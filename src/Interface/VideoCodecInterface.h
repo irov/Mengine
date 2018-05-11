@@ -82,5 +82,5 @@ namespace Mengine
         virtual EVideoDecoderReadState readNextFrame( float & _pts ) = 0;
     };
 
-    typedef stdex::intrusive_ptr<VideoDecoderInterface> VideoDecoderInterfacePtr;
+    typedef IntrusivePtr<VideoDecoderInterface> VideoDecoderInterfacePtr;
 }

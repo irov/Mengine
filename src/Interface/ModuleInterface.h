@@ -3,7 +3,7 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/ServiceInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 #include "Core/ConstString.h"
 #include "Core/Params.h"
 
@@ -40,7 +40,7 @@ namespace Mengine
 		virtual void messageAll( const ConstString & _messageName, const TMapWParams & _params ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ModuleInterface> ModuleInterfacePtr;
+	typedef IntrusivePtr<ModuleInterface> ModuleInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class ModuleFactoryInterface
 		: public ServantInterface
@@ -49,7 +49,7 @@ namespace Mengine
 		virtual ModuleInterfacePtr createModule( const ConstString & _name ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ModuleFactoryInterface> ModuleFactoryInterfacePtr;
+	typedef IntrusivePtr<ModuleFactoryInterface> ModuleFactoryInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class ModuleServiceInterface
 		: public ServiceInterface

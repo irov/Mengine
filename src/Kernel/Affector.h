@@ -9,22 +9,22 @@
 
 #include "Core/ValueInterpolator.h"
 
-#include "stdex/intrusive_slug_linked.h"
+#include "stdex/intrusive_slug_linked_ptr.h"
 
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class AffectorCallback
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		virtual void onAffectorEnd( AFFECTOR_ID _id, bool _isEnd ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<AffectorCallback> AffectorCallbackPtr;
+	typedef IntrusivePtr<AffectorCallback> AffectorCallbackPtr;
 	//////////////////////////////////////////////////////////////////////////
 	class Affector
-		: public stdex::intrusive_slug_linked<Affector>
+		: public stdex::intrusive_slug_linked_ptr<Affector>
 		, public Factorable
 	{
 	public:
@@ -74,6 +74,8 @@ namespace Mengine
 
 		bool m_freeze;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Affector> AffectorPtr;
 	//////////////////////////////////////////////////////////////////////////
 	class CallbackAffector
 		: public Affector
@@ -117,7 +119,7 @@ namespace Mengine
 		template<class T>
 		void update( const T & _value )
 		{
-			(m_self->*m_method)(m_argument, _value);
+            (m_self->*m_method)(m_argument, _value);
 		}
 
 	protected:
@@ -331,6 +333,7 @@ namespace Mengine
 		{
 		public:
 			typedef MemberAffectorAccumulateLinear<C, M, T, void> AffectorType;
+            typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
             NodeAffectorCreatorAccumulateLinear()
@@ -343,11 +346,11 @@ namespace Mengine
             }
 
 		public:
-			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
+			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _pos, const T & _dir, float _speed )
 			{
-				AffectorType * affector = m_factory->createObject();
+				AffectorTypePtr affector = m_factory->createObject();
 
 				affector->setAffectorType( _type );
 
@@ -372,6 +375,7 @@ namespace Mengine
 		{
 		public:
 			typedef MemberAffectorInterpolateLinear<C, M, T, MA> AffectorType;
+            typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
             NodeAffectorCreatorInterpolateLinear()
@@ -384,11 +388,11 @@ namespace Mengine
             }
 
 		public:
-			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
+			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method, const MA & _argument
 				, const T & _start, const T & _end, float _time )
 			{
-				AffectorType * affector = m_factory->createObject();
+				AffectorTypePtr affector = m_factory->createObject();
 
 				affector->setAffectorType( _type );
 
@@ -413,6 +417,7 @@ namespace Mengine
 		{
 		public:
 			typedef MemberAffectorInterpolateLinear<C, M, T, void> AffectorType;
+            typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
             NodeAffectorCreatorInterpolateLinear()
@@ -425,11 +430,11 @@ namespace Mengine
             }
             
 		public:
-			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
+			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _start, const T & _end, float _time )
 			{
-				AffectorType * affector = m_factory->createObject();
+                AffectorTypePtr affector = m_factory->createObject();
 
 				affector->setAffectorType( _type );
 
@@ -454,6 +459,7 @@ namespace Mengine
 		{
 		public:
 			typedef MemberAffectorInterpolateQuadratic<C, M, T> AffectorType;
+            typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
             NodeAffectorCreatorInterpolateQuadratic()
@@ -466,11 +472,11 @@ namespace Mengine
             }
 
 		public:
-			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
+			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _start, const T & _end, const T & _v0, float _time )
 			{
-				AffectorType * affector = m_factory->createObject();
+                AffectorTypePtr affector = m_factory->createObject();
 
 				affector->setAffectorType( _type );
 
@@ -495,6 +501,7 @@ namespace Mengine
 		{
 		public:
 			typedef MemberAffectorInterpolateBezier<C, M, T, N> AffectorType;
+            typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
             NodeAffectorCreatorInterpolateBezier()
@@ -507,11 +514,11 @@ namespace Mengine
             }
 
 		public:
-			Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
+			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
 				, C * _self, M _method
 				, const T & _start, const T & _end, const T * _v, float _time )
 			{
-				AffectorType * affector = m_factory->createObject();
+                AffectorTypePtr affector = m_factory->createObject();
 
 				affector->setAffectorType( _type );
 

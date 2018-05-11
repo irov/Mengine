@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Core/IntrusivePtr.h"
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"
 #include "Core/Visitor.h"
@@ -10,7 +11,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PrefetcherObserverInterface
-        : public FactorablePtr
+        : public Factorable
     {
     public:
         virtual void onPrefetchPreparation() = 0;
@@ -19,11 +20,11 @@ namespace Mengine
         virtual void onPrefetchComplete( bool _successful ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<PrefetcherObserverInterface> PrefetcherObserverInterfacePtr;
+    typedef IntrusivePtr<PrefetcherObserverInterface> PrefetcherObserverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<class ImageDecoderInterface> ImageDecoderInterfacePtr;
-    typedef stdex::intrusive_ptr<class SoundDecoderInterface> SoundDecoderInterfacePtr;
-    typedef stdex::intrusive_ptr<class DataInterface> DataInterfacePtr;
+    typedef IntrusivePtr<class ImageDecoderInterface> ImageDecoderInterfacePtr;
+    typedef IntrusivePtr<class SoundDecoderInterface> SoundDecoderInterfacePtr;
+    typedef IntrusivePtr<class DataInterface> DataInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class PrefetcherServiceInterface
 		: public ServiceInterface

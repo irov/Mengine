@@ -21,7 +21,7 @@ namespace Mengine
         virtual void onScriptHolderReleaseScript( const pybind::object & _script ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<ScriptHolderEventReceiver> ScriptHolderEventReceiverPtr;
+    typedef IntrusivePtr<ScriptHolderEventReceiver> ScriptHolderEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 	class ScriptHolder
 		: public Node

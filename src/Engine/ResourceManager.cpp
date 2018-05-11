@@ -458,7 +458,7 @@ namespace Mengine
 		return successful;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReferencePtr ResourceManager::generateResource( const ConstString& _type ) const
+    PointerResourceReference ResourceManager::generateResource( const ConstString& _type ) const
 	{
 		ResourceReferencePtr resource = PROTOTYPE_SERVICE()
 			->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type );
@@ -484,7 +484,7 @@ namespace Mengine
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReferencePtr ResourceManager::createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
+    PointerResourceReference ResourceManager::createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 	{
 		ResourceReferencePtr resource = this->generateResource( _type );
 
@@ -691,7 +691,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReferencePtr ResourceManager::getResource( const ConstString& _name ) const
+    PointerResourceReference ResourceManager::getResource( const ConstString& _name ) const
 	{
 		const ResourceEntry * entry = this->findResource_( _name );
 
@@ -728,7 +728,7 @@ namespace Mengine
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReferencePtr ResourceManager::getResourceReference( const ConstString & _name ) const
+    PointerResourceReference ResourceManager::getResourceReference( const ConstString & _name ) const
 	{
 		const ResourceEntry * entry = this->findResource_( _name );
 

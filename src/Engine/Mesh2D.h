@@ -79,6 +79,8 @@ namespace Mengine
 		mutable bool m_invalidateVerticesWM;
 		mutable bool m_invalidateVerticesColor;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Mesh2D> Mesh2DPtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline const RenderVertex2D * Mesh2D::getVerticesWM() const
 	{

@@ -145,5 +145,5 @@ namespace Mengine
 		bool m_enable;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<Package> PackagePtr;
+	typedef IntrusivePtr<Package> PackagePtr;
 }

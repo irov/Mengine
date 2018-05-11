@@ -7,7 +7,13 @@ namespace Mengine
     class ConstString
     {
     public:
+        typedef ConstStringHolder::size_type size_type;
+        typedef ConstStringHolder::hash_type hash_type;
+        typedef ConstStringHolder::value_type value_type;
+
+    public:
         ConstString()
+            : m_holder( nullptr )
         {
         }
 
@@ -17,15 +23,9 @@ namespace Mengine
         }
 
     public:
-        typedef ConstStringHolder::size_type size_type;
-        typedef ConstStringHolder::hash_type hash_type;
-        typedef ConstStringHolder::value_type value_type;
-
-    public:
-        explicit ConstString( const ConstStringHolderPtr & _holder )
+        explicit ConstString( const ConstStringHolder * _holder )
             : m_holder( _holder )
         {
-
         }
 
     public:
@@ -85,11 +85,6 @@ namespace Mengine
             *this = ConstString::none();;
         }
 
-        inline void swap( ConstString & _cs )
-        {
-            m_holder.swap( _cs.m_holder );
-        }
-
     public:
         inline ConstString & operator = ( const ConstString & _right )
         {
@@ -141,7 +136,7 @@ namespace Mengine
         };
 
     protected:
-        ConstStringHolderPtr m_holder;
+        const ConstStringHolder * m_holder;
     };
     //////////////////////////////////////////////////////////////////////////
     bool operator == ( const ConstString & _left, const ConstString::value_type * _right );
@@ -152,12 +147,4 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool operator != ( const ConstString::value_type * _left, const ConstString & _right );
     //////////////////////////////////////////////////////////////////////////
-} 
-
-namespace std
-{
-	inline void swap( Mengine::ConstString & _left, Mengine::ConstString & _right )
-	{
-		_left.swap( _right );
-	}
 }

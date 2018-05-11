@@ -1,27 +1,34 @@
 #pragma once
 
-#include "stdex/intrusive_slug_list_size.h"
-#include "stdex/intrusive_slug.h"
+#include "stdex/intrusive_slug_list_size_ptr.h"
+#include "stdex/intrusive_slug_linked_ptr.h"
+#include "stdex/intrusive_slug_ptr.h"
+
+#include "Core/Mixin.h"
+#include "Core/IntrusivePtr.h"
 
 #include "math/mat4.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class Transformation3D> Transformation3DPtr;
 	//////////////////////////////////////////////////////////////////////////
 	class Transformation3D
-        : public stdex::intrusive_slug_linked<Transformation3D>
+        : public stdex::intrusive_slug_linked_ptr<Transformation3D>
+        , public Mixin
 	{
 	public:
 		Transformation3D();
         ~Transformation3D();
 
 	public:
-		void setRelationTransformation( Transformation3D * _relation );
-		inline Transformation3D * getRelationTransformation() const;
+		void setRelationTransformation( const Transformation3DPtr & _relation );
+		inline const Transformation3DPtr & getRelationTransformation() const;
 
     protected:
-        void addRelationChildren_( Transformation3D * _child );
-        void removeRelationChildren_( Transformation3D * _child );
+        void addRelationChildren_( const Transformation3DPtr & _child );
+        void removeRelationChildren_( const Transformation3DPtr & _child );
 
 	public:
 		inline const mt::mat4f & getWorldMatrix() const;
@@ -116,8 +123,8 @@ namespace Mengine
 	protected:
 		Transformation3D * m_relationTransformation;
 
-		typedef stdex::intrusive_slug_list_size<Transformation3D> TListTransformation3D;
-		typedef stdex::intrusive_slug<TListTransformation3D> TSlugTransformation3D;
+        typedef stdex::intrusive_slug_list_size_ptr<Transformation3D> TListTransformation3D;
+        typedef stdex::intrusive_slug_ptr<Transformation3D> TSlugTransformation3D;
 		TListTransformation3D m_relationChild;
 
 		mt::vec3f m_position;
@@ -134,7 +141,9 @@ namespace Mengine
 		mutable bool m_invalidateWorldMatrix;
 	};
     //////////////////////////////////////////////////////////////////////////
-    inline Transformation3D * Transformation3D::getRelationTransformation() const
+    typedef stdex::intrusive_ptr<Transformation3D> Transformation3DPtr;
+    //////////////////////////////////////////////////////////////////////////
+    inline const Transformation3DPtr & Transformation3D::getRelationTransformation() const
     {
         return m_relationTransformation;
     }

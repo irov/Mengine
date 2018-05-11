@@ -197,7 +197,7 @@ namespace Mengine
             , m_fullscreen
         );
 
-        uint32_t MultiSampleCount = CONFIG_VALUE( "Render", "MultiSampleCount", 2U );
+        uint32_t MultiSampleCount = CONFIG_VALUE( "Engine", "MultiSampleCount", 2U );
 
         m_windowCreated = RENDER_SYSTEM()
             ->createRenderWindow( m_windowResolution, _bits, m_fullscreen, m_vsync, _FSAAType, _FSAAQuality, MultiSampleCount );
@@ -826,12 +826,16 @@ namespace Mengine
 
         float vp_x = ::floorf( renderViewport.begin.x + 0.5f );
         float vp_y = ::floorf( renderViewport.begin.y + 0.5f );
+        //float vp_x = renderViewport.begin.x;
+        //float vp_y = renderViewport.begin.y;
 
         float width = renderViewport.getWidth();
         float height = renderViewport.getHeight();
 
         float vp_width = ::floorf( width + 0.5f );
         float vp_height = ::floorf( height + 0.5f );
+        //float vp_width = width;
+        //float vp_height = height;
 
         mt::vec2f windowSize;
         m_windowResolution.calcSize( windowSize );
@@ -1207,10 +1211,10 @@ namespace Mengine
             Helper::makeRenderBoundingBox( bb, _vertices, _vertexCount );
         }
 
-        const RenderCameraInterface * camera = rp->camera;
+        const RenderCameraInterfacePtr & camera = rp->camera;
         const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
 
-        const RenderViewportInterface * viewport = rp->viewport;
+        const RenderViewportInterfacePtr & viewport = rp->viewport;
         const Viewport & vp = viewport->getViewport();
 
         mt::box2f bb_homogenize;

@@ -5,7 +5,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/RenderEnumInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Core/Viewport.h"
 #include "Core/Resolution.h"
@@ -41,7 +41,7 @@ namespace Mengine
         PixelFormat format;
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<class RenderImageInterface> RenderImageInterfacePtr;
+	typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderImageLoaderInterface
 		: public ServantInterface
@@ -54,7 +54,7 @@ namespace Mengine
         //virtual bool load( void * _buffer, uint32_t _pitch ) const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;
+	typedef IntrusivePtr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderImageProviderInterface
         : public ServantInterface
@@ -63,7 +63,7 @@ namespace Mengine
         virtual RenderImageLoaderInterfacePtr getLoader() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<RenderImageProviderInterface> RenderImageProviderInterfacePtr;
+    typedef IntrusivePtr<RenderImageProviderInterface> RenderImageProviderInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderImageInterface
 		: public ServantInterface
@@ -93,7 +93,7 @@ namespace Mengine
 		virtual bool unlock( uint32_t _level, bool _successful ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderImageInterface> RenderImageInterfacePtr;
+	typedef IntrusivePtr<RenderImageInterface> RenderImageInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderTextureInterface
 		: public ServantInterface
@@ -130,7 +130,7 @@ namespace Mengine
 		virtual bool isPow2() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderTextureInterface> RenderTextureInterfacePtr;
+	typedef IntrusivePtr<RenderTextureInterface> RenderTextureInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     struct RenderTextureStage
     {
@@ -168,7 +168,7 @@ namespace Mengine
         virtual void disable() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<RenderVertexAttributeInterface> RenderVertexAttributeInterfacePtr;
+    typedef IntrusivePtr<RenderVertexAttributeInterface> RenderVertexAttributeInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderFragmentShaderInterface
 		: public ServantInterface
@@ -177,7 +177,7 @@ namespace Mengine
 		virtual const ConstString & getName() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderFragmentShaderInterface> RenderFragmentShaderInterfacePtr;
+	typedef IntrusivePtr<RenderFragmentShaderInterface> RenderFragmentShaderInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderVertexShaderInterface
 		: public ServantInterface
@@ -186,7 +186,7 @@ namespace Mengine
 		virtual const ConstString & getName() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderVertexShaderInterface> RenderVertexShaderInterfacePtr;
+	typedef IntrusivePtr<RenderVertexShaderInterface> RenderVertexShaderInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderProgramInterface
 		: public ServantInterface
@@ -200,7 +200,7 @@ namespace Mengine
 		virtual RenderFragmentShaderInterfacePtr getFragmentShader() const = 0;		
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderProgramInterface> RenderProgramInterfacePtr;
+	typedef IntrusivePtr<RenderProgramInterface> RenderProgramInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderMaterialStage
 	{
@@ -227,7 +227,7 @@ namespace Mengine
 	};
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialInterface
-		: public FactorablePtr
+		: public Factorable
     {
 	public:
 		virtual const ConstString & getName() const = 0;
@@ -243,7 +243,7 @@ namespace Mengine
 		virtual const RenderMaterialStage * getStage() const = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderMaterialInterface> RenderMaterialInterfacePtr;
+	typedef IntrusivePtr<RenderMaterialInterface> RenderMaterialInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	const uint32_t VDECL_XYZ = 0x00000002;
 	const uint32_t VDECL_XYZRHW = 0x00000004;
@@ -277,7 +277,7 @@ namespace Mengine
         virtual void draw( const void * _buffer, size_t _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderVertexBufferInterface> RenderVertexBufferInterfacePtr;
+	typedef IntrusivePtr<RenderVertexBufferInterface> RenderVertexBufferInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderIndexBufferInterface
 		: public ServantInterface
@@ -301,7 +301,7 @@ namespace Mengine
         virtual void draw( const void * _buffer, size_t _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderIndexBufferInterface> RenderIndexBufferInterfacePtr;
+	typedef IntrusivePtr<RenderIndexBufferInterface> RenderIndexBufferInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderMaterialServiceInterface
         : public ServiceInterface
@@ -358,7 +358,7 @@ namespace Mengine
     class VisitorRenderTextureInterface
     {
     public:
-        virtual void visitRenderTexture( const RenderTextureInterface * _texture ) = 0;
+        virtual void visitRenderTexture( const RenderTextureInterfacePtr & _texture ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     class RenderTextureServiceInterface
@@ -396,19 +396,26 @@ namespace Mengine
     ((Mengine::RenderTextureServiceInterface*)SERVICE_GET(Mengine::RenderTextureServiceInterface))
 	//////////////////////////////////////////////////////////////////////////
 	class RenderViewportInterface
+        : public Mixin
 	{
 	public:
 		virtual const Viewport & getViewport() const = 0;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<RenderViewportInterface> RenderViewportInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderClipplaneInterface
+        : public Mixin
 	{
 	public:
 		virtual uint32_t getCount() const = 0;
 		virtual const mt::planef & getPlane( uint32_t _index ) const = 0;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<RenderClipplaneInterface> RenderClipplaneInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderCameraInterface
+        : public Mixin
 	{
 	public:
 		virtual const mt::mat4f & getCameraViewMatrix() const = 0;
@@ -421,9 +428,11 @@ namespace Mengine
 		virtual const mt::mat4f & getCameraViewProjectionMatrix() const = 0;
         virtual const mt::mat4f & getCameraViewProjectionMatrixInv() const = 0;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<RenderCameraInterface> RenderCameraInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderTargetInterface
-		: public ServantInterface
+		: public Mixin
 	{
     public:
         virtual uint32_t getWidth() const = 0;
@@ -442,7 +451,7 @@ namespace Mengine
 		virtual bool getData( unsigned char * _buffer, size_t _pitch ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<RenderTargetInterface> RenderTargetInterfacePtr;
+    typedef IntrusivePtr<RenderTargetInterface> RenderTargetInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderSystemInterface
         : public ServiceInterface
@@ -577,9 +586,9 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderState
 	{
-		const RenderViewportInterface * viewport;
-		const RenderCameraInterface * camera;
-		const RenderClipplaneInterface * clipplane;
+		RenderViewportInterfacePtr viewport;
+		RenderCameraInterfacePtr camera;
+		RenderClipplaneInterfacePtr clipplane;
 
 		RenderTargetInterfacePtr target;
 	};

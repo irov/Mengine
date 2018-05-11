@@ -284,8 +284,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         Node * movie_getMovieNode( Movie * _movie, const ConstString & _name )
         {
-            Node * node;
-            Movie * submovie;
+            NodePtr node;
+            MoviePtr submovie;
             if( _movie->getMovieNode( _name, ConstString::none(), &node, &submovie ) == false )
             {
                 return nullptr;
@@ -296,8 +296,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool movie_hasMovieNode( Movie * _movie, const ConstString & _name )
         {
-            Node * node;
-            Movie * submovie;
+            NodePtr node;
+            MoviePtr submovie;
             bool successful = _movie->hasMovieNode( _name, ConstString::none(), &node, &submovie );
 
             return successful;
@@ -337,10 +337,10 @@ namespace Mengine
             return pybind::ptr( _kernel, enable );
         }
         //////////////////////////////////////////////////////////////////////////
-        Node * movie_getMovieSlot( Movie * _movie, const ConstString & _name )
+        NodePtr movie_getMovieSlot( Movie * _movie, const ConstString & _name )
         {
-            Node * node;
-            Movie * submovie;
+            NodePtr node;
+            MoviePtr submovie;
             if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
             {
                 return nullptr;
@@ -349,9 +349,9 @@ namespace Mengine
             return node;
         }
         //////////////////////////////////////////////////////////////////////////
-        RenderClipplane * movie_getMovieClipplane( Movie * _movie, const ConstString & _name )
+        RenderClipplanePtr movie_getMovieClipplane( Movie * _movie, const ConstString & _name )
         {
-            RenderClipplane * clipplane;
+            RenderClipplanePtr clipplane;
             if( _movie->getMovieClipplane( _name, &clipplane ) == false )
             {
                 return nullptr;
@@ -369,17 +369,17 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool movie_hasMovieSlot( Movie * _movie, const ConstString & _name )
         {
-            Node * node;
-            Movie * submovie;
+            NodePtr node;
+            MoviePtr submovie;
             bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie );
 
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        Node * movie_getMovieText( Movie * _movie, const ConstString & _name )
+        NodePtr movie_getMovieText( Movie * _movie, const ConstString & _name )
         {
-            Node * node;
-            Movie * submovie;
+            NodePtr node;
+            MoviePtr submovie;
 
             if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieText" ), &node, &submovie ) == false )
             {
@@ -391,18 +391,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool movie_hasMovieText( Movie * _movie, const ConstString & _name )
         {
-            Node * node;
-            Movie * submovie;
+            NodePtr node;
+            MoviePtr submovie;
 
             bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieText" ), &node, &submovie );
 
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        Node * movie_getSubMovie( Movie * _movie, const ConstString & _name )
+        NodePtr movie_getSubMovie( Movie * _movie, const ConstString & _name )
         {
-            Node * node;
-            Movie * submovie;
+            NodePtr node;
+            MoviePtr submovie;
             if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "SubMovie" ), &node, &submovie ) == false )
             {
                 return nullptr;
@@ -413,17 +413,17 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool movie_hasSubMovie( Movie * _movie, const ConstString & _name )
         {
-            Node * node;
-            Movie * submovie;
+            NodePtr node;
+            MoviePtr submovie;
             bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "SubMovie" ), &node, &submovie );
 
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        Node * movie_getSocket( Movie * _movie, const ConstString & _name )
+        NodePtr movie_getSocket( Movie * _movie, const ConstString & _name )
         {
-            Node * node;
-            Movie * submovie;
+            NodePtr node;
+            MoviePtr submovie;
 
             if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), &node, &submovie ) == true )
             {
@@ -446,8 +446,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool movie_hasSocket( Movie * _movie, const ConstString & _name )
         {
-            Node * node;
-            Movie * submovie;
+            NodePtr node;
+            MoviePtr submovie;
 
             if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), &node, &submovie ) == true )
             {
@@ -464,15 +464,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool movie_setMovieEvent( Movie * _movie, const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
         {
-            Node * node;
-            Movie * submovie;
+            NodePtr node;
+            MoviePtr submovie;
 
             if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieEvent" ), &node, &submovie ) == false )
             {
                 return false;
             }
 
-            MovieEvent * ev = static_node_cast<MovieEvent *>(node);
+            MovieEventPtr ev = stdex::intrusive_static_cast<MovieEventPtr>(node);
 
             ev->setEvent( _cb, _args );
 
@@ -516,9 +516,9 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieNode( Movie * _movie, Node * _node ) override
+            void visitMovieNode( Movie * _movie, const NodePtr & _node ) override
             {
-                MovieSlot * slot = static_node_cast<MovieSlot *>(_node);
+                MovieSlotPtr slot = stdex::intrusive_static_cast<MovieSlotPtr>(_node);
 
                 if( slot == nullptr )
                 {
@@ -560,9 +560,9 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieNode( Movie * _movie, Node * _node ) override
+            void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
             {
-                HotSpot * hotspot = static_node_cast<HotSpot *>(_node);
+                HotSpot * hotspot = stdex::intrusive_static_cast<HotSpotPtr>(_node);
 
                 if( hotspot == nullptr )
                 {
@@ -601,9 +601,9 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieNode( Movie * _movie, Node * _node ) override
+            void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
             {
-                Movie * subMovie = static_node_cast<Movie *>(_node);
+                MoviePtr subMovie = stdex::intrusive_static_cast<MoviePtr>(_node);
 
                 if( subMovie == nullptr )
                 {
@@ -641,7 +641,7 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieNode( Movie * _movie, Node * _layer ) override
+            void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
             {
                 m_list.append( pybind::make_tuple_t( m_kernel, _movie, _layer ) );
             }
@@ -738,7 +738,7 @@ namespace Mengine
         float movie_getLayerPathLength( Movie * _movie, const ConstString & _name )
         {
             const MovieLayer * layer;
-            Movie * sub_movie;
+            MoviePtr sub_movie;
             if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
             {
                 LOGGER_ERROR( "Movie::getLayerPathLength: '%s' not found layer '%s'"
@@ -788,7 +788,7 @@ namespace Mengine
         pybind::list movie_getLayerPath( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
         {
             const MovieLayer * layer;
-            Movie * sub_movie;
+            MoviePtr sub_movie;
             if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
             {
                 LOGGER_ERROR( "Movie::getLayerPathLength: '%s' not found layer '%s'"
@@ -1234,8 +1234,8 @@ namespace Mengine
             const Resolution & contentResolution = APPLICATION_SERVICE()
                 ->getContentResolution();
 
-            const RenderCameraInterface * camera = _hs->getRenderCameraInheritance();
-            const RenderViewportInterface * viewport = _hs->getRenderViewportInheritance();
+            const RenderCameraInterfacePtr & camera = _hs->getRenderCameraInheritance();
+            const RenderViewportInterfacePtr & viewport = _hs->getRenderViewportInheritance();
 
             mt::box2f b1;
             _hs->getPolygonScreen( camera, viewport, contentResolution, &b1, nullptr );
@@ -1371,6 +1371,8 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<PyScheduleTimerInterface> PyScheduleTimerInterfacePtr;
+        //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPyObjectTimingListener;
         //////////////////////////////////////////////////////////////////////////
         class PySchedulePipeInterface
@@ -1405,6 +1407,8 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<PySchedulePipeInterface> PySchedulePipeInterfacePtr;
+        //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPySchedulePipeInterface;
         //////////////////////////////////////////////////////////////////////////
         class DelaySchedulePipeInterface
@@ -1438,6 +1442,8 @@ namespace Mengine
         protected:
             float m_delay;
         };
+        //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<DelaySchedulePipeInterface> DelaySchedulePipeInterfacePtr;
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryDelaySchedulePipeInterface;
         //////////////////////////////////////////////////////////////////////////
@@ -1476,6 +1482,8 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<PyScheduleEventInterface> PyScheduleEventInterfacePtr;
+        //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPyObjectScheduleListener;
         //////////////////////////////////////////////////////////////////////////
         uint32_t timing( float _delay, const pybind::object & _listener, const pybind::args & _args )
@@ -1483,11 +1491,11 @@ namespace Mengine
             const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
-            DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface->createObject();
+            DelaySchedulePipeInterfacePtr pipe = m_factoryDelaySchedulePipeInterface->createObject();
 
             pipe->initialize( _delay );
 
-            PyScheduleTimerInterface * listener = m_factoryPyObjectTimingListener->createObject();
+            PyScheduleTimerInterfacePtr listener = m_factoryPyObjectTimingListener->createObject();
 
             listener->initialize( _listener, _args );
 
@@ -1535,7 +1543,7 @@ namespace Mengine
             const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
-            PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener->createObject();
+            PyScheduleEventInterfacePtr sl = m_factoryPyObjectScheduleListener->createObject();
 
             sl->initialize( _script, _args );
 
@@ -1546,7 +1554,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
         {
-            PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener->createObject();
+            PyScheduleEventInterfacePtr sl = m_factoryPyObjectScheduleListener->createObject();
 
             sl->initialize( _script, _args );
 
@@ -1557,11 +1565,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t ScheduleManagerInterface_timing( ScheduleManagerInterface * _scheduleManager, float _delay, const pybind::object & _listener, const pybind::args & _args )
         {
-            DelaySchedulePipeInterface * pipe = m_factoryDelaySchedulePipeInterface->createObject();
+            DelaySchedulePipeInterfacePtr pipe = m_factoryDelaySchedulePipeInterface->createObject();
 
             pipe->initialize( _delay );
 
-            PyScheduleTimerInterface * tl = m_factoryPyObjectTimingListener->createObject();
+            PyScheduleTimerInterfacePtr tl = m_factoryPyObjectTimingListener->createObject();
 
             tl->initialize( _listener, _args );
 
@@ -1572,11 +1580,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t ScheduleManagerInterface_pipe( ScheduleManagerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _listener, const pybind::args & _args )
         {
-            PySchedulePipeInterface * pipe = m_factoryPySchedulePipeInterface->createObject();
+            PySchedulePipeInterfacePtr pipe = m_factoryPySchedulePipeInterface->createObject();
 
             pipe->initialize( _pipe, _args );
 
-            PyScheduleTimerInterface * tl = m_factoryPyObjectTimingListener->createObject();
+            PyScheduleTimerInterfacePtr tl = m_factoryPyObjectTimingListener->createObject();
 
             tl->initialize( _listener, _args );
 
@@ -1692,7 +1700,7 @@ namespace Mengine
                 return 0;
             }
 
-            PyScheduleEventInterface * sl = m_factoryPyObjectScheduleListener->createObject();
+            PyScheduleEventInterfacePtr sl = m_factoryPyObjectScheduleListener->createObject();
 
             sl->initialize( _script, _args );
 
@@ -1841,7 +1849,7 @@ namespace Mengine
             }
 
         public:
-            void onSceneChange( Scene * _scene, bool _enable, bool _remove ) override
+            void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove ) override
             {
                 if( _remove == false )
                 {
@@ -1867,7 +1875,7 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        typedef stdex::intrusive_ptr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
+        typedef IntrusivePtr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPythonSceneChangeCallback;
         //////////////////////////////////////////////////////////////////////////
@@ -1898,7 +1906,7 @@ namespace Mengine
 
             py_cb->initialize( _cb, _args );
 
-            Scene * currentScene = PLAYER_SERVICE()
+            ScenePtr currentScene = PLAYER_SERVICE()
                 ->getCurrentScene();
 
             if( currentScene != nullptr && currentScene->getName() == _name )
@@ -1911,7 +1919,7 @@ namespace Mengine
             }
             else
             {
-                Scene * scene = PROTOTYPE_SERVICE()
+                ScenePtr scene = PROTOTYPE_SERVICE()
                     ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
 
                 if( scene == nullptr )
@@ -1933,17 +1941,17 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        Scene * getCurrentScene()
+        const ScenePtr & getCurrentScene()
         {
-            Scene * scene = PLAYER_SERVICE()
+            const ScenePtr & scene = PLAYER_SERVICE()
                 ->getCurrentScene();
 
             return scene;
         }
         //////////////////////////////////////////////////////////////////////////
-        Scene * s_createScene( const ConstString & _prototype, const ConstString & _name )
+        ScenePtr s_createScene( const ConstString & _prototype, const ConstString & _name )
         {
-            Scene * scene = PROTOTYPE_SERVICE()
+            ScenePtr scene = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), _prototype );
 
             scene->setName( _name );
@@ -1975,7 +1983,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_setArrow( const ConstString & _prototype )
         {
-            Arrow * arrow = PROTOTYPE_SERVICE()
+            ArrowPtr arrow = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), _prototype );
 
             if( arrow == nullptr )
@@ -2076,7 +2084,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const mt::vec2f& s_getCamera2DPosition()
         {
-            const RenderViewportInterface * rv = PLAYER_SERVICE()
+            const RenderViewportInterfacePtr & rv = PLAYER_SERVICE()
                 ->getRenderViewport();
 
             const Viewport & vp = rv->getViewport();
@@ -2545,9 +2553,9 @@ namespace Mengine
             _node->destroy();
         }
         //////////////////////////////////////////////////////////////////////////
-        Node * createNode( const ConstString & _type )
+        NodePtr createNode( const ConstString & _type )
         {
-            Node * node = NODE_SERVICE()
+            NodePtr node = NODE_SERVICE()
                 ->createNode( _type );
 
             if( node == nullptr )
@@ -2596,8 +2604,8 @@ namespace Mengine
             surface->setName( _name );
             surface->setResourceImage( _resource );
 
-            ShapeQuadFixed * shape = NODE_SERVICE()
-                ->createNodeT<ShapeQuadFixed *>( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
+            ShapeQuadFixedPtr shape = NODE_SERVICE()
+                ->createNode( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
             if( shape == nullptr )
             {
@@ -2785,7 +2793,7 @@ namespace Mengine
         void writeImageToFile( const ConstString& _resource, const FilePath& _fileName )
         {
             ResourceImagePtr resource = RESOURCE_SERVICE()
-                ->getResourceT<ResourceImagePtr>( _resource );
+                ->getResource( _resource );
 
             if( resource == nullptr )
             {
@@ -2902,8 +2910,8 @@ namespace Mengine
                 return false;
             }
 
-            const RenderCameraInterface * renderCamera = arrow->getRenderCamera();
-            const RenderViewportInterface * renderViewport = arrow->getRenderViewport();
+            const RenderCameraInterfacePtr & renderCamera = arrow->getRenderCamera();
+            const RenderViewportInterfacePtr & renderViewport = arrow->getRenderViewport();
 
             arrow->calcMouseScreenPosition( renderCamera, renderViewport, _pos, _screen );
 
@@ -3639,7 +3647,7 @@ namespace Mengine
         bool s_copyFile_( const ConstString & _resourceFileName, MemoryBufferInterfacePtr & _blob )
         {
             ResourceFilePtr resourceFile = RESOURCE_SERVICE()
-                ->getResourceT<ResourceFilePtr>( _resourceFileName );
+                ->getResource( _resourceFileName );
 
             if( resourceFile == nullptr )
             {
@@ -3729,7 +3737,8 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PyInputMousePositionProvider
-            : public InputMousePositionProviderInterface
+            : public Factorable
+            , public InputMousePositionProviderInterface
         {
         public:
             PyInputMousePositionProvider()
@@ -3740,7 +3749,7 @@ namespace Mengine
             }
 
         public:
-            void setup( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const pybind::object & _cb, const pybind::args & _args )
+            void setup( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
             {
                 m_arrow = _arrow;
                 m_renderCamera = _camera;
@@ -3763,16 +3772,16 @@ namespace Mengine
         protected:
             Arrow * m_arrow;
             const RenderCameraInterface * m_renderCamera;
-            const RenderViewportInterface * m_renderViewport;
+            RenderViewportInterfacePtr m_renderViewport;
             pybind::object m_cb;
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        typedef stdex::intrusive_ptr<PyInputMousePositionProvider> PyInputMousePositionProviderPtr;
+        typedef IntrusivePtr<PyInputMousePositionProvider> PyInputMousePositionProviderPtr;
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPyInputMousePositionProvider;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_addMousePositionProvider( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_addMousePositionProvider( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterfacePtr & _viewport, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _arrow == nullptr )
             {
@@ -3791,15 +3800,16 @@ namespace Mengine
                     ->getRenderCamera();
             }
 
-            if( _viewport == nullptr )
+            RenderViewportInterfacePtr viewport = _viewport;
+            if( viewport == nullptr )
             {
-                _viewport = PLAYER_SERVICE()
+                viewport = PLAYER_SERVICE()
                     ->getRenderViewport();
             }
 
             PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject();
 
-            provider->setup( _arrow, _camera, _viewport, _cb, _args );
+            provider->setup( _arrow, _camera, viewport, _cb, _args );
 
             uint32_t id = INPUT_SERVICE()
                 ->addMousePositionProvider( provider );
@@ -3813,7 +3823,7 @@ namespace Mengine
                 ->removeMousePositionProvider( _id );
         }
         //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_screenToWorldPoint( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint )
+        mt::vec2f s_screenToWorldPoint( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
         {
             if( _arrow == nullptr )
             {
@@ -3832,19 +3842,20 @@ namespace Mengine
                     ->getRenderCamera();
             }
 
-            if( _viewport == nullptr )
+            RenderViewportInterfacePtr viewport = _viewport;
+            if( viewport == nullptr )
             {
-                _viewport = PLAYER_SERVICE()
+                viewport = PLAYER_SERVICE()
                     ->getRenderViewport();
             }
 
             mt::vec2f wp;
-            _arrow->calcMouseWorldPosition( _camera, _viewport, _screenPoint, wp );
+            _arrow->calcMouseWorldPosition( _camera, viewport, _screenPoint, wp );
 
             return wp;
         }
         //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_screenToWorldClick( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint )
+        mt::vec2f s_screenToWorldClick( Arrow * _arrow, const RenderCameraInterface * _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint )
         {
             if( _arrow == nullptr )
             {
@@ -3863,14 +3874,15 @@ namespace Mengine
                     ->getRenderCamera();
             }
 
-            if( _viewport == nullptr )
+            RenderViewportInterfacePtr viewport = _viewport;
+            if( viewport == nullptr )
             {
-                _viewport = PLAYER_SERVICE()
+                viewport = PLAYER_SERVICE()
                     ->getRenderViewport();
             }
 
             mt::vec2f wp;
-            _arrow->calcPointClick( _camera, _viewport, _screenPoint, wp );
+            _arrow->calcPointClick( _camera, viewport, _screenPoint, wp );
 
             return wp;
         }
@@ -4075,11 +4087,13 @@ namespace Mengine
             float m_timing;
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<AffectorGridBurnTransparency> AffectorGridBurnTransparencyPtr;
+        //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryAffectorGridBurnTransparency;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_gridBurnTransparency( Grid2D * _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
         {
-            AffectorGridBurnTransparency * affector = m_factoryAffectorGridBurnTransparency->createObject();
+            AffectorGridBurnTransparencyPtr affector = m_factoryAffectorGridBurnTransparency->createObject();
 
             affector->setAffectorType( ETA_USER );
 
@@ -4123,16 +4137,16 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<AffectorUser> AffectorUserPtr;
+        //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryAffectorUser;
         //////////////////////////////////////////////////////////////////////////		
-        Affector * s_createAffector( const pybind::object & _cb, const pybind::args & _args )
+        AffectorPtr s_createAffector( const pybind::object & _cb, const pybind::args & _args )
         {
-            AffectorUser * affector = m_factoryAffectorUser->createObject();
+            AffectorUserPtr affector = m_factoryAffectorUser->createObject();
 
             if( affector->initialize( _cb, _args ) == false )
             {
-                affector->destroy();
-
                 return nullptr;
             }
 
@@ -4141,16 +4155,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         AFFECTOR_ID s_addAffector( const pybind::object & _cb, const pybind::args & _args )
         {
-            AffectorUser * affector = m_factoryAffectorUser->createObject();
+            AffectorUserPtr affector = m_factoryAffectorUser->createObject();
 
             if( affector->initialize( _cb, _args ) == false )
             {
-                affector->destroy();
-
                 return 0;
             }
 
-            Affectorable * affectorable = PLAYER_SERVICE()
+            const AffectorablePtr & affectorable = PLAYER_SERVICE()
                 ->getAffectorableGlobal();
 
             AFFECTOR_ID id = affectorable->addAffector( affector );
@@ -4160,7 +4172,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_removeAffector( AFFECTOR_ID _id )
         {
-            Affectorable * affectorable = PLAYER_SERVICE()
+            const AffectorablePtr & affectorable = PLAYER_SERVICE()
                 ->getAffectorableGlobal();
 
             bool successful = affectorable->stopAffector( _id );
@@ -4446,7 +4458,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_isInViewport( const mt::vec2f & _pos )
         {
-            const RenderViewportInterface * renderViewport = PLAYER_SERVICE()
+            const RenderViewportInterfacePtr & renderViewport = PLAYER_SERVICE()
                 ->getRenderViewport();
 
             const Viewport & vp = renderViewport->getViewport();
@@ -4580,9 +4592,9 @@ namespace Mengine
             return imageCenter_wm;
         }
         //////////////////////////////////////////////////////////////////////////
-        Node * createChildren( Node * _node, const ConstString & _type )
+        NodePtr createChildren( Node * _node, const ConstString & _type )
         {
-            Node * newNode = NODE_SERVICE()
+            NodePtr newNode = NODE_SERVICE()
                 ->createNode( _type );
 
             if( newNode == nullptr )
@@ -4669,7 +4681,7 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        typedef stdex::intrusive_ptr<ScriptableAffectorCallback> ScriptableAffectorCallbackPtr;
+        typedef IntrusivePtr<ScriptableAffectorCallback> ScriptableAffectorCallbackPtr;
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryNodeAffectorCallback;
         //////////////////////////////////////////////////////////////////////////
@@ -4735,7 +4747,7 @@ namespace Mengine
             }
 
         public:
-            void setNode( Node * _node )
+            void setNode( const NodePtr & _node )
             {
                 m_node = _node;
             }
@@ -4770,11 +4782,13 @@ namespace Mengine
             }
 
         protected:
-            Node * m_node;
+            NodePtr m_node;
 
             mt::vec3f m_velocity;
             float m_time;
         };
+        //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<AffectorVelocity2> AffectorVelocity2Ptr;
         //////////////////////////////////////////////////////////////////////////
         class FactoryAffectorVelocity2
         {
@@ -4786,9 +4800,9 @@ namespace Mengine
 
         public:
             Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
-                , Node * _node, const mt::vec3f & _velocity, float _time )
+                , const NodePtr & _node, const mt::vec3f & _velocity, float _time )
             {
-                AffectorVelocity2 * affector = m_factory->createObject();
+                AffectorVelocity2Ptr affector = m_factory->createObject();
 
                 affector->setAffectorType( _type );
 
@@ -5068,18 +5082,18 @@ namespace Mengine
 
             return id;
         }
+        //////////////////////////////////////////////////////////////////////////
         class AffectorCreatorInterpolateParabolic
             : public CallbackAffector
         {
         public:
             AffectorCreatorInterpolateParabolic()
-                : m_node( nullptr )
-                , m_speed( 5.f )
+                : m_speed( 5.f )
             {
             }
 
         public:
-            void setNode( Node * _node )
+            void setNode( const NodePtr & _node )
             {
                 m_node = _node;
             }
@@ -5174,7 +5188,7 @@ namespace Mengine
             }
 
         protected:
-            Node * m_node;
+            NodePtr m_node;
 
             mt::vec3f m_prevDir;
             mt::vec3f m_currentDir;
@@ -5183,6 +5197,8 @@ namespace Mengine
 
             ValueInterpolatorParabolic<mt::vec3f> m_interpolator;
         };
+        //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<AffectorCreatorInterpolateParabolic> AffectorCreatorInterpolateParabolicPtr;
         //////////////////////////////////////////////////////////////////////////
         class FactoryAffectorInterpolateParabolic
         {
@@ -5196,7 +5212,7 @@ namespace Mengine
             Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
                 , Node * _node, const mt::vec3f & _end, const mt::vec3f & _v0, float _time )
             {
-                AffectorCreatorInterpolateParabolic * affector = m_factory->createObject();
+                AffectorCreatorInterpolateParabolicPtr affector = m_factory->createObject();
 
                 affector->setAffectorType( _type );
 
@@ -5255,14 +5271,13 @@ namespace Mengine
 
             return id;
         }
+        //////////////////////////////////////////////////////////////////////////
         class AffectorCreatorFollowTo
             : public CallbackAffector
         {
         public:
             AffectorCreatorFollowTo()
-                : m_node( nullptr )
-                , m_target( nullptr )
-                , m_offset( 0.f, 0.f, 0.f )
+                : m_offset( 0.f, 0.f, 0.f )
                 , m_distance( 0.f )
                 , m_moveSpeed( 0.f )
                 , m_moveAcceleration( 0.f )
@@ -5275,7 +5290,7 @@ namespace Mengine
             }
 
         public:
-            bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, bool _rotate, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
+            bool initialize( const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit, bool _rotate, float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
             {
                 if( _node == nullptr )
                 {
@@ -5400,8 +5415,8 @@ namespace Mengine
             }
 
         protected:
-            Node * m_node;
-            Node * m_target;
+            NodePtr m_node;
+            NodePtr m_target;
 
             mt::vec3f m_offset;
             float m_distance;
@@ -5414,6 +5429,8 @@ namespace Mengine
             float m_rotationLimit;
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<AffectorCreatorFollowTo> AffectorCreatorFollowToPtr;
+        //////////////////////////////////////////////////////////////////////////
         class FactoryAffectorFollowTo
         {
         public:
@@ -5424,11 +5441,11 @@ namespace Mengine
 
         public:
             Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
-                , Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit
+                , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit
                 , bool _rotate
                 , float _rotationSpeed, float _rotationAcceleration, float _rotationLimit )
             {
-                AffectorCreatorFollowTo * affector = m_factory->createObject();
+                AffectorCreatorFollowToPtr affector = m_factory->createObject();
 
                 affector->setAffectorType( _type );
 
@@ -5436,8 +5453,6 @@ namespace Mengine
 
                 if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit, _rotate, _rotationSpeed, _rotationAcceleration, _rotationLimit ) == false )
                 {
-                    affector->destroy();
-
                     return nullptr;
                 }
 
@@ -5506,9 +5521,7 @@ namespace Mengine
         {
         public:
             AffectorCreatorFollowToW()
-                : m_node( nullptr )
-                , m_target( nullptr )
-                , m_offset( 0.f, 0.f, 0.f )
+                : m_offset( 0.f, 0.f, 0.f )
                 , m_distance( 0.f )
                 , m_moveSpeed( 0.f )
                 , m_moveAcceleration( 0.f )
@@ -5517,7 +5530,7 @@ namespace Mengine
             }
 
         public:
-            bool initialize( Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
+            bool initialize( const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
             {
                 if( _node == nullptr )
                 {
@@ -5599,8 +5612,8 @@ namespace Mengine
             }
 
         protected:
-            Node * m_node;
-            Node * m_target;
+            NodePtr m_node;
+            NodePtr m_target;
 
             mt::vec3f m_offset;
             float m_distance;
@@ -5608,6 +5621,8 @@ namespace Mengine
             float m_moveAcceleration;
             float m_moveLimit;
         };
+        //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<AffectorCreatorFollowToW> AffectorCreatorFollowToWPtr;
         //////////////////////////////////////////////////////////////////////////
         class FactoryAffectorFollowToW
         {
@@ -5619,9 +5634,9 @@ namespace Mengine
 
         public:
             Affector * create( EAffectorType _type, const AffectorCallbackPtr & _cb
-                , Node * _node, Node * _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
+                , const NodePtr & _node, const NodePtr & _target, const mt::vec3f & _offset, float _distance, float _moveSpeed, float _moveAcceleration, float _moveLimit )
             {
-                AffectorCreatorFollowToW * affector = m_factory->createObject();
+                AffectorCreatorFollowToWPtr affector = m_factory->createObject();
 
                 affector->setAffectorType( _type );
 
@@ -5629,8 +5644,6 @@ namespace Mengine
 
                 if( affector->initialize( _node, _target, _offset, _distance, _moveSpeed, _moveAcceleration, _moveLimit ) == false )
                 {
-                    affector->destroy();
-
                     return nullptr;
                 }
 
@@ -5643,8 +5656,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryAffectorFollowToW m_nodeAffectorCreatorFollowToW;
         //////////////////////////////////////////////////////////////////////////		
-        uint32_t followToW( Node * _node
-            , Node * _target
+        uint32_t followToW( const NodePtr & _node
+            , const NodePtr & _target
             , const mt::vec3f & _offset
             , float _distance
             , float _moveSpeed
@@ -5688,7 +5701,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        void angleStop( Node * _node )
+        void angleStop( const NodePtr & _node )
         {
             _node->stopAffectors( ETA_ANGLE );
             _node->setAngularSpeed( 0.f );
@@ -5696,7 +5709,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)(float), float> m_nodeAffectorCreatorInterpolateLinearFloat;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t angleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t angleTo( const NodePtr & _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -5744,7 +5757,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)(float), float> m_nodeAffectorCreatorInterpolateQuadraticFloat;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t accAngleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t accAngleTo( const NodePtr & _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -6421,7 +6434,7 @@ namespace Mengine
         float s_getMovieDuration( const ConstString & _resourceName )
         {
             ResourceMoviePtr resourceMovie = RESOURCE_SERVICE()
-                ->getResourceT<ResourceMoviePtr>( _resourceName );
+                ->getResource( _resourceName );
 
             if( resourceMovie == nullptr )
             {
@@ -6660,7 +6673,7 @@ namespace Mengine
         bool s_hasMovieElement( const ConstString & _resourceName, const ConstString & _slotName, const ConstString & _typeName )
         {
             ResourceMoviePtr resource = RESOURCE_SERVICE()
-                ->getResourceT<ResourceMoviePtr>( _resourceName );
+                ->getResource( _resourceName );
 
             if( resource == nullptr )
             {
@@ -7411,10 +7424,8 @@ namespace Mengine
             .def( "getMaxSize", &Surface::getMaxSize )
             .def( "getSize", &Surface::getSize )
             .def( "getOffset", &Surface::getOffset )
-
             .def( "getUVCount", &Surface::getUVCount )
             .def( "getUV", &Surface::getUV )
-
             .def( "getColour", &Surface::getColour )
             ;
 
@@ -7461,6 +7472,7 @@ namespace Mengine
             ;
 
         pybind::interface_<RenderViewportInterface>( kernel, "RenderViewportInterface" )
+            .def_smart_pointer()
             .def( "getViewport", &RenderViewportInterface::getViewport )
             ;
 

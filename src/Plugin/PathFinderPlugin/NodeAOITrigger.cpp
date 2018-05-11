@@ -61,9 +61,9 @@ namespace Mengine
 		//this->registerEvent( EVENT_TRIGGER_LEAVE, ("onTriggerLeave"), _listener );
 	//}
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeAOITrigger::onAOIActorTest( AOIActorProviderInterface * _actor ) const
+	bool NodeAOITrigger::onAOIActorTest( const AOIActorProviderInterfacePtr & _actor ) const
 	{
-		NodeAOIActor * actor = static_cast<NodeAOIActor *>(_actor);
+        NodeAOIActor * actor = _actor.getT<NodeAOIActor *>();
 
 		const mt::vec3f & actor_pos = actor->getWorldPosition();
 		
@@ -78,26 +78,24 @@ namespace Mengine
 		return sqrlength <= sqrradius;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeAOITrigger::onAOIActorEnter( AOIActorProviderInterface * _enemy )
+	void NodeAOITrigger::onAOIActorEnter( const AOIActorProviderInterfacePtr & _enemy )
 	{
-		NodeAOIActor * enemy = static_cast<NodeAOIActor *>(_enemy);
+        NodeAOIActorPtr enemy = stdex::intrusive_static_cast<NodeAOIActorPtr>(_enemy);
 
 		uint32_t enemy_iff = enemy->getIFF();
 
         EVENTABLE_METHOD( this, EVENT_NODE_AOI_TRIGGER_ENTER )
             ->onNodeAOITriggerEnter( enemy, m_iff, enemy_iff );
-		//EVENTABLE_CALL( this, EVENT_TRIGGER_ENTER )(this, enemy, m_iff, enemy_iff);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeAOITrigger::onAOIActorLeave( AOIActorProviderInterface * _enemy )
+	void NodeAOITrigger::onAOIActorLeave( const AOIActorProviderInterfacePtr & _enemy )
 	{
-		NodeAOIActor * enemy = static_cast<NodeAOIActor *>(_enemy);
+        NodeAOIActorPtr enemy = stdex::intrusive_static_cast<NodeAOIActorPtr>(_enemy);
 
 		uint32_t enemy_iff = enemy->getIFF();
 
         EVENTABLE_METHOD( this, EVENT_NODE_AOI_TRIGGER_ENTER )
             ->onNodeAOITriggerLeave( enemy, m_iff, enemy_iff );
-		//EVENTABLE_CALL( this, EVENT_TRIGGER_LEAVE )(this, enemy, m_iff, enemy_iff);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool NodeAOITrigger::_activate()

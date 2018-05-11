@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 #include "Factory/FactorablePointer.h"
 #include "Factory/FactorableUnique.h"
 
@@ -17,7 +17,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Factory
-        : public FactorableUnique<FactorablePtr>
+        : public FactorableUnique<Factorable>
     {
     public:
         Factory( const Char * _name );
@@ -50,7 +50,7 @@ namespace Mengine
         STDEX_THREAD_GUARD_INIT;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<Factory> FactoryPtr;
+    typedef IntrusivePtr<Factory> FactoryPtr;
     //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_ASSERTION_FACTORY_EMPTY(F) MENGINE_ASSERTION((F) == nullptr || (F)->isEmptyObjects() == true)
     //////////////////////////////////////////////////////////////////////////

@@ -79,5 +79,5 @@ namespace Mengine
         bool m_noSeek;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceVideo> ResourceVideoPtr;
+	typedef IntrusivePtr<ResourceVideo> ResourceVideoPtr;
 }

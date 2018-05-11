@@ -165,7 +165,7 @@ namespace Mengine
 			return nullptr;
 		}
 
-		Entity * entity = PROTOTYPE_SERVICE()
+		EntityPtr entity = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), m_category );
 
 		if( entity == nullptr )

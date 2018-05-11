@@ -28,5 +28,5 @@ namespace Mengine
 		volatile bool m_done;
 	};
 
-	typedef stdex::intrusive_ptr<ThreadWorkerSoundBufferUpdate> ThreadWorkerSoundBufferUpdatePtr;
+	typedef IntrusivePtr<ThreadWorkerSoundBufferUpdate> ThreadWorkerSoundBufferUpdatePtr;
 }	

@@ -39,9 +39,9 @@ namespace Mengine
 		bool unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
 
 	public:
-		ResourceReferencePtr generateResource( const ConstString& _type ) const override;
+        PointerResourceReference generateResource( const ConstString& _type ) const override;
 
-		ResourceReferencePtr createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
+        PointerResourceReference createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
 		bool removeResource( const ResourceReferencePtr & _resource ) override;
 
 	public:
@@ -52,9 +52,9 @@ namespace Mengine
 
 		bool validResource( const ConstString& _name ) const override;
 
-		ResourceReferencePtr getResource( const ConstString& _name ) const override;
+        PointerResourceReference getResource( const ConstString& _name ) const override;
         
-        ResourceReferencePtr getResourceReference( const ConstString& _name ) const override; //not compile resource
+        PointerResourceReference getResourceReference( const ConstString& _name ) const override; //not compile resource
 
 		const ConstString & getResourceType( const ConstString & _name ) const;
 

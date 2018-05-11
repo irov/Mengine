@@ -7,8 +7,7 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderViewport::RenderViewport()
-		: m_observerChangeWindowResolution(nullptr)
-		, m_fixedViewport( false )
+		: m_fixedViewport( false )
 		, m_invalidateViewport(true)		
 	{
 	}
@@ -20,7 +19,7 @@ namespace Mengine
 			return true;
 		}
 
-		m_observerChangeWindowResolution = NOTIFICATION_SERVICE()
+		NOTIFICATION_SERVICE()
 			->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &RenderViewport::notifyChangeWindowResolution );
 
 		this->invalidateViewport_();
@@ -31,8 +30,6 @@ namespace Mengine
 	void RenderViewport::_deactivate()
 	{
 		Node::_deactivate();
-
-		m_observerChangeWindowResolution = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderViewport::setFixedViewport( bool _value )

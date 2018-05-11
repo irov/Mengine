@@ -2,23 +2,28 @@
 
 #include "Kernel/AffectorType.h"
 
-#include "stdex/intrusive_slug_list_size.h"
-#include "stdex/intrusive_slug.h"
+#include "stdex/intrusive_slug_list_size_ptr.h"
+#include "stdex/intrusive_slug_ptr.h"
+
+#include "Core/Mixin.h"
+#include "Core/IntrusivePtr.h"
 
 #include "math/vec3.h"
 
 namespace Mengine
-{
-	class Affector;
-
+{ 
+    //////////////////////////////////////////////////////////////////////////
+	typedef IntrusivePtr<class Affector> AffectorPtr;
+    //////////////////////////////////////////////////////////////////////////
 	class Affectorable
+        : public Mixin
 	{
 	public:
 		Affectorable();
 		virtual ~Affectorable();
 
 	public:
-		AFFECTOR_ID addAffector( Affector * _affector );
+		AFFECTOR_ID addAffector( const AffectorPtr & _affector );
 		bool stopAffector( AFFECTOR_ID _id );
 
 	public:
@@ -38,15 +43,12 @@ namespace Mengine
 		void updateAffectors( float _current, float _timing );
 
 	protected:
-		void updateAffector_( Affector * _affector, float _current, float _timing );
-
-    protected:
-        void updateAdd_();
-
+		void updateAffector_( const AffectorPtr & _affector, float _current, float _timing );
+        
 	protected:
-		typedef stdex::intrusive_slug_list_size<Affector> TVectorAffector;
-        typedef stdex::intrusive_slug<TVectorAffector> TSlugAffector;
-             
+		typedef stdex::intrusive_slug_list_size_ptr<Affector> TVectorAffector;
+        typedef stdex::intrusive_slug_ptr<Affector> TSlugAffector;
+
 		TVectorAffector m_affectors;
 
 		float m_angularSpeed;
@@ -54,4 +56,7 @@ namespace Mengine
 
 		uint32_t m_enumerator;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Affectorable> AffectorablePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

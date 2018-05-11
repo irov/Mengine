@@ -15,7 +15,7 @@ namespace Mengine
 	{ 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AFFECTOR_ID Affectorable::addAffector( Affector * _affector )
+    AFFECTOR_ID Affectorable::addAffector( const AffectorPtr & _affector )
 	{
 		if( _affector == nullptr )
 		{
@@ -40,7 +40,7 @@ namespace Mengine
 	{
 		for( TSlugAffector it(m_affectors); it.eof() == false; )
 		{
-			Affector * affector = *it;
+            AffectorPtr affector = *it;
 
 			it.next_shuffle();
 
@@ -49,7 +49,6 @@ namespace Mengine
 				m_affectors.remove( affector );
 
 				affector->stop();
-				affector->destroy();
 
 				return true;
 			}
@@ -62,7 +61,7 @@ namespace Mengine
 	{
         for( TSlugAffector it(m_affectors); it.eof() == false; )
         {
-            Affector * affector = *it;
+            AffectorPtr affector = *it;
 
 			it.next_shuffle();
 
@@ -71,7 +70,6 @@ namespace Mengine
 				m_affectors.remove( affector );
 
 				affector->stop();
-                affector->destroy();
             }
         }
 	}
@@ -80,14 +78,13 @@ namespace Mengine
 	{
         for( TSlugAffector it(m_affectors); it.eof() == false; )
         {
-            Affector * affector = *it;
+            AffectorPtr affector = *it;
 
 			it.next_shuffle();
 
 			m_affectors.remove( affector );
 
 			affector->stop();
-            affector->destroy();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -95,7 +92,7 @@ namespace Mengine
 	{
         (void)_current;
 
-		Affector * single_affector = m_affectors.single();
+		AffectorPtr single_affector = m_affectors.single();
 
 		if( single_affector != nullptr )
 		{
@@ -105,7 +102,7 @@ namespace Mengine
 		{
 			for( TSlugAffector it(m_affectors); it.eof() == false; )
 			{
-				Affector * affector = *it;
+				AffectorPtr affector = *it;
 
 				it.next_shuffle();
 
@@ -114,7 +111,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affectorable::updateAffector_( Affector * _affector, float _current, float _timing )
+	void Affectorable::updateAffector_( const AffectorPtr & _affector, float _current, float _timing )
 	{
 		(void)_current;
 
@@ -125,7 +122,6 @@ namespace Mengine
 			m_affectors.remove( _affector );
 
 			_affector->complete();
-			_affector->destroy();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

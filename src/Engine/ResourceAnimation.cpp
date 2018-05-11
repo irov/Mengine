@@ -64,7 +64,7 @@ namespace Mengine
         for( AnimationSequence & sequence : m_sequence )
 		{			
 			ResourceImagePtr resource  = RESOURCE_SERVICE()
-				->getResourceT<ResourceImagePtr>( sequence.resourceName );
+				->getResource( sequence.resourceName );
 
 			if( resource == nullptr )
 			{

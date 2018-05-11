@@ -8,10 +8,9 @@
 
 namespace Mengine
 {
-	class RenderCameraOrthogonal;
-	class RenderViewport;
-
-    typedef stdex::intrusive_ptr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
+    typedef IntrusivePtr<class RenderCameraOrthogonal> RenderCameraOrthogonalPtr;
+    typedef IntrusivePtr<class RenderViewport> RenderViewportPtr;
+    typedef IntrusivePtr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
 
 	class Layer2D
 		: public Layer
@@ -64,8 +63,8 @@ namespace Mengine
 
 		Viewport m_viewport;
 		
-		RenderCameraOrthogonal * m_renderCamera;
-		RenderViewport * m_renderViewport;
+		RenderCameraOrthogonalPtr m_renderCamera;
+        RenderViewportPtr m_renderViewport;
 
         ResourceHolder<ResourceImage> m_resourceImageMask;
         //RenderTargetInterfacePtr m_renderTarget;

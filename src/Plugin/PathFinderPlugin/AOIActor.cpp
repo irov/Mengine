@@ -13,12 +13,12 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void AOIActor::setProvider( AOIActorProviderInterface * _provider )
+	void AOIActor::setProvider( const AOIActorProviderInterfacePtr & _provider )
 	{
 		m_provider = _provider;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	AOIActorProviderInterface * AOIActor::getProvider()
+	const AOIActorProviderInterfacePtr & AOIActor::getProvider()
 	{
 		return m_provider;
 	}

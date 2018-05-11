@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/StreamInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Core/Pointer.h"
 
@@ -19,7 +19,7 @@ namespace Mengine
 		virtual bool empty() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MemoryInterface> MemoryInterfacePtr;
+	typedef IntrusivePtr<MemoryInterface> MemoryInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryBufferInterface
 		: public MemoryInterface
@@ -29,7 +29,7 @@ namespace Mengine
 		virtual Pointer newMemory( size_t _size, const char * _file, uint32_t _line ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<MemoryBufferInterface> MemoryBufferInterfacePtr;
+    typedef IntrusivePtr<MemoryBufferInterface> MemoryBufferInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class MemoryProxyInterface
         : public MemoryInterface
@@ -38,7 +38,7 @@ namespace Mengine
         virtual void setMemory( void * _ptr, size_t _size, const char * _file, uint32_t _line ) = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MemoryProxyInterface> MemoryProxyInterfacePtr;
+	typedef IntrusivePtr<MemoryProxyInterface> MemoryProxyInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryGetterStreamInterface
 		: public InputStreamInterface
@@ -55,7 +55,7 @@ namespace Mengine
 		virtual Pointer cacheMemory( size_t _size, const char * _file, uint32_t _line ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MemoryCacheInputInterface> MemoryCacheInputInterfacePtr;
+	typedef IntrusivePtr<MemoryCacheInputInterface> MemoryCacheInputInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryProxyInputInterface
 		: public MemoryGetterStreamInterface
@@ -64,7 +64,7 @@ namespace Mengine
 		virtual Pointer setMemory( void * _memory, size_t _offset, size_t _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MemoryProxyInputInterface> MemoryProxyInputInterfacePtr;
+	typedef IntrusivePtr<MemoryProxyInputInterface> MemoryProxyInputInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryInputInterface
 		: public MemoryGetterStreamInterface
@@ -73,7 +73,7 @@ namespace Mengine
 		virtual Pointer newMemory( size_t _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MemoryInputInterface> MemoryInputInterfacePtr;
+	typedef IntrusivePtr<MemoryInputInterface> MemoryInputInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class MemoryServiceInterface
 		: public ServiceInterface

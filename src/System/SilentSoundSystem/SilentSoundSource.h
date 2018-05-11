@@ -65,5 +65,5 @@ namespace Mengine
 		void unloadBuffer_();
 	};
 
-	typedef stdex::intrusive_ptr<SilentSoundSource> SilentSoundSourcePtr;
+	typedef IntrusivePtr<SilentSoundSource> SilentSoundSourcePtr;
 }	

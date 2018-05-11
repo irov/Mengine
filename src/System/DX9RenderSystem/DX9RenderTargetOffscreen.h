@@ -26,5 +26,5 @@ namespace Mengine
 		LPDIRECT3DSURFACE9 m_surfacePlain;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<DX9RenderTargetOffscreen> DX9RenderTargetOffscreenPtr;
+    typedef IntrusivePtr<DX9RenderTargetOffscreen> DX9RenderTargetOffscreenPtr;
 }

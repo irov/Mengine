@@ -7,7 +7,8 @@ namespace Mengine
 	class Viewport;
 	
 	class RenderCameraProxy
-        : public RenderCameraInterface
+        : public Factorable
+        , public RenderCameraInterface
 	{
 	public:
 		RenderCameraProxy();

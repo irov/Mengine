@@ -24,7 +24,7 @@ namespace Mengine
     protected:
         EncoderInterfacePtr createEncoder() override
         {
-            T * encoder = m_factory->createObject();
+            EncoderInterfacePtr encoder = m_factory->createObject();
             
             return encoder;
         }

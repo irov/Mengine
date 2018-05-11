@@ -102,5 +102,5 @@ namespace Mengine
         TMapCompositions m_compositions;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceMovie2> ResourceMovie2Ptr;
+	typedef IntrusivePtr<ResourceMovie2> ResourceMovie2Ptr;
 }

@@ -29,7 +29,7 @@ namespace Mengine
 
 	public:
 		void stringizeInternal(const Char * _str, ConstString::size_type _size, ConstString::hash_type _hash, ConstString & _cstr) override;
-        bool stringizeExternal( const ConstStringHolderPtr & _holder, ConstString & _cstr ) override;
+        bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) override;
 		
     protected:	
 		FactoryPtr m_factoryHolderStringMemory;
@@ -40,7 +40,7 @@ namespace Mengine
 		struct InternalHolder
 		{
 			const char * str;
-			ConstStringHolderPtr holder;
+			const ConstStringHolder * holder;
 		};
 
 		InternalHolder m_internals[257][8];

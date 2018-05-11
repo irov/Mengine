@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
+#include "Core/IntrusivePtr.h"
+
+#include "Config/Vector.h"
 
 #include "math/vec3.h"
-
-#include "stdex/intrusive_ptr.h"
-#include "stdex/stl_vector.h"
 
 namespace Mengine
 {
@@ -17,10 +17,10 @@ namespace Mengine
 		virtual bool onCollisionTest( CollisionActorProviderInterface * _actor, const mt::vec3f & _point, const mt::vec3f & _normal, float _penetration ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<class CollisionActor> CollisionActorPtr;
+	typedef IntrusivePtr<class CollisionActor> CollisionActorPtr;
 	//////////////////////////////////////////////////////////////////////////
 	class CollisionActor
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		CollisionActor();

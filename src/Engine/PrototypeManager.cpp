@@ -134,7 +134,7 @@ namespace Mengine
             return nullptr;
         }
 
-        Factorable * prototype = generator->generate();
+        FactorablePtr prototype = generator->generate();
 
         return prototype;
     }

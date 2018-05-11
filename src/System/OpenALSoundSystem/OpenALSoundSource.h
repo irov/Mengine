@@ -70,5 +70,5 @@ namespace Mengine
         bool m_loop;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<OALSoundSource> OALSoundSourcePtr;
+	typedef IntrusivePtr<OALSoundSource> OALSoundSourcePtr;
 }	

@@ -69,7 +69,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
 		const pybind::object & s_createEntity( const ConstString & _prototype )
 		{
-			Entity * entity = PROTOTYPE_SERVICE()
+			EntityPtr entity = PROTOTYPE_SERVICE()
 				->generatePrototype(STRINGIZE_STRING_LOCAL( "Entity"), _prototype );
 
 			if( entity == nullptr )
@@ -139,8 +139,8 @@ namespace Mengine
 			(void)_args;
 			(void)_kwds;
 
-			Entity * entity = NODE_SERVICE()
-				->createNodeT<Entity *>(STRINGIZE_STRING_LOCAL( "Entity" ) );
+            EntityPtr entity = NODE_SERVICE()
+                ->createNode( STRINGIZE_STRING_LOCAL( "Entity" ) );
 
 			entity->setEmbed( _obj );
 
@@ -162,8 +162,8 @@ namespace Mengine
 			(void)_args;
 			(void)_kwds;
 
-			Arrow * arrow = NODE_SERVICE()
-				->createNodeT<Arrow *>(STRINGIZE_STRING_LOCAL( "Arrow" ) );
+			ArrowPtr arrow = NODE_SERVICE()
+                ->createNode( STRINGIZE_STRING_LOCAL( "Arrow" ) );
 
 			arrow->setEmbed( _obj );
 
@@ -185,8 +185,8 @@ namespace Mengine
 			(void)_args;
 			(void)_kwds;
 
-			Scene * scene = NODE_SERVICE()
-				->createNodeT<Scene *>(STRINGIZE_STRING_LOCAL( "Scene" ) );
+			ScenePtr scene = NODE_SERVICE()
+                ->createNode( STRINGIZE_STRING_LOCAL( "Scene" ) );
 
 			scene->setEmbed( _obj );
 

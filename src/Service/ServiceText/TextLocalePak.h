@@ -6,12 +6,12 @@
 #include "Core/String.h"
 #include "Core/FilePath.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 namespace Mengine
 {
 	class TextLocalePack
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		TextLocalePack();
@@ -34,5 +34,5 @@ namespace Mengine
 		MemoryBufferInterfacePtr m_memory;		
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<TextLocalePack> TextLocalePackPtr;
+	typedef IntrusivePtr<TextLocalePack> TextLocalePackPtr;
 }

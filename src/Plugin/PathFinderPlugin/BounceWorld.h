@@ -4,7 +4,7 @@
 
 #include "Kernel/Scriptable.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 #include "Factory/Factory.h"
 
 #include "stdex/intrusive_ptr.h"
@@ -12,7 +12,7 @@
 namespace Mengine
 {
 	class BounceWorld
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		BounceWorld();
@@ -45,5 +45,5 @@ namespace Mengine
 		bool m_remove;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<class BounceWorld> BounceWorldPtr;
+	typedef IntrusivePtr<class BounceWorld> BounceWorldPtr;
 }

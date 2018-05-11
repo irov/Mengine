@@ -39,17 +39,16 @@ namespace Mengine
     {
         if( m_homeless != nullptr )
         {
-            Node * homeless = m_homeless;
+            NodePtr homeless = m_homeless;
             m_homeless = nullptr;
 			
             homeless->destroyAllChild();
-            delete homeless;            
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	Node * NodeManager::createNode( const ConstString& _type )
+    PointerNode NodeManager::createNode( const ConstString& _type )
 	{
-		Node * node = PROTOTYPE_SERVICE()
+        NodePtr node = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type );
 
 		if( node == nullptr )
@@ -64,7 +63,7 @@ namespace Mengine
 		return node;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void NodeManager::addHomeless( Node * _homeless )
+    void NodeManager::addHomeless( const NodePtr & _homeless )
     {
         if( m_homeless == nullptr )
         {
@@ -91,7 +90,7 @@ namespace Mengine
         m_homeless->addChild( _homeless );
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool NodeManager::isHomeless( const Node * _node ) const
+	bool NodeManager::isHomeless( const NodePtr & _node ) const
 	{
 		if( _node == nullptr )
 		{
@@ -100,7 +99,7 @@ namespace Mengine
 
 		Node * parent = _node->getParent();
 
-		bool is = parent == m_homeless;
+		bool is = (parent == m_homeless);
 
 		return is;
 	}

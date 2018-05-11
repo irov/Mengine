@@ -78,5 +78,5 @@ namespace Mengine
 		return m_stage;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderMaterial> RenderMaterialPtr;
+	typedef IntrusivePtr<RenderMaterial> RenderMaterialPtr;
 }

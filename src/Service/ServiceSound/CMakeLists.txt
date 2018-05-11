@@ -2,10 +2,10 @@ SET( MY_LIB_NAME ServiceSound )
 
 ADD_FILTER(
 src
+    SoundIdentity.h
+    SoundIdentity.cpp
 	SoundEngine.h
 	SoundEngine.cpp
-    MixerVolume.h
-    MixerVolume.cpp
     ThreadWorkerSoundBufferUpdate.h
     ThreadWorkerSoundBufferUpdate.cpp
 )

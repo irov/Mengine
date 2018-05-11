@@ -6,7 +6,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
+    typedef IntrusivePtr<class ResourceImage> ResourceImagePtr;
     //////////////////////////////////////////////////////////////////////////
 	class SurfaceImage
 		: public Surface        
@@ -45,5 +45,5 @@ namespace Mengine
 		ResourceHolder<ResourceImage> m_resourceImage;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<SurfaceImage> SurfaceImagePtr;
+    typedef IntrusivePtr<SurfaceImage> SurfaceImagePtr;
 }

@@ -23,7 +23,7 @@ namespace Mengine
         it != it_end;
         ++it )
         {
-            const Node * node = *it;
+            NodePtr node = *it;
 
             LOGGER_ERROR("MovieSlot::_destroy slot %s:%s has children %s:%s!! (please remove, before release movie '%s')"
                 , this->getName().c_str()

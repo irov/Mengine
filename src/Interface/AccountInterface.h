@@ -5,7 +5,7 @@
 #   include "Interface/MemoryInterface.h"
 
 #   include "Core/ConstString.h"
-#	include "Factory/FactorablePtr.h"
+#	include "Factory/Factorable.h"
 
 #   include "Config/String.h"
 

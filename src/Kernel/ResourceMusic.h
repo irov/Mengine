@@ -38,5 +38,5 @@ namespace Mengine
 		bool m_external;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceMusic> ResourceMusicPtr;
+	typedef IntrusivePtr<ResourceMusic> ResourceMusicPtr;
 }

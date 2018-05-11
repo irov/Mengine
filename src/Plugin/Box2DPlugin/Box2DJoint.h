@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Kernel/Scriptable.h"
 #include "Kernel/Servant.h"
@@ -28,5 +28,5 @@ namespace Mengine
 		b2Joint* m_joint;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<Box2DJoint> Box2DJointPtr;
+	typedef IntrusivePtr<Box2DJoint> Box2DJointPtr;
 }

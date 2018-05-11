@@ -36,12 +36,12 @@ namespace Mengine
 		virtual const PickCodecDataInfo * getCodecDataInfo() const override = 0;
 	};
 
-    typedef stdex::intrusive_ptr<PickDecoderInterface> PickDecoderInterfacePtr;
+    typedef IntrusivePtr<PickDecoderInterface> PickDecoderInterfacePtr;
 
 	class PickEncoderInterface
 		: public EncoderInterface
 	{
 	};
 
-    typedef stdex::intrusive_ptr<PickEncoderInterface> PickEncoderInterfacePtr;
+    typedef IntrusivePtr<PickEncoderInterface> PickEncoderInterfacePtr;
 }	

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Kernel/Scriptable.h"
 #include "Kernel/Servant.h"
@@ -17,15 +17,16 @@
 
 namespace Mengine
 {
-	typedef stdex::intrusive_ptr<class Box2DBody> Box2DBodyPtr;
-	typedef stdex::intrusive_ptr<class Box2DJoint> Box2DJointPtr;
-
+    //////////////////////////////////////////////////////////////////////////
+	typedef IntrusivePtr<class Box2DBody> Box2DBodyPtr;
+	typedef IntrusivePtr<class Box2DJoint> Box2DJointPtr;
+    //////////////////////////////////////////////////////////////////////////
 	class Box2DWorld
 		: public Servant
 		, public Scriptable
 		, public b2DestructionListener
 		, public b2ContactFilter
-		, public b2ContactListener		
+		, public b2ContactListener
     {
     public:
 		Box2DWorld();
@@ -150,4 +151,7 @@ namespace Mengine
         typedef stdex::vector<JoinDef> TVectorJoints;
         TVectorJoints m_joints;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Box2DWorld> Box2DWorldPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

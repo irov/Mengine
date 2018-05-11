@@ -23,7 +23,7 @@ namespace Mengine
 		virtual bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<FileInputStreamInterface> FileInputStreamInterfacePtr;
+    typedef IntrusivePtr<FileInputStreamInterface> FileInputStreamInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class FileMappedInterface
 		: public ServantInterface
@@ -36,7 +36,7 @@ namespace Mengine
         virtual bool openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<FileMappedInterface> FileMappedInterfacePtr;
+    typedef IntrusivePtr<FileMappedInterface> FileMappedInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class FileOutputStreamInterface
 		: public OutputStreamInterface
@@ -45,7 +45,7 @@ namespace Mengine
 		virtual bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<FileOutputStreamInterface> FileOutputStreamInterfacePtr;
+    typedef IntrusivePtr<FileOutputStreamInterface> FileOutputStreamInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
     class FileGroupInterface
         : public ServantInterface
@@ -77,7 +77,7 @@ namespace Mengine
         virtual bool openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _stream ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<FileGroupInterface> FileGroupInterfacePtr;
+	typedef IntrusivePtr<FileGroupInterface> FileGroupInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
     class FileServiceInterface 
         : public ServiceInterface

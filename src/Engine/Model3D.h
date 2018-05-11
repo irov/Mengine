@@ -19,8 +19,9 @@
 
 namespace Mengine
 {
-	class RenderCameraProjection;
-
+    //////////////////////////////////////////////////////////////////////////
+	typedef IntrusivePtr<class RenderCameraProjection> RenderCameraProjectionPtr;
+    //////////////////////////////////////////////////////////////////////////
 	class Model3D
 		: public Node
 		, public Animatable
@@ -97,7 +98,7 @@ namespace Mengine
 		float m_frameTiming;
 		uint32_t m_currentFrame;
 
-		RenderCameraProjection * m_camera;
+		RenderCameraProjectionPtr m_camera;
 
 		const Model3DFrame * m_frame;
 		

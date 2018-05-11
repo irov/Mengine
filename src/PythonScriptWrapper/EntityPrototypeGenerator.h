@@ -45,6 +45,6 @@ namespace Mengine
 		uint32_t m_count;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;
+	typedef IntrusivePtr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;
 	
 }

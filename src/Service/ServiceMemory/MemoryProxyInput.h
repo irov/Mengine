@@ -47,7 +47,7 @@ namespace Mengine
 		STDEX_THREAD_GUARD_INIT;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<MemoryProxyInput> MemoryProxyInputPtr;
+    typedef IntrusivePtr<MemoryProxyInput> MemoryProxyInputPtr;
     //////////////////////////////////////////////////////////////////////////
 }
 

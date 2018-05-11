@@ -56,5 +56,5 @@ namespace Mengine
         TVectorAttribute m_attributes;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<DX9RenderVertexAttribute> DX9RenderVertexAttributePtr;
+	typedef IntrusivePtr<DX9RenderVertexAttribute> DX9RenderVertexAttributePtr;
 }

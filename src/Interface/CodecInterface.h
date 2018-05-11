@@ -6,7 +6,7 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Core/FilePath.h"
 
@@ -32,7 +32,7 @@ namespace Mengine
         virtual bool initialize() = 0;
 	};
 
-	typedef stdex::intrusive_ptr<CodecFactoryInterface> CodecFactoryInterfacePtr;
+	typedef IntrusivePtr<CodecFactoryInterface> CodecFactoryInterfacePtr;
 
 	class DecoderInterface
         : public ServantInterface
@@ -63,7 +63,7 @@ namespace Mengine
 		virtual float tell() const = 0;
 	};
 
-    typedef stdex::intrusive_ptr<DecoderInterface> DecoderInterfacePtr;
+    typedef IntrusivePtr<DecoderInterface> DecoderInterfacePtr;
 
 	class DecoderFactoryInterface
 		: public CodecFactoryInterface
@@ -76,7 +76,7 @@ namespace Mengine
 		virtual DecoderInterfacePtr createDecoder() = 0;
 	};
 
-	typedef stdex::intrusive_ptr<DecoderFactoryInterface> DecoderFactoryInterfacePtr;
+	typedef IntrusivePtr<DecoderFactoryInterface> DecoderFactoryInterfacePtr;
 
 	class EncoderInterface
         : public ServantInterface
@@ -95,7 +95,7 @@ namespace Mengine
         virtual OutputStreamInterfacePtr getStream() const = 0;
 	};
 
-    typedef stdex::intrusive_ptr<EncoderInterface> EncoderInterfacePtr;
+    typedef IntrusivePtr<EncoderInterface> EncoderInterfacePtr;
 
 	class EncoderFactoryInterface
 		: public CodecFactoryInterface
@@ -104,7 +104,7 @@ namespace Mengine
 		virtual EncoderInterfacePtr createEncoder() = 0;
 	};
 
-	typedef stdex::intrusive_ptr<EncoderFactoryInterface> EncoderFactoryInterfacePtr;
+	typedef IntrusivePtr<EncoderFactoryInterface> EncoderFactoryInterfacePtr;
 
 	enum ECodecTargetFormat
 	{

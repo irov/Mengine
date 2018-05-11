@@ -36,5 +36,5 @@ namespace Mengine
 		TVectorThreadTasks m_tasks;
 	};
 
-	typedef stdex::intrusive_ptr<ThreadTaskPacket> ThreadTaskPacketPtr;
+	typedef IntrusivePtr<ThreadTaskPacket> ThreadTaskPacketPtr;
 }

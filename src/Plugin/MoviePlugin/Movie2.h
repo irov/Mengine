@@ -21,6 +21,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class Movie2> Movie2Ptr;
+    //////////////////////////////////////////////////////////////////////////
     class Movie2EventReceiver
         : public AnimatableEventReceiver
     {
@@ -30,7 +32,7 @@ namespace Mengine
     class VisitorMovie2Layer
     {
     public:
-        virtual void visitMovieLayer( class Movie2 * _movie, uint32_t _index, Node * _node ) = 0;
+        virtual void visitMovieLayer( const Movie2Ptr & _movie, uint32_t _index, const NodePtr & _node ) = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
 	class Movie2
@@ -99,69 +101,69 @@ namespace Mengine
 		void _update( float _current, float _timing ) override;
 
 	protected:
-		void _render( Mengine::RenderServiceInterface * _renderService, const RenderState * _state ) override;
+		void _render( RenderServiceInterface * _renderService, const RenderState * _state ) override;
 
 	protected:
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;
-		void _addChild( Node * _node ) override;
-		void _removeChild( Node * _node ) override;
+		void _addChild( const NodePtr & _node ) override;
+		void _removeChild( const NodePtr & _node ) override;
 
 	public:
 		void addSurface( const SurfacePtr & _surface );
         void removeSurface( const SurfacePtr & _surface );
 
     protected:
-        void addSprite_( uint32_t _index, ShapeQuadFixed * _sprite );
-        ShapeQuadFixed * getSprite_( uint32_t _index ) const;
+        void addSprite_( uint32_t _index, const ShapeQuadFixedPtr & _sprite );
+        const ShapeQuadFixedPtr & getSprite_( uint32_t _index ) const;
 
     public:
-        ShapeQuadFixed * findSprite( const ConstString & _name ) const;
+        const ShapeQuadFixedPtr & findSprite( const ConstString & _name ) const;
         bool hasSprite( const ConstString & _name ) const;
 
     protected:
-        void addParticle_( uint32_t _index, ParticleEmitter2 * _particleEmitter );
-        ParticleEmitter2 * getParticle_( uint32_t _index ) const;
+        void addParticle_( uint32_t _index, const ParticleEmitter2Ptr & _particleEmitter );
+        const ParticleEmitter2Ptr & getParticle_( uint32_t _index ) const;
 
     public:
-        ParticleEmitter2 * findParticle( const ConstString & _name ) const;
+        const ParticleEmitter2Ptr & findParticle( const ConstString & _name ) const;
         bool hasParticle( const ConstString & _name ) const;
 
     protected:
-        void addSlot_( uint32_t _index, Movie2Slot * _slot );
-        Movie2Slot * getSlot_( uint32_t _index ) const;
+        void addSlot_( uint32_t _index, const Movie2SlotPtr & _slot );
+        const Movie2SlotPtr & getSlot_( uint32_t _index ) const;
 
     public:
-        Movie2Slot * findSlot( const ConstString & _name ) const;
+        const Movie2SlotPtr & findSlot( const ConstString & _name ) const;
         bool hasSlot( const ConstString & _name ) const;
 
     protected:
-        void addSocket_( uint32_t _index, HotSpotPolygon * _hotspot );
-        HotSpotPolygon * getSocket_( uint32_t _index ) const;
+        void addSocket_( uint32_t _index, const HotSpotPolygonPtr & _hotspot );
+        const HotSpotPolygonPtr & getSocket_( uint32_t _index ) const;
 
     public:
-        HotSpotPolygon * findSocket( const ConstString & _name ) const;
+        const HotSpotPolygonPtr & findSocket( const ConstString & _name ) const;
         bool hasSocket( const ConstString & _name ) const;
         void visitSockets( VisitorMovie2Layer * _visitor );
 
     protected:
-        void addText_( uint32_t _index, TextField * _text );
-        TextField * getText_( uint32_t _index ) const;
+        void addText_( uint32_t _index, const TextFieldPtr & _text );
+        const TextFieldPtr & getText_( uint32_t _index ) const;
 
     public:
-        TextField * findText( const ConstString & _name ) const;
+        const TextFieldPtr & findText( const ConstString & _name ) const;
         bool hasText( const ConstString & _name ) const;
         
     public:
-        void addMatrixProxy( MatrixProxy * _matrixProxy );
+        void addMatrixProxy( const MatrixProxyPtr & _matrixProxy );
         
 	public:
 		struct Camera
 		{
-			RenderCameraProjection * projection;
-			RenderViewport * viewport;
+			RenderCameraProjectionPtr projection;
+			RenderViewportPtr viewport;
 		};
 
-		Camera * addCamera( const ConstString & _name, RenderCameraProjection * _projection, RenderViewport * _viewport );
+		Camera * addCamera( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport );
         bool removeCamera( const ConstString & _name );
 		bool hasCamera( const ConstString & _name ) const;
 
@@ -201,25 +203,28 @@ namespace Mengine
 		typedef stdex::vector<SurfacePtr> TVectorSurfaces;
 		TVectorSurfaces m_surfaces;
 
-        typedef stdex::map<uint32_t, Movie2Slot *> TMapSlots;
+        typedef stdex::map<uint32_t, Movie2SlotPtr> TMapSlots;
         TMapSlots m_slots;
 
-        typedef stdex::map<uint32_t, HotSpotPolygon *> TMapSockets;
+        typedef stdex::map<uint32_t, HotSpotPolygonPtr> TMapSockets;
         TMapSockets m_sockets;
 
-        typedef stdex::map<uint32_t, TextField *> TMapTexts;
+        typedef stdex::map<uint32_t, TextFieldPtr> TMapTexts;
         TMapTexts m_texts;
 
-        typedef stdex::map<uint32_t, ShapeQuadFixed *> TMapSprites;
+        typedef stdex::map<uint32_t, ShapeQuadFixedPtr> TMapSprites;
         TMapSprites m_sprites;
 
-        typedef stdex::map<uint32_t, ParticleEmitter2 *> TMapParticleEmitter2s;
+        typedef stdex::map<uint32_t, ParticleEmitter2Ptr> TMapParticleEmitter2s;
         TMapParticleEmitter2s m_particleEmitters;
 
-        typedef stdex::vector<MatrixProxy *> TVectorMatrixProxies;
+        typedef stdex::vector<MatrixProxyPtr> TVectorMatrixProxies;
         TVectorMatrixProxies m_matrixProxies;
 
     protected:
         static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud );
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Movie2> Movie2Ptr;
+    //////////////////////////////////////////////////////////////////////////
 }

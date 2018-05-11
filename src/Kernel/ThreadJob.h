@@ -19,7 +19,7 @@ namespace Mengine
 		virtual void onDone( uint32_t _id ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadWorkerInterface> ThreadWorkerInterfacePtr;
+	typedef IntrusivePtr<ThreadWorkerInterface> ThreadWorkerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	enum EThreadStatus
 	{
@@ -68,6 +68,6 @@ namespace Mengine
 		ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadJob> ThreadJobPtr;
+	typedef IntrusivePtr<ThreadJob> ThreadJobPtr;
     //////////////////////////////////////////////////////////////////////////
 }

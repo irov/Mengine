@@ -32,7 +32,7 @@ namespace Mengine
         virtual void onMeshgetUpdate( float _current, float _timing ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<MeshgetEventReceiver> MeshgetEventReceiverPtr;
+    typedef IntrusivePtr<MeshgetEventReceiver> MeshgetEventReceiverPtr;
 	//////////////////////////////////////////////////////////////////////////
 	class Meshget
 		: public Node

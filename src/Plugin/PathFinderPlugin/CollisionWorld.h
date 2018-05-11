@@ -48,5 +48,5 @@ namespace Mengine
 		bool m_remove;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<CollisionWorld> CollisionWorldPtr;
+	typedef IntrusivePtr<CollisionWorld> CollisionWorldPtr;
 }

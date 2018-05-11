@@ -8,13 +8,16 @@
 
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"
+#include "Core/Pointer.h"
 
 #include "Factory/Factory.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class ResourceReference> ResourceReferencePtr;
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<class ResourceReference> ResourceReferencePtr;
+    typedef PointerT<ResourceReferencePtr> PointerResourceReference;
 	//////////////////////////////////////////////////////////////////////////
     class ResourceServiceInterface
         : public ServiceInterface
@@ -26,108 +29,18 @@ namespace Mengine
 		virtual bool unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual ResourceReferencePtr generateResource( const ConstString& _type ) const = 0;
+		virtual PointerResourceReference generateResource( const ConstString& _type ) const = 0;
 
 	public:
-		template<class T>
-		T generateResourceT( const ConstString& _type ) const
-		{
-			ResourceReferencePtr resource = this->generateResource( _type );
-
-#ifndef NDEBUG
-			if( resource == nullptr )
-			{
-				return nullptr;
-			}
-
-			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
-			{
-				throw;
-			}
-#endif
-
-			T t = stdex::intrusive_static_cast<T>(resource);
-
-			return t;
-		}
-
-	public:
-		virtual ResourceReferencePtr createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;
-
-	public:
-        template<class T>
-		T createResourceT( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
-        {
-			ResourceReferencePtr resource = this->createResource( _locale, _category, _group, _name, _type );
-
-#ifdef NDEBUG
-			if( resource == nullptr )
-			{
-				return nullptr;
-			}
-			
-			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
-			{
-				throw;
-			}
-#endif
-
-			T t = stdex::intrusive_static_cast<T>(resource);
-
-			return t;
-        }
+		virtual PointerResourceReference createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;
 
 	public:
 		virtual bool removeResource( const ResourceReferencePtr & _resource ) = 0;
 		
     public:
-		virtual ResourceReferencePtr getResource( const ConstString& _name ) const = 0;
-
-        template<class T>
-        T getResourceT( const ConstString & _name ) const
-        {
-			ResourceReferencePtr resource = this->getResource( _name );
-
-#ifndef NDEBUG
-			if( resource == nullptr )
-			{
-				return nullptr;
-			}
-			
-			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
-            {
-				throw;
-            }
-#endif
-
-			T t = stdex::intrusive_static_cast<T>(resource);
-
-            return t;
-        }
+		virtual PointerResourceReference getResource( const ConstString& _name ) const = 0;
 
 		virtual ResourceReferencePtr getResourceReference( const ConstString& _name ) const = 0;
-
-        template<class T>
-        T getResourceReferenceT( const ConstString & _name ) const
-        {
-			ResourceReferencePtr resource = this->getResourceReference( _name );
-
-#ifndef NDEBUG
-			if( resource == nullptr )
-			{
-				return nullptr;
-			}
-
-			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
-			{
-				throw;
-			}
-#   endif
-
-			T t = stdex::intrusive_static_cast<T>(resource);
-
-            return t;
-        }
 
 		virtual bool hasResource( const ConstString& _name, ResourceReferencePtr * _resource ) const = 0;
 		
@@ -146,13 +59,13 @@ namespace Mengine
 				return false;
 			}
 
-			if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
+            if( stdex::intrusive_dynamic_cast<T>(resource) == nullptr )
 			{
 				throw;
 			}
 #endif
 
-			*_resource = stdex::intrusive_static_cast<T>(resource);
+            *_resource = stdex::intrusive_static_cast<T>(resource);
 
 			return true;
 		}

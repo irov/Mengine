@@ -10,8 +10,6 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	MovieInternalObject::MovieInternalObject()
-		: m_movie(nullptr)
-		, m_internalNode(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -19,12 +17,12 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MovieInternalObject::setMovie( Movie * _movie )
+	void MovieInternalObject::setMovie( const MoviePtr & _movie )
 	{
 		m_movie = _movie;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Movie * MovieInternalObject::getMovie() const
+	const MoviePtr & MovieInternalObject::getMovie() const
 	{
 		return m_movie;
 	}
@@ -44,7 +42,7 @@ namespace Mengine
 		return m_resourceInternalObject;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * MovieInternalObject::getInternalNode() const
+	const NodePtr & MovieInternalObject::getInternalNode() const
 	{ 
 		return m_internalNode;
 	}
@@ -84,8 +82,6 @@ namespace Mengine
 
         pybind::object py_object = EVENTABLE_METHODR( m_movie, EVENT_MOVIE_GET_INTERNAL, pybind::object() )
             ->onMovieGetInternal( internalGroup, internalName );
-		//pybind::object py_object;
-		//EVENTABLE_ASK( m_movie, EVENT_MOVIE_GET_INTERNAL, py_object )(internalGroup, internalName);
 
 		if( py_object.is_invalid() == true )
         {
@@ -99,7 +95,7 @@ namespace Mengine
             return false;
         }
 
-        m_internalObject = py_object;        
+        m_internalObject = py_object;
 
         return true;
     }
@@ -118,9 +114,8 @@ namespace Mengine
 			return false;
 		}
 
-		Node * node = EVENTABLE_METHODR( m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, nullptr )
+		NodePtr node = EVENTABLE_METHODR( m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, nullptr )
             ->onMovieActivateInternal( m_internalObject );
-		//EVENTABLE_ASK( m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, node )(m_internalObject);
 
 		if( node == nullptr )
 		{
@@ -152,10 +147,9 @@ namespace Mengine
 
 		m_internalNode->removeFromParent();
 		m_internalNode = nullptr;
-				
+
         EVENTABLE_METHOD( m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL )
             ->onMovieDeactivateInternal( m_internalObject );
-		//EVENTABLE_CALL(m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL)( m_internalObject );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieInternalObject::_setLocalHide( bool _hide )

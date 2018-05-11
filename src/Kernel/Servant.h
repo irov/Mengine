@@ -1,18 +1,20 @@
 #pragma once
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
+
+#include "Core/IntrusivePtr.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	class Servant
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		Servant();
 		~Servant() override;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<Servant> ServantPtr;
+    typedef IntrusivePtr<Servant> ServantPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -637,7 +637,7 @@ namespace Mengine
 	bool ParticleEmitter2::compileEmitterImage_( const ParticleEmitterInterfacePtr & _emitter )
 	{
 		ResourceHITPtr resourceHIT = RESOURCE_SERVICE()
-			->getResourceT<ResourceHITPtr>( m_emitterImageName );
+			->getResource( m_emitterImageName );
 
 		if( resourceHIT == nullptr )
 		{
@@ -802,7 +802,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction )
 	{
-		const RenderCameraInterface * camera = this->getRenderCameraInheritance();
+		RenderCameraInterfacePtr camera = this->getRenderCameraInheritance();
 
 		if( camera == nullptr )
 		{

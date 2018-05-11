@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 #include "Factory/FactorablePointer.h"
 
 #include "Core/ConstString.h"
@@ -24,7 +24,7 @@ namespace Mengine
         virtual uint32_t count() const = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<PrototypeGeneratorInterface> PrototypeGeneratorInterfacePtr;
+	typedef IntrusivePtr<PrototypeGeneratorInterface> PrototypeGeneratorInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
     class VisitorPrototypeGenerator
     {

@@ -9,11 +9,13 @@
 
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"
+#include "Core/MixerValue.h"
 
 #include "math/vec3.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     enum ESoundSourceType
     {
         ESST_SOUND,
@@ -21,15 +23,24 @@ namespace Mengine
         ESST_VOICE
     };
     //////////////////////////////////////////////////////////////////////////
+    enum ESoundSourceState
+    {
+        ESS_STOP = 0,	    // currently stopped
+        ESS_PLAY = 2,		// currently playing
+        ESS_PAUSE = 4,			// currently paused
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class SoundIdentityInterface> SoundIdentityInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 	class SoundListenerInterface
-        : public FactorablePtr
+        : public Factorable
 	{
 	public:
-		virtual void onSoundPause( uint32_t _soundId ) = 0;
-		virtual void onSoundStop( uint32_t _soundId ) = 0;
+		virtual void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) = 0;
+		virtual void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<SoundListenerInterface> SoundListenerInterfacePtr;
+    typedef IntrusivePtr<SoundListenerInterface> SoundListenerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class SoundBufferInterface
         : public ServantInterface
@@ -41,7 +52,7 @@ namespace Mengine
 		virtual const SoundDecoderInterfacePtr & getDecoder() const = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<SoundBufferInterface> SoundBufferInterfacePtr;
+	typedef IntrusivePtr<SoundBufferInterface> SoundBufferInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class SoundSourceInterface
         : public ServantInterface
@@ -68,13 +79,33 @@ namespace Mengine
 		virtual SoundBufferInterfacePtr getSoundBuffer() const = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<SoundSourceInterface> SoundSourceInterfacePtr;
+	typedef IntrusivePtr<SoundSourceInterface> SoundSourceInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-	class SoundSulkCallbackInterface
-	{
-	public:
-		virtual void blow( float _blow ) = 0;
-	};
+    class SoundIdentityInterface
+        : public ServantInterface
+    {
+    public:
+        virtual uint32_t getId() const = 0;
+
+    public:
+        virtual void setSoundSource( const SoundSourceInterfacePtr & _source ) = 0;
+        virtual const SoundSourceInterfacePtr & getSoundSource() const = 0;
+
+        virtual void setSoundListener( const SoundListenerInterfacePtr & _listener ) = 0;
+        virtual const SoundListenerInterfacePtr & getSoundListener() const = 0;        
+
+    public:
+        virtual bool isStreamable() const = 0;
+        virtual bool getLoop() const = 0;
+
+    public:
+        virtual ESoundSourceType getType() const = 0;
+        virtual ESoundSourceState getState() const = 0;
+
+        virtual const MixerValue & getVolume() const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<SoundIdentityInterface> SoundIdentityInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class SoundSystemInterface
         : public ServiceInterface
@@ -107,7 +138,7 @@ namespace Mengine
 		virtual void onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<SoundVolumeProviderInterface> SoundVolumeProviderInterfacePtr;
+	typedef IntrusivePtr<SoundVolumeProviderInterface> SoundVolumeProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class SoundServiceInterface
 		: public ServiceInterface
@@ -131,7 +162,7 @@ namespace Mengine
 		virtual void updateVolume() = 0;
 
 	public:
-		virtual uint32_t createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceType _type, bool _streamable ) = 0;
+		virtual SoundIdentityInterfacePtr createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceType _type, bool _streamable ) = 0;
 
     public:
 		virtual SoundBufferInterfacePtr createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecType, bool _isStream ) = 0; 
@@ -154,35 +185,34 @@ namespace Mengine
 		virtual float mixVoiceVolume() const = 0;
 
     public:
-		virtual bool setSourceVolume( uint32_t _emitter, float _volume, float _default ) = 0;
-		virtual float getSourceVolume( uint32_t _emitter ) const = 0;
+		virtual bool setSourceVolume( const SoundIdentityInterfacePtr & _identity, float _volume, float _default, bool _force ) = 0;
+		virtual float getSourceVolume( const SoundIdentityInterfacePtr & _identity ) const = 0;
 
 	public:
-		virtual bool setSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer, float _volume, float _default ) = 0;
-		virtual float getSourceMixerVolume( uint32_t _emitter, const ConstString & _mixer ) const = 0;
+		virtual bool setSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer, float _volume, float _default ) = 0;
+		virtual float getSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer ) const = 0;
 
 	public:
-		virtual bool releaseSoundSource( uint32_t _sourceID ) = 0;
-		virtual bool validSoundSource( uint32_t _sourceID ) const = 0;
+		virtual bool releaseSoundSource( const SoundIdentityInterfacePtr & _identity ) = 0;
 
 	public:
-		virtual void setSourceListener( uint32_t _emitter, const SoundListenerInterfacePtr & _listener ) = 0;
+		virtual void setSourceListener( const SoundIdentityInterfacePtr & _identity, const SoundListenerInterfacePtr & _listener ) = 0;
 
 	public:
-		virtual bool playEmitter( uint32_t _emitter ) = 0;
-		virtual bool pauseEmitter( uint32_t _emitter ) = 0;
-		virtual bool resumeEmitter( uint32_t _emitter ) = 0;
-		virtual bool stopEmitter( uint32_t _emitter ) = 0;
+		virtual bool playEmitter( const SoundIdentityInterfacePtr & _identity ) = 0;
+		virtual bool pauseEmitter( const SoundIdentityInterfacePtr & _identity ) = 0;
+		virtual bool resumeEmitter( const SoundIdentityInterfacePtr & _identity ) = 0;
+		virtual bool stopEmitter( const SoundIdentityInterfacePtr & _identity ) = 0;
 
 	public:
-		virtual bool setLoop( uint32_t _emitter, bool _looped ) = 0;
-		virtual bool getLoop( uint32_t _emitter ) const = 0;
+		virtual bool setLoop( const SoundIdentityInterfacePtr & _identity, bool _looped ) = 0;
+		virtual bool getLoop( const SoundIdentityInterfacePtr & _identity ) const = 0;
 
 	public:
-		virtual float getDuration( uint32_t _emitter ) const = 0;
+		virtual float getDuration( const SoundIdentityInterfacePtr & _identity ) const = 0;
 		
-		virtual bool setPosMs( uint32_t _emitter, float _pos ) = 0;
-		virtual float getPosMs( uint32_t _emitter ) = 0;
+		virtual bool setPosMs( const SoundIdentityInterfacePtr & _identity, float _pos ) = 0;
+		virtual float getPosMs( const SoundIdentityInterfacePtr & _identity ) = 0;
 		
     public:
 		virtual void mute( bool _mute ) = 0;

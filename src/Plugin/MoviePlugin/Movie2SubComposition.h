@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Animatable.h"
 
@@ -9,7 +9,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class Movie2;
+    typedef IntrusivePtr<class Movie2> Movie2Ptr;
     //////////////////////////////////////////////////////////////////////////
     class Movie2SubCompositionEventReceiver
         : public AnimatableEventReceiver
@@ -18,7 +18,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
 	class Movie2SubComposition
-        : public FactorablePtr
+        : public Factorable
 		, public Eventable
         , public Animatable
 	{
@@ -29,8 +29,8 @@ namespace Mengine
         ~Movie2SubComposition() override;
 
     public:
-        void setMovie( Movie2 * _movie );
-        Movie2 * getMovie() const;
+        void setMovie( const Movie2Ptr & _movie );
+        const Movie2Ptr & getMovie() const;
         
     protected:
         bool _play( uint32_t _enumerator, float _time ) override;
@@ -42,9 +42,12 @@ namespace Mengine
         bool _interrupt( uint32_t _enumerator ) override;
 
     protected:
-        Movie2 * m_movie;
+        Movie2Ptr m_movie;
 
         const aeMovieComposition * m_composition;
         const aeMovieSubComposition * m_subcomposition;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Movie2> Movie2Ptr;
+    //////////////////////////////////////////////////////////////////////////
 }

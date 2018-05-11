@@ -43,5 +43,5 @@ namespace Mengine
 		bool m_validNoExist;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceImageDefault> ResourceImageDefaultPtr;
+	typedef IntrusivePtr<ResourceImageDefault> ResourceImageDefaultPtr;
 }

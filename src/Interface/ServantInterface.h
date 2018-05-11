@@ -2,13 +2,15 @@
 
 #include "Config/Typedef.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
+
+#include "Core/IntrusivePtr.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ServantInterface
-        : public FactorablePtr
+        : public Factorable
     {
     public:
         ServantInterface()
@@ -20,6 +22,6 @@ namespace Mengine
         };
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ServantInterface> ServantInterfacePtr;
+	typedef IntrusivePtr<ServantInterface> ServantInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 }

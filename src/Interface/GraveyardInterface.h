@@ -2,13 +2,14 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Core/IntrusivePtr.h"
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"
 
 namespace Mengine
 {	
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
+    typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class GraveyardInterface
 		: public ServiceInterface

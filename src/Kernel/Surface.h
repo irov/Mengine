@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Kernel/Identity.h"
 #include "Kernel/Servant.h"
@@ -48,5 +48,5 @@ namespace Mengine
         virtual bool _update( float _current, float _timing ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<Surface> SurfacePtr;
+	typedef IntrusivePtr<Surface> SurfacePtr;
 }

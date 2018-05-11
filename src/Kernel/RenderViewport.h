@@ -12,6 +12,7 @@ namespace Mengine
 	class RenderViewport
 		: public Node
         , public RenderViewportInterface
+        , public ObserverInterface
 	{
 	public:
 		RenderViewport();
@@ -45,12 +46,12 @@ namespace Mengine
 	protected:
 		Viewport m_viewport;
 		
-		ObserverInterfacePtr m_observerChangeWindowResolution;
-
 		bool m_fixedViewport;
 		mutable Viewport m_viewportWM;		
 		mutable bool m_invalidateViewport;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<RenderViewport> RenderViewportPtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline void RenderViewport::invalidateViewport_()
 	{

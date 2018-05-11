@@ -868,7 +868,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextManager::createLocalString_( const Char * _text, size_t _size, ConstString & _cstr )
     {
-        ConstStringHolderLocalStringPtr holder = m_factoryLocalString->createObject();
+        ConstStringHolderLocalString * holder = m_factoryLocalString->createObject();
 
         holder->setup( _text, _size, -1 );
 

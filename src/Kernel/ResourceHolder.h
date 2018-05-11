@@ -9,7 +9,7 @@ namespace Mengine
     class ResourceHolder
     {
 	public:
-		typedef stdex::intrusive_ptr<T> TPtr;
+		typedef IntrusivePtr<T> TPtr;
 
 	public:
 		ResourceHolder()

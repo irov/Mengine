@@ -59,7 +59,7 @@ namespace Mengine
 		STDEX_THREAD_GUARD_INIT;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<MemoryCacheInput> MemoryCacheInputPtr;
+    typedef IntrusivePtr<MemoryCacheInput> MemoryCacheInputPtr;
     //////////////////////////////////////////////////////////////////////////
 }	
 

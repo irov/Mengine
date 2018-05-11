@@ -60,5 +60,5 @@ namespace Mengine
 		RenderTextureInterfacePtr m_textureOutline;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<BitmapFont> BitmapFontPtr;
+	typedef IntrusivePtr<BitmapFont> BitmapFontPtr;
 }

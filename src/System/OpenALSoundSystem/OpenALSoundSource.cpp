@@ -238,11 +238,20 @@ namespace Mengine
         if( posmc > total )
         {
             LOGGER_ERROR("OALSoundSource::setPosMs pos %f total %f"
-                , _posMs
+                , posmc
                 , total
                 );
 
             return false;
+        }
+
+        if( posmc < 0.f )
+        {
+            LOGGER_ERROR( "OALSoundSource::setPosMs pos %f less zero"
+                , posmc
+            );
+
+            posmc = 0.f;
         }
 
         m_timing = posmc;

@@ -2,33 +2,32 @@
 
 #include "AOIInterface.h"
 
-#include "Factory/FactorablePtr.h"
-
-#include "stdex/intrusive_ptr.h"
+#include "Factory/Factorable.h"
+#include "Core/IntrusivePtr.h"
 
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class AOIActor
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		AOIActor();
 		~AOIActor() override;
 
 	public:
-		void setProvider( AOIActorProviderInterface * _provider );
-		AOIActorProviderInterface * getProvider();
+		void setProvider( const AOIActorProviderInterfacePtr & _provider );
+		const AOIActorProviderInterfacePtr & getProvider();
 
 	public:
 		void remove();
 		bool isRemoved() const;
 
 	protected:
-		AOIActorProviderInterface * m_provider;
+		AOIActorProviderInterfacePtr m_provider;
 
 		bool m_remove;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<AOIActor> AOIActorPtr;
+	typedef IntrusivePtr<AOIActor> AOIActorPtr;
 }

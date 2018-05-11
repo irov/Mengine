@@ -5,7 +5,7 @@
 #include "Kernel/Scriptable.h"
 #include "Kernel/Node.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Core/ConstString.h"
 
@@ -22,7 +22,7 @@ namespace Mengine
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class BounceActor
-		: public FactorablePtr
+		: public Factorable
 		, public Scriptable
 	{
 	public:
@@ -58,5 +58,5 @@ namespace Mengine
 		bool m_remove;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<class BounceActor> BounceActorPtr;
+	typedef IntrusivePtr<class BounceActor> BounceActorPtr;
 }

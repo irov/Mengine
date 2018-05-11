@@ -8,7 +8,7 @@
 
 namespace Mengine
 {
-	class Movie;
+	typedef IntrusivePtr<class Movie> MoviePtr;
 
 	class MovieInternalObject
 		: public Node
@@ -18,14 +18,14 @@ namespace Mengine
 		~MovieInternalObject() override;
 
 	public:
-		void setMovie( Movie * _movie );
-		Movie * getMovie() const;
+		void setMovie( const MoviePtr & _movie );
+		const MoviePtr & getMovie() const;
 
 		void setResourceInternalObject( const ResourceInternalObjectPtr & _resource );
 		const ResourceInternalObjectPtr & getResourceInternalObject() const;
 
 	public:
-		Node * getInternalNode() const;
+		const NodePtr & getInternalNode() const;
 
 	protected:
         bool _compile() override;
@@ -43,9 +43,12 @@ namespace Mengine
 
 	protected:
         ResourceHolder<ResourceInternalObject> m_resourceInternalObject;
-        Movie * m_movie;
+        MoviePtr m_movie;
 
 		pybind::object m_internalObject;
-		Node * m_internalNode;
+		NodePtr m_internalNode;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<MovieInternalObject> MovieInternalObjectPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

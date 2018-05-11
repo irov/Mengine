@@ -12,7 +12,7 @@ namespace Mengine
 		class FIsometricSortY
 		{
 		public:
-			bool operator() ( Node * _left, Node * _right ) const
+			bool operator() ( const NodePtr & _left, const NodePtr & _right ) const
 			{
 				const mt::vec3f & l = _left->getLocalPosition();
 				const mt::vec3f & r = _right->getLocalPosition();
@@ -30,7 +30,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Isometric::render( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
 	{
-		stdex::intrusive_sort_stable( m_children, FIsometricSortY() );
+		stdex::helper::intrusive_sort_stable( m_children, FIsometricSortY() );
 
 		Node::render( _renderService, _state, _debugMask );
 	}

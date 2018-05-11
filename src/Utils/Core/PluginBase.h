@@ -8,7 +8,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<class ModuleFactoryInterface> ModuleFactoryInterfacePtr;
+    typedef IntrusivePtr<class ModuleFactoryInterface> ModuleFactoryInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class PluginBase
 		: public ServantBase<PluginInterface>

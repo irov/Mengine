@@ -601,7 +601,7 @@ namespace Mengine
             return true;
         }
 
-        ConstStringHolderPythonStringPtr holder = m_factoryPythonString->createObject();
+        ConstStringHolderPythonString * holder = m_factoryPythonString->createObject();
 
         holder->setPythonObject( (PyObject*)_object );
 

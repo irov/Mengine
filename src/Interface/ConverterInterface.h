@@ -6,7 +6,7 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Core/ConstString.h"
 
@@ -41,7 +41,7 @@ namespace Mengine
 		virtual bool convert() = 0;
 	};
 
-	typedef stdex::intrusive_ptr<ConverterInterface> ConverterInterfacePtr;
+	typedef IntrusivePtr<ConverterInterface> ConverterInterfacePtr;
 
 	class ConverterFactoryInterface
         : public ServantInterface
@@ -53,7 +53,7 @@ namespace Mengine
 		virtual ConverterInterfacePtr createConverter() = 0;
 	};
 
-    typedef stdex::intrusive_ptr<ConverterFactoryInterface> ConverterFactoryInterfacePtr;
+    typedef IntrusivePtr<ConverterFactoryInterface> ConverterFactoryInterfacePtr;
 
 	class ConverterServiceInterface
 		: public ServiceInterface

@@ -43,5 +43,5 @@ namespace Mengine
         bool m_isStereo;        
 	};
 
-	typedef stdex::intrusive_ptr<SilentSoundBuffer> SilentSoundBufferPtr;
+	typedef IntrusivePtr<SilentSoundBuffer> SilentSoundBufferPtr;
 }

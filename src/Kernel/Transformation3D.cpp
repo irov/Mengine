@@ -27,7 +27,7 @@ namespace Mengine
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Transformation3D::setRelationTransformation( Transformation3D * _relation )
+	void Transformation3D::setRelationTransformation( const Transformation3DPtr & _relation )
 	{
 		bool identityPrevTransformation = true;
 
@@ -38,7 +38,7 @@ namespace Mengine
             m_relationTransformation->removeRelationChildren_( this );
         }
 
-		m_relationTransformation = _relation;
+		m_relationTransformation = _relation.get();
 
         if( m_relationTransformation != nullptr )
         {
@@ -60,12 +60,12 @@ namespace Mengine
 		this->invalidateWorldMatrix();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Transformation3D::addRelationChildren_( Transformation3D * _child )
+    void Transformation3D::addRelationChildren_( const Transformation3DPtr & _child )
     {
         m_relationChild.push_back( _child );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation3D::removeRelationChildren_( Transformation3D * _child )
+    void Transformation3D::removeRelationChildren_( const Transformation3DPtr & _child )
     {
         m_relationChild.remove( _child );
     }
@@ -76,7 +76,7 @@ namespace Mengine
 		{
 			m_invalidateWorldMatrix = true;
 
-			Transformation3D * single = m_relationChild.single();
+			Transformation3DPtr single = m_relationChild.single();
 
 			if( single != nullptr )
 			{
@@ -86,7 +86,7 @@ namespace Mengine
 			{
 				for( TSlugTransformation3D it( m_relationChild ); it.eof() == false; )
 				{
-					Transformation3D * transform = *it;
+                    Transformation3DPtr transform = *it;
 
 					it.next_shuffle();
 

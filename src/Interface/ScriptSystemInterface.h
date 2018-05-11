@@ -36,7 +36,7 @@ namespace Mengine
 		virtual PyObject * wrap( Scriptable * _node ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<ScriptWrapperInterface> ScriptWrapperInterfacePtr;
+    typedef IntrusivePtr<ScriptWrapperInterface> ScriptWrapperInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	struct ScriptModulePack
 	{
@@ -60,7 +60,7 @@ namespace Mengine
         virtual const pybind::base & getModule() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ScriptModuleInterface> ScriptModuleInterfacePtr;
+	typedef IntrusivePtr<ScriptModuleInterface> ScriptModuleInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class ScriptServiceInterface
 		: public ServiceInterface

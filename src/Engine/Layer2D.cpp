@@ -19,10 +19,10 @@ namespace Mengine
         , m_viewport( 0.f, 0.f, 0.f, 0.f )
         , m_renderCamera( nullptr )
         , m_renderViewport( nullptr )
-        , m_hasViewport( false )
-        , m_hasImageMask( false )
         , m_invalidateVerticesImageMaskColor( true )
         , m_invalidateVerticesImageMaskWM( true )
+        , m_hasViewport( false )
+        , m_hasImageMask( false )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -93,7 +93,7 @@ namespace Mengine
 		if( m_renderCamera == nullptr )
 		{
 			m_renderCamera = NODE_SERVICE() 
-				->createNodeT<RenderCameraOrthogonal *>( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+				->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
 			if( m_renderCamera == nullptr )
 			{
@@ -110,7 +110,7 @@ namespace Mengine
 		if( m_renderViewport == nullptr )
 		{
 			m_renderViewport = NODE_SERVICE() 
-				->createNodeT<RenderViewport *>( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
+				->createNode( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
 
 			if( m_renderViewport == nullptr )
 			{
@@ -236,7 +236,7 @@ namespace Mengine
         }
         
         m_materialImageMask = material;
-                
+        
         float hwWidth = (float)renderTarget->getHWWidth();
         float hwHeight = (float)renderTarget->getHWHeight();
 
@@ -270,9 +270,9 @@ namespace Mengine
     void Layer2D::_renderTarget( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
     {
         (void)_debugMask;
-              
+        
         const RenderVertex2D * verticesImageMask = this->getVerticesImageMaskWM();
-                
+        
         const mt::box2f & bb = this->getBoundingBox();
 
         _renderService

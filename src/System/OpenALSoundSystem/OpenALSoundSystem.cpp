@@ -208,8 +208,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	SoundSourceInterfacePtr OALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
 	{
-		//OALSoundSource* soundSource = m_soundSources.get();
-		OALSoundSource * soundSource = m_factoryOALSoundSource->createObject();
+        OALSoundSourcePtr soundSource = m_factoryOALSoundSource->createObject();
 
         soundSource->initialize( this );
         		
@@ -221,11 +220,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	SoundBufferInterfacePtr OALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
 	{
-		OALSoundBufferBase * base = nullptr;
+		OALSoundBufferBasePtr base = nullptr;
 
         if( _isStream == false || m_threadAvaliable == false )
         {
-            OALSoundBufferMemory * buffer = m_factoryOALSoundBuffer->createObject();
+            OALSoundBufferMemoryPtr buffer = m_factoryOALSoundBuffer->createObject();
             
             buffer->initialize( this );
 
@@ -233,7 +232,7 @@ namespace Mengine
         }
         else
         {
-            OALSoundBufferStream * buffer = m_factoryOALSoundBufferStream->createObject();
+            OALSoundBufferStreamPtr buffer = m_factoryOALSoundBufferStream->createObject();
 
             buffer->initialize( this );
 

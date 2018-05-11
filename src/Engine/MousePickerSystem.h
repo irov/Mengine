@@ -14,12 +14,13 @@ namespace Mengine
 	struct PickerTrapStateDesc
 	{
 		PickerTrapState * state;
-		const RenderViewportInterface * viewport;
-		const RenderCameraInterface * camera;
-	};
 
+		RenderViewportInterfacePtr viewport;
+		RenderCameraInterfacePtr camera;
+	};
+    //////////////////////////////////////////////////////////////////////////
 	typedef stdex::vector<PickerTrapStateDesc> TVectorPickerTrapStates;
-	
+	//////////////////////////////////////////////////////////////////////////
 	class MousePickerSystem
 		: public ServiceBase<MousePickerSystemInterface>
 	{
@@ -31,13 +32,13 @@ namespace Mengine
         void setHandleValue( bool _value ) override;
 
 	public:
-		void setArrow( Arrow * _arrow ) override;
-		void setScene( Scene * _scene ) override;
+		void setArrow( const ArrowPtr & _arrow ) override;
+		void setScene( const ScenePtr & _scene ) override;
 
 	public:
-		void setRenderViewport( const RenderViewportInterface * _viewport ) override;
-		void setRenderCamera( const RenderCameraInterface * _camera ) override;
-		void setRenderClipplane( const RenderClipplaneInterface * _clipplane ) override;
+		void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;
+		void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
+		void setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane ) override;
 
 	public:
 		void update() override;
@@ -47,7 +48,7 @@ namespace Mengine
 		bool pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps ) override;
 		
 	public:
-		PickerTrapState * regTrap( MousePickerTrapInterface * _trap ) override;		
+		PickerTrapState * regTrap( const MousePickerTrapInterfacePtr & _trap ) override;		
 		void unregTrap( PickerTrapState * _id ) override;
 
 		void updateTraps() override;
@@ -78,12 +79,12 @@ namespace Mengine
 	private:
 		uint32_t m_enumerator;
 
-		Arrow * m_arrow;
-		Scene * m_scene;
+		ArrowPtr m_arrow;
+		ScenePtr m_scene;
 
-		const RenderViewportInterface * m_viewport;
-		const RenderCameraInterface * m_camera;
-		const RenderClipplaneInterface * m_clipplane;
+		RenderViewportInterfacePtr m_viewport;
+		RenderCameraInterfacePtr m_camera;
+		RenderClipplaneInterfacePtr m_clipplane;
 
 		typedef stdex::list<PickerTrapState> TPickerTrapState;
 		TPickerTrapState m_pickerTrapState;

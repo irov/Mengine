@@ -29,5 +29,5 @@ namespace Mengine
 		ConstString m_internalGroup;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceInternalObject> ResourceInternalObjectPtr;
+	typedef IntrusivePtr<ResourceInternalObject> ResourceInternalObjectPtr;
 }

@@ -5,7 +5,7 @@
 
 #include "Core/ServantBase.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 namespace Mengine
 {
@@ -50,5 +50,5 @@ namespace Mengine
         return m_size == 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<MemoryBuffer> MemoryPtr;
+    typedef IntrusivePtr<MemoryBuffer> MemoryPtr;
 }

@@ -30,5 +30,5 @@ namespace Mengine
 		pybind::module m_module;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ScriptModule> ScriptModulePtr;
+	typedef IntrusivePtr<ScriptModule> ScriptModulePtr;
 }

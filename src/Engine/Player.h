@@ -18,24 +18,18 @@
 
 namespace Mengine
 {	
-    class Game;
-	class Scene;
-	class Arrow;
-	class TextField;
-
-	class Node;
-	class Join;
-
-	class RenderViewport;
-	class RenderCameraOrthogonal;
-
-    typedef stdex::intrusive_ptr<class RenderTargetInterface> RenderTargetInterfacePtr;
-
-	class MousePickerSystemInterface;
-	class GlobalHandleSystem;
-
-	class EventManager;
-
+    typedef IntrusivePtr<class Node> NodePtr;
+    typedef IntrusivePtr<class Game> GamePtr;
+	typedef IntrusivePtr<class Scene> ScenePtr;
+	typedef IntrusivePtr<class Arrow> ArrowPtr;
+	typedef IntrusivePtr<class TextField> TextFieldPtr;    
+    typedef IntrusivePtr<class RenderViewport> RenderViewportPtr;
+    typedef IntrusivePtr<class RenderCameraOrthogonal> RenderCameraOrthogonalPtr;
+    typedef IntrusivePtr<class RenderTargetInterface> RenderTargetInterfacePtr;
+	typedef IntrusivePtr<class MousePickerSystemInterface> MousePickerSystemInterfacePtr;
+	typedef IntrusivePtr<class GlobalHandleSystem> GlobalHandleSystemPtr;
+    typedef IntrusivePtr<class GlobalAffectorable> GlobalAffectorablePtr;
+    
 	class Player
 		: public ServiceBase<PlayerServiceInterface>
 	{
@@ -48,21 +42,21 @@ namespace Mengine
 		void _finalize() override;
 
 	public:
-		bool setCurrentScene( Scene * _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) override;
+		bool setCurrentScene( const ScenePtr & _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) override;
 		bool restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) override;
 		bool removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) override;
 		void destroyCurrentScene() override;
 
-		Scene * getCurrentScene() override;
+		const ScenePtr & getCurrentScene() override;
 
 	public:
 		bool createGlobalScene() override;
 		void removeGlobalScene() override;
-		Scene * getGlobalScene() override;
+		const ScenePtr & getGlobalScene() override;
             
 	public:
-		void setArrow( Arrow * _arrow ) override;
-		Arrow * getArrow() const override;
+		void setArrow( const ArrowPtr & _arrow ) override;
+        const ArrowPtr & getArrow() const override;
 
 	public:
 		void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) override;
@@ -73,28 +67,28 @@ namespace Mengine
 		bool destroySchedulerManager( const ScheduleManagerInterfacePtr & _scheduler ) override;
 
     public:
-        MousePickerSystemInterface * getMousePickerSystem() const override;
-        GlobalHandleSystemInterface * getGlobalHandleSystem() const override;
+        const MousePickerSystemInterfacePtr & getMousePickerSystem() const override;
+        const GlobalHandleSystemInterfacePtr & getGlobalHandleSystem() const override;
 
     public:
         const ScheduleManagerInterfacePtr & getScheduleManager() const override;
         const ScheduleManagerInterfacePtr & getScheduleManagerGlobal() const override;
 
 	public:
-		Affectorable * getAffectorable() const override;
-		Affectorable * getAffectorableGlobal() const override;
+		const AffectorablePtr & getAffectorable() const override;
+        const AffectorablePtr & getAffectorableGlobal() const override;
 
 	public:
-		void setRenderCamera( RenderCameraInterface * _camera) override;
-		const RenderCameraInterface * getRenderCamera() const override;
+		void setRenderCamera( const RenderCameraInterfacePtr & _camera) override;
+		const RenderCameraInterfacePtr & getRenderCamera() const override;
 
 	public:
-		void setRenderViewport( RenderViewportInterface * _viewport ) override;
-		const RenderViewportInterface * getRenderViewport() const override;
+		void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;
+		const RenderViewportInterfacePtr & getRenderViewport() const override;
 
 	public:
-		void setRenderClipplane( RenderClipplaneInterface * _clipplane ) override;
-		const RenderClipplaneInterface * getRenderClipplane() const override;
+		void setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane ) override;
+		const RenderClipplaneInterfacePtr & getRenderClipplane() const override;
 
     public:
 		void initializeRenderResources() override;
@@ -133,24 +127,24 @@ namespace Mengine
 		void renderArrow_( uint32_t _debugMask );
 
 	private:
-		Scene * m_scene;
-		Arrow * m_arrow;
+		ScenePtr m_scene;
+        ArrowPtr m_arrow;
 
-		Scene * m_globalScene;
+		ScenePtr m_globalScene;
 
-		RenderCameraOrthogonal * m_camera2D;
-		RenderViewport * m_viewport2D;
+		RenderCameraOrthogonalPtr m_camera2D;
+		RenderViewportPtr m_viewport2D;
 
-		RenderCameraOrthogonal * m_arrowCamera2D;
+		RenderCameraOrthogonalPtr m_arrowCamera2D;
 		
-		RenderViewportInterface * m_renderViewport;
-		RenderCameraInterface * m_renderCamera;		
-		RenderClipplaneInterface * m_renderClipplane;
+        RenderViewportInterfacePtr m_renderViewport;
+		RenderCameraInterfacePtr m_renderCamera;		
+		RenderClipplaneInterfacePtr m_renderClipplane;
 		
         RenderTargetInterfacePtr m_renderTarget;
 
-        MousePickerSystemInterface * m_mousePickerSystem;
-        GlobalHandleSystemInterface * m_globalHandleSystem;
+        MousePickerSystemInterfacePtr m_mousePickerSystem;
+        GlobalHandleSystemInterfacePtr m_globalHandleSystem;
 
 		ScheduleManagerInterfacePtr m_scheduleManager;
 		ScheduleManagerInterfacePtr m_scheduleManagerGlobal;
@@ -160,13 +154,13 @@ namespace Mengine
 		typedef stdex::vector<ScheduleManagerInterfacePtr> TVectorUserScheduler;
 		TVectorUserScheduler m_schedulers;               
 
-		Affectorable * m_affectorable;
-		Affectorable * m_affectorableGlobal;
+        GlobalAffectorablePtr m_affectorable;
+        GlobalAffectorablePtr m_affectorableGlobal;
 
 		bool m_arrowHided;
 		bool m_focus;
 		
-		Scene * m_switchSceneTo;
+		ScenePtr m_switchSceneTo;
 
 		uint32_t m_fps;
 
@@ -175,7 +169,7 @@ namespace Mengine
 
 	protected:
 		uint32_t m_showDebugText;
-		TextField * m_debugText;
-		RenderCameraOrthogonal * m_debugCamera2D;
+		TextFieldPtr m_debugText;
+		RenderCameraOrthogonalPtr m_debugCamera2D;
 	};
 }

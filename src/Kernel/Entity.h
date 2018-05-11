@@ -37,7 +37,7 @@ namespace Mengine
         virtual void onEntityDestroy( const pybind::object & _self ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<EntityEventReceiver> EntityEventReceiverPtr;
+    typedef IntrusivePtr<EntityEventReceiver> EntityEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
 	class Entity
 		: public Node
@@ -84,4 +84,7 @@ namespace Mengine
 		Eventable * m_scriptEventable;
 		pybind::object m_object;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Entity> EntityPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

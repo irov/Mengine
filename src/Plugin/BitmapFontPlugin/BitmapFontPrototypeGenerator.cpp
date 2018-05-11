@@ -19,7 +19,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	PointerFactorable BitmapFontPrototypeGenerator::generate()
 	{
-		BitmapFont * font = m_factoryFont->createObject();
+		BitmapFontPtr font = m_factoryFont->createObject();
         
 		return font;
 	}

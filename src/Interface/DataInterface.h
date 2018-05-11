@@ -6,7 +6,7 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"
@@ -16,7 +16,7 @@
 namespace Mengine
 {	
 	class DataInterface
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		virtual Pointer allocateMemory( size_t _size ) const = 0;
@@ -32,7 +32,7 @@ namespace Mengine
 
 	};
 
-	typedef stdex::intrusive_ptr<DataInterface> DataInterfacePtr;
+	typedef IntrusivePtr<DataInterface> DataInterfacePtr;
 
 	class DataflowInterface
 		: public ServantInterface
@@ -46,7 +46,7 @@ namespace Mengine
 		virtual bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) = 0;
 	};
 
-	typedef stdex::intrusive_ptr<DataflowInterface> DataflowInterfacePtr;
+	typedef IntrusivePtr<DataflowInterface> DataflowInterfacePtr;
 
 	class DataflowFactoryInterface
 		: public ServantInterface
@@ -58,7 +58,7 @@ namespace Mengine
 		virtual DataflowInterfacePtr createDataflow() = 0;
 	};
 
-	typedef stdex::intrusive_ptr<DataflowFactoryInterface> DataflowFactoryInterfacePtr;
+	typedef IntrusivePtr<DataflowFactoryInterface> DataflowFactoryInterfacePtr;
 
 	class DataServiceInterface
 		: public ServiceInterface

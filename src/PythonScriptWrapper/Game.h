@@ -179,7 +179,7 @@ namespace Mengine
 		void destroyArrow();
 
     protected:
-		Arrow * m_defaultArrow;
+		ArrowPtr m_defaultArrow;
 		
 		ConstString m_currentPackName;
 		String m_currentResourcePath;

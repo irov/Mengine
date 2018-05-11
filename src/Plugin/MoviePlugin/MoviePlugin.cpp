@@ -113,7 +113,7 @@ namespace Mengine
         protected:
             PointerFactorable generate() override
             {
-                ResourceMovie2 * resource = m_factory->createObject();
+                ResourceMovie2Ptr resource = m_factory->createObject();
 
                 if( resource == nullptr )
                 {
@@ -198,11 +198,11 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieLayer( Movie2 * _movie, uint32_t _index, Node * _node ) override
+            void visitMovieLayer( const Movie2Ptr & _movie, uint32_t _index, const NodePtr & _node ) override
             {
                 (void)_index;
 
-                HotSpotPolygon * hotspot = static_node_cast<HotSpotPolygon *>(_node);
+                HotSpotPolygonPtr hotspot = stdex::intrusive_static_cast<HotSpotPolygonPtr>(_node);
 
                 if( hotspot == nullptr )
                 {
@@ -240,11 +240,11 @@ namespace Mengine
             }
 
         protected:
-            void visitMovieLayer( Movie2 * _movie, uint32_t _index, Node * _node ) override
+            void visitMovieLayer( const Movie2Ptr & _movie, uint32_t _index, const NodePtr & _node ) override
             {
                 (void)_index;
 
-                Movie2Slot * hotspot = static_node_cast<Movie2Slot *>(_node);
+                Movie2SlotPtr hotspot = stdex::intrusive_static_cast<Movie2SlotPtr>(_node);
 
                 if( hotspot == nullptr )
                 {

@@ -251,25 +251,28 @@ namespace Mengine
         m_fullscreen = _fullscreen;
         m_waitForVSync = _waitForVSync;
 
-        D3DMULTISAMPLE_TYPE multiSampleType = s_getMultiSampleType( _MultiSampleCount );
-
-        HRESULT hr_checkDeviceMultiSampleType = m_pD3D->CheckDeviceMultiSampleType(
-            m_adapterToUse, m_deviceType, m_displayMode.Format,
-            TRUE, multiSampleType, NULL
-        );
-
-        if( FAILED( hr_checkDeviceMultiSampleType ) )
+        D3DMULTISAMPLE_TYPE multiSampleType = D3DMULTISAMPLE_NONE;
+        for( uint32_t MultiSampleIndex = _MultiSampleCount; MultiSampleIndex != 0; --MultiSampleIndex )
         {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow can't support multi sample count '%u' error [%p]"
-                , multiSampleType
-                , hr_checkDeviceMultiSampleType
+            D3DMULTISAMPLE_TYPE testMultiSampleType = s_getMultiSampleType( MultiSampleIndex );
+
+            HRESULT hr_checkDeviceMultiSampleType = m_pD3D->CheckDeviceMultiSampleType(
+                m_adapterToUse, m_deviceType, m_displayMode.Format,
+                TRUE, testMultiSampleType, NULL
             );
 
-            multiSampleType = D3DMULTISAMPLE_NONE;
-        }
-        else
-        {
-            multiSampleType = D3DMULTISAMPLE_NONE;
+            if( FAILED( hr_checkDeviceMultiSampleType ) )
+            {
+                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow can't support multi sample count '%u' error [%p]"
+                    , testMultiSampleType
+                    , hr_checkDeviceMultiSampleType
+                );
+
+                continue;
+            }
+
+            multiSampleType = testMultiSampleType;
+            break;
         }
 
         ZeroMemory( &m_d3dppW, sizeof( m_d3dppW ) );

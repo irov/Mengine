@@ -115,5 +115,5 @@ namespace Mengine
 		bool m_relative;
 	};
 
-	typedef stdex::intrusive_ptr<AstralaxEmitter2> AstralaxEmitter2Ptr;
+	typedef IntrusivePtr<AstralaxEmitter2> AstralaxEmitter2Ptr;
 }

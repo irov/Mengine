@@ -10,7 +10,7 @@
 #include "Config/Typedef.h"
 #include "Config/String.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 namespace Mengine
 {
@@ -25,7 +25,7 @@ namespace Mengine
 
     public:
         virtual void stringizeInternal( const Char * _str, ConstString::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) = 0;
-        virtual bool stringizeExternal( const ConstStringHolderPtr & _holder, ConstString & _cstr ) = 0;
+        virtual bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #   define STRINGIZE_SERVICE()\
@@ -100,7 +100,11 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
 #	define STRINGIZE_STRING_LOCAL( str )\
-	([]{constexpr Mengine::ConstString::hash_type hash = Mengine::Helper::makeHash( str, (sizeof(str) - 1)); return Mengine::Helper::stringizeStringHashLocal( str, (sizeof(str) - 1), hash );}())
+	([]{\
+        constexpr Mengine::ConstString::hash_type hash = Mengine::Helper::makeHash( str, (sizeof(str) - 1));\
+        static Mengine::ConstString cstr = Mengine::Helper::stringizeStringHashLocal( str, (sizeof(str) - 1), hash );\
+        return cstr;\
+    }())
 }
 
 

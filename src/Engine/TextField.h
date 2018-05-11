@@ -25,6 +25,7 @@ namespace Mengine
     class TextField
         : public Node
         , public Materialable
+        , public ObserverInterface
     {
     public:
         TextField();
@@ -119,10 +120,6 @@ namespace Mengine
     protected:
         void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyDebugMode( bool _debugMode );
-
-    protected:
-        ObserverInterfacePtr m_observerChangeLocale;
-        ObserverInterfacePtr m_observerDebugMode;
 
     protected:
         float getHorizontAlignOffset_( const TVectorTextLine2 & _lines );
@@ -233,6 +230,8 @@ namespace Mengine
         mutable bool m_invalidateTextLines;
         mutable bool m_invalidateTextEntry;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<TextField> TextFieldPtr;
     //////////////////////////////////////////////////////////////////////////
     inline const TVectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font )
     {

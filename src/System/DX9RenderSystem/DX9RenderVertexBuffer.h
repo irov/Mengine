@@ -49,5 +49,5 @@ namespace Mengine
 		IDirect3DVertexBuffer9 * m_pVB;        
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<DX9RenderVertexBuffer> DX9RenderVertexBufferPtr;
+	typedef IntrusivePtr<DX9RenderVertexBuffer> DX9RenderVertexBufferPtr;
 }

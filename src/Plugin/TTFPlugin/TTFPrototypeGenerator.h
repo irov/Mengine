@@ -38,6 +38,6 @@ namespace Mengine
 		FactoryPtr m_factoryFont;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<TTFPrototypeGenerator> TTFPrototypeGeneratorPtr;
+	typedef IntrusivePtr<TTFPrototypeGenerator> TTFPrototypeGeneratorPtr;
 	//////////////////////////////////////////////////////////////////////////
 }

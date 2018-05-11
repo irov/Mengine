@@ -11,16 +11,16 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     NotificationService::NotificationService()
-		: m_visiting(0)
+        : m_visiting( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     NotificationService::~NotificationService()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool NotificationService::_initialize()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    bool NotificationService::_initialize()
+    {
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
 
@@ -29,124 +29,131 @@ namespace Mengine
             return false;
         }
 
-		m_mutex = mutex;
+        m_mutex = mutex;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::_finalize()
-	{
-		m_mutex = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::addObserver( ObserverInterface * _observer )
-	{
-		if( m_visiting != 0 )
-		{
-			m_add.emplace_back( _observer );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NotificationService::_finalize()
+    {
+        m_mutex = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NotificationService::addObserver( uint32_t _id, const ObserverInterfacePtr & _observer, const ObserverCallableInterfacePtr & _callable )
+    {
+        if( m_visiting != 0 )
+        {
+            ObserverQueue desc;
+            desc.id = _id;
+            desc.observer = _observer;
+            desc.callable = _callable;
 
-			return;
-		}
+            m_add.emplace_back( desc );
 
-		uint32_t id = _observer->getId();
+            return;
+        }
 
-		TMapObservers::iterator it_find = m_mapObserves.find( id );
+        this->addObserver_( _id, _observer, _callable );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NotificationService::removeObserver( uint32_t _id, const ObserverInterfacePtr & _observer )
+    {
+        if( m_visiting != 0 )
+        {
+            ObserverQueue desc;
+            desc.id = _id;
+            desc.observer = _observer;
 
-		if( it_find == m_mapObserves.end() )
-		{
-			TVectorObservers new_observers;
+            m_remove.emplace_back( desc );
 
-			it_find = m_mapObserves.insert( std::make_pair(id, new_observers) ).first;
-		}
+            return;
+        }
+        
+        this->removeObserver_( _id, _observer );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NotificationService::visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor )
+    {
+        TMapObservers::iterator it_find = m_mapObserves.find( _id );
 
-		TVectorObservers & observers = it_find->second;
+        if( it_find == m_mapObserves.end() )
+        {
+            return;
+        }
 
-		observers.emplace_back( _observer );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::removeObserver( ObserverInterface * _observer )
-	{
-		if( m_visiting != 0 )
-		{
-			m_remove.emplace_back( _observer );
+        const TVectorObservers & observers = it_find->second;
 
-			return;
-		}
+        m_mutex->lock();
 
-		uint32_t id = _observer->getId();
+        ++m_visiting;
 
-		TMapObservers::iterator it_find = m_mapObserves.find( id );
+        for( const ObserverDesc & desc : observers )
+        {
+            _visitor->visit( desc.observer, desc.callable );
+        }
 
-		if( it_find == m_mapObserves.end() )
-		{
-			return;
-		}
+        --m_visiting;
 
-		TVectorObservers & observers = it_find->second;
+        if( m_visiting == 0 )
+        {
+            for( const ObserverQueue & q : m_add )
+            {
+                this->addObserver_( q.id, q.observer, q.callable );
+            }
 
-		TVectorObservers::iterator it_observer = std::find( observers.begin(), observers.end(), _observer );
+            m_add.clear();
 
-		if( it_observer == observers.end() )
-		{
-			return;
-		}
+            for( const ObserverQueue & q : m_remove )
+            {
+                this->removeObserver_( q.id, q.observer );
+            }
 
-		ObserverInterface * observer = *it_observer;
-		observer->destroy();
+            m_remove.clear();
+        }
 
-		*it_observer = observers.back();
-		observers.pop_back();		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::visitObservers( uint32_t _id, VisitorObserver * _visitor )
-	{
-		TMapObservers::iterator it_find = m_mapObserves.find( _id );
+        m_mutex->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NotificationService::addObserver_( uint32_t _id, const ObserverInterfacePtr & _observer, const ObserverCallableInterfacePtr & _callable )
+    {
+        TMapObservers::iterator it_find = m_mapObserves.find( _id );
 
-		if( it_find == m_mapObserves.end() )
-		{
-			return;
-		}
+        if( it_find == m_mapObserves.end() )
+        {
+            TVectorObservers new_observers;
 
-		TVectorObservers & observers = it_find->second;
+            it_find = m_mapObserves.emplace( _id, new_observers ).first;
+        }
 
-		m_mutex->lock();
+        TVectorObservers & observers = it_find->second;
+        
+        ObserverDesc desc;
+        desc.observer = _observer;
+        desc.callable = _callable;
 
-		++m_visiting;
-		
-        for( ObserverInterface * observer : observers )
-		{
-			if( _visitor->visit( observer ) == false )
-			{
-				this->invalidObserver_( _id );
-			}
-		}
+        observers.emplace_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NotificationService::removeObserver_( uint32_t _id, const ObserverInterfacePtr & _observer )
+    {
+        TMapObservers::iterator it_find = m_mapObserves.find( _id );
 
-		--m_visiting;
+        if( it_find == m_mapObserves.end() )
+        {
+            return;
+        }
 
-		if( m_visiting == 0 )
-		{
-            for( ObserverInterface * observer : m_add )
-			{
-				this->addObserver( observer );
-			}
+        TVectorObservers & observers = it_find->second;
 
-			m_add.clear();
+        for( ObserverDesc & desc : observers )
+        {
+            if( desc.observer != _observer )
+            { 
+                continue;
+            }
 
-            for( ObserverInterface * observer : m_remove )
-			{
-				this->removeObserver( observer );
-			}
-
-			m_remove.clear();
-		}
-
-		m_mutex->unlock();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void NotificationService::invalidObserver_( uint32_t _id )
-	{
-		LOGGER_ERROR("NotificationService: invalid observer %d"
-			, _id
-			);
-	}
+            desc = observers.back();
+            observers.pop_back();
+        }
+    }
 }

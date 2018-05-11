@@ -74,7 +74,7 @@ namespace Mengine
 		}
         
 		m_resourceImageRGB = RESOURCE_SERVICE()
-			->getResourceT<ResourceImagePtr>( m_resourceImageRGBName );
+			->getResource( m_resourceImageRGBName );
 
 		if( m_resourceImageRGB == nullptr )
 		{
@@ -89,7 +89,7 @@ namespace Mengine
 		}
 
 		m_resourceImageAlpha = RESOURCE_SERVICE()
-			->getResourceT<ResourceImagePtr>( m_resourceImageAlphaName );
+			->getResource( m_resourceImageAlphaName );
 
 		if( m_resourceImageAlpha == nullptr )
 		{

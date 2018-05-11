@@ -55,5 +55,5 @@ namespace Mengine
 		ParticleEmitterContainerInterface2Ptr m_container;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceParticle> ResourceParticlePtr;
+	typedef IntrusivePtr<ResourceParticle> ResourceParticlePtr;
 }

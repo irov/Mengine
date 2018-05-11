@@ -118,7 +118,7 @@ namespace Mengine
 
 		m_invalidateRendering = true;
 
-		Node * single = m_children.single();
+		NodePtr single = m_children.single();
 
 		if( single != nullptr )
 		{
@@ -128,7 +128,7 @@ namespace Mengine
 		{
 			for( TSlugChild it(m_children); it.eof() == false; )
 			{
-				Node * children = (*it);
+				NodePtr children = (*it);
 
 				it.next_shuffle();
 
@@ -174,7 +174,7 @@ namespace Mengine
 
 		this->_deactivate();
 
-		Node * single = m_children.single();
+		NodePtr single = m_children.single();
 
 		if( single != nullptr )
 		{
@@ -184,7 +184,7 @@ namespace Mengine
 		{
 			for( TSlugChild it(m_children); it.eof() == false; )
 			{
-				Node * children = *it;
+				NodePtr children = *it;
 
 				it.next_shuffle();
 
@@ -254,7 +254,7 @@ namespace Mengine
 	{
 		for( TSlugChild it( m_children ); it.eof() == false; )
 		{
-			Node * node = (*it);
+			NodePtr node = (*it);
 
 			node->setParent_( nullptr );
 
@@ -263,8 +263,6 @@ namespace Mengine
 			it.next_shuffle();
 
 			m_children.erase( it_node );
-
-			node->destroy();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -272,7 +270,7 @@ namespace Mengine
 	{
 		for( TSlugChild it(m_children); it.eof() == false; )
 		{
-            Node * node = (*it);
+            NodePtr node = (*it);
 
 			TListNodeChild::iterator it_node( node );
 
@@ -319,7 +317,7 @@ namespace Mengine
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::addChild( Node * _node )
+	void Node::addChild( const NodePtr & _node )
 	{
 		if( _node == nullptr )
 		{
@@ -333,7 +331,7 @@ namespace Mengine
 		this->addChild_( m_children.end(), _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::addChildFront( Node * _node )
+	void Node::addChildFront( const NodePtr & _node )
 	{
 		if( _node == nullptr )
 		{
@@ -347,7 +345,7 @@ namespace Mengine
 		this->addChild_( m_children.begin(), _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::addChildAfter( Node* _node, Node * _after )
+	bool Node::addChildAfter( const NodePtr & _node, const NodePtr & _after )
 	{
 		if( _node == nullptr )
 		{
@@ -368,7 +366,7 @@ namespace Mengine
 		}
 
 		TListNodeChild::iterator it_found = 
-			stdex::intrusive_find( m_children.begin(), m_children.end(), _after );
+			stdex::helper::intrusive_find( m_children.begin(), m_children.end(), _after );
 
 		if( it_found == m_children.end() )
 		{
@@ -384,7 +382,7 @@ namespace Mengine
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::addChild_( TListNodeChild::iterator _insert, Node * _node )
+    void Node::addChild_( TListNodeChild::iterator _insert, const NodePtr & _node )
 	{
 		Node * parent = _node->getParent();
 
@@ -444,12 +442,12 @@ namespace Mengine
         _node->removeShallowGrave();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::insertChild_( TListNodeChild::iterator _insert, Node * _node )
+	void Node::insertChild_( TListNodeChild::iterator _insert, const NodePtr & _node )
 	{
 		m_children.insert( _insert, _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::eraseChild_( Node * _node )
+    void Node::eraseChild_( const NodePtr & _node )
 	{
         TListNodeChild::iterator it_node(_node, true);
 		m_children.erase( it_node );
@@ -461,7 +459,7 @@ namespace Mengine
 
 		this->setShallowGrave();
 
-		Node * single_child = m_children.single();
+		NodePtr single_child = m_children.single();
 
 		if( single_child != nullptr )
 		{
@@ -471,7 +469,7 @@ namespace Mengine
 		{
 			for( TSlugChild it(m_children); it.eof() == false; )
 			{
-				Node * children = (*it);
+                NodePtr children = (*it);
 
 				it.next_shuffle();
 
@@ -482,10 +480,10 @@ namespace Mengine
 		this->removeShallowGrave();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Node::removeChild( Node * _node )
+	bool Node::removeChild( const NodePtr & _node )
 	{
 #ifndef NDEBUG
-		if( stdex::intrusive_has( m_children.begin(), m_children.end(), _node ) == false )
+		if( stdex::helper::intrusive_has( m_children.begin(), m_children.end(), _node ) == false )
         {
             LOGGER_ERROR("Node::removeChild %s not found children %s"
                 , this->getName().c_str()
@@ -514,7 +512,7 @@ namespace Mengine
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Node::removeChild_( Node * _node )
+    void Node::removeChild_( const NodePtr & _node )
     {
         this->_removeChild( _node );
 		
@@ -536,9 +534,11 @@ namespace Mengine
 			}
 
 		public:
-			bool operator () ( Node * _node ) const
+            bool operator () ( const NodePtr & _node ) const
 			{
-				return (_node->*m_method)() == m_name;
+                Node * node_ptr = _node.get();
+
+                return (node_ptr->*m_method)() == m_name;
 			}
 
         private:
@@ -555,20 +555,20 @@ namespace Mengine
 		static typename C::const_iterator s_node_find_child( const C & _child, M _method, const ConstString & _name )
 		{
 			typename C::const_iterator it_found =
-				intrusive_find_if( _child.begin(), _child.end(), FFindChild<M>( _method, _name) );
+				stdex::helper::intrusive_find_if( _child.begin(), _child.end(), FFindChild<M>( _method, _name) );
 
 			return it_found;
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * Node::findChild( const ConstString & _name, bool _recursion ) const
+    NodePtr Node::findChild( const ConstString & _name, bool _recursion ) const
 	{
 		TListNodeChild::const_iterator it_found =
 			s_node_find_child( m_children, &Identity::getName, _name );
 
 		if( it_found != m_children.end() )
 		{
-			Node * children = *it_found;
+            NodePtr children = *it_found;
 
 			return children;
 		}
@@ -581,9 +581,9 @@ namespace Mengine
 			it != it_end;
 			++it )
 			{
-				Node * children = (*it);
+                const NodePtr & children = (*it);
 
-				Node * node = children->findChild( _name, true );
+                NodePtr node = children->findChild( _name, true );
 
 				if( node == nullptr )
 				{
@@ -595,7 +595,7 @@ namespace Mengine
 		}
 		else
 		{
-			Node * node = this->_findChild( _name, _recursion );
+            NodePtr node = this->_findChild( _name, _recursion );
 
 			if( node != nullptr )
 			{
@@ -614,7 +614,7 @@ namespace Mengine
 		return nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
-    Node * Node::getSiblingPrev()
+    NodePtr Node::getSiblingPrev()
     {
         Node * parent = this->getParent();
 
@@ -626,7 +626,7 @@ namespace Mengine
         TListNodeChild & parent_children = parent->getChildren();
 
         TListNodeChild::iterator it_found =
-            intrusive_find( parent_children.begin(), parent_children.end(), this );
+            stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), this );
 
         if( it_found == parent_children.begin() )
         {
@@ -635,12 +635,12 @@ namespace Mengine
 
         it_found--;
 
-        Node * prev_node = *it_found;
+        NodePtr prev_node = *it_found;
 
         return prev_node;
     }
     //////////////////////////////////////////////////////////////////////////
-    Node * Node::getSiblingNext()
+    NodePtr Node::getSiblingNext()
     {
         Node * parent = this->getParent();
 
@@ -652,7 +652,7 @@ namespace Mengine
         TListNodeChild & parent_children = parent->getChildren();
 
         TListNodeChild::iterator it_found =
-            intrusive_find( parent_children.begin(), parent_children.end(), this );
+            stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), this );
 
         it_found++;
 
@@ -661,7 +661,7 @@ namespace Mengine
             return nullptr;
         }
 
-        Node * next_node = *it_found;
+        NodePtr next_node = *it_found;
 
         return next_node;
     }
@@ -684,7 +684,7 @@ namespace Mengine
 			it != it_end;
 			++it )
 			{
-				Node * children = (*it);
+                NodePtr children = (*it);
 				
 				if( children->hasChild( _name, true ) == true )
 				{
@@ -721,13 +721,13 @@ namespace Mengine
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_addChild( Node * _node )
+	void Node::_addChild( const NodePtr & _node )
 	{
         (void)_node;
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_removeChild( Node * _node )
+	void Node::_removeChild( const NodePtr & _node )
 	{
         (void)_node;
 		//Empty
@@ -751,7 +751,7 @@ namespace Mengine
 
 		for( TSlugChild it(m_children); it.eof() == false; )
 		{
-			Node * node = *it;
+			NodePtr node = *it;
 
 			it.next_shuffle();
 
@@ -798,7 +798,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::updateChildren_( float _current, float _timing )
 	{
-		Node * single = m_children.single();
+		NodePtr single = m_children.single();
 
 		if( single != nullptr )
 		{
@@ -808,7 +808,7 @@ namespace Mengine
 		{
 			for( TSlugChild it(m_children); it.eof() == false; )
 			{
-				Node * children = *it;
+				NodePtr children = *it;
 
 				it.next_shuffle();
 			
@@ -866,7 +866,7 @@ namespace Mengine
 			this->deactivate();
 		}
 
-		Node * single = m_children.single();
+		NodePtr single = m_children.single();
 
 		if( single != nullptr )
 		{
@@ -876,7 +876,7 @@ namespace Mengine
 		{
 			for( TSlugChild it(m_children); it.eof() == false; )
 			{
-				Node * node = (*it);
+				NodePtr node = (*it);
 
 				it.next_shuffle();
 
@@ -932,21 +932,21 @@ namespace Mengine
 			return;
 		}
 
-		const RenderViewportInterface * renderViewport = _state->viewport;
+		RenderViewportInterfacePtr renderViewport = _state->viewport;
 
 		if( m_renderViewport != nullptr )
 		{
 			renderViewport = m_renderViewport;
 		}
 
-		const RenderCameraInterface * renderCamera = _state->camera;
+		RenderCameraInterfacePtr renderCamera = _state->camera;
 
 		if( m_renderCamera != nullptr )
 		{
 			renderCamera = m_renderCamera;
 		}
 
-		const RenderClipplaneInterface * renderClipplane = _state->clipplane;
+		RenderClipplaneInterfacePtr renderClipplane = _state->clipplane;
 
 		if( m_renderClipplane != nullptr )
 		{
@@ -1015,19 +1015,19 @@ namespace Mengine
         //Empty
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setRenderViewport( const RenderViewportInterface * _viewport )
+	void Node::setRenderViewport( const RenderViewportInterfacePtr & _viewport )
 	{
 		m_renderViewport = _viewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderViewportInterface * Node::getRenderViewport() const
+	const RenderViewportInterfacePtr & Node::getRenderViewport() const
 	{
 		return m_renderViewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderViewportInterface * Node::getRenderViewportInheritance() const
+	const RenderViewportInterfacePtr & Node::getRenderViewportInheritance() const
 	{
-		const RenderViewportInterface * rv = this->getRenderViewport();
+		const RenderViewportInterfacePtr & rv = this->getRenderViewport();
 
 		if( rv != nullptr )
 		{
@@ -1038,27 +1038,27 @@ namespace Mengine
 
 		if( parent == nullptr )
 		{
-			return nullptr;
+			return RenderViewportInterfacePtr::none();
 		}
 
-		const RenderViewportInterface * rv_parent = parent->getRenderViewportInheritance();
+		const RenderViewportInterfacePtr & rv_parent = parent->getRenderViewportInheritance();
 
 		return rv_parent;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setRenderCamera( const RenderCameraInterface * _camera )
+	void Node::setRenderCamera( const RenderCameraInterfacePtr & _camera )
 	{
 		m_renderCamera = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderCameraInterface * Node::getRenderCamera() const
+	const RenderCameraInterfacePtr & Node::getRenderCamera() const
 	{
 		return m_renderCamera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderCameraInterface * Node::getRenderCameraInheritance() const
+	const RenderCameraInterfacePtr & Node::getRenderCameraInheritance() const
 	{
-		const RenderCameraInterface * rc = this->getRenderCamera();
+		const RenderCameraInterfacePtr & rc = this->getRenderCamera();
 
 		if( rc != nullptr )
 		{
@@ -1069,27 +1069,27 @@ namespace Mengine
 
 		if( parent == nullptr )
 		{
-			return nullptr;
+			return RenderCameraInterfacePtr::none();
 		}
 
-		const RenderCameraInterface * rc_parent = parent->getRenderCameraInheritance();
+		const RenderCameraInterfacePtr & rc_parent = parent->getRenderCameraInheritance();
 
 		return rc_parent;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setRenderClipplane( const RenderClipplaneInterface * _clipplane )
+	void Node::setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane )
 	{
 		m_renderClipplane = _clipplane;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderClipplaneInterface * Node::getRenderClipplane() const
+	const RenderClipplaneInterfacePtr & Node::getRenderClipplane() const
 	{
 		return m_renderClipplane;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderClipplaneInterface * Node::getRenderClipplaneInheritance() const
+	const RenderClipplaneInterfacePtr & Node::getRenderClipplaneInheritance() const
 	{
-		const RenderClipplaneInterface * rc = this->getRenderClipplane();
+		const RenderClipplaneInterfacePtr & rc = this->getRenderClipplane();
 
 		if( rc != nullptr )
 		{
@@ -1100,10 +1100,10 @@ namespace Mengine
 
 		if( parent == nullptr )
 		{
-			return nullptr;
+            return RenderClipplaneInterfacePtr::none();
 		}
 
-		const RenderClipplaneInterface * rc_parent = parent->getRenderClipplaneInheritance();
+		const RenderClipplaneInterfacePtr & rc_parent = parent->getRenderClipplaneInheritance();
 
 		return rc_parent;
 	}
@@ -1161,7 +1161,7 @@ namespace Mengine
 		it != it_end;
 		++it )
 		{
-			Node * node = (*it);
+            NodePtr node = (*it);
 
             if( node->getExternalRender() == true )
             {
@@ -1178,7 +1178,7 @@ namespace Mengine
 		//invalidateBoundingBox();add
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::calcScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _screen )
+	void Node::calcScreenPosition( const RenderCameraInterfacePtr & _camera, mt::vec2f & _screen )
 	{
         const mt::vec3f & wp = this->getWorldPosition();
 
@@ -1201,7 +1201,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateColor()
 	{
-		Node * single = m_children.single();
+		NodePtr single = m_children.single();
 
 		if( single != nullptr )
 		{
@@ -1211,7 +1211,7 @@ namespace Mengine
 		{
 			for( TSlugChild it(m_children); it.eof() == false; )
 			{
-				Node * node = (*it);
+                NodePtr node = (*it);
 
 				it.next_shuffle();
 

@@ -26,5 +26,5 @@ namespace Mengine
         Game * m_game;
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<GameSoundVolumeProvider> GameSoundVolumeProviderPtr;
+	typedef IntrusivePtr<GameSoundVolumeProvider> GameSoundVolumeProviderPtr;
 }

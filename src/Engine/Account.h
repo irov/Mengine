@@ -73,6 +73,6 @@ namespace Mengine
 		typedef stdex::map<ConstString, Setting> TMapSettings;
 		TMapSettings m_settings;
 	};
-
-	typedef stdex::intrusive_ptr<Account> AccountPtr;
+    //////////////////////////////////////////////////////////////////////////
+	typedef IntrusivePtr<Account> AccountPtr;
 }	

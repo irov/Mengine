@@ -67,7 +67,7 @@ namespace Mengine
 		bool m_pow2;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<RenderTexture> RenderTexturePtr;
+	typedef IntrusivePtr<RenderTexture> RenderTexturePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & RenderTexture::getCategory() const
 	{

@@ -6,12 +6,11 @@
 
 #include "Core/ServiceBase.h"
 #include "Core/ConstString.h"
+#include "Core/IntrusivePtr.h"
 
 namespace Mengine
-{
-	class Node;	
-	class NodeFactory;
-
+{	
+    //////////////////////////////////////////////////////////////////////////
 	class NodeManager
         : public ServiceBase<NodeServiceInterface>
 	{
@@ -23,14 +22,14 @@ namespace Mengine
         void _finalize() override;
 
     public:
-		Node * createNode( const ConstString& _type ) override;
+        PointerNode createNode( const ConstString& _type ) override;
 
     public:
-        void addHomeless( Node * _homeless ) override;
-		bool isHomeless( const Node * _node ) const override;
+        void addHomeless( const NodePtr & _homeless ) override;
+		bool isHomeless( const NodePtr & _node ) const override;
         void clearHomeless() override;
 
     protected:
-        Node * m_homeless;
+        NodePtr m_homeless;
 	};
 }

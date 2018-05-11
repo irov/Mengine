@@ -3,7 +3,7 @@
 #include "Interface/ServantInterface.h"
 
 #include "Factory/Factorable.h"
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Core/ConstString.h"
 
@@ -29,7 +29,7 @@ namespace Mengine
         virtual bool update() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadTaskInterface> ThreadTaskInterfacePtr;
+	typedef IntrusivePtr<ThreadTaskInterface> ThreadTaskInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class ThreadQueueInterface
 		: public ServantInterface
@@ -41,7 +41,7 @@ namespace Mengine
 		virtual void cancel() = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadQueueInterface> ThreadQueueInterfacePtr;
+	typedef IntrusivePtr<ThreadQueueInterface> ThreadQueueInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class ThreadIdentityInterface
 		: public ServantInterface
@@ -54,7 +54,7 @@ namespace Mengine
 		virtual void join() = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadIdentityInterface> ThreadIdentityInterfacePtr;
+	typedef IntrusivePtr<ThreadIdentityInterface> ThreadIdentityInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class ThreadMutexInterface
         : public ServantInterface
@@ -67,6 +67,6 @@ namespace Mengine
 		virtual bool try_lock() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadMutexInterface> ThreadMutexInterfacePtr;
+	typedef IntrusivePtr<ThreadMutexInterface> ThreadMutexInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

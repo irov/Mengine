@@ -40,12 +40,12 @@ namespace Mengine
 		float getRadius() const;
 
 	public:
-		void calcMouseWorldPosition( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const;		
-		void calcPointClick( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const;		
-		void calcPointDeltha( const RenderCameraInterface * _camera, const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) const;
+		void calcMouseWorldPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const;
+		void calcPointClick( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const;
+		void calcPointDeltha( const RenderCameraInterfacePtr & _camera, const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) const;
 
 	public:
-		void calcMouseScreenPosition( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const mt::vec2f & _worldPoint, mt::vec2f & _screenPoint ) const;
+		void calcMouseScreenPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _worldPoint, mt::vec2f & _screenPoint ) const;
 		
 	public:
 		void adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f & _adaptScreenPoint ) const;
@@ -77,4 +77,7 @@ namespace Mengine
 
         class ArrowInputMousePositionProvider;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Arrow> ArrowPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
+
+#include "Core/IntrusivePtr.h"
+
+#include "Config/Vector.h"
 
 #include "math/vec3.h"
-
-#include "stdex/intrusive_ptr.h"
-#include "stdex/stl_vector.h"
 
 namespace Mengine
 {
@@ -17,10 +18,10 @@ namespace Mengine
 		virtual void onMagnetAffect( const mt::vec3f & _velocity ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<class MagnetActor> MagnetActorPtr;
+	typedef IntrusivePtr<class MagnetActor> MagnetActorPtr;
 	//////////////////////////////////////////////////////////////////////////
 	class MagnetActor
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		MagnetActor();
@@ -69,7 +70,7 @@ namespace Mengine
 
 		uint32_t m_iff;
 
-		typedef stdex::vector<MagnetActorPtr> TVectorActorException;
+		typedef Vector<MagnetActorPtr> TVectorActorException;
 		TVectorActorException m_exceptions;
 
 		mt::vec3f m_velocity;

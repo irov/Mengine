@@ -2,6 +2,7 @@
 
 #include "HotspotMousePickerVisitor.h"
 
+#include "Interface/RenderSystemInterface.h"
 #include "Interface/MousePickerSystemInterface.h"
 #include "Interface/PlayerInterface.h"
 
@@ -98,7 +99,7 @@ namespace Mengine
 			return;
 		}
 
-		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE()
+		const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
 			->getMousePickerSystem();
 
 		if( mousePickerSystem == nullptr )
@@ -132,7 +133,7 @@ namespace Mengine
 			return;
 		}
 
-		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE()
+		const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
 			->getMousePickerSystem();
 
 		if( mousePickerSystem == nullptr )
@@ -309,7 +310,7 @@ namespace Mengine
 			return;
 		}
 
-		MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE()
+		const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
 			->getMousePickerSystem();
 
 		if( mousePickerSystem == nullptr )
@@ -352,7 +353,7 @@ namespace Mengine
 		Node::_deactivate();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpot::pick( const mt::vec2f & _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Resolution & _contentResolution, Arrow * _arrow )
+	bool HotSpot::pick( const mt::vec2f & _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow )
 	{
 		if( this->isActivate() == false )
 		{

@@ -8,11 +8,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class NodeAOITriggerUserData
-        : public FactorablePtr
+        : public Factorable
     {
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<NodeAOITriggerUserData> NodeAOITriggerUserDataPtr;
+    typedef IntrusivePtr<NodeAOITriggerUserData> NodeAOITriggerUserDataPtr;
     //////////////////////////////////////////////////////////////////////////
     enum NodeAOITriggerEventFlag
     {
@@ -24,8 +24,8 @@ namespace Mengine
         : public EventReceiver
     {
     public:
-        virtual void onNodeAOITriggerEnter( AOIActorProviderInterface * _enemy, uint32_t _iff1, uint32_t _iff2 ) = 0;
-        virtual void onNodeAOITriggerLeave( AOIActorProviderInterface * _enemy, uint32_t _iff1, uint32_t _iff2 ) = 0;
+        virtual void onNodeAOITriggerEnter( const AOIActorProviderInterfacePtr & _enemy, uint32_t _iff1, uint32_t _iff2 ) = 0;
+        virtual void onNodeAOITriggerLeave( const AOIActorProviderInterfacePtr & _enemy, uint32_t _iff1, uint32_t _iff2 ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 	class NodeAOITrigger
@@ -56,9 +56,9 @@ namespace Mengine
 		const NodeAOITriggerUserDataPtr & getTriggerUserData() const;
 
 	protected:
-		bool onAOIActorTest( AOIActorProviderInterface * _actor ) const override;
-		void onAOIActorEnter( AOIActorProviderInterface * _actor ) override;
-		void onAOIActorLeave( AOIActorProviderInterface * _actor ) override;
+		bool onAOIActorTest( const AOIActorProviderInterfacePtr & _actor ) const override;
+		void onAOIActorEnter( const AOIActorProviderInterfacePtr & _actor ) override;
+		void onAOIActorLeave( const AOIActorProviderInterfacePtr & _actor ) override;
 
 	protected:
 		bool _activate() override;

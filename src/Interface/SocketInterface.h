@@ -2,13 +2,15 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
+
+#include "Core/IntrusivePtr.h"
 
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class SocketInterface
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		virtual bool initialize( const Char * _ip, const Char * _port ) = 0;
@@ -19,7 +21,7 @@ namespace Mengine
 		virtual bool receive( void * _buffer, size_t _capacity, size_t & _receiv ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<SocketInterface> SocketInterfacePtr;
+	typedef IntrusivePtr<SocketInterface> SocketInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class SocketSystemInterface
 		: public ServiceInterface

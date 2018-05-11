@@ -3,14 +3,15 @@
 #include "Config/Typedef.h"
 #include "Config/String.h"
 
-#include "math/vec2.h"
+#include "Interface/ServiceInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
+#include "Core/IntrusivePtr.h"
 #include "Core/Resolution.h"
 #include "Core/Viewport.h"
 
-#include "Interface/ServiceInterface.h"
+#include "math/vec2.h"
 
 namespace Mengine
 {
@@ -334,6 +335,7 @@ namespace Mengine
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class InputHandlerInterface
+        : public Mixin
 	{
 	public:
 		InputHandlerInterface(){};
@@ -352,13 +354,13 @@ namespace Mengine
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class InputMousePositionProviderInterface
-        : public FactorablePtr
+        : public Mixin
 	{
 	public:
 		virtual void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<InputMousePositionProviderInterface> InputMousePositionProviderInterfacePtr;
+    typedef IntrusivePtr<InputMousePositionProviderInterface> InputMousePositionProviderInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class InputServiceInterface
 		: public ServiceInterface

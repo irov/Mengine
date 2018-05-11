@@ -48,5 +48,5 @@ namespace Mengine
 		virtual const Model3DFrame * getFrame( uint32_t _frameId ) const = 0; 
 	};
 
-	typedef stdex::intrusive_ptr<Model3DInterface> Model3DInterfacePtr;
+	typedef IntrusivePtr<Model3DInterface> Model3DInterfacePtr;
 }

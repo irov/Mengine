@@ -41,7 +41,7 @@ namespace Mengine
 		virtual void flush() = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<LoggerInterface> LoggerInterfacePtr;
+    typedef IntrusivePtr<LoggerInterface> LoggerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class LoggerServiceInterface
 		: public ServiceInterface

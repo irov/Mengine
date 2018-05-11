@@ -23,7 +23,7 @@ namespace Mengine
 	public:
 		ModuleInterfacePtr createModule( const ConstString & _name ) override
 		{
-			ModuleInterface * module = m_factory->createObject();
+			ModuleInterfacePtr module = m_factory->createObject();
 
 			module->setName(_name);
 

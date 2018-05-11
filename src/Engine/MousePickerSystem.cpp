@@ -1,6 +1,7 @@
 #include "MousePickerSystem.h"
 
 #include "Interface/InputSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 
 #include "Kernel/Arrow.h"
@@ -34,15 +35,16 @@ namespace Mengine
 			}
 
 		public:
-			void visit( const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, Node * _node )
+			void visit( const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const NodePtr & _node )
 			{
-				const RenderViewportInterface * nodeViewport = _node->getRenderViewport();
-				const RenderCameraInterface * nodeCamera = _node->getRenderCamera();
+				RenderViewportInterfacePtr nodeViewport = _node->getRenderViewport();
 							
 				if( nodeViewport == nullptr )
 				{
 					nodeViewport = _viewport;
 				}
+
+                RenderCameraInterfacePtr nodeCamera = _node->getRenderCamera();
 
 				if( nodeCamera == nullptr )
 				{
@@ -56,7 +58,7 @@ namespace Mengine
 
 				TListNodeChild & child = _node->getChildren();
 
-				Node * single_child = child.single();
+				NodePtr single_child = child.single();
 
 				if( single_child != nullptr )
 				{
@@ -70,7 +72,7 @@ namespace Mengine
 					it != it_end;
 					++it )
 					{
-						Node * children = (*it);
+						NodePtr children = (*it);
 
 						this->visit( nodeViewport, nodeCamera, children );
 					}
@@ -79,7 +81,7 @@ namespace Mengine
 				{
 					for( TSlugChild it(child); it.eof() == false; )
 					{
-						Node * children = (*it);
+						NodePtr children = (*it);
 
 						it.next_shuffle();
 
@@ -89,7 +91,7 @@ namespace Mengine
 			}
 
 		protected:
-			void accept( Node * _node )
+			void accept( const NodePtr & _node )
 			{
 				MousePickerTrapInterface * trap = _node->getPickerTrap();
 
@@ -121,8 +123,8 @@ namespace Mengine
 		protected:
 			TVectorPickerTrapStates & m_traps;
 
-			const RenderViewportInterface * m_currentViewport;
-			const RenderCameraInterface * m_currentCamera;
+			RenderViewportInterfacePtr m_currentViewport;
+			RenderCameraInterfacePtr m_currentCamera;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -150,27 +152,27 @@ namespace Mengine
         m_handleValue = _value;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::setArrow( Arrow * _arrow )
+	void MousePickerSystem::setArrow( const ArrowPtr & _arrow )
 	{
 		m_arrow = _arrow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::setScene( Scene * _scene )
+	void MousePickerSystem::setScene( const ScenePtr & _scene )
 	{
 		m_scene = _scene;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::setRenderViewport( const RenderViewportInterface * _viewport )
+	void MousePickerSystem::setRenderViewport( const RenderViewportInterfacePtr & _viewport )
 	{
 		m_viewport = _viewport;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::setRenderCamera( const RenderCameraInterface * _camera )
+	void MousePickerSystem::setRenderCamera( const RenderCameraInterfacePtr & _camera )
 	{
 		m_camera = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::setRenderClipplane( const RenderClipplaneInterface * _clipplane )
+	void MousePickerSystem::setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane )
 	{
 		m_clipplane = _clipplane;
 	}
@@ -203,7 +205,7 @@ namespace Mengine
 				continue;
 			}
 			
-			MousePickerTrapInterface * trap = state->trap;					
+			const MousePickerTrapInterfacePtr & trap = state->trap;
 			_traps.emplace_back( trap );
 		}
 
@@ -227,7 +229,7 @@ namespace Mengine
 		this->updateDead_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PickerTrapState * MousePickerSystem::regTrap( MousePickerTrapInterface * _trap )
+	PickerTrapState * MousePickerSystem::regTrap( const MousePickerTrapInterfacePtr & _trap )
 	{
 		PickerTrapState state;
 
@@ -314,7 +316,7 @@ namespace Mengine
 				continue;
 			}
 				
-			MousePickerTrapInterface * trap = state->trap;
+			const MousePickerTrapInterfacePtr & trap = state->trap;
 
 			if( trap->handleKeyEvent( _event ) == false )
 			{
@@ -349,7 +351,7 @@ namespace Mengine
 				continue;
 			}
 
-			MousePickerTrapInterface * trap = state->trap;
+            const MousePickerTrapInterfacePtr & trap = state->trap;
 
 			if( trap->handleTextEvent( _event ) == false )
 			{
@@ -396,10 +398,10 @@ namespace Mengine
 			//	continue;
 			//}
 			
-			MousePickerTrapInterface * trap = state->trap;
+            const MousePickerTrapInterfacePtr & trap = state->trap;
 
-			const RenderViewportInterface * viewport = desc.viewport;
-			const RenderCameraInterface * camera = desc.camera;
+			const RenderViewportInterfacePtr & viewport = desc.viewport;
+			const RenderCameraInterfacePtr & camera = desc.camera;
 
 			mt::vec2f wp;
 			m_arrow->calcPointClick( camera, viewport, mt::vec2f(_event.x, _event.y), wp );
@@ -458,10 +460,10 @@ namespace Mengine
 			//	continue;
 			//}
 			
-			MousePickerTrapInterface * trap = state->trap;
+            const MousePickerTrapInterfacePtr & trap = state->trap;
 
-			const RenderViewportInterface * viewport = desc.viewport;
-			const RenderCameraInterface * camera = desc.camera;
+			const RenderViewportInterfacePtr & viewport = desc.viewport;
+			const RenderCameraInterfacePtr & camera = desc.camera;
 
 			mt::vec2f wp;
 			m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), wp );
@@ -523,10 +525,10 @@ namespace Mengine
 				}
 			}
 			
-			MousePickerTrapInterface * trap = state->trap;
+            const MousePickerTrapInterfacePtr & trap = state->trap;
 
-			const RenderViewportInterface * viewport = desc.viewport;
-			const RenderCameraInterface * camera = desc.camera;
+			const RenderViewportInterfacePtr & viewport = desc.viewport;
+			const RenderCameraInterfacePtr & camera = desc.camera;
 
 			mt::vec2f wp;
 			m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), wp );
@@ -576,10 +578,10 @@ namespace Mengine
 				continue;
 			}
 			
-			MousePickerTrapInterface * trap = state->trap;
+            const MousePickerTrapInterfacePtr & trap = state->trap;
 
-			const RenderViewportInterface * viewport = desc.viewport;
-			const RenderCameraInterface * camera = desc.camera;
+			const RenderViewportInterfacePtr & viewport = desc.viewport;
+			const RenderCameraInterfacePtr & camera = desc.camera;
 
 			mt::vec2f wp;
 			m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y), wp );
@@ -633,10 +635,10 @@ namespace Mengine
 				continue;
 			}
 
-			MousePickerTrapInterface * trap = state->trap;
+            const MousePickerTrapInterfacePtr & trap = state->trap;
 
-			const RenderViewportInterface * viewport = desc.viewport;
-			const RenderCameraInterface * camera = desc.camera;
+			const RenderViewportInterfacePtr & viewport = desc.viewport;
+			const RenderCameraInterfacePtr & camera = desc.camera;
 
 			mt::vec2f wp;
 			m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), wp );
@@ -695,7 +697,7 @@ namespace Mengine
 				continue;
 			}
 
-			MousePickerTrapInterface * trap = state->trap;
+            const MousePickerTrapInterfacePtr & trap = state->trap;
 
 			if( state->picked == true )
 			{
@@ -755,10 +757,10 @@ namespace Mengine
 				continue;
 			}
 
-			MousePickerTrapInterface * trap = state->trap;
+            const MousePickerTrapInterfacePtr & trap = state->trap;
 
-			const RenderViewportInterface * viewport = desc.viewport;
-			const RenderCameraInterface * camera = desc.camera;
+			const RenderViewportInterfacePtr & viewport = desc.viewport;
+			const RenderCameraInterfacePtr & camera = desc.camera;
 
 			if( handle == false || m_handleValue == false )
 			{

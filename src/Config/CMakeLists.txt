@@ -8,6 +8,9 @@ src
     Stringstream.h
     Typedef.h
     Floats.h
+    Vector.h
+    Map.h
+    List.h
 	Config.h
 	cmake_dummy.cpp
 )

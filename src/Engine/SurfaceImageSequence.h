@@ -8,7 +8,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<class ResourceAnimation> ResourceAnimationPtr;
+    typedef IntrusivePtr<class ResourceAnimation> ResourceAnimationPtr;
     //////////////////////////////////////////////////////////////////////////
     enum SurfaceImageSequenceEventFlag
     {
@@ -100,5 +100,5 @@ namespace Mengine
 		stdex::vector<RenderMaterialInterfacePtr> m_materials;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<SurfaceImageSequence> SurfaceImageSequencePtr;
+    typedef IntrusivePtr<SurfaceImageSequence> SurfaceImageSequencePtr;
 }

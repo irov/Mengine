@@ -2,7 +2,7 @@
 
 #include "AOIInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "AOIActor.h"
 
@@ -13,7 +13,7 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class AOITrigger
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		AOITrigger();
@@ -42,5 +42,5 @@ namespace Mengine
 		bool m_remove;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<AOITrigger> AOITriggerPtr;
+	typedef IntrusivePtr<AOITrigger> AOITriggerPtr;
 }

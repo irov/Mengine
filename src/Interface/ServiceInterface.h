@@ -2,17 +2,16 @@
 
 #include "Interface/ServiceProviderInterface.h"
 
+#include "Factory/Factorable.h"
+
 #include "Core/Typename.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ServiceInterface
+        : public Factorable
     {
-    public:
-        ServiceInterface() {};
-        virtual ~ServiceInterface() {};
-
     public:
         virtual const Char * getServiceID() const = 0;
 
@@ -25,9 +24,6 @@ namespace Mengine
 
     protected:
         virtual bool isInitialize() const = 0;
-
-    public:
-        virtual void destroy() = 0;
 
     public:
         friend class ServiceProvider;

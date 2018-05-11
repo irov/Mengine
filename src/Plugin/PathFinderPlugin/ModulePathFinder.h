@@ -33,8 +33,8 @@ namespace Mengine
 		bool setMapWeight( PathFinderMap * _map, const ConstString & _resourceName );
 		
 	public:
-		PathFinderWayAffector * createPathFinderWayAffector( Node * _node, const pybind::list & _satellite, const pybind::list & _way, float _offset, float _speed, bool _preparePosition, const pybind::object & _cb, const pybind::args & _args );
-		void destroyPathFinderWayAffector( PathFinderWayAffector * _affector );
+		PathFinderWayAffectorPtr createPathFinderWayAffector( Node * _node, const pybind::list & _satellite, const pybind::list & _way, float _offset, float _speed, bool _preparePosition, const pybind::object & _cb, const pybind::args & _args );
+		void destroyPathFinderWayAffector( const PathFinderWayAffectorPtr & _affector );
 
 	public:
 		void _tick( float _time, float _timing ) override;

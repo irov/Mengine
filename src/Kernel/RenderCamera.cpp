@@ -6,8 +6,7 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	RenderCamera::RenderCamera()
-		: m_observerChangeWindowResolution( nullptr )		
-		, m_invalidateProjectionMatrix( true )
+		: m_invalidateProjectionMatrix( true )
 		, m_invalidateViewMatrix( true )
 		, m_invalidateViewProjectionMatrix( true )	
 	{
@@ -20,7 +19,7 @@ namespace Mengine
 			return true;
 		}
 
-		m_observerChangeWindowResolution = NOTIFICATION_SERVICE()
+		NOTIFICATION_SERVICE()
 			->addObserverMethod( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this, &RenderCamera::notifyChangeWindowResolution );
 
 		this->invalidateViewMatrix_();
@@ -33,7 +32,8 @@ namespace Mengine
 	{
         Node::_deactivate();
 
-		m_observerChangeWindowResolution = nullptr;
+        NOTIFICATION_SERVICE()
+            ->removeObserver( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCamera::_invalidateWorldMatrix()

@@ -8,22 +8,24 @@
 
 namespace Mengine
 {
-    class Node;
-    class Scene;
-    class Arrow;
-	class Affectorable;
-    class RenderCameraInterface;
-    class RenderViewportInterface;
-    class RenderClipplaneInterface;
+    typedef IntrusivePtr<class Node> NodePtr;
+    typedef IntrusivePtr<class Scene> ScenePtr;
+    typedef IntrusivePtr<class Arrow> ArrowPtr;
+    typedef IntrusivePtr<class Affectorable> AffectorablePtr;
+    typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
+    typedef IntrusivePtr<class RenderCameraInterface> RenderCameraInterfacePtr;
+    typedef IntrusivePtr<class RenderClipplaneInterface> RenderClipplaneInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class Affectorable;
 	//////////////////////////////////////////////////////////////////////////
 	class SceneChangeCallbackInterface
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
-		virtual void onSceneChange( Scene * _scene, bool _enable, bool _remove ) = 0;
+		virtual void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<SceneChangeCallbackInterface> SceneChangeCallbackInterfacePtr;
+	typedef IntrusivePtr<SceneChangeCallbackInterface> SceneChangeCallbackInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
     class PlayerServiceInterface
         : public ServiceInterface
@@ -32,17 +34,17 @@ namespace Mengine
         SERVICE_DECLARE("PlayerService")
 
     public:
-		virtual bool setCurrentScene( Scene * _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) = 0;
+		virtual bool setCurrentScene( const ScenePtr & _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) = 0;
 		virtual bool restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) = 0;
 		virtual bool removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) = 0;
 		virtual void destroyCurrentScene() = 0;
         
-		virtual Scene * getCurrentScene() = 0;
+		virtual const ScenePtr & getCurrentScene() = 0;
 
     public:
 		virtual bool createGlobalScene() = 0;
 		virtual void removeGlobalScene() = 0;
-		virtual Scene * getGlobalScene() = 0;
+		virtual const ScenePtr & getGlobalScene() = 0;
 
 	public:
 		virtual void onFocus( bool _focus ) = 0;
@@ -66,8 +68,8 @@ namespace Mengine
 
 
     public:
-        virtual void setArrow( Arrow * _arrow ) = 0;
-        virtual Arrow * getArrow() const = 0;
+        virtual void setArrow( const ArrowPtr & _arrow ) = 0;
+        virtual const ArrowPtr & getArrow() const = 0;
 
 	public:
 		virtual void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) = 0;
@@ -78,28 +80,28 @@ namespace Mengine
 		virtual bool destroySchedulerManager( const ScheduleManagerInterfacePtr & _scheduler ) = 0;
 
     public:
-        virtual void setRenderCamera( RenderCameraInterface * _camera) = 0;
-        virtual const RenderCameraInterface * getRenderCamera() const = 0;
+        virtual void setRenderCamera( const RenderCameraInterfacePtr & _camera) = 0;
+        virtual const RenderCameraInterfacePtr & getRenderCamera() const = 0;
 
 	public:
-		virtual void setRenderViewport( RenderViewportInterface * _renderViewport ) = 0;
-		virtual const RenderViewportInterface * getRenderViewport() const = 0;
+		virtual void setRenderViewport( const RenderViewportInterfacePtr & _renderViewport ) = 0;
+		virtual const RenderViewportInterfacePtr & getRenderViewport() const = 0;
 
 	public:
-		virtual void setRenderClipplane( RenderClipplaneInterface * _clipplane ) = 0;
-		virtual const RenderClipplaneInterface * getRenderClipplane() const = 0;
+        virtual void setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane ) = 0;
+		virtual const RenderClipplaneInterfacePtr & getRenderClipplane() const = 0;
         
     public:
-        virtual MousePickerSystemInterface * getMousePickerSystem() const = 0;
-        virtual GlobalHandleSystemInterface * getGlobalHandleSystem() const = 0;
+        virtual const MousePickerSystemInterfacePtr & getMousePickerSystem() const = 0;
+        virtual const GlobalHandleSystemInterfacePtr & getGlobalHandleSystem() const = 0;
 
     public:
         virtual const ScheduleManagerInterfacePtr & getScheduleManager() const = 0;
         virtual const ScheduleManagerInterfacePtr & getScheduleManagerGlobal() const = 0;
 
 	public:
-		virtual Affectorable * getAffectorable() const = 0;
-		virtual Affectorable * getAffectorableGlobal() const = 0;
+		virtual const AffectorablePtr & getAffectorable() const = 0;
+		virtual const AffectorablePtr & getAffectorableGlobal() const = 0;
 		
     public:
         virtual void toggleDebugText() = 0;

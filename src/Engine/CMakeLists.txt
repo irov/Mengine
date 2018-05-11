@@ -202,6 +202,8 @@ ADD_FILTER(
 Player
 	Player.cpp
 	Player.h
+    GlobalAffectorable.cpp
+    GlobalAffectorable.h    
 	GlobalHandleSystem.cpp
 	GlobalHandleSystem.h
 )

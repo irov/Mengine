@@ -196,28 +196,24 @@ namespace Mengine
 		delete _graph;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PathFinderWayAffector * ModulePathFinder::createPathFinderWayAffector( Node * _node, const pybind::list & _satellite, const pybind::list & _way, float _offset, float _speed, bool _preparePosition, const pybind::object & _cb, const pybind::args & _args )
+	PathFinderWayAffectorPtr ModulePathFinder::createPathFinderWayAffector( Node * _node, const pybind::list & _satellite, const pybind::list & _way, float _offset, float _speed, bool _preparePosition, const pybind::object & _cb, const pybind::args & _args )
 	{
-		PathFinderWayAffector * affector = m_factoryPathFinderWayAffector->createObject();
+		PathFinderWayAffectorPtr affector = m_factoryPathFinderWayAffector->createObject();
 
 		if( affector->initialize( _node, _satellite, _offset, _speed, _way, _preparePosition, _cb, _args ) == false )
 		{
-			affector->destroy();
-
 			return nullptr;
 		}
 
 		if( _node->addAffector( affector ) == INVALID_AFFECTOR_ID )
 		{
-			affector->destroy();
-
 			return nullptr;
 		}
 
 		return affector;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::destroyPathFinderWayAffector( PathFinderWayAffector * _affector )
+	void ModulePathFinder::destroyPathFinderWayAffector( const PathFinderWayAffectorPtr & _affector )
 	{
 		Node * node = _affector->getNode();
 

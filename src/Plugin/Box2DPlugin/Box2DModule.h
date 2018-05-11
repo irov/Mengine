@@ -12,7 +12,7 @@
 
 namespace Mengine
 {
-	class Box2DWorld;
+	typedef IntrusivePtr<class Box2DWorld> Box2DWorldPtr;
 	
 	class Box2DModule
 		: public ModuleBase
@@ -27,8 +27,8 @@ namespace Mengine
 		void _finalize() override;
 
     public:
-		Box2DWorld * createWorld( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::args & _update_args );
-		void destroyWorld( Box2DWorld * _world );
+		Box2DWorldPtr createWorld( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::args & _update_args );
+		void destroyWorld( const Box2DWorldPtr & _world );
 
 	public:
 		void _tick( float _time, float _timing ) override;
@@ -38,7 +38,7 @@ namespace Mengine
 		PyObject * s_Box2DBody_setEventListener( pybind::kernel_interface * _kernel, Box2DBody * _node, PyObject * _args, PyObject * _kwds );
 
     private:
-		typedef stdex::vector<Box2DWorld *> TVectorWorlds;
+		typedef stdex::vector<Box2DWorldPtr> TVectorWorlds;
 		TVectorWorlds m_worlds;
 		TVectorWorlds m_worldsAdd;
     };

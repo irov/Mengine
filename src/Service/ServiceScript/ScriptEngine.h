@@ -94,7 +94,7 @@ namespace Mengine
 		typedef stdex::map<ConstString, ScriptWrapperInterfacePtr> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;
 
-        FactoryPtr m_factoryPythonString;		
+        FactoryPtr m_factoryPythonString;
 		FactoryPtr m_factoryScriptModule;
 		
 		bool m_initializeModules;

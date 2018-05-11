@@ -32,5 +32,5 @@ namespace Mengine
 		size_t m_uncompressSize;
 	};    
 
-	typedef stdex::intrusive_ptr<ImageDecoderArchive> ImageDecoderArchivePtr;	
+	typedef IntrusivePtr<ImageDecoderArchive> ImageDecoderArchivePtr;
 }

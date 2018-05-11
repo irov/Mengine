@@ -19,6 +19,4 @@ namespace Mengine
     protected:			
 		Char * m_buff;
     };
-
-    typedef stdex::intrusive_ptr<ConstStringHolderMemory> ConstStringHolderMemoryPtr;
 }

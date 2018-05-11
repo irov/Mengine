@@ -318,19 +318,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	void Box2DModule::_finalize()
     {
-		for( Box2DWorld * world : m_worlds )
+		for( const Box2DWorldPtr & world : m_worlds )
 		{
 			world->finalize();
-
-			delete world;
 		}
 
 		m_worlds.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-	Box2DWorld * Box2DModule::createWorld( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::args & _update_args )
+	Box2DWorldPtr Box2DModule::createWorld( const mt::vec2f& _gravity, const pybind::object & _update, const pybind::args & _update_args )
     {
-		Box2DWorld * world = PROTOTYPE_SERVICE()
+		Box2DWorldPtr world = PROTOTYPE_SERVICE()
 			->generatePrototype( STRINGIZE_STRING_LOCAL( "Box2D" ), STRINGIZE_STRING_LOCAL( "Box2DWorld" ) );
 
 		if( world->initialize( _gravity, _update, _update_args ) == false )
@@ -343,7 +341,7 @@ namespace Mengine
 		return world;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Box2DModule::destroyWorld( Box2DWorld * _world )
+	void Box2DModule::destroyWorld( const Box2DWorldPtr & _world )
 	{
 		_world->setDead();
 	}
@@ -352,7 +350,7 @@ namespace Mengine
 	{
 		struct FWorldDead
 		{
-			bool operator ()( Box2DWorld * _event ) const
+			bool operator ()( const Box2DWorldPtr & _event ) const
 			{
 				return _event->isDead();
 			}
@@ -364,7 +362,7 @@ namespace Mengine
 		m_worlds.insert( m_worlds.end(), m_worldsAdd.begin(), m_worldsAdd.end() );
 		m_worldsAdd.clear();
 
-		for( Box2DWorld * world : m_worlds )
+		for( const Box2DWorldPtr & world : m_worlds )
 		{
 			if( world->isDead() == true )
 			{

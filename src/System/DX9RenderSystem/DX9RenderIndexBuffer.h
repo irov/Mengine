@@ -49,5 +49,5 @@ namespace Mengine
 		IDirect3DIndexBuffer9 * m_pIB;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<DX9RenderIndexBuffer> DX9RenderIndexBufferPtr;
+	typedef IntrusivePtr<DX9RenderIndexBuffer> DX9RenderIndexBufferPtr;
 }

@@ -26,7 +26,7 @@ namespace Mengine
 	protected:
 		PointerFactorable generate() override
 		{
-			Type * resource = m_factory->createObject();
+			IntrusivePtr<Type> resource = m_factory->createObject();
 
 			if( resource == nullptr )
 			{

@@ -16,7 +16,7 @@
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<class ResourceShape> ResourceShapePtr;
+	typedef IntrusivePtr<class ResourceShape> ResourceShapePtr;
 	//////////////////////////////////////////////////////////////////////////
     const uint32_t MOVIE_LAYER_NODE = 0x0001;
     const uint32_t MOVIE_LAYER_ANIMATABLE = 0x0002;
@@ -296,7 +296,7 @@ namespace Mengine
 		uint32_t m_maxLayerIndex;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceMovie> ResourceMoviePtr;
+	typedef IntrusivePtr<ResourceMovie> ResourceMoviePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline const MovieFramePackInterfacePtr & ResourceMovie::getFramePack() const
 	{

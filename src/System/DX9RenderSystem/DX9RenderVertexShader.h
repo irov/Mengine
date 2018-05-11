@@ -38,5 +38,5 @@ namespace Mengine
         bool m_compile;		
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<DX9RenderVertexShader> DX9RenderVertexShaderPtr;
+	typedef IntrusivePtr<DX9RenderVertexShader> DX9RenderVertexShaderPtr;
 }

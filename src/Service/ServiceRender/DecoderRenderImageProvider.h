@@ -28,6 +28,6 @@ namespace Mengine
         ConstString m_codecName;
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<DecoderRenderImageProvider> DecoderRenderImageProviderPtr;
+	typedef IntrusivePtr<DecoderRenderImageProvider> DecoderRenderImageProviderPtr;
 	//////////////////////////////////////////////////////////////////////////
 }	

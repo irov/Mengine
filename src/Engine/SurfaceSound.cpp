@@ -27,17 +27,17 @@ namespace Mengine
         }
 
     protected:
-        void onSoundPause( uint32_t _soundId ) override
+        void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override
         {
-            (void)_soundId;
+            (void)_emitter;
 
             EVENTABLE_METHOD( m_sound, EVENT_ANIMATABLE_PAUSE )
                 ->onAnimatablePause( m_id );
         }
 
-        void onSoundStop( uint32_t _soundId ) override
+        void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
         {
-            (void)_soundId;
+            (void)_emitter;
 
             m_sound->end();
         }
@@ -46,119 +46,127 @@ namespace Mengine
         uint32_t m_id;
         SurfaceSound * m_sound;
     };
-	//////////////////////////////////////////////////////////////////////////
-	SurfaceSound::SurfaceSound()
-		: m_soundBuffer(nullptr)
-		, m_sourceID(0)
-		, m_isHeadMode(false)
-        , m_volume( 0.f )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SurfaceSound::~SurfaceSound()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceSound::_compile()
-	{
-		if( m_resourceSound == nullptr )
-		{
-			LOGGER_ERROR("SoundEmitter::_compile: '%s' resource is null"
-				, this->getName().c_str()				
-				);
+    //////////////////////////////////////////////////////////////////////////
+    SurfaceSound::SurfaceSound()
+        : m_interpolateVolume( true )
+        , m_isHeadMode( false )
+        , m_volume( 1.f )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SurfaceSound::~SurfaceSound()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SurfaceSound::_compile()
+    {
+        if( m_resourceSound == nullptr )
+        {
+            LOGGER_ERROR( "SoundEmitter::_compile: '%s' resource is null"
+                , this->getName().c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
         if( m_resourceSound.compile() == false )
         {
-            LOGGER_ERROR("SoundEmitter::_compile: '%s' resource '%s' not compile"
+            LOGGER_ERROR( "SoundEmitter::_compile: '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceSound->getName().c_str()
-                );
+            );
 
             return false;
         }
 
-		m_soundBuffer = m_resourceSound->createSoundBuffer();
+        m_soundBuffer = m_resourceSound->createSoundBuffer();
 
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR("SoundEmitter::_compile: '%s' sound buffer not create"
-                , this->getName().c_str() 
-                );
+            LOGGER_ERROR( "SoundEmitter::_compile: '%s' sound buffer not create"
+                , this->getName().c_str()
+            );
 
             return false;
         }
 
-		bool streamable = m_resourceSound->isStreamable();
+        bool streamable = m_resourceSound->isStreamable();
 
-		m_sourceID = SOUND_SERVICE()
-			->createSoundSource( m_isHeadMode, m_soundBuffer, ESST_SOUND, streamable );
+        m_soundEmitter = SOUND_SERVICE()
+            ->createSoundIdentity( m_isHeadMode, m_soundBuffer, ESST_SOUND, streamable );
 
-		if( m_sourceID == 0 )
-		{
-			LOGGER_ERROR("SoundEmitter::_compile: sound emitter '%s' not compiled"
-				, this->getName().c_str() 
-				);
+        if( m_soundEmitter == nullptr )
+        {
+            LOGGER_ERROR( "SoundEmitter::_compile: sound emitter '%s' not compiled"
+                , this->getName().c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		SOUND_SERVICE()
-            ->setSourceListener( m_sourceID, new MySoundListener( m_enumerator, this ) );
+        SOUND_SERVICE()
+            ->setSourceListener( m_soundEmitter, new MySoundListener( m_enumerator, this ) );
 
-		SOUND_SERVICE()
-			->setLoop( m_sourceID, m_loop );
+        SOUND_SERVICE()
+            ->setLoop( m_soundEmitter, m_loop );
 
-		float volume = m_resourceSound->getDefaultVolume();
-		this->setVolume( volume );
+        float volume = m_resourceSound->getDefaultVolume();
+        this->setVolume( volume );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::_release()
-	{ 
-		if( SOUND_SERVICE()
-			->releaseSoundSource( m_sourceID ) == false )
-		{
-			LOGGER_ERROR("SoundEmitter::_release %s emitter invalid release sound %d"
-				, this->getName().c_str()
-				, m_sourceID
-				);
-		}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::_release()
+    {
+        if( SOUND_SERVICE()
+            ->releaseSoundSource( m_soundEmitter ) == false )
+        {
+            LOGGER_ERROR( "SoundEmitter::_release %s emitter invalid release sound %d"
+                , this->getName().c_str()
+                , m_soundEmitter->getId()
+            );
+        }
 
-		m_sourceID = 0;
-
-		m_soundBuffer = nullptr;
+        m_soundEmitter = nullptr;
+        m_soundBuffer = nullptr;
 
         m_resourceSound.release();
-	}
-	//////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_update( float _time, float _timing )
-	{
-		(void)_time;
-		(void)_timing;
-		//Empty
+    {
+        (void)_time;
+        (void)_timing;
+        //Empty
 
         return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::setResourceSound( const ResourceSoundPtr & _resourceSound )
-	{
-		if( m_resourceSound == _resourceSound )
-		{
-			return;
-		}
-
-		m_resourceSound = _resourceSound;
-
-		this->recompile();
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
-	const ResourceSoundPtr & SurfaceSound::getResourceSound() const
+    void SurfaceSound::setResourceSound( const ResourceSoundPtr & _resourceSound )
+    {
+        if( m_resourceSound == _resourceSound )
+        {
+            return;
+        }
+
+        m_resourceSound = _resourceSound;
+
+        this->recompile();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceSoundPtr & SurfaceSound::getResourceSound() const
     {
         return m_resourceSound;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::setInterpolateVolume( bool _interpolateVolume )
+    {
+        m_interpolateVolume = _interpolateVolume;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SurfaceSound::getInterpolateVolume() const
+    {
+        return m_interpolateVolume;
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceSound::getMaxSize() const
@@ -199,178 +207,186 @@ namespace Mengine
     {
         return ColourValue::identity();
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceSound::_play( uint32_t _enumerator, float _time )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    bool SurfaceSound::_play( uint32_t _enumerator, float _time )
+    {
         (void)_enumerator;
         (void)_time;
 
-		if( this->isCompile() == false )
-		{
-			return false;
-		}
-
-		if( m_sourceID == 0 )
-		{
-			return false;
-		}
-        
-		if( SOUND_SERVICE()
-			->playEmitter( m_sourceID ) == false )
+        if( this->isCompile() == false )
         {
-            LOGGER_ERROR("SoundEmitter::_play %s invalid play [%d] resource %s"
+            return false;
+        }
+
+        if( m_soundEmitter == nullptr )
+        {
+            return false;
+        }
+
+        if( SOUND_SERVICE()
+            ->playEmitter( m_soundEmitter ) == false )
+        {
+            LOGGER_ERROR( "SoundEmitter::_play %s invalid play [%d] resource %s"
                 , this->getName().c_str()
-                , m_sourceID
+                , m_soundEmitter->getId()
                 , m_resourceSound->getName().c_str()
-                );
+            );
 
             return false;
         }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceSound::_restart( uint32_t _enumerator, float _time )
-	{
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SurfaceSound::_restart( uint32_t _enumerator, float _time )
+    {
         (void)_time;
         (void)_enumerator;
-		//ToDo
+        //ToDo
 
-		return false;	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::_pause( uint32_t _enumerator )
-	{
-		(void)_enumerator;
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::_pause( uint32_t _enumerator )
+    {
+        (void)_enumerator;
 
-		if( m_sourceID == 0 )
-		{
-			return;
-		}
-		
-		SOUND_SERVICE()
-			->pauseEmitter( m_sourceID );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::_resume( uint32_t _enumerator, float _time )
-	{
-		(void)_time;
-		(void)_enumerator;
+        if( m_soundEmitter == nullptr )
+        {
+            return;
+        }
 
-		if( m_sourceID == 0 )
-		{
-			return;
-		}
+        SOUND_SERVICE()
+            ->pauseEmitter( m_soundEmitter );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::_resume( uint32_t _enumerator, float _time )
+    {
+        (void)_time;
+        (void)_enumerator;
 
-		SOUND_SERVICE()
-			->resumeEmitter( m_sourceID );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::_stop( uint32_t _enumerator )
-	{
-		if( m_sourceID != 0 )
-		{
-			SOUND_SERVICE()
-				->stopEmitter( m_sourceID );
-		}
+        if( m_soundEmitter == nullptr )
+        {
+            return;
+        }
+
+        SOUND_SERVICE()
+            ->resumeEmitter( m_soundEmitter );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::_stop( uint32_t _enumerator )
+    {
+        if( m_soundEmitter != nullptr )
+        {
+            SOUND_SERVICE()
+                ->stopEmitter( m_soundEmitter );
+        }
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
             ->onAnimatableStop( _enumerator );
-		//EVENTABLE_CALL( this, EVENT_SOUND_END )(this, _enumerator, false);
-		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::_end( uint32_t _enumerator )
-	{
-		if( m_sourceID != 0 )
-		{
-			SOUND_SERVICE()
-				->stopEmitter( m_sourceID );
-		}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::_end( uint32_t _enumerator )
+    {
+        if( m_soundEmitter != nullptr )
+        {
+            SOUND_SERVICE()
+                ->stopEmitter( m_soundEmitter );
+        }
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
             ->onAnimatableEnd( _enumerator );
-		//EVENTABLE_CALL( this, EVENT_SOUND_END )(this, _enumerator, true);
-		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::_setVolume( float _volume )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::_setVolume( float _volume )
+    {
         if( fabsf( m_volume - _volume ) < 0.00001f )
         {
             return;
         }
 
         m_volume = _volume;
-                
-		if( m_sourceID == 0 )
-		{
-			return;
-		}        
 
-		if( SOUND_SERVICE()
-			->setSourceVolume( m_sourceID, m_volume, m_volume ) == false )
-		{
-			LOGGER_ERROR("SoundEmitter::setVolume invalid %s:%d %f"
-				, m_resourceSound->getName().c_str()
-                , m_sourceID
+        if( m_soundEmitter == nullptr )
+        {
+            return;
+        }
+
+        bool forceVolume = false;
+
+        if( m_interpolateVolume == false )
+        {
+            forceVolume = true;
+        }
+
+        if( this->isPlay() == false )
+        {
+            forceVolume = true;
+        }
+
+        if( SOUND_SERVICE()
+            ->setSourceVolume( m_soundEmitter, m_volume, m_volume, forceVolume ) == false )
+        {
+            LOGGER_ERROR( "SoundEmitter::setVolume invalid %s:%d %f"
+                , m_resourceSound->getName().c_str()
+                , m_soundEmitter->getId()
                 , m_volume
-				);
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float SurfaceSound::_getVolume() const
-	{
+            );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float SurfaceSound::_getVolume() const
+    {
         return m_volume;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::_setLoop( bool _value )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::_setLoop( bool _value )
+    {
         (void)_value;
 
-		if( m_sourceID == 0 )
-		{
-			return;
-		}
-		
-		SOUND_SERVICE()
-			->setLoop( m_sourceID, m_loop );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float SurfaceSound::getDuration() const
-	{
-		if( m_sourceID == 0 )
-		{
-			return 0.f;
-		}
+        if( m_soundEmitter == nullptr )
+        {
+            return;
+        }
 
-		float lengthMs = SOUND_SERVICE()
-			->getDuration( m_sourceID );
-	
-		return lengthMs;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceSound::_interrupt( uint32_t _enumerator )
-	{
-        (void)_enumerator;
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSound::_setTiming( float _timing )
-	{
-		if( this->isCompile() == false )
-		{
-			return;
-		}
-
-		if( m_sourceID == 0 )
-		{
-			return;
-		}
+        SOUND_SERVICE()
+            ->setLoop( m_soundEmitter, m_loop );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float SurfaceSound::getDuration() const
+    {
+        if( m_soundEmitter == nullptr )
+        {
+            return 0.f;
+        }
 
         float lengthMs = SOUND_SERVICE()
-            ->getDuration( m_sourceID );
+            ->getDuration( m_soundEmitter );
+
+        return lengthMs;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SurfaceSound::_interrupt( uint32_t _enumerator )
+    {
+        (void)_enumerator;
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::_setTiming( float _timing )
+    {
+        if( this->isCompile() == false )
+        {
+            return;
+        }
+
+        if( m_soundEmitter == nullptr )
+        {
+            return;
+        }
+
+        float lengthMs = SOUND_SERVICE()
+            ->getDuration( m_soundEmitter );
 
         float pos = _timing;
         if( _timing > lengthMs )
@@ -378,12 +394,12 @@ namespace Mengine
             pos = lengthMs;
         }
 
-		SOUND_SERVICE()
-			->setPosMs( m_sourceID, pos );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr SurfaceSound::_updateMaterial() const
-	{
-		return nullptr;
-	}
+        SOUND_SERVICE()
+            ->setPosMs( m_soundEmitter, pos );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr SurfaceSound::_updateMaterial() const
+    {
+        return nullptr;
+    }
 }

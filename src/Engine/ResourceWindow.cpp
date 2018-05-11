@@ -65,8 +65,8 @@ namespace Mengine
 				}
 			}
 
-			ResourceImagePtr resource  = RESOURCE_SERVICE()
-				->getResourceT<ResourceImagePtr>( m_images[i].resourceName );
+            ResourceImagePtr resource = RESOURCE_SERVICE()
+                ->getResource( m_images[i].resourceName );
 			
 			if( resource == 0 )
 			{

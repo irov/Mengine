@@ -78,6 +78,6 @@ namespace Mengine
 		mutable PathString m_cacheFullPath;
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ScriptModuleFinder> ScriptModuleFinderPtr;
+	typedef IntrusivePtr<ScriptModuleFinder> ScriptModuleFinderPtr;
 	//////////////////////////////////////////////////////////////////////////
 }

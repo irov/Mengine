@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "stdex/intrusive_linked.h"
 
@@ -9,7 +9,7 @@
 namespace Mengine
 {
     class ConstStringHolder
-        : public FactorablePtr
+        : public Factorable
         , public stdex::intrusive_linked<ConstStringHolder>
     {
     protected:
@@ -53,6 +53,4 @@ namespace Mengine
 
         hash_type m_hash;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<ConstStringHolder> ConstStringHolderPtr;
 }

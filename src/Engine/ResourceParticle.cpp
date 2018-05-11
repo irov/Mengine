@@ -82,7 +82,7 @@ namespace Mengine
 			const ConstString & resourceName = atlas.get_ResourceName();
 
             ResourceImagePtr resourceImage = RESOURCE_SERVICE()
-                ->getResourceReferenceT<ResourceImagePtr>( resourceName );
+                ->getResourceReference( resourceName );
 
             if( resourceImage == nullptr )
             {

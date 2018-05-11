@@ -33,7 +33,7 @@ namespace Mengine
 		virtual bool isInitialize() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<PluginInterface> PluginInterfacePtr;
+	typedef IntrusivePtr<PluginInterface> PluginInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
     typedef bool( *TPluginCreate )(ServiceProviderInterface * _serviceProvider, PluginInterface ** _plugin, bool _dynamic);
 	//////////////////////////////////////////////////////////////////////////
@@ -49,7 +49,7 @@ namespace Mengine
 		virtual TDynamicLibraryFunction getSymbol( const Char * _name ) const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<DynamicLibraryInterface> DynamicLibraryInterfacePtr;
+	typedef IntrusivePtr<DynamicLibraryInterface> DynamicLibraryInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class PluginSystemInterface
 		: public ServiceInterface

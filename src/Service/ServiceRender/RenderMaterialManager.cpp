@@ -852,7 +852,7 @@ namespace Mengine
 			return material;
 		}
 
-		RenderMaterial * material = m_factoryMaterial->createObject();
+		RenderMaterialPtr material = m_factoryMaterial->createObject();
 
 		uint32_t id = this->makeMaterialIndex_();
 		material->initialize( _materialName, id, material_hash, _primitiveType, _textureCount, _textures, _stage );

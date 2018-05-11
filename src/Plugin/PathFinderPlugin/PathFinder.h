@@ -44,5 +44,5 @@ namespace Mengine
 		pybind::list m_way;
 	};
 
-	typedef stdex::intrusive_ptr<PathFinder> PathFinderPtr;
+	typedef IntrusivePtr<PathFinder> PathFinderPtr;
 }

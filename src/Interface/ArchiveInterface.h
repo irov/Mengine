@@ -4,7 +4,7 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Core/Magic.h"
 #include "Core/ConstString.h"
@@ -29,7 +29,7 @@ namespace Mengine
 		virtual bool decompress( void * _buffer, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _uncompressSize ) = 0;
 	};
 
-	typedef stdex::intrusive_ptr<ArchivatorInterface> ArchivatorInterfacePtr;
+	typedef IntrusivePtr<ArchivatorInterface> ArchivatorInterfacePtr;
 
     class ArchiveServiceInterface
         : public ServiceInterface

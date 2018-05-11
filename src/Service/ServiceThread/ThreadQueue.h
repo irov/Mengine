@@ -48,5 +48,5 @@ namespace Mengine
 		bool m_cancel;
 	};
 
-	typedef stdex::intrusive_ptr<ThreadQueue> ThreadQueuePtr;
+	typedef IntrusivePtr<ThreadQueue> ThreadQueuePtr;
 }

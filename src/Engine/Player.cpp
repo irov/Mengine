@@ -31,6 +31,8 @@
 
 #include "Factory/FactoryDefault.h"
 
+#include "GlobalAffectorable.h"
+
 #include "Logger/Logger.h"
 
 #include "TextField.h"
@@ -57,6 +59,8 @@ namespace Mengine
     namespace
     {
         class PlayerResourceUselessCompile
+            : public FactorableUnique<Factorable>
+            , public ObserverInterface
         {
         public:
             PlayerResourceUselessCompile()
@@ -70,17 +74,20 @@ namespace Mengine
         public:
             void begin()
             {
-                m_observerResourceCompile = NOTIFICATION_SERVICE()
+                NOTIFICATION_SERVICE()
                     ->addObserverMethod( NOTIFICATOR_RESOURCE_COMPILE, this, &PlayerResourceUselessCompile::resourceCompile );
 
-                m_observerResourceRelease = NOTIFICATION_SERVICE()
+                NOTIFICATION_SERVICE()
                     ->addObserverMethod( NOTIFICATOR_RESOURCE_RELEASE, this, &PlayerResourceUselessCompile::resourceRelease );
             }
 
             void end()
             {
-                m_observerResourceCompile = nullptr;
-                m_observerResourceRelease = nullptr;
+                NOTIFICATION_SERVICE()
+                    ->removeObserver( NOTIFICATOR_RESOURCE_COMPILE, this );
+
+                NOTIFICATION_SERVICE()
+                    ->removeObserver( NOTIFICATOR_RESOURCE_RELEASE, this );
             }
 
         protected:
@@ -109,36 +116,23 @@ namespace Mengine
             }
 
         protected:
-            ObserverInterfacePtr m_observerResourceCompile;
-            ObserverInterfacePtr m_observerResourceRelease;
-
             typedef stdex::vector<ResourceReference *> TVectorResourceDesc;
             TVectorResourceDesc m_resources;
         };
+
+        typedef IntrusivePtr<PlayerResourceUselessCompile> PlayerResourceUselessCompilePtr;
     }
     //////////////////////////////////////////////////////////////////////////
     Player::Player()
-        : m_scene( nullptr )
-        , m_arrow( nullptr )
-        , m_globalScene( nullptr )
-        , m_scheduleManager( nullptr )
-        , m_scheduleManagerGlobal( nullptr )
-        , m_arrowCamera2D( nullptr )
+        : m_arrowCamera2D( nullptr )
         , m_renderCamera( nullptr )
         , m_renderViewport( nullptr )
         , m_renderClipplane( nullptr )
         , m_renderTarget( nullptr )
         , m_switchSceneTo( nullptr )
         , m_mousePickerSystem( nullptr )
-        //, m_switchScene2( true )
-        //, m_switchScene( false )
-        //, m_removeScene( false )
-        //, m_destroyOldScene( false )
-        //, m_restartScene( false )
         , m_arrowHided( false )
         , m_fps( 0 )
-        , m_affectorable( nullptr )
-        , m_affectorableGlobal( nullptr )
         , m_showDebugText( 0 )
         , m_debugText( nullptr )
         , m_camera2D( nullptr )
@@ -152,7 +146,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Player::setCurrentScene( Scene * _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb )
+    bool Player::setCurrentScene( const ScenePtr & _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb )
     {
         if( _scene == nullptr )
         {
@@ -162,7 +156,7 @@ namespace Mengine
         MODULE_SERVICE()
             ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), TMapWParams() );
 
-        Scene * oldScene = m_scene;
+        ScenePtr oldScene = m_scene;
         m_scene = nullptr;
 
         if( m_arrow != nullptr )
@@ -206,14 +200,14 @@ namespace Mengine
         }
 
 #   ifndef MENGINE_MASTER_RELEASE
-        PlayerResourceUselessCompile unlessCompile;
-        unlessCompile.begin();
+        PlayerResourceUselessCompilePtr unlessCompile = new PlayerResourceUselessCompile;
+        unlessCompile->begin();
 #   endif
 
         m_scene->enable();
 
 #   ifndef MENGINE_MASTER_RELEASE
-        unlessCompile.end();
+        unlessCompile->end();
 #   endif
 
         if( m_arrow != nullptr )
@@ -265,14 +259,14 @@ namespace Mengine
         }
 
 #   ifndef MENGINE_MASTER_RELEASE
-        PlayerResourceUselessCompile unlessCompile;
-        unlessCompile.begin();
+        PlayerResourceUselessCompilePtr unlessCompile = new PlayerResourceUselessCompile;
+        unlessCompile->begin();
 #   endif
 
         m_scene->enable();
 
 #   ifndef MENGINE_MASTER_RELEASE
-        unlessCompile.end();
+        unlessCompile->end();
 #   endif
 
         if( m_arrow != nullptr )
@@ -334,21 +328,21 @@ namespace Mengine
     {
         if( m_scene != nullptr )
         {
-            Scene * destroyScene = m_scene;
+            ScenePtr destroyScene = m_scene;
             m_scene = nullptr;
 
             destroyScene->destroy();
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    Scene * Player::getCurrentScene()
+    const ScenePtr & Player::getCurrentScene()
     {
         return m_scene;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Player::createGlobalScene()
     {
-        Scene * scene = PROTOTYPE_SERVICE()
+        ScenePtr scene = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
 
         if( scene == nullptr )
@@ -370,12 +364,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    Scene * Player::getGlobalScene()
+    const ScenePtr & Player::getGlobalScene()
     {
         return m_globalScene;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Player::setArrow( Arrow * _arrow )
+    void Player::setArrow( const ArrowPtr & _arrow )
     {
         if( m_arrow != nullptr )
         {
@@ -402,7 +396,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    Arrow * Player::getArrow() const
+    const ArrowPtr & Player::getArrow() const
     {
         return m_arrow;
     }
@@ -443,12 +437,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MousePickerSystemInterface * Player::getMousePickerSystem() const
+    const MousePickerSystemInterfacePtr & Player::getMousePickerSystem() const
     {
         return m_mousePickerSystem;
     }
     //////////////////////////////////////////////////////////////////////////
-    GlobalHandleSystemInterface * Player::getGlobalHandleSystem() const
+    const GlobalHandleSystemInterfacePtr & Player::getGlobalHandleSystem() const
     {
         return m_globalHandleSystem;
     }
@@ -463,12 +457,12 @@ namespace Mengine
         return m_scheduleManagerGlobal;
     }
     //////////////////////////////////////////////////////////////////////////
-    Affectorable * Player::getAffectorable() const
+    const AffectorablePtr & Player::getAffectorable() const
     {
         return m_affectorable;
     }
     //////////////////////////////////////////////////////////////////////////
-    Affectorable * Player::getAffectorableGlobal() const
+    const AffectorablePtr & Player::getAffectorableGlobal() const
     {
         return m_affectorableGlobal;
     }
@@ -488,86 +482,43 @@ namespace Mengine
 
         m_scheduleManagerGlobal = scheduleManagerGlobal;
 
-        m_affectorable = new Affectorable;
-        m_affectorableGlobal = new Affectorable;
+        m_affectorable = new GlobalAffectorable;
+        m_affectorableGlobal = new GlobalAffectorable;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Player::_finalize()
     {
-        if( m_scene != nullptr )
-        {
-            m_scene->destroy();
-            m_scene = nullptr;
-        }
-
-        if( m_globalScene != nullptr )
-        {
-            m_globalScene->destroy();
-            m_globalScene = nullptr;
-        }
-
-        if( m_camera2D != nullptr )
-        {
-            m_camera2D->destroy();
-            m_camera2D = nullptr;
-        }
-
-        if( m_debugCamera2D != nullptr )
-        {
-            m_debugCamera2D->destroy();
-            m_debugCamera2D = nullptr;
-        }
-
-        if( m_arrowCamera2D != nullptr )
-        {
-            m_arrowCamera2D->destroy();
-            m_arrowCamera2D = nullptr;
-        }
-
-        if( m_viewport2D != nullptr )
-        {
-            m_viewport2D->destroy();
-            m_viewport2D = nullptr;
-        }
-
-        if( m_mousePickerSystem != nullptr )
-        {
-            delete m_mousePickerSystem;
-            m_mousePickerSystem = nullptr;
-        }
-
-        if( m_globalHandleSystem != nullptr )
-        {
-            delete m_globalHandleSystem;
-            m_globalHandleSystem = nullptr;
-        }
-
+        m_scene = nullptr;
+        m_globalScene = nullptr;
+        
+        m_camera2D = nullptr;
+        
+        m_debugCamera2D = nullptr;
+        
+        m_arrowCamera2D = nullptr;
+        m_viewport2D = nullptr;
+        
+        m_mousePickerSystem = nullptr;
+        m_globalHandleSystem = nullptr;
+        
         m_scheduleManager = nullptr;
         m_scheduleManagerGlobal = nullptr;
 
         m_schedulers.clear();
 
-        if( m_affectorable != nullptr )
-        {
-            delete m_affectorable;
-            m_affectorable = nullptr;
-        }
+        m_affectorable = nullptr;
+        m_affectorableGlobal = nullptr;
 
-        if( m_affectorableGlobal != nullptr )
-        {
-            delete m_affectorableGlobal;
-            m_affectorableGlobal = nullptr;
-        }
-
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduleManager );
         m_factoryScheduleManager = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void Player::initializeRenderResources()
     {
         m_debugText = NODE_SERVICE()->
-            createNodeT<TextField *>( STRINGIZE_STRING_LOCAL( "TextField" ) );
+            createNode( STRINGIZE_STRING_LOCAL( "TextField" ) );
 
         m_debugText->setFontName( STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ) );
         m_debugText->setTextID( STRINGIZE_STRING_LOCAL( "__ID_TEXT_CONSOLE" ) );
@@ -582,7 +533,7 @@ namespace Mengine
         Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
         m_camera2D = NODE_SERVICE()
-            ->createNodeT<RenderCameraOrthogonal *>( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+            ->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
         m_camera2D->setOrthogonalViewport( vp );
 
@@ -591,7 +542,7 @@ namespace Mengine
         this->setRenderCamera( m_camera2D );
 
         m_viewport2D = NODE_SERVICE()
-            ->createNodeT<RenderViewport *>( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
+            ->createNode( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
 
         m_viewport2D->setViewport( vp );
         m_viewport2D->enable();
@@ -599,7 +550,7 @@ namespace Mengine
         this->setRenderViewport( m_viewport2D );
 
         m_arrowCamera2D = NODE_SERVICE()
-            ->createNodeT<RenderCameraOrthogonal *>( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+            ->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
         m_arrowCamera2D->setOrthogonalViewport( vp );
         m_arrowCamera2D->enable();
@@ -612,7 +563,7 @@ namespace Mengine
         }
 
         m_debugCamera2D = NODE_SERVICE()
-            ->createNodeT<RenderCameraOrthogonal *>( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+            ->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
         m_debugCamera2D->setOrthogonalViewport( vp );
 
@@ -866,7 +817,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Player::setRenderCamera( RenderCameraInterface * _camera )
+    void Player::setRenderCamera( const RenderCameraInterfacePtr & _camera )
     {
         m_renderCamera = _camera;
 
@@ -876,12 +827,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderCameraInterface * Player::getRenderCamera() const
+    const RenderCameraInterfacePtr & Player::getRenderCamera() const
     {
         return m_renderCamera;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Player::setRenderViewport( RenderViewportInterface * _viewport )
+    void Player::setRenderViewport( const RenderViewportInterfacePtr & _viewport )
     {
         m_renderViewport = _viewport;
 
@@ -891,12 +842,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderViewportInterface * Player::getRenderViewport() const
+    const RenderViewportInterfacePtr & Player::getRenderViewport() const
     {
         return m_renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Player::setRenderClipplane( RenderClipplaneInterface * _clipplane )
+    void Player::setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane )
     {
         m_renderClipplane = _clipplane;
 
@@ -906,7 +857,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderClipplaneInterface * Player::getRenderClipplane() const
+    const RenderClipplaneInterfacePtr & Player::getRenderClipplane() const
     {
         return m_renderClipplane;
     }
@@ -1068,7 +1019,7 @@ namespace Mengine
 
                 ss << "Prefetcher " << cttv.getCount() << std::endl;
 
-                MousePickerSystemInterface * mousePickerSystem = PLAYER_SERVICE()
+                const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
                     ->getMousePickerSystem();
 
                 ss << "PickerTrapCount:" << mousePickerSystem->getPickerTrapCount() << std::endl;

@@ -12,6 +12,7 @@ namespace Mengine
 	class RenderCamera
 		: public Node
         , public RenderCameraInterface
+        , public ObserverInterface
 	{
 	public:
 		RenderCamera();
@@ -49,8 +50,6 @@ namespace Mengine
 		void notifyChangeWindowResolution( bool _fullscreen, const Resolution & _resolution );
 
 	protected:
-		ObserverInterfacePtr m_observerChangeWindowResolution;
-
 		mutable mt::mat4f m_viewMatrix;
 		mutable mt::mat4f m_viewMatrixInv;
 
@@ -64,6 +63,8 @@ namespace Mengine
 		mutable bool m_invalidateViewMatrix;
 		mutable bool m_invalidateViewProjectionMatrix;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<RenderCamera> RenderCameraPtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline const mt::mat4f & RenderCamera::getCameraProjectionMatrix() const
 	{

@@ -836,8 +836,8 @@ namespace Mengine
 				return false;
 			}
 
-			Node * node1;
-			Movie * submovie1;
+			NodePtr node1;
+			MoviePtr submovie1;
 
 			if( _movie1->hasMovieNode( _socket1, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &node1, &submovie1 ) == false )
 			{
@@ -849,8 +849,8 @@ namespace Mengine
 				return false;
 			}
 
-			Node * node2;
-			Movie * submovie2;
+			NodePtr node2;
+			MoviePtr submovie2;
 
 			if( _movie2->hasMovieNode( _socket2, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &node2, &submovie2 ) == false )
 			{
@@ -862,7 +862,7 @@ namespace Mengine
 				return false;
 			}
 
-			HotSpotShape * shape1 = static_cast<HotSpotShape *>(node1);
+            HotSpotShapePtr shape1 = stdex::intrusive_static_cast<HotSpotShapePtr>(node1);
 
 			if( shape1->compile() == false )
 			{
@@ -874,7 +874,7 @@ namespace Mengine
 				return false;
 			}
 
-			HotSpotShape * shape2 = static_cast<HotSpotShape *>(node2);
+            HotSpotShapePtr shape2 = stdex::intrusive_static_cast<HotSpotShapePtr>(node2);
 
 			if( shape2->compile() == false )
 			{
@@ -889,15 +889,15 @@ namespace Mengine
 			const Resolution & contentResolution = APPLICATION_SERVICE()
 				->getContentResolution();
 			
-			const RenderCameraInterface * shape1_camera = shape1->getRenderCameraInheritance();
-			const RenderViewportInterface * shape1_viewport = shape1->getRenderViewportInheritance();
+			const RenderCameraInterfacePtr & shape1_camera = shape1->getRenderCameraInheritance();
+			const RenderViewportInterfacePtr & shape1_viewport = shape1->getRenderViewportInheritance();
 
 			mt::box2f b1;
 			Polygon p1;
 			shape1->getPolygonScreen( shape1_camera, shape1_viewport, contentResolution, &b1, &p1 );
 
-			const RenderCameraInterface * shape2_camera = shape2->getRenderCameraInheritance();
-			const RenderViewportInterface * shape2_viewport = shape2->getRenderViewportInheritance();
+			const RenderCameraInterfacePtr & shape2_camera = shape2->getRenderCameraInheritance();
+			const RenderViewportInterfacePtr & shape2_viewport = shape2->getRenderViewportInheritance();
 
 			mt::box2f b2;
 			Polygon p2;
@@ -913,7 +913,7 @@ namespace Mengine
 			return result;
 		}
 
-		bool s_intersectMoviesHotspotVsPolygon( Movie * _movie, const ConstString & _socket, Polygon _polygon )
+		bool s_intersectMoviesHotspotVsPolygon( const MoviePtr & _movie, const ConstString & _socket, Polygon _polygon )
 		{
 			_polygon.correct();
 
@@ -933,8 +933,8 @@ namespace Mengine
 				return false;
 			}
 
-			Node * node;
-			Movie * submovie;
+			NodePtr node;
+			MoviePtr submovie;
 
 			if( _movie->hasMovieNode( _socket, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &node, &submovie ) == false )
 			{
@@ -946,7 +946,7 @@ namespace Mengine
 				return false;
 			}
 
-			HotSpotShape * shape = static_cast<HotSpotShape *>(node);
+            HotSpotShapePtr shape = stdex::intrusive_static_cast<HotSpotShapePtr>(node);
 
 			if( shape->compile() == false )
 			{
@@ -961,8 +961,8 @@ namespace Mengine
 			const Resolution & contentResolution = APPLICATION_SERVICE()
 				->getContentResolution();
 
-			const RenderCameraInterface * shape_camera = shape->getRenderCameraInheritance();
-			const RenderViewportInterface * shape_viewport = shape->getRenderViewportInheritance();
+			const RenderCameraInterfacePtr & shape_camera = shape->getRenderCameraInheritance();
+			const RenderViewportInterfacePtr & shape_viewport = shape->getRenderViewportInheritance();
 
 			Polygon p1;
 			shape->getPolygonScreen( shape_camera, shape_viewport, contentResolution, nullptr, &p1 );
@@ -1015,7 +1015,7 @@ namespace Mengine
             }
 
         protected:
-            void visitRenderTexture( const RenderTextureInterface * _texture ) override
+            void visitRenderTexture( const RenderTextureInterfacePtr & _texture ) override
             {
                 const FilePath & filePath = _texture->getFileName();
 

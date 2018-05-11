@@ -56,7 +56,7 @@ namespace Mengine
         }
 
         m_resourceImage = RESOURCE_SERVICE()
-            ->getResourceT<ResourceImagePtr>( m_resourceImageName );
+            ->getResource( m_resourceImageName );
 
         if( m_resourceImage == nullptr )
         {

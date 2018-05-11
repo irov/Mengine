@@ -6,7 +6,7 @@
 
 namespace Mengine
 {
-    typedef stdex::intrusive_ptr<class RenderImageInterface> RenderImageInterfacePtr;
+    typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
 
 	struct RenderTextureGraveEntry
 	{

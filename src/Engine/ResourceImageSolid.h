@@ -25,5 +25,5 @@ namespace Mengine
 		bool _compile() override;				
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceImageSolid> ResourceImageSolidPtr;
+	typedef IntrusivePtr<ResourceImageSolid> ResourceImageSolidPtr;
 }

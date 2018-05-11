@@ -33,7 +33,7 @@ namespace Mengine
 
 		struct Element
 		{
-			Node * node;
+			NodePtr node;
 			uint32_t id;
 		};
 

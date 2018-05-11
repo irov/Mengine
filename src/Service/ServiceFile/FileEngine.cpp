@@ -83,7 +83,7 @@ namespace Mengine
 
 		const FactoryPtr & factory = it_found->second;
 
-		FileGroupInterface * fileGroup = factory->createObject();
+		FileGroupInterfacePtr fileGroup = factory->createObject();
 
 		if( fileGroup == nullptr )
 		{

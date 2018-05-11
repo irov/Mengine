@@ -28,5 +28,5 @@ namespace Mengine
 		FilePath m_path;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceFile> ResourceFilePtr;
+	typedef IntrusivePtr<ResourceFile> ResourceFilePtr;
 }

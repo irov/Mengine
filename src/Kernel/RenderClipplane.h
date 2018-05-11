@@ -39,6 +39,8 @@ namespace Mengine
 		mutable mt::planef m_planesWM[6];
 		mutable bool m_invalidateClipplanes;		
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<RenderClipplane> RenderClipplanePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline void RenderClipplane::invalidateClipplanes_()
 	{

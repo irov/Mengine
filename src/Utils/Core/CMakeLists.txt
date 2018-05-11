@@ -107,7 +107,13 @@ src
     Magic.h    
     Mixin.h
     
+    MixerValue.h
+    MixerValue.cpp
+    
     Typename.h
+    
+    IntrusivePtr.h
+    IntrusivePtrBase.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

@@ -4,7 +4,7 @@
 
 #include "Kernel/Updatable.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 #include "Core/ConstString.h"
 #include "math/vec3.h"
 
@@ -15,7 +15,7 @@ namespace Mengine
 	class Node;
 
 	class Motor
-		: public FactorablePtr
+		: public Factorable
 		, public Updatable
 	{
 	public:

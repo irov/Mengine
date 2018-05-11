@@ -5,7 +5,7 @@
 
 #include "Core/ServantBase.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Core/FilePath.h"
 #include "Core/ConstString.h"
@@ -61,7 +61,7 @@ namespace Mengine
 		return m_size == 0;
 	}
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<MemoryCacheBuffer> MemoryCacheBufferPtr;
+    typedef IntrusivePtr<MemoryCacheBuffer> MemoryCacheBufferPtr;
     //////////////////////////////////////////////////////////////////////////
 }	
 

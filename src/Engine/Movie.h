@@ -12,18 +12,18 @@
 
 namespace Mengine
 {
-	class RenderCameraProjection;
-	class RenderViewport;
-	class RenderClipplane;
+	typedef IntrusivePtr<class RenderCameraProjection> RenderCameraProjectionPtr;
+	typedef IntrusivePtr<class RenderViewport> RenderViewportPtr;
+	typedef IntrusivePtr<class RenderClipplane> RenderClipplanePtr;
 
-    class MovieNodeExtra;
-    class MovieEvent;
-    class MovieSceneEffect;
-    class MovieInternalObject;
+    typedef IntrusivePtr<class MovieNodeExtra> MovieNodeExtraPtr;
+    typedef IntrusivePtr<class MovieEvent> MovieEventPtr;
+    typedef IntrusivePtr<class MovieSceneEffect> MovieSceneEffectPtr;
+    typedef IntrusivePtr<class MovieInternalObject> MovieInternalObjectPtr;
 
-	class Materialable;
+	typedef IntrusivePtr<class Materialable> MaterialablePtr;
 
-	class Movie;
+    typedef IntrusivePtr<class Movie> MoviePtr;
 
 	struct MovieLayer;
 	struct MovieFrameSource;    
@@ -31,7 +31,7 @@ namespace Mengine
 	class VisitorMovieNode
 	{
 	public:
-		virtual void visitMovieNode( Movie * _movie, Node * _node ) = 0;
+        virtual void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	enum MovieEventFlag
@@ -46,7 +46,7 @@ namespace Mengine
     {
     public:
         virtual pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) = 0;
-        virtual Node * onMovieActivateInternal( const pybind::object & _internal ) = 0;
+        virtual NodePtr onMovieActivateInternal( const pybind::object & _internal ) = 0;
         virtual void onMovieDeactivateInternal( const pybind::object & _internal ) = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
@@ -75,15 +75,15 @@ namespace Mengine
 		bool visitMovieLayer( const ConstString & _type, VisitorMovieNode * _visitor );
 
 	public:
-		bool getMovieNode( const ConstString & _name, const ConstString & _type, Node ** _node, Movie ** _movie );
-		bool hasMovieNode( const ConstString & _name, const ConstString & _type, Node ** _node, Movie ** _movie );
+		bool getMovieNode( const ConstString & _name, const ConstString & _type, NodePtr* _node, MoviePtr* _movie );
+        bool hasMovieNode( const ConstString & _name, const ConstString & _type, NodePtr* _node, MoviePtr* _movie );
 
 	public:		
-		bool getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, Movie ** _movie );
+		bool getMovieLayer( const ConstString & _name, const MovieLayer ** _layer, MoviePtr* _movie );
 		bool hasMovieLayer( const ConstString & _name ) const;
 
-	public:
-		bool getMovieClipplane( const ConstString & _name, RenderClipplane ** _clipplane );
+    public:
+        bool getMovieClipplane( const ConstString & _name, RenderClipplanePtr* _clipplane );
 		bool hasMovieClipplane( const ConstString & _name );
 
 	public:
@@ -140,13 +140,12 @@ namespace Mengine
 
     protected:
         void updateForward_( float _time );
-        void updateBackward_();
         
         void updateForwardFrame_( float _time, uint32_t _beginFrame, uint32_t _endFrame );
-        void updateForwardFrameNode_( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer &, Node * _node );
+        void updateForwardFrameNode_( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer &, const NodePtr & _node );
 
 	protected:
-		bool updateFrameNode_( const MovieLayer & layer, Node * _node, uint32_t _frameId, bool _interpolate, bool _start );
+		bool updateFrameNode_( const MovieLayer & layer, const NodePtr & _node, uint32_t _frameId, bool _interpolate, bool _start );
 
 	protected:
 		bool setupSceneEffect_();
@@ -194,14 +193,14 @@ namespace Mengine
 		bool compileMovieText_( const MovieLayer & _layer );  
 
 	protected:
-		bool addMovieNode_( const MovieLayer & _layer, Node * _node, Animatable * _animatable, Soundable * _soundable, Movie * _movie );
+		bool addMovieNode_( const MovieLayer & _layer, const NodePtr & _node, const AnimatablePtr & _animatable, const SoundablePtr & _soundable, const MoviePtr & _movie );
 
 	protected:
-		inline Node * getLayerNode_( const MovieLayer & _layer ) const;
-		inline Animatable * getLayerAnimatable_( const MovieLayer & _layer ) const;
-		inline Soundable * getLayerSoundable_( const MovieLayer & _layer ) const;
-		inline Movie * getLayerMovie_( const MovieLayer & _layer ) const;
-		inline Node * getLayerParent_( const MovieLayer & _layer ) const;
+		inline const NodePtr & getLayerNode_( const MovieLayer & _layer ) const;
+		inline const AnimatablePtr & getLayerAnimatable_( const MovieLayer & _layer ) const;
+		inline const SoundablePtr & getLayerSoundable_( const MovieLayer & _layer ) const;
+		inline const MoviePtr & getLayerMovie_( const MovieLayer & _layer ) const;
+		inline const NodePtr & getLayerParent_( const MovieLayer & _layer ) const;
 
 	protected:
 		void getFrameTiming_( float _time, uint32_t & _frame, float & _timing ) const;
@@ -223,15 +222,15 @@ namespace Mengine
 		inline bool getVisibleLayer_( const MovieLayer & _layer ) const;
 
 	protected:
-		bool setupBlendingMode_( const MovieLayer & _layer, Materialable * _materiable );
+		bool setupBlendingMode_( const MovieLayer & _layer, const MaterialablePtr & _materiable );
 		
 	protected:
 		ResourceHolder<ResourceMovie> m_resourceMovie;
 
-		RenderCameraProjection * m_renderCameraProjection;
-		RenderViewport * m_renderViewport;
+		RenderCameraProjectionPtr m_renderCameraProjection;
+		RenderViewportPtr m_renderViewport;
 
-		typedef std::vector<RenderClipplane *> TVectorClipplane;
+		typedef std::vector<RenderClipplanePtr> TVectorClipplane;
 		TVectorClipplane m_clipplanes;
 
         struct Nodies
@@ -245,10 +244,10 @@ namespace Mengine
 				, child(false)
 			{}
 
-            Node * node;
-			Animatable * animatable;
-			Soundable * soundable;
-			Movie * movie;
+            NodePtr node;
+			AnimatablePtr animatable;
+			SoundablePtr soundable;
+			MoviePtr movie;
 
 			bool visible;
 			bool enable;
@@ -264,36 +263,38 @@ namespace Mengine
 		bool m_interruptEnd;
 		bool m_parentMovie;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Movie> MoviePtr;
 	//////////////////////////////////////////////////////////////////////////
-	inline Node * Movie::getLayerNode_( const MovieLayer & _layer ) const
+	inline const NodePtr & Movie::getLayerNode_( const MovieLayer & _layer ) const
 	{	
 		const Nodies & ns = m_nodies[_layer.index - 1];
 
 		return ns.node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline Animatable * Movie::getLayerAnimatable_( const MovieLayer & _layer ) const
+	inline const AnimatablePtr & Movie::getLayerAnimatable_( const MovieLayer & _layer ) const
 	{	
 		const Nodies & ns = m_nodies[_layer.index - 1];
 
 		return ns.animatable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline Soundable * Movie::getLayerSoundable_( const MovieLayer & _layer ) const
+	inline const SoundablePtr & Movie::getLayerSoundable_( const MovieLayer & _layer ) const
 	{
 		const Nodies & ns = m_nodies[_layer.index - 1];
 
 		return ns.soundable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline Movie * Movie::getLayerMovie_( const MovieLayer & _layer ) const
+	inline const MoviePtr & Movie::getLayerMovie_( const MovieLayer & _layer ) const
 	{
 		const Nodies & ns = m_nodies[_layer.index - 1];
 
 		return ns.movie;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline Node * Movie::getLayerParent_( const MovieLayer & _layer ) const
+	inline const NodePtr & Movie::getLayerParent_( const MovieLayer & _layer ) const
 	{
 		const Nodies & ns = m_nodies[_layer.parent - 1];
 

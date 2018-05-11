@@ -3,23 +3,23 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ScheduleEventInterface
-		: public FactorablePtr
+		: public Factorable
     {
     public:
         virtual void onScheduleComplete( uint32_t _id ) = 0;
         virtual void onScheduleStop( uint32_t _id ) = 0;
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ScheduleEventInterface> ScheduleEventInterfacePtr;
+	typedef IntrusivePtr<ScheduleEventInterface> ScheduleEventInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class ScheduleTimerInterface
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		virtual void onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _timing ) = 0;
@@ -27,16 +27,16 @@ namespace Mengine
 		virtual void onScheduleStop( uint32_t _id ) = 0;		
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ScheduleTimerInterface> ScheduleTimerInterfacePtr;
+	typedef IntrusivePtr<ScheduleTimerInterface> ScheduleTimerInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class SchedulePipeInterface
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		virtual float onSchedulePipe( uint32_t _id, uint32_t _index ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<SchedulePipeInterface> SchedulePipeInterfacePtr;
+	typedef IntrusivePtr<SchedulePipeInterface> SchedulePipeInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
     class ScheduleManagerInterface
         : public ServantInterface
@@ -76,5 +76,5 @@ namespace Mengine
         virtual void update( float _current, float _timing ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<ScheduleManagerInterface> ScheduleManagerInterfacePtr;
+    typedef IntrusivePtr<ScheduleManagerInterface> ScheduleManagerInterfacePtr;
 }

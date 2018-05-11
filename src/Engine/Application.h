@@ -17,10 +17,11 @@
 
 namespace Mengine
 {
-	typedef stdex::intrusive_ptr<class ResourceCursor> ResourceCursorPtr;
+	typedef IntrusivePtr<class ResourceCursor> ResourceCursorPtr;
 
 	class Application 
 		: public ServiceBase<ApplicationInterface>
+        , public ObserverInterface
 	{
 	public:
 		Application();
@@ -239,6 +240,5 @@ namespace Mengine
 		bool m_debugPause;
 
 		bool m_debugFileOpen;
-		ObserverInterfacePtr m_notifyDebugOpenFile;
 	};
 }

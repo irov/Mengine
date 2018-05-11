@@ -46,8 +46,8 @@ namespace Mengine
 
 		for( uint32_t i = 0; i != m_elementCount; ++i )
 		{
-			Parallax * parallax = NODE_SERVICE() 
-				->createNodeT<Parallax *>( STRINGIZE_STRING_LOCAL( "Parallax" ) );
+            ParallaxPtr parallax = NODE_SERVICE()
+				->createNode( STRINGIZE_STRING_LOCAL( "Parallax" ) );
 
 			parallax->setImmortal( true );
 			

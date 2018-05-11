@@ -1,13 +1,13 @@
 #pragma once
 
-#include "pybind/bindable.hpp"
+#include "Core/IntrusivePtr.h"
 
-#include "stdex/intrusive_ptr.h"
+#include "pybind/bindable.hpp"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<class ScriptWrapperInterface> ScriptWrapperInterfacePtr;
+    typedef IntrusivePtr<class ScriptWrapperInterface> ScriptWrapperInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class Scriptable
 		: public pybind::bindable

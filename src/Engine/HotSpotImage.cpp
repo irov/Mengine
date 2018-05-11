@@ -118,7 +118,7 @@ namespace Mengine
 		HotSpot::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
+	bool HotSpotImage::testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
 	{
 		(void)_contentResolution;
 		(void)_viewport;
@@ -173,7 +173,7 @@ namespace Mengine
 		return result != m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
+	bool HotSpotImage::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
 	{
 		(void)_contentResolution;
 		(void)_viewport;
@@ -228,7 +228,7 @@ namespace Mengine
 		return result != m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotImage::testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
+	bool HotSpotImage::testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
 	{
 		(void)_contentResolution;
 		(void)_viewport;

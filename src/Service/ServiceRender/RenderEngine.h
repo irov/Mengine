@@ -69,7 +69,7 @@ namespace Mengine
 	};
     //////////////////////////////////////////////////////////////////////////
     struct RenderBatch
-        : public FactorablePtr
+        : public Factorable
     {
         RenderVertexAttributeInterfacePtr vertexAttribute;
 
@@ -87,19 +87,19 @@ namespace Mengine
         uint32_t ibPos;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<RenderBatch> RenderBatchPtr;
+    typedef IntrusivePtr<RenderBatch> RenderBatchPtr;
 	//////////////////////////////////////////////////////////////////////////
 	struct RenderPass
-        : public FactorablePtr
+        : public Factorable
 	{
 		uint32_t beginRenderObject;
 		uint32_t countRenderObject;
 
         RenderBatchPtr batch;
 
-		const RenderViewportInterface * viewport;
-		const RenderCameraInterface * camera;
-		const RenderClipplaneInterface * clipplane;
+		RenderViewportInterfacePtr viewport;
+		RenderCameraInterfacePtr camera;
+		RenderClipplaneInterfacePtr clipplane;
 		
         RenderTargetInterfacePtr target;
 				
@@ -108,7 +108,7 @@ namespace Mengine
         uint32_t flags;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<RenderPass> RenderPassPtr;
+    typedef IntrusivePtr<RenderPass> RenderPassPtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderEngine
 		: public ServiceBase<RenderServiceInterface>

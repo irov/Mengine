@@ -48,5 +48,5 @@ namespace Mengine
 		return m_filePath;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadTaskPrefetch> ThreadTaskPrefetchPtr;
+	typedef IntrusivePtr<ThreadTaskPrefetch> ThreadTaskPrefetchPtr;
 }

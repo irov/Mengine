@@ -38,6 +38,10 @@ namespace Mengine
 		void setResourceSound( const ResourceSoundPtr & _resourceSound );
 		const ResourceSoundPtr & getResourceSound() const;
 
+    public:
+        void setInterpolateVolume( bool _interpolateVolume );
+        bool getInterpolateVolume() const;
+
     protected:
         const mt::vec2f & getMaxSize() const override;
         const mt::vec2f & getSize() const override;
@@ -85,10 +89,10 @@ namespace Mengine
 	private:
 		ResourceHolder<ResourceSound> m_resourceSound;
 
-        SoundBufferInterfacePtr m_soundBuffer;
-        
-		uint32_t m_sourceID;
+        SoundBufferInterfacePtr m_soundBuffer;        
+        SoundIdentityInterfacePtr m_soundEmitter;
 
+        bool m_interpolateVolume;
 		bool m_isHeadMode;
 
         float m_volume;
@@ -96,5 +100,5 @@ namespace Mengine
         class MySoundListener;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<SurfaceSound> SurfaceSoundPtr;
+	typedef IntrusivePtr<SurfaceSound> SurfaceSoundPtr;
 };

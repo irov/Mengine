@@ -9,11 +9,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class NodeCollisionActorUserData
-        : public FactorablePtr
+        : public Factorable
     {
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<NodeCollisionActorUserData> NodeCollisionActorUserDataPtr;
+    typedef IntrusivePtr<NodeCollisionActorUserData> NodeCollisionActorUserDataPtr;
     //////////////////////////////////////////////////////////////////////////
     enum CollisionEventFlag
     {

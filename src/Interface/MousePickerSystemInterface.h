@@ -2,17 +2,22 @@
 
 #include "Interface/InputSystemInterface.h"
 
+#include "Core/IntrusivePtr.h"
+
 #include "math/vec2.h"
 
 namespace Mengine
 {
-    class Arrow;
-	class Scene;
-	class Scriptable;
-
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class Arrow> ArrowPtr;
+	typedef IntrusivePtr<class Scene> ScenePtr;
+	typedef IntrusivePtr<class Scriptable> ScriptablePtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class MousePickerTrapInterface> MousePickerTrapInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 	struct PickerTrapState
 	{
-		class MousePickerTrapInterface * trap;
+		MousePickerTrapInterfacePtr trap;
 
 		uint32_t id;
 		bool picked;
@@ -20,16 +25,16 @@ namespace Mengine
 		bool handle;
 		bool dead;
 	};
-
-    class RenderViewportInterface;
-    class RenderCameraInterface;
-    class RenderClipplaneInterface;
-	
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
+    typedef IntrusivePtr<class RenderCameraInterface> RenderCameraInterfacePtr;
+    typedef IntrusivePtr<class RenderClipplaneInterface> RenderClipplaneInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class MousePickerTrapInterface
         : public InputHandlerInterface
     {
     public:
-		virtual bool pick( const mt::vec2f& _point, const RenderViewportInterface * _viewport, const RenderCameraInterface * _camera, const Resolution & _contentResolution, Arrow * _arrow ) = 0;
+		virtual bool pick( const mt::vec2f& _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) = 0;
 
     public:
 		virtual bool onHandleMouseEnter( float _x, float _y ) = 0;
@@ -40,9 +45,11 @@ namespace Mengine
 		virtual PickerTrapState * propagatePickerTrapState() const = 0;
 		virtual Scriptable * propagatePickerScriptable() = 0;
     };
-
-    typedef stdex::vector<MousePickerTrapInterface *> TVectorPickerTraps;
-
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<MousePickerTrapInterface> MousePickerTrapInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::vector<MousePickerTrapInterfacePtr> TVectorPickerTraps;
+    //////////////////////////////////////////////////////////////////////////
     class MousePickerSystemInterface
         : public ServiceInterface
         , public InputHandlerInterface
@@ -54,13 +61,13 @@ namespace Mengine
         virtual void setHandleValue( bool _value ) = 0;
 
     public:
-        virtual void setArrow( Arrow * _arrow ) = 0;
-		virtual void setScene( Scene * _scene ) = 0;
+        virtual void setArrow( const ArrowPtr & _arrow ) = 0;
+		virtual void setScene( const ScenePtr & _scene ) = 0;
 
 	public:
-		virtual void setRenderViewport( const RenderViewportInterface * _viewport ) = 0;
-		virtual void setRenderCamera( const RenderCameraInterface * _camera ) = 0;
-		virtual void setRenderClipplane( const RenderClipplaneInterface * _viewport ) = 0;
+		virtual void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) = 0;
+		virtual void setRenderCamera( const RenderCameraInterfacePtr & _camera ) = 0;
+		virtual void setRenderClipplane( const RenderClipplaneInterfacePtr & _viewport ) = 0;
 
     public:
         virtual void update() = 0;
@@ -70,7 +77,7 @@ namespace Mengine
         virtual bool pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps ) = 0;
 
     public:
-        virtual PickerTrapState * regTrap( MousePickerTrapInterface * _trap ) = 0;
+        virtual PickerTrapState * regTrap( const MousePickerTrapInterfacePtr & _trap ) = 0;
         virtual void unregTrap( PickerTrapState * _id ) = 0;
 
 		virtual void updateTraps() = 0;
@@ -83,4 +90,7 @@ namespace Mengine
 		virtual void handleMouseEnter( const InputMousePositionEvent & _event ) = 0;
 		virtual void handleMouseLeave( const InputMousePositionEvent & _event ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<MousePickerSystemInterface> MousePickerSystemInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

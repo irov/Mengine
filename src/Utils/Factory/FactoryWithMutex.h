@@ -25,6 +25,6 @@ namespace Mengine
 		ThreadMutexInterfacePtr m_mutex;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<FactoryWithMutex> FactoryWithMutexPtr;
+	typedef IntrusivePtr<FactoryWithMutex> FactoryWithMutexPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -4,8 +4,9 @@
 
 namespace Mengine
 {
-    class Movie2;
-
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class Movie2> Movie2Ptr;
+    //////////////////////////////////////////////////////////////////////////
 	class Movie2Slot
 		: public Node
 	{
@@ -14,8 +15,8 @@ namespace Mengine
         ~Movie2Slot() override;
 
     public:
-        void setMovie( Movie2 * _movie );
-        Movie2 * getMovie() const;
+        void setMovie( const Movie2Ptr & _movie );
+        const Movie2Ptr & getMovie() const;
 
     protected:
         void _destroy() override;
@@ -34,6 +35,9 @@ namespace Mengine
 		void _debugRender( Mengine::RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
 
     protected:
-        Movie2 * m_movie;
+        Movie2Ptr m_movie;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Movie2Slot> Movie2SlotPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

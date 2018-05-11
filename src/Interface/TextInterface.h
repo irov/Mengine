@@ -10,7 +10,7 @@
 
 #include "Config/String.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "math/vec4.h"
 #include "math/uv4.h"
@@ -51,7 +51,7 @@ namespace Mengine
 		EFP_MAX_VALUE = 0xffffffff
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
+    typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	struct Glyph
 	{	
@@ -113,10 +113,10 @@ namespace Mengine
         virtual bool getFontPremultiply() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<TextFontInterface> TextFontInterfacePtr;
+	typedef IntrusivePtr<TextFontInterface> TextFontInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class TextEntryInterface
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		virtual const ConstString & getKey() const = 0;
@@ -138,7 +138,7 @@ namespace Mengine
 		virtual uint32_t getFontParams() const = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<TextEntryInterface> TextEntryInterfacePtr;
+    typedef IntrusivePtr<TextEntryInterface> TextEntryInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class VisitorTextFontInterface
 	{

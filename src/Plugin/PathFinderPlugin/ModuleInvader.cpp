@@ -49,7 +49,7 @@ namespace Mengine
 		, const pybind::object & _cb
 		, const pybind::args & _args )
 	{
-		InvaderFollowAffector * affector = m_factoryInvaderFollowAffector->createObject();
+		InvaderFollowAffectorPtr affector = m_factoryInvaderFollowAffector->createObject();
 
 		affector->setMoveSpeed( _moveSpeed );
 

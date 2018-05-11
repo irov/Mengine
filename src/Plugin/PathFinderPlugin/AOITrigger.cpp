@@ -28,7 +28,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool AOITrigger::testActor( const AOIActorPtr & _actor ) const
 	{
-		AOIActorProviderInterface * actorProvider = _actor->getProvider();
+		const AOIActorProviderInterfacePtr & actorProvider = _actor->getProvider();
 
 		bool result = m_provider->onAOIActorTest( actorProvider );
 
@@ -47,7 +47,7 @@ namespace Mengine
 
 		m_actors.emplace_back( _actor );
 
-		AOIActorProviderInterface * actorProvider = _actor->getProvider();
+		const AOIActorProviderInterfacePtr & actorProvider = _actor->getProvider();
 		
 		m_provider->onAOIActorEnter( actorProvider );
 	}
@@ -62,7 +62,7 @@ namespace Mengine
 			return;
 		}
 
-		AOIActorProviderInterface * actorProvider = _actor->getProvider();
+		const AOIActorProviderInterfacePtr & actorProvider = _actor->getProvider();
 
 		*it_erase = m_actors.back();
 		m_actors.pop_back();

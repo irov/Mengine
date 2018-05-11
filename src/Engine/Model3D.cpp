@@ -70,7 +70,7 @@ namespace Mengine
 		const Model3DInterfacePtr & model = m_resourceModel->getModel();
 
 		m_camera = NODE_SERVICE()
-			->createNodeT<RenderCameraProjection *>( STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ) );
+			->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ) );
 
 		const ConstString & name = this->getName();
 		m_camera->setName( name );

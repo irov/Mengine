@@ -76,5 +76,5 @@ namespace Mengine
         TVectorKerning m_kernings[257];
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<BitmapGlyph> BitmapGlyphPtr;
+	typedef IntrusivePtr<BitmapGlyph> BitmapGlyphPtr;
 }

@@ -59,5 +59,5 @@ namespace Mengine
 		uint32_t m_mipmapsize;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceHIT> ResourceHITPtr;
+	typedef IntrusivePtr<ResourceHIT> ResourceHITPtr;
 }	

@@ -31,5 +31,5 @@ namespace Mengine
 		SoundDecoderInterfacePtr m_soundDecoder;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadTaskPrefetchSoundDecoder> ThreadTaskPrefetchSoundDecoderPtr;
+	typedef IntrusivePtr<ThreadTaskPrefetchSoundDecoder> ThreadTaskPrefetchSoundDecoderPtr;
 }

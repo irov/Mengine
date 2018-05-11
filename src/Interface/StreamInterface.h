@@ -28,7 +28,7 @@ namespace Mengine
 		virtual bool memory( void ** _memory, size_t * _size ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<InputStreamInterface> InputStreamInterfacePtr;
+    typedef IntrusivePtr<InputStreamInterface> InputStreamInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class OutputStreamInterface
         : public ServantInterface
@@ -41,5 +41,5 @@ namespace Mengine
 		virtual bool flush() = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<OutputStreamInterface> OutputStreamInterfacePtr;
+    typedef IntrusivePtr<OutputStreamInterface> OutputStreamInterfacePtr;
 }

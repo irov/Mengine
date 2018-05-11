@@ -21,6 +21,4 @@ namespace Mengine
     protected:			
         PyObject * m_value;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<ConstStringHolderPythonString> ConstStringHolderPythonStringPtr;
 }

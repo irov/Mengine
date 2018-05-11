@@ -8,6 +8,4 @@ namespace Mengine
 		: public ConstStringHolder
 	{	
 	};
-    //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<ConstStringHolderLocalString> ConstStringHolderLocalStringPtr;
 }

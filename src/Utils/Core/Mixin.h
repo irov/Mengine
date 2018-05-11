@@ -1,12 +1,11 @@
 #pragma once
 
-#include "stdex/intrusive_ptr_base.h"
+#include "Core/IntrusivePtrBase.h"
 
 namespace Mengine
 {
     class Mixin
-        : virtual public stdex::intrusive_ptr_base
+        : virtual public IntrusivePtrBase
     {
-
     };
 }

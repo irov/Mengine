@@ -26,13 +26,13 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	AOITriggerPtr AreaOfInterest::createTrigger( AOITriggerProviderInterface * _provider )
 	{
-		AOITrigger * trigger = m_factoryAOITrigger->createObject();
+		AOITriggerPtr trigger = m_factoryAOITrigger->createObject();
 
 		trigger->setProvider( _provider );
 
 		m_triggersAdd.emplace_back( trigger );
 
-		AOITriggerProviderInterface * triggerProvider = trigger->getProvider();
+		const AOITriggerProviderInterfacePtr & triggerProvider = trigger->getProvider();
 
         for( const AOIActorPtr & actor : m_actors )
 		{
@@ -41,7 +41,7 @@ namespace Mengine
 				continue;
 			}
 
-			AOIActorProviderInterface * actorProvider = actor->getProvider();
+			const AOIActorProviderInterfacePtr & actorProvider = actor->getProvider();
 
 			if( trigger->isRemoved() == true )
 			{
@@ -83,13 +83,13 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	AOIActorPtr AreaOfInterest::createActor( AOIActorProviderInterface * _provider )
 	{
-		AOIActor * actor = m_factoryAOIActor->createObject();
+		AOIActorPtr actor = m_factoryAOIActor->createObject();
 
 		actor->setProvider( _provider );
 
 		m_actorsAdd.emplace_back( actor );
 
-		AOIActorProviderInterface * actorProvider = actor->getProvider();
+		const AOIActorProviderInterfacePtr & actorProvider = actor->getProvider();
 
         for( const AOITriggerPtr & trigger : m_triggers )
 		{
@@ -98,7 +98,7 @@ namespace Mengine
 				continue;
 			}
 
-			AOITriggerProviderInterface * triggerProvider = trigger->getProvider();
+			const AOITriggerProviderInterfacePtr & triggerProvider = trigger->getProvider();
 
 			if( triggerProvider->onAOIActorTest( actorProvider ) == true )
 			{
@@ -183,7 +183,7 @@ namespace Mengine
 				continue;
 			}
 
-			AOIActorProviderInterface * actorProvider = actor->getProvider();
+			const AOIActorProviderInterfacePtr & actorProvider = actor->getProvider();
 
             for( const AOITriggerPtr & trigger : m_triggers )
 			{
@@ -192,7 +192,7 @@ namespace Mengine
 					continue;
 				}
 
-				AOITriggerProviderInterface * triggerProvider = trigger->getProvider();
+				const AOITriggerProviderInterfacePtr & triggerProvider = trigger->getProvider();
 
 				if( triggerProvider->onAOIActorTest( actorProvider ) == true )
 				{

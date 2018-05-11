@@ -15,6 +15,9 @@ namespace Mengine
 		: public BasePrototypeGenerator
 	{
     protected:
+        typedef IntrusivePtr<Type> TypePtr;
+
+    protected:
         bool _initialize() override
         {
             m_factory = new FactoryPool<Type, Count>();
@@ -25,7 +28,7 @@ namespace Mengine
 	protected:
 		PointerFactorable generate() override
 		{
-			Type * object = m_factory->createObject();
+            TypePtr object = m_factory->createObject();
 
 			if( object == nullptr )
 			{

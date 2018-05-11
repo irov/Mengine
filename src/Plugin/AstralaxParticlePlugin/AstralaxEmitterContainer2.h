@@ -64,5 +64,5 @@ namespace Mengine
 		TVectorResourceImage m_resourceImages;
 	};
 
-	typedef stdex::intrusive_ptr<AstralaxEmitterContainer2> AstralaxEmitterContainer2Ptr;
+	typedef IntrusivePtr<AstralaxEmitterContainer2> AstralaxEmitterContainer2Ptr;
 }

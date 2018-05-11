@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Kernel/Scriptable.h"
 #include "Kernel/Eventable.h"
@@ -35,7 +35,7 @@ namespace Mengine
 		virtual void onBox2DBodyPostSolve( class Box2DBody * _other, b2Contact * _contact, const b2ContactImpulse* _impulse ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<Box2DBodyEventReceiver> Box2DBodyEventReceiverPtr;
+    typedef IntrusivePtr<Box2DBodyEventReceiver> Box2DBodyEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
     class Box2DBody
 		: public Servant
@@ -122,5 +122,5 @@ namespace Mengine
 		pybind::object m_userData;
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<Box2DBody> Box2DBodyPtr;
+	typedef IntrusivePtr<Box2DBody> Box2DBodyPtr;
 }

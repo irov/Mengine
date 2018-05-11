@@ -13,6 +13,7 @@ namespace Mengine
 	{
 	public:
 		Win32ThreadIdentity();
+        ~Win32ThreadIdentity() override;
 
 	public:
         bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const Char * _file, uint32_t _line );
@@ -43,6 +44,6 @@ namespace Mengine
 #endif
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<Win32ThreadIdentity> Win32ThreadIdentityPtr;
+	typedef IntrusivePtr<Win32ThreadIdentity> Win32ThreadIdentityPtr;
     //////////////////////////////////////////////////////////////////////////
 }

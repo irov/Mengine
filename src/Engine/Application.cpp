@@ -390,8 +390,8 @@ namespace Mengine
         protected:
             PointerFactorable generate() override
             {
-                Scene * scene = NODE_SERVICE()
-                    ->createNodeT<Scene *>( STRINGIZE_STRING_LOCAL( "Scene" ) );
+                ScenePtr scene = NODE_SERVICE()
+                    ->createNode( STRINGIZE_STRING_LOCAL( "Scene" ) );
 
                 if( scene == nullptr )
                 {
@@ -640,13 +640,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void s_printChildren2( Node * _node, uint32_t _tab )
+    static void s_printChildren2( const NodePtr & _node, uint32_t _tab )
     {
         TListNodeChild & children = _node->getChildren();
 
         for( TSlugChild it( children ); it.eof() == false; )
         {
-            Node * child = *it;
+            NodePtr child = *it;
 
             it.next_shuffle();
 
@@ -669,7 +669,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static void s_printChildren( Node * _node )
+    static void s_printChildren( const NodePtr & _node )
     {
         if( _node == nullptr )
         {
@@ -842,12 +842,13 @@ namespace Mengine
 
                 if( m_debugFileOpen == true )
                 {
-                    m_notifyDebugOpenFile = NOTIFICATION_SERVICE()
+                    NOTIFICATION_SERVICE()
                         ->addObserverMethod( NOTIFICATOR_DEBUG_OPEN_FILE, this, &Application::notifyDebugOpenFile_ );
                 }
                 else
                 {
-                    m_notifyDebugOpenFile = nullptr;
+                    NOTIFICATION_SERVICE()
+                        ->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, this );
                 }
             }
 
@@ -941,7 +942,7 @@ namespace Mengine
 
             if( _event.code == KC_F2 && _event.isDown == true )
             {
-                Scene * scene = PLAYER_SERVICE()
+                const ScenePtr & scene = PLAYER_SERVICE()
                     ->getCurrentScene();
 
                 s_printChildren( scene );
@@ -1392,7 +1393,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::_finalize()
     {
-        m_notifyDebugOpenFile = nullptr;
+        NOTIFICATION_SERVICE()
+            ->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, this );
 
         if( SERVICE_EXIST( GameServiceInterface ) == true )
         {
@@ -2057,7 +2059,7 @@ namespace Mengine
         }
 
         m_cursorResource = RESOURCE_SERVICE()
-            ->getResourceT<ResourceCursorPtr>( _resourceName );
+            ->getResource( _resourceName );
 
         if( m_cursorResource == nullptr )
         {

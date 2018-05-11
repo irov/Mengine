@@ -15,7 +15,7 @@
 #include "Core/RenderIndex.h"
 
 #include "Factory/Factorable.h"
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "math/vec2.h"
 #include "math/box2.h"
@@ -30,7 +30,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
+    typedef IntrusivePtr<class ResourceImage> ResourceImagePtr;
     //////////////////////////////////////////////////////////////////////////
 	struct ParticleMesh
 	{
@@ -137,7 +137,7 @@ namespace Mengine
 		virtual bool getRandomMode() const = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ParticleEmitterInterface> ParticleEmitterInterfacePtr;
+	typedef IntrusivePtr<ParticleEmitterInterface> ParticleEmitterInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	DECLARE_MAGIC_NUMBER( MAGIC_PTZ, 'P', 'T', 'Z', '2', 2 );
     //////////////////////////////////////////////////////////////////////////
@@ -151,7 +151,7 @@ namespace Mengine
 		virtual void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ParticleEmitterContainerInterface2> ParticleEmitterContainerInterface2Ptr;
+	typedef IntrusivePtr<ParticleEmitterContainerInterface2> ParticleEmitterContainerInterface2Ptr;
     //////////////////////////////////////////////////////////////////////////
     struct RenderMaterialStage;
     //////////////////////////////////////////////////////////////////////////

@@ -63,5 +63,5 @@ namespace Mengine
         float m_hwHeightInv;
 	};
 	//////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<DX9RenderImage> DX9RenderImagePtr;
+    typedef IntrusivePtr<DX9RenderImage> DX9RenderImagePtr;
 }	

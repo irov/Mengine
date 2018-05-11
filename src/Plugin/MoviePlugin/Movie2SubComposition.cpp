@@ -1,4 +1,5 @@
 #include "Movie2SubComposition.h"
+#include "Movie2.h"
 
 #include "Interface/RenderSystemInterface.h"
 
@@ -18,12 +19,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::setMovie( Movie2 * _movie )
+    void Movie2SubComposition::setMovie( const Movie2Ptr & _movie )
     {
         m_movie = _movie;
     }
     //////////////////////////////////////////////////////////////////////////
-    Movie2 * Movie2SubComposition::getMovie() const
+    const Movie2Ptr & Movie2SubComposition::getMovie() const
     {
         return m_movie;
     }

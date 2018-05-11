@@ -54,4 +54,6 @@ namespace Mengine
 
 		bool m_freeze;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<AreaOfInterest> AreaOfInterestPtr;
 }

@@ -7,7 +7,7 @@
 
 #include "Config/String.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 
 #include "Kernel/Servant.h"
 
@@ -110,5 +110,5 @@ namespace Mengine
         class PFindGlyph;
 	};
 
-	typedef stdex::intrusive_ptr<TTFFont> TTFFontPtr;
+	typedef IntrusivePtr<TTFFont> TTFFontPtr;
 }

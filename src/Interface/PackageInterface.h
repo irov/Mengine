@@ -59,7 +59,7 @@ namespace Mengine
 		virtual bool isEnable() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<PackageInterface> PackageInterfacePtr;
+	typedef IntrusivePtr<PackageInterface> PackageInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class PackageServiceInterface
 		: public ServiceInterface

@@ -48,5 +48,5 @@ namespace Mengine
 		bool m_remove;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<MagnetWorld> MagnetWorldPtr;
+	typedef IntrusivePtr<MagnetWorld> MagnetWorldPtr;
 }

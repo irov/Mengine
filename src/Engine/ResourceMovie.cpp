@@ -110,7 +110,7 @@ namespace Mengine
             }
 
             ResourceShapePtr resourceShape = RESOURCE_SERVICE()
-                ->getResourceReferenceT<ResourceShapePtr>( layer.source );
+                ->getResourceReference( layer.source );
 
             return resourceShape;
         }

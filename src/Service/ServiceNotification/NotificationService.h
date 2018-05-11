@@ -5,8 +5,8 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/stl_vector.h"
-#include "stdex/stl_map.h"
+#include "Config/Vector.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -22,23 +22,37 @@ namespace Mengine
 		void _finalize() override;
 
 	public:
-		void addObserver( ObserverInterface * _observer ) override;
-		void removeObserver( ObserverInterface * _observer ) override;
+		void addObserver( uint32_t _id, const ObserverInterfacePtr & _observer, const ObserverCallableInterfacePtr & _callable ) override;
+		void removeObserver( uint32_t _id, const ObserverInterfacePtr & _observer ) override;
 
-	protected:
-		void visitObservers( uint32_t _id, VisitorObserver * _visitor ) override;
-		
-	protected:
-		void invalidObserver_( uint32_t _id );
+    public:
+        void visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor ) override;
+
+    public:
+        void addObserver_( uint32_t _id, const ObserverInterfacePtr & _observer, const ObserverCallableInterfacePtr & _callable );
+        void removeObserver_( uint32_t _id, const ObserverInterfacePtr & _observer );
 
 	protected:		
-		typedef stdex::vector<ObserverInterface *> TVectorObservers;
-		typedef stdex::map<uint32_t, TVectorObservers> TMapObservers;
+        struct ObserverDesc
+        {
+            ObserverInterfacePtr observer;
+            ObserverCallableInterfacePtr callable;
+        };
+
+        typedef Vector<ObserverDesc> TVectorObservers;
+        typedef Map<uint32_t, TVectorObservers> TMapObservers;
 		TMapObservers m_mapObserves;
 
-		typedef stdex::vector<ObserverInterface *> TVectorAddObservers;
-		TVectorAddObservers m_add;
-		TVectorAddObservers m_remove;
+        struct ObserverQueue
+        {
+            uint32_t id;
+            ObserverInterfacePtr observer;
+            ObserverCallableInterfacePtr callable;
+        };
+
+        typedef Vector<ObserverQueue> TVectorObserverQueues;
+        TVectorObserverQueues m_add;
+        TVectorObserverQueues m_remove;
 
 		uint32_t m_visiting;
 

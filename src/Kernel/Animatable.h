@@ -3,6 +3,8 @@
 #include "Config/Typedef.h"
 #include "Kernel/EventReceiver.h"
 
+#include "Core/Mixin.h"
+
 #include "math/vec2.h"
 
 namespace Mengine
@@ -34,6 +36,7 @@ namespace Mengine
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class Animatable
+        : public Mixin
 	{
 	public:
 		Animatable();
@@ -140,6 +143,8 @@ namespace Mengine
 
 		bool m_loop;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Animatable> AnimatablePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Animatable::isPlay() const
 	{

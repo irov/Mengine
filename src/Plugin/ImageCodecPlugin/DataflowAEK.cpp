@@ -50,7 +50,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	DataInterfacePtr DataflowAEK::create()
 	{
-		MovieFramePack * pack = m_poolMovieFramePack->createObject();
+        MovieFramePackPtr pack = m_poolMovieFramePack->createObject();
 
 		return pack;
 	}

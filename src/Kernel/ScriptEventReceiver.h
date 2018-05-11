@@ -41,7 +41,7 @@ namespace Mengine
             }
             else
             {
-                T_Receiver * receiver = new FactorableUnique<T_Receiver>();
+                IntrusivePtr<T_Receiver> receiver = new FactorableUnique<T_Receiver>();
 
                 receiver->initialize( py_event );
 

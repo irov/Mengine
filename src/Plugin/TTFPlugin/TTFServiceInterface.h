@@ -10,7 +10,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
+    typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class TextureGlyphProviderInterface
     {

@@ -8,7 +8,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
+    typedef IntrusivePtr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class Window
 		: public Node

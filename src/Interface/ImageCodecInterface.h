@@ -101,12 +101,12 @@ namespace Mengine
 		virtual const ImageCodecDataInfo * getCodecDataInfo() const override = 0;
 	};
 
-    typedef stdex::intrusive_ptr<ImageDecoderInterface> ImageDecoderInterfacePtr;
+    typedef IntrusivePtr<ImageDecoderInterface> ImageDecoderInterfacePtr;
 
 	class ImageEncoderInterface
 		: public EncoderInterface
 	{
 	};
 
-    typedef stdex::intrusive_ptr<ImageEncoderInterface> ImageEncoderInterfacePtr;
+    typedef IntrusivePtr<ImageEncoderInterface> ImageEncoderInterfacePtr;
 }

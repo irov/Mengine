@@ -120,5 +120,5 @@ namespace Mengine
 		virtual bool isLayerPermanentlyHide( uint32_t _layerIndex ) const = 0;
 	};
 
-	typedef stdex::intrusive_ptr<MovieFramePackInterface> MovieFramePackInterfacePtr;
+	typedef IntrusivePtr<MovieFramePackInterface> MovieFramePackInterfacePtr;
 }

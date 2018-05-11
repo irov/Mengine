@@ -6,13 +6,13 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	class FactoryDestroyListenerInterface
-		: public FactorablePtr
+		: public Factorable
 	{
 	public:
 		virtual void onFactoryDestroyObject( Factorable * _object ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<FactoryDestroyListenerInterface> FactoryDestroyListenerInterfacePtr;
+	typedef IntrusivePtr<FactoryDestroyListenerInterface> FactoryDestroyListenerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class FactoryWithListener
 		: public Factory
@@ -32,6 +32,6 @@ namespace Mengine
 		FactoryDestroyListenerInterfacePtr m_destroyListener;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<FactoryWithListener> FactoryWithListenerPtr;
+	typedef IntrusivePtr<FactoryWithListener> FactoryWithListenerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -27,7 +27,7 @@ namespace Mengine
         virtual bool onSceneAppFocus( const pybind::object & _object, bool _focus ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<SceneEventReceiver> SceneEventReceiverPtr;
+    typedef IntrusivePtr<SceneEventReceiver> SceneEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
     class Scene
 		: public Entity
@@ -45,4 +45,7 @@ namespace Mengine
     public:
 		void onFocus( bool _focus );
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Scene> ScenePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

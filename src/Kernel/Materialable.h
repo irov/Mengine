@@ -1,12 +1,14 @@
 #pragma once
 
 #include "Core/ConstString.h"
+#include "Core/IntrusivePtr.h"
+#include "Core/Mixin.h"
 
 namespace Mengine
 {
-    typedef stdex::intrusive_ptr<class ResourceImage> ResourceImagePtr;
-    typedef stdex::intrusive_ptr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
-    typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
+    typedef IntrusivePtr<class ResourceImage> ResourceImagePtr;
+    typedef IntrusivePtr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
+    typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
 
 	enum EMaterialBlendMode 
 	{	
@@ -24,6 +26,7 @@ namespace Mengine
 	}
 
 	class Materialable
+        : public Mixin
 	{
 	public:
 		Materialable();
@@ -77,6 +80,8 @@ namespace Mengine
 		mutable RenderMaterialInterfacePtr m_material;
 		mutable bool m_invalidateMaterial;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Materialable> MaterialablePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline void Materialable::invalidateMaterial()
 	{

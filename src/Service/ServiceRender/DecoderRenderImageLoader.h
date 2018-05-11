@@ -33,6 +33,6 @@ namespace Mengine
         ImageDecoderInterfacePtr m_decoder;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<DecoderRenderImageLoader> DecoderRenderImageLoaderPtr;
+    typedef IntrusivePtr<DecoderRenderImageLoader> DecoderRenderImageLoaderPtr;
     //////////////////////////////////////////////////////////////////////////
 }	

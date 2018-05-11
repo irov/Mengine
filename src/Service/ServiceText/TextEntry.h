@@ -65,5 +65,5 @@ namespace Mengine
 		uint32_t m_params;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<TextEntry> TextEntryPtr;
+	typedef IntrusivePtr<TextEntry> TextEntryPtr;
 }

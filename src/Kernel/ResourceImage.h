@@ -13,7 +13,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<class RenderTextureInterface> RenderTextureInterfacePtr;
+    typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceImage
 		: public ResourceReference
@@ -88,7 +88,7 @@ namespace Mengine
 		bool m_isPremultiply;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceImage> ResourceImagePtr;
+	typedef IntrusivePtr<ResourceImage> ResourceImagePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline void ResourceImage::setMaxSize( const mt::vec2f & _maxSize )
 	{

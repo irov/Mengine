@@ -104,5 +104,5 @@ namespace Mengine
 		mt::uv4f m_uv;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<SurfaceVideo> SurfaceVideoPtr;
+	typedef IntrusivePtr<SurfaceVideo> SurfaceVideoPtr;
 }

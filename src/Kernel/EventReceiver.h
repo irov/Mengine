@@ -1,14 +1,15 @@
 #pragma once
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
+#include "Core/IntrusivePtr.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class EventReceiver
-        : public FactorablePtr
+        : public Factorable
     { 
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<EventReceiver> EventReceiverPtr;
+    typedef IntrusivePtr<EventReceiver> EventReceiverPtr;
 }

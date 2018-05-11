@@ -56,5 +56,5 @@ namespace Mengine
 		bool m_isStreamable;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceSound> ResourceSoundPtr;
+	typedef IntrusivePtr<ResourceSound> ResourceSoundPtr;
 }

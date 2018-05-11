@@ -90,7 +90,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotPolygon::testPoint( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
+	bool HotSpotPolygon::testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
 	{
 		if( m_global == true )
 		{
@@ -118,7 +118,7 @@ namespace Mengine
 		return !m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotPolygon::testRadius( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
+	bool HotSpotPolygon::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
 	{
 		if( m_global == true )
 		{
@@ -147,7 +147,7 @@ namespace Mengine
 		return !m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotPolygon::testPolygon( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
+	bool HotSpotPolygon::testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
 	{
 		if( m_global == true )
 		{
@@ -185,7 +185,7 @@ namespace Mengine
 		return !m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotPolygon::getPolygonScreen( const RenderCameraInterface * _camera, const RenderViewportInterface * _viewport, const Resolution & _contentResolution, mt::box2f * _bb, Polygon * _screen ) const
+	void HotSpotPolygon::getPolygonScreen( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * _bb, Polygon * _screen ) const
 	{
 		if( _bb != nullptr )
 		{

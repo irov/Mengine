@@ -63,7 +63,7 @@ namespace Mengine
 		this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic"), voiceVolume, 0.f );
 
         m_factoryWorkerTaskSoundBufferUpdate = new FactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
-        m_factorySoundSourceDesc = new FactoryPool<SoundSourceDesc, 32>();
+        m_factorySoundEmitter = new FactoryPool<SoundIdentity, 32>();
 
         return true;
 	}
@@ -72,29 +72,23 @@ namespace Mengine
 	{
 		this->stopSounds_();
 
-		for( TMapSoundSource::iterator 
-		    it = m_soundSourceMap.begin(), 
-		    it_end = m_soundSourceMap.end();
-		it != it_end;
-		++it )
+		for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            const SoundSourceDescPtr & source = it->second;
-
-            if( source == nullptr )
+            if( identity == nullptr )
             {
                 continue;
             }
 
-			this->stopSoundBufferUpdate_( source );
+			this->stopSoundBufferUpdate_( identity );
 
-            if( source->source != nullptr )
+            if( identity->source != nullptr )
             {
-                source->source->stop();
-                source->source = nullptr;
+                identity->source->stop();
+                identity->source = nullptr;
             }
         }
 
-        m_soundSourceMap.clear();
+        m_soundIdentities.clear();
 
 		if( m_threadJobSoundBufferUpdate != nullptr )
 		{
@@ -106,10 +100,10 @@ namespace Mengine
 
         m_soundVolumeProviders.clear();
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundSourceDesc );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundEmitter );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWorkerTaskSoundBufferUpdate );
 
-        m_factorySoundSourceDesc = nullptr;
+        m_factorySoundEmitter = nullptr;
         m_factoryWorkerTaskSoundBufferUpdate = nullptr;        
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -141,29 +135,23 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::playSounds_()
 	{
-		for( TMapSoundSource::iterator 
-			it = m_soundSourceMap.begin(), 
-			it_end = m_soundSourceMap.end();
-		it != it_end;
-		++it )
+        for( const SoundIdentityPtr & identity : m_soundIdentities )
 		{
-            const SoundSourceDescPtr & source = it->second;
-
-            if( source == nullptr )
+            if( identity == nullptr )
             {
                 continue;
             }
 			
-			source->turn = true;
+			identity->turn = true;
 
-			if( source->state != ESS_PLAY )
+			if( identity->state != ESS_PLAY )
 			{
 				continue;
 			}
 
-			this->updateSourceVolume_( source );
+			this->updateSourceVolume_( identity );
 									
-			if( source->source->play() == false )
+			if( identity->source->play() == false )
 			{
 				LOGGER_ERROR("SoundEngine::playSounds_ invalid play"
 					);
@@ -171,20 +159,14 @@ namespace Mengine
 				continue;
 			}
 			
-			this->playSoundBufferUpdate_( source );						
+			this->playSoundBufferUpdate_( identity );						
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
     void SoundEngine::pauseSounds_()
     {
-        for( TMapSoundSource::iterator 
-            it = m_soundSourceMap.begin(),	
-            it_end = m_soundSourceMap.end();
-        it != it_end;
-        ++it )
+        for( const SoundIdentityPtr & source : m_soundIdentities )
         {
-            const SoundSourceDescPtr & source = it->second;
-
             if( source == nullptr )
             {
                 continue;
@@ -205,14 +187,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::stopSounds_()
 	{
-		for( TMapSoundSource::iterator 
-			it = m_soundSourceMap.begin(),	
-			it_end = m_soundSourceMap.end();
-		it != it_end;
-		++it )
+        for( const SoundIdentityPtr & source : m_soundIdentities )
 		{
-            const SoundSourceDescPtr & source = it->second;
-
             if( source == nullptr )
             {
                 continue;
@@ -266,7 +242,7 @@ namespace Mengine
             ->onTurnSound( m_turnSound );
     }
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t SoundEngine::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceType _type, bool _streamable )
+    SoundIdentityInterfacePtr SoundEngine::createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceType _type, bool _streamable )
 	{
 		if( m_supportStream == false && _streamable == true )
 		{
@@ -284,84 +260,98 @@ namespace Mengine
 			LOGGER_ERROR("SoundEngine::createSoundSource: create SoundSource invalid"
                 );
 
-			return 0;
+			return nullptr;
 		}
 
-        SoundSourceDescPtr source = m_factorySoundSourceDesc->createObject();
+        SoundIdentityPtr emitter = m_factorySoundEmitter->createObject();
 
 		++m_enumerator;
-		uint32_t soundId = m_enumerator;
-		source->soundId = soundId;
+		uint32_t new_id = m_enumerator;
+		emitter->id = new_id;
 
-		source->source = sourceInterface;
-		source->listener = nullptr;
-		source->worker = nullptr;
-        source->bufferId = 0;
+		emitter->source = sourceInterface;
+		emitter->listener = nullptr;
+		emitter->worker = nullptr;
+        emitter->bufferId = 0;
 		
-        source->timing = 0.f;
-		source->volume.setVolume( STRINGIZE_STRING_LOCAL( "Generic" ), 1.f, 1.f );
+        emitter->timing = 0.f;
+		//emitter->volume.setValue( STRINGIZE_STRING_LOCAL( "Generic" ), 1.f, 1.f );
 
-		source->state = ESS_STOP;
-		source->type = _type;
+		emitter->state = ESS_STOP;
+		emitter->type = _type;
 
-        source->streamable = _streamable;
-		source->looped = false;
-		source->turn = _streamable ? m_turnStream : m_turnSound;
+        emitter->streamable = _streamable;
+		emitter->looped = false;
+		emitter->turn = _streamable ? m_turnStream : m_turnSound;
 
-		this->updateSourceVolume_( source );
+		this->updateSourceVolume_( emitter );
 
-		m_soundSourceMap.insert( std::make_pair( soundId, source ) );
+		m_soundIdentities.emplace_back( emitter );
         
-		return soundId;
+		return emitter;
 	}
     //////////////////////////////////////////////////////////////////////////
-	void SoundEngine::updateSourceVolume_( const SoundSourceDescPtr & _source )
+	void SoundEngine::updateSourceVolume_( const SoundIdentityPtr & _emitter )
     {
-        const SoundSourceInterfacePtr & source = _source->source;
+        const SoundSourceInterfacePtr & source = _emitter->getSoundSource();
 
         if( source == nullptr )
         {
             return;
         }
+
+        bool streamable = _emitter->isStreamable();
         
         if( this->isMute() == true || 
-			(m_turnStream == false && _source->streamable == true ) || 
-			(m_turnSound == false && _source->streamable == false) )
+            (m_turnStream == false && streamable == true) ||
+            (m_turnSound == false && streamable == false) )
         {
             source->setVolume( 0.f );
         }
         else
         {
-            ESoundSourceType type = _source->type;
+            ESoundSourceType type = _emitter->getType();
 
-			const MixerVolume & generalVolume = _source->volume;
+			const MixerValue & emitterVolume = _emitter->getVolume();
 
             switch( type )
             {
             case ESST_SOUND:
                 {
-					float mixVolume = 1.f;
-					mixVolume *= m_commonVolume.mixVolume();
-					mixVolume *= m_soundVolume.mixVolume();
-					mixVolume *= generalVolume.mixVolume();
+                    float commonMixVolume = m_commonVolume.mixValue();
+                    float soundMixVolume = m_soundVolume.mixValue();
+                    float emitterMixVolume = emitterVolume.mixValue();
+
+					float mixVolume = 1.f;                    
+					mixVolume *= commonMixVolume;
+					mixVolume *= soundMixVolume;
+					mixVolume *= emitterMixVolume;
 
                     source->setVolume( mixVolume );
                 }break;
             case ESST_MUSIC:
                 {
+                    float commonMixVolume = m_commonVolume.mixValue();
+                    float musicMixVolume = m_musicVolume.mixValue();
+                    float emitterMixVolume = emitterVolume.mixValue();
+
 					float mixVolume = 1.f;
-					mixVolume *= m_commonVolume.mixVolume();
-					mixVolume *= m_musicVolume.mixVolume();
-					mixVolume *= generalVolume.mixVolume();
+					mixVolume *= commonMixVolume;
+					mixVolume *= musicMixVolume;
+					mixVolume *= emitterMixVolume;
 
                     source->setVolume( mixVolume );
                 }break;
             case ESST_VOICE:
                 {
+                    float commonMixVolume = m_commonVolume.mixValue();
+                    float voiceMixVolume = m_voiceVolume.mixValue();
+                    float emitterMixVolume = emitterVolume.mixValue();
+
 					float mixVolume = 1.f;
-					mixVolume *= m_commonVolume.mixVolume();
-					mixVolume *= m_voiceVolume.mixVolume();
-					mixVolume *= generalVolume.mixVolume();
+					mixVolume *= commonMixVolume;
+					mixVolume *= voiceMixVolume;
+					mixVolume *= emitterMixVolume;
 
 					source->setVolume( mixVolume );
                 }break;
@@ -480,146 +470,129 @@ namespace Mengine
 		return buffer;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::releaseSoundSource( uint32_t _sourceID )
+	bool SoundEngine::releaseSoundSource( const SoundIdentityInterfacePtr & _element )
 	{
-		TMapSoundSource::iterator it_find = m_soundSourceMap.find( _sourceID );
+		this->stopSoundBufferUpdate_( _element );
+
+        const SoundSourceInterfacePtr & source = _element->getSoundSource();
 		
-		if( it_find == m_soundSourceMap.end() )
-		{
-            LOGGER_ERROR("SoundEngine::releaseSoundSource not found %d"
-                , _sourceID
-                );
-
-			return false;
-		}
-
-        const SoundSourceDescPtr & source = it_find->second;
-
-        if( source == nullptr )
+        if( source != nullptr )
         {
-            return true;
+            source->stop();
+            _element->setSoundSource( nullptr );
         }
 
-		this->stopSoundBufferUpdate_( source );
-		
-        if( source->source != nullptr )
+        _element->setSoundListener( nullptr );
+
+        uint32_t id = _element->getId();
+
+        for( TVectorSoundSource::iterator
+            it = m_soundIdentities.begin(),
+            it_end = m_soundIdentities.end();
+            it != it_end;
+            ++it )
         {
-            source->source->stop();
-            source->source = nullptr;
+            const SoundIdentityPtr & identity = *it;
+
+            if( identity->id != id )
+            {
+                continue;
+            }
+
+            m_soundIdentities.erase( it );
+            break;
         }
-
-		source->listener = nullptr;
-
-		m_soundSourceMap.erase( it_find );
         
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::validSoundSource( uint32_t _sourceID ) const
-	{
-		TMapSoundSource::const_iterator it_find = m_soundSourceMap.find( _sourceID );
-
-		if( it_find == m_soundSourceMap.end() )
-		{
-			return false;
-		}
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setSoundVolume( const ConstString & _type, float _volume, float _default )
 	{
-		m_soundVolume.setVolume( _type, _volume, _default );
+        m_soundVolume.setValue( _type, _volume, _default, true );
 
 		this->updateVolume();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getSoundVolume( const ConstString & _type ) const
 	{
-		float volume = m_soundVolume.getVolume( _type );
+		float volume = m_soundVolume.getValue( _type );
 
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::mixSoundVolume() const
 	{
-		float volume = m_soundVolume.mixVolume();
+		float volume = m_soundVolume.mixValue();
 
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////	
 	void SoundEngine::setCommonVolume( const ConstString & _type, float _volume, float _default )
 	{
-		m_commonVolume.setVolume( _type, _volume, _default );
+		m_commonVolume.setValue( _type, _volume, _default, true );
 
 		this->updateVolume();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getCommonVolume( const ConstString & _type ) const
 	{
-		float volume = m_commonVolume.getVolume( _type );
+		float volume = m_commonVolume.getValue( _type );
 
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::mixCommonVolume() const
 	{
-		float volume = m_commonVolume.mixVolume();
+		float volume = m_commonVolume.mixValue();
 
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setMusicVolume( const ConstString & _type, float _volume, float _default )
 	{
-		m_musicVolume.setVolume( _type, _volume, _default );
+		m_musicVolume.setValue( _type, _volume, _default, true );
 
 		this->updateVolume();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getMusicVolume( const ConstString & _type ) const
 	{
-		float volume = m_musicVolume.getVolume( _type );
+		float volume = m_musicVolume.getValue( _type );
 
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::mixMusicVolume() const
 	{
-		float volume = m_musicVolume.mixVolume();
+		float volume = m_musicVolume.mixValue();
 
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::setVoiceVolume( const ConstString & _type, float _volume, float _default )
 	{
-		m_voiceVolume.setVolume( _type, _volume, _default );
+		m_voiceVolume.setValue( _type, _volume, _default, true );
 
 		this->updateVolume();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getVoiceVolume( const ConstString & _type ) const
 	{
-		float volume = m_voiceVolume.getVolume( _type );
+		float volume = m_voiceVolume.getValue( _type );
 
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::mixVoiceVolume() const
 	{
-		float volume = m_voiceVolume.mixVolume();
+		float volume = m_voiceVolume.mixValue();
 
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
-		struct SoundListenerStopDesc
-		{
-            SoundListenerInterfacePtr listener;
-			uint32_t id;
-		};
-
-		typedef stdex::vector<SoundListenerStopDesc> TVectorSoundListeners;
+		typedef stdex::vector<SoundIdentityInterfacePtr> TVectorSoundListeners;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::tick( float _time, float _timing )
@@ -653,42 +626,36 @@ namespace Mengine
 
 		TVectorSoundListeners m_listeners;
 
-		for( TMapSoundSource::iterator 
-			it = m_soundSourceMap.begin(), 
-			it_end = m_soundSourceMap.end();
-		it != it_end;
-		++it )
+        for( const SoundIdentityPtr & identity : m_soundIdentities )
 		{
-            const SoundSourceDescPtr & source = it->second;
-
-            if( source == nullptr )
+            if( identity == nullptr )
             {
                 continue;
             }
 
-			if( source->state != ESS_PLAY )
+			if( identity->state != ESS_PLAY )
 			{
 				continue;
 			}
 
 			bool source_process = process;
 
-			if( source->volume.update( _timing ) == true )
+			if( identity->volume.update( _timing ) == true )
 			{
 				source_process = true;
 			}
 
 			if( source_process == true )
 			{
-				this->updateSourceVolume_( source );
+				this->updateSourceVolume_( identity );
 			}
 
-			if( source->looped == true )
+			if( identity->looped == true )
 			{
 				continue;
 			}
 
-			if( source->turn == false )
+			if( identity->turn == false )
 			{
 				continue;
 			}
@@ -696,25 +663,28 @@ namespace Mengine
 			//float length_ms = source->source->getLengthMs();
 			//float pos_ms = source->source->getPosMs();		
 
-			if( (source->worker != nullptr && source->worker->isDone() == true) || (source->worker == nullptr && source->timing <= 0.f) )
+			if( (identity->worker != nullptr && identity->worker->isDone() == true) || (identity->worker == nullptr && identity->timing <= 0.f) )
 			{
-				source->state = ESS_STOP;
-				this->stopSoundBufferUpdate_( source );
-				source->source->stop();
-				source->timing = 0.f;
+				identity->state = ESS_STOP;
+				this->stopSoundBufferUpdate_( identity );
 
-				if( source->listener != nullptr )
+                const SoundSourceInterfacePtr & soundSource = identity->getSoundSource();
+
+                if( soundSource != nullptr )
+                {
+                    soundSource->stop();
+                }
+
+				identity->timing = 0.f;
+
+				if( identity->listener != nullptr )
 				{
-					SoundListenerStopDesc desc;
-					desc.listener = source->listener;
-					desc.id = source->soundId;
-
-					m_listeners.emplace_back( desc );
+					m_listeners.emplace_back( identity );
 				}
 			}
 			else
 			{
-				source->timing -= _timing;
+				identity->timing -= _timing;
 			}
 		}
 
@@ -723,10 +693,10 @@ namespace Mengine
 			this->updateVolume();
 		}
 
-        for( const SoundListenerStopDesc & desc : m_listeners )
+        for( const SoundIdentityPtr & identity : m_listeners )
 		{
-            SoundListenerInterfacePtr listener = desc.listener;
-			listener->onSoundStop( desc.id );
+            SoundListenerInterfacePtr keep_listener = identity->getSoundListener();
+			keep_listener->onSoundStop( identity );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -741,61 +711,43 @@ namespace Mengine
 	{
 		return m_muted;
 	}
-    //////////////////////////////////////////////////////////////////////////
-    bool SoundEngine::getSoundSourceDesc_( uint32_t _emitterId, SoundSourceDescPtr * _desc ) const
-    {
-		TMapSoundSource::const_iterator it_found = m_soundSourceMap.find( _emitterId );
-
-		if( it_found == m_soundSourceMap.end() )
-		{
-			return false;
-		}
-
-		*_desc = it_found->second;
-
-        return true;
-    }
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::playEmitter( uint32_t _emitterId )
+	bool SoundEngine::playEmitter( const SoundIdentityInterfacePtr & _identity )
 	{
-        SoundSourceDescPtr source;
-		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-		{
-			LOGGER_ERROR("SoundEngine:play not found emitter id %d"
-				, _emitterId
-				);
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-			return false;
-		}
+		this->updateSourceVolume_( identity );
 
-		this->updateSourceVolume_( source );
+        ESoundSourceState state = identity->getState();
 
-		switch( source->state )
+		switch( state )
 		{
 		case ESS_STOP:
 		case ESS_PAUSE:
             {
-                this->stopSoundBufferUpdate_( source );
+                this->stopSoundBufferUpdate_( identity );
+
+                const SoundSourceInterfacePtr & source = identity->getSoundSource();
    
-                float length_ms = source->source->getDuration();
-                float pos_ms = source->source->getPosition();
+                float length_ms = source->getDuration();
+                float pos_ms = source->getPosition();
 
-                source->timing = length_ms - pos_ms;
+                identity->timing = length_ms - pos_ms;
 
-				source->state = ESS_PLAY;
+                identity->state = ESS_PLAY;
 
-				if( source->turn == true )
+				if( identity->turn == true )
 				{
-					if( source->source->play() == false )
+					if( source->play() == false )
 					{
 						LOGGER_ERROR("SoundEngine::play invalid play %d"
-							, _emitterId
+							, identity->id
 							);
 
 						return false;
 					}
 				
-					this->playSoundBufferUpdate_( source );
+					this->playSoundBufferUpdate_( identity );
 				}
             }break;
 		default:
@@ -806,36 +758,36 @@ namespace Mengine
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::pauseEmitter( uint32_t _emitterId )
-	{
-        SoundSourceDescPtr source;
-        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-        {
-			LOGGER_ERROR("SoundEngine:pause not found emitter id %d"
-				, _emitterId
-				);
+	bool SoundEngine::pauseEmitter( const SoundIdentityInterfacePtr & _identity )
+    {
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-			return false;
-		}
+        ESoundSourceState state = identity->getState();
 
-		switch( source->state )
+		switch( state )
 		{
 		case ESS_PLAY:
 			{
-				source->state = ESS_PAUSE;
+                identity->state = ESS_PAUSE;
 
-				if( source->turn == true )
+				if( identity->turn == true )
 				{
-					this->stopSoundBufferUpdate_( source );
+					this->stopSoundBufferUpdate_( identity );
 				}
 
-				source->source->pause();
-				source->timing = source->source->getPosition();
+                const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
-				if( source->listener != nullptr )
+                source->pause();
+                float pos_ms = source->getPosition();
+
+                identity->timing = pos_ms;
+
+                const SoundListenerInterfacePtr & listener = identity->getSoundListener();
+
+				if( listener != nullptr )
 				{
-                    SoundListenerInterfacePtr listener = source->listener;					
-                    listener->onSoundPause( source->soundId );
+                    SoundListenerInterfacePtr keep_listener = listener;
+                    keep_listener->onSoundPause( identity );
 				}
 			}
 		default:
@@ -846,43 +798,39 @@ namespace Mengine
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::resumeEmitter( uint32_t _emitterId )
+    bool SoundEngine::resumeEmitter( const SoundIdentityInterfacePtr & _identity )
 	{
-		SoundSourceDescPtr source;
-		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-		{
-			LOGGER_ERROR("SoundEngine:pause not found emitter id %d"
-				, _emitterId
-				);
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-			return false;
-		}
+        ESoundSourceState state = identity->getState();
 
-		switch( source->state )
+		switch( state )
 		{
 		case ESS_PAUSE:
 			{
-				this->stopSoundBufferUpdate_( source );
+				this->stopSoundBufferUpdate_( identity );
 
-				float length_ms = source->source->getDuration();
-				float pos_ms = source->source->getPosition();
+                const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
-				source->timing = length_ms - pos_ms;
+				float length_ms = source->getDuration();
+				float pos_ms = source->getPosition();
 
-				source->state = ESS_PLAY;
+                identity->timing = length_ms - pos_ms;
 
-				if( source->turn == true )
+                identity->state = ESS_PLAY;
+
+				if( identity->turn == true )
 				{
-					if( source->source->play() == false )
+					if( source->play() == false )
 					{
 						LOGGER_ERROR("SoundEngine::play invalid play %d"
-							, _emitterId
+							, identity->id
 							);
 
 						return false;
 					}
 
-					this->playSoundBufferUpdate_( source );
+					this->playSoundBufferUpdate_( identity );
 				}
 			}
 		default:
@@ -893,47 +841,34 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::stopEmitter( uint32_t _emitterId )
+	bool SoundEngine::stopEmitter( const SoundIdentityInterfacePtr & _identity )
 	{
-        SoundSourceDescPtr desc;
-        if( this->getSoundSourceDesc_( _emitterId, &desc ) == false )
-        {
-			LOGGER_ERROR("SoundEngine:stop not found emitter id %d"
-				, _emitterId
-				);
-
-			return false;
-		}
-
-        if( desc == nullptr )
-        {
-            return true;
-        }
-                
-		switch( desc->state )
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+               
+		switch( identity->state )
 		{
 		case ESS_PLAY:
 		case ESS_PAUSE:
 			{
-				desc->state = ESS_STOP;
+                identity->state = ESS_STOP;
 
-				if( desc->turn == true )
+				if( identity->turn == true )
 				{
-					this->stopSoundBufferUpdate_( desc );
+					this->stopSoundBufferUpdate_( identity );
 				}
 
-                if( desc->source != nullptr )
+                if( identity->source != nullptr )
                 {
-                    SoundSourceInterfacePtr source = desc->source;
+                    SoundSourceInterfacePtr source = identity->source;
                     
                     source->stop();
-                    desc->timing = source->getPosition();
+                    identity->timing = source->getPosition();
                 }
 
-				if( desc->listener != nullptr )
+				if( identity->listener != nullptr )
 				{
-                    SoundListenerInterfacePtr listener = desc->listener;
-                    listener->onSoundStop( desc->soundId );
+                    SoundListenerInterfacePtr keep_listener = identity->getSoundListener();
+                    keep_listener->onSoundStop( identity );
 				}
 			}
 		default:
@@ -944,63 +879,39 @@ namespace Mengine
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::setLoop( uint32_t _emitterId, bool _looped )
+	bool SoundEngine::setLoop( const SoundIdentityInterfacePtr & _identity, bool _looped )
 	{
-        SoundSourceDescPtr source;
-        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-        {
-			LOGGER_ERROR("SoundEngine:setLoop not found emitter id %d"
-				, _emitterId
-				);
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-			return false;
-		}
+        identity->looped = _looped;
 
-		source->looped = _looped;
-		source->source->setLoop( _looped );
+        const SoundSourceInterfacePtr & source = identity->getSoundSource();
+        source->setLoop( _looped );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::getLoop( uint32_t _emitterId ) const
+	bool SoundEngine::getLoop( const SoundIdentityInterfacePtr & _identity ) const
 	{
-		SoundSourceDescPtr source;
-		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-		{
-			LOGGER_ERROR("SoundEngine:getLoop not found emitter id %d"
-				, _emitterId
-				);
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-			return false;
-		}
-
-		bool looped = source->looped;
+        bool looped = identity->getLoop();
 
 		return looped;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::setSourceListener( uint32_t _emitter, const SoundListenerInterfacePtr & _listener )
+	void SoundEngine::setSourceListener( const SoundIdentityInterfacePtr & _identity, const SoundListenerInterfacePtr & _listener )
 	{
-        SoundSourceDescPtr source;
-        if( this->getSoundSourceDesc_( _emitter, &source ) == false )
-        {
-			LOGGER_ERROR("SoundEngine:setSourceListener not found emitter id %d"
-				, _emitter
-				);
-
-			return;
-		}
-	
-		source->listener = _listener;
+        _identity->setSoundListener( _listener );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::updateSoundVolumeProvider_(const SoundVolumeProviderInterfacePtr & _provider )
 	{
-		float commonVolume = m_commonVolume.mixVolume();
+		float commonVolume = m_commonVolume.mixValue();
 
-		float soundVolume = m_soundVolume.mixVolume();
-		float musicVolume = m_musicVolume.mixVolume();
-		float voiceVolume = m_voiceVolume.mixVolume();
+		float soundVolume = m_soundVolume.mixValue();
+		float musicVolume = m_musicVolume.mixValue();
+		float voiceVolume = m_voiceVolume.mixValue();
 
 		float mixSoundVolume = 1.f;
 		mixSoundVolume *= commonVolume;
@@ -1019,20 +930,14 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::updateVolume()
 	{
-		for( TMapSoundSource::iterator 
-			it = m_soundSourceMap.begin(), 
-			it_end = m_soundSourceMap.end();
-		it != it_end;
-		++it )
+        for( const SoundIdentityPtr & identity : m_soundIdentities )
 		{
-            const SoundSourceDescPtr & source = it->second;
-
-            if( source == nullptr )
+            if( identity == nullptr )
             {
                 continue;
             }
 
-            this->updateSourceVolume_( source );
+            this->updateSourceVolume_( identity );
 		}
 
         for( const SoundVolumeProviderInterfacePtr & provider : m_soundVolumeProviders )
@@ -1041,122 +946,78 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::setSourceVolume( uint32_t _emitterId, float _volume, float _default )
+	bool SoundEngine::setSourceVolume( const SoundIdentityInterfacePtr & _identity, float _volume, float _default, bool _force )
 	{
-        SoundSourceDescPtr source;
-        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-        {
-			LOGGER_ERROR("SoundEngine:setVolume not found emitter id %d"
-				, _emitterId
-				);
-
-			return false;
-		}
-                
-		source->volume.setVolume( STRINGIZE_STRING_LOCAL( "General" ), _volume, _default );
-
-        this->updateSourceVolume_( source );
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        
+        identity->volume.setValue( STRINGIZE_STRING_LOCAL( "General" ), _volume, _default, _force );
+        
+        this->updateSourceVolume_( identity );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getSourceVolume( uint32_t _emitterId ) const
+	float SoundEngine::getSourceVolume( const SoundIdentityInterfacePtr & _identity ) const
 	{
-        SoundSourceDescPtr source;
-        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-        {
-			LOGGER_ERROR("SoundEngine:getVolume not found emitter id %d"
-				, _emitterId
-				);
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-			return 0.f;
-		}
-
-        float volume = source->volume.mixVolume();
+        float volume = identity->volume.mixValue();
 
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::setSourceMixerVolume( uint32_t _emitterId, const ConstString & _mixer, float _volume, float _default )
+	bool SoundEngine::setSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer, float _volume, float _default )
 	{
-		SoundSourceDescPtr source;
-		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-		{
-			LOGGER_ERROR("SoundEngine:setVolume not found emitter id %d"
-				, _emitterId
-				);
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-			return false;
-		}
+        identity->volume.setValue( _mixer, _volume, _default, true );
 
-		source->volume.setVolume( _mixer, _volume, _default );
-
-		this->updateSourceVolume_( source );
+		this->updateSourceVolume_( identity );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getSourceMixerVolume( uint32_t _emitterId, const ConstString & _mixer ) const
+	float SoundEngine::getSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer ) const
 	{
-		SoundSourceDescPtr source;
-		if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-		{
-			LOGGER_ERROR("SoundEngine:getVolume not found emitter id %d"
-				, _emitterId
-				);
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-			return 0.f;
-		}
-
-		float volume = source->volume.getVolume( _mixer );
+		float volume = identity->volume.getValue( _mixer );
 
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getDuration( uint32_t _emitter ) const
+	float SoundEngine::getDuration( const SoundIdentityInterfacePtr & _identity ) const
 	{
-        SoundSourceDescPtr source;
-        if( this->getSoundSourceDesc_( _emitter, &source ) == false )
-        {
-			LOGGER_ERROR("SoundEngine:getLengthMs not found emitter id %d"
-				, _emitter
-				);
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-			return 0.0f;
-		}
+        const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
-        float ms = source->source->getDuration();
+        float ms = source->getDuration();
 		
 		return ms;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::setPosMs( uint32_t _emitterId, float _pos )
+	bool SoundEngine::setPosMs( const SoundIdentityInterfacePtr & _identity, float _pos )
 	{
-        SoundSourceDescPtr source;
-        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-        {
-			LOGGER_ERROR("SoundEngine:setPosMs not found emitter id %d"
-				, _emitterId
-				);
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-			return false;
-		}
+        const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
-        if( source->source == nullptr )
+        if( source == nullptr )
         {
             LOGGER_ERROR("SoundEngine:setPosMs not setup source %d"
-                , _emitterId
+                , identity->id
                 );
 
 			return false;
         }
 
-        float lengthMs = source->source->getDuration();
+        float lengthMs = source->getDuration();
         
         if( _pos > lengthMs )
         {
             LOGGER_ERROR("SoundEngine::setPosMs emitter %d pos %f length %f"
-                , _emitterId
+                , identity->id
                 , _pos
                 , lengthMs
                 );
@@ -1164,45 +1025,45 @@ namespace Mengine
 			_pos = lengthMs;
         }
 
-        source->timing = lengthMs - _pos;
+        identity->timing = lengthMs - _pos;
 
-        bool hasBufferUpdate = source->worker != nullptr;
+        bool hasBufferUpdate = identity->worker != nullptr;
 
         if( hasBufferUpdate == true )
         {
-            this->stopSoundBufferUpdate_( source );
+            this->stopSoundBufferUpdate_( identity );
         }
 
-		float current_pos = source->source->getPosition();
+		float current_pos = source->getPosition();
 
 		if( mt::equal_f_f( current_pos, _pos ) == true )
 		{
 			if( hasBufferUpdate == true )				
 			{
-				this->playSoundBufferUpdate_( source );
+				this->playSoundBufferUpdate_( identity );
 			}
 
 			return true;
 		}
         
-        bool playing = source->source->isPlay();
-		bool pausing = source->source->isPause();
+        bool playing = source->isPlay();
+		bool pausing = source->isPause();
         
         if( playing == true && pausing == false )
         {
-            source->source->pause();
+            source->pause();
         }
         
-		if( source->source->setPosition( _pos ) == false )
+		if( source->setPosition( _pos ) == false )
         {
             return false;
         }
 
         if( playing == true && pausing == false )
         {
-			this->updateSourceVolume_( source );
+			this->updateSourceVolume_( identity );
 
-            if( source->source->play() == false )
+            if( source->play() == false )
             {
                 LOGGER_ERROR("SoundEngine::setPosMs invalid play"
                     );
@@ -1213,43 +1074,43 @@ namespace Mengine
 
         if( hasBufferUpdate == true )				
         {
-            this->playSoundBufferUpdate_( source );
+            this->playSoundBufferUpdate_( identity );
         }
 
         return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool SoundEngine::stopSoundBufferUpdate_( const SoundSourceDescPtr & _source )
+    bool SoundEngine::stopSoundBufferUpdate_( const SoundIdentityPtr & _identity )
     {
-		if( _source->streamable == false )
+		if( _identity->streamable == false )
 		{
 			return false;
 		}
 
-		if( _source->worker == nullptr )
+		if( _identity->worker == nullptr )
 		{
 			return false;
 		}
 
 		if( m_threadJobSoundBufferUpdate != nullptr )
 		{
-	        m_threadJobSoundBufferUpdate->removeWorker( _source->bufferId );
+	        m_threadJobSoundBufferUpdate->removeWorker( _identity->bufferId );
 		}
 
-        _source->worker = nullptr;
-        _source->bufferId = 0;
+        _identity->worker = nullptr;
+        _identity->bufferId = 0;
 
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundEngine::playSoundBufferUpdate_( const SoundSourceDescPtr & _source )
+    bool SoundEngine::playSoundBufferUpdate_( const SoundIdentityPtr & _identity )
     {
-		if( _source->streamable == false )
+		if( _identity->streamable == false )
 		{
 			return false;				 
 		}
 
-		if( _source->worker != nullptr )
+		if( _identity->worker != nullptr )
 		{
 			LOGGER_ERROR("SoundEngine::playSoundBufferUpdate_ _source worker is not null"
 				);
@@ -1261,52 +1122,46 @@ namespace Mengine
 		{
 			ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject();
 
-			SoundBufferInterfacePtr soundBuffer = _source->source->getSoundBuffer();
+			SoundBufferInterfacePtr soundBuffer = _identity->source->getSoundBuffer();
 
 			worker->initialize( soundBuffer );
 
-			_source->worker = worker;
+			_identity->worker = worker;
 			
-			_source->bufferId = m_threadJobSoundBufferUpdate->addWorker( _source->worker );
+			_identity->bufferId = m_threadJobSoundBufferUpdate->addWorker( _identity->worker );
 		}
 		else
 		{
-			_source->worker = nullptr;
-			_source->bufferId = 0;
+			_identity->worker = nullptr;
+			_identity->bufferId = 0;
 		}
 
 		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	float SoundEngine::getPosMs( uint32_t _emitterId )
+	float SoundEngine::getPosMs( const SoundIdentityInterfacePtr & _identity )
 	{
-        SoundSourceDescPtr source;
-        if( this->getSoundSourceDesc_( _emitterId, &source ) == false )
-        {
-			LOGGER_ERROR("SoundEngine:getPosMs not found emitter id %d"
-				, _emitterId
-				);
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-			return 0.f;
-		}
+        const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
-		if( source->source == nullptr )
+        if( source == nullptr )
 		{
 			return 0.f;
 		}
 
-		bool hasBufferUpdate = source->worker != nullptr;
+        bool hasBufferUpdate = identity->worker != nullptr;
 
 		if( hasBufferUpdate == true )
 		{
-			this->stopSoundBufferUpdate_( source );
+            this->stopSoundBufferUpdate_( identity );
 		}
 
-        float pos = source->source->getPosition();
+        float pos = source->getPosition();
 
 		if( hasBufferUpdate == true )				
 		{
-			this->playSoundBufferUpdate_( source );
+			this->playSoundBufferUpdate_( identity );
 		}
 		
 		return pos;
@@ -1316,23 +1171,15 @@ namespace Mengine
     {
         this->stopSounds_();
 
-        for( TMapSoundSource::iterator
-            it = m_soundSourceMap.begin(),
-            it_end = m_soundSourceMap.end();
-            it != it_end;
-            ++it )
+        for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
-            const SoundSourceDescPtr & source = it->second;
+            this->stopSoundBufferUpdate_( identity );
 
-            this->stopSoundBufferUpdate_( source );
-
-            if( source->source != nullptr )
+            if( identity->source != nullptr )
             {
-                source->source->stop();
-                source->source = nullptr;
+                identity->source->stop();
+                identity->source = nullptr;
             }
-
-            it->second = nullptr;
         }
     }
 }

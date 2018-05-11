@@ -17,12 +17,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2Slot::setMovie( Movie2 * _movie )
+    void Movie2Slot::setMovie( const Movie2Ptr & _movie )
     {
         m_movie = _movie;
     }
     //////////////////////////////////////////////////////////////////////////
-    Movie2 * Movie2Slot::getMovie() const
+    const Movie2Ptr & Movie2Slot::getMovie() const
     {
         return m_movie;
     }
@@ -38,7 +38,7 @@ namespace Mengine
         it != it_end;
         ++it )
         {
-            const Node * node = *it;
+            NodePtr node = *it;
 
             LOGGER_ERROR("Movie2Slot::_destroy slot %s:%s has children %s:%s!! (please remove, before release movie '%s')"
                 , this->getName().c_str()

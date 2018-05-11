@@ -9,7 +9,8 @@
 namespace Mengine
 {
 	class DX9RenderTarget
-		: public ServantBase<RenderTargetInterface>
+        : public Factorable
+        , public RenderTargetInterface
 	{
 	public:
         DX9RenderTarget();
@@ -56,5 +57,5 @@ namespace Mengine
 		LPDIRECT3DSURFACE9 m_oldSurface;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<DX9RenderTarget> DX9RenderTargetPtr;
+    typedef IntrusivePtr<DX9RenderTarget> DX9RenderTargetPtr;
 }

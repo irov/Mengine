@@ -28,7 +28,7 @@ namespace Mengine
 	protected:
 		PointerFactorable generate() override
 		{
-			Surface * surface = m_factory->createObject();
+			SurfacePtr surface = m_factory->createObject();
 
 			if( surface == nullptr )
 			{

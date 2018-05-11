@@ -33,5 +33,5 @@ namespace Mengine
 		TMapBitmapGlyph m_glyphs;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<BitmapGlyphService> BitmapGlyphServicePtr;
+	typedef IntrusivePtr<BitmapGlyphService> BitmapGlyphServicePtr;
 }

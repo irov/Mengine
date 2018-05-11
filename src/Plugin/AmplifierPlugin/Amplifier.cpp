@@ -16,8 +16,7 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Amplifier::Amplifier()
-		: m_sourceID(0)
-		, m_play(false)
+		: m_play(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -42,7 +41,7 @@ namespace Mengine
 		}
 
 		ResourceMusicPtr resourceMusic = RESOURCE_SERVICE()
-			->getResourceReferenceT<ResourceMusicPtr>( _resourceMusic );
+			->getResourceReference( _resourceMusic );
 
 		if( resourceMusic == nullptr )
 		{
@@ -93,10 +92,10 @@ namespace Mengine
 			return false;
 		}
 
-		m_sourceID = SOUND_SERVICE()
-			->createSoundSource( false, buffer, ESST_MUSIC, true );
+		m_soundEmitter = SOUND_SERVICE()
+			->createSoundIdentity( false, buffer, ESST_MUSIC, true );
 
-		if( m_sourceID == 0 )
+		if( m_soundEmitter == nullptr )
 		{
 			LOGGER_ERROR("Amplifier::playMusic can't create sound source '%s'"
 				, path.c_str()
@@ -106,7 +105,7 @@ namespace Mengine
 		}
 
 		if( SOUND_SERVICE()
-			->setSourceVolume( m_sourceID, volume, 0.f ) == false )
+            ->setSourceVolume( m_soundEmitter, volume, 0.f, false ) == false )
 		{
 			LOGGER_ERROR("Amplifier::playMusic can't set sound '%s' volume '%f'"
 				, path.c_str()
@@ -117,7 +116,7 @@ namespace Mengine
 		}
 
 		if( SOUND_SERVICE()
-			->setPosMs( m_sourceID, _pos ) == false )
+			->setPosMs( m_soundEmitter, _pos ) == false )
 		{
 			LOGGER_ERROR("Amplifier::playMusic can't set sound '%s' pos '%f'"
 				, path.c_str()
@@ -128,7 +127,7 @@ namespace Mengine
 		}
 
 		if( SOUND_SERVICE()
-			->setLoop( m_sourceID, _looped ) == false )
+			->setLoop( m_soundEmitter, _looped ) == false )
 		{
 			LOGGER_ERROR("Amplifier::playMusic can't set sound '%s' lood '%d'"
 				, path.c_str()
@@ -138,11 +137,11 @@ namespace Mengine
 			return false;
 		}
 
-		if( SOUND_SERVICE()->playEmitter( m_sourceID ) == false )
+		if( SOUND_SERVICE()->playEmitter( m_soundEmitter ) == false )
 		{
 			LOGGER_ERROR("Amplifier::playMusic '%s' invalid play %d"
 				, path.c_str()
-				, m_sourceID
+				, m_soundEmitter->getId()
 				);
 
 			return false;
@@ -157,22 +156,22 @@ namespace Mengine
 	{
 		m_play = false;
 
-		if( m_sourceID != 0 )
-		{
-			uint32_t sourceId = m_sourceID;
-			m_sourceID = 0;
+		if( m_soundEmitter != nullptr )
+        {
+            SoundIdentityInterfacePtr keep_sourceEmitter = m_soundEmitter;
+			m_soundEmitter = nullptr;
 
 			SOUND_SERVICE()
-                ->stopEmitter( sourceId );
+                ->stopEmitter( keep_sourceEmitter );
 		
 			SOUND_SERVICE()
-				->releaseSoundSource( sourceId );
+				->releaseSoundSource( keep_sourceEmitter );
 		}				
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::pauseMusic()
 	{
-		if( m_sourceID == 0 )
+		if( m_soundEmitter == nullptr )
 		{
 			return false;
 		}
@@ -180,14 +179,14 @@ namespace Mengine
 		m_play = false;
 
 		SOUND_SERVICE()
-            ->pauseEmitter( m_sourceID );
+            ->pauseEmitter( m_soundEmitter );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Amplifier::resumeMusic()
 	{
-		if( m_sourceID == 0 )
+		if( m_soundEmitter == nullptr )
 		{
 			return false;
 		}
@@ -195,46 +194,46 @@ namespace Mengine
         m_play = true;
 
         SOUND_SERVICE()
-            ->playEmitter( m_sourceID );
+            ->playEmitter( m_soundEmitter );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Amplifier::getDuration() const
 	{
-		if( m_sourceID == 0 )
+		if( m_soundEmitter == nullptr )
 		{
 			return 0.f;
 		}
 
 		float pos = SOUND_SERVICE()
-			->getDuration( m_sourceID );
+			->getDuration( m_soundEmitter );
 
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	float Amplifier::getPosMs() const
 	{
-		if( m_sourceID == 0 )
+		if( m_soundEmitter == nullptr )
 		{
 			return 0.f;
 		}
 
 		float pos = SOUND_SERVICE()
-            ->getPosMs( m_sourceID );
+            ->getPosMs( m_soundEmitter );
 		
 		return pos;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Amplifier::setPosMs( float _posMs )
 	{
-		if( m_sourceID == 0 )
+		if( m_soundEmitter == nullptr )
 		{
             return;
         }
 		
         SOUND_SERVICE()
-            ->setPosMs( m_sourceID, _posMs );
+            ->setPosMs( m_soundEmitter, _posMs );
 	}
 	//////////////////////////////////////////////////////////////////////////
     void Amplifier::_stopService()

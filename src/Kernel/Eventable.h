@@ -2,23 +2,25 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 #include "Kernel/EventReceiver.h"
 #include "Core/ConstString.h"
+#include "Core/Mixin.h"
 
 #include "stdex/stl_vector.h"
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class Eventable
-	{
-	public:
-		Eventable();
-		~Eventable();
+    //////////////////////////////////////////////////////////////////////////
+    class Eventable
+        : public Mixin
+    {
+    public:
+        Eventable();
+        ~Eventable() override;
 
     public:
-        bool registerEventReceiver(uint32_t _event, const EventReceiverPtr & _receiver );
+        bool registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver );
         void removeEventReceiver( uint32_t _event );
 
     public:
@@ -31,7 +33,7 @@ namespace Mengine
     public:
         template<class T>
         T getEventRecieverT( uint32_t _event ) const
-        {   
+        {
             const EventReceiverPtr & reciever = this->getEventReciever( _event );
 
             if( reciever == nullptr )
@@ -40,7 +42,7 @@ namespace Mengine
             }
 
             EventReceiver * r = reciever.get();
-            
+
 #ifndef NDEBUG            
             if( dynamic_cast<T>(r) == nullptr )
             {
@@ -53,8 +55,7 @@ namespace Mengine
             return t;
         }
 
-
-	protected:
+    protected:
         struct EventReceiverDesc
         {
             uint32_t event;
@@ -68,7 +69,9 @@ namespace Mengine
 
     private:
         class FEventReciver;
-	};
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Eventable> EventablePtr;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
@@ -76,7 +79,17 @@ namespace Mengine
         static typename T::EventReceiverType * getThisEventRecieverT( T * _self, uint32_t _event )
         {
             typedef typename T::EventReceiverType * T_EventReceiverType;
-            
+
+            T_EventReceiverType reciever = _self->template getEventRecieverT<T_EventReceiverType>( _event );
+
+            return reciever;
+        }
+
+        template<class T>
+        static typename T::EventReceiverType * getThisEventRecieverT( const IntrusivePtr<T> & _self, uint32_t _event )
+        {
+            typedef typename T::EventReceiverType * T_EventReceiverType;
+
             T_EventReceiverType reciever = _self->template getEventRecieverT<T_EventReceiverType>( _event );
 
             return reciever;
@@ -86,6 +99,14 @@ namespace Mengine
         static T * getThisEventReciever( Eventable * _self, uint32_t _event )
         {
             T * reciever = _self->getEventRecieverT<T *>( _event );
+
+            return reciever;
+        }
+
+        template<class T>
+        static T * getThisEventReciever( const EventablePtr & _self, uint32_t _event )
+        {
+            T * reciever = _self->getEventRecieverT<T>( _event );
 
             return reciever;
         }

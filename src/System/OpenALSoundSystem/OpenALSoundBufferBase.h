@@ -52,5 +52,5 @@ namespace Mengine
 		bool m_isStereo;		
 	};
 
-	typedef stdex::intrusive_ptr<OALSoundBufferBase> OALSoundBufferBasePtr;
+	typedef IntrusivePtr<OALSoundBufferBase> OALSoundBufferBasePtr;
 }	

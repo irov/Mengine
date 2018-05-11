@@ -509,7 +509,7 @@ namespace Mengine
 	ResourceReference * ResourceMovie2::createResourceImage_( const aeMovieResourceImage * _resource )
 	{
 		ResourceImageDefaultPtr image = RESOURCE_SERVICE()
-			->generateResourceT<ResourceImageDefaultPtr>( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
+			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
 
 		const ConstString & category = this->getCategory();
 
@@ -539,7 +539,7 @@ namespace Mengine
 	ResourceReference * ResourceMovie2::createResourceVideo_( const aeMovieResourceVideo * _resource )
 	{
 		ResourceVideoPtr video = RESOURCE_SERVICE()
-			->generateResourceT<ResourceVideoPtr>( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
+			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
 
 		const ConstString & category = this->getCategory();
 
@@ -578,7 +578,7 @@ namespace Mengine
 	ResourceReference * ResourceMovie2::createResourceSound_( const aeMovieResourceSound * _resource )
 	{
 		ResourceSoundPtr sound = RESOURCE_SERVICE()
-			->generateResourceT<ResourceSoundPtr>( STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
+			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
 
 		const ConstString & category = this->getCategory();
 
@@ -605,7 +605,7 @@ namespace Mengine
     ResourceReference * ResourceMovie2::createResourceParticle_( const aeMovieResourceParticle * _resource )
     {
         ResourceParticlePtr particle = RESOURCE_SERVICE()
-            ->generateResourceT<ResourceParticlePtr>( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
+            ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 
         const ConstString & category = this->getCategory();
 

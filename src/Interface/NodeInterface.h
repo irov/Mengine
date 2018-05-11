@@ -3,40 +3,27 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Core/ConstString.h"
+#include "Core/IntrusivePtr.h"
+#include "Core/Pointer.h"
 
 namespace Mengine
 {
-    class Node;
-    class Factory;
-
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class Node> NodePtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef PointerT<NodePtr> PointerNode;
+    //////////////////////////////////////////////////////////////////////////
     class NodeServiceInterface
         : public ServiceInterface
     {
         SERVICE_DECLARE("NodeService")
 
     public:
-        virtual Node * createNode( const ConstString& _type ) = 0;
-
-        template<class T>
-        T createNodeT( const ConstString& _type )
-        {
-            Node * node = this->createNode( _type );
-
-#ifndef NDEBUG
-            if( dynamic_cast<T>(node) == nullptr )
-            {
-                throw;
-            }
-#endif
-
-            T t = static_cast<T>(node);
-
-            return t;
-        }
+        virtual PointerNode createNode( const ConstString& _type ) = 0;
 
     public:
-        virtual void addHomeless( Node * _homeless ) = 0;
-		virtual bool isHomeless( const Node * _node ) const = 0;
+        virtual void addHomeless( const NodePtr & _homeless ) = 0;
+		virtual bool isHomeless( const NodePtr & _node ) const = 0;
         virtual void clearHomeless() = 0;
     };
 

@@ -13,7 +13,7 @@
 
 #include "Kernel/ResourceHolder.h"
 
-#include "Factory/FactorablePtr.h"
+#include "Factory/Factorable.h"
 #include "Factory/Factory.h"
 
 #include "Core/ConstString.h"
@@ -96,7 +96,7 @@ namespace Mengine
 		bool m_cache;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ResourceReference> ResourceReferencePtr;
+	typedef IntrusivePtr<ResourceReference> ResourceReferencePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & ResourceReference::getLocale() const
 	{

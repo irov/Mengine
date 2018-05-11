@@ -18,26 +18,24 @@
 
 #include "Core/Viewport.h"
 
-#include "stdex/intrusive_slug_list_size.h"
-#include "stdex/intrusive_slug.h"
+#include "stdex/intrusive_slug_list_size_ptr.h"
+#include "stdex/intrusive_slug_ptr.h"
 
 namespace Mengine
 {		
-	class MousePickerTrapInterface;
-
-    class RenderViewportInterface;
-    class RenderCameraInterface;
-    class RenderClipplaneInterface;
-
-    typedef stdex::intrusive_ptr<class RenderTargetInterface> RenderTargetInterfacePtr;
+    typedef IntrusivePtr<class MousePickerTrapInterface> MousePickerTrapInterfacePtr;
+    typedef IntrusivePtr<class RenderCameraInterface> RenderCameraInterfacePtr;
+    typedef IntrusivePtr<class RenderClipplaneInterface> RenderClipplaneInterfacePtr;
+    typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
+    typedef IntrusivePtr<class RenderTargetInterface> RenderTargetInterfacePtr;
 	
-	class Node;
+	typedef IntrusivePtr<class Node> NodePtr;
 
-    typedef stdex::intrusive_slug_list_size<Node> TListNodeChild;
-	typedef stdex::intrusive_slug<TListNodeChild> TSlugChild;
-
+    typedef stdex::intrusive_slug_list_size_ptr<Node> TListNodeChild;
+	typedef stdex::intrusive_slug_ptr<Node> TSlugChild;
+    
 	class Node
-        : public stdex::intrusive_slug_linked<Node>
+        : public stdex::intrusive_slug_linked_ptr<Node>
 		, public Factorable
         , public Identity
 		, public Resource
@@ -64,25 +62,25 @@ namespace Mengine
         virtual void _renderTarget( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask );
 		
 	public:
-		void setRenderViewport( const RenderViewportInterface * _viewport );
-		const RenderViewportInterface * getRenderViewport() const;
+		void setRenderViewport( const RenderViewportInterfacePtr & _viewport );
+		const RenderViewportInterfacePtr & getRenderViewport() const;
 
 	public:
-		const RenderViewportInterface * getRenderViewportInheritance() const;
+		const RenderViewportInterfacePtr & getRenderViewportInheritance() const;
 		
 	public:
-		void setRenderCamera( const RenderCameraInterface * _camera );
-		const RenderCameraInterface * getRenderCamera() const;
+		void setRenderCamera( const RenderCameraInterfacePtr & _camera );
+        const RenderCameraInterfacePtr & getRenderCamera() const;
 
 	public:
-		const RenderCameraInterface * getRenderCameraInheritance() const;
+        const RenderCameraInterfacePtr & getRenderCameraInheritance() const;
 
 	public:
-		void setRenderClipplane( const RenderClipplaneInterface * _clipplane );
-		const RenderClipplaneInterface * getRenderClipplane() const;
+		void setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane );
+		const RenderClipplaneInterfacePtr & getRenderClipplane() const;
 
 	public:
-		const RenderClipplaneInterface * getRenderClipplaneInheritance() const;
+		const RenderClipplaneInterfacePtr & getRenderClipplaneInheritance() const;
 
     public:
         void setRenderTarget( const RenderTargetInterfacePtr & _clipplane );
@@ -99,9 +97,9 @@ namespace Mengine
 		void _debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
 	
 	protected:
-		const RenderViewportInterface * m_renderViewport;
-		const RenderCameraInterface * m_renderCamera;
-		const RenderClipplaneInterface * m_renderClipplane;
+		RenderViewportInterfacePtr m_renderViewport;
+		RenderCameraInterfacePtr m_renderCamera;
+		RenderClipplaneInterfacePtr m_renderClipplane;
 		
     protected:
         RenderTargetInterfacePtr m_renderTarget;
@@ -110,7 +108,7 @@ namespace Mengine
 		void renderChild_( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask );
 
 	public:
-		void calcScreenPosition( const RenderCameraInterface * _camera, mt::vec2f & _screen );
+		void calcScreenPosition( const RenderCameraInterfacePtr & _camera, mt::vec2f & _screen );
 		
 	public:
 		const ColourValue & getWorldColor() const;
@@ -125,10 +123,10 @@ namespace Mengine
 		inline bool hasParent() const;
 
     public:
-		void addChild( Node * _node );
-		void addChildFront( Node* _node );
-		bool addChildAfter( Node* _node, Node * _after );
-		bool removeChild( Node * _node );
+		void addChild( const NodePtr & _node );
+		void addChildFront( const NodePtr & _node );
+		bool addChildAfter( const NodePtr & _node, const NodePtr & _after );
+		bool removeChild( const NodePtr & _node );
 		void removeChildren();
 		bool removeFromParent();
 
@@ -139,14 +137,14 @@ namespace Mengine
 		inline TListNodeChild & getChildren();
 		inline const TListNodeChild & getChildren() const;
 
-		Node * findChild( const ConstString & _name, bool _recursion ) const;
-        Node * getSiblingPrev();
-        Node * getSiblingNext();
+        NodePtr findChild( const ConstString & _name, bool _recursion ) const;
+        NodePtr getSiblingPrev();
+        NodePtr getSiblingNext();
 		bool hasChild( const ConstString & _name, bool _recursive ) const;
 		bool emptyChildren() const;
 
     protected:
-        void removeChild_( Node * _node );
+        void removeChild_( const NodePtr & _node );
 		void setParent_( Node * _node );
 
 	protected:
@@ -155,8 +153,8 @@ namespace Mengine
 
 	protected:
 		virtual void _changeParent( Node * _oldParent, Node * _newParent );
-		virtual void _addChild( Node * _node );
-		virtual void _removeChild( Node * _node );
+		virtual void _addChild( const NodePtr & _node );
+		virtual void _removeChild( const NodePtr & _node );
 		
 	protected:
 		Node * m_parent;
@@ -164,10 +162,10 @@ namespace Mengine
 		TListNodeChild m_children;
 
 	private:
-		void addChild_( TListNodeChild::iterator _insert, Node * _node );
+		void addChild_( TListNodeChild::iterator _insert, const NodePtr & _node );
 
-		void insertChild_( TListNodeChild::iterator _insert, Node * _node );
-		void eraseChild_( Node * _node );
+		void insertChild_( TListNodeChild::iterator _insert, const NodePtr & _node );
+		void eraseChild_( const NodePtr & _node );
 
 	public:
 		void visitChildren( Visitor * _visitor );
@@ -271,6 +269,8 @@ namespace Mengine
 		int m_shallowGrave;
 		bool m_shallowGravePropagate;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Node> NodePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Node::isActivate() const
 	{

@@ -24,7 +24,7 @@ namespace Mengine
     protected:
         DecoderInterfacePtr createDecoder() override
         {	
-            T * decoder = m_factory->createObject();
+            DecoderInterfacePtr decoder = m_factory->createObject();
 
             return decoder;
         }

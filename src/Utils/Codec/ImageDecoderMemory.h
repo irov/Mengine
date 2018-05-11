@@ -17,5 +17,5 @@ namespace Mengine
 		size_t decodeData_( void * _buffer, size_t _bufferSize ) const;
 	};    
 
-	typedef stdex::intrusive_ptr<ImageDecoderMemory> ImageDecoderMemoryPtr;	
+	typedef IntrusivePtr<ImageDecoderMemory> ImageDecoderMemoryPtr;
 }

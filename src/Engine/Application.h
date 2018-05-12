@@ -21,7 +21,7 @@ namespace Mengine
 
 	class Application 
 		: public ServiceBase<ApplicationInterface>
-        , public ObserverInterface
+        , public Observable
 	{
 	public:
 		Application();

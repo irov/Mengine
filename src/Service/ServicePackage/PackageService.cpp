@@ -18,7 +18,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 	PackageService::PackageService()
-		: m_observerChangeLocale(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -28,8 +27,10 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::_initialize()
 	{
-		m_observerChangeLocale = NOTIFICATION_SERVICE()
+        NOTIFICATION_SERVICE()
 			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPackage );
 
         m_factoryPackage = new FactoryPool<Package, 8>();
 
@@ -38,7 +39,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void PackageService::_finalize()
 	{
-		m_observerChangeLocale = nullptr;
+        NOTIFICATION_SERVICE()
+            ->removeObserver( NOTIFICATOR_CHANGE_LOCALE, this );
 
 		m_packages.clear();
 

@@ -644,7 +644,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_equalMaterial( const RenderMaterial * _material
+	static bool s_equalMaterial( const RenderMaterialPtr & _material
 		, EPrimitiveType _primitiveType
 		, uint32_t _textureCount 
 		, const RenderTextureInterfacePtr * _textures
@@ -835,7 +835,7 @@ namespace Mengine
 
 		TVectorRenderMaterial & materials = m_materials[material_table_index];
 
-        for( RenderMaterial * material : materials )
+        for( const RenderMaterialPtr & material : materials )
 		{
 			uint32_t test_material_hash = material->getHash();
 
@@ -876,7 +876,7 @@ namespace Mengine
 
         TVectorRenderMaterial & materials = m_materials[material_table_index];
 
-        for( RenderMaterial * material : materials )
+        for( const RenderMaterialPtr & material : materials )
         {
             uint32_t test_material_hash = material->getHash();
 
@@ -893,7 +893,7 @@ namespace Mengine
             return material;
         }
 
-        RenderMaterial * material = m_factoryMaterial->createObject();
+        RenderMaterialPtr material = m_factoryMaterial->createObject();
 
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( materialName, id, material_hash, _primitiveType, _textureCount, _textures, stage );
@@ -950,7 +950,7 @@ namespace Mengine
 		it != it_end;
 		++it )
 		{
-			RenderMaterial * material = *it;
+			const RenderMaterialPtr & material = *it;
 
 			if( material != _material )
 			{

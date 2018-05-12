@@ -60,7 +60,7 @@ namespace Mengine
     {
         class PlayerResourceUselessCompile
             : public FactorableUnique<Factorable>
-            , public ObserverInterface
+            , public Observable
         {
         public:
             PlayerResourceUselessCompile()

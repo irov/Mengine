@@ -25,7 +25,7 @@ namespace Mengine
     class TextField
         : public Node
         , public Materialable
-        , public ObserverInterface
+        , public Observable
     {
     public:
         TextField();

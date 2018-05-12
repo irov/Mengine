@@ -13,7 +13,7 @@ namespace Mengine
     {
     public:
         ConstStringHolderPythonString();
-        ~ConstStringHolderPythonString() override;
+        ~ConstStringHolderPythonString();
         
     public:
         void setPythonObject( PyObject * _value );

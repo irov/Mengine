@@ -13,7 +13,7 @@ namespace Mengine
 	{
 		uint32_t id;
 
-		InputHandlerInterface * handler;
+		InputHandlerInterfacePtr handler;
         String doc;
 		bool enable;
 		bool dead;
@@ -26,8 +26,8 @@ namespace Mengine
         GlobalHandleSystem();
 
 	public:
-		uint32_t addGlobalHandler( InputHandlerInterface * _handler, const String & _doc ) override;
-		InputHandlerInterface * removeGlobalHandler( uint32_t _id ) override;
+        uint32_t addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc ) override;
+		const InputHandlerInterfacePtr & removeGlobalHandler( uint32_t _id ) override;
 
 	public:
 		bool enableGlobalHandler( uint32_t _id, bool _value ) override;

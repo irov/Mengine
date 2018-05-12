@@ -22,16 +22,16 @@ namespace Mengine
         , public NodeAOITriggerEventReceiver
     {
     public:
-        void onNodeAOITriggerEnter( AOIActorProviderInterface * _enemy, uint32_t _iff1, uint32_t _iff2 )
+        void onNodeAOITriggerEnter( const AOIActorProviderInterfacePtr & _enemy, uint32_t _iff1, uint32_t _iff2 )
         {
-            NodeAOIActor * enemy = static_cast<NodeAOIActor *>(_enemy);
+            NodeAOIActorPtr enemy = stdex::intrusive_static_cast<NodeAOIActorPtr>(_enemy);
 
             m_cb.call( enemy, _iff1, _iff2 );
         }
 
-        void onNodeAOITriggerLeave( AOIActorProviderInterface * _enemy, uint32_t _iff1, uint32_t _iff2 )
+        void onNodeAOITriggerLeave( const AOIActorProviderInterfacePtr & _enemy, uint32_t _iff1, uint32_t _iff2 )
         {
-            NodeAOIActor * enemy = static_cast<NodeAOIActor *>(_enemy);
+            NodeAOIActorPtr enemy = stdex::intrusive_static_cast<NodeAOIActorPtr>(_enemy);
 
             m_cb.call( enemy, _iff1, _iff2 );
         }

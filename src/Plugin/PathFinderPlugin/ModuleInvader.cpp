@@ -43,8 +43,8 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	InvaderFollowAffector * ModuleInvader::createFollowAffector( Node * _node
-		, Node * _target
+    InvaderFollowAffectorPtr ModuleInvader::createFollowAffector( const NodePtr & _node
+		, const NodePtr & _target
 		, float _moveSpeed
 		, const pybind::object & _cb
 		, const pybind::args & _args )
@@ -55,24 +55,20 @@ namespace Mengine
 
 		if( affector->initialize( _node, _target, _cb, _args ) == false )
 		{
-			affector->destroy();
-
 			return nullptr;
 		}
 
 		if( _node->addAffector( affector ) == INVALID_AFFECTOR_ID )
 		{
-			affector->destroy();
-
 			return nullptr;
 		}
 
 		return affector;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleInvader::destroyFollowAffector( InvaderFollowAffector * _affector )
+	void ModuleInvader::destroyFollowAffector( const InvaderFollowAffectorPtr & _affector )
 	{
-		Node * node = _affector->getNode();
+		const NodePtr & node = _affector->getNode();
 
 		uint32_t id = _affector->getId();
 

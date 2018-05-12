@@ -103,7 +103,7 @@ namespace Mengine
 		
 	protected:
 		PickerTrapState * propagatePickerTrapState() const override;
-		Scriptable * propagatePickerScriptable() override;
+		ScriptablePtr propagatePickerScriptable() override;
 
 	protected:
 		bool onHandleMouseEnter( float _x, float _y ) override;

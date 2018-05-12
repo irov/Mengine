@@ -2,7 +2,7 @@
 
 #include "Factory/Factory.h"
 
-#include "stdex/pool.h"
+#include "stdex/template_pool.h"
 
 #include <typeinfo>
 

@@ -100,8 +100,8 @@ namespace Mengine
         pybind::def_functor( kernel, "Warning", this, &XlsExportPlugin::warning_, module_builtins );
         pybind::def_functor( kernel, "Error", this, &XlsExportPlugin::error_, module_builtins );
 
-		m_observerChangeLocale = NOTIFICATION_SERVICE()
-			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_PREPARE, this, &XlsExportPlugin::notifyChangeLocale );
+        NOTIFICATION_SERVICE()
+            ->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_PREPARE, this, &XlsExportPlugin::notifyChangeLocale );
 				
 		this->proccess_();
 
@@ -115,7 +115,8 @@ namespace Mengine
 		delete m_warninglogger;
 		delete m_errorLogger;
 
-		m_observerChangeLocale = nullptr;
+        NOTIFICATION_SERVICE()
+            ->removeObserver( NOTIFICATOR_CHANGE_LOCALE_PREPARE, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void XlsExportPlugin::notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale )

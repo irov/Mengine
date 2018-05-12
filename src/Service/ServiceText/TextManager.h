@@ -16,6 +16,7 @@
 #include "Core/FilePath.h"
 
 #include "stdex/stl_map.h"
+#include "stdex/template_pool.h"
 
 #include "Config/Typedef.h"
 
@@ -91,7 +92,9 @@ namespace Mengine
 
         FactoryPtr m_factoryTextEntry;
 		FactoryPtr m_factoryTextLocalePak;
-		FactoryPtr m_factoryLocalString;
+
+        typedef stdex::template_pool<ConstStringHolderLocalString, 1024> PoolConstStringHolderLocalString;
+        PoolConstStringHolderLocalString m_poolLocalString;
 
 	protected:
         class TextManagerLoadSaxCallback;

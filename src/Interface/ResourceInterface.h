@@ -40,7 +40,7 @@ namespace Mengine
     public:
 		virtual PointerResourceReference getResource( const ConstString& _name ) const = 0;
 
-		virtual ResourceReferencePtr getResourceReference( const ConstString& _name ) const = 0;
+		virtual PointerResourceReference getResourceReference( const ConstString& _name ) const = 0;
 
 		virtual bool hasResource( const ConstString& _name, ResourceReferencePtr * _resource ) const = 0;
 		

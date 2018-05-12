@@ -16,12 +16,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ObserverInterface
+    class Observable
         : public Mixin
     {
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ObserverInterface> ObserverInterfacePtr;
+    typedef IntrusivePtr<Observable> ObservablePtr;
     //////////////////////////////////////////////////////////////////////////
     class ObserverCallableInterface
         : public FactorableUnique<Factorable>
@@ -146,8 +146,8 @@ namespace Mengine
         SERVICE_DECLARE( "NotificationService" )
 
     public:
-        virtual void addObserver( uint32_t _id, const ObserverInterfacePtr & _observer, const ObserverCallableInterfacePtr & _callable ) = 0;
-        virtual void removeObserver( uint32_t _id, const ObserverInterfacePtr & _observer ) = 0;
+        virtual void addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable ) = 0;
+        virtual void removeObserver( uint32_t _id, const ObservablePtr & _observer ) = 0;
 
     public:
         template<class C, class M>

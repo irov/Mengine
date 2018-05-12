@@ -393,7 +393,7 @@ namespace Mengine
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Scriptable * HotSpot::propagatePickerScriptable()
+	ScriptablePtr HotSpot::propagatePickerScriptable()
 	{
 		return this;
 	}

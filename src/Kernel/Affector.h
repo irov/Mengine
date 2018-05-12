@@ -104,12 +104,11 @@ namespace Mengine
 	{
 	public:
 		MemeberAffector()
-			: m_self( nullptr )
-			, m_method( nullptr )
+			: m_method( nullptr )
 		{
 		}
 
-		void setup( C * _self, M _method, const MA & _argument )
+		void setup( const IntrusivePtr<C> & _self, M _method, const MA & _argument )
 		{
 			m_self = _self;
 			m_method = _method;
@@ -119,11 +118,13 @@ namespace Mengine
 		template<class T>
 		void update( const T & _value )
 		{
-            (m_self->*m_method)(m_argument, _value);
+            C * self_ptr = m_self.get();
+
+            (self_ptr->*m_method)(m_argument, _value);
 		}
 
 	protected:
-		C * m_self;
+		IntrusivePtr<C> m_self;
 		M m_method;
 		MA m_argument;
 	};
@@ -134,12 +135,11 @@ namespace Mengine
 	{
 	public:
 		MemeberAffector()
-			: m_self( nullptr )
-			, m_method( nullptr )
+			: m_method( nullptr )
 		{
 		}
 
-		void setup( C * _self, M _method )
+		void setup( const IntrusivePtr<C> & _self, M _method )
 		{
 			m_self = _self;
 			m_method = _method;
@@ -148,11 +148,13 @@ namespace Mengine
 		template<class T>
 		void update( const T & _value )
 		{
-			(m_self->*m_method)(_value);
+            C * self_ptr = m_self.get();
+
+            (self_ptr->*m_method)(_value);
 		}
 
 	protected:
-		C * m_self;
+        IntrusivePtr<C> m_self;
 		M m_method;
 	};
 	//////////////////////////////////////////////////////////////////////////
@@ -223,7 +225,7 @@ namespace Mengine
 		: public MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>
 	{
 	public:
-		bool initialize( C * _self, M _method, const MA & _argument, const T & _start, const T & _dir, float _speed )
+		bool initialize( const IntrusivePtr<C> & _self, M _method, const MA & _argument, const T & _start, const T & _dir, float _speed )
 		{
 			MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>::setup( _self, _method, _argument );
 
@@ -241,7 +243,7 @@ namespace Mengine
 		: public MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>
 	{
 	public:
-		bool initialize( C * _self, M _method, const T & _start, const T & _dir, float _speed )
+		bool initialize( const IntrusivePtr<C> & _self, M _method, const T & _start, const T & _dir, float _speed )
 		{
 			MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>::setup( _self, _method );
 
@@ -259,7 +261,7 @@ namespace Mengine
 		: public MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >
 	{
 	public:
-		bool initialize( C * _self, M _method, const MA & _argument, const T & _start, const T & _end, float _time )
+		bool initialize( const IntrusivePtr<C> & _self, M _method, const MA & _argument, const T & _start, const T & _end, float _time )
 		{
 			MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >::setup( _self, _method, _argument );
 
@@ -277,7 +279,7 @@ namespace Mengine
 		: public MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >
 	{
 	public:
-		bool initialize( C * _self, M _method, const T & _start, const T & _end, float _time )
+		bool initialize( const IntrusivePtr<C> & _self, M _method, const T & _start, const T & _end, float _time )
 		{
 			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >::setup( _self, _method );
 
@@ -295,7 +297,7 @@ namespace Mengine
 		: public MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorQuadratic<T> >
 	{
 	public:
-		bool initialize( C * _self, M _method, const T & _start, const T & _end, const T & _v0, float _time )
+		bool initialize( const IntrusivePtr<C> & _self, M _method, const T & _start, const T & _end, const T & _v0, float _time )
 		{
 			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorQuadratic<T> >::setup( _self, _method );
 
@@ -313,7 +315,7 @@ namespace Mengine
 		: public MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >
 	{
 	public:
-		bool initialize( C * _self, M _method, const T & _start, const T & _end, const T * _v, float _time )
+		bool initialize( const IntrusivePtr<C> & _self, M _method, const T & _start, const T & _end, const T * _v, float _time )
 		{
 			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >::setup( _self, _method );
 
@@ -347,7 +349,7 @@ namespace Mengine
 
 		public:
 			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
-				, C * _self, M _method
+				, const IntrusivePtr<C> & _self, M _method
 				, const T & _pos, const T & _dir, float _speed )
 			{
 				AffectorTypePtr affector = m_factory->createObject();
@@ -389,7 +391,7 @@ namespace Mengine
 
 		public:
 			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
-				, C * _self, M _method, const MA & _argument
+				, const IntrusivePtr<C> & _self, M _method, const MA & _argument
 				, const T & _start, const T & _end, float _time )
 			{
 				AffectorTypePtr affector = m_factory->createObject();
@@ -431,7 +433,7 @@ namespace Mengine
             
 		public:
 			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
-				, C * _self, M _method
+				, const IntrusivePtr<C> & _self, M _method
 				, const T & _start, const T & _end, float _time )
 			{
                 AffectorTypePtr affector = m_factory->createObject();
@@ -473,7 +475,7 @@ namespace Mengine
 
 		public:
 			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
-				, C * _self, M _method
+				, const IntrusivePtr<C> & _self, M _method
 				, const T & _start, const T & _end, const T & _v0, float _time )
 			{
                 AffectorTypePtr affector = m_factory->createObject();
@@ -515,7 +517,7 @@ namespace Mengine
 
 		public:
 			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
-				, C * _self, M _method
+				, const IntrusivePtr<C> & _self, M _method
 				, const T & _start, const T & _end, const T * _v, float _time )
 			{
                 AffectorTypePtr affector = m_factory->createObject();

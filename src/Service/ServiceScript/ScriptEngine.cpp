@@ -232,7 +232,6 @@ namespace Mengine
 
         //pybind::call_method( gc, "disable", "()" );
 
-        m_factoryPythonString = new FactoryPool<ConstStringHolderPythonString, 256>();
         m_factoryScriptModule = new FactoryPool<ScriptModule, 8>();
 
         return true;
@@ -278,7 +277,6 @@ namespace Mengine
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
 
-        m_factoryPythonString = nullptr;
         m_factoryScriptModule = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -601,7 +599,7 @@ namespace Mengine
             return true;
         }
 
-        ConstStringHolderPythonString * holder = m_factoryPythonString->createObject();
+        ConstStringHolderPythonString * holder = m_poolPythonString.createT();
 
         holder->setPythonObject( (PyObject*)_object );
 

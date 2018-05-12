@@ -40,7 +40,6 @@ namespace Mengine
     {
         m_factoryTextEntry = new FactoryPool<TextEntry, 128>();
 		m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>();
-		m_factoryLocalString = new FactoryPool<ConstStringHolderLocalString, 128>();
 		
         return true;
     }
@@ -55,8 +54,7 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextLocalePak );
         
         m_factoryTextEntry = nullptr;
-        m_factoryTextLocalePak = nullptr;
-        m_factoryLocalString = nullptr;
+        m_factoryTextLocalePak = nullptr;        
     }
     //////////////////////////////////////////////////////////////////////////
     class TextManager::TextManagerLoadSaxCallback
@@ -868,7 +866,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextManager::createLocalString_( const Char * _text, size_t _size, ConstString & _cstr )
     {
-        ConstStringHolderLocalString * holder = m_factoryLocalString->createObject();
+        ConstStringHolderLocalString * holder = m_poolLocalString.createT();
 
         holder->setup( _text, _size, -1 );
 

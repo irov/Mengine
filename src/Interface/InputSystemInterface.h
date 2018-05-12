@@ -352,6 +352,8 @@ namespace Mengine
 		virtual bool handleMouseMove( const InputMouseMoveEvent & _event ) = 0;
 		virtual bool handleMouseWheel( const InputMouseWheelEvent & _event ) = 0;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<InputHandlerInterface> InputHandlerInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class InputMousePositionProviderInterface
         : public Mixin

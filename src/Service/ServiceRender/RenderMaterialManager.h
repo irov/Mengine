@@ -104,7 +104,7 @@ namespace Mengine
 		RenderMaterialStage m_stages[MENGINE_MATERIAL_RENDER_STAGE_MAX];
 		uint32_t m_stageCount;
 
-		typedef stdex::vector<RenderMaterial *> TVectorRenderMaterial;
+		typedef stdex::vector<RenderMaterialPtr> TVectorRenderMaterial;
 		TVectorRenderMaterial m_materials[MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE];
 
 		FactoryPtr m_factoryMaterial;

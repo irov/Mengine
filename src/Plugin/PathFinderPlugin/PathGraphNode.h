@@ -3,13 +3,15 @@
 #include "fastpathfinder/graph.h"
 
 #include "Kernel/Scriptable.h"
+#include "Factory/Factorable.h"
 
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class PathGraphNode
-		: public fastpathfinder::graph_node
+		: public Factorable
 		, public Scriptable
+        , public fastpathfinder::graph_node
 	{
 	public:
 		uint32_t getWeight() const
@@ -17,5 +19,8 @@ namespace Mengine
 			return this->weight;
 		}
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<PathGraphNode> PathGraphNodePtr;
+    //////////////////////////////////////////////////////////////////////////
 }
 

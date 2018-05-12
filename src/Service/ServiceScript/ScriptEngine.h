@@ -19,6 +19,7 @@
 #include "pybind/pybind.hpp"
 
 #include "stdex/stl_map.h"
+#include "stdex/template_pool.h"
 
 #include <cstdarg>
 
@@ -94,7 +95,9 @@ namespace Mengine
 		typedef stdex::map<ConstString, ScriptWrapperInterfacePtr> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;
 
-        FactoryPtr m_factoryPythonString;
+        typedef stdex::template_pool<ConstStringHolderPythonString, 1024> PoolConstStringHolderPythonString;
+        PoolConstStringHolderPythonString m_poolPythonString;
+
 		FactoryPtr m_factoryScriptModule;
 		
 		bool m_initializeModules;

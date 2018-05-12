@@ -27,6 +27,12 @@ namespace Mengine
 	class superclass_new_PathGraphNode
 		: public pybind::new_adapter_interface
 	{
+    public:
+        superclass_new_PathGraphNode()
+        {
+            m_factoryPathGraphNode = new FactoryPool<PathGraphNode, 16>();
+        }
+
 	public:
 		void * call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, PyObject * _obj, PyObject * _args, PyObject * _kwds ) override
 		{
@@ -35,11 +41,8 @@ namespace Mengine
 			(void)_obj;
 			(void)_args;
 			(void)_kwds;
-
-			//void * user = _scope->get_user();
-			//ServiceProviderInterface * serviceProvider = static_cast<ServiceProviderInterface *>(user);
-
-			PathGraphNode * node = new PathGraphNode;
+            			
+            PathGraphNodePtr node = m_factoryPathGraphNode->createObject();
 
 			node->setEmbed( _obj );
 
@@ -47,6 +50,9 @@ namespace Mengine
 
 			return node;
 		}
+
+    protected:
+        FactoryPtr m_factoryPathGraphNode;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	static pybind::list s_fastpathfinder_graph_getPath( pybind::kernel_interface * _kernel, fastpathfinder::graph * _graph, fastpathfinder::graph_node * _from, fastpathfinder::graph_node * _to, uint32_t _mask )

@@ -150,7 +150,7 @@ namespace Mengine
 		(void)_fileName;
 		(void)_streaming;
 
-		Win32FileInputStream * inputStream = m_factoryInputStream->createObject();
+        Win32FileInputStreamPtr inputStream = m_factoryInputStream->createObject();
         
 		return inputStream;
 	}
@@ -184,7 +184,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile()
 	{
-		Win32FileOutputStream * outputStream = m_factoryOutputStream->createObject();
+		Win32FileOutputStreamPtr outputStream = m_factoryOutputStream->createObject();
 
 		return outputStream;
 	}

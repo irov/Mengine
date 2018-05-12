@@ -22,20 +22,20 @@ namespace Mengine
 		void _finalize() override;
 
 	public:
-		void addObserver( uint32_t _id, const ObserverInterfacePtr & _observer, const ObserverCallableInterfacePtr & _callable ) override;
-		void removeObserver( uint32_t _id, const ObserverInterfacePtr & _observer ) override;
+		void addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable ) override;
+		void removeObserver( uint32_t _id, const ObservablePtr & _observer ) override;
 
     public:
         void visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor ) override;
 
     public:
-        void addObserver_( uint32_t _id, const ObserverInterfacePtr & _observer, const ObserverCallableInterfacePtr & _callable );
-        void removeObserver_( uint32_t _id, const ObserverInterfacePtr & _observer );
+        void addObserver_( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable );
+        void removeObserver_( uint32_t _id, const ObservablePtr & _observer );
 
 	protected:		
         struct ObserverDesc
         {
-            ObserverInterfacePtr observer;
+            ObservablePtr observer;
             ObserverCallableInterfacePtr callable;
         };
 
@@ -46,7 +46,7 @@ namespace Mengine
         struct ObserverQueue
         {
             uint32_t id;
-            ObserverInterfacePtr observer;
+            ObservablePtr observer;
             ObserverCallableInterfacePtr callable;
         };
 

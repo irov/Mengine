@@ -6,9 +6,7 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	InvaderFollowAffector::InvaderFollowAffector()
-		: m_node( nullptr )
-		, m_target( nullptr )
-		, m_moveSpeed( 0.f )
+		: m_moveSpeed( 0.f )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -16,12 +14,12 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * InvaderFollowAffector::getNode() const
+	const NodePtr & InvaderFollowAffector::getNode() const
 	{
 		return m_node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Node * InvaderFollowAffector::getTarget() const
+    const NodePtr & InvaderFollowAffector::getTarget() const
 	{
 		return m_target;
 	}
@@ -36,7 +34,7 @@ namespace Mengine
 		return m_moveSpeed;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InvaderFollowAffector::initialize( Node * _node, Node * _target, const pybind::object & _cb, const pybind::args & _args )
+	bool InvaderFollowAffector::initialize( const NodePtr & _node, const NodePtr & _target, const pybind::object & _cb, const pybind::args & _args )
 	{
 		if( _node == nullptr )
 		{

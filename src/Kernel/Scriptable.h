@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/IntrusivePtr.h"
+#include "Core/Mixin.h"
 
 #include "pybind/bindable.hpp"
 
@@ -11,6 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	class Scriptable
 		: public pybind::bindable
+        , public Mixin
 	{	
 	public:
 		Scriptable();
@@ -26,4 +28,7 @@ namespace Mengine
 	protected:
 		ScriptWrapperInterfacePtr m_scriptWrapper;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Scriptable> ScriptablePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

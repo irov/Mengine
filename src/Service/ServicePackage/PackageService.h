@@ -13,6 +13,7 @@ namespace Mengine
 {
     class PackageService
 		: public ServiceBase<PackageServiceInterface>
+        , public Observable
     {
     public:
 		PackageService();
@@ -41,9 +42,6 @@ namespace Mengine
 
 	protected:
 		void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
-
-	protected:
-		ObserverInterfacePtr m_observerChangeLocale;
 
 	protected:
 		typedef stdex::vector<PackagePtr> TVectorPackage;

@@ -33,7 +33,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	PointerFactorable TTFPrototypeGenerator::generate()
 	{
-		TTFFont * font = m_factoryFont->createObject();
+		TTFFontPtr font = m_factoryFont->createObject();
         
 		font->setFTLibrary( m_ftlibrary );
 

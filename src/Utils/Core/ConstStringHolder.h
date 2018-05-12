@@ -9,13 +9,12 @@
 namespace Mengine
 {
     class ConstStringHolder
-        : public Factorable
-        , public stdex::intrusive_linked<ConstStringHolder>
+        : public stdex::intrusive_linked<ConstStringHolder>
     {
     protected:
         ConstStringHolder();
         ConstStringHolder( const ConstStringHolder & _holder );
-        ~ConstStringHolder() override;
+        ~ConstStringHolder();
 
     public:
         typedef size_t size_type;

@@ -43,7 +43,7 @@ namespace Mengine
 
     public:
 		virtual PickerTrapState * propagatePickerTrapState() const = 0;
-		virtual Scriptable * propagatePickerScriptable() = 0;
+		virtual ScriptablePtr propagatePickerScriptable() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MousePickerTrapInterface> MousePickerTrapInterfacePtr;

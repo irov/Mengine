@@ -11,6 +11,7 @@ namespace Mengine
 {
 	class XlsExportPlugin
 		: public PluginBase
+        , public Observable
 	{
 		PLUGIN_DECLARE( "XlsExport" )
 
@@ -34,7 +35,5 @@ namespace Mengine
 	protected:
 		XlsScriptLogger * m_warninglogger;
 		XlsScriptLogger * m_errorLogger;
-
-		ObserverInterfacePtr m_observerChangeLocale;
 	};
 }

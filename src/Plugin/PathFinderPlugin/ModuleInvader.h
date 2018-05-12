@@ -18,13 +18,13 @@ namespace Mengine
 		void _finalize() override;
 
 	public:
-		InvaderFollowAffector * createFollowAffector( Node * _node
-			, Node * _target
+		InvaderFollowAffectorPtr createFollowAffector( const NodePtr & _node
+			, const NodePtr & _target
 			, float _moveSpeed
 			, const pybind::object & _cb
 			, const pybind::args & _args );
 
-		void destroyFollowAffector( InvaderFollowAffector * _affector );
+		void destroyFollowAffector( const InvaderFollowAffectorPtr & _affector );
 
 	protected:
 		FactoryPtr m_factoryInvaderFollowAffector;

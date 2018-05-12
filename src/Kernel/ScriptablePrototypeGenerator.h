@@ -17,6 +17,8 @@ namespace Mengine
 	class ScriptablePrototypeGenerator
 		: public BasePrototypeGenerator
 	{
+        typedef IntrusivePtr<Type> TypePtr;
+
     protected:
         bool _initialize() override
         {
@@ -28,7 +30,7 @@ namespace Mengine
 	protected:
 		PointerFactorable generate() override
 		{
-			Type * scriptable = m_factory->createObject();
+            TypePtr scriptable = m_factory->createObject();
 
 			if( scriptable == nullptr )
 			{

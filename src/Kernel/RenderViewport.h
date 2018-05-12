@@ -12,7 +12,7 @@ namespace Mengine
 	class RenderViewport
 		: public Node
         , public RenderViewportInterface
-        , public ObserverInterface
+        , public Observable
 	{
 	public:
 		RenderViewport();

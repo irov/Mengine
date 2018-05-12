@@ -25,7 +25,7 @@ namespace Mengine
     protected:
         ConverterInterfacePtr createConverter() override
         {
-			ConverterInterface * converter = m_factory->createObject();
+			ConverterInterfacePtr converter = m_factory->createObject();
 
             return converter;
         }

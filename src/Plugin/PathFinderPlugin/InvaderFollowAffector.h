@@ -21,15 +21,15 @@ namespace Mengine
 		~InvaderFollowAffector() override;
 
 	public:
-		Node * getNode() const;
-		Node * getTarget() const;
+        const NodePtr & getNode() const;
+        const NodePtr & getTarget() const;
 
 	public:
 		void setMoveSpeed( float _moveSpeed );
 		float getMoveSpeed() const;
 	
 	public:
-		bool initialize( Node * _node, Node * _target, const pybind::object & _cb, const pybind::args & _args );
+		bool initialize( const NodePtr & _node, const NodePtr & _target, const pybind::object & _cb, const pybind::args & _args );
 
 	protected:
 		bool _affect( float _timing ) override;
@@ -40,8 +40,8 @@ namespace Mengine
 		PyObject * _embedded() override;
 
 	protected:
-		Node * m_node;
-		Node * m_target;
+		NodePtr m_node;
+		NodePtr m_target;
 
 		float m_moveSpeed;
 

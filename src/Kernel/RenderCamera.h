@@ -12,7 +12,7 @@ namespace Mengine
 	class RenderCamera
 		: public Node
         , public RenderCameraInterface
-        , public ObserverInterface
+        , public Observable
 	{
 	public:
 		RenderCamera();

@@ -39,7 +39,7 @@ namespace Mengine
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::addObserver( uint32_t _id, const ObserverInterfacePtr & _observer, const ObserverCallableInterfacePtr & _callable )
+    void NotificationService::addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable )
     {
         if( m_visiting != 0 )
         {
@@ -56,7 +56,7 @@ namespace Mengine
         this->addObserver_( _id, _observer, _callable );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::removeObserver( uint32_t _id, const ObserverInterfacePtr & _observer )
+    void NotificationService::removeObserver( uint32_t _id, const ObservablePtr & _observer )
     {
         if( m_visiting != 0 )
         {
@@ -89,7 +89,7 @@ namespace Mengine
 
         for( const ObserverDesc & desc : observers )
         {
-            _visitor->visit( desc.observer, desc.callable );
+            _visitor->visit( desc.callable );
         }
 
         --m_visiting;
@@ -114,7 +114,7 @@ namespace Mengine
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::addObserver_( uint32_t _id, const ObserverInterfacePtr & _observer, const ObserverCallableInterfacePtr & _callable )
+    void NotificationService::addObserver_( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable )
     {
         TMapObservers::iterator it_find = m_mapObserves.find( _id );
 
@@ -134,7 +134,7 @@ namespace Mengine
         observers.emplace_back( desc );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::removeObserver_( uint32_t _id, const ObserverInterfacePtr & _observer )
+    void NotificationService::removeObserver_( uint32_t _id, const ObservablePtr & _observer )
     {
         TMapObservers::iterator it_find = m_mapObserves.find( _id );
 

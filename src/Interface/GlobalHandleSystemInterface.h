@@ -11,8 +11,8 @@ namespace Mengine
         SERVICE_DECLARE( "GlobalHandleSystem" )
 
     public:
-		virtual uint32_t addGlobalHandler( InputHandlerInterface * _handler, const String & _doc ) = 0;
-		virtual InputHandlerInterface * removeGlobalHandler (uint32_t _id) = 0;
+		virtual uint32_t addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc ) = 0;
+		virtual const InputHandlerInterfacePtr & removeGlobalHandler (uint32_t _id) = 0;
 
 	public:
 		virtual bool enableGlobalHandler( uint32_t _id, bool _value ) = 0;

@@ -191,12 +191,12 @@ Reference
 
 ADD_FILTER(
 Resource
-	Resource.cpp
-	Resource.h
+	Compilable.cpp
+	Compilable.h
     ResourceCacher.h
     ResourceHolder.h        
-    ResourceReference.cpp
-    ResourceReference.h
+    Resource.cpp
+    Resource.h
 )
 
 ADD_FILTER(

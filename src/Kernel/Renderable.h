@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Core/Viewport.h"
+#include "Core/Mixin.h"
+#include "Core/IntrusivePtr.h"
 
 namespace Mengine
 {
@@ -8,6 +10,7 @@ namespace Mengine
     struct RenderState;
 
 	class Renderable
+        : public Mixin
 	{
 	public:
 		Renderable();
@@ -42,6 +45,8 @@ namespace Mengine
 		bool m_localHide;
         bool m_externalRender;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Renderable> RenderablePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Renderable::getHide() const
 	{

@@ -37,7 +37,7 @@
 
 #include "TextField.h"
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "math/mat3.h"
 
@@ -91,12 +91,12 @@ namespace Mengine
             }
 
         protected:
-            void resourceCompile( ResourceReference * _resource )
+            void resourceCompile( Resource * _resource )
             {
                 m_resources.emplace_back( _resource );
             }
 
-            void resourceRelease( ResourceReference * _resource )
+            void resourceRelease( Resource * _resource )
             {
                 TVectorResourceDesc::iterator it_remove =
                     std::find( m_resources.begin(), m_resources.end(), _resource );
@@ -116,7 +116,7 @@ namespace Mengine
             }
 
         protected:
-            typedef stdex::vector<ResourceReference *> TVectorResourceDesc;
+            typedef stdex::vector<Resource *> TVectorResourceDesc;
             TVectorResourceDesc m_resources;
         };
 
@@ -157,7 +157,12 @@ namespace Mengine
             ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), TMapWParams() );
 
         ScenePtr oldScene = m_scene;
-        m_scene = nullptr;
+
+        if( m_scene != nullptr )
+        {
+            m_scene->disable();
+            m_scene = nullptr;
+        }
 
         if( m_arrow != nullptr )
         {
@@ -170,7 +175,11 @@ namespace Mengine
 
         if( oldScene != nullptr && _destroyOld == true )
         {
-            oldScene->destroy();
+            if( oldScene != nullptr )
+            {
+                oldScene->disable();
+                oldScene = nullptr;
+            }
 
             //NODE_SERVICE() 
             //    ->clearHomeless();
@@ -326,13 +335,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Player::destroyCurrentScene()
     {
+        ScenePtr destroyScene = m_scene;
+        
         if( m_scene != nullptr )
         {
-            ScenePtr destroyScene = m_scene;
+            m_scene->disable();
             m_scene = nullptr;
-
-            destroyScene->destroy();
         }
+
+        destroyScene = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     const ScenePtr & Player::getCurrentScene()
@@ -357,11 +368,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Player::removeGlobalScene()
     {
-        if( m_globalScene != nullptr )
-        {
-            m_globalScene->destroy();
-            m_globalScene = nullptr;
-        }
+        m_globalScene = nullptr;        
     }
     //////////////////////////////////////////////////////////////////////////
     const ScenePtr & Player::getGlobalScene()
@@ -469,8 +476,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Player::_initialize()
     {
-        m_mousePickerSystem = SERVICE_GENERATE( MousePickerSystem, MousePickerSystemInterface );
-        m_globalHandleSystem = SERVICE_GENERATE( GlobalHandleSystem, GlobalHandleSystemInterface );
+        SERVICE_CREATE( MousePickerSystem );
+        SERVICE_CREATE( GlobalHandleSystem );
+
+        m_mousePickerSystem = SERVICE_GET( MousePickerSystemInterface );
+        m_globalHandleSystem = SERVICE_GET( GlobalHandleSystemInterface );
 
         m_factoryScheduleManager = new FactoryDefault<ScheduleManager>();
 
@@ -490,19 +500,54 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Player::_finalize()
     {
-        m_scene = nullptr;
-        m_globalScene = nullptr;
+        if( m_scene != nullptr )
+        {
+            m_scene->disable();
+            m_scene = nullptr;
+        }
+
+        if( m_arrow != nullptr )
+        {
+            m_arrow->disable();
+            m_arrow = nullptr;
+        }
+
+        if( m_globalScene != nullptr )
+        {
+            m_globalScene->disable();
+            m_globalScene = nullptr;
+        }
         
-        m_camera2D = nullptr;
+        if( m_camera2D != nullptr )
+        {
+            m_camera2D->disable();
+            m_camera2D = nullptr;
+        }
+
+        if( m_viewport2D != nullptr )
+        {
+            m_viewport2D->disable();
+            m_viewport2D = nullptr;
+        }
         
-        m_debugCamera2D = nullptr;
-        
-        m_arrowCamera2D = nullptr;
-        m_viewport2D = nullptr;
-        
+        if( m_arrowCamera2D != nullptr )
+        {
+            m_arrowCamera2D->disable();
+            m_arrowCamera2D = nullptr;
+        }
+
+        m_renderViewport = nullptr;
+        m_renderCamera = nullptr;
+        m_renderClipplane = nullptr;
+
+        m_renderTarget = nullptr;
+
         m_mousePickerSystem = nullptr;
         m_globalHandleSystem = nullptr;
-        
+
+        SERVICE_FINALIZE( MousePickerSystemInterface );
+        SERVICE_FINALIZE( GlobalHandleSystemInterface );
+
         m_scheduleManager = nullptr;
         m_scheduleManagerGlobal = nullptr;
 
@@ -510,6 +555,20 @@ namespace Mengine
 
         m_affectorable = nullptr;
         m_affectorableGlobal = nullptr;
+
+        m_switchSceneTo = nullptr;
+
+        if( m_debugText != nullptr )
+        {
+            m_debugText->disable();
+            m_debugText = nullptr;
+        }
+
+        if( m_debugCamera2D != nullptr )
+        {
+            m_debugCamera2D->disable();
+            m_debugCamera2D = nullptr;
+        }
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduleManager );
         m_factoryScheduleManager = nullptr;
@@ -572,11 +631,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Player::finalizeRenderResources()
     {
-        if( m_debugText != nullptr )
-        {
-            m_debugText->destroy();
-            m_debugText = nullptr;
-        }
+        m_debugText = nullptr;        
     }
     //////////////////////////////////////////////////////////////////////////
     bool Player::handleKeyEvent( const InputKeyEvent & _event )
@@ -945,7 +1000,7 @@ namespace Mengine
             {
                 class CompileResourceVisitor
                     : public Visitor
-                    , public ConcreteVisitor<ResourceReference>
+                    , public ConcreteVisitor<Resource>
                 {
                 public:
                     CompileResourceVisitor()
@@ -960,7 +1015,7 @@ namespace Mengine
                     }
 
                 protected:
-                    void accept( ResourceReference * _resource )
+                    void accept( Resource * _resource )
                     {
                         if( _resource->isCompile() == false )
                         {

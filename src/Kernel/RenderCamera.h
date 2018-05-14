@@ -16,6 +16,7 @@ namespace Mengine
 	{
 	public:
 		RenderCamera();
+        ~RenderCamera() override;
 		
 	protected:
 		bool _activate() override;

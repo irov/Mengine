@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "Kernel/ResourceImage.h"
 
@@ -30,9 +30,9 @@ namespace Mengine
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceWindow
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceWindow();

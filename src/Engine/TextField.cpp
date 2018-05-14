@@ -55,6 +55,12 @@ namespace Mengine
             return false;
         }
 
+        NOTIFICATION_SERVICE()
+            ->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale );
+
+        NOTIFICATION_SERVICE()
+            ->addObserverMethod( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode );
+
         this->invalidateTextLines();
 
         return true;
@@ -63,29 +69,23 @@ namespace Mengine
     void TextField::_deactivate()
     {
         Node::_deactivate();
+
+        NOTIFICATION_SERVICE()
+            ->removeObserver( NOTIFICATOR_CHANGE_LOCALE_POST, this );
+
+        NOTIFICATION_SERVICE()
+            ->removeObserver( NOTIFICATOR_DEBUG_TEXT_MODE, this );
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextField::_compile()
     {
         this->invalidateTextEntry();
 
-        NOTIFICATION_SERVICE()
-            ->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE_POST, this, &TextField::notifyChangeLocale );
-
-        NOTIFICATION_SERVICE()
-            ->addObserverMethod( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::_release()
     {
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_CHANGE_LOCALE_POST, this );
-
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_DEBUG_TEXT_MODE, this );
-
         if( m_font != nullptr )
         {
             m_font->releaseFont();

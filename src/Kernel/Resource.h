@@ -1,38 +1,120 @@
 #pragma once
 
-#include "Config/Typedef.h"
+#include "Kernel/Loadable.h"
+
+#include "Kernel/Servant.h"
+#include "Kernel/Compilable.h"
+#include "Kernel/Identity.h"
+#include "Kernel/Reference.h"
+
+#include "Kernel/Scriptable.h"
+#include "Kernel/Visitable.h"
+#include "Kernel/Comable.h"
+
+#include "Kernel/ResourceHolder.h"
+
+#include "Factory/Factorable.h"
+#include "Factory/Factory.h"
+
+#include "Core/ConstString.h"
+#include "Core/FilePath.h"
 
 namespace Mengine
 {
+    class ResourceVisitor;
+	
 	class Resource
+		: public Servant
+		, public Compilable
+		, public Identity
+		, public Reference
+		, public Loadable
+        , public Scriptable
+		, public Visitable
 	{
+		DECLARE_VISITABLE_BASE();
+
 	public:
 		Resource();
-        ~Resource();
+		~Resource() override;
 
 	public:
-		inline bool isCompile() const;
+		void setLocale( const ConstString & _locale );
+		inline const ConstString & getLocale() const;
+
+		void setCategory( const ConstString & _category );
+		inline const ConstString & getCategory() const;
+
+		void setGroup( const ConstString & _group );
+		inline const ConstString & getGroup() const;
 
 	public:
-		virtual bool compile();
-		virtual void release();
+		bool initialize();
+
+	protected:
+		virtual bool _initialize();
 
 	public:
-		bool recompile();
+		bool isValid() const;
+
+    protected:
+        virtual bool _isValid() const;
+
+	public:
+		bool _loader( const Metabuf::Metadata * _parser ) override;
 		
-	protected:
-		virtual bool _compile();
-		virtual void _release();
+    public:
+        bool convert();
 
-		virtual void _recompile();
-        virtual void _uncompile();
+    protected:
+        virtual bool _convert();
 
 	protected:
-		bool m_compile;
+		bool convertDefault2_( const ConstString & _converter, const FilePath & _path, FilePath & _out );
+		bool convertDefault_( const ConstString & _converter, const FilePath & _path, FilePath & _out, ConstString & _codecType );
+
+	public:
+		bool cache();
+		void uncache();
+
+	public:
+		inline bool isCache() const;
+
+	protected:
+		virtual void _cache();
+		virtual void _uncache();
+
+	protected:
+		bool _incrementZero() override;
+		void _decrementZero() override;
+
+	protected:       
+		ConstString m_locale;
+		ConstString m_category;
+		ConstString m_group;
+
+		bool m_cache;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline bool Resource::isCompile() const
+	typedef IntrusivePtr<Resource> ResourceReferencePtr;
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & Resource::getLocale() const
 	{
-		return m_compile;
+		return m_locale;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & Resource::getCategory() const
+	{
+		return m_category;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline const ConstString & Resource::getGroup() const
+	{
+		return m_group;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	inline bool Resource::isCache() const
+	{
+		return m_cache;
 	}
 }

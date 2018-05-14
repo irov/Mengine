@@ -1,10 +1,14 @@
 #pragma once
 
+#include "Core/Mixin.h"
+#include "Core/IntrusivePtr.h"
+
 #include "math/box2.h"
 
 namespace Mengine
 {
 	class BoundingBox
+        : public Mixin
 	{
 	public:
 		BoundingBox();
@@ -26,6 +30,8 @@ namespace Mengine
 		mutable mt::box2f m_boundingBox;
 		mutable bool m_invalidateBoundingBox;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<BoundingBox> BoundingBoxPtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline void BoundingBox::invalidateBoundingBox() const
 	{

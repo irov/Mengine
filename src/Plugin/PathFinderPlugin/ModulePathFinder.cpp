@@ -48,12 +48,30 @@ namespace Mengine
 
 			pybind::decref( _obj );
 
-			return node;
+            PathGraphNode * node_ptr = node.get();
+
+            stdex::intrusive_this_acquire( node_ptr );
+
+            return node_ptr;
 		}
 
     protected:
         FactoryPtr m_factoryPathGraphNode;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    class superclass_destroy_PathGraphNode
+        : public pybind::destroy_adapter_interface
+    {
+        void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * impl ) override
+        {
+            (void)_kernel;
+            (void)_scope;
+
+            PathGraphNode * node_ptr = (PathGraphNode *)impl;
+
+            stdex::intrusive_this_release( node_ptr );
+        }
+    };
 	//////////////////////////////////////////////////////////////////////////
 	static pybind::list s_fastpathfinder_graph_getPath( pybind::kernel_interface * _kernel, fastpathfinder::graph * _graph, fastpathfinder::graph_node * _from, fastpathfinder::graph_node * _to, uint32_t _mask )
 	{
@@ -84,7 +102,7 @@ namespace Mengine
 		pybind::interface_<fastpathfinder::graph_node>( kernel, "fastpathfinder::graph_node", true )
 			;
 
-		pybind::superclass_<PathGraphNode, pybind::bases<fastpathfinder::graph_node> >( kernel, "PathGraphNode", nullptr, (void *)new superclass_new_PathGraphNode, nullptr, false )
+        pybind::superclass_<PathGraphNode, pybind::bases<fastpathfinder::graph_node> >( kernel, "PathGraphNode", nullptr, (void *)new superclass_new_PathGraphNode, (void *)new superclass_destroy_PathGraphNode, false )
 			.def_constructor( pybind::init<>() )
 			.def_bindable()
 			.def( "getWeight", &PathGraphNode::getWeight )

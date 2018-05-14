@@ -2,7 +2,7 @@
 
 #include "Interface/VideoCodecInterface.h"
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 #include "Kernel/ResourceCacher.h"
 
 #include "math/vec2.h"
@@ -10,9 +10,9 @@
 namespace Mengine
 {
 	class ResourceVideo
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceVideo();

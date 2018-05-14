@@ -7,7 +7,7 @@
 #include "Metacode/Metacode.h"
 
 #include "Kernel/Loadable.h"
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "Logger/Logger.h"
 

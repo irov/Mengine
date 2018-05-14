@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "stdex/stl_vector.h"
 
@@ -19,9 +19,9 @@ namespace Mengine
 	typedef stdex::vector<AnimationSequence> TVectorAnimationSequence;
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceAnimation
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceAnimation();

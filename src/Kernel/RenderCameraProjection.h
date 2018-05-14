@@ -9,6 +9,7 @@ namespace Mengine
 	{
 	public:
 		RenderCameraProjection();
+        ~RenderCameraProjection() override;
 				
 	public:
 		void setCameraPosition( const mt::vec3f & _position );

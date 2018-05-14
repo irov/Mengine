@@ -2,7 +2,7 @@
 
 #include "Interface/TextInterface.h"
 
-#include "Kernel/Resource.h"
+#include "Kernel/Compilable.h"
 #include "Kernel/Reference.h"
 
 #include "Core/FontBase.h"

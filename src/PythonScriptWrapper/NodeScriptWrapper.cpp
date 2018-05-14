@@ -1932,7 +1932,7 @@ namespace Mengine
                 if( PLAYER_SERVICE()
                     ->setCurrentScene( scene, _destroyOld, py_cb ) == false )
                 {
-                    scene->destroy();
+                    scene = nullptr;
 
                     return false;
                 }
@@ -2543,7 +2543,7 @@ namespace Mengine
             _animatable->resume( time );
         }
         //////////////////////////////////////////////////////////////////////////
-        void destroyNode( Node * _node )
+        void destroyNode( const NodePtr & _node )
         {
             if( _node == nullptr )
             {
@@ -2554,7 +2554,7 @@ namespace Mengine
             }
 
             _node->removeFromParent();
-            _node->destroy();
+            _node->release();
         }
         //////////////////////////////////////////////////////////////////////////
         NodePtr createNode( const ConstString & _type )
@@ -3489,7 +3489,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class CacheResourceVisitor
             : public Visitor
-            , public ConcreteVisitor<ResourceReference>
+            , public ConcreteVisitor<Resource>
         {
         public:
             CacheResourceVisitor()
@@ -3501,7 +3501,7 @@ namespace Mengine
             }
 
         protected:
-            bool filterResource( ResourceReference * _resource ) const
+            bool filterResource( Resource * _resource ) const
             {
                 if( _resource->isCompile() == false )
                 {
@@ -3512,7 +3512,7 @@ namespace Mengine
             }
 
         protected:
-            void accept( ResourceReference * _resource ) override
+            void accept( Resource * _resource ) override
             {
                 if( this->filterResource( _resource ) == false )
                 {
@@ -3533,7 +3533,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class UncacheResourceVisitor
             : public Visitor
-            , public ConcreteVisitor<ResourceReference>
+            , public ConcreteVisitor<Resource>
         {
         public:
             UncacheResourceVisitor()
@@ -3545,7 +3545,7 @@ namespace Mengine
             }
 
         protected:
-            bool filterResource( ResourceReference * _resource ) const
+            bool filterResource( Resource * _resource ) const
             {
                 if( _resource->isCompile() == false )
                 {
@@ -3561,7 +3561,7 @@ namespace Mengine
             }
 
         protected:
-            void accept( ResourceReference * _resource ) override
+            void accept( Resource * _resource ) override
             {
                 if( this->filterResource( _resource ) == false )
                 {
@@ -4270,7 +4270,7 @@ namespace Mengine
             }
 
         public:
-            bool initialize( const T_NodePtr & _node, T_Setter _setter, T_Getter _getter, const T_Value & _value, const T_Value & _target, float _speed )
+            bool initialize( const T_NodePtr & _node, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed )
             {
                 if( _node == nullptr )
                 {
@@ -4287,7 +4287,7 @@ namespace Mengine
 
                 m_follower.follow( _target );
 
-                (_node->*m_setter)(_value);
+                m_setter( _node, _value );
 
                 return true;
             }
@@ -4303,9 +4303,9 @@ namespace Mengine
         protected:
             bool _affect( float _timing ) override
             {
-                T_Node * node = this->getNode();
+                const T_NodePtr & node = this->getNode();
 
-                T_Value current_value = (node->*m_getter)();
+                T_Value current_value = m_getter( node );
 
                 m_follower.setValue( current_value );
 
@@ -4313,7 +4313,7 @@ namespace Mengine
 
                 T_Value value = m_follower.getValue();
 
-                (node->*m_setter)(value);
+                m_setter( node, value );
 
                 return false;
             }
@@ -4325,10 +4325,13 @@ namespace Mengine
             T_Getter m_getter;
         };
         //////////////////////////////////////////////////////////////////////////
-        template<class T_Node, class T_Value, class T_Setter, class T_Getter>
+        template<class T_Node, class T_Value>
         class AffectorNodeFollowerCreator
         {
             typedef IntrusivePtr<T_Node> T_NodePtr;
+
+            typedef Lambda<void( const T_NodePtr &, const T_Value & )> T_Setter;
+            typedef Lambda<T_Value( const T_NodePtr & )> T_Getter;
 
             typedef AffectorNodeFollowerMethod<T_Node, T_Value, T_Setter, T_Getter> TAffectorNodeFollowerMethod;
             typedef IntrusivePtr<TAffectorNodeFollowerMethod> TAffectorNodeFollowerMethodPtr;
@@ -4340,7 +4343,7 @@ namespace Mengine
             }            
 
         public:
-            AffectorFollowerPtr create( const T_NodePtr & _node, T_Setter _setter, T_Getter _getter, const T_Value & _value, const T_Value & _target, float _speed )
+            AffectorFollowerPtr create( const T_NodePtr & _node, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed )
             {
                 TAffectorNodeFollowerMethodPtr affector = m_factory->createObject();
 
@@ -4361,29 +4364,38 @@ namespace Mengine
             FactoryPtr m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
-        AffectorNodeFollowerCreator<Node, float, void(Node::*)(float), float(Node::*)()const> m_creatorAffectorNodeFollowerLocalAlpha;
+        AffectorNodeFollowerCreator<Node, float> m_creatorAffectorNodeFollowerLocalAlpha;
         //////////////////////////////////////////////////////////////////////////
-        AffectorFollowerPtr s_addNodeFollowerLocalAlpha( Node * _node, float _value, float _target, float _speed )
+        AffectorFollowerPtr s_addNodeFollowerLocalAlpha( const NodePtr & _node, float _value, float _target, float _speed )
         {
-            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerLocalAlpha.create( _node, &Node::setLocalAlpha, &Node::getLocalAlpha, _value, _target, _speed );
+            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerLocalAlpha.create( _node
+                , []( const NodePtr & _node, float _alpha ) { _node->setLocalAlpha( _alpha ); }
+            , []( const NodePtr & _node ) { return _node->getLocalAlpha(); }
+            , _value, _target, _speed );
 
             return affector;
         }
         //////////////////////////////////////////////////////////////////////////
-        AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f, void(ShapeQuadFlex::*)(const mt::vec2f &), const mt::vec2f &(ShapeQuadFlex::*)()const> m_creatorAffectorNodeFollowerCustomSize;
+        AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f> m_creatorAffectorNodeFollowerCustomSize;
         //////////////////////////////////////////////////////////////////////////
-        AffectorFollowerPtr s_addShapeFollowerCustomSize( ShapeQuadFlex * _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
+        AffectorFollowerPtr s_addShapeFollowerCustomSize( const ShapeQuadFlexPtr & _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
         {
-            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerCustomSize.create( _node, &ShapeQuadFlex::setCustomSize, &ShapeQuadFlex::getCustomSize, _value, _target, _speed );
+            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerCustomSize.create( _node
+                , []( const ShapeQuadFlexPtr & _node, const mt::vec2f & _value ) { _node->setCustomSize( _value ); }
+            , []( const ShapeQuadFlexPtr & _node ) { return _node->getCustomSize(); }
+            , _value, _target, _speed );
 
             return affector;
         }
         //////////////////////////////////////////////////////////////////////////
-        AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f, void(ShapeQuadFlex::*)(const mt::vec2f &), const mt::vec2f &(ShapeQuadFlex::*)()const> m_creatorAffectorNodeFollowerTextureUVScale;
+        AffectorNodeFollowerCreator<ShapeQuadFlex, mt::vec2f> m_creatorAffectorNodeFollowerTextureUVScale;
         //////////////////////////////////////////////////////////////////////////
-        AffectorFollowerPtr s_addShapeFollowerTextureUVScale( ShapeQuadFlex * _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
+        AffectorFollowerPtr s_addShapeFollowerTextureUVScale( const ShapeQuadFlexPtr & _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
         {
-            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerTextureUVScale.create( _node, &ShapeQuadFlex::setTextureUVScale, &ShapeQuadFlex::getTextureUVScale, _value, _target, _speed );
+            AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerTextureUVScale.create( _node
+                , []( const ShapeQuadFlexPtr & _node, const mt::vec2f & _value ) { _node->setTextureUVScale( _value ); }
+            , []( const ShapeQuadFlexPtr & _node ) { return _node->getTextureUVScale(); }
+            , _value, _target, _speed );
 
             return affector;
         }
@@ -4708,7 +4720,7 @@ namespace Mengine
             return callback;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorAccumulateLinear;
+        NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f> m_nodeAffectorCreatorAccumulateLinear;
         //////////////////////////////////////////////////////////////////////////
         uint32_t velocityTo( const NodePtr & _node, float _speed, const mt::vec3f& _dir, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -4725,7 +4737,8 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorAccumulateLinear.create( ETA_POSITION
-                , callback, _node, &Node::setLocalPosition
+                , callback
+                , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                 , _node->getLocalPosition(), _dir, _speed
             );
 
@@ -4872,7 +4885,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateLinear;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f> m_nodeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
         uint32_t moveTo( const NodePtr & _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -4890,7 +4903,8 @@ namespace Mengine
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateLinear.create( ETA_POSITION
-                    , callback, _node, &Node::setLocalPosition
+                    , callback
+                    , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                     , _node->getLocalPosition(), _point, _time
                 );
 
@@ -4917,7 +4931,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)(const mt::vec3f &), mt::vec3f> m_nodeAffectorCreatorInterpolateQuadratic;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f> m_nodeAffectorCreatorInterpolateQuadratic;
         //////////////////////////////////////////////////////////////////////////
         uint32_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -4936,7 +4950,7 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadratic.create( ETA_POSITION
-                , callback, _node, &Node::setLocalPosition
+                , callback, [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                 , _node->getLocalPosition(), _point, linearSpeed, _time
             );
 
@@ -4957,7 +4971,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<Node, void (Node::*)(const mt::vec3f &), mt::vec3f, 1> m_nodeAffectorCreatorInterpolateQuadraticBezier;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1> m_nodeAffectorCreatorInterpolateQuadraticBezier;
         //////////////////////////////////////////////////////////////////////////
         uint32_t bezier2To( const NodePtr & _node
             , float _time
@@ -4981,7 +4995,8 @@ namespace Mengine
             mt::vec3f v[] = { _v0 };
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
-                , callback, _node, &Node::setLocalPosition
+                , callback
+                , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                 , _node->getLocalPosition(), _to, v, _time
             );
 
@@ -5002,7 +5017,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<Node, void (Node::*)(const mt::vec3f &), mt::vec3f, 2> m_nodeAffectorCreatorInterpolateCubicBezier;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 2> m_nodeAffectorCreatorInterpolateCubicBezier;
         //////////////////////////////////////////////////////////////////////////
         uint32_t bezier3To( const NodePtr & _node
             , float _time
@@ -5028,7 +5043,8 @@ namespace Mengine
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateCubicBezier.create( ETA_POSITION
-                    , callback, _node, &Node::setLocalPosition
+                    , callback
+                    , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                     , _node->getLocalPosition(), _to, v, _time
                 );
 
@@ -5049,7 +5065,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<Node, void (Node::*)(const mt::vec3f &), mt::vec3f, 3> m_nodeAffectorCreatorInterpolateQuarticBezier;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 3> m_nodeAffectorCreatorInterpolateQuarticBezier;
         //////////////////////////////////////////////////////////////////////////
         uint32_t bezier4To( const NodePtr & _node
             , float _time
@@ -5076,7 +5092,8 @@ namespace Mengine
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateQuarticBezier.create( ETA_POSITION
-                    , callback, _node, &Node::setLocalPosition
+                    , callback
+                    , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
                     , _node->getLocalPosition(), _to, v, _time
                 );
 
@@ -5721,7 +5738,7 @@ namespace Mengine
             _node->setAngularSpeed( 0.f );
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)(float), float> m_nodeAffectorCreatorInterpolateLinearFloat;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_nodeAffectorCreatorInterpolateLinearFloat;
         //////////////////////////////////////////////////////////////////////////
         uint32_t angleTo( const NodePtr & _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -5744,7 +5761,8 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearFloat.create( ETA_ANGLE
-                , callback, _node, &Node::setOrientationX
+                , callback
+                , [_node]( float _v ) {_node->setOrientationX( _v ); }
                 , correct_angle_from, correct_angle_to, _time
             );
 
@@ -5769,7 +5787,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<Node, void (Node::*)(float), float> m_nodeAffectorCreatorInterpolateQuadraticFloat;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float> m_nodeAffectorCreatorInterpolateQuadraticFloat;
         //////////////////////////////////////////////////////////////////////////
         uint32_t accAngleTo( const NodePtr & _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -5795,7 +5813,8 @@ namespace Mengine
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateQuadraticFloat.create( ETA_ANGLE
-                    , callback, _node, &Node::setOrientationX
+                    , callback
+                    , [_node]( float _v ) {_node->setOrientationX( _v ); }
                     , correct_angle_from, correct_angle_to, angularSpeed, _time
                 );
 
@@ -5836,7 +5855,8 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinear.create( ETA_SCALE
-                , callback, _node, &Node::setScale
+                , callback
+                , [_node]( const mt::vec3f & _v ) { _node->setScale( _v ); }
                 , _node->getScale(), _scale, _time
             );
 
@@ -5862,7 +5882,7 @@ namespace Mengine
             _node->stopAffectors( ETA_COLOR );
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Node, void (Node::*)(const ColourValue &), ColourValue> m_nodeAffectorCreatorInterpolateLinearColour;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<ColourValue> m_nodeAffectorCreatorInterpolateLinearColour;
         //////////////////////////////////////////////////////////////////////////		
         inline static float s_length_color( const ColourValue & _rColor )
         {
@@ -5887,7 +5907,8 @@ namespace Mengine
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateLinearColour.create( ETA_COLOR
-                    , callback, _node, &Colorable::setLocalColor
+                    , callback
+                    , [_node]( const ColourValue & _v ) { _node->setLocalColor( _v ); }
                     , _node->getLocalColor(), _color, _time
                 );
 
@@ -5928,7 +5949,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<ShapeQuadFlex, void (ShapeQuadFlex::*)(const mt::vec4f &), mt::vec4f> m_nodeAffectorCreatorInterpolateLinearVec4;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec4f> m_nodeAffectorCreatorInterpolateLinearVec4;
         //////////////////////////////////////////////////////////////////////////
         uint32_t setPercentVisibilityTo( const ShapeQuadFlexPtr & _shape, float _time, const mt::vec4f& _percent, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -5940,7 +5961,8 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _shape, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateLinearVec4.create( ETA_VISIBILITY
-                , callback, _shape, &ShapeQuadFlex::setPercentVisibility
+                , callback
+                , [_shape]( const mt::vec4f & _v ) { _shape->setPercentVisibility( _v ); }
                 , _shape->getPercentVisibility(), _percent, _time
             );
 
@@ -6748,7 +6770,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class ResourceVisitorGetAlreadyCompiled
             : public Visitor
-            , public ConcreteVisitor<ResourceReference>
+            , public ConcreteVisitor<Resource>
         {
         public:
             ResourceVisitorGetAlreadyCompiled( const pybind::object & _cb )
@@ -6761,7 +6783,7 @@ namespace Mengine
             }
 
         protected:
-            void accept( ResourceReference* _resource ) override
+            void accept( Resource* _resource ) override
             {
                 if( _resource->isCompile() == false )
                 {
@@ -6785,7 +6807,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class MyResourceVisitor
             : public Visitor
-            , public ConcreteVisitor<ResourceReference>
+            , public ConcreteVisitor<Resource>
         {
         public:
             MyResourceVisitor( const pybind::object & _cb )
@@ -6798,7 +6820,7 @@ namespace Mengine
             }
 
         protected:
-            void accept( ResourceReference* _resource ) override
+            void accept( Resource* _resource ) override
             {
                 m_cb.call( _resource );
             }
@@ -6817,10 +6839,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class IncrefResourceVisitor
             : public Visitor
-            , public ConcreteVisitor<ResourceReference>
+            , public ConcreteVisitor<Resource>
         {
         protected:
-            void accept( ResourceReference* _resource ) override
+            void accept( Resource* _resource ) override
             {
                 _resource->incrementReference();
             }
@@ -6836,10 +6858,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class DecrementResourceVisitor
             : public Visitor
-            , public ConcreteVisitor<ResourceReference>
+            , public ConcreteVisitor<Resource>
         {
         protected:
-            void accept( ResourceReference * _resource ) override
+            void accept( Resource * _resource ) override
             {
                 _resource->decrementReference();
             }
@@ -6855,14 +6877,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class GetResourceVisitor
             : public Visitor
-            , public ConcreteVisitor<ResourceReference>
+            , public ConcreteVisitor<Resource>
         {
         public:
             GetResourceVisitor( pybind::kernel_interface * _kernel )
                 : m_kernel( _kernel )
                 , m_l( _kernel )
             {
-                m_scope = m_kernel->class_scope<ResourceReference>();
+                m_scope = m_kernel->class_scope<Resource>();
             }
 
             const pybind::list & getResult() const
@@ -6871,7 +6893,7 @@ namespace Mengine
             }
 
         protected:
-            void accept( ResourceReference* _resource ) override
+            void accept( Resource* _resource ) override
             {
                 PyObject * py_obj = m_scope->create_holder( (void *)_resource );
 
@@ -6962,7 +6984,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
         //SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 
-        SCRIPT_CLASS_WRAPPING( ResourceReference );
+        SCRIPT_CLASS_WRAPPING( Resource );
         SCRIPT_CLASS_WRAPPING( ResourceImage );
         SCRIPT_CLASS_WRAPPING( ResourceImageData );
         SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
@@ -7096,6 +7118,7 @@ namespace Mengine
         classWrapping();
 
         pybind::interface_<Affector>( kernel, "Affector", true )
+            .def_smart_pointer()
             .def( "stop", &Affector::stop )
             .def( "getId", &Affector::getId )
             .def( "setFreeze", &Affector::setFreeze )
@@ -7105,20 +7128,24 @@ namespace Mengine
             ;
 
         pybind::interface_<Scriptable>( kernel, "Scriptable" )
+            .def_smart_pointer()
             .def_bindable()
             ;
 
         pybind::interface_<Identity>( kernel, "Identity" )
+            .def_smart_pointer()
             .def( "setName", &Identity::setName )
             .def( "getName", &Identity::getName )
             .def( "getType", &Identity::getType )
             ;
 
         pybind::interface_<BoundingBox>( kernel, "BoundingBox" )
+            .def_smart_pointer()
             .def( "getBoundingBox", &BoundingBox::getBoundingBox )
             ;
 
         pybind::interface_<Transformation3D>( kernel, "Transformation3D" )
+            .def_smart_pointer()
             .def( "setLocalPosition", &Transformation3D::setLocalPosition )
             .def( "getLocalPosition", &Transformation3D::getLocalPosition )
             .def( "setLocalPositionX", &Transformation3D::setLocalPositionX )
@@ -7168,27 +7195,29 @@ namespace Mengine
             .def_proxy_static( "removeRelationTransformation", nodeScriptMethod, &NodeScriptMethod::Transformation3D_removeRelationTransformation )
             ;
 
-        pybind::interface_<Resource>( kernel, "Resource" )
-            .def( "compile", &Resource::compile )
-            .def( "release", &Resource::release )
-            .def( "isCompile", &Resource::isCompile )
+        pybind::interface_<Compilable>( kernel, "Compilable" )
+            .def_smart_pointer()
+            .def( "compile", &Compilable::compile )
+            .def( "release", &Compilable::release )
+            .def( "isCompile", &Compilable::isCompile )
             ;
 
         pybind::interface_<Reference>( kernel, "Reference" )
+            .def_smart_pointer()
             .def( "incrementReference", &Reference::incrementReference )
             .def( "decrementReference", &Reference::decrementReference )
             .def( "countReference", &Reference::countReference )
             ;
 
-        pybind::interface_<ResourceReference, pybind::bases<Scriptable, Resource, Identity, Reference> >( kernel, "ResourceReference", false )
+        pybind::interface_<Resource, pybind::bases<Scriptable, Compilable, Identity, Reference> >( kernel, "ResourceReference", false )
             .def_smart_pointer()
-            .def( "getCategory", &ResourceReference::getCategory )
-            .def( "getGroup", &ResourceReference::getGroup )
-            .def( "cache", &ResourceReference::cache )
-            .def( "uncache", &ResourceReference::uncache )
+            .def( "getCategory", &Resource::getCategory )
+            .def( "getGroup", &Resource::getGroup )
+            .def( "cache", &Resource::cache )
+            .def( "uncache", &Resource::uncache )
             ;
 
-        pybind::interface_<ResourceImage, pybind::bases<ResourceReference> >( kernel, "ResourceImage", false )
+        pybind::interface_<ResourceImage, pybind::bases<Resource> >( kernel, "ResourceImage", false )
             .def( "setMaxSize", &ResourceImage::setMaxSize )
             .def( "getMaxSize", &ResourceImage::getMaxSize )
             .def( "setSize", &ResourceImage::setSize )
@@ -7207,7 +7236,7 @@ namespace Mengine
             .def( "getColor", &ResourceImage::getColor )
             ;
 
-        pybind::interface_<ResourceImageData, pybind::bases<ResourceReference> >( kernel, "ResourceImageData", false )
+        pybind::interface_<ResourceImageData, pybind::bases<Resource> >( kernel, "ResourceImageData", false )
             .def( "getImagePath", &ResourceImageData::getImagePath )
             .def( "getCodecType", &ResourceImageData::getCodecType )
             .def( "getImageMaxSize", &ResourceImageData::getImageMaxSize )
@@ -7227,7 +7256,7 @@ namespace Mengine
         pybind::interface_<ResourceImageSolid, pybind::bases<ResourceImage> >( kernel, "ResourceImageSolid", false )
             ;
 
-        pybind::interface_<ResourceMovie, pybind::bases<ResourceReference> >( kernel, "ResourceMovie", false )
+        pybind::interface_<ResourceMovie, pybind::bases<Resource> >( kernel, "ResourceMovie", false )
             .def( "getSize", &ResourceMovie::getSize )
             .def( "getLoopSegment", &ResourceMovie::getLoopSegment )
             .def( "getFrameCount", &ResourceMovie::getFrameCount )
@@ -7244,34 +7273,35 @@ namespace Mengine
             .def_proxy_static( "getLayerIn", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_getLayerIn )
             ;
 
-        pybind::interface_<ResourceAnimation, pybind::bases<ResourceReference> >( kernel, "ResourceAnimation", false )
+        pybind::interface_<ResourceAnimation, pybind::bases<Resource> >( kernel, "ResourceAnimation", false )
             ;
 
-        pybind::interface_<ResourceModel3D, pybind::bases<ResourceReference> >( kernel, "ResourceModel3D", false )
+        pybind::interface_<ResourceModel3D, pybind::bases<Resource> >( kernel, "ResourceModel3D", false )
             ;
 
-        pybind::interface_<ResourceVideo, pybind::bases<ResourceReference> >( kernel, "ResourceVideo", false )
+        pybind::interface_<ResourceVideo, pybind::bases<Resource> >( kernel, "ResourceVideo", false )
             ;
 
-        pybind::interface_<ResourceSound, pybind::bases<ResourceReference> >( kernel, "ResourceSound", false )
+        pybind::interface_<ResourceSound, pybind::bases<Resource> >( kernel, "ResourceSound", false )
             ;
 
-        pybind::interface_<ResourceInternalObject, pybind::bases<ResourceReference> >( kernel, "ResourceInternalObject", false )
+        pybind::interface_<ResourceInternalObject, pybind::bases<Resource> >( kernel, "ResourceInternalObject", false )
             ;
 
-        pybind::interface_<ResourceShape, pybind::bases<ResourceReference> >( kernel, "ResourceShape", false )
+        pybind::interface_<ResourceShape, pybind::bases<Resource> >( kernel, "ResourceShape", false )
             .def( "getPolygon", &ResourceShape::getPolygon )
             ;
 
-        pybind::interface_<ResourceWindow, pybind::bases<ResourceReference> >( kernel, "ResourceWindow", false )
+        pybind::interface_<ResourceWindow, pybind::bases<Resource> >( kernel, "ResourceWindow", false )
             ;
 
-        pybind::interface_<ResourceHIT, pybind::bases<ResourceReference> >( kernel, "ResourceHIT", false )
+        pybind::interface_<ResourceHIT, pybind::bases<Resource> >( kernel, "ResourceHIT", false )
             .def( "getWidth", &ResourceHIT::getWidth )
             .def( "getHeight", &ResourceHIT::getHeight )
             ;
 
         pybind::interface_<Renderable>( kernel, "Renderable" )
+            .def_smart_pointer()
             .def( "hide", &Renderable::setHide )
             .def( "isHide", &Renderable::getHide )
             .def( "localHide", &Renderable::setLocalHide )
@@ -7279,6 +7309,7 @@ namespace Mengine
             ;
 
         pybind::interface_<Colorable>( kernel, "Colorable" )
+            .def_smart_pointer()
             .def( "setLocalColor", &Colorable::setLocalColor )
             .def( "getLocalColor", &Colorable::getLocalColor )
             .def( "setLocalColorR", &Colorable::setLocalColorR )
@@ -7297,6 +7328,7 @@ namespace Mengine
             ;
 
         pybind::interface_<Animatable>( kernel, "Animatable" )
+            .def_smart_pointer()
             .def_proxy_static( "play", nodeScriptMethod, &NodeScriptMethod::s_Animatable_play )
             .def( "stop", &Animatable::stop )
             .def( "pause", &Animatable::pause )
@@ -7326,16 +7358,17 @@ namespace Mengine
             ;
 
         pybind::interface_<Eventable>( kernel, "Eventable" )
-            //.def_native( "setEventListener", &Eventable::setEventListener )
-            //.def( "removeEventListener", &Eventable::removeEventListener )
+            .def_smart_pointer()
             ;
 
         pybind::interface_<Soundable>( kernel, "Soundable" )
+            .def_smart_pointer()
             .def( "setVolume", &Soundable::setVolume )
             .def( "getVolume", &Soundable::getVolume )
             ;
 
         pybind::interface_<Affectorable>( kernel, "Affectorable" )
+            .def_smart_pointer()
             .def( "addAffector", &Affectorable::addAffector )
             .def( "stopAffector", &Affectorable::stopAffector )
             .def( "stopAllAffectors", &Affectorable::stopAllAffectors )
@@ -7344,6 +7377,7 @@ namespace Mengine
             ;
 
         pybind::interface_<Materialable>( kernel, "Materialable", false )
+            .def_smart_pointer()
             .def( "setMaterialName", &Materialable::setMaterialName )
             .def( "getMaterialName", &Materialable::getMaterialName )
             .def( "setDisableTextureColor", &Materialable::setDisableTextureColor )
@@ -7352,7 +7386,8 @@ namespace Mengine
             .def( "getBlendMode", &Materialable::getBlendMode )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Resource, Renderable, Affectorable> >( kernel, "Node", false )
+        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Compilable, Renderable, Affectorable> >( kernel, "Node", false )
+            .def_smart_pointer()
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )
@@ -7433,7 +7468,7 @@ namespace Mengine
             .def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )
             ;
 
-        pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable, Resource> >( kernel, "Surface", false )
+        pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable, Compilable> >( kernel, "Surface", false )
             .def_smart_pointer()
             .def( "getMaxSize", &Surface::getMaxSize )
             .def( "getSize", &Surface::getSize )
@@ -7483,6 +7518,7 @@ namespace Mengine
 
 
         pybind::interface_<ThreadTask>( kernel, "Task" )
+            .def_smart_pointer()
             ;
 
         pybind::interface_<RenderViewportInterface>( kernel, "RenderViewportInterface" )
@@ -7497,6 +7533,7 @@ namespace Mengine
             ;
 
         pybind::interface_<RenderCameraInterface>( kernel, "RenderCameraInterface" )
+            .def_smart_pointer()
             ;
 
         pybind::interface_<RenderCameraOrthogonal, pybind::bases<Node, RenderCameraInterface> >( kernel, "RenderCameraOrthogonal", false )
@@ -7537,6 +7574,7 @@ namespace Mengine
 
 
         pybind::interface_<RenderClipplaneInterface>( kernel, "RenderClipplaneInterface", false )
+            .def_smart_pointer()
             .def( "getCount", &RenderClipplaneInterface::getCount )
             .def( "getPlane", &RenderClipplaneInterface::getPlane )
             ;
@@ -7545,82 +7583,11 @@ namespace Mengine
             ;
 
         pybind::interface_<RenderTargetInterface>( kernel, "RenderTargetInterface", false )
+            .def_smart_pointer()
             .def( "getWidth", &RenderTargetInterface::getWidth )
             .def( "getHeight", &RenderTargetInterface::getHeight )
             ;
         {
-
-            //pybind::proxy_<RigidBody3D, pybind::bases<Node>>("RigidBody3D", false)
-            //	.def( "applyForce", &RigidBody3D::applyForce )
-            //	.def( "applyImpulse", &RigidBody3D::applyImpulse )
-            //	.def( "applyAngularImpulse", &RigidBody3D::applyAngularImpulse )
-            //	.def( "applyTorque", &RigidBody3D::applyTorque )
-            //	.def( "setLinearVelocity", &RigidBody3D::setLinearVelocity )
-            //	.def( "setAngularVelocity", &RigidBody3D::setAngularVelocity )
-            //	.def( "setActive", &RigidBody3D::setActive )
-            //	;
-
-            //pybind::proxy_<CapsuleController, pybind::bases<Node>>("CapsuleController", false)
-            //	.def( "move", &CapsuleController::move )
-            //	.def( "setPosition", &CapsuleController::setPosition )
-            //	.def( "getFilteredPosition", &CapsuleController::getFilteredPosition )
-            //	;
-
-            //pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
-            //	.def( "setPosition", &Camera3D::setPosition )
-            //	.def( "lookAt", &Camera3D::lookAt )
-            //	//	.def( "yaw", &Camera3D::yaw )
-            //	//	.def( "pitch", &Camera3D::pitch )
-            //	//	.def( "roll", &Camera3D::roll )
-            //	.def( "getDirection", &Camera3D::getDirection )
-            //	;
-
-            //pybind::proxy_<DiscreteEntity, pybind::bases<SceneNode3D>>("DiscreteEntity", false)
-            //	.def( "createRenderToTexture", &DiscreteEntity::createRenderToTexture )
-            //	.def( "playAnimation", &DiscreteEntity::playAnimation )
-            //	.def( "setMaterial", &DiscreteEntity::setMaterial )
-            //	//.def( "playAnimation", &DiscreteEntity::playAnimation )
-            //	;
-
-            //pybind::interface_<Allocator3D>("Allocator3D", false)
-            //	.def( "scale", &Allocator3D::scale )
-            //	;
-
-            //pybind::proxy_<SceneNode3D, pybind::bases<Node, Allocator3D> >("SceneNode3D", false)
-            //	.def( "yaw", &SceneNode3D::yaw )
-            //	.def( "pitch", &SceneNode3D::pitch )
-            //	.def( "getYaw", &SceneNode3D::getYaw )
-            //	.def( "getPitch", &SceneNode3D::getPitch )
-            //	.def( "yawTime", &SceneNode3D::yawTime )
-            //	.def( "pitchTime", &SceneNode3D::pitchTime )
-            //	.def( "setListener", &SceneNode3D::setListener )
-            //	;
-
-            //pybind::proxy_<Layer3D, pybind::bases<SceneNode3D> >("Layer3D", false)
-            //	//.def( "addCamera", &Layer3D::addCamera )
-            //	//.def( "getCamera", &Layer3D::getCamera )	
-            //	.def( "addController", &Layer3D::addController )
-            //	.def( "getController", &Layer3D::getController )		
-            //	//.def( "getNode", &Layer3D::getNode )
-            //	;
-
-            {
-
-                //pybind::proxy_< RenderMesh, pybind::bases<SceneNode3D> >("RenderMesh", false)
-                //	//.def( "createRenderTarget", &RenderMesh::createRenderTarget )
-                //	//.def( "setMaterial", &RenderMesh::setMaterial )
-                //	;
-
-                //pybind::proxy_<Camera3D, pybind::bases<SceneNode3D> >("Camera3D", false)
-                //	//	.def( "setPosition", &Camera3D::setPosition )
-                //	.def( "lookAt", &Camera3D::lookAt )
-                //	.def( "yaw", &Camera3D::yaw )
-                //	.def( "pitch", &Camera3D::pitch )
-                //	//.def( "roll", &Camera3D::roll )
-                //	//	.def( "getDirection", &Camera3D::getDirection )
-                //	;
-            }
-
             {
                 pybind::interface_<ParticleEmitter2, pybind::bases<Node, Eventable, Animatable> >( kernel, "ParticleEmitter2", false )
                     .def( "setResourceParticle", &ParticleEmitter2::setResourceParticle )
@@ -7744,33 +7711,13 @@ namespace Mengine
                     .def( "removeImageMask", &Layer2D::removeImageMask )
                     ;
 
-                //pybind::interface_<Layer2DParallax, pybind::bases<Layer> >( "Layer2DParallax", false )
-                //	.def( "setParallaxFactor", &Layer2DParallax::setParallaxFactor )
-                //	.def( "getParallaxFactor", &Layer2DParallax::getParallaxFactor )
-                //	.def( "setParallaxLoop", &Layer2DParallax::setParallaxLoop )
-                //	.def( "getParallaxLoop", &Layer2DParallax::getParallaxLoop )
-                //	;
-
                 pybind::interface_<Parallax, pybind::bases<Node> >( kernel, "Parallax", false )
                     .def( "setParallaxFactor", &Parallax::setParallaxFactor )
                     .def( "getParallaxFactor", &Parallax::getParallaxFactor )
                     ;
 
-
-                //pybind::interface_<Layer2DIsometric, pybind::bases<Layer> >( "Layer2DIsometric", false )
-                //	;
-
-                //pybind::interface_<Layer2DPhysic, pybind::bases<Layer2D> >("Layer2DPhysic", false)
-                //    ;
-
-                //pybind::proxy_<Layer2DTexture, pybind::bases<Layer2D> >("Layer2DTexture", false)
-                //	.def( "setCameraOffset", &Layer2DTexture::setCameraOffset )
-                //	.def( "getCameraOffset", &Layer2DTexture::getCameraOffset )
-                //	.def( "setRenderTargetName", &Layer2DTexture::setRenderTargetName )
-                //	.def( "getRenderTargetName", &Layer2DTexture::getRenderTargetName )
-                //	;
-
                 pybind::interface_<MousePickerTrapInterface>( kernel, "MousePickerTrap", false )
+                    .def_smart_pointer()
                     .def( "pick", &MousePickerTrapInterface::pick )
                     ;
 

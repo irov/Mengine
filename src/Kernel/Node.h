@@ -3,7 +3,7 @@
 #include "Kernel/Identity.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Eventable.h"
-#include "Kernel/Resource.h"
+#include "Kernel/Compilable.h"
 //#include "Kernel/GlobalHandleAdapter.h"
 #include "Kernel/Updatable.h"
 #include "Kernel/Renderable.h"
@@ -38,7 +38,7 @@ namespace Mengine
         : public stdex::intrusive_slug_linked_ptr<Node>
 		, public Factorable
         , public Identity
-		, public Resource
+		, public Compilable
 		, public Updatable
 		, public Renderable
 		, public BoundingBox
@@ -169,10 +169,7 @@ namespace Mengine
 
 	public:
 		void visitChildren( Visitor * _visitor );
-
-	public:
-		void destroy() override;
-
+        
 	protected:
 		void _destroy() override;
 	
@@ -232,7 +229,7 @@ namespace Mengine
 		void updateChildren_( float _current, float _timing );
 		
 	public:
-		virtual MousePickerTrapInterface * getPickerTrap();
+		virtual MousePickerTrapInterfacePtr getPickerTrap();
 
 	protected:
 		bool m_active;
@@ -253,21 +250,6 @@ namespace Mengine
 
 	protected:
 		void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
-
-	public:
-		void setShallowGrave(); //Shallow Grave prevents any damage from killing the targetted hero. 
-		void removeShallowGrave();
-
-		bool isShallowGrave() const;
-
-		void setShallowGravePropagate( bool _propagate );
-
-	protected:
-		virtual void _unshallowGrave();
-
-	protected:
-		int m_shallowGrave;
-		bool m_shallowGravePropagate;
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Node> NodePtr;

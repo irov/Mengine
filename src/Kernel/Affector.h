@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Lambda.h"
+
 #include "Kernel/AffectorType.h"
 
 #include "Kernel/Scriptable.h"
@@ -98,69 +100,33 @@ namespace Mengine
 		AffectorCallbackPtr m_cb;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class MA>
-	class MemeberAffector
+	template<class L>
+	class LambdaAffector
 		: public CallbackAffector
 	{
 	public:
-		MemeberAffector()
-			: m_method( nullptr )
+		LambdaAffector()
 		{
 		}
 
-		void setup( const IntrusivePtr<C> & _self, M _method, const MA & _argument )
+		void setup( const L & _lambda )
 		{
-			m_self = _self;
-			m_method = _method;
-			m_argument = _argument;
+			m_lambda = _lambda;
 		}
 
 		template<class T>
 		void update( const T & _value )
 		{
-            C * self_ptr = m_self.get();
-
-            (self_ptr->*m_method)(m_argument, _value);
+            m_lambda( _value );
 		}
 
 	protected:
-		IntrusivePtr<C> m_self;
-		M m_method;
-		MA m_argument;
+		L m_lambda;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	template<class C, class M>
-	class MemeberAffector<C, M, void>
-		: public CallbackAffector
-	{
-	public:
-		MemeberAffector()
-			: m_method( nullptr )
-		{
-		}
-
-		void setup( const IntrusivePtr<C> & _self, M _method )
-		{
-			m_self = _self;
-			m_method = _method;
-		}
-
-		template<class T>
-		void update( const T & _value )
-		{
-            C * self_ptr = m_self.get();
-
-            (self_ptr->*m_method)(_value);
-		}
-
-	protected:
-        IntrusivePtr<C> m_self;
-		M m_method;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class MA, class T, template<class> class Accumulator>
-	class MemberAffectorAccumulate
-		: public MemeberAffector<C, M, MA>
+	template<class L, class T, template<class> class Accumulator>
+	class LambdaAffectorAccumulate
+		: public LambdaAffector<L>
 	{
 	protected:
 		bool _affect( float _timing ) override
@@ -189,9 +155,9 @@ namespace Mengine
 		Accumulator<T> m_accumulator;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class MA, class T, class Interpolator>
-	class MemberAffectorInterpolate
-		: public MemeberAffector<C, M, MA>
+	template<class L, class T, class Interpolator>
+	class LambdaAffectorInterpolate
+		: public LambdaAffector<L>
 	{
 	protected:
 		bool _affect( float _timing ) override
@@ -220,16 +186,16 @@ namespace Mengine
 		Interpolator m_interpolator;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class T, class MA>
-	class MemberAffectorAccumulateLinear
-		: public MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>
+	template<class L, class T>
+	class LambdaAffectorAccumulateLinear
+		: public LambdaAffectorAccumulate<L, T, ValueAccumulateLinear>
 	{
 	public:
-		bool initialize( const IntrusivePtr<C> & _self, M _method, const MA & _argument, const T & _start, const T & _dir, float _speed )
+		bool initialize( const L & _lambda, const T & _start, const T & _dir, float _speed )
 		{
-			MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>::setup( _self, _method, _argument );
+            LambdaAffectorAccumulate<L, T, ValueAccumulateLinear>::setup( _lambda );
 
-			if( MemberAffectorAccumulate<C, M, MA, T, ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed ) == false )
+			if( LambdaAffectorAccumulate<L, T, ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed ) == false )
 			{
 				return false;
 			}
@@ -238,103 +204,59 @@ namespace Mengine
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class T>
-	class MemberAffectorAccumulateLinear<C, M, T, void>
-		: public MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>
+	template<class L, class T>
+	class LambdaAffectorInterpolateLinear
+		: public LambdaAffectorInterpolate<L, T, ValueInterpolatorLinear<T> >
 	{
 	public:
-		bool initialize( const IntrusivePtr<C> & _self, M _method, const T & _start, const T & _dir, float _speed )
+		bool initialize( const L & _lambda, const T & _start, const T & _end, float _time )
 		{
-			MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>::setup( _self, _method );
+            LambdaAffectorInterpolate<L, T, ValueInterpolatorLinear<T> >::setup( _lambda );
 
-			if( MemberAffectorAccumulate<C, M, void, T, ValueAccumulateLinear>::m_accumulator.start( _start, _dir, _speed ) == false )
-			{
-				return false;
-			}
+            bool successful = LambdaAffectorInterpolate<L, T, ValueInterpolatorLinear<T> >::m_interpolator.start( _start, _end, _time );
 
-			return true;
+			return successful;
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class T, class MA>
-	class MemberAffectorInterpolateLinear
-		: public MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >
+	template<class L, class T>
+	class LambdaAffectorInterpolateQuadratic
+		: public LambdaAffectorInterpolate<L, T, ValueInterpolatorQuadratic<T> >
 	{
 	public:
-		bool initialize( const IntrusivePtr<C> & _self, M _method, const MA & _argument, const T & _start, const T & _end, float _time )
+		bool initialize( const L & _lambda, const T & _start, const T & _end, const T & _v0, float _time )
 		{
-			MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >::setup( _self, _method, _argument );
+            LambdaAffectorInterpolate<L, T, ValueInterpolatorQuadratic<T> >::setup( _lambda );
 
-			if( MemberAffectorInterpolate<C, M, MA, T, ValueInterpolatorLinear<T> >::m_interpolator.start( _start, _end, _time ) == false )
-			{
-				return false;
-			}
+            bool successful = LambdaAffectorInterpolate<L, T, ValueInterpolatorQuadratic<T> >::m_interpolator.start( _start, _end, _v0, _time );
 
-			return true;
+			return successful;
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class T>
-	class MemberAffectorInterpolateLinear<C, M, T, void>
-		: public MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >
+	template<class L, class T, size_t N>
+	class LambdaAffectorInterpolateBezier
+		: public LambdaAffectorInterpolate<L, T, ValueInterpolatorBezier<T, N> >
 	{
 	public:
-		bool initialize( const IntrusivePtr<C> & _self, M _method, const T & _start, const T & _end, float _time )
+		bool initialize( const L & _lambda, const T & _start, const T & _end, const T * _v, float _time )
 		{
-			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >::setup( _self, _method );
+            LambdaAffectorInterpolate<L, T, ValueInterpolatorBezier<T, N> >::setup( _lambda );
 
-			if( MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorLinear<T> >::m_interpolator.start( _start, _end, _time ) == false )
-			{
-				return false;
-			}
+            bool successful = LambdaAffectorInterpolate<L, T, ValueInterpolatorBezier<T, N> >::m_interpolator.start( _start, _end, _v, _time );
 
-			return true;
-		}
-	};
-	//////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class T>
-	class MemberAffectorInterpolateQuadratic
-		: public MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorQuadratic<T> >
-	{
-	public:
-		bool initialize( const IntrusivePtr<C> & _self, M _method, const T & _start, const T & _end, const T & _v0, float _time )
-		{
-			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorQuadratic<T> >::setup( _self, _method );
-
-			if( MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorQuadratic<T> >::m_interpolator.start( _start, _end, _v0, _time ) == false )
-			{
-				return false;
-			}
-
-			return true;
-		}
-	};
-	//////////////////////////////////////////////////////////////////////////
-	template<class C, class M, class T, size_t N>
-	class MemberAffectorInterpolateBezier
-		: public MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >
-	{
-	public:
-		bool initialize( const IntrusivePtr<C> & _self, M _method, const T & _start, const T & _end, const T * _v, float _time )
-		{
-			MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >::setup( _self, _method );
-
-			if( MemberAffectorInterpolate<C, M, void, T, ValueInterpolatorBezier<T, N> >::m_interpolator.start( _start, _end, _v, _time ) == false )
-			{
-				return false;
-			}
-
-			return true;
+            return successful;
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
 	namespace NodeAffectorCreator
 	{
-		template<class C, class M, class T>
+		template<class T>
 		class NodeAffectorCreatorAccumulateLinear
 		{
 		public:
-			typedef MemberAffectorAccumulateLinear<C, M, T, void> AffectorType;
+            typedef Lambda<void( T )> LambdaType;
+			typedef LambdaAffectorAccumulateLinear<LambdaType, T> AffectorType;
             typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
@@ -348,8 +270,8 @@ namespace Mengine
             }
 
 		public:
-			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
-				, const IntrusivePtr<C> & _self, M _method
+            AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
+                , const LambdaType & _lambda
 				, const T & _pos, const T & _dir, float _speed )
 			{
 				AffectorTypePtr affector = m_factory->createObject();
@@ -358,7 +280,7 @@ namespace Mengine
 
 				affector->setCallback( _cb );
 
-				if( affector->initialize( _self, _method, _pos, _dir, _speed ) == false )
+				if( affector->initialize( _lambda, _pos, _dir, _speed ) == false )
 				{
 					return nullptr;
 				}
@@ -372,11 +294,12 @@ namespace Mengine
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		template<class C, class M, class T, class MA = void>
+		template<class T>
 		class NodeAffectorCreatorInterpolateLinear
 		{
 		public:
-			typedef MemberAffectorInterpolateLinear<C, M, T, MA> AffectorType;
+            typedef Lambda<void( T )> LambdaType;
+            typedef LambdaAffectorInterpolateLinear<LambdaType, T> AffectorType;
             typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
@@ -391,7 +314,7 @@ namespace Mengine
 
 		public:
 			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
-				, const IntrusivePtr<C> & _self, M _method, const MA & _argument
+				, const LambdaType & _lambda
 				, const T & _start, const T & _end, float _time )
 			{
 				AffectorTypePtr affector = m_factory->createObject();
@@ -400,7 +323,7 @@ namespace Mengine
 
 				affector->setCallback( _cb );
 
-				if( affector->initialize( _self, _method, _argument, _start, _end, _time ) == false )
+                if( affector->initialize( _lambda, _start, _end, _time ) == false )
 				{
 					return nullptr;
 				}
@@ -414,53 +337,12 @@ namespace Mengine
             FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		template<class C, class M, class T>
-		class NodeAffectorCreatorInterpolateLinear<C, M, T, void>
-		{
-		public:
-			typedef MemberAffectorInterpolateLinear<C, M, T, void> AffectorType;
-            typedef IntrusivePtr<AffectorType> AffectorTypePtr;
-
-        public:
-            NodeAffectorCreatorInterpolateLinear()
-            {
-                m_factory = new FactoryPool<AffectorType, 16>();
-            }                       
-
-            virtual ~NodeAffectorCreatorInterpolateLinear()
-            {
-            }
-            
-		public:
-			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
-				, const IntrusivePtr<C> & _self, M _method
-				, const T & _start, const T & _end, float _time )
-			{
-                AffectorTypePtr affector = m_factory->createObject();
-
-				affector->setAffectorType( _type );
-
-				affector->setCallback( _cb );
-
-				if( affector->initialize( _self, _method, _start, _end, _time ) == false )
-				{
-					return nullptr;
-				}
-
-				affector->update( _start );
-
-				return affector;
-			}
-
-		protected:
-			FactoryPtr m_factory;
-		};
-		//////////////////////////////////////////////////////////////////////////
-		template<class C, class M, class T>
+		template<class T>
 		class NodeAffectorCreatorInterpolateQuadratic
 		{
 		public:
-			typedef MemberAffectorInterpolateQuadratic<C, M, T> AffectorType;
+            typedef Lambda<void( T )> LambdaType;
+			typedef LambdaAffectorInterpolateQuadratic<LambdaType, T> AffectorType;
             typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
@@ -475,7 +357,7 @@ namespace Mengine
 
 		public:
 			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
-				, const IntrusivePtr<C> & _self, M _method
+				, const LambdaType & _lambda
 				, const T & _start, const T & _end, const T & _v0, float _time )
 			{
                 AffectorTypePtr affector = m_factory->createObject();
@@ -484,7 +366,7 @@ namespace Mengine
 
 				affector->setCallback( _cb );
 
-				if( affector->initialize( _self, _method, _start, _end, _v0, _time ) == false )
+				if( affector->initialize( _lambda, _start, _end, _v0, _time ) == false )
 				{
 					return nullptr;
 				}
@@ -498,11 +380,12 @@ namespace Mengine
 			FactoryPtr m_factory;
 		};
 		//////////////////////////////////////////////////////////////////////////
-		template<class C, class M, class T, size_t N>
+        template<class T, size_t N>
 		class NodeAffectorCreatorInterpolateBezier
 		{
 		public:
-			typedef MemberAffectorInterpolateBezier<C, M, T, N> AffectorType;
+            typedef Lambda<void( T )> LambdaType;
+            typedef LambdaAffectorInterpolateBezier<LambdaType, T, N> AffectorType;
             typedef IntrusivePtr<AffectorType> AffectorTypePtr;
 
         public:
@@ -517,7 +400,7 @@ namespace Mengine
 
 		public:
 			AffectorPtr create( EAffectorType _type, const AffectorCallbackPtr & _cb
-				, const IntrusivePtr<C> & _self, M _method
+				, const LambdaType & _lambda
 				, const T & _start, const T & _end, const T * _v, float _time )
 			{
                 AffectorTypePtr affector = m_factory->createObject();
@@ -526,7 +409,7 @@ namespace Mengine
 
 				affector->setCallback( _cb );
 
-				if( affector->initialize( _self, _method, _start, _end, _v, _time ) == false )
+                if( affector->initialize( _lambda, _start, _end, _v, _time ) == false )
 				{
 					return nullptr;
 				}

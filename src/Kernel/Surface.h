@@ -7,7 +7,7 @@
 #include "Kernel/Visitable.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Materialable.h"
-#include "Kernel/Resource.h"
+#include "Kernel/Compilable.h"
 
 #include "math/vec2.h"
 #include "math/uv4.h"
@@ -21,7 +21,7 @@ namespace Mengine
         , public Visitable
         , public Scriptable
         , public Materialable
-        , public Resource
+        , public Compilable
 	{
         DECLARE_VISITABLE_BASE();
 

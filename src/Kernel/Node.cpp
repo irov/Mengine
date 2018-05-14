@@ -1,6 +1,7 @@
 #include "Kernel/Node.h"
 
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/MousePickerSystemInterface.h"
 #include "Interface/NodeInterface.h"
 
 #include "Logger/Logger.h"
@@ -22,62 +23,11 @@ namespace Mengine
 		, m_renderViewport(nullptr)
 		, m_renderClipplane(nullptr)
 		, m_renderTarget(nullptr)
-		, m_shallowGrave(0)
-		, m_shallowGravePropagate(false)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Node::~Node()
 	{		
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setShallowGrave()
-    {
-        ++m_shallowGrave;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::removeShallowGrave()
-    {
-        --m_shallowGrave;
-
-		if( m_shallowGrave == 0 && m_shallowGravePropagate == true )
-		{
-			this->_unshallowGrave();
-		}
-    }    
-    //////////////////////////////////////////////////////////////////////////
-    bool Node::isShallowGrave() const
-    {
-        return m_shallowGrave > 0;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	void Node::setShallowGravePropagate( bool _propagate )
-	{
-		m_shallowGravePropagate = _propagate;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::_unshallowGrave()
-	{
-		this->setShallowGravePropagate( false );
-
-		Factorable::destroy();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Node::destroy()
-	{
-		if( this->isShallowGrave() == true )
-		{
-			NODE_SERVICE()
-				->addHomeless( this );
-
-			this->release();
-
-			this->setShallowGravePropagate( true );
-
-			return;
-		}
-
-		Factorable::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_destroy()
@@ -112,7 +62,7 @@ namespace Mengine
 			return false;
 		}
 
-        this->setShallowGrave();
+        stdex::intrusive_this_acquire( this );
 
 		m_active = true;
 
@@ -140,7 +90,7 @@ namespace Mengine
 
 		this->_afterActivate();
 
-		this->removeShallowGrave();
+        stdex::intrusive_this_release( this );
 
 		return m_active;
 	}
@@ -170,8 +120,6 @@ namespace Mengine
 
 		m_afterActive = false;
 
-        this->setShallowGrave();
-
 		this->_deactivate();
 
 		NodePtr single = m_children.single();
@@ -198,8 +146,6 @@ namespace Mengine
 		this->_afterDeactivate();		
 
 		m_invalidateRendering = true;
-
-		this->removeShallowGrave();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::enable()
@@ -229,7 +175,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::disable()
 	{
-        this->setShallowGrave();
+        stdex::intrusive_this_acquire( this );
 
         this->deactivate();
 
@@ -237,7 +183,7 @@ namespace Mengine
 
 		m_enable = false;
 
-		this->removeShallowGrave();
+        stdex::intrusive_this_release( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setParent_( Node * _parent )
@@ -285,15 +231,11 @@ namespace Mengine
                 continue;
             }
 
-			node->setShallowGrave();
-
 			node->release();
 
             node->setParent_( nullptr );
 
 			m_children.erase( it_node );
-
-			node->removeShallowGrave();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -384,17 +326,15 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     void Node::addChild_( TListNodeChild::iterator _insert, const NodePtr & _node )
 	{
-		Node * parent = _node->getParent();
+		NodePtr parent = _node->getParent();
 
-		this->setShallowGrave();
-        _node->setShallowGrave();
-
+        stdex::intrusive_this_acquire( this );
+               
 		if( parent == this )
 		{
 			if( *_insert == _node )
 			{
-				this->removeShallowGrave();
-				_node->removeShallowGrave();
+                stdex::intrusive_this_release( this );
 
 				return;
 			}
@@ -438,8 +378,7 @@ namespace Mengine
 		_node->invalidateWorldMatrix();
 		_node->invalidateColor();
 
-		this->removeShallowGrave();
-        _node->removeShallowGrave();
+        stdex::intrusive_this_release( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::insertChild_( TListNodeChild::iterator _insert, const NodePtr & _node )
@@ -457,7 +396,7 @@ namespace Mengine
 	{
 		this->visit( _visitor );
 
-		this->setShallowGrave();
+        stdex::intrusive_this_acquire( this );
 
 		NodePtr single_child = m_children.single();
 
@@ -477,7 +416,7 @@ namespace Mengine
 			}
 		}
 
-		this->removeShallowGrave();
+        stdex::intrusive_this_release( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::removeChild( const NodePtr & _node )
@@ -747,7 +686,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_freeze( bool _value )
 	{
-		this->setShallowGrave();
+        stdex::intrusive_this_acquire( this );
 
 		for( TSlugChild it(m_children); it.eof() == false; )
 		{
@@ -758,7 +697,7 @@ namespace Mengine
 			node->freeze( _value );
 		}
 
-		this->removeShallowGrave();
+        stdex::intrusive_this_release( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setSpeedFactor( float _speedFactor )
@@ -785,7 +724,7 @@ namespace Mengine
 
 		float total_timing = _timing * m_speedFactor;
 
-		this->setShallowGrave();
+        stdex::intrusive_this_acquire( this );
 
 		this->_update( _current, total_timing );
 
@@ -793,7 +732,7 @@ namespace Mengine
 		
 		this->updateChildren_( _current, total_timing );
 
-		this->removeShallowGrave();
+        stdex::intrusive_this_release( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::updateChildren_( float _current, float _timing )
@@ -850,7 +789,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::compile()
 	{
-		bool result = Resource::compile();
+		bool result = Compilable::compile();
 
 		m_invalidateRendering = true;
 
@@ -859,8 +798,6 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::release()
 	{
-        this->setShallowGrave();
-
 		if( this->isActivate() == true )
 		{
 			this->deactivate();
@@ -884,11 +821,9 @@ namespace Mengine
 			}
 		}
 
-		Resource::release();
+		Compilable::release();
 
 		this->updateRendering_();
-
-        this->removeShallowGrave();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_recompile()
@@ -1266,7 +1201,7 @@ namespace Mengine
         return solid;
     }
 	//////////////////////////////////////////////////////////////////////////
-	MousePickerTrapInterface * Node::getPickerTrap()
+    MousePickerTrapInterfacePtr Node::getPickerTrap()
 	{
 		return nullptr;
 	}

@@ -23,14 +23,14 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    ServiceInterface * ServiceProvider::generateService( TServiceProviderGenerator _generator )
+    ServiceInterfacePtr ServiceProvider::generateService( TServiceProviderGenerator _generator )
     {
         if( _generator == nullptr )
         {
             return nullptr;
         }
 
-        ServiceInterface * service;
+        ServiceInterfacePtr service;
         if( (*_generator)(&service) == false )
         {
             return nullptr;
@@ -46,7 +46,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ServiceProvider::initializeService( TServiceProviderGenerator _generator )
 	{
-		ServiceInterface * service = this->generateService( _generator );
+		ServiceInterfacePtr service = this->generateService( _generator );
 		
         if( service == nullptr )
 		{
@@ -75,7 +75,7 @@ namespace Mengine
 			else
 			{
 				desc.service->finalize();
-				desc.service->destroy();
+				desc.service = nullptr;
 			}
 
 			desc.service = service;
@@ -127,7 +127,6 @@ namespace Mengine
 			}
 
 			desc.service->finalize();
-			desc.service->destroy();
 			desc.service = nullptr;
 
 			return true;
@@ -158,7 +157,7 @@ namespace Mengine
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ServiceInterface * ServiceProvider::getService( const char * _name ) const
+	const ServiceInterfacePtr & ServiceProvider::getService( const char * _name ) const
 	{
 		for( uint32_t index = 0; index != SERVICE_PROVIDER_COUNT; ++index )
 		{
@@ -177,7 +176,7 @@ namespace Mengine
 			return desc.service;
 		}
 
-		return nullptr;
+		return ServiceInterfacePtr::none();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ServiceProvider::destroy()
@@ -203,7 +202,6 @@ namespace Mengine
                 continue;
             }
 
-            desc.service->destroy();
             desc.service = nullptr;
         }
 	}

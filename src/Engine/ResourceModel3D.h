@@ -2,16 +2,16 @@
 
 #include "Interface/Model3DInterface.h"
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "Kernel/ResourceImage.h"
 
 namespace Mengine
 {
 	class ResourceModel3D
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceModel3D();

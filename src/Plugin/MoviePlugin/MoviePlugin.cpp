@@ -332,7 +332,7 @@ namespace Mengine
             ;
 
 
-        pybind::interface_<ResourceMovie2, pybind::bases<ResourceReference> >( kernel, "ResourceMovie2", false )
+        pybind::interface_<ResourceMovie2, pybind::bases<Resource> >( kernel, "ResourceMovie2", false )
             .def( "hasComposition", &ResourceMovie2::hasComposition )
             .def( "getCompositionDuration", &ResourceMovie2::getCompositionDuration )
             .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )

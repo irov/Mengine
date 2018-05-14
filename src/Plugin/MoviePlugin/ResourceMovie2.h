@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 #include "Core/ColourValue.h"
 
 #include "math/mat4.h"
@@ -41,9 +41,9 @@ namespace Mengine
     };
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceMovie2
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceMovie2();
@@ -80,13 +80,13 @@ namespace Mengine
 
     public:        
         void storeResource_( const ResourceReferencePtr & _resource );
-        ResourceReference * getResource_( const ae_string_t _name );
+        Resource * getResource_( const ae_string_t _name );
 
 	public:
-		ResourceReference * createResourceImage_( const aeMovieResourceImage * _resource );
-		ResourceReference * createResourceVideo_( const aeMovieResourceVideo * _resource );
-		ResourceReference * createResourceSound_( const aeMovieResourceSound * _resource );
-        ResourceReference * createResourceParticle_( const aeMovieResourceParticle * _resource );
+		Resource * createResourceImage_( const aeMovieResourceImage * _resource );
+		Resource * createResourceVideo_( const aeMovieResourceVideo * _resource );
+		Resource * createResourceSound_( const aeMovieResourceSound * _resource );
+        Resource * createResourceParticle_( const aeMovieResourceParticle * _resource );
 
 	protected:
         const aeMovieInstance * m_movieInstance;

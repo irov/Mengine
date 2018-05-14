@@ -71,7 +71,7 @@ namespace Mengine
 		bool isMousePickerOver() const;
 
 	public:
-		MousePickerTrapInterface * getPickerTrap() override;
+        MousePickerTrapInterfacePtr getPickerTrap() override;
 
 	public:
 		void setDefaultHandle( bool _handle );

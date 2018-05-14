@@ -29,6 +29,8 @@ namespace Mengine
         friend class ServiceProvider;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ServiceInterface> ServiceInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
@@ -55,17 +57,19 @@ namespace Mengine
                 }
 #endif
 
-                ServiceInterface * service = serviceProvider->getService( serviceName );
+                const ServiceInterfacePtr & service = serviceProvider->getService( serviceName );
+
+                ServiceInterface * service_ptr = service.get();
 
 #ifndef NDEBUG
-                if( service == nullptr )
+                if( service_ptr == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service %s not found"
                         , serviceName
                         );
                 }
 
-                if( dynamic_cast<T *>(service) == nullptr )
+                if( dynamic_cast<T *>(service_ptr) == nullptr )
                 {
                     MENGINE_THROW_EXCEPTION_FL( _file, _line )("Service %s invalid cast to %s"
                         , serviceName
@@ -74,7 +78,7 @@ namespace Mengine
                 }
 #endif
 
-                s_service = static_cast<T *>(service);
+                s_service = static_cast<T *>(service_ptr);
             }
 
             return s_service;
@@ -120,14 +124,14 @@ namespace Mengine
     protected:
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_FACTORY( Name, Implement )\
-    bool SERVICE_NAME_CREATE(Name)(Mengine::ServiceInterface**_service){\
+    bool SERVICE_NAME_CREATE(Name)(Mengine::ServiceInterfacePtr*_service){\
     if(_service==nullptr){return false;}\
 	try{*_service=new Implement();}catch(...){return false;}\
     return true;}\
 	struct __mengine_dummy_factory##Name{}
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_EXTERN(Name)\
-	extern bool SERVICE_NAME_CREATE( Name )(Mengine::ServiceInterface**);
+	extern bool SERVICE_NAME_CREATE( Name )(Mengine::ServiceInterfacePtr*);
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_CREATE( Name )\
 	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name))

@@ -4,14 +4,14 @@
 
 #include "Core/ServantBase.h"
 
-#include "Kernel/Resource.h"
+#include "Kernel/Compilable.h"
 #include "Kernel/Reference.h"
 
 namespace Mengine
 {
 	class FontBase
 		: public ServantBase<TextFontInterface>
-		, public Resource
+		, public Compilable
 		, public Reference
 	{
 	public:

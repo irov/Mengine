@@ -1398,8 +1398,8 @@ namespace Mengine
 
         Camera & c = it_found->second;
 
-        c.projection->destroy();
-        c.viewport->destroy();
+        c.projection = nullptr;
+        c.viewport = nullptr;
 
         m_cameras.erase( it_found );
 
@@ -1735,7 +1735,7 @@ namespace Mengine
         aeMovieRenderMesh mesh;
         while( ae_compute_movie_mesh( m_composition, &compute_movie_mesh_iterator, &mesh ) == AE_TRUE )
         {
-            ResourceReference * resource_reference = reinterpret_node_cast<ResourceReference *>(mesh.resource_data);
+            Resource * resource_reference = reinterpret_node_cast<Resource *>(mesh.resource_data);
 
             RenderState state;
 

@@ -92,7 +92,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const char * _file, uint32_t _line )
     {
-        Win32ThreadMutex * mutex = m_factoryWin32ThreadMutex->createObject();
+        Win32ThreadMutexPtr mutex = m_factoryWin32ThreadMutex->createObject();
 
 		mutex->initialize( _file, _line );
 

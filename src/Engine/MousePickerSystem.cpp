@@ -93,7 +93,7 @@ namespace Mengine
 		protected:
 			void accept( const NodePtr & _node )
 			{
-				MousePickerTrapInterface * trap = _node->getPickerTrap();
+                MousePickerTrapInterfacePtr trap = _node->getPickerTrap();
 
 				if( trap == nullptr )
 				{
@@ -141,6 +141,28 @@ namespace Mengine
 		, m_invalidateTraps( false )
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    MousePickerSystem::~MousePickerSystem()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MousePickerSystem::_initialize()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MousePickerSystem::_finalize()
+    {
+        m_arrow = nullptr;
+        m_scene = nullptr;
+
+        m_viewport = nullptr;
+        m_camera = nullptr;
+        m_clipplane = nullptr;
+
+        m_pickerTrapState.clear();
+        m_states.clear();
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::setBlock( bool _value )
 	{

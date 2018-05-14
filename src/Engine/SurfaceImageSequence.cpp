@@ -74,13 +74,11 @@ namespace Mengine
 
                 EVENTABLE_METHOD( this, EVENT_SURFACE_IMAGESEQUENCE_FRAME_END )
                     ->onSurfaceImageSequenceFrameEnd( m_currentFrame );
-				//EVENTABLE_CALL( this, EVENT_FRAME_END )(this, m_currentFrame);
 				
 				++m_currentFrame;
 
                 EVENTABLE_METHOD( this, EVENT_SURFACE_IMAGESEQUENCE_FRAME_TICK )
                     ->onSurfaceImageSequenceFrameTick( m_currentFrame, frameCount );
-				//EVENTABLE_CALL( this, EVENT_FRAME_TICK )(this, m_currentFrame, frameCount);
 
                 if( m_currentFrame == frameCount )
                 {
@@ -243,8 +241,6 @@ namespace Mengine
         
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
             ->onAnimatableStop( _enumerator );
-		//EVENTABLE_CALL( this, EVENT_ANIMATION_END )(this, _enumerator, false);
-		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceImageSequence::_end( uint32_t _enumerator )
@@ -260,8 +256,6 @@ namespace Mengine
         
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
             ->onAnimatableEnd( _enumerator );
-		//EVENTABLE_CALL( this, EVENT_ANIMATION_END )(this, _enumerator, true);
-		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t SurfaceImageSequence::getFrame_( float _timing, float & _delthaTiming ) const

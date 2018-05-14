@@ -79,7 +79,7 @@ namespace Mengine
 			m_elementCb.call( false, ED_ALL, i, el.node, el.id );
 
 			el.node->setImmortal( false );
-			el.node->destroy();
+            el.node = nullptr;
 		}
 
 		m_elements.clear();

@@ -276,8 +276,6 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
             ->onAnimatableStop( _enumerator );
-		//EVENTABLE_CALL( this, EVENT_VIDEO_END )(this, _enumerator, false);
-		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_end( uint32_t _enumerator )
@@ -288,8 +286,6 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
             ->onAnimatableEnd( _enumerator );
-		//EVENTABLE_CALL( this, EVENT_VIDEO_END )(this, _enumerator, true);
-		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceVideo::_play( uint32_t _enumerator, float _time )

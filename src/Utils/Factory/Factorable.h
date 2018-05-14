@@ -34,7 +34,7 @@ namespace Mengine
     public:
         void setImmortal( bool _value );
 
-    protected:
+    private:
 		void destroy() override;
 
     protected:

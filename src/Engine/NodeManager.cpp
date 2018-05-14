@@ -3,6 +3,8 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/PrototypeManagerInterface.h"
 
+#include "Factory/FactorableUnique.h"
+
 #include "Logger/Logger.h"
 
 #include "Kernel/Node.h"
@@ -22,7 +24,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeManager::_initialize()
     {
-        m_homeless = new Node();
+        m_homeless = new FactorableUnique<Node>();
 
 		if( m_homeless == nullptr )
 		{

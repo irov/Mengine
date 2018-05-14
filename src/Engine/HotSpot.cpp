@@ -58,7 +58,7 @@ namespace Mengine
 		return picked;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	MousePickerTrapInterface * HotSpot::getPickerTrap()
+    MousePickerTrapInterfacePtr HotSpot::getPickerTrap()
 	{
 		return this;
 	}
@@ -119,7 +119,6 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_ACTIVATE )
             ->onHotSpotActivate();
-		//EVENTABLE_CALL(this, EVENT_ACTIVATE)();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::deactivatePicker_()
@@ -156,7 +155,6 @@ namespace Mengine
         
         EVENTABLE_METHOD( this, EVENT_DEACTIVATE )
             ->onHotSpotDeactivate();
-		//EVENTABLE_CALL( this, EVENT_DEACTIVATE )();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onHandleMouseLeave()
@@ -165,7 +163,6 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_MOUSE_LEAVE )
             ->onHotSpotMouseLeave();
-		//EVENTABLE_CALL( this, EVENT_MOUSE_LEAVE )(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpot::onHandleMouseOverDestroy()
@@ -174,7 +171,6 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_MOUSE_OVER_DESTROY )
             ->onHotSpotMouseOverDestroy();
-		//EVENTABLE_CALL( this, EVENT_MOUSE_OVER_DESTROY )(this);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool HotSpot::onHandleMouseEnter( float _x, float _y )
@@ -183,7 +179,6 @@ namespace Mengine
 
 		bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_ENTER, m_defaultHandle )
             ->onHotSpotMouseEnter( _x, _y );
-		//EVENTABLE_ASK( this, EVENT_MOUSE_ENTER, handle )(this, _x, _y);
 
 		return handle;
 	}
@@ -194,7 +189,6 @@ namespace Mengine
 				
         bool handle = EVENTABLE_METHODR( this, EVENT_KEY, m_defaultHandle )
             ->onHotSpotKey( _event );
-		//EVENTABLE_ASK( this, EVENT_KEY, handle )(this, (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
 
 		return handle;
 	}
@@ -205,7 +199,6 @@ namespace Mengine
 
 		bool handle = EVENTABLE_METHODR( this, EVENT_TEXT, m_defaultHandle )
 			->onHotSpotText( _event );
-		//EVENTABLE_ASK( this, EVENT_KEY, handle )(this, (uint32_t)_event.key, _event.x, _event.y, _event.code, _event.isDown, _event.isRepeat);
 
 		return handle;
 	}
@@ -216,7 +209,6 @@ namespace Mengine
 
         bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON, m_defaultHandle )
             ->onHotSpotMouseButton( _event );
-		//EVENTABLE_ASK( this, EVENT_MOUSE_BUTTON, handle )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
 
 		return handle;
 	}
@@ -225,7 +217,6 @@ namespace Mengine
 	{
         bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON_BEGIN, false )
             ->onHotSpotMouseButtonBegin( _event );
-		//EVENTABLE_CALL( this, EVENT_MOUSE_BUTTON_BEGIN )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
 
 		return handle;
 	}
@@ -234,7 +225,6 @@ namespace Mengine
 	{
         bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON_END, false )
             ->onHotSpotMouseButtonEnd( _event );
-		//EVENTABLE_CALL( this, EVENT_MOUSE_BUTTON_END )(this, _event.touchId, _event.x, _event.y, _event.button, _event.isDown, _event.isPressed);
 
 		return handle;
 	}
@@ -243,9 +233,6 @@ namespace Mengine
 	{
         bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_MOVE, m_defaultHandle )
             ->onHotSpotMouseMove( _event );
-		//bool handle = m_defaultHandle;
-
-		//EVENTABLE_ASK( this, EVENT_MOUSE_MOVE, handle )(this, _event.touchId, _event.x, _event.y, _event.dx, _event.dy);
 
 		return handle;
 	}
@@ -254,9 +241,6 @@ namespace Mengine
 	{
         bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_WHEEL, m_defaultHandle )
             ->onHotSpotMouseWheel( _event );
-		//bool handle = m_defaultHandle;
-				
-		//EVENTABLE_ASK( this, EVENT_MOUSE_WHEEL, handle )(this, _event.button, _event.x, _event.y, _event.wheel);
 
 		return handle;
 	}

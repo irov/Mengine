@@ -98,12 +98,8 @@ namespace Mengine
 
 		m_resourceModel.release();
 
-		if( m_camera != nullptr )
-		{
-			m_camera->destroy();
-			m_camera = nullptr;
-		}
-				
+        m_camera = nullptr;
+
 		m_frame = nullptr;
 
 		this->releaseMaterial();

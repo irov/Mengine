@@ -11,12 +11,12 @@ namespace Mengine
     typedef IntrusivePtr<class ScriptWrapperInterface> ScriptWrapperInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	class Scriptable
-		: public pybind::bindable
-        , public Mixin
+		: public Mixin
+        , public pybind::bindable
 	{	
 	public:
 		Scriptable();
-		~Scriptable();
+		~Scriptable() override;
 
 	public:
 		void setScriptWrapper( const ScriptWrapperInterfacePtr & _scriptWrapper );		

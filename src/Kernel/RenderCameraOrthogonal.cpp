@@ -18,6 +18,10 @@ namespace Mengine
 		, m_fixedOrthogonalViewport( false )
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderCameraOrthogonal::~RenderCameraOrthogonal()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCameraOrthogonal::setCameraPosition( const mt::vec3f & _pos )
 	{

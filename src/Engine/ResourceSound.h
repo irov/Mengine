@@ -2,15 +2,15 @@
 
 #include "Interface/SoundSystemInterface.h"
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 #include "Kernel/ResourceCacher.h"
 
 namespace Mengine
 {
 	class ResourceSound
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceSound();

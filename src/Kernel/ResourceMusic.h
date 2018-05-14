@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "stdex/stl_vector.h"
 
@@ -8,9 +8,9 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceMusic
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceMusic();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "ResourceReference.h"
+#include "Resource.h"
 
 namespace Mengine
 {

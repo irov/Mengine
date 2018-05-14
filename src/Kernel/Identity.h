@@ -3,10 +3,12 @@
 #include "Config/Typedef.h"
 
 #include "Core/ConstString.h"
+#include "Core/Mixin.h"
 
 namespace Mengine
 {
 	class Identity
+        : public Mixin
 	{
 	public:
 		Identity();
@@ -23,6 +25,8 @@ namespace Mengine
 		ConstString m_name;
 		ConstString m_type;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Identity> IdentityPtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & Identity::getName()const
 	{	

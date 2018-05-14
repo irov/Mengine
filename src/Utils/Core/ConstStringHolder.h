@@ -14,7 +14,7 @@ namespace Mengine
     protected:
         ConstStringHolder();
         ConstStringHolder( const ConstStringHolder & _holder );
-        ~ConstStringHolder();
+        virtual ~ConstStringHolder();
 
     public:
         typedef size_t size_type;

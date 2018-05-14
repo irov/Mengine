@@ -833,7 +833,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie::_compile()
     {
-        if( ResourceReference::_compile() == false )
+        if( Resource::_compile() == false )
         {
             return false;
         }
@@ -915,7 +915,7 @@ namespace Mengine
     {
         m_keyFramePack = nullptr;
 
-        ResourceReference::_release();
+        Resource::_release();
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceMovie::visitResourceMovie( VisitorResourceMovie * _visitor )

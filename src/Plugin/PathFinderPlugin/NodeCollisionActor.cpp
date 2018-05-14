@@ -126,7 +126,6 @@ namespace Mengine
 
          bool handle = EVENTABLE_METHODR( this, EVENT_COLLISION_TEST, true )
              ->onNodeCollisionActorCollisionTest( other, m_collisionIFF, other_iff, _point, _normal, _penetration );
-		//EVENTABLE_ASK( this, EVENT_COLLISION_TEST, handle )(this, actor, m_collisionIFF, actor_iff, _point, _normal, _penetration );
 
 		return handle;
 	}

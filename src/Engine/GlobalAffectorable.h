@@ -2,6 +2,7 @@
 
 #include "Factory/FactorableUnique.h"
 #include "Factory/Factorable.h"
+
 #include "Kernel/Affectorable.h"
 
 namespace Mengine
@@ -16,6 +17,6 @@ namespace Mengine
         ~GlobalAffectorable() override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<GlobalAffectorable> GlobalAffectorablePtr;
+    typedef IntrusiveDerivedPtr<GlobalAffectorable, Affectorable> GlobalAffectorablePtr;
     //////////////////////////////////////////////////////////////////////////
 }

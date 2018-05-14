@@ -168,6 +168,10 @@ namespace Mengine
         m_nullTexture = nullptr;
         m_whitePixelTexture = nullptr;
 
+        m_currentRenderViewport = nullptr;
+        m_currentRenderCamera = nullptr;
+        m_currentRenderClipplane = nullptr;
+
         m_currentVertexBuffer = nullptr;
         m_currentIndexBuffer = nullptr;
 

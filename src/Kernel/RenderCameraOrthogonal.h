@@ -9,6 +9,7 @@ namespace Mengine
 	{
 	public:
 		RenderCameraOrthogonal();
+        ~RenderCameraOrthogonal() override;
 		
 	public:
 		void setCameraPosition( const mt::vec3f & _pos );

@@ -26,6 +26,11 @@ namespace Mengine
 	{
 	public:
 		MousePickerSystem();
+        ~MousePickerSystem() override;
+
+    public:
+        bool _initialize() override;
+        void _finalize() override;
 
 	public:
 		void setBlock( bool _value ) override;

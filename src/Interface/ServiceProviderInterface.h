@@ -3,6 +3,7 @@
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 
+#include "Core/IntrusivePtr.h"
 #include "Core/Holder.h"
 #include "Core/Exception.h"
 #include "Core/Typename.h"
@@ -14,9 +15,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ServiceInterface;
+    typedef IntrusivePtr<class ServiceInterface> ServiceInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    typedef bool( *TServiceProviderGenerator )(ServiceInterface**);
+    typedef bool( *TServiceProviderGenerator )(ServiceInterfacePtr*);
     //////////////////////////////////////////////////////////////////////////
     class ServiceProviderInterface
     {
@@ -28,15 +29,15 @@ namespace Mengine
         virtual bool existService( const Char * _name ) const = 0;
 
     public:
-        virtual ServiceInterface * getService( const Char * _name ) const = 0;
+        virtual const ServiceInterfacePtr & getService( const Char * _name ) const = 0;
 
     public:
-        virtual ServiceInterface * generateService( TServiceProviderGenerator _generator ) = 0;
+        virtual ServiceInterfacePtr generateService( TServiceProviderGenerator _generator ) = 0;
 
         template<class T>
-        T * generateServiceT( TServiceProviderGenerator _generator, const Char * _file, uint32_t _line )
+        IntrusivePtr<T> generateServiceT( TServiceProviderGenerator _generator, const Char * _file, uint32_t _line )
         {
-            ServiceInterface * service = this->generateService( _generator );
+            ServiceInterfacePtr service = this->generateService( _generator );
 
 #ifndef NDEBUG
             const Char * serviceName = T::getStaticServiceID();
@@ -48,7 +49,7 @@ namespace Mengine
                     );
             }
 
-            if( dynamic_cast<T *>(service) == nullptr )
+            if( stdex::intrusive_dynamic_cast<IntrusivePtr<T>>(service) == nullptr )
             {
                 MENGINE_THROW_EXCEPTION_FL( _file, _line )("Genereate service %s invalid cast to '%s'"
                     , serviceName
@@ -61,7 +62,7 @@ namespace Mengine
             (void)_file;
             (void)_line;
 #   endif
-            T * t = static_cast<T *>(service);
+            IntrusivePtr<T> t = stdex::intrusive_static_cast<IntrusivePtr<T>>(service);
 
             return t;
         }

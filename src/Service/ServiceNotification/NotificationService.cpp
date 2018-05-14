@@ -36,6 +36,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::_finalize()
     {
+        m_add.clear();
+        m_remove.clear();
+
+        for( TMapObservers::const_iterator
+            it = m_mapObserves.begin(),
+            it_end = m_mapObserves.end();
+            it != it_end;
+            ++it )
+        {
+            const TVectorObservers & observers = it->second;
+
+            if( observers.empty() == false )
+            {
+                throw;
+            }
+        }
+
         m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

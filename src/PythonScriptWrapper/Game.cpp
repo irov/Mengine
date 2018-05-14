@@ -110,7 +110,6 @@ namespace Mengine
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON, handle )
                 ->onGameMouseButton( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
-			//EVENTABLE_ASK( this, EVENT_GAME_MOUSE_BUTTON, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
@@ -136,7 +135,6 @@ namespace Mengine
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )
                 ->onGameMouseButtonBegin( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
-			//EVENTABLE_ASK( this, EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
@@ -162,7 +160,6 @@ namespace Mengine
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_END, handle )
                 ->onGameMouseButtonEnd( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
-			//EVENTABLE_ASK( this, EVENT_GAME_MOUSE_BUTTON_END, handle )(_event.touchId, wp.x, wp.y, _event.button, _event.isDown);
 		}
 
 		if( handle == false )
@@ -193,7 +190,6 @@ namespace Mengine
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_MOVE, handle )
                 ->onGameMouseMove( _event.touchId, wp.x, wp.y, wd.x, wd.y );
-			//EVENTABLE_ASK( this, EVENT_GAME_MOUSE_MOVE, handle )(_event.touchId, wp.x, wp.y, wd.x, wd.y);
 		}
 
 		if( handle == false )
@@ -213,7 +209,6 @@ namespace Mengine
 		{
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_WHEEL, handle )
                 ->onGameMouseWheel( _event.button, _event.x, _event.y, _event.wheel );
-			//EVENTABLE_ASK( this, EVENT_GAME_MOUSE_WHEEL, handle )(_event.button, _event.x, _event.y, _event.wheel);
 		}
 
 		if( handle == false )
@@ -586,8 +581,6 @@ namespace Mengine
 
         bool result = EVENTABLE_METHODR( this, EVENT_GAME_PREPARATION, true )
             ->onGamePreparation( is_debug );
-		//bool result = true;
-		//EVENTABLE_ASK( this, EVENT_GAME_PREPARATION, result )( is_debug );
 
 		if( result == false )
 		{
@@ -618,9 +611,6 @@ namespace Mengine
 
         bool EVENT_INITIALIZE_result = EVENTABLE_METHODR( this, EVENT_GAME_INITIALIZE, true )
             ->onGameInitialize();
-
-		//bool EVENT_INITIALIZE_result = true;
-		//EVENTABLE_ASK( this, EVENT_GAME_INITIALIZE, EVENT_INITIALIZE_result )();
 
 		if( EVENT_INITIALIZE_result == false )
 		{
@@ -719,11 +709,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Game::destroyArrow()
 	{
-		if( m_defaultArrow != nullptr )
-		{
-			m_defaultArrow->destroy();
-			m_defaultArrow = nullptr;
-		}
+		m_defaultArrow = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Game::initializeRenderResources()

@@ -19,6 +19,10 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
+    RenderCameraProjection::~RenderCameraProjection()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
 	void RenderCameraProjection::setCameraPosition( const mt::vec3f & _position )
     {
         if( m_cameraPosition == _position )

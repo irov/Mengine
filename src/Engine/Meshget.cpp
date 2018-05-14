@@ -131,8 +131,6 @@ namespace Mengine
 	{
         EVENTABLE_METHOD( this, EVENT_MESHGET_UPDATE )
             ->onMeshgetUpdate( _current, _timing );
-        
-		//EVENTABLE_CALL( this, EVENT_MESHGET_UPDATE )(this, _current, _timing);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Meshget::_render( RenderServiceInterface * _renderService, const RenderState * _state )

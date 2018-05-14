@@ -225,7 +225,6 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESTART )
             ->onAnimatableRestart( _enumerator, _time );
-		//EVENTABLE_CALL(this, EVENT_PARTICLE_EMITTER_RESTART)( this, _enumerator, false );
 
 		m_emitter->restart();
 
@@ -268,18 +267,12 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
             ->onAnimatableStop( _enumerator );
-
-		//EVENTABLE_CALL( this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, false);
-		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, false);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_end( uint32_t _enumerator )
 	{
         EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
             ->onAnimatableEnd( _enumerator );
-        
-		//EVENTABLE_CALL( this, EVENT_PARTICLE_EMITTER_END )(this, _enumerator, true);
-		//EVENTABLE_CALL( this, EVENT_ANIMATABLE_END )(this, _enumerator, true);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_setLoop( bool _value )

@@ -2,9 +2,13 @@
 
 #include "Config/Typedef.h"
 
+#include "Core/Mixin.h"
+#include "Core/IntrusivePtr.h"
+
 namespace Mengine
 {
 	class Reference
+        : public Mixin
 	{
 	public:
 		Reference();
@@ -13,7 +17,7 @@ namespace Mengine
 		bool incrementReference();
 		bool decrementReference();
 
-		uint32_t countReference() const;
+		inline uint32_t countReference() const;
 
 	protected:
 		virtual bool _incrementZero();
@@ -26,6 +30,8 @@ namespace Mengine
 	protected:
 		uint32_t m_refcounter;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Reference> ReferencePtr;
     //////////////////////////////////////////////////////////////////////////
     inline uint32_t Reference::countReference() const
     {

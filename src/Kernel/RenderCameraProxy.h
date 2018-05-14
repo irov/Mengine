@@ -12,6 +12,7 @@ namespace Mengine
 	{
 	public:
 		RenderCameraProxy();
+        ~RenderCameraProxy() override;
 		
 	public:
 		void initialize( const mt::mat4f & _pm, const mt::mat4f & _vm );

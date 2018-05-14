@@ -2,7 +2,7 @@
 
 #include "BasePrototypeGenerator.h"
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "Core/ConstString.h"
 #include "Factory/FactoryPool.h"

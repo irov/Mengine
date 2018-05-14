@@ -2363,7 +2363,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::_destroy()
     {
-        for( const Nodies & ns : m_nodies )
+        for( Nodies & ns : m_nodies )
         {
             if( ns.node == nullptr )
             {
@@ -2375,7 +2375,10 @@ namespace Mengine
                 continue;
             }
 
-            ns.node->destroy();
+            ns.node = nullptr;
+            ns.animatable = nullptr;
+            ns.soundable = nullptr;
+            ns.movie = nullptr;
         }
 
         Node::_destroy();
@@ -2982,22 +2985,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::destroyCamera3D_()
 	{
-		if( m_renderCameraProjection != nullptr )
-		{
-			m_renderCameraProjection->destroy();
-			m_renderCameraProjection = nullptr;
-		}
-
-		if( m_renderViewport != nullptr )
-		{
-			m_renderViewport->destroy();
-			m_renderViewport = nullptr;
-		}
-
-        for( const RenderClipplanePtr & clipplane : m_clipplanes )
-		{
-			clipplane->destroy();
-		}
+        m_renderCameraProjection = nullptr;		
+        m_renderViewport = nullptr;
 
 		m_clipplanes.clear();
 	}

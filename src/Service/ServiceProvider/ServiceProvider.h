@@ -18,10 +18,10 @@ namespace Mengine
 		bool existService( const char * _name ) const override;
 
     protected:
-        ServiceInterface * getService( const char * _name ) const override;
+        const ServiceInterfacePtr & getService( const char * _name ) const override;
 
 	protected:
-        ServiceInterface * generateService( TServiceProviderGenerator _generator ) override;
+        ServiceInterfacePtr generateService( TServiceProviderGenerator _generator ) override;
 		bool initializeService( TServiceProviderGenerator _generator ) override;
 		bool finalizeService( const char * _name ) override;
 
@@ -37,7 +37,7 @@ namespace Mengine
         struct ServiceDesc
         {
             char name[SERVICE_PROVIDER_NAME_SIZE];
-            ServiceInterface * service;
+            ServiceInterfacePtr service;
         };
 
         ServiceDesc m_services[SERVICE_PROVIDER_COUNT];

@@ -2,7 +2,7 @@
 
 #include "Interface/MovieKeyFrameInterface.h"
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
@@ -191,9 +191,9 @@ namespace Mengine
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceMovie
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceMovie();

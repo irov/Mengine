@@ -22,8 +22,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StringizeService::_initialize()
     {
-        m_factoryHolderStringMemory = new FactoryPool<ConstStringHolderMemory, 512>();
-
         for( uint32_t i = 0; i != 257; ++i )
         {
             for( uint32_t j = 0; j != 8; ++j )
@@ -51,7 +49,12 @@ namespace Mengine
             }
         }
 
-        m_factoryHolderStringMemory = nullptr;
+        for( uint32_t i = 0; i != 4096; ++i )
+        {
+            TIntrusiveListConstStringHolder & holdres = m_holdres[i];
+
+            holdres.clear();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void StringizeService::stringize( const char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr )
@@ -168,7 +171,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstStringHolder * StringizeService::stringizeHolder_( const char * _str, size_t _size, ConstString::hash_type _hash )
+    ConstStringHolder * StringizeService::stringizeHolder_( const Char * _str, size_t _size, ConstString::hash_type _hash )
     {
         ConstStringHolder * test = this->testHolder_( _str, _size, _hash );
 
@@ -177,7 +180,7 @@ namespace Mengine
             return test;
         }
 
-        ConstStringHolderMemory * holder = m_factoryHolderStringMemory->createObject();
+        ConstStringHolderMemory * holder = m_poolHolderStringMemory.createT();
 
         holder->setValue( _str, _size, _hash );
 
@@ -186,7 +189,7 @@ namespace Mengine
         return holder;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstStringHolder * StringizeService::testHolder_( const char * _str, ConstString::size_type _size, ConstString::hash_type _hash )
+    ConstStringHolder * StringizeService::testHolder_( const Char * _str, ConstString::size_type _size, ConstString::hash_type _hash )
     {
         TIntrusiveListConstStringHolder & list = this->getList_( _hash );
 

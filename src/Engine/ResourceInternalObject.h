@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 namespace Mengine
 {
 	class ResourceInternalObject
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceInternalObject();

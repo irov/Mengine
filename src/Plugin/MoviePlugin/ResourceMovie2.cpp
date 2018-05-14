@@ -46,9 +46,9 @@ namespace Mengine
                 const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
 
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
-                ResourceReference * data_resource = resourceMovie2->getResource_( resource_image->name );
+                Resource * data_resource = resourceMovie2->getResource_( resource_image->name );
 #else
-                ResourceReference * data_resource = resourceMovie2->createResourceImage_( resource_image );
+                Resource * data_resource = resourceMovie2->createResourceImage_( resource_image );
 #endif
 
                 if( data_resource == AE_NULL )
@@ -65,9 +65,9 @@ namespace Mengine
                 const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
 
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
-                ResourceReference * data_resource = resourceMovie2->getResource_( resource_video->name );
+                Resource * data_resource = resourceMovie2->getResource_( resource_video->name );
 #else
-                ResourceReference * data_resource = resourceMovie2->createResourceVideo_( resource_video );
+                Resource * data_resource = resourceMovie2->createResourceVideo_( resource_video );
 #endif
 
                 if( data_resource == AE_NULL )
@@ -84,9 +84,9 @@ namespace Mengine
                 const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
 
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
-                ResourceReference * data_resource = resourceMovie2->getResource_( resource_sound->name );
+                Resource * data_resource = resourceMovie2->getResource_( resource_sound->name );
 #else
-                ResourceReference * data_resource = resourceMovie2->createResourceSound_( resource_sound );
+                Resource * data_resource = resourceMovie2->createResourceSound_( resource_sound );
 #endif
 
                 if( data_resource == AE_NULL )
@@ -103,9 +103,9 @@ namespace Mengine
                 const aeMovieResourceParticle * resource_particle = (const aeMovieResourceParticle *)_resource;
 
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
-                ResourceReference * data_resource = resourceMovie2->getResource_( resource_particle->name );
+                Resource * data_resource = resourceMovie2->getResource_( resource_particle->name );
 #else
-                ResourceReference * data_resource = resourceMovie2->createResourceParticle_( resource_particle );
+                Resource * data_resource = resourceMovie2->createResourceParticle_( resource_particle );
 #endif
 
                 if( data_resource == AE_NULL )
@@ -296,7 +296,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceMovie2::_compile()
 	{
-		if( ResourceReference::_compile() == false )
+		if( Resource::_compile() == false )
 		{
 			return false;
 		}
@@ -385,7 +385,7 @@ namespace Mengine
 
 		ae_delete_movie_data( m_movieData );
 
-		ResourceReference::_release();
+		Resource::_release();
 	}
     //////////////////////////////////////////////////////////////////////////    
     static ae_bool_t Mengine_movie_layer_data_visitor( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layerData, ae_voidptr_t _ud )
@@ -496,7 +496,7 @@ namespace Mengine
         m_resources.emplace_back( _resource );
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceReference * ResourceMovie2::getResource_( const ae_string_t _name )
+    Resource * ResourceMovie2::getResource_( const ae_string_t _name )
     {
         ResourceReferencePtr resource = RESOURCE_SERVICE()
             ->getResource( Helper::stringizeString( _name ) );
@@ -506,7 +506,7 @@ namespace Mengine
         return resource.get();
     }
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceMovie2::createResourceImage_( const aeMovieResourceImage * _resource )
+	Resource * ResourceMovie2::createResourceImage_( const aeMovieResourceImage * _resource )
 	{
 		ResourceImageDefaultPtr image = RESOURCE_SERVICE()
 			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
@@ -536,7 +536,7 @@ namespace Mengine
 		return image.get();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceMovie2::createResourceVideo_( const aeMovieResourceVideo * _resource )
+	Resource * ResourceMovie2::createResourceVideo_( const aeMovieResourceVideo * _resource )
 	{
 		ResourceVideoPtr video = RESOURCE_SERVICE()
 			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
@@ -575,7 +575,7 @@ namespace Mengine
 		return video.get();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ResourceReference * ResourceMovie2::createResourceSound_( const aeMovieResourceSound * _resource )
+	Resource * ResourceMovie2::createResourceSound_( const aeMovieResourceSound * _resource )
 	{
 		ResourceSoundPtr sound = RESOURCE_SERVICE()
 			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
@@ -602,7 +602,7 @@ namespace Mengine
 		return sound.get();
 	}
     //////////////////////////////////////////////////////////////////////////
-    ResourceReference * ResourceMovie2::createResourceParticle_( const aeMovieResourceParticle * _resource )
+    Resource * ResourceMovie2::createResourceParticle_( const aeMovieResourceParticle * _resource )
     {
         ResourceParticlePtr particle = RESOURCE_SERVICE()
             ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );

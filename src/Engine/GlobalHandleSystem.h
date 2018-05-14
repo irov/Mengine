@@ -24,6 +24,11 @@ namespace Mengine
 	{
     public:
         GlobalHandleSystem();
+        ~GlobalHandleSystem() override;
+
+    public:
+        bool _initialize() override;
+        void _finalize() override;
 
 	public:
         uint32_t addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc ) override;

@@ -6,6 +6,10 @@ namespace Mengine
 	RenderCameraProxy::RenderCameraProxy()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderCameraProxy::~RenderCameraProxy()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void RenderCameraProxy::initialize( const mt::mat4f & _pm, const mt::mat4f & _vm )
 	{

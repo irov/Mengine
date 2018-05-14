@@ -1,10 +1,13 @@
 #pragma once
 
 #include "Core/ColourValue.h"
+#include "Core/Mixin.h"
+#include "Core/IntrusivePtr.h"
 
 namespace Mengine
 {
 	class Colorable
+        : public Mixin
 	{
 	public:
 		Colorable();
@@ -62,6 +65,8 @@ namespace Mengine
 		mutable ColourValue m_colorRelation;
 		mutable bool m_invalidateColor;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Colorable> ColorablePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Colorable::isLocalTransparent() const
 	{

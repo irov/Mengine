@@ -72,12 +72,8 @@ namespace Mengine
 		void _release() override;
 			
 	public:
-		void destroy() override;
 		void _destroy() override;
-
-	protected:
-		void _unshallowGrave() override;
-
+        
 	protected:
 		ConstString m_prototype;
 

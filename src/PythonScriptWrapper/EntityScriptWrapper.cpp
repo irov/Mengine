@@ -146,9 +146,28 @@ namespace Mengine
 
 			pybind::decref( _obj );
 
-			return entity;
+            Entity * entity_ptr = entity.get();
+
+            stdex::intrusive_this_acquire( entity_ptr );
+
+			return entity_ptr;
 		}
 	};
+    //////////////////////////////////////////////////////////////////////////
+    class superclass_destroy_Entity
+        : public pybind::destroy_adapter_interface
+    {
+    public:
+        void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
+        {
+            (void)_kernel;
+            (void)_scope;
+
+            Entity * entity_ptr = static_cast<Entity *>(_impl);
+
+            stdex::intrusive_this_release( entity_ptr );
+        }
+    };
     //////////////////////////////////////////////////////////////////////////
 	class superclass_new_Arrow
 		: public pybind::new_adapter_interface
@@ -169,9 +188,28 @@ namespace Mengine
 
 			pybind::decref( _obj );
 
-			return arrow;
+            Arrow * arrow_ptr = arrow.get();
+
+            stdex::intrusive_this_acquire( arrow_ptr );
+
+			return arrow_ptr;
 		}
 	};
+    //////////////////////////////////////////////////////////////////////////    
+    class superclass_destroy_Arrow
+        : public pybind::destroy_adapter_interface
+    {
+    public:
+        void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
+        {
+            (void)_kernel;
+            (void)_scope;
+
+            Arrow * arrow_ptr = static_cast<Arrow *>(_impl);
+
+            stdex::intrusive_this_release( arrow_ptr );
+        }
+    };
     //////////////////////////////////////////////////////////////////////////
 	class superclass_new_Scene
 		: public pybind::new_adapter_interface
@@ -192,9 +230,28 @@ namespace Mengine
 
 			pybind::decref( _obj );
 
-			return scene;
+            Scene * scene_ptr = scene.get();
+
+            stdex::intrusive_this_acquire( scene_ptr );
+
+			return scene_ptr;
 		}
 	};
+    //////////////////////////////////////////////////////////////////////////    
+    class superclass_destroy_Scene
+        : public pybind::destroy_adapter_interface
+    {
+    public:
+        void call( pybind::kernel_interface * _kernel, const pybind::class_type_scope_interface_ptr & _scope, void * _impl ) override
+        {
+            (void)_kernel;
+            (void)_scope;
+
+            Scene * scene_ptr = static_cast<Scene *>(_impl);
+
+            stdex::intrusive_this_release( scene_ptr );
+        }
+    };
 	//////////////////////////////////////////////////////////////////////////
 	void PythonScriptWrapper::entityWrap()
 	{
@@ -202,12 +259,12 @@ namespace Mengine
 
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
-		pybind::superclass_<Entity, pybind::bases<Node> >( kernel, "Entity", nullptr, new superclass_new_Entity, nullptr, false )
+		pybind::superclass_<Entity, pybind::bases<Node> >( kernel, "Entity", nullptr, new superclass_new_Entity, new superclass_destroy_Entity, false )
             .def_constructor( pybind::init<>() )
 			.def( "getPrototype", &Entity::getPrototype )
 			;
 
-		pybind::superclass_<Arrow, pybind::bases<Entity> >( kernel, "Arrow", nullptr, new superclass_new_Arrow, nullptr, false )
+		pybind::superclass_<Arrow, pybind::bases<Entity> >( kernel, "Arrow", nullptr, new superclass_new_Arrow, new superclass_destroy_Arrow, false )
             .def_constructor( pybind::init<>() )
 			.def( "setOffsetClick", &Arrow::setOffsetClick )
 			.def( "getOffsetClick", &Arrow::getOffsetClick )
@@ -217,7 +274,7 @@ namespace Mengine
 			.def( "getRadius", &Arrow::getRadius )
 			;
 
-		pybind::superclass_<Scene, pybind::bases<Entity> >( kernel, "Scene", nullptr, new superclass_new_Scene, nullptr, false )
+		pybind::superclass_<Scene, pybind::bases<Entity> >( kernel, "Scene", nullptr, new superclass_new_Scene, new superclass_destroy_Scene, false )
             .def_constructor( pybind::init<>() )
 			//.def( "isSubScene", &Scene::isSubScene )
 			//.def( "getParentScene", &Scene::getParentScene )

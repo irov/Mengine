@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "Config/Typedef.h"
 
@@ -10,9 +10,9 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceImageData
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceImageData();

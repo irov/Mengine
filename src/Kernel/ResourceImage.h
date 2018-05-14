@@ -3,7 +3,7 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "Core/ColourValue.h"
 
@@ -16,9 +16,9 @@ namespace Mengine
     typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceImage
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceImage();

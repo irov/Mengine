@@ -11,6 +11,10 @@ namespace Mengine
 		, m_invalidateViewport(true)		
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderViewport::~RenderViewport()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool RenderViewport::_activate()
 	{
@@ -30,6 +34,9 @@ namespace Mengine
 	void RenderViewport::_deactivate()
 	{
 		Node::_deactivate();
+
+        NOTIFICATION_SERVICE()
+            ->removeObserver( NOTIFICATOR_CHANGE_WINDOW_RESOLUTION, this );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void RenderViewport::setFixedViewport( bool _value )

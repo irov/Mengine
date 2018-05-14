@@ -50,7 +50,6 @@ namespace Mengine
 	{
         EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_PREPARATION, EntityEventReceiver )
             ->onEntityPreparation( m_object );
-		//EVENTABLE_CALL( m_scriptEventable, EVENT_ENTITY_PREPARATION )(m_object);
 
 		bool successful = Node::_activate();
 
@@ -63,14 +62,12 @@ namespace Mengine
 
         EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_ACTIVATE, EntityEventReceiver )
             ->onEntityActivate(m_object);
-		//EVENTABLE_CALL( m_scriptEventable, EVENT_ENTITY_ACTIVATE )(m_object);
 	}
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
         EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_PREPARATION_DEACTIVATE, EntityEventReceiver )
             ->onEntityPreparationDeactivate( m_object );
-		//EVENTABLE_CALL( m_scriptEventable, EVENT_ENTITY_PREPARATION_DEACTIVATE )(m_object);
 
         Node::_deactivate();		
     }
@@ -81,14 +78,12 @@ namespace Mengine
 
         EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_DEACTIVATE, EntityEventReceiver )
             ->onEntityDeactivate( m_object );
-		//EVENTABLE_CALL( m_scriptEventable, EVENT_ENTITY_DEACTIVATE )(m_object);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
 	{
         EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_COMPILE, EntityEventReceiver )
             ->onEntityCompile( m_object );
-		//EVENTABLE_CALL( m_scriptEventable, EVENT_ENTITY_COMPILE )(m_object);
 		
 		return true;
 	}
@@ -97,45 +92,23 @@ namespace Mengine
 	{
         EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_RELEASE, EntityEventReceiver )
             ->onEntityRelease( m_object );
-		//EVENTABLE_CALL( m_scriptEventable, EVENT_ENTITY_RELEASE )(m_object);
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCreate()
 	{
         EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_CREATE, EntityEventReceiver )
             ->onEntityCreate( m_object, this );
-		//EVENTABLE_CALL( m_scriptEventable, EVENT_ENTITY_CREATE )(m_object, this);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::destroy()
-	{
-        if( this->isShallowGrave() == true )
-        {
-            NODE_SERVICE()
-                ->addHomeless( this );
-
-			this->release();
-
-			this->setShallowGravePropagate( true );
-			
-            return;
-        }
-
-        Factorable::destroy();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_destroy()
 	{
-        this->setShallowGravePropagate( false );
-
 		this->release();
 
 		Node * old_parent = this->getParent();
 
         EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_DESTROY, EntityEventReceiver )
             ->onEntityDestroy( m_object );
-		//EVENTABLE_CALL( m_scriptEventable, EVENT_ENTITY_DESTROY )(m_object);
-
+		
 		m_object.reset();
 
 		Node * new_parent = this->getParent();
@@ -154,17 +127,5 @@ namespace Mengine
 		this->removeFromParent();
 
 		this->unwrap();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::_unshallowGrave()
-	{
-		this->setShallowGravePropagate( false );
-
-		this->removeFromParent();
-
-        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_DESTROY, EntityEventReceiver )
-            ->onEntityDestroy( m_object );
-
-		Factorable::destroy();
 	}
 }

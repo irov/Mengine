@@ -1,15 +1,15 @@
 #pragma once
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "math/vec2.h"
 
 namespace Mengine
 {
 	class ResourceTestPick
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		virtual bool testPoint( const mt::vec2f& _point, float _minAlpha ) const = 0;

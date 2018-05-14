@@ -28,7 +28,7 @@ namespace Mengine
     typedef IntrusivePtr<class RenderTargetInterface> RenderTargetInterfacePtr;
 	typedef IntrusivePtr<class MousePickerSystemInterface> MousePickerSystemInterfacePtr;
 	typedef IntrusivePtr<class GlobalHandleSystem> GlobalHandleSystemPtr;
-    typedef IntrusivePtr<class GlobalAffectorable> GlobalAffectorablePtr;
+    typedef IntrusiveDerivedPtr<class GlobalAffectorable, class Affectorable> GlobalAffectorablePtr;
     
 	class Player
 		: public ServiceBase<PlayerServiceInterface>

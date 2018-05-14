@@ -16,6 +16,7 @@ namespace Mengine
 	{
 	public:
 		RenderViewport();
+        ~RenderViewport() override;
 		
 	protected:
 		bool _activate() override;

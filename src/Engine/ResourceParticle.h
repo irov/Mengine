@@ -2,7 +2,7 @@
 
 #include "Interface/ParticleSystemInterface.h"
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 #include "Kernel/ResourceImage.h"
 
 #include "Utils/Core/Polygon.h"
@@ -10,9 +10,9 @@
 namespace Mengine
 {
 	class ResourceParticle
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		ResourceParticle();

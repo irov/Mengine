@@ -8,6 +8,8 @@
 #include "Kernel/Affectorable.h"
 #include "Kernel/Affector.h"
 
+#include "Config/Lambda.h"
+
 #include "Engine/ResourceSound.h"
 #include "Factory/FactoryPool.h"
 
@@ -348,7 +350,7 @@ namespace Mengine
 				->setSourceMixerVolume( _emitter, STRINGIZE_STRING_LOCAL( "Fade" ), _volume, _volume );
 		}
 		//////////////////////////////////////////////////////////////////////////		
-		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<SoundScriptMethod, void (SoundScriptMethod::*)(const SoundIdentityInterfacePtr &, float), float, SoundIdentityInterfacePtr> m_affectorCreatorSound;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_affectorCreatorSound;
 		//////////////////////////////////////////////////////////////////////////
 		void soundFadeIn( const SoundIdentityInterfacePtr & _emitter, float _time, const pybind::object & _cb, const pybind::args & _args )
 		{
@@ -356,7 +358,7 @@ namespace Mengine
 
 			AffectorPtr affector =
 				m_affectorCreatorSound.create( ETA_POSITION
-                    , callback, this, &SoundScriptMethod::___soundFade, _emitter
+                    , callback, [this, _emitter]( float _volume ) { this->___soundFade( _emitter, _volume ); }
                     , 1.f, 0.f, _time
                 );
 
@@ -391,7 +393,7 @@ namespace Mengine
 
 			AffectorPtr affector =
 				m_affectorCreatorSound.create( ETA_POSITION
-                    , nullptr, this, &SoundScriptMethod::___soundFade, sourceEmitter
+                    , nullptr, [this, sourceEmitter]( float _value ) { this->___soundFade( sourceEmitter, _value ); }
                     , 0.f, 1.f, _time
                 );
 
@@ -625,7 +627,7 @@ namespace Mengine
 			return callback; 
 		}
 		//////////////////////////////////////////////////////////////////////////		
-		NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<SoundScriptMethod, void (SoundScriptMethod::*)(float), float> m_affectorCreatorMusic;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_affectorCreatorMusic;
 		//////////////////////////////////////////////////////////////////////////
 		uint32_t musicFadeIn( float _time, const pybind::object & _cb, const pybind::args & _args )
 		{
@@ -638,8 +640,9 @@ namespace Mengine
 
 			AffectorPtr affector = 
 				m_affectorCreatorMusic.create( ETA_POSITION
-                    , callback, this, &SoundScriptMethod::___musicFade
-				, 1.f, 0.f, _time
+                    , callback
+                    , [this]( float _value ) { this->___musicFade( _value ); }
+                    , 1.f, 0.f, _time
 				);
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
@@ -662,9 +665,10 @@ namespace Mengine
 
 			AffectorPtr affector = 
 				m_affectorCreatorMusic.create( ETA_POSITION
-                    , nullptr, this, &SoundScriptMethod::___musicFade
-				, 0.f, 1.f, _time
-				);
+                    , nullptr
+                    , [this]( float _value ) { this->___musicFade( _value ); }
+                    , 0.f, 1.f, _time
+                );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
 				->getAffectorableGlobal();

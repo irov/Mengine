@@ -2,7 +2,7 @@
 
 #include "Interface/ResourceInterface.h"
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "Core/ServiceBase.h"
 

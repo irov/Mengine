@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Factory/Factorable.h"
-
 #include "Kernel/Scriptable.h"
 #include "Kernel/Servant.h"
 
@@ -20,6 +18,7 @@ namespace Mengine
 	public:
 		bool initialize( b2World* _world, const b2JointDef * _jointDef );
 
+    public:
 		b2World* getWorld() const;
 		b2Joint* getJoint() const;
 
@@ -29,4 +28,5 @@ namespace Mengine
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<Box2DJoint> Box2DJointPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

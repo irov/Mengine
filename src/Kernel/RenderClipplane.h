@@ -14,6 +14,7 @@ namespace Mengine
 	{
 	public:
 		RenderClipplane();
+        ~RenderClipplane() override;
 		
 	protected:
 		bool _activate() override;

@@ -281,9 +281,9 @@ namespace Mengine
 		EBlendFactor m_currentBlendDst;
 		EBlendOp m_currentBlendOp;
 
-		const RenderViewportInterface * m_currentRenderViewport;
-		const RenderCameraInterface * m_currentRenderCamera;
-		const RenderClipplaneInterface * m_currentRenderClipplane;
+		RenderViewportInterfacePtr m_currentRenderViewport;
+		RenderCameraInterfacePtr m_currentRenderCamera;
+		RenderClipplaneInterfacePtr m_currentRenderClipplane;
 		
         RenderTargetInterfacePtr m_currentRenderTarget;
 

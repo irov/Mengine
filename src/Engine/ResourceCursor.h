@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/ResourceReference.h"
+#include "Kernel/Resource.h"
 
 #include "Interface/MemoryInterface.h"
 
@@ -8,9 +8,9 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceCursor
-		: public ResourceReference
+		: public Resource
 	{
-		DECLARE_VISITABLE( ResourceReference );
+		DECLARE_VISITABLE( Resource );
 
 	public:
 		virtual const FilePath & getPath() const = 0;

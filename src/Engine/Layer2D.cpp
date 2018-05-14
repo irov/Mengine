@@ -146,17 +146,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::clearViewport_()
     {	
-        if( m_renderViewport != nullptr )
-        {
-		    m_renderViewport->destroy();
-		    m_renderViewport = nullptr;
-        }
-
-		if( m_renderCamera != nullptr )
-		{
-			m_renderCamera->destroy();
-			m_renderCamera = nullptr;
-		}
+        m_renderViewport = nullptr;
+		m_renderCamera = nullptr;
 
 		Node::setRenderCamera( nullptr );
 		Node::setRenderViewport( nullptr );

@@ -80,7 +80,7 @@ namespace Mengine
         return mt::uv4f::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceSolidColor::getColour() const
+    const ColourValue & SurfaceSolidColor::getColor() const
     {        
         return m_color;
     }

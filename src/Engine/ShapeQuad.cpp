@@ -45,7 +45,7 @@ namespace Mengine
         ColourValue color;
         this->calcTotalColor( color );
 
-        const ColourValue & surfaceColor = m_surface->getColour();
+        const ColourValue & surfaceColor = m_surface->getColor();
 
         color *= surfaceColor;
 

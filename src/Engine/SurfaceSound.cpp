@@ -203,7 +203,7 @@ namespace Mengine
         _out = _in;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceSound::getColour() const
+    const ColourValue & SurfaceSound::getColor() const
     {
         return ColourValue::identity();
     }

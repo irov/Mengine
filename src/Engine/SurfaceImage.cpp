@@ -209,7 +209,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceImage::getColour() const
+    const ColourValue & SurfaceImage::getColor() const
     {
         if( m_resourceImage == nullptr )
         {

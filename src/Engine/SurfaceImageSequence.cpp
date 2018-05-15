@@ -493,11 +493,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceImageSequence::getColour() const
+    const ColourValue & SurfaceImageSequence::getColor() const
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR("SurfaceImageSequence.getColour: '%s' not compile"
+            LOGGER_ERROR("SurfaceImageSequence.getColor: '%s' not compile"
                 , this->getName().c_str()
                 );
 

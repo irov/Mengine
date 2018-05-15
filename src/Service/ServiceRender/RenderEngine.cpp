@@ -50,7 +50,7 @@ namespace Mengine
         , m_debugRedAlertMode( false )
         , m_currentStage( nullptr )
         , m_nullTexture( nullptr )
-        , m_batchMode( ERBM_SMART )
+        , m_batchMode( ERBM_NORMAL )
         , m_currentMaterialId( 0 )
         , m_iterateRenderObjects( 0 )
         , m_limitRenderObjects( 0 )
@@ -112,7 +112,7 @@ namespace Mengine
 
         //m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
-        uint32_t batchMode = CONFIG_VALUE( "Engine", "RenderServiceBatchMode", 2 );
+        uint32_t batchMode = CONFIG_VALUE( "Engine", "RenderServiceBatchMode", 1 );
 
         switch( batchMode )
         {

@@ -263,7 +263,7 @@ namespace Mengine
         mt::uv4_quad_point( _out, m_uv, _in );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceVideo::getColour() const
+    const ColourValue & SurfaceVideo::getColor() const
     {
         return ColourValue::identity();
     }

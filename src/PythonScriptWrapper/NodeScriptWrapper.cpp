@@ -7462,7 +7462,7 @@ namespace Mengine
             .def( "getOffset", &Surface::getOffset )
             .def( "getUVCount", &Surface::getUVCount )
             .def( "getUV", &Surface::getUV )
-            .def( "getColour", &Surface::getColour )
+            .def( "getColour", &Surface::getColor )
             ;
 
         pybind::interface_<SurfaceVideo, pybind::bases<Surface, Eventable, Animatable> >( kernel, "SurfaceVideo", false )
@@ -7862,9 +7862,9 @@ namespace Mengine
                     .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Movie_setEventListener )
                     ;
 
-                pybind::interface_<Meshget, pybind::bases<Node, Eventable, Materialable> >( kernel, "Meshget", false )
-                    .def( "setResourceImage", &Meshget::setResourceImage )
-                    .def( "getResourceImage", &Meshget::getResourceImage )
+                pybind::interface_<Meshget, pybind::bases<Node, Eventable> >( kernel, "Meshget", false )
+                    .def( "setSurface", &Meshget::setSurface )
+                    .def( "getSurface", &Meshget::getSurface )
                     .def( "setVertices", &Meshget::setVertices )
                     .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Meshget_setEventListener )
                     ;

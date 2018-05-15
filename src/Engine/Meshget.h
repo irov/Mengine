@@ -5,7 +5,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/Materialable.h"
 
-#include "Kernel/ResourceImage.h"
+#include "Kernel/Surface.h"
 
 #include "Core/ColourValue.h"
 #include "Core/ValueInterpolator.h"
@@ -37,7 +37,6 @@ namespace Mengine
 	class Meshget
 		: public Node
 		, public Eventable
-		, public Materialable
 	{
         EVENT_RECEIVER( MeshgetEventReceiver );
 
@@ -45,9 +44,9 @@ namespace Mengine
 		Meshget();
 		~Meshget() override;
 
-	public:
-		void setResourceImage( const ResourceImagePtr & _resourceImage );
-		const ResourceImagePtr & getResourceImage() const;
+    public:
+        void setSurface( const SurfacePtr & _surface );
+        const SurfacePtr & getSurface() const;
 
 	public:
 		bool setVertices( const pybind::list & _positions, const pybind::list & _uv, const pybind::list & _colors, const pybind::list & _indices );
@@ -77,12 +76,9 @@ namespace Mengine
 
 	protected:
 		inline const TVectorRenderVertex2D & getVerticesWM() const;
-
+        
 	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const override;
-
-	protected:
-		ResourceHolder<ResourceImage> m_resourceImage;
+        SurfacePtr m_surface;
 		
 		typedef stdex::vector<mt::vec3f> TVectorPosition;
 		typedef stdex::vector<mt::vec2f> TVectorUV;
@@ -94,9 +90,7 @@ namespace Mengine
 		TVectorRenderIndices m_indices;
 
 		mutable TVectorRenderVertex2D m_verticesWM;
-		
-		bool m_solid;
-				
+			
 		mutable bool m_invalidateVerticesWM;
 		mutable bool m_invalidateVerticesColor;
 	};

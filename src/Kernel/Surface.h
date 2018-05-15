@@ -39,7 +39,7 @@ namespace Mengine
 
         virtual void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) = 0;
 
-        virtual const ColourValue & getColour() const = 0;
+        virtual const ColourValue & getColor() const = 0;
         
     public:
         bool update( float _current, float _timing );

@@ -219,7 +219,8 @@ namespace Mengine
 
 		if( it_found_add != m_handlersAdd.end() )
         {
-			const InputHandlerInterfacePtr & handler = it_found_add->handler;
+			InputHandlerInterfacePtr handler = it_found_add->handler;
+            it_found_add->handler = nullptr;
 
 			m_handlersAdd.erase( it_found_add );
 
@@ -234,7 +235,7 @@ namespace Mengine
                 , _id
                 );
 
-            return InputHandlerInterfacePtr::none();
+            return nullptr;
         }
         
         InputHandlerInterfacePtr handler = it_found->handler;

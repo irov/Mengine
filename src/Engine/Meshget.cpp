@@ -10,8 +10,7 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Meshget::Meshget()
-		: m_solid( false )
-		, m_invalidateVerticesWM( true )
+		: m_invalidateVerticesWM( true )
 		, m_invalidateVerticesColor( true )
 	{
 	}
@@ -22,26 +21,27 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Meshget::_compile()
 	{
-		if( m_resourceImage == nullptr )
-		{
-			LOGGER_ERROR("Meshget::_compile '%s' image resource null"
-				, m_name.c_str()
-				);
+        if( m_surface == nullptr )
+        {
+            LOGGER_ERROR( "Meshget::_compile '%s' can`t setup surface"
+                , this->getName().c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		if( m_resourceImage.compile() == false )
-		{
-			LOGGER_ERROR("Meshget::_compile '%s' image resource %s not compile"
-				, m_name.c_str()
-				, m_resourceImage->getName().c_str()
-				);
+        if( m_surface->compile() == false )
+        {
+            LOGGER_ERROR( "Meshget::_compile '%s' can`t compile surface '%s'"
+                , this->getName().c_str()
+                , m_surface->getName().c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		this->invalidateMaterial();
+		this->invalidateVerticesWM();
+        this->invalidateVerticesColor();
 
 		return true;
 	}
@@ -50,27 +50,25 @@ namespace Mengine
 	{
 		Node::_release();
 
-		m_resourceImage.release();
-
-		this->releaseMaterial();
+        m_surface->release();
 	}
-	//////////////////////////////////////////////////////////////////////////
-	void Meshget::setResourceImage( const ResourceImagePtr & _resourceImage )
-	{
-		if( m_resourceImage == _resourceImage )
-		{
-			return;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    void Meshget::setSurface( const SurfacePtr & _surface )
+    {
+        if( m_surface == _surface )
+        {
+            return;
+        }
 
-		m_resourceImage = _resourceImage;
+        m_surface = _surface;
 
-		this->recompile();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ResourceImagePtr & Meshget::getResourceImage() const
-	{
-		return m_resourceImage;
-	}
+        this->recompile();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const SurfacePtr & Meshget::getSurface() const
+    {
+        return m_surface;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Meshget::setVertices( const pybind::list & _positions, const pybind::list & _uv, const pybind::list & _colors, const pybind::list & _indices )
 	{
@@ -111,22 +109,6 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr Meshget::_updateMaterial() const
-	{
-		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid );
-
-		if( material == nullptr )
-		{
-			LOGGER_ERROR("Mesh::updateMaterial_ %s m_material is NULL"
-				, this->getName().c_str()
-				);
-
-			return nullptr;
-		}
-
-		return material;
-	}
-	//////////////////////////////////////////////////////////////////////////
 	void Meshget::_update( float _current, float _timing )
 	{
         EVENTABLE_METHOD( this, EVENT_MESHGET_UPDATE )
@@ -144,7 +126,7 @@ namespace Mengine
 		uint32_t indicesCount = (uint32_t)m_indices.size();
 
 		const TVectorRenderVertex2D & vertices = this->getVerticesWM();
-		const RenderMaterialInterfacePtr & material = this->getMaterial();
+		const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
 
 		const RenderVertex2D * vertices_buff = &vertices[0];
 		const RenderIndex * indices_buff = &m_indices[0];
@@ -197,15 +179,6 @@ namespace Mengine
 		Node::_invalidateColor();
 
 		this->invalidateVerticesColor();
-
-		bool solid = this->isSolidColor();
-
-		if( m_solid != solid )
-		{
-			m_solid = solid;
-
-			this->invalidateMaterial();
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Meshget::invalidateVerticesColor()
@@ -220,7 +193,7 @@ namespace Mengine
 		ColourValue color;
 		this->calcTotalColor( color );
 
-		const ColourValue & textureColour = m_resourceImage->getColor();
+        const ColourValue & textureColour = m_surface->getColor();
 		color *= textureColour;
 
 		size_t vertexCount = m_positions.size();
@@ -254,8 +227,8 @@ namespace Mengine
 			mt::vec3f & wm_pos = m_verticesWM[i].position;
 			mt::mul_v3_v3_m4( wm_pos, pos, wm );
 
-            m_resourceImage->correctUVImage( m_verticesWM[i].uv[0], uv );
-            m_resourceImage->correctUVAlpha( m_verticesWM[i].uv[1], uv );
+            m_surface->correctUV( 0, m_verticesWM[i].uv[0], uv );
+            m_surface->correctUV( 1, m_verticesWM[i].uv[1], uv );
 		}
 	}
 }

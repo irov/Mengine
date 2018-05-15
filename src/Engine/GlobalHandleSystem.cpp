@@ -45,12 +45,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GlobalHandleSystem::_initialize()
+    bool GlobalHandleSystem::_initializeService()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GlobalHandleSystem::_finalize()
+    void GlobalHandleSystem::_finalizeService()
     {
         m_handlers.clear();
         m_handlersAdd.clear();
@@ -213,7 +213,7 @@ namespace Mengine
         return new_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const InputHandlerInterfacePtr & GlobalHandleSystem::removeGlobalHandler( uint32_t _id )
+	InputHandlerInterfacePtr GlobalHandleSystem::removeGlobalHandler( uint32_t _id )
 	{
 		TVectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), FFindHandler( _id ) );
 
@@ -237,7 +237,7 @@ namespace Mengine
             return InputHandlerInterfacePtr::none();
         }
         
-        const InputHandlerInterfacePtr & handler = it_found->handler;
+        InputHandlerInterfacePtr handler = it_found->handler;
 
         it_found->dead = true;
         it_found->handler = nullptr;

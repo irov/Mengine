@@ -22,14 +22,14 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Graveyard::_initialize()
+	bool Graveyard::_initializeService()
 	{
 		m_graveyardTime = CONFIG_VALUE("Engine", "GraveyardTime", 1000.f);
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Graveyard::_finalize()
+	void Graveyard::_finalizeService()
 	{
 		this->clearTextures();
 	}
@@ -98,7 +98,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Graveyard::buryTexture( RenderTextureInterface * _texture )
 	{
-		if( this->isInitialize() == false )
+		if( this->isInitializeService() == false )
 		{
 			return false;
 		}

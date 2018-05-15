@@ -20,8 +20,8 @@ namespace Mengine
 		: public ServiceBase<OptionsServiceInterface>
 	{
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	public:
 		void setArgs( const TVectorString & _args ) override;

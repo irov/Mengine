@@ -28,8 +28,7 @@ namespace Mengine
 	{
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
-		pybind::interface_<BounceWorld>( kernel, "BounceWorld" )
-			.def_smart_pointer()            
+		pybind::interface_<BounceWorld, pybind::bases<Mixin> >( kernel, "BounceWorld" )
 			.def( "createBounceActor", &BounceWorld::createBounceActor )
 			.def( "removeBounceActor", &BounceWorld::removeBounceActor )
 			;
@@ -37,8 +36,7 @@ namespace Mengine
 		pybind::def_functor( kernel, "createBounceWorld", this, &ModuleBounce::createBounceWorld );
 		pybind::def_functor( kernel, "removeBounceWorld", this, &ModuleBounce::removeBounceWorld );
 
-		pybind::interface_<BounceActor>( kernel, "BounceActor", false )
-			.def_smart_pointer()
+		pybind::interface_<BounceActor, pybind::bases<Scriptable> >( kernel, "BounceActor", false )
 			.def( "setRadius", &BounceActor::setRadius )
 			.def( "getRadius", &BounceActor::getRadius )
 			.def( "setMass", &BounceActor::setMass )

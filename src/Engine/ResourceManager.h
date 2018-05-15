@@ -31,8 +31,8 @@ namespace Mengine
 		~ResourceManager() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	public:
 		bool loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path, bool _ignored ) override;

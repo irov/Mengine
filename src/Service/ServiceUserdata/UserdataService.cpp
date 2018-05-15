@@ -21,7 +21,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool UserdataService::_initialize()
+	bool UserdataService::_initializeService()
 	{
 		m_archivator = ARCHIVE_SERVICE()
 			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
@@ -34,7 +34,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void UserdataService::_finalize()
+	void UserdataService::_finalizeService()
 	{			
 	}
 	//////////////////////////////////////////////////////////////////////////

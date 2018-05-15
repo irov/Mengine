@@ -25,7 +25,7 @@ namespace Mengine
 
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SilentSoundSystem::_initialize()
+	bool SilentSoundSystem::_initializeService()
 	{
         LOGGER_INFO( "Starting Silent Sound System..." );
         		
@@ -35,7 +35,7 @@ namespace Mengine
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundSystem::_finalize()
+    void SilentSoundSystem::_finalizeService()
     {
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySilentSoundBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySilentSoundSource );

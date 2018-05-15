@@ -16,8 +16,8 @@ namespace Mengine
 		~FileEngine() override;
 
     public:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializeService() override;
+        void _finalizeService() override;
 
 	public:
 		void registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory ) override;

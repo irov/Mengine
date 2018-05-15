@@ -20,8 +20,8 @@ namespace Mengine
 		~Win32SocketSystem() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	protected:
 		SocketInterfacePtr createSocket() override;

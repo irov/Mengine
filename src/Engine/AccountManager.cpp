@@ -35,7 +35,7 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool AccountManager::_initialize()
+    bool AccountManager::_initializeService()
     {
 		LOGGER_INFO("Initializing Account manager..."
 			);
@@ -45,7 +45,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountManager::_finalize()
+    void AccountManager::_finalizeService()
     {
         LOGGER_WARNING("AccountManager::finalize save accounts"
             );

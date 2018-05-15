@@ -16,12 +16,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrototypeManager::_initialize()
+    bool PrototypeManager::_initializeService()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PrototypeManager::_finalize()
+    void PrototypeManager::_finalizeService()
     {
         for( size_t index = 0; index != MENGINE_PROTOTYPE_HASH_SIZE; ++index )
         {

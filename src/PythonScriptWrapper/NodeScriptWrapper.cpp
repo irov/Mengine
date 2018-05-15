@@ -6445,7 +6445,7 @@ namespace Mengine
 
             if( py_handler == nullptr )
             {
-                LOGGER_ERROR( "s_removeKeyHandler %d handler invalid PyGlobalKeyHandler"
+                LOGGER_ERROR( "s_removeKeyHandler %d handler invalid"
                     , _id
                 );
 
@@ -7117,8 +7117,11 @@ namespace Mengine
 
         classWrapping();
 
-        pybind::interface_<Affector>( kernel, "Affector", true )
+        pybind::interface_<Mixin>( kernel, "Mixin", true )
             .def_smart_pointer()
+            ;
+
+        pybind::interface_<Affector, pybind::bases<Mixin> >( kernel, "Affector", true )
             .def( "stop", &Affector::stop )
             .def( "getId", &Affector::getId )
             .def( "setFreeze", &Affector::setFreeze )
@@ -7127,25 +7130,21 @@ namespace Mengine
             .def( "getSpeedFactor", &Affector::getSpeedFactor )
             ;
 
-        pybind::interface_<Scriptable>( kernel, "Scriptable" )
-            .def_smart_pointer()
+        pybind::interface_<Scriptable, pybind::bases<Mixin> >( kernel, "Scriptable" )
             .def_bindable()
             ;
 
-        pybind::interface_<Identity>( kernel, "Identity" )
-            .def_smart_pointer()
+        pybind::interface_<Identity, pybind::bases<Mixin> >( kernel, "Identity" )
             .def( "setName", &Identity::setName )
             .def( "getName", &Identity::getName )
             .def( "getType", &Identity::getType )
             ;
 
-        pybind::interface_<BoundingBox>( kernel, "BoundingBox" )
-            .def_smart_pointer()
+        pybind::interface_<BoundingBox, pybind::bases<Mixin> >( kernel, "BoundingBox" )
             .def( "getBoundingBox", &BoundingBox::getBoundingBox )
             ;
 
-        pybind::interface_<Transformation3D>( kernel, "Transformation3D" )
-            .def_smart_pointer()
+        pybind::interface_<Transformation3D, pybind::bases<Mixin> >( kernel, "Transformation3D" )
             .def( "setLocalPosition", &Transformation3D::setLocalPosition )
             .def( "getLocalPosition", &Transformation3D::getLocalPosition )
             .def( "setLocalPositionX", &Transformation3D::setLocalPositionX )
@@ -7195,22 +7194,19 @@ namespace Mengine
             .def_proxy_static( "removeRelationTransformation", nodeScriptMethod, &NodeScriptMethod::Transformation3D_removeRelationTransformation )
             ;
 
-        pybind::interface_<Compilable>( kernel, "Compilable" )
-            .def_smart_pointer()
+        pybind::interface_<Compilable, pybind::bases<Mixin> >( kernel, "Compilable" )
             .def( "compile", &Compilable::compile )
             .def( "release", &Compilable::release )
             .def( "isCompile", &Compilable::isCompile )
             ;
 
-        pybind::interface_<Reference>( kernel, "Reference" )
-            .def_smart_pointer()
+        pybind::interface_<Reference, pybind::bases<Mixin> >( kernel, "Reference" )
             .def( "incrementReference", &Reference::incrementReference )
             .def( "decrementReference", &Reference::decrementReference )
             .def( "countReference", &Reference::countReference )
             ;
 
-        pybind::interface_<Resource, pybind::bases<Scriptable, Compilable, Identity, Reference> >( kernel, "ResourceReference", false )
-            .def_smart_pointer()
+        pybind::interface_<Resource, pybind::bases<Scriptable, Compilable, Identity, Reference> >( kernel, "ResourceReference", false )            
             .def( "getCategory", &Resource::getCategory )
             .def( "getGroup", &Resource::getGroup )
             .def( "cache", &Resource::cache )
@@ -7300,16 +7296,14 @@ namespace Mengine
             .def( "getHeight", &ResourceHIT::getHeight )
             ;
 
-        pybind::interface_<Renderable>( kernel, "Renderable" )
-            .def_smart_pointer()
+        pybind::interface_<Renderable, pybind::bases<Mixin> >( kernel, "Renderable" )
             .def( "hide", &Renderable::setHide )
             .def( "isHide", &Renderable::getHide )
             .def( "localHide", &Renderable::setLocalHide )
             .def( "isLocalHide", &Renderable::getLocalHide )
             ;
 
-        pybind::interface_<Colorable>( kernel, "Colorable" )
-            .def_smart_pointer()
+        pybind::interface_<Colorable, pybind::bases<Mixin> >( kernel, "Colorable" )
             .def( "setLocalColor", &Colorable::setLocalColor )
             .def( "getLocalColor", &Colorable::getLocalColor )
             .def( "setLocalColorR", &Colorable::setLocalColorR )
@@ -7327,8 +7321,7 @@ namespace Mengine
             .def( "getPersonalAlpha", &Colorable::getPersonalAlpha )
             ;
 
-        pybind::interface_<Animatable>( kernel, "Animatable" )
-            .def_smart_pointer()
+        pybind::interface_<Animatable, pybind::bases<Mixin> >( kernel, "Animatable" )
             .def_proxy_static( "play", nodeScriptMethod, &NodeScriptMethod::s_Animatable_play )
             .def( "stop", &Animatable::stop )
             .def( "pause", &Animatable::pause )
@@ -7357,18 +7350,15 @@ namespace Mengine
             .def( "getIntervalStart", &Animatable::getIntervalStart )
             ;
 
-        pybind::interface_<Eventable>( kernel, "Eventable" )
-            .def_smart_pointer()
+        pybind::interface_<Eventable, pybind::bases<Mixin> >( kernel, "Eventable" )
             ;
 
-        pybind::interface_<Soundable>( kernel, "Soundable" )
-            .def_smart_pointer()
+        pybind::interface_<Soundable, pybind::bases<Mixin> >( kernel, "Soundable" )
             .def( "setVolume", &Soundable::setVolume )
             .def( "getVolume", &Soundable::getVolume )
             ;
 
-        pybind::interface_<Affectorable>( kernel, "Affectorable" )
-            .def_smart_pointer()
+        pybind::interface_<Affectorable, pybind::bases<Mixin> >( kernel, "Affectorable" )
             .def( "addAffector", &Affectorable::addAffector )
             .def( "stopAffector", &Affectorable::stopAffector )
             .def( "stopAllAffectors", &Affectorable::stopAllAffectors )
@@ -7376,8 +7366,7 @@ namespace Mengine
             .def( "getLinearSpeed", &Affectorable::getLinearSpeed )
             ;
 
-        pybind::interface_<Materialable>( kernel, "Materialable", false )
-            .def_smart_pointer()
+        pybind::interface_<Materialable, pybind::bases<Mixin> >( kernel, "Materialable", false )
             .def( "setMaterialName", &Materialable::setMaterialName )
             .def( "getMaterialName", &Materialable::getMaterialName )
             .def( "setDisableTextureColor", &Materialable::setDisableTextureColor )
@@ -7386,8 +7375,7 @@ namespace Mengine
             .def( "getBlendMode", &Materialable::getBlendMode )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Compilable, Renderable, Affectorable> >( kernel, "Node", false )
-            .def_smart_pointer()
+        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Compilable, Renderable, Affectorable> >( kernel, "Node", false )            
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )
@@ -7468,8 +7456,7 @@ namespace Mengine
             .def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )
             ;
 
-        pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable, Compilable> >( kernel, "Surface", false )
-            .def_smart_pointer()
+        pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable, Compilable> >( kernel, "Surface", false )            
             .def( "getMaxSize", &Surface::getMaxSize )
             .def( "getSize", &Surface::getSize )
             .def( "getOffset", &Surface::getOffset )
@@ -7517,12 +7504,10 @@ namespace Mengine
             ;
 
 
-        pybind::interface_<ThreadTask>( kernel, "Task" )
-            .def_smart_pointer()
+        pybind::interface_<ThreadTask, pybind::bases<Mixin> >( kernel, "Task" )
             ;
 
-        pybind::interface_<RenderViewportInterface>( kernel, "RenderViewportInterface" )
-            .def_smart_pointer()
+        pybind::interface_<RenderViewportInterface, pybind::bases<Mixin> >( kernel, "RenderViewportInterface" )
             .def( "getViewport", &RenderViewportInterface::getViewport )
             ;
 
@@ -7532,8 +7517,7 @@ namespace Mengine
             .def( "setViewport", &RenderViewport::setViewport )
             ;
 
-        pybind::interface_<RenderCameraInterface>( kernel, "RenderCameraInterface" )
-            .def_smart_pointer()
+        pybind::interface_<RenderCameraInterface, pybind::bases<Mixin> >( kernel, "RenderCameraInterface" )
             ;
 
         pybind::interface_<RenderCameraOrthogonal, pybind::bases<Node, RenderCameraInterface> >( kernel, "RenderCameraOrthogonal", false )
@@ -7573,8 +7557,7 @@ namespace Mengine
             ;
 
 
-        pybind::interface_<RenderClipplaneInterface>( kernel, "RenderClipplaneInterface", false )
-            .def_smart_pointer()
+        pybind::interface_<RenderClipplaneInterface, pybind::bases<Mixin> >( kernel, "RenderClipplaneInterface", false )
             .def( "getCount", &RenderClipplaneInterface::getCount )
             .def( "getPlane", &RenderClipplaneInterface::getPlane )
             ;
@@ -7582,8 +7565,7 @@ namespace Mengine
         pybind::interface_<RenderClipplane, pybind::bases<Node, RenderClipplaneInterface> >( kernel, "RenderClipplane", false )
             ;
 
-        pybind::interface_<RenderTargetInterface>( kernel, "RenderTargetInterface", false )
-            .def_smart_pointer()
+        pybind::interface_<RenderTargetInterface, pybind::bases<Mixin> >( kernel, "RenderTargetInterface", false )
             .def( "getWidth", &RenderTargetInterface::getWidth )
             .def( "getHeight", &RenderTargetInterface::getHeight )
             ;
@@ -7716,8 +7698,7 @@ namespace Mengine
                     .def( "getParallaxFactor", &Parallax::getParallaxFactor )
                     ;
 
-                pybind::interface_<MousePickerTrapInterface>( kernel, "MousePickerTrap", false )
-                    .def_smart_pointer()
+                pybind::interface_<MousePickerTrapInterface, pybind::bases<Mixin> >( kernel, "MousePickerTrap", false )
                     .def( "pick", &MousePickerTrapInterface::pick )
                     ;
 
@@ -7927,8 +7908,7 @@ namespace Mengine
             pybind::def_functor_args( kernel, "timing", nodeScriptMethod, &NodeScriptMethod::timing );
             pybind::def_functor( kernel, "timingRemove", nodeScriptMethod, &NodeScriptMethod::timingRemove );
 
-            pybind::interface_<ScheduleManagerInterface>( kernel, "ScheduleManagerInterface", true )
-                .def_smart_pointer()
+            pybind::interface_<ScheduleManagerInterface, pybind::bases<Mixin> >( kernel, "ScheduleManagerInterface", true )
                 .def_proxy_args_static( "timing", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_timing )
                 .def_proxy_args_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
                 .def_proxy_args_static( "pipe", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_pipe )

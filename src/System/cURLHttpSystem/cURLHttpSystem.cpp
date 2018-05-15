@@ -26,7 +26,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLHttpSystem::_initialize()
+    cURLHttpSystem::~cURLHttpSystem()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool cURLHttpSystem::_initializeService()
     {
         CURLcode code = curl_global_init( CURL_GLOBAL_ALL );
 
@@ -54,7 +58,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLHttpSystem::_finalize()
+    void cURLHttpSystem::_finalizeService()
     {
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ) );

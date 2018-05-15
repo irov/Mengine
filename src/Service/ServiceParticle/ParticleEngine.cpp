@@ -25,7 +25,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ParticleEngine2::_initialize()
+	bool ParticleEngine2::_initializeService()
 	{
 		m_available = CONFIG_VALUE( "Engine", "ParticleService2Avaliable", true );
 
@@ -54,7 +54,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEngine2::_finalize()
+	void ParticleEngine2::_finalizeService()
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////

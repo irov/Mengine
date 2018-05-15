@@ -19,7 +19,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MemoryManager::_initialize()
+	bool MemoryManager::_initializeService()
 	{
         m_memoryCacheMutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
@@ -45,7 +45,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MemoryManager::_finalize()
+	void MemoryManager::_finalizeService()
 	{
 		this->clearCacheBuffers();
 

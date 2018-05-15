@@ -18,8 +18,8 @@ namespace Mengine
         ~NotificationService() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	public:
 		void addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable ) override;

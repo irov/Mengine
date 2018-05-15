@@ -16,7 +16,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32SocketSystem::_initialize()
+	bool Win32SocketSystem::_initializeService()
 	{
         WORD wVersionRequested = MAKEWORD( 2, 2 );
 
@@ -32,7 +32,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32SocketSystem::_finalize()
+	void Win32SocketSystem::_finalizeService()
 	{
         WSACleanup();
 

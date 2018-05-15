@@ -14,8 +14,8 @@ namespace Mengine
         ~ProfilerService() override;
 
     protected:
-        bool _initialize() override;
-		void _finalize() override;
+        bool _initializeService() override;
+		void _finalizeService() override;
 
     protected:
         void memoryBegin() override;

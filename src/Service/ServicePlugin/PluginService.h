@@ -20,8 +20,8 @@ namespace Mengine
         ~PluginService() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
     public:
 		bool loadPlugin( const WString & _dllName ) override;

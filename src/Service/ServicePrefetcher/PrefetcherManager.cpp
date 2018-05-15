@@ -21,7 +21,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::_initialize()
+	bool PrefetcherManager::_initializeService()
 	{
         bool avaliable = CONFIG_VALUE( "Engine", "PrefetcherAvaliable", true );
 
@@ -45,7 +45,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PrefetcherManager::_finalize()
+	void PrefetcherManager::_finalizeService()
 	{
         if( m_avaliable == false )
         {

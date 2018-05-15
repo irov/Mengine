@@ -22,7 +22,7 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool NodeManager::_initialize()
+    bool NodeManager::_initializeService()
     {
         m_homeless = new FactorableUnique<Node>();
 
@@ -37,7 +37,7 @@ namespace Mengine
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeManager::_finalize()
+    void NodeManager::_finalizeService()
     {
         if( m_homeless != nullptr )
         {

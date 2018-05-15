@@ -183,7 +183,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////	
-    bool Application::_initialize()
+    bool Application::_initializeService()
     {
         if( this->registerBaseNodeTypes_() == false )
         {
@@ -1391,7 +1391,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::_finalize()
+    void Application::_finalizeService()
     {
         NOTIFICATION_SERVICE()
             ->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, this );

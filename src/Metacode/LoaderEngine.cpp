@@ -24,8 +24,12 @@ namespace Mengine
 	LoaderEngine::LoaderEngine()		
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    LoaderEngine::~LoaderEngine()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::_initialize()
+	bool LoaderEngine::_initializeService()
 	{
 		m_archivator = ARCHIVE_SERVICE()
 			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
@@ -40,7 +44,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoaderEngine::_finalize()
+	void LoaderEngine::_finalizeService()
 	{
 		m_archivator = nullptr;
 

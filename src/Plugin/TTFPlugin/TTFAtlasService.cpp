@@ -22,7 +22,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TTFAtlasService::_initialize()
+	bool TTFAtlasService::_initializeService()
 	{
 		m_minAtlasPow = CONFIG_VALUE( "TTF", "MinAtlasPow", 4U );
 		m_maxAtlasPow = CONFIG_VALUE( "TTF", "MaxAtlasPow", 16U );
@@ -38,7 +38,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void TTFAtlasService::_finalize()
+	void TTFAtlasService::_finalizeService()
 	{
 		for( uint32_t i = 0; i != 3; ++i )
 		{

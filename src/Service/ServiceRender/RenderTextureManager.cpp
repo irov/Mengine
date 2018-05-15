@@ -36,7 +36,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderTextureManager::_initialize()
+    bool RenderTextureManager::_initializeService()
     {
 		m_supportA8 = RENDER_SYSTEM()
 			->supportTextureFormat( PF_A8 );
@@ -57,7 +57,7 @@ namespace Mengine
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureManager::_finalize()
+    void RenderTextureManager::_finalizeService()
     {   
 		for( uint32_t i = 0; i != MENGINE_TEXTURE_MANAGER_HASH_SIZE; ++i )
 		{
@@ -100,7 +100,7 @@ namespace Mengine
 			return false;
 		}
 
-		const RenderTexturePtr & texture = it_found->second;
+		const RenderTextureInterface * texture = it_found->second;
 
 		if( _texture != nullptr )
 		{
@@ -118,10 +118,10 @@ namespace Mengine
 
         if( it_found == textures.end() )
         {
-            return nullptr;
+            return RenderTextureInterfacePtr::none();
         }
 
-		const RenderTexturePtr & texture = it_found->second;
+        const RenderTextureInterface * texture = it_found->second;
 				
         return texture;
     }
@@ -305,11 +305,9 @@ namespace Mengine
 			it != it_end;
 			++it )
 			{
-				const RenderTexturePtr & texture = it->second;
-
-				const RenderTexture * texture_ptr = texture.get();
-
-				_visitor->visitRenderTexture( texture_ptr );
+                const RenderTextureInterface * texture = it->second;
+                
+				_visitor->visitRenderTexture( texture );
 			}
 		}
     }
@@ -321,7 +319,7 @@ namespace Mengine
 
         TMapRenderTextureEntry & textures = this->getHashEntry_(_fileName);
 		
-		RenderTextureInterface * texture_ptr = _texture.get();
+        RenderTextureInterface * texture_ptr = _texture.get();
 
 		textures.insert( std::make_pair( std::make_pair( _pakName, _fileName ), texture_ptr ) );
 
@@ -339,7 +337,7 @@ namespace Mengine
 
 		if( it_found != textures.end() )
         {
-			const RenderTexturePtr & texture = it_found->second;
+			const RenderTextureInterface * texture = it_found->second;
 
             return texture;
         }

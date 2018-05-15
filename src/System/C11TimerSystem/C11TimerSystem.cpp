@@ -16,12 +16,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool C11TimerSystem::_initialize()
+    bool C11TimerSystem::_initializeService()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void C11TimerSystem::_finalize()
+    void C11TimerSystem::_finalizeService()
     {
         //Empty
     }

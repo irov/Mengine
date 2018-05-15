@@ -18,8 +18,8 @@ namespace Mengine
 		NodeManager();
 
     public:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializeService() override;
+        void _finalizeService() override;
 
     public:
         PointerNode createNode( const ConstString& _type ) override;

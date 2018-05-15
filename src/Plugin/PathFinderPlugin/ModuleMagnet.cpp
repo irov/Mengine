@@ -30,8 +30,7 @@ namespace Mengine
 	{
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
-		pybind::interface_<MagnetWorld>( kernel, "MagnetWorld" )
-			.def_smart_pointer()
+		pybind::interface_<MagnetWorld, pybind::bases<Mixin> >( kernel, "MagnetWorld" )
 			.def( "setIFFs", &MagnetWorld::setIFFs )
 			.def( "getIFFs", &MagnetWorld::getIFFs )
 			;

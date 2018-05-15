@@ -28,7 +28,7 @@ namespace Mengine
 	{     
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundSystem::_initialize()
+	bool OALSoundSystem::_initializeService()
 	{
 		LOGGER_INFO( "Starting OpenAL Sound System..." );
 
@@ -150,7 +150,7 @@ namespace Mengine
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSystem::_finalize()
+    void OALSoundSystem::_finalizeService()
     {
 		if( m_device != nullptr )
 		{

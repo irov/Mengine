@@ -1,5 +1,7 @@
 #include "NotificationService.h"
 
+#include "Core/Assertion.h"
+
 #include "Logger/Logger.h"
 
 #include <algorithm>
@@ -19,7 +21,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NotificationService::_initialize()
+    bool NotificationService::_initializeService()
     {
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
@@ -34,7 +36,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::_finalize()
+    void NotificationService::_finalizeService()
     {
         m_add.clear();
         m_remove.clear();
@@ -47,10 +49,9 @@ namespace Mengine
         {
             const TVectorObservers & observers = it->second;
 
-            if( observers.empty() == false )
-            {
-                throw;
-            }
+            (void)observers;
+
+            MENGINE_ASSERTION( observers.empty() == true );
         }
 
         m_mutex = nullptr;

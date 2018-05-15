@@ -38,8 +38,8 @@ namespace Mengine
 		~Player() override;
 
 	public:
-        bool _initialize() override;
-		void _finalize() override;
+        bool _initializeService() override;
+		void _finalizeService() override;
 
 	public:
 		bool setCurrentScene( const ScenePtr & _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) override;

@@ -27,12 +27,12 @@ namespace Mengine
         ~GlobalHandleSystem() override;
 
     public:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializeService() override;
+        void _finalizeService() override;
 
 	public:
         uint32_t addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc ) override;
-		const InputHandlerInterfacePtr & removeGlobalHandler( uint32_t _id ) override;
+		InputHandlerInterfacePtr removeGlobalHandler( uint32_t _id ) override;
 
 	public:
 		bool enableGlobalHandler( uint32_t _id, bool _value ) override;

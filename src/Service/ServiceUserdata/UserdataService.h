@@ -17,8 +17,8 @@ namespace Mengine
 		~UserdataService() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	public:
 		bool addUserdata( const ConstString & _name, const ConstString & _category, const FilePath & _path ) override;

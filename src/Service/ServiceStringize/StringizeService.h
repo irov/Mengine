@@ -22,8 +22,8 @@ namespace Mengine
         ~StringizeService() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	public:
 		void stringize( const Char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr ) override;

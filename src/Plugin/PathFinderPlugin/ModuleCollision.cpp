@@ -115,8 +115,7 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        pybind::interface_<CollisionWorld>( kernel, "CollisionWorld" )
-            .def_smart_pointer()
+        pybind::interface_<CollisionWorld, pybind::bases<Mixin> >( kernel, "CollisionWorld" )
             .def( "setIFFs", &CollisionWorld::setIFFs )
             .def( "getIFFs", &CollisionWorld::getIFFs )
             ;

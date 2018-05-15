@@ -39,7 +39,7 @@ namespace Mengine
 		_mutex->unlock();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadEngine::_initialize()
+	bool ThreadEngine::_initializeService()
 	{
         m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>();
         m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>();
@@ -82,7 +82,7 @@ namespace Mengine
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadEngine::_finalize()
+	void ThreadEngine::_finalizeService()
 	{	
         for( const ThreadTaskDesc & desc : m_tasks )
 		{

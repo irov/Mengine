@@ -16,14 +16,14 @@ namespace Mengine
         virtual const Char * getServiceID() const = 0;
 
     protected:
-        virtual bool initialize() = 0;
-        virtual void finalize() = 0;
+        virtual bool initializeService() = 0;
+        virtual void finalizeService() = 0;
+        virtual bool isInitializeService() const = 0;
+                
 
     protected:
         virtual void stopService() = 0;
-
-    protected:
-        virtual bool isInitialize() const = 0;
+        virtual bool isStopService() const = 0;
 
     public:
         friend class ServiceProvider;

@@ -62,7 +62,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::_initialize()
+    bool RenderEngine::_initializeService()
     {
         m_maxVertexCount = CONFIG_VALUE( "Engine", "RenderMaxVertexCount", 32000U );
         m_maxIndexCount = CONFIG_VALUE( "Engine", "RenderMaxIndexCount", 48000U );
@@ -140,7 +140,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::_finalize()
+    void RenderEngine::_finalizeService()
     {
         if( m_windowCreated == false )
         {
@@ -157,7 +157,7 @@ namespace Mengine
         {
             RenderObject & ro = *it;
 
-            ro.material = nullptr;
+            stdex::intrusive_ptr_release( ro.material );
         }
 
         m_renderObjects.clear();
@@ -178,6 +178,12 @@ namespace Mengine
         m_currentProgram = nullptr;
 
         m_currentRenderTarget = nullptr;
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderPass );
+
+        m_factoryRenderBatch = nullptr;
+        m_factoryRenderPass = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,

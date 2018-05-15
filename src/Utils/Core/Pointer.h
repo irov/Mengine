@@ -30,6 +30,11 @@ namespace Mengine
         operator U * () const
         {
 #ifndef NDEBUG
+            if( m_pointer == nullptr )
+            {
+                return nullptr;
+            }
+
             if( stdex::mpl::is_dynamic_cast<U *>::test( m_pointer ) == false )
             {
                 throw;
@@ -45,6 +50,11 @@ namespace Mengine
         operator IntrusivePtr<U>() const
         {
 #ifndef NDEBUG
+            if( m_pointer == nullptr )
+            {
+                return IntrusivePtr<U>();
+            }
+
             if( stdex::mpl::is_dynamic_cast<U *>::test( m_pointer ) == false )
             {
                 throw;
@@ -87,6 +97,11 @@ namespace Mengine
             T * p = m_pointer.get();
 
 #ifndef NDEBUG
+            if( p == nullptr )
+            {
+                return IntrusivePtr<U>();
+            }
+
             if( stdex::mpl::is_dynamic_cast<U *>::test( p ) == false )
             {
                 throw;

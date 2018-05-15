@@ -14,10 +14,11 @@ namespace Mengine
 	{
 	public:
 		ConfigManager();
+        ~ConfigManager() override;
 
 	public:
-		bool _initialize() override;
-        void _finalize() override;
+		bool _initializeService() override;
+        void _finalizeService() override;
 
 	public:
 		bool loadConfig( const ConstString & _fileGroup, const FilePath & _applicationPath ) override;

@@ -63,7 +63,7 @@ namespace Mengine
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-    bool RenderMaterialManager::_initialize()
+    bool RenderMaterialManager::_initializeService()
     {
 		m_defaultStageNames[EM_DEBUG] = STRINGIZE_STRING_LOCAL( "Debug" );
 
@@ -156,7 +156,7 @@ namespace Mengine
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderMaterialManager::_finalize()
+    void RenderMaterialManager::_finalizeService()
     {
 		for( uint32_t i = 0; i != MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE; ++i )
 		{

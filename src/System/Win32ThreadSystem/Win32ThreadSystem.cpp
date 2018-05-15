@@ -21,7 +21,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32ThreadSystem::_initialize()		
+	bool Win32ThreadSystem::_initializeService()
 	{
         m_factoryWin32ThreadIdentity = new FactoryPool<Win32ThreadIdentity, 16>();
         m_factoryWin32ThreadMutex = new FactoryPool<Win32ThreadMutex, 16>();
@@ -29,7 +29,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32ThreadSystem::_finalize()
+	void Win32ThreadSystem::_finalizeService()
 	{
 		if( m_factoryWin32ThreadIdentity->isEmptyObjects() == false )
 		{

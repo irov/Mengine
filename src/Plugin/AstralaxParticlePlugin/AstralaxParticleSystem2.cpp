@@ -27,7 +27,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxParticleSystem2::_initialize()
+    bool AstralaxParticleSystem2::_initializeService()
     {
         bool states[17];
         states[MAGIC_RENDER_STATE_BLENDING] = false;
@@ -79,7 +79,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleSystem2::_finalize()
+    void AstralaxParticleSystem2::_finalizeService()
     {
         m_atlases.clear();
         m_containers.clear();

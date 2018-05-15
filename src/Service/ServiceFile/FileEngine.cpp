@@ -25,12 +25,12 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool FileEngine::_initialize()
+    bool FileEngine::_initializeService()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FileEngine::_finalize()
+    void FileEngine::_finalizeService()
     {
         for( TMapFileSystem::reverse_iterator
             it = m_fileSystemMap.rbegin(),

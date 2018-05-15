@@ -25,12 +25,12 @@ namespace Mengine
 	{		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::_initialize()
+	bool ResourceManager::_initializeService()
 	{
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::_finalize()
+	void ResourceManager::_finalizeService()
 	{
 		m_resourcesCache.clear();
 

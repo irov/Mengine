@@ -146,12 +146,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MousePickerSystem::_initialize()
+    bool MousePickerSystem::_initializeService()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MousePickerSystem::_finalize()
+    void MousePickerSystem::_finalizeService()
     {
         m_arrow = nullptr;
         m_scene = nullptr;

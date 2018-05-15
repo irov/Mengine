@@ -21,8 +21,8 @@ namespace Mengine
 		~Amplifier() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
     protected:
         void _stopService() override;

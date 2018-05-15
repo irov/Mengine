@@ -36,7 +36,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextManager::_initialize()
+    bool TextManager::_initializeService()
     {
         m_factoryTextEntry = new FactoryPool<TextEntry, 128>();
 		m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>();
@@ -44,7 +44,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextManager::_finalize()
+    void TextManager::_finalizeService()
     {
         m_texts.clear();
         m_fonts.clear();

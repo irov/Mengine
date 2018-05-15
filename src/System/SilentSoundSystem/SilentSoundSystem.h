@@ -19,8 +19,8 @@ namespace Mengine
 		~SilentSoundSystem() override;
 
 	public:
-		bool _initialize() override;
-        void _finalize() override;
+		bool _initializeService() override;
+        void _finalizeService() override;
 
 	public:
 		void update() override;

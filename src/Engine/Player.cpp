@@ -474,7 +474,7 @@ namespace Mengine
         return m_affectorableGlobal;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Player::_initialize()
+    bool Player::_initializeService()
     {
         SERVICE_CREATE( MousePickerSystem );
         SERVICE_CREATE( GlobalHandleSystem );
@@ -498,7 +498,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Player::_finalize()
+    void Player::_finalizeService()
     {
         if( m_scene != nullptr )
         {

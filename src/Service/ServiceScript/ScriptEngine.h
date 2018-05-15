@@ -33,8 +33,8 @@ namespace Mengine
 		~ScriptEngine() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	protected:
 		pybind::kernel_interface * getKernel() override;

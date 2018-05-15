@@ -26,14 +26,14 @@ namespace Mengine
         m_plugins.clear();
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool PluginService::_initialize()
+	bool PluginService::_initializeService()
 	{
 		//Empty
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PluginService::_finalize()
+	void PluginService::_finalizeService()
 	{
         for( PluginDesc & desc : m_plugins )
 		{

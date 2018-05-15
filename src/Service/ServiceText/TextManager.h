@@ -30,8 +30,8 @@ namespace Mengine
 		~TextManager() override;
 
     public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 		
 	public:
 		bool loadTextEntry( const ConstString & _pakName, const FilePath & _path ) override;

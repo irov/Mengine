@@ -63,7 +63,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32Platform::_initialize()
+	bool Win32Platform::_initializeService()
 	{
 		// seed randomizer
 		//LARGE_INTEGER randomSeed;
@@ -182,7 +182,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32Platform::_finalize()
+	void Win32Platform::_finalizeService()
 	{
         m_platformTags.clear();
         

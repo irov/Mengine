@@ -67,7 +67,7 @@ namespace Mengine
         return m_renderPlatformName;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::_initialize()
+    bool DX9RenderSystem::_initializeService()
     {
         m_frames = 0;
 
@@ -202,7 +202,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::_finalize()
+    void DX9RenderSystem::_finalizeService()
     {
         m_deferredCompileVertexShaders.clear();
         m_deferredCompileFragmentShaders.clear();

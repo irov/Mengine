@@ -20,8 +20,8 @@ namespace Mengine
 		~BitmapGlyphService() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	public:
 		BitmapGlyphPtr getGlyph( const ConstString & _category, const FilePath & _path ) override;

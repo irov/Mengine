@@ -134,7 +134,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptEngine::_initialize()
+    bool ScriptEngine::_initializeService()
     {
         bool developmentMode = HAS_OPTION( "dev" );
 
@@ -237,7 +237,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptEngine::_finalize()
+    void ScriptEngine::_finalizeService()
     {
         pybind::_remove_module_finder();
 

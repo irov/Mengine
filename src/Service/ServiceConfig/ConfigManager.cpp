@@ -16,8 +16,12 @@ namespace Mengine
 	ConfigManager::ConfigManager()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ConfigManager::~ConfigManager()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigManager::_initialize()
+	bool ConfigManager::_initializeService()
 	{
 		if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
 		{
@@ -30,7 +34,7 @@ namespace Mengine
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    void ConfigManager::_finalize()
+    void ConfigManager::_finalizeService()
     {
         m_platformTags.clear();
     }

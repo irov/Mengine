@@ -20,14 +20,14 @@ namespace Mengine
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Win32PluginSystem::_initialize()
+	bool Win32PluginSystem::_initializeService()
 	{
 		m_factoryDynamicLibraries = new FactoryPool<Win32DynamicLibrary, 8>();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32PluginSystem::_finalize()
+	void Win32PluginSystem::_finalizeService()
 	{
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
 

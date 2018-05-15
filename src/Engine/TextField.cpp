@@ -92,6 +92,8 @@ namespace Mengine
             m_font = nullptr;
         }
 
+        m_chunks.clear();
+
         for( const CacheFont & cache : m_cacheFonts )
         {
             const TextFontInterfacePtr & font = cache.font;

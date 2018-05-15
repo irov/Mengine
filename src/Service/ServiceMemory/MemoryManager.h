@@ -30,8 +30,8 @@ namespace Mengine
 		~MemoryManager() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	public:
 		CacheBufferID lockBuffer( size_t _size, void ** _memory, const char * _file, uint32_t _line );

@@ -648,7 +648,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Game::_initialize()
+	bool Game::_initializeService()
 	{
 		CONFIG_SECTION( "Params", m_params );
 
@@ -669,7 +669,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Game::_finalize()
+	void Game::_finalizeService()
 	{	
         EVENTABLE_METHOD( this, EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();

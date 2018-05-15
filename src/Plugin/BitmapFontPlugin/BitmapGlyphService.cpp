@@ -16,14 +16,14 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BitmapGlyphService::_initialize()
+	bool BitmapGlyphService::_initializeService()
 	{
 		m_factoryTextGlyph = new FactoryPool<BitmapGlyph, 8>();
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BitmapGlyphService::_finalize()
+	void BitmapGlyphService::_finalizeService()
 	{
         m_glyphs.clear();
 

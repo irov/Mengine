@@ -17,8 +17,8 @@ namespace Mengine
         ~ModuleService() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	public:
 		bool registerModule( const ConstString & _name, const ModuleFactoryInterfacePtr & _module ) override;

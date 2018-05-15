@@ -20,7 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool StringizeService::_initialize()
+    bool StringizeService::_initializeService()
     {
         for( uint32_t i = 0; i != 257; ++i )
         {
@@ -36,7 +36,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::_finalize()
+    void StringizeService::_finalizeService()
     {
         for( uint32_t i = 0; i != 257; ++i )
         {

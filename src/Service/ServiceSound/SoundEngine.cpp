@@ -33,7 +33,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SoundEngine::_initialize()
+	bool SoundEngine::_initializeService()
 	{
 		m_supportStream = THREAD_SERVICE()
 			->avaliable();
@@ -68,7 +68,7 @@ namespace Mengine
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::_finalize()
+	void SoundEngine::_finalizeService()
 	{
 		this->stopSounds_();
 
@@ -252,6 +252,14 @@ namespace Mengine
 			_streamable = false;
 		}
 
+        if( this->isStopService() == true )
+        {
+            LOGGER_ERROR( "SoundEngine::createSoundSource: service is stoped"
+            );
+
+            return nullptr;
+        }
+
 		SoundSourceInterfacePtr sourceInterface = SOUND_SYSTEM()
             ->createSoundSource( _isHeadMode, _buffer );
 
@@ -416,6 +424,14 @@ namespace Mengine
 
 			_streamable = false;
 		}
+
+        if( this->isStopService() == true )
+        {
+            LOGGER_ERROR( "SoundEngine::createSoundBufferFromFile: service is stoped"
+            );
+
+            return nullptr;
+        }
 
 		SoundDecoderInterfacePtr soundDecoder;
 		if( _streamable == false )
@@ -1171,7 +1187,9 @@ namespace Mengine
     {
         this->stopSounds_();
 
-        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        TVectorSoundSource remove_soundIdentities = m_soundIdentities;
+
+        for( const SoundIdentityPtr & identity : remove_soundIdentities )
         {
             this->stopSoundBufferUpdate_( identity );
 
@@ -1179,6 +1197,14 @@ namespace Mengine
             {
                 identity->source->stop();
                 identity->source = nullptr;
+            }
+
+            if( identity->listener != nullptr )
+            {
+                SoundListenerInterfacePtr keep_identity = identity->listener;
+                keep_identity->onSoundStop( identity );
+
+                identity->listener = nullptr;
             }
         }
     }

@@ -18,12 +18,12 @@ namespace Mengine
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ModuleService::_initialize()
+	bool ModuleService::_initializeService()
 	{
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::_finalize()
+	void ModuleService::_finalizeService()
 	{
         for( const ModuleInterfacePtr & module : m_modules )
 		{

@@ -36,7 +36,7 @@ namespace Mengine
             return nullptr;
         }
 
-        if( service->initialize() == false )
+        if( service->initializeService() == false )
         {
             return nullptr;
         }
@@ -74,7 +74,7 @@ namespace Mengine
 			}
 			else
 			{
-				desc.service->finalize();
+				desc.service->finalizeService();
 				desc.service = nullptr;
 			}
 
@@ -102,7 +102,7 @@ namespace Mengine
 				break;
 			}
 
-			desc.service->finalize();
+			desc.service->finalizeService();
 
 			return true;
 		}
@@ -126,7 +126,7 @@ namespace Mengine
 				break;
 			}
 
-			desc.service->finalize();
+			desc.service->finalizeService();
 			desc.service = nullptr;
 
 			return true;
@@ -190,7 +190,7 @@ namespace Mengine
 				continue;
 			}
 
-			desc.service->finalize();
+			desc.service->finalizeService();
 		}
 
         for( uint32_t index = SERVICE_PROVIDER_COUNT; index != 0; --index )

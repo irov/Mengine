@@ -11,7 +11,8 @@ namespace Mengine
     {
     public:
         ServiceBase()
-            : m_initialize( false )
+            : m_initializeService( false )
+            , m_stopService( false )
         {
         }
 
@@ -20,47 +21,47 @@ namespace Mengine
         }
 
     private:
-        bool initialize() override
+        bool initializeService() override
         {
-            if( m_initialize == true )
+            if( m_initializeService == true )
             {
                 return true;
             }
 
-            bool successful = this->_initialize();
+            bool successful = this->_initializeService();
 
-            m_initialize = successful;
+            m_initializeService = successful;
 
-            return m_initialize;
+            return m_initializeService;
         }
 
-        void finalize() override
+        void finalizeService() override
         {
-            if( m_initialize == false )
+            if( m_initializeService == false )
             {
                 return;
             }
 
-            m_initialize = false;
+            m_initializeService = false;
 
-            this->_finalize();
+            this->_finalizeService();
         }
 
     public:
-        bool isInitialize() const override
+        bool isInitializeService() const override
         {
-            return m_initialize;
+            return m_initializeService;
         }
 
     protected:
-        virtual bool _initialize()
+        virtual bool _initializeService()
         {
             //Empty
 
             return true;
         }
 
-        virtual void _finalize()
+        virtual void _finalizeService()
         {
             //Empty
         }
@@ -69,7 +70,14 @@ namespace Mengine
     protected:
         void stopService() override
         {
+            m_stopService = true;
+
             this->_stopService();
+        }
+
+        bool isStopService() const override
+        {
+            return m_stopService;
         }
 
     protected:
@@ -93,6 +101,7 @@ namespace Mengine
         }
 
     protected:
-        bool m_initialize;
+        bool m_initializeService;
+        bool m_stopService;
     };
 }

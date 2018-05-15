@@ -21,7 +21,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InputEngine::_initialize()
+	bool InputEngine::_initializeService()
 	{
 		for( uint32_t i = 0; i != MENGINE_INPUT_MAX_TOUCH; ++i )
 		{
@@ -37,7 +37,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void InputEngine::_finalize()
+	void InputEngine::_finalizeService()
 	{
 		m_events.clear();
         m_eventsAdd.clear();

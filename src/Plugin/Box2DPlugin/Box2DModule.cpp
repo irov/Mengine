@@ -154,7 +154,6 @@ namespace Mengine
 		pybind::def_functor( kernel, "destroyBox2DWorld", this, &Box2DModule::destroyWorld );
 
 		pybind::interface_<Box2DWorld, pybind::bases<Scriptable> >( kernel, "Box2DWorld" )
-			.def_smart_pointer()
 			.def_bindable()
 			.def( "setTimeStep", &Box2DWorld::setTimeStep )
 			.def( "createBody", &Box2DWorld::createBody )
@@ -169,7 +168,6 @@ namespace Mengine
 			;
 			
 		pybind::interface_<Box2DBody, pybind::bases<Scriptable, Eventable> >( kernel, "Box2DBody" )
-			.def_smart_pointer()
 			.def_bindable()
 			.def( "setUserData", &Box2DBody::setUserData )
 			.def( "getUserData", &Box2DBody::getUserData )
@@ -202,7 +200,6 @@ namespace Mengine
 			;
 
 		pybind::interface_<Box2DJoint, pybind::bases<Scriptable> >( kernel, "Box2DJoint" )
-			.def_smart_pointer()
 			.def_bindable()
 			;
 

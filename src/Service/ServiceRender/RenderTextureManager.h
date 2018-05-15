@@ -24,8 +24,8 @@ namespace Mengine
         ~RenderTextureManager() override;
 
     public:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializeService() override;
+        void _finalizeService() override;
 
     public:
 		RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codecName ) override;

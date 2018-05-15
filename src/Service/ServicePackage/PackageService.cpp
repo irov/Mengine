@@ -25,7 +25,7 @@ namespace Mengine
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool PackageService::_initialize()
+	bool PackageService::_initializeService()
 	{
         NOTIFICATION_SERVICE()
 			->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
@@ -37,7 +37,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PackageService::_finalize()
+	void PackageService::_finalizeService()
 	{
         NOTIFICATION_SERVICE()
             ->removeObserver( NOTIFICATOR_CHANGE_LOCALE, this );

@@ -20,8 +20,8 @@ namespace Mengine
 		~PackageService() override;
 
 	public:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	public:
 		bool loadPackages( const ConstString & _fileGroup, const FilePath & _resourceIni ) override;

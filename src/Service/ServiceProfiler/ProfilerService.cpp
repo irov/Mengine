@@ -18,7 +18,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ProfilerService::_initialize()
+    bool ProfilerService::_initializeService()
     {
         //m_beginMemoryUsage = PLATFORM_SERVICE()
         //    ->getMemoryUsage();
@@ -26,7 +26,7 @@ namespace Mengine
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void ProfilerService::_finalize()
+	void ProfilerService::_finalizeService()
 	{
 		//Empty
 	}

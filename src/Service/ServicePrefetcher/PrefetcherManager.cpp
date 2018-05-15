@@ -355,31 +355,6 @@ namespace Mengine
             prefetcher->visit( _visitor );
         }
     }
-	////////////////////////////////////////////////////////////////////////////
-	//PrefetcherDebugInfo PrefetcherManager::getDebugInfo() const
-	//{
-	//	PrefetcherDebugInfo info;
-
-	//	info.receiverCount = 0;
-
-	//	for( TMapPrefetchReceiver::const_iterator
-	//		it = m_prefetchReceiver.begin(),
-	//		it_end = m_prefetchReceiver.end();
-	//	it != it_end;
-	//	++it )
-	//	{
-	//		const PrefetchReceiver & receiver = it->second;
-
-	//		if( receiver.prefetcher->isComplete() == false )
-	//		{
-	//			continue;
-	//		}
-
-	//		++info.receiverCount;
-	//	}
-	//	
-	//	return info;
-	//}
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::hasPrefetch( const ConstString& _pakName, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
 	{ 

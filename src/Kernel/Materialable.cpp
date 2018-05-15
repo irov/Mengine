@@ -78,13 +78,13 @@ namespace Mengine
 
             if( _materialName.empty() == false )
             {
-                if( textures[0] != nullptr )
-                {
-                    texturesNum = 1;
-                }
-                else if( textures[1] != nullptr )
+                if( textures[1] != nullptr )
                 {
                     texturesNum = 2;
+                }
+                else if( textures[0] != nullptr )
+                {
+                    texturesNum = 1;
                 }
 
                 RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()

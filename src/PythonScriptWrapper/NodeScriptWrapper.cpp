@@ -3648,7 +3648,7 @@ namespace Mengine
             return correct_polygon;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_copyFile_( const ConstString & _resourceFileName, MemoryBufferInterfacePtr & _blob )
+        bool s_copyFile_( const ConstString & _resourceFileName, const MemoryBufferInterfacePtr & _blob )
         {
             ResourceFilePtr resourceFile = RESOURCE_SERVICE()
                 ->getResource( _resourceFileName );
@@ -3793,7 +3793,7 @@ namespace Mengine
                 arrow = PLAYER_SERVICE()
                     ->getArrow();
 
-                if( _arrow == nullptr )
+                if( arrow == nullptr )
                 {
                     return 0;
                 }
@@ -3815,7 +3815,7 @@ namespace Mengine
 
             PyInputMousePositionProviderPtr provider = m_factoryPyInputMousePositionProvider->createObject();
 
-            provider->setup( _arrow, _camera, viewport, _cb, _args );
+            provider->setup( arrow, camera, viewport, _cb, _args );
 
             uint32_t id = INPUT_SERVICE()
                 ->addMousePositionProvider( provider );

@@ -29,6 +29,15 @@ namespace Mengine
         return m_movie;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::setSubMovieComposition( const aeMovieComposition * _composition, const ConstString & _name )
+    {
+        m_composition = _composition;
+
+        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
+
+        m_subcomposition = subcomposition;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::_play( uint32_t _enumerator, float _time )
     {
         ae_play_movie_sub_composition( m_composition, m_subcomposition, 0.f );
@@ -79,6 +88,11 @@ namespace Mengine
             ->onAnimatableInterrupt( _enumerator );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::_setLoop( bool _value )
+    {
+        ae_set_movie_sub_composition_loop( m_subcomposition, _value );
     }
     //////////////////////////////////////////////////////////////////////////
 }

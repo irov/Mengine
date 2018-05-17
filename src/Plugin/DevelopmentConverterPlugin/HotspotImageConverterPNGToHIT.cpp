@@ -93,7 +93,7 @@ namespace Mengine
                 , m_options.inputFileName.c_str() 
                 );
 
-            return nullptr;
+            return false;
         }
 
 		if( imageDecoder->prepareData( input_stream ) == false )
@@ -102,7 +102,7 @@ namespace Mengine
 				, m_options.inputFileName.c_str() 
 				);
 
-			return nullptr;
+			return false;
 		}
 
         const ImageCodecDataInfo* dataInfo = imageDecoder->getCodecDataInfo();
@@ -128,6 +128,10 @@ namespace Mengine
 
 		if( memory == nullptr )
 		{
+            LOGGER_ERROR( "HotspotImageConverterPNGToHIT::convert_: create memory cache buffer '%d'"
+                , bufferSize
+            );
+
 			return false;
 		}
 
@@ -156,7 +160,7 @@ namespace Mengine
                 , m_options.pakName.c_str()
                 );
 
-            return nullptr;
+            return false;
         }
 
         PickEncoderInterfacePtr encoder = CODEC_SERVICE()
@@ -168,7 +172,7 @@ namespace Mengine
                 , m_options.outputFileName.c_str() 
                 );
 			
-            return nullptr;
+            return false;
         }
 
 		if( encoder->initialize( output_stream ) == false )
@@ -177,7 +181,7 @@ namespace Mengine
 				, m_options.outputFileName.c_str() 
 				);
 
-			return nullptr;
+			return false;
 		}
 
         PickCodecDataInfo di;

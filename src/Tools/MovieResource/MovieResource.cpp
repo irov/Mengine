@@ -597,7 +597,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
 	std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
     std::wstring movie_name = parse_kwds( lpCmdLine, L"--movie_name", std::wstring() );
-    std::wstring hash = parse_kwds( lpCmdLine, L"--hash", std::wstring() );
+    std::wstring hash_crc = parse_kwds( lpCmdLine, L"--hash_crc", std::wstring() );
     
 	if( in_path.empty() == true )
 	{
@@ -615,13 +615,13 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return -1;
     }
 
-    CHAR utf8_hash[64];
-    unicode_to_utf8( utf8_hash, 64, hash.c_str(), hash.size() );
+    CHAR utf8_hash_crc[64];
+    unicode_to_utf8( utf8_hash_crc, 64, hash_crc.c_str(), hash_crc.size() );
 
     CHAR utf8_movie_name[128];
     unicode_to_utf8( utf8_movie_name, 128, movie_name.c_str(), movie_name.size() );
     
-    const aeMovieInstance *  movieInstance = ae_create_movie_instance( utf8_hash
+    const aeMovieInstance *  movieInstance = ae_create_movie_instance( "f86464bbdebf0fe3e684b03ec263d049d079e6f1"
         , &stdlib_movie_alloc
         , &stdlib_movie_alloc_n
         , &stdlib_movie_free

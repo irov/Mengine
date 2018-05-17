@@ -10,13 +10,13 @@ namespace Mengine
     class PointerT
     {
     public:
-        PointerT( T * _pointer )
-            : m_pointer( _pointer )
+        PointerT( const PointerT & _pointer )
+            : m_pointer( _pointer.m_pointer )
         {
         }
 
-        PointerT( const PointerT & _pointer )
-            : m_pointer( _pointer.m_pointer )
+        PointerT( T * _pointer )
+            : m_pointer( _pointer )
         {
         }
 
@@ -75,13 +75,18 @@ namespace Mengine
     class PointerT<IntrusivePtr<T> >
     {
     public:
+        PointerT( const PointerT & _pointer )
+            : m_pointer( _pointer.m_pointer )
+        {
+        }
+
         PointerT( const IntrusivePtr<T> & _pointer )
             : m_pointer( _pointer )
         {
         }
 
-        PointerT( const PointerT & _pointer )
-            : m_pointer( _pointer.m_pointer )
+        PointerT( T * _pointer )
+            : m_pointer( _pointer )
         {
         }
 

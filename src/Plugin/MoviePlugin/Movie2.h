@@ -15,6 +15,7 @@
 
 #include "ResourceMovie2.h"
 #include "Movie2Slot.h"
+#include "Movie2SubComposition.h"
 
 #include "stdex/stl_map.h"
 
@@ -61,12 +62,7 @@ namespace Mengine
 
     public:
         bool hasSubComposition( const ConstString & _name ) const;
-		void playSubComposition( const ConstString & _name );
-		void stopSubComposition( const ConstString & _name );
-        void interruptSubComposition( const ConstString & _name, bool _skip );
-
-    public:
-        void setLoopSubComposition( const ConstString & _name, bool _loop );
+        const Movie2SubCompositionPtr & getSubComposition( const ConstString & _name ) const;
 
     public:
         void setEnableMovieLayers( const ConstString & _name, bool _enable );
@@ -135,6 +131,7 @@ namespace Mengine
     public:
         const Movie2SlotPtr & findSlot( const ConstString & _name ) const;
         bool hasSlot( const ConstString & _name ) const;
+        void visitSlots( VisitorMovie2Layer * _visitor );
 
     protected:
         void addSocket_( uint32_t _index, const HotSpotPolygonPtr & _hotspot );
@@ -152,9 +149,13 @@ namespace Mengine
     public:
         const TextFieldPtr & findText( const ConstString & _name ) const;
         bool hasText( const ConstString & _name ) const;
-        
+        void visitTexts( VisitorMovie2Layer * _visitor );
+
     public:
-        void addMatrixProxy( const MatrixProxyPtr & _matrixProxy );
+        void addSubMovieComposition_( const ConstString & _name, const Movie2SubCompositionPtr & _subComposition );
+      
+    public:
+        void addMatrixProxy_( const MatrixProxyPtr & _matrixProxy );
         
 	public:
 		struct Camera
@@ -199,6 +200,9 @@ namespace Mengine
 
 		typedef stdex::map<ConstString, Camera> TMapCamera;
 		TMapCamera m_cameras;
+
+        typedef stdex::map<ConstString, Movie2SubCompositionPtr> TMapSubCompositions;
+        TMapSubCompositions m_subCompositions;
 
 		typedef stdex::vector<SurfacePtr> TVectorSurfaces;
 		TVectorSurfaces m_surfaces;

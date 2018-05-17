@@ -2966,7 +2966,8 @@ namespace Mengine
 
         pybind::def_function( kernel, "signed_angle", &mt::signed_angle );
         pybind::def_function( kernel, "angle_length", &mt::angle_length );
-        pybind::def_function( kernel, "perp", &mt::perp );
+        pybind::def_function( kernel, "perp_v2", &mt::perp );
+        pybind::def_function_deprecate( kernel, "perp", &mt::perp, "use perp_v2" );
         pybind::def_function( kernel, "perp_left", &mt::perp_left );
 
         pybind::def_function( kernel, "getrefcount", &pybind::refcount );

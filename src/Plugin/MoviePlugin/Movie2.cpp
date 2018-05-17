@@ -125,7 +125,7 @@ namespace Mengine
 
                 this->addChild( matrixProxy );
 
-                this->addMatrixProxy( matrixProxy );
+                this->addMatrixProxy_( matrixProxy );
             }
             else if( layer.type == STRINGIZE_STRING_LOCAL( "Movie2Slot" ) )
             {
@@ -161,7 +161,7 @@ namespace Mengine
 
                 this->addChild( matrixProxy );
 
-                this->addMatrixProxy( matrixProxy );
+                this->addMatrixProxy_( matrixProxy );
             }
             else if( layer.type == STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) )
             {
@@ -195,7 +195,7 @@ namespace Mengine
 
                 this->addChild( matrixProxy );
 
-                this->addMatrixProxy( matrixProxy );
+                this->addMatrixProxy_( matrixProxy );
             }
             else if( layer.type == STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) )
             {
@@ -233,7 +233,7 @@ namespace Mengine
 
                 this->addChild( matrixProxy );
 
-                this->addMatrixProxy( matrixProxy );
+                this->addMatrixProxy_( matrixProxy );
             }
             else if( layer.type == STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) )
             {
@@ -302,13 +302,20 @@ namespace Mengine
 
                 this->addChild( matrixProxy );
 
-                this->addMatrixProxy( matrixProxy );
+                this->addMatrixProxy_( matrixProxy );
             }
         }
 
         for( const ResourceMovie2CompositionSubComposition & subcomposition : composition->subcompositions )
         {
-            subcomposition.name;
+            Movie2SubCompositionPtr node = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
+            
+            node->setMovie( this );
+            
+            node->setSubMovieComposition( m_composition, subcomposition.name );
+            
+            this->addSubMovieComposition_( subcomposition.name, node );
         }
 
         return true;
@@ -367,17 +374,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSubComposition( const ConstString & _name ) const
     {
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "Movie2::hasSubComposition '%s' invalid has '%s' not compile"
-                , this->getName().c_str()
-                , _name.c_str()
-            );
+        TMapSubCompositions::const_iterator it_found = m_subCompositions.find( _name );
 
-            return false;
-        }
-
-        if( ae_has_movie_sub_composition( m_composition, _name.c_str() ) == AE_FALSE )
+        if( it_found == m_subCompositions.end() )
         {
             return false;
         }
@@ -385,72 +384,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::playSubComposition( const ConstString & _name )
+    const Movie2SubCompositionPtr & Movie2::getSubComposition( const ConstString & _name ) const
     {
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "Movie2::playSubComposition '%s' invalid play '%s' not compile"
-                , this->getName().c_str()
-                , _name.c_str()
-            );
+        TMapSubCompositions::const_iterator it_found = m_subCompositions.find( _name );
 
-            return;
+        if( it_found == m_subCompositions.end() )
+        {
+            return Movie2SubCompositionPtr::none();
         }
 
-        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
+        const Movie2SubCompositionPtr & subComposition = it_found->second;
 
-        ae_play_movie_sub_composition( m_composition, subcomposition, 0.f );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie2::stopSubComposition( const ConstString & _name )
-    {
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "Movie2::stopSubComposition '%s' invalid stop '%s' not compile"
-                , this->getName().c_str()
-                , _name.c_str()
-            );
-
-            return;
-        }
-
-        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
-
-        ae_stop_movie_sub_composition( m_composition, subcomposition );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie2::interruptSubComposition( const ConstString & _name, bool _skip )
-    {
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "Movie2::interruptSubComposition '%s' invalid interrupt '%s' not compile"
-                , this->getName().c_str()
-                , _name.c_str()
-            );
-
-            return;
-        }
-
-        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
-
-        ae_interrupt_movie_sub_composition( m_composition, subcomposition, _skip );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie2::setLoopSubComposition( const ConstString & _name, bool _loop )
-    {
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "Movie2::setLoopSubComposition '%s' invalid loop '%s' not compile"
-                , this->getName().c_str()
-                , _name.c_str()
-            );
-
-            return;
-        }
-
-        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
-
-        ae_set_movie_sub_composition_loop( subcomposition, _loop );
+        return subComposition;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::setEnableMovieLayers( const ConstString & _name, bool _enable )
@@ -2219,6 +2164,14 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2::visitSlots( VisitorMovie2Layer * _visitor )
+    {
+        for( const TMapSlots::value_type & value : m_slots )
+        {
+            _visitor->visitMovieLayer( this, value.first, value.second );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Movie2::addSocket_( uint32_t _index, const HotSpotPolygonPtr & _hotspot )
     {
         m_sockets.insert( std::make_pair( _index, _hotspot ) );
@@ -2333,7 +2286,20 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::addMatrixProxy( const MatrixProxyPtr & _matrixProxy )
+    void Movie2::visitTexts( VisitorMovie2Layer * _visitor )
+    {
+        for( const TMapTexts::value_type & value : m_texts )
+        {
+            _visitor->visitMovieLayer( this, value.first, value.second );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addSubMovieComposition_( const ConstString & _name, const Movie2SubCompositionPtr & _subComposition )
+    {
+        m_subCompositions.insert( std::make_pair( _name, _subComposition ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::addMatrixProxy_( const MatrixProxyPtr & _matrixProxy )
     {
         m_matrixProxies.emplace_back( _matrixProxy );
     }

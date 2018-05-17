@@ -76,6 +76,9 @@ WIN32 is still required for the locale module.
 #define USE_SOCKET
 #endif
 
+#ifdef __MINGW32__
+#include <sys/time.h>
+#endif
 
 /* Compiler specific defines */
 

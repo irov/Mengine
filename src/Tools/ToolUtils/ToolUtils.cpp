@@ -57,7 +57,7 @@ void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
 {
 	if( _path.empty() == true )
 	{
-		wcscpy_s( _quotePath, 2, L"" );
+		wcscpy( _quotePath, L"" );
 
 		return;
 	}
@@ -73,15 +73,18 @@ void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
 	const WCHAR * pathBuffer = true_path.c_str();
 
 	PathCanonicalize( _quotePath, pathBuffer );
+
+    if( _quotePath[0] == L'\"' )
+    {
+        return;
+    }
+
     size_t pathSize = wcslen( _quotePath );
 
-	if( PathQuoteSpaces( _quotePath ) == FALSE )
-	{
-		wmemmove( _quotePath + 1, _quotePath, pathSize );
-		_quotePath[0] = '\"';
-		_quotePath[pathSize + 1] = '\"';
-		_quotePath[pathSize + 2] = 0;
-	}
+	wmemmove( _quotePath + 1, _quotePath, pathSize );
+	_quotePath[0] = '\"';
+	_quotePath[pathSize + 1] = '\"';
+	_quotePath[pathSize + 2] = 0;
 };
 //////////////////////////////////////////////////////////////////////////
 int ForceRemoveDirectory( LPCTSTR dir )

@@ -159,9 +159,9 @@ namespace Mengine
 
 					if( count != 0 )
 					{
-						textureBuffer[index * 4 + 0] = unsigned char( r / count );
-						textureBuffer[index * 4 + 1] = unsigned char( g / count );
-						textureBuffer[index * 4 + 2] = unsigned char( b / count );
+						textureBuffer[index * 4 + 0] = (unsigned char)( r / count );
+						textureBuffer[index * 4 + 1] = (unsigned char)( g / count );
+						textureBuffer[index * 4 + 2] = (unsigned char)( b / count );
 					}
 				}
 			}

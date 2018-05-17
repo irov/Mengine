@@ -11,6 +11,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Movie2> Movie2Ptr;
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class Movie2SubComposition> Movie2SubCompositionPtr;
+    //////////////////////////////////////////////////////////////////////////
     class Movie2SubCompositionEventReceiver
         : public AnimatableEventReceiver
     {
@@ -31,6 +33,9 @@ namespace Mengine
     public:
         void setMovie( const Movie2Ptr & _movie );
         const Movie2Ptr & getMovie() const;
+
+    public:
+        void setSubMovieComposition( const aeMovieComposition * _composition, const ConstString & _name );
         
     protected:
         bool _play( uint32_t _enumerator, float _time ) override;
@@ -42,12 +47,15 @@ namespace Mengine
         bool _interrupt( uint32_t _enumerator ) override;
 
     protected:
+        void _setLoop( bool _value ) override;
+
+    protected:
         Movie2Ptr m_movie;
 
         const aeMovieComposition * m_composition;
         const aeMovieSubComposition * m_subcomposition;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Movie2> Movie2Ptr;
+    typedef IntrusivePtr<Movie2SubComposition> Movie2SubCompositionPtr;
     //////////////////////////////////////////////////////////////////////////
 }

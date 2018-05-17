@@ -171,6 +171,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	uint32_t oW = xml_sprite_oW.as_uint();
 	uint32_t oH = xml_sprite_oH.as_uint();
 
+    //TODO
+    (void)oW;
+    (void)oH;
+
 	pugi::xml_node xml_vertices = doc.first_element_by_path( "TextureAtlas/sprite/vertices" );
 
 	const char * vertices = xml_vertices.child_value();

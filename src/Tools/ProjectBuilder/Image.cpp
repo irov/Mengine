@@ -31,7 +31,7 @@ namespace Mengine
 		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( ConstString::none(), _path, false );
 
-		if( stream == false )
+		if( stream == nullptr )
 		{
 			return false;
 		}

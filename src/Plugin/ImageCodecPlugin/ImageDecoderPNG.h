@@ -4,8 +4,6 @@
 
 #include "png.h"
 
-//#include "stdex/memory_cache.h"
-
 namespace Mengine
 {
 	class ImageDecoderPNG

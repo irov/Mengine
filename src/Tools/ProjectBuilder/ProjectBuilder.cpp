@@ -688,7 +688,9 @@ static bool getCurrentUserRegValue( const WCHAR * _path, WCHAR * _value, DWORD _
 	LONG lRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ, &hKey );  // Check Python x32
 	if( lRes == ERROR_FILE_NOT_FOUND )
 	{
-		lRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );  // Check Python x64
+#ifdef _MSC_VER
+        lRes = RegOpenKeyEx( HKEY_CURRENT_USER, _path, 0, KEY_READ | KEY_WOW64_64KEY, &hKey );  // Check Python x64
+#endif
 	}
 
 	if( lRes != ERROR_SUCCESS )
@@ -829,8 +831,14 @@ bool run()
 				);
 		}
 
+#ifdef _MSC_VER
 		WCHAR * ch_buffer;
 		WCHAR * ch = wcstok( szPythonPath, L";", &ch_buffer );
+#elif __MINGW32__
+        WCHAR * ch = wcstok( szPythonPath, L";" );
+#else
+#   error unssuport
+#endif
 
 		while( ch != NULL )
 		{
@@ -838,7 +846,13 @@ bool run()
 			pybind::list_appenditem( py_syspath, py_stdpath );
 			pybind::decref( py_stdpath );
 
-			ch = wcstok( NULL, L";", &ch_buffer );
+#ifdef _MSC_VER
+            ch = wcstok( NULL, L";", &ch_buffer );
+#elif __MINGW32__
+            ch = wcstok( NULL, L";" );
+#else
+#   error unssuport
+#endif
 		}
 	}
 
@@ -900,12 +914,25 @@ bool run()
 	return true;
 }
 ///////////////////////////////////////////////////////////////////////////////////
+#ifdef _MSC_VER
 int CALLBACK WinMain( _In_  HINSTANCE hInstance, _In_  HINSTANCE hPrevInstance, _In_  LPSTR lpCmdLine, _In_  int nCmdShow )
+#elif __MINGW32__
+int main( int argc, char *argv[] )
+#else
+#   error unsupport
+#endif
 { 
+#ifdef _MSC_VER
 	(void)hInstance;
-	(void)hPrevInstance;
-	(void)lpCmdLine;
-	(void)nCmdShow;
+    (void)hPrevInstance;
+    (void)lpCmdLine;
+    (void)nCmdShow;
+#elif __MINGW32__
+    (void)argc;
+    (void)argv;
+#else
+#   error unsupport
+#endif
 
     Mengine::createConsole();
 

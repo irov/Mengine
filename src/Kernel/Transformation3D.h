@@ -24,7 +24,7 @@ namespace Mengine
 
 	public:
 		void setRelationTransformation( const Transformation3DPtr & _relation );
-		inline const Transformation3DPtr & getRelationTransformation() const;
+		inline Transformation3DPtr getRelationTransformation() const;
 
     protected:
         void addRelationChildren_( const Transformation3DPtr & _child );
@@ -143,7 +143,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_ptr<Transformation3D> Transformation3DPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const Transformation3DPtr & Transformation3D::getRelationTransformation() const
+    inline Transformation3DPtr Transformation3D::getRelationTransformation() const
     {
         return m_relationTransformation;
     }

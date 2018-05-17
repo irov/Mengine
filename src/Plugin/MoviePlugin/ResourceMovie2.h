@@ -79,7 +79,7 @@ namespace Mengine
         bool _isValid() const override;
 
     public:        
-        void storeResource_( const ResourceReferencePtr & _resource );
+        void storeResource_( const ResourcePtr & _resource );
         Resource * getResource_( const ae_string_t _name );
 
 	public:
@@ -95,7 +95,7 @@ namespace Mengine
 
         FilePath m_filePath;
 
-		typedef stdex::vector<ResourceReferencePtr> TVectorResources;
+		typedef stdex::vector<ResourcePtr> TVectorResources;
 		TVectorResources m_resources;
 
         typedef stdex::map<ConstString, ResourceMovie2Composition> TMapCompositions;

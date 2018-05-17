@@ -96,7 +96,7 @@ namespace Mengine
 		bool m_cache;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<Resource> ResourceReferencePtr;
+	typedef IntrusivePtr<Resource> ResourcePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline const ConstString & Resource::getLocale() const
 	{

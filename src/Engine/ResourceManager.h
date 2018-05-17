@@ -17,11 +17,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	struct ResourceEntry
 	{
-		ResourceReferencePtr resource;
+		ResourcePtr resource;
 		bool isLocked;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<ResourceReferencePtr> TVectorResources;
+	typedef stdex::vector<ResourcePtr> TVectorResources;
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceManager
 		: public ServiceBase<ResourceServiceInterface>
@@ -42,10 +42,10 @@ namespace Mengine
         PointerResourceReference generateResource( const ConstString& _type ) const override;
 
         PointerResourceReference createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
-		bool removeResource( const ResourceReferencePtr & _resource ) override;
+		bool removeResource( const ResourcePtr & _resource ) override;
 
 	public:
-		bool hasResource( const ConstString& _name, ResourceReferencePtr * _resource ) const override;
+		bool hasResource( const ConstString& _name, ResourcePtr * _resource ) const override;
 		bool lockResource( const ConstString& _name );
 		bool unlockResource( const ConstString& _name );
 		bool validResourceType( const ConstString& _name, const ConstString& _type ) const override;

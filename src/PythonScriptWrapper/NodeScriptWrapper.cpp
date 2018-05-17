@@ -2581,7 +2581,7 @@ namespace Mengine
             return surface;
         }
         //////////////////////////////////////////////////////////////////////////
-        ShapeQuadFixedPtr createSprite( const ConstString & _name, const ResourceReferencePtr & _resource )
+        ShapeQuadFixedPtr createSprite( const ConstString & _name, const ResourcePtr & _resource )
         {
             if( _resource == nullptr )
             {
@@ -2633,9 +2633,9 @@ namespace Mengine
                 ->quit();
         }
         //////////////////////////////////////////////////////////////////////////
-        ResourceReferencePtr createResource( const ConstString& _type )
+        ResourcePtr createResource( const ConstString& _type )
         {
-            ResourceReferencePtr resource = RESOURCE_SERVICE()
+            ResourcePtr resource = RESOURCE_SERVICE()
                 ->generateResource( _type );
 
             if( resource == nullptr )
@@ -2652,7 +2652,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool directResourceCompile( const ConstString & _nameResource )
         {
-            ResourceReferencePtr resource;
+            ResourcePtr resource;
             if( RESOURCE_SERVICE()
                 ->hasResource( _nameResource, &resource ) == false )
             {
@@ -2678,7 +2678,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool directResourceRelease( const ConstString & _nameResource )
         {
-            ResourceReferencePtr resource;
+            ResourcePtr resource;
             if( RESOURCE_SERVICE()
                 ->hasResource( _nameResource, &resource ) == false )
             {
@@ -2718,9 +2718,9 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        ResourceReferencePtr s_getResourceReference( const ConstString & _name )
+        ResourcePtr s_getResourceReference( const ConstString & _name )
         {
-            const ResourceReferencePtr & resource = RESOURCE_SERVICE()
+            const ResourcePtr & resource = RESOURCE_SERVICE()
                 ->getResourceReference( _name );
 
             if( resource == nullptr )

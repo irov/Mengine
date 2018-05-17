@@ -15,9 +15,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Resource> ResourceReferencePtr;
+    typedef IntrusivePtr<class Resource> ResourcePtr;
 	//////////////////////////////////////////////////////////////////////////
-    typedef PointerT<ResourceReferencePtr> PointerResourceReference;
+    typedef PointerT<ResourcePtr> PointerResourceReference;
 	//////////////////////////////////////////////////////////////////////////
     class ResourceServiceInterface
         : public ServiceInterface
@@ -35,19 +35,19 @@ namespace Mengine
 		virtual PointerResourceReference createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;
 
 	public:
-		virtual bool removeResource( const ResourceReferencePtr & _resource ) = 0;
+		virtual bool removeResource( const ResourcePtr & _resource ) = 0;
 		
     public:
 		virtual PointerResourceReference getResource( const ConstString& _name ) const = 0;
 
 		virtual PointerResourceReference getResourceReference( const ConstString& _name ) const = 0;
 
-		virtual bool hasResource( const ConstString& _name, ResourceReferencePtr * _resource ) const = 0;
+		virtual bool hasResource( const ConstString& _name, ResourcePtr * _resource ) const = 0;
 		
 		template<class T>
 		bool hasResourceT( const ConstString& _name, T * _resource ) const
 		{
-			ResourceReferencePtr resource;
+			ResourcePtr resource;
 			if( this->hasResource( _name, &resource ) == false )
 			{
 				return false;

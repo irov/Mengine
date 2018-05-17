@@ -47,7 +47,7 @@ namespace Mengine
 			{
 				const ResourceEntry & entry = it->second;
 
-				const ResourceReferencePtr & resource = entry.resource;
+				const ResourcePtr & resource = entry.resource;
 
 				uint32_t refcount = resource->countReference();
 
@@ -140,7 +140,7 @@ namespace Mengine
 			bool unique = true;
 			meta_resource->get_Unique( &unique );
 
-			ResourceReferencePtr has_resource = nullptr;
+			ResourcePtr has_resource = nullptr;
 			if( this->hasResource( name, &has_resource ) == true )
 			{
 				if( unique == false )
@@ -164,7 +164,7 @@ namespace Mengine
 				return false;
 			}
 
-			ResourceReferencePtr resource =
+			ResourcePtr resource =
 				this->createResource( _locale, _pakName, groupName, name, type );
 
             if( resource == nullptr )
@@ -282,7 +282,7 @@ namespace Mengine
 			const ConstString & name = meta_resource->get_Name();
 			const ConstString & type = meta_resource->get_Type();
 
-			ResourceReferencePtr has_resource = nullptr;
+			ResourcePtr has_resource = nullptr;
 			if( this->hasResource( name, &has_resource ) == false )
 			{
 				const ConstString & resource_category = has_resource->getCategory();
@@ -390,7 +390,7 @@ namespace Mengine
 			bool unique = true;
 			meta_resource->get_Unique( &unique );
 
-			ResourceReferencePtr resource =
+			ResourcePtr resource =
 				this->generateResource( type );
 
 			if( resource == nullptr )
@@ -460,7 +460,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     PointerResourceReference ResourceManager::generateResource( const ConstString& _type ) const
 	{
-		ResourceReferencePtr resource = PROTOTYPE_SERVICE()
+		ResourcePtr resource = PROTOTYPE_SERVICE()
 			->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type );
 
 		if( resource == nullptr )
@@ -486,7 +486,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     PointerResourceReference ResourceManager::createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
 	{
-		ResourceReferencePtr resource = this->generateResource( _type );
+		ResourcePtr resource = this->generateResource( _type );
 
 		if( resource == nullptr )
 		{
@@ -554,7 +554,7 @@ namespace Mengine
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::removeResource( const ResourceReferencePtr & _resource )
+	bool ResourceManager::removeResource( const ResourcePtr & _resource )
 	{
 		if( _resource == nullptr )
 		{
@@ -593,7 +593,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::hasResource( const ConstString& _name, ResourceReferencePtr * _resource ) const
+	bool ResourceManager::hasResource( const ConstString& _name, ResourcePtr * _resource ) const
 	{
 		const ResourceEntry * entry = this->findResource_( _name );
 
@@ -638,7 +638,7 @@ namespace Mengine
 			return false;
 		}
 
-		const ResourceReferencePtr & resource = entry->resource;
+		const ResourcePtr & resource = entry->resource;
 
 		bool valid = resource->isValid();
 
@@ -713,7 +713,7 @@ namespace Mengine
             return nullptr;
         }
 		
-		const ResourceReferencePtr & resource = entry->resource;
+		const ResourcePtr & resource = entry->resource;
 
 		if( resource->incrementReference() == false )
 		{
@@ -750,7 +750,7 @@ namespace Mengine
 			return nullptr;
 		}
 		
-		const ResourceReferencePtr & resource = entry->resource;
+		const ResourcePtr & resource = entry->resource;
 
 		return resource;
 	}
@@ -768,7 +768,7 @@ namespace Mengine
 			return ConstString::none();
 		}
 
-		const ResourceReferencePtr & resource = entry->resource;
+		const ResourcePtr & resource = entry->resource;
 
 		const ConstString & type = resource->getType();
 
@@ -789,7 +789,7 @@ namespace Mengine
 			{
 				const ResourceEntry & entry = it->second;
 
-				const ResourceReferencePtr & resource = entry.resource;
+				const ResourcePtr & resource = entry.resource;
 
 				resource->visit( _visitor );
 			}
@@ -809,7 +809,7 @@ namespace Mengine
 
 		const TVectorResources & resources = it_cache_found->second;
 
-		for( const ResourceReferencePtr & resource : resources )
+		for( const ResourcePtr & resource : resources )
 		{
 			resource->visit( _visitor );
 		}
@@ -832,7 +832,7 @@ namespace Mengine
 		public:
 			void operator () ( ResourceEntry * _entry )
 			{
-				const ResourceReferencePtr & resource = _entry->resource;
+				const ResourcePtr & resource = _entry->resource;
 
 				uint32_t count = resource->countReference();
 
@@ -877,7 +877,7 @@ namespace Mengine
 			{
 				const ResourceEntry & entry = it->second;
 
-				const ResourceReferencePtr & resource = entry.resource;
+				const ResourcePtr & resource = entry.resource;
 
 				uint32_t count = resource->countReference();
 

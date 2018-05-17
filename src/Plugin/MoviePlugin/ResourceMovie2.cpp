@@ -358,7 +358,7 @@ namespace Mengine
 		m_movieData = movieData;
 		stream = nullptr;
 	
-        for( const ResourceReferencePtr & resource : m_resources )
+        for( const ResourcePtr & resource : m_resources )
 		{
 			if( resource->compile() == false )
 			{
@@ -371,12 +371,12 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceMovie2::_release()
 	{
-        for( const ResourceReferencePtr & resource : m_resources )
+        for( const ResourcePtr & resource : m_resources )
         {
             resource->release();
         }
 
-        for( const ResourceReferencePtr & resource : m_resources )
+        for( const ResourcePtr & resource : m_resources )
         {
             resource->decrementReference();
         }
@@ -480,7 +480,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::storeResource_( const ResourceReferencePtr & _resource )
+    void ResourceMovie2::storeResource_( const ResourcePtr & _resource )
     {
         if( _resource == nullptr )
         {
@@ -498,7 +498,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Resource * ResourceMovie2::getResource_( const ae_string_t _name )
     {
-        ResourceReferencePtr resource = RESOURCE_SERVICE()
+        ResourcePtr resource = RESOURCE_SERVICE()
             ->getResource( Helper::stringizeString( _name ) );
 
         this->storeResource_( resource );

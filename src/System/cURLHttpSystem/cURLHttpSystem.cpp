@@ -71,7 +71,7 @@ namespace Mengine
         curl_global_cleanup();
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLHttpSystem::getMessage( const String & _url, HttpReceiver * _receiver )
+    HttpRequestID cURLHttpSystem::getMessage( const String & _url, const HttpReceiverInterfacePtr & _receiver )
     {
         uint32_t task_id = ++m_enumeratorReceivers;
 
@@ -101,7 +101,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLHttpSystem::postMessage( const String & _url, const TMapParams & _params, HttpReceiver * _receiver )
+    HttpRequestID cURLHttpSystem::postMessage( const String & _url, const TMapParams & _params, const HttpReceiverInterfacePtr & _receiver )
     {
         uint32_t task_id = ++m_enumeratorReceivers;
 
@@ -131,7 +131,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLHttpSystem::headerData( const String & _url, const TVectorString & _headers, const String & _data, HttpReceiver * _receiver )
+    HttpRequestID cURLHttpSystem::headerData( const String & _url, const TVectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver )
     {
         uint32_t task_id = ++m_enumeratorReceivers;
 
@@ -161,7 +161,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
+    HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver )
     {
         if( FILE_SERVICE()
             ->hasFileGroup( _category, nullptr ) == false )
@@ -255,7 +255,7 @@ namespace Mengine
                 continue;
             }
 
-            HttpReceiver * receiver = desc.receiver;
+            HttpReceiverInterfacePtr receiver = desc.receiver;
 
             m_receiverDescs.erase( it );
 

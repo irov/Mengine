@@ -16,13 +16,13 @@ namespace Mengine
         ~SDLSocketSystem();
 
     public:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializeService() override;
+        void _finalizeService() override;
 
     protected:
         SocketInterfacePtr createSocket() override;
 
     protected:
-        FactoryPtr m_poolSDLSocket;
+        FactoryPtr m_factorySocket;
     };
 }

@@ -14,11 +14,14 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	typedef uint32_t HttpRequestID;
 	//////////////////////////////////////////////////////////////////////////
-	class HttpReceiver
+	class HttpReceiverInterface
+        : public Mixin
 	{
 	public:
 		virtual void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _response, uint32_t _code, bool _successful ) = 0;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<HttpReceiverInterface> HttpReceiverInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
     class HttpSystemInterface
 		: public ServiceInterface
@@ -26,12 +29,12 @@ namespace Mengine
 		SERVICE_DECLARE("HttpSystem")
 
 	public:
-		virtual HttpRequestID getMessage( const String & _url, HttpReceiver * _receiver ) = 0;
-		virtual HttpRequestID postMessage( const String & _url, const TMapParams & _params, HttpReceiver * _receiver ) = 0;		
-        virtual HttpRequestID headerData( const String & _url, const TVectorString & _headers, const String & _data, HttpReceiver * _receiver ) = 0;
+		virtual HttpRequestID getMessage( const String & _url, const HttpReceiverInterfacePtr & _receiver ) = 0;
+		virtual HttpRequestID postMessage( const String & _url, const TMapParams & _params, const HttpReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID headerData( const String & _url, const TVectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver ) = 0;
 
     public:
-        virtual HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver ) = 0;
+        virtual HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver ) = 0;
 
 	public:
 		virtual bool cancelRequest( HttpRequestID _id ) = 0;

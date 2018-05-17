@@ -63,7 +63,7 @@ namespace Mengine
 
                 KeyCode code = this->getKeyCode_( _event.key.keysym.scancode );
 
-				if( code == SDL_SCANCODE_UNKNOWN )
+				if( code == KC_UNASSIGNED )
 				{
 					return;
 				}

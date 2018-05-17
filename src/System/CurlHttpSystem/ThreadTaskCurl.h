@@ -19,8 +19,8 @@ namespace Mengine
         void setRequestId( HttpRequestID _id );
         HttpRequestID getRequestId() const;
 
-        void setReceiver( HttpReceiver * _receiver );
-        HttpReceiver * getReceiver() const;
+        void setReceiver( const HttpReceiverInterfacePtr & _receiver );
+        const HttpReceiverInterfacePtr & getReceiver() const;
 
 	protected:
 		bool _onRun() override;
@@ -40,7 +40,7 @@ namespace Mengine
 
 	protected:		
 		HttpRequestID m_id;
-		HttpReceiver * m_receiver;
+        HttpReceiverInterfacePtr m_receiver;
 
 		uint32_t m_code;
         CURLcode m_status;

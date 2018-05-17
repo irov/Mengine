@@ -19,10 +19,21 @@ src
 
 add_definitions(-DCURL_STATICLIB)
 
-INCLUDE_DIRECTORIES( 
-    ${THIRDPARTY_DIR}/libcurl/include 
+INCLUDE_DIRECTORIES(         
     ${THIRDPARTY_DIR}/libmath/include
     )
+
+IF(WIN32)
+    INCLUDE_DIRECTORIES( 
+        ${THIRDPARTY_DIR}/libcurl/include 
+        )
+ENDIF()
+
+IF(MENGINE_PLATFORM_ANDROID)
+    INCLUDE_DIRECTORIES( 
+        ${THIRDPARTY_DIR}/openssl/armeabi-v7a/include
+        )
+ENDIF()
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
@@ -42,15 +53,24 @@ SET( APPLICATION_DEPENDENCIES
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}
- ${THIRDPARTY_LIB_DIR}/libcurl${MENGINE_LIB_SUFFIX} 
 )
 
 IF(WIN32)
-SET( APPLICATION_LIBS
- ${APPLICATION_LIBS}
-	ws2_32.lib
-    Crypt32.lib
-)
+    SET( APPLICATION_LIBS
+     ${APPLICATION_LIBS}
+     ${THIRDPARTY_LIB_DIR}/libcurl${MENGINE_LIB_SUFFIX}
+        ws2_32.lib
+        Crypt32.lib
+    )
+ENDIF()
+
+IF(MENGINE_PLATFORM_ANDROID)
+    SET( APPLICATION_LIBS
+     ${APPLICATION_LIBS}
+     ${THIRDPARTY_DIR}/openssl/armeabi-v7a/lib/libcrypto.a
+     ${THIRDPARTY_DIR}/openssl/armeabi-v7a/lib/libcurl.a
+     ${THIRDPARTY_DIR}/openssl/armeabi-v7a/lib/libssl.a
+    )
 ENDIF()
 
 SET( APPLICATION_LIBS

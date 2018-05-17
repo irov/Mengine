@@ -27,8 +27,8 @@ set BUILD_TEMP_DIR="%CD%\..\..\build_temp\build_android_sdl_%BUILD_TYPE%"
     -DCMAKE_MAKE_PROGRAM=%MAKE_PROGRAM% ^
     -DCMAKE_TOOLCHAIN_FILE=%TOOLCHAIN_FILE% ^
     -DCMAKE_SYSROOT_COMPILE=%ANDROID_SYSROOT% ^
-    -DCMAKE_C_FLAGS="-std=c11 -Wa,-mimplicit-it=thumb" ^
-    -DCMAKE_CXX_FLAGS="-std=c++14 -frtti -fexceptions -Wa,-mimplicit-it=thumb" ^
+    -DCMAKE_C_FLAGS="-std=c11" ^
+    -DCMAKE_CXX_FLAGS="-std=c++14 -frtti -fexceptions" ^
     %CMAKE_PATH%
     
 %CMAKE_EXE% --build .\ --config %BUILD_TYPE%

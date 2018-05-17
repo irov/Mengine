@@ -20,7 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLSocketSystem::_initialize()
+    bool SDLSocketSystem::_initializeService()
     {
         const int sdlNetInit = SDLNet_Init();
 
@@ -29,19 +29,23 @@ namespace Mengine
             return false;
         }
 
-        m_poolSDLSocket = new FactoryPool<SDLSocket, 16>();
+        m_factorySocket = new FactoryPool<SDLSocket, 16>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLSocketSystem::_finalize()
+    void SDLSocketSystem::_finalizeService()
     {
         SDLNet_Quit();
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySocket );
+
+        m_factorySocket = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     SocketInterfacePtr SDLSocketSystem::createSocket()
     {
-        SocketInterfacePtr socket = m_poolSDLSocket->createObject();
+        SocketInterfacePtr socket = m_factorySocket->createObject();
 
         return socket;
     }

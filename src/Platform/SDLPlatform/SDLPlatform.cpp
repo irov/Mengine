@@ -219,7 +219,7 @@ namespace Mengine
         return 1;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::_initialize()
+    bool SDLPlatform::_initializeService()
     {
         if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
         {
@@ -276,6 +276,21 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::_finalizeService()
+    {
+        this->destroyWindow_();
+
+        SDL_Quit();
+
+        if( m_sdlInput != nullptr )
+        {
+            m_sdlInput->finalize();
+            m_sdlInput = nullptr;
+        }
+
+        m_platformName.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::update()
@@ -339,21 +354,6 @@ namespace Mengine
     {
         PARAM_UNUSED( _url );
         return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::_finalize()
-    {
-        this->destroyWindow_();
-
-        SDL_Quit();
-
-        if( m_sdlInput != nullptr )
-        {
-            m_sdlInput->finalize();
-            m_sdlInput = nullptr;
-        }
-
-        m_platformName.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::stopPlatform()
@@ -601,7 +601,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_createDurectoryFullpath( const WChar * _fullpath )
     {
-#ifdef defined(__APPLE__)
+#if defined(__APPLE__)
         Char utf8_fullpath[MENGINE_MAX_PATH];
         Helper::unicodeToUtf8( _fullpath, utf8_fullpath, MENGINE_MAX_PATH );
 

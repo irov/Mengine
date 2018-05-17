@@ -21,18 +21,21 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadSystem::_initialize()
+    bool SDLThreadSystem::_initializeService()
     {	
-        m_poolThreadIdentity = new FactoryPool<SDLThreadIdentity, 16>();
-        m_poolThreadMutex = new FactoryPool<SDLThreadMutex, 16>();
+        m_factoryThreadIdentity = new FactoryPool<SDLThreadIdentity, 16>();
+        m_factoryThreadMutex = new FactoryPool<SDLThreadMutex, 16>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLThreadSystem::_finalize()
+    void SDLThreadSystem::_finalizeService()
     {
-        m_poolThreadIdentity = nullptr;
-        m_poolThreadMutex = nullptr;
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadIdentity );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutex );
+
+        m_factoryThreadIdentity = nullptr;
+        m_factoryThreadMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadSystem::avaliable() const
@@ -42,7 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr SDLThreadSystem::createThread( int _priority, const char * _file, uint32_t _line )
     {
-        SDLThreadIdentityPtr identity = m_poolThreadIdentity->createObject();
+        SDLThreadIdentityPtr identity = m_factoryThreadIdentity->createObject();
 
         if( identity == nullptr )
         {
@@ -76,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr SDLThreadSystem::createMutex( const char * _file, uint32_t _line )
     {
-        SDLThreadMutexPtr mutex = m_poolThreadMutex->createObject();
+        SDLThreadMutexPtr mutex = m_factoryThreadMutex->createObject();
         
         if( mutex == nullptr )
         {

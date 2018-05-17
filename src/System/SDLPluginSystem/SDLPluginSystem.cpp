@@ -22,15 +22,17 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPluginSystem::_initialize()
+    bool SDLPluginSystem::_initializeService()
     {
         m_factoryDynamicLibraries = new FactoryPool<SDLDynamicLibrary, 8>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPluginSystem::_finalize()
+    void SDLPluginSystem::_finalizeService()
     {
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
+
         m_factoryDynamicLibraries = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////

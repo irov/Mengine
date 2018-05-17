@@ -17,8 +17,8 @@ namespace Mengine
         ~SDLThreadSystem();
 
     public:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializeService() override;
+        void _finalizeService() override;
 
     public:
         bool avaliable() const override;
@@ -36,7 +36,7 @@ namespace Mengine
         ptrdiff_t getCurrentThreadId() const override;
     
     protected:
-        FactoryPtr m_poolThreadIdentity;
-        FactoryPtr m_poolThreadMutex;
+        FactoryPtr m_factoryThreadIdentity;
+        FactoryPtr m_factoryThreadMutex;
     };
 }

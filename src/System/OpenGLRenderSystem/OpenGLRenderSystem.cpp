@@ -67,7 +67,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderSystem::_initialize()
+    bool OpenGLRenderSystem::_initializeService()
     {
         LOGGER_WARNING( "Initializing OpenGL RenderSystem..." );
 
@@ -88,7 +88,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::_finalize()
+    void OpenGLRenderSystem::_finalizeService()
     {
         for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
         {

@@ -1156,6 +1156,9 @@ namespace Mengine
 
                 matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
             }break;
+        default:
+            {
+            }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1457,14 +1460,9 @@ namespace Mengine
         aeMovieCompositionRenderInfo info;
         ae_calculate_movie_composition_render_info( composition, &info );
 
-        m_meshes.resize( info.max_render_node );
-
-        if( info.max_render_node == 0 )
+        if( info.max_render_node != 0 )
         {
-            LOGGER_WARNING( "Movie2::_compile '%s' resource '%s' zero render node"
-                , this->getName().c_str()
-                , m_resourceMovie2->getName().c_str()
-            );
+            m_meshes.resize( info.max_render_node );
         }
 
         bool loop = this->getLoop();

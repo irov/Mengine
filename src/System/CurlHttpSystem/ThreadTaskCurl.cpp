@@ -13,7 +13,6 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     ThreadTaskCurl::ThreadTaskCurl()
         : m_id( 0 )
-        , m_receiver( nullptr )
         , m_code( 0 )
         , m_status( CURLE_OK )
 	{
@@ -29,12 +28,12 @@ namespace Mengine
         return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskCurl::setReceiver( HttpReceiver * _receiver )
+    void ThreadTaskCurl::setReceiver( const HttpReceiverInterfacePtr & _receiver )
     {
         m_receiver = _receiver;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpReceiver * ThreadTaskCurl::getReceiver() const
+    const HttpReceiverInterfacePtr & ThreadTaskCurl::getReceiver() const
     {
         return m_receiver;
     }

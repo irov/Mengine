@@ -95,12 +95,6 @@ namespace Mengine
         }
 
     protected:
-        virtual void _destroy()
-        {
-            //Empty
-        }
-
-    protected:
         bool m_initializeService;
         bool m_stopService;
     };

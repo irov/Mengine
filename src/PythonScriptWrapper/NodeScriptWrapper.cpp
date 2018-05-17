@@ -2966,7 +2966,8 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PyHttpReceiver
-            : public HttpReceiver
+            : public FactorableUnique<Factorable>
+            , public HttpReceiverInterface
         {
         public:
             PyHttpReceiver( const pybind::object & _cb, const pybind::args & _args )

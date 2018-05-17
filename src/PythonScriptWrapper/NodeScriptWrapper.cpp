@@ -4260,6 +4260,8 @@ namespace Mengine
         class AffectorNodeFollowerMethod
             : public AffectorNodeFollower<T_Node>
         {
+            typedef IntrusivePtr<T_Node> T_NodePtr;
+
         public:
             AffectorNodeFollowerMethod()
             {

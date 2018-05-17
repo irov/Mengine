@@ -13,6 +13,11 @@ namespace Mengine
     class PointerT
     {
     public:
+        PointerT( std::nullptr_t )
+            : m_pointer( nullptr )
+        {
+        }
+
         PointerT( T * _pointer )
             : m_pointer( _pointer )
         {
@@ -45,13 +50,28 @@ namespace Mengine
     class PointerT<IntrusivePtr<T> >
     {
     public:
-        PointerT( const IntrusivePtr<T> & _pointer )
+        PointerT( std::nullptr_t )
+        {
+        }
+
+        PointerT( T * _pointer )
             : m_pointer( _pointer )
         {
         }
 
         PointerT( const PointerT & _pointer )
             : m_pointer( _pointer.m_pointer )
+        {
+        }
+
+        PointerT( const IntrusivePtr<T> & _pointer )
+            : m_pointer( _pointer )
+        {
+        }
+
+        template<class U>
+        PointerT( const IntrusivePtr<U> & _pointer )
+            : m_pointer( _pointer )
         {
         }
 
@@ -83,21 +103,21 @@ namespace Mengine
             return IntrusivePtr<U>( t );
         }
 
-        template<class B>
-        operator IntrusiveDerivedPtr<T, B>() const
+        template<class UD>
+        operator IntrusiveDerivedPtr<T, UD>() const
         {
-            return IntrusiveDerivedPtr<T, B>( m_pointer );
+            return IntrusiveDerivedPtr<T, UD>( m_pointer );
         }
 
-        template<class U, class B>
-        operator IntrusiveDerivedPtr<U, B>() const
+        template<class U, class UD>
+        operator IntrusiveDerivedPtr<U, UD>() const
         {
             T * p = m_pointer.get();
 
 #ifndef NDEBUG
             if( p == nullptr )
             {
-                return IntrusivePtr<U>();
+                return IntrusiveDerivedPtr<U, UD>();
             }
 
             if( stdex::mpl::is_dynamic_cast<U *>::test( p ) == false )
@@ -108,7 +128,7 @@ namespace Mengine
 
             U * u = static_cast<U *>(p);
 
-            return IntrusiveDerivedPtr<U, B>( u );
+            return IntrusiveDerivedPtr<U, UD>( u );
         }
 
     protected:

@@ -18,8 +18,8 @@ namespace Mengine
 		MockupHttpSystem();
 
 	protected:
-		bool _initialize() override;
-		void _finalize() override;
+		bool _initializeService() override;
+		void _finalizeService() override;
 
 	protected:
 		HttpRequestID getMessage( const String & _url, HttpReceiver * _receiver ) override;

@@ -21,7 +21,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MockupHttpSystem::_initialize()
+	bool MockupHttpSystem::_initializeService()
 	{
 		if( THREAD_SERVICE()
 			->createThread( STRINGIZE_STRING_LOCAL( "ThreadMockupHttpSystem" ), MENGINE_THREAD_PRIORITY_LOWEST, __FILE__, __LINE__ ) == false )
@@ -34,7 +34,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MockupHttpSystem::_finalize()
+	void MockupHttpSystem::_finalizeService()
 	{
 		THREAD_SERVICE()
 			->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadMockupHttpSystem" ) );

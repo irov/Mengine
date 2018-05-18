@@ -50,6 +50,11 @@ namespace Mengine
 
         this->_onCURL( curl );
 
+        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
+
+        char errorbuf[CURL_ERROR_SIZE];
+        curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorbuf);
+
         CURLcode status = curl_easy_perform( curl );
 
         m_status = status;

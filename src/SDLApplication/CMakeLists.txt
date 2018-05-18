@@ -11,6 +11,14 @@ src
     SDLStdioLogger.h
 )
 
+if(MENGINE_PLATFORM_ANDROID)
+    ADD_FILTER(
+    android
+        AndroidLogger.cpp
+        AndroidLogger.h
+    )
+endif()
+
 add_definitions(-DUNICODE)
 add_definitions(-D_UNICODE)
 

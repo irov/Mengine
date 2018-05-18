@@ -17,7 +17,7 @@
 #   define MENGINE_OPENGL_ES
 #endif
 
-#if __ANDROID__
+#if defined(__ANDROID__)
 #   define GL_GLEXT_PROTOTYPES
 #   include "SDL_opengles.h"
 #   include "SDL_opengles2.h"
@@ -27,7 +27,7 @@
 #   define MENGINE_OPENGL_ES
 #endif
 
-#if WIN32 || MACOSX
+#if defined(WIN32) || defined(MACOSX)
 #include "SDL_opengl.h"
 #include "SDL_opengl_glext.h"
 #endif

@@ -6,12 +6,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class SDLStdioLogger
+    class AndroidLogger
         : public LoggerBase
     {
     public:
-		SDLStdioLogger();
-        ~SDLStdioLogger();
+        AndroidLogger();
+        ~AndroidLogger();
 
     public:
         void log( EMessageLevel _level, uint32_t _flag, const Char * _data, size_t _count ) override;

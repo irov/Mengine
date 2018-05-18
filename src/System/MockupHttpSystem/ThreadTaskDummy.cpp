@@ -9,11 +9,10 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	ThreadTaskDummy::ThreadTaskDummy()
 		: m_id( 0 )
-		, m_receiver( nullptr )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskDummy::initialize( HttpRequestID _id, HttpReceiver * _receiver )
+	bool ThreadTaskDummy::initialize( HttpRequestID _id, const HttpReceiverInterfacePtr & _receiver )
 	{
 		m_id = _id;
 		m_receiver = _receiver;

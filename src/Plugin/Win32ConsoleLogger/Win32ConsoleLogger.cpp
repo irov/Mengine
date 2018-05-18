@@ -15,9 +15,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ConsoleLogger::Win32ConsoleLogger()
-        : m_verboseLevel( LM_INFO )
-        , m_verboseFlag( 0xFFFFFFFF )
-        , m_createConsole( false )
+        : m_createConsole( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -35,36 +33,6 @@ namespace Mengine
     void Win32ConsoleLogger::finalize()
     {
         this->removeConsole_();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32ConsoleLogger::setVerboseLevel( EMessageLevel _level )
-    {
-        m_verboseLevel = _level;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Win32ConsoleLogger::setVerboseFlag( uint32_t _flag )
-    {
-        m_verboseFlag = _flag;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32ConsoleLogger::validMessage( EMessageLevel _level, uint32_t _flag ) const
-    {
-        if( m_verboseLevel < _level )
-        {
-            return false;
-        }
-
-        if( _flag == 0 )
-        {
-            return true;
-        }
-
-        if( (m_verboseFlag & _flag) == 0 )
-        {
-            return false;
-        }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ConsoleLogger::createConsole_()

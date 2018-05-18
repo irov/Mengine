@@ -12,7 +12,7 @@ namespace Mengine
 {
 	class MockupHttpSystem
 		: public ServiceBase<HttpSystemInterface>
-		, public HttpReceiver
+		, public HttpReceiverInterface
 	{
 	public:
 		MockupHttpSystem();
@@ -22,10 +22,10 @@ namespace Mengine
 		void _finalizeService() override;
 
 	protected:
-		HttpRequestID getMessage( const String & _url, HttpReceiver * _receiver ) override;
-		HttpRequestID postMessage( const String & _url, const TMapParams & _params, HttpReceiver * _receiver ) override;
-		HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver ) override;
-        HttpRequestID headerData( const String & _url, const TVectorString & _headers, const String & _data, HttpReceiver * _receiver ) override;
+		HttpRequestID getMessage( const String & _url, const HttpReceiverInterfacePtr & _receiver ) override;
+		HttpRequestID postMessage( const String & _url, const TMapParams & _params, const HttpReceiverInterfacePtr & _receiver ) override;
+		HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver ) override;
+        HttpRequestID headerData( const String & _url, const TVectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver ) override;
         
 	protected:
 		bool cancelRequest( HttpRequestID _id ) override;
@@ -40,7 +40,7 @@ namespace Mengine
 		{
 			uint32_t id;
 			ThreadTaskPtr task;
-			HttpReceiver * receiver;
+            HttpReceiverInterfacePtr receiver;
 		};
 
 		typedef stdex::vector<HttpReceiverDesc> TVectorHttpReceiverDesc;

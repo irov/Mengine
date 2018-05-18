@@ -44,7 +44,7 @@ namespace Mengine
 		m_factoryTaskDummy = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HttpRequestID MockupHttpSystem::getMessage( const String & _url, HttpReceiver * _receiver )
+	HttpRequestID MockupHttpSystem::getMessage( const String & _url, const HttpReceiverInterfacePtr & _receiver )
 	{
 		uint32_t task_id = ++m_enumeratorReceivers;
 
@@ -72,7 +72,7 @@ namespace Mengine
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HttpRequestID MockupHttpSystem::postMessage( const String & _url, const TMapParams & _params, HttpReceiver * _receiver )
+	HttpRequestID MockupHttpSystem::postMessage( const String & _url, const TMapParams & _params, const HttpReceiverInterfacePtr & _receiver )
 	{
 		(void)_params;
 
@@ -102,7 +102,7 @@ namespace Mengine
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HttpRequestID MockupHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, HttpReceiver * _receiver )
+	HttpRequestID MockupHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver )
 	{
 		(void)_login;
 		(void)_password;
@@ -159,7 +159,7 @@ namespace Mengine
 		return task_id;
 	}
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID MockupHttpSystem::headerData( const String & _url, const TVectorString & _headers, const String & _data, HttpReceiver * _receiver )
+    HttpRequestID MockupHttpSystem::headerData( const String & _url, const TVectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver )
     {
         (void)_url;
         (void)_headers;
@@ -223,7 +223,7 @@ namespace Mengine
 				continue;
 			}
 
-			HttpReceiver * receiver = desc.receiver;
+            HttpReceiverInterfacePtr receiver = desc.receiver;
 
 			m_receiverDescs.erase( it );
 

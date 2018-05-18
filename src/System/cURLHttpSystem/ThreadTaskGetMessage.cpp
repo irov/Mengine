@@ -10,6 +10,10 @@ namespace Mengine
 	ThreadTaskGetMessage::ThreadTaskGetMessage()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ThreadTaskGetMessage::~ThreadTaskGetMessage()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskGetMessage::initialize( const String & _url )
 	{

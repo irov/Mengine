@@ -114,6 +114,9 @@ src
     
     IntrusivePtr.h
     IntrusivePtrBase.h
+    
+    LoggerBase.cpp
+    LoggerBase.h
 )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

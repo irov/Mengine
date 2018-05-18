@@ -30,7 +30,12 @@
 #include "Core/Date.h"
 
 #include "SDLMessageBoxLogger.h"
-#include "SDLStdioLogger.h"
+
+#if defined(__ANDROID__)
+#   include "AndroidLogger.h"
+#else
+#   include "SDLStdioLogger.h"
+#endif
 
 #include <ctime>
 #include <algorithm>
@@ -332,7 +337,11 @@ namespace Mengine
             return true;
         }
 
+#if defined(__ANDROID__)
+        m_loggerStdio = new FactorableUnique<AndroidLogger>();
+#else
 		m_loggerStdio = new FactorableUnique<SDLStdioLogger>();
+#endif
 
 		m_loggerStdio->setVerboseFlag( LM_LOG );
 

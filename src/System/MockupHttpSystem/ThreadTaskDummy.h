@@ -15,7 +15,7 @@ namespace Mengine
 		ThreadTaskDummy();
 		
 	public:
-		bool initialize( HttpRequestID _id, HttpReceiver * _receiver );
+		bool initialize( HttpRequestID _id, const HttpReceiverInterfacePtr & _receiver );
 
 	protected:
 		bool _onRun() override;
@@ -28,7 +28,7 @@ namespace Mengine
 
 	protected:
 		HttpRequestID m_id;
-		HttpReceiver * m_receiver;
+        HttpReceiverInterfacePtr m_receiver;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<ThreadTaskDummy> ThreadTaskDummyPtr;

@@ -1,30 +1,30 @@
-#	include "SDLStdioLogger.h"
+#include "AndroidLogger.h"
 
-#	include "SDL_log.h"
+#include <iostream>
 
-#   include <iostream>
+#include <android/log.h>
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	SDLStdioLogger::SDLStdioLogger()
+    AndroidLogger::AndroidLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	SDLStdioLogger::~SDLStdioLogger()
+    AndroidLogger::~AndroidLogger()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLStdioLogger::log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _count )
+    void AndroidLogger::log( EMessageLevel _level, uint32_t _flag, const Char * _data, size_t _count )
     {
 		(void)_level;
         (void)_flag;
 		(void)_count;
 
-		std::cout.write( _data, _count );
+        __android_log_print( ANDROID_LOG_ERROR, "Mengine", "%.*s", _count, _data );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLStdioLogger::flush()
+    void AndroidLogger::flush()
     {
     }
 }	// namespace Mengine

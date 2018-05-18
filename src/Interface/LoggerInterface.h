@@ -37,7 +37,7 @@ namespace Mengine
 		virtual bool validMessage( EMessageLevel _level, uint32_t _flag ) const = 0;
 
 	public:
-		virtual void log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _size ) = 0;
+		virtual void log( EMessageLevel _level, uint32_t _flag, const Char * _data, size_t _size ) = 0;
 		virtual void flush() = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
@@ -56,7 +56,7 @@ namespace Mengine
 		virtual bool validMessage( EMessageLevel _level, uint32_t _flag ) const = 0;
 
 	public:
-		virtual void logMessage( Mengine::EMessageLevel _level, uint32_t _flag, const char * _message, size_t _size  ) = 0;
+		virtual void logMessage( Mengine::EMessageLevel _level, uint32_t _flag, const Char * _message, size_t _size  ) = 0;
 		virtual size_t getCountMessage( Mengine::EMessageLevel _level ) = 0;
 
 	public:

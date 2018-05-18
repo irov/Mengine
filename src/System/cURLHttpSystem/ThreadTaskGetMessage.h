@@ -10,6 +10,7 @@ namespace Mengine
 	{
 	public:
 		ThreadTaskGetMessage();
+        ~ThreadTaskGetMessage() override;
 		
 	public:
 		bool initialize( const String & _url );

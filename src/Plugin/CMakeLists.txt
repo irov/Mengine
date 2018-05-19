@@ -9,6 +9,10 @@ ADD_SUBDIRECTORY( PathFinderPlugin )
 ADD_SUBDIRECTORY( Box2DPlugin )
 ADD_SUBDIRECTORY( MoviePlugin )
 
+if( MENGINE_PLUGIN_ANDROID_LINEAR_ACCELERATION )
+    ADD_SUBDIRECTORY( AndroidLinearAccelerationPlugin )
+endif()
+
 if( MENGINE_PLUGIN_ASTRALAX )
     ADD_SUBDIRECTORY( AstralaxParticlePlugin )
 endif()

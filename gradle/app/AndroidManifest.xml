@@ -14,7 +14,7 @@
         android:theme="@android:style/Theme.NoTitleBar.Fullscreen"
         android:hardwareAccelerated="true">
         
-        <activity android:name="MainActivity"
+        <activity android:name="MengineActivity"
                   android:label="@string/app_name"
                   android:keepScreenOn="true"
                   android:configChanges="keyboard|keyboardHidden|orientation|screenSize"

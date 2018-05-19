@@ -1,2 +1,2 @@
-LIBRARY		"DevelopmentConverterPlugin"
+LIBRARY		"MoviePlugin"
 EXPORTS 	dllCreatePlugin 	@1

@@ -150,31 +150,41 @@ PLUGIN_EXPORT( Amplifier );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
 PLUGIN_EXPORT( BitmapFont );
+
 #ifdef MENGINE_PLUGIN_TTF
 #ifndef MENGINE_PLUGIN_TTF_DLL
-PLUGIN_EXPORT( TTF )
+    PLUGIN_EXPORT( TTF )
 #endif
 #endif
+
 #ifdef MENGINE_PLUGIN_SPINE
 #ifndef MENGINE_PLUGIN_SPINE_DLL
-PLUGIN_EXPORT( Spine );
+    PLUGIN_EXPORT( Spine );
 #endif
 #endif
+
 PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( PathFinder );
 PLUGIN_EXPORT( SDLFileGroup );
+
 #ifdef MENGINE_PLUGIN_ASTRALAX
 #ifndef MENGINE_PLUGIN_ASTRALAX_DLL
 PLUGIN_EXPORT( AstralaxParticlePlugin2 );
 #endif
 #endif
+
 #ifdef MENGINE_PLUGIN_STEAM
 #ifndef MENGINE_PLUGIN_STEAM_DLL
 PLUGIN_EXPORT( Steam );
 #endif
 #endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_LINEAR_ACCELERATION
+PLUGIN_EXPORT( AndroidLinearAcceleration );
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -649,6 +659,11 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( Steam, "initialize Steam Plugin..." );
 #endif
 #endif
+
+#ifdef MENGINE_PLUGIN_ANDROID_LINEAR_ACCELERATION
+    MENGINE_ADD_PLUGIN( AndroidLinearAcceleration, "initialize Android Linear Acceleration..." );
+#endif
+        
 
 #   undef MENGINE_ADD_PLUGIN
 

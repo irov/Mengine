@@ -20,6 +20,7 @@ namespace Mengine
 
 	public:
 		MoviePlugin();
+        ~MoviePlugin() override;
 
 	protected:
 		bool _avaliable() override;

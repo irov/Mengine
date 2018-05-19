@@ -1,8 +1,8 @@
-#	include "SDLStdioLogger.h"
+#include "SDLStdioLogger.h"
 
-#	include "SDL_log.h"
+#include "SDL_log.h"
 
-#   include <iostream>
+#include <iostream>
 
 namespace Mengine
 {

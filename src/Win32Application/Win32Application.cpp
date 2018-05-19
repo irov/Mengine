@@ -111,17 +111,17 @@ PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( Win32FileGroup );
 PLUGIN_EXPORT( BitmapFont );
 
-#   ifdef MENGINE_PLUGIN_SPINE
+#ifdef MENGINE_PLUGIN_SPINE
 PLUGIN_EXPORT( Spine );
-#   endif
+#endif
 
 PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( PathFinder );
 
-#   ifdef MENGINE_PLUGIN_TTF
+#ifdef MENGINE_PLUGIN_TTF
 PLUGIN_EXPORT( TTF );
-#   endif
+#endif
 
 namespace Mengine
 {

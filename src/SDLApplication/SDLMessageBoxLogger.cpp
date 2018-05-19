@@ -1,28 +1,17 @@
-#   include "SDLMessageBoxLogger.h"
+#include "SDLMessageBoxLogger.h"
 
-#   include "SDL_messagebox.h"
+#include "SDL_messagebox.h"
 
-#   include <cstdio>
+#include <cstdio>
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLMessageBoxLogger::SDLMessageBoxLogger()
-        : m_verboseLevel(LM_INFO)
-        , m_verboseFlag(0xFFFFFFFF)
     {
     }
     //////////////////////////////////////////////////////////////////////////
     SDLMessageBoxLogger::~SDLMessageBoxLogger()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLMessageBoxLogger::initialize()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLMessageBoxLogger::finalize()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -47,35 +36,5 @@ namespace Mengine
     void SDLMessageBoxLogger::flush()
     {
         //fflush(stdout);
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLMessageBoxLogger::setVerboseLevel( EMessageLevel _level )
-    {
-        m_verboseLevel = _level;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SDLMessageBoxLogger::setVerboseFlag( uint32_t _flag )
-    {
-        m_verboseFlag = _flag;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLMessageBoxLogger::validMessage( EMessageLevel _level, uint32_t _flag ) const
-    {
-        if( m_verboseLevel < _level )
-        {
-            return false;
-        }
-
-        if( _flag == 0 )
-        {
-            return true;
-        }
-
-        if( (m_verboseFlag & _flag) == 0 )
-        {
-            return false;
-        }
-
-        return true;
     }
 }

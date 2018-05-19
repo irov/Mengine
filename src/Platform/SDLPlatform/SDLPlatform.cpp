@@ -1,43 +1,43 @@
-#   include "Config/Config.h"
+#include "Config/Config.h"
 
-#   include "SDLPlatform.h"
+#include "SDLPlatform.h"
 
-#   include "Interface/LoggerInterface.h"
-#   include "Interface/FileSystemInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/InputSystemInterface.h"
-#   include "Interface/OptionsInterface.h"
-#   include "Interface/TimerInterface.h"
+#include "Interface/LoggerInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/InputSystemInterface.h"
+#include "Interface/OptionsInterface.h"
+#include "Interface/TimerInterface.h"
 
-#	ifdef WIN32
+#ifdef WIN32
 #	include "WIN32/WindowsIncluder.h"
-#	endif
+#endif
 
-#	ifdef __APPLE__
+#ifdef __APPLE__
 #	include "TargetConditionals.h"
-#	endif
+#endif
 
-#   include <cstdio>
-#   include <clocale>
+#include <cstdio>
+#include <clocale>
 
-#   include "Core/FileLogger.h"
-#   include "Core/IniUtil.h"
-#   include "Core/FilePath.h"
+#include "Core/FileLogger.h"
+#include "Core/IniUtil.h"
+#include "Core/FilePath.h"
 
-#   include "Factory/FactorableUnique.h"
-#   include "Factory/FactoryDefault.h"
+#include "Factory/FactorableUnique.h"
+#include "Factory/FactoryDefault.h"
 
-#   include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#   include <ctime>
-#   include <algorithm>
+#include <ctime>
+#include <algorithm>
 
-#   include <sstream>
-#   include <iomanip>
+#include <sstream>
+#include <iomanip>
 
-#   include <sys/stat.h>
+#include <sys/stat.h>
 
-#   define PARAM_UNUSED(x) ((void)x)
+#define PARAM_UNUSED(x) ((void)x)
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::SDLPlatform );

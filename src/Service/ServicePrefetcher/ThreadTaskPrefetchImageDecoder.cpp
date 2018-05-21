@@ -8,6 +8,7 @@
 #include "Factory/FactorableUnique.h"
 
 #include "Logger/Logger.h"
+#include <Windows.h>
 
 namespace Mengine
 {
@@ -15,6 +16,10 @@ namespace Mengine
 	ThreadTaskPrefetchImageDecoder::ThreadTaskPrefetchImageDecoder()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ThreadTaskPrefetchImageDecoder::~ThreadTaskPrefetchImageDecoder()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void ThreadTaskPrefetchImageDecoder::setImageCodec( const ConstString & _codec )
 	{
@@ -72,7 +77,7 @@ namespace Mengine
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPrefetchImageDecoder::_onMain()
-	{		
+	{	
 		if( m_group->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
 		{
 			LOGGER_ERROR("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide open file '%s:%s'"

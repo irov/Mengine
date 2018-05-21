@@ -13,6 +13,7 @@ namespace Mengine
 	{
 	public:
 		ThreadTaskPrefetchImageDecoder();
+        ~ThreadTaskPrefetchImageDecoder() override;
 
 	public:
 		void setImageCodec( const ConstString & _codec );

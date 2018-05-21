@@ -1809,7 +1809,6 @@ namespace Mengine
             , public ConcreteVisitor<ResourceHIT>
             , public ConcreteVisitor<ResourceSound>
             , public ConcreteVisitor<ResourceMovie>
-            , public ConcreteVisitor<ResourceMovie2>
         {
         public:
             PrefetchResourceVisitor( const ConstString & _category, const PrefetcherObserverInterfacePtr & _observer )
@@ -1869,21 +1868,6 @@ namespace Mengine
                 {
                     m_process = true;
                 }
-            }
-
-            void accept( ResourceMovie2 * _resource ) override
-            {
-                (void)_resource;
-                //const FilePath & filePath = _resource->getFilePath();
-                //const ConstString & dataflowType = _resource->getDataflowType();
-
-                //if( PREFETCHER_SERVICE()
-                //    ->prefetchData( m_category, filePath, dataflowType, m_observer ) == true )
-                //{
-                //    m_process = true;
-                //}
-
-                //m_process = true;
             }
 
         protected:

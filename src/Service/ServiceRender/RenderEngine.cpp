@@ -38,9 +38,6 @@ namespace Mengine
         , m_vsync( false )
         , m_fullscreen( false )
         , m_currentTextureStages( 0 )
-        , m_currentRenderCamera( nullptr )
-        , m_currentRenderViewport( nullptr )
-        , m_currentRenderClipplane( nullptr )
         , m_maxVertexCount( 0 )
         , m_maxIndexCount( 0 )
         , m_depthBufferWriteEnable( false )
@@ -49,7 +46,6 @@ namespace Mengine
         , m_debugStepRenderMode( false )
         , m_debugRedAlertMode( false )
         , m_currentStage( nullptr )
-        , m_nullTexture( nullptr )
         , m_batchMode( ERBM_NORMAL )
         , m_currentMaterialId( 0 )
         , m_iterateRenderObjects( 0 )
@@ -170,7 +166,7 @@ namespace Mengine
 
         m_currentRenderViewport = nullptr;
         m_currentRenderCamera = nullptr;
-        m_currentRenderClipplane = nullptr;
+        m_currentRenderScissor = nullptr;
 
         m_currentVertexBuffer = nullptr;
         m_currentIndexBuffer = nullptr;
@@ -730,7 +726,7 @@ namespace Mengine
 
         m_currentRenderCamera = nullptr;
         m_currentRenderViewport = nullptr;
-        m_currentRenderClipplane = nullptr;
+        m_currentRenderScissor = nullptr;
         m_currentRenderTarget = nullptr;
 
         m_currentMaterialId = 0;
@@ -936,27 +932,6 @@ namespace Mengine
                 ->setViewport( renderViewport );
         }
 
-        if( _pass->clipplane != nullptr )
-        {
-            uint32_t count = _pass->clipplane->getCount();
-
-            RENDER_SYSTEM()
-                ->setClipplaneCount( count );
-
-            for( uint32_t i = 0; i != count; ++i )
-            {
-                const mt::planef & p = _pass->clipplane->getPlane( i );
-
-                RENDER_SYSTEM()
-                    ->setClipplane( i, p );
-            }
-        }
-        else
-        {
-            RENDER_SYSTEM()
-                ->setClipplaneCount( 0 );
-        }
-
         if( _pass->camera != nullptr )
         {
             //const mt::mat4f & worldMatrix = _renderPass.camera->getCameraWorldMatrix();
@@ -993,6 +968,19 @@ namespace Mengine
 
             RENDER_SYSTEM()
                 ->setProjectionMatrix( projectionMatrix );
+        }
+
+        if( _pass->scissor != nullptr )
+        {
+            const Viewport & viewport = _pass->scissor->getScissorViewport();
+
+            RENDER_SYSTEM()
+                ->setScissor( viewport );
+        }
+        else
+        {
+            RENDER_SYSTEM()
+                ->removeScissor();
         }
 
         if( _pass->target != nullptr )
@@ -1085,7 +1073,7 @@ namespace Mengine
         if( pass->batch != _renderBatch ||
             pass->viewport != _state->viewport ||
             pass->camera != _state->camera ||
-            pass->clipplane != _state->clipplane ||
+            pass->scissor != _state->scissor ||
             pass->target != _state->target )
         {
             return true;
@@ -1116,7 +1104,7 @@ namespace Mengine
             pass->batch = batch;
             pass->viewport = _state->viewport;
             pass->camera = _state->camera;
-            pass->clipplane = _state->clipplane;
+            pass->scissor = _state->scissor;
             pass->target = _state->target;
 
             for( uint32_t i = 0U; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )

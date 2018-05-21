@@ -32,6 +32,11 @@ namespace Mengine
             m_factoryEntityPrototypeGenerator = new FactoryPool<EntityPrototypeGenerator, 64>();
         }
 
+        ~EntityScriptMethod()
+        {
+            m_factoryEntityPrototypeGenerator = new FactoryPool<EntityPrototypeGenerator, 64>();
+        }
+
     public:
         //////////////////////////////////////////////////////////////////////////
         bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator)

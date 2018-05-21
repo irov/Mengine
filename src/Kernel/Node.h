@@ -25,7 +25,7 @@ namespace Mengine
 {		
     typedef IntrusivePtr<class MousePickerTrapInterface> MousePickerTrapInterfacePtr;
     typedef IntrusivePtr<class RenderCameraInterface> RenderCameraInterfacePtr;
-    typedef IntrusivePtr<class RenderClipplaneInterface> RenderClipplaneInterfacePtr;
+    typedef IntrusivePtr<class RenderScissorInterface> RenderScissorInterfacePtr;
     typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
     typedef IntrusivePtr<class RenderTargetInterface> RenderTargetInterfacePtr;
 	
@@ -76,14 +76,14 @@ namespace Mengine
         const RenderCameraInterfacePtr & getRenderCameraInheritance() const;
 
 	public:
-		void setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane );
-		const RenderClipplaneInterfacePtr & getRenderClipplane() const;
+		void setRenderScissor( const RenderScissorInterfacePtr & _scissor );
+		const RenderScissorInterfacePtr & getRenderScissor() const;
 
 	public:
-		const RenderClipplaneInterfacePtr & getRenderClipplaneInheritance() const;
+		const RenderScissorInterfacePtr & getRenderScissorInheritance() const;
 
     public:
-        void setRenderTarget( const RenderTargetInterfacePtr & _clipplane );
+        void setRenderTarget( const RenderTargetInterfacePtr & _target );
         const RenderTargetInterfacePtr & getRenderTarget() const;
 
     public:
@@ -99,7 +99,7 @@ namespace Mengine
 	protected:
 		RenderViewportInterfacePtr m_renderViewport;
 		RenderCameraInterfacePtr m_renderCamera;
-		RenderClipplaneInterfacePtr m_renderClipplane;
+		RenderScissorInterfacePtr m_renderScissor;
 		
     protected:
         RenderTargetInterfacePtr m_renderTarget;

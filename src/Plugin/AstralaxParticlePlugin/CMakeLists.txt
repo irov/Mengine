@@ -43,7 +43,8 @@ set_target_properties (${MY_LIB_NAME} PROPERTIES
 
 if(MENGINE_PLATFORM_WIN32)
     if(MENGINE_TARGET_MINGW)
-        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)
+        #TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/x64/libmagic3d.a)
     else()
         TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/magic3d.lib)
     endif()

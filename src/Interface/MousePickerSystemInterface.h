@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
     typedef IntrusivePtr<class RenderCameraInterface> RenderCameraInterfacePtr;
-    typedef IntrusivePtr<class RenderClipplaneInterface> RenderClipplaneInterfacePtr;
+    typedef IntrusivePtr<class RenderScissorInterface> RenderScissorInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class MousePickerTrapInterface
         : public InputHandlerInterface
@@ -67,7 +67,7 @@ namespace Mengine
 	public:
 		virtual void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) = 0;
 		virtual void setRenderCamera( const RenderCameraInterfacePtr & _camera ) = 0;
-		virtual void setRenderClipplane( const RenderClipplaneInterfacePtr & _viewport ) = 0;
+		virtual void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) = 0;
 
     public:
         virtual void update() = 0;

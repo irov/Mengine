@@ -7,6 +7,12 @@ ScriptHolder
 )
 
 ADD_FILTER(
+ScriptableAffectorCallback
+    ScriptableAffectorCallback.cpp
+    ScriptableAffectorCallback.h
+)
+
+ADD_FILTER(
 Game
 	Game.cpp
 	Game.h
@@ -24,6 +30,7 @@ Wrapper
     HelperScriptWrapper.cpp
 	SoundScriptWrapper.cpp
 	NodeScriptWrapper.cpp
+    EngineScriptWrapper.cpp
 	MathScriptWrapper.cpp
 	EntityScriptWrapper.cpp
 	ConstsScriptWrapper.cpp

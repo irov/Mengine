@@ -99,6 +99,11 @@ namespace Mengine
                     return false;
                 }
 
+                if( layer.name == "ID_NewPlayerName" )
+                {
+                    printf( "d" );
+                }
+
                 node->setName( layer.name );
                 node->setExternalRender( true );
 
@@ -1688,15 +1693,28 @@ namespace Mengine
 
                 state.camera = camera->projection;
                 state.viewport = camera->viewport;
-                state.clipplane = _state->clipplane;
+                state.scissor = _state->scissor;
                 state.target = _state->target;
             }
             else
             {
                 state.camera = _state->camera;
                 state.viewport = _state->viewport;
-                state.clipplane = _state->clipplane;
+                
                 state.target = _state->target;
+            }
+
+            if( mesh.viewport != nullptr )
+            {
+                Movie2ScissorPtr scissor = new FactorableUnique<Movie2Scissor>();
+
+                scissor->setViewport( wm, mesh.viewport );
+
+                state.scissor = scissor;
+            }
+            else
+            {
+                state.scissor = _state->scissor;
             }
 
             ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
@@ -1709,14 +1727,14 @@ namespace Mengine
                     {
                         Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_data);
                         
-                        node->render( _renderService, _state, 0 );
+                        node->render( _renderService, &state, 0 );
                     }break;
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
                         ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_data);
 
-                        node->render( _renderService, _state, 0 );
+                        node->render( _renderService, &state, 0 );
 
                     }break;
 #endif
@@ -1724,13 +1742,18 @@ namespace Mengine
                     {
                         TextField * node = reinterpret_node_cast<TextField *>(mesh.element_data);
 
-                        node->render( _renderService, _state, 0 );
+                        if( node->getTextID() == "ID_NewPlayerName" )
+                        {
+                            printf( "Fds" );
+                        }
+
+                        node->render( _renderService, &state, 0 );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
                         ParticleEmitter2 * particleEmitter2 = reinterpret_node_cast<ParticleEmitter2 *>(mesh.element_data);
 
-                        particleEmitter2->render( _renderService, _state, 0 );
+                        particleEmitter2->render( _renderService, &state, 0 );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {

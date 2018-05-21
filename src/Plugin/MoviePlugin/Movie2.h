@@ -16,6 +16,9 @@
 #include "ResourceMovie2.h"
 #include "Movie2Slot.h"
 #include "Movie2SubComposition.h"
+#include "Movie2Scissor.h"
+
+#include "movie/movie.hpp"
 
 #include "stdex/stl_map.h"
 

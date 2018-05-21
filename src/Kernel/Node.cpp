@@ -19,10 +19,6 @@ namespace Mengine
 		, m_rendering(false)
 		, m_invalidateRendering(true)
 		, m_parent(nullptr)
-		, m_renderCamera(nullptr)
-		, m_renderViewport(nullptr)
-		, m_renderClipplane(nullptr)
-		, m_renderTarget(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -881,11 +877,11 @@ namespace Mengine
 			renderCamera = m_renderCamera;
 		}
 
-		RenderClipplaneInterfacePtr renderClipplane = _state->clipplane;
+		RenderScissorInterfacePtr renderScissor = _state->scissor;
 
-		if( m_renderClipplane != nullptr )
+		if( m_renderScissor != nullptr )
 		{
-			renderClipplane = m_renderClipplane;
+			renderScissor = m_renderScissor;
 		}
 
 		RenderTargetInterfacePtr renderTarget = _state->target;
@@ -913,7 +909,7 @@ namespace Mengine
 		RenderState state;
 		state.viewport = renderViewport;
 		state.camera = renderCamera;
-		state.clipplane = renderClipplane;
+		state.scissor = renderScissor;
 		state.target = renderTarget;
 
 		//if( this->checkVisibility( viewPort ) == true )
@@ -1012,19 +1008,19 @@ namespace Mengine
 		return rc_parent;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane )
+	void Node::setRenderScissor( const RenderScissorInterfacePtr & _scissor )
 	{
-		m_renderClipplane = _clipplane;
+		m_renderScissor = _scissor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderClipplaneInterfacePtr & Node::getRenderClipplane() const
+	const RenderScissorInterfacePtr & Node::getRenderScissor() const
 	{
-		return m_renderClipplane;
+		return m_renderScissor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const RenderClipplaneInterfacePtr & Node::getRenderClipplaneInheritance() const
+	const RenderScissorInterfacePtr & Node::getRenderScissorInheritance() const
 	{
-		const RenderClipplaneInterfacePtr & rc = this->getRenderClipplane();
+		const RenderScissorInterfacePtr & rc = this->getRenderScissor();
 
 		if( rc != nullptr )
 		{
@@ -1035,12 +1031,12 @@ namespace Mengine
 
 		if( parent == nullptr )
 		{
-            return RenderClipplaneInterfacePtr::none();
+            return RenderScissorInterfacePtr::none();
 		}
 
-		const RenderClipplaneInterfacePtr & rc_parent = parent->getRenderClipplaneInheritance();
+		const RenderScissorInterfacePtr & rs_parent = parent->getRenderScissorInheritance();
 
-		return rc_parent;
+		return rs_parent;
 	}
     //////////////////////////////////////////////////////////////////////////
     void Node::setRenderTarget( const RenderTargetInterfacePtr & _target )

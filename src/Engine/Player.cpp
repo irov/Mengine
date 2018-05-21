@@ -21,7 +21,7 @@
 #include "Kernel/Scene.h"
 
 #include "Kernel/RenderViewport.h"
-#include "Kernel/RenderClipplane.h"
+#include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/Arrow.h"
@@ -124,14 +124,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     Player::Player()
-        : m_arrowCamera2D( nullptr )
-        , m_renderCamera( nullptr )
-        , m_renderViewport( nullptr )
-        , m_renderClipplane( nullptr )
-        , m_renderTarget( nullptr )
-        , m_switchSceneTo( nullptr )
-        , m_mousePickerSystem( nullptr )
-        , m_arrowHided( false )
+        : m_arrowHided( false )
         , m_fps( 0 )
         , m_showDebugText( 0 )
         , m_debugText( nullptr )
@@ -389,7 +382,7 @@ namespace Mengine
         {
             m_arrow->setRenderCamera( m_arrowCamera2D );
             m_arrow->setRenderViewport( m_renderViewport );
-            m_arrow->setRenderClipplane( m_renderClipplane );
+            m_arrow->setRenderScissor( m_renderScissor );
 
             if( m_scene != nullptr )
             {
@@ -538,7 +531,7 @@ namespace Mengine
 
         m_renderViewport = nullptr;
         m_renderCamera = nullptr;
-        m_renderClipplane = nullptr;
+        m_renderScissor = nullptr;
 
         m_renderTarget = nullptr;
 
@@ -618,7 +611,7 @@ namespace Mengine
         {
             m_arrow->setRenderCamera( m_arrowCamera2D );
             m_arrow->setRenderViewport( m_renderViewport );
-            m_arrow->setRenderClipplane( m_renderClipplane );
+            m_arrow->setRenderScissor( m_renderScissor );
         }
 
         m_debugCamera2D = NODE_SERVICE()
@@ -902,19 +895,19 @@ namespace Mengine
         return m_renderViewport;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Player::setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane )
+    void Player::setRenderScissor( const RenderScissorInterfacePtr & _scissor )
     {
-        m_renderClipplane = _clipplane;
+        m_renderScissor = _scissor;
 
         if( m_mousePickerSystem != nullptr )
         {
-            m_mousePickerSystem->setRenderClipplane( _clipplane );
+            m_mousePickerSystem->setRenderScissor( _scissor );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderClipplaneInterfacePtr & Player::getRenderClipplane() const
+    const RenderScissorInterfacePtr & Player::getRenderScissor() const
     {
-        return m_renderClipplane;
+        return m_renderScissor;
     }
     //////////////////////////////////////////////////////////////////////////
     namespace
@@ -935,7 +928,7 @@ namespace Mengine
         RenderState state;
         state.viewport = m_renderViewport;
         state.camera = m_renderCamera;
-        state.clipplane = m_renderClipplane;
+        state.scissor = m_renderScissor;
         state.target = m_renderTarget;
 
         RenderServiceInterface * renderService = RENDER_SERVICE();

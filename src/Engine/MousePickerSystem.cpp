@@ -130,11 +130,6 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	MousePickerSystem::MousePickerSystem()
 		: m_enumerator(0)
-		, m_arrow(nullptr)
-		, m_scene(nullptr)
-		, m_viewport(nullptr)
-		, m_camera(nullptr)
-		, m_clipplane(nullptr)
 		, m_pickerTrapCount(0)
 		, m_block( false )
 		, m_handleValue( true )
@@ -158,7 +153,7 @@ namespace Mengine
 
         m_viewport = nullptr;
         m_camera = nullptr;
-        m_clipplane = nullptr;
+        m_scissor = nullptr;
 
         m_pickerTrapState.clear();
         m_states.clear();
@@ -194,9 +189,9 @@ namespace Mengine
 		m_camera = _camera;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void MousePickerSystem::setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane )
+	void MousePickerSystem::setRenderScissor( const RenderScissorInterfacePtr & _scissor )
 	{
-		m_clipplane = _clipplane;
+		m_scissor = _scissor;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool MousePickerSystem::pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps )

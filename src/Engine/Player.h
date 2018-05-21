@@ -87,8 +87,8 @@ namespace Mengine
 		const RenderViewportInterfacePtr & getRenderViewport() const override;
 
 	public:
-		void setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane ) override;
-		const RenderClipplaneInterfacePtr & getRenderClipplane() const override;
+		void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) override;
+		const RenderScissorInterfacePtr & getRenderScissor() const override;
 
     public:
 		void initializeRenderResources() override;
@@ -139,7 +139,7 @@ namespace Mengine
 		
         RenderViewportInterfacePtr m_renderViewport;
 		RenderCameraInterfacePtr m_renderCamera;		
-		RenderClipplaneInterfacePtr m_renderClipplane;
+		RenderScissorInterfacePtr m_renderScissor;
 		
         RenderTargetInterfacePtr m_renderTarget;
 

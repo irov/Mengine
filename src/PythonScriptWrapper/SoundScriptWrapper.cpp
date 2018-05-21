@@ -7,6 +7,7 @@
 
 #include "Kernel/Affectorable.h"
 #include "Kernel/Affector.h"
+#include "Kernel/AffectorHelper.h"
 
 #include "Config/Lambda.h"
 
@@ -284,7 +285,7 @@ namespace Mengine
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class SoundAffectorCallback
-			: public AffectorCallback
+			: public AffectorCallbackInterface
 		{
 		public:
 			SoundAffectorCallback()
@@ -572,7 +573,7 @@ namespace Mengine
 		}
 		//////////////////////////////////////////////////////////////////////////
 		class MusicAffectorCallback
-			: public AffectorCallback
+			: public AffectorCallbackInterface
 		{
 		public:
 			MusicAffectorCallback()

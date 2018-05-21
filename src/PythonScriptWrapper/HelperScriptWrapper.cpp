@@ -56,11 +56,15 @@
 
 #include "pybind/pybind.hpp"
 #include "pybind/pickle.hpp"
+#include "pybind/stl_type_cast.hpp"
 
 #include <math.h>
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef stdex::vector<ResourceImage *> TVectorResourceImage;
+    typedef stdex::vector<HotSpotPolygon *> TVectorHotSpotPolygon;
 	//////////////////////////////////////////////////////////////////////////
 	class HelperScriptMethod
 	{
@@ -2751,7 +2755,94 @@ namespace Mengine
 			return true;
 		}
     };
+    //////////////////////////////////////////////////////////////////////////
+    struct extract_TBlobject_type
+        : public pybind::type_cast_result<Blobject>
+    {
+        bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, Blobject & _value, bool _nothrow ) override
+        {
+            (void)_kernel;
+            (void)_nothrow;
 
+            if( pybind::string_check( _obj ) == true )
+            {
+                size_t size;
+                const char * value_char = pybind::string_to_char_and_size( _obj, size );
+
+                if( value_char == 0 )
+                {
+                    return false;
+                }
+
+                _value.assign( value_char, value_char + size );
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<Blobject>::TCastRef _value ) override
+        {
+            (void)_kernel;
+
+            PyObject * py_value = pybind::string_from_char_size( reinterpret_cast<const char *>(&_value[0]), _value.size() );
+
+            return py_value;
+        }
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct extract_Tags_type
+        : public pybind::type_cast_result<Tags>
+    {
+        bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, Tags & _tags, bool _nothrow ) override
+        {
+            (void)_kernel;
+            (void)_nothrow;
+
+            if( pybind::list_check( _obj ) == true )
+            {
+                pybind::list l( _kernel, _obj, pybind::borrowed() );
+
+                size_t tags_size = l.size();
+
+                for( size_t i = 0; i != tags_size; ++i )
+                {
+                    ConstString tag = l[i];
+
+                    _tags.addTag( tag );
+                }
+            }
+            else
+            {
+                return false;
+            }
+
+            return true;
+        }
+
+        PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<Tags>::TCastRef _value ) override
+        {
+            (void)_kernel;
+
+            const TVectorConstString & tags = _value.getTags();
+
+            PyObject * py_tags = pybind::list_new( 0 );
+
+            for( const ConstString & tag : tags )
+            {
+                PyObject * py_tag = pybind::ptr( _kernel, tag );
+
+                pybind::list_appenditem( py_tags, py_tag );
+
+                pybind::decref( py_tag );
+            }
+
+            return py_tags;
+        }
+    };
 	//////////////////////////////////////////////////////////////////////////
 	void PythonScriptWrapper::helperWrap()
 	{
@@ -2760,11 +2851,14 @@ namespace Mengine
 		//srand( (unsigned)std::time( NULL ) );
         HelperScriptMethod * helperScriptMethod = new HelperScriptMethod();
 
-  //      pybind::def_functor( "addInterpolatorLinearVector", helperScriptMethod, &HelperScriptMethod::addInterpolatorLinearVector );
-		//pybind::def_functor( "addInterpolatorLinearFloat", helperScriptMethod, &HelperScriptMethod::addInterpolatorLinearFloat);
+        pybind::registration_type_cast<Blobject>(kernel, new extract_TBlobject_type);
+        pybind::registration_type_cast<Tags>(kernel, new extract_Tags_type);
 
-		//pybind::def_functor( "addGlobalInterpolatorLinearVector", helperScriptMethod, &HelperScriptMethod::addGlobalInterpolatorLinearVector );
-		//pybind::def_functor( "addGlobalInterpolatorLinearFloat", helperScriptMethod, &HelperScriptMethod::addGlobalInterpolatorLinearFloat);		
+        pybind::registration_stl_vector_type_cast<ResourceImage *, TVectorResourceImage>(kernel);
+        pybind::registration_stl_vector_type_cast<HotSpotPolygon *, TVectorHotSpotPolygon>(kernel);
+
+        pybind::registration_stl_map_type_cast<ConstString, WString, TMapWParams>(kernel);
+        pybind::registration_stl_map_type_cast<ConstString, String, TMapParams>(kernel);
 
 		pybind::def_functor( kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::mt_enumerator );
 

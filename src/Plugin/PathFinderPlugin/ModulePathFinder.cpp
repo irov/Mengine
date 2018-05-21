@@ -10,6 +10,8 @@
 #include "Kernel/ResourceImageData.h"
 #include "Kernel/ScriptWrapper.h"
 
+#include "Factory/FactoryPool.h"
+
 #include "pybind/pybind.hpp"
 
 //////////////////////////////////////////////////////////////////////////

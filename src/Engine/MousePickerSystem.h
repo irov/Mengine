@@ -43,7 +43,7 @@ namespace Mengine
 	public:
 		void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;
 		void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
-		void setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane ) override;
+		void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) override;
 
 	public:
 		void update() override;
@@ -89,7 +89,7 @@ namespace Mengine
 
 		RenderViewportInterfacePtr m_viewport;
 		RenderCameraInterfacePtr m_camera;
-		RenderClipplaneInterfacePtr m_clipplane;
+		RenderScissorInterfacePtr m_scissor;
 
 		typedef stdex::list<PickerTrapState> TPickerTrapState;
 		TPickerTrapState m_pickerTrapState;

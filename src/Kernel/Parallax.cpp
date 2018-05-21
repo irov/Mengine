@@ -38,7 +38,7 @@ namespace Mengine
 		RenderState state;
 		state.viewport = _state->viewport;
 		state.camera = &m_parallaxCamera;
-		state.clipplane = _state->clipplane;
+		state.scissor = _state->scissor;
 		state.target = _state->target;
 
 		Node::render( _renderService, &state, _debugMask );

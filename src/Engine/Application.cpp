@@ -72,7 +72,7 @@
 #include "Kernel/Parallax.h"
 #include "Kernel/MatrixProxy.h"
 #include "Kernel/RenderViewport.h"
-#include "Kernel/RenderClipplane.h"
+#include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderCameraOrthogonalTarget.h"
@@ -337,7 +337,7 @@ namespace Mengine
         //NODE_FACTORY( LayerScene );
         //NODE_FACTORY( RenderMesh );
         NODE_FACTORY( RenderViewport );
-        NODE_FACTORY( RenderClipplane );
+        NODE_FACTORY( RenderScissor );
         NODE_FACTORY( RenderCameraOrthogonal );
         NODE_FACTORY( RenderCameraProjection );
         NODE_FACTORY( RenderCameraOrthogonalTarget );

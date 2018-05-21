@@ -14,7 +14,7 @@ namespace Mengine
 {
 	typedef IntrusivePtr<class RenderCameraProjection> RenderCameraProjectionPtr;
 	typedef IntrusivePtr<class RenderViewport> RenderViewportPtr;
-	typedef IntrusivePtr<class RenderClipplane> RenderClipplanePtr;
+	typedef IntrusivePtr<class RenderScissor> RenderScissorPtr;
 
     typedef IntrusivePtr<class MovieNodeExtra> MovieNodeExtraPtr;
     typedef IntrusivePtr<class MovieEvent> MovieEventPtr;
@@ -83,8 +83,8 @@ namespace Mengine
 		bool hasMovieLayer( const ConstString & _name ) const;
 
     public:
-        bool getMovieClipplane( const ConstString & _name, RenderClipplanePtr* _clipplane );
-		bool hasMovieClipplane( const ConstString & _name );
+        bool getMovieScissor( const ConstString & _name, RenderScissorPtr* _scissor );
+		bool hasMovieScissor( const ConstString & _name );
 
 	public:
 		bool setEnableMovieLayer( const ConstString & _name, bool _enable );
@@ -230,8 +230,8 @@ namespace Mengine
 		RenderCameraProjectionPtr m_renderCameraProjection;
 		RenderViewportPtr m_renderViewport;
 
-		typedef std::vector<RenderClipplanePtr> TVectorClipplane;
-		TVectorClipplane m_clipplanes;
+		typedef std::vector<RenderScissorPtr> TVectorScissor;
+		TVectorScissor m_scissors;
 
         struct Nodies
         {	

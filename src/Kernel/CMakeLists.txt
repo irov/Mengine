@@ -17,6 +17,8 @@ ADD_FILTER(
 Affector
 	Affector.h
 	Affector.cpp
+    AffectorHelper.h
+    AffectorHelper.cpp
 	AffectorType.h
     AffectorType.cpp
 )
@@ -179,8 +181,8 @@ RenderCamera
 	RenderCameraOrthogonalTarget.h
     RenderViewport.h
     RenderViewport.cpp
-    RenderClipplane.h
-    RenderClipplane.cpp
+    RenderScissor.h
+    RenderScissor.cpp
 )
 
 ADD_FILTER(

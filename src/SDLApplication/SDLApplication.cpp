@@ -153,7 +153,7 @@ PLUGIN_EXPORT( BitmapFont );
 
 #ifdef MENGINE_PLUGIN_TTF
 #ifndef MENGINE_PLUGIN_TTF_DLL
-    PLUGIN_EXPORT( TTF )
+    PLUGIN_EXPORT( TTF );
 #endif
 #endif
 
@@ -171,18 +171,18 @@ PLUGIN_EXPORT( SDLFileGroup );
 
 #ifdef MENGINE_PLUGIN_ASTRALAX
 #ifndef MENGINE_PLUGIN_ASTRALAX_DLL
-PLUGIN_EXPORT( AstralaxParticlePlugin2 );
+    PLUGIN_EXPORT( AstralaxParticlePlugin2 );
 #endif
 #endif
 
 #ifdef MENGINE_PLUGIN_STEAM
 #ifndef MENGINE_PLUGIN_STEAM_DLL
-PLUGIN_EXPORT( Steam );
+    PLUGIN_EXPORT( Steam );
 #endif
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_LINEAR_ACCELERATION
-PLUGIN_EXPORT( AndroidLinearAcceleration );
+    PLUGIN_EXPORT( AndroidLinearAcceleration );
 #endif
 
 //////////////////////////////////////////////////////////////////////////

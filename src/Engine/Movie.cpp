@@ -22,7 +22,7 @@
 
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderViewport.h"
-#include "Kernel/RenderClipplane.h"
+#include "Kernel/RenderScissor.h"
 
 #include "ShapeQuadFixed.h"
 #include "Mesh2D.h"
@@ -405,22 +405,22 @@ namespace Mengine
 	{		
 		if( _layer.hasViewport == true )
 		{
-			RenderClipplanePtr clippane = NODE_SERVICE() 
-				->createNode( STRINGIZE_STRING_LOCAL( "RenderClipplane" ) );
+			RenderScissorPtr scissor = NODE_SERVICE() 
+				->createNode( STRINGIZE_STRING_LOCAL( "RenderScissor" ) );
 
-			if( clippane == nullptr )
+			if( scissor == nullptr )
 			{
 				return false;
 			}
 
-			clippane->setName( _layer.name );
-			clippane->setViewport( _layer.viewport );
+			scissor->setName( _layer.name );
+			scissor->setViewport( _layer.viewport );
 
-			_node->setRenderClipplane( clippane );
+			_node->setRenderScissor( scissor );
 
-			m_clipplanes.emplace_back( clippane );
+			m_scissors.emplace_back( scissor );
 
-			this->addChild( clippane );
+			this->addChild( scissor );
 		}
 
 		Nodies nd;
@@ -654,18 +654,18 @@ namespace Mengine
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool Movie::getMovieClipplane( const ConstString & _name, RenderClipplanePtr * _clipplane )
+    bool Movie::getMovieScissor( const ConstString & _name, RenderScissorPtr * _scissor )
 	{
-		for( const RenderClipplanePtr & clipplane : m_clipplanes )
+		for( const RenderScissorPtr & scissor : m_scissors )
 		{
-			const ConstString & name = clipplane->getName();
+			const ConstString & name = scissor->getName();
 
 			if( name != _name )
 			{
 				continue;
 			}
 
-			*_clipplane = clipplane;
+			*_scissor = scissor;
 
 			return true;
 		}
@@ -673,11 +673,11 @@ namespace Mengine
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Movie::hasMovieClipplane( const ConstString & _name )
+	bool Movie::hasMovieScissor( const ConstString & _name )
 	{
-		for( const RenderClipplanePtr & clipplane : m_clipplanes )
+		for( const RenderScissorPtr & scissor : m_scissors )
 		{
-			const ConstString & name = clipplane->getName();
+			const ConstString & name = scissor->getName();
 
 			if( name != _name )
 			{
@@ -2988,7 +2988,7 @@ namespace Mengine
         m_renderCameraProjection = nullptr;		
         m_renderViewport = nullptr;
 
-		m_clipplanes.clear();
+		m_scissors.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::setEnableLayer_( const MovieLayer & _layer, bool _enable )

@@ -769,6 +769,15 @@ namespace Mengine
             return false;
         }
 
+        RECT r;
+        r.left = 1315;
+        r.top = 433;
+        r.right = 1665;
+        r.bottom = 533;
+
+        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE) );
+        DXCALL( m_pD3DDevice, SetScissorRect, (&r) );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -849,42 +858,37 @@ namespace Mengine
         DXCALL( m_pD3DDevice, Clear, (0, NULL, frameBufferFlags, _color, _depth, _stencil) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setClipplaneCount( uint32_t _count )
+    void DX9RenderSystem::setScissor( const Viewport & _viewport )
     {
-        DWORD CLIPPLANEENABLE = 0U;
+        mt::mat4f pm;
+        mt::mul_m4_m4( pm, m_projectionMatrix, m_modelViewMatrix );
 
-        switch( _count )
-        {
-        case 0:
-            break;
-        case 1:
-            CLIPPLANEENABLE = D3DCLIPPLANE0;
-            break;
-        case 2:
-            CLIPPLANEENABLE = D3DCLIPPLANE0 | D3DCLIPPLANE1;
-            break;
-        case 3:
-            CLIPPLANEENABLE = D3DCLIPPLANE0 | D3DCLIPPLANE1 | D3DCLIPPLANE2;
-            break;
-        case 4:
-            CLIPPLANEENABLE = D3DCLIPPLANE0 | D3DCLIPPLANE1 | D3DCLIPPLANE2 | D3DCLIPPLANE3;
-            break;
-        case 5:
-            CLIPPLANEENABLE = D3DCLIPPLANE0 | D3DCLIPPLANE1 | D3DCLIPPLANE2 | D3DCLIPPLANE3 | D3DCLIPPLANE4;
-            break;
-        case 6:
-            CLIPPLANEENABLE = D3DCLIPPLANE0 | D3DCLIPPLANE1 | D3DCLIPPLANE2 | D3DCLIPPLANE3 | D3DCLIPPLANE4 | D3DCLIPPLANE5;
-            break;
-        }
+        mt::vec2f b;
+        mt::mul_v2_v2_m4( b, _viewport.begin, pm );
 
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_CLIPPLANEENABLE, CLIPPLANEENABLE) );
+        mt::vec2f e;
+        mt::mul_v2_v2_m4( e, _viewport.end, pm );
+
+        mt::vec2f vs = m_viewport.size();
+
+        float bx = (b.x + 1.f) * 0.5f * vs.x;
+        float by = (1.f - (b.y + 1.f) * 0.5f) * vs.y;
+        float ex = (e.x + 1.f) * 0.5f * vs.x;
+        float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
+        
+        RECT r;
+        r.left = (uint32_t)bx;
+        r.top = (uint32_t)by;
+        r.right = (uint32_t)ex;
+        r.bottom = (uint32_t)ey;
+
+        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE) );
+        DXCALL( m_pD3DDevice, SetScissorRect, (&r) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setClipplane( uint32_t _i, const mt::planef & _plane )
+    void DX9RenderSystem::removeScissor()
     {
-        const float * plane_buff = _plane.buff();
-
-        DXCALL( m_pD3DDevice, SetClipPlane, (_i, plane_buff) );
+        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, FALSE) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setViewport( const Viewport & _viewport )

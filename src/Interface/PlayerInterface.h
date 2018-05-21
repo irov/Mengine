@@ -14,7 +14,7 @@ namespace Mengine
     typedef IntrusivePtr<class Affectorable> AffectorablePtr;
     typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
     typedef IntrusivePtr<class RenderCameraInterface> RenderCameraInterfacePtr;
-    typedef IntrusivePtr<class RenderClipplaneInterface> RenderClipplaneInterfacePtr;
+    typedef IntrusivePtr<class RenderScissorInterface> RenderScissorInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class Affectorable;
 	//////////////////////////////////////////////////////////////////////////
@@ -88,8 +88,8 @@ namespace Mengine
 		virtual const RenderViewportInterfacePtr & getRenderViewport() const = 0;
 
 	public:
-        virtual void setRenderClipplane( const RenderClipplaneInterfacePtr & _clipplane ) = 0;
-		virtual const RenderClipplaneInterfacePtr & getRenderClipplane() const = 0;
+        virtual void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) = 0;
+		virtual const RenderScissorInterfacePtr & getRenderScissor() const = 0;
         
     public:
         virtual const MousePickerSystemInterfacePtr & getMousePickerSystem() const = 0;

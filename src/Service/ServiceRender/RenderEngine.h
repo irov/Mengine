@@ -99,7 +99,7 @@ namespace Mengine
 
 		RenderViewportInterfacePtr viewport;
 		RenderCameraInterfacePtr camera;
-		RenderClipplaneInterfacePtr clipplane;
+		RenderScissorInterfacePtr scissor;
 		
         RenderTargetInterfacePtr target;
 				
@@ -283,7 +283,7 @@ namespace Mengine
 
 		RenderViewportInterfacePtr m_currentRenderViewport;
 		RenderCameraInterfacePtr m_currentRenderCamera;
-		RenderClipplaneInterfacePtr m_currentRenderClipplane;
+		RenderScissorInterfacePtr m_currentRenderScissor;
 		
         RenderTargetInterfacePtr m_currentRenderTarget;
 

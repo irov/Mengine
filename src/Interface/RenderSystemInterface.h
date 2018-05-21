@@ -404,15 +404,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderViewportInterface> RenderViewportInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
-	class RenderClipplaneInterface
+	class RenderScissorInterface
         : public Mixin
 	{
 	public:
-		virtual uint32_t getCount() const = 0;
-		virtual const mt::planef & getPlane( uint32_t _index ) const = 0;
+		virtual const Viewport & getScissorViewport() const = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderClipplaneInterface> RenderClipplaneInterfacePtr;
+    typedef IntrusivePtr<RenderScissorInterface> RenderScissorInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderCameraInterface
         : public Mixin
@@ -537,8 +536,8 @@ namespace Mengine
 		virtual void swapBuffers() = 0;
 		virtual void clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil ) = 0;
 
-		virtual void setClipplaneCount( uint32_t _count ) = 0;
-		virtual void setClipplane( uint32_t _i, const mt::planef & _plane ) = 0;
+		virtual void setScissor( const Viewport & _viewport ) = 0;
+        virtual void removeScissor() = 0;
 
 		virtual void setViewport( const Viewport & _viewport ) = 0;
 
@@ -588,7 +587,7 @@ namespace Mengine
 	{
 		RenderViewportInterfacePtr viewport;
 		RenderCameraInterfacePtr camera;
-		RenderClipplaneInterfacePtr clipplane;
+		RenderScissorInterfacePtr scissor;
 
 		RenderTargetInterfacePtr target;
 	};

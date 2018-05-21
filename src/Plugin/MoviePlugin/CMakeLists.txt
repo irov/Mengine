@@ -9,6 +9,8 @@ src
     Movie2.h
     Movie2Slot.cpp
     Movie2Slot.h
+    Movie2Scissor.cpp
+    Movie2Scissor.h
     Movie2SubComposition.cpp
     Movie2SubComposition.h
     ResourceMovie2.cpp

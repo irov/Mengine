@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Core/ModuleBase.h"
+#include "Factory/Factory.h"
 
 #include "InvaderFollowAffector.h"
 

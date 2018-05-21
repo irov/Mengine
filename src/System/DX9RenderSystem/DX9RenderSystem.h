@@ -114,9 +114,9 @@ namespace Mengine
 		void endScene() override;
 		void swapBuffers() override;
 		void clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil ) override;
-
-		void setClipplaneCount( uint32_t _count ) override;
-		void setClipplane( uint32_t _i, const mt::planef & _plane ) override;
+        
+        void setScissor( const Viewport & _viewport ) override;
+        void removeScissor() override;
 
 		void setViewport( const Viewport & _viewport ) override;
 

@@ -626,11 +626,13 @@ namespace Mengine
 #endif
 
 		PythonScriptWrapper::constsWrap();
+        PythonScriptWrapper::helperWrap();
 		PythonScriptWrapper::mathWrap();
 		PythonScriptWrapper::nodeWrap();
-		PythonScriptWrapper::helperWrap();
+        PythonScriptWrapper::entityWrap();
+        PythonScriptWrapper::engineWrap();		
 		PythonScriptWrapper::soundWrap();
-		PythonScriptWrapper::entityWrap();
+		
 
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( NodeService );

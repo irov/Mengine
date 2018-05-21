@@ -1,0 +1,33 @@
+#pragma once
+
+#include "Interface/RenderSystemInterface.h"
+
+#include "movie/movie.hpp"
+
+namespace Mengine
+{
+    class Movie2Scissor
+        : public Factorable
+        , public RenderScissorInterface
+    {
+    public:
+        Movie2Scissor();
+        ~Movie2Scissor() override;
+
+    public:
+        void setViewport( const mt::mat4f & _wm, const ae_viewport_t * _viewport );
+
+    public:
+        const Viewport & getScissorViewport() const override;
+
+    protected:
+        Viewport m_viewport;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Movie2Scissor> Movie2ScissorPtr;
+    //////////////////////////////////////////////////////////////////////////
+    inline const Viewport & Movie2Scissor::getScissorViewport() const
+    {
+        return m_viewport;
+    }
+}

@@ -272,39 +272,60 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setClipplaneCount( uint32_t _count )
+    void OpenGLRenderSystem::setScissor( const Viewport & _viewport )
     {
-        GLUNUSED( _count );
-        //ToDo
+        mt::mat4f pm;
+        mt::mul_m4_m4( pm, m_projectionMatrix, m_viewMatrix );
+
+        mt::vec2f b;
+        mt::mul_v2_v2_m4( b, _viewport.begin, pm );
+
+        mt::vec2f e;
+        mt::mul_v2_v2_m4( e, _viewport.end, pm );
+
+        mt::vec2f vs = m_viewport.size();
+
+        float bx = (b.x + 1.f) * 0.5f * vs.x;
+        float by = (1.f - (b.y + 1.f) * 0.5f) * vs.y;
+        float ex = (e.x + 1.f) * 0.5f * vs.x;
+        float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
+
+        uint32_t left = (uint32_t)bx;
+        uint32_t top = (uint32_t)by;
+        uint32_t right = (uint32_t)ex;
+        uint32_t bottom = (uint32_t)ey;
+
+        glEnable( GL_SCISSOR_TEST );
+        glScissor( left, top, right - left, bottom - top );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setClipplane( uint32_t _i, const mt::planef & _plane )
+    void OpenGLRenderSystem::removeScissor()
     {
-        GLUNUSED( _i );
-        GLUNUSED( _plane );
-        //ToDo
+        glDisable( GL_SCISSOR_TEST );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setViewport( const Viewport & _viewport )
     {
-        GLsizei xb = static_cast<GLsizei>(_viewport.begin.x);
-        GLsizei ye = static_cast<GLsizei>(_viewport.end.y);
-        GLsizei w = static_cast<GLsizei>(_viewport.getWidth());
-        GLsizei h = static_cast<GLsizei>(_viewport.getHeight());
+        m_viewport = _viewport;
+
+        GLsizei xb = static_cast<GLsizei>(m_viewport.begin.x);
+        GLsizei ye = static_cast<GLsizei>(m_viewport.end.y);
+        GLsizei w = static_cast<GLsizei>(m_viewport.getWidth());
+        GLsizei h = static_cast<GLsizei>(m_viewport.getHeight());
 
         GLsizei resolution_height = static_cast<GLsizei>(m_resolution.getHeight());
 
         GLCALL( glViewport, (xb, resolution_height - ye, w, h) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setViewMatrix( const mt::mat4f & _view )
+    void OpenGLRenderSystem::setViewMatrix( const mt::mat4f & _viewMatrix )
     {
-        m_viewMatrix = _view;
+        m_viewMatrix = _viewMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setProjectionMatrix( const mt::mat4f & _projection )
+    void OpenGLRenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
     {
-        m_projectionMatrix = _projection;
+        m_projectionMatrix = _projectionMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )
@@ -314,9 +335,9 @@ namespace Mengine
         // To Do
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setWorldMatrix( const mt::mat4f & _world )
+    void OpenGLRenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
     {
-        m_worldMatrix = _world;
+        m_worldMatrix = _worldMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexBufferInterfacePtr OpenGLRenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType )

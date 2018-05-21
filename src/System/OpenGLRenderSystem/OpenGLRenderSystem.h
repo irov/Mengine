@@ -125,8 +125,8 @@ namespace Mengine
         void swapBuffers() override;
         void clearFrameBuffer( uint32_t _frameBufferTypes, uint32_t _color, float _depth, uint32_t _stencil ) override;
 
-        void setClipplaneCount( uint32_t _count ) override;
-        void setClipplane( uint32_t _i, const mt::planef & _plane ) override;
+        void setScissor( const Viewport & _viewport ) override;
+        void removeScissor() override;
 
         void setViewport( const Viewport & _viewport ) override;
 
@@ -162,6 +162,8 @@ namespace Mengine
 
     private:
         ConstString m_renderPlatform;
+
+        Viewport m_viewport;
 
         mt::mat4f m_worldMatrix;
         mt::mat4f m_viewMatrix;

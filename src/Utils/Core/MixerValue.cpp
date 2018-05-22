@@ -38,7 +38,7 @@ namespace Mengine
                 mixer.follower.setValue( _from );
             }
 
-			mixer.follower.follow( _value );
+			mixer.follower.setFollow( _value );
             mixer.follower.setSpeed( m_speed );
 
 			return;
@@ -52,7 +52,7 @@ namespace Mengine
 		Element el;
 		el.type = _type;
         el.follower.setValue( _from );
-		el.follower.follow( _value );
+		el.follower.setFollow( _value );
 		el.follower.setSpeed( m_speed );
 
 		m_mixer.emplace_back( el );
@@ -101,7 +101,7 @@ namespace Mengine
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MixerValue::update( float _timing )
+	bool MixerValue::update( float _current, float _timing )
 	{
 		bool process = false;
 
@@ -113,7 +113,7 @@ namespace Mengine
 		{
 			Element & m = *it;
 
-			if( m.follower.update( _timing ) == false )
+			if( m.follower.update( _current, _timing ) == false )
 			{
 				process = true;
 			}

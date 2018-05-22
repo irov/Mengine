@@ -115,7 +115,7 @@ namespace Mengine
 	{
 		(void)_current;
 
-		bool end = _affector->affect( _timing );
+		bool end = _affector->affect( _current, _timing );
 
 		if( end == true )
 		{

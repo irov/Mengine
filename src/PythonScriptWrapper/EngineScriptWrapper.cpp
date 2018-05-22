@@ -125,10 +125,12 @@
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"
 #include "Kernel/ThreadTask.h"
+#include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/ScriptEventReceiver.h"
 #include "Kernel/ScriptWrapper.h"
 
 #include "PythonAnimatableEventReceiver.h"
+#include "PythonValueFollower.h"
 
 #include "Core/Polygon.h"
 #include "Core/MemoryHelper.h"
@@ -2463,8 +2465,10 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _timing ) override
+            bool _affect( float _current, float _timing ) override
             {
+                (void)_current;
+
                 m_timing += _timing;
 
                 bool complete = false;
@@ -2588,8 +2592,10 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _timing ) override
+            bool _affect( float _current, float _timing ) override
             {
+                (void)_current;
+
                 bool complete = m_cb.call_args( _timing, m_args );
 
                 return complete;
@@ -2746,7 +2752,7 @@ namespace Mengine
                 m_follower.setValue( _value );
                 m_follower.setSpeed( _speed );
 
-                m_follower.follow( _target );
+                m_follower.setFollow( _target );
 
                 m_setter( _node, _value );
 
@@ -2758,19 +2764,21 @@ namespace Mengine
             {
                 T_Value value_target = _target.extract();
 
-                m_follower.follow( value_target );
+                m_follower.setFollow( value_target );
             }
 
         protected:
-            bool _affect( float _timing ) override
+            bool _affect( float _current, float _timing ) override
             {
+                (void)_current;
+
                 const T_NodePtr & node = this->getNode();
 
                 T_Value current_value = m_getter( node );
 
                 m_follower.setValue( current_value );
 
-                m_follower.update( _timing );
+                m_follower.update( _current, _timing );
 
                 T_Value value = m_follower.getValue();
 
@@ -2890,6 +2898,31 @@ namespace Mengine
             mt::mul_m4_v3( wp_screen, vm, wp );
 
             return wp_screen;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        PythonValueFollowerPtr s_createValueFollower( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
+        {
+            PythonValueFollowerPtr follower = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollower" ) );
+
+            follower->initialize( _value, _speed, _cb, _args );
+
+            const AffectorablePtr & affectorable = PLAYER_SERVICE()
+                ->getAffectorableGlobal();
+
+            affectorable->addAffector( follower );
+
+            return follower;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_destroyValueFollower( const PythonValueFollowerPtr & _follower )
+        {
+            AFFECTOR_ID id = _follower->getId();
+
+            const AffectorablePtr & affectorable = PLAYER_SERVICE()
+                ->getAffectorableGlobal();
+
+            affectorable->stopAffector( id );
         }
         //////////////////////////////////////////////////////////////////////////
         ScenePtr s_findNodeScene( const NodePtr & _node )
@@ -4197,5 +4230,24 @@ namespace Mengine
         pybind::def_functor( kernel, "findNodeScene", nodeScriptMethod, &EngineScriptMethod::s_findNodeScene );
 
         pybind::def_functor( kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
+
+        pybind::interface_<PythonValueFollower, pybind::bases<Affector> >( kernel, "PythonValueFollower" )
+            .def( "setSpeed", &PythonValueFollower::setSpeed )
+            .def( "getSpeed", &PythonValueFollower::getSpeed )
+            .def( "setValue", &PythonValueFollower::setValue )
+            .def( "getValue", &PythonValueFollower::getValue )
+            .def( "setFollow", &PythonValueFollower::setFollow )
+            .def( "getFollow", &PythonValueFollower::getFollow )
+            .def( "resetValue", &PythonValueFollower::resetValue )
+            ;
+
+        pybind::def_functor_args( kernel, "createValueFollower", nodeScriptMethod, &EngineScriptMethod::s_createValueFollower );
+        pybind::def_functor( kernel, "destroyValueFollower", nodeScriptMethod, &EngineScriptMethod::s_destroyValueFollower );
+
+        SCRIPT_SERVICE()
+            ->setWrapper( Helper::stringizeString( "PythonValueFollower" ), new ScriptWrapper<PythonValueFollower>() );
+
+        PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollower" ), new ScriptablePrototypeGenerator<PythonValueFollower, 32>() );
     }
 }

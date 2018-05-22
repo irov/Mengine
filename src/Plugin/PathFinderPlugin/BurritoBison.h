@@ -133,7 +133,7 @@ namespace Mengine
 		float getCameraFollowerScale() const;
 
 	public:
-		void update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, uint32_t _iterate );
+		void update( float _current, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, uint32_t _iterate );
 
 	public:
 		void translate( const mt::vec3f & _translate );

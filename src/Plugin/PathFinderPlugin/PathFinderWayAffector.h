@@ -46,7 +46,7 @@ namespace Mengine
 
 	public:
 		bool _prepare() override;
-		bool _affect( float _timing ) override;
+		bool _affect( float _current, float _timing ) override;
 		void complete() override;
 		void stop() override;
 

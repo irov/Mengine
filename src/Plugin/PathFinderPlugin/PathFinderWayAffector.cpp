@@ -168,9 +168,9 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PathFinderWayAffector::_affect( float _timing )
+	bool PathFinderWayAffector::_affect( float _current, float _timing )
 	{
-		m_followerPurge.update( _timing );
+		m_followerPurge.update( _current, _timing );
 
 		float purge = m_followerPurge.getValue();
 

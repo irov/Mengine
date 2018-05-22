@@ -611,31 +611,29 @@ namespace Mengine
 		typedef stdex::vector<SoundIdentityInterfacePtr> TVectorSoundListeners;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SoundEngine::tick( float _time, float _timing )
+	void SoundEngine::tick( float _current, float _timing )
 	{
-		(void)_time;
-
 		SOUND_SYSTEM()
 			->update();
 
 		bool process = false;
 
-		if( m_commonVolume.update( _timing ) == true )
+		if( m_commonVolume.update( _current, _timing ) == true )
 		{
 			process = true;
 		}
 
-		if( m_soundVolume.update( _timing ) == true )
+		if( m_soundVolume.update( _current, _timing ) == true )
 		{
 			process = true;
 		}
 
-		if( m_musicVolume.update( _timing ) == true )
+		if( m_musicVolume.update( _current, _timing ) == true )
 		{
 			process = true;
 		}
 		
-		if( m_voiceVolume.update( _timing ) == true )
+		if( m_voiceVolume.update( _current, _timing ) == true )
 		{
 			process = true;
 		}
@@ -656,7 +654,7 @@ namespace Mengine
 
 			bool source_process = process;
 
-			if( identity->volume.update( _timing ) == true )
+			if( identity->volume.update( _current, _timing ) == true )
 			{
 				source_process = true;
 			}

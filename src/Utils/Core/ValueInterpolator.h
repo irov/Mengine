@@ -4,434 +4,438 @@
 
 namespace Mengine
 {
-	template <typename T>
-	class ValueAccumulator
-	{
-	public:
-		ValueAccumulator()
-			: m_started(false)
-			, m_timing(0.f)
-		{
-		}
+    template <typename T>
+    class ValueAccumulator
+    {
+    public:
+        ValueAccumulator()
+            : m_started( false )
+            , m_timing( 0.f )
+        {
+        }
 
-	public:
-		void stop()
-		{
-			m_started = false;
-		}
+    public:
+        void stop()
+        {
+            m_started = false;
+        }
 
-		bool isStarted() const	
-		{ 
-			return m_started; 
-		}
-		
-		virtual bool update( float _timing, T * _out ) = 0;
+        bool isStarted() const
+        {
+            return m_started;
+        }
 
-	protected:
-		bool m_started;
-		float m_timing;
+        virtual bool update( float _current, float _timing, T * _out ) = 0;
 
-		T m_pos;
-		T m_delta;			
-	};
+    protected:
+        bool m_started;
+        float m_timing;
 
-	template <typename T>
-	class ValueAccumulateLinear
-		: public ValueAccumulator<T>
-	{
-	public:
-		bool start( const T & _pos, const T & _acc, float _speed )
-		{
-			ValueAccumulator<T>::m_started = false;
+        T m_pos;
+        T m_delta;
+    };
 
-			ValueAccumulator<T>::m_pos = _pos;
-			ValueAccumulator<T>::m_delta = _acc * _speed;
-			ValueAccumulator<T>::m_timing = 0.f;
+    template <typename T>
+    class ValueAccumulateLinear
+        : public ValueAccumulator<T>
+    {
+    public:
+        bool start( const T & _pos, const T & _acc, float _speed )
+        {
+            ValueAccumulator<T>::m_started = false;
 
-			if( _speed < mt::constant::eps )
-			{
-				return false;
-			}
+            ValueAccumulator<T>::m_pos = _pos;
+            ValueAccumulator<T>::m_delta = _acc * _speed;
+            ValueAccumulator<T>::m_timing = 0.f;
 
-			ValueAccumulator<T>::m_started = true;
+            if( _speed < mt::constant::eps )
+            {
+                return false;
+            }
 
-			return true;
-		}
+            ValueAccumulator<T>::m_started = true;
 
-		bool update( float _timing, T * _out )
-		{
-			if( ValueAccumulator<T>::m_started == false )
-			{
-				*_out = ValueAccumulator<T>::m_pos;
-				return true;
-			}
+            return true;
+        }
 
-			ValueAccumulator<T>::m_timing += _timing;
+        bool update( float _current, float _timing, T * _out )
+        {
+            (void)_current;
 
-			ValueAccumulator<T>::m_pos += ValueAccumulator<T>::m_delta * _timing;
+            if( ValueAccumulator<T>::m_started == false )
+            {
+                *_out = ValueAccumulator<T>::m_pos;
+                return true;
+            }
 
-			*_out = ValueAccumulator<T>::m_pos;
+            ValueAccumulator<T>::m_timing += _timing;
 
-			return false;
-		}
-	};
+            ValueAccumulator<T>::m_pos += ValueAccumulator<T>::m_delta * _timing;
 
-	template <typename T>
-	class ValueInterpolator
-	{
-	public:
-		ValueInterpolator()
-			: m_started( false )
-			, m_timing( 0.f )
-			, m_time( 0.f )
-		{
-		}
+            *_out = ValueAccumulator<T>::m_pos;
 
-	public:
-		void stop()
-		{
-			m_started = false;
-		}
+            return false;
+        }
+    };
 
-		bool isStarted() const
-		{
-			return m_started;
-		}
+    template <typename T>
+    class ValueInterpolator
+    {
+    public:
+        ValueInterpolator()
+            : m_started( false )
+            , m_timing( 0.f )
+            , m_time( 0.f )
+        {
+        }
 
-		const T & getValue() const
-		{
-			return m_prev;
-		}
+    public:
+        void stop()
+        {
+            m_started = false;
+        }
 
-		void step( float _timing, T * _out )
-		{
-			if( _timing > m_time )
-			{
-				*_out = m_value2;
+        bool isStarted() const
+        {
+            return m_started;
+        }
 
-				return;
-			}
+        const T & getValue() const
+        {
+            return m_prev;
+        }
 
-			float dt = m_timing / m_time;
+        void step( float _timing, T * _out )
+        {
+            if( _timing > m_time )
+            {
+                *_out = m_value2;
 
-			this->_update( dt, _out );			
-		}
+                return;
+            }
 
-		bool update( float _timing, T * _out )
-		{
-			if( m_started == false )
-			{
-				*_out = m_value2;
+            float dt = m_timing / m_time;
 
-				return true;
-			}
+            this->_update( dt, _out );
+        }
 
-			m_timing += _timing;
+        bool update( float _current, float _timing, T * _out )
+        {
+            (void)_current;
 
-			if( m_timing > m_time )
-			{
-				m_time = 0.f;
-				m_timing = 0.f;
-				*_out = m_value2;
-				m_delta = m_value2 - m_prev;
-				m_started = false;
+            if( m_started == false )
+            {
+                *_out = m_value2;
 
-				return true;
-			}
+                return true;
+            }
 
-			float dt = m_timing / m_time;
+            m_timing += _timing;
 
-			this->_update( dt, _out );
+            if( m_timing > m_time )
+            {
+                m_time = 0.f;
+                m_timing = 0.f;
+                *_out = m_value2;
+                m_delta = m_value2 - m_prev;
+                m_started = false;
 
-			m_delta = (*_out) - m_prev;
-			m_prev = (*_out);
+                return true;
+            }
 
-			return false;
-		}
+            float dt = m_timing / m_time;
 
-	protected:
-		virtual void _update( float _dt, T * _out ) = 0;
+            this->_update( dt, _out );
 
-	protected:
-		bool m_started;
-		float m_timing;
+            m_delta = (*_out) - m_prev;
+            m_prev = (*_out);
 
-		T m_value1;
-		T m_value2;
-		T m_prev;
-		T m_delta;
-		float m_time;
-	};
+            return false;
+        }
 
-	template <typename T>
-	class ValueInterpolatorLinear
-		: public ValueInterpolator<T>
-	{
-	public:
-		bool start( const T & _value1, const T & _value2, float _time )
-		{
-			ValueInterpolator<T>::m_started = false;
+    protected:
+        virtual void _update( float _dt, T * _out ) = 0;
 
-			ValueInterpolator<T>::m_value1 = _value1;
-			ValueInterpolator<T>::m_value2 = _value2;
-			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_time = _time;
-			ValueInterpolator<T>::m_timing = 0.f;
+    protected:
+        bool m_started;
+        float m_timing;
 
-			if( _time < mt::constant::eps )
-			{
-				return false;
-			}
+        T m_value1;
+        T m_value2;
+        T m_prev;
+        T m_delta;
+        float m_time;
+    };
 
-			ValueInterpolator<T>::m_started = true;
-			
-			return true;
-		}
+    template <typename T>
+    class ValueInterpolatorLinear
+        : public ValueInterpolator<T>
+    {
+    public:
+        bool start( const T & _value1, const T & _value2, float _time )
+        {
+            ValueInterpolator<T>::m_started = false;
 
-		void _update( float _dt, T * _out ) override
-		{					
-			*_out = ValueInterpolator<T>::m_value1 + (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1) * _dt;
-		}		
-	};
+            ValueInterpolator<T>::m_value1 = _value1;
+            ValueInterpolator<T>::m_value2 = _value2;
+            ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
+            ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
+            ValueInterpolator<T>::m_time = _time;
+            ValueInterpolator<T>::m_timing = 0.f;
 
-	template <typename T>
-	class ValueInterpolatorQuadratic
-		: public ValueInterpolator<T>
-	{
-	public:
-		bool start( const T& _value1, const T& _value2, const T& _v0, float _time )
-		{
-			ValueInterpolator<T>::m_started = false;
+            if( _time < mt::constant::eps )
+            {
+                return false;
+            }
 
-			ValueInterpolator<T>::m_value1 = _value1;
-			ValueInterpolator<T>::m_value2 = _value2;
-			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_time = _time;
-			ValueInterpolator<T>::m_timing = 0.f;
-			
-			m_v0 = _v0;
+            ValueInterpolator<T>::m_started = true;
 
-			if( _time < mt::constant::eps )
-			{
-				return false;
-			}
+            return true;
+        }
 
-			ValueInterpolator<T>::m_started = true;
-			float invTime = 1.0f / ValueInterpolator<T>::m_time;
-			m_a = (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1 - m_v0 * ValueInterpolator<T>::m_time) * 2.0f * invTime * invTime;
+        void _update( float _dt, T * _out ) override
+        {
+            *_out = ValueInterpolator<T>::m_value1 + (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1) * _dt;
+        }
+    };
 
-			return true;
-		}
-		
-		void _update( float _dt, T * _out ) override
-		{
-			(void)_dt;
+    template <typename T>
+    class ValueInterpolatorQuadratic
+        : public ValueInterpolator<T>
+    {
+    public:
+        bool start( const T& _value1, const T& _value2, const T& _v0, float _time )
+        {
+            ValueInterpolator<T>::m_started = false;
+
+            ValueInterpolator<T>::m_value1 = _value1;
+            ValueInterpolator<T>::m_value2 = _value2;
+            ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
+            ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
+            ValueInterpolator<T>::m_time = _time;
+            ValueInterpolator<T>::m_timing = 0.f;
+
+            m_v0 = _v0;
+
+            if( _time < mt::constant::eps )
+            {
+                return false;
+            }
+
+            ValueInterpolator<T>::m_started = true;
+            float invTime = 1.0f / ValueInterpolator<T>::m_time;
+            m_a = (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1 - m_v0 * ValueInterpolator<T>::m_time) * 2.0f * invTime * invTime;
+
+            return true;
+        }
+
+        void _update( float _dt, T * _out ) override
+        {
+            (void)_dt;
 
             *_out = ValueInterpolator<T>::m_value1 + m_v0 * ValueInterpolator<T>::m_timing + m_a * 0.5f * ValueInterpolator<T>::m_timing * ValueInterpolator<T>::m_timing;
-		}
+        }
 
-	protected:
-		T m_v0;
-		T m_a;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	template<class T>
-	void calculateBezierPosition( T & _out, const T & _begin, const T & _end, uint32_t _count, const T * _v, float _time )
-	{
-		if( _count == 0 )
-		{
-			return;
-		}
+    protected:
+        T m_v0;
+        T m_a;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    void calculateBezierPosition( T & _out, const T & _begin, const T & _end, uint32_t _count, const T * _v, float _time )
+    {
+        if( _count == 0 )
+        {
+            return;
+        }
 
-		uint32_t n = _count + 1;
+        uint32_t n = _count + 1;
 
-		float t0 = mt::integral_powf( 1.f - _time, n );
-		float tn = mt::integral_powf( _time, n );
+        float t0 = mt::integral_powf( 1.f - _time, n );
+        float tn = mt::integral_powf( _time, n );
 
-		_out = t0 * _begin + tn * _end;
+        _out = t0 * _begin + tn * _end;
 
-		float f_count = mt::factorialf( n );
+        float f_count = mt::factorialf( n );
 
-		for( uint32_t i = 1; i != n; ++i )
-		{
-			float c = f_count / (mt::factorialf( i ) * mt::factorialf( n - i ));
-			float t = mt::integral_powf( _time, i ) * mt::integral_powf( 1.f - _time, n - i );
+        for( uint32_t i = 1; i != n; ++i )
+        {
+            float c = f_count / (mt::factorialf( i ) * mt::factorialf( n - i ));
+            float t = mt::integral_powf( _time, i ) * mt::integral_powf( 1.f - _time, n - i );
 
-			const T & v = _v[i - 1];
+            const T & v = _v[i - 1];
 
-			_out += c * t * v;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	//////////////////////////////////////////////////////////////////////////
-	template<class T, class LENGTH>
-	float calculateBezierLength( const T & _begin, const T & _end, uint32_t _count, const T * _v, LENGTH _length )
-	{
-		const uint32_t max_iterator = 10;
+            _out += c * t * v;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    template<class T, class LENGTH>
+    float calculateBezierLength( const T & _begin, const T & _end, uint32_t _count, const T * _v, LENGTH _length )
+    {
+        const uint32_t max_iterator = 10;
 
-		float total_length = 0.f;
+        float total_length = 0.f;
 
-		T prevPoint = _begin;
+        T prevPoint = _begin;
 
-		const float dt = 1.f / float( max_iterator );
+        const float dt = 1.f / float( max_iterator );
 
-		float t = 0.f;
+        float t = 0.f;
 
-		for( uint32_t i = 1; i != max_iterator; ++i )
-		{
-			t += dt;
+        for( uint32_t i = 1; i != max_iterator; ++i )
+        {
+            t += dt;
 
-			T nextPoint;
-			calculateBezierPosition( nextPoint, _begin, _end, _count, _v, t );
+            T nextPoint;
+            calculateBezierPosition( nextPoint, _begin, _end, _count, _v, t );
 
-			float length = _length( nextPoint, prevPoint );
+            float length = _length( nextPoint, prevPoint );
 
-			total_length += length;
+            total_length += length;
 
-			prevPoint = nextPoint;
-		}
+            prevPoint = nextPoint;
+        }
 
-		float length = _length( _end, prevPoint );
+        float length = _length( _end, prevPoint );
 
-		total_length += length;
+        total_length += length;
 
-		return total_length;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	template <typename T, uint32_t N>
-	class ValueInterpolatorBezier
-		: public ValueInterpolator<T>
-	{
-	public:
-		bool start( const T& _value1, const T& _value2, const T * _v, float _time )
-		{
-			ValueInterpolator<T>::m_started = false;
+        return total_length;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template <typename T, uint32_t N>
+    class ValueInterpolatorBezier
+        : public ValueInterpolator<T>
+    {
+    public:
+        bool start( const T& _value1, const T& _value2, const T * _v, float _time )
+        {
+            ValueInterpolator<T>::m_started = false;
 
-			ValueInterpolator<T>::m_value1 = _value1;
-			ValueInterpolator<T>::m_value2 = _value2;
-			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_time = _time;
-			ValueInterpolator<T>::m_timing = 0.f;
+            ValueInterpolator<T>::m_value1 = _value1;
+            ValueInterpolator<T>::m_value2 = _value2;
+            ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
+            ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
+            ValueInterpolator<T>::m_time = _time;
+            ValueInterpolator<T>::m_timing = 0.f;
 
-			if( _time < 0.00001f )
-			{
-				return false;
-			}
+            if( _time < 0.00001f )
+            {
+                return false;
+            }
 
-			for( uint32_t i = 0; i != N; ++i )
-			{
-				m_v[i] = _v[i];
-			}			
+            for( uint32_t i = 0; i != N; ++i )
+            {
+                m_v[i] = _v[i];
+            }
 
-			ValueInterpolator<T>::m_started = true;
+            ValueInterpolator<T>::m_started = true;
 
-			return true;
-		}
-		
-		void _update( float _dt, T * _out ) override
-		{
-			calculateBezierPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, N, m_v, _dt );
-		}
+            return true;
+        }
 
-	protected:
-		T m_v[N];
-	};
-	//////////////////////////////////////////////////////////////////////////
-	template<class T>
-	void calculateParabolicPosition( T & _out, const T & _begin, const T & _end, const T & _height, float _time )
-	{
-		T a = 2.f * _end - 4.f * _height + 2.f * _begin;
-		T b = 4.f * _height - _end - 3.f * _begin;
-		T c = _begin;
+        void _update( float _dt, T * _out ) override
+        {
+            calculateBezierPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, N, m_v, _dt );
+        }
 
-		_out = a * _time * _time + b * _time + c;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	template<class T, class LENGTH>
-	float calculateParabolicLength( const T & _begin, const T & _end, const T & _height, LENGTH _length )
-	{
-		const uint32_t max_iterator = 10;
+    protected:
+        T m_v[N];
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    void calculateParabolicPosition( T & _out, const T & _begin, const T & _end, const T & _height, float _time )
+    {
+        T a = 2.f * _end - 4.f * _height + 2.f * _begin;
+        T b = 4.f * _height - _end - 3.f * _begin;
+        T c = _begin;
 
-		float total_length = 0.f;
+        _out = a * _time * _time + b * _time + c;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template<class T, class LENGTH>
+    float calculateParabolicLength( const T & _begin, const T & _end, const T & _height, LENGTH _length )
+    {
+        const uint32_t max_iterator = 10;
 
-		T prevPoint = _begin;
+        float total_length = 0.f;
 
-		const float dt = 1.f / float( max_iterator );
+        T prevPoint = _begin;
 
-		float t = 0.f;
+        const float dt = 1.f / float( max_iterator );
 
-		for( uint32_t i = 1; i != max_iterator; ++i )
-		{
-			t += dt;
+        float t = 0.f;
 
-			T nextPoint;
-			calculateParabolicPosition( nextPoint, _begin, _end, _height, t );
+        for( uint32_t i = 1; i != max_iterator; ++i )
+        {
+            t += dt;
 
-			float length = _length( nextPoint, prevPoint );
+            T nextPoint;
+            calculateParabolicPosition( nextPoint, _begin, _end, _height, t );
 
-			total_length += length;
+            float length = _length( nextPoint, prevPoint );
 
-			prevPoint = nextPoint;
-		}
+            total_length += length;
 
-		float length = _length( _end, prevPoint );
+            prevPoint = nextPoint;
+        }
 
-		total_length += length;
+        float length = _length( _end, prevPoint );
 
-		return total_length;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	template <typename T>
-	class ValueInterpolatorParabolic
-		: public ValueInterpolator<T>
-	{
-	public:
-		bool start( const T& _value1, const T& _value2, const T& _v0, float _time )
-		{
-			ValueInterpolator<T>::m_started = false;
+        total_length += length;
 
-			ValueInterpolator<T>::m_value1 = _value1;
-			ValueInterpolator<T>::m_value2 = _value2;
-			ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-			ValueInterpolator<T>::m_time = _time;
-			ValueInterpolator<T>::m_timing = 0.f;
+        return total_length;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    template <typename T>
+    class ValueInterpolatorParabolic
+        : public ValueInterpolator<T>
+    {
+    public:
+        bool start( const T& _value1, const T& _value2, const T& _v0, float _time )
+        {
+            ValueInterpolator<T>::m_started = false;
 
-			m_v0 = _v0;
+            ValueInterpolator<T>::m_value1 = _value1;
+            ValueInterpolator<T>::m_value2 = _value2;
+            ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
+            ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
+            ValueInterpolator<T>::m_time = _time;
+            ValueInterpolator<T>::m_timing = 0.f;
 
-			if( _time < 0.00001f )
-			{
-				return false;
-			}
+            m_v0 = _v0;
 
-			ValueInterpolator<T>::m_started = true;
+            if( _time < 0.00001f )
+            {
+                return false;
+            }
 
-			return true;
-		}
+            ValueInterpolator<T>::m_started = true;
 
-		void step( float _timing, T * _out )
-		{
-			if( _timing > ValueInterpolator<T>::m_time )
-			{
-				*_out = ValueInterpolator<T>::m_value2;
+            return true;
+        }
 
-				return;
-			}
+        void step( float _timing, T * _out )
+        {
+            if( _timing > ValueInterpolator<T>::m_time )
+            {
+                *_out = ValueInterpolator<T>::m_value2;
 
-			float t_time = _timing / ValueInterpolator<T>::m_time;
+                return;
+            }
 
-			calculateParabolicPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, t_time );
-		}
+            float t_time = _timing / ValueInterpolator<T>::m_time;
 
-		void _update( float _dt, T * _out ) override
-		{			
-			calculateParabolicPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, _dt );
-		}
+            calculateParabolicPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, t_time );
+        }
 
-	protected:
-		T m_v0;
-	};
+        void _update( float _dt, T * _out ) override
+        {
+            calculateParabolicPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, _dt );
+        }
+
+    protected:
+        T m_v0;
+    };
 }

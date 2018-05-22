@@ -93,6 +93,14 @@ namespace Mengine
         EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_RELEASE, EntityEventReceiver )
             ->onEntityRelease( m_object );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::_update( float _current, float _timing )
+    {
+        Node::_update( _current, _timing );
+
+        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_UPDATE, EntityEventReceiver )
+            ->onEntityUpdate( m_object, _current, _timing );
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCreate()
 	{

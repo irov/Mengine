@@ -20,6 +20,7 @@ namespace Mengine
         EVENT_ENTITY_DEACTIVATE,
         EVENT_ENTITY_COMPILE,
         EVENT_ENTITY_RELEASE,
+        EVENT_ENTITY_UPDATE,
         __EVENT_ENTITY_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
@@ -27,14 +28,16 @@ namespace Mengine
         : public EventReceiver
     {
     public:
+        virtual void onEntityCreate( const pybind::object & _self, Node * _node ) = 0;
+        virtual void onEntityDestroy( const pybind::object & _self ) = 0;
         virtual void onEntityPreparation( const pybind::object & _self ) = 0;
         virtual void onEntityActivate( const pybind::object & _self ) = 0;
         virtual void onEntityPreparationDeactivate( const pybind::object & _self ) = 0;
         virtual void onEntityDeactivate( const pybind::object & _self ) = 0;
         virtual void onEntityCompile( const pybind::object & _self ) = 0;
         virtual void onEntityRelease( const pybind::object & _self ) = 0;
-        virtual void onEntityCreate( const pybind::object & _self, Node * _node ) = 0;
-        virtual void onEntityDestroy( const pybind::object & _self ) = 0;
+        virtual void onEntityUpdate( const pybind::object & _self, float _current, float _timing ) = 0;
+        
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EntityEventReceiver> EntityEventReceiverPtr;
@@ -70,6 +73,9 @@ namespace Mengine
 		
         bool _compile() override;
 		void _release() override;
+
+    protected:
+        void _update( float _current, float _timing ) override;
 			
 	public:
 		void _destroy() override;

@@ -27,7 +27,7 @@ namespace Mengine
 		float mixValue() const;
 
 	public:
-		bool update( float _timing );
+		bool update( float _current, float _timing );
 
 	protected:
         float m_speed;

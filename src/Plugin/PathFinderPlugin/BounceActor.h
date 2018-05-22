@@ -28,11 +28,7 @@ namespace Mengine
 	public:
 		BounceActor();
 		~BounceActor() override;
-
-	public:
-		void setType( const ConstString & _type );
-		const ConstString & getType() const;
-
+        
 	public:
 		void setRadius( float _radius );
 		float getRadius() const;
@@ -48,8 +44,6 @@ namespace Mengine
 		bool isRemoved() const;
 
 	protected:
-		ConstString m_type;
-
 		float m_radius;
 		float m_mass;
 

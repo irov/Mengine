@@ -32,7 +32,7 @@ namespace Mengine
 		bool initialize( const NodePtr & _node, const NodePtr & _target, const pybind::object & _cb, const pybind::args & _args );
 
 	protected:
-		bool _affect( float _timing ) override;
+		bool _affect( float _current, float _timing ) override;
 		void complete() override;
 		void stop() override;		
 

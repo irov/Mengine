@@ -55,8 +55,10 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool InvaderFollowAffector::_affect( float _timing )
+	bool InvaderFollowAffector::_affect( float _current, float _timing )
 	{
+        (void)_current;
+
 		mt::vec3f node_position = m_node->getLocalPosition();
 		mt::vec3f follow_position = m_target->getLocalPosition();
 

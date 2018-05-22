@@ -4,241 +4,245 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	template <typename T>
-	class ValueFollower
-	{
-	public:
-		void initialize( const T & _value )
-		{
-			m_value = _value;
-			m_follow = _value;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    template <typename T>
+    class ValueFollower
+    {
+    public:
+        void initialize( const T & _value )
+        {
+            m_value = _value;
+            m_follow = _value;
+        }
 
-		void setValue( const T & _value )
-		{
-			m_value = _value;
-		}
+        void setValue( const T & _value )
+        {
+            m_value = _value;
+        }
 
-		const T & getValue() const
-		{
-			return m_value;
-		}
+        const T & getValue() const
+        {
+            return m_value;
+        }
 
-		const T & getFollow() const
-		{
-			return m_follow;
-		}
+        const T & getFollow() const
+        {
+            return m_follow;
+        }
 
-		T getDistance() const
-		{
-			T distance = m_follow - m_value;
+        T getDistance() const
+        {
+            T distance = m_follow - m_value;
 
-			return distance;
-		}
+            return distance;
+        }
 
-		void overtake()
-		{
-			m_value = m_follow;
-		}
+        void overtake()
+        {
+            m_value = m_follow;
+        }
 
-		void step( const T & _value )
-		{
-			m_value += _value;
-		}
+        void step( const T & _value )
+        {
+            m_value += _value;
+        }
 
-		float getLength() const
-		{
-			float length = mt::length( m_follow, m_value );
+        float getLength() const
+        {
+            float length = mt::length( m_follow, m_value );
 
-			return length;
-		}
+            return length;
+        }
 
-		void follow( const T & _follow )
-		{
-			m_follow = _follow;
-		}
+        void setFollow( const T & _follow )
+        {
+            m_follow = _follow;
+        }
 
-		bool update( float _timing )
-		{
-			bool successful = this->_update( _timing );
+        bool update( float _current, float _timing )
+        {
+            bool successful = this->_update( _current, _timing );
 
-			return successful;
-		}
+            return successful;
+        }
 
-	protected:
-		virtual bool _update( float _timing ) = 0;
+    protected:
+        virtual bool _update( float _current, float _timing ) = 0;
 
-	protected:
-		T m_value;
-		T m_follow;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	template <typename T>
-	class ValueFollowerLinear
-		: public ValueFollower<T>
-	{
-	public:
-		ValueFollowerLinear()
-			: m_speed( 0.f )
-			, m_minimalDistance( 0.f )
-		{
-		}
+    protected:
+        T m_value;
+        T m_follow;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template <typename T>
+    class ValueFollowerLinear
+        : public ValueFollower<T>
+    {
+    public:
+        ValueFollowerLinear()
+            : m_speed( 0.f )
+            , m_minimalDistance( 0.f )
+        {
+        }
 
-	public:
-		void setSpeed( float _speed )
-		{
-			m_speed = _speed;
-		}
+    public:
+        void setSpeed( float _speed )
+        {
+            m_speed = _speed;
+        }
 
-		float getSpeed() const
-		{
-			return m_speed;
-		}
+        float getSpeed() const
+        {
+            return m_speed;
+        }
 
-		void setMinimalDistance( float _minimalDistance )
-		{
-			m_minimalDistance = _minimalDistance;
-		}
+        void setMinimalDistance( float _minimalDistance )
+        {
+            m_minimalDistance = _minimalDistance;
+        }
 
-		float getMinimalDistance() const
-		{
-			return m_minimalDistance;
-		}
+        float getMinimalDistance() const
+        {
+            return m_minimalDistance;
+        }
 
-	protected:
-		bool _update( float _timing ) override
-		{
-			float l = this->getLength();
+    protected:
+        bool _update( float _current, float _timing ) override
+        {
+            (void)_current;
 
-			if( mt::equal_f_z( l ) == true )
-			{
-				this->overtake();
+            float value_length = this->getLength();
 
-				return true;
-			}
+            if( mt::equal_f_z( value_length ) == true )
+            {
+                this->overtake();
 
-			float step = m_speed * _timing;
+                return true;
+            }
 
-			if( step >= l )
-			{
-				this->overtake();
+            float step = m_speed * _timing;
 
-				return true;
-			}
-			else if( step + m_minimalDistance >= l )
-			{
-				T offset = this->getDistance();
+            if( step >= value_length )
+            {
+                this->overtake();
 
-				T add = offset * ((l - m_minimalDistance) / l);
+                return true;
+            }
+            else if( step + m_minimalDistance >= value_length )
+            {
+                T offset = this->getDistance();
 
-				this->step( add );
+                T add = offset * ((value_length - m_minimalDistance) / value_length);
 
-				return true;
-			}
+                this->step( add );
 
-			T offset = this->getDistance();
+                return true;
+            }
 
-			T add = offset * (step / l);
+            T offset = this->getDistance();
 
-			this->step( add );
+            T add = offset * (step / value_length);
 
-			return false;
-		}
+            this->step( add );
 
-	protected:
-		float m_speed;
-		float m_minimalDistance;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	template <typename T>
-	class ValueFollowerAcceleration
-		: public ValueFollower<T>
-	{
-	public:
-		ValueFollowerAcceleration()
-			: m_speed( 0.f )
-			, m_acceleration( 0.f )
-			, m_distance( 0.f )
-		{
-		}
+            return false;
+        }
 
-	public:
-		void setSpeed( float _speed )
-		{
-			m_speed = _speed;
-		}
+    protected:
+        float m_speed;
+        float m_minimalDistance;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template <typename T>
+    class ValueFollowerAcceleration
+        : public ValueFollower<T>
+    {
+    public:
+        ValueFollowerAcceleration()
+            : m_speed( 0.f )
+            , m_acceleration( 0.f )
+            , m_distance( 0.f )
+        {
+        }
 
-		float getSpeed() const
-		{
-			return m_speed;
-		}
+    public:
+        void setSpeed( float _speed )
+        {
+            m_speed = _speed;
+        }
 
-		void setAcceleration( float _acceleration )
-		{
-			m_acceleration = _acceleration;
-		}
+        float getSpeed() const
+        {
+            return m_speed;
+        }
 
-		float getAcceleration() const
-		{
-			return m_acceleration;
-		}
+        void setAcceleration( float _acceleration )
+        {
+            m_acceleration = _acceleration;
+        }
 
-		void setDistance( float _distance )
-		{
-			m_distance = _distance;
-		}
+        float getAcceleration() const
+        {
+            return m_acceleration;
+        }
 
-		float getDistance() const
-		{
-			return m_distance;
-		}
+        void setDistance( float _distance )
+        {
+            m_distance = _distance;
+        }
 
-	protected:
-		bool _update( float _timing ) override
-		{
-			float l = this->getLength();
+        float getDistance() const
+        {
+            return m_distance;
+        }
 
-			if( mt::equal_f_z( l ) == true )
-			{
-				this->overtake();
+    protected:
+        bool _update( float _current, float _timing ) override
+        {
+            (void)_current;
 
-				return true;
-			}
+            float value_length = this->getLength();
 
-			m_speed += m_acceleration * _timing;
+            if( mt::equal_f_z( value_length ) == true )
+            {
+                this->overtake();
 
-			float step = m_speed * _timing;
+                return true;
+            }
 
-			if( step >= l )
-			{
-				this->overtake();
+            m_speed += m_acceleration * _timing;
 
-				return true;
-			}
-			else if( step + m_distance >= l )
-			{
-				T offset = this->getDistance();
+            float step = m_speed * _timing;
 
-				T add = offset * ((l - m_distance) / l);
+            if( step >= value_length )
+            {
+                this->overtake();
 
-				this->step( add );
+                return true;
+            }
+            else if( step + m_distance >= value_length )
+            {
+                T offset = this->getDistance();
 
-				return true;
-			}
+                T add = offset * ((value_length - m_distance) / value_length);
 
-			T offset = this->getDistance();
+                this->step( add );
 
-			T add = offset * (step / l);
+                return true;
+            }
 
-			this->step( add );
+            T offset = this->getDistance();
 
-			return false;
-		}
+            T add = offset * (step / value_length);
 
-	protected:
-		float m_speed;
-		float m_acceleration;
-		float m_distance;
-	};
+            this->step( add );
+
+            return false;
+        }
+
+    protected:
+        float m_speed;
+        float m_acceleration;
+        float m_distance;
+    };
 }

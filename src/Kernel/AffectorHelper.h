@@ -62,10 +62,10 @@ namespace Mengine
         : public LambdaAffector<L>
     {
     protected:
-        bool _affect( float _timing ) override
+        bool _affect( float _current, float _timing ) override
         {
             T value;
-            bool finish = m_accumulator.update( _timing, &value );
+            bool finish = m_accumulator.update( _current, _timing, &value );
 
             this->update( value );
 
@@ -93,10 +93,10 @@ namespace Mengine
         : public LambdaAffector<L>
     {
     protected:
-        bool _affect( float _timing ) override
+        bool _affect( float _current, float _timing ) override
         {
             T value;
-            bool finish = m_interpolator.update( _timing, &value );
+            bool finish = m_interpolator.update( _current, _timing, &value );
 
             this->update( value );
 

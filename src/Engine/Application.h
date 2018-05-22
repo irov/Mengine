@@ -149,16 +149,12 @@ namespace Mengine
 		bool isValidWindowMode() const override;		
 
 	public:
-		void enableDebug( bool _enable );
-
 		void updateNotification();
 		void setVSync( bool _vsync ) override;
 		bool getVSync() const override;
 		void setCursorMode( bool _mode ) override;
 		bool getCursorMode() const override;
 		void setCursorIcon( const ConstString & _resourceName ) override;
-
-		//void setAsScreensaver( bool _set );
 
 		void showKeyboard() override;
 		void hideKeyboard() override;
@@ -215,8 +211,6 @@ namespace Mengine
 		bool m_resetTiming;
 		float m_phycisTiming;
 		float m_maxTiming;
-
-		void parseArguments_( const String& _arguments );
 
 		ResourceCursorPtr m_cursorResource;
 

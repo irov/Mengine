@@ -40,7 +40,6 @@ namespace Mengine
 				return nullptr;
 			}
 
-			object->setType( m_prototype );
 			object->setScriptWrapper( m_scriptWrapper );
 
 			return object;

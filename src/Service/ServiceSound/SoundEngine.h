@@ -40,7 +40,7 @@ namespace Mengine
 		bool supportStreamSound() const override;
 
 	public:
-		void tick( float _time, float _timing ) override;
+		void tick( float _current, float _timing ) override;
 
 	public:
 		void addSoundVolumeProvider( const SoundVolumeProviderInterfacePtr & _soundVolumeProvider ) override;

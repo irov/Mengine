@@ -625,6 +625,10 @@ namespace Mengine
 		}
 #endif
 
+        SERVICE_CREATE( PrototypeService );
+        SERVICE_CREATE( NodeService );
+        SERVICE_CREATE( LoaderService );
+
 		PythonScriptWrapper::constsWrap();
         PythonScriptWrapper::helperWrap();
 		PythonScriptWrapper::mathWrap();
@@ -633,11 +637,6 @@ namespace Mengine
         PythonScriptWrapper::engineWrap();		
 		PythonScriptWrapper::soundWrap();
 		
-
-        SERVICE_CREATE( PrototypeService );
-        SERVICE_CREATE( NodeService );
-        SERVICE_CREATE( LoaderService );
-
         SERVICE_CREATE( RenderService );
         SERVICE_CREATE( RenderMaterialService );
         SERVICE_CREATE( RenderTextureService );

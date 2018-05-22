@@ -249,11 +249,11 @@ namespace Mengine
 		return total_scale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void BurritoBison::update( float _time, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, uint32_t _iterate )
+	void BurritoBison::update( float _current, float _timing, mt::vec3f & _velocity, mt::vec3f & _position, uint32_t _iterate )
 	{		
-		(void)_time;
+		(void)_current;
 
-		m_cameraFollowerScale.update( _timing );
+		m_cameraFollowerScale.update( _current, _timing );
 
 		if( m_neutron == true )
 		{
@@ -421,7 +421,7 @@ namespace Mengine
 
 		float ca = 1.f + mt::clamp( 0.f, a, 1.f ) * m_cameraScale;
 
-		m_cameraFollowerScale.follow( ca );
+		m_cameraFollowerScale.setFollow( ca );
 
 		float caa = m_cameraFollowerScale.getValue();
 

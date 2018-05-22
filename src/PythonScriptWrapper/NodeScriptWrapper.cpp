@@ -2563,8 +2563,10 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _timing ) override
+            bool _affect( float _current, float _timing ) override
             {
+                (void)_current;
+
                 m_time -= _timing;
 
                 if( m_time > 0.f )
@@ -2926,12 +2928,12 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _timing ) override
+            bool _affect( float _current, float _timing ) override
             {
                 mt::vec3f position;
-                bool finish = m_interpolator.update( _timing, &position );
+                bool finish = m_interpolator.update( _current, _timing, &position );
 
-                this->updateDirection_( _timing, position );
+                this->updateDirection_( _current, _timing, position );
                 this->updatePosition_( position );
 
                 if( finish == false )
@@ -2950,8 +2952,10 @@ namespace Mengine
             }
 
         protected:
-            void updateDirection_( float _timing, const mt::vec3f & _position )
+            void updateDirection_( float _current, float _timing, const mt::vec3f & _position )
             {
+                (void)_current;
+
                 const mt::vec3f & prev_position = m_node->getLocalPosition();
 
                 if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::constant::eps )
@@ -3125,8 +3129,10 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _timing ) override
+            bool _affect( float _current, float _timing ) override
             {
+                (void)_current;
+
                 mt::vec3f node_position = m_node->getLocalPosition();
                 mt::vec3f follow_position = m_target->getLocalPosition();
 
@@ -3361,8 +3367,10 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _timing ) override
+            bool _affect( float _current, float _timing ) override
             {
+                (void)_current;
+
                 mt::vec3f node_position = m_node->getWorldPosition();
                 mt::vec3f follow_position = m_target->getWorldPosition();
 

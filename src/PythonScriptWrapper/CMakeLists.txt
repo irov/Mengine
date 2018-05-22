@@ -13,6 +13,12 @@ ScriptableAffectorCallback
 )
 
 ADD_FILTER(
+PythonValueFollower
+    PythonValueFollower.cpp
+    PythonValueFollower.h
+)
+
+ADD_FILTER(
 Game
 	Game.cpp
 	Game.h

@@ -157,6 +157,8 @@ namespace Mengine
         GlobalAffectorablePtr m_affectorable;
         GlobalAffectorablePtr m_affectorableGlobal;
 
+
+
 		bool m_arrowHided;
 		bool m_focus;
 		

@@ -16,7 +16,6 @@ namespace Mengine
 		, m_pausing(false)
 		, m_volume(1.f)
 		, m_loop(false)
-		, m_soundBuffer(nullptr)
 		, m_soundSystem(nullptr)
 		, m_sourceId(0)
 		, m_timing(0.f)

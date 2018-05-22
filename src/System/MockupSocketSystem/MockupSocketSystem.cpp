@@ -1,4 +1,4 @@
-#   include "MockupSocketSystem.h"
+#include "MockupSocketSystem.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SocketSystem, Mengine::MockupSocketSystem );
@@ -14,12 +14,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MockupSocketSystem::_initialize()
+    bool MockupSocketSystem::_initializeService()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MockupSocketSystem::_finalize()
+    void MockupSocketSystem::_finalizeService()
     {
     }
     //////////////////////////////////////////////////////////////////////////

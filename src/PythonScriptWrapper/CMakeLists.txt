@@ -19,6 +19,18 @@ PythonValueFollower
 )
 
 ADD_FILTER(
+PythonSchedule
+    PythonScheduleTimer.cpp
+    PythonScheduleTimer.h
+    PythonSchedulePipe.cpp
+    PythonSchedulePipe.h
+    PythonScheduleEvent.cpp
+    PythonScheduleEvent.h
+    DelaySchedulePipe.cpp
+    DelaySchedulePipe.h
+)   
+
+ADD_FILTER(
 Game
 	Game.cpp
 	Game.h

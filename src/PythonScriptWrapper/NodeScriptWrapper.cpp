@@ -131,6 +131,11 @@
 #include "PythonAnimatableEventReceiver.h"
 #include "ScriptableAffectorCallback.h"
 
+#include "PythonScheduleTimer.h"
+#include "PythonSchedulePipe.h"
+#include "PythonScheduleEvent.h"
+#include "DelaySchedulePipe.h"
+
 #include "Core/Polygon.h"
 #include "Core/MemoryHelper.h"
 #include "Core/ValueFollower.h"
@@ -164,34 +169,31 @@ namespace Mengine
     public:
         NodeScriptMethod()
         {
-            m_factoryPyObjectTimingListener = new FactoryPool<PyScheduleTimerInterface, 8>();
-            m_factoryPySchedulePipeInterface = new FactoryPool<PySchedulePipeInterface, 8>();
-            m_factoryDelaySchedulePipeInterface = new FactoryPool<DelaySchedulePipeInterface, 8>();
-            m_factoryPyObjectScheduleListener = new FactoryPool<PyScheduleEventInterface, 8>();
-            m_factoryPythonSceneChangeCallback = new FactoryPool<PythonSceneChangeCallback, 8>();
+            m_factoryPythonScheduleEvent = new FactoryPool<PythonScheduleEvent, 16>();
+            m_factoryDelaySchedulePipe = new FactoryPool<DelaySchedulePipe, 16>();
+            m_factoryPythonScheduleTimer = new FactoryPool<PythonScheduleTimer, 16>();
+            m_factoryPythonSchedulePipe = new FactoryPool<PythonSchedulePipe, 16>();
             m_factoryNodeAffectorCallback = new FactoryPool<ScriptableAffectorCallback, 4>();
         }
 
         ~NodeScriptMethod()
         {
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyObjectTimingListener );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPySchedulePipeInterface );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipeInterface );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyObjectScheduleListener );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSceneChangeCallback );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipe );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTimer );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSchedulePipe );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryNodeAffectorCallback );
 
-            m_factoryPyObjectTimingListener = nullptr;
-            m_factoryPySchedulePipeInterface = nullptr;
-            m_factoryDelaySchedulePipeInterface = nullptr;
-            m_factoryPyObjectScheduleListener = nullptr;
-            m_factoryPythonSceneChangeCallback = nullptr;
+            m_factoryPythonScheduleEvent = nullptr;
+            m_factoryDelaySchedulePipe = nullptr;
+            m_factoryPythonScheduleTimer = nullptr;
+            m_factoryPythonSchedulePipe = nullptr;
             m_factoryNodeAffectorCallback = nullptr;
         }
 
     public:
         //////////////////////////////////////////////////////////////////////////
-        PyObject * textfield_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
+        PyObject * s_TextField_setTextFormatArgs( pybind::kernel_interface * _kernel, TextField * _textField, PyObject * _args, PyObject * _kwds )
         {
             (void)_kwds;
 
@@ -257,7 +259,7 @@ namespace Mengine
             return pybind::ret_true();
         }
         //////////////////////////////////////////////////////////////////////////
-        TVectorWString textfield_getTextFormatArgs( TextField * _textField )
+        TVectorWString s_TextField_getTextFormatArgs( TextField * _textField )
         {
             TVectorWString ws_args;
 
@@ -1118,14 +1120,14 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Transformation3D_setAngleDeg( Transformation3D * _transformation, float _angle )
+        void s_Transformation3D_setAngleDeg( Transformation3D * _transformation, float _angle )
         {
             float rad = _angle * mt::constant::deg2rad;
 
             _transformation->setOrientationX( rad );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Transformation3D_removeRelationTransformation( Transformation3D * _transformation )
+        void s_Transformation3D_removeRelationTransformation( Transformation3D * _transformation )
         {
             _transformation->setRelationTransformation( nullptr );
         }
@@ -1137,7 +1139,7 @@ namespace Mengine
             _transformation->translate( _coordinate );
         }
         //////////////////////////////////////////////////////////////////////////
-        mt::vec3f ResourceMovie_getLayerPosition( ResourceMovie * _movie, const ConstString & _name )
+        mt::vec3f s_ResourceMovie_getLayerPosition( ResourceMovie * _movie, const ConstString & _name )
         {
             const MovieLayer * layer;
             bool successful = _movie->hasMovieLayer( _name, &layer );
@@ -1155,7 +1157,7 @@ namespace Mengine
             return layer->position;
         }
         //////////////////////////////////////////////////////////////////////////
-        float ResourceMovie_getLayerIn( ResourceMovie * _movie, const ConstString & _name )
+        float s_ResourceMovie_getLayerIn( ResourceMovie * _movie, const ConstString & _name )
         {
             const MovieLayer * layer;
             bool successful = _movie->hasMovieLayer( _name, &layer );
@@ -1173,7 +1175,7 @@ namespace Mengine
             return layer->in;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool ResourceMovie_hasLayer( ResourceMovie * _movie, const ConstString & _name )
+        bool s_ResourceMovie_hasLayer( ResourceMovie * _movie, const ConstString & _name )
         {
             const MovieLayer * layer;
             bool successful = _movie->hasMovieLayer( _name, &layer );
@@ -1181,7 +1183,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool ResourceMovie_hasLayerType( ResourceMovie * _movie, const ConstString & _name, const ConstString & _type )
+        bool s_ResourceMovie_hasLayerType( ResourceMovie * _movie, const ConstString & _name, const ConstString & _type )
         {
             const MovieLayer * layer;
             bool successful = _movie->hasMovieLayerType( _name, _type, &layer );
@@ -1365,303 +1367,11 @@ namespace Mengine
             _shape->stopAffectors( ETA_VISIBILITY );
         }
         //////////////////////////////////////////////////////////////////////////
-        Polygon s_polygon_wm( Node * _node, const Polygon & _polygon )
-        {
-            const mt::mat4f & wm = _node->getWorldMatrix();
-
-            Polygon polygon;
-            _polygon.mul_wm( polygon, wm );
-
-            return polygon;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        Polygon s_polygon_anchor( const Polygon & _polygon, const mt::vec2f & _anchor )
-        {
-            Polygon polygon;
-            _polygon.transpose( polygon, _anchor );
-
-            return polygon;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_testHotspot( HotSpotPolygon * _left, HotSpotPolygon * _right )
-        {
-            const Polygon & left_poligon = _left->getPolygon();
-            const mt::mat4f & left_wm = _left->getWorldMatrix();
-
-            const Polygon & right_poligon = _right->getPolygon();
-            const mt::mat4f & right_wm = _right->getWorldMatrix();
-
-            Polygon left_polygon_wm;
-            left_poligon.mul_wm( left_polygon_wm, left_wm );
-
-            Polygon right_polygon_wm;
-            right_poligon.mul_wm( right_polygon_wm, right_wm );
-
-            bool result = left_polygon_wm.intersects( right_polygon_wm );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_loadPlugin( const WString & _pluginName )
-        {
-            bool successful = PLUGIN_SERVICE()
-                ->loadPlugin( _pluginName );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_setMousePickerBlockInput( bool _value )
-        {
-            const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
-                ->getMousePickerSystem();
-
-            mousePickerSystem->setBlock( _value );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_setMousePickerHandleValue( bool _value )
-        {
-            const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
-                ->getMousePickerSystem();
-
-            mousePickerSystem->setHandleValue( _value );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_setInputMouseButtonEventBlock( bool _value )
-        {
-            APPLICATION_SERVICE()
-                ->setInputMouseButtonEventBlock( _value );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_getInputMouseButtonEventBlock()
-        {
-            return APPLICATION_SERVICE()
-                ->getInputMouseButtonEventBlock();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PyScheduleTimerInterface
-            : public ScheduleTimerInterface
-        {
-        public:
-            PyScheduleTimerInterface()
-            {
-            }
-
-            ~PyScheduleTimerInterface() override
-            {
-            }
-
-        public:
-            void initialize( const pybind::object & _cb, const pybind::args & _args )
-            {
-                m_cb = _cb;
-                m_args = _args;
-            }
-
-        protected:
-            void onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _delay ) override
-            {
-                m_cb.call_args( _id, _iterate, _delay, false, false, m_args );
-            }
-
-            void onScheduleComplete( uint32_t _id ) override
-            {
-                m_cb.call_args( _id, 0, 0.f, true, false, m_args );
-            }
-
-            void onScheduleStop( uint32_t _id ) override
-            {
-                m_cb.call_args( _id, 0, 0.f, false, true, m_args );
-            }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PyScheduleTimerInterface> PyScheduleTimerInterfacePtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPyObjectTimingListener;
-        //////////////////////////////////////////////////////////////////////////
-        class PySchedulePipeInterface
-            : public SchedulePipeInterface
-        {
-        public:
-            PySchedulePipeInterface()
-            {
-            }
-
-            ~PySchedulePipeInterface() override
-            {
-            }
-
-        public:
-            void initialize( const pybind::object & _cb, const pybind::args & _args )
-            {
-                m_cb = _cb;
-                m_args = _args;
-            }
-
-        protected:
-            float onSchedulePipe( uint32_t _id, uint32_t _index ) override
-            {
-                float delay = m_cb.call_args( _id, _index, m_args );
-
-                return delay;
-            }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PySchedulePipeInterface> PySchedulePipeInterfacePtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPySchedulePipeInterface;
-        //////////////////////////////////////////////////////////////////////////
-        class DelaySchedulePipeInterface
-            : public SchedulePipeInterface
-        {
-        public:
-            DelaySchedulePipeInterface()
-                : m_delay( 0.f )
-            {
-            }
-
-            ~DelaySchedulePipeInterface() override
-            {
-            }
-
-        public:
-            void initialize( float _delay )
-            {
-                m_delay = _delay;
-            }
-
-        protected:
-            float onSchedulePipe( uint32_t _id, uint32_t _index ) override
-            {
-                (void)_id;
-                (void)_index;
-
-                return m_delay;
-            }
-
-        protected:
-            float m_delay;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<DelaySchedulePipeInterface> DelaySchedulePipeInterfacePtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryDelaySchedulePipeInterface;
-        //////////////////////////////////////////////////////////////////////////
-        class PyScheduleEventInterface
-            : public ScheduleEventInterface
-        {
-        public:
-            PyScheduleEventInterface()
-            {
-            }
-
-            ~PyScheduleEventInterface() override
-            {
-            }
-
-        public:
-            void initialize( const pybind::object & _cb, const pybind::args & _args )
-            {
-                m_cb = _cb;
-                m_args = _args;
-            }
-
-        protected:
-            void onScheduleComplete( uint32_t _id ) override
-            {
-                m_cb.call_args( _id, false, m_args );
-            }
-
-            void onScheduleStop( uint32_t _id ) override
-            {
-                m_cb.call_args( _id, true, m_args );
-            }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PyScheduleEventInterface> PyScheduleEventInterfacePtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPyObjectScheduleListener;
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t timing( float _delay, const pybind::object & _listener, const pybind::args & _args )
-        {
-            const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE()
-                ->getScheduleManager();
-
-            DelaySchedulePipeInterfacePtr pipe = m_factoryDelaySchedulePipeInterface->createObject();
-
-            pipe->initialize( _delay );
-
-            PyScheduleTimerInterfacePtr listener = m_factoryPyObjectTimingListener->createObject();
-
-            listener->initialize( _listener, _args );
-
-            uint32_t id = tm->timing( pipe, listener );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool timingRemove( uint32_t _id )
-        {
-            const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE()
-                ->getScheduleManager();
-
-            bool successful = tm->remove( _id );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        ScheduleManagerInterfacePtr createScheduler()
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->createSchedulerManager();
-
-            return sm;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool destroyScheduler( const ScheduleManagerInterfacePtr & _sm )
-        {
-            if( _sm == nullptr )
-            {
-                LOGGER_ERROR( "Mengine.destroyScheduler destroy scheduler is NULL"
-                );
-
-                return false;
-            }
-
-            bool successful = PLAYER_SERVICE()
-                ->destroySchedulerManager( _sm );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
-
-            PyScheduleEventInterfacePtr sl = m_factoryPyObjectScheduleListener->createObject();
-
-            sl->initialize( _script, _args );
-
-            uint32_t id = sm->event( _timing, sl );
-
-            return id;
-        }
+        FactoryPtr m_factoryPythonScheduleEvent;
         //////////////////////////////////////////////////////////////////////////
         uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
         {
-            PyScheduleEventInterfacePtr sl = m_factoryPyObjectScheduleListener->createObject();
+            PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject();
 
             sl->initialize( _script, _args );
 
@@ -1670,13 +1380,16 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
+        FactoryPtr m_factoryDelaySchedulePipe;
+        FactoryPtr m_factoryPythonScheduleTimer;
+        //////////////////////////////////////////////////////////////////////////
         uint32_t ScheduleManagerInterface_timing( ScheduleManagerInterface * _scheduleManager, float _delay, const pybind::object & _listener, const pybind::args & _args )
         {
-            DelaySchedulePipeInterfacePtr pipe = m_factoryDelaySchedulePipeInterface->createObject();
+            DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject();
 
             pipe->initialize( _delay );
 
-            PyScheduleTimerInterfacePtr tl = m_factoryPyObjectTimingListener->createObject();
+            PythonScheduleTimerPtr tl = m_factoryPythonScheduleTimer->createObject();
 
             tl->initialize( _listener, _args );
 
@@ -1684,265 +1397,22 @@ namespace Mengine
 
             return id;
         }
+        //////////////////////////////////////////////////////////////////////////
+        FactoryPtr m_factoryPythonSchedulePipe;
         //////////////////////////////////////////////////////////////////////////
         uint32_t ScheduleManagerInterface_pipe( ScheduleManagerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _listener, const pybind::args & _args )
         {
-            PySchedulePipeInterfacePtr pipe = m_factoryPySchedulePipeInterface->createObject();
+            PythonSchedulePipePtr pipe = m_factoryPythonSchedulePipe->createObject();
 
             pipe->initialize( _pipe, _args );
 
-            PyScheduleTimerInterfacePtr tl = m_factoryPyObjectTimingListener->createObject();
+            PythonScheduleTimerPtr tl = m_factoryPythonScheduleTimer->createObject();
 
             tl->initialize( _listener, _args );
 
             uint32_t id = _scheduleManager->timing( pipe, tl );
 
             return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool scheduleRemove( uint32_t _id )
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
-
-            if( sm == nullptr )
-            {
-                return false;
-            }
-
-            bool successful = sm->remove( _id );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void scheduleRemoveAll()
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
-
-            if( sm == nullptr )
-            {
-                return;
-            }
-
-            sm->removeAll();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_scheduleFreeze( uint32_t _id, bool _freeze )
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
-
-            if( sm == nullptr )
-            {
-                return false;
-            }
-
-            bool successful = sm->freeze( _id, _freeze );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_scheduleFreezeAll()
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
-
-            if( sm == nullptr )
-            {
-                return;
-            }
-
-            sm->freezeAll( true );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void scheduleResumeAll()
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
-
-            if( sm == nullptr )
-            {
-                return;
-            }
-
-            sm->freezeAll( false );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_scheduleIsFreeze( uint32_t _id )
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
-
-            if( sm == nullptr )
-            {
-                return false;
-            }
-
-            return sm->isFreeze( _id );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float s_scheduleTime( uint32_t _id )
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
-
-            if( sm == nullptr )
-            {
-                return 0.f;
-            }
-
-            float time = sm->time( _id );
-
-            return time;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::args & _args )
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
-
-            if( sm == nullptr )
-            {
-                return 0;
-            }
-
-            PyScheduleEventInterfacePtr sl = m_factoryPyObjectScheduleListener->createObject();
-
-            sl->initialize( _script, _args );
-
-            uint32_t id = sm->event( _timing, sl );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_scheduleGlobalRemove( uint32_t _id )
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
-
-            if( sm == nullptr )
-            {
-                return false;
-            }
-
-            bool successful = sm->remove( _id );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_scheduleGlobalRemoveAll()
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
-
-            if( sm == nullptr )
-            {
-                return;
-            }
-
-            sm->removeAll();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_scheduleGlobalFreeze( uint32_t _id, bool _freeze )
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
-
-            if( sm == nullptr )
-            {
-                return false;
-            }
-
-            bool successful = sm->freeze( _id, _freeze );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_scheduleGlobalFreezeAll()
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
-
-            if( sm == nullptr )
-            {
-                return;
-            }
-
-            sm->freezeAll( true );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_scheduleGlobalResumeAll()
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
-
-            if( sm == nullptr )
-            {
-                return;
-            }
-
-            sm->freezeAll( false );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_scheduleGlobalIsFreeze( uint32_t _id )
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
-
-            if( sm == nullptr )
-            {
-                return false;
-            }
-
-            bool freeze = sm->isFreeze( _id );
-
-            return freeze;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float s_scheduleGlobalTime( uint32_t _id )
-        {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
-
-            if( sm == nullptr )
-            {
-                return 0.f;
-            }
-
-            float time = sm->time( _id );
-
-            return time;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_setTimingFactor( float _factor )
-        {
-            GAME_SERVICE()
-                ->setTimingFactor( _factor );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_addHomeless( Node * _node )
-        {
-            NODE_SERVICE()
-                ->addHomeless( _node );
-
-            _node->release();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_isHomeless( Node * _node )
-        {
-            bool is = NODE_SERVICE()
-                ->isHomeless( _node );
-
-            return is;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float s_getTimingFactor()
-        {
-            float factor = GAME_SERVICE()
-                ->getTimingFactor();
-
-            return factor;
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonSceneChangeCallback
@@ -1984,7 +1454,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<PythonSceneChangeCallback> PythonSceneChangeCallbackPtr;
         //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPythonSceneChangeCallback;        
+        FactoryPtr m_factoryPythonSceneChangeCallback;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Animatable_play( Animatable * _animatable )
         {
@@ -2451,7 +1921,7 @@ namespace Mengine
             return length;
         }
         //////////////////////////////////////////////////////////////////////////
-        NodePtr createChildren( Node * _node, const ConstString & _type )
+        NodePtr s_Node_createChildren( Node * _node, const ConstString & _type )
         {
             NodePtr newNode = NODE_SERVICE()
                 ->createNode( _type );
@@ -2468,7 +1938,7 @@ namespace Mengine
             return newNode;
         }
         //////////////////////////////////////////////////////////////////////////
-        pybind::list getAllChildren( pybind::kernel_interface * _kernel, Node * _node )
+        pybind::list s_Node_getAllChildren( pybind::kernel_interface * _kernel, Node * _node )
         {
             TListNodeChild & children = _node->getChildren();
 
@@ -2490,7 +1960,7 @@ namespace Mengine
             return py_children;
         }
         //////////////////////////////////////////////////////////////////////////
-        void moveStop( Node * _node )
+        void s_Node_moveStop( Node * _node )
         {
             _node->stopAffectors( ETA_POSITION );
             _node->setLinearSpeed( mt::vec3f( 0.f, 0.f, 0.f ) );
@@ -2498,7 +1968,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorAccumulateLinear<mt::vec3f> m_nodeAffectorCreatorAccumulateLinear;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_velocityTo( Node * _node, float _speed, const mt::vec3f& _dir, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -2523,7 +1993,7 @@ namespace Mengine
                 return 0;
             }
 
-            moveStop( _node );
+            s_Node_moveStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -2626,7 +2096,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryAffectorVelocity2 m_factoryAffectorVelocity2;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_velocityTo2( Node * _node, const mt::vec3f & _velocity, float _time, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -2649,7 +2119,7 @@ namespace Mengine
                 return 0;
             }
 
-            moveStop( _node );
+            s_Node_moveStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -2665,7 +2135,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<mt::vec3f> m_nodeAffectorCreatorInterpolateLinear;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t moveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_moveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -2691,7 +2161,7 @@ namespace Mengine
                 return 0;
             }
 
-            moveStop( _node );
+            s_Node_moveStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -2711,7 +2181,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<mt::vec3f> m_nodeAffectorCreatorInterpolateQuadratic;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_accMoveTo( Node * _node, float _time, const mt::vec3f& _point, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -2737,7 +2207,7 @@ namespace Mengine
                 return 0;
             }
 
-            moveStop( _node );
+            s_Node_moveStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -2751,7 +2221,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 1> m_nodeAffectorCreatorInterpolateQuadraticBezier;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t bezier2To( Node * _node
+        uint32_t s_Node_bezier2To( Node * _node
             , float _time
             , const mt::vec3f& _to
             , const mt::vec3f& _v0
@@ -2783,7 +2253,7 @@ namespace Mengine
                 return 0;
             }
 
-            moveStop( _node );
+            s_Node_moveStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -2797,7 +2267,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 2> m_nodeAffectorCreatorInterpolateCubicBezier;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t bezier3To( Node * _node
+        uint32_t s_Node_bezier3To( Node * _node
             , float _time
             , const mt::vec3f& _to
             , const mt::vec3f& _v0
@@ -2831,7 +2301,7 @@ namespace Mengine
                 return 0;
             }
 
-            moveStop( _node );
+            s_Node_moveStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -2845,7 +2315,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateBezier<mt::vec3f, 3> m_nodeAffectorCreatorInterpolateQuarticBezier;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t bezier4To( Node * _node
+        uint32_t s_Node_bezier4To( Node * _node
             , float _time
             , const mt::vec3f& _to
             , const mt::vec3f& _v0
@@ -2880,7 +2350,7 @@ namespace Mengine
                 return 0;
             }
 
-            moveStop( _node );
+            s_Node_moveStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -3042,7 +2512,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryAffectorInterpolateParabolic m_nodeAffectorCreatorInterpolateParabolic;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t parabolaTo( Node * _node
+        uint32_t s_Node_parabolaTo( Node * _node
             , float _time
             , const mt::vec3f& _end
             , const mt::vec3f& _v0
@@ -3071,7 +2541,7 @@ namespace Mengine
                 return 0;
             }
 
-            moveStop( _node );
+            s_Node_moveStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -3278,7 +2748,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryAffectorFollowTo m_nodeAffectorCreatorFollowTo;
         //////////////////////////////////////////////////////////////////////////		
-        uint32_t followTo( Node * _node
+        uint32_t s_Node_followTo( Node * _node
             , const NodePtr & _target
             , const mt::vec3f & _offset
             , float _distance
@@ -3317,7 +2787,7 @@ namespace Mengine
                 return 0;
             }
 
-            moveStop( _node );
+            s_Node_moveStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -3471,7 +2941,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryAffectorFollowToW m_nodeAffectorCreatorFollowToW;
         //////////////////////////////////////////////////////////////////////////		
-        uint32_t followToW( Node * _node
+        uint32_t s_Node_followToW( Node * _node
             , const NodePtr & _target
             , const mt::vec3f & _offset
             , float _distance
@@ -3504,7 +2974,7 @@ namespace Mengine
                 return 0;
             }
 
-            moveStop( _node );
+            s_Node_moveStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -3516,7 +2986,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        void angleStop( const NodePtr & _node )
+        void s_Node_angleStop( const NodePtr & _node )
         {
             _node->stopAffectors( ETA_ANGLE );
             _node->setAngularSpeed( 0.f );
@@ -3524,7 +2994,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<float> m_nodeAffectorCreatorInterpolateLinearFloat;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t angleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_angleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -3555,7 +3025,7 @@ namespace Mengine
                 return 0;
             }
 
-            angleStop( _node );
+            s_Node_angleStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -3573,7 +3043,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateQuadratic<float> m_nodeAffectorCreatorInterpolateQuadraticFloat;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t accAngleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_accAngleTo( Node * _node, float _time, float _angle, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -3607,7 +3077,7 @@ namespace Mengine
                 return 0;
             }
 
-            angleStop( _node );
+            s_Node_angleStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -3619,12 +3089,12 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        void scaleStop( Node * _node )
+        void s_Node_scaleStop( Node * _node )
         {
             _node->stopAffectors( ETA_SCALE );
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t scaleTo( Node * _node, float _time, const mt::vec3f& _scale, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_scaleTo( Node * _node, float _time, const mt::vec3f& _scale, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -3649,7 +3119,7 @@ namespace Mengine
                 return 0;
             }
 
-            scaleStop( _node );
+            s_Node_scaleStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -3661,14 +3131,14 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        void colorStop( Node * _node )
+        void s_Node_colorStop( Node * _node )
         {
             _node->stopAffectors( ETA_COLOR );
         }
         //////////////////////////////////////////////////////////////////////////
         NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<ColourValue> m_nodeAffectorCreatorInterpolateLinearColour;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t colorTo( Node * _node, float _time, const ColourValue& _color, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_colorTo( Node * _node, float _time, const ColourValue& _color, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -3694,7 +3164,7 @@ namespace Mengine
                 return 0;
             }
 
-            colorStop( _node );
+            s_Node_colorStop( _node );
 
             if( _node->isActivate() == false )
             {
@@ -3706,7 +3176,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t alphaTo( Node * _node, float _time, float _alpha, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_alphaTo( Node * _node, float _time, float _alpha, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node->isActivate() == false )
             {
@@ -3721,7 +3191,7 @@ namespace Mengine
             ColourValue color = _node->getLocalColor();
             color.setA( _alpha );
 
-            uint32_t id = colorTo( _node, _time, color, _cb, _args );
+            uint32_t id = s_Node_colorTo( _node, _time, color, _cb, _args );
 
             return id;
         }
@@ -3875,7 +3345,7 @@ namespace Mengine
 
             .def( "setAngle", &Transformation3D::setOrientationX )
             .def( "getAngle", &Transformation3D::getOrientationX )
-            .def_proxy_static( "setAngleDeg", nodeScriptMethod, &NodeScriptMethod::Transformation3D_setAngleDeg )
+            .def_proxy_static( "setAngleDeg", nodeScriptMethod, &NodeScriptMethod::s_Transformation3D_setAngleDeg )
 
             .def( "setDirection", &Transformation3D::setDirection )
             .def( "setBillboard", &Transformation3D::setBillboard )
@@ -3894,7 +3364,7 @@ namespace Mengine
 
             .def( "resetTransformation", &Transformation3D::resetTransformation )
             .def( "setRelationTransformation", &Transformation3D::setRelationTransformation )
-            .def_proxy_static( "removeRelationTransformation", nodeScriptMethod, &NodeScriptMethod::Transformation3D_removeRelationTransformation )
+            .def_proxy_static( "removeRelationTransformation", nodeScriptMethod, &NodeScriptMethod::s_Transformation3D_removeRelationTransformation )
             ;
 
         pybind::interface_<Compilable, pybind::bases<Mixin> >( kernel, "Compilable" )
@@ -3966,10 +3436,10 @@ namespace Mengine
             .def( "getAnchorPoint", &ResourceMovie::getAnchorPoint )
             .def( "hasBoundBox", &ResourceMovie::hasBoundBox )
             .def( "getBoundBox", &ResourceMovie::getBoundBox )
-            .def_proxy_static( "hasLayer", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_hasLayer )
-            .def_proxy_static( "hasLayerType", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_hasLayerType )
-            .def_proxy_static( "getLayerPosition", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_getLayerPosition )
-            .def_proxy_static( "getLayerIn", nodeScriptMethod, &NodeScriptMethod::ResourceMovie_getLayerIn )
+            .def_proxy_static( "hasLayer", nodeScriptMethod, &NodeScriptMethod::s_ResourceMovie_hasLayer )
+            .def_proxy_static( "hasLayerType", nodeScriptMethod, &NodeScriptMethod::s_ResourceMovie_hasLayerType )
+            .def_proxy_static( "getLayerPosition", nodeScriptMethod, &NodeScriptMethod::s_ResourceMovie_getLayerPosition )
+            .def_proxy_static( "getLayerIn", nodeScriptMethod, &NodeScriptMethod::s_ResourceMovie_getLayerIn )
             ;
 
         pybind::interface_<ResourceAnimation, pybind::bases<Resource> >( kernel, "ResourceAnimation", false )
@@ -4131,32 +3601,32 @@ namespace Mengine
             .def( "getRenderTarget", &Node::getRenderTarget )
             .def( "getRenderTargetInheritance", &Node::getRenderTargetInheritance )
 
-            .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::createChildren )
-            .def_proxy_static_kernel( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::getAllChildren )
+            .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_createChildren )
+            .def_proxy_static_kernel( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_getAllChildren )
 
-            .def_proxy_args_static( "colorTo", nodeScriptMethod, &NodeScriptMethod::colorTo )
-            .def_proxy_args_static( "alphaTo", nodeScriptMethod, &NodeScriptMethod::alphaTo )
-            .def_proxy_static( "colorStop", nodeScriptMethod, &NodeScriptMethod::colorStop )
+            .def_proxy_args_static( "colorTo", nodeScriptMethod, &NodeScriptMethod::s_Node_colorTo )
+            .def_proxy_args_static( "alphaTo", nodeScriptMethod, &NodeScriptMethod::s_Node_alphaTo )
+            .def_proxy_static( "colorStop", nodeScriptMethod, &NodeScriptMethod::s_Node_colorStop )
 
-            .def_proxy_args_static( "velocityTo", nodeScriptMethod, &NodeScriptMethod::velocityTo )
-            .def_proxy_args_static( "velocityTo2", nodeScriptMethod, &NodeScriptMethod::velocityTo2 )
+            .def_proxy_args_static( "velocityTo", nodeScriptMethod, &NodeScriptMethod::s_Node_velocityTo )
+            .def_proxy_args_static( "velocityTo2", nodeScriptMethod, &NodeScriptMethod::s_Node_velocityTo2 )
 
-            .def_proxy_args_static( "moveTo", nodeScriptMethod, &NodeScriptMethod::moveTo )
-            .def_proxy_args_static( "bezier2To", nodeScriptMethod, &NodeScriptMethod::bezier2To )
-            .def_proxy_args_static( "bezier3To", nodeScriptMethod, &NodeScriptMethod::bezier3To )
-            .def_proxy_args_static( "bezier4To", nodeScriptMethod, &NodeScriptMethod::bezier4To )
-            .def_proxy_args_static( "parabolaTo", nodeScriptMethod, &NodeScriptMethod::parabolaTo )
-            .def_proxy_args_static( "followTo", nodeScriptMethod, &NodeScriptMethod::followTo )
-            .def_proxy_args_static( "followToW", nodeScriptMethod, &NodeScriptMethod::followToW )
-            .def_proxy_static( "moveStop", nodeScriptMethod, &NodeScriptMethod::moveStop )
+            .def_proxy_args_static( "moveTo", nodeScriptMethod, &NodeScriptMethod::s_Node_moveTo )
+            .def_proxy_args_static( "bezier2To", nodeScriptMethod, &NodeScriptMethod::s_Node_bezier2To )
+            .def_proxy_args_static( "bezier3To", nodeScriptMethod, &NodeScriptMethod::s_Node_bezier3To )
+            .def_proxy_args_static( "bezier4To", nodeScriptMethod, &NodeScriptMethod::s_Node_bezier4To )
+            .def_proxy_args_static( "parabolaTo", nodeScriptMethod, &NodeScriptMethod::s_Node_parabolaTo )
+            .def_proxy_args_static( "followTo", nodeScriptMethod, &NodeScriptMethod::s_Node_followTo )
+            .def_proxy_args_static( "followToW", nodeScriptMethod, &NodeScriptMethod::s_Node_followToW )
+            .def_proxy_static( "moveStop", nodeScriptMethod, &NodeScriptMethod::s_Node_moveStop )
 
-            .def_proxy_args_static( "angleTo", nodeScriptMethod, &NodeScriptMethod::angleTo )
-            .def_proxy_static( "angleStop", nodeScriptMethod, &NodeScriptMethod::angleStop )
-            .def_proxy_args_static( "scaleTo", nodeScriptMethod, &NodeScriptMethod::scaleTo )
-            .def_proxy_static( "scaleStop", nodeScriptMethod, &NodeScriptMethod::scaleStop )
+            .def_proxy_args_static( "angleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_angleTo )
+            .def_proxy_static( "angleStop", nodeScriptMethod, &NodeScriptMethod::s_Node_angleStop )
+            .def_proxy_args_static( "scaleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_scaleTo )
+            .def_proxy_static( "scaleStop", nodeScriptMethod, &NodeScriptMethod::s_Node_scaleStop )
 
-            .def_proxy_args_static( "accMoveTo", nodeScriptMethod, &NodeScriptMethod::accMoveTo )
-            .def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::accAngleTo )
+            .def_proxy_args_static( "accMoveTo", nodeScriptMethod, &NodeScriptMethod::s_Node_accMoveTo )
+            .def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_accAngleTo )
             ;
 
         pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable, Compilable> >( kernel, "Surface", false )
@@ -4303,8 +3773,8 @@ namespace Mengine
                 .def_deprecated( "setTextByKey", &TextField::setTextID, "use setTextID" )
                 .def( "setTextID", &TextField::setTextID )
                 .def( "removeTextID", &TextField::removeTextID )
-                .def_proxy_native_kernel( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::textfield_setTextFormatArgs )
-                .def_proxy_static( "getTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::textfield_getTextFormatArgs )
+                .def_proxy_native_kernel( "setTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::s_TextField_setTextFormatArgs )
+                .def_proxy_static( "getTextFormatArgs", nodeScriptMethod, &NodeScriptMethod::s_TextField_getTextFormatArgs )
                 .def( "removeTextFormatArgs", &TextField::removeTextFormatArgs )
                 .def_deprecated( "getTextKey", &TextField::getTextID, "use getTextID" )
                 .def( "getTextID", &TextField::getTextID )

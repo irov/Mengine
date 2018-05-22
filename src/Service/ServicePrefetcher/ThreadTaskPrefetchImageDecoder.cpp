@@ -8,7 +8,6 @@
 #include "Factory/FactorableUnique.h"
 
 #include "Logger/Logger.h"
-#include <Windows.h>
 
 namespace Mengine
 {

@@ -132,6 +132,11 @@
 #include "PythonAnimatableEventReceiver.h"
 #include "PythonValueFollower.h"
 
+#include "PythonScheduleTimer.h"
+#include "PythonSchedulePipe.h"
+#include "PythonScheduleEvent.h"
+#include "DelaySchedulePipe.h"
+
 #include "Core/Polygon.h"
 #include "Core/MemoryHelper.h"
 #include "Core/ValueFollower.h"
@@ -168,10 +173,10 @@ namespace Mengine
     public:
         EngineScriptMethod()
         {
-            m_factoryPyObjectTimingListener = new FactoryPool<PyScheduleTimerInterface, 8>();
-            m_factoryPySchedulePipeInterface = new FactoryPool<PySchedulePipeInterface, 8>();
-            m_factoryDelaySchedulePipeInterface = new FactoryPool<DelaySchedulePipeInterface, 8>();
-            m_factoryPyObjectScheduleListener = new FactoryPool<PyScheduleEventInterface, 8>();
+            m_factoryPythonScheduleTimer = new FactoryPool<PythonScheduleTimer, 8>();
+            m_factoryPythonSchedulePipe = new FactoryPool<PythonSchedulePipe, 8>();
+            m_factoryDelaySchedulePipe = new FactoryPool<DelaySchedulePipe, 8>();
+            m_factoryPythonScheduleEvent = new FactoryPool<PythonScheduleEvent, 8>();
             m_factoryPythonSceneChangeCallback = new FactoryPool<PythonSceneChangeCallback, 8>();
             m_factoryAffectorGridBurnTransparency = new FactoryPool<AffectorGridBurnTransparency, 4>();
             m_factoryAffectorUser = new FactoryPool<AffectorUser, 4>();            
@@ -187,10 +192,10 @@ namespace Mengine
 
         ~EngineScriptMethod()
         {
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyObjectTimingListener );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPySchedulePipeInterface );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipeInterface );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyObjectScheduleListener );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTimer );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSchedulePipe );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipe );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSceneChangeCallback );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAffectorGridBurnTransparency );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryAffectorUser );
@@ -203,10 +208,10 @@ namespace Mengine
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalTextHandler );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyInputMousePositionProvider );
 
-            m_factoryPyObjectTimingListener = nullptr;
-            m_factoryPySchedulePipeInterface = nullptr;
-            m_factoryDelaySchedulePipeInterface = nullptr;
-            m_factoryPyObjectScheduleListener = nullptr;
+            m_factoryPythonScheduleTimer = nullptr;
+            m_factoryPythonSchedulePipe = nullptr;
+            m_factoryDelaySchedulePipe = nullptr;
+            m_factoryPythonScheduleEvent = nullptr;
             m_factoryPythonSceneChangeCallback = nullptr;
             m_factoryAffectorGridBurnTransparency = nullptr;
             m_factoryAffectorUser = nullptr;
@@ -295,171 +300,24 @@ namespace Mengine
                 ->getInputMouseButtonEventBlock();
         }
         //////////////////////////////////////////////////////////////////////////
-        class PyScheduleTimerInterface
-            : public ScheduleTimerInterface
-        {
-        public:
-            PyScheduleTimerInterface()
-            {
-            }
-
-            ~PyScheduleTimerInterface() override
-            {
-            }
-
-        public:
-            void initialize( const pybind::object & _cb, const pybind::args & _args )
-            {
-                m_cb = _cb;
-                m_args = _args;
-            }
-
-        protected:
-            void onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _delay ) override
-            {
-                m_cb.call_args( _id, _iterate, _delay, false, false, m_args );
-            }
-
-            void onScheduleComplete( uint32_t _id ) override
-            {
-                m_cb.call_args( _id, 0, 0.f, true, false, m_args );
-            }
-
-            void onScheduleStop( uint32_t _id ) override
-            {
-                m_cb.call_args( _id, 0, 0.f, false, true, m_args );
-            }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
+        FactoryPtr m_factoryPythonScheduleTimer;
         //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PyScheduleTimerInterface> PyScheduleTimerInterfacePtr;
+        FactoryPtr m_factoryPythonSchedulePipe;
         //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPyObjectTimingListener;
+        FactoryPtr m_factoryDelaySchedulePipe;
         //////////////////////////////////////////////////////////////////////////
-        class PySchedulePipeInterface
-            : public SchedulePipeInterface
-        {
-        public:
-            PySchedulePipeInterface()
-            {
-            }
-
-            ~PySchedulePipeInterface() override
-            {
-            }
-
-        public:
-            void initialize( const pybind::object & _cb, const pybind::args & _args )
-            {
-                m_cb = _cb;
-                m_args = _args;
-            }
-
-        protected:
-            float onSchedulePipe( uint32_t _id, uint32_t _index ) override
-            {
-                float delay = m_cb.call_args( _id, _index, m_args );
-
-                return delay;
-            }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PySchedulePipeInterface> PySchedulePipeInterfacePtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPySchedulePipeInterface;
-        //////////////////////////////////////////////////////////////////////////
-        class DelaySchedulePipeInterface
-            : public SchedulePipeInterface
-        {
-        public:
-            DelaySchedulePipeInterface()
-                : m_delay( 0.f )
-            {
-            }
-
-            ~DelaySchedulePipeInterface() override
-            {
-            }
-
-        public:
-            void initialize( float _delay )
-            {
-                m_delay = _delay;
-            }
-
-        protected:
-            float onSchedulePipe( uint32_t _id, uint32_t _index ) override
-            {
-                (void)_id;
-                (void)_index;
-
-                return m_delay;
-            }
-
-        protected:
-            float m_delay;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<DelaySchedulePipeInterface> DelaySchedulePipeInterfacePtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryDelaySchedulePipeInterface;
-        //////////////////////////////////////////////////////////////////////////
-        class PyScheduleEventInterface
-            : public ScheduleEventInterface
-        {
-        public:
-            PyScheduleEventInterface()
-            {
-            }
-
-            ~PyScheduleEventInterface() override
-            {
-            }
-
-        public:
-            void initialize( const pybind::object & _cb, const pybind::args & _args )
-            {
-                m_cb = _cb;
-                m_args = _args;
-            }
-
-        protected:
-            void onScheduleComplete( uint32_t _id ) override
-            {
-                m_cb.call_args( _id, false, m_args );
-            }
-
-            void onScheduleStop( uint32_t _id ) override
-            {
-                m_cb.call_args( _id, true, m_args );
-            }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PyScheduleEventInterface> PyScheduleEventInterfacePtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPyObjectScheduleListener;
+        FactoryPtr m_factoryPythonScheduleEvent;
         //////////////////////////////////////////////////////////////////////////
         uint32_t timing( float _delay, const pybind::object & _listener, const pybind::args & _args )
         {
             const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
-            DelaySchedulePipeInterfacePtr pipe = m_factoryDelaySchedulePipeInterface->createObject();
+            DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject();
 
             pipe->initialize( _delay );
 
-            PyScheduleTimerInterfacePtr listener = m_factoryPyObjectTimingListener->createObject();
+            PythonScheduleTimerPtr listener = m_factoryPythonScheduleTimer->createObject();
 
             listener->initialize( _listener, _args );
 
@@ -480,7 +338,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         ScheduleManagerInterfacePtr createScheduler()
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            ScheduleManagerInterfacePtr sm = PLAYER_SERVICE()
                 ->createSchedulerManager();
 
             return sm;
@@ -507,7 +365,7 @@ namespace Mengine
             const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
-            PyScheduleEventInterfacePtr sl = m_factoryPyObjectScheduleListener->createObject();
+            PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject();
 
             sl->initialize( _script, _args );
 
@@ -623,7 +481,7 @@ namespace Mengine
                 return 0;
             }
 
-            PyScheduleEventInterfacePtr sl = m_factoryPyObjectScheduleListener->createObject();
+            PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject();
 
             sl->initialize( _script, _args );
 

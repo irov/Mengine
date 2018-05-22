@@ -1,6 +1,6 @@
 @echo off
 
-set BUILD_TYPE=Debug
+set BUILD_TYPE=Release
 
 @echo Starting dependencies build %BUILD_TYPE% configuration...
 

@@ -40,13 +40,13 @@ namespace Mengine
     protected:
         virtual void _destroy();
 
-#   ifdef MENGINE_FACTORABLE_DEBUG
+#ifdef MENGINE_FACTORABLE_DEBUG
     public:
         bool isDestroyed() const;
 
     protected:
         virtual void _checkDestroy();
-#   endif
+#endif
 
 	public:
         uint32_t getReference() const;

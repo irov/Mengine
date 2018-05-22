@@ -588,16 +588,17 @@ namespace Mengine
         SERVICE_CREATE( TimerSystem );
         SERVICE_CREATE( TimerService );
 
-        PythonScriptWrapper::constsWrap();
-        PythonScriptWrapper::mathWrap();
-        PythonScriptWrapper::nodeWrap();
-        PythonScriptWrapper::helperWrap();
-        PythonScriptWrapper::soundWrap();
-        PythonScriptWrapper::entityWrap();
-
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( NodeService );
         SERVICE_CREATE( LoaderService );
+
+        PythonScriptWrapper::constsWrap();
+        PythonScriptWrapper::helperWrap();
+        PythonScriptWrapper::mathWrap();
+        PythonScriptWrapper::nodeWrap();
+        PythonScriptWrapper::entityWrap();
+        PythonScriptWrapper::engineWrap();
+        PythonScriptWrapper::soundWrap();
 
         SERVICE_CREATE( RenderService );
         SERVICE_CREATE( RenderMaterialService );

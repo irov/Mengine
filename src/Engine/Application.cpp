@@ -230,6 +230,7 @@ namespace Mengine
         );
 
 #if TARGET_OS_IPHONE
+#elif __ANDROID__
 #else
         m_windowResolution = CONFIG_VALUE( "Window", "Size", Resolution( 1024, 768 ) );
 #endif

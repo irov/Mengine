@@ -37,6 +37,12 @@ namespace Mengine
             return distance;
         }
 
+        void reset( const T & _value )
+        {
+            m_value = _value;
+            m_follow = _value;            
+        }
+
         void overtake()
         {
             m_value = m_follow;

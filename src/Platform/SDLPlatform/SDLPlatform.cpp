@@ -233,7 +233,7 @@ namespace Mengine
         if( strcmp( sdlPlatform, "Windows" ) == 0 )
         {
             m_touchpad = false;
-            m_platformName.addTag( Helper::stringizeString( "WIN32" ) );
+            m_platformName.addTag( Helper::stringizeString( "PC" ) );
         }
         else if( strcmp( sdlPlatform, "Mac OS X" ) == 0 )
         {

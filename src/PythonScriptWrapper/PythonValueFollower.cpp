@@ -60,8 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////        
     void PythonValueFollower::resetValue( float _value )
     {
-        this->setValue( _value );
-        m_valueFollower.overtake();
+        m_valueFollower.reset( _value );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonValueFollower::_affect( float _current, float _timing )

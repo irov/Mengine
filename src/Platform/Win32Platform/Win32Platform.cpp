@@ -134,10 +134,16 @@ namespace Mengine
 
 			m_touchpad = false;
 		}
+        else if( HAS_OPTION( "mac" ) )
+        {
+            m_platformTags.clear();
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MAC" ) );
+
+            m_touchpad = false;
+        }
 		else if( HAS_OPTION("ios") )
 		{ 
 			m_platformTags.clear();
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MOBILE" ) );
 			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
 			
 			m_touchpad = true;
@@ -145,7 +151,6 @@ namespace Mengine
 		else if( HAS_OPTION( "android" ) )
 		{
 			m_platformTags.clear();
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MOBILE" ) );
 			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "ANDROID" ) );
 
 			m_touchpad = true;
@@ -153,17 +158,9 @@ namespace Mengine
 		else if( HAS_OPTION( "wp" ) )
 		{
 			m_platformTags.clear();
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "MOBILE" ) );
 			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WP" ) );
 						
 			m_touchpad = true;
-		}
-		else if( HAS_OPTION( "osx" ) )
-		{
-			m_platformTags.clear();
-			m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "OSX" ) );
-
-			m_touchpad = false;
 		}
 
         const char * option_platform = GET_OPTION_VALUE( "platform" );

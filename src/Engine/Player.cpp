@@ -958,8 +958,17 @@ namespace Mengine
 
             ss << "FPS: " << m_fps << std::endl;
 
+            if( m_showDebugText == 0 )
+            {
+                RENDER_SERVICE()
+                    ->enableDebugFillrateCalcMode( false );
+            }
+
             if( m_showDebugText > 1 )
             {
+                RENDER_SERVICE()
+                    ->enableDebugFillrateCalcMode( true );
+
                 const Resolution & contentResolution = APPLICATION_SERVICE()
                     ->getContentResolution();
 
@@ -983,10 +992,13 @@ namespace Mengine
 
                 ss << "Texture Count: " << textureCount << std::endl;
 
-                uint32_t particlesCount = PARTICLE_SYSTEM2()
-                    ->getEmitterCount();
+                if( SERVICE_EXIST( Mengine::ParticleSystemInterface2 ) == true )
+                {
+                    uint32_t particlesCount = PARTICLE_SYSTEM2()
+                        ->getEmitterCount();
 
-                ss << "Particles: " << particlesCount << std::endl;
+                    ss << "Particles: " << particlesCount << std::endl;
+                }
             }
 
             if( m_showDebugText == 2 )

@@ -925,9 +925,9 @@ namespace Mengine
     {
         (void)_data;
             
-        aeMovieLayerTypeEnum type = _callbackData->type;
+        aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( _callbackData->layer );
 
-        switch( type )
+        switch( layer_type )
         {
         case AE_MOVIE_LAYER_TYPE_PARTICLE:
             {
@@ -1449,7 +1449,7 @@ namespace Mengine
         providers.scene_effect_update = &__movie_scene_effect_update;
 #endif
 
-        aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
+        const aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
 
         if( composition == nullptr )
         {
@@ -1468,6 +1468,21 @@ namespace Mengine
         if( info.max_render_node != 0 )
         {
             m_meshes.resize( info.max_render_node );
+        }
+
+        if( info.max_vertex_count != 0 )
+        {
+            m_vertices.resize( info.max_vertex_count );
+        }
+
+        if( info.max_vertex_count != 0 )
+        {
+            m_vertices.resize( info.max_vertex_count );
+        }
+
+        if( info.max_index_count != 0 )
+        {
+            m_indices.resize( info.max_index_count );
         }
 
         bool loop = this->getLoop();
@@ -1663,6 +1678,11 @@ namespace Mengine
         }
 
         uint32_t mesh_iterator = 0;
+        uint32_t vertex_iterator = 0;
+        uint32_t index_iterator = 0;
+
+        RenderVertex2D * vertices_buffer = m_vertices.empty() == false ? &m_vertices.front() : nullptr;
+        RenderIndex * indices_buffer = m_indices.empty() == false ? &m_indices.front() : nullptr;
         Mesh * meshes_buffer = &m_meshes.front();
 
         const mt::mat4f & wm = this->getWorldMatrix();
@@ -1764,11 +1784,12 @@ namespace Mengine
 
                         Mesh & m = meshes_buffer[mesh_iterator++];
 
-                        m.vertices.resize( mesh.vertexCount );
+                        RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
+                        vertex_iterator += mesh.vertexCount;
                                                 
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
-                            RenderVertex2D & v = m.vertices[index];
+                            RenderVertex2D & v = vertices[index];
 
                             mt::vec3f vp;
                             vp.from_f3( &mesh.position[index][0] );
@@ -1783,20 +1804,17 @@ namespace Mengine
                             v.color = total_mesh_color;
                         }
 
-                        m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+                        RenderIndex * indices = indices_buffer + index_iterator;
+                        index_iterator += mesh.indexCount;
+
+                        stdex::memorycopy_pod( indices, 0, mesh.indices, mesh.indexCount );
 
                         EMaterialBlendMode blend_mode = Helper::getMovieBlendMode( mesh.blend_mode );
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-                        const RenderVertex2D * vertexBuffer = &m.vertices[0];
-                        uint32_t vertexSize = (uint32_t)m.vertices.size();
-
-                        const RenderIndex * indexBuffer = &m.indices[0];
-                        uint32_t indexSize = (uint32_t)m.indices.size();
-
                         _renderService
-                            ->addRenderObject( &state, m.material, vertexBuffer, vertexSize, indexBuffer, indexSize, nullptr, false );
+                            ->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
@@ -1807,11 +1825,12 @@ namespace Mengine
 
                         Mesh & m = meshes_buffer[mesh_iterator++];
 
-                        m.vertices.resize( mesh.vertexCount );
-
+                        RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
+                        vertex_iterator += mesh.vertexCount;
+                        
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
-                            RenderVertex2D & v = m.vertices[index];
+                            RenderVertex2D & v = vertices[index];
 
                             mt::vec3f vp;
                             vp.from_f3( &mesh.position[index][0] );
@@ -1826,20 +1845,17 @@ namespace Mengine
                             v.color = total_mesh_color;
                         }
 
-                        m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+                        RenderIndex * indices = indices_buffer + index_iterator;
+                        index_iterator += mesh.indexCount;
+
+                        stdex::memorycopy_pod( indices, 0, mesh.indices, mesh.indexCount );
 
                         EMaterialBlendMode blend_mode = Helper::getMovieBlendMode( mesh.blend_mode );
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-                        const RenderVertex2D * vertexBuffer = &m.vertices[0];
-                        uint32_t vertexSize = (uint32_t)m.vertices.size();
-
-                        const RenderIndex * indexBuffer = &m.indices[0];
-                        uint32_t indexSize = (uint32_t)m.indices.size();
-
                         _renderService
-                            ->addRenderObject( &state, m.material, vertexBuffer, vertexSize, indexBuffer, indexSize, nullptr, false );
+                            ->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
@@ -1852,12 +1868,13 @@ namespace Mengine
                         ResourceImage * resource_image = reinterpret_node_cast<ResourceImage *>(resource_reference);
 
                         Mesh & m = meshes_buffer[mesh_iterator++];
-
-                        m.vertices.resize( mesh.vertexCount );
+                        
+                        RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
+                        vertex_iterator += mesh.vertexCount;
 
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
-                            RenderVertex2D & v = m.vertices[index];
+                            RenderVertex2D & v = vertices[index];
 
                             mt::vec3f vp;
                             const float * vp3 = mesh.position[index];
@@ -1865,30 +1882,49 @@ namespace Mengine
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
 
-                            mt::vec2f uv;
-                            const float * uv2 = mesh.uv[index];
-                            uv.from_f2( uv2 );
-
-                            resource_image->correctUVImage( v.uv[0], uv );
-                            resource_image->correctUVAlpha( v.uv[1], uv );
-
                             v.color = total_mesh_color;
                         }
 
-                        m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+                        if( mesh.uv_cache_data == AE_NULL )
+                        {
+                            for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
+                            {
+                                RenderVertex2D & v = vertices[index];
+
+                                mt::vec2f uv;
+                                const float * uv2 = mesh.uv[index];
+                                uv.from_f2( uv2 );
+
+                                resource_image->correctUVImage( v.uv[0], uv );
+                                resource_image->correctUVAlpha( v.uv[1], uv );
+                            }
+                        }
+                        else
+                        {
+                            const mt::vec2f * uvs = reinterpret_cast<const mt::vec2f *>(mesh.uv_cache_data);
+
+                            for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
+                            {
+                                RenderVertex2D & v = vertices[index];
+
+                                const mt::vec2f & uv = uvs[index];
+                                
+                                v.uv[0] = uv;
+                                v.uv[1] = uv;
+                            }
+                        }
+
+                        RenderIndex * indices = indices_buffer + index_iterator;
+                        index_iterator += mesh.indexCount;
+
+                        stdex::memorycopy_pod( indices, 0, mesh.indices, mesh.indexCount );
 
                         EMaterialBlendMode blend_mode = Helper::getMovieBlendMode( mesh.blend_mode );
 
                         m.material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
 
-                        const RenderVertex2D * vertexBuffer = &m.vertices[0];
-                        uint32_t vertexSize = (uint32_t)m.vertices.size();
-
-                        const RenderIndex * indexBuffer = &m.indices[0];
-                        uint32_t indexSize = (uint32_t)m.indices.size();
-
                         _renderService
-                            ->addRenderObject( &state, m.material, vertexBuffer, vertexSize, indexBuffer, indexSize, nullptr, false );
+                            ->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
@@ -1901,11 +1937,12 @@ namespace Mengine
 
                         Mesh & m = meshes_buffer[mesh_iterator++];
 
-                        m.vertices.resize( mesh.vertexCount );
+                        RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
+                        vertex_iterator += mesh.vertexCount;
 
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
-                            RenderVertex2D & v = m.vertices[index];
+                            RenderVertex2D & v = vertices[index];
 
                             mt::vec3f vp;
                             vp.from_f3( &mesh.position[index][0] );
@@ -1921,18 +1958,15 @@ namespace Mengine
                             v.color = total_mesh_color;
                         }
 
-                        m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+                        RenderIndex * indices = indices_buffer + index_iterator;
+                        index_iterator += mesh.indexCount;
+
+                        stdex::memorycopy_pod( indices, 0, mesh.indices, mesh.indexCount );
 
                         m.material = surfaceVideo->getMaterial();
 
-                        const RenderVertex2D * vertexBuffer = &m.vertices[0];
-                        uint32_t vertexSize = (uint32_t)m.vertices.size();
-
-                        const RenderIndex * indexBuffer = &m.indices[0];
-                        uint32_t indexSize = (uint32_t)m.indices.size();
-
                         _renderService
-                            ->addRenderObject( &state, m.material, vertexBuffer, vertexSize, indexBuffer, indexSize, nullptr, false );
+                            ->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 default:
                     break;
@@ -1953,7 +1987,8 @@ namespace Mengine
 
                         Mesh & m = meshes_buffer[mesh_iterator++];
 
-                        m.vertices.resize( mesh.vertexCount );
+                        RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
+                        vertex_iterator += mesh.vertexCount;
 
                         const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
                         const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
@@ -1964,7 +1999,7 @@ namespace Mengine
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
-                            RenderVertex2D & v = m.vertices[index];
+                            RenderVertex2D & v = vertices[index];
 
                             mt::vec3f vp;
                             vp.from_f3( mesh.position[index] );
@@ -1977,7 +2012,7 @@ namespace Mengine
                             resourceImage->correctUVImage( v.uv[0], uv );
 
                             mt::vec2f uv_track_matte;
-                            uv_track_matte = calc_point_uv(
+                            uv_track_matte = mt::calc_point_uv(
                                 mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
                                 mt::vec2f( track_matte_mesh->uv[0] ), mt::vec2f( track_matte_mesh->uv[1] ), mt::vec2f( track_matte_mesh->uv[2] ),
                                 vp.to_vec2f()
@@ -1988,20 +2023,17 @@ namespace Mengine
                             v.color = total_mesh_color;
                         }
 
-                        m.indices.assign( mesh.indices, mesh.indices + mesh.indexCount );
+                        RenderIndex * indices = indices_buffer + index_iterator;
+                        index_iterator += mesh.indexCount;
+
+                        stdex::memorycopy_pod( indices, 0, mesh.indices, mesh.indexCount );
 
                         //EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
 
                         m.material = surfaceTrackMatte->getMaterial();
 
-                        const RenderVertex2D * vertexBuffer = &m.vertices[0];
-                        uint32_t vertexSize = (uint32_t)m.vertices.size();
-
-                        const RenderIndex * indexBuffer = &m.indices[0];
-                        uint32_t indexSize = (uint32_t)m.indices.size();
-
                         _renderService
-                            ->addRenderObject( &state, m.material, vertexBuffer, vertexSize, indexBuffer, indexSize, nullptr, false );
+                            ->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 default:
                     break;

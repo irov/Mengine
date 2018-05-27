@@ -438,5 +438,9 @@ namespace Mengine
 		{
 			m_hasAlpha = true;
 		}
+
+        bool pow2 = m_texture->isPow2();
+
+        this->setPow2( pow2 );
 	}
 }

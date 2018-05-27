@@ -50,7 +50,10 @@ namespace Mengine
 		inline bool hasAlpha() const;
 
 		inline void setPremultiply( bool _alpha );
-		inline bool getPremultiply() const;
+		inline bool isPremultiply() const;
+
+        inline void setPow2( bool _pow2 );
+        inline bool isPow2() const;
     
     public:
         void setTexture( const RenderTextureInterfacePtr & _texture );
@@ -86,6 +89,7 @@ namespace Mengine
         bool m_uvAlphaRotate;
         bool m_hasAlpha;
 		bool m_isPremultiply;
+        bool m_isPow2;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<ResourceImage> ResourceImagePtr;
@@ -195,8 +199,18 @@ namespace Mengine
 		m_isPremultiply = _premultiply;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline bool ResourceImage::getPremultiply() const
+	inline bool ResourceImage::isPremultiply() const
 	{
 		return m_isPremultiply;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    inline void ResourceImage::setPow2( bool _pow2 )
+    {
+        m_isPow2 = _pow2;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline bool ResourceImage::isPow2() const
+    {
+        return m_isPow2;
+    }
 }

@@ -186,7 +186,7 @@ namespace Mengine
 			return false;
 		}
 
-		uint32_t * V = Helper::allocateMemoryT<uint32_t>( n );  /* we want a counter-clockwise polygon in V */
+		uint32_t * V = Helper::allocateArrayT<uint32_t>( n );  /* we want a counter-clockwise polygon in V */
 
 		double area_polygon = boost::geometry::area( THIS_IMPL );
 
@@ -278,7 +278,7 @@ namespace Mengine
 			return false;
 		}
 
-		uint32_t *V = Helper::allocateMemoryT<uint32_t>( n );  /* we want a counter-clockwise polygon in V */
+		uint32_t *V = Helper::allocateArrayT<uint32_t>( n );  /* we want a counter-clockwise polygon in V */
 
 		double area_polygon = boost::geometry::area( THIS_IMPL );
 

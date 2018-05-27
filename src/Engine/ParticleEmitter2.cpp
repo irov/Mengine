@@ -367,14 +367,14 @@ namespace Mengine
 		{
 			m_vertexCount = flush.vertexCount;
 
-			m_vertices = Helper::reallocateMemoryT<RenderVertex2D>( m_vertices, m_vertexCount );
+			m_vertices = Helper::reallocateArrayT<RenderVertex2D>( m_vertices, m_vertexCount );
 		}
 
 		if( m_indexCount < flush.indexCount )
 		{
 			m_indexCount = flush.indexCount;
 
-			m_indicies = Helper::reallocateMemoryT<RenderIndex>( m_indicies, m_indexCount );
+			m_indicies = Helper::reallocateArrayT<RenderIndex>( m_indicies, m_indexCount );
 		}
 
 		ParticleMesh meshes[MENGINE_PARTICLE_MAX_MESH];

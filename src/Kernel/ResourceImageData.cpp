@@ -174,7 +174,7 @@ namespace Mengine
 
 		size_t memorySize = Helper::getTextureMemorySize( width, height, channels, 1, format );
 
-		m_buffer = Helper::allocateMemoryT<unsigned char>( memorySize );
+		m_buffer = Helper::allocateArrayT<unsigned char>( memorySize );
 
 		ImageCodecOptions options;
 		options.pitch = width * channels;

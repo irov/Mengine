@@ -631,10 +631,10 @@ namespace Mengine
 
 		PythonScriptWrapper::constsWrap();
         PythonScriptWrapper::helperWrap();
+        PythonScriptWrapper::nodeWrap();
 		PythonScriptWrapper::mathWrap();
-		PythonScriptWrapper::nodeWrap();
         PythonScriptWrapper::entityWrap();
-        PythonScriptWrapper::engineWrap();		
+        PythonScriptWrapper::engineWrap();
 		PythonScriptWrapper::soundWrap();
 		
         SERVICE_CREATE( RenderService );

@@ -15,7 +15,7 @@
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	static size_t __movie_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, size_t _carriage, size_t _size )
+	static ae_size_t __movie_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size )
 	{
         (void)_carriage;
 
@@ -26,7 +26,7 @@ namespace Mengine
 		return bytes;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void __movie_copy_stream( ae_voidptr_t _data, ae_constvoidptr_t _src, ae_voidptr_t _dst, size_t _size )
+	static ae_void_t __movie_copy_stream( ae_voidptr_t _data, ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size )
 	{
 		(void)_data;
 
@@ -126,11 +126,68 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void Mengine_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t _data, ae_voidptr_t _ud )
+    static ae_void_t __movie_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t _data, ae_voidptr_t _ud )
     {
         (void)_type;
         (void)_data;
         (void)_ud;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ae_bool_t __movie_cache_uv_provider( const aeMovieDataCacheUVProviderCallbackData * _callbackData, ae_voidptrptr_t _cud, ae_voidptr_t _ud )
+    {
+        (void)_ud;
+
+        const aeMovieResource * movie_resource = _callbackData->resource;
+
+        Resource * resource = reinterpret_cast<Resource *>(movie_resource->data);
+
+        aeMovieResourceTypeEnum resource_type = movie_resource->type;
+
+        switch( resource_type )
+        {
+        case AE_MOVIE_RESOURCE_IMAGE:
+            {
+                const aeMovieResourceImage * movie_resource_image = reinterpret_cast<const aeMovieResourceImage *>(movie_resource);
+
+                if( movie_resource_image->atlas_image != AE_NULL )
+                {
+                    break;
+                }
+
+                ResourceImage * resource_image = static_cast<ResourceImage *>(resource);
+
+                ae_uint32_t vertex_count = _callbackData->vertex_count;
+
+                mt::vec2f * uvs = Helper::allocateArrayT<mt::vec2f>( vertex_count );
+
+                for( uint32_t index = 0; index != vertex_count; ++index )
+                {
+                    mt::vec2f uv;
+                    const float * uv2 = _callbackData->uvs[index];
+                    uv.from_f2( uv2 );
+                    
+                    resource_image->correctUVImage( uvs[index], uv );
+                }
+
+                *_cud = uvs;
+            }break;
+        default:
+            {
+            }break;
+        }
+
+        return AE_TRUE;
+    }
+    static ae_void_t __movie_cache_uv_deleter( const aeMovieDataCacheUVDeleterCallbackData * _callbackData, ae_voidptr_t _ud )
+    {
+        (void)_ud;
+
+        if( _callbackData->uv_cache_data == AE_NULL )
+        {
+            return;
+        }
+
+        Helper::freeMemoryT( reinterpret_cast<mt::vec2f *>(const_cast<void *>(_callbackData->uv_cache_data)) );
     }
 	//////////////////////////////////////////////////////////////////////////
 	ResourceMovie2::ResourceMovie2()
@@ -327,7 +384,15 @@ namespace Mengine
 			return false;
 		}
 
-		aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &__movie_resource_provider, &Mengine_resource_deleter, this );
+        aeMovieDataProviders data_providers;
+        ae_clear_movie_data_providers( &data_providers );
+
+        data_providers.resource_provider = &__movie_resource_provider;
+        data_providers.resource_deleter = &__movie_resource_deleter;
+        data_providers.cache_uv_provider = &__movie_cache_uv_provider;
+        data_providers.cache_uv_deleter = &__movie_cache_uv_deleter;
+
+		aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, this );
 
 		aeMovieStream * movie_stream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, stream.get() );
 
@@ -446,7 +511,10 @@ namespace Mengine
             return false;
         }
 
-        aeMovieData * movieData = ae_create_movie_data( m_movieInstance, 0, 0, AE_NULL );
+        aeMovieDataProviders data_providers;
+        ae_clear_movie_data_providers( &data_providers );
+
+        aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, AE_NULL );
 
         aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, stream.get() );
 
@@ -559,7 +627,7 @@ namespace Mengine
 		video->setFrameRate( _resource->frameRate );
 		video->setDuration( _resource->duration );
 
-		if( _resource->alpha == AE_TRUE )
+		if( _resource->has_alpha_channel == AE_TRUE )
 		{
 			video->setAlpha( true );
 			video->setCodecType( STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );

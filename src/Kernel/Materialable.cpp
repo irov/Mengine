@@ -68,7 +68,7 @@ namespace Mengine
 				textures[0] = _resourceImage->getTexture();
 				textures[1] = _resourceImage->getTextureAlpha();
 
-				premultiply = _resourceImage->getPremultiply();
+				premultiply = _resourceImage->isPremultiply();
 			}
 			else
 			{

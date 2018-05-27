@@ -701,10 +701,10 @@ namespace Mengine
 					shape.vertexCount = (uint16_t)shapeVertexCount;
 					shape.indexCount = (uint16_t)shapeIndicesCount;
 
-					shape.pos = Helper::allocateMemoryT<mt::vec2f>( shapeVertexCount );
-					shape.uv = Helper::allocateMemoryT<mt::vec2f>( shapeVertexCount );
+					shape.pos = Helper::allocateArrayT<mt::vec2f>( shapeVertexCount );
+					shape.uv = Helper::allocateArrayT<mt::vec2f>( shapeVertexCount );
 
-					shape.indices = Helper::allocateMemoryT<RenderIndex>( shapeIndicesCount );
+					shape.indices = Helper::allocateArrayT<RenderIndex>( shapeIndicesCount );
 
 					for( size_t i = 0; i != shapeVertexCount; ++i )
 					{

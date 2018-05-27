@@ -265,7 +265,7 @@ namespace Mengine
 
 		uint32_t m_maxVertexCount;
 		uint32_t m_maxIndexCount;
-						
+
 		RenderVertexBufferInterfacePtr m_currentVertexBuffer;
 		RenderIndexBufferInterfacePtr m_currentIndexBuffer;
 
@@ -309,7 +309,7 @@ namespace Mengine
         typedef stdex::vector<RenderPassPtr> TVectorRenderPass;
         TVectorRenderPass m_renderPasses;
 
-		typedef stdex::vector<RenderVertex2D> TArrayRenderVertex2D;
+		typedef TVectorRenderVertex2D TArrayRenderVertex2D;
 		typedef stdex::list<TArrayRenderVertex2D> TListDebugVertices;
 		TListDebugVertices m_debugVertices;
               

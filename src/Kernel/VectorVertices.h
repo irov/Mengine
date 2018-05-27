@@ -10,26 +10,23 @@ namespace Mengine
 	{
 	public:
 		VectorVertices();
-
-	protected:
-		typedef stdex::vector<RenderVertex2D> TVectorVertex2D;
-
+        
 	public:
-		inline TVectorVertex2D & getVertices();
+		inline TVectorRenderVertex2D & getVertices();
 		inline void invalidateVertices( unsigned char _invalidate = 0xFE );
 
 	protected:
 		void updateVertices_();
 	
 	protected:
-		virtual void _updateVertices( TVectorVertex2D & _vertices, unsigned char _invalidate ) = 0;
+		virtual void _updateVertices( TVectorRenderVertex2D & _vertices, unsigned char _invalidate ) = 0;
 
 	private:
-		TVectorVertex2D m_vertices;
+        TVectorRenderVertex2D m_vertices;
 		unsigned char m_invalidateVertices;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline VectorVertices::TVectorVertex2D & VectorVertices::getVertices()
+	inline TVectorRenderVertex2D & VectorVertices::getVertices()
 	{
 		if( m_invalidateVertices != 0 )
 		{

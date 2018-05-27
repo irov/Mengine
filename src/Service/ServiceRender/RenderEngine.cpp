@@ -101,11 +101,7 @@ namespace Mengine
         m_debugInfo.fillrate = 0.f;
         m_debugInfo.object = 0;
         m_debugInfo.triangle = 0;
-
-#ifndef MENGINE_MASTER_RELEASE 
-        m_debugFillrateCalcMode = true;
-#endif
-
+        
         //m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
         uint32_t batchMode = CONFIG_VALUE( "Engine", "RenderServiceBatchMode", 1 );

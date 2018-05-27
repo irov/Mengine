@@ -185,18 +185,24 @@ namespace Mengine
 
 		ConstString m_compositionName;
 
-		aeMovieComposition * m_composition;
+		const aeMovieComposition * m_composition;
 
         float m_duration;
         float m_frameDuration;
 
-		struct Mesh
-		{
-			TVectorRenderVertex2D vertices;
-			TVectorRenderIndices indices;
+        TVectorRenderVertex2D m_vertices;
+        TVectorRenderIndices m_indices;
 
-			RenderMaterialInterfacePtr material;
-		};
+        struct Mesh
+        {
+            uint32_t begin_vertices;
+            uint32_t count_vertices;
+
+            uint32_t begin_indices;
+            uint32_t count_indices;
+
+            RenderMaterialInterfacePtr material;
+        };
 
 		typedef stdex::vector<Mesh> TVectorMesh;
 		TVectorMesh m_meshes;

@@ -3400,7 +3400,9 @@ namespace Mengine
             .def( "setAlpha", &ResourceImage::setAlpha )
             .def( "isAlpha", &ResourceImage::hasAlpha )
             .def( "setPremultiply", &ResourceImage::setPremultiply )
-            .def( "getPremultiply", &ResourceImage::getPremultiply )
+            .def( "isPremultiply", &ResourceImage::isPremultiply )
+            .def( "setPow2", &ResourceImage::setPow2 )
+            .def( "isPow2", &ResourceImage::isPow2 )
             .def( "setColor", &ResourceImage::setColor )
             .def( "getColor", &ResourceImage::getColor )
             ;

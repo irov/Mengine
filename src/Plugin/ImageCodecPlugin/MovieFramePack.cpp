@@ -76,28 +76,28 @@ namespace Mengine
     {
 		m_sizeLayers = _size;
 
-		m_layers = Helper::allocateMemoryT<MovieLayerFrame>( _size );
+		m_layers = Helper::allocateArrayT<MovieLayerFrame>( _size );
     }
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializeTimeremap( uint32_t _size )
 	{
 		m_sizeTimeremap = _size;
 
-		m_timeremap = Helper::allocateMemoryT<MovieLayerTimeRemap>( _size );
+		m_timeremap = Helper::allocateArrayT<MovieLayerTimeRemap>( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializeShapes( uint32_t _size )
 	{
 		m_sizeShapes = _size;
 
-		m_shapes = Helper::allocateMemoryT<MovieLayerShapes>( _size );
+		m_shapes = Helper::allocateArrayT<MovieLayerShapes>( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void MovieFramePack::initializePolygons( uint32_t _size )
 	{
 		m_sizePolygons = _size;
 
-		m_polygons = Helper::allocateMemoryT<MovieLayerPolygon>( _size );
+		m_polygons = Helper::allocateArrayT<MovieLayerPolygon>( _size );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	MovieLayerFrame & MovieFramePack::initializeLayer( uint32_t _layerIndex, uint32_t _count, bool _immutable )

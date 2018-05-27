@@ -72,6 +72,10 @@ namespace Mengine
                        
         m_texture = m_resourceImage->getTexture();
         m_textureAlpha = m_resourceImage->getTextureAlpha();
+
+        bool pow2 = m_texture->isPow2();
+
+        this->setPow2( pow2 );
       		        
         return true;
     }

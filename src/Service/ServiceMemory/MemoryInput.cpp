@@ -27,7 +27,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	Pointer MemoryInput::newMemory( size_t _size )
 	{
-		unsigned char * memory = Helper::reallocateMemoryT<unsigned char>( m_data, _size );
+		unsigned char * memory = Helper::reallocateArrayT<unsigned char>( m_data, _size );
 
 		if( memory == nullptr )
 		{

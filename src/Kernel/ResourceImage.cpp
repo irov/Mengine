@@ -6,21 +6,22 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::ResourceImage()
-        : m_maxSize(0.f, 0.f)
-        , m_size(0.f, 0.f)
-		, m_offset(0.f, 0.f)
-        , m_uvImageRotate(false)
-        , m_uvAlphaRotate(false)
-        , m_hasAlpha(false)
-		, m_isPremultiply(false)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceImage::~ResourceImage()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    ResourceImage::ResourceImage()
+        : m_maxSize( 0.f, 0.f )
+        , m_size( 0.f, 0.f )
+        , m_offset( 0.f, 0.f )
+        , m_uvImageRotate( false )
+        , m_uvAlphaRotate( false )
+        , m_hasAlpha( false )
+        , m_isPremultiply( false )
+        , m_isPow2( false )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ResourceImage::~ResourceImage()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImage::setTexture( const RenderTextureInterfacePtr & _texture )
     {
@@ -31,17 +32,17 @@ namespace Mengine
     {
         m_textureAlpha = _textureAlpha;
     }
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     void ResourceImage::_release()
     {
         if( m_texture != nullptr )
         {
             const FilePath & filePath = m_texture->getFileName();
 
-            LOGGER_INFO("ResourceImage::_release %s release texture %s"
+            LOGGER_INFO( "ResourceImage::_release %s release texture %s"
                 , this->getName().c_str()
                 , filePath.c_str()
-                );
+            );
 
             m_texture = nullptr;
         }
@@ -50,10 +51,10 @@ namespace Mengine
         {
             const FilePath & filePath = m_textureAlpha->getFileName();
 
-            LOGGER_INFO("ResourceImage::_release %s release texture alpha %s"
+            LOGGER_INFO( "ResourceImage::_release %s release texture alpha %s"
                 , this->getName().c_str()
                 , filePath.c_str()
-                );
+            );
 
             m_textureAlpha = nullptr;
         }

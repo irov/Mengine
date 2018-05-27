@@ -183,7 +183,7 @@ namespace Mengine
 		textures[0] = m_resourceImage->getTexture();
 		textures[1] = m_resourceTrackMatteImage->getTexture();
 
-        bool premultiply = m_resourceImage->getPremultiply();
+        bool premultiply = m_resourceImage->isPremultiply();
 
         RenderMaterialInterfacePtr material = nullptr;
 

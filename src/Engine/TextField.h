@@ -32,7 +32,7 @@ namespace Mengine
         ~TextField() override;
 
     public:
-        void setMaxLength( float _len );
+        void setMaxLength( float _maxLength );
         float getMaxLength() const;
 
     public:
@@ -56,7 +56,7 @@ namespace Mengine
         bool updateTextCache_( U32String & _cacheText ) const;
 
     public:
-        void setFontName( const ConstString & _name );
+        void setFontName( const ConstString & _fontName );
         const ConstString & getFontName() const;
 
     public:
@@ -64,7 +64,7 @@ namespace Mengine
 
     public:
         void setFontColor( const ColourValue & _color );
-        const ColourValue& getFontColor() const;
+        const ColourValue & getFontColor() const;
 
         void setLineOffset( float _offset );
         float getLineOffset() const;
@@ -146,6 +146,7 @@ namespace Mengine
         inline bool isInvalidateTextLines() const;
 
         void updateTextLines_() const;
+        void updateTextLinesMaxCount_( TVectorTextLines & _textLines ) const;
 
     protected:
         inline const TextEntryInterfacePtr & getTextEntry() const;

@@ -368,34 +368,12 @@ namespace Mengine
 
         const mt::box2f & bb = this->getBoundingBox();
 
-        uint32_t renderCharCount = 0U;
-
         for( const Chunk & chunk : m_chunks )
         {
             const TVectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.vertex_begin;
 
-            if( renderCharCount >= m_maxCharCount )
-            {
-                continue;
-            }
-
-            uint32_t correctChunkVertexCount = chunk.vertex_count;
-
-            uint32_t chunkCharCount = chunk.vertex_count / 4;
-
-            if( renderCharCount + chunkCharCount >= m_maxCharCount )
-            {
-                correctChunkVertexCount = (m_maxCharCount - renderCharCount) * 4;
-
-                renderCharCount = m_maxCharCount;
-            }
-            else
-            {
-                renderCharCount += chunkCharCount;
-            }
-
             _renderService
-                ->addRenderQuad( _state, chunk.material, chunk_vertices, correctChunkVertexCount, &bb, false );
+                ->addRenderQuad( _state, chunk.material, chunk_vertices, chunk.vertex_count, &bb, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -418,9 +396,9 @@ namespace Mengine
         return m_charCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::setMaxLength( float _len )
+    void TextField::setMaxLength( float _maxLength )
     {
-        m_maxLength = _len;
+        m_maxLength = _maxLength;
 
         this->invalidateTextLines();
     }
@@ -553,7 +531,51 @@ namespace Mengine
 
         return m_textSize;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::updateTextLinesMaxCount_( TVectorTextLines & _textLines ) const
+    {
+        uint32_t charIterator = 0;
+        for( TVectorTextLines::iterator
+            it_lines = _textLines.begin(),
+            it_lines_end = _textLines.end();
+            it_lines != it_lines_end;
+            ++it_lines )
+        {
+            TVectorTextChunks & chars = *it_lines;
 
+            for( TVectorTextChunks::iterator
+                it_chars = chars.begin(),
+                it_chars_end = chars.end();
+                it_chars != it_chars_end;
+                ++it_chars )
+            {
+                TextChunk & chunk = *it_chars;
+
+                U32String::size_type value_size = chunk.value.size();
+
+                if( charIterator + value_size < m_maxCharCount )
+                {
+                    charIterator += value_size;
+
+                    continue;
+                }
+
+                chunk.value = chunk.value.substr( 0, m_maxCharCount - charIterator );
+
+                TVectorTextChunks::iterator it_chars_erase = it_chars;
+                std::advance( it_chars_erase, 1 );
+
+                chars.erase( it_chars_erase, chars.end() );
+
+                TVectorTextLines::iterator it_lines_erase = it_lines;
+                std::advance( it_lines_erase, 1 );
+
+                _textLines.erase( it_lines_erase, _textLines.end() );
+
+                return;
+            }
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLines_() const
     {
@@ -729,6 +751,8 @@ namespace Mengine
 
             textLines.swap( new_textLines );
         }
+
+        this->updateTextLinesMaxCount_( textLines );
         
         //if( m_debugMode == true )
         //{
@@ -794,7 +818,7 @@ namespace Mengine
                 line_chars += line.getCharsDataSize();
             }
 
-            maxlen = (std::max)(maxlen, line_length);                
+            maxlen = (std::max)(maxlen, line_length);
             m_charCount += line_chars;
         }
 

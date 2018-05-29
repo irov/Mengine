@@ -9,6 +9,13 @@ namespace Mengine
     class ValueFollower
     {
     public:
+        ValueFollower()
+            : m_value( T() )
+            , m_follow( T() )
+        {
+        }
+
+    public:
         void initialize( const T & _value )
         {
             m_value = _value;

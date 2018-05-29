@@ -395,6 +395,21 @@ namespace Mengine
 			return uid;
 		}
 
+        String s_getTextFromID( const ConstString & _textId )
+        {
+            const TextEntryInterfacePtr & textEntry = TEXT_SERVICE()
+                ->getTextEntry( _textId );
+
+            if( textEntry == nullptr )
+            {
+                return String();
+            }
+
+            const String & value = textEntry->getValue();
+
+            return value;
+        }
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE()
@@ -3108,6 +3123,7 @@ namespace Mengine
 		pybind::def_functor( kernel, "reloadModule", helperScriptMethod, &HelperScriptMethod::s_reloadModule );
 
 		pybind::def_functor( kernel, "makeUID", helperScriptMethod, &HelperScriptMethod::s_makeUID );
-			
+
+        pybind::def_functor( kernel, "getTextFromID", helperScriptMethod, &HelperScriptMethod::s_getTextFromID );
 	}
 }

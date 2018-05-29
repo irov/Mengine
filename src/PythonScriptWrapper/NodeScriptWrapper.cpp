@@ -3780,7 +3780,6 @@ namespace Mengine
                 .def( "removeTextFormatArgs", &TextField::removeTextFormatArgs )
                 .def_deprecated( "getTextKey", &TextField::getTextID, "use getTextID" )
                 .def( "getTextID", &TextField::getTextID )
-                //.def_proxy_static( "getText", nodeScriptMethod, &NodeScriptMethod::textfield_getText )
                 .def( "getTextExpectedArgument", &TextField::getTextExpectedArgument )
 
                 .def_deprecated( "getHeight", &TextField::getFontHeight, "use getFontHeight" )

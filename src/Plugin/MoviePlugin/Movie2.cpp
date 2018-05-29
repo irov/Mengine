@@ -924,7 +924,7 @@ namespace Mengine
     static ae_void_t __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, ae_voidptr_t _data )
     {
         (void)_data;
-            
+        
         aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( _callbackData->layer );
 
         switch( layer_type )

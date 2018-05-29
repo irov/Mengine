@@ -8,9 +8,7 @@
 namespace Mengine
 {	
 	namespace Helper
-	{
-		const ConstString& emptyConstString();
-		
+	{		
 		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delim );
 		void wsplit( TVectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delim );
 

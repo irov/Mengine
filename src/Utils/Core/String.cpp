@@ -12,11 +12,6 @@ namespace Mengine
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		const ConstString& emptyConstString()
-		{
-			return ConstString::none();
-		}
-		//////////////////////////////////////////////////////////////////////////
 		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delim )
 		{
 			uint32_t numSplits = 0;

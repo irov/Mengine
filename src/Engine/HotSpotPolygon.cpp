@@ -55,7 +55,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotPolygon::_updateBoundingBox( mt::box2f & _boundingBox ) const
 	{
-		size_t numPoints = m_polygon.num_points();
+        uint32_t numPoints = m_polygon.num_points();
 
 		if( numPoints == 0 )
 		{
@@ -75,7 +75,7 @@ namespace Mengine
 
 		mt::reset( _boundingBox, wmp_0 );
 
-		for( size_t
+		for( uint32_t
 			it = 1,
 			it_end = numPoints;
 		it != it_end;
@@ -214,10 +214,10 @@ namespace Mengine
 
 		const Polygon & polygon = this->getPolygon();
 
-		size_t numpoints = polygon.num_points();
+        uint32_t numpoints = polygon.num_points();
 		const mt::vec2f * points = polygon.outer_points();
 
-		for( size_t it = 0; it != numpoints; ++it )
+		for( uint32_t it = 0; it != numpoints; ++it )
 		{
 			const mt::vec2f & v = points[it];
 
@@ -256,14 +256,14 @@ namespace Mengine
 
 		const Polygon & polygon = this->getPolygon();
 
-		size_t numpoints = polygon.num_points();
+        uint32_t numpoints = polygon.num_points();
 
 		if( numpoints == 0 )
 		{
 			return;
 		}
 
-		size_t vertexCount = numpoints * 2;
+        uint32_t vertexCount = numpoints * 2;
 
 		RenderVertex2D * vertices = _renderService
 			->getDebugRenderVertex2D( vertexCount );
@@ -277,9 +277,9 @@ namespace Mengine
 
 		const mt::vec2f * ring = polygon.outer_points();
 
-		for( size_t i = 0; i != numpoints; ++i )
+		for( uint32_t i = 0; i != numpoints; ++i )
 		{
-			size_t j = (i + 1) % numpoints;
+            uint32_t j = (i + 1) % numpoints;
 
 			mt::vec3f trP0;
 			mt::mul_v3_v2_m4( trP0, ring[i], wm );
@@ -290,7 +290,7 @@ namespace Mengine
 
 			v0.color = m_debugColor;
 
-			for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
 			{
 				v0.uv[uv_index].x = 0.f;
 				v0.uv[uv_index].y = 0.f;
@@ -305,7 +305,7 @@ namespace Mengine
 
 			v1.color = m_debugColor;
 
-			for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
 			{
 				v1.uv[uv_index].x = 0.f;
 				v1.uv[uv_index].y = 0.f;

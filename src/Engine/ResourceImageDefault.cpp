@@ -32,13 +32,13 @@ namespace Mengine
 		return m_codecType;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_checkRowTransparency( const void * _buffer, size_t _width, size_t _height, size_t _row )
+	static bool s_checkRowTransparency( const void * _buffer, uint32_t _width, uint32_t _height, uint32_t _row )
 	{				
 		(void)_height;
 
 		const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer) + _row * _width * 4;
 
-		for( size_t i = 0; i != _width; ++i )
+		for( uint32_t i = 0; i != _width; ++i )
 		{
 			if( pixel_memory[i * 4 + 3] != 0 )
 			{
@@ -49,11 +49,11 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_checkColumnTransparency( const void * _buffer, size_t _width, size_t _height, size_t _column )
+	static bool s_checkColumnTransparency( const void * _buffer, uint32_t _width, uint32_t _height, uint32_t _column )
 	{				
 		const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer);
 
-		for( size_t i = 0; i != _height; ++i )
+		for( uint32_t i = 0; i != _height; ++i )
 		{
 			if( pixel_memory[i * _width * 4 + _column * 4 + 3] != 0 )
 			{
@@ -64,9 +64,9 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_checkRowColumnTransparency( const void * _buffer, size_t _width, size_t _height )
+	static bool s_checkRowColumnTransparency( const void * _buffer, uint32_t _width, uint32_t _height )
 	{	
-		for( size_t i = 0; i != _width; ++i )
+		for( uint32_t i = 0; i != _width; ++i )
 		{
 			if( s_checkColumnTransparency( _buffer, _width, _height, i ) == true )
 			{
@@ -74,7 +74,7 @@ namespace Mengine
 			}
 		}
 
-		for( size_t j = 0; j != _height; ++j )
+		for( uint32_t j = 0; j != _height; ++j )
 		{
 			if( s_checkRowTransparency( _buffer, _width, _height, j ) == true )
 			{
@@ -85,11 +85,11 @@ namespace Mengine
 		return false;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static bool s_allPixelsTransparency( const void * _buffer, size_t _size )
+	static bool s_allPixelsTransparency( const void * _buffer, uint32_t _size )
 	{
 		const uint8_t * pixel_memory = static_cast<const uint8_t *>(_buffer);
 
-		for( size_t i = 0; i != _size; i += 4 )
+		for( uint32_t i = 0; i != _size; i += 4 )
 		{
 			if( pixel_memory[i + 3] != 0 )
 			{
@@ -376,7 +376,7 @@ namespace Mengine
         uv_unscale.x = hwWidth * width_inv;
         uv_unscale.y = hwHeight * height_inv;
 
-		for( size_t i = 0; i != 4; ++i )
+		for( uint32_t i = 0; i != 4; ++i )
 		{
 			m_uvImage[i] *= uv_unscale;
 		}
@@ -423,7 +423,7 @@ namespace Mengine
 		uv_scale.x = width * hwWidthInv;
 		uv_scale.y = height * hwHeightInv;
 
-		for( size_t i = 0; i != 4; ++i )
+		for( uint32_t i = 0; i != 4; ++i )
 		{
 			m_uvImage[i] *= uv_scale;
 		}

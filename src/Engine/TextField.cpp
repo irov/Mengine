@@ -172,15 +172,11 @@ namespace Mengine
         {
         case ETFVA_BOTTOM:
             {
-                TVectorTextLine::size_type line_count = layouts.size();
-
-                base_offset.y = (fontAscent + lineOffset) * (float( line_count ) - 1.f) * 0.5f;
+                base_offset.y = (fontAscent + lineOffset) * (float( m_layoutCount ) - 1.f) * 0.5f;
             }break;
         case ETFVA_CENTER:
             {
-                TVectorTextLine::size_type line_count = layouts.size();
-
-                base_offset.y = -(fontAscent + lineOffset) * (float( line_count ) - 2.f) * 0.5f;
+                base_offset.y = -(fontAscent + lineOffset) * (float( m_layoutCount ) - 2.f) * 0.5f;
             }break;
         case ETFVA_TOP:
             {
@@ -192,7 +188,9 @@ namespace Mengine
         
         EMaterial materialId = EM_DEBUG;
 
-        if( _font->getFontPremultiply() == false )
+        bool premultiply = _font->getFontPremultiply();
+
+        if( premultiply == false )
         {
             switch( m_blendMode )
             {
@@ -245,6 +243,12 @@ namespace Mengine
 
         const ColourValue & paramsFontColor = this->calcFontColor();
         ColourValue colorBaseFont = paramsFontColor * _color;
+
+        if( premultiply == true )
+        {
+            colorBaseFont.premultiplyRGB();
+        }
+
         cacheFontARGB[0] = colorBaseFont.getAsARGB();
 
         for( TVectorCacheFonts::size_type index = 1; index != m_cacheFonts.size(); ++index )
@@ -255,6 +259,12 @@ namespace Mengine
 
             const ColourValue & fontColor = font->getFontColor();
             ColourValue totalFontColor = fontColor * _color;
+
+            if( premultiply == true )
+            {
+                totalFontColor.premultiplyRGB();
+            }
+
             cacheFontARGB[index] = totalFontColor.getAsARGB();
         }
 
@@ -371,6 +381,11 @@ namespace Mengine
         for( const Chunk & chunk : m_chunks )
         {
             const TVectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.vertex_begin;
+
+            if( chunk_vertices[0].color == 16777215 )
+            {
+                continue;
+            }
 
             _renderService
                 ->addRenderQuad( _state, chunk.material, chunk_vertices, chunk.vertex_count, &bb, false );
@@ -577,6 +592,85 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const TVectorTextLines & _textLines, mt::vec2f & _size, uint32_t & _charCount, uint32_t & _layoutCount ) const
+    {
+        float fontHeight = _font->getFontAscent();
+
+        float charOffset = this->calcCharOffset();        
+        float lineOffset = this->calcLineOffset();
+
+        TVectorTextLineLayout layouts;
+        for( const TVectorTextChunks & textChunks : _textLines )
+        {
+            TVectorTextLine2 textLine2;
+            for( const TextChunk & textChunk : textChunks )
+            {
+                const CacheFont & cache = m_cacheFonts[textChunk.fontId];
+
+                const TextFontInterfacePtr & chunkFont = cache.font;
+
+                uint32_t layoutCount = chunkFont->getLayoutCount();
+
+                TVectorTextLine textLine;
+                for( uint32_t layoutIndex = 0; layoutIndex != layoutCount; ++layoutIndex )
+                {
+                    TextLine tl( layoutIndex, charOffset );
+                    if( tl.initialize( textChunk.fontId, chunkFont, textChunk.value ) == false )
+                    {
+                        LOGGER_ERROR( "TextField::updateTextLines_ %s textID %s invalid setup line"
+                            , this->getName().c_str()
+                            , m_key.c_str()
+                        );
+
+                        continue;
+                    }
+
+                    textLine.emplace_back( tl );
+                }
+
+                textLine2.emplace_back( textLine );
+            }
+
+            layouts.emplace_back( textLine2 );
+        }
+
+        _charCount = 0;
+
+        float maxlen = 0.f;
+
+        for( const TVectorTextLine2 & line2 : layouts )
+        {
+            float line_length = 0.f;
+            uint32_t line_chars = 0;
+
+            for( const TVectorTextLine & lines : line2 )
+            {
+                const TextLine & line = lines[0];
+
+                line_length += line.getLength();
+                line_chars += line.getCharsDataSize();
+            }
+
+            maxlen = (std::max)(maxlen, line_length);
+            _charCount += line_chars;
+        }
+
+        _layoutCount = layouts.size();
+
+        _size.x = maxlen;
+
+        TVectorTextLineLayout::size_type lineCount = layouts.size();
+
+        if( lineCount > 0 )
+        {
+            _size.y = (lineOffset + fontHeight) * (lineCount - 1) + fontHeight;
+        }
+        else
+        {
+            _size.y = fontHeight;
+        }
+    }
+    ////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLines_() const
     {
         m_invalidateTextLines = false;
@@ -642,7 +736,10 @@ namespace Mengine
 
             const TextFontInterfacePtr & font = cache.font;
 
-            font->prepareGlyph( tc.value );
+            if( font->prepareGlyph( tc.value ) == false )
+            {
+                return;
+            }
         }
 
         TVectorU32String line_delims;
@@ -732,7 +829,14 @@ namespace Mengine
 
                         if( new_textChunk.value.empty() == true )
                         {
-                            new_textChunk.value.insert( new_textChunk.value.end(), word.begin(), word.end() );
+                            if( word.empty() == true )
+                            {
+                                new_textChunk.value.insert( new_textChunk.value.end(), space_delim.begin(), space_delim.end() );
+                            }
+                            else
+                            {
+                                new_textChunk.value.insert( new_textChunk.value.end(), word.begin(), word.end() );
+                            }
                         }
                         else
                         {
@@ -751,9 +855,11 @@ namespace Mengine
 
             textLines.swap( new_textLines );
         }
+                
+        this->updateTextLinesDimension_( baseFont, textLines, m_textSize, m_charCount, m_layoutCount );
 
         this->updateTextLinesMaxCount_( textLines );
-        
+
         //if( m_debugMode == true )
         //{
         //    String s_key = m_key.c_str();
@@ -803,44 +909,9 @@ namespace Mengine
             m_layouts.emplace_back( textLine2 );
         }
 
-        float maxlen = 0.f;
-
-        for( const TVectorTextLine2 & line2 : m_layouts )
-        {
-            float line_length = 0.f;
-            uint32_t line_chars = 0;
-
-            for( const TVectorTextLine & lines : line2 )
-            {
-                const TextLine & line = lines[0];
-
-                line_length += line.getLength();
-                line_chars += line.getCharsDataSize();
-            }
-
-            maxlen = (std::max)(maxlen, line_length);
-            m_charCount += line_chars;
-        }
-
-        m_textSize.x = maxlen;
-
-        float fontHeight = baseFont->getFontAscent();
-        float lineOffset = this->calcLineOffset();
-                
-        TVectorTextLineLayout::size_type lineCount = m_layouts.size();
-
-        if( lineCount > 0 )
-        {
-            m_textSize.y = lineOffset * (lineCount - 1) + fontHeight;
-        }
-        else
-        {
-            m_textSize.y = fontHeight;
-        }
-
         this->invalidateVertices_();
     }
-    //////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
     void TextField::updateFont_() const
     {
         m_invalidateFont = false;
@@ -1161,23 +1232,23 @@ namespace Mengine
 
         //const TListTextLine & lines = this->getTextLines();
 
-        //for( TListTextLine::const_iterator 
-        //	it_line = lines.begin(),
-        //	it_line_end = lines.end(); 
-        //it_line != it_line_end; 
-        //++it_line )
+        //for( TListTextLine::const_iterator
+        //    it_line = lines.begin(),
+        //    it_line_end = lines.end();
+        //    it_line != it_line_end;
+        //    ++it_line )
         //{
-        //	mt::vec2f alignOffset;
+        //    mt::vec2f alignOffset;
 
-        //	this->updateAlignOffset_( *it_line, alignOffset );
+        //    this->updateAlignOffset_( *it_line, alignOffset );
 
-        //	offset.x = alignOffset.x;
-        //	offset.y += alignOffset.y;
+        //    offset.x = alignOffset.x;
+        //    offset.y += alignOffset.y;
 
-        //	it_line->updateBoundingBox( offset, wm, _boundingBox );
+        //    it_line->updateBoundingBox( offset, wm, _boundingBox );
 
-        //	offset.y += m_lineOffset;
-        //}		
+        //    offset.y += m_lineOffset;
+        //}
     }
     //////////////////////////////////////////////////////////////////////////
     float TextField::getHorizontAlignOffset_( const TVectorTextLine2 & _lines )

@@ -149,9 +149,9 @@ namespace Mengine
 			return;
 		}
 
-		size_t numpoints = 16;
+		uint32_t numpoints = 16;
 
-		size_t vertexCount = numpoints * 2;
+        uint32_t vertexCount = numpoints * 2;
 
 		RenderVertex2D * vertices = _renderService
 			->getDebugRenderVertex2D( vertexCount );
@@ -163,9 +163,9 @@ namespace Mengine
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 		
-		for( size_t i = 0; i != numpoints; ++i )
+		for( uint32_t i = 0; i != numpoints; ++i )
 		{
-			size_t j = (i + 1) % numpoints;
+            uint32_t j = (i + 1) % numpoints;
 
 			float x0 = ::cosf( mt::constant::two_pi / numpoints * i ) * m_radius;
 			float x1 = ::cosf( mt::constant::two_pi / numpoints * j ) * m_radius;
@@ -181,7 +181,7 @@ namespace Mengine
 
 			v0.color = m_debugColor;
 
-			for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
 			{
 				v0.uv[uv_index].x = 0.f;
 				v0.uv[uv_index].y = 0.f;
@@ -196,7 +196,7 @@ namespace Mengine
 
 			v1.color = m_debugColor;
 
-			for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
 			{
 				v1.uv[uv_index].x = 0.f;
 				v1.uv[uv_index].y = 0.f;

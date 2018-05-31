@@ -163,7 +163,7 @@ namespace Mengine
 		uint32_t i = 0;
 		uint32_t j = 0;
 
-		size_t elementCount = m_images.size();
+        uint32_t elementCount = m_images.size();
 		m_elements.reserve( elementCount );
 		m_verticesWM.resize( elementCount * 4 );
 

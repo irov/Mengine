@@ -58,7 +58,7 @@ namespace Mengine
 		void updateElementWM_();
 
 	protected:
-		inline const RenderVertex2D * getVerticesWM( size_t _offset );
+		inline const RenderVertex2D * getVerticesWM( uint32_t _offset );
 		inline TVectorLandscape2DElements & getElementWM();
 		       
 	protected:
@@ -83,7 +83,7 @@ namespace Mengine
 		mutable bool m_invalidateElementWM;
     };
 	//////////////////////////////////////////////////////////////////////////
-	inline const RenderVertex2D * Landscape2D::getVerticesWM( size_t _offset )
+	inline const RenderVertex2D * Landscape2D::getVerticesWM( uint32_t _offset )
 	{
 		if( m_invalidateVerticesWM == true )
 		{

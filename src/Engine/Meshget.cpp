@@ -72,9 +72,9 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Meshget::setVertices( const pybind::list & _positions, const pybind::list & _uv, const pybind::list & _colors, const pybind::list & _indices )
 	{
-		size_t positions_count = _positions.size();
-		size_t uvs_count = _uv.size();
-		size_t colors_count = _colors.size();
+        uint32_t positions_count = _positions.size();
+        uint32_t uvs_count = _uv.size();
+		uint32_t colors_count = _colors.size();
 		
 		if( positions_count != uvs_count || positions_count != colors_count )
 		{
@@ -92,7 +92,7 @@ namespace Mengine
 			m_colors[i] = _colors[i];
 		}
 
-		size_t indices_count = _indices.size();
+		uint32_t indices_count = _indices.size();
 
 		m_indices.resize( indices_count );
 
@@ -150,7 +150,7 @@ namespace Mengine
 
 		mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
-		size_t vertexCount = m_positions.size();
+		uint32_t vertexCount = m_positions.size();
 				
 		for( uint32_t i = 1; i != vertexCount; ++i )
 		{
@@ -196,7 +196,7 @@ namespace Mengine
         const ColourValue & textureColour = m_surface->getColor();
 		color *= textureColour;
 
-		size_t vertexCount = m_positions.size();
+		uint32_t vertexCount = m_positions.size();
 
 		for( uint32_t i = 0; i != vertexCount; ++i )
 		{
@@ -215,7 +215,7 @@ namespace Mengine
 	{
 		m_invalidateVerticesWM = false;
 
-		size_t vertexCount = m_positions.size();
+		uint32_t vertexCount = m_positions.size();
 
 		const mt::mat4f & wm = this->getWorldMatrix();
 		

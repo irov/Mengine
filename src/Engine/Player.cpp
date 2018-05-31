@@ -1356,9 +1356,9 @@ namespace Mengine
                 typedef stdex::map<int32_t, stdex::vector<String>> TMapPybindScope;
                 TMapPybindScope scopes;
 
-                size_t count = stdex_allocator_report_count();
+                uint32_t count = stdex_allocator_report_count();
 
-                for( size_t i = 0; i != count; ++i )
+                for( uint32_t i = 0; i != count; ++i )
                 {
                     stdex_memory_report_t * report = stdex_allocator_report_info( i );
 

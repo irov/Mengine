@@ -114,7 +114,7 @@ namespace Mengine
         bool loop = this->getLoop();
 		emitter->setLoop( loop );
 
-		size_t polygon_count = m_polygon.num_points();
+        uint32_t polygon_count = m_polygon.num_points();
 
         if( polygon_count != 0 )
         {
@@ -685,7 +685,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	bool ParticleEmitter2::compilePolygon_( const ParticleEmitterInterfacePtr & _emitter )
     {
-		size_t n = m_polygon.num_points();
+        uint32_t n = m_polygon.num_points();
 
         if( n == 0 )
         {
@@ -712,7 +712,7 @@ namespace Mengine
 		}
         
         float * triangles_ptr = points.front().buff();
-		size_t triangles_size = points.size() / 3;
+        uint32_t triangles_size = points.size() / 3;
 
 		if( _emitter->changeEmitterModel( triangles_ptr, triangles_size ) == false )
 		{

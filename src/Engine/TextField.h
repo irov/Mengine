@@ -147,6 +147,7 @@ namespace Mengine
 
         void updateTextLines_() const;
         void updateTextLinesMaxCount_( TVectorTextLines & _textLines ) const;
+        void updateTextLinesDimension_( const TextFontInterfacePtr & _font, const TVectorTextLines & _textLines, mt::vec2f & _size, uint32_t & _charCount, uint32_t & _layoutCount ) const;
 
     protected:
         inline const TextEntryInterfacePtr & getTextEntry() const;
@@ -200,6 +201,7 @@ namespace Mengine
         uint32_t m_maxCharCount;
 
         mutable uint32_t m_charCount;
+        mutable uint32_t m_layoutCount;
         mutable mt::vec2f m_textSize;
 
         bool m_wrap;

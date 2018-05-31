@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PrototypeManager::_finalizeService()
     {
-        for( size_t index = 0; index != MENGINE_PROTOTYPE_HASH_SIZE; ++index )
+        for( uint32_t index = 0; index != MENGINE_PROTOTYPE_HASH_SIZE; ++index )
         {
             TVectorPrototypes & prototypes = m_prototypes[index];
 
@@ -141,7 +141,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PrototypeManager::visitGenerators( VisitorPrototypeGenerator * _visitor ) const
     {
-        for( size_t index = 0; index != MENGINE_PROTOTYPE_HASH_SIZE; ++index )
+        for( uint32_t index = 0; index != MENGINE_PROTOTYPE_HASH_SIZE; ++index )
         {
             const TVectorPrototypes & prototypes = m_prototypes[index];
 

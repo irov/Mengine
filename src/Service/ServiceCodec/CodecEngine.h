@@ -6,7 +6,7 @@
 
 #include "Core/ConstString.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -42,13 +42,13 @@ namespace Mengine
         const ConstString & findCodecType( const FilePath & _path ) const override;
 
 	protected:
-		typedef stdex::map<ConstString, DecoderFactoryInterfacePtr> TMapDecoderSystem;
+		typedef Map<ConstString, DecoderFactoryInterfacePtr> TMapDecoderSystem;
 		TMapDecoderSystem m_mapDecoderSystem;
 
-		typedef stdex::map<ConstString, EncoderFactoryInterfacePtr> TMapEncoderSystem;
+		typedef Map<ConstString, EncoderFactoryInterfacePtr> TMapEncoderSystem;
 		TMapEncoderSystem m_mapEncoderSystem;
 
-		typedef stdex::map<String, ConstString> TMapCodecTypes;
+		typedef Map<String, ConstString> TMapCodecTypes;
 		TMapCodecTypes m_codecTypes;
 	};
 }

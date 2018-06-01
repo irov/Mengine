@@ -4,7 +4,7 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -31,7 +31,7 @@ namespace Mengine
 		MemoryInputInterfacePtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress ) override;
 
     protected:
-		typedef stdex::map<ConstString, ArchivatorInterfacePtr> TMapArchivators;
+		typedef Map<ConstString, ArchivatorInterfacePtr> TMapArchivators;
 		TMapArchivators m_archivators;
 	};
 }

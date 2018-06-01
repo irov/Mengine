@@ -19,7 +19,7 @@
 
 #include "math/uv4.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 #include "fe/fe.h"
 
@@ -104,8 +104,10 @@ namespace Mengine
             TTFGlyphQuad quads[4];
         };
 		
-		typedef stdex::vector<TTFGlyph> TVectorTTFGlyphs;
+		typedef Vector<TTFGlyph> TVectorTTFGlyphs;
 		TVectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
+
+        uint32_t m_ttfFESample;
 
         class PFindGlyph;
 	};

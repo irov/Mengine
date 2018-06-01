@@ -4,7 +4,7 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -53,7 +53,7 @@ namespace Mengine
 		bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
 	protected:      		
-		typedef stdex::vector<GlobalHandlerDesc> TVectorGlobalHandler;
+		typedef Vector<GlobalHandlerDesc> TVectorGlobalHandler;
 		TVectorGlobalHandler m_handlers;
 		TVectorGlobalHandler m_handlersAdd;
 

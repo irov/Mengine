@@ -6,6 +6,10 @@ namespace Mengine
 	Isometric::Isometric()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    Isometric::~Isometric()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
@@ -28,10 +32,10 @@ namespace Mengine
 		};		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Isometric::render( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
+	void Isometric::render( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
 		stdex::helper::intrusive_sort_stable( m_children, FIsometricSortY() );
 
-		Node::render( _renderService, _state, _debugMask );
+		Node::render( _renderService, _state );
 	}
 }

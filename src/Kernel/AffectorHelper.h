@@ -167,7 +167,7 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    template<class L, class T, size_t N>
+    template<class L, class T, uint32_t N>
     class LambdaAffectorInterpolateBezier
         : public LambdaAffectorInterpolate<L, T, ValueInterpolatorBezier<T, N> >
     {
@@ -313,7 +313,7 @@ namespace Mengine
             FactoryPtr m_factory;
         };
         //////////////////////////////////////////////////////////////////////////
-        template<class T, size_t N>
+        template<class T, uint32_t N>
         class NodeAffectorCreatorInterpolateBezier
         {
         public:

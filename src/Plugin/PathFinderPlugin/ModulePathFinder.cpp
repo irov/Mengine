@@ -288,7 +288,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModulePathFinder::_render( const RenderState * _state, uint32_t _debugMask )
+	void ModulePathFinder::_render( const RenderContext * _state, uint32_t _debugMask )
 	{
 		for( TPathFinderMaps::iterator 
 			it = m_maps.begin(),

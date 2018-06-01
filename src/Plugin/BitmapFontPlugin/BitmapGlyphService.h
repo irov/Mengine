@@ -8,7 +8,7 @@
 
 #include "Factory/Factory.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -29,7 +29,7 @@ namespace Mengine
 	protected:
 		FactoryPtr m_factoryTextGlyph;
 
-		typedef stdex::map<ConstString, BitmapGlyphPtr> TMapBitmapGlyph;
+		typedef Map<ConstString, BitmapGlyphPtr> TMapBitmapGlyph;
 		TMapBitmapGlyph m_glyphs;
 	};
 	//////////////////////////////////////////////////////////////////////////

@@ -7,7 +7,7 @@
 #include "Core/ConstString.h"
 #include "Core/Mixin.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -62,8 +62,8 @@ namespace Mengine
             EventReceiverPtr receiver;
         };
 
-        typedef stdex::vector<EventReceiverDesc> TMapEventReceivers;
-        TMapEventReceivers m_receivers;
+        typedef Vector<EventReceiverDesc> TVectorEventReceivers;
+        TVectorEventReceivers m_receivers;
 
         uint64_t m_flag;
 

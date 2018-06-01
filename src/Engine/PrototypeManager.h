@@ -5,11 +5,11 @@
 #include "Core/ServiceBase.h"
 #include "Core/ConstString.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
-#   ifndef MENGINE_PROTOTYPE_HASH_SIZE
+#ifndef MENGINE_PROTOTYPE_HASH_SIZE
 #   define MENGINE_PROTOTYPE_HASH_SIZE 256
-#   endif
+#endif
 
 namespace Mengine
 {
@@ -60,7 +60,7 @@ namespace Mengine
             }
         };
 
-        typedef stdex::vector<CategoryKey> TVectorPrototypes;
+        typedef Vector<CategoryKey> TVectorPrototypes;
         TVectorPrototypes m_prototypes[MENGINE_PROTOTYPE_HASH_SIZE];
 	};
 }

@@ -95,9 +95,9 @@ namespace Mengine
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie2Slot::_debugRender( Mengine::RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
+	void Movie2Slot::_debugRender( Mengine::RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
-		if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
+        if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{
 			return;
 		}
@@ -134,7 +134,7 @@ namespace Mengine
 
 			v0.position = trP0;
 
-			v0.color = 0x000000FF;
+			v0.color = 0xFFFFFFFF;
 
 			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index)
 			{
@@ -149,7 +149,7 @@ namespace Mengine
 
 			v1.position = trP1;
 
-			v1.color = 0x000000FF;
+			v1.color = 0xFFFFFFFF;
 
 			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index)
 			{

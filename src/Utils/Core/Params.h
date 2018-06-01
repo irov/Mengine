@@ -3,10 +3,10 @@
 #include "Core/String.h"
 #include "Core/ConstString.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
-	typedef stdex::map<ConstString, String> TMapParams;
-	typedef stdex::map<ConstString, WString> TMapWParams;
+	typedef Map<ConstString, String> TMapParams;
+	typedef Map<ConstString, WString> TMapWParams;
 }

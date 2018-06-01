@@ -6,6 +6,7 @@
 
 #include "Config/Typedef.h"
 #include "Config/String.h"
+#include "Config/Vector.h"
 
 #include "Core/ColourValue.h"
 #include "Core/GlyphChar.h"
@@ -34,7 +35,7 @@ namespace Mengine
 		RenderTextureInterfacePtr texture;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<CharData> TVectorCharData;
+	typedef Vector<CharData> TVectorCharData;
     //////////////////////////////////////////////////////////////////////////
 	class TextLine
 	{

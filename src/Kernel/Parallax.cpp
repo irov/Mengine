@@ -22,7 +22,7 @@ namespace Mengine
 		return m_parallaxFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Parallax::render( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
+	void Parallax::render( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
 		const mt::mat4f & camera_vm = _state->camera->getCameraViewMatrix();
 		const mt::mat4f & camera_pm = _state->camera->getCameraProjectionMatrix();
@@ -35,12 +35,12 @@ namespace Mengine
 
 		m_parallaxCamera.initialize( camera_pm, vm );
 
-		RenderState state;
+		RenderContext state;
 		state.viewport = _state->viewport;
 		state.camera = &m_parallaxCamera;
 		state.scissor = _state->scissor;
 		state.target = _state->target;
 
-		Node::render( _renderService, &state, _debugMask );
+		Node::render( _renderService, &state );
 	}
 }

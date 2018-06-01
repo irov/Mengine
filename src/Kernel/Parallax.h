@@ -19,7 +19,7 @@ namespace Mengine
 		const mt::vec3f & getParallaxFactor() const;
 
 	protected:
-		void render( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
+		void render( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
 
 	protected:
 		mt::vec3f m_parallaxFactor;

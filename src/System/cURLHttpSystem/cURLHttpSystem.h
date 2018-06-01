@@ -46,7 +46,7 @@ namespace Mengine
             HttpReceiverInterfacePtr receiver;
         };
 
-        typedef stdex::vector<HttpReceiverDesc> TVectorHttpReceiverDesc;
+        typedef Vector<HttpReceiverDesc> TVectorHttpReceiverDesc;
         TVectorHttpReceiverDesc m_receiverDescs;
 
         FactoryPtr m_factoryTaskGetMessage;

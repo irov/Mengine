@@ -63,8 +63,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::vector<ResourceImage *> TVectorResourceImage;
-    typedef stdex::vector<HotSpotPolygon *> TVectorHotSpotPolygon;
+    typedef Vector<ResourceImage *> TVectorResourceImage;
+    typedef Vector<HotSpotPolygon *> TVectorHotSpotPolygon;
 	//////////////////////////////////////////////////////////////////////////
 	class HelperScriptMethod
 	{

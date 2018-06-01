@@ -70,7 +70,7 @@ namespace Mengine
 
 		uint32_t m_iff;
 
-		typedef stdex::vector<CollisionActorPtr> TVectorActorException;
+		typedef Vector<CollisionActorPtr> TVectorActorException;
 		TVectorActorException m_exceptions;
 
 		mt::vec3f m_raycastDirection;

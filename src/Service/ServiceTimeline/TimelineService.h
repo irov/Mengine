@@ -4,7 +4,7 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -29,7 +29,7 @@ namespace Mengine
 	protected:
 		float m_time;
 
-		typedef stdex::vector<float> TVectorTime;
+		typedef Vector<float> TVectorTime;
 		TVectorTime m_offsets;
 	};
 };

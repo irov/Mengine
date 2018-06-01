@@ -130,7 +130,7 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    const TVectorTextLineLayout & TextField::getTextLayots() const
+    const TextField::TVectorTextLineLayout & TextField::getTextLayots() const
     {
         if( this->isInvalidateTextLines() == true )
         {
@@ -152,13 +152,6 @@ namespace Mengine
         _vertexData.clear();
         m_chunks.clear();
 
-        float fontAscent = _font->getFontAscent();
-        float fontHeight = _font->getFontHeight();
-
-        float lineOffset = this->calcLineOffset();
-
-        ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
-
         const TVectorTextLineLayout & layouts = this->getTextLayots();
 
         if( layouts.empty() == true )
@@ -166,6 +159,13 @@ namespace Mengine
             return;
         }
 
+        float fontAscent = _font->getFontAscent();
+        float fontHeight = _font->getFontHeight();
+
+        float lineOffset = this->calcLineOffset();
+
+        ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
+        
         mt::vec2f base_offset( 0.f, 0.f );
 
         switch( verticalAlign )
@@ -239,7 +239,7 @@ namespace Mengine
             };
         }               
 
-        uint32_t cacheFontARGB[16];
+        uint32_t cacheFontARGB[16] = { 0 };
 
         const ColourValue & paramsFontColor = this->calcFontColor();
         ColourValue colorBaseFont = paramsFontColor * _color;
@@ -352,7 +352,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::_render( RenderServiceInterface * _renderService, const RenderState * _state )
+    void TextField::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
     {
         if( m_key.empty() == true )
         {
@@ -636,14 +636,15 @@ namespace Mengine
 
         _charCount = 0;
 
-        float maxlen = 0.f;
+        m_textLineAlignOffsets.clear();
 
-        for( const TVectorTextLine2 & line2 : layouts )
+        float maxlen = 0.f;
+        for( const TVectorTextLine2 & lines2 : layouts )
         {
             float line_length = 0.f;
             uint32_t line_chars = 0;
 
-            for( const TVectorTextLine & lines : line2 )
+            for( const TVectorTextLine & lines : lines2 )
             {
                 const TextLine & line = lines[0];
 
@@ -653,6 +654,10 @@ namespace Mengine
 
             maxlen = (std::max)(maxlen, line_length);
             _charCount += line_chars;
+
+            //float alignOffsetX = this->getHorizontAlignOffset_( lines2 );
+
+            //m_textLineAlignOffsets.push_back( alignOffsetX );
         }
 
         _layoutCount = layouts.size();

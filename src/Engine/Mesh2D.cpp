@@ -106,7 +106,7 @@ namespace Mengine
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::_render( RenderServiceInterface * _renderService, const RenderState * _state )
+	void Mesh2D::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
 		if( m_vertexCount == 0 )
 		{

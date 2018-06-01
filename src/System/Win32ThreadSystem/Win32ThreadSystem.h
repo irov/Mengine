@@ -11,9 +11,7 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/pool.h"
-
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {

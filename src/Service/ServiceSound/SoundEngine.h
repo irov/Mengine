@@ -15,9 +15,8 @@
 
 #include "math/vec3.h"
 
-#include "stdex/stl_map.h"
-#include "stdex/stl_vector.h"
-#include "stdex/pool.h"
+#include "Config/Map.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -142,7 +141,7 @@ namespace Mengine
 
         FactoryPtr m_factoryWorkerTaskSoundBufferUpdate;
 
-		typedef stdex::vector<SoundVolumeProviderInterfacePtr> TVectorSoundVolumeProviders;
+		typedef Vector<SoundVolumeProviderInterfacePtr> TVectorSoundVolumeProviders;
 		TVectorSoundVolumeProviders m_soundVolumeProviders;
 
 		bool m_supportStream;

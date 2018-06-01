@@ -14,7 +14,7 @@
 
 #include "Factory/Factory.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Vector.h"
 
 #include <d3d9.h>
 
@@ -211,13 +211,13 @@ namespace Mengine
         FactoryPtr m_factoryDX9TargetTexture;
         FactoryPtr m_factoryDX9TargetOffscreen;
 
-        typedef stdex::vector<DX9RenderVertexShaderPtr> TVectorRenderVertexShaders;
+        typedef Vector<DX9RenderVertexShaderPtr> TVectorRenderVertexShaders;
         TVectorRenderVertexShaders m_deferredCompileVertexShaders;
 
-        typedef stdex::vector<DX9RenderFragmentShaderPtr> TVectorRenderFragmentShaders;
+        typedef Vector<DX9RenderFragmentShaderPtr> TVectorRenderFragmentShaders;
         TVectorRenderFragmentShaders m_deferredCompileFragmentShaders;
 
-        typedef stdex::vector<DX9RenderProgramPtr> TVectorRenderPrograms;
+        typedef Vector<DX9RenderProgramPtr> TVectorRenderPrograms;
         TVectorRenderPrograms m_deferredCompilePrograms;
 
 

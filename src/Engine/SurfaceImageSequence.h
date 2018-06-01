@@ -97,7 +97,7 @@ namespace Mengine
 
 		uint32_t m_currentFrame;
 
-		stdex::vector<RenderMaterialInterfacePtr> m_materials;
+		Vector<RenderMaterialInterfacePtr> m_materials;
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SurfaceImageSequence> SurfaceImageSequencePtr;

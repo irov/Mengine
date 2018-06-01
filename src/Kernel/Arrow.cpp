@@ -347,9 +347,9 @@ namespace Mengine
         _adaptScreenPoint = _screenPoint * windowScale + windowOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::_debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
+    void Arrow::_debugRender( RenderServiceInterface * _renderService, const RenderContext * _state )
     {
-        if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
+        if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
         {
             return;
         }
@@ -434,7 +434,7 @@ namespace Mengine
             }break;
         case EAT_POLYGON:
             {
-                size_t numpoints = m_polygon.num_points();
+                uint32_t numpoints = m_polygon.num_points();
 
                 if( numpoints == 0 )
                 {
@@ -455,9 +455,9 @@ namespace Mengine
 
                 const mt::vec2f * ring = m_polygon.outer_points();
 
-                for( size_t i = 0; i != numpoints; ++i )
+                for( uint32_t i = 0; i != numpoints; ++i )
                 {
-                    size_t j = (i + 1) % numpoints;
+                    uint32_t j = (i + 1) % numpoints;
 
                     mt::vec3f trP0;
                     mt::mul_v3_v2_m4( trP0, ring[i], worldMat );
@@ -468,7 +468,7 @@ namespace Mengine
 
                     v0.color = 0x8080FFFF;
 
-                    for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+                    for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
                     {
                         v0.uv[uv_index].x = 0.f;
                         v0.uv[uv_index].y = 0.f;
@@ -483,7 +483,7 @@ namespace Mengine
 
                     v1.color = 0x8080FFFF;
 
-                    for( size_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+                    for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
                     {
                         v1.uv[uv_index].x = 0.f;
                         v1.uv[uv_index].y = 0.f;

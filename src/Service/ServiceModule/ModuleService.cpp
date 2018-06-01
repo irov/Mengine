@@ -142,7 +142,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::render( const RenderState * _state, uint32_t _debugMask )
+	void ModuleService::render( const RenderContext * _state, uint32_t _debugMask )
 	{
         for( const ModuleInterfacePtr & module : m_modules )
 		{

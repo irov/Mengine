@@ -2,12 +2,12 @@
 
 #include "Core/ConstString.h"
 
-#include "stdex/stl_vector.h"
-#include "stdex/stl_string.h"
+#include "Config/Vector.h"
+#include "Config/String.h"
 
 namespace Mengine
 {
-	typedef stdex::vector<ConstString> TVectorConstString;
+	typedef Vector<ConstString> TVectorConstString;
 
 	class Tags
 	{
@@ -29,7 +29,7 @@ namespace Mengine
 		void swap( Tags & _tags );
 
 	public:
-		stdex::string to_str() const;
+		String to_str() const;
 
 	protected:		
 		TVectorConstString m_tags;

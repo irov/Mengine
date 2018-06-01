@@ -6,7 +6,7 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -20,7 +20,7 @@ namespace Mengine
 		float watch( const String & _tag ) override;
 
 	protected:
-		typedef stdex::map<String, float> TMapWatchers;
+		typedef Map<String, float> TMapWatchers;
 		TMapWatchers m_watchers;
 	};
 }

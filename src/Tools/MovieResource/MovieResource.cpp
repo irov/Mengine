@@ -211,8 +211,8 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
             xmlResourceFile.append_attribute( "Size" ).set_value( xmlSize );
 
-            xmlResourceFile.append_attribute( "Alpha" ).set_value( resource_video->alpha == AE_TRUE ? 1U : 0U );
-            xmlResourceFile.append_attribute( "Codec" ).set_value( resource_video->alpha == AE_TRUE ? "ogvaVideo" : "ogvVideo" );
+            xmlResourceFile.append_attribute( "Alpha" ).set_value( resource_video->has_alpha_channel == AE_TRUE ? 1U : 0U );
+            xmlResourceFile.append_attribute( "Codec" ).set_value( resource_video->has_alpha_channel == AE_TRUE ? "ogvaVideo" : "ogvVideo" );
             xmlResourceFile.append_attribute( "FrameRate" ).set_value( resource_video->frameRate );
             xmlResourceFile.append_attribute( "Duration" ).set_value( resource_video->duration * 1000.0 );
 
@@ -549,7 +549,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
     return AE_TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
-static ae_bool_t __visit_sub_composition( const aeMovieComposition * _compositionData, const ae_char_t * _name, const aeMovieSubComposition * _subcomposition, ae_voidptr_t _ud )
+static ae_bool_t __visit_sub_composition( const aeMovieComposition * _compositionData, ae_uint32_t _index, const ae_char_t * _name, const aeMovieSubComposition * _subcomposition, ae_voidptr_t _ud )
 {
     (void)_compositionData;
     (void)_subcomposition;
@@ -557,7 +557,8 @@ static ae_bool_t __visit_sub_composition( const aeMovieComposition * _compositio
     node_provider_t * np = (node_provider_t *)_ud;
 
     pugi::xml_node xmlSubComposition = np->xmlComposition->append_child( "SubComposition" );
-
+        
+    xmlSubComposition.append_attribute( "Index" ).set_value( _index );
     xmlSubComposition.append_attribute( "Name" ).set_value( _name );
 
     return AE_TRUE;
@@ -658,7 +659,12 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     rp.xmlDataBlock = &xmlDataBlock;
     strcpy( rp.movie_name, utf8_movie_name );
 
-    aeMovieData * movieData = ae_create_movie_data( movieInstance, &my_resource_provider, &my_resource_deleter, &rp );
+    aeMovieDataProviders data_providers;
+    ae_clear_movie_data_providers( &data_providers );
+    data_providers.resource_provider = &my_resource_provider;
+    data_providers.resource_deleter = &my_resource_deleter;
+
+    aeMovieData * movieData = ae_create_movie_data( movieInstance, &data_providers, &rp );
 
     aeMovieStream * movieStream = ae_create_movie_stream( movieInstance, &my_read_stream, &my_copy_stream, f_in );
 
@@ -708,16 +714,16 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         xmlDataResourceComposition.append_attribute( "FrameDuration" ).set_value( frame_duration );       
         
 
-        aeMovieCompositionProviders providers;
-        ae_clear_movie_composition_providers( &providers );
+        aeMovieCompositionProviders composition_providers;
+        ae_clear_movie_composition_providers( &composition_providers );
 
-        providers.node_provider = &__movie_composition_node_provider;
+        composition_providers.node_provider = &__movie_composition_node_provider;
 
         node_provider_t np;
         np.xmlComposition = &xmlDataResourceComposition;
         strcpy( np.movie_name, utf8_movie_name );
 
-        aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, &np );
+        const aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &composition_providers, &np );
         
         ae_visit_movie_sub_composition( composition, __visit_sub_composition, &np );
 

@@ -1,20 +1,20 @@
 #pragma once
 
 #include "Config/Typedef.h"
+#include "Config/Vector.h"
 
 #include "math/vec2.h"
 #include "math/mat4.h"
 #include "math/box2.h"
 
-#include "stdex/stl_vector.h"
-
 namespace Mengine
 {
-	typedef stdex::vector<mt::vec2f> TVectorPoints;
-	typedef stdex::vector<uint32_t> TVectorIndices;
-
-	typedef stdex::vector<class Polygon> TVectorPolygon;
-	
+    //////////////////////////////////////////////////////////////////////////
+	typedef Vector<mt::vec2f> TVectorPoints;
+	typedef Vector<uint32_t> TVectorIndices;
+    //////////////////////////////////////////////////////////////////////////
+	typedef Vector<class Polygon> TVectorPolygon;
+	//////////////////////////////////////////////////////////////////////////
 	class Polygon
 	{
 	public:
@@ -25,7 +25,7 @@ namespace Mengine
 		Polygon( const void * _impl );
 
 	public:
-		typedef size_t size_type;
+		typedef uint32_t size_type;
 
 	public:
 		void operator = (const Polygon & _polygon);
@@ -52,20 +52,20 @@ namespace Mengine
 		bool to_box2f( mt::box2f & _box2f ) const;
 		bool empty() const;
 
-		size_t num_points() const;
+        size_type num_points() const;
 
-		size_t outer_count() const;
+        size_type outer_count() const;
 		const mt::vec2f * outer_points() const;
 		mt::vec2f * outer_points();
-		const mt::vec2f & outer_point( size_t _index ) const;
-		mt::vec2f & outer_point( size_t _index );
+		const mt::vec2f & outer_point( size_type _index ) const;
+		mt::vec2f & outer_point( size_type _index );
 
-		size_t inners_count() const;
-		size_t inner_count( size_t _index ) const;
-		const mt::vec2f * inner_points( size_t _index ) const;
-		mt::vec2f * inner_points( size_t _index );
-		const mt::vec2f & inner_point( size_t _index, size_t _v ) const;
-		mt::vec2f & inner_point( size_t _index, size_t _v );
+        size_type inners_count() const;
+        size_type inner_count( size_type _index ) const;
+		const mt::vec2f * inner_points( size_type _index ) const;
+		mt::vec2f * inner_points( size_type _index );
+		const mt::vec2f & inner_point( size_type _index, size_type _v ) const;
+		mt::vec2f & inner_point( size_type _index, size_type _v );
 		
 	public:
 		bool intersects( const Polygon & _polygon ) const;

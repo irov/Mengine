@@ -57,7 +57,7 @@ namespace Mengine
 		, unsigned short _categoryBits
 		, unsigned short _groupIndex )
 	{
-		size_t num_points = _vertices.num_points();
+        uint32_t num_points = _vertices.num_points();
 
 		if( num_points > b2_maxPolygonVertices )
 		{
@@ -65,7 +65,7 @@ namespace Mengine
 		}
 
 		b2Vec2 vertices[b2_maxPolygonVertices];
-		for( size_t i = 0; i != num_points; ++i )
+		for( uint32_t i = 0; i != num_points; ++i )
 		{
 			const mt::vec2f & v = _vertices.outer_point( i );
 

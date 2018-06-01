@@ -18,7 +18,7 @@
 
 #include "pybind/pybind.hpp"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 #include "stdex/template_pool.h"
 
 #include <cstdarg>
@@ -88,11 +88,11 @@ namespace Mengine
 		ScriptLogger * m_loggerWarning;
 		ScriptLogger * m_loggerError;
 
-		typedef stdex::map<ConstString, PyObject *> TMapModules;
-		typedef stdex::map<ConstString, TMapModules> TMapCategoryPrototypies;
+		typedef Map<ConstString, PyObject *> TMapModules;
+		typedef Map<ConstString, TMapModules> TMapCategoryPrototypies;
 		TMapCategoryPrototypies m_prototypies;
 
-		typedef stdex::map<ConstString, ScriptWrapperInterfacePtr> TMapScriptWrapper;
+		typedef Map<ConstString, ScriptWrapperInterfacePtr> TMapScriptWrapper;
 		TMapScriptWrapper m_scriptWrapper;
 
         typedef stdex::template_pool<ConstStringHolderPythonString, 1024> PoolConstStringHolderPythonString;

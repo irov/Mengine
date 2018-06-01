@@ -244,10 +244,11 @@ namespace Mengine
 
 		m_node->translate( velocity );
 
-		for( size_t
-			it = 0,
-			it_end = m_satellite.size();
-		it != it_end; ++it )
+        for( pybind::list::size_type
+            it = 0,
+            it_end = m_satellite.size();
+            it != it_end;
+            ++it )
 		{
 			Node * satellite = m_satellite[it];
 

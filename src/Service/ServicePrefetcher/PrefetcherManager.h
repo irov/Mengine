@@ -8,7 +8,7 @@
 
 #include "Factory/Factory.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 #ifndef MENGINE_PREFETCHER_THREAD_COUNT
 #	define MENGINE_PREFETCHER_THREAD_COUNT 2
@@ -69,7 +69,7 @@ namespace Mengine
         FactoryPtr m_factoryThreadTaskPrefetchDataflow;
 		
 		typedef std::pair<ConstString, FilePath> TKeyPrefetchReceiver;
-		typedef stdex::map<TKeyPrefetchReceiver, PrefetchReceiver> TMapPrefetchReceiver;
+		typedef Map<TKeyPrefetchReceiver, PrefetchReceiver> TMapPrefetchReceiver;
 		TMapPrefetchReceiver m_prefetchReceiver;
 
         bool m_avaliable;

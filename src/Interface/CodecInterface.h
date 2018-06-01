@@ -10,9 +10,6 @@
 
 #include "Core/FilePath.h"
 
-#include "stdex/intrusive_ptr.h"
-#include "stdex/intrusive_algorithm.h"
-
 namespace Mengine
 {
 	struct CodecDataInfo 

@@ -3,11 +3,10 @@
 #include "Interface/MousePickerSystemInterface.h"
 
 #include "Core/ServiceBase.h"
-
 #include "Core/Viewport.h"
 
-#include "stdex/stl_list.h"
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
+#include "Config/List.h"
 
 namespace Mengine
 {	
@@ -19,7 +18,7 @@ namespace Mengine
 		RenderCameraInterfacePtr camera;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<PickerTrapStateDesc> TVectorPickerTrapStates;
+	typedef Vector<PickerTrapStateDesc> TVectorPickerTrapStates;
 	//////////////////////////////////////////////////////////////////////////
 	class MousePickerSystem
 		: public ServiceBase<MousePickerSystemInterface>
@@ -91,7 +90,7 @@ namespace Mengine
 		RenderCameraInterfacePtr m_camera;
 		RenderScissorInterfacePtr m_scissor;
 
-		typedef stdex::list<PickerTrapState> TPickerTrapState;
+		typedef List<PickerTrapState> TPickerTrapState;
 		TPickerTrapState m_pickerTrapState;
 
 		TVectorPickerTrapStates m_states;

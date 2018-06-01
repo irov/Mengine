@@ -2,6 +2,8 @@
 
 #include "HotSpot.h"
 
+#include "Config/Vector.h"
+
 namespace Mengine
 {
 	class HotSpotBubbles
@@ -37,7 +39,7 @@ namespace Mengine
 			bool outward;
 		};
 
-		typedef stdex::vector<Bubble> TVectorBubbles;
+		typedef Vector<Bubble> TVectorBubbles;
 		TVectorBubbles m_bubbles;
 
 		uint32_t m_enumerator;

@@ -71,7 +71,7 @@ namespace Mengine
 		m_verticesWM.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::_render( RenderServiceInterface * _renderService, const RenderState * _state )
+	void Landscape2D::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
 		TVectorLandscape2DElements & elementsWM = this->getElementWM();
 
@@ -167,7 +167,7 @@ namespace Mengine
 		m_elements.reserve( elementCount );
 		m_verticesWM.resize( elementCount * 4 );
 
-        for( ResourceImage * image : m_images )
+        for( const ResourceImagePtr & image : m_images )
 		{
 			if( image == nullptr )
 			{

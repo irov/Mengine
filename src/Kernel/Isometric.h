@@ -11,8 +11,9 @@ namespace Mengine
 
 	public:
 		Isometric();
+        ~Isometric() override;
 
 	protected:
-		void render( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
+		void render( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
 	};
 }

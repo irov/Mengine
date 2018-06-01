@@ -4,7 +4,7 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -26,7 +26,7 @@ namespace Mengine
 		DataInterfacePtr dataflow( const ConstString & _type, const InputStreamInterfacePtr & _stream ) override;
 
 	protected:
-		typedef stdex::map<ConstString, DataflowInterfacePtr> TMapDataflow;
+		typedef Map<ConstString, DataflowInterfacePtr> TMapDataflow;
 		TMapDataflow m_dataflows;
 	};
 }

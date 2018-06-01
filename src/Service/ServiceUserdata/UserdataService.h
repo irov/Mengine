@@ -5,7 +5,7 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -38,7 +38,7 @@ namespace Mengine
 			FilePath path;
 		};
 
-		typedef stdex::map<ConstString, UserdataDesc> TMapDatas;
+		typedef Map<ConstString, UserdataDesc> TMapDatas;
 		TMapDatas m_datas;
     };
 }

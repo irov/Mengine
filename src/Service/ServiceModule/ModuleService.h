@@ -4,8 +4,8 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/stl_map.h"
-#include "stdex/stl_vector.h"
+#include "Config/Map.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -33,7 +33,7 @@ namespace Mengine
 
 	public:
 		void tick( float _time, float _timing ) override;
-		void render( const RenderState * _state, uint32_t _debugMask ) override;
+		void render( const RenderContext * _state, uint32_t _debugMask ) override;
 
 	public:
 		void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params ) override;
@@ -43,10 +43,10 @@ namespace Mengine
 		const ModuleInterfacePtr & findModule( const ConstString & _moduleName ) const;
 
     protected:
-		typedef stdex::map<ConstString, ModuleFactoryInterfacePtr> TMapModuleFactory;
+		typedef Map<ConstString, ModuleFactoryInterfacePtr> TMapModuleFactory;
         TMapModuleFactory m_moduleFactory;
 
-		typedef stdex::vector<ModuleInterfacePtr> TVectorModules;
+		typedef Vector<ModuleInterfacePtr> TVectorModules;
 		TVectorModules m_modules;
     };
 }

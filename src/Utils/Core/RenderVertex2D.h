@@ -1,9 +1,9 @@
 #pragma once
 
+#include "Config/Vector.h"
+
 #include "math/vec2.h"
 #include "math/vec3.h"
-
-#include "stdex/stl_vector.h"
 
 #include <stdint.h>
 
@@ -21,6 +21,6 @@ namespace Mengine
         mt::vec2f uv[MENGINE_RENDER_VERTEX_UV_COUNT];
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::vector<RenderVertex2D> TVectorRenderVertex2D;
+    typedef Vector<RenderVertex2D> TVectorRenderVertex2D;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -11,7 +11,7 @@
 
 #include "pybind/object.hpp"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -161,23 +161,23 @@ namespace Mengine
 
 		ValueFollowerLinear<float> m_cameraFollowerScale;
 
-		typedef stdex::vector<BurritoBisonForce> TVectorBurritoBisonForce;
+		typedef Vector<BurritoBisonForce> TVectorBurritoBisonForce;
 		TVectorBurritoBisonForce m_forces;
 
-		typedef stdex::vector<BurritoBisonImpulse> TVectorBurritoBisonImpulse;
+		typedef Vector<BurritoBisonImpulse> TVectorBurritoBisonImpulse;
 		TVectorBurritoBisonImpulse m_impulses;
 
 		uint32_t m_enumeratorId;
 
-		typedef stdex::vector<VelocityEventDesc> TVectorVelocityEventDesc;
+		typedef Vector<VelocityEventDesc> TVectorVelocityEventDesc;
 		TVectorVelocityEventDesc m_velocityEvents;
 		TVectorVelocityEventDesc m_velocityEventsAdd;
 
-		typedef stdex::vector<HeightEventDesc> TVectorHeightEventDesc;
+		typedef Vector<HeightEventDesc> TVectorHeightEventDesc;
 		TVectorHeightEventDesc m_heightEvents;
 		TVectorHeightEventDesc m_heightEventsAdd;		
 
-		typedef stdex::vector<DistanceEventDesc> TVectorDistanceEventDesc;
+		typedef Vector<DistanceEventDesc> TVectorDistanceEventDesc;
 		TVectorDistanceEventDesc m_distanceEvents;
 		TVectorDistanceEventDesc m_distanceEventsAdd;
 

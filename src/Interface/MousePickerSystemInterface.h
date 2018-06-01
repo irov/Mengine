@@ -4,6 +4,8 @@
 
 #include "Core/IntrusivePtr.h"
 
+#include "Config/Vector.h"
+
 #include "math/vec2.h"
 
 namespace Mengine
@@ -48,7 +50,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MousePickerTrapInterface> MousePickerTrapInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::vector<MousePickerTrapInterfacePtr> TVectorPickerTraps;
+    typedef Vector<MousePickerTrapInterfacePtr> TVectorPickerTraps;
     //////////////////////////////////////////////////////////////////////////
     class MousePickerSystemInterface
         : public ServiceInterface

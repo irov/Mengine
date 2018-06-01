@@ -19,8 +19,8 @@
 #include "math/mat4.h"
 #include "math/vec4.h"
 
-#include "stdex/stl_vector.h"
-#include "stdex/stl_list.h"
+#include "Config/Vector.h"
+#include "Config/List.h"
 
 #include "Core/ConstString.h"
 
@@ -131,28 +131,28 @@ namespace Mengine
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
 	public:
-        void addRenderMesh( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+        void addRenderMesh( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _indexCount ) override;
 
-		void addRenderObject( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+		void addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const RenderIndex * _indices, uint32_t _indexCount 
 			, const mt::box2f * _bb, bool _debug ) override;
 
-		void addRenderQuad( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+		void addRenderQuad( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
 			, const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) override;
 
-		void addRenderLine( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+		void addRenderLine( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) override;
 
     protected:
         const RenderBatchPtr & requestRenderBatch_( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount );
-        bool testRenderPass_( const RenderState * _state, const RenderBatchPtr & _renderBatch ) const;
-        const RenderPassPtr & requestRenderPass_( const RenderState * _state, const RenderMaterialInterfacePtr & _material, uint32_t _vertexCount, uint32_t _indexCount );
+        bool testRenderPass_( const RenderContext * _state, const RenderBatchPtr & _renderBatch ) const;
+        const RenderPassPtr & requestRenderPass_( const RenderContext * _state, const RenderMaterialInterfacePtr & _material, uint32_t _vertexCount, uint32_t _indexCount );
 
 	public:
 		RenderVertex2D * getDebugRenderVertex2D( size_t _count ) override;
@@ -303,14 +303,14 @@ namespace Mengine
         typedef stdex::heap_array<RenderObject> TArrayRenderObject;
         TArrayRenderObject m_renderObjects;
 
-        typedef stdex::vector<RenderBatchPtr> TVectorRenderBatch;
+        typedef Vector<RenderBatchPtr> TVectorRenderBatch;
         TVectorRenderBatch m_renderBatches;
 
-        typedef stdex::vector<RenderPassPtr> TVectorRenderPass;
+        typedef Vector<RenderPassPtr> TVectorRenderPass;
         TVectorRenderPass m_renderPasses;
 
 		typedef TVectorRenderVertex2D TArrayRenderVertex2D;
-		typedef stdex::list<TArrayRenderVertex2D> TListDebugVertices;
+		typedef List<TArrayRenderVertex2D> TListDebugVertices;
 		TListDebugVertices m_debugVertices;
               
 		bool m_depthBufferWriteEnable;

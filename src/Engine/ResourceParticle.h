@@ -5,7 +5,9 @@
 #include "Kernel/Resource.h"
 #include "Kernel/ResourceImage.h"
 
-#include "Utils/Core/Polygon.h"
+#include "Core/Polygon.h"
+
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -49,7 +51,7 @@ namespace Mengine
 
 		ConstString m_converterType;
 
-		typedef stdex::vector<ResourceImagePtr> TVectorResourceImages;
+		typedef Vector<ResourceImagePtr> TVectorResourceImages;
 		TVectorResourceImages m_resourceImages;
 
 		ParticleEmitterContainerInterface2Ptr m_container;

@@ -5,7 +5,7 @@
 
 #include "Core/ServantBase.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -65,7 +65,7 @@ namespace Mengine
 			uint32_t compr_method;
 		};
 
-		typedef stdex::map<FilePath, FileInfo> TMapFileInfo;
+		typedef Map<FilePath, FileInfo> TMapFileInfo;
 		TMapFileInfo m_files;
 	};
 }	

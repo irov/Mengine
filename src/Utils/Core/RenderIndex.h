@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 #include <stdint.h>
 
@@ -9,5 +9,5 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef uint16_t RenderIndex;
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::vector<RenderIndex> TVectorRenderIndices;
+    typedef Vector<RenderIndex> TVectorRenderIndices;
 }

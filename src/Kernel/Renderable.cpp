@@ -14,18 +14,17 @@ namespace Mengine
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_render( RenderServiceInterface * _renderService, const RenderState * _state )
+	void Renderable::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
 		(void)_renderService;
 		(void)_state;
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
+	void Renderable::_debugRender( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
 		(void)_renderService;
 		(void)_state;
-		(void)_debugMask;
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////

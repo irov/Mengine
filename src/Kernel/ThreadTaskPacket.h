@@ -2,7 +2,7 @@
 
 #include "ThreadTask.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -32,7 +32,7 @@ namespace Mengine
 		void _onComplete( bool _successful ) override;
 
 	protected:
-		typedef stdex::vector<ThreadTaskPtr> TVectorThreadTasks;
+		typedef Vector<ThreadTaskPtr> TVectorThreadTasks;
 		TVectorThreadTasks m_tasks;
 	};
 

@@ -13,7 +13,7 @@
 
 #include "math/vec4.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -199,7 +199,7 @@ namespace Mengine
 
 		Resolution m_contentResolution;
 
-		typedef stdex::map<float, Viewport> TMapAspectRatioViewports;
+		typedef Map<float, Viewport> TMapAspectRatioViewports;
 		TMapAspectRatioViewports m_aspectRatioViewports;
 
 		bool m_fixedContentResolution;

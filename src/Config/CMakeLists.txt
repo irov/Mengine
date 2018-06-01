@@ -5,6 +5,7 @@ src
     Blobject.h
     Char.h
     String.h
+    VectorString.h
     Stringstream.h
     Typedef.h
     Floats.h

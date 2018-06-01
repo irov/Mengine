@@ -157,10 +157,8 @@ namespace Mengine
 		m_actor = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void NodeCollisionActor::_debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
+	void NodeCollisionActor::_debugRender( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
-		(void)_debugMask;
-
 		mt::vec2f v[16 + 1];
 
 		for( uint32_t i = 0; i != 16; ++i )
@@ -178,7 +176,7 @@ namespace Mengine
 
 		for( uint32_t i = 0; i != 16; ++i )
 		{
-			size_t j = (i + 1) % 16;
+            uint32_t j = (i + 1) % 16;
 
 			RenderVertex2D & v0 = vertices[i * 2 + 0];
 			RenderVertex2D & v1 = vertices[i * 2 + 1];

@@ -4,7 +4,7 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -42,10 +42,10 @@ namespace Mengine
 		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileGroupName, const FilePath& _fileName ) override;
         
 	private:
-		typedef stdex::map<ConstString, FactoryPtr> TFactoryFileGroups;
+		typedef Map<ConstString, FactoryPtr> TFactoryFileGroups;
 		TFactoryFileGroups m_factoryFileGroups;
 
-		typedef stdex::map<ConstString, FileGroupInterfacePtr> TMapFileSystem;
+		typedef Map<ConstString, FileGroupInterfacePtr> TMapFileSystem;
 		TMapFileSystem m_fileSystemMap;
 	};
 }

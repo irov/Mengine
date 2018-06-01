@@ -137,9 +137,9 @@ namespace Mengine
 		return test;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotCircle::_debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
+	void HotSpotCircle::_debugRender( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
-		if( (_debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
+		if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{
 			return;
 		}

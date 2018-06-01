@@ -14,7 +14,7 @@
 
 #include "Factory/FactoryWithMutex.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -62,7 +62,7 @@ namespace Mengine
 			bool lock;
 		};
 
-		typedef stdex::vector<CacheBufferMemory> TVectorCacheBufferMemory;
+		typedef Vector<CacheBufferMemory> TVectorCacheBufferMemory;
 		TVectorCacheBufferMemory m_buffers;
 
 		CacheBufferID m_enumeratorId;

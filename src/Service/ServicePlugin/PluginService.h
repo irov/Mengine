@@ -4,7 +4,7 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -41,7 +41,7 @@ namespace Mengine
             PluginInterfacePtr plugin;
         };
 
-		typedef stdex::vector<PluginDesc> TVectorPlugins;
+		typedef Vector<PluginDesc> TVectorPlugins;
 		TVectorPlugins m_plugins;
 	};
 }

@@ -8,7 +8,7 @@
 
 namespace Mengine
 {
-	template<class Type, size_t Count, class F = Factory>
+	template<class Type, uint32_t Count, class F = Factory>
 	class FactoryPool
 		: public F
 	{

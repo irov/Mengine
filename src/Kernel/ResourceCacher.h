@@ -1,6 +1,6 @@
 #pragma once
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 #include <algorithm>
 
@@ -39,7 +39,7 @@ namespace Mengine
         };
 
     protected:
-        typedef stdex::vector<ResourceCacherDesc> TVectorResourceCacherDesc;
+        typedef Vector<ResourceCacherDesc> TVectorResourceCacherDesc;
         TVectorResourceCacherDesc m_cachers;
 
         class FEraseCacher;

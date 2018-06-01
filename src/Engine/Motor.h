@@ -8,7 +8,7 @@
 #include "Core/ConstString.h"
 #include "math/vec3.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -42,7 +42,7 @@ namespace Mengine
 			mt::vec3f velocity;
 		};
 
-		typedef stdex::map<ConstString, VelocityDesc> TMapVelocity;
+		typedef Map<ConstString, VelocityDesc> TMapVelocity;
 		TMapVelocity m_velocities;
 	};
 }

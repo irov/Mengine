@@ -39,11 +39,11 @@ namespace Mengine
 
 	protected:
 		void tick( float _time, float _timing ) override;
-		void render( const RenderState * _state, uint32_t _debugMask ) override;
+		void render( const RenderContext * _state, uint32_t _debugMask ) override;
 
 	protected:
 		virtual void _tick( float _time, float _timing );
-		virtual void _render( const RenderState * _state, uint32_t _debugMask );
+		virtual void _render( const RenderContext * _state, uint32_t _debugMask );
 		
 	protected:
 		void message( const ConstString & _messageName, const TMapWParams & _params ) override;

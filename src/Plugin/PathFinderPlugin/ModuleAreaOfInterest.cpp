@@ -156,7 +156,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleAreaOfInterest::_render( const RenderState * _state, uint32_t _debugMask )
+	void ModuleAreaOfInterest::_render( const RenderContext * _state, uint32_t _debugMask )
 	{
 		(void)_state;
 		(void)_debugMask;

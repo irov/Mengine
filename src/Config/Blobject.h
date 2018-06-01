@@ -1,10 +1,10 @@
 #pragma once
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 #include <stdint.h>
 
 namespace Mengine
 {
-    typedef stdex::vector<uint8_t> Blobject;
+    typedef Vector<uint8_t> Blobject;
 }

@@ -33,7 +33,7 @@ namespace Mengine
 		ISteamUserStats	* m_userStats;
 		ISteamFriends * m_friends;
 
-		typedef stdex::map<String, ConstString> TMapISO639_1;
+		typedef Map<String, ConstString> TMapISO639_1;
 		TMapISO639_1 m_iso639_1;
 	};
 }

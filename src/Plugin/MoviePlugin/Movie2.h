@@ -20,7 +20,7 @@
 
 #include "movie/movie.hpp"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -100,7 +100,7 @@ namespace Mengine
 		void _update( float _current, float _timing ) override;
 
 	protected:
-		void _render( RenderServiceInterface * _renderService, const RenderState * _state ) override;
+		void _render( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
 
 	protected:
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;
@@ -204,34 +204,34 @@ namespace Mengine
             RenderMaterialInterfacePtr material;
         };
 
-		typedef stdex::vector<Mesh> TVectorMesh;
+		typedef Vector<Mesh> TVectorMesh;
 		TVectorMesh m_meshes;
 
-		typedef stdex::map<ConstString, Camera> TMapCamera;
+		typedef Map<ConstString, Camera> TMapCamera;
 		TMapCamera m_cameras;
 
-        typedef stdex::map<ConstString, Movie2SubCompositionPtr> TMapSubCompositions;
+        typedef Map<ConstString, Movie2SubCompositionPtr> TMapSubCompositions;
         TMapSubCompositions m_subCompositions;
 
-		typedef stdex::vector<SurfacePtr> TVectorSurfaces;
+		typedef Vector<SurfacePtr> TVectorSurfaces;
 		TVectorSurfaces m_surfaces;
 
-        typedef stdex::map<uint32_t, Movie2SlotPtr> TMapSlots;
+        typedef Map<uint32_t, Movie2SlotPtr> TMapSlots;
         TMapSlots m_slots;
 
-        typedef stdex::map<uint32_t, HotSpotPolygonPtr> TMapSockets;
+        typedef Map<uint32_t, HotSpotPolygonPtr> TMapSockets;
         TMapSockets m_sockets;
 
-        typedef stdex::map<uint32_t, TextFieldPtr> TMapTexts;
+        typedef Map<uint32_t, TextFieldPtr> TMapTexts;
         TMapTexts m_texts;
 
-        typedef stdex::map<uint32_t, ShapeQuadFixedPtr> TMapSprites;
+        typedef Map<uint32_t, ShapeQuadFixedPtr> TMapSprites;
         TMapSprites m_sprites;
 
-        typedef stdex::map<uint32_t, ParticleEmitter2Ptr> TMapParticleEmitter2s;
+        typedef Map<uint32_t, ParticleEmitter2Ptr> TMapParticleEmitter2s;
         TMapParticleEmitter2s m_particleEmitters;
 
-        typedef stdex::vector<MatrixProxyPtr> TVectorMatrixProxies;
+        typedef Vector<MatrixProxyPtr> TVectorMatrixProxies;
         TVectorMatrixProxies m_matrixProxies;
 
     protected:

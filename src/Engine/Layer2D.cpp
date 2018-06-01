@@ -258,10 +258,8 @@ namespace Mengine
         m_materialImageMask = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layer2D::_renderTarget( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
-    {
-        (void)_debugMask;
-        
+    void Layer2D::_renderTarget( RenderServiceInterface * _renderService, const RenderContext * _state )
+    {        
         const RenderVertex2D * verticesImageMask = this->getVerticesImageMaskWM();
         
         const mt::box2f & bb = this->getBoundingBox();

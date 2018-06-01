@@ -1057,7 +1057,7 @@ namespace Mengine
         return batch;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::testRenderPass_( const RenderState * _state, const RenderBatchPtr & _renderBatch ) const
+    bool RenderEngine::testRenderPass_( const RenderContext * _state, const RenderBatchPtr & _renderBatch ) const
     {
         if( m_renderPasses.empty() == true )
         {
@@ -1078,7 +1078,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderPassPtr & RenderEngine::requestRenderPass_( const RenderState * _state, const RenderMaterialInterfacePtr & _material, uint32_t _vertexCount, uint32_t _indexCount )
+    const RenderPassPtr & RenderEngine::requestRenderPass_( const RenderContext * _state, const RenderMaterialInterfacePtr & _material, uint32_t _vertexCount, uint32_t _indexCount )
     {
         const RenderMaterialStage * materialStage = _material->getStage();
 
@@ -1116,7 +1116,7 @@ namespace Mengine
         return rp;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderMesh( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+    void RenderEngine::addRenderMesh( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
         , const RenderVertexBufferInterfacePtr & _vertexBuffer
         , const RenderIndexBufferInterfacePtr & _indexBuffer
         , uint32_t _indexCount )
@@ -1128,7 +1128,7 @@ namespace Mengine
         (void)_indexCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderObject( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+    void RenderEngine::addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const RenderIndex * _indices, uint32_t _indexCount
         , const mt::box2f * _bb, bool _debug )
@@ -1323,7 +1323,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderQuad( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+    void RenderEngine::addRenderQuad( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const mt::box2f * _bb, bool _debug )
     {
@@ -1344,7 +1344,7 @@ namespace Mengine
         this->addRenderObject( _state, _material, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderLine( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+    void RenderEngine::addRenderLine( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const mt::box2f * _bb, bool _debug )
     {

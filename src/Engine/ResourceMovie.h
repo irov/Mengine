@@ -11,7 +11,7 @@
 #include "Core/Viewport.h"
 #include "Core/Polygon.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -165,7 +165,7 @@ namespace Mengine
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<MovieLayer> TVectorMovieLayers;
+	typedef Vector<MovieLayer> TVectorMovieLayers;
 	//////////////////////////////////////////////////////////////////////////
 	struct MovieLayerCamera3D
 	{

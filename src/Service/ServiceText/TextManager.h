@@ -15,7 +15,7 @@
 
 #include "Core/FilePath.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 #include "stdex/template_pool.h"
 
 #include "Config/Typedef.h"
@@ -79,13 +79,13 @@ namespace Mengine
 		bool directFontRelease( const ConstString & _name ) override;
 
     protected:
-		typedef stdex::map<ConstString, TextEntryInterfacePtr> TMapTextEntry;
+		typedef Map<ConstString, TextEntryInterfacePtr> TMapTextEntry;
 		TMapTextEntry m_texts;
 
-		typedef stdex::map<ConstString, TextFontInterfacePtr> TMapTextFont;
+		typedef Map<ConstString, TextFontInterfacePtr> TMapTextFont;
 		TMapTextFont m_fonts;
 
-		typedef stdex::vector<TextLocalePackPtr> TVectorPaks;
+		typedef Vector<TextLocalePackPtr> TVectorPaks;
 		TVectorPaks m_packs;
 		
 		ConstString m_defaultFontName;

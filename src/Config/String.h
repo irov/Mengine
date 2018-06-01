@@ -2,20 +2,13 @@
 
 #include "Config/Char.h"
 
-#include "stdex/stl_string.h"
-#include "stdex/stl_vector.h"
+#include "stdex/stl_allocator.h"
+
+#include <string>
 
 namespace Mengine
 {
-    typedef stdex::string String;
-    typedef stdex::wstring WString;
-	typedef stdex::u32string U32String;
-
-    typedef stdex::vector<Char> TVectorChar;
-    typedef stdex::vector<String> TVectorString;
-	
-    typedef stdex::vector<WChar> TVectorWChar;
-    typedef stdex::vector<WString> TVectorWString;
-
-	typedef stdex::vector<U32String> TVectorU32String;
+    typedef std::basic_string<Char, std::char_traits<Char>, stdex::stl_allocator<Char> > String;
+    typedef std::basic_string<WChar, std::char_traits<WChar>, stdex::stl_allocator<WChar> > WString;
+    typedef std::basic_string<Char32, std::char_traits<Char32>, stdex::stl_allocator<Char32> > U32String;
 }

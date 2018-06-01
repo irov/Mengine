@@ -1,16 +1,16 @@
 #pragma once
 
-#include <stdint.h>
+#include "Config/Vector.h"
 
-#include "stdex/stl_vector.h"
+#include <stdint.h>
 
 namespace Mengine
 {
-    typedef stdex::vector<float> Floats;
-	typedef stdex::vector<int8_t> Int8s;
-	typedef stdex::vector<int16_t> Int16s;
-	typedef stdex::vector<int32_t> Int32s;
-	typedef stdex::vector<uint8_t> UInt8s;
-	typedef stdex::vector<uint16_t> UInt16s;
-	typedef stdex::vector<uint32_t> UInt32s;
+    typedef Vector<float> Floats;
+	typedef Vector<int8_t> Int8s;
+	typedef Vector<int16_t> Int16s;
+	typedef Vector<int32_t> Int32s;
+	typedef Vector<uint8_t> UInt8s;
+	typedef Vector<uint16_t> UInt16s;
+	typedef Vector<uint32_t> UInt32s;
 }

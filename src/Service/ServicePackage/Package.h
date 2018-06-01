@@ -88,7 +88,7 @@ namespace Mengine
 			bool ignored;
 		};
 
-		typedef stdex::vector<PakResourceDesc> TVectorPakResourceDesc;
+		typedef Vector<PakResourceDesc> TVectorPakResourceDesc;
 		TVectorPakResourceDesc m_resourcesDesc;
 				
 		ConstString m_name;		
@@ -128,7 +128,7 @@ namespace Mengine
 			Tags platform;
 		};
 
-		typedef stdex::vector<PakDataDesc> TVectorPakDataDesc;
+		typedef Vector<PakDataDesc> TVectorPakDataDesc;
 		TVectorPakDataDesc m_datas;
 
 		struct PakMaterialDesc
@@ -137,7 +137,7 @@ namespace Mengine
 			Tags platform;
 		};
 
-		typedef stdex::vector<PakMaterialDesc> TVectorPakMaterialDesc;
+		typedef Vector<PakMaterialDesc> TVectorPakMaterialDesc;
 		TVectorPakMaterialDesc m_pathMaterials;
 
         bool m_preload;

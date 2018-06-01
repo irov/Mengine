@@ -856,7 +856,7 @@ namespace Mengine
         this->deactivate();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
+	void Node::render( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
 		if( this->isRenderable() == false )
 		{
@@ -906,11 +906,12 @@ namespace Mengine
 		//{
 		//	m_cameraRevision = cameraRevision;
 
-		RenderState state;
+		RenderContext state;
 		state.viewport = renderViewport;
 		state.camera = renderCamera;
 		state.scissor = renderScissor;
 		state.target = renderTarget;
+        state.debugMask = _state->debugMask;
 
 		//if( this->checkVisibility( viewPort ) == true )
 		{
@@ -919,29 +920,28 @@ namespace Mengine
 				this->_render( _renderService, &state );
 			}
 
-			this->renderChild_( _renderService, &state, _debugMask );
+			this->renderChild_( _renderService, &state );
 		}
 		//}
 
         if( m_renderTarget != nullptr )
         {
-            this->_renderTarget( _renderService, _state, _debugMask );
+            this->_renderTarget( _renderService, _state );
         }
 
-        if( _debugMask != 0 )
+        if( _state->debugMask != 0 )
         {
 			if( this->getLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				this->_debugRender( _renderService, &state, _debugMask );
+				this->_debugRender( _renderService, &state );
 			}
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Node::_renderTarget( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
+    void Node::_renderTarget( RenderServiceInterface * _renderService, const RenderContext * _state )
     {
         (void)_renderService;
         (void)_state;
-        (void)_debugMask;
 
         //Empty
     }
@@ -1084,7 +1084,7 @@ namespace Mengine
         m_invalidateRendering = true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild_( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
+	void Node::renderChild_( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
 		for( TListNodeChild::unslug_iterator
 			it = m_children.ubegin(),
@@ -1099,7 +1099,7 @@ namespace Mengine
                 continue;
             }
 
-			node->render( _renderService, _state, _debugMask );
+			node->render( _renderService, _state );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1228,9 +1228,9 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_debugRender( RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask )
+	void Node::_debugRender( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
-        if( (_debugMask & MENGINE_DEBUG_NODES) == 0 )
+        if( (_state->debugMask & MENGINE_DEBUG_NODES) == 0 )
 		{
 			return;
 		}

@@ -7,12 +7,10 @@
 #include "Core/ConstString.h"
 #include "Core/Params.h"
 
-#include "stdex/intrusive_ptr.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    struct RenderState;
+    struct RenderContext;
     //////////////////////////////////////////////////////////////////////////
 	class ModuleInterface
 		: public ServantInterface
@@ -33,7 +31,7 @@ namespace Mengine
 
 	public:
 		virtual void tick( float _time, float _timing ) = 0;
-		virtual void render( const RenderState * _state, uint32_t _debugMask ) = 0;
+		virtual void render( const RenderContext * _state, uint32_t _debugMask ) = 0;
 
 	public:
 		virtual void message( const ConstString & _messageName, const TMapWParams & _params ) = 0;
@@ -69,7 +67,7 @@ namespace Mengine
 
 	public:
 		virtual void tick( float _time, float _timing ) = 0;
-		virtual void render( const RenderState * _state, uint32_t _debugMask ) = 0;
+		virtual void render( const RenderContext * _state, uint32_t _debugMask ) = 0;
 
 	public:
 		virtual void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params ) = 0;

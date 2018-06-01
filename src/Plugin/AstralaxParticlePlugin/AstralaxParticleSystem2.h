@@ -13,6 +13,7 @@
 #include "Factory/Factory.h"
 
 #include "Config/Stringstream.h"
+#include "Config/Vector.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
@@ -24,7 +25,7 @@
 #	pragma warning(pop) 
 #endif
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -64,13 +65,13 @@ namespace Mengine
         FactoryPtr m_factoryPoolAstralaxEmitterContainer;
         FactoryPtr m_factoryPoolAstralaxEmitter;
 
-        typedef stdex::map<uint32_t, AstralaxEmitterContainer2 *> TMapHashEmitterContainers;
+        typedef Map<uint32_t, AstralaxEmitterContainer2 *> TMapHashEmitterContainers;
         TMapHashEmitterContainers m_containers;
 
         int m_materialCount;
         const RenderMaterialStage * m_stages[256];
 
-        typedef stdex::vector<ResourceImagePtr> TVectorAtlasDesc;
+        typedef Vector<ResourceImagePtr> TVectorAtlasDesc;
         TVectorAtlasDesc m_atlases;
 
         struct MagicStatesCache
@@ -81,7 +82,7 @@ namespace Mengine
             RenderFragmentShaderInterfacePtr fragmentShader;
         };
 
-        typedef stdex::vector<MagicStatesCache> TVectorRenderFragmentShaderCache;
+        typedef Vector<MagicStatesCache> TVectorRenderFragmentShaderCache;
         TVectorRenderFragmentShaderCache m_renderFragmentShaderCache;
 
     protected:

@@ -9,7 +9,7 @@
 
 #include "math/vec2.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -77,10 +77,10 @@ namespace Mengine
 
         uint32_t m_enumerator;
 
-		typedef stdex::vector<InputMousePositionProviderDesc> TVectorMousePositionProviders;
+		typedef Vector<InputMousePositionProviderDesc> TVectorMousePositionProviders;
 		TVectorMousePositionProviders m_mousePositionProviders;
 				
-		typedef stdex::vector<InputUnionEvent> TVectorInputEvent;
+		typedef Vector<InputUnionEvent> TVectorInputEvent;
 		TVectorInputEvent m_eventsAdd;
 		TVectorInputEvent m_events;
 

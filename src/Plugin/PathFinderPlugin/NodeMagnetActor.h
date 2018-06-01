@@ -48,7 +48,7 @@ namespace Mengine
 		void _deactivate() override;
 
 	protected:
-		void _debugRender( Mengine::RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
+		void _debugRender( Mengine::RenderServiceInterface * _renderService, const RenderContext * _state ) override;
 
 	protected:
 		MagnetWorldPtr m_magnetWorld;
@@ -57,7 +57,7 @@ namespace Mengine
 
 		Node * m_magnetNode;
 
-		typedef stdex::vector<MagnetActorPtr> TVectorActorException;
+		typedef Vector<MagnetActorPtr> TVectorActorException;
 		TVectorActorException m_exceptions;
 
 		float m_magnetRadius;

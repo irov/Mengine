@@ -6,7 +6,7 @@
 
 #include "Logger/Logger.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -26,7 +26,7 @@ namespace Mengine
 
 	public:
 		void logMessage( EMessageLevel _level, uint32_t _flag, const char * _message, size_t _size  ) override;
-		size_t getCountMessage( Mengine::EMessageLevel _level ) override;
+        uint32_t getCountMessage( Mengine::EMessageLevel _level ) override;
 
 	public:
 		bool registerLogger( const LoggerInterfacePtr & _logger ) override;
@@ -36,9 +36,9 @@ namespace Mengine
 		Mengine::EMessageLevel m_verboseLevel;
         uint32_t m_verboseFlag;
 
-		typedef stdex::vector<LoggerInterfacePtr> TVectorLoggers;
+		typedef Vector<LoggerInterfacePtr> TVectorLoggers;
 		TVectorLoggers m_loggers;
 
-		size_t m_countMessage[LM_MAX];
+        uint32_t m_countMessage[LM_MAX];
 	};
 }

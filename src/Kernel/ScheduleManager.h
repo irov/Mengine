@@ -4,7 +4,7 @@
 
 #include "Core/ServantBase.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {    
@@ -82,7 +82,7 @@ namespace Mengine
 		float m_speedFactor;
 		float m_timing;
 
-		typedef stdex::vector<ScheduleEventDesc> TListSchedules;
+		typedef Vector<ScheduleEventDesc> TListSchedules;
 		TListSchedules m_schedules;
 		TListSchedules m_schedulesAdd;
 

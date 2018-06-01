@@ -7,8 +7,8 @@
 #include "Core/ServiceBase.h"
 
 #include "Config/Typedef.h"
-
-#include "stdex/stl_map.h"
+#include "Config/Vector.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -21,7 +21,7 @@ namespace Mengine
 		bool isLocked;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<ResourcePtr> TVectorResources;
+	typedef Vector<ResourcePtr> TVectorResources;
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceManager
 		: public ServiceBase<ResourceServiceInterface>
@@ -73,11 +73,11 @@ namespace Mengine
 		const ResourceEntry * findResource_( const ConstString & _name ) const;
 
 	protected:
-		typedef stdex::map<ConstString, ResourceEntry> TMapResource;
+		typedef Map<ConstString, ResourceEntry> TMapResource;
 		TMapResource m_resources[MENGINE_RESOURCE_MANAGER_HASH_SIZE];
 
 		typedef std::pair<ConstString, ConstString> TResourceCacheKey;
-		typedef stdex::map<TResourceCacheKey, TVectorResources> TMapResourceCache;
+		typedef Map<TResourceCacheKey, TVectorResources> TMapResourceCache;
 		TMapResourceCache m_resourcesCache;
 	};
 }

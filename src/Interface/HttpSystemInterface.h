@@ -7,7 +7,7 @@
 #include "Core/FilePath.h"
 #include "Core/Params.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {

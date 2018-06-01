@@ -2,6 +2,9 @@
 
 #include "Interface/TextInterface.h"
 
+#include "Config/Vector.h"
+#include "Config/VectorString.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -16,9 +19,9 @@ namespace Mengine
         TextFontInterfacePtr font;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::vector<TextChunk> TVectorTextChunks;
-    typedef stdex::vector<TVectorTextChunks> TVectorTextLines;
-    typedef stdex::vector<CacheFont> TVectorCacheFonts;
+    typedef Vector<TextChunk> TVectorTextChunks;
+    typedef Vector<TVectorTextChunks> TVectorTextLines;
+    typedef Vector<CacheFont> TVectorCacheFonts;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {

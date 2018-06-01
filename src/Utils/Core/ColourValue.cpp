@@ -61,6 +61,15 @@ namespace Mengine
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
+    void ColourValue::premultiplyRGB()
+    {
+        m_r *= m_a;
+        m_g *= m_a;
+        m_b *= m_a;
+
+        this->invalidate();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ColourValue::setRGB( float _r, float _g, float _b )
     {
         m_r = _r;

@@ -5,7 +5,7 @@
 
 #include "Core/PluginBase.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {

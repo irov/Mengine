@@ -8,7 +8,7 @@
 
 #include "pybind/types.hpp"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -79,7 +79,7 @@ namespace Mengine
 	protected:
 		AccountProviderInterfacePtr m_accountProvider;
 				
-		typedef stdex::map<ConstString, AccountInterfacePtr> TMapAccounts;
+		typedef Map<ConstString, AccountInterfacePtr> TMapAccounts;
 		TMapAccounts m_accounts;
 		
 		FactoryPtr m_factoryAccounts;

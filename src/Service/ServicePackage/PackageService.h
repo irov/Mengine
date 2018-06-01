@@ -44,7 +44,7 @@ namespace Mengine
 		void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
 
 	protected:
-		typedef stdex::vector<PackagePtr> TVectorPackage;
+		typedef Vector<PackagePtr> TVectorPackage;
 		TVectorPackage m_packages;
 
 		FactoryPtr m_factoryPackage;

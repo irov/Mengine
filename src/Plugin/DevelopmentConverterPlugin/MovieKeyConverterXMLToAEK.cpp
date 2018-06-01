@@ -16,6 +16,8 @@
 
 #include "Logger/Logger.h"
 
+#include "Config/Vector.h"
+
 #include "math/quat.h"
 
 #include "poly2tri/poly2tri.h"
@@ -23,7 +25,7 @@
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<MovieFrameSource> TVectorMovieFrameSource;
+	typedef Vector<MovieFrameSource> TVectorMovieFrameSource;
 	//////////////////////////////////////////////////////////////////////////
 	struct ConverterMovieLayerFrame
 	{
@@ -34,7 +36,7 @@ namespace Mengine
 		uint8_t immutable;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<ConverterMovieLayerFrame> TVectorConverterMovieFrameLayer;
+	typedef Vector<ConverterMovieLayerFrame> TVectorConverterMovieFrameLayer;
 	//////////////////////////////////////////////////////////////////////////
 	MovieKeyConverterXMLToAEK::MovieKeyConverterXMLToAEK()
 	{
@@ -582,19 +584,19 @@ namespace Mengine
 				{
 					std::vector<p2t::Point> p2t_points;
 
-					size_t max_points = 0;
+                    uint32_t max_points = 0;
 
                     for( const Polygon & shape_vertex : output )
 					{
-						size_t outer_count = shape_vertex.outer_count();
+                        uint32_t outer_count = shape_vertex.outer_count();
 
 						max_points += outer_count - 1;
 
-						size_t inners_count = shape_vertex.inners_count();
+                        uint32_t inners_count = shape_vertex.inners_count();
 
-						for( size_t index = 0; index != inners_count; ++index )
+						for( uint32_t index = 0; index != inners_count; ++index )
 						{
-							size_t inner_count = shape_vertex.inner_count( index );
+                            uint32_t inner_count = shape_vertex.inner_count( index );
 
 							max_points += inner_count - 1;
 						}
@@ -619,9 +621,9 @@ namespace Mengine
 					{
 						std::vector<p2t::Point*> p2t_polygon;
 
-						size_t outer_count = shape_vertex.outer_count();
+                        uint32_t outer_count = shape_vertex.outer_count();
 
-						for( size_t index = 0; index != outer_count - 1; ++index )
+						for( uint32_t index = 0; index != outer_count - 1; ++index )
 						{
 							const mt::vec2f & v = shape_vertex.outer_point( index );
 
@@ -633,15 +635,15 @@ namespace Mengine
 
 						p2t::CDT * cdt = new p2t::CDT( p2t_polygon );
 
-						size_t inners_count = shape_vertex.inners_count();
+                        uint32_t inners_count = shape_vertex.inners_count();
 
-						for( size_t index_inners = 0; index_inners != inners_count; ++index_inners )
+						for( uint32_t index_inners = 0; index_inners != inners_count; ++index_inners )
 						{
 							std::vector<p2t::Point*> p2t_hole;
 
-							size_t inner_count = shape_vertex.inner_count( index_inners );
+                            uint32_t inner_count = shape_vertex.inner_count( index_inners );
 
-							for( size_t index_inner = 0; index_inner != inner_count - 1; ++index_inner )
+							for( uint32_t index_inner = 0; index_inner != inner_count - 1; ++index_inner )
 							{
 								const mt::vec2f & v = shape_vertex.inner_point( index_inners, index_inner );
 
@@ -684,8 +686,8 @@ namespace Mengine
 						delete cdt;
 					}
 
-					size_t shapeVertexCount = p2t_points.size();
-					size_t shapeIndicesCount = shape_indices.size();
+                    uint32_t shapeVertexCount = p2t_points.size();
+                    uint32_t shapeIndicesCount = shape_indices.size();
 
 					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
 					{
@@ -706,7 +708,7 @@ namespace Mengine
 
 					shape.indices = Helper::allocateArrayT<RenderIndex>( shapeIndicesCount );
 
-					for( size_t i = 0; i != shapeVertexCount; ++i )
+					for( uint32_t i = 0; i != shapeVertexCount; ++i )
 					{
 						const p2t::Point & shape_pos = p2t_points[i];
 
@@ -717,7 +719,7 @@ namespace Mengine
 						shape.uv[i].y = ((float)shape_pos.y - imageOffset.y) / imageSize.y;
 					}
 
-					for( size_t i = 0; i != shapeIndicesCount; ++i )
+					for( uint32_t i = 0; i != shapeIndicesCount; ++i )
 					{
 						shape.indices[i] = (RenderIndex)shape_indices[i];
 					}
@@ -760,7 +762,7 @@ namespace Mengine
 
 			const Polygon & polygon = meta_polygon.get_Value();
 
-			size_t polygon_size = polygon.num_points();
+            uint32_t polygon_size = polygon.num_points();
 
 			if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
 			{

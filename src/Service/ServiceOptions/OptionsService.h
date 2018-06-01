@@ -37,7 +37,7 @@ namespace Mengine
 			Char value[MENGINE_OPTIONS_VALUE_SIZE];
 		};
 
-		typedef stdex::vector<Option> TVectorOptions;
+		typedef Vector<Option> TVectorOptions;
 		TVectorOptions m_options;
 	};
 }

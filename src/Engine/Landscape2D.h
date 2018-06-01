@@ -9,29 +9,32 @@
 #include "Core/ValueInterpolator.h"
 #include "Core/RenderVertex2D.h"
 
+#include "Config/Vector.h"
+
 #include "math/mat3.h"
 #include "math/vec4.h"
 #include "math/mat4.h"
 
 namespace Mengine
 {
-	typedef stdex::vector<ResourceImage *> TVectorResourceImage;
-
+    //////////////////////////////////////////////////////////////////////////
+	typedef Vector<ResourceImagePtr> TVectorResourceImage;
+    //////////////////////////////////////////////////////////////////////////
 	struct RenderMaterial;
 	struct RenderMaterialGroup;    
-
+    //////////////////////////////////////////////////////////////////////////
 	struct Landscape2DElement
 	{
-		ResourceImage * image;
+		ResourceImagePtr image;
 		RenderMaterialInterfacePtr material;
 		uint32_t i;
 		uint32_t j;
 		mt::box2f bb;
 		mt::box2f bb_wm;
 	};
-
-	typedef stdex::vector<Landscape2DElement> TVectorLandscape2DElements;
-	
+    //////////////////////////////////////////////////////////////////////////
+	typedef Vector<Landscape2DElement> TVectorLandscape2DElements;
+    //////////////////////////////////////////////////////////////////////////
 	class Landscape2D 
 		: public Node
 		, public Materialable
@@ -48,7 +51,7 @@ namespace Mengine
 		void _release() override;
 
 	protected:
-		void _render( RenderServiceInterface * _renderService, const RenderState * _state ) override;
+		void _render( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
 
     protected:
 		void _invalidateWorldMatrix() override;

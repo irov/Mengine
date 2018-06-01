@@ -10,13 +10,13 @@
 #include "AOIActor.h"
 #include "AOITrigger.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<AOITriggerPtr> TVectorAOITriggers;
-	typedef stdex::vector<AOIActorPtr> TVectorAOIActors;
+	typedef Vector<AOITriggerPtr> TVectorAOITriggers;
+	typedef Vector<AOIActorPtr> TVectorAOIActors;
 	//////////////////////////////////////////////////////////////////////////
 	class AreaOfInterest
         : public Servant

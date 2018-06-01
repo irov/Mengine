@@ -6,7 +6,7 @@
 
 #include "Core/ConstString.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -31,7 +31,7 @@ namespace Mengine
         bool convert( const ConstString & _converter, const ConstString & _category, const FilePath & _in, FilePath & _out ) override;
 
 	protected:
-		typedef stdex::map<ConstString, ConverterFactoryInterfacePtr> TMapConverterSystem;
+		typedef Map<ConstString, ConverterFactoryInterfacePtr> TMapConverterSystem;
 		TMapConverterSystem m_mapConverterSystem;
 	};
 }

@@ -5,7 +5,7 @@
 #include "Kernel/ThreadTaskPacket.h"
 #include "Factory/Factory.h"
 
-#include "stdex/stl_list.h"
+#include "Config/List.h"
 
 namespace Mengine 
 {
@@ -37,10 +37,10 @@ namespace Mengine
 		ConstString m_threadName;
 		uint32_t m_packetSize;
 
-		typedef stdex::list<ThreadTaskInterfacePtr> TVectorThreadTask;
+		typedef List<ThreadTaskInterfacePtr> TVectorThreadTask;
 		TVectorThreadTask m_threadTasks;
 
-		typedef stdex::vector<ThreadTaskInterfacePtr> TVectorCurrentThreadTask;
+		typedef Vector<ThreadTaskInterfacePtr> TVectorCurrentThreadTask;
 		TVectorCurrentThreadTask m_currentTasks;
 
 		FactoryPtr m_factoryPoolTaskPacket;

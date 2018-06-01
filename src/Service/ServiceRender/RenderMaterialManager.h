@@ -8,8 +8,7 @@
 
 #include "Factory/Factory.h"
 
-#include "stdex/binary_vector.h"
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 #ifndef MENGINE_MATERIAL_RENDER_STAGE_MAX
 #	define MENGINE_MATERIAL_RENDER_STAGE_MAX 256
@@ -98,38 +97,38 @@ namespace Mengine
 		ETextureFilter m_defaultTextureFilterMagnification;
 		ETextureFilter m_defaultTextureFilterMinification;		
 
-		typedef stdex::map<ConstString, const RenderMaterialStage *> TMapRenderStage;
+		typedef Map<ConstString, const RenderMaterialStage *> TMapRenderStage;
         TMapRenderStage m_materialStageIndexer;
 
 		RenderMaterialStage m_stages[MENGINE_MATERIAL_RENDER_STAGE_MAX];
 		uint32_t m_stageCount;
 
-		typedef stdex::vector<RenderMaterial *> TVectorRenderMaterial;
+		typedef Vector<RenderMaterial *> TVectorRenderMaterial;
 		TVectorRenderMaterial m_materials[MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE];
 
 		FactoryPtr m_factoryMaterial;
 
-		typedef stdex::vector<uint32_t> TVectorMaterialIndexer;
+		typedef Vector<uint32_t> TVectorMaterialIndexer;
 		TVectorMaterialIndexer m_materialEnumerators;
 
 		RenderMaterialInterfacePtr m_debugMaterial;
 
-		typedef stdex::map<ConstString, RenderVertexShaderInterfacePtr> TMapRenderVertexShaders;
+		typedef Map<ConstString, RenderVertexShaderInterfacePtr> TMapRenderVertexShaders;
 		TMapRenderVertexShaders m_vertexShaders;
 
-		typedef stdex::map<ConstString, RenderFragmentShaderInterfacePtr> TMapRenderFragmentShaders;
+		typedef Map<ConstString, RenderFragmentShaderInterfacePtr> TMapRenderFragmentShaders;
 		TMapRenderFragmentShaders m_fragmentShaders;
 
-        typedef stdex::map<ConstString, RenderVertexAttributeInterfacePtr> TMapRenderVertexAttributes;
+        typedef Map<ConstString, RenderVertexAttributeInterfacePtr> TMapRenderVertexAttributes;
         TMapRenderVertexAttributes m_vertexAttributes;
 
-		typedef stdex::map<ConstString, RenderProgramInterfacePtr> TMapRenderPrograms;
+		typedef Map<ConstString, RenderProgramInterfacePtr> TMapRenderPrograms;
 		TMapRenderPrograms m_programs;
 
         const RenderMaterialStage * m_defaultStages[EM_MATERIAL_COUNT];
 		ConstString m_defaultStageNames[EM_MATERIAL_COUNT];
 
-        typedef stdex::map<ConstString, EMaterial> TMapDefaultStagesName;
+        typedef Map<ConstString, EMaterial> TMapDefaultStagesName;
         TMapDefaultStagesName m_defaultStagesEnum;
     };
 }

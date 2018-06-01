@@ -25,10 +25,10 @@ namespace Mengine
 
 	public:
 		void _tick( float _time, float _timing ) override;
-		void _render( const RenderState * _state, uint32_t _debugMask ) override;
+		void _render( const RenderContext * _state, uint32_t _debugMask ) override;
 		
 	protected:
-		typedef stdex::vector<AreaOfInterest *> TVectorAreaOfInterest;
+		typedef Vector<AreaOfInterest *> TVectorAreaOfInterest;
 		TVectorAreaOfInterest m_aois;
 	};
 }

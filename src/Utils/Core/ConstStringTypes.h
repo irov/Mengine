@@ -2,9 +2,9 @@
 
 #include "Core/ConstString.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
-	typedef stdex::vector<ConstString> TVectorConstString;
+	typedef Vector<ConstString> TVectorConstString;
 } 

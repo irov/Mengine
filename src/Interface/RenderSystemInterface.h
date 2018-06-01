@@ -19,8 +19,6 @@
 
 #include "Config/Typedef.h"
 
-#include "stdex/intrusive_ptr.h"
-
 #include "math/mat4.h"
 #include "math/uv4.h"
 #include "math/plane.h"
@@ -583,13 +581,15 @@ namespace Mengine
 		uint32_t batch;
     };
 	//////////////////////////////////////////////////////////////////////////
-	struct RenderState
+	struct RenderContext
 	{
 		RenderViewportInterfacePtr viewport;
 		RenderCameraInterfacePtr camera;
 		RenderScissorInterfacePtr scissor;
 
 		RenderTargetInterfacePtr target;
+        
+        uint32_t debugMask;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class RenderServiceInterface
@@ -598,26 +598,26 @@ namespace Mengine
         SERVICE_DECLARE("RenderService")
 
     public:
-        virtual void addRenderMesh( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+        virtual void addRenderMesh( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _indexCount ) = 0;
 
-		virtual void addRenderObject( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+		virtual void addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indicesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
-		virtual void addRenderQuad( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+		virtual void addRenderQuad( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
-		virtual void addRenderLine( const RenderState * _state, const RenderMaterialInterfacePtr & _material
+		virtual void addRenderLine( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
 	public:
-		virtual RenderVertex2D * getDebugRenderVertex2D( size_t _count ) = 0;
+		virtual RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) = 0;
 
 	public:
 		virtual void setBatchMode( ERenderBatchMode _mode ) = 0;

@@ -608,7 +608,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
-		typedef stdex::vector<SoundIdentityInterfacePtr> TVectorSoundListeners;
+		typedef Vector<SoundIdentityInterfacePtr> TVectorSoundListeners;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::tick( float _current, float _timing )

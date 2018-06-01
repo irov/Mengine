@@ -13,14 +13,14 @@
 #include "Core/ConstString.h"
 #include "Core/RenderVertex2D.h"
 
+#include "Config/Vector.h"
+
 #include "math/vec4.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class TextLine;
-    typedef stdex::vector<TextLine> TVectorTextLine;
-    typedef stdex::vector<TVectorTextLine> TVectorTextLine2;
-    typedef stdex::vector<TVectorTextLine2> TVectorTextLineLayout;
     //////////////////////////////////////////////////////////////////////////
     class TextField
         : public Node
@@ -105,7 +105,7 @@ namespace Mengine
         uint32_t getCharCount() const;
 
     protected:
-        void _render( RenderServiceInterface * _renderService, const RenderState * _state ) override;
+        void _render( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
         
     protected:
         bool _activate() override;
@@ -122,9 +122,6 @@ namespace Mengine
         void notifyDebugMode( bool _debugMode );
 
     protected:
-        float getHorizontAlignOffset_( const TVectorTextLine2 & _lines );
-
-    protected:
         void updateVertices_( const TextFontInterfacePtr & _font );
         void invalidateVertices_() const;
 
@@ -136,9 +133,6 @@ namespace Mengine
         inline const TVectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font );
 
         void updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, TVectorRenderVertex2D& _vertexData );
-
-    protected:
-        const TVectorTextLineLayout & getTextLayots() const;
 
     protected:
         void invalidateTextLines() const;
@@ -208,8 +202,14 @@ namespace Mengine
         bool m_pixelsnap;
 
         bool m_debugMode;
-
+        
+        typedef Vector<TextLine> TVectorTextLine;
+        typedef Vector<TVectorTextLine> TVectorTextLine2;
+        typedef Vector<TVectorTextLine2> TVectorTextLineLayout;
         mutable TVectorTextLineLayout m_layouts;
+
+        typedef Vector<float> TVectorTextLineAlignOffset;
+        mutable TVectorTextLineAlignOffset m_textLineAlignOffsets;
 
         struct Chunk
         {
@@ -219,7 +219,7 @@ namespace Mengine
             RenderMaterialInterfacePtr material;
         };
 
-        typedef stdex::vector<Chunk> TVectorChunks;
+        typedef Vector<Chunk> TVectorChunks;
         TVectorChunks m_chunks;
 
         mutable TVectorCacheFonts m_cacheFonts;
@@ -232,6 +232,10 @@ namespace Mengine
 
         mutable bool m_invalidateTextLines;
         mutable bool m_invalidateTextEntry;
+
+    protected:
+        const TVectorTextLineLayout & getTextLayots() const;
+        float getHorizontAlignOffset_( const TVectorTextLine2 & _lines );
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TextField> TextFieldPtr;

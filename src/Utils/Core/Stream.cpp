@@ -73,8 +73,8 @@ namespace Mengine
 			uint32_t load_compress_size;
 			_stream->read( &load_compress_size, sizeof(load_compress_size) );
 
-			size_t binary_size = (size_t)load_binary_size;
-			size_t compress_size = (size_t)load_compress_size;
+            uint32_t binary_size = load_binary_size;
+            uint32_t compress_size = load_compress_size;
 
             MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( compress_size, _file, _line );
 
@@ -174,8 +174,8 @@ namespace Mengine
 			uint32_t load_compress_size;
 			_stream->read( &load_compress_size, sizeof(load_compress_size) );
 
-			size_t binary_size = (size_t)load_binary_size;
-			size_t compress_size = (size_t)load_compress_size;
+            uint32_t binary_size = load_binary_size;
+            uint32_t compress_size = load_compress_size;
 
 			if( binary_size != _size )
 			{
@@ -379,8 +379,8 @@ namespace Mengine
 			uint32_t load_compress_size;
 			_stream->read( &load_compress_size, sizeof( load_compress_size ) );
 
-			size_t binary_size = (size_t)load_binary_size;
-			size_t compress_size = (size_t)load_compress_size;
+			size_t binary_size = load_binary_size;
+			size_t compress_size = load_compress_size;
 
 			MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( compress_size, _file, _line );
 

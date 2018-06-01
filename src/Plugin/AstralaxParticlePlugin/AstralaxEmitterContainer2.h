@@ -6,6 +6,8 @@
 
 #include "Core/ServantBase.h"
 
+#include "Config/Vector.h"
+
 #include "Factory/Factory.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
@@ -60,7 +62,7 @@ namespace Mengine
 		
 		MemoryInterfacePtr m_memory;
 
-		typedef stdex::vector<ResourceImagePtr> TVectorResourceImage;
+		typedef Vector<ResourceImagePtr> TVectorResourceImage;
 		TVectorResourceImage m_resourceImages;
 	};
 

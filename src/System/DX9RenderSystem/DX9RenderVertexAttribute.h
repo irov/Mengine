@@ -5,6 +5,8 @@
 
 #include "Core/ServantBase.h"
 
+#include "Config/Vector.h"
+
 #include <d3d9.h>
 
 namespace Mengine
@@ -52,7 +54,7 @@ namespace Mengine
             bool normalized;
         };
 
-        typedef stdex::vector<Attribute> TVectorAttribute;
+        typedef Vector<Attribute> TVectorAttribute;
         TVectorAttribute m_attributes;
 	};
 	//////////////////////////////////////////////////////////////////////////

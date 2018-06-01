@@ -3,7 +3,7 @@
 #include "Core/ConstString.h"
 #include "Core/ValueFollower.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -38,7 +38,7 @@ namespace Mengine
 			ValueFollowerLinear<float> follower;
 		};
 
-		typedef stdex::vector<Element> TMixerElement;
+		typedef Vector<Element> TMixerElement;
 		TMixerElement m_mixer;
 	};
 }

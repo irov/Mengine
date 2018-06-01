@@ -85,7 +85,7 @@ namespace Mengine
 
 		const ImageCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-		size_t data_full_size = dataInfo->getFullSize();
+        uint32_t data_full_size = dataInfo->getFullSize();
 
 		MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_full_size, __FILE__, __LINE__ );
 		

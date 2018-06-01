@@ -342,7 +342,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_render( RenderServiceInterface * _renderService, const RenderState * _state )
+	void ParticleEmitter2::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
 		if( this->isPlay() == false )
 		{

@@ -32,7 +32,7 @@ namespace Mengine
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
 	protected:
-		void _debugRender( Mengine::RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
+		void _debugRender( Mengine::RenderServiceInterface * _renderService, const RenderContext * _state ) override;
 
     protected:
         Movie2Ptr m_movie;

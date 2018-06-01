@@ -9,11 +9,11 @@
 
 #include "Box2D/Box2D.h"
 
+#include "Config/Vector.h"
+
 #include "pybind/object.hpp"
 
 #include "math/vec2.h"
-
-#include "stdex/stl_vector.h"
 
 namespace Mengine
 {
@@ -148,7 +148,7 @@ namespace Mengine
             Box2DJoint * join;
         };
 
-        typedef stdex::vector<JoinDef> TVectorJoints;
+        typedef Vector<JoinDef> TVectorJoints;
         TVectorJoints m_joints;
     };
     //////////////////////////////////////////////////////////////////////////

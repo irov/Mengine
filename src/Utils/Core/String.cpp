@@ -2,7 +2,7 @@
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
-
+#include "Config/Vector.h"
 
 #include <sstream>
 #include <clocale>
@@ -43,7 +43,7 @@ namespace Mengine
 			} while( pos != String::npos );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		template<class T, class C = stdex::vector<T> >
+		template<class T, class C = Vector<T> >
 		static void t_split2( C & _outStrings, const T & _str, bool _trimDelims, const C & _delims )
 		{
 			typename T::size_type start = 0;
@@ -115,7 +115,7 @@ namespace Mengine
 			t_split2( _outStrings, _str, _trimDelims, _delims );
 		}
         //////////////////////////////////////////////////////////////////////////
-        template<class T, class C = stdex::vector<T> >
+        template<class T, class C = Vector<T> >
         static bool t_split3( C & _outStrings, const T & _str, const C & _delims )
         {
             typename T::size_type start = 0;

@@ -77,14 +77,14 @@ namespace Mengine
 		//void _setEventListener( const pybind::dict & _listener ) override;
 
 	protected:
-		void _debugRender(  RenderServiceInterface * _renderService, const RenderState * _state, uint32_t _debugMask ) override;
+		void _debugRender(  RenderServiceInterface * _renderService, const RenderContext * _state ) override;
 
 	protected:
 		CollisionWorldPtr m_collisionWorld;
 
 		CollisionActorPtr m_actor;
 
-		typedef stdex::vector<CollisionActorPtr> TVectorActorException;
+		typedef Vector<CollisionActorPtr> TVectorActorException;
 		TVectorActorException m_exceptions;
 
         NodeCollisionActorUserDataPtr m_data;

@@ -6,9 +6,10 @@
 
 #include "ResourceMovie.h"
 
+#include "Config/Vector.h"
+
 #include "pybind/pybind.hpp"
 
-#include "stdex/binary_vector.h"
 
 namespace Mengine
 {
@@ -230,7 +231,7 @@ namespace Mengine
 		RenderCameraProjectionPtr m_renderCameraProjection;
 		RenderViewportPtr m_renderViewport;
 
-		typedef std::vector<RenderScissorPtr> TVectorScissor;
+		typedef Vector<RenderScissorPtr> TVectorScissor;
 		TVectorScissor m_scissors;
 
         struct Nodies
@@ -254,7 +255,7 @@ namespace Mengine
 			bool child;
         };
 
-		typedef stdex::vector<Nodies> TVectorNodies;
+		typedef Vector<Nodies> TVectorNodies;
 		TVectorNodies m_nodies;
 				
 		float m_frameTiming;

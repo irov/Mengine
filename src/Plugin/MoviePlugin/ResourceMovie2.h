@@ -7,7 +7,7 @@
 
 #include "movie/movie.hpp"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -21,7 +21,7 @@ namespace Mengine
         ColourValue color;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::vector<ResourceMovie2CompositionLayer> ResourceMovie2CompositionLayers;
+    typedef Vector<ResourceMovie2CompositionLayer> ResourceMovie2CompositionLayers;
     //////////////////////////////////////////////////////////////////////////
     struct ResourceMovie2CompositionSubComposition
     {
@@ -29,7 +29,7 @@ namespace Mengine
         ConstString name;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::vector<ResourceMovie2CompositionSubComposition> ResourceMovie2CompositionSubCompositions;
+    typedef Vector<ResourceMovie2CompositionSubComposition> ResourceMovie2CompositionSubCompositions;
     //////////////////////////////////////////////////////////////////////////
     struct ResourceMovie2Composition
     {
@@ -95,10 +95,10 @@ namespace Mengine
 
         FilePath m_filePath;
 
-		typedef stdex::vector<ResourcePtr> TVectorResources;
+		typedef Vector<ResourcePtr> TVectorResources;
 		TVectorResources m_resources;
 
-        typedef stdex::map<ConstString, ResourceMovie2Composition> TMapCompositions;
+        typedef Map<ConstString, ResourceMovie2Composition> TMapCompositions;
         TMapCompositions m_compositions;
 	};
 	//////////////////////////////////////////////////////////////////////////

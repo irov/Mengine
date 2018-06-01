@@ -6,10 +6,9 @@
 #include "Core/ConstString.h"
 
 #include "Config/String.h"
+#include "Config/Vector.h"
 
 #include "stdex/array_string.h"
-
-#include "stdex/stl_vector.h"
 
 #include <stdint.h>
 
@@ -38,7 +37,7 @@ namespace Mengine
 	//typedef ConstString FilePath; //UTF8
 	typedef stdex::array_string<MENGINE_MAX_PATH> PathString;
 
-    typedef stdex::vector<FilePath> TVectorFilePath;
+    typedef Vector<FilePath> TVectorFilePath;
 
 	namespace Helper
 	{

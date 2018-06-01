@@ -380,7 +380,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::changeEmitterModel( float * _points, size_t _count )
+	bool AstralaxEmitter2::changeEmitterModel( float * _points, uint32_t _count )
 	{
 		MAGIC_TRIANGLE * triangle = reinterpret_cast<MAGIC_TRIANGLE *>(_points);
 

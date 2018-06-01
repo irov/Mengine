@@ -25,7 +25,7 @@ namespace Mengine
 		TVectorConstString pathes;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<ModulePathes> TVectorModulePathes;
+	typedef Vector<ModulePathes> TVectorModulePathes;
 	//////////////////////////////////////////////////////////////////////////
     class ScriptModuleFinder
 		: public Servant
@@ -72,7 +72,7 @@ namespace Mengine
 		FactoryPtr m_factoryScriptModuleLoaderSource;
 #endif
 
-		typedef stdex::vector<ScriptModuleLoaderPtr> TMapModuleLoaders;
+		typedef Vector<ScriptModuleLoaderPtr> TMapModuleLoaders;
 		TMapModuleLoaders m_loaders;
 
 		mutable PathString m_cacheFullPath;

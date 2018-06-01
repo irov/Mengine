@@ -21,8 +21,8 @@ namespace Mengine
 		bool dead;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<BurritoNode *> TVectorBurritoNode;
-	typedef stdex::vector<BurritoUnit *> TVectorBurritoUnit;
+	typedef Vector<BurritoNode *> TVectorBurritoNode;
+	typedef Vector<BurritoUnit *> TVectorBurritoUnit;
 	//////////////////////////////////////////////////////////////////////////
 	struct BurritoUnitBound
 	{
@@ -32,7 +32,7 @@ namespace Mengine
 		pybind::object cb;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<BurritoUnitBound> TVectorBurritoUnitBounds;	
+	typedef Vector<BurritoUnitBound> TVectorBurritoUnitBounds;	
 	//////////////////////////////////////////////////////////////////////////	
 	struct BurritoLayer
 	{
@@ -90,12 +90,12 @@ namespace Mengine
 	protected:
 		BurritoBison * m_bison;
 
-		typedef stdex::vector<BurritoGround *> TVectorBurritoGround;
+		typedef Vector<BurritoGround *> TVectorBurritoGround;
 		TVectorBurritoGround m_grounds;
 
 		TVectorBurritoUnitBounds m_unitBounds;
 
-		typedef stdex::vector<BurritoLayer> TVectorBurritoLayer;
+		typedef Vector<BurritoLayer> TVectorBurritoLayer;
 		TVectorBurritoLayer m_layers;				
 
 		TVectorBurritoUnit m_units;

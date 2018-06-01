@@ -4,7 +4,7 @@
 
 #include "Core/ServiceBase.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -23,7 +23,7 @@ namespace Mengine
         void visitFactories( VisitorFactoryService * _visitor ) override;
 
     protected:
-        typedef stdex::vector<const Factory *> TVectorFactories;
+        typedef Vector<const Factory *> TVectorFactories;
         TVectorFactories m_factories;
     };
 }

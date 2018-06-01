@@ -11,6 +11,8 @@
 #include "Core/ValueInterpolator.h"
 #include "Core/RenderVertex2D.h"
 
+#include "Config/Vector.h"
+
 #include "math/mat3.h"
 #include "math/vec4.h"
 #include "math/mat4.h"
@@ -57,7 +59,7 @@ namespace Mengine
 
 	protected:
 		void _update( float _current, float _timing ) override;
-		void _render( RenderServiceInterface * _renderService, const RenderState * _state ) override;
+		void _render( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
 
 	protected:
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
@@ -80,9 +82,9 @@ namespace Mengine
 	protected:
         SurfacePtr m_surface;
 		
-		typedef stdex::vector<mt::vec3f> TVectorPosition;
-		typedef stdex::vector<mt::vec2f> TVectorUV;
-		typedef stdex::vector<mt::vec4f> TVectorColor;
+		typedef Vector<mt::vec3f> TVectorPosition;
+		typedef Vector<mt::vec2f> TVectorUV;
+		typedef Vector<mt::vec4f> TVectorColor;
 		TVectorPosition m_positions;
 		TVectorUV m_uvs;
 		TVectorColor m_colors;

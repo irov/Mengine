@@ -8,7 +8,7 @@
 #include "Core/ServantBase.h"
 #include "Core/ConstString.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 #include "pybind/object.hpp"
 
@@ -70,7 +70,7 @@ namespace Mengine
             pybind::object cb;
         };
 
-		typedef stdex::map<ConstString, Setting> TMapSettings;
+		typedef Map<ConstString, Setting> TMapSettings;
 		TMapSettings m_settings;
 	};
     //////////////////////////////////////////////////////////////////////////

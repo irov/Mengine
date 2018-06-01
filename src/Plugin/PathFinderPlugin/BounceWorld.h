@@ -7,8 +7,6 @@
 #include "Factory/Factorable.h"
 #include "Factory/Factory.h"
 
-#include "stdex/intrusive_ptr.h"
-
 namespace Mengine
 {
 	class BounceWorld
@@ -36,7 +34,7 @@ namespace Mengine
 	protected:		
 		FactoryPtr m_factoryBounceActors;
 
-		typedef stdex::vector<BounceActorPtr> TVectorBounceActors;
+		typedef Vector<BounceActorPtr> TVectorBounceActors;
 		TVectorBounceActors m_actors;
 		TVectorBounceActors m_actorsAdd;
 

@@ -48,9 +48,9 @@ namespace Mengine
 		return m_tags;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	stdex::string Tags::to_str() const
+	String Tags::to_str() const
 	{
-		stdex::string str;
+		String str;
 
 		str += '[';
 

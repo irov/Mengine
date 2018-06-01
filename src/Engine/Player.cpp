@@ -116,7 +116,7 @@ namespace Mengine
             }
 
         protected:
-            typedef stdex::vector<Resource *> TVectorResourceDesc;
+            typedef Vector<Resource *> TVectorResourceDesc;
             TVectorResourceDesc m_resources;
         };
 
@@ -925,17 +925,18 @@ namespace Mengine
         uint32_t debugMask = APPLICATION_SERVICE()
             ->getDebugMask();
 
-        RenderState state;
+        RenderContext state;
         state.viewport = m_renderViewport;
         state.camera = m_renderCamera;
         state.scissor = m_renderScissor;
         state.target = m_renderTarget;
+        state.debugMask = debugMask;
 
         RenderServiceInterface * renderService = RENDER_SERVICE();
 
         if( m_scene != nullptr )
         {
-            m_scene->render( renderService, &state, debugMask );
+            m_scene->render( renderService, &state );
         }
 
         MODULE_SERVICE()
@@ -946,7 +947,7 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->render( renderService, &state, debugMask );
+            m_arrow->render( renderService, &state );
         }
 
         if( m_showDebugText != 0 )
@@ -1136,7 +1137,7 @@ namespace Mengine
                             ++it )
                         {
                             uint32_t c = it->first;
-                            const stdex::vector<ConstString> & l = it->second;
+                            const TVectorConstString & l = it->second;
 
                             for( stdex::vector<ConstString>::const_iterator
                                 it_list = l.begin(),
@@ -1165,7 +1166,7 @@ namespace Mengine
 
                 protected:
                     ConstString m_category;
-                    typedef stdex::map<uint32_t, stdex::vector<ConstString>> TMapPybindScope;
+                    typedef Map<uint32_t, TVectorConstString> TMapPybindScope;
                     TMapPybindScope m_scopes;
                 };
 
@@ -1228,9 +1229,9 @@ namespace Mengine
                             ++it )
                         {
                             uint32_t c = it->first;
-                            const stdex::vector<String> & l = it->second;
+                            const TVectorString & l = it->second;
 
-                            for( stdex::vector<String>::const_iterator
+                            for( TVectorString::const_iterator
                                 it_list = l.begin(),
                                 it_list_end = l.end();
                                 it_list != it_list_end;
@@ -1256,7 +1257,7 @@ namespace Mengine
                     }
 
                 protected:
-                    typedef stdex::map<uint32_t, stdex::vector<String>> TMapPybindScope;
+                    typedef Map<uint32_t, TVectorString> TMapPybindScope;
                     TMapPybindScope m_scopes;
                 };
 
@@ -1312,9 +1313,9 @@ namespace Mengine
                             ++it )
                         {
                             uint32_t c = it->first;
-                            const stdex::vector<String> & l = it->second;
+                            const TVectorString & l = it->second;
 
-                            for( stdex::vector<String>::const_iterator
+                            for( TVectorString::const_iterator
                                 it_list = l.begin(),
                                 it_list_end = l.end();
                                 it_list != it_list_end;
@@ -1340,7 +1341,7 @@ namespace Mengine
                     }
 
                 protected:
-                    typedef stdex::map<uint32_t, stdex::vector<String>> TMapPybindScope;
+                    typedef Map<uint32_t, TVectorString> TMapPybindScope;
                     TMapPybindScope m_scopes;
                 };
                 
@@ -1353,7 +1354,7 @@ namespace Mengine
             }
             else if( m_showDebugText == 6 )
             {
-                typedef stdex::map<int32_t, stdex::vector<String>> TMapPybindScope;
+                typedef Map<int32_t, TVectorString> TMapPybindScope;
                 TMapPybindScope scopes;
 
                 uint32_t count = stdex_allocator_report_count();
@@ -1376,9 +1377,9 @@ namespace Mengine
                     ++it )
                 {
                     int32_t c = it->first;
-                    const stdex::vector<String> & l = it->second;
+                    const TVectorString & l = it->second;
 
-                    for( stdex::vector<String>::const_iterator
+                    for( TVectorString::const_iterator
                         it_list = l.begin(),
                         it_list_end = l.end();
                         it_list != it_list_end;
@@ -1429,7 +1430,7 @@ namespace Mengine
 
             m_debugText->setScale( mt::vec3f( scale, 1.f ) );
 
-            m_debugText->render( renderService, &state, debugMask );
+            m_debugText->render( renderService, &state );
         }
     }
     //////////////////////////////////////////////////////////////////////////

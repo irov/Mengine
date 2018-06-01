@@ -60,6 +60,11 @@ namespace Mengine
 
         m_compositionName = _compositionName;
 
+        if( m_resourceMovie2 == nullptr )
+        {
+            return true;
+        }
+
         this->destroyCompositionLayers_();
 
         if( this->createCompositionLayers_() == false )
@@ -1500,6 +1505,14 @@ namespace Mengine
 
         m_composition = composition;
 
+        if( m_compositionName.empty() == false )
+        {            
+            if( this->createCompositionLayers_() == false )
+            {
+                return false;
+            }
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1670,20 +1683,15 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_render( RenderServiceInterface * _renderService, const RenderState * _state )
+    void Movie2::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
     {
-        if( m_meshes.empty() == true )
-        {
-            return;
-        }
-
         uint32_t mesh_iterator = 0;
         uint32_t vertex_iterator = 0;
         uint32_t index_iterator = 0;
 
         RenderVertex2D * vertices_buffer = m_vertices.empty() == false ? &m_vertices.front() : nullptr;
         RenderIndex * indices_buffer = m_indices.empty() == false ? &m_indices.front() : nullptr;
-        Mesh * meshes_buffer = &m_meshes.front();
+        Mesh * meshes_buffer = m_meshes.empty() == false ? &m_meshes.front() : nullptr;
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -1705,7 +1713,8 @@ namespace Mengine
         {
             Resource * resource_reference = reinterpret_node_cast<Resource *>(mesh.resource_data);
 
-            RenderState state;
+            RenderContext state;
+            state.debugMask = _state->debugMask;
 
             if( mesh.camera_data != nullptr )
             {
@@ -1747,14 +1756,14 @@ namespace Mengine
                     {
                         Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_data);
                         
-                        node->render( _renderService, &state, 0 );
+                        node->render( _renderService, &state );
                     }break;
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
                         ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_data);
 
-                        node->render( _renderService, &state, 0 );
+                        node->render( _renderService, &state );
 
                     }break;
 #endif
@@ -1767,13 +1776,13 @@ namespace Mengine
                             printf( "Fds" );
                         }
 
-                        node->render( _renderService, &state, 0 );
+                        node->render( _renderService, &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
                         ParticleEmitter2 * particleEmitter2 = reinterpret_node_cast<ParticleEmitter2 *>(mesh.element_data);
 
-                        particleEmitter2->render( _renderService, &state, 0 );
+                        particleEmitter2->render( _renderService, &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {

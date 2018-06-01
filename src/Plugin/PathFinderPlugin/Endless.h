@@ -37,7 +37,7 @@ namespace Mengine
 			uint32_t id;
 		};
 
-		typedef stdex::vector<Element> TVectorElement;
+		typedef Vector<Element> TVectorElement;
 		TVectorElement m_elements;
 
 		uint32_t m_enumeratorElementId;

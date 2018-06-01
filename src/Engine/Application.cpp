@@ -126,13 +126,13 @@
 
 #include "Config/Config.h"
 #include "Config/Stringstream.h"
+#include "Config/List.h"
 
 #include "Core/String.h"
 #include "Core/IniUtil.h"
 
 #include "stdex/allocator.h"
 #include "stdex/allocator_report.h"
-#include "stdex/stl_list.h"
 
 #include <ctime>
 #include <sstream>

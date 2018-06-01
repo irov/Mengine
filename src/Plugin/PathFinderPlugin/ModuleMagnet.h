@@ -27,12 +27,12 @@ namespace Mengine
 
 	public:
 		void _tick( float _time, float _timing ) override;
-		void _render( const RenderState * _state, uint32_t _debugMask ) override;
+		void _render( const RenderContext * _state, uint32_t _debugMask ) override;
 		
 	protected:
 		FactoryPtr m_factoryMagnetWorld;
 
-		typedef stdex::vector<MagnetWorldPtr> TVectorMagnetWorlds;
+		typedef Vector<MagnetWorldPtr> TVectorMagnetWorlds;
 		TVectorMagnetWorlds m_magnetWorlds;
 	};
 }

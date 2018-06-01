@@ -3672,8 +3672,6 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        typedef stdex::vector<String> TVectorConstString;
-        //////////////////////////////////////////////////////////////////////////
         void s_visitChild( Node * _node, const pybind::object & _cb )
         {
             TListNodeChild & child = _node->getChildren();

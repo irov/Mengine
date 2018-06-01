@@ -134,7 +134,7 @@ namespace Mengine
 
 		HCURSOR m_cursor;
 
-		typedef stdex::map<ConstString, HCURSOR> TMapCursors;
+		typedef Map<ConstString, HCURSOR> TMapCursors;
 		TMapCursors m_cursors;
 
 		bool m_lastMouse;

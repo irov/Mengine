@@ -16,7 +16,7 @@
 #include "pybind/kernel.hpp"
 #include "pybind/base.hpp"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 #include <stdarg.h>
 
@@ -47,7 +47,7 @@ namespace Mengine
 		Tags platform;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<ScriptModulePack> TVectorScriptModulePack;
+	typedef Vector<ScriptModulePack> TVectorScriptModulePack;
 	//////////////////////////////////////////////////////////////////////////
 	class ScriptModuleInterface
 		: public Servant

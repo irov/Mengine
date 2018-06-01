@@ -51,7 +51,7 @@ namespace Mengine
             _factory->setDestroyListener( destroyListener );
         }
         //////////////////////////////////////////////////////////////////////////
-        template<class Type, size_t Count, class C, class M>
+        template<class Type, uint32_t Count, class C, class M>
         FactoryPtr makeFactoryPoolWithListener( C * _self, M _method )
         {
             FactoryWithListenerPtr factory = new FactoryPool<Type, Count, FactoryWithListener>();

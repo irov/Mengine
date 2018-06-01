@@ -5,6 +5,8 @@
 #include "Core/ServantBase.h"
 #include "Core/ConstString.h"
 
+#include "Config/Vector.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -48,7 +50,7 @@ namespace Mengine
 		bool m_dynamicLoad;
 		bool m_initialize;
 
-		typedef stdex::vector<ConstString> TVectorModuleFactory;
+		typedef Vector<ConstString> TVectorModuleFactory;
 		TVectorModuleFactory m_moduleFactories;
 	};
 }

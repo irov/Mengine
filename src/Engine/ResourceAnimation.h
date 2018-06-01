@@ -2,7 +2,7 @@
 
 #include "Kernel/Resource.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -16,7 +16,7 @@ namespace Mengine
 		ConstString resourceName;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::vector<AnimationSequence> TVectorAnimationSequence;
+	typedef Vector<AnimationSequence> TVectorAnimationSequence;
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceAnimation
 		: public Resource

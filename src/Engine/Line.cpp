@@ -43,7 +43,7 @@ namespace Mengine
 		return m_width;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Line::_render( RenderServiceInterface * _renderService, const RenderState * _state )
+	void Line::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
 	{
 		const mt::mat4f & wm = this->getWorldMatrix();
 

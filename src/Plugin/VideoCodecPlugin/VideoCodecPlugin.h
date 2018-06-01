@@ -20,7 +20,7 @@ namespace Mengine
 		void _finalize() override;
 
 	protected:
-		typedef stdex::vector<DecoderFactoryInterfacePtr> TVectorVideoDecoders;
+		typedef Vector<DecoderFactoryInterfacePtr> TVectorVideoDecoders;
 		TVectorVideoDecoders m_decoders;
 	};
 }

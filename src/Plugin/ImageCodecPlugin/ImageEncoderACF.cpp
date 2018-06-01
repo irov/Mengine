@@ -60,7 +60,7 @@ namespace Mengine
 
 		for( uint32_t i = 0; i != mipmaps; ++i )
 		{   
-			size_t mipmap_size = dataInfo->getMipMapSize( i );
+            uint32_t mipmap_size = dataInfo->getMipMapSize( i );
 
 			if( Helper::writeStreamArchiveBuffer( m_stream, m_archivator, false, mipmap_buffer, mipmap_size, EAC_BEST ) == false )
 			{

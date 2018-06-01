@@ -30,13 +30,13 @@ namespace Mengine
 
         PixelFormat format;
 
-		size_t getFullSize() const
+        uint32_t getFullSize() const
 		{
-			size_t full_size = 0;
+            uint32_t full_size = 0;
 
 			for( uint32_t i = 0; i != mipmaps; ++i )
 			{
-				size_t s = this->getMipMapSize(i);
+                uint32_t s = this->getMipMapSize(i);
 
 				full_size += s;
 			}
@@ -54,9 +54,9 @@ namespace Mengine
 			return mipmap_size;
 		}
 
-		size_t getSize() const
+        uint32_t getSize() const
 		{
-			size_t size = Helper::getTextureMemorySize( width, height, channels, depth, format );
+            uint32_t size = Helper::getTextureMemorySize( width, height, channels, depth, format );
 
 			return size;
 		}

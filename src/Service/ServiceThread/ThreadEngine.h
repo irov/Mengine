@@ -9,7 +9,7 @@
 
 #include "Factory/Factory.h"
 
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -72,10 +72,10 @@ namespace Mengine
 			bool complete;
 		};
 
-        typedef stdex::vector<ThreadTaskDesc> TVectorThreadTaskDesc;
+        typedef Vector<ThreadTaskDesc> TVectorThreadTaskDesc;
         TVectorThreadTaskDesc m_tasks;
 				
-		typedef stdex::vector<ThreadQueuePtr> TVectorThreadQueues;
+		typedef Vector<ThreadQueuePtr> TVectorThreadQueues;
 		TVectorThreadQueues m_threadQueues;
 
 		FactoryPtr m_factoryThreadQueue;
@@ -88,7 +88,7 @@ namespace Mengine
 			ThreadIdentityInterfacePtr identity;
 		};
 
-		typedef stdex::vector<ThreadDesc> TVectorThreads;
+		typedef Vector<ThreadDesc> TVectorThreads;
 		TVectorThreads m_threads;
 
 		bool m_avaliable;

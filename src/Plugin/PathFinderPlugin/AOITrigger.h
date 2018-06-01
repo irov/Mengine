@@ -6,8 +6,7 @@
 
 #include "AOIActor.h"
 
-#include "stdex/intrusive_ptr.h"
-#include "stdex/stl_vector.h"
+#include "Config/Vector.h"
 
 namespace Mengine
 {
@@ -36,7 +35,7 @@ namespace Mengine
 	protected:
 		AOITriggerProviderInterface * m_provider;
 
-		typedef stdex::vector<AOIActorPtr> TVectorAOIActors;
+		typedef Vector<AOIActorPtr> TVectorAOIActors;
 		TVectorAOIActors m_actors;
 
 		bool m_remove;

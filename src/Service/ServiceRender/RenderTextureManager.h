@@ -9,7 +9,7 @@
 
 #include "Factory/Factory.h"
 
-#include "stdex/stl_map.h"
+#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -59,7 +59,7 @@ namespace Mengine
 
     protected:
 		typedef std::pair<ConstString, FilePath> TMapRenderTextureKey;
-		typedef stdex::map<TMapRenderTextureKey, RenderTextureInterface *> TMapRenderTextureEntry;
+		typedef Map<TMapRenderTextureKey, RenderTextureInterface *> TMapRenderTextureEntry;
 		TMapRenderTextureEntry m_textures[MENGINE_TEXTURE_MANAGER_HASH_SIZE];
 
         FactoryPtr m_factoryRenderTexture;

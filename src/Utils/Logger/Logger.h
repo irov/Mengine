@@ -10,10 +10,10 @@ namespace Mengine
 		LoggerOperator( LoggerServiceInterface * _logger, EMessageLevel _level, uint32_t _flag );
 
 	public:
-		LoggerOperator & operator()( const char * _format, ... );
+		LoggerOperator & operator()( const Char * _format, ... );
 
 	public:
-		void logMessage( const char * _format, size_t _size );
+		void logMessage( const Char * _format, size_t _size );
 
 	protected:
 		LoggerServiceInterface * m_log;

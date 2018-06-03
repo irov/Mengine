@@ -161,7 +161,7 @@ namespace Mengine
 		SERVICE_DECLARE( "ParticleSystem2" )
 
 	public:
-		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) = 0;
+		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName ) = 0;
         virtual ParticleEmitterInterfacePtr createEmitter( const ParticleEmitterContainerInterface2Ptr & _container ) = 0;
 
 	public:
@@ -184,7 +184,7 @@ namespace Mengine
 		virtual bool isAvailable() const = 0;
 
 	public:
-		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) = 0;
+		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) = 0;
 
 	public:
 		virtual uint32_t getMaxParticlesCount() const = 0;

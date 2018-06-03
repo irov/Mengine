@@ -16,6 +16,10 @@ namespace Mengine
 	ResourceParticle::ResourceParticle()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ResourceParticle::~ResourceParticle()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceParticle::setFilePath( const FilePath& _filePath )
 	{
@@ -88,7 +92,7 @@ namespace Mengine
             {
                 LOGGER_ERROR("ResourceParticle::_loader %s container %s can't get atlas image %s"
                     , this->getName().c_str()
-                    , m_filePath.c_str()
+                    , this->getFilePath().c_str()
                     , resourceName.c_str()
                     );
 
@@ -115,16 +119,17 @@ namespace Mengine
 			return true;
 		}
    
+        const ConstString & name = this->getName();
 		const ConstString & category = this->getCategory();
 
 		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2()
-			->createEmitterContainerFromFile( category, m_filePath );
+			->createEmitterContainerFromFile( category, m_filePath, name );
 		
 		if( container == nullptr )
 		{
 			LOGGER_ERROR("ResourceParticle::_isValid %s can't create container file '%s'"
-				, m_name.c_str()
-				, m_filePath.c_str() 
+				, this->getName().c_str()
+				, this->getFilePath().c_str()
 				);
 
 			return false;
@@ -133,8 +138,8 @@ namespace Mengine
 		if( container->isValid() == false )
 		{
 			LOGGER_ERROR("ResourceParticle::_isValid %s can't valid container '%s'"
-				, m_name.c_str()
-				, m_filePath.c_str() 
+				, this->getName().c_str()
+				, this->getFilePath().c_str()
 				);
 
 			return false;
@@ -145,16 +150,17 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceParticle::_compile()
 	{
-		const ConstString & category = this->getCategory();
+        const ConstString & name = this->getName();
+        const ConstString & category = this->getCategory();
 
 		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2()
-			->createEmitterContainerFromFile( category, m_filePath );
+            ->createEmitterContainerFromFile( category, m_filePath, name );
 
 		if( container == nullptr )
 		{
 			LOGGER_ERROR("ResourceParticle::_compile %s can't create container file '%s'"
-				, m_name.c_str()
-				, m_filePath.c_str()
+				, this->getName().c_str()
+				, this->getFilePath().c_str()
 				);
 
 			return false;
@@ -171,8 +177,8 @@ namespace Mengine
             if( resourceImage->incrementReference() == false )
             {
                 LOGGER_ERROR("ResourceParticle::_compile '%s' file '%s' can't invalid compile resource image '%s'"
-                    , m_name.c_str()
-                    , m_filePath.c_str()
+                    , this->getName().c_str()
+                    , this->getFilePath().c_str()
                     , resourceImage->getName().c_str()
                     );
 
@@ -194,8 +200,8 @@ namespace Mengine
             if( resourceImage->decrementReference() == false )
             {
                 LOGGER_ERROR("ResourceParticle::_release '%s' file '%s' can't invalid compile resource image '%s'"
-                    , m_name.c_str()
-                    , m_filePath.c_str()
+                    , this->getName().c_str()
+                    , this->getFilePath().c_str()
                     , resourceImage->getName().c_str()
                     );
             }

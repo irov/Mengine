@@ -111,6 +111,7 @@ src
     MixerValue.cpp
     
     Typename.h
+    SHA1.h
     
     IntrusivePtr.h
     IntrusivePtrBase.h

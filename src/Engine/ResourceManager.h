@@ -64,7 +64,7 @@ namespace Mengine
 	public:
 		void visitResources( Visitor * _visitor ) const override;
 		void visitGroupResources( const ConstString & _category, const ConstString & _group, Visitor * _visitor ) const override;
-			
+
 	public:
 		void dumpResources( const String & _tag ) override;
 

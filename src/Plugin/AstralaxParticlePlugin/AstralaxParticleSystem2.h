@@ -41,7 +41,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:        
-        ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator ) override;
+        ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName ) override;
         ParticleEmitterInterfacePtr createEmitter( const ParticleEmitterContainerInterface2Ptr & _container ) override;
 
     public:
@@ -64,8 +64,14 @@ namespace Mengine
 
         FactoryPtr m_factoryPoolAstralaxEmitterContainer;
         FactoryPtr m_factoryPoolAstralaxEmitter;
+        
+        struct AstralaxEmitterContainerDesc
+        {
+            uint32_t reference;
+            const AstralaxEmitterContainer2 * container;
+        };
 
-        typedef Map<uint32_t, AstralaxEmitterContainer2 *> TMapHashEmitterContainers;
+        typedef Map<uint32_t, AstralaxEmitterContainerDesc> TMapHashEmitterContainers;
         TMapHashEmitterContainers m_containers;
 
         int m_materialCount;

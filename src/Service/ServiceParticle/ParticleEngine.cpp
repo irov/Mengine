@@ -63,7 +63,7 @@ namespace Mengine
 		return m_available;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterface2Ptr ParticleEngine2::createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName )
+	ParticleEmitterContainerInterface2Ptr ParticleEngine2::createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName )
 	{
 		if( m_available == false )
 		{
@@ -87,7 +87,7 @@ namespace Mengine
 		}
 
 		ParticleEmitterContainerInterface2Ptr container = PARTICLE_SYSTEM2()
-            ->createEmitterContainerFromMemory( stream, m_archivator );
+            ->createEmitterContainerFromMemory( stream, m_archivator, _whoName );
 
 		if( container == nullptr )
 		{

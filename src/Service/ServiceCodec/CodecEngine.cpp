@@ -131,8 +131,8 @@ namespace Mengine
 		}
 
 		String ext( dot_find + 1 );
-
-		TMapCodecTypes::const_iterator it_found = m_codecTypes.find( ext );
+        
+        TMapCodecTypes::const_iterator it_found = m_codecTypes.find( ext );
 
 		if( it_found == m_codecTypes.end() )
 		{

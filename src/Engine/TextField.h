@@ -235,7 +235,7 @@ namespace Mengine
 
     protected:
         const TVectorTextLineLayout & getTextLayots() const;
-        float getHorizontAlignOffset_( const TVectorTextLine2 & _lines );
+        float getHorizontAlignOffset_( const TVectorTextLine2 & _lines ) const;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TextField> TextFieldPtr;

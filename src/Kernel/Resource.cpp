@@ -114,7 +114,7 @@ namespace Mengine
 		}
 
 		const ConstString & codecType = CODEC_SERVICE()
-			->findCodecType( _path );
+			->findCodecType( _out );
 
 		if( codecType.empty() == true )
 		{

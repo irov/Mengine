@@ -70,16 +70,16 @@ namespace Mengine
 		virtual void unregisterDataflow( const ConstString& _type ) = 0;
 		
 	public:
-		virtual DataflowInterfacePtr getDataflow( const ConstString & _type ) const = 0;
+		virtual const DataflowInterfacePtr & getDataflow( const ConstString & _type ) const = 0;
 
     public:
-		virtual DataInterfacePtr dataflow( const ConstString & _type, const InputStreamInterfacePtr & _stream ) = 0;
+		virtual DataInterfacePtr dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream ) = 0;
 			
 	public:
         template<class T>
-        T dataflowT( const ConstString & _type, const InputStreamInterfacePtr & _stream )
+        T dataflowT( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream )
         {
-            DataInterfacePtr data = this->dataflow( _type, _stream );
+            DataInterfacePtr data = this->dataflow( _dataflow, _stream );
 
 #ifndef NDEBUG
 			if (data == nullptr)
@@ -100,6 +100,6 @@ namespace Mengine
 	};
 
 #   define DATA_SERVICE()\
-    SERVICE_GET(Mengine::DataServiceInterface)
+    ((Mengine::DataServiceInterface*)SERVICE_GET(Mengine::DataServiceInterface))
 }
 

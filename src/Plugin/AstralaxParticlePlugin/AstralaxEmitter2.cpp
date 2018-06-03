@@ -69,7 +69,7 @@ namespace Mengine
 		m_box.minimum.y = -std::numeric_limits<float>::max();
 		m_box.maximum.x = std::numeric_limits<float>::max();
 		m_box.maximum.y = std::numeric_limits<float>::max();
-               
+                       
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
@@ -525,7 +525,10 @@ namespace Mengine
 			return false;
 		}
 
-		m_particleSystem->updateAtlas();
+        if( m_particleSystem->updateAtlas() == false )
+        {
+            return false;
+        }
 
 #ifdef MENGINE_RENDER_TEXTURE_RGBA
 		MAGIC_ARGB_ENUM color_mode = MAGIC_ARGB;

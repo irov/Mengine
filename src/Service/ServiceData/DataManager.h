@@ -20,10 +20,10 @@ namespace Mengine
 		void unregisterDataflow( const ConstString& _type ) override;
 
 	public:
-		DataflowInterfacePtr getDataflow( const ConstString & _type ) const override;
+        const DataflowInterfacePtr & getDataflow( const ConstString & _type ) const override;
 
 	public:
-		DataInterfacePtr dataflow( const ConstString & _type, const InputStreamInterfacePtr & _stream ) override;
+		DataInterfacePtr dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream ) override;
 
 	protected:
 		typedef Map<ConstString, DataflowInterfacePtr> TMapDataflow;

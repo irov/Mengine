@@ -107,9 +107,7 @@ namespace Mengine
 		        
         m_fileName = metadata->get_File_Path();
 
-        metadata->get_File_Codec( &m_codecType );
-
-        if( m_codecType.empty() == true )
+        if( metadata->get_File_Codec( &m_codecType ) == false )
         {
             m_codecType = CODEC_SERVICE()
                 ->findCodecType( m_fileName );

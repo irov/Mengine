@@ -26,7 +26,7 @@ namespace Mengine
 		m_dataflows.erase( _type );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataflowInterfacePtr DataManager::getDataflow( const ConstString & _type ) const
+    const DataflowInterfacePtr & DataManager::getDataflow( const ConstString & _type ) const
 	{
 		TMapDataflow::const_iterator it_found = m_dataflows.find( _type );
 
@@ -36,44 +36,29 @@ namespace Mengine
 				, _type.c_str()
 				);
 
-			return nullptr;
+			return DataflowInterfacePtr::none();
 		}
 
-		DataflowInterfacePtr dataflow = it_found->second;
+		const DataflowInterfacePtr & dataflow = it_found->second;
 
 		return dataflow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	DataInterfacePtr DataManager::dataflow( const ConstString & _type, const InputStreamInterfacePtr & _stream )
+	DataInterfacePtr DataManager::dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream )
 	{
-		TMapDataflow::const_iterator it_found = m_dataflows.find( _type );
-
-		if( it_found == m_dataflows.end() )
-		{
-			LOGGER_ERROR("DataManager::dataflow '%s' don't register"
-				, _type.c_str()
-				);
-
-			return nullptr;
-		}
-
-		DataflowInterfacePtr dataflow = it_found->second;
-
-		DataInterfacePtr data = dataflow->create();
+		DataInterfacePtr data = _dataflow->create();
 
 		if( data == nullptr )
 		{
-			LOGGER_ERROR("DataManager::dataflow '%s' invalid create data"
-				, _type.c_str()
+			LOGGER_ERROR("DataManager::dataflow invalid create data"
 				);
 
 			return nullptr;
 		}
 
-		if( dataflow->load( data, _stream ) == false )
+		if( _dataflow->load( data, _stream ) == false )
 		{
-			LOGGER_ERROR("DataManager::dataflow '%s' invalid load data"
-				, _type.c_str()
+			LOGGER_ERROR("DataManager::dataflow invalid load data"
 				);
 
 			return nullptr;

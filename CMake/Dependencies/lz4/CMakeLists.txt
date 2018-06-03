@@ -10,6 +10,10 @@ ${SOURCE_DIR}/lib/lz4.c
 ${SOURCE_DIR}/lib/lz4hc.c
 )
 
+if(WIN32)
+    ADD_DEFINITIONS(-DLZ4_FORCE_MEMORY_ACCESS=2)
+endif()
+
 include_directories(${SOURCE_DIR}/lib)
 
 add_library( ${PROJECT_NAME} STATIC ${SOURCES} )

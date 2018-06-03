@@ -275,9 +275,11 @@ namespace Mengine
 
         mt::vec2f offset = base_offset;
 
+        uint32_t textLineAlignOffsetIterator = 0U;
+
         for( const TVectorTextLine2 & lines2 : layouts )
         {
-            float alignOffsetX = this->getHorizontAlignOffset_( lines2 );
+            float alignOffsetX = m_textLineAlignOffsets[textLineAlignOffsetIterator++];
             offset.x = alignOffsetX;
 
             for( const TVectorTextLine & lines : lines2 )
@@ -655,9 +657,9 @@ namespace Mengine
             maxlen = (std::max)(maxlen, line_length);
             _charCount += line_chars;
 
-            //float alignOffsetX = this->getHorizontAlignOffset_( lines2 );
+            float alignOffsetX = this->getHorizontAlignOffset_( lines2 );
 
-            //m_textLineAlignOffsets.push_back( alignOffsetX );
+            m_textLineAlignOffsets.push_back( alignOffsetX );
         }
 
         _layoutCount = layouts.size();
@@ -1256,7 +1258,7 @@ namespace Mengine
         //}
     }
     //////////////////////////////////////////////////////////////////////////
-    float TextField::getHorizontAlignOffset_( const TVectorTextLine2 & _lines )
+    float TextField::getHorizontAlignOffset_( const TVectorTextLine2 & _lines ) const
     {
         float length = 0.f;
         for( const TVectorTextLine & line : _lines )

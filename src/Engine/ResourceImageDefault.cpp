@@ -297,14 +297,13 @@ namespace Mengine
 		       
         m_filePath = metadata->get_File_Path();
 
-        metadata->get_File_Codec( &m_codecType );
-		metadata->get_File_Converter( &m_converter );
+        if( metadata->get_File_Codec( &m_codecType ) == false )
+        {
+            m_codecType = CODEC_SERVICE()
+                ->findCodecType( m_filePath );
+        }
 
-		if( m_codecType.empty() == true )
-		{
-			m_codecType = CODEC_SERVICE()
-				->findCodecType( m_filePath );
-		}
+		metadata->get_File_Converter( &m_converter );
         
 		m_hasAlpha = true;
         metadata->get_File_Alpha( &m_hasAlpha );
@@ -384,14 +383,20 @@ namespace Mengine
 		ResourceImage::_release();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize )
+	bool ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize )
 	{
-        m_filePath = _imagePath;
+        m_filePath = _imagePath;        
+        m_codecType = _codecType;
 
-		if( _codecType.empty() == true )
+		if( m_codecType.empty() == true )
 		{
 			m_codecType = CODEC_SERVICE()
 				->findCodecType( m_filePath );
+
+            if( m_codecType.empty() == true )
+            {
+                return false;
+            }
 		}
 
         m_uvImage = _uv_image;
@@ -406,7 +411,12 @@ namespace Mengine
 		
 		m_hasAlpha = true;
 		
-		this->recompile();
+        if( this->recompile() == false )
+        {
+            return false;
+        }
+
+        return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceImageDefault::prepareImageFrame_()

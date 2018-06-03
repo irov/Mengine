@@ -58,6 +58,14 @@ namespace Mengine
 			return false;
 		}
 
+        m_dataflow = DATA_SERVICE()
+            ->getDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+
+        if( m_dataflow == nullptr )
+        {
+            return false;
+        }
+
 		return true;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
@@ -80,7 +88,7 @@ namespace Mengine
 	bool MovieKeyConverterXMLToAEK::validateVersion( const InputStreamInterfacePtr & _stream ) const
 	{
 		MovieFramePackInterfacePtr framePack = DATA_SERVICE()
-			->dataflowT<MovieFramePackInterfacePtr>( STRINGIZE_STRING_LOCAL( "aekMovie" ), _stream );
+            ->dataflowT<MovieFramePackInterfacePtr>( m_dataflow, _stream );
 
 		if( framePack == nullptr )
 		{

@@ -279,8 +279,16 @@ namespace Mengine
             }
         }
 
+        const DataflowInterfacePtr & dataflow = DATA_SERVICE()
+            ->getDataflow( dataflowType );
+
+        if( dataflow == nullptr )
+        {
+            return false;
+        }
+
         MovieFramePackInterfacePtr framePack = DATA_SERVICE()
-            ->dataflowT<MovieFramePackInterfacePtr>( dataflowType, stream );
+            ->dataflowT<MovieFramePackInterfacePtr>( dataflow, stream );
 
         if( framePack == nullptr )
         {
@@ -458,6 +466,7 @@ namespace Mengine
         m_hasOffsetPoint = metadata->get_Offset_Point( &m_offsetPoint );
 
         m_filePath = metadata->get_KeyFramesPackPath_Path();
+
         metadata->get_KeyFramesPackPath_Codec( &m_dataflowType );
         metadata->get_KeyFramesPackPath_Converter( &m_converterType );
 
@@ -893,8 +902,22 @@ namespace Mengine
             return nullptr;
         }
 
+        const DataflowInterfacePtr & dataflow = DATA_SERVICE()
+            ->getDataflow( m_dataflowType );
+
+        if( dataflow == nullptr )
+        {
+            LOGGER_ERROR( "ResourceMovie::compileData_: '%s' group '%s' can` t find dataflow type '%s'"
+                , this->getName().c_str()
+                , this->getGroup().c_str()
+                , m_dataflowType.c_str()
+            );
+
+            return nullptr;
+        }
+
         DataInterfacePtr data = DATA_SERVICE()
-            ->dataflow( m_dataflowType, stream );
+            ->dataflow( dataflow, stream );
 
         if( data == nullptr )
         {

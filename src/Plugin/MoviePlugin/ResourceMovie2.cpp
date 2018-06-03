@@ -2,6 +2,7 @@
 
 #include "Interface/ResourceInterface.h"
 #include "Interface/StringizeInterface.h"
+#include "Interface/OptionsInterface.h"
 
 #include "Engine/ResourceImageDefault.h"
 #include "Engine/ResourceVideo.h"
@@ -422,6 +423,30 @@ namespace Mengine
 
 		m_movieData = movieData;
 		stream = nullptr;
+
+#ifndef MENGINE_MASTER_RELEASE
+        bool developmentMode = HAS_OPTION( "dev" );
+        bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
+        
+        if( developmentMode == true && noresourceCheck == false )
+        {
+            for( const ResourcePtr & resource : m_resources )
+            {
+                if( resource->isValid() == false )
+                {
+                    LOGGER_ERROR( "ResourceMovie2::_compile resource name '%s' group '%s' path '%s' invalid store resource '%s' type '%s'"
+                        , this->getName().c_str()
+                        , this->getGroup().c_str()
+                        , this->getFilePath().c_str()
+                        , resource->getName().c_str()
+                        , resource->getType().c_str()
+                    );
+
+                    return false;
+                }
+            }
+        }
+#endif
 	
         for( const ResourcePtr & resource : m_resources )
 		{
@@ -468,7 +493,7 @@ namespace Mengine
             {
                 if( ae_test_movie_layer_data_opacity_transparent( _layerData ) == AE_TRUE )
                 {
-                    LOGGER_ERROR( "ResourceMovie2::_isValid '%s' composition '%s' text layer '%s' opacity transparent"
+                    LOGGER_ERROR( "Mengine_movie_layer_data_visitor '%s' composition '%s' text layer '%s' opacity transparent"
                         , resourceMovie2->getName().c_str()
                         , compositionDataName
                         , layerDataName
@@ -548,20 +573,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::storeResource_( const ResourcePtr & _resource )
+    bool ResourceMovie2::storeResource_( const ResourcePtr & _resource )
     {
-        if( _resource == nullptr )
-        {
-            LOGGER_ERROR( "ResourceMovie2::storeResource_ resource nullptr name '%s' group '%s' path '%s'"
-                , this->getName().c_str()
-                , this->getGroup().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return;
-        }
-
         m_resources.emplace_back( _resource );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     Resource * ResourceMovie2::getResource_( const ae_string_t _name )
@@ -569,7 +585,21 @@ namespace Mengine
         ResourcePtr resource = RESOURCE_SERVICE()
             ->getResource( Helper::stringizeString( _name ) );
 
-        this->storeResource_( resource );
+        if( resource == nullptr )
+        {
+            LOGGER_ERROR( "ResourceMovie2::storeResource_ resource nullptr name '%s' group '%s' path '%s'"
+                , this->getName().c_str()
+                , this->getGroup().c_str()
+                , this->getFilePath().c_str()
+            );
+
+            return nullptr;
+        }
+
+        if( this->storeResource_( resource ) == false )
+        {
+            return nullptr;
+        }
 
         return resource.get();
     }
@@ -597,9 +627,15 @@ namespace Mengine
 
 		mt::vec2f size( _resource->trim_width, _resource->trim_height );
 
-		image->setup( c_path, ConstString::none(), uv_image, uv_alpha, size );
+        if( image->setup( c_path, ConstString::none(), uv_image, uv_alpha, size ) == false )
+        {
+            return nullptr;
+        }
 
-        this->storeResource_( image );
+        if( this->storeResource_( image ) == false )
+        {
+            return nullptr;
+        }
 
 		return image.get();
 	}
@@ -638,7 +674,10 @@ namespace Mengine
 			video->setCodecType( STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
 		}
 
-        this->storeResource_( video );
+        if( this->storeResource_( video ) == false )
+        {
+            return nullptr;
+        }
 
 		return video.get();
 	}
@@ -665,7 +704,10 @@ namespace Mengine
 		
 		sound->setCodecType( STRINGIZE_STRING_LOCAL( "oggSound" ) );
 
-        this->storeResource_( sound );
+        if( this->storeResource_( sound ) == false )
+        {
+            return nullptr;
+        }
 
 		return sound.get();
 	}
@@ -699,7 +741,10 @@ namespace Mengine
             particle->addResourceImage( resourceImage );
         }
                 
-        this->storeResource_( particle );
+        if( this->storeResource_( particle ) == false )
+        {
+            return nullptr;
+        }
 
         return particle.get();
     }

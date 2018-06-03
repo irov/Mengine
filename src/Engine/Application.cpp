@@ -599,6 +599,7 @@ namespace Mengine
             return false;
         }
 
+#ifndef MENGINE_MASTER_RELEASE
         bool developmentMode = HAS_OPTION( "dev" );
         bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
@@ -628,6 +629,7 @@ namespace Mengine
                 }
             }
         }
+#endif
 
         if( GAME_SERVICE()
             ->loadPersonality() == false )

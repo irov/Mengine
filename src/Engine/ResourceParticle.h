@@ -18,6 +18,7 @@ namespace Mengine
 
 	public:
 		ResourceParticle();
+        ~ResourceParticle() override;
 
 	public:
 		void setFilePath( const FilePath& _filePath );

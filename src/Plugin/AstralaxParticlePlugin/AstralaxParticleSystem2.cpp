@@ -93,13 +93,14 @@ namespace Mengine
         m_factoryPoolAstralaxEmitter = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
+    ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName )
     {
         AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject();
 
         if( container == nullptr )
         {
-            LOGGER_ERROR( "AstralaxParticleSystem::createEmitterContainerFromMemory invalid create container"
+            LOGGER_ERROR( "AstralaxParticleSystem::createEmitterContainerFromMemory '%s' invalid create container"
+                , _whoName.c_str()
             );
 
             return nullptr;
@@ -107,7 +108,8 @@ namespace Mengine
 
         if( container->initialize( this, _stream, _archivator ) == false )
         {
-            LOGGER_ERROR( "AstralaxParticleSystem::createEmitterContainerFromMemory invalid initialize container"
+            LOGGER_ERROR( "AstralaxParticleSystem::createEmitterContainerFromMemory '%s' invalid initialize container"
+                , _whoName.c_str()
             );
 
             return nullptr;
@@ -115,7 +117,25 @@ namespace Mengine
 
         uint32_t id = container->getId();
 
-        m_containers[id] = container.get();
+        TMapHashEmitterContainers::iterator it_found = m_containers.find( id );
+
+        if( it_found == m_containers.end() )
+        {
+            AstralaxEmitterContainerDesc new_desc;
+            new_desc.reference = 0;
+            new_desc.container = container.get();
+
+            it_found = m_containers.emplace( id, new_desc ).first;
+        }
+        else
+        {
+            LOGGER_PERFORMANCE( "AstralaxParticleSystem::createEmitterContainerFromMemory '%s' useless load container"
+                , _whoName.c_str()
+            );
+        }
+
+        AstralaxEmitterContainerDesc & desc = it_found->second;
+        ++desc.reference;
 
         return container;
     }
@@ -130,6 +150,11 @@ namespace Mengine
         }
 
         if( this->updateMaterial() == false )
+        {
+            return nullptr;
+        }
+
+        if( this->updateAtlas() == false )
         {
             return nullptr;
         }
@@ -152,9 +177,16 @@ namespace Mengine
                 }break;
             case MAGIC_CHANGE_ATLAS_CREATE:
                 {
-                    AstralaxEmitterContainer2 * container = m_containers[c.ptc_id];
+                    TMapHashEmitterContainers::const_iterator it_found = m_containers.find( c.ptc_id );
+                    
+                    if( it_found == m_containers.end() )
+                    {
+                        return false;
+                    }
 
-                    const ResourceImagePtr & resourceImage = container->getAtlasResourceImage( c.file );
+                    const AstralaxEmitterContainerDesc & desc = it_found->second;
+                    
+                    const ResourceImagePtr & resourceImage = desc.container->getAtlasResourceImage( c.file );
 
                     m_atlases.emplace_back( resourceImage );
                 }break;
@@ -943,7 +975,15 @@ namespace Mengine
     {
         uint32_t id = _container->getId();
 
-        m_containers.erase( id );
+        TMapHashEmitterContainers::iterator it_found = m_containers.find( id );
+
+        AstralaxEmitterContainerDesc & desc = it_found->second;
+        --desc.reference;
+
+        if( desc.reference == 0 )
+        {
+            m_containers.erase( it_found );
+        }   
 
         _container->finalize();
     }

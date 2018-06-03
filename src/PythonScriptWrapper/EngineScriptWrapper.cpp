@@ -1207,7 +1207,10 @@ namespace Mengine
             mt::uv4f uv_image;
             mt::uv4f uv_alpha;
 
-            resource->setup( _fileName, ConstString::none(), uv_image, uv_alpha, maxSize );
+            if( resource->setup( _fileName, ConstString::none(), uv_image, uv_alpha, maxSize ) == false )
+            {
+                return nullptr;
+            }
 
             return resource;
         }

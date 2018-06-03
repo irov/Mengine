@@ -16,14 +16,14 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceModel3D::setDataflow( const ConstString & _dataflow )
+	void ResourceModel3D::setDataflowType( const ConstString & _dataflow )
 	{
-		m_dataflow = _dataflow;
+		m_dataflowType = _dataflow;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceModel3D::getDataflow() const
+	const ConstString & ResourceModel3D::getDataflowType() const
 	{
-		return m_dataflow;
+		return m_dataflowType;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceModel3D::_loader( const Metabuf::Metadata * _meta )
@@ -33,7 +33,7 @@ namespace Mengine
 
         m_path = metadata->get_File_Path();
 
-		metadata->get_File_Dataflow( &m_dataflow );
+		metadata->get_File_Dataflow( &m_dataflowType );
 		metadata->get_File_Converter( &m_converterType );
 
         m_imageResourceName = metadata->get_Image_Resource();
@@ -63,13 +63,13 @@ namespace Mengine
 			}
 		}
 
-		if( m_dataflow.empty() == true )
+		if( m_converterType.empty() == true )
 		{
-			m_dataflow = CODEC_SERVICE()
+            m_converterType = CODEC_SERVICE()
 				->findCodecType( m_path );
 		}
 
-		if( m_dataflow.empty() == true )
+		if( m_converterType.empty() == true )
 		{
 			LOGGER_ERROR("ResourceMovie::_convert: '%s' you must determine codec for file '%s'"
 				, this->getName().c_str()
@@ -99,8 +99,16 @@ namespace Mengine
 			return false;
 		}
 
+        const DataflowInterfacePtr & dataflow = DATA_SERVICE()
+            ->getDataflow( m_dataflowType );
+
+        if( dataflow == nullptr )
+        {
+            return false;
+        }
+
 		m_model = DATA_SERVICE()
-			->dataflowT<Model3DInterfacePtr>( m_dataflow, stream );
+			->dataflowT<Model3DInterfacePtr>( dataflow, stream );
 
 		if( m_model == nullptr )
 		{
@@ -148,8 +156,16 @@ namespace Mengine
 			return false;				 
 		}
 
+        const DataflowInterfacePtr & dataflow = DATA_SERVICE()
+            ->getDataflow( m_dataflowType );
+
+        if( dataflow == nullptr )
+        {
+            return false;
+        }
+
 		Model3DInterfacePtr model = DATA_SERVICE()
-			->dataflowT<Model3DInterfacePtr>( m_dataflow, stream );
+			->dataflowT<Model3DInterfacePtr>( dataflow, stream );
 
 		if( model == nullptr )
 		{

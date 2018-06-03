@@ -8,7 +8,7 @@
 #include "Config/Vector.h"
 
 #ifndef MENGINE_PROTOTYPE_HASH_SIZE
-#   define MENGINE_PROTOTYPE_HASH_SIZE 256
+#   define MENGINE_PROTOTYPE_HASH_SIZE 257
 #endif
 
 namespace Mengine
@@ -41,23 +41,6 @@ namespace Mengine
             ConstString category;
             ConstString prototype;
             PrototypeGeneratorInterfacePtr generator;
-        };
-
-        struct CategoryKeyLess
-        {
-            bool operator () ( const CategoryKey & _left, const CategoryKey & _right ) const
-            {
-                if( _left.category < _right.category )
-                {
-                    return true;
-                }
-                else if( _left.category == _right.category )
-                {
-                    return _left.prototype < _right.prototype;
-                }
-
-                return false;
-            }
         };
 
         typedef Vector<CategoryKey> TVectorPrototypes;

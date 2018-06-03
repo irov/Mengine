@@ -27,7 +27,7 @@ namespace Mengine
 		bool isAvailable() const override;
 
 	public:
-		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName ) override;
+		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) override;
 
 	public:
 		uint32_t getMaxParticlesCount() const override;		

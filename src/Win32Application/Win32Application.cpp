@@ -709,7 +709,7 @@ namespace Mengine
 #ifdef MENGINE_MASTER_RELEASE
         bool devplugins = false;
 #else
-#ifdef _DEBUG
+#ifndef NDEBUG
 		bool devplugins = true;
 #else
 		bool developmentMode = HAS_OPTION( "dev" );

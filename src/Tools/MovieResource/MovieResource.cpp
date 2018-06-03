@@ -109,28 +109,47 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                 pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
                 xmlResource.append_attribute( "Name" ).set_value( resource_image->name );
                 xmlResource.append_attribute( "Type" ).set_value( "ResourceImageDefault" );
-                xmlResource.append_attribute( "Unique" ).set_value( 0U );
+                //xmlResource.append_attribute( "Unique" ).set_value( 0U );
 
-                pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
-
-                char xmlFilePath[MAX_PATH];
-                sprintf( xmlFilePath, "Movies2/%s/%s"
-                    , provider->movie_name
-                    , resource_image->path
-                );
-
-                xmlResourceFile.append_attribute( "Path" ).set_value( xmlFilePath );
-
-                char xmlMaxSize[256];
-                sprintf( xmlMaxSize, "%u;%u"
-                    , (uint32_t)resource_image->trim_width
-                    , (uint32_t)resource_image->trim_height
-                );
-
-                xmlResourceFile.append_attribute( "MaxSize" ).set_value( xmlMaxSize );
-
-                if( strstr( resource_image->name, ".ptc_" ) != nullptr )
+                if( strstr( resource_image->name, ".ptc_" ) == nullptr )
                 {
+                    pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
+
+                    char xmlFilePath[MAX_PATH];
+                    sprintf( xmlFilePath, "Movies2/%s/%s"
+                        , provider->movie_name
+                        , resource_image->path
+                    );
+
+                    xmlResourceFile.append_attribute( "Path" ).set_value( xmlFilePath );
+
+                    char xmlMaxSize[256];
+                    sprintf( xmlMaxSize, "%u;%u"
+                        , (uint32_t)resource_image->trim_width
+                        , (uint32_t)resource_image->trim_height
+                    );
+
+                    xmlResourceFile.append_attribute( "MaxSize" ).set_value( xmlMaxSize );
+                }
+                else
+                {
+                    pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
+
+                    char xmlFilePath[MAX_PATH];
+                    sprintf( xmlFilePath, "Movies2/.store_particles/%s"
+                        , resource_image->path
+                    );
+
+                    xmlResourceFile.append_attribute( "Path" ).set_value( xmlFilePath );
+
+                    char xmlMaxSize[256];
+                    sprintf( xmlMaxSize, "%u;%u"
+                        , (uint32_t)resource_image->trim_width
+                        , (uint32_t)resource_image->trim_height
+                    );
+
+                    xmlResourceFile.append_attribute( "MaxSize" ).set_value( xmlMaxSize );
+
                     xmlResourceFile.append_attribute( "NoConvert" ).set_value( 1U );
                     xmlResourceFile.append_attribute( "NoAtlas" ).set_value( 1U );
                 }
@@ -140,7 +159,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                 pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
                 xmlResource.append_attribute( "Name" ).set_value( resource_image->name );
                 xmlResource.append_attribute( "Type" ).set_value( "ResourceImageSubstract" );
-                xmlResource.append_attribute( "Unique" ).set_value( 0U );
+                //xmlResource.append_attribute( "Unique" ).set_value( 0U );
 
                 pugi::xml_node xmlResourceImage = xmlResource.append_child( "Image" );
                 xmlResourceImage.append_attribute( "Alpha" ).set_value( "1" );
@@ -154,18 +173,6 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
                 xmlResourceImage.append_attribute( "Name" ).set_value( resource_image->atlas_image->name );
 
-                //char xmlUV[256];
-                //sprintf( xmlUV, "%.126g;%.126g;%.126g;%.126g;%.126g;%.126g;%.126g;%.126g"
-                //    , resource_image->uv[0][0]
-                //    , resource_image->uv[0][1]
-                //    , resource_image->uv[1][0]
-                //    , resource_image->uv[1][1]
-                //    , resource_image->uv[2][0]
-                //    , resource_image->uv[2][1]
-                //    , resource_image->uv[3][0]
-                //    , resource_image->uv[3][1]
-                //);
-
                 char xmlUV[256];
                 sprintf( xmlUV, "%.126g;%.126g;%.126g;%.126g;%.126g;%.126g;%.126g;%.126g"
                     , 0.f
@@ -177,7 +184,6 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                     , 0.f
                     , 1.f
                 );
-
 
                 xmlResourceImage.append_attribute( "UV" ).set_value( xmlUV );
 
@@ -196,8 +202,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
             char xmlFilePath[MAX_PATH];
-            sprintf( xmlFilePath, "Movies2/%s/%s"
-                , provider->movie_name
+            sprintf( xmlFilePath, "Movies2/.store_video/%s"
                 , resource_video->path
             );
 
@@ -229,8 +234,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
             char xmlFilePath[MAX_PATH];
-            sprintf( xmlFilePath, "Movies2/%s/%s"
-                , provider->movie_name
+            sprintf( xmlFilePath, "Movies2/.store_sounds/%s"
                 , resource_sound->path
             );
 
@@ -257,8 +261,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
             char xmlFilePath[MAX_PATH];
-            sprintf( xmlFilePath, "Movies2/%s/%s"
-                , provider->movie_name
+            sprintf( xmlFilePath, "Movies2/.store_particles/%s"
                 , resource_particle->path
             );
 

@@ -15,7 +15,7 @@ namespace Mengine
 		ResourceImageDefault();
         
 	public:
-		void setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize );
+		bool setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize );
 
     public:
         const FilePath & getFilePath() const;

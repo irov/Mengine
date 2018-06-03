@@ -3,6 +3,7 @@
 #include "DevelopmentConverter.h"
 
 #include "Interface/ArchiveInterface.h"
+#include "Interface/DataInterface.h"
 
 #include "Config/Blobject.h"
 
@@ -30,5 +31,7 @@ namespace Mengine
 
 	protected:
 		ArchivatorInterfacePtr m_archivator;
+
+        DataflowInterfacePtr m_dataflow;
 	};
 }

@@ -13,6 +13,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ModuleInterface.h"
 #include "Interface/GameInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 namespace Mengine
 {
@@ -51,7 +52,7 @@ namespace Mengine
 		virtual void paint() = 0;
 
 	public:
-		virtual bool initializeGame( const ConstString & _category, const FilePath & _resourceIniPath ) = 0;
+		virtual bool initializeGame( const FileGroupInterfacePtr & _category, const FilePath & _resourceIniPath ) = 0;
         
 	public:
 		virtual const WString & getCompanyName() const = 0;

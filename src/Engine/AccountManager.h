@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/AccountInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Core/ServiceBase.h"
 
@@ -78,6 +79,8 @@ namespace Mengine
 
 	protected:
 		AccountProviderInterfacePtr m_accountProvider;
+        
+        FileGroupInterfacePtr m_fileGroup;
 				
 		typedef Map<ConstString, AccountInterfacePtr> TMapAccounts;
 		TMapAccounts m_accounts;

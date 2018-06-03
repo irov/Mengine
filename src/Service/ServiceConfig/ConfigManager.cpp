@@ -39,7 +39,7 @@ namespace Mengine
         m_platformTags.clear();
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ConfigManager::loadConfig( const ConstString & _fileGroup, const FilePath & _applicationPath )
+	bool ConfigManager::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _applicationPath )
 	{
 		InputStreamInterfacePtr applicationInputStream = FILE_SERVICE()
 			->openInputFile( _fileGroup, _applicationPath, false );

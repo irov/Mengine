@@ -16,6 +16,7 @@ namespace Mengine
 
 	public:
 		ResourceImageData();
+        ~ResourceImageData() override;
         
     public:
         const FilePath & getFileName() const;
@@ -27,7 +28,7 @@ namespace Mengine
 
 	public:
 		const mt::vec2f & getImageMaxSize() const;
-		unsigned char * getImageBuffer() const;
+        uint8_t * getImageBuffer() const;
 
 	protected:
 		bool _isValid() const override;
@@ -44,7 +45,7 @@ namespace Mengine
         ConstString m_codecType;
 
 		mt::vec2f m_maxSize;
-		unsigned char * m_buffer;
+		uint8_t * m_buffer;
 
 		bool m_validNoExist;		
 	};

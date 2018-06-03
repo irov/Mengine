@@ -62,8 +62,8 @@ namespace Mengine
         {
             LOGGER_ERROR("ResourceImageSubstract::_compile '%s' category '%s' group '%s' invalid get image resource '%s'"
                 , this->getName().c_str()
-				, this->getCategory().c_str()
-				, this->getGroup().c_str()
+				, this->getCategory()->getName().c_str()
+				, this->getGroupName().c_str()
                 , m_resourceImageName.c_str()
                 );
 

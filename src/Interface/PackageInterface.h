@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Core/ConstString.h"
 #include "Core/Tags.h"
@@ -67,7 +68,7 @@ namespace Mengine
 		SERVICE_DECLARE( "PackageService" );
 
 	public:
-		virtual bool loadPackages( const ConstString & _fileGroup, const FilePath & _resourceIni ) = 0;
+		virtual bool loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIni ) = 0;
 
 	public:
 		virtual bool hasPackage( const ConstString & _name ) const = 0;

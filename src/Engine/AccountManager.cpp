@@ -42,6 +42,16 @@ namespace Mengine
 		
         m_factoryAccounts = new FactoryPool<Account, 8>();
 
+        FileGroupInterfacePtr fileGroup = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
+        if( fileGroup == nullptr )
+        {
+            return false;
+        }
+
+        m_fileGroup = fileGroup;
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -219,16 +229,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AccountInterfacePtr AccountManager::newAccount_( const ConstString& _accountID )
     {
-        FileGroupInterfacePtr fileGroup = FILE_SERVICE()
-            ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
-
         PathString accountString;
         accountString.append( _accountID );
         accountString.append( '/' );
 
         FilePath accountPath = Helper::stringizeFilePath( accountString );
 
-        if( fileGroup->createDirectory( accountPath ) == false )
+        if( m_fileGroup->createDirectory( accountPath ) == false )
         {
             LOGGER_ERROR("AccountManager::createAccount_: Account '%s' failed create directory"
                 , accountPath.c_str()
@@ -242,7 +249,7 @@ namespace Mengine
         uint32_t projectVersion = APPLICATION_SERVICE()
 			->getProjectVersion();
 
-		if( newAccount->initialize( _accountID, accountPath, projectVersion ) == false )
+		if( newAccount->initialize( _accountID, m_fileGroup, accountPath, projectVersion ) == false )
 		{
 			return nullptr;				 
 		}
@@ -472,11 +479,8 @@ namespace Mengine
 		}
 
 		FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
-
-		bool accountsExist = FILE_SERVICE()
-            ->existFile( STRINGIZE_STRING_LOCAL( "user" ), accountsPath, nullptr );
-
-		if( accountsExist == false )
+                
+		if( m_fileGroup->existFile( accountsPath ) == false )
 		{
 			LOGGER_WARNING( "AccountManager::loadAccounts not exist accounts '%s'"
 				, accountsPath.c_str()
@@ -486,7 +490,7 @@ namespace Mengine
 		}
         	
 		IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, STRINGIZE_STRING_LOCAL( "user" ), accountsPath ) == false )
+        if( IniUtil::loadIni( ini, m_fileGroup, accountsPath ) == false )
 		{
 			LOGGER_ERROR("AccountManager::loadAccounts parsing accounts failed '%s'"
 				, accountsPath.c_str()
@@ -627,7 +631,7 @@ namespace Mengine
 		FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
 		OutputStreamInterfacePtr file = FILE_SERVICE()
-            ->openOutputFile( STRINGIZE_STRING_LOCAL( "user" ), accountsPath );
+            ->openOutputFile( m_fileGroup, accountsPath );
 
 		if( file == nullptr )
 		{

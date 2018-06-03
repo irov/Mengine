@@ -581,8 +581,8 @@ and (consequently) setpgrp() as setpgrp(0, 0). */
 #define Py_UNICODE_SIZE 2
 
 /* Use Python's own small-block memory-allocator. */
-//#define WITH_PYMALLOC
-#undef WITH_PYMALLOC
+#define WITH_PYMALLOC
+//#undef WITH_PYMALLOC
 
 /* Define if you have clock.  */
 /* #define HAVE_CLOCK */

@@ -112,7 +112,7 @@ namespace Mengine
 		FilePath path_bin = Helper::stringizeFilePath( binPath );
 
 		if( LOADER_SERVICE()
-			->load( m_options.pakName, path_bin, &keyFramesPack, exist ) == false )
+			->load( m_options.fileGroup, path_bin, &keyFramesPack, exist ) == false )
 		{
 			if( exist == false )
 			{
@@ -804,12 +804,12 @@ namespace Mengine
 	bool MovieKeyConverterXMLToAEK::writeFramePak_( const Blobject & _buffer )
 	{
 		OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-			->openOutputFile( m_options.pakName, m_options.outputFileName );
+			->openOutputFile( m_options.fileGroup, m_options.outputFileName );
 
 		if( output_stream == nullptr )
 		{
 			LOGGER_ERROR("MovieKeyConverterXMLToAEK::writeFramePak_ invalid open file %s:%s"
-				, m_options.pakName.c_str()
+				, m_options.fileGroup.c_str()
 				, m_options.outputFileName.c_str()
 				);
 
@@ -822,7 +822,7 @@ namespace Mengine
 		if( Helper::writeStreamArchiveData( output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
 		{
 			LOGGER_ERROR("MovieKeyConverterXMLToAEK::writeFramePak_ invalid write stream %s:%s"
-				, m_options.pakName.c_str()
+				, m_options.fileGroup.c_str()
 				, m_options.outputFileName.c_str()
 				);
 

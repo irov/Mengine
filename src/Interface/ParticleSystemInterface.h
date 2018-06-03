@@ -5,6 +5,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/StreamInterface.h"
+#include "Interface/FileSystemInterface.h"
 #include "Interface/ArchiveInterface.h"
 
 #include "Core/ConstString.h"
@@ -184,7 +185,7 @@ namespace Mengine
 		virtual bool isAvailable() const = 0;
 
 	public:
-		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) = 0;
+		virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) = 0;
 
 	public:
 		virtual uint32_t getMaxParticlesCount() const = 0;

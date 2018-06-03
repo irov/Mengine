@@ -130,7 +130,7 @@ namespace Mengine
 			{
 				LOGGER_ERROR("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
-					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getGroupName().c_str()
 					, m_resourceParticle->getName().c_str()
 					);
 
@@ -143,7 +143,7 @@ namespace Mengine
 			{
 				LOGGER_ERROR("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
-					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getGroupName().c_str()
 					, m_resourceParticle->getName().c_str()
 					);
 
@@ -157,7 +157,7 @@ namespace Mengine
 			{
 				LOGGER_ERROR("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
-					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getGroupName().c_str()
 					, m_resourceParticle->getName().c_str()
 					);
 
@@ -170,7 +170,7 @@ namespace Mengine
 			{
 				LOGGER_ERROR("ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
-					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getGroupName().c_str()
 					, m_resourceParticle->getName().c_str()
 					);
 
@@ -537,7 +537,7 @@ namespace Mengine
 			{
 				LOGGER_ERROR("ParticleEmitter2::setEmitterPositionRelative '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
-					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getGroupName().c_str()
 					, m_resourceParticle->getName().c_str()
 					);
 
@@ -550,7 +550,7 @@ namespace Mengine
 			{
 				LOGGER_ERROR("ParticleEmitter2::setEmitterPositionRelative '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
-					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getGroupName().c_str()
 					, m_resourceParticle->getName().c_str()
 					);
 
@@ -574,7 +574,7 @@ namespace Mengine
 			{
 				LOGGER_ERROR("ParticleEmitter2::setEmitterCameraRelative '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
-					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getGroupName().c_str()
 					, m_resourceParticle->getName().c_str()
 					);
 
@@ -587,7 +587,7 @@ namespace Mengine
 			{
 				LOGGER_ERROR("ParticleEmitter2::setEmitterCameraRelative '%s' group '%s' resource '%s' invalid setup position provider"
 					, this->getName().c_str()
-					, m_resourceParticle->getGroup().c_str()
+					, m_resourceParticle->getGroupName().c_str()
 					, m_resourceParticle->getName().c_str()
 					);
 

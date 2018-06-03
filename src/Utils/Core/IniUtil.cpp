@@ -16,7 +16,7 @@ namespace Mengine
     namespace IniUtil
     {
 		//////////////////////////////////////////////////////////////////////////
-		bool loadIni( IniStore & _ini, const ConstString & _category, const FilePath & _path )
+		bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _category, const FilePath & _path )
 		{
 			InputStreamInterfacePtr stream = FILE_SERVICE()
 				->openInputFile( _category, _path, false );
@@ -24,14 +24,13 @@ namespace Mengine
 			if( stream == nullptr )
 			{
                 LOGGER_ERROR( "loadIni invalid open ini file '%s:%s'"
-					, _category.c_str()
+                    , _category->getName().c_str()
 					, _path.c_str()
 					);
 
 				return false;
 			}
 
-			_ini.category = _category;
 			_ini.path = _path;
 
 			return loadIni( _ini, stream );
@@ -130,15 +129,13 @@ namespace Mengine
 #ifndef NDEBUG
 			if( strstr( ini_value, "\\" ) != nullptr )
 			{
-				LOGGER_ERROR( "get ini '%s:%s' filepath section '%s' key '%s' has invalid slash"
-					, _ini.category.c_str()
+				LOGGER_ERROR( "get ini '%s' filepath section '%s' key '%s' has invalid slash"
 					, _ini.path.c_str()
 					, _section
 					, _key
 					);
 
-				MENGINE_THROW_EXCEPTION( "get ini '%s:%s' filepath section '%s' key '%s' has invalid slash"
-					, _ini.category.c_str()
+				MENGINE_THROW_EXCEPTION( "get ini '%s' filepath section '%s' key '%s' has invalid slash"
 					, _ini.path.c_str()
 					, _section
 					, _key

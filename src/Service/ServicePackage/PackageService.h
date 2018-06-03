@@ -24,7 +24,7 @@ namespace Mengine
 		void _finalizeService() override;
 
 	public:
-		bool loadPackages( const ConstString & _fileGroup, const FilePath & _resourceIni ) override;
+		bool loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIni ) override;
 
 	public:
 		bool hasPackage( const ConstString & _name ) const override;

@@ -2,6 +2,7 @@
 
 #include "Interface/ServantInterface.h"
 #include "Interface/ServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"
@@ -72,7 +73,7 @@ namespace Mengine
 		virtual const ConstString & getName() const = 0;
 
 	public:
-		virtual bool initialize( const ConstString & _category, const IniUtil::IniStore & _ini ) = 0;
+		virtual bool initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini ) = 0;
 
 	public:
 		virtual bool compileFont() = 0;

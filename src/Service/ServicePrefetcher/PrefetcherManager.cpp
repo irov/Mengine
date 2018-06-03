@@ -94,7 +94,7 @@ namespace Mengine
 		//m_prefetchReceiver.erase( it_erase, m_prefetchReceiver.end() );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::prefetchImageDecoder( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer )
+	bool PrefetcherManager::prefetchImageDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer )
 	{
         if( m_avaliable == false )
         {
@@ -107,7 +107,7 @@ namespace Mengine
 		}
 
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == true )
+		if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == true )
 		{
 			++receiver->refcount;
 
@@ -120,19 +120,19 @@ namespace Mengine
 	
 		ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject();
 
-		task->initialize( _pakName, _filePath, _observer );
+		task->initialize( _fileGroup, _filePath, _observer );
 		task->setImageCodec( _codec );
 
 		new_receiver.prefetcher = task;
 
-		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _pakName, _filePath ), new_receiver ) );
+		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup, _filePath ), new_receiver ) );
 
 		m_threadQueue->addTask( task );
 
 		return true;		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::getImageDecoder( const ConstString & _pakName, const FilePath & _filePath, ImageDecoderInterfacePtr & _decoder ) const
+	bool PrefetcherManager::getImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ImageDecoderInterfacePtr & _decoder ) const
 	{
         if( m_avaliable == false )
         {
@@ -140,7 +140,7 @@ namespace Mengine
         }
 
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == false )
+		if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == false )
 		{
 			return false;
 		}
@@ -169,7 +169,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::prefetchSoundDecoder( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer )
+	bool PrefetcherManager::prefetchSoundDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer )
 	{
         if( m_avaliable == false )
         {
@@ -182,7 +182,7 @@ namespace Mengine
 		}
 
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == true )
+		if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == true )
 		{
 			++receiver->refcount;
 
@@ -195,19 +195,19 @@ namespace Mengine
 
 		ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject();
 
-		task->initialize( _pakName, _filePath, _observer );
+		task->initialize( _fileGroup, _filePath, _observer );
 		task->setSoundCodec( _codec );
 
 		new_receiver.prefetcher = task;
 				
-		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _pakName, _filePath ), new_receiver ) );
+		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup, _filePath ), new_receiver ) );
 
 		m_threadQueue->addTask( task );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::getSoundDecoder( const ConstString& _pakName, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder ) const
+	bool PrefetcherManager::getSoundDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder ) const
 	{
         if( m_avaliable == false )
         {
@@ -215,7 +215,7 @@ namespace Mengine
         }
 
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == false )
+		if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == false )
 		{
 			return false;
 		}
@@ -244,7 +244,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::prefetchData( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _dataflowType, const PrefetcherObserverInterfacePtr & _observer )
+	bool PrefetcherManager::prefetchData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _dataflowType, const PrefetcherObserverInterfacePtr & _observer )
 	{
         if( m_avaliable == false )
         {
@@ -257,7 +257,7 @@ namespace Mengine
 		}
 
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == true )
+		if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == true )
 		{
 			++receiver->refcount;
 
@@ -270,19 +270,34 @@ namespace Mengine
 
 		ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject();
 
-		task->initialize( _pakName, _filePath, _observer );
-		task->setDataflowType( _dataflowType );
+		task->initialize( _fileGroup, _filePath, _observer );
+
+        const DataflowInterfacePtr & dataflow = DATA_SERVICE()
+            ->getDataflow( _dataflowType );
+
+        if( dataflow == nullptr )
+        {
+            LOGGER_ERROR( "PrefetcherManager::prefetchData: '%s':'%s' invalide get dataflow '%s'"
+                , _fileGroup.c_str()
+                , _filePath.c_str()
+                , _dataflowType.c_str()
+            );
+
+            return false;
+        }
+
+		task->setDataflow( dataflow );
 
 		new_receiver.prefetcher = task;
 
-		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _pakName, _filePath ), new_receiver ) );
+		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup, _filePath ), new_receiver ) );
 
 		m_threadQueue->addTask( task );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////			
-	bool PrefetcherManager::getData( const ConstString& _pakName, const FilePath & _filePath, DataInterfacePtr & _data ) const
+	bool PrefetcherManager::getData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data ) const
 	{
         if( m_avaliable == false )
         {
@@ -290,7 +305,7 @@ namespace Mengine
         }
 
 		PrefetchReceiver * receiver;
-		if( this->hasPrefetch( _pakName, _filePath, &receiver ) == false )
+		if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == false )
 		{
 			return false;
 		}
@@ -319,9 +334,9 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void PrefetcherManager::unfetch( const ConstString& _pakName, const FilePath& _filePath )
+	void PrefetcherManager::unfetch( const FileGroupInterfacePtr& _fileGroup, const FilePath& _filePath )
 	{
-		TMapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _pakName, _filePath ) );
+		TMapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup, _filePath ) );
 
 		if( it_found == m_prefetchReceiver.end() )
 		{
@@ -356,9 +371,9 @@ namespace Mengine
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool PrefetcherManager::hasPrefetch( const ConstString& _pakName, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
+	bool PrefetcherManager::hasPrefetch( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
 	{ 
-		TMapPrefetchReceiver::const_iterator it_found = m_prefetchReceiver.find( std::make_pair( _pakName, _filePath ) );
+		TMapPrefetchReceiver::const_iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup, _filePath ) );
 
 		if( it_found == m_prefetchReceiver.end() )
 		{

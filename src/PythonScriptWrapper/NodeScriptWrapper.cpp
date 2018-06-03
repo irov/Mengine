@@ -1132,6 +1132,15 @@ namespace Mengine
             _transformation->setRelationTransformation( nullptr );
         }
         //////////////////////////////////////////////////////////////////////////
+        const ConstString & s_Resource_getCategory( Resource * _resource )
+        {
+            const FileGroupInterfacePtr & category = _resource->getCategory();
+
+            const ConstString & categoryName = category->getName();
+
+            return categoryName;
+        }
+        //////////////////////////////////////////////////////////////////////////
         void Transformation3D_coordinate( Transformation3D * _transformation, const mt::vec3f & _coordinate )
         {
             const mt::vec3f & origin = _transformation->getOrigin();
@@ -3380,8 +3389,8 @@ namespace Mengine
             ;
 
         pybind::interface_<Resource, pybind::bases<Scriptable, Compilable, Identity, Reference> >( kernel, "ResourceReference", false )
-            .def( "getCategory", &Resource::getCategory )
-            .def( "getGroup", &Resource::getGroup )
+            .def_proxy_static( "getCategory", nodeScriptMethod, &NodeScriptMethod::s_Resource_getCategory )
+            .def( "getGroup", &Resource::getGroupName )
             .def( "cache", &Resource::cache )
             .def( "uncache", &Resource::uncache )
             ;

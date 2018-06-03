@@ -35,13 +35,13 @@ namespace Mengine
 		void _finalizeService() override;
 
 	public:
-		bool loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path, bool _ignored ) override;
-		bool unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) override;
+		bool loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path, bool _ignored ) override;
+		bool unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) override;
 
 	public:
         PointerResourceReference generateResource( const ConstString& _type ) const override;
 
-        PointerResourceReference createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
+        PointerResourceReference createResource( const ConstString & _locale, const FileGroupInterfacePtr& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
 		bool removeResource( const ResourcePtr & _resource ) override;
 
 	public:
@@ -59,11 +59,11 @@ namespace Mengine
 		const ConstString & getResourceType( const ConstString & _name ) const;
 
     public:
-		bool validateResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) const override;
+		bool validateResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) const override;
 
 	public:
 		void visitResources( Visitor * _visitor ) const override;
-		void visitGroupResources( const ConstString & _category, const ConstString & _group, Visitor * _visitor ) const override;
+		void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, Visitor * _visitor ) const override;
 
 	public:
 		void dumpResources( const String & _tag ) override;

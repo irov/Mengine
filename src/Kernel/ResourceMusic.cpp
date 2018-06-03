@@ -65,10 +65,9 @@ namespace Mengine
 			return true;
 		}
 		
-		const ConstString & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
-		if( FILE_SERVICE()
-			->existFile( category, m_path, nullptr ) == false )
+        if( category->existFile( m_path ) == false )
 		{
 			LOGGER_ERROR("ResourceMusic::_loader: '%s' music '%s' not exist"
 				, this->getName().c_str()

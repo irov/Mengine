@@ -2,6 +2,7 @@
 
 #include "Interface/AccountInterface.h"
 #include "Interface/ArchiveInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Config/Typedef.h"
 
@@ -22,7 +23,7 @@ namespace Mengine
 		~Account() override;
 
 	public:
-		bool initialize( const ConstString & _id, const FilePath & _folder, uint32_t _projectVersion );
+		bool initialize( const ConstString & _id, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folder, uint32_t _projectVersion );
         
 	public:
 		const ConstString & getID() const override;
@@ -56,6 +57,7 @@ namespace Mengine
 	
 	protected:
 		ArchivatorInterfacePtr m_archivator;
+        FileGroupInterfacePtr m_fileGroup;
 
         ConstString m_id;
 		String m_uid;

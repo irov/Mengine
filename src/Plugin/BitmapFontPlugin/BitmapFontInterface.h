@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/TextInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Kernel/Servant.h"
 
@@ -16,7 +17,7 @@ namespace Mengine
 		SERVICE_DECLARE( "BitmapGlyphService" )
 
 	public:
-		virtual BitmapGlyphPtr getGlyph( const ConstString & _category, const FilePath & _path ) = 0;
+		virtual BitmapGlyphPtr getGlyph( const FileGroupInterfacePtr & _category, const FilePath & _path ) = 0;
 	};
 }
 

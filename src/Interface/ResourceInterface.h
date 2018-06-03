@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Core/Visitor.h"
 
@@ -25,14 +26,14 @@ namespace Mengine
         SERVICE_DECLARE("ResourceService")
 
     public:
-		virtual bool loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path, bool _ignored ) = 0;
-		virtual bool unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path, bool _ignored ) = 0;
+		virtual bool unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) = 0;
 
 	public:
 		virtual PointerResourceReference generateResource( const ConstString& _type ) const = 0;
 
 	public:
-		virtual PointerResourceReference createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;
+		virtual PointerResourceReference createResource( const ConstString & _locale, const FileGroupInterfacePtr& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) = 0;
 
 	public:
 		virtual bool removeResource( const ResourcePtr & _resource ) = 0;
@@ -75,10 +76,10 @@ namespace Mengine
         virtual bool validResourceType( const ConstString& _name, const ConstString& _type ) const = 0;
 
         virtual void visitResources( Visitor * _visitor ) const = 0;
-		virtual void visitGroupResources( const ConstString & _category, const ConstString & _group, Visitor * _visitor ) const = 0;
+		virtual void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, Visitor * _visitor ) const = 0;
 
     public:
-		virtual bool validateResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) const = 0;
+		virtual bool validateResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) const = 0;
 
     public:
         virtual void dumpResources( const String & _tag ) = 0;

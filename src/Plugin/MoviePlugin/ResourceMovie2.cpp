@@ -363,13 +363,13 @@ namespace Mengine
 		{
 			LOGGER_ERROR("ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
 				, this->getName().c_str()
-				, this->getGroup().c_str()
+				, this->getGroupName().c_str()
 				);
 
 			return false;
 		}
 
-		const ConstString & category = this->getCategory();
+		const FileGroupInterfacePtr & category = this->getCategory();
 
 		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( category, m_filePath, false );
@@ -378,7 +378,7 @@ namespace Mengine
 		{
 			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' can`t open file '%s'"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
                 , this->getFilePath().c_str()
 				);
 
@@ -407,7 +407,7 @@ namespace Mengine
 
 			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
 				, this->getName().c_str()
-				, this->getGroup().c_str()
+				, this->getGroupName().c_str()
 				, this->getFilePath().c_str()
                 , result_string_info
                 , AE_MOVIE_SDK_MAJOR_VERSION
@@ -436,7 +436,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "ResourceMovie2::_compile resource name '%s' group '%s' path '%s' invalid store resource '%s' type '%s'"
                         , this->getName().c_str()
-                        , this->getGroup().c_str()
+                        , this->getGroupName().c_str()
                         , this->getFilePath().c_str()
                         , resource->getName().c_str()
                         , resource->getType().c_str()
@@ -514,13 +514,13 @@ namespace Mengine
         {
             LOGGER_ERROR("ResourceMovie::_isValid: '%s' group '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
                 );
 
             return false;
         }
 
-        const ConstString & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, m_filePath, false );
@@ -529,7 +529,7 @@ namespace Mengine
         {
             LOGGER_ERROR("ResourceMovie2::_isValid: '%s' group '%s' can`t open file '%s'"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
                 , this->getFilePath().c_str()
                 );
 
@@ -553,7 +553,7 @@ namespace Mengine
 
             LOGGER_ERROR("ResourceMovie2::_isValid: '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
                 , this->getFilePath().c_str()
                 , result_string_info
                 , AE_MOVIE_SDK_MAJOR_VERSION
@@ -589,7 +589,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceMovie2::storeResource_ resource nullptr name '%s' group '%s' path '%s'"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
                 , this->getFilePath().c_str()
             );
 
@@ -609,7 +609,7 @@ namespace Mengine
 		ResourceImageDefaultPtr image = RESOURCE_SERVICE()
 			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
 
-		const ConstString & category = this->getCategory();
+		const FileGroupInterfacePtr & category = this->getCategory();
 
 		image->setCategory( category );
 
@@ -645,7 +645,7 @@ namespace Mengine
 		ResourceVideoPtr video = RESOURCE_SERVICE()
 			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
 
-		const ConstString & category = this->getCategory();
+		const FileGroupInterfacePtr & category = this->getCategory();
 
 		video->setCategory( category );
 
@@ -687,7 +687,7 @@ namespace Mengine
 		ResourceSoundPtr sound = RESOURCE_SERVICE()
 			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
 
-		const ConstString & category = this->getCategory();
+		const FileGroupInterfacePtr & category = this->getCategory();
 
 		sound->setCategory( category );
 
@@ -717,7 +717,7 @@ namespace Mengine
         ResourceParticlePtr particle = RESOURCE_SERVICE()
             ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 
-        const ConstString & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
         particle->setCategory( category );
 

@@ -73,7 +73,7 @@ namespace Mengine
 	bool HotspotImageConverterPNGToHIT::convert()
 	{
         InputStreamInterfacePtr input_stream = FILE_SERVICE()
-            ->openInputFile( m_options.pakName, m_options.inputFileName, false );
+            ->openInputFile( m_options.fileGroup, m_options.inputFileName, false );
 
         if( input_stream == nullptr )
         {
@@ -151,13 +151,13 @@ namespace Mengine
         this->makeMipMapLevel_( buffer, width, height, mimmap_level );
 
         OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-            ->openOutputFile( m_options.pakName, m_options.outputFileName );
+            ->openOutputFile( m_options.fileGroup, m_options.outputFileName );
 
         if( output_stream == nullptr )
         {
             LOGGER_ERROR("HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (open file %s)"
                 , m_options.outputFileName.c_str() 
-                , m_options.pakName.c_str()
+                , m_options.fileGroup.c_str()
                 );
 
             return false;

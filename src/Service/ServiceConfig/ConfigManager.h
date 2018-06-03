@@ -21,7 +21,7 @@ namespace Mengine
         void _finalizeService() override;
 
 	public:
-		bool loadConfig( const ConstString & _fileGroup, const FilePath & _applicationPath ) override;
+		bool loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _applicationPath ) override;
 
 	public:
 		bool getValue( const Char * _section, const Char * _key, bool _default ) const override;

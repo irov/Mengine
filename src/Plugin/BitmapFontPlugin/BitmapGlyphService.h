@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/TextInterface.h"
-
 #include "BitmapFontInterface.h"
 
 #include "Kernel/Servant.h"
@@ -24,7 +22,7 @@ namespace Mengine
 		void _finalizeService() override;
 
 	public:
-		BitmapGlyphPtr getGlyph( const ConstString & _category, const FilePath & _path ) override;
+		BitmapGlyphPtr getGlyph( const FileGroupInterfacePtr & _category, const FilePath & _path ) override;
 
 	protected:
 		FactoryPtr m_factoryTextGlyph;

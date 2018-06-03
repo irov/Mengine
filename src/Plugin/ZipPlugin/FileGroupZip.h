@@ -17,7 +17,7 @@ namespace Mengine
 		~FileGroupZip() override;
 
 	public:
-		bool initialize( const ConstString & _name, const ConstString & _category, const FilePath & _path ) override;
+		bool initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path ) override;
 		void finalize() override;
 		
     public:
@@ -47,12 +47,11 @@ namespace Mengine
 
 	protected:
 		ConstString m_name;
-		ConstString m_category;
+        FileGroupInterfacePtr m_category;
 		
         FilePath m_relationPath;
         FilePath m_path;
 
-		FileGroupInterfacePtr m_zipFileGroup;
 		InputStreamInterfacePtr m_zipFile;
 
 		ThreadMutexInterfacePtr m_mutex;

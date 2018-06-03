@@ -1160,8 +1160,11 @@ namespace Mengine
 
             if( _maxSize.x < 0.f || _maxSize.y < 0.f )
             {
+                const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                    ->getFileGroup( _pakName );
+
                 InputStreamInterfacePtr stream = FILE_SERVICE()
-                    ->openInputFile( _pakName, _fileName, false );
+                    ->openInputFile( fileGroup, _fileName, false );
 
                 if( stream == nullptr )
                 {
@@ -1424,10 +1427,12 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_existFile( const ConstString & _fileGroup, const FilePath & _path )
+        bool s_existFile( const ConstString & _fileGroupName, const FilePath & _path )
         {
-            bool result = FILE_SERVICE()
-                ->existFile( _fileGroup, _path, nullptr );
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _fileGroupName );
+
+            bool result = fileGroup->existFile( _path );
 
             return result;
         }
@@ -1498,9 +1503,12 @@ namespace Mengine
             pybind::object m_cb;
         };
         //////////////////////////////////////////////////////////////////////////
-        bool s_parseXml( pybind::kernel_interface * _kernel, const ConstString & _fileGroup, const FilePath & _path, const pybind::object & _cb )
+        bool s_parseXml( pybind::kernel_interface * _kernel, const ConstString & _fileGroupName, const FilePath & _path, const pybind::object & _cb )
         {
-            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( _fileGroup, _path, false, __FILE__, __LINE__ );
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _fileGroupName );
+
+            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _path, false, __FILE__, __LINE__ );
 
             if( binary_buffer == nullptr )
             {
@@ -1674,7 +1682,7 @@ namespace Mengine
             , public ConcreteVisitor<ResourceMovie>
         {
         public:
-            PrefetchResourceVisitor( const ConstString & _category, const PrefetcherObserverInterfacePtr & _observer )
+            PrefetchResourceVisitor( const FileGroupInterfacePtr & _category, const PrefetcherObserverInterfacePtr & _observer )
                 : m_category( _category )
                 , m_observer( _observer )
                 , m_process( false )
@@ -1734,17 +1742,25 @@ namespace Mengine
             }
 
         protected:
-            ConstString m_category;
+            FileGroupInterfacePtr m_category;
             PrefetcherObserverInterfacePtr m_observer;
             bool m_process;
         };
         //////////////////////////////////////////////////////////////////////////
         bool s_prefetchResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
         {
-            PrefetchResourceVisitor rv_gac( _category, new PyPrefetcherObserver( _cb, _args ) );
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _category );
+
+            if( fileGroup == nullptr )
+            {
+                return false;
+            }
+
+            PrefetchResourceVisitor rv_gac( fileGroup, new PyPrefetcherObserver( _cb, _args ) );
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( _category, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
 
             bool process = rv_gac.isProcess();
 
@@ -1770,7 +1786,7 @@ namespace Mengine
         protected:
             void accept( ResourceImageDefault * _resource ) override
             {
-                const ConstString & category = _resource->getCategory();
+                const FileGroupInterfacePtr & category = _resource->getCategory();
                 const FilePath & filePath = _resource->getFilePath();
 
                 PREFETCHER_SERVICE()
@@ -1784,7 +1800,7 @@ namespace Mengine
 
             void accept( ResourceSound * _resource ) override
             {
-                const ConstString & category = _resource->getCategory();
+                const FileGroupInterfacePtr & category = _resource->getCategory();
                 const FilePath & filePath = _resource->getFilePath();
 
                 PREFETCHER_SERVICE()
@@ -1793,7 +1809,7 @@ namespace Mengine
 
             void accept( ResourceMovie * _resource ) override
             {
-                const ConstString & category = _resource->getCategory();
+                const FileGroupInterfacePtr & category = _resource->getCategory();
                 const FilePath & filePath = _resource->getFilePath();
 
                 PREFETCHER_SERVICE()
@@ -1803,10 +1819,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_unfetchResources( const ConstString & _category, const ConstString & _groupName )
         {
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _category );
+
+            if( fileGroup == nullptr )
+            {
+                return;
+            }
+
             UnfetchResourceVisitor rv_gac;
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( _category, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class CacheResourceVisitor
@@ -1847,10 +1871,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_cacheResources( const ConstString & _category, const ConstString & _groupName )
         {
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _category );
+
+            if( fileGroup == nullptr )
+            {
+                return;
+            }
+
             CacheResourceVisitor rv_gac;
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( _category, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class UncacheResourceVisitor
@@ -1896,10 +1928,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_uncacheResources( const ConstString & _category, const ConstString & _groupName )
         {
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _category );
+
+            if( fileGroup == nullptr )
+            {
+                return;
+            }
+
             UncacheResourceVisitor rv_gac;
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( _category, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_rotateToTrimetric( const mt::vec2f & _dir, const mt::vec2f & _vx, const mt::vec2f & _vy )
@@ -1980,7 +2020,7 @@ namespace Mengine
                 return false;
             }
 
-            const ConstString & category = resourceFile->getCategory();
+            const FileGroupInterfacePtr & category = resourceFile->getCategory();
 
             const FilePath & filePath = resourceFile->getFilePath();
 
@@ -3713,10 +3753,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_visitCompiledResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb )
         {
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _category );
+
+            if( fileGroup == nullptr )
+            {
+                return;
+            }
+
             ResourceVisitorGetAlreadyCompiled rv_gac( _cb );
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( _category, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class MyResourceVisitor
@@ -3745,10 +3793,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_visitResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb )
         {
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _category );
+
+            if( fileGroup == nullptr )
+            {
+                return;
+            }
+
             MyResourceVisitor rv_gac( _cb );
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( _category, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class IncrefResourceVisitor
@@ -3764,10 +3820,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////		
         void s_incrementResources( const ConstString & _category, const ConstString & _groupName )
         {
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _category );
+
+            if( fileGroup == nullptr )
+            {
+                return;
+            }
+
             IncrefResourceVisitor rv_gac;
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( _category, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class DecrementResourceVisitor
@@ -3783,10 +3847,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////		
         void s_decrementResources( const ConstString & _category, const ConstString & _groupName )
         {
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _category );
+
+            if( fileGroup == nullptr )
+            {
+                return;
+            }
+
             DecrementResourceVisitor rv_gac;
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( _category, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class GetResourceVisitor
@@ -3822,10 +3894,18 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////		
         pybind::list s_getResources( pybind::kernel_interface * _kernel, const ConstString & _category, const ConstString & _groupName )
         {
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _category );
+
+            if( fileGroup == nullptr )
+            {
+                return pybind::list( _kernel );
+            }
+
             GetResourceVisitor rv_gac( _kernel );
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( _category, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
 
             const pybind::list & l = rv_gac.getResult();
 

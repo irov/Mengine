@@ -27,21 +27,22 @@ namespace Mengine
 		FileGroupInterfacePtr createFileGroup( const ConstString & _type );
 
 	public:	// FileEngine Interface
-		bool mountFileGroup( const ConstString& _name, const ConstString & _category, const FilePath & _path, const ConstString & _type ) override;
+		bool mountFileGroup( const ConstString& _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type ) override;
 		bool unmountFileGroup( const ConstString& _name ) override;
 
     public:
         bool hasFileGroup( const ConstString& _fileGroupName, FileGroupInterfacePtr * _fileGroup ) const override;
-        FileGroupInterfacePtr getFileGroup( const ConstString& _fileGroupName ) const override;
+        const FileGroupInterfacePtr & getFileGroup( const ConstString& _fileGroupName ) const override;
         
-    public:
-		bool existFile( const ConstString& _fileGroupName, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const override;
+        const FileGroupInterfacePtr & getDefaultFileGroup() const override;
 
 	public:
-		InputStreamInterfacePtr openInputFile( const ConstString& _fileGroupName, const FilePath& _fileName, bool _streaming ) override;
-		OutputStreamInterfacePtr openOutputFile( const ConstString& _fileGroupName, const FilePath& _fileName ) override;
+		InputStreamInterfacePtr openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath& _fileName, bool _streaming ) override;
+		OutputStreamInterfacePtr openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath& _fileName ) override;
         
 	private:
+        FileGroupInterfacePtr m_defaultFileGroup;
+
 		typedef Map<ConstString, FactoryPtr> TFactoryFileGroups;
 		TFactoryFileGroups m_factoryFileGroups;
 

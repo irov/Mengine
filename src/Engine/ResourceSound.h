@@ -48,7 +48,7 @@ namespace Mengine
 		FilePath m_filePath;
 
 		ConstString m_codecType;
-		ConstString m_converter;
+		ConstString m_converterType;
 		float m_defaultVolume;
 
 		SoundBufferInterfacePtr m_soundBufferNoStreamableCache;

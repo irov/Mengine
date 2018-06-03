@@ -4,6 +4,7 @@
 #include "Config/String.h"
 
 #include "Interface/ServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"
@@ -20,7 +21,7 @@ namespace Mengine
         SERVICE_DECLARE("ConfigService")
 
 	public:
-		virtual bool loadConfig( const ConstString & _fileGroup, const FilePath & _applicationPath ) = 0;
+		virtual bool loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _applicationPath ) = 0;
 
 	public:
 		virtual bool getValue( const Char * _section, const Char * _key, bool _default ) const = 0;

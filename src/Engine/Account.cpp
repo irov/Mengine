@@ -24,7 +24,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Account::initialize( const ConstString & _id, const FilePath & _folder, uint32_t _projectVersion )
+	bool Account::initialize( const ConstString & _id, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folder, uint32_t _projectVersion )
 	{
 		m_id = _id;
 		m_projectVersion = _projectVersion;
@@ -37,13 +37,17 @@ namespace Mengine
 
 		m_settingsPath = Helper::stringizeFilePath( settingsPath );
 
-		m_archivator = ARCHIVE_SERVICE()
+        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
 			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
-		if( m_archivator == nullptr )
+		if( archivator == nullptr )
 		{
 			return false;
 		}
+
+        m_archivator = archivator;
+
+        m_fileGroup = _fileGroup;
 
 		return true;
 	}
@@ -149,9 +153,8 @@ namespace Mengine
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Account::load()
-	{
-        if( FILE_SERVICE()
-			->existFile( STRINGIZE_STRING_LOCAL( "user"), m_settingsPath, nullptr ) == false )
+	{        
+        if( m_fileGroup->existFile( m_settingsPath ) == false )
         {
             LOGGER_ERROR("Account::load account '%s' settings not found '%s'"
                 , m_id.c_str()
@@ -162,7 +165,7 @@ namespace Mengine
         }
 
 		IniUtil::IniStore ini;
-		if( IniUtil::loadIni( ini, STRINGIZE_STRING_LOCAL( "user" ), m_settingsPath ) == false )
+		if( IniUtil::loadIni( ini, m_fileGroup, m_settingsPath ) == false )
 		{
 			LOGGER_ERROR("Account::load parsing Account '%s' settings failed '%s'"
                 , m_id.c_str()
@@ -240,7 +243,7 @@ namespace Mengine
 	bool Account::save()
 	{
 		OutputStreamInterfacePtr file = FILE_SERVICE()
-            ->openOutputFile( STRINGIZE_STRING_LOCAL( "user" ), m_settingsPath );
+            ->openOutputFile( m_fileGroup, m_settingsPath );
 
 		if( file == nullptr )
 		{
@@ -312,7 +315,7 @@ namespace Mengine
 		FilePath fullpath = Helper::stringizeFilePath( path );
 
 		InputStreamInterfacePtr stream = 
-            FILE_SERVICE()->openInputFile( STRINGIZE_STRING_LOCAL( "user" ), fullpath, false );
+            FILE_SERVICE()->openInputFile( m_fileGroup, fullpath, false );
 
 		if( stream == nullptr )
 		{
@@ -337,7 +340,7 @@ namespace Mengine
 		FilePath fullpath = Helper::stringizeFilePath( path );
 
 		OutputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openOutputFile( STRINGIZE_STRING_LOCAL( "user" ), fullpath );
+            ->openOutputFile( m_fileGroup, fullpath );
 
 		if( stream == nullptr )
 		{
@@ -429,8 +432,7 @@ namespace Mengine
 
 		FilePath fullpath = Helper::stringizeFilePath( path );
 
-		bool exist = FILE_SERVICE()
-            ->existFile( STRINGIZE_STRING_LOCAL( "user" ), fullpath, nullptr );
+		bool exist = m_fileGroup->existFile( fullpath );
 
 		return exist;
 	}

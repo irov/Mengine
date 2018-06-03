@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/TextInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Kernel/Servant.h"
 
@@ -24,7 +25,7 @@ namespace Mengine
 		~BitmapGlyph() override;
 
 	public:
-		bool initialize( const ConstString & _pakName, const FilePath & _path );
+		bool initialize( const FileGroupInterfacePtr & _pakName, const FilePath & _path );
 
 	public:
 		void setSize( float _size );

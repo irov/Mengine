@@ -16,7 +16,7 @@ namespace Mengine
         ~ThreadTaskPrefetch() override;
 	
 	public:
-		void initialize( const ConstString& _pakName, const FilePath & _fileName, const PrefetcherObserverInterfacePtr & _observer );
+		void initialize( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, const PrefetcherObserverInterfacePtr & _observer );
 
 	protected:
         void _onPreparation() override;
@@ -25,22 +25,21 @@ namespace Mengine
 		void _onComplete( bool _successful ) override;
 		
 	public:
-		inline const ConstString & getPakName() const;
+		inline const FileGroupInterfacePtr & getFileGroup() const;
 		inline const FilePath & getFilePath() const;
 		
 	protected:
-		ConstString m_pakName;
-		FilePath m_filePath; 
+		FilePath m_filePath;
 				
 	protected:
-		FileGroupInterfacePtr m_group;
+		FileGroupInterfacePtr m_fileGroup;
 		InputStreamInterfacePtr m_stream;
         PrefetcherObserverInterfacePtr m_observer;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const ConstString & ThreadTaskPrefetch::getPakName() const
+	inline const FileGroupInterfacePtr & ThreadTaskPrefetch::getFileGroup() const
 	{
-		return m_pakName;
+		return m_fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const FilePath & ThreadTaskPrefetch::getFilePath() const

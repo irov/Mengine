@@ -29,10 +29,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceFile::_isValid() const
     {   
-		const ConstString & category = this->getCategory();
+		const FileGroupInterfacePtr & category = this->getCategory();
 
-		bool valid = FILE_SERVICE()
-			->existFile( category, m_path, nullptr );
+		bool valid = category->existFile( m_path );
 
 		return valid;
 	}

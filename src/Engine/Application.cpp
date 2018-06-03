@@ -550,7 +550,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::initializeGame( const ConstString & _category, const FilePath & _resourceIniPath )
+    bool Application::initializeGame( const FileGroupInterfacePtr & _category, const FilePath & _resourceIniPath )
     {
         if( SERVICE_EXIST( Mengine::GameServiceInterface ) == false )
         {
@@ -558,7 +558,7 @@ namespace Mengine
         }
 
         LOGGER_INFO( "Application load resource packs... %s:%s"
-            , _category.c_str()
+            , _category->getName().c_str()
             , _resourceIniPath.c_str()
         );
 

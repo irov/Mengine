@@ -26,14 +26,14 @@ namespace Mengine
 		m_locale = _locale;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	void Resource::setCategory( const ConstString & _category )
+	void Resource::setCategory( const FileGroupInterfacePtr & _category )
 	{
 		m_category = _category;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Resource::setGroup( const ConstString & _group )
+	void Resource::setGroupName( const ConstString & _groupName )
 	{
-		m_group = _group;
+        m_groupName = _groupName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Resource::initialize()
@@ -164,7 +164,7 @@ namespace Mengine
 		if( this->incrementReference() == false )
 		{
 			LOGGER_ERROR("ResourceReference::cache: '%s:%s' invalid increment reference"
-				, this->getGroup().c_str()
+				, this->getGroupName().c_str()
 				, this->getName().c_str()				
 				);
 
@@ -175,7 +175,7 @@ namespace Mengine
 
 		this->_cache();
 
-		return true; 
+		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Resource::uncache()

@@ -63,7 +63,7 @@ namespace Mengine
 		return m_available;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ParticleEmitterContainerInterface2Ptr ParticleEngine2::createEmitterContainerFromFile( const ConstString& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName )
+	ParticleEmitterContainerInterface2Ptr ParticleEngine2::createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _whoName )
 	{
 		if( m_available == false )
 		{
@@ -74,12 +74,12 @@ namespace Mengine
 		}
 		
 		InputStreamInterfacePtr stream = FILE_SERVICE()
-			->openInputFile( _fileGroupName, _fileName, false );
+			->openInputFile( _fileGroup, _fileName, false );
 		
 		if( stream == nullptr )
 		{
 			LOGGER_ERROR("ParticleEngine2::createEmitterContainerFromFile can't open file %s:%s"
-				, _fileGroupName.c_str()
+				, _fileGroup->getName().c_str()
 				, _fileName.c_str() 
 				);
 
@@ -91,7 +91,8 @@ namespace Mengine
 
 		if( container == nullptr )
 		{
-			LOGGER_ERROR("ParticleEngine2::createEmitterContainerFromFile can't create emitter container '%s'"
+			LOGGER_ERROR("ParticleEngine2::createEmitterContainerFromFile can't create emitter container '%s:%s'"
+                , _fileGroup->getName().c_str()
 				, _fileName.c_str() 
 				);
 

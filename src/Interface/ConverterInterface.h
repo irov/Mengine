@@ -14,7 +14,7 @@ namespace Mengine
 {	
 	struct ConverterOptions
 	{		
-		ConstString pakName; 
+        FileGroupInterfacePtr fileGroup;
 
 		FilePath inputFileName;
 		FilePath outputFileName;
@@ -69,7 +69,7 @@ namespace Mengine
 		virtual ConverterInterfacePtr createConverter( const ConstString & _type ) = 0; 
 
     public:
-        virtual bool convert( const ConstString & _converter, const ConstString & _category, const FilePath & _in, FilePath & _out ) = 0;
+        virtual bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out ) = 0;
 	};
 
 #   define CONVERTER_SERVICE()\

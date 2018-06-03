@@ -22,6 +22,20 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
+    ResourceHIT::~ResourceHIT()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceHIT::setFilePath( const FilePath & _filePath )
+    {
+        m_filePath = _filePath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & ResourceHIT::getFilePath() const
+    {
+        return m_filePath;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ResourceHIT::setCodecType( const ConstString & _codec )
     {
         m_codecType = _codec;
@@ -38,7 +52,7 @@ namespace Mengine
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceHIT *>(_meta);
 
         m_filePath = metadata->get_File_Path();
-        metadata->get_File_Converter( &m_converterType );        
+        metadata->get_File_Converter( &m_converterType );
         metadata->get_File_Codec( &m_codecType );
 
         return true;
@@ -53,7 +67,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceHIT::_compile()
 	{
-        const ConstString & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, m_filePath, false );
@@ -62,7 +76,7 @@ namespace Mengine
         {
             LOGGER_ERROR("ResourceHIT::_compile: '%s' - hit file '%s' not found"
                 , this->getName().c_str()
-                , m_filePath.c_str()
+                , this->getFilePath().c_str()
                 );
 
             return false;
@@ -75,8 +89,8 @@ namespace Mengine
         {
             LOGGER_ERROR("ResourceHIT::_compile: '%s' - hit file '%s' invalid create decoder '%s'"
                 , this->getName().c_str()
-                , m_filePath.c_str()
-                , m_codecType.c_str()
+                , this->getFilePath().c_str()
+                , this->getCodecType().c_str()
                 );
 
             return false;
@@ -86,8 +100,8 @@ namespace Mengine
 		{
 			LOGGER_ERROR("ResourceHIT::_compile: '%s' - hit file '%s' invalid initialize decoder '%s'"
 				, this->getName().c_str()
-				, m_filePath.c_str()
-				, m_codecType.c_str()
+                , this->getFilePath().c_str()
+                , this->getCodecType().c_str()
 				);
 
 			return false;
@@ -106,7 +120,7 @@ namespace Mengine
 		{
 			LOGGER_ERROR("ResourceHIT::_compile: '%s' - hit file '%s' invalid create memory"
 				, this->getName().c_str()
-				, m_filePath.c_str()
+                , this->getFilePath().c_str()
 				);
 
 			return false;
@@ -119,7 +133,7 @@ namespace Mengine
 		{
 			LOGGER_ERROR("ResourceHIT::_compile: '%s' - hit file '%s' invalid new memory '%u'"
 				, this->getName().c_str()
-				, m_filePath.c_str()
+                , this->getFilePath().c_str()
 				, mipmapsize
 				);
 
@@ -132,7 +146,7 @@ namespace Mengine
         {
             LOGGER_ERROR("ResourceHIT::_compile %s invalid decode hit %s size %d (%d)"
                 , this->getName().c_str()
-                , m_filePath.c_str()
+                , this->getFilePath().c_str()
                 , (uint32_t)m_mipmapsize
 				, (uint32_t)mipmapsize
                 );
@@ -153,12 +167,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_isValid() const
     {
-        const ConstString & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
-        bool exist = FILE_SERVICE()
-            ->existFile( category, m_filePath, nullptr );
-
-        if( exist == false )
+        if( category->existFile( m_filePath ) == false )
         {
             return false;
         }
@@ -169,9 +180,9 @@ namespace Mengine
 		if( stream == nullptr )
 		{
 			LOGGER_ERROR("ResourceHIT::_isValid %s invalid open file %s:%s"
-				, m_name.c_str()
-				, category.c_str()
-				, m_filePath.c_str()
+				, this->getName().c_str()
+				, this->getCategory()->getName().c_str()
+				, this->getFilePath().c_str()
 				);
 
 			return false;
@@ -183,10 +194,10 @@ namespace Mengine
 		if( decoder == nullptr )
 		{
 			LOGGER_ERROR("ResourceHIT::_isValid %s file %s:%s invalid decoder %s"
-				, m_name.c_str()
-				, category.c_str()
-				, m_filePath.c_str()
-				, m_codecType.c_str()
+                , this->getName().c_str()
+                , this->getCategory()->getName().c_str()
+                , this->getFilePath().c_str()
+				, this->getCodecType().c_str()
 				);
 
 			return false;
@@ -195,10 +206,10 @@ namespace Mengine
 		if( decoder->prepareData( stream ) == false )
 		{
 			LOGGER_ERROR("ResourceHIT::_isValid %s file %s:%s decoder initialize failed %s"
-				, m_name.c_str()
-				, category.c_str()
-				, m_filePath.c_str()
-				, m_codecType.c_str()
+                , this->getName().c_str()
+                , this->getCategory()->getName().c_str()
+                , this->getFilePath().c_str()
+                , this->getCodecType().c_str()
 				);
 
 			return false;
@@ -300,7 +311,7 @@ namespace Mengine
         {
             LOGGER_ERROR("ResourceHIT::testRadius %s hit file %s invalid get level buffer %d:%d"
                 , this->getName().c_str()
-                , m_filePath.c_str()
+                , this->getFilePath().c_str()
                 , level
                 , m_mipmaplevel
                 );
@@ -351,7 +362,7 @@ namespace Mengine
         {
             LOGGER_ERROR("ResourceHIT::getHitBuffer_ %s hit file %s invalid get level buffer %d:%d"
                 , this->getName().c_str()
-                , m_filePath.c_str()
+                , this->getFilePath().c_str()
                 , _level
                 , m_mipmaplevel
                 );

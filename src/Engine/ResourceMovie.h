@@ -258,7 +258,7 @@ namespace Mengine
 		void _release() override;
 
 	protected:
-		DataInterfacePtr compileData_( const ConstString & _category, const FilePath & _path );
+		DataInterfacePtr compileData_( const FileGroupInterfacePtr & _category, const FilePath & _path );
 
 	protected:
 		bool isThreeDNode( uint32_t _index ) const;

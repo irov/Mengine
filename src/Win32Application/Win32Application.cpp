@@ -781,7 +781,8 @@ namespace Mengine
 			return false;
 		}
 
-		if( APPLICATION_SERVICE()->initializeGame( ConstString::none(), resourceIniPath ) == false )
+		if( APPLICATION_SERVICE()
+            ->initializeGame( ConstString::none(), resourceIniPath ) == false )
 		{
 			LOGGER_CRITICAL("Application invalid initialize game"
 				);

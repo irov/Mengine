@@ -13,6 +13,11 @@ namespace Mengine
 
 	public:
 		ResourceHIT();
+        ~ResourceHIT() override;
+
+    public:
+        void setFilePath( const FilePath & _filePath );
+        const FilePath & getFilePath() const;
 
     public:
         void setCodecType( const ConstString & _codec );

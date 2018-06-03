@@ -33,24 +33,24 @@ namespace Mengine
             return false;
         }
 
-		m_group = FILE_SERVICE()
-			->getFileGroup( m_pakName );
+		m_fileGroup = FILE_SERVICE()
+			->getFileGroup( m_fileGroup );
 
-		if( m_group == nullptr )
+		if( m_fileGroup == nullptr )
 		{
 			LOGGER_ERROR("FileEngine::openInputFile can't get group '%s'"
-				, m_pakName.c_str()
+				, m_fileGroup.c_str()
 				);
 
 			return false;
 		}
 
-		m_stream = m_group->createInputFile( m_filePath, false );
+		m_stream = m_fileGroup->createInputFile( m_filePath, false );
 
 		if( m_stream == nullptr )
 		{
 			LOGGER_ERROR("FileEngine::openInputFile can't create input file '%s'"
-				, m_pakName.c_str()
+				, m_fileGroup.c_str()
 				);
 
 			return false;
@@ -73,10 +73,10 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPrefetchSoundDecoder::_onMain()
 	{		
-		if( m_group->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
+		if( m_fileGroup->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
 		{
 			LOGGER_ERROR("ThreadTaskPrefetchSoundDecoder::_onRun: invalide open file '%s:%s'"
-				, m_pakName.c_str()
+				, m_fileGroup.c_str()
 				, m_filePath.c_str()
 				);
 
@@ -91,7 +91,7 @@ namespace Mengine
 		if( memoryInput == nullptr )
 		{
 			LOGGER_ERROR("ThreadTaskPrefetchSoundDecoder::_onMain: '%s:%s' invalid create memory input"
-				, m_pakName.c_str()
+				, m_fileGroup.c_str()
 				, m_filePath.c_str()
 				, stream_size
 				);
@@ -104,7 +104,7 @@ namespace Mengine
 		if( memory == nullptr )
 		{
 			LOGGER_ERROR("ThreadTaskPrefetchSoundDecoder::_onMain: '%s:%s' invalid alloc memory '%d'"
-				, m_pakName.c_str()
+				, m_fileGroup.c_str()
 				, m_filePath.c_str() 
 				, stream_size
 				);
@@ -115,7 +115,7 @@ namespace Mengine
 		if( m_stream->read( memory, stream_size ) != stream_size )
 		{
 			LOGGER_ERROR("ThreadTaskPrefetchSoundDecoder::_onMain: '%s:%s' invalid read stream '%d'"
-				, m_pakName.c_str()
+				, m_fileGroup.c_str()
 				, m_filePath.c_str() 
 				, stream_size
 				);
@@ -126,7 +126,7 @@ namespace Mengine
 		if( m_soundDecoder->prepareData( memoryInput ) == false )
 		{
 			LOGGER_ERROR("ThreadTaskPrefetchSoundDecoder::_onMain: decoder for file '%s:%s' was not initialize"
-				, m_pakName.c_str()
+				, m_fileGroup.c_str()
 				, m_filePath.c_str() 
 				);
 

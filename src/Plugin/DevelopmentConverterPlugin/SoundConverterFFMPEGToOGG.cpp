@@ -28,10 +28,10 @@ namespace Mengine
 	bool SoundConverterFFMPEGToOGG::convert()
 	{
         FileGroupInterfacePtr fileGroup;
-        if( FILE_SERVICE()->hasFileGroup( m_options.pakName, &fileGroup ) == false )
+        if( FILE_SERVICE()->hasFileGroup( m_options.fileGroup, &fileGroup ) == false )
         {
             LOGGER_ERROR("SoundConverterFFMPEGToOGG::convert_: not found file group '%s'"
-                , m_options.pakName.c_str()
+                , m_options.fileGroup.c_str()
                 );
 
             return false;

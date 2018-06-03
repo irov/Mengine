@@ -56,7 +56,7 @@ namespace Mengine
 					LOGGER_WARNING("ResourceManager::~ResourceManager resource '%s' type '%s' group '%s' refcount %d"
 						, resource->getName().c_str()
                         , resource->getType().c_str()
-                        , resource->getGroup().c_str()
+                        , resource->getGroupName().c_str()
 						, refcount
 						);
 				}
@@ -72,25 +72,25 @@ namespace Mengine
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::loadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path, bool _ignored )
+	bool ResourceManager::loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pak, const FilePath & _path, bool _ignored )
 	{
 		Metacode::Meta_Data::Meta_DataBlock datablock;
 
 		bool exist = false;
 		if( LOADER_SERVICE()
-            ->load( _pakName, _path, &datablock, exist ) == false )
+            ->load( _pak, _path, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
 				LOGGER_ERROR("ResourceManager::loadResource: resource '%s:%s' not found"
-					, _pakName.c_str()
+					, _pak->getName().c_str()
 					, _path.c_str()
 					);
 			}
 			else
 			{
 				LOGGER_ERROR("ResourceManager::loadResource: Invalid parse resource '%s:%s'"
-                    , _pakName.c_str()
+                    , _pak->getName().c_str()
                     , _path.c_str()
 					);
 			}
@@ -112,10 +112,10 @@ namespace Mengine
 
             const FilePath & path = meta_include.get_Path();
 
-			if( this->loadResources( _locale, _pakName, path, _ignored ) == false )
+			if( this->loadResources( _locale, _pak, path, _ignored ) == false )
             {
                 LOGGER_ERROR("ResourceManager::loadResource load %s:%s resource invalid load include %s"
-                    , _pakName.c_str()
+                    , _pak->getName().c_str()
                     , _path.c_str()
                     , path.c_str()
                     );
@@ -148,16 +148,16 @@ namespace Mengine
 					continue;
 				}
 
-				const ConstString & resource_category = has_resource->getCategory();
+				const FileGroupInterfacePtr & resource_category = has_resource->getCategory();
 
 				LOGGER_ERROR("ResourceManager::loadResource: path %s already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
 					, _path.c_str()
 					, name.c_str()
 					, groupName.c_str()
-					, _pakName.c_str()
-					, resource_category.c_str()
-					, has_resource->getCategory().c_str()
-					, has_resource->getGroup().c_str()
+                    , _pak->getName().c_str()
+					, resource_category->getName().c_str()
+					, has_resource->getCategory()->getName().c_str()
+					, has_resource->getGroupName().c_str()
 					, has_resource->getName().c_str()
 					);
 
@@ -165,13 +165,13 @@ namespace Mengine
 			}
 
 			ResourcePtr resource =
-				this->createResource( _locale, _pakName, groupName, name, type );
+				this->createResource( _locale, _pak, groupName, name, type );
 
             if( resource == nullptr )
             {
 				LOGGER_ERROR("ResourceManager::loadResource: '%s' invalid create resource '%s:%s' name %s type %s"
 					, _path.c_str()
-                    , _pakName.c_str()
+                    , _pak->getName().c_str()
                     , groupName.c_str()
                     , name.c_str()
                     , type.c_str()
@@ -184,7 +184,7 @@ namespace Mengine
             {
                 LOGGER_ERROR("ResourceManager::loadResource '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
 					, _path.c_str()
-					, _pakName.c_str()
+                    , _pak->getName().c_str()
 					, groupName.c_str()
 					, name.c_str()
 					, type.c_str()
@@ -217,25 +217,25 @@ namespace Mengine
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::unloadResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path )
+	bool ResourceManager::unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pak, const FilePath & _path )
 	{
 		Metacode::Meta_Data::Meta_DataBlock datablock;
 
 		bool exist = false;
 		if( LOADER_SERVICE()
-            ->load( _pakName, _path, &datablock, exist ) == false )
+            ->load( _pak, _path, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
 				LOGGER_ERROR("ResourceManager::unloadResource: resource '%s:%s' not found"
-					, _pakName.c_str()
+                    , _pak->getName().c_str()
 					, _path.c_str()
 					);
 			}
 			else
 			{
 				LOGGER_ERROR("ResourceManager::unloadResource: Invalid parse resource '%s:%s'"
-					, _pakName.c_str()
+                    , _pak->getName().c_str()
 					, _path.c_str()
 					);
 			}
@@ -257,10 +257,10 @@ namespace Mengine
 
 			const FilePath & path = meta_include.get_Path();
 
-			if( this->unloadResources( _locale, _pakName, path ) == false )
+			if( this->unloadResources( _locale, _pak, path ) == false )
 			{
 				LOGGER_ERROR("ResourceManager::unloadResource load %s:%s resource invalid load include %s"
-					, _pakName.c_str()
+                    , _pak->getName().c_str()
 					, _path.c_str()
 					, path.c_str()
 					);
@@ -285,16 +285,16 @@ namespace Mengine
 			ResourcePtr has_resource = nullptr;
 			if( this->hasResource( name, &has_resource ) == false )
 			{
-				const ConstString & resource_category = has_resource->getCategory();
+				const FileGroupInterfacePtr & resource_category = has_resource->getCategory();
 
 				LOGGER_ERROR("ResourceManager::unloadResource: path %s not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
 					, _path.c_str()
 					, name.c_str()
 					, groupName.c_str()
-					, _pakName.c_str()
-					, resource_category.c_str()
-					, has_resource->getCategory().c_str()
-					, has_resource->getGroup().c_str()
+                    , _pak->getName().c_str()
+					, resource_category->getName().c_str()
+					, has_resource->getCategory()->getName().c_str()
+					, has_resource->getGroupName().c_str()
 					, has_resource->getName().c_str()
 					);
 
@@ -305,7 +305,7 @@ namespace Mengine
 			{
 				LOGGER_ERROR("ResourceManager::unloadResource: '%s' invalid remove resource '%s:%s' name %s type %s"
 					, _path.c_str()
-					, _pakName.c_str()
+                    , _pak->getName().c_str()
 					, groupName.c_str()
 					, name.c_str()
 					, type.c_str()
@@ -318,25 +318,25 @@ namespace Mengine
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool ResourceManager::validateResources( const ConstString & _locale, const ConstString & _pakName, const FilePath & _path ) const
+	bool ResourceManager::validateResources( const ConstString & _locale, const FileGroupInterfacePtr & _pak, const FilePath & _path ) const
     {
 		Metacode::Meta_Data::Meta_DataBlock datablock;
 
 		bool exist = false;
 		if( LOADER_SERVICE()
-            ->load( _pakName, _path, &datablock, exist ) == false )
+            ->load( _pak, _path, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
 				LOGGER_ERROR("ResourceManager::validateResources resource '%s:%s' not found"
-					, _pakName.c_str()
+                    , _pak->getName().c_str()
 					, _path.c_str()
 					);
 			}
 			else
 			{
 				LOGGER_ERROR("ResourceManager::validateResources Invalid parse resource '%s:%s'"
-					, _pakName.c_str()
+                    , _pak->getName().c_str()
 					, _path.c_str()
 					);
 			}
@@ -360,10 +360,10 @@ namespace Mengine
 
 			const FilePath & path = meta_include.get_Path();
 
-			if( this->validateResources( _locale, _pakName, path ) == false )
+			if( this->validateResources( _locale, _pak, path ) == false )
 			{
 				LOGGER_ERROR("ResourceManager::validateResources load %s:%s resource invalid load include %s"
-					, _pakName.c_str()
+                    , _pak->getName().c_str()
 					, _path.c_str()
 					, path.c_str()
 					);
@@ -397,7 +397,7 @@ namespace Mengine
 			{
 				LOGGER_ERROR("ResourceManager::validateResources '%s' invalid create resource '%s:%s' name %s type %s"
 					, _path.c_str()
-					, _pakName.c_str()
+                    , _pak->getName().c_str()
 					, groupName.c_str()
 					, name.c_str()
 					, type.c_str()
@@ -409,15 +409,15 @@ namespace Mengine
 			}
 
 			resource->setLocale( _locale );
-			resource->setCategory( _pakName );
-			resource->setGroup( groupName );
+			resource->setCategory( _pak );
+			resource->setGroupName( groupName );
 			resource->setName( name );
 
 			if( resource->loader( meta_resource ) == false )
 			{
 				LOGGER_ERROR("ResourceManager::validateResources '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
 					, _path.c_str()
-					, _pakName.c_str()
+                    , _pak->getName().c_str()
 					, groupName.c_str()
 					, name.c_str()
 					, type.c_str()
@@ -484,7 +484,7 @@ namespace Mengine
 		return resource;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    PointerResourceReference ResourceManager::createResource( const ConstString & _locale, const ConstString& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type )
+    PointerResourceReference ResourceManager::createResource( const ConstString & _locale, const FileGroupInterfacePtr& _category, const ConstString& _groupName, const ConstString& _name, const ConstString& _type )
 	{
 		ResourcePtr resource = this->generateResource( _type );
 
@@ -492,8 +492,8 @@ namespace Mengine
 		{
 			LOGGER_ERROR("ResourceManager createResource: invalid generate resource locale '%s' category '%s' group '%s' name '%s' type '%s'"
 				, _locale.c_str()
-				, _category.c_str()
-				, _group.c_str()
+				, _category->getName().c_str()
+				, _groupName.c_str()
 				, _name.c_str()
 				, _type.c_str()
 				);
@@ -501,9 +501,9 @@ namespace Mengine
 			return nullptr;
 		}
 
-		resource->setLocale( _locale );
+		resource->setLocale( _locale );        
 		resource->setCategory( _category );
-		resource->setGroup( _group );
+		resource->setGroupName( _groupName );
 		resource->setName( _name );
 
 		ResourceEntry entry;
@@ -517,7 +517,7 @@ namespace Mengine
 
 		std::pair<TMapResource::iterator, bool> insert_result = resources.insert( std::make_pair( _name, entry ) );
 
-		TResourceCacheKey cache_key = std::make_pair( _category, _group );
+		TResourceCacheKey cache_key = std::make_pair( _category->getName(), _groupName );
 
 		TMapResourceCache::iterator it_cache_found = m_resourcesCache.find( cache_key );
 
@@ -534,10 +534,10 @@ namespace Mengine
 		{
 			ResourceEntry & insert_entry = insert_result.first->second;
 
-			const ConstString & insert_category = insert_entry.resource->getCategory();
-			const ConstString & insert_group = insert_entry.resource->getGroup();
+			const FileGroupInterfacePtr & insert_category = insert_entry.resource->getCategory();
+			const ConstString & insert_group = insert_entry.resource->getGroupName();
 
-			TResourceCacheKey remove_cache_key = std::make_pair( insert_category, insert_group );
+			TResourceCacheKey remove_cache_key = std::make_pair( insert_category->getName(), insert_group );
 
 			TMapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
 
@@ -571,10 +571,10 @@ namespace Mengine
 			return false;
 		}
 
-		const ConstString & category = _resource->getCategory();
-		const ConstString & group = _resource->getGroup();
+		const FileGroupInterfacePtr & category = _resource->getCategory();
+		const ConstString & group = _resource->getGroupName();
 
-		TResourceCacheKey remove_cache_key = std::make_pair( category, group );
+		TResourceCacheKey remove_cache_key = std::make_pair( category->getName(), group );
 
 		TMapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
 				
@@ -796,9 +796,9 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceManager::visitGroupResources( const ConstString & _category, const ConstString & _group, Visitor * _visitor ) const
+	void ResourceManager::visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, Visitor * _visitor ) const
 	{		
-		TResourceCacheKey cache_key = std::make_pair( _category, _group );
+		TResourceCacheKey cache_key = std::make_pair( _category->getName(), _group );
 
 		TMapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( cache_key );
 

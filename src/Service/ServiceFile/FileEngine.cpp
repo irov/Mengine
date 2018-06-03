@@ -97,7 +97,7 @@ namespace Mengine
 		return fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::mountFileGroup( const ConstString & _name, const ConstString & _category, const FilePath & _path, const ConstString & _type )
+	bool FileEngine::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type )
 	{
 		LOGGER_INFO( "FileEngine:mountFileSystem _fileGroupName '%s' _path '%s' _type '%s'"
 			, _name.c_str() 
@@ -117,9 +117,9 @@ namespace Mengine
 			return false;
 		}
 
-		FileGroupInterfacePtr fs = this->createFileGroup( _type );
+		FileGroupInterfacePtr fileGroup = this->createFileGroup( _type );
 
-		if( fs == nullptr )
+		if( fileGroup == nullptr )
 		{
 			LOGGER_ERROR("FileEngine::mountFileSystem can't create fileGroup '%s' type '%s' for object '%s'"
                 , _name.c_str()
@@ -130,7 +130,7 @@ namespace Mengine
 			return false;
 		}
 
-		if( fs->initialize( _name, _category, _path ) == false )
+		if( fileGroup->initialize( _name, _category, _path ) == false )
 		{
 			LOGGER_ERROR("FileEngine::mountFileSystem can't initialize FileSystem '%s' for object '%s'"
 				, _name.c_str()
@@ -140,12 +140,17 @@ namespace Mengine
 			return false;
 		}
 
-		m_fileSystemMap.insert( std::make_pair(_name, fs) );
+        if( _name.empty() == true )
+        {
+            m_defaultFileGroup = fileGroup;
+        }
+
+		m_fileSystemMap.insert( std::make_pair(_name, fileGroup) );
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::unmountFileGroup( const ConstString& _name )
+    bool FileEngine::unmountFileGroup( const ConstString & _name )
 	{
 		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _name );
 		if( it_find == m_fileSystemMap.end() )
@@ -161,33 +166,14 @@ namespace Mengine
 
         groupInterface->finalize();
 
+        if( _name.empty() == true )
+        {
+            m_defaultFileGroup = nullptr;
+        }
+
 		m_fileSystemMap.erase( it_find );
 
 		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::existFile( const ConstString& _name, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const
-	{
-		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _name );
-
-		if( it_find == m_fileSystemMap.end() )
-		{
-			return false;
-		}
-		
-		const FileGroupInterfacePtr & fileGroup = it_find->second;
-
-		if( fileGroup->existFile( _fileName ) == false )
-        {
-            return false;
-        }
-
-		if( _fileGroup != nullptr )
-		{
-			*_fileGroup = fileGroup;
-		}
-
-        return true;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool FileEngine::hasFileGroup( const ConstString& _name, FileGroupInterfacePtr * _fileGroup ) const
@@ -207,7 +193,7 @@ namespace Mengine
 		return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	FileGroupInterfacePtr FileEngine::getFileGroup( const ConstString & _name ) const
+	const FileGroupInterfacePtr & FileEngine::getFileGroup( const ConstString & _name ) const
 	{
 		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _name );
 
@@ -217,42 +203,37 @@ namespace Mengine
 				, _name.c_str()
 				);
 
-			return nullptr;
+			return FileGroupInterfacePtr::none();
 		}
 
 		const FileGroupInterfacePtr & fileGroup = it_find->second;
 
 		return fileGroup;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    const FileGroupInterfacePtr & FileEngine::getDefaultFileGroup() const
+    {
+        return m_defaultFileGroup;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr FileEngine::openInputFile( const ConstString& _name, const FilePath & _fileName, bool _streaming )
+	InputStreamInterfacePtr FileEngine::openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, bool _streaming )
 	{
-		FileGroupInterfacePtr group = this->getFileGroup( _name );
-
-		if( group == nullptr )
-		{
-            LOGGER_ERROR("FileEngine::openInputFile can't get group '%s'"
-                , _name.c_str()
-                );
-
-			return nullptr;
-		}
-
-		InputStreamInterfacePtr file = group->createInputFile( _fileName, _streaming );
+		InputStreamInterfacePtr file = _fileGroup->createInputFile( _fileName, _streaming );
 
 		if( file == nullptr )
 		{
-			LOGGER_ERROR("FileEngine::openInputFile can't create input file '%s'"
-				, _name.c_str()
+			LOGGER_ERROR("FileEngine::openInputFile can't create input file '%s:%s'"
+                , _fileGroup->getName().c_str()
+				, _fileName.c_str()
 				);
 
 			return nullptr;
 		}
 
-		if( group->openInputFile( _fileName, file, 0, 0, _streaming ) == false )
+		if( _fileGroup->openInputFile( _fileName, file, 0, 0, _streaming ) == false )
 		{
-			LOGGER_ERROR("FileEngine::openInputFile can't open input file '%s' '%s'"
-				, _name.c_str()
+			LOGGER_ERROR("FileEngine::openInputFile can't open input file '%s:%s'"
+                , _fileGroup->getName().c_str()
 				, _fileName.c_str()
 				);
 
@@ -262,35 +243,25 @@ namespace Mengine
 		return file;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterfacePtr FileEngine::openOutputFile( const ConstString & _name, const FilePath & _fileName )
+	OutputStreamInterfacePtr FileEngine::openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName )
 	{
-        FileGroupInterfacePtr group = this->getFileGroup( _name );
-
-        if( group == nullptr )
-        {
-            LOGGER_ERROR("FileEngine::openOutputFile can't get group '%s'"
-                , _name.c_str()
-                );
-
-            return nullptr;
-        }
-
-        OutputStreamInterfacePtr file = group->createOutputFile();
+        OutputStreamInterfacePtr file = _fileGroup->createOutputFile();
 
 		if( file == nullptr )
 		{
-			LOGGER_ERROR("FileEngine::openOutputFile can't create output file '%s'"
-				, _name.c_str()
+			LOGGER_ERROR("FileEngine::openOutputFile can't create output file '%s:%s'"
+                , _fileGroup->getName().c_str()
+                , _fileName.c_str()
 				);
 
 			return nullptr;
 		}
 
-		if( group->openOutputFile( _fileName, file ) == false )
+		if( _fileGroup->openOutputFile( _fileName, file ) == false )
 		{
-			LOGGER_ERROR("FileEngine::openOutputFile can't open output file '%s' '%s'"
-				, _name.c_str()
-				, _fileName.c_str()
+			LOGGER_ERROR("FileEngine::openOutputFile can't open output file '%s:%s'"
+                , _fileGroup->getName().c_str()
+                , _fileName.c_str()
 				);
 			
 			return nullptr;

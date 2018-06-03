@@ -3,6 +3,7 @@
 #include "Interface/LoaderInterface.h"
 #include "Interface/StreamInterface.h"
 #include "Interface/ArchiveInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Core/ServiceBase.h"
 
@@ -33,15 +34,15 @@ namespace Mengine
 		void setProtocolPath( const FilePath & _protocolPath ) override;
 
 	public:
-		bool load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const override;
-		bool validation( const ConstString & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const override;
+		bool load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const override;
+		bool validation( const FileGroupInterfacePtr & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const override;
 
 	private:
 		bool importBin_( const InputStreamInterfacePtr & _bin, Metabuf::Metadata * _metadata, bool * _reimport ) const;
-		bool openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const;
+		bool openBin_( const FileGroupInterfacePtr & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const;
 
 #ifndef MENGINE_MASTER_RELEASE
-		bool makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin ) const;
+		bool makeBin_( const FileGroupInterfacePtr & _pak, const FilePath & _pathXml, const FilePath & _pathBin ) const;
 #endif
 
     public:

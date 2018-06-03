@@ -12,11 +12,20 @@ namespace Mengine
 	ThreadTaskPrefetchDataflow::ThreadTaskPrefetchDataflow()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ThreadTaskPrefetchDataflow::~ThreadTaskPrefetchDataflow()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetchDataflow::setDataflowType( const ConstString & _dataflowType )
+	void ThreadTaskPrefetchDataflow::setDataflow( const DataflowInterfacePtr & _dataflow )
 	{
-		m_dataflowType = _dataflowType;
+		m_dataflow = _dataflow;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    const DataflowInterfacePtr & ThreadTaskPrefetchDataflow::getDataflow() const
+    {
+        return m_dataflow;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	const DataInterfacePtr & ThreadTaskPrefetchDataflow::getData() const
 	{
@@ -30,51 +39,24 @@ namespace Mengine
             return false;
         }
 
-		m_group = FILE_SERVICE()
-			->getFileGroup( m_pakName );
-
-		if( m_group == nullptr )
-		{
-			LOGGER_ERROR("ThreadTaskPrefetchDataflow::_onRun can't get group '%s'"
-				, m_pakName.c_str()
-				);
-
-			return false;
-		}
-
-		m_stream = m_group->createInputFile( m_filePath, false );
+		m_stream = m_fileGroup->createInputFile( m_filePath, false );
 
 		if( m_stream == nullptr )
 		{
 			LOGGER_ERROR("ThreadTaskPrefetchDataflow::_onRun can't create input file '%s'"
-				, m_pakName.c_str()
+                , this->getFileGroup()->getName().c_str()
 				);
 
 			return false;
 		}
 	
-		m_dataflow = DATA_SERVICE()
-			->getDataflow( m_dataflowType );
-			
-		if( m_dataflow == nullptr )
-		{
-			LOGGER_ERROR("ThreadTaskPrefetchDataflow::_onRun: '%s':'%s' invalide get dataflow '%s'"
-				, m_pakName.c_str()
-				, m_filePath.c_str()
-				, m_dataflowType.c_str()
-				);
-
-			return false;
-		}
-
 		m_data = m_dataflow->create();
 
 		if( m_data == nullptr )
 		{
-			LOGGER_ERROR("ThreadTaskPrefetchDataflow::_onRun: '%s':'%s' dataflow invalid create data '%s'"
-				, m_pakName.c_str()
-				, m_filePath.c_str()
-				, m_dataflowType.c_str()
+			LOGGER_ERROR("ThreadTaskPrefetchDataflow::_onRun: '%s':'%s' dataflow invalid create data"
+				, this->getFileGroup()->getName().c_str()
+				, this->getFilePath().c_str()
 				);
 
 			return false;
@@ -85,11 +67,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskPrefetchDataflow::_onMain()
 	{
-		if( m_group->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
+		if( m_fileGroup->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
 		{
 			LOGGER_ERROR("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide open file '%s':'%s'"
-				, m_pakName.c_str()
-				, m_filePath.c_str()
+                , this->getFileGroup()->getName().c_str()
+                , this->getFilePath().c_str()
 				);
 
 			return false;
@@ -98,8 +80,8 @@ namespace Mengine
 		if( m_dataflow->load( m_data, m_stream ) == false )
 		{
 			LOGGER_ERROR("ThreadTaskPrefetcherTextureDecoder::_onRun: invalide load file '%s':'%s'"
-				, m_pakName.c_str()
-				, m_filePath.c_str()
+                , this->getFileGroup()->getName().c_str()
+                , this->getFilePath().c_str()
 				);
 
 			return false;

@@ -32,7 +32,7 @@ namespace Mengine
 		m_factoryTextGlyph = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	BitmapGlyphPtr BitmapGlyphService::getGlyph( const ConstString & _category, const FilePath & _path )
+	BitmapGlyphPtr BitmapGlyphService::getGlyph( const FileGroupInterfacePtr & _category, const FilePath & _path )
 	{
 		TMapBitmapGlyph::iterator it_found = m_glyphs.find( _path );
 

@@ -3,6 +3,7 @@
 #include "tinyini/tinyini.h"
 
 #include "Interface/ServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 #include "Interface/StreamInterface.h"
 
 #include "Core/Params.h"
@@ -28,13 +29,12 @@ namespace Mengine
         struct IniStore
             : public tinyini::tinyini
         {
-            ConstString category;
             FilePath path;
 
             char buff[MENGINE_INI_BUFFER_SIZE];
         };
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const ConstString & _category, const FilePath & _path );
+        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _category, const FilePath & _path );
         bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input );
         //////////////////////////////////////////////////////////////////////////
         bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key );

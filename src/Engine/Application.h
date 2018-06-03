@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/ApplicationInterface.h"
-
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Core/Resolution.h"
@@ -38,7 +37,7 @@ namespace Mengine
 		bool getAllowFullscreenSwitchShortcut() const override;
 
 	public:
-		bool initializeGame( const ConstString & _category, const FilePath & _resourceIniPath ) override;
+		bool initializeGame( const FileGroupInterfacePtr & _category, const FilePath & _resourceIniPath ) override;
 
 	public:
 		void changeWindowResolution( const Resolution & _resolution ) override;

@@ -32,7 +32,7 @@ namespace Mengine
 		, const ConstString & _locale
 		, const Tags & _platform
 		, const FilePath & _descriptionPath
-		, const ConstString & _category
+		, const FileGroupInterfacePtr & _category
 		, const FilePath & _path
 		, bool _preload	)
 	{
@@ -115,7 +115,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::mountFileGroup_()
 	{	
-		if( FILE_SERVICE()->mountFileGroup( m_name, m_category, m_path, m_type ) == false )
+		if( FILE_SERVICE()
+            ->mountFileGroup( m_name, m_category, m_path, m_type ) == false )
 		{
 			LOGGER_ERROR("ResourcePak::mountFileGroup_ failed to mount pak '%s' path '%s'"
 				, m_name.c_str()
@@ -131,7 +132,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Package::unmountFileGroup_()
 	{
-		if( FILE_SERVICE()->unmountFileGroup( m_name ) == false )
+		if( FILE_SERVICE()
+            ->unmountFileGroup( m_name ) == false )
 		{
 			LOGGER_ERROR("ResourcePak::unmountFileGroup_ failed to mount pak '%s' path '%s'"
 				, m_name.c_str()

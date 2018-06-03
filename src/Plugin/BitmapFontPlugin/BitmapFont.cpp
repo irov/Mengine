@@ -21,7 +21,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool BitmapFont::initialize( const ConstString & _category, const IniUtil::IniStore & _ini )
+	bool BitmapFont::initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini )
 	{
 		m_category = _category;
 

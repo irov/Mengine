@@ -47,12 +47,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FileOutputStreamInterface> FileOutputStreamInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class FileGroupInterface> FileGroupInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class FileGroupInterface
         : public ServantInterface
     {	
     public:
-        virtual bool initialize( const ConstString & _name, const ConstString & _category, const FilePath & _path ) = 0;
+        virtual bool initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path ) = 0;
         virtual void finalize() = 0;
+
+    public:
+        virtual const ConstString & getName() = 0;
+        virtual const ConstString & getCategory() = 0;
 
     public:
 		virtual bool isPacked() const = 0;
@@ -89,19 +95,18 @@ namespace Mengine
 		virtual void unregisterFileGroupFactory( const ConstString & _type ) = 0;
 
     public:
-        virtual bool mountFileGroup( const ConstString & _name, const ConstString & _category, const FilePath & _path, const ConstString & _type ) = 0;
+        virtual bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type ) = 0;
         virtual bool unmountFileGroup( const ConstString & _name ) = 0;
 
     public:
         virtual bool hasFileGroup( const ConstString & _name, FileGroupInterfacePtr * _fileGroup ) const = 0;
-        virtual FileGroupInterfacePtr getFileGroup( const ConstString & _name ) const = 0;
+        virtual const FileGroupInterfacePtr & getFileGroup( const ConstString & _name ) const = 0;
+
+        virtual const FileGroupInterfacePtr & getDefaultFileGroup() const = 0;
 
 	public:
-		virtual bool existFile( const ConstString & _name, const FilePath & _fileName, FileGroupInterfacePtr * _fileGroup ) const = 0;
-
-	public:
-		virtual InputStreamInterfacePtr openInputFile( const ConstString & _name, const FilePath & _fileName, bool _streamable ) = 0;
-		virtual OutputStreamInterfacePtr openOutputFile( const ConstString & _name, const FilePath & _fileName ) = 0;
+		virtual InputStreamInterfacePtr openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, bool _streamable ) = 0;
+		virtual OutputStreamInterfacePtr openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define FILE_SERVICE()\

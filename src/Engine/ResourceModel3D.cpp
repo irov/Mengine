@@ -89,7 +89,7 @@ namespace Mengine
 			return false;
 		}
 
-		const ConstString & category = this->getCategory();
+		const FileGroupInterfacePtr & category = this->getCategory();
 
 		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( category, m_path, false );
@@ -146,7 +146,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceModel3D::_isValid() const
 	{
-		const ConstString & category = this->getCategory();
+		const FileGroupInterfacePtr & category = this->getCategory();
 
 		InputStreamInterfacePtr stream = FILE_SERVICE()
 			->openInputFile( category, m_path, false );

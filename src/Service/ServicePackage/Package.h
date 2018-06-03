@@ -21,7 +21,7 @@ namespace Mengine
 			, const ConstString & _locale
 			, const Tags & _platform
 			, const FilePath & _descriptionPath
-			, const ConstString & _category
+			, const FileGroupInterfacePtr & _category
 			, const FilePath & _path
 			, bool _preload
 			);
@@ -98,7 +98,7 @@ namespace Mengine
 		Tags m_platform;
 		FilePath m_descriptionPath;
 
-		ConstString m_category;
+		FileGroupInterfacePtr m_category;
 		FilePath m_path;
 
 		TVectorScriptModulePack m_scriptsPackages;

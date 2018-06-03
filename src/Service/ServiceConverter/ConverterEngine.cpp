@@ -98,7 +98,7 @@ namespace Mengine
 		return converter;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool ConverterEngine::convert( const ConstString & _converter, const ConstString & _category, const FilePath & _in, FilePath & _out )
+    bool ConverterEngine::convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out )
     {
         ConverterInterfacePtr converter = this->createConverter( _converter );
 
@@ -112,20 +112,8 @@ namespace Mengine
         }
 
         ConverterOptions options; 
-        options.pakName = _category;
+        options.fileGroup = _category;
         options.inputFileName = _in;
-
-
-        if( FILE_SERVICE()
-            ->hasFileGroup( _category, nullptr ) == false )
-        {
-            LOGGER_ERROR("ConverterEngine::convert: can't get file system '%s' for converter '%s'"
-                , _category.c_str()
-                , _converter.c_str()
-                );
-
-            return false;
-        }
 
         PathString cache_path;
 		
@@ -156,28 +144,26 @@ namespace Mengine
             return false;
         }
 
-        if( FILE_SERVICE()
-            ->existFile( options.pakName, options.inputFileName, nullptr ) == false )
+        if( options.fileGroup->existFile( options.inputFileName ) == false )
         {
             LOGGER_ERROR("ConverterEngine::convert: input file '%s:%s' not found"
-				, options.pakName.c_str()
+				, options.fileGroup->getName().c_str()
                 , options.inputFileName.c_str()
                 );
 
             return false;
         }
 
-        if( FILE_SERVICE()
-            ->existFile( options.pakName, options.outputFileName, nullptr ) == true )
+        if( options.fileGroup->existFile( options.outputFileName ) == true )
         {			
             InputStreamInterfacePtr oldFile = FILE_SERVICE()
-                ->openInputFile( options.pakName, options.inputFileName, false );
+                ->openInputFile( options.fileGroup, options.inputFileName, false );
 
             if( oldFile == nullptr )
             {
                 LOGGER_ERROR("ConverterEngine::convert '%s' can't open input file '%s:%s' (time)"
                     , _converter.c_str()
-					, options.pakName.c_str()
+					, options.fileGroup->getName().c_str()
                     , options.inputFileName.c_str()
                     );
 
@@ -190,13 +176,13 @@ namespace Mengine
             oldFile = nullptr;
 
             InputStreamInterfacePtr newFile = FILE_SERVICE()
-                ->openInputFile( options.pakName, options.outputFileName, false );
+                ->openInputFile( options.fileGroup, options.outputFileName, false );
 
             if( newFile == nullptr )
             {
                 LOGGER_ERROR("ConverterEngine::convert '%s' can't open output file '%s:%s' (time)"
                     , _converter.c_str()
-					, options.pakName.c_str()
+					, options.fileGroup->getName().c_str()
                     , options.outputFileName.c_str()
                     );
 
@@ -216,7 +202,7 @@ namespace Mengine
 				}
 
 				LOGGER_WARNING("ConverterEngine::convert invalid version '%s:%s'"
-					, options.pakName.c_str()
+					, options.fileGroup->getName().c_str()
 					, options.outputFileName.c_str()
 					);
             }
@@ -224,9 +210,9 @@ namespace Mengine
 
 		LOGGER_WARNING("ConverterEngine::convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
 			, _converter.c_str()
-			, options.pakName.c_str()
+			, options.fileGroup->getName().c_str()
 			, options.inputFileName.c_str()
-			, options.pakName.c_str()
+			, options.fileGroup->getName().c_str()
 			, options.outputFileName.c_str()
 			);
 
@@ -234,9 +220,9 @@ namespace Mengine
         {
             LOGGER_ERROR("ConverterEngine::convert can't convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
                 , _converter.c_str()
-				, options.pakName.c_str()
+				, options.fileGroup->getName().c_str()
                 , options.inputFileName.c_str()
-				, options.pakName.c_str()
+				, options.fileGroup->getName().c_str()
                 , options.outputFileName.c_str()
                 );
 

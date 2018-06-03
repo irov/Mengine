@@ -52,35 +52,26 @@ namespace Mengine
 			return false;
 		}
 
-		const ConstString & category = resourceMusic->getCategory();
+		const FileGroupInterfacePtr & category = resourceMusic->getCategory();
 		const FilePath & path = resourceMusic->getPath();
 		const ConstString & codec = resourceMusic->getCodec();
 		bool external = resourceMusic->isExternal();
 		float volume = resourceMusic->getVolume();
 
-		FileGroupInterfacePtr fileGroup = FILE_SERVICE()
-			->getFileGroup( category );
-
-		if( fileGroup == nullptr )
-		{
-			LOGGER_ERROR("Amplifier::playMusic can't found file group '%s'"
-				, category.c_str()
-				);
-
-			return false;
-		}
-
 		SoundBufferInterfacePtr buffer;
 
-		if( fileGroup->isPacked() == false || external == false )
+		if( category->isPacked() == false || external == false )
 		{
 			buffer = SOUND_SERVICE()
 				->createSoundBufferFromFile( category, path, codec, true );
 		}
 		else
 		{
+            const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
+                ->getDefaultFileGroup();
+
 			buffer = SOUND_SERVICE()
-				->createSoundBufferFromFile( ConstString::none(), path, codec, true );
+				->createSoundBufferFromFile( defaultFileGroup, path, codec, true );
 		}
 
 		if( buffer == nullptr )

@@ -48,7 +48,7 @@ namespace Mengine
 			return memoryBuffer;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryInterfacePtr createMemoryFile( const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line )
+		MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line )
 		{
 			InputStreamInterfacePtr fileStream = FILE_SERVICE()
 				->openInputFile( _category, _filePath, _stream );
@@ -118,7 +118,7 @@ namespace Mengine
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheFile( const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line )
 		{
 			InputStreamInterfacePtr stream = FILE_SERVICE()
 				->openInputFile( _category, _filePath, _stream );
@@ -138,7 +138,7 @@ namespace Mengine
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheFileString( const ConstString & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line )
 		{
 			InputStreamInterfacePtr stream = FILE_SERVICE()
 				->openInputFile( _category, _filePath, _stream );

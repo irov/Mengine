@@ -57,17 +57,17 @@ namespace Mengine
 		m_protocolPath = _protocolPath;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::load( const ConstString & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const
+	bool LoaderEngine::load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const
 	{
         LOGGER_INFO( "LoaderEngine::load pak '%s:%s'"
-            , _pak.c_str()
+            , _pak->getName().c_str()
             , _path.c_str()
             );
 
 		if( _path.empty() == true )
 		{
 			LOGGER_ERROR("LoaderEngine::import invalid open bin '%s' path is empty"
-				, _pak.c_str()
+				, _pak->getName().c_str()
 				);
 
 			return false;
@@ -77,7 +77,7 @@ namespace Mengine
 		if( this->openBin_( _pak, _path, file_bin, _exist ) == false )
 		{
             LOGGER_ERROR("LoaderEngine::import invalid open bin '%s':'%s'"
-                , _pak.c_str()
+                , _pak->getName().c_str()
                 , _path.c_str()
                 );
 
@@ -124,7 +124,7 @@ namespace Mengine
 		return done;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::validation( const ConstString & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const
+	bool LoaderEngine::validation( const FileGroupInterfacePtr & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const
 	{
 		InputStreamInterfacePtr stream =
 			FILE_SERVICE()->openInputFile( _pak, _path, false );
@@ -289,7 +289,7 @@ namespace Mengine
 	}
 #ifndef MENGINE_MASTER_RELEASE
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const
+	bool LoaderEngine::openBin_( const FileGroupInterfacePtr & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const
 	{
 		PathString cache_path_xml;		
 		cache_path_xml += _path;
@@ -297,17 +297,17 @@ namespace Mengine
         		
         FilePath c_cache_path_xml = Helper::stringizeFilePath( cache_path_xml );
         
-		if( FILE_SERVICE()->existFile( _pak, c_cache_path_xml, nullptr ) == false )
+		if( _pak->existFile( c_cache_path_xml ) == false )
 		{
-			if( FILE_SERVICE()->existFile( _pak, _path, nullptr ) == false )
+			if( _pak->existFile( _path ) == false )
 			{
 				_exist = false;
 
 				return false;
 			}
 
-			InputStreamInterfacePtr file_bin = 
-                FILE_SERVICE()->openInputFile( _pak, _path, false );
+			InputStreamInterfacePtr file_bin = FILE_SERVICE()
+                ->openInputFile( _pak, _path, false );
 
 			if( file_bin == nullptr )
 			{
@@ -321,7 +321,7 @@ namespace Mengine
 
 		_exist = true;
 
-		if( FILE_SERVICE()->existFile( _pak, _path, nullptr ) == false )
+		if( _pak->existFile( _path ) == false )
 		{
 			if( this->makeBin_( _pak, c_cache_path_xml, _path ) == false )
 			{
@@ -376,7 +376,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::makeBin_( const ConstString & _pak, const FilePath & _pathXml, const FilePath & _pathBin ) const
+	bool LoaderEngine::makeBin_( const FileGroupInterfacePtr & _pak, const FilePath & _pathXml, const FilePath & _pathBin ) const
 	{
 		XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
             ->createDecoderT<XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin") );
@@ -384,7 +384,7 @@ namespace Mengine
 		if( decoder == nullptr )
 		{
 			LOGGER_ERROR("LoaderEngine::makeBin_ invalid create decoder xml2bin for %s:%s"
-				, _pak.c_str()
+				, _pak->getName().c_str()
 				, _pathXml.c_str()
 				);
 
@@ -394,7 +394,7 @@ namespace Mengine
 		if( decoder->prepareData( nullptr ) == false )
 		{
 			LOGGER_ERROR("LoaderEngine::makeBin_ invalid initialize decoder xml2bin for %s:%s"
-				, _pak.c_str()
+				, _pak->getName().c_str()
 				, _pathXml.c_str()
 				);
 
@@ -403,36 +403,16 @@ namespace Mengine
 
 		XmlCodecOptions options;
         options.pathProtocol = m_protocolPath;
-		
-        FileGroupInterfacePtr fileGroup = FILE_SERVICE()
-            ->getFileGroup( _pak );
 
-        if( fileGroup == nullptr )
-        {
-            LOGGER_ERROR("LoaderEngine::makeBin_ invalid get file group %s (%s)"
-                , _pak.c_str()
-                , _pathXml.c_str()
-                );
+		const FilePath & folderPath = _pak->getFolderPath();
 
-            return false;
-        }
-
-		const FilePath & path = fileGroup->getFolderPath();
-
-		options.pathXml = Helper::concatenationFilePath( path, _pathXml );
-		options.pathBin = Helper::concatenationFilePath( path, _pathBin );
+		options.pathXml = Helper::concatenationFilePath( folderPath, _pathXml );
+		options.pathBin = Helper::concatenationFilePath( folderPath, _pathBin );
 
 		if( decoder->setOptions( &options ) == false )
         {
             return false;
         }
-
-		//if( decoder->initialize( 0 ) == false )
-		//{
-			//decoder->destroy();
-
-			//return false;
-		//}
 
 		if( decoder->decode( 0, 0 ) == 0 )
 		{
@@ -443,7 +423,7 @@ namespace Mengine
 	}
 #else
 	//////////////////////////////////////////////////////////////////////////
-	bool LoaderEngine::openBin_( const ConstString & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const
+	bool LoaderEngine::openBin_( const FileGroupInterfacePtr & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const
 	{
 		if( FILE_SERVICE()->existFile( _pak, _path, nullptr ) == false )
 		{
@@ -452,8 +432,8 @@ namespace Mengine
 			return false;
 		}
 
-		InputStreamInterfacePtr file_bin = 
-            FILE_SERVICE()->openInputFile( _pak, _path, false );
+		InputStreamInterfacePtr file_bin = FILE_SERVICE()
+            ->openInputFile( _pak, _path, false );
 
 		if( file_bin == nullptr )
 		{

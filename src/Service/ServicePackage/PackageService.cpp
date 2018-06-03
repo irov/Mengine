@@ -49,7 +49,7 @@ namespace Mengine
         m_factoryPackage = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PackageService::loadPackages( const ConstString & _fileGroup, const FilePath & _resourceIni )
+	bool PackageService::loadPackages( const FileGroupInterfacePtr & _fileGroup, const FilePath & _resourceIni )
 	{ 
         LOGGER_WARNING( "Packages load..."
         );

@@ -42,7 +42,7 @@ namespace Mengine
         m_filePath = metadata->get_File_Path();
 
         metadata->get_File_Codec( &m_codecType );
-        metadata->get_File_Converter( &m_converter );
+        metadata->get_File_Converter( &m_converterType );
 
         metadata->get_DefaultVolume_Value( &m_defaultVolume );
         metadata->get_IsStreamable_Value( &m_isStreamable );
@@ -62,7 +62,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_convert()
     {
-		bool result = this->convertDefault_( m_converter, m_filePath, m_filePath, m_codecType );
+		bool result = this->convertDefault_( m_converterType, m_filePath, m_filePath, m_codecType );
 
         return result;
     }
@@ -99,7 +99,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_isValid() const
     {
-        const ConstString & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, m_filePath, m_isStreamable );
@@ -108,9 +108,9 @@ namespace Mengine
         {
             LOGGER_ERROR("ResourceSound::_isValid: '%s' group %s can't open sound file '%s:%s'"
 				, this->getName().c_str()
-				, this->getGroup().c_str()
-                , category.c_str()
-                , m_filePath.c_str() 
+				, this->getGroupName().c_str()
+                , this->getCategory()->getName().c_str()
+                , this->getFilePath().c_str()
                 );
 
             return false;
@@ -123,9 +123,9 @@ namespace Mengine
         {
             LOGGER_ERROR("SoundEngine::_isValid: '%s' group '%s' can't create sound decoder for file '%s:%s'"
 				, this->getName().c_str()
-				, this->getGroup().c_str()
-                , category.c_str()
-                , m_filePath.c_str() 
+				, this->getGroupName().c_str()
+                , this->getCategory()->getName().c_str()
+                , this->getFilePath().c_str()
                 );
 
             return false;
@@ -135,9 +135,9 @@ namespace Mengine
 		{
 			LOGGER_ERROR("SoundEngine::_isValid: '%s' group '%s' can't initialize sound decoder for file '%s:%s'"
 				, this->getName().c_str()
-				, this->getGroup().c_str()
-				, category.c_str()
-				, m_filePath.c_str() 
+				, this->getGroupName().c_str()
+                , this->getCategory()->getName().c_str()
+                , this->getFilePath().c_str()
 				);
 
 			return false;
@@ -151,11 +151,11 @@ namespace Mengine
 		{
 			LOGGER_ERROR("SoundEngine::_isValid: '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"0\"/>"
 				, this->getName().c_str()
-				, this->getGroup().c_str()
+				, this->getGroupName().c_str()
 				, dataInfo->length
 				, limitMinimalStreamSoundDuration
-				, category.c_str()
-				, m_filePath.c_str()
+                , this->getCategory()->getName().c_str()
+                , this->getFilePath().c_str()
 				);
 
 			return false;
@@ -167,11 +167,11 @@ namespace Mengine
 		{
 			LOGGER_WARNING("SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
 				, this->getName().c_str()
-				, this->getGroup().c_str()
+				, this->getGroupName().c_str()
 				, dataInfo->length
 				, limitNoStreamSoundDurationWarning
-				, category.c_str()
-				, m_filePath.c_str()
+                , this->getCategory()->getName().c_str()
+                , this->getFilePath().c_str()
 				);
 		}
 
@@ -181,11 +181,11 @@ namespace Mengine
 		{
 			LOGGER_ERROR("SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
 				, this->getName().c_str()
-				, this->getGroup().c_str()
+				, this->getGroupName().c_str()
 				, dataInfo->length
 				, limitNoStreamSoundDurationError
-				, category.c_str()
-				, m_filePath.c_str()
+                , this->getCategory()->getName().c_str()
+                , this->getFilePath().c_str()
 				);
 
 			return false;
@@ -200,8 +200,8 @@ namespace Mengine
         {
             LOGGER_ERROR("SoundEngine::isValid '%s' group '%s' can't create buffer '%s'"
                 , this->getName().c_str()
-				, this->getGroup().c_str()
-                , m_filePath.c_str()
+				, this->getGroupName().c_str()
+                , this->getFilePath().c_str()
                 );
 
             return false;
@@ -217,7 +217,7 @@ namespace Mengine
 			return m_soundBufferNoStreamableCache;
 		}
 
-		const ConstString & category = this->getCategory();
+		const FileGroupInterfacePtr & category = this->getCategory();
 
 		SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE()
 			->createSoundBufferFromFile( category, m_filePath, m_codecType, m_isStreamable );
@@ -226,8 +226,8 @@ namespace Mengine
 		{
 			LOGGER_ERROR("ResourceSound::createSoundBuffer: '%s' group '%s' can't load sound '%s'"
 				, this->getName().c_str()
-				, this->getGroup().c_str()
-				, m_filePath.c_str()
+				, this->getGroupName().c_str()
+				, this->getFilePath().c_str()
 				);
 
 			return nullptr;

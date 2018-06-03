@@ -60,10 +60,10 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileGroupZip::initialize( const ConstString & _name, const ConstString & _category, const FilePath & _path )
+	bool FileGroupZip::initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path )
 	{
 		m_name = _name;
-		m_category = _category;
+        m_category = _category;
         m_path = _path;
 
 		if( this->loadHeader_() == false )
@@ -89,20 +89,7 @@ namespace Mengine
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupZip::loadHeader_()
-	{
-		FileGroupInterfacePtr zipFileGroup;
-		if( FILE_SERVICE()
-			->hasFileGroup( m_category, &zipFileGroup ) == false )
-		{
-			LOGGER_ERROR("FileSystemZip::loadHeader_ can't open file group for path %s"
-				, m_path.c_str()
-				);
-
-			return false;
-		}
-
-		m_zipFileGroup = zipFileGroup;
-		
+	{		
 		InputStreamInterfacePtr zipFile = FILE_SERVICE()
 			->openInputFile( m_category, m_path, false );
 
@@ -228,7 +215,7 @@ namespace Mengine
     {
         m_files.clear();
 
-        m_zipFileGroup = nullptr;
+        m_category = nullptr;
 		m_zipFile = nullptr;
 
         m_mutex = nullptr;
@@ -340,7 +327,7 @@ namespace Mengine
 			
 		if( _streaming == true )
 		{
-			InputStreamInterfacePtr stream = m_zipFileGroup->createInputFile( _fileName, true );
+			InputStreamInterfacePtr stream = m_category->createInputFile( _fileName, true );
 
 			return stream;
 		}
@@ -406,7 +393,7 @@ namespace Mengine
 				return false;
 			}
 
-			if( m_zipFileGroup->openInputFile( m_path, _stream, file_offset, file_size, true ) == false )
+			if( m_category->openInputFile( m_path, _stream, file_offset, file_size, true ) == false )
 			{
 				LOGGER_ERROR("FileGroupZip::openInputFile: pak %s file %s invalid open range %d:%d"
 					, m_path.c_str()

@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/FileSystemInterface.h"
 #include "Interface/RenderEnumInterface.h"
 
 #include "Factory/Factorable.h"
@@ -307,8 +308,8 @@ namespace Mengine
         SERVICE_DECLARE("RenderMaterialManager")
 
     public:
-        virtual bool loadMaterials( const ConstString& _pakName, const FilePath& _fileName ) = 0;
-		virtual bool unloadMaterials( const ConstString& _pakName, const FilePath& _fileName ) = 0;
+        virtual bool loadMaterials( const FileGroupInterfacePtr& _pakName, const FilePath& _fileName ) = 0;
+		virtual bool unloadMaterials( const FileGroupInterfacePtr& _pakName, const FilePath& _fileName ) = 0;
 
     public:
         virtual const RenderVertexShaderInterfacePtr & getVertexShader( const ConstString & _name ) const = 0;
@@ -365,7 +366,7 @@ namespace Mengine
         SERVICE_DECLARE("RenderTextureManager")
 
     public:
-        virtual RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codec ) = 0;
+        virtual RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr& _pakName, const FilePath& _fileName, const ConstString& _codec ) = 0;
 		virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height ) = 0;
 
     public:
@@ -373,15 +374,15 @@ namespace Mengine
         virtual RenderTextureInterfacePtr createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
         
 	public:
-        virtual RenderTextureInterfacePtr getTexture( const ConstString& _pakName, const FilePath & _fileName ) const = 0;
+        virtual RenderTextureInterfacePtr getTexture( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName ) const = 0;
         
-        virtual bool hasTexture( const ConstString& _pakName, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const = 0;
+        virtual bool hasTexture( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const = 0;
 
 	public:
 		virtual size_t getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const = 0;
 
     public:
-        virtual void cacheFileTexture( const ConstString& _pakName, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) = 0;
+        virtual void cacheFileTexture( const FileGroupInterfacePtr& _pakName, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) = 0;
 
     public:
         virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileGroupName, const ConstString & _codecName, const FilePath & _fileName ) = 0;

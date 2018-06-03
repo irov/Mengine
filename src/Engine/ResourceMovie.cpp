@@ -180,7 +180,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceMovie::_isValid: '%s' group '%s' m_frameDuration == 0.f"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
             );
 
             return false;
@@ -196,7 +196,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceMovie::isValid '%s' group '%s' invalid limit %d:%d size %d:%d"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
                 , limitMovieWidth
                 , limitMovieHeight
                 , width
@@ -224,7 +224,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "ResourceMovie::isValid '%s' group '%s' layer %s:%d invalid parent %d"
                     , this->getName().c_str()
-                    , this->getGroup().c_str()
+                    , this->getGroupName().c_str()
                     , layer.name.c_str()
                     , layer.index
                     , layer.parent
@@ -238,13 +238,13 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
             );
 
             return false;
         }
 
-        const ConstString & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, m_filePath, false );
@@ -253,7 +253,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid open file '%s'"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
                 , m_filePath.c_str()
             );
 
@@ -271,7 +271,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' you must determine codec for file '%s'"
                     , this->getName().c_str()
-                    , this->getGroup().c_str()
+                    , this->getGroupName().c_str()
                     , m_filePath.c_str()
                 );
 
@@ -303,7 +303,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer %d '%s' type '%s'"
                     , this->getName().c_str()
-                    , this->getGroup().c_str()
+                    , this->getGroupName().c_str()
                     , layer.index
                     , layer.name.c_str()
                     , layer.type.c_str()
@@ -320,7 +320,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer '%d' SceneEffect should not be threeD"
                         , this->getName().c_str()
-                        , this->getGroup().c_str()
+                        , this->getGroupName().c_str()
                         , layer.index
                     );
 
@@ -345,7 +345,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' immutable and scale %f:%f (please rescale on graphics editor and re-export)"
                             , this->getName().c_str()
-                            , this->getGroup().c_str()
+                            , this->getGroupName().c_str()
                             , layer.index
                             , layer.name.c_str()
                             , layer.type.c_str()
@@ -380,7 +380,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' minmax and scale %f:%f (please rescale on graphics editor and re-export)"
                             , this->getName().c_str()
-                            , this->getGroup().c_str()
+                            , this->getGroupName().c_str()
                             , layer.index
                             , layer.name.c_str()
                             , layer.type.c_str()
@@ -410,7 +410,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' permanently hide"
                         , this->getName().c_str()
-                        , this->getGroup().c_str()
+                        , this->getGroupName().c_str()
                         , layer.index
                         , layer.name.c_str()
                         , layer.type.c_str()
@@ -432,7 +432,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "ResourceMovie::isValid: '%s' group '%s' invalid layer '%d':'%s' type '%s' text '%s' not found"
                         , this->getName().c_str()
-                        , this->getGroup().c_str()
+                        , this->getGroupName().c_str()
                         , layer.index
                         , layer.name.c_str()
                         , layer.type.c_str()
@@ -730,7 +730,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "ResourceMovie: '%s' group '%s' can't setup layer2d '%s' type '%s'"
                     , this->getName().c_str()
-                    , this->getGroup().c_str()
+                    , this->getGroupName().c_str()
                     , layer.source.c_str()
                     , layer.type.c_str()
                 );
@@ -811,7 +811,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "ResourceMovie::_convert: '%s' group '%s' can't convert '%s':'%s'"
                     , this->getName().c_str()
-                    , this->getGroup().c_str()
+                    , this->getGroupName().c_str()
                     , c_xml_path.c_str()
                     , m_converterType.c_str()
                 );
@@ -829,7 +829,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "ResourceMovie::_convert: '%s' group '%s' you must determine codec for file '%s'"
                     , this->getName().c_str()
-                    , this->getGroup().c_str()
+                    , this->getGroupName().c_str()
                     , m_filePath.c_str()
                 );
 
@@ -851,13 +851,13 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
             );
 
             return false;
         }
 
-        const ConstString & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
         DataInterfacePtr data = this->compileData_( category, m_filePath );
 
@@ -865,7 +865,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceMovie::_compile: '%s' group '%s' can` t get frame pack '%s'"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
                 , m_filePath.c_str()
             );
 
@@ -877,7 +877,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr ResourceMovie::compileData_( const ConstString & _category, const FilePath & _path )
+    DataInterfacePtr ResourceMovie::compileData_( const FileGroupInterfacePtr & _category, const FilePath & _path )
     {
         DataInterfacePtr prefetch_data;
         if( PREFETCHER_SERVICE()
@@ -886,7 +886,7 @@ namespace Mengine
             return prefetch_data;
         }
 
-        const ConstString & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, _path, false );
@@ -895,7 +895,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceMovie::compileData_: '%s' group '%s' don`t open Frames Pack '%s'"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
                 , _path.c_str()
             );
 
@@ -909,7 +909,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceMovie::compileData_: '%s' group '%s' can` t find dataflow type '%s'"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
                 , m_dataflowType.c_str()
             );
 
@@ -923,7 +923,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceMovie::compileData_: '%s' group '%s' can` t dataflow '%s' from '%s'"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
                 , m_dataflowType.c_str()
                 , _path.c_str()
             );
@@ -947,7 +947,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceMovie::visitResourceMovie '%s' group '%s' not compile"
                 , this->getName().c_str()
-                , this->getGroup().c_str()
+                , this->getGroupName().c_str()
             );
         }
 

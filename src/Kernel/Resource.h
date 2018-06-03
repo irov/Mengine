@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/FileSystemInterface.h"
+
 #include "Kernel/Loadable.h"
 
 #include "Kernel/Servant.h"
@@ -42,11 +44,11 @@ namespace Mengine
 		void setLocale( const ConstString & _locale );
 		inline const ConstString & getLocale() const;
 
-		void setCategory( const ConstString & _category );
-		inline const ConstString & getCategory() const;
+		void setCategory( const FileGroupInterfacePtr & _category );
+		inline const FileGroupInterfacePtr & getCategory() const;
 
-		void setGroup( const ConstString & _group );
-		inline const ConstString & getGroup() const;
+		void setGroupName( const ConstString & _groupName );
+		inline const ConstString & getGroupName() const;
 
 	public:
 		bool initialize();
@@ -90,8 +92,8 @@ namespace Mengine
 
 	protected:       
 		ConstString m_locale;
-		ConstString m_category;
-		ConstString m_group;
+        FileGroupInterfacePtr m_category;
+		ConstString m_groupName;
 
 		bool m_cache;
 	};
@@ -103,14 +105,14 @@ namespace Mengine
 		return m_locale;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const ConstString & Resource::getCategory() const
+	inline const FileGroupInterfacePtr & Resource::getCategory() const
 	{
 		return m_category;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const ConstString & Resource::getGroup() const
+	inline const ConstString & Resource::getGroupName() const
 	{
-		return m_group;
+		return m_groupName;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline bool Resource::isCache() const

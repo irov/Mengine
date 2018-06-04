@@ -32,6 +32,7 @@ namespace Mengine
     {
     public:
         ScriptModuleFinder();
+        ~ScriptModuleFinder() override;
 
 	public:
 		bool initialize();
@@ -51,13 +52,13 @@ namespace Mengine
     protected:
         bool find_module_source_( PyObject * _module, const ScriptModuleLoaderPtr & _loader );
         bool find_module_code_( PyObject * _module, const ScriptModuleLoaderPtr & _loader );        
-		bool find_module_( PyObject * _module, const ScriptModuleLoaderPtr & _loader, const char * _ext, size_t _extN, const char * _init, size_t _extI );
+		bool find_module_( PyObject * _module, const ScriptModuleLoaderPtr & _loader, const char * _ext, uint32_t _extN, const Char * _init, uint32_t _extI );
 
     protected:
-        bool convertDotToSlash_( char * _cache, size_t _cacheSize, PyObject * _module, size_t & _modulePathCacheLen );
+        bool convertDotToSlash_( Char * _cache, uint32_t _cacheSize, PyObject * _module, uint32_t & _modulePathCacheLen );
 
 	protected:
-		bool findModule_( const char * _modulePath, size_t _modulePathLen, const ScriptModuleLoaderPtr & _loader ) const;
+		bool findModule_( const Char * _modulePath, uint32_t _modulePathLen, const ScriptModuleLoaderPtr & _loader ) const;
 
     protected:
 		PyObject * m_embed;

@@ -55,7 +55,7 @@ namespace Mengine
                     , _functionName
                 );
 
-                size_t count = LOGGER_SERVICE()
+                uint32_t count = LOGGER_SERVICE()
                     ->getCountMessage( LM_ERROR );
 
                 m_counts.emplace_back( count );
@@ -71,10 +71,10 @@ namespace Mengine
                     , _functionName
                 );
 
-                size_t count = LOGGER_SERVICE()
+                uint32_t count = LOGGER_SERVICE()
                     ->getCountMessage( LM_ERROR );
 
-                size_t last_count = m_counts.back();
+                uint32_t last_count = m_counts.back();
                 m_counts.pop_back();
 
                 if( last_count == count )
@@ -109,7 +109,7 @@ namespace Mengine
             }
 
         protected:
-            typedef std::vector<size_t> TVectorStackMsgCount;
+            typedef std::vector<uint32_t> TVectorStackMsgCount;
             TVectorStackMsgCount m_counts;
         };
     }

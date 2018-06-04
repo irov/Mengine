@@ -13,7 +13,7 @@ namespace Mengine
 		LoggerOperator & operator()( const Char * _format, ... );
 
 	public:
-		void logMessage( const Char * _format, size_t _size );
+		void logMessage( const Char * _format, uint32_t _size );
 
 	protected:
 		LoggerServiceInterface * m_log;

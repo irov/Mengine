@@ -25,14 +25,15 @@ namespace Mengine
 			if( resource == nullptr )
 			{
 				LOGGER_ERROR("ResourcePrototypeGenerator can't generate %s %s"
-					, m_category.c_str()
-					, m_prototype.c_str()
+					, this->getCategory().c_str()
+					, this->getPrototype().c_str()
 					);
 
 				return nullptr;
 			}
 
-			resource->setType( m_prototype );
+            const ConstString & prototype = this->getPrototype();
+			resource->setType( prototype );
 
             this->setupScriptable( resource );
 

@@ -17,6 +17,10 @@ namespace Mengine
         : m_embed(nullptr)
     {
     }
+    //////////////////////////////////////////////////////////////////////////
+    ScriptModuleFinder::~ScriptModuleFinder()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool ScriptModuleFinder::initialize()
 	{
@@ -167,9 +171,9 @@ namespace Mengine
 		return py_code;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptModuleFinder::convertDotToSlash_( char * _cache, size_t _cacheSize, PyObject * _module, size_t & _modulePathCacheLen )
+    bool ScriptModuleFinder::convertDotToSlash_( Char * _cache, uint32_t _cacheSize, PyObject * _module, uint32_t & _modulePathCacheLen )
     {
-		size_t module_size;
+        uint32_t module_size;
 		const char * module_str = pybind::string_to_char_and_size( _module, module_size );
 		
 		if( stdex::memorycopy_safe( _cache, 0, _cacheSize, module_str, module_size ) == false )
@@ -210,11 +214,11 @@ namespace Mengine
 		return successful;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptModuleFinder::find_module_( PyObject * _module, const ScriptModuleLoaderPtr & _loader, const char * _ext, size_t _extN, const char * _init, size_t _extI )
+    bool ScriptModuleFinder::find_module_( PyObject * _module, const ScriptModuleLoaderPtr & _loader, const Char * _ext, uint32_t _extN, const char * _init, uint32_t _extI )
     {
-		char modulePathCache[MENGINE_MAX_PATH];
+		Char modulePathCache[MENGINE_MAX_PATH];
         
-		size_t modulePathCacheLen;
+        uint32_t modulePathCacheLen;
 		if( this->convertDotToSlash_( modulePathCache, MENGINE_MAX_PATH, _module, modulePathCacheLen ) == false )
 		{
 			return false;
@@ -244,7 +248,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptModuleFinder::findModule_( const char * _modulePath, size_t _modulePathLen, const ScriptModuleLoaderPtr & _loader ) const
+    bool ScriptModuleFinder::findModule_( const Char * _modulePath, uint32_t _modulePathLen, const ScriptModuleLoaderPtr & _loader ) const
     {
         for( const ModulePathes & mp : m_modulePaths )
         {

@@ -26,7 +26,7 @@ namespace Mengine
 			return pybind::ret_none();
 		}
 
-        size_t tuple_size = pybind::tuple_size(_args);
+        uint32_t tuple_size = pybind::tuple_size(_args);
 
         if( tuple_size == 0 )
         {
@@ -37,14 +37,14 @@ namespace Mengine
 
         if( pybind::string_check( arg ) == true )
         {
-            size_t size;
+            uint32_t size;
             const char * str = pybind::string_to_char_and_size( arg, size );
 
             this->write( str, size );
         }
         else if( pybind::unicode_check( arg ) == true )
 		{
-            size_t size;
+            uint32_t size;
 			const char * utf8 = pybind::unicode_to_utf8_and_size( arg, size );
 
 			this->write( utf8, size );
@@ -53,7 +53,7 @@ namespace Mengine
 		return pybind::ret_none();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ScriptLogger::write( const char * _msg, size_t _size )
+	void ScriptLogger::write( const char * _msg, uint32_t _size )
 	{		
 		LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), m_level ).logMessage( _msg, _size );
 	}

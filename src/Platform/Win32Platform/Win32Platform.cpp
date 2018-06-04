@@ -99,7 +99,7 @@ namespace Mengine
 		m_hInstance = GetModuleHandle( NULL );
 
         constexpr HashType hash = Helper::makeHash( "IDC_ARROW", (sizeof( "IDC_ARROW" ) - 1) );
-        Mengine::Helper::stringizeStringSizeHash( "IDC_ARROW", (sizeof( "IDC_ARROW" ) - 1), hash );
+        Helper::stringizeStringSizeHash( "IDC_ARROW", (sizeof( "IDC_ARROW" ) - 1), hash );
     
         STRINGIZE_STRING_LOCAL( "IDC_ARROW" );
 

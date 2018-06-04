@@ -56,7 +56,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerEngine::logMessage( EMessageLevel _level, uint32_t _flag, const char * _message, size_t _size  )
+	void LoggerEngine::logMessage( EMessageLevel _level, uint32_t _flag, const char * _message, uint32_t _size  )
 	{
 		++m_countMessage[_level];
 
@@ -71,7 +71,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	size_t LoggerEngine::getCountMessage( Mengine::EMessageLevel _level )
+    uint32_t LoggerEngine::getCountMessage( EMessageLevel _level )
 	{
 		size_t count = m_countMessage[_level];
 

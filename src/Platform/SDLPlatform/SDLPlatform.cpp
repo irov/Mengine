@@ -937,7 +937,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createWindow_( const Resolution & _resolution, bool _fullscreen )
     {
-        Mengine::Char utf8Title[1024] = { 0 };
+        Char utf8Title[1024] = { 0 };
         Helper::unicodeToUtf8( m_projectTitle, utf8Title, 1024 );
 
         //SDL_GL_SetAttribute( SDL_GL_DOUBLEBUFFER, 1 );

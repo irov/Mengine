@@ -56,8 +56,8 @@ namespace Mengine
 		virtual bool validMessage( EMessageLevel _level, uint32_t _flag ) const = 0;
 
 	public:
-		virtual void logMessage( Mengine::EMessageLevel _level, uint32_t _flag, const Char * _message, size_t _size  ) = 0;
-		virtual size_t getCountMessage( Mengine::EMessageLevel _level ) = 0;
+		virtual void logMessage( EMessageLevel _level, uint32_t _flag, const Char * _message, uint32_t _size  ) = 0;
+		virtual uint32_t getCountMessage( EMessageLevel _level ) = 0;
 
 	public:
 		virtual bool registerLogger( const LoggerInterfacePtr & _logger ) = 0;

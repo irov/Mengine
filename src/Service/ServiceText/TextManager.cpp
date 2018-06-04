@@ -144,7 +144,7 @@ namespace Mengine
                     }
                     else
                     {
-						text = Mengine::String( str_value, str_value_size );
+						text = String( str_value, str_value_size );
                     }
                 }
                 else if( strcmp( str_key, "Font" ) == 0 )

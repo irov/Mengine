@@ -51,7 +51,7 @@ namespace boost
 				: boost::mpl::int_<2>
 			{};
 
-			template<uint32_t Dimension>
+			template<size_t Dimension>
 			struct access<mt::vec2f, Dimension >
 			{
 				static inline float get( mt::vec2f const& p )

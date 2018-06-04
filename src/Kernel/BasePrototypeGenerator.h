@@ -24,6 +24,8 @@ namespace Mengine
         ~BasePrototypeGenerator() override;
 
     protected:
+        inline const ConstString & getCategory() const;
+        inline const ConstString & getPrototype() const;
         inline const FactoryPtr & getFactory() const;
 
 	protected:
@@ -44,6 +46,16 @@ namespace Mengine
 
         FactoryPtr m_factory;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    inline const ConstString & BasePrototypeGenerator::getCategory() const
+    {
+        return m_category;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline const ConstString & BasePrototypeGenerator::getPrototype() const
+    {
+        return m_prototype;
+    }
     //////////////////////////////////////////////////////////////////////////
     inline const FactoryPtr & BasePrototypeGenerator::getFactory() const
     {

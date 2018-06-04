@@ -427,7 +427,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::openBin_( const FileGroupInterfacePtr & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const
 	{
-		if( FILE_SERVICE()->existFile( _pak, _path, nullptr ) == false )
+        if( _pak->existFile( _path ) == false )
 		{
 			_exist = false;
 

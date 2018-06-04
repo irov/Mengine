@@ -60,7 +60,7 @@ namespace Mengine
         return *this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void LoggerOperator::logMessage( const Char * _format, size_t _size )
+	void LoggerOperator::logMessage( const Char * _format, uint32_t _size )
 	{
 		m_log->logMessage( m_level, m_flag, _format, _size );
 	}

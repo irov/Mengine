@@ -1371,7 +1371,7 @@ namespace Mengine
         this->addRenderObject( _state, _material, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertex2D * RenderEngine::getDebugRenderVertex2D( size_t _count )
+    RenderVertex2D * RenderEngine::getDebugRenderVertex2D( uint32_t _count )
     {
         m_debugVertices.emplace_back( TArrayRenderVertex2D() );
         TArrayRenderVertex2D & vertices_array = m_debugVertices.back();

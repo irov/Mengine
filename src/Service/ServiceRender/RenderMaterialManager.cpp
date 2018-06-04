@@ -432,7 +432,7 @@ namespace Mengine
 		{
 			const Metacode::Meta_Data::Meta_DataBlock::Meta_Material & meta_Material = *it;
 
-			const Mengine::ConstString & name = meta_Material.get_Name();
+			const ConstString & name = meta_Material.get_Name();
 
 			ConstString renderPlatform;
 			if( meta_Material.get_RenderPlatform( &renderPlatform ) == true )
@@ -637,7 +637,7 @@ namespace Mengine
 		{
 			const Metacode::Meta_Data::Meta_DataBlock::Meta_Material & meta_Material = *it;
 
-			const Mengine::ConstString & name = meta_Material.get_Name();
+			const ConstString & name = meta_Material.get_Name();
 
 			m_materialStageIndexer.erase( name );
 		}

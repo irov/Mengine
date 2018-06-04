@@ -155,7 +155,7 @@ namespace Mengine
         const RenderPassPtr & requestRenderPass_( const RenderContext * _state, const RenderMaterialInterfacePtr & _material, uint32_t _vertexCount, uint32_t _indexCount );
 
 	public:
-		RenderVertex2D * getDebugRenderVertex2D( size_t _count ) override;
+		RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) override;
 
 	public:
 		void setBatchMode( ERenderBatchMode _mode ) override;

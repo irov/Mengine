@@ -115,7 +115,7 @@ namespace Mengine
 		Win32MouseEvent m_mouseEvent;
 
         uint32_t m_icon;
-        Mengine::WString m_projectTitle;
+        WString m_projectTitle;
 
 		Tags m_platformTags;
 		Resolution m_windowResolution;

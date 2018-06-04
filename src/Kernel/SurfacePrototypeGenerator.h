@@ -27,14 +27,15 @@ namespace Mengine
 			if( surface == nullptr )
 			{
 				LOGGER_ERROR("NodePrototypeGenerator::generate can't generate %s %s"
-					, m_category.c_str()
-					, m_prototype.c_str()
+					, this->getCategory().c_str()
+					, this->getPrototype().c_str()
 					);
 
 				return nullptr;
 			}
 
-			surface->setType( m_prototype );
+            const ConstString & prototype = this->getPrototype();
+			surface->setType( prototype );
 
             this->setupScriptable( surface );
 

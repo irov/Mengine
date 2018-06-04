@@ -221,14 +221,25 @@ namespace Mengine
 			return true;
 		}
 
-		PackagePtr package = m_factoryPackage->createObject();
+        FileGroupInterfacePtr category;
+        if( FILE_SERVICE()
+            ->hasFileGroup( _desc.category, &category ) == false )
+        {
+            LOGGER_ERROR( "PackageService::addPackage invalid found file group %s"
+                , _desc.category.c_str()
+            );
 
+            return false;
+        }
+
+		PackagePtr package = m_factoryPackage->createObject();
+        
 		package->setup( _desc.name
 			, _desc.type
 			, _desc.locale
 			, _desc.platform
 			, _desc.descriptionPath
-			, _desc.category
+			, category
 			, _desc.path
 			, _desc.preload
 			);

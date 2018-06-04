@@ -1,6 +1,6 @@
-#	pragma once
+#pragma once
 
-#	include "ThreadTaskCurl.h"
+#include "ThreadTaskCurl.h"
 
 namespace Mengine
 {

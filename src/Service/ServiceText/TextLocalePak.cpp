@@ -18,18 +18,18 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TextLocalePack::initialize( const ConstString & _pakName, const FilePath & _path )
+	bool TextLocalePack::initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
 	{
-		m_pakName = _pakName;
+		m_fileGroup = _fileGroup;
 		m_path = _path;
 
 		InputStreamInterfacePtr xml_text = FILE_SERVICE()
-			->openInputFile( _pakName, _path, false );
+			->openInputFile( _fileGroup, _path, false );
 
 		if( xml_text == nullptr )
 		{
 			LOGGER_ERROR("TextManager::loadResource invalid open file %s:%s"
-				, _pakName.c_str()
+				, _fileGroup->getName().c_str()
 				, _path.c_str()
 				);
 
@@ -49,9 +49,9 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ConstString & TextLocalePack::getPackName() const
+	const FileGroupInterfacePtr & TextLocalePack::getFileGroup() const
 	{
-		return m_pakName;
+		return m_fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const FilePath & TextLocalePack::getPath() const

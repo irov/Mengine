@@ -15,18 +15,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DecoderRenderImageLoader::initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecName )
+    bool DecoderRenderImageLoader::initialize( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName )
     {
         ImageDecoderInterfacePtr decoder;
         if( PREFETCHER_SERVICE()
-            ->getImageDecoder( _pakName, _fileName, decoder ) == false )
+            ->getImageDecoder( _fileGroup, _fileName, decoder ) == false )
         {
-            decoder = this->createImageDecoder_( _pakName, _fileName, _codecName );
+            decoder = this->createImageDecoder_( _fileGroup, _fileName, _codecName );
 
             if( decoder == nullptr )
             {
                 LOGGER_ERROR("DecoderRenderImageProviderInterface::getImageMemory invalid create decoder '%s':'%s' codec '%s'"
-                    , _pakName.c_str()
+                    , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , _codecName.c_str()
                     );
@@ -39,7 +39,7 @@ namespace Mengine
             if( decoder->rewind() == false )
             {
                 LOGGER_ERROR("DecoderRenderImageProviderInterface::loadTexture invalid rewind decoder '%s':'%s' codec '%s'"
-                    , _pakName.c_str()
+                    , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , _codecName.c_str()
                     );
@@ -155,15 +155,15 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecName ) const
+    ImageDecoderInterfacePtr DecoderRenderImageLoader::createImageDecoder_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName ) const
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _pakName, _fileName, false );
+            ->openInputFile( _fileGroup, _fileName, false );
 
         if( stream == nullptr )
         {
             LOGGER_ERROR("DecoderRenderImageProviderInterface::createImageDecoder_ invalid open stream '%s:%s' codec '%s'"
-                , _pakName.c_str()
+                , _fileGroup->getName().c_str()
                 , _fileName.c_str()
                 , _codecName.c_str()
                 );
@@ -177,7 +177,7 @@ namespace Mengine
         if( decoder == nullptr )
         {
             LOGGER_ERROR("DecoderRenderImageProviderInterface::createImageDecoder_ invalid create decoder '%s:%s' codec '%s'"
-                , _pakName.c_str()
+                , _fileGroup->getName().c_str()
                 , _fileName.c_str()
                 , _codecName.c_str()
                 );
@@ -188,7 +188,7 @@ namespace Mengine
         if( decoder->prepareData( stream ) == false )
         {
             LOGGER_ERROR("DecoderRenderImageProviderInterface::createImageDecoder_ invalid prepare data '%s:%s' codec '%s'"
-                , _pakName.c_str()
+                , _fileGroup->getName().c_str()
                 , _fileName.c_str()
                 , _codecName.c_str()
                 );

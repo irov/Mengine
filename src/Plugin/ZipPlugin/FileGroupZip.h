@@ -19,6 +19,10 @@ namespace Mengine
 	public:
 		bool initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path ) override;
 		void finalize() override;
+
+    public:
+        const ConstString & getName() const override;
+        const FileGroupInterfacePtr & getCategory() const override;
 		
     public:
 		bool isPacked() const override;

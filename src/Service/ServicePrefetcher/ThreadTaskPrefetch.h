@@ -17,6 +17,10 @@ namespace Mengine
 	
 	public:
 		void initialize( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, const PrefetcherObserverInterfacePtr & _observer );
+        
+    public:
+        inline const FilePath & getFilePath() const;
+        inline const FileGroupInterfacePtr & getFileGroup() const;        
 
 	protected:
         void _onPreparation() override;
@@ -24,9 +28,7 @@ namespace Mengine
         void _onCancel() override;
 		void _onComplete( bool _successful ) override;
 		
-	public:
-		inline const FileGroupInterfacePtr & getFileGroup() const;
-		inline const FilePath & getFilePath() const;
+
 		
 	protected:
 		FilePath m_filePath;
@@ -36,15 +38,15 @@ namespace Mengine
 		InputStreamInterfacePtr m_stream;
         PrefetcherObserverInterfacePtr m_observer;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    inline const FilePath & ThreadTaskPrefetch::getFilePath() const
+    {
+        return m_filePath;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	inline const FileGroupInterfacePtr & ThreadTaskPrefetch::getFileGroup() const
 	{
 		return m_fileGroup;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline const FilePath & ThreadTaskPrefetch::getFilePath() const
-	{
-		return m_filePath;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<ThreadTaskPrefetch> ThreadTaskPrefetchPtr;

@@ -6,6 +6,8 @@
 
 #include "Factory/FactoryPool.h"
 
+#include "Logger/Logger.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PrefetcherService, Mengine::PrefetcherManager );
 //////////////////////////////////////////////////////////////////////////
@@ -125,7 +127,7 @@ namespace Mengine
 
 		new_receiver.prefetcher = task;
 
-		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup, _filePath ), new_receiver ) );
+		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup->getName(), _filePath ), new_receiver ) );
 
 		m_threadQueue->addTask( task );
 
@@ -200,7 +202,7 @@ namespace Mengine
 
 		new_receiver.prefetcher = task;
 				
-		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup, _filePath ), new_receiver ) );
+		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup->getName(), _filePath ), new_receiver ) );
 
 		m_threadQueue->addTask( task );
 
@@ -278,7 +280,7 @@ namespace Mengine
         if( dataflow == nullptr )
         {
             LOGGER_ERROR( "PrefetcherManager::prefetchData: '%s':'%s' invalide get dataflow '%s'"
-                , _fileGroup.c_str()
+                , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , _dataflowType.c_str()
             );
@@ -290,7 +292,7 @@ namespace Mengine
 
 		new_receiver.prefetcher = task;
 
-		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup, _filePath ), new_receiver ) );
+		m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup->getName(), _filePath ), new_receiver ) );
 
 		m_threadQueue->addTask( task );
 
@@ -336,7 +338,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void PrefetcherManager::unfetch( const FileGroupInterfacePtr& _fileGroup, const FilePath& _filePath )
 	{
-		TMapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup, _filePath ) );
+		TMapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
 		if( it_found == m_prefetchReceiver.end() )
 		{
@@ -373,7 +375,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::hasPrefetch( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
 	{ 
-		TMapPrefetchReceiver::const_iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup, _filePath ) );
+        TMapPrefetchReceiver::const_iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
 		if( it_found == m_prefetchReceiver.end() )
 		{

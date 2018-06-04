@@ -26,8 +26,8 @@ namespace Mengine
 	protected:
 		FileGroupInterfacePtr createFileGroup( const ConstString & _type );
 
-	public:	// FileEngine Interface
-		bool mountFileGroup( const ConstString& _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type ) override;
+	public:
+		bool mountFileGroup( const ConstString& _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup ) override;
 		bool unmountFileGroup( const ConstString& _name ) override;
 
     public:

@@ -1,12 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/HttpSystemInterface.h"
+#include "Interface/HttpSystemInterface.h"
 
-#	include "Core/ServiceBase.h"
+#include "Core/ServiceBase.h"
 
-#	include "Factory/Factory.h"
+#include "Factory/Factory.h"
 
-#	include "Kernel/ThreadTask.h"
+#include "Kernel/ThreadTask.h"
 
 namespace Mengine
 {
@@ -28,7 +28,7 @@ namespace Mengine
         HttpRequestID headerData( const String & _url, const TVectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver ) override;
 
     protected:
-        HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver ) override;
+        HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver ) override;
 
     protected:
         bool cancelRequest( HttpRequestID _id ) override;

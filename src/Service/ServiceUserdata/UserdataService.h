@@ -21,7 +21,7 @@ namespace Mengine
 		void _finalizeService() override;
 
 	public:
-		bool addUserdata( const ConstString & _name, const ConstString & _category, const FilePath & _path ) override;
+		bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path ) override;
 		bool removeUserdata( const ConstString & _name ) override;
 		bool hasUserdata( const ConstString & _name ) const override;
 
@@ -34,7 +34,7 @@ namespace Mengine
 
 		struct UserdataDesc
 		{
-			ConstString category;
+            FileGroupInterfacePtr category;
 			FilePath path;
 		};
 

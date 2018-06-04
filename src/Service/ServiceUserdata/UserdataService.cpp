@@ -1,7 +1,6 @@
 #include "UserdataService.h"
 
 #include "Interface/StringizeInterface.h"
-#include "Interface/FileSystemInterface.h"
 
 #include "Logger/Logger.h"
 
@@ -23,13 +22,15 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool UserdataService::_initializeService()
 	{
-		m_archivator = ARCHIVE_SERVICE()
+        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
 			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-		if( m_archivator == nullptr )
+		if( archivator == nullptr )
 		{
 			return false;
 		}
+
+        m_archivator = archivator;
 
 		return true;
 	}
@@ -38,7 +39,7 @@ namespace Mengine
 	{			
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool UserdataService::addUserdata( const ConstString & _name, const ConstString & _category, const FilePath & _path )
+	bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path )
 	{
 		TMapDatas::const_iterator it_found = m_datas.find( _name );
 
@@ -85,8 +86,7 @@ namespace Mengine
 
 		const UserdataDesc & desc = it_found->second;
 
-		if( FILE_SERVICE()
-			->existFile( desc.category, desc.path, nullptr ) == false )
+        if( desc.category->existFile( desc.path ) == false )
 		{
 			return false;
 		}

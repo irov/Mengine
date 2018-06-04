@@ -26,7 +26,7 @@ namespace Mengine
 	{
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool ImageConverterPVRToHTF::initialize()
+	bool ImageConverterPVRToHTF::_initialize()
 	{
         m_convertExt = ".htf";
 
@@ -35,23 +35,13 @@ namespace Mengine
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool ImageConverterPVRToHTF::convert()
 	{
-        FileGroupInterfacePtr fileGroup;
-        if( FILE_SERVICE()->hasFileGroup( m_options.fileGroup, &fileGroup ) == false )
-        {
-            LOGGER_ERROR("ImageConverterPVRToHTF::convert_: not found file group '%s'"
-                , m_options.fileGroup.c_str()
-                );
-
-            return false;
-        }
-
-        const FilePath & pakPath = fileGroup->getFolderPath();
+        const FilePath & pakPath = m_options.fileGroup->getFolderPath();
 
 		FilePath full_input = Helper::concatenationFilePath( pakPath, m_options.inputFileName );
 		FilePath full_output = Helper::concatenationFilePath( pakPath, m_options.outputFileName );
 		        
         InputStreamInterfacePtr stream_intput = FILE_SERVICE()
-            ->openInputFile( STRINGIZE_STRING_LOCAL( "dev" ), full_input, false );
+            ->openInputFile( m_fileGroup, full_input, false );
 
 		if( stream_intput == nullptr )
 		{
@@ -143,7 +133,7 @@ namespace Mengine
 		}
 
         OutputStreamInterfacePtr stream_output = FILE_SERVICE()
-            ->openOutputFile( STRINGIZE_STRING_LOCAL( "dev" ), full_output );
+            ->openOutputFile( m_fileGroup, full_output );
 
 		if( stream_output == nullptr )
 		{

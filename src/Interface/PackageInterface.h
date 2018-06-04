@@ -19,7 +19,7 @@ namespace Mengine
 		ConstString locale;
 		Tags platform;
 
-		ConstString category;
+        ConstString category;
 		FilePath descriptionPath;
 		FilePath path;
 

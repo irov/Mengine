@@ -38,7 +38,7 @@ namespace Mengine
 		void setFTLibrary( FT_Library _library );
 
 	public:
-		bool initialize( const ConstString & _category, const IniUtil::IniStore & _ini ) override;
+		bool initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini ) override;
 
 	protected:
 		bool _compile() override;
@@ -70,7 +70,7 @@ namespace Mengine
 		FT_Library m_ftlibrary;
 		FT_Face m_face;
 
-		ConstString m_category;
+        FileGroupInterfacePtr m_category;
 		FilePath m_ttfPath;
         
         float m_ttfAscender;

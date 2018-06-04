@@ -17,6 +17,8 @@ namespace Mengine
 
 	public:
 		void setImageCodec( const ConstString & _codec );
+        const ConstString & getImageCodec() const;
+
 		
 	public:
 		const ImageDecoderInterfacePtr & getDecoder() const;
@@ -26,7 +28,7 @@ namespace Mengine
 		bool _onMain() override;
 
 	protected:
-		ConstString m_codec;
+		ConstString m_imageCodec;
 				
 	protected:
 		ImageDecoderInterfacePtr m_imageDecoder;

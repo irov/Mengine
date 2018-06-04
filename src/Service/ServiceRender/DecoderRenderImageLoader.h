@@ -18,7 +18,7 @@ namespace Mengine
         ~DecoderRenderImageLoader() override;
 
     public:
-        bool initialize( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecName );
+        bool initialize( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName );
 
     protected:
         RenderImageDesc getImageDesc() const override;
@@ -27,7 +27,7 @@ namespace Mengine
         bool load( const RenderImageInterfacePtr & _image ) const override;
 
     protected:
-        ImageDecoderInterfacePtr createImageDecoder_( const ConstString& _pakName, const FilePath & _fileName, const ConstString & _codecName ) const;
+        ImageDecoderInterfacePtr createImageDecoder_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName ) const;
         
     protected:
         ImageDecoderInterfacePtr m_decoder;

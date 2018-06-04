@@ -13,6 +13,12 @@ namespace Mengine
 		DevelopmentConverter();
 		~DevelopmentConverter() override;
 
+    private:
+        bool initialize() override;
+
+    protected:
+        virtual bool _initialize() = 0;
+
 	public:
 		const String & getConvertExt() const override;
 
@@ -23,6 +29,8 @@ namespace Mengine
 		bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
 
 	protected:
+        FileGroupInterfacePtr m_fileGroup;
+
 		ConverterOptions m_options;
 
 		String m_convertExt;

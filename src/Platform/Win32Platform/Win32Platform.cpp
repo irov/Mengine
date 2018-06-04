@@ -1157,8 +1157,11 @@ namespace Mengine
             
             FilePath c_icoFile = Helper::stringizeFilePath( icoFile );
 
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
             OutputStreamInterfacePtr stream = FILE_SERVICE()
-				->openOutputFile( STRINGIZE_STRING_LOCAL( "user" ), c_icoFile );
+				->openOutputFile( fileGroup, c_icoFile );
 
             if( stream == nullptr )
 			{

@@ -88,13 +88,25 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool XmlToBinDecoder::initialize()
 	{
-		m_archivator = ARCHIVE_SERVICE()
+        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
 			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
-		if( m_archivator == nullptr )
+		if( archivator == nullptr )
 		{
 			return false;
 		}
+
+        m_archivator = archivator;
+
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
+
+        if( fileGroup == nullptr )
+        {
+            return false;
+        }
+
+        m_fileGroup = fileGroup;
 
 		return true;
 	}
@@ -122,7 +134,7 @@ namespace Mengine
             );
 
         InputStreamInterfacePtr protocol_stream = FILE_SERVICE()
-            ->openInputFile( STRINGIZE_STRING_LOCAL( "dev" ), m_options.pathProtocol, false );
+            ->openInputFile( m_fileGroup, m_options.pathProtocol, false );
 
         if( protocol_stream == nullptr )
         {
@@ -162,7 +174,7 @@ namespace Mengine
         }
         	
         InputStreamInterfacePtr xml_stream = FILE_SERVICE()
-            ->openInputFile( STRINGIZE_STRING_LOCAL( "dev"), m_options.pathXml, false );
+            ->openInputFile( m_fileGroup, m_options.pathXml, false );
 
         if( xml_stream == nullptr )
         {
@@ -246,7 +258,7 @@ namespace Mengine
 		}
 
         OutputStreamInterfacePtr bin_stream = FILE_SERVICE()
-            ->openOutputFile( STRINGIZE_STRING_LOCAL( "dev"), m_options.pathBin );
+            ->openOutputFile( m_fileGroup, m_options.pathBin );
 
         if( bin_stream == nullptr )
         {

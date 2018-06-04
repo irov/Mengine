@@ -31,13 +31,15 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool LoaderEngine::_initializeService()
 	{
-		m_archivator = ARCHIVE_SERVICE()
+        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
 			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
-		if( m_archivator == nullptr )
+		if( archivator == nullptr )
 		{
 			return false;
 		}
+
+        m_archivator = archivator;
 
 		m_protocolPath = CONFIG_VALUE( "Engine", "ProtocolPath", STRINGIZE_FILEPATH_LOCAL( "protocol.xml" ) );
 

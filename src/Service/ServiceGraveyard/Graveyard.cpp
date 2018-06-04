@@ -103,7 +103,7 @@ namespace Mengine
 			return false;
 		}
 
-		const ConstString & category = _texture->getCategory();
+		const FileGroupInterfacePtr & category = _texture->getCategory();
 		const FilePath & filePath = _texture->getFileName();
 
 		if( filePath.empty() == true )
@@ -139,8 +139,8 @@ namespace Mengine
 		class FGraveyardFind
 		{
 		public:
-			FGraveyardFind( const ConstString& _pakName, const FilePath & _filePath )
-				: m_pakName(_pakName)
+			FGraveyardFind( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath )
+				: m_fileGroup(_fileGroup)
 				, m_filePath(_filePath)
 			{
 			}
@@ -148,7 +148,7 @@ namespace Mengine
 		public:
 			bool operator() ( const RenderTextureGraveEntry & _entry )
 			{
-				if( _entry.category != m_pakName )
+				if( _entry.category != m_fileGroup )
 				{
 					return false;
 				}
@@ -168,12 +168,12 @@ namespace Mengine
 			}
 
 		protected:
-			const ConstString& m_pakName;
+            const FileGroupInterfacePtr& m_fileGroup;
 			const FilePath & m_filePath;
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderTextureInterfacePtr Graveyard::resurrectTexture( const ConstString& _pakName, const FilePath & _filePath )
+	RenderTextureInterfacePtr Graveyard::resurrectTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath )
 	{
 		if( _filePath.empty() == true )
 		{
@@ -185,7 +185,7 @@ namespace Mengine
 			return nullptr;
 		}					
 
-		TVectorTextureGrave::iterator it_found = std::find_if( m_textures.begin(), m_textures.end(), FGraveyardFind( _pakName, _filePath ) );
+		TVectorTextureGrave::iterator it_found = std::find_if( m_textures.begin(), m_textures.end(), FGraveyardFind( _fileGroup, _filePath ) );
 
 		if( it_found == m_textures.end() )
 		{

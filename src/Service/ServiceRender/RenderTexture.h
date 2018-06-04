@@ -29,8 +29,8 @@ namespace Mengine
 		uint32_t getId() const override;
 
     public:
-		void setCategory( const ConstString & _category ) override;
-		const ConstString & getCategory() const override;
+		void setCategory( const FileGroupInterfacePtr & _category ) override;
+		const FileGroupInterfacePtr & getCategory() const override;
 
 		void setFileName( const FilePath & _fileName ) override;
 		const FilePath & getFileName() const override;
@@ -52,7 +52,7 @@ namespace Mengine
 
 		RenderImageInterfacePtr m_image;
 
-		ConstString m_category;
+        FileGroupInterfacePtr m_category;
 		FilePath m_fileName;
 		
 		uint32_t m_width;
@@ -69,7 +69,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusiveDerivedPtr<RenderTexture, RenderTextureInterface> RenderTexturePtr;
 	//////////////////////////////////////////////////////////////////////////
-	inline const ConstString & RenderTexture::getCategory() const
+	inline const FileGroupInterfacePtr & RenderTexture::getCategory() const
 	{
 		return m_category;
 	}

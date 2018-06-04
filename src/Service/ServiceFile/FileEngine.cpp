@@ -97,7 +97,7 @@ namespace Mengine
 		return fileGroup;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool FileEngine::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type )
+	bool FileEngine::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup )
 	{
 		LOGGER_INFO( "FileEngine:mountFileSystem _fileGroupName '%s' _path '%s' _type '%s'"
 			, _name.c_str() 
@@ -143,6 +143,11 @@ namespace Mengine
         if( _name.empty() == true )
         {
             m_defaultFileGroup = fileGroup;
+        }
+
+        if( _fileGroup != nullptr )
+        {
+            *_fileGroup = fileGroup;
         }
 
 		m_fileSystemMap.insert( std::make_pair(_name, fileGroup) );

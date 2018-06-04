@@ -1,8 +1,9 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/StreamInterface.h"
+#include "Interface/StreamInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#	include "ThreadTaskCurl.h"
+#include "ThreadTaskCurl.h"
 
 namespace Mengine
 {
@@ -12,9 +13,10 @@ namespace Mengine
 	{
 	public:
 		ThreadTaskGetAsset();
+        ~ThreadTaskGetAsset() override;
 		
 	public:
-		bool initialize( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath );
+		bool initialize( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath );
 
 	protected:
         bool _onRun() override;
@@ -29,7 +31,7 @@ namespace Mengine
 		String m_url;
 		String m_login;
 		String m_password;
-		ConstString m_category;
+		FileGroupInterfacePtr m_fileGroup;
 		FilePath m_filePath;
 
 		OutputStreamInterfacePtr m_stream;

@@ -42,6 +42,8 @@ namespace Mengine
 	protected:
 		ArchivatorInterfacePtr m_archivator;
 
+        FileGroupInterfacePtr m_fileGroup;
+
         InputStreamInterfacePtr m_stream;
 
 		XmlCodecOptions m_options;

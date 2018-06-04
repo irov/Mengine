@@ -1,19 +1,19 @@
-#	include "cURLHttpSystem.h"
+#include "cURLHttpSystem.h"
 
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/ThreadSystemInterface.h"
-#	include "Interface/StringizeInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
+#include "Interface/StringizeInterface.h"
 
-#	include "ThreadTaskGetMessage.h"
-#	include "ThreadTaskPostMessage.h"
-#	include "ThreadTaskHeaderData.h"
-#	include "ThreadTaskGetAsset.h"
+#include "ThreadTaskGetMessage.h"
+#include "ThreadTaskPostMessage.h"
+#include "ThreadTaskHeaderData.h"
+#include "ThreadTaskGetAsset.h"
 
-#	include "Factory/FactoryPool.h"
+#include "Factory/FactoryPool.h"
 
-#	include "Logger/Logger.h"
+#include "Logger/Logger.h"
 
-#	include "curl/curl.h"
+#include "curl/curl.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( HttpSystem, Mengine::cURLHttpSystem );
@@ -161,26 +161,13 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver )
     {
-        if( FILE_SERVICE()
-            ->hasFileGroup( _category, nullptr ) == false )
-        {
-            LOGGER_ERROR( "CurlHttpSystem::downloadAsset url '%s' not found category '%s' for filepath '%s'"
-                , _url.c_str()
-                , _category.c_str()
-                , _path.c_str()
-            );
-
-            return 0;
-        }
-
-        if( FILE_SERVICE()
-            ->existFile( _category, _path, nullptr ) == true )
+        if( _fileGroup->existFile( _path ) == true )
         {
             LOGGER_ERROR( "CurlHttpSystem::downloadAsset url '%s' category '%s' file alredy exist '%s'"
                 , _url.c_str()
-                , _category.c_str()
+                , _fileGroup->getName().c_str()
                 , _path.c_str()
             );
 
@@ -193,14 +180,14 @@ namespace Mengine
 
         task->setRequestId( task_id );
         task->setReceiver( this );
-        task->initialize( _url, _login, _password, _category, _path );
+        task->initialize( _url, _login, _password, _fileGroup, _path );
 
         if( THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ), task ) == false )
         {
             LOGGER_ERROR( "CurlHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
                 , _url.c_str()
-                , _category.c_str()
+                , _fileGroup->getName().c_str()
                 , _path.c_str()
             );
 

@@ -25,7 +25,7 @@ namespace Mengine
 	{
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool HotspotImageConverterPNGToHIT::initialize()
+	bool HotspotImageConverterPNGToHIT::_initialize()
 	{
         m_convertExt = ".hit";
 
@@ -157,7 +157,7 @@ namespace Mengine
         {
             LOGGER_ERROR("HotspotImageConverterPNGToHIT::convert_: HIT file '%s' not create (open file %s)"
                 , m_options.outputFileName.c_str() 
-                , m_options.fileGroup.c_str()
+                , m_options.fileGroup->getName().c_str()
                 );
 
             return false;

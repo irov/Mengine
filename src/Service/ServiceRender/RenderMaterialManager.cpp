@@ -186,25 +186,25 @@ namespace Mengine
         m_factoryMaterial = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderMaterialManager::loadMaterials( const ConstString& _pakName, const FilePath& _fileName )
+    bool RenderMaterialManager::loadMaterials( const FileGroupInterfacePtr& _fileGroup, const FilePath& _fileName )
     {
 		Metacode::Meta_Data::Meta_DataBlock datablock;
 
 		bool exist = false;
 		if( LOADER_SERVICE()
-			->load( _pakName, _fileName, &datablock, exist ) == false )
+			->load( _fileGroup, _fileName, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
 				LOGGER_ERROR("RenderMaterialManager::loadMaterials: materials '%s:%s' not found"
-					, _pakName.c_str()
+					, _fileGroup->getName().c_str()
 					, _fileName.c_str()
 					);
 			}
 			else
 			{
 				LOGGER_ERROR("RenderMaterialManager::loadMaterials: Invalid parse materials '%s:%s'"
-					, _pakName.c_str()
+                    , _fileGroup->getName().c_str()
 					, _fileName.c_str()
 					);
 			}
@@ -238,12 +238,12 @@ namespace Mengine
 			bool isCompile = false;
 			meta_FragmentShader.get_File_Compile( &isCompile );
 
-			RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _pakName, filePath, isCompile );
+			RenderFragmentShaderInterfacePtr shader = this->createFragmentShader_( name, _fileGroup, filePath, isCompile );
 
 			if( shader == nullptr )
 			{
 				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s invalid load fragment shader %s compile %d"
-					, _pakName.c_str()
+                    , _fileGroup->getName().c_str()
 					, _fileName.c_str()
 					, filePath.c_str()
 					, isCompile
@@ -279,12 +279,12 @@ namespace Mengine
 			bool isCompile = false;
 			meta_VertexShader.get_File_Compile( &isCompile );
 
-			RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _pakName, filePath, isCompile );
+			RenderVertexShaderInterfacePtr shader = this->createVertexShader_( name, _fileGroup, filePath, isCompile );
 
 			if( shader == nullptr )
 			{
 				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s invalid load vertex shader %s compile %d"
-					, _pakName.c_str()
+                    , _fileGroup->getName().c_str()
 					, _fileName.c_str()
 					, filePath.c_str()
 					, isCompile
@@ -367,7 +367,7 @@ namespace Mengine
 			if( vertexShader == nullptr )
 			{
 				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s program %s not found vertex shader %s"
-					, _pakName.c_str()
+                    , _fileGroup->getName().c_str()
 					, _fileName.c_str()
 					, name.c_str()
 					, vertexShaderName.c_str()
@@ -380,8 +380,8 @@ namespace Mengine
 				
 			if( fragmentShader == nullptr )
 			{
-				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s program %s not found fragment shader %s"
-					, _pakName.c_str()
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials material '%s:%s' program '%s' not found fragment shader '%s'"
+                    , _fileGroup->getName().c_str()
 					, _fileName.c_str()
 					, name.c_str()
 					, fragmentShaderName.c_str()
@@ -394,7 +394,8 @@ namespace Mengine
 
             if( vertexAttribute == nullptr )
             {
-                LOGGER_ERROR( "material '%s' program '%s' not found vertex attribute '%s'"
+                LOGGER_ERROR( "material '%s:%s' program '%s' not found vertex attribute '%s'"
+                    , _fileGroup->getName().c_str()
                     , _fileName.c_str()
                     , name.c_str()
                     , vertexAttributeName.c_str()
@@ -408,8 +409,8 @@ namespace Mengine
 
 			if( program == nullptr )
 			{
-				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s invalid create program vertex %s fragment %s"
-					, _pakName.c_str()
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials material '%s:%s' invalid create program vertex '%s' fragment '%s'"
+                    , _fileGroup->getName().c_str()
 					, _fileName.c_str()
 					, vertexShaderName.c_str()
 					, fragmentShaderName.c_str()
@@ -458,8 +459,8 @@ namespace Mengine
 
 				if( program == nullptr )
 				{
-                    LOGGER_ERROR( "RenderMaterialManager::loadMaterials material %s:%s invalid get program %s"
-                        , _pakName.c_str()
+                    LOGGER_ERROR( "RenderMaterialManager::loadMaterials material '%s:%s' invalid get program '%s'"
+                        , _fileGroup->getName().c_str()
                         , _fileName.c_str()
                         , programName.c_str()
                     );
@@ -497,8 +498,8 @@ namespace Mengine
 			
 			if( cache_stage == nullptr )
 			{
-				LOGGER_ERROR("RenderMaterialManager::loadMaterials material %s:%s invalid create stage group %s"
-					, _pakName.c_str()
+				LOGGER_ERROR("RenderMaterialManager::loadMaterials material '%s:%s' invalid create stage group '%s'"
+                    , _fileGroup->getName().c_str()
 					, _fileName.c_str()
 					, name.c_str()
 					);
@@ -529,25 +530,25 @@ namespace Mengine
         return true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool RenderMaterialManager::unloadMaterials( const ConstString& _pakName, const FilePath& _fileName )
+	bool RenderMaterialManager::unloadMaterials( const FileGroupInterfacePtr& _fileGroup, const FilePath& _fileName )
 	{
 		Metacode::Meta_Data::Meta_DataBlock datablock;
 
 		bool exist = false;
 		if( LOADER_SERVICE()
-			->load( _pakName, _fileName, &datablock, exist ) == false )
+			->load( _fileGroup, _fileName, &datablock, exist ) == false )
 		{
 			if( exist == false )
 			{
 				LOGGER_ERROR("RenderMaterialManager::loadMaterials: materials '%s:%s' not found"
-					, _pakName.c_str()
+                    , _fileGroup->getName().c_str()
 					, _fileName.c_str()
 					);
 			}
 			else
 			{
 				LOGGER_ERROR("RenderMaterialManager::loadMaterials: Invalid parse materials '%s:%s'"
-					, _pakName.c_str()
+                    , _fileGroup->getName().c_str()
 					, _fileName.c_str()
 					);
 			}
@@ -1029,9 +1030,9 @@ namespace Mengine
         return vertexAttribute;
     }
 	//////////////////////////////////////////////////////////////////////////
-	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool _compile )
+	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _compile )
 	{
-		MemoryInterfacePtr memory = Helper::createMemoryFile( _pakName, _filePath, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, _filePath, false, __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
@@ -1044,9 +1045,9 @@ namespace Mengine
 		return shader;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const ConstString & _pakName, const FilePath & _filePath, bool _compile )
+	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _compile )
 	{ 
-		MemoryInterfacePtr memory = Helper::createMemoryFile( _pakName, _filePath, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, _filePath, false, __FILE__, __LINE__ );
 		
 		if( memory == nullptr )
 		{

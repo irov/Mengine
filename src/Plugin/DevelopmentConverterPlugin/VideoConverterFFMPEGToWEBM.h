@@ -12,7 +12,7 @@ namespace Mengine
 		~VideoConverterFFMPEGToWEBM() override;
 
 	public:
-		bool initialize() override;
+		bool _initialize() override;
 
     public:
 		bool convert() override;

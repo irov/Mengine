@@ -220,6 +220,16 @@ namespace Mengine
 
         m_mutex = nullptr;
     }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & FileGroupZip::getName() const
+    {
+        return m_name;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FileGroupInterfacePtr & FileGroupZip::getCategory() const
+    {
+        return m_category;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupZip::isPacked() const
 	{

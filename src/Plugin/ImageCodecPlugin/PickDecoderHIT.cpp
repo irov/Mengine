@@ -23,13 +23,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PickDecoderHIT::_initialize()
     {
-        m_archivator = ARCHIVE_SERVICE()
+        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
             ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-        if( m_archivator == nullptr )
+        if( archivator == nullptr )
         {
             return false;
         }
+
+        m_archivator = archivator;
 
         return true;
     }

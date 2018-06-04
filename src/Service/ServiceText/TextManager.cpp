@@ -60,9 +60,9 @@ namespace Mengine
     class TextManager::TextManagerLoadSaxCallback
     {
     public:
-		TextManagerLoadSaxCallback( TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
+		TextManagerLoadSaxCallback( TextManager * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
             : m_textManager( _textManager )
-            , m_pakName( _pakName )
+            , m_fileGroup( _fileGroup )
             , m_path( _path )
         {
         }
@@ -128,7 +128,7 @@ namespace Mengine
                     if( str_value_valid != str_value_end )
                     {
                         LOGGER_ERROR( "TextManager::loadResource %s:%s invalid read text key %s value |%s| invalid utf8 char |%s|"
-                            , m_pakName.c_str()
+                            , m_fileGroup->getName().c_str()
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
@@ -159,7 +159,7 @@ namespace Mengine
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
                         LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' charOffset '%s'"
-                            , m_pakName.c_str()
+                            , m_fileGroup->getName().c_str()
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
@@ -176,7 +176,7 @@ namespace Mengine
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
                         LOGGER_ERROR( "TextManager::loadResource %s:%s invalid read for text '%s' lineOffset '%s'"
-                            , m_pakName.c_str()
+                            , m_fileGroup->getName().c_str()
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
@@ -196,7 +196,7 @@ namespace Mengine
                     if( sscanf( str_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
                     {
                         LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' lineOffset '%s'"
-                            , m_pakName.c_str()
+                            , m_fileGroup->getName().c_str()
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
@@ -213,7 +213,7 @@ namespace Mengine
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
                         LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' Override '%s'"
-                            , m_pakName.c_str()
+                            , m_fileGroup->getName().c_str()
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
@@ -230,7 +230,7 @@ namespace Mengine
                     if( sscanf( str_value, "%d", &value ) != 1 )
                     {
                         LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' tag 'Override' '%s'"
-                            , m_pakName.c_str()
+                            , m_fileGroup->getName().c_str()
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
@@ -256,7 +256,7 @@ namespace Mengine
                     else
                     {
                         LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Bottom, Center, Top]"
-                            , m_pakName.c_str()
+                            , m_fileGroup->getName().c_str()
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
@@ -282,7 +282,7 @@ namespace Mengine
                     else
                     {
                         LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
-                            , m_pakName.c_str()
+                            , m_fileGroup->getName().c_str()
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
@@ -297,7 +297,7 @@ namespace Mengine
                     if( sscanf( str_value, "%f", &value ) != 1 )
                     {
                         LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' Scale '%s'"
-                            , m_pakName.c_str()
+                            , m_fileGroup->getName().c_str()
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
@@ -314,7 +314,7 @@ namespace Mengine
                     if( sscanf( str_value, "%d", &value ) != 1 )
                     {
                         LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid read for text '%s' tag 'Empty' '%s'"
-                            , m_pakName.c_str()
+                            , m_fileGroup->getName().c_str()
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
@@ -326,7 +326,7 @@ namespace Mengine
                 else
                 {
                     LOGGER_ERROR( "TextManager::loadResource %s:%s invalid tag '%s' for text '%s'"
-                        , m_pakName.c_str()
+                        , m_fileGroup->getName().c_str()
                         , m_path.c_str()
                         , str_key
                         , text_key.c_str()
@@ -337,7 +337,7 @@ namespace Mengine
             if( text.empty() == true && isEmpty == false )
             {
                 LOGGER_ERROR( "TextManager::loadResource '%s:%s' invalid text key '%s' value is empty"
-                    , m_pakName.c_str()
+                    , m_fileGroup->getName().c_str()
                     , m_path.c_str()
                     , text_key.c_str()
                     );
@@ -354,18 +354,18 @@ namespace Mengine
     protected:
         TextManager * m_textManager;
 
-        const ConstString & m_pakName;
+        const FileGroupInterfacePtr & m_fileGroup;
         const FilePath & m_path;
     };
     //////////////////////////////////////////////////////////////////////////
-    bool TextManager::loadTextEntry( const ConstString & _pakName, const FilePath & _path )
+    bool TextManager::loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
     {
         TextLocalePackPtr pak = m_factoryTextLocalePak->createObject();
 
-        if( pak->initialize( _pakName, _path ) == false )
+        if( pak->initialize( _fileGroup, _path ) == false )
         {
             LOGGER_ERROR( "TextManager::loadTextEntry '%s:%s' invalid initialize pak"
-                , _pakName.c_str()
+                , _fileGroup->getName().c_str()
                 , _path.c_str()
                 );
 
@@ -378,11 +378,11 @@ namespace Mengine
 
         Char * xml_buff = xml_memory->getMemory();
 
-        TextManagerLoadSaxCallback tmsc( this, _pakName, _path );
+        TextManagerLoadSaxCallback tmsc( this, _fileGroup, _path );
         if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
         {
             LOGGER_ERROR( "TextManager::loadTextEntry '%s:%s' invalid parse pak"
-                , _pakName.c_str()
+                , _fileGroup->getName().c_str()
                 , _path.c_str()
                 );
 
@@ -396,9 +396,9 @@ namespace Mengine
     class TextManager::TextManagerUnloadSaxCallback
     {
     public:
-        TextManagerUnloadSaxCallback( TextManager * _textManager, const ConstString & _pakName, const FilePath & _path )
+        TextManagerUnloadSaxCallback( TextManager * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
             : m_textManager( _textManager )
-            , m_pakName( _pakName )
+            , m_fileGroup( _fileGroup )
             , m_path( _path )
         {
         }
@@ -451,44 +451,15 @@ namespace Mengine
     protected:
         TextManager * m_textManager;
 
-        const ConstString & m_pakName;
+        const FileGroupInterfacePtr & m_fileGroup;
         const FilePath & m_path;
     };
-    namespace
-    {
-        //////////////////////////////////////////////////////////////////////////
-        class FPackLocaleRemove
-        {
-        public:
-            FPackLocaleRemove( const ConstString & _pakName )
-                : m_pakName( _pakName )
-            {
-            }
-
-        protected:
-            void operator = ( const FPackLocaleRemove & );
-
-        public:
-            bool operator () ( const TextLocalePackPtr & _pack ) const
-            {
-                if( _pack->getPackName() != m_pakName )
-                {
-                    return false;
-                }
-
-                return true;
-            }
-
-        protected:
-            const ConstString & m_pakName;
-        };
-    }
     //////////////////////////////////////////////////////////////////////////
-    bool TextManager::unloadTextEntry( const ConstString & _pakName, const FilePath & _path )
+    bool TextManager::unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
     {
         TextLocalePackPtr pak = m_factoryTextLocalePak->createObject();
 
-        if( pak->initialize( _pakName, _path ) == false )
+        if( pak->initialize( _fileGroup, _path ) == false )
         {
             return false;
         }
@@ -497,26 +468,26 @@ namespace Mengine
 
         Char * xml_buff = xml_memory->getMemory();
 
-        TextManagerUnloadSaxCallback tmsc( this, _pakName, _path );
+        TextManagerUnloadSaxCallback tmsc( this, _fileGroup, _path );
         if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
         {
             return false;
         }
 
         m_packs.erase(
-            std::remove_if( m_packs.begin(), m_packs.end(), FPackLocaleRemove( _pakName ) )
+            std::remove_if( m_packs.begin(), m_packs.end(), [&_fileGroup]( const TextLocalePackPtr & _pack ) {if( _pack->getFileGroup() != _fileGroup ) { return false; }return true; })
             , m_packs.end()
         );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextManager::loadFonts( const ConstString & _pakName, const FilePath & _path )
+    bool TextManager::loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
     {
         IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, _pakName, _path ) == false )
+        if( IniUtil::loadIni( ini, _fileGroup, _path ) == false )
         {
-            LOGGER_ERROR( "TextManager::loadFonts Invalid load settings %s"
+            LOGGER_ERROR( "TextManager::loadFonts Invalid load settings '%s'"
                 , _path.c_str()
                 );
 
@@ -530,8 +501,8 @@ namespace Mengine
         {
             if( ini.hasSection( fontName.c_str() ) == false )
             {
-                LOGGER_ERROR( "TextManager::loadFonts invalid %s:%s section for FONT %s"
-                    , _pakName.c_str()
+                LOGGER_ERROR( "TextManager::loadFonts invalid '%s:%s' section for FONT '%s'"
+                    , _fileGroup->getName().c_str()
                     , _path.c_str()
                     , fontName.c_str()
                     );
@@ -555,10 +526,10 @@ namespace Mengine
 
             font->setName( fontName );
 
-			if( font->initialize( _pakName, ini ) == false )
+			if( font->initialize( _fileGroup, ini ) == false )
 			{
-				LOGGER_ERROR( "TextManager::loadFonts invalid initialize %s:%s font %s"
-					, _pakName.c_str()
+				LOGGER_ERROR( "TextManager::loadFonts invalid initialize '%s:%s' font '%s'"
+                    , _fileGroup->getName().c_str()
 					, _path.c_str()
 					, fontName.c_str()
 					);
@@ -570,8 +541,8 @@ namespace Mengine
             {
                 if( font->compileFont() == false )
                 {
-                    LOGGER_ERROR( "TextManager::loadFonts invalid precompile %s:%s font %s"
-                        , _pakName.c_str()
+                    LOGGER_ERROR( "TextManager::loadFonts invalid precompile '%s:%s' font %s"
+                        , _fileGroup->getName().c_str()
                         , _path.c_str()
                         , fontName.c_str()
                     );
@@ -580,9 +551,9 @@ namespace Mengine
                 }
             }
 
-			LOGGER_INFO( "TextManager::loadFonts add font %s path '%s:%s'"
+			LOGGER_INFO( "TextManager::loadFonts add font '%s' path '%s:%s'"
 				, fontName.c_str()
-				, _pakName.c_str()
+                , _fileGroup->getName().c_str()
 				, _path.c_str()
 				);
 			
@@ -598,12 +569,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextManager::unloadFonts( const ConstString & _pakName, const FilePath & _path )
+    bool TextManager::unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
     {
         IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, _pakName, _path ) == false )
+        if( IniUtil::loadIni( ini, _fileGroup, _path ) == false )
         {
-            LOGGER_ERROR( "TextManager::unloadFonts Invalid load settings %s"
+            LOGGER_ERROR( "TextManager::unloadFonts Invalid load settings '%s'"
                 , _path.c_str()
                 );
 
@@ -617,8 +588,8 @@ namespace Mengine
         {
             if( ini.hasSection( fontName.c_str() ) == false )
             {
-                LOGGER_ERROR( "TextManager::unloadFonts invalid %s:%s section for FONT %s"
-                    , _pakName.c_str()
+                LOGGER_ERROR( "TextManager::unloadFonts invalid '%s:%s' section for FONT '%s'"
+                    , _fileGroup->getName().c_str()
                     , _path.c_str()
                     , fontName.c_str()
                     );

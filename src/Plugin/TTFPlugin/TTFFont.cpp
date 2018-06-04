@@ -41,7 +41,7 @@ namespace Mengine
 		m_ftlibrary = _ftlibrary;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::initialize( const ConstString & _category, const IniUtil::IniStore & _ini )
+	bool TTFFont::initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini )
 	{
 		m_category = _category;
 

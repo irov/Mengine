@@ -153,12 +153,12 @@ namespace Mengine
 		SERVICE_DECLARE("TextService")
 
 	public:
-		virtual bool loadTextEntry( const ConstString & _pakName, const FilePath & _path ) = 0;
-		virtual bool unloadTextEntry( const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool loadTextEntry( const FileGroupInterfacePtr & _pakName, const FilePath & _path ) = 0;
+		virtual bool unloadTextEntry( const FileGroupInterfacePtr & _pakName, const FilePath & _path ) = 0;
 
 	public:
-		virtual bool loadFonts( const ConstString & _pakName, const FilePath & _path ) = 0;
-		virtual bool unloadFonts( const ConstString & _pakName, const FilePath & _path ) = 0;
+		virtual bool loadFonts( const FileGroupInterfacePtr & _pakName, const FilePath & _path ) = 0;
+		virtual bool unloadFonts( const FileGroupInterfacePtr & _pakName, const FilePath & _path ) = 0;
 
 	public:
 		virtual bool addTextEntry( const ConstString & _key

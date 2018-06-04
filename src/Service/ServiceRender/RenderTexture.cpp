@@ -65,7 +65,7 @@ namespace Mengine
         return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTexture::setCategory( const ConstString & _category )
+    void RenderTexture::setCategory( const FileGroupInterfacePtr & _category )
     {
         m_category = _category;
     }

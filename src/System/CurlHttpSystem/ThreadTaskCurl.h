@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/HttpSystemInterface.h"
+#include "Interface/HttpSystemInterface.h"
 
-#	include "Kernel/ThreadTask.h"
+#include "Kernel/ThreadTask.h"
 
-#	include "curl/curl.h"
+#include "curl/curl.h"
 
 namespace Mengine
 {

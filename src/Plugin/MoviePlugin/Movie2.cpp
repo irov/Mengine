@@ -1505,14 +1505,6 @@ namespace Mengine
 
         m_composition = composition;
 
-        if( m_compositionName.empty() == false )
-        {            
-            if( this->createCompositionLayers_() == false )
-            {
-                return false;
-            }
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

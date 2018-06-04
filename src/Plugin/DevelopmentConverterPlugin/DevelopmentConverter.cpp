@@ -10,6 +10,23 @@ namespace Mengine
 	DevelopmentConverter::~DevelopmentConverter()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool DevelopmentConverter::initialize()
+    {
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "dev" ) );
+
+        if( fileGroup == nullptr )
+        {
+            return false;
+        }
+
+        m_fileGroup = fileGroup;
+
+        bool successful = this->_initialize();
+
+        return successful;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	const String & DevelopmentConverter::getConvertExt() const
 	{

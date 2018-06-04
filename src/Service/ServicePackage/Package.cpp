@@ -116,7 +116,7 @@ namespace Mengine
 	bool Package::mountFileGroup_()
 	{	
 		if( FILE_SERVICE()
-            ->mountFileGroup( m_name, m_category, m_path, m_type ) == false )
+            ->mountFileGroup( m_name, m_category, m_path, m_type, &m_fileGroup ) == false )
 		{
 			LOGGER_ERROR("ResourcePak::mountFileGroup_ failed to mount pak '%s' path '%s'"
 				, m_name.c_str()
@@ -162,7 +162,7 @@ namespace Mengine
 
 		bool exist = false;
 		if( LOADER_SERVICE()
-            ->load( m_name, m_descriptionPath, &pak, exist ) == false )
+            ->load( m_fileGroup, m_descriptionPath, &pak, exist ) == false )
 		{
 			LOGGER_ERROR("ResourcePak::load Invalid resource file '%s:%s' '%s'"
 				, m_path.c_str()
@@ -369,7 +369,7 @@ namespace Mengine
             //    ->memoryBegin();
 
 			if( RESOURCE_SERVICE()
-				->loadResources( m_locale, m_name, desc.path, desc.ignored ) == false )
+				->loadResources( m_locale, m_fileGroup, desc.path, desc.ignored ) == false )
             {
                 LOGGER_ERROR("Package::enable '%s:%s' invalid load resource '%s'"
                     , m_path.c_str()
@@ -391,7 +391,7 @@ namespace Mengine
 
         for( const PakFontDesc & desc : m_pathFonts )
 		{
-			if( this->loadFont_( m_name, desc.path ) == false )
+			if( this->loadFont_( desc.path ) == false )
 			{
                 LOGGER_ERROR("Package::enable '%s:%s' invalid load font '%s'"
                     , m_path.c_str()
@@ -405,7 +405,7 @@ namespace Mengine
 
         for( const PakTextDesc & desc : m_pathTexts )
 		{
-			if( this->loadText_( m_name, desc.path ) == false )
+			if( this->loadText_( desc.path ) == false )
             {
                 LOGGER_ERROR("Package::enable '%s:%s' invalid load text '%s'"
                     , m_path.c_str()
@@ -419,7 +419,7 @@ namespace Mengine
 
         for( const PakDataDesc & desc : m_datas )
 		{
-			if( this->addUserData_( m_name, desc.name, desc.path ) == false )
+			if( this->addUserData_( desc.name, desc.path ) == false )
 			{
                 LOGGER_ERROR("Package::enable '%s:%s' invalid load userdata '%s' path '%s'"
                     , m_path.c_str()
@@ -434,7 +434,7 @@ namespace Mengine
 
         for( const PakMaterialDesc & desc : m_pathMaterials )
 		{
-			if( this->loadMaterials_( m_name, desc.path ) == false )
+			if( this->loadMaterials_( desc.path ) == false )
 			{
                 LOGGER_ERROR("Package::enable '%s:%s' invalid load material '%s'"
                     , m_path.c_str()
@@ -463,7 +463,7 @@ namespace Mengine
 			}
 
 			if( RESOURCE_SERVICE()
-				->validateResources( m_locale, m_name, desc.path ) == false )
+				->validateResources( m_locale, m_fileGroup, desc.path ) == false )
 			{
 				successful = false;
 			}
@@ -493,7 +493,7 @@ namespace Mengine
         for( const PakResourceDesc & desc : m_resourcesDesc )
 		{
 			if( RESOURCE_SERVICE()
-				->unloadResources( m_locale, m_name, desc.path ) == false )
+				->unloadResources( m_locale, m_fileGroup, desc.path ) == false )
 			{
 				return false;
 			}
@@ -501,7 +501,7 @@ namespace Mengine
 
         for( const PakFontDesc & desc : m_pathFonts )
 		{
-			if( this->unloadFont_( m_name, desc.path ) == false )
+			if( this->unloadFont_( desc.path ) == false )
 			{
 				return false;
 			}
@@ -509,7 +509,7 @@ namespace Mengine
 
         for( const PakTextDesc & desc : m_pathTexts )
 		{
-			if( this->unloadText_( m_name, desc.path ) == false )
+			if( this->unloadText_( desc.path ) == false )
 			{
 				return false;
 			}
@@ -525,7 +525,7 @@ namespace Mengine
 
         for( const PakMaterialDesc & desc : m_pathMaterials )
 		{
-			if( this->unloadMaterials_( m_name, desc.path ) == false )
+			if( this->unloadMaterials_( desc.path ) == false )
 			{
 				return false;
 			}
@@ -544,58 +544,58 @@ namespace Mengine
 		return m_enable;
 	}
     //////////////////////////////////////////////////////////////////////////
-	bool Package::loadText_( const ConstString & _pakName, const FilePath & _path )
+	bool Package::loadText_( const FilePath & _path )
     {
         bool result = TEXT_SERVICE()
-			->loadTextEntry( _pakName, _path );
+			->loadTextEntry( m_fileGroup, _path );
 
         return result;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool Package::unloadText_( const ConstString & _pakName, const FilePath & _path )
+	bool Package::unloadText_( const FilePath & _path )
 	{
 		bool result = TEXT_SERVICE()
-			->unloadTextEntry( _pakName, _path );
+			->unloadTextEntry( m_fileGroup, _path );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Package::loadFont_( const ConstString & _pakName, const FilePath & _path )
+	bool Package::loadFont_( const FilePath & _path )
 	{
 		bool result = TEXT_SERVICE()
-			->loadFonts( _pakName, _path );
+			->loadFonts( m_fileGroup, _path );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Package::unloadFont_( const ConstString & _pakName, const FilePath & _path )
+	bool Package::unloadFont_( const FilePath & _path )
 	{
 		bool result = TEXT_SERVICE()
-			->unloadFonts( _pakName, _path );
+			->unloadFonts( m_fileGroup, _path );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Package::loadMaterials_( const ConstString & _pakName, const FilePath & _path )
+	bool Package::loadMaterials_( const FilePath & _path )
 	{
 		bool result = RENDERMATERIAL_SERVICE()
-			->loadMaterials( _pakName, _path );
+			->loadMaterials( m_fileGroup, _path );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Package::unloadMaterials_( const ConstString & _pakName, const FilePath & _path )
+	bool Package::unloadMaterials_( const FilePath & _path )
 	{
 		bool result = RENDERMATERIAL_SERVICE()
-			->unloadMaterials( _pakName, _path );
+			->unloadMaterials( m_fileGroup, _path );
 
 		return result;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Package::addUserData_( const ConstString & _pakName, const ConstString & _name, const FilePath & _path )
+	bool Package::addUserData_( const ConstString & _name, const FilePath & _path )
 	{
 		bool result = USERDATA_SERVICE()
-			->addUserdata( _name, _pakName, _path );
+			->addUserdata( _name, m_fileGroup, _path );
 
 		return result;
 	}

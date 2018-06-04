@@ -18,7 +18,7 @@ namespace Mengine
 	{
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool VideoConverterFFMPEGToOGV::initialize()
+	bool VideoConverterFFMPEGToOGV::_initialize()
 	{
         m_convertExt = ".ogv";
 
@@ -27,17 +27,7 @@ namespace Mengine
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool VideoConverterFFMPEGToOGV::convert()
 	{
-        FileGroupInterfacePtr fileGroup;
-        if( FILE_SERVICE()->hasFileGroup( m_options.fileGroup, &fileGroup ) == false )
-        {
-            LOGGER_ERROR("VideoConverterFFMPEGToOGV::convert_: not found file group '%s'"
-                , m_options.fileGroup.c_str()
-                );
-
-            return false;
-        }
-
-        const ConstString & pakPath = fileGroup->getFolderPath();
+        const ConstString & pakPath = m_options.fileGroup->getFolderPath();
 
         String full_input = pakPath.c_str();
         full_input += m_options.inputFileName.c_str();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Core/String.h"
 #include "Core/ConstString.h"
@@ -34,7 +35,7 @@ namespace Mengine
         virtual HttpRequestID headerData( const String & _url, const TVectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver ) = 0;
 
     public:
-        virtual HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver ) = 0;
 
 	public:
 		virtual bool cancelRequest( HttpRequestID _id ) = 0;

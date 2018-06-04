@@ -155,8 +155,11 @@ namespace Mengine
 	{
 		FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( "application.ini" );
 
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
 		InputStreamInterfacePtr applicationInputStream = FILE_SERVICE()
-			->openInputFile( ConstString::none(), applicationPath, false );
+            ->openInputFile( fileGroup, applicationPath, false );
 
 		if( applicationInputStream == nullptr )
 		{
@@ -203,8 +206,11 @@ namespace Mengine
 			return false;
 		}
 
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
 		if( CONFIG_SERVICE()
-			->loadConfig( ConstString::none(), gameIniPath ) == false )
+			->loadConfig( fileGroup, gameIniPath ) == false )
 		{
 			LOGGER_ERROR("WinApplication::initializeConfigEngine_ invalid load config %s"				
 				, gameIniPath.c_str()
@@ -253,7 +259,7 @@ namespace Mengine
 			);
 		
 		// mount root		
-        if( FILE_SERVICE()->mountFileGroup( ConstString::none(), ConstString::none(), FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( "dir" ) ) == false )
+        if( FILE_SERVICE()->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( "dir" ), nullptr ) == false )
 		{
 			LOGGER_ERROR("WinApplication::setupFileService: failed to mount application directory %ls"
 				, currentPath
@@ -264,7 +270,7 @@ namespace Mengine
 
 #	ifndef MENGINE_MASTER_RELEASE
 		// mount root		
-		if( FILE_SERVICE()->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), ConstString::none(), FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( "global" ) ) == false )
+		if( FILE_SERVICE()->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
 		{
 			LOGGER_ERROR("WinApplication::setupFileService: failed to mount dev directory %ls"
 				, currentPath
@@ -313,7 +319,7 @@ namespace Mengine
 
 		// mount user directory
 		if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), ConstString::none(), Helper::stringizeFilePath( utf8_userPath ), STRINGIZE_STRING_LOCAL( "global" ) ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, Helper::stringizeFilePath( utf8_userPath ), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
 		{
 			LOGGER_ERROR("WinApplication: failed to mount user directory %ls"
 				, userPath.c_str()
@@ -364,8 +370,11 @@ namespace Mengine
 
 		FilePath logFilename = Helper::stringizeFilePath( utf8_logFilename );
 
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
+
 		OutputStreamInterfacePtr fileLogInterface = FILE_SERVICE()
-			->openOutputFile( STRINGIZE_STRING_LOCAL( "user" ), logFilename );
+			->openOutputFile( fileGroup, logFilename );
 
 		if( fileLogInterface != nullptr )
 		{
@@ -762,8 +771,11 @@ namespace Mengine
             LOGGER_WARNING( "Materials Load..."
             );
 
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getDefaultFileGroup();
+
 			if( RENDERMATERIAL_SERVICE()
-				->loadMaterials( ConstString::none(), renderMaterialsPath ) == false )
+				->loadMaterials( fileGroup, renderMaterialsPath ) == false )
 			{
 				return false;
 			}
@@ -781,8 +793,11 @@ namespace Mengine
 			return false;
 		}
 
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
 		if( APPLICATION_SERVICE()
-            ->initializeGame( ConstString::none(), resourceIniPath ) == false )
+            ->initializeGame( fileGroup, resourceIniPath ) == false )
 		{
 			LOGGER_CRITICAL("Application invalid initialize game"
 				);

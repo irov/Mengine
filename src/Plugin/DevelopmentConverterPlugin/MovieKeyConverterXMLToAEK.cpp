@@ -46,17 +46,19 @@ namespace Mengine
 	{
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverterXMLToAEK::initialize()
+	bool MovieKeyConverterXMLToAEK::_initialize()
 	{
 		m_convertExt = ".aek";
 
-		m_archivator = ARCHIVE_SERVICE()
+        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
 			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-		if( m_archivator == nullptr )
+		if( archivator == nullptr )
 		{
 			return false;
 		}
+
+        m_archivator = archivator;
 
         m_dataflow = DATA_SERVICE()
             ->getDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
@@ -809,7 +811,7 @@ namespace Mengine
 		if( output_stream == nullptr )
 		{
 			LOGGER_ERROR("MovieKeyConverterXMLToAEK::writeFramePak_ invalid open file %s:%s"
-				, m_options.fileGroup.c_str()
+				, m_options.fileGroup->getName().c_str()
 				, m_options.outputFileName.c_str()
 				);
 
@@ -822,7 +824,7 @@ namespace Mengine
 		if( Helper::writeStreamArchiveData( output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
 		{
 			LOGGER_ERROR("MovieKeyConverterXMLToAEK::writeFramePak_ invalid write stream %s:%s"
-				, m_options.fileGroup.c_str()
+				, m_options.fileGroup->getName().c_str()
 				, m_options.outputFileName.c_str()
 				);
 

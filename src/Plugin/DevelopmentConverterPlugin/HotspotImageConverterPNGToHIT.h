@@ -12,7 +12,7 @@ namespace Mengine
 		~HotspotImageConverterPNGToHIT() override;
 
 	public:
-		bool initialize() override;
+		bool _initialize() override;
 
 	public:
 		bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;

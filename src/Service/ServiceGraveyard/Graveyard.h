@@ -10,7 +10,7 @@ namespace Mengine
 
 	struct RenderTextureGraveEntry
 	{
-		ConstString category;
+        FileGroupInterfacePtr category;
 		FilePath filePath;
 
 		RenderImageInterfacePtr image;
@@ -39,7 +39,7 @@ namespace Mengine
 
 	public:
 		bool buryTexture( RenderTextureInterface * _texture ) override;
-		RenderTextureInterfacePtr resurrectTexture( const ConstString& _pakName, const FilePath & _filePath ) override;
+		RenderTextureInterfacePtr resurrectTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath ) override;
 
 	protected:
 		void updateTexture_( RenderTextureGraveEntry * _entry, float _timing );

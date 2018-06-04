@@ -11,13 +11,17 @@ namespace Mengine
 	ThreadTaskGetAsset::ThreadTaskGetAsset()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    ThreadTaskGetAsset::~ThreadTaskGetAsset()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskGetAsset::initialize( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath )
+	bool ThreadTaskGetAsset::initialize( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath )
 	{
 		m_url = _url;
 		m_login = _login;
 		m_password = _password;
-		m_category = _category;
+		m_fileGroup = _fileGroup;
 		m_filePath = _filepath;
 
 		return false;
@@ -25,16 +29,13 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadTaskGetAsset::_onRun()
 	{
-        FileGroupInterfacePtr fileGroup = FILE_SERVICE()
-            ->getFileGroup( m_category );
-
-        if( fileGroup->createDirectory( m_filePath ) == false )
+        if( m_fileGroup->createDirectory( m_filePath ) == false )
         {
             return false;
         }
 
 		m_stream = FILE_SERVICE()
-			->openOutputFile( m_category, m_filePath );
+			->openOutputFile( m_fileGroup, m_filePath );
 
 		if( m_stream == nullptr )
 		{
@@ -104,7 +105,7 @@ namespace Mengine
                 , m_url.c_str()
                 , m_login.c_str()
                 , m_password.c_str()
-                , m_category.c_str()
+                , m_fileGroup->getName().c_str()
                 , m_filePath.c_str()
                 );
         }

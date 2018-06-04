@@ -42,7 +42,7 @@ namespace Mengine
 
     public:
 		virtual bool hasArchivator( const ConstString & _type ) const = 0;
-        virtual ArchivatorInterfacePtr getArchivator( const ConstString & _type ) const = 0;
+        virtual const ArchivatorInterfacePtr & getArchivator( const ConstString & _type ) const = 0;
 
 	public:
 		virtual bool decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress ) = 0;

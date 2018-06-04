@@ -302,8 +302,11 @@ namespace Mengine
 
         image->unlock( 0, true );
 
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
         RENDERTEXTURE_SERVICE()
-            ->cacheFileTexture( ConstString::none(), STRINGIZE_FILEPATH_LOCAL( "__null__" ), texture );
+            ->cacheFileTexture( fileGroup, STRINGIZE_FILEPATH_LOCAL( "__null__" ), texture );
 
         m_nullTexture = texture;
 
@@ -374,8 +377,11 @@ namespace Mengine
 
         image->unlock( 0, true );
 
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
         RENDERTEXTURE_SERVICE()
-            ->cacheFileTexture( ConstString::none(), STRINGIZE_FILEPATH_LOCAL( "WhitePixel" ), texture );
+            ->cacheFileTexture( fileGroup, STRINGIZE_FILEPATH_LOCAL( "WhitePixel" ), texture );
 
         m_whitePixelTexture = texture;
 

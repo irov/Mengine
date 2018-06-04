@@ -18,7 +18,7 @@ namespace Mengine
 	{
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool SoundConverterFFMPEGToOGG::initialize()
+	bool SoundConverterFFMPEGToOGG::_initialize()
 	{
         m_convertExt = ".ogg";
 
@@ -27,17 +27,7 @@ namespace Mengine
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool SoundConverterFFMPEGToOGG::convert()
 	{
-        FileGroupInterfacePtr fileGroup;
-        if( FILE_SERVICE()->hasFileGroup( m_options.fileGroup, &fileGroup ) == false )
-        {
-            LOGGER_ERROR("SoundConverterFFMPEGToOGG::convert_: not found file group '%s'"
-                , m_options.fileGroup.c_str()
-                );
-
-            return false;
-        }
-
-        const ConstString & pakPath = fileGroup->getFolderPath();            
+        const ConstString & pakPath = m_options.fileGroup->getFolderPath();
 
         String full_input = pakPath.c_str();
         full_input += m_options.inputFileName.c_str();

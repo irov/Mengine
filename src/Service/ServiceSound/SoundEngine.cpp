@@ -367,10 +367,10 @@ namespace Mengine
         }
     }
 	//////////////////////////////////////////////////////////////////////////
-	SoundDecoderInterfacePtr SoundEngine::createSoundDecoder_( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
+	SoundDecoderInterfacePtr SoundEngine::createSoundDecoder_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
 	{
 		InputStreamInterfacePtr stream = FILE_SERVICE()
-			->openInputFile( _pakName, _filePath, _streamable );
+			->openInputFile( _fileGroup, _filePath, _streamable );
 
         if( _filePath == "SFX/02.ogg" )
         {
@@ -380,7 +380,7 @@ namespace Mengine
 		if( stream == nullptr )
 		{
 			LOGGER_ERROR("SoundEngine::createSoundDecoder_: Can't open sound file %s:%s"
-				, _pakName.c_str()
+				, _fileGroup->getName().c_str()
 				, _filePath.c_str() 
 				);
 
@@ -393,7 +393,7 @@ namespace Mengine
 		if( soundDecoder == nullptr )
 		{
 			LOGGER_ERROR("SoundEngine::createSoundDecoder_: Can't create sound decoder for file %s:%s"
-				, _pakName.c_str()
+                , _fileGroup->getName().c_str()
 				, _filePath.c_str() 
 				);
 
@@ -403,7 +403,7 @@ namespace Mengine
 		if( soundDecoder->prepareData( stream ) == false )
 		{
 			LOGGER_ERROR("SoundEngine::createSoundDecoder_: Can't initialize sound decoder for file %s:%s"
-				, _pakName.c_str()
+                , _fileGroup->getName().c_str()
 				, _filePath.c_str() 
 				);
 
@@ -413,12 +413,12 @@ namespace Mengine
 		return soundDecoder;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterfacePtr SoundEngine::createSoundBufferFromFile( const ConstString& _pakName, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
+	SoundBufferInterfacePtr SoundEngine::createSoundBufferFromFile( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
 	{
 		if( m_supportStream == false && _streamable == true )
 		{
 			LOGGER_WARNING("SoundEngine::createSoundBufferFromFile: unsupport stream sound %s:%s"
-				, _pakName.c_str()
+                , _fileGroup->getName().c_str()
 				, _filePath.c_str() 
 				);
 
@@ -437,16 +437,16 @@ namespace Mengine
 		if( _streamable == false )
 		{		
 			if( PREFETCHER_SERVICE()
-				->getSoundDecoder( _pakName, _filePath, soundDecoder ) == false )
+				->getSoundDecoder( _fileGroup, _filePath, soundDecoder ) == false )
 			{
-				soundDecoder = this->createSoundDecoder_( _pakName, _filePath, _codecType, false );
+				soundDecoder = this->createSoundDecoder_( _fileGroup, _filePath, _codecType, false );
 			}
 			else
 			{
 				if( soundDecoder->rewind() == false )
 				{
 					LOGGER_ERROR("SoundEngine::createSoundBufferFromFile invalid rewind decoder '%s':'%s'"
-						, _pakName.c_str()
+                        , _fileGroup->getName().c_str()
 						, _filePath.c_str()
 						);
 
@@ -456,13 +456,13 @@ namespace Mengine
 		}
 		else
 		{
-			soundDecoder = this->createSoundDecoder_( _pakName, _filePath, _codecType, true );
+			soundDecoder = this->createSoundDecoder_( _fileGroup, _filePath, _codecType, true );
 		}
 
 		if( soundDecoder == nullptr )
 		{
 			LOGGER_ERROR("SoundEngine::createSoundBufferFromFile invalid create decoder '%s':'%s' type %s"
-				, _pakName.c_str()
+                , _fileGroup->getName().c_str()
 				, _filePath.c_str()
 				, _codecType.c_str()
 				);
@@ -476,7 +476,7 @@ namespace Mengine
         if( buffer == nullptr )
         {
             LOGGER_ERROR("SoundEngine::createSoundBufferFromFile: Can't create sound buffer for file %s:%s"
-                , _pakName.c_str()
+                , _fileGroup->getName().c_str()
                 , _filePath.c_str() 
                 );
 

@@ -1,6 +1,7 @@
 # pragma once
 
 #include "Interface/MemoryInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Core/ConstString.h"
 #include "Core/String.h"
@@ -18,17 +19,17 @@ namespace Mengine
 		~TextLocalePack() override;
 
 	public:
-		bool initialize( const ConstString & _pakName, const FilePath & _path );
+		bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path );
 		
 	public:
-		const ConstString & getPackName() const;
+		const FileGroupInterfacePtr & getFileGroup() const;
 		const FilePath & getPath() const;
 
 	public:
 		MemoryInterfacePtr getXmlBuffer() const;
 
 	protected:
-		ConstString m_pakName;
+        FileGroupInterfacePtr m_fileGroup;
 		FilePath m_path;
 
 		MemoryBufferInterfacePtr m_memory;		

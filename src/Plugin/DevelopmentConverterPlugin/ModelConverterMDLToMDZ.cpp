@@ -26,41 +26,31 @@ namespace Mengine
 	{
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool ModelConverterMDLToMDZ::initialize()
+	bool ModelConverterMDLToMDZ::_initialize()
 	{
         m_convertExt = ".mdz";
 
-		m_archivator = ARCHIVE_SERVICE()
+        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
 			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
-		if( m_archivator == nullptr )
+		if( archivator == nullptr )
 		{
 			return false;
 		}
+
+        m_archivator = archivator;
 
 		return true;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool ModelConverterMDLToMDZ::convert()
 	{
-        FileGroupInterfacePtr fileGroup;
-        if( FILE_SERVICE()->hasFileGroup( m_options.fileGroup, &fileGroup ) == false )
-        {
-            LOGGER_ERROR("ModelConverterMDLToMDZ::convert_: not found file group '%s'"
-                , m_options.fileGroup.c_str()
-                );
-
-            return false;
-        }
-
-        const FilePath & pakPath = fileGroup->getFolderPath();
+        const FilePath & pakPath = m_options.fileGroup->getFolderPath();
 
 		FilePath full_input = Helper::concatenationFilePath( pakPath, m_options.inputFileName );
 		FilePath full_output = Helper::concatenationFilePath( pakPath, m_options.outputFileName );
 
-        ConstString c_dev = STRINGIZE_STRING_LOCAL( "dev" );
-
-		MemoryInterfacePtr cache = Helper::createMemoryCacheFile( c_dev, full_input, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr cache = Helper::createMemoryCacheFile( m_fileGroup, full_input, false, __FILE__, __LINE__ );
 
 		if( cache == nullptr )
 		{
@@ -75,7 +65,7 @@ namespace Mengine
 		size_t uncompressSize = cache->getSize();
 
 		OutputStreamInterfacePtr output = FILE_SERVICE()
-			->openOutputFile( STRINGIZE_STRING_LOCAL( "dev" ), full_output );
+			->openOutputFile( m_fileGroup, full_output );
 
 		if( output == nullptr )
 		{

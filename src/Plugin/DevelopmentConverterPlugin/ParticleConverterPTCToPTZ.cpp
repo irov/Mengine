@@ -28,39 +28,31 @@ namespace Mengine
 	{
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool ParticleConverterPTCToPTZ::initialize()
+	bool ParticleConverterPTCToPTZ::_initialize()
 	{
         m_convertExt = ".ptz";
 
-		m_archivator = ARCHIVE_SERVICE()
+        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
 			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
 
-		if( m_archivator == nullptr )
+		if( archivator == nullptr )
 		{
 			return false;
 		}
+
+        m_archivator = archivator;
 
 		return true;
 	}
 	///////////////////////////////////////////////////////////////////////////////////////////////
 	bool ParticleConverterPTCToPTZ::convert()
 	{
-        FileGroupInterfacePtr fileGroup;
-        if( FILE_SERVICE()->hasFileGroup( m_options.fileGroup, &fileGroup ) == false )
-        {
-            LOGGER_ERROR("ParticleConverterPTCToPTZ::convert_: not found file group '%s'"
-                , m_options.fileGroup.c_str()
-                );
-
-            return false;
-        }
-
-        const FilePath & pakPath = fileGroup->getFolderPath();
+        const FilePath & pakPath = m_options.fileGroup->getFolderPath();
 
 		FilePath full_input = Helper::concatenationFilePath( pakPath, m_options.inputFileName );
 		FilePath full_output = Helper::concatenationFilePath( pakPath, m_options.outputFileName );
 		        
-		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( STRINGIZE_STRING_LOCAL( "dev" ), full_input, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroup, full_input, false, __FILE__, __LINE__ );
 
 		if( data_cache == nullptr )
 		{
@@ -80,7 +72,7 @@ namespace Mengine
 		}
 
         OutputStreamInterfacePtr output = FILE_SERVICE()
-            ->openOutputFile( STRINGIZE_STRING_LOCAL( "dev" ), full_output );
+            ->openOutputFile( m_fileGroup, full_output );
 
 		if( output == nullptr )
 		{

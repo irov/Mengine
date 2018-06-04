@@ -53,7 +53,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	ArchivatorInterfacePtr ArchiveService::getArchivator( const ConstString & _type ) const
+	const ArchivatorInterfacePtr & ArchiveService::getArchivator( const ConstString & _type ) const
 	{
 		TMapArchivators::const_iterator it_found = m_archivators.find( _type );
 
@@ -63,7 +63,7 @@ namespace Mengine
 				, _type.c_str() 
 				);
 
-			return nullptr;
+			return ArchivatorInterfacePtr::none();
 		}
 
 		const ArchivatorInterfacePtr & archivator = it_found->second;

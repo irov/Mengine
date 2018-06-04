@@ -14,7 +14,7 @@
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-#	define MENGINE_TEXTURE_MANAGER_HASH_SIZE 4096
+#	define MENGINE_TEXTURE_MANAGER_HASH_SIZE 4099
 	//////////////////////////////////////////////////////////////////////////
     class RenderTextureManager
         : public ServiceBase<RenderTextureServiceInterface>
@@ -28,7 +28,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-		RenderTextureInterfacePtr loadTexture( const ConstString& _pakName, const FilePath& _fileName, const ConstString& _codecName ) override;
+		RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath& _fileName, const ConstString& _codecName ) override;
 		RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height ) override;
 
     public:        
@@ -36,16 +36,16 @@ namespace Mengine
         RenderTextureInterfacePtr createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 
 	public:
-        RenderTextureInterfacePtr getTexture( const ConstString& _pakName, const FilePath & _fileName ) const override;
+        RenderTextureInterfacePtr getTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName ) const override;
 
     public:
-        bool hasTexture( const ConstString& _pakName, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const override;
+        bool hasTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const override;
 
     public:
-        void cacheFileTexture( const ConstString& _pakName, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) override;
+        void cacheFileTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) override;
 
     public:
-        bool saveImage( const RenderTextureInterfacePtr & _texture, const ConstString& _fileGroupName, const ConstString & _codecName, const FilePath & _fileName ) override;
+        bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr& _fileGroup, const ConstString & _codecName, const FilePath & _fileName ) override;
 
     public:
         void visitTexture( VisitorRenderTextureInterface * _visitor ) const override;

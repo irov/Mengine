@@ -34,12 +34,12 @@ namespace Mengine
 		void _finalizeService() override;
 		
 	public:
-		bool loadTextEntry( const ConstString & _pakName, const FilePath & _path ) override;
-		bool unloadTextEntry( const ConstString & _pakName, const FilePath & _path ) override;
+		bool loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
+		bool unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
 
 	public:
-		bool loadFonts( const ConstString & _pakName, const FilePath & _path ) override;
-		bool unloadFonts( const ConstString & _pakName, const FilePath & _path ) override;
+		bool loadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
+		bool unloadFonts( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path ) override;
 
 	public:
 		bool existText( const ConstString & _key, TextEntryInterfacePtr * _entry ) const override;

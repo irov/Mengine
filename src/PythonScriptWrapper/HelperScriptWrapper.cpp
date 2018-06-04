@@ -150,7 +150,7 @@ namespace Mengine
 
 		bool s_writeGameData( pybind::kernel_interface * _kernel, const ConstString & _name, PyObject * _data, PyObject * _pickleTypes )
 		{
-			size_t size;
+            size_t size;
 			pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size );
 
             MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, __FILE__, __LINE__ );
@@ -296,7 +296,7 @@ namespace Mengine
 			s_printChildren2( _node, 0 );
 		}
 
-		size_t s_getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group )
+        uint32_t s_getGroupResourcesMemoryUse( const ConstString & _category, const ConstString & _group )
 		{
             (void)_category;
             (void)_group;
@@ -306,7 +306,7 @@ namespace Mengine
 
 		bool s_intersectPathVsCircle( const pybind::list & _path, const mt::vec3f & _position, float _radius )
 		{
-			size_t path_count = _path.size();
+            pybind::list::size_type path_count = _path.size();
 
 			if( path_count < 2 )
 			{
@@ -315,7 +315,7 @@ namespace Mengine
 
 			float dradius = _radius * _radius;
 
-			for( size_t i = 1; i != path_count; ++i )
+			for( pybind::list::size_type i = 1; i != path_count; ++i )
 			{
 				mt::vec3f v0 = _path[i - 1];
 				mt::vec3f v1 = _path[i - 0];
@@ -351,13 +351,13 @@ namespace Mengine
 
 		pybind::object s_selectRandomPointFromPathRadius( pybind::kernel_interface * _kernel, const pybind::list & _path, const mt::vec3f & _position, float _radius )
 		{
-			size_t path_count = _path.size();
+            pybind::list::size_type path_count = _path.size();
 
 			float dradius = _radius * _radius;
 
 			std::vector<mt::vec3f> points;
 
-			for( size_t i = 0; i != path_count; ++i )
+			for( pybind::list::size_type i = 0; i != path_count; ++i )
 			{
 				mt::vec3f v = _path[i];
 
@@ -752,7 +752,7 @@ namespace Mengine
 			pybind::list py_list( _kernel );
 
 			const mt::vec2f * ring = _polygon.outer_points();
-			size_t ring_count = _polygon.outer_count();
+			Polygon::size_type ring_count = _polygon.outer_count();
 
 			py_list.append( ring, ring + ring_count );
 
@@ -2781,8 +2781,8 @@ namespace Mengine
 
             if( pybind::string_check( _obj ) == true )
             {
-                size_t size;
-                const char * value_char = pybind::string_to_char_and_size( _obj, size );
+                uint32_t size;
+                const Char * value_char = pybind::string_to_char_and_size( _obj, size );
 
                 if( value_char == 0 )
                 {
@@ -2821,9 +2821,9 @@ namespace Mengine
             {
                 pybind::list l( _kernel, _obj, pybind::borrowed() );
 
-                size_t tags_size = l.size();
+                uint32_t tags_size = l.size();
 
-                for( size_t i = 0; i != tags_size; ++i )
+                for( uint32_t i = 0; i != tags_size; ++i )
                 {
                     ConstString tag = l[i];
 

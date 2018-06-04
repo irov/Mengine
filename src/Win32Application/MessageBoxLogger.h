@@ -13,6 +13,6 @@ namespace Mengine
 		~MessageBoxLogger() override;
 
 	public:
-		void log( EMessageLevel _level, uint32_t _flag, const Char * _data, size_t _count ) override;
+		void log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count ) override;
 	};
 }

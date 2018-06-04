@@ -7,7 +7,7 @@ namespace Mengine
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const char * _file, uint32_t _line )
+		MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const Char * _file, uint32_t _line )
 		{
 			size_t stream_size = _stream->size();
 
@@ -21,7 +21,7 @@ namespace Mengine
 			return memoryBuffer;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const char * _file, uint32_t _line )
+		MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const Char * _file, uint32_t _line )
 		{
 			MemoryBufferInterfacePtr memoryBuffer = MEMORY_SERVICE()
 				->createMemoryBuffer();
@@ -48,7 +48,7 @@ namespace Mengine
 			return memoryBuffer;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line )
+		MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _file, uint32_t _line )
 		{
 			InputStreamInterfacePtr fileStream = FILE_SERVICE()
 				->openInputFile( _category, _filePath, _stream );
@@ -63,7 +63,7 @@ namespace Mengine
 			return memory;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const Char * _file, uint32_t _line )
 		{
             MemoryBufferInterfacePtr cache = MEMORY_SERVICE()
 				->createMemoryCacheBuffer();
@@ -83,7 +83,7 @@ namespace Mengine
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const Char * _file, uint32_t _line )
 		{
             MemoryInterfacePtr cache = Helper::createMemoryCacheBuffer( _size, _file, _line );
 
@@ -104,7 +104,7 @@ namespace Mengine
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheStream( const InputStreamInterfacePtr & _stream, const char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheStream( const InputStreamInterfacePtr & _stream, const Char * _file, uint32_t _line )
 		{
 			size_t size = _stream->size();
 
@@ -118,7 +118,7 @@ namespace Mengine
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _file, uint32_t _line )
 		{
 			InputStreamInterfacePtr stream = FILE_SERVICE()
 				->openInputFile( _category, _filePath, _stream );
@@ -138,7 +138,7 @@ namespace Mengine
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _file, uint32_t _line )
 		{
 			InputStreamInterfacePtr stream = FILE_SERVICE()
 				->openInputFile( _category, _filePath, _stream );

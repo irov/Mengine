@@ -98,7 +98,7 @@ namespace Mengine
         m_createConsole = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ConsoleLogger::log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _count )
+    void Win32ConsoleLogger::log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count )
     {
         (void)_flag;
 

@@ -18,17 +18,19 @@ namespace Mengine
         typedef IntrusivePtr<Type> TypePtr;
 
     protected:
-        bool _initialize() override
+        FactoryPtr _initializeFactory() override
         {
-            m_factory = new FactoryPool<Type, Count>();
+            FactoryPtr factory = new FactoryPool<Type, Count>();
 
-            return true;
+            return factory;
         }
 
 	protected:
 		PointerFactorable generate() override
 		{
-            TypePtr object = m_factory->createObject();
+            const FactoryPtr & factory = this->getFactory();
+
+            TypePtr object = factory->createObject();
 
 			if( object == nullptr )
 			{
@@ -40,19 +42,7 @@ namespace Mengine
 				return nullptr;
 			}
 
-			object->setScriptWrapper( m_scriptWrapper );
-
 			return object;
 		}
-
-		uint32_t count() const override
-		{
-			uint32_t count = m_factory->getCountObject();
-
-			return count;
-		}
-
-	protected:
-        FactoryPtr m_factory;
 	};
 }

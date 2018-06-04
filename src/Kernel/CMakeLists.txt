@@ -255,6 +255,13 @@ ScriptWrapper
 	ScriptWrapper.h
 	ScriptEventReceiver.h	
 )
+
+ADD_FILTER(
+Randomizer
+	MT19937Randomizer.cpp
+	MT19937Randomizer.h	
+)
+   
    
 INCLUDE_DIRECTORIES(
     ${SOURCE_DIR}

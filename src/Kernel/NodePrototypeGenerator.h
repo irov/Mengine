@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasePrototypeGenerator.h"
+#include "ScriptablePrototypeGenerator.h"
 
 #include "Kernel/Node.h"
 
@@ -15,20 +15,14 @@ namespace Mengine
 {
 	template<class Type, uint32_t Count>
 	class NodePrototypeGenerator
-		: public BasePrototypeGenerator
+		: public ScriptablePrototypeGenerator<Type, Count>
 	{
-    protected:
-        bool _initialize() override
-        {
-            m_factory = new FactoryPool<Type, Count>();
-
-            return true;
-        }
-
 	protected:
 		PointerFactorable generate() override
 		{
-            IntrusivePtr<Type> node = m_factory->createObject();
+            const FactoryPtr & factory = this->getFactory();
+
+            NodePtr node = factory->createObject();
 
 			if( node == nullptr )
 			{
@@ -41,19 +35,10 @@ namespace Mengine
 			}
 
 			node->setType( m_prototype );
-			node->setScriptWrapper( m_scriptWrapper );
+
+            this->setupScriptable( node );
 
 			return node;
 		}
-
-		uint32_t count() const override
-		{
-			uint32_t count = m_factory->getCountObject();
-
-			return count;
-		}
-
-	protected:
-        FactoryPtr m_factory;
 	};
 }

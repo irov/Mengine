@@ -2,10 +2,7 @@
 
 #include "BasePrototypeGenerator.h"
 
-#include "Kernel/Scriptable.h"
-
 #include "Core/ConstString.h"
-#include "Core/MemoryAllocator.h"
 
 #include "Factory/FactoryPool.h"
 
@@ -17,20 +14,32 @@ namespace Mengine
 	class ScriptablePrototypeGenerator
 		: public BasePrototypeGenerator
 	{
+    protected:
         typedef IntrusivePtr<Type> TypePtr;
 
     protected:
-        bool _initialize() override
+        const ScriptWrapperInterfacePtr & getScriptWrapper() const
         {
-            m_factory = new FactoryPool<Type, Count>();
+            return m_scriptWrapper;
+        }
 
-            return true;
+    protected:
+        FactoryPtr _initializeFactory() override
+        {
+            m_scriptWrapper = SCRIPT_SERVICE()
+                ->getWrapper( m_prototype );
+
+            FactoryPtr factory = new FactoryPool<Type, Count>();
+
+            return factory;
         }
 
 	protected:
 		PointerFactorable generate() override
 		{
-            TypePtr scriptable = m_factory->createObject();
+            const FactoryPtr & factory = this->getFactory();
+
+            TypePtr scriptable = factory->createObject();
 
 			if( scriptable == nullptr )
 			{
@@ -42,19 +51,18 @@ namespace Mengine
 				return nullptr;
 			}
 
-			scriptable->setScriptWrapper( m_scriptWrapper );
+            this->setupScriptable( scriptable );
 
 			return scriptable;
 		}
 
-		uint32_t count() const override
-		{
-			uint32_t count = m_factory->getCountObject();
-
-			return count;
-		}
+    protected:
+        void setupScriptable( const ScriptablePtr & _scriptable )
+        {
+            _scriptable->setScriptWrapper( m_scriptWrapper );
+        }
 
 	protected:
-		FactoryPtr m_factory;
+        ScriptWrapperInterfacePtr m_scriptWrapper;
 	};
 }

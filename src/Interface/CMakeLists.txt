@@ -67,6 +67,7 @@ src
     UnicodeInterface.h
     NotificatorInterface.h
     LoaderInterface.h
+    RandomizerInterface.h
     
 	dummy.cpp
 )

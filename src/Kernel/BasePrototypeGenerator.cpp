@@ -6,29 +6,35 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	BasePrototypeGenerator::BasePrototypeGenerator()
-		: m_scriptWrapper( nullptr )
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    BasePrototypeGenerator::~BasePrototypeGenerator()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////	
 	bool BasePrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype )
 	{
 		m_category = _category;
 		m_prototype = _prototype;
 
-		m_scriptWrapper = SCRIPT_SERVICE()
-			->getWrapper( m_prototype );
+        FactoryPtr factory = this->_initializeFactory();
 
-        if( this->_initialize() == false )
+        if( factory == nullptr )
         {
             return false;
         }
 
+        m_factory = factory;
+
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool BasePrototypeGenerator::_initialize()
+    uint32_t BasePrototypeGenerator::count() const
     {
-        return true;
+        uint32_t count = m_factory->getCountObject();
+
+        return count;
     }
 	//////////////////////////////////////////////////////////////////////////
 	void BasePrototypeGenerator::destroy()

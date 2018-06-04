@@ -15,10 +15,12 @@
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PackageInterface.h"
+#include "Interface/RandomizerInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
 #include "Kernel/Arrow.h"
+#include "Kernel/MT19937Randomizer.h"
 
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ScheduleManagerInterface.h"
@@ -125,6 +127,7 @@
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"
 #include "Kernel/ThreadTask.h"
+#include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/ScriptEventReceiver.h"
 #include "Kernel/ScriptWrapper.h"
@@ -914,6 +917,14 @@ namespace Mengine
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), _type );
 
             return surface;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        RandomizerInterfacePtr s_generateRandomizer( const ConstString & _prototype )
+        {
+            RandomizerInterfacePtr randomizer = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), _prototype );
+
+            return randomizer;
         }
         //////////////////////////////////////////////////////////////////////////
         ShapeQuadFixedPtr createSprite( const ConstString & _name, const ResourcePtr & _resource )
@@ -3977,6 +3988,8 @@ namespace Mengine
         pybind::def_functor( kernel, "createSurface", nodeScriptMethod, &EngineScriptMethod::createSurface );
         pybind::def_functor( kernel, "createSprite", nodeScriptMethod, &EngineScriptMethod::createSprite );
 
+        pybind::def_functor( kernel, "generateRandomizer", nodeScriptMethod, &EngineScriptMethod::s_generateRandomizer );
+
         pybind::def_functor_args( kernel, "timing", nodeScriptMethod, &EngineScriptMethod::timing );
         pybind::def_functor( kernel, "timingRemove", nodeScriptMethod, &EngineScriptMethod::timingRemove );
 
@@ -4221,5 +4234,16 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollower" ), new ScriptablePrototypeGenerator<PythonValueFollower, 32>() );
+
+        pybind::interface_<RandomizerInterface, pybind::bases<Mixin> >( kernel, "Randomizer" )
+            .def( "setSeed", &RandomizerInterface::setSeed )
+            .def( "getRandom", &RandomizerInterface::getRandom )
+            .def( "getRandomRange", &RandomizerInterface::getRandomRange )
+            .def( "getRandomf", &RandomizerInterface::getRandomf )
+            .def( "getRandomRangef", &RandomizerInterface::getRandomRangef )
+            ;
+        
+        PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), new DefaultPrototypeGenerator<MT19937Randomizer, 8>() );
     }
 }

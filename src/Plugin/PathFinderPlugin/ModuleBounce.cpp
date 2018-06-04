@@ -3,7 +3,7 @@
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Kernel/DefaultPrototypeGenerator.h"
+#include "Kernel/ScriptablePrototypeGenerator.h"
 #include "Kernel/ScriptEventReceiver.h"
 #include "Kernel/ScriptWrapper.h"
 
@@ -49,7 +49,7 @@ namespace Mengine
 			->setWrapper( STRINGIZE_STRING_LOCAL( "BounceActor" ), new ScriptWrapper<BounceActor>() );
 
 		PROTOTYPE_SERVICE()
-			->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "BounceActor" ), new DefaultPrototypeGenerator<BounceActor, 32>() );
+			->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "BounceActor" ), new ScriptablePrototypeGenerator<BounceActor, 32>() );
 		
         m_factoryBounceWorlds = new FactoryPool<BounceWorld, 4>();
 

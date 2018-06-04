@@ -9,6 +9,8 @@
 #include "Core/ConstString.h"
 #include "Core/MemoryAllocator.h"
 
+#include "Factory/Factory.h"
+
 #include "Logger/Logger.h"
 
 namespace Mengine
@@ -19,12 +21,19 @@ namespace Mengine
 	{
 	public:
 		BasePrototypeGenerator();
+        ~BasePrototypeGenerator() override;
+
+    protected:
+        inline const FactoryPtr & getFactory() const;
 
 	protected:
 		bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
 
     protected:
-        virtual bool _initialize();
+        virtual FactoryPtr _initializeFactory() = 0;
+
+    protected:
+        uint32_t count() const override;
 
     protected:
 		void destroy() override;
@@ -33,6 +42,11 @@ namespace Mengine
 		ConstString m_category;
 		ConstString m_prototype;
 
-		ScriptWrapperInterfacePtr m_scriptWrapper;
+        FactoryPtr m_factory;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    inline const FactoryPtr & BasePrototypeGenerator::getFactory() const
+    {
+        return m_factory;
+    }
 }

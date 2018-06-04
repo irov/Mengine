@@ -117,7 +117,9 @@ namespace Mengine
         protected:
             PointerFactorable generate() override
             {
-                ResourceMovie2Ptr resource = m_factory->createObject();
+                const FactoryPtr & factory = this->getFactory();
+
+                ResourceMovie2Ptr resource = factory->createObject();
 
                 if( resource == nullptr )
                 {
@@ -130,7 +132,8 @@ namespace Mengine
                 }
 
                 resource->setType( m_prototype );
-                resource->setScriptWrapper( m_scriptWrapper );
+
+                this->setupScriptable( resource );
 
                 resource->setMovieInstance( m_instance );
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasePrototypeGenerator.h"
+#include "ScriptablePrototypeGenerator.h"
 
 #include "Kernel/Resource.h"
 
@@ -13,20 +13,14 @@ namespace Mengine
 {
 	template<class Type, uint32_t Count>
 	class ResourcePrototypeGenerator
-		: public BasePrototypeGenerator
+		: public ScriptablePrototypeGenerator<Type, Count>
 	{
-    protected:
-        bool _initialize() override
-        {
-            m_factory = new FactoryPool<Type, Count>();
-
-            return true;
-        }
-
 	protected:
 		PointerFactorable generate() override
 		{
-			IntrusivePtr<Type> resource = m_factory->createObject();
+            const FactoryPtr & factory = this->getFactory();
+
+			ResourcePtr resource = factory->createObject();
 
 			if( resource == nullptr )
 			{
@@ -39,19 +33,10 @@ namespace Mengine
 			}
 
 			resource->setType( m_prototype );
-			resource->setScriptWrapper( m_scriptWrapper );
+
+            this->setupScriptable( resource );
 
 			return resource;
 		}
-
-		uint32_t count() const override
-		{
-			uint32_t count = m_factory->getCountObject();
-
-			return count;
-		}
-		
-	protected:
-		FactoryPtr m_factory;
 	};
 }

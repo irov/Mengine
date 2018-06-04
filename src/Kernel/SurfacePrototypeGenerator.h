@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasePrototypeGenerator.h"
+#include "ScriptablePrototypeGenerator.h"
 
 #include "Kernel/Surface.h"
 
@@ -15,20 +15,14 @@ namespace Mengine
 {
 	template<class Type, uint32_t Count>
 	class SurfacePrototypeGenerator
-		: public BasePrototypeGenerator
+		: public ScriptablePrototypeGenerator<Type, Count>
 	{
-    protected:
-        bool _initialize() override
-        {
-            m_factory = new FactoryPool<Type, Count>();
-
-			return true;
-        }
-
 	protected:
 		PointerFactorable generate() override
 		{
-			SurfacePtr surface = m_factory->createObject();
+            const FactoryPtr & factory = this->getFactory();
+
+			SurfacePtr surface = factory->createObject();
 
 			if( surface == nullptr )
 			{
@@ -41,19 +35,10 @@ namespace Mengine
 			}
 
 			surface->setType( m_prototype );
-			surface->setScriptWrapper( m_scriptWrapper );
+
+            this->setupScriptable( surface );
 
 			return surface;
 		}
-
-		uint32_t count() const override
-		{
-			uint32_t count = m_factory->getCountObject();
-
-			return count;
-		}
-
-	protected:		
-		FactoryPtr m_factory;
 	};
 }

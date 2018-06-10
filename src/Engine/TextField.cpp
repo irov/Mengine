@@ -165,7 +165,7 @@ namespace Mengine
         float lineOffset = this->calcLineOffset();
 
         ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
-        
+
         mt::vec2f base_offset( 0.f, 0.f );
 
         switch( verticalAlign )
@@ -185,7 +185,7 @@ namespace Mengine
         }
 
         float charScale = this->calcCharScale();
-        
+
         EMaterial materialId = EM_DEBUG;
 
         bool premultiply = _font->getFontPremultiply();
@@ -237,7 +237,7 @@ namespace Mengine
             default:
                 break;
             };
-        }               
+        }
 
         uint32_t cacheFontARGB[16] = { 0 };
 
@@ -598,7 +598,7 @@ namespace Mengine
     {
         float fontHeight = _font->getFontAscent();
 
-        float charOffset = this->calcCharOffset();        
+        float charOffset = this->calcCharOffset();
         float lineOffset = this->calcLineOffset();
 
         TVectorTextLineLayout layouts;
@@ -709,7 +709,7 @@ namespace Mengine
 
             return;
         }
-                
+
         for( const CacheFont & cache : m_cacheFonts )
         {
             const TextFontInterfacePtr & font = cache.font;
@@ -788,7 +788,7 @@ namespace Mengine
 
                     TVectorU32String words;
                     Helper::u32split2( words, text, false, space_delims );
-                    
+
                     TextChunk new_textChunk;
                     for( const U32String & word : words )
                     {
@@ -832,7 +832,7 @@ namespace Mengine
                         else
                         {
                             length += word_length;
-                        }             
+                        }
 
                         if( new_textChunk.value.empty() == true )
                         {
@@ -862,7 +862,7 @@ namespace Mengine
 
             textLines.swap( new_textLines );
         }
-                
+
         this->updateTextLinesDimension_( baseFont, textLines, m_textSize, m_charCount, m_layoutCount );
 
         this->updateTextLinesMaxCount_( textLines );
@@ -890,9 +890,9 @@ namespace Mengine
                 const CacheFont & cache = m_cacheFonts[textChunk.fontId];
 
                 const TextFontInterfacePtr & chunkFont = cache.font;
-                
+
                 uint32_t layoutCount = chunkFont->getLayoutCount();
-                
+
                 TVectorTextLine textLine;
                 for( uint32_t layoutIndex = 0; layoutIndex != layoutCount; ++layoutIndex )
                 {
@@ -911,7 +911,7 @@ namespace Mengine
                 }
 
                 textLine2.emplace_back( textLine );
-            }    
+            }
 
             m_layouts.emplace_back( textLine2 );
         }
@@ -1365,7 +1365,7 @@ namespace Mengine
         return m_textFormatArgs;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t TextField::getTextExpectedArgument() const
+    uint32_t TextField::getTextExpectedArgument() const
     {
         const TextEntryInterfacePtr & textEntry = this->getTextEntry();
 
@@ -1381,17 +1381,13 @@ namespace Mengine
 
         const String & textValue = textEntry->getValue();
 
-        const char * str_textValue = textValue.c_str();
-
         try
         {
-            StringFormat fmt( str_textValue );
-
-            int expected_args = fmt.expected_args();
-
-            return (size_t)expected_args;
+            uint32_t expected_args = Helper::getStringFormatExpectedArgs( textValue );
+            
+            return expected_args;
         }
-        catch( const boost::io::format_error & _ex )
+        catch( const std::exception & _ex )
         {
             LOGGER_ERROR( "TextField::getTextExpectedArgument '%s:%s' except error '%s'"
                 , this->getName().c_str()
@@ -1418,23 +1414,16 @@ namespace Mengine
         }
 
         const String & textValue = textEntry->getValue();
-
-        const Char * str_textValue = textValue.c_str();
-
+                
         try
         {
-            StringFormat fmt( str_textValue );
-
-            for( const String & arg : m_textFormatArgs )
-            {
-                fmt % arg;
-            }
+            String fmt = Helper::getStringFormat( textValue, m_textFormatArgs );
 
             const TextFontInterfacePtr & font = this->getFont();
 
-            _cacheText = font->prepareText( fmt.str() );
+            _cacheText = font->prepareText( fmt );
         }
-        catch( const boost::io::format_error & _ex )
+        catch( const std::exception & _ex )
         {
             LOGGER_ERROR( "TextField::updateTextCache_ '%s:%s' except error '%s'"
                 , this->getName().c_str()

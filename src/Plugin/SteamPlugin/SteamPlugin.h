@@ -14,6 +14,7 @@ namespace Mengine
 
 	public:
 		SteamPlugin();
+        ~SteamPlugin() override;
 
 	protected:
 		bool _initialize() override;

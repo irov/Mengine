@@ -34,7 +34,7 @@ namespace Mengine
 	static void PNGAPI s_readProc( png_structp _png_ptr, unsigned char * _data, png_size_t _size )
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
-		InputStreamInterface * stream = static_cast<InputStreamInterface *>( io_ptr );
+		InputStreamInterface * stream = reinterpret_cast<InputStreamInterface *>( io_ptr );
 
 		stream->read( _data, _size );
 	}
@@ -118,6 +118,11 @@ namespace Mengine
 		png_set_read_fn( m_png_ptr, m_stream.get(), &s_readProc );
 
 		png_set_sig_bytes( m_png_ptr, PNG_BYTES_TO_CHECK );
+
+        if( setjmp( png_jmpbuf( m_png_ptr ) ) )
+        {
+            return false;
+        }
 
 		png_read_info( m_png_ptr, m_info_ptr );
 

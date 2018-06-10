@@ -15,14 +15,11 @@ set( sources
     ${SOURCE_DIR}/lib/analyze.c
     ${SOURCE_DIR}/lib/apiwrapper.c
     ${SOURCE_DIR}/lib/bitpack.c
-    ${SOURCE_DIR}/lib/cpu.c
-    
-    ${SOURCE_DIR}/lib/decapiwrapper.c
-    
+    ${SOURCE_DIR}/lib/collect.c    
+    ${SOURCE_DIR}/lib/decapiwrapper.c    
     ${SOURCE_DIR}/lib/decinfo.c
     ${SOURCE_DIR}/lib/decode.c
-    ${SOURCE_DIR}/lib/dequant.c
-    
+    ${SOURCE_DIR}/lib/dequant.c    
     ${SOURCE_DIR}/lib/fdct.c
     ${SOURCE_DIR}/lib/fragment.c
     ${SOURCE_DIR}/lib/huffdec.c
@@ -35,5 +32,23 @@ set( sources
     ${SOURCE_DIR}/lib/state.c
     ${SOURCE_DIR}/lib/tokenize.c
     )
+	
+set( sources_ext )	
+	
+if(WIN32)
+	add_definitions(-DOC_X86_ASM)
 
-add_library( ${PROJECT_NAME} STATIC ${sources} )
+	if(MSVC)
+		set( sources_ext
+			${SOURCE_DIR}/lib/x86_vc/mmxencfrag.c
+			${SOURCE_DIR}/lib/x86_vc/mmxfdct.c
+			${SOURCE_DIR}/lib/x86_vc/mmxfrag.c
+			${SOURCE_DIR}/lib/x86_vc/mmxidct.c
+			${SOURCE_DIR}/lib/x86_vc/mmxstate.c
+			${SOURCE_DIR}/lib/x86_vc/x86cpu.c
+			${SOURCE_DIR}/lib/x86_vc/x86state.c	
+			)
+	endif()
+endif()	
+
+add_library( ${PROJECT_NAME} STATIC ${sources} ${sources_ext} )

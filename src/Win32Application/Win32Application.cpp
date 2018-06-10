@@ -116,8 +116,8 @@ PLUGIN_EXPORT( Spine );
 #endif
 
 PLUGIN_EXPORT( Movie );
-PLUGIN_EXPORT( Box2D );
-PLUGIN_EXPORT( PathFinder );
+//PLUGIN_EXPORT( Box2D );
+//PLUGIN_EXPORT( PathFinder );
 
 #ifdef MENGINE_PLUGIN_TTF
 PLUGIN_EXPORT( TTF );
@@ -702,9 +702,8 @@ namespace Mengine
 #endif
         MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
         //MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
-        MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
-
-        MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
+        //MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
+        //MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
 
         MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin BitmapFont..." );
 

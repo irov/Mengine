@@ -336,7 +336,6 @@ INCLUDE_DIRECTORIES(
     ${Mengine_SOURCE_DIR}/Utils 
     ${THIRDPARTY_DIR}
     ${THIRDPARTY_DIR}/pybind/include
-    ${THIRDPARTY_DIR}/boost
     ${THIRDPARTY_DIR}/metabuf
     ${THIRDPARTY_DIR}/stdex/include
     ${THIRDPARTY_DIR}/utf8/source

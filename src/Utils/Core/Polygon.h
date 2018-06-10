@@ -22,6 +22,7 @@ namespace Mengine
 		~Polygon();
 
 		Polygon( const Polygon & _polygon );
+        Polygon( Polygon && _polygon );
 		Polygon( const void * _impl );
 
 	public:
@@ -80,7 +81,7 @@ namespace Mengine
 		bool difference( const Polygon & _polygon, TVectorPolygon & _out ) const;
 
 	public:
-		void * impl;
+		void * m_impl;
 	};
 	//////////////////////////////////////////////////////////////////////////	
 }

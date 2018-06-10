@@ -50,7 +50,7 @@ namespace Mengine
         const TVectorString & getTextFormatArgs() const;
 
     public:
-        size_t getTextExpectedArgument() const;
+		uint32_t getTextExpectedArgument() const;
 
     protected:
         bool updateTextCache_( U32String & _cacheText ) const;

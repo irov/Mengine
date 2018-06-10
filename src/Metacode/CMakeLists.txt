@@ -19,8 +19,7 @@ INCLUDE_DIRECTORIES(
     ${Mengine_SOURCE_DIR} 
     ${Mengine_SOURCE_DIR}/Utils 
     ${THIRDPARTY_DIR}/libmath/include
-    ${THIRDPARTY_DIR}/metabuf    
-    ${THIRDPARTY_DIR}/boost
+    ${THIRDPARTY_DIR}/metabuf
     )     
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )

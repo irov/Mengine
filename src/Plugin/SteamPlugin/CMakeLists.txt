@@ -15,7 +15,7 @@ endif()
 
 INCLUDE_DIRECTORIES( 
         ${Mengine_SOURCE_DIR}/Utils 
-        ${THIRDPARTY_DIR}/steam/include
+        ${THIRDPARTY_DIR}/steam/public
         ${THIRDPARTY_DIR}/libmath/include
 )
 
@@ -30,11 +30,11 @@ set_target_properties (${MY_LIB_NAME} PROPERTIES
 )
 
 IF(MENGINE_PLATFORM_WIN32)
-    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/steam/lib/steam_api.lib)
+    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/steam/redistributable_bin/steam_api.lib)
 ENDIF()
 
 if( MENGINE_PLATFORM_MAC )
-    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/steam/lib/libsteam_api.dylib)
+    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/steam/redistributable_bin/osx32/libsteam_api.dylib)
 endif()
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})

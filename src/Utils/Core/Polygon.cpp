@@ -144,36 +144,45 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-#	define THIS_IMPL (*(BoostPolygon *)(this->impl))
-#	define OTHER_IMPL(other) (*(BoostPolygon *)(other.impl))
+#	define THIS_IMPL (*(BoostPolygon *)(this->m_impl))
+#	define OTHER_IMPL(other) (*(BoostPolygon *)(other.m_impl))
 	//////////////////////////////////////////////////////////////////////////
 	Polygon::Polygon()
 	{
-		impl = Helper::allocateT<BoostPolygon>();
+		m_impl = Helper::allocateT<BoostPolygon>();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Polygon::~Polygon()
 	{
-		Helper::freeT( (BoostPolygon*)impl);
+        if( m_impl != nullptr )
+        {
+            Helper::freeT( (BoostPolygon*)m_impl );
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Polygon::Polygon( const Polygon & _polygon )
 	{
-		impl = Helper::allocateT<BoostPolygon>();
+		m_impl = Helper::allocateT<BoostPolygon>();
 
-		THIS_IMPL = (*(BoostPolygon *)(_polygon.impl));
+		THIS_IMPL = (*(BoostPolygon *)(_polygon.m_impl));
 	}
+    //////////////////////////////////////////////////////////////////////////
+    Polygon::Polygon( Polygon && _polygon )
+    {
+        m_impl = _polygon.m_impl;
+        _polygon.m_impl = nullptr;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	Polygon::Polygon( const void * _impl )
 	{
-		impl = Helper::allocateT<BoostPolygon>();
+		m_impl = Helper::allocateT<BoostPolygon>();
 
 		THIS_IMPL = (*(BoostPolygon *)(_impl));
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Polygon::operator = (const Polygon & _polygon)
 	{
-		THIS_IMPL = (*(BoostPolygon *)(_polygon.impl));
+		THIS_IMPL = (*(BoostPolygon *)(_polygon.m_impl));
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Polygon::triangulate_indices( TVectorIndices & _result ) const
@@ -732,7 +741,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Polygon::intersects( const Polygon & _polygon ) const
 	{
-		return boost::geometry::intersects( THIS_IMPL, *(BoostPolygon*)(_polygon.impl) );
+		return boost::geometry::intersects( THIS_IMPL, *(BoostPolygon*)(_polygon.m_impl) );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Polygon::intersects( const mt::vec2f & _point ) const
@@ -762,7 +771,7 @@ namespace Mengine
 
 		try
 		{
-			boost::geometry::intersection( THIS_IMPL, *(BoostPolygon*)(_polygon.impl), output );
+			boost::geometry::intersection( THIS_IMPL, *(BoostPolygon*)(_polygon.m_impl), output );
 		}
 		catch( const std::exception & )
 		{
@@ -789,7 +798,7 @@ namespace Mengine
 
 		try
 		{
-			boost::geometry::difference( THIS_IMPL, *(BoostPolygon*)(_polygon.impl), output );
+			boost::geometry::difference( THIS_IMPL, *(BoostPolygon*)(_polygon.m_impl), output );
 		}
 		catch( const std::exception & )
 		{

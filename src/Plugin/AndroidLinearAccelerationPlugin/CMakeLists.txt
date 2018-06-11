@@ -16,7 +16,7 @@ INCLUDE_DIRECTORIES(
         ${THIRDPARTY_DIR}/libmath/include
 )
 
-ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
+ADD_MENGINE_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER Plugins

@@ -14,11 +14,11 @@ if errorlevel 1 goto error
 @echo Starting dependencies build release with debug info configuration...
 
 @pushd ..
-@call cmake_configure "%CD%\..\dependencies\cmake\bin\cmake.exe" "%CD%\..\CMake\Depends_WIN32" "..\dependencies\build_msvc12_relwithdebinfo" "Visual Studio 12 2013" "" "-DCMAKE_CONFIGURATION_TYPES:STRING='RelWithDebInfo'" "-DCMAKE_BUILD_TYPE:STRING='RelWithDebInfo'"
+@call cmake_configure CMake "%CD%\..\CMake\Depends_WIN32" "..\dependencies\build_msvc12_relwithdebinfo" "Visual Studio 12 2013" "" "-DCMAKE_CONFIGURATION_TYPES:STRING='RelWithDebInfo'" "-DCMAKE_BUILD_TYPE:STRING='RelWithDebInfo'"
 @popd
 
 @pushd ..\..\dependencies\build_msvc12_relwithdebinfo
-..\..\dependencies\cmake\bin\cmake --build .\ --config RelWithDebInfo
+CMake --build .\ --config RelWithDebInfo
 @popd
 
 @echo Done

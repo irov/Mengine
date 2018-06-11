@@ -32,9 +32,9 @@ else()
 endif()
 
 if(MENGINE_PLUGIN_ASTRALAX_DLL)
-    ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+    ADD_MENGINE_SHARED()
 else()
-    ADD_LIBRARY( ${MY_LIB_NAME} STATIC ${SRC_FILES} )
+    ADD_MENGINE_LIBRARY()
 endif()    
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
@@ -43,8 +43,9 @@ set_target_properties (${MY_LIB_NAME} PROPERTIES
 
 if(MENGINE_PLATFORM_WIN32)
     if(MENGINE_TARGET_MINGW)
-        #TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)
-        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/x64/libmagic3d.a)
+        #TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)		
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)
+		#TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/x64/magic3d.lib)
     else()
         TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/magic3d.lib)
     endif()

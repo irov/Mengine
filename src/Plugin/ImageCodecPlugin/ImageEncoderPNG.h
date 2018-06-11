@@ -2,7 +2,7 @@
 
 #include "Codec/ImageEncoder.h"
 
-#include <png.h>
+#include "png.h"
 
 namespace Mengine
 {

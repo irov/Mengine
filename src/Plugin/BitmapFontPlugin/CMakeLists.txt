@@ -24,7 +24,7 @@ INCLUDE_DIRECTORIES(
         ${THIRDPARTY_DIR}/tinyini/include
 )
 
-ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
+ADD_MENGINE_LIBRARY()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER Plugins

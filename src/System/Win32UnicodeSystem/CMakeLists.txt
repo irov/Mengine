@@ -7,7 +7,7 @@ src
 	Win32UnicodeSystem.h
 )
 
-ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
+ADD_MENGINE_LIBRARY()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER System

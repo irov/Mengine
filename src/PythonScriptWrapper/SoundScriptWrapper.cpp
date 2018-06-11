@@ -67,13 +67,13 @@ namespace Mengine
 
 				if( m_cb.is_callable() == true )
 				{
-					m_cb.call_args( id, m_args );
+					m_cb.call_args( _emitter, m_args );
 				}
 
 				if( SOUND_SERVICE()
                     ->releaseSoundSource( _emitter ) == false )
 				{
-					LOGGER_ERROR("MySoundNodeListenerInterface %s emitter invalid release sound %d"
+					LOGGER_ERROR("MySoundNodeListenerInterface '%s' emitter invalid release sound '%d'"
 						, m_resource->getName().c_str()
 						, id
 						);

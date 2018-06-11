@@ -36,9 +36,9 @@ set( sources
 set( sources_ext )	
 	
 if(WIN32)
-	add_definitions(-DOC_X86_ASM)
-
 	if(MSVC)
+		add_definitions(-DOC_X86_ASM)
+		
 		set( sources_ext
 			${SOURCE_DIR}/lib/x86_vc/mmxencfrag.c
 			${SOURCE_DIR}/lib/x86_vc/mmxfdct.c
@@ -47,6 +47,23 @@ if(WIN32)
 			${SOURCE_DIR}/lib/x86_vc/mmxstate.c
 			${SOURCE_DIR}/lib/x86_vc/x86cpu.c
 			${SOURCE_DIR}/lib/x86_vc/x86state.c	
+			)
+	else()
+		add_definitions(-DOC_X86_ASM)		
+	
+		set( sources_ext
+			${SOURCE_DIR}/lib/x86/mmxencfrag.c
+			${SOURCE_DIR}/lib/x86/mmxfdct.c
+			${SOURCE_DIR}/lib/x86/mmxfrag.c
+			${SOURCE_DIR}/lib/x86/mmxidct.c
+			${SOURCE_DIR}/lib/x86/mmxstate.c
+			${SOURCE_DIR}/lib/x86/sse2encfrag.c
+			${SOURCE_DIR}/lib/x86/sse2fdct.c
+			${SOURCE_DIR}/lib/x86/sse2idct.c
+			${SOURCE_DIR}/lib/x86/x86cpu.c
+			${SOURCE_DIR}/lib/x86/x86enc.c
+			${SOURCE_DIR}/lib/x86/x86enquant.c
+			${SOURCE_DIR}/lib/x86/x86state.c	
 			)
 	endif()
 endif()	

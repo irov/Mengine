@@ -6,7 +6,7 @@ src
 	TimelineService.cpp
 )
 
-ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
+ADD_MENGINE_LIBRARY()
 
 INCLUDE_DIRECTORIES( 
     ${Mengine_SOURCE_DIR} 

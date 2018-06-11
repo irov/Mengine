@@ -20,6 +20,46 @@ MACRO( ADD_PLUGIN Plugin Toggle DLL MSG )
     ENDIF()
 ENDMACRO()
 
+MACRO(CREATE_PRECOMPILED_HEADER)
+  IF(MSVC)
+	SET(PrecompiledHeader "PrecompiledHeader.h")
+	SET(PrecompiledSource "${SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.cpp")
+    SET(PrecompiledBinary "${SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.pch")
+
+    SET_SOURCE_FILES_PROPERTIES(${PrecompiledSource}
+                                PROPERTIES COMPILE_FLAGS "/Yc\"${PrecompiledHeader}\" /FI\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
+                                           OBJECT_OUTPUTS "${PrecompiledBinary}")
+  ENDIF()
+ENDMACRO()
+
+MACRO(ADD_PRECOMPILED_HEADER)
+  IF(MSVC)
+	SET(PrecompiledHeader "PrecompiledHeader.h")
+    SET(PrecompiledBinary "${SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.pch")
+
+    SET_SOURCE_FILES_PROPERTIES(${SRC_FILES}
+                                PROPERTIES COMPILE_FLAGS "/Yu\"${PrecompiledHeader}\" /FI\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
+                                           )  
+										   #OBJECT_DEPENDS "${PrecompiledBinary}"
+  ENDIF()
+ENDMACRO()
+
+MACRO(ADD_MENGINE_LIBRARY)
+	#ADD_PRECOMPILED_HEADER()
+
+	ADD_LIBRARY( ${MY_LIB_NAME} STATIC ${SRC_FILES})	
+	
+	#ADD_DEPENDENCIES( ${MY_LIB_NAME} PrecompiledHeader )
+ENDMACRO()
+
+MACRO(ADD_MENGINE_SHARED)
+	#ADD_PRECOMPILED_HEADER()
+
+	ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES})
+	
+	#ADD_DEPENDENCIES( ${MY_LIB_NAME} PrecompiledHeader )
+ENDMACRO()
+
 if(APPLE)
   macro(ADD_FRAMEWORK appname fwname)
     find_library(FRAMEWORK_${fwname}

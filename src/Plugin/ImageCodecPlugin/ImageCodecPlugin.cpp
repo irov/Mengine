@@ -17,8 +17,6 @@
 #include "ImageDecoderPVRTC.h"
 #include "ImageDecoderETC1.h"
 
-//#include "ImageDecoderCRN.h"
-
 #include "ImageDecoderHTF.h"
 #include "ImageEncoderHTF.h"
 #include "ImageDecoderACF.h"

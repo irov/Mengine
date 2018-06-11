@@ -6,6 +6,7 @@ MACRO( ADD_FILTER group_name )
     #MESSAGE( ${ARGN} )
 ENDMACRO()
 
+#ADD_SUBDIRECTORY( PrecompiledHeader )
 ADD_SUBDIRECTORY( Config )
 
 ADD_SUBDIRECTORY( Kernel )

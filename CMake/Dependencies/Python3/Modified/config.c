@@ -50,9 +50,7 @@ extern PyObject* PyInit__struct(void);
 extern PyObject* PyInit__datetime(void);
 extern PyObject* PyInit__functools(void);
 extern PyObject* PyInit__json(void);
-#ifdef _Py_HAVE_ZLIB
 extern PyObject* PyInit_zlib(void);
-#endif
 extern PyObject* PyInit_pyexpat( void );
 extern PyObject* PyInit__socket( void );
 extern PyObject* PyInit_unicodedata( void );
@@ -140,9 +138,7 @@ struct _inittab _PyImport_Inittab[] = {
 
     {"xxsubtype", PyInit_xxsubtype},
     {"zipimport", PyInit_zipimport},
-#ifdef _Py_HAVE_ZLIB
     {"zlib", PyInit_zlib},
-#endif
 
     /* CJK codecs */
     {"_multibytecodec", PyInit__multibytecodec},

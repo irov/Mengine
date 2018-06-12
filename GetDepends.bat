@@ -47,7 +47,7 @@ call:gitdepend https://github.com/irov/GOAP.git GOAP
 call:gitdepend https://github.com/curl/curl.git libcurl
 call:gitdepend https://github.com/irov/tinyini.git tinyini
 call:gitdepend https://github.com/spurious/SDL-mirror.git SDL2
-call:gitdepend https://github.com/kcat/openal-soft.git openal-soft
+call:gitdependr https://github.com/kcat/openal-soft.git openal-soft v1.18
 call:gitdepend https://github.com/frankinshtein/font-effects-lib.git libfe
 call:gitdepend https://github.com/irov/math.git libmath
 call:gitdepend https://github.com/akheron/jansson.git jansson

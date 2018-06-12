@@ -710,6 +710,9 @@ namespace Mengine
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
         pybind::interface_<SoundIdentityInterface, pybind::bases<Mixin> >( kernel, "SoundIdentity" )
+            .def( "getId", &SoundIdentityInterface::getId )
+            .def( "isStreamable", &SoundIdentityInterface::isStreamable )
+            .def( "getLoop", &SoundIdentityInterface::getLoop )
             ;
 
 		pybind::def_functor( kernel, "hasSound", soundScriptMethod, &SoundScriptMethod::hasSound );

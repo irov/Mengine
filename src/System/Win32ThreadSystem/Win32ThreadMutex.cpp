@@ -27,23 +27,11 @@ namespace Mengine
     void Win32ThreadMutex::lock()
     {
         EnterCriticalSection( &m_cs );
-        intrusive_ptr_add_ref( this );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::unlock()
     {
-        if( intrusive_ptr_get_ref( this ) == 1 )
-        {
-            CRITICAL_SECTION cs = m_cs;
-            intrusive_ptr_dec_ref( this );
-
-            LeaveCriticalSection( &cs );
-        }
-        else
-        {
-            intrusive_ptr_dec_ref( this );
-            LeaveCriticalSection( &m_cs );
-        }
+        LeaveCriticalSection( &m_cs );        
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadMutex::try_lock()
@@ -52,8 +40,6 @@ namespace Mengine
         {
             return false;
         }
-
-        intrusive_ptr_add_ref( this );
 
         return true;
     }

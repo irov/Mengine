@@ -564,7 +564,7 @@ namespace Mengine
 
 		virtual void setSeparateAlphaBlendMode() = 0;
 
-		virtual size_t getTextureMemoryUse() const = 0;
+		virtual uint32_t getTextureMemoryUse() const = 0;
 		virtual uint32_t getTextureCount() const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////

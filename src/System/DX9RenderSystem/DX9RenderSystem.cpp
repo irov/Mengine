@@ -952,7 +952,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t DX9RenderSystem::getTextureMemoryUse() const
+    uint32_t DX9RenderSystem::getTextureMemoryUse() const
     {
         return m_textureMemoryUse;
     }

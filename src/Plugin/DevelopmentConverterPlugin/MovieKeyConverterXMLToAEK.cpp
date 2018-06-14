@@ -696,8 +696,8 @@ namespace Mengine
 						delete cdt;
 					}
 
-                    uint32_t shapeVertexCount = p2t_points.size();
-                    uint32_t shapeIndicesCount = shape_indices.size();
+                    std::vector<p2t::Point>::size_type shapeVertexCount = p2t_points.size();
+                    TVectorIndices::size_type shapeIndicesCount = shape_indices.size();
 
 					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
 					{

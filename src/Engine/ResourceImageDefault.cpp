@@ -215,7 +215,7 @@ namespace Mengine
 
 		if( check_imageTransparency == true && dataInfo->channels == 4 )
 		{
-			size_t texture_size = dataInfo->getSize();
+            uint32_t texture_size = dataInfo->getSize();
 
 			MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( texture_size, __FILE__, __LINE__ );
 

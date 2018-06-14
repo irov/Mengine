@@ -17,8 +17,6 @@ namespace Mengine
         VistaWindowsLayer();
 
     public:
-        EWindowsType getWindowsType() override;
-
         bool setProcessDPIAware() override;
         bool supportUnicode() override;
 
@@ -73,8 +71,6 @@ namespace Mengine
 		bool createDirectoryUser_( const WChar * _userPath, const WString & _path, const WString & _file, const void * _data, size_t _size );
 
     protected:
-        EWindowsType m_windowsType;
-
         bool m_checkedUnicode;
         bool m_supportUnicode;
     };

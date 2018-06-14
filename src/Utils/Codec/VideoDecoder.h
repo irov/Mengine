@@ -11,6 +11,7 @@ namespace Mengine
 	{
 	public:
 		VideoDecoder();
+        ~VideoDecoder() override;
 
     public:
         bool setOptions( const CodecOptions * _options ) override;

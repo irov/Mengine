@@ -6,6 +6,8 @@
 
 #include "Core/ServantBase.h"
 
+#include <atomic>
+
 namespace Mengine
 {
 	class Win32ThreadIdentity
@@ -35,8 +37,8 @@ namespace Mengine
 
         ThreadTaskInterface * m_task;
 
-		volatile bool m_complete;
-		volatile bool m_exit;
+        std::atomic_bool m_complete;
+        std::atomic_bool m_exit;
 
 #ifndef NDEBUG
         const Char * m_file;

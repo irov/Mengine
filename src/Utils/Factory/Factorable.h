@@ -53,7 +53,7 @@ namespace Mengine
 
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG
 	public:
-		inline static bool intrusive_ptr_check_ref( Factorable * _ptr );
+		inline static bool intrusive_ptr_check_ref( const Factorable * _ptr );
 #endif
 		
     protected:
@@ -73,8 +73,13 @@ namespace Mengine
     }
 	//////////////////////////////////////////////////////////////////////////
 #ifdef STDEX_INTRUSIVE_PTR_DEBUG
-	inline bool Factorable::intrusive_ptr_check_ref( Factorable * _ptr )
+	inline bool Factorable::intrusive_ptr_check_ref( const Factorable * _ptr )
 	{
+        if( _ptr == nullptr )
+        {
+            return false;
+        }
+
 #ifdef MENGINE_FACTORABLE_DEBUG
 		if( _ptr->isDestroyed() == true )
 		{

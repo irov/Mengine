@@ -27,7 +27,6 @@ namespace Mengine
         SERVICE_DECLARE("WindowsLayer")
 
     public:
-        virtual EWindowsType getWindowsType() = 0;
         virtual bool setProcessDPIAware() = 0;
         virtual bool supportUnicode() = 0;
 

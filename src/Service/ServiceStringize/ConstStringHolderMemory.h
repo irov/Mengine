@@ -14,7 +14,7 @@ namespace Mengine
         ~ConstStringHolderMemory() override;
 
 	public:
-		void setValue( const Char * _value, size_t _size, hash_type _hash );
+		void setValue( const Char * _value, ConstStringHolder::size_type _size, hash_type _hash );
         
     protected:			
 		Char * m_buff;

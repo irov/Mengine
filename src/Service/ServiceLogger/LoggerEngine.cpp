@@ -73,7 +73,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     uint32_t LoggerEngine::getCountMessage( EMessageLevel _level )
 	{
-		size_t count = m_countMessage[_level];
+        uint32_t count = m_countMessage[_level];
 
 		return count;
 	}

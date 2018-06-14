@@ -22,17 +22,18 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     TextField::TextField()
-        : m_textSize( 0.f, 0.f )
-        , m_invalidateFont( true )
-        , m_fontParams( EFP_NONE )
-        , m_horizontAlign( ETFHA_LEFT )
+        : m_horizontAlign( ETFHA_LEFT )
         , m_verticalAlign( ETFVA_BOTTOM )
+        , m_invalidateFont( true )
         , m_charScale( 1.f )
         , m_maxLength( 2048.f )
+        , m_lineOffset( 0.f )
+        , m_charOffset( 0.f )
+        , m_fontParams( EFP_NONE )
         , m_maxCharCount( 0xFFFFFFFF )
         , m_charCount( 0 )
-        , m_charOffset( 0.f )
-        , m_lineOffset( 0.f )
+        , m_layoutCount( 0 )
+        , m_textSize( 0.f, 0.f )
         , m_wrap( true )
         , m_pixelsnap( true )
         , m_debugMode( false )
@@ -40,7 +41,6 @@ namespace Mengine
         , m_invalidateVerticesWM( true )
         , m_invalidateTextLines( true )
         , m_invalidateTextEntry( true )
-        , m_textEntry( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -368,6 +368,11 @@ namespace Mengine
         }
 
         const TextFontInterfacePtr & font = this->getFont();
+        
+        if( font == nullptr )
+        {
+            return;
+        }
 
         const TVectorRenderVertex2D & textVertices = this->getTextVertices( font );
 
@@ -568,7 +573,7 @@ namespace Mengine
             {
                 TextChunk & chunk = *it_chars;
 
-                U32String::size_type value_size = chunk.value.size();
+                uint32_t value_size = (uint32_t)chunk.value.size();
 
                 if( charIterator + value_size < m_maxCharCount )
                 {
@@ -662,7 +667,7 @@ namespace Mengine
             m_textLineAlignOffsets.push_back( alignOffsetX );
         }
 
-        _layoutCount = layouts.size();
+        _layoutCount = (uint32_t)layouts.size();
 
         _size.x = maxlen;
 
@@ -1413,13 +1418,18 @@ namespace Mengine
             return false;
         }
 
+        const TextFontInterfacePtr & font = this->getFont();
+
+        if( font == nullptr )
+        {
+            return false;
+        }
+
         const String & textValue = textEntry->getValue();
                 
         try
         {
             String fmt = Helper::getStringFormat( textValue, m_textFormatArgs );
-
-            const TextFontInterfacePtr & font = this->getFont();
 
             _cacheText = font->prepareText( fmt );
         }

@@ -24,9 +24,9 @@ namespace Mengine
         pybind::incref( m_value );
 
         const char * data = pybind::string_to_char( m_value );
-        size_t size = pybind::string_size( m_value );
-        ConstString::hash_type hash = pybind::string_hash( m_value );
+        uint32_t size = pybind::string_size( m_value );
+        int64_t hash = pybind::string_hash( m_value );
 		
-        this->setup( data, size, hash );
+        this->setup( data, (ConstString::size_type)size, (ConstString::hash_type)hash );
     }
 }

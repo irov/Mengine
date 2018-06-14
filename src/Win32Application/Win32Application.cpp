@@ -27,6 +27,7 @@
 
 #include <cstdio>
 #include <clocale>
+#include <memory>
 
 #include <errno.h>
 
@@ -126,9 +127,8 @@ PLUGIN_EXPORT( TTF );
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	Win32Application::Win32Application() 
-		: m_loggerMessageBox(nullptr)	
-		, m_fileLog(nullptr)
+	Win32Application::Win32Application()
+        : m_serviceProvider( nullptr )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -170,8 +170,8 @@ namespace Mengine
 			return false;
 		}
 
-		IniUtil::IniStore ini;
-		if( IniUtil::loadIni( ini, applicationInputStream ) == false )
+        std::unique_ptr<IniUtil::IniStore> ini( new IniUtil::IniStore() );
+		if( IniUtil::loadIni( *ini.get(), applicationInputStream ) == false )
 		{
 			LOGGER_ERROR("WinApplication::initializeConfigEngine_ Invalid load application settings %s"
 				, applicationPath.c_str()
@@ -180,7 +180,7 @@ namespace Mengine
 			return false;
 		}
 
-		const char * gameIniPath = ini.getSettingValue( _section, _key );
+		const char * gameIniPath = ini->getSettingValue( _section, _key );
 
 		if( gameIniPath == nullptr )
 		{
@@ -618,13 +618,12 @@ namespace Mengine
 		SERVICE_CREATE( TimerSystem );
 		SERVICE_CREATE( TimerService );
 
-#ifndef NDEBUG
 		{
 			bool developmentMode = HAS_OPTION( "dev" );
 			bool roamingMode = HAS_OPTION( "roaming" );
 			bool noroamingMode = HAS_OPTION( "noroaming" );
 
-			if( developmentMode == true && roamingMode == false || noroamingMode == true )
+			if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
 			{
 				WString userPath;
 				this->makeUserPath_( userPath );
@@ -632,7 +631,6 @@ namespace Mengine
 				CriticalErrorsMonitor::run( userPath );
 			}
 		}
-#endif
 
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( NodeService );

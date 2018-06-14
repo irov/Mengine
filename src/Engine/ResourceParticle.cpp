@@ -166,14 +166,9 @@ namespace Mengine
 			return false;
 		}
 
-		for( TVectorResourceImages::size_type
-			it = 0,
-			it_end = m_resourceImages.size();
-		it != it_end;
-		++it )
+        uint32_t iterator = 0U;
+		for( const ResourceImagePtr & resourceImage : m_resourceImages )
 		{
-			const ResourceImagePtr & resourceImage = m_resourceImages[it];
-
             if( resourceImage->incrementReference() == false )
             {
                 LOGGER_ERROR("ResourceParticle::_compile '%s' file '%s' can't invalid compile resource image '%s'"
@@ -185,7 +180,9 @@ namespace Mengine
                 return false;
             }
 
-			container->setAtlasResourceImage( it, resourceImage );
+            container->setAtlasResourceImage( iterator, resourceImage );
+
+            ++iterator;
 		}
 
 		m_container = container;

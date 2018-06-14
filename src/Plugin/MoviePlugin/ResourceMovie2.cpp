@@ -13,6 +13,8 @@
 
 #include "Logger/Logger.h"
 
+#include "stdex/memorycopy.h"
+
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -31,7 +33,7 @@ namespace Mengine
 	{
 		(void)_data;
 
-		memcpy( _dst, _src, _size );
+		stdex::memorycopy( _dst, 0U, _src, _size );
 	}
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )

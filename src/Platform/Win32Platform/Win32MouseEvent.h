@@ -27,6 +27,6 @@ namespace Mengine
 	protected:
 		HWND m_hWnd;
 
-		UINT m_uTimer;		
+        UINT_PTR m_uTimer;
 	};
 }

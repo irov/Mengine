@@ -363,17 +363,16 @@ namespace Mengine
 
 			Polygon * polygon = (Polygon*)_place;
 
-			size_t size = pybind::list_size( _obj );
+			uint32_t size = pybind::list_size( _obj );
 
-			for( size_t i = 0; i != size; ++i )
+			for( uint32_t i = 0; i != size; ++i )
 			{
 				PyObject * py_item = pybind::list_getitem( _obj, i );
 
 				if( pybind::list_check( py_item ) == true )
 				{
 					Polygon inner = pybind::extract<Polygon>( _kernel, py_item );
-
-
+                    
 					polygon->append_inner( inner );
 				}
 				else

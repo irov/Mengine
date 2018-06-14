@@ -5,6 +5,8 @@
 #include "Core/ServantBase.h"
 #include "Kernel/Visitable.h"
 
+#include <atomic>
+
 namespace Mengine 
 {
     //////////////////////////////////////////////////////////////////////////
@@ -46,11 +48,11 @@ namespace Mengine
 		virtual void _onComplete( bool _successful );
 
 	private:
-		volatile bool m_run;
-		volatile bool m_complete;
-		volatile bool m_finish;
-		volatile bool m_successful;
-		volatile bool m_cancel;				
+		std::atomic_bool m_run;
+		std::atomic_bool m_complete;
+		std::atomic_bool m_finish;
+		std::atomic_bool m_successful;
+		std::atomic_bool m_cancel;				
 	};
     //////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<ThreadTask> ThreadTaskPtr;

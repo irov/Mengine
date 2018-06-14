@@ -712,9 +712,9 @@ namespace Mengine
 		}
         
         float * triangles_ptr = points.front().buff();
-        uint32_t triangles_size = points.size() / 3;
+        TVectorPoints::size_type triangles_size = points.size() / 3;
 
-		if( _emitter->changeEmitterModel( triangles_ptr, triangles_size ) == false )
+		if( _emitter->changeEmitterModel( triangles_ptr, (uint32_t)triangles_size ) == false )
 		{
 			LOGGER_ERROR("ParticleEmitter::changeEmitterPolygon '%s' changeEmitterModel Error polygon"
 				, m_name.c_str()

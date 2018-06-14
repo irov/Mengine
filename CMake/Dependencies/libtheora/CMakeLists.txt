@@ -35,7 +35,7 @@ set( sources
 	
 set( sources_ext )	
 	
-if(WIN32)
+if(WIN32 AND NOT MENGINE_PLATFORM_WIN64)
 	if(MSVC)
 		add_definitions(-DOC_X86_ASM)
 		

@@ -49,7 +49,7 @@ namespace Mengine
 		FilePath getPathFolder( const FilePath & _fullpath );
 
 		//////////////////////////////////////////////////////////////////////////
-		FilePath stringizeFilePath( const Char * _value, ConstString::size_type _size );
+		FilePath stringizeFilePath( const Char * _value, size_t _size );
 		FilePath stringizeFilePath( const String & _path );
 		FilePath stringizeFilePath( const PathString & _path );
 		//////////////////////////////////////////////////////////////////////////

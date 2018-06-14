@@ -100,6 +100,6 @@ namespace Mengine
         class TextManagerLoadSaxCallback;
         class TextManagerUnloadSaxCallback;
 
-        void createLocalString_( const Char * _text, size_t _size, ConstString & _cstr );
+        void createLocalString_( const Char * _text, ConstString::size_type _size, ConstString & _cstr );
 	};
 }

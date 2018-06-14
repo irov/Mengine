@@ -3,6 +3,7 @@
 #include "Kernel/ThreadTask.h"
 
 #include <list>
+#include <atomic>
 
 #ifndef MENGINE_THREAD_JOB_WORK_COUNT
 #	define MENGINE_THREAD_JOB_WORK_COUNT 32
@@ -34,9 +35,9 @@ namespace Mengine
 
 		ThreadWorkerInterfacePtr worker;
 
-		volatile uint32_t id;
+		std::atomic_uint32_t id;
 
-		volatile uint32_t status;
+        std::atomic_uint32_t status;
 	};
     //////////////////////////////////////////////////////////////////////////
 	class ThreadJob

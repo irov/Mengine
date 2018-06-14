@@ -31,6 +31,8 @@
 #include <ctime>
 #include <cstdio>
 #include <clocale>
+#include <atomic>
+#include <memory>
 
 #undef min
 #undef max

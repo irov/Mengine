@@ -3,6 +3,8 @@
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
+#include <atomic>
+
 namespace Mengine
 {
 	class ThreadWorkerSoundBufferUpdate
@@ -25,7 +27,7 @@ namespace Mengine
 	protected:
 		SoundBufferInterfacePtr m_soundBuffer;
 
-		volatile bool m_done;
+        std::atomic_bool m_done;
 	};
 
 	typedef IntrusivePtr<ThreadWorkerSoundBufferUpdate> ThreadWorkerSoundBufferUpdatePtr;

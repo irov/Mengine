@@ -14,6 +14,10 @@ namespace Mengine
 		{
 		}
 
+        ~FactorableUnique() override
+        {
+        }
+
     public:
         void destroy() override
         {

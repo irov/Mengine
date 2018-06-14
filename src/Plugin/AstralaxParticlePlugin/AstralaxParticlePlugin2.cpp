@@ -15,6 +15,10 @@ namespace Mengine
 	AstralaxParticlePlugin2::AstralaxParticlePlugin2()
 	{
 	}
+    //////////////////////////////////////////////////////////////////////////
+    AstralaxParticlePlugin2::~AstralaxParticlePlugin2()
+    {
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxParticlePlugin2::_initialize()
 	{

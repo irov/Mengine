@@ -57,11 +57,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringize( const char * _str, size_t _size, ConstString::hash_type _hash, ConstString & _cstr )
+    void StringizeService::stringize( const char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr )
     {
-        if( _size == (size_t)-1 )
+        if( _size == (ConstStringHolder::size_type)-1 )
         {
-            _size = strlen( _str );
+            size_t len = strlen( _str );
+
+            _size = (ConstStringHolder::size_type)len;
         }
 
         if( _size == 0 )
@@ -81,7 +83,7 @@ namespace Mengine
         _cstr = ConstString( holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringizeInternal( const Char * _str, ConstString::size_type _size, ConstString::hash_type _hash, ConstString & _cstr )
+    void StringizeService::stringizeInternal( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr )
     {
         if( _size == 0 )
         {
@@ -145,7 +147,7 @@ namespace Mengine
 
         if( holder_size == (ConstStringHolder::size_type)(-1) )
         {
-            holder_size = strlen( holder_str );
+            holder_size = (ConstStringHolder::size_type)strlen( holder_str );
         }
 
         if( holder_hash == (ConstStringHolder::hash_type) (-1) )
@@ -171,7 +173,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstStringHolder * StringizeService::stringizeHolder_( const Char * _str, size_t _size, ConstString::hash_type _hash )
+    ConstStringHolder * StringizeService::stringizeHolder_( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash )
     {
         ConstStringHolder * test = this->testHolder_( _str, _size, _hash );
 
@@ -189,7 +191,7 @@ namespace Mengine
         return holder;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstStringHolder * StringizeService::testHolder_( const Char * _str, ConstString::size_type _size, ConstString::hash_type _hash )
+    ConstStringHolder * StringizeService::testHolder_( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash )
     {
         TIntrusiveListConstStringHolder & list = this->getList_( _hash );
 

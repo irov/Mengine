@@ -14,40 +14,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     VistaWindowsLayer::VistaWindowsLayer()
-        : m_windowsType( EWT_UNKNOWN )
-        , m_checkedUnicode( false )
+        : m_checkedUnicode( false )
         , m_supportUnicode( false )
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    EWindowsType VistaWindowsLayer::getWindowsType()
-    {
-        if( m_windowsType != EWT_UNKNOWN )
-        {
-            return m_windowsType;
-        }
-
-        OSVERSIONINFO osvi;
-        ::ZeroMemory( &osvi, sizeof( OSVERSIONINFO ) );
-
-        osvi.dwOSVersionInfoSize = sizeof( OSVERSIONINFO );
-        if( ::GetVersionEx( (LPOSVERSIONINFO)&osvi ) == TRUE )
-        {
-            if( osvi.dwMajorVersion >= 6 )
-            {
-                m_windowsType = EWT_VISTA;
-            }
-            else if( osvi.dwPlatformId == VER_PLATFORM_WIN32_WINDOWS ) // let's check Win95, 98, *AND* ME.
-            {
-                m_windowsType = EWT_98;
-            }
-        }
-        else
-        {
-            m_windowsType = EWT_NT;
-        }
-
-        return m_windowsType;
     }
     //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::setProcessDPIAware()

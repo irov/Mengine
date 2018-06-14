@@ -114,7 +114,7 @@ namespace Mengine
 
                 if( strcmp( str_key, "Key" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (size_t)-1, text_key );
+                    m_textManager->createLocalString_( str_value, (ConstString::size_type)-1, text_key );
 
                     //text_key = Helper::stringizeStringExternal( str_value, (size_t)-1 );
                 }
@@ -149,7 +149,7 @@ namespace Mengine
                 }
                 else if( strcmp( str_key, "Font" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (size_t)-1, fontName );
+                    m_textManager->createLocalString_( str_value, (ConstString::size_type)-1, fontName );
 
                     params |= EFP_FONT;
                 }
@@ -430,7 +430,7 @@ namespace Mengine
 
                 if( strcmp( str_key, "Key" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (size_t)-1, text_key );
+                    m_textManager->createLocalString_( str_value, (ConstString::size_type)-1, text_key );
                     //text_key = Helper::stringizeString( str_value, (size_t)-1 );
                 }
             }
@@ -852,7 +852,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextManager::createLocalString_( const Char * _text, size_t _size, ConstString & _cstr )
+    void TextManager::createLocalString_( const Char * _text, ConstString::size_type _size, ConstString & _cstr )
     {
         ConstStringHolderLocalString * holder = m_poolLocalString.createT();
 

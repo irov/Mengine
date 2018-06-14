@@ -115,14 +115,14 @@ namespace Mengine
 
         inline bool operator > ( const ConstString & _right ) const
         {
-            bool result = !(*this <= _right);
+            const bool result = !(*this <= _right);
 
             return result;
         }
 
         inline bool operator >= ( const ConstString & _right ) const
         {
-            bool result = !(*this < _right);
+            const bool result = !(*this < _right);
 
             return result;
         }

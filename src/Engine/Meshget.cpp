@@ -150,9 +150,9 @@ namespace Mengine
 
 		mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
-		uint32_t vertexCount = m_positions.size();
+        TVectorPosition::size_type vertexCount = m_positions.size();
 				
-		for( uint32_t i = 1; i != vertexCount; ++i )
+		for( TVectorPosition::size_type i = 1; i != vertexCount; ++i )
 		{
 			const mt::vec3f & v = m_positions[i];
 
@@ -196,9 +196,9 @@ namespace Mengine
         const ColourValue & textureColour = m_surface->getColor();
 		color *= textureColour;
 
-		uint32_t vertexCount = m_positions.size();
+        TVectorPosition::size_type vertexCount = m_positions.size();
 
-		for( uint32_t i = 0; i != vertexCount; ++i )
+		for( TVectorPosition::size_type i = 0; i != vertexCount; ++i )
 		{
 			const mt::vec4f & c = m_colors[i];
 
@@ -215,11 +215,11 @@ namespace Mengine
 	{
 		m_invalidateVerticesWM = false;
 
-		uint32_t vertexCount = m_positions.size();
+        const mt::mat4f & wm = this->getWorldMatrix();
 
-		const mt::mat4f & wm = this->getWorldMatrix();
-		
-		for( uint32_t i = 0; i != vertexCount; ++i )
+        TVectorPosition::size_type vertexCount = m_positions.size();
+        
+		for( TVectorPosition::size_type i = 0; i != vertexCount; ++i )
 		{
 			const mt::vec3f & pos = m_positions[i];
 			const mt::vec2f & uv = m_uvs[i];

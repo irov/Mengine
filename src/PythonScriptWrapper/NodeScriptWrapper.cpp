@@ -1951,11 +1951,11 @@ namespace Mengine
         {
             TListNodeChild & children = _node->getChildren();
 
-            size_t size = children.size();
+            TListNodeChild::size_type size = children.size();
 
             pybind::list py_children( _kernel, size );
 
-            size_t index = 0;
+            uint32_t index = 0;
 
             for( TSlugChild it( children ); it.eof() == false; )
             {

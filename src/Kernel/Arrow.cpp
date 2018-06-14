@@ -441,7 +441,7 @@ namespace Mengine
                     return;
                 }
 
-                size_t vertexCount = numpoints * 2;
+                uint32_t vertexCount = numpoints * 2;
 
                 RenderVertex2D * vertices = _renderService
                     ->getDebugRenderVertex2D( vertexCount );

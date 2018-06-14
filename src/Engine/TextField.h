@@ -151,10 +151,6 @@ namespace Mengine
         void updateTextEntry_() const;
 
     protected:
-        mutable TextFontInterfacePtr m_font;
-        mutable bool m_invalidateFont;
-
-    protected:
         const ConstString & calcFontName() const;
         float calcLineOffset() const;
         float calcCharOffset() const;
@@ -178,6 +174,9 @@ namespace Mengine
 
         ETextHorizontAlign m_horizontAlign;
         ETextVerticalAlign m_verticalAlign;
+
+        mutable TextFontInterfacePtr m_font;
+        mutable bool m_invalidateFont;
 
         float m_charScale;
 

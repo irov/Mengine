@@ -97,11 +97,15 @@ namespace Mengine
 
                 if( it_found != _cacheFonts.end() )
                 {
-                    c.fontId = std::distance( _cacheFonts.begin(), it_found );
+                    ptrdiff_t d = std::distance( _cacheFonts.begin(), it_found );
+
+                    c.fontId = (uint32_t)d;
                 }
                 else
                 {
-                    c.fontId = _cacheFonts.size();
+                    TVectorCacheFonts::size_type cacheFontSize = _cacheFonts.size();
+
+                    c.fontId = (uint32_t)cacheFontSize;
 
                     CacheFont cache;
                     cache.font = font;

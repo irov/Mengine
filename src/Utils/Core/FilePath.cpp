@@ -72,9 +72,9 @@ namespace Mengine
 			return c_folder;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		FilePath stringizeFilePath( const Char * _value, ConstString::size_type _size )
+		FilePath stringizeFilePath( const Char * _value, size_t _size )
 		{
-			ConstString cstr = stringizeStringSize( _value, _size );
+			ConstString cstr = stringizeStringSize( _value, (ConstStringHolder::size_type)_size );
 
 			return FilePath( cstr );
 		}

@@ -21,10 +21,10 @@ namespace Mengine
         SERVICE_DECLARE( "StringizeService" )
 
     public:
-        virtual void stringize( const Char * _str, ConstString::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) = 0;
+        virtual void stringize( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) = 0;
 
     public:
-        virtual void stringizeInternal( const Char * _str, ConstString::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) = 0;
+        virtual void stringizeInternal( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) = 0;
         virtual bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -34,7 +34,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        inline ConstString stringizeStringSizeHash( const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash )
+        inline ConstString stringizeStringSizeHash( const Char * _value, ConstStringHolder::size_type _size, ConstString::hash_type _hash )
         {
             ConstString cstr;
             STRINGIZE_SERVICE()
@@ -43,9 +43,9 @@ namespace Mengine
             return cstr;
         }
         //////////////////////////////////////////////////////////////////////////
-        inline ConstString stringizeStringSize( const Char * _value, ConstString::size_type _size )
+        inline ConstString stringizeStringSize( const Char * _value, size_t _size )
         {
-            ConstString cstr = stringizeStringSizeHash( _value, _size, ((ConstString::hash_type)(-1)) );
+            ConstString cstr = stringizeStringSizeHash( _value, (ConstStringHolder::size_type)_size, ((ConstString::hash_type)(-1)) );
 
             return cstr;
         }
@@ -59,7 +59,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         inline ConstString stringizeString( const String & _value )
         {
-            ConstString cstr = stringizeStringSize( _value.c_str(), _value.size() );
+            const Char * value_str = _value.c_str();
+            String::size_type value_size = _value.size();
+
+            ConstString cstr = stringizeStringSize( value_str, value_size );
 
             return cstr;
         }
@@ -67,7 +70,7 @@ namespace Mengine
         inline ConstString stringizeString( const WString & _value )
         {
             String buffer_value( _value.begin(), _value.end() );
-            ConstString cstr = stringizeStringSize( buffer_value.c_str(), buffer_value.size() );
+            ConstString cstr = stringizeString( buffer_value );
 
             return cstr;
         }
@@ -75,7 +78,7 @@ namespace Mengine
         inline ConstString stringizeString( const U32String & _value )
         {
             String buffer_value( _value.begin(), _value.end() );
-            ConstString cstr = stringizeStringSize( buffer_value.c_str(), buffer_value.size() );
+            ConstString cstr = stringizeString( buffer_value );
 
             return cstr;
         }
@@ -84,16 +87,16 @@ namespace Mengine
         {
             ConstString cstr;
             STRINGIZE_SERVICE()
-                ->stringizeInternal( _value, _size, ((ConstString::hash_type)(-1)), cstr );
+                ->stringizeInternal( _value, (ConstString::size_type)_size, ((ConstString::hash_type)(-1)), cstr );
 
             return cstr;
         }
         //////////////////////////////////////////////////////////////////////////
-        inline ConstString stringizeStringHashLocal( const Char * _value, ConstString::size_type _size, ConstString::hash_type _hash )
+        inline ConstString stringizeStringHashLocal( const Char * _value, size_t _size, ConstString::hash_type _hash )
         {
             ConstString cstr;
             STRINGIZE_SERVICE()
-                ->stringizeInternal( _value, _size, _hash, cstr );
+                ->stringizeInternal( _value, (ConstString::size_type)_size, _hash, cstr );
 
             return cstr;
         }
@@ -101,8 +104,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #	define STRINGIZE_STRING_LOCAL( str )\
 	([]{\
-        constexpr Mengine::ConstString::hash_type hash = Mengine::Helper::makeHash( str, (sizeof(str) - 1));\
-        static Mengine::ConstString cstr = Mengine::Helper::stringizeStringHashLocal( str, (sizeof(str) - 1), hash );\
+        constexpr size_t value_size = (sizeof(str) - 1);\
+        constexpr Mengine::ConstString::hash_type value_hash = Mengine::Helper::makeHash( str, value_size);\
+        static Mengine::ConstString cstr = Mengine::Helper::stringizeStringHashLocal( str, value_size, value_hash );\
         return cstr;\
     }())
 }

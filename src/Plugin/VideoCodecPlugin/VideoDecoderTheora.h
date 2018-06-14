@@ -48,7 +48,7 @@ namespace Mengine
 		theora_info m_theoraInfo;
 		mutable theora_state m_theoraState;
 
-		size_t m_pitch;
+        uint32_t m_pitch;
 
 		float m_time;
 		bool m_readyFrame;

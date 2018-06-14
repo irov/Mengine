@@ -11,6 +11,7 @@ namespace Mengine
 
 	public:
 		AstralaxParticlePlugin2();
+        ~AstralaxParticlePlugin2() override;
 
 	protected:
 		bool _initialize() override;

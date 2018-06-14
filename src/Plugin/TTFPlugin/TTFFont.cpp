@@ -104,7 +104,7 @@ namespace Mengine
             const void * ttfEffectMemory_buffer = ttfEffectMemory->getMemory();
             size_t ttfEffectMemory_size = ttfEffectMemory->getSize();
 
-            m_ttfFEBundle = fe_bundle_load( (const uint8_t *)ttfEffectMemory_buffer, ttfEffectMemory_size );
+            m_ttfFEBundle = fe_bundle_load( (const uint8_t *)ttfEffectMemory_buffer, (int)ttfEffectMemory_size );
 
             if( m_ttfFEBundle == nullptr )
             {
@@ -153,7 +153,7 @@ namespace Mengine
 			return false;
 		}
 
-		FT_Error err_code = FT_New_Memory_Face( m_ftlibrary, memory_byte, memory_size, 0, &m_face );
+		FT_Error err_code = FT_New_Memory_Face( m_ftlibrary, memory_byte, (FT_Long)memory_size, 0, &m_face );
 
 		if( err_code != 0 )
 		{
@@ -654,7 +654,7 @@ namespace Mengine
         }
 
         FT_Face face;
-        FT_Error err_code = FT_New_Memory_Face( m_ftlibrary, memory_byte, memory_size, 0, &face );
+        FT_Error err_code = FT_New_Memory_Face( m_ftlibrary, memory_byte, (FT_Long)memory_size, 0, &face );
 
         if( err_code != 0 )
         {

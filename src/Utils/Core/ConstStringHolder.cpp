@@ -21,7 +21,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstStringHolder::setup( const char * _data, size_type _size, hash_type _hash )
+    void ConstStringHolder::setup( const value_type * _data, size_type _size, hash_type _hash )
     {
         m_data = _data;
         m_size = _size;

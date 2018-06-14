@@ -136,7 +136,7 @@ namespace Mengine
 		void setSeparateAlphaBlendMode() override;
 
 	public:
-		size_t getTextureMemoryUse() const override;
+		uint32_t getTextureMemoryUse() const override;
 		uint32_t getTextureCount() const override;
 		
 	public:

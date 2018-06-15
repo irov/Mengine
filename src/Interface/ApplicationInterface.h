@@ -129,6 +129,9 @@ namespace Mengine
 		virtual void setTextEnable( bool _enable ) = 0;
 		virtual bool getTextEnable() const = 0;
 
+        virtual void setVideoEnable( bool _enabled ) = 0;
+        virtual bool getVideoEnable() const = 0;
+
 	public:
         virtual uint32_t getDebugMask() const = 0;
 

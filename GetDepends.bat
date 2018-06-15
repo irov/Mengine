@@ -29,7 +29,7 @@ call:gitdependr https://github.com/glennrp/libpng.git libpng libpng17
 call:gitdepend https://github.com/madler/zlib.git zlib
 call:gitdepend https://github.com/xiph/ogg.git libogg
 call:gitdepend https://github.com/xiph/vorbis.git libvorbis
-call:gitdepend https://github.com/xiph/theora.git libtheora
+call:gitdependr https://github.com/xiph/theora.git libtheora theora-1.1
 call:gitdepend https://github.com/aseprite/freetype2.git freetype
 call:gitdepend https://github.com/webmproject/libwebp.git libwebp
 

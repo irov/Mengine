@@ -14,8 +14,8 @@ INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
 set( sources
     ${SOURCE_DIR}/lib/analyze.c
     ${SOURCE_DIR}/lib/apiwrapper.c
-    ${SOURCE_DIR}/lib/bitpack.c
-    ${SOURCE_DIR}/lib/collect.c    
+    ${SOURCE_DIR}/lib/bitpack.c    
+	${SOURCE_DIR}/lib/cpu.c
     ${SOURCE_DIR}/lib/decapiwrapper.c    
     ${SOURCE_DIR}/lib/decinfo.c
     ${SOURCE_DIR}/lib/decode.c
@@ -45,7 +45,6 @@ if(WIN32 AND NOT MENGINE_PLATFORM_WIN64)
 			${SOURCE_DIR}/lib/x86_vc/mmxfrag.c
 			${SOURCE_DIR}/lib/x86_vc/mmxidct.c
 			${SOURCE_DIR}/lib/x86_vc/mmxstate.c
-			${SOURCE_DIR}/lib/x86_vc/x86cpu.c
 			${SOURCE_DIR}/lib/x86_vc/x86state.c	
 			)
 	else()
@@ -56,13 +55,8 @@ if(WIN32 AND NOT MENGINE_PLATFORM_WIN64)
 			${SOURCE_DIR}/lib/x86/mmxfdct.c
 			${SOURCE_DIR}/lib/x86/mmxfrag.c
 			${SOURCE_DIR}/lib/x86/mmxidct.c
-			${SOURCE_DIR}/lib/x86/mmxstate.c
-			${SOURCE_DIR}/lib/x86/sse2encfrag.c
+			${SOURCE_DIR}/lib/x86/mmxstate.c			
 			${SOURCE_DIR}/lib/x86/sse2fdct.c
-			${SOURCE_DIR}/lib/x86/sse2idct.c
-			${SOURCE_DIR}/lib/x86/x86cpu.c
-			${SOURCE_DIR}/lib/x86/x86enc.c
-			${SOURCE_DIR}/lib/x86/x86enquant.c
 			${SOURCE_DIR}/lib/x86/x86state.c	
 			)
 	endif()

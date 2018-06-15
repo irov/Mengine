@@ -1,5 +1,6 @@
 #include "SurfaceVideo.h"
 
+#include "Interface/ApplicationInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
 #include "Core/RenderUtils.h"
@@ -105,6 +106,14 @@ namespace Mengine
 		{
 			return false;
 		}
+
+        bool enabled = APPLICATION_SERVICE()
+            ->getVideoEnable();
+
+        if( enabled == false )
+        {
+            return false;
+        }
 
 		if( m_playTime > _current )
 		{

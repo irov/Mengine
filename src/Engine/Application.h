@@ -112,6 +112,9 @@ namespace Mengine
 		void setTextEnable( bool _enable ) override;
 		bool getTextEnable() const override;
 
+        void setVideoEnable( bool _enabled ) override;
+        bool getVideoEnable() const override;
+
 	public:
 		void setInputMouseButtonEventBlock( bool _block ) override;
 		bool getInputMouseButtonEventBlock() const override;
@@ -180,6 +183,7 @@ namespace Mengine
 
 		bool m_particleEnable;
 		bool m_textEnable;
+        bool m_videoEnable;
 
 		bool m_focus;
 		bool m_freeze;

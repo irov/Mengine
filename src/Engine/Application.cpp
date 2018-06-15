@@ -148,6 +148,7 @@ namespace Mengine
     Application::Application()
         : m_particleEnable( true )
         , m_textEnable( true )
+        , m_videoEnable( true )
         , m_debugMask( 0 )
         , m_phycisTiming( 0.f )
         , m_resetTiming( false )
@@ -875,6 +876,16 @@ namespace Mengine
                     ->setTextEnable( s_text_enable );
             }
 
+            if( _event.code == KC_O && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
+            {
+                static bool s_video_enable = true;
+
+                s_video_enable = !s_video_enable;
+
+                APPLICATION_SERVICE()
+                    ->setVideoEnable( s_video_enable );
+            }
+
             if( _event.code == KC_R && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
             {
                 static bool s_text_debug = true;
@@ -1113,6 +1124,16 @@ namespace Mengine
     bool Application::getTextEnable() const
     {
         return m_textEnable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::setVideoEnable( bool _enabled )
+    {
+        m_videoEnable = _enabled;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::getVideoEnable() const
+    {
+        return m_videoEnable;
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::setInputMouseButtonEventBlock( bool _block )

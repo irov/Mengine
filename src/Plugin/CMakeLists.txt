@@ -29,6 +29,7 @@ if( MENGINE_TARGET_MSVC )
     ADD_SUBDIRECTORY( Win32SocketPlugin )    
     ADD_SUBDIRECTORY( VideoCodecPlugin )
     ADD_SUBDIRECTORY( Win32FileGroupPlugin )
+	ADD_SUBDIRECTORY( Win32ConsoleLogger )
     
     #ADD_SUBDIRECTORY( GOAPPlugin )
     
@@ -49,14 +50,15 @@ if( MENGINE_TARGET_MINGW )
     ADD_SUBDIRECTORY( VideoCodecPlugin )
     ADD_SUBDIRECTORY( Win32FileGroupPlugin )
 	ADD_SUBDIRECTORY( Win32ConsoleLogger )
+	
+	ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
 endif()
 
 if( MENGINE_TARGET_MSVC )
     ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
     
     ADD_SUBDIRECTORY( XlsExportPlugin )
-    ADD_SUBDIRECTORY( XmlCodecPlugin )
-    ADD_SUBDIRECTORY( Win32ConsoleLogger )
+    ADD_SUBDIRECTORY( XmlCodecPlugin )    
 endif()
 
 if( MENGINE_TARGET_SDL AND MENGINE_PLATFORM_WIN32 )

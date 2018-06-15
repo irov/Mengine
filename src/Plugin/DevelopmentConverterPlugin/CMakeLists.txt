@@ -43,7 +43,7 @@ INCLUDE_DIRECTORIES(
 	)
     
 
-ADD_MENGINE_LIBRARY()
+ADD_MENGINE_SHARED()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER Plugins

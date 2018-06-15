@@ -618,6 +618,7 @@ namespace Mengine
 		SERVICE_CREATE( TimerSystem );
 		SERVICE_CREATE( TimerService );
 
+#ifndef NDEBUG
 		{
 			bool developmentMode = HAS_OPTION( "dev" );
 			bool roamingMode = HAS_OPTION( "roaming" );
@@ -631,6 +632,7 @@ namespace Mengine
 				CriticalErrorsMonitor::run( userPath );
 			}
 		}
+#endif
 
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( NodeService );

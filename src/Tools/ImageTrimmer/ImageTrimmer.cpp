@@ -174,7 +174,7 @@ namespace Mengine
         PLUGIN_CREATE( ImageCodec );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), Helper::stringizeString( "global" ) ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, Helper::emptyPath(), Helper::stringizeString( "global" ), nullptr ) == false )
         {
             return false;
         }
@@ -182,7 +182,7 @@ namespace Mengine
         ConstString dev = Helper::stringizeString( "dev" );
 
         if( FILE_SERVICE()
-            ->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), Helper::stringizeString( "global" ) ) == false )
+            ->mountFileGroup( dev, nullptr, Helper::emptyPath(), Helper::stringizeString( "global" ), nullptr ) == false )
         {
             return false;
         }
@@ -197,8 +197,11 @@ namespace Mengine
 
         FilePath c_in = Helper::stringizeFilePath( utf8_in );
 
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
         InputStreamInterfacePtr input_stream = FILE_SERVICE()
-            ->openInputFile( ConstString::none(), c_in, false );
+            ->openInputFile( fileGroup, c_in, false );
 
         if( input_stream == nullptr )
         {
@@ -605,8 +608,11 @@ namespace Mengine
 
             FilePath c_out = Helper::stringizeFilePath( utf8_out );
 
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getDefaultFileGroup();
+
             OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-                ->openOutputFile( ConstString::none(), c_out );
+                ->openOutputFile( fileGroup, c_out );
 
             if( output_stream == nullptr )
             {

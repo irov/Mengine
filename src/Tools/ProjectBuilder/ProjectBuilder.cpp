@@ -255,7 +255,7 @@ namespace Mengine
 			->loadPlugin( L"XmlCodecPlugin.dll" );
 
 		if( FILE_SERVICE()
-			->mountFileGroup( ConstString::none(), ConstString::none(), Helper::emptyPath(), STRINGIZE_STRING_LOCAL( "global" ) ) == false )
+			->mountFileGroup( ConstString::none(), nullptr, Helper::emptyPath(), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
 		{
 			return false;
 		}
@@ -263,7 +263,7 @@ namespace Mengine
 		ConstString dev = Helper::stringizeString("dev");
 
 		if( FILE_SERVICE()
-			->mountFileGroup( dev, ConstString::none(), Helper::emptyPath(), STRINGIZE_STRING_LOCAL("global") ) == false )
+			->mountFileGroup( dev, nullptr, Helper::emptyPath(), STRINGIZE_STRING_LOCAL("global"), nullptr ) == false )
 		{
 			return false;
 		}
@@ -287,7 +287,10 @@ namespace Mengine
 
 		ConverterOptions options;
 
-		options.pakName = ConstString::none();
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
+		options.fileGroup = fileGroup;
 		options.inputFileName = Helper::stringizeFilePath(utf8_fromPath);
 		options.outputFileName = Helper::stringizeFilePath(utf8_toPath);
 		options.params = utf8_params;
@@ -348,8 +351,11 @@ namespace Mengine
 
 		FilePath c_path = Helper::stringizeFilePath(utf8_path);
 
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
 		InputStreamInterfacePtr stream = FILE_SERVICE()
-			->openInputFile( ConstString::none(), c_path, false );
+			->openInputFile( fileGroup, c_path, false );
 		
 		if( stream == nullptr )
 		{
@@ -541,8 +547,11 @@ namespace Mengine
 
 		FilePath c_path = Helper::stringizeFilePath( utf8_path );
 
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
 		InputStreamInterfacePtr stream = FILE_SERVICE()
-			->openInputFile( ConstString::none(), c_path, false );
+			->openInputFile( fileGroup, c_path, false );
 
 		if( stream == nullptr )
 		{

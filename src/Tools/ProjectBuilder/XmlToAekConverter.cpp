@@ -53,8 +53,11 @@ namespace Mengine
 		FilePath path_xml = Helper::stringizeFilePath( framePackPath );
 
 		ConverterOptions options;
+
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
 		   
-		options.pakName = ConstString::none();
+		options.fileGroup = fileGroup;
 		options.inputFileName = path_xml;
 		options.outputFileName = Helper::stringizeFilePath(utf8_aekPath);
 		

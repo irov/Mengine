@@ -16,7 +16,7 @@
 #   pragma warning(push, 0) 
 #   pragma warning(disable:4800)  
 
-#	include <boost/geometry/geometry.hpp> 
+#	include <boost/geometry/geometry.hpp>
 #	include <boost/geometry/core/tag.hpp> 
 #	include <boost/geometry/geometries/polygon.hpp>
 #	include <boost/geometry/geometries/box.hpp>

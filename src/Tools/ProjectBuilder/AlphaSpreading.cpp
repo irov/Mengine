@@ -32,8 +32,11 @@ namespace Mengine
         FilePath inputFileName = Helper::stringizeFilePath(utf8_inputFileName);
 		FilePath outputFileName = Helper::stringizeFilePath(utf8_outputFileName);
 
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
         InputStreamInterfacePtr input_stream = FILE_SERVICE()
-			->openInputFile( ConstString::none(), inputFileName, false );
+			->openInputFile( fileGroup, inputFileName, false );
         
         if( input_stream == nullptr )
         {
@@ -166,9 +169,9 @@ namespace Mengine
 				}
 			}
 		}
-
+        
         OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-			->openOutputFile( ConstString::none(), outputFileName );
+			->openOutputFile( fileGroup, outputFileName );
 
         if( output_stream == nullptr )
         {

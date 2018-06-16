@@ -28,8 +28,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Image::load( const FilePath & _path )
 	{
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
 		InputStreamInterfacePtr stream = FILE_SERVICE()
-			->openInputFile( ConstString::none(), _path, false );
+            ->openInputFile( fileGroup, _path, false );
 
 		if( stream == nullptr )
 		{
@@ -96,8 +99,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Image::save( const FilePath & _path )
 	{
+        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
 		OutputStreamInterfacePtr stream = FILE_SERVICE()
-			->openOutputFile( ConstString::none(), _path );
+			->openOutputFile( fileGroup, _path );
 
 		if( stream == nullptr )
 		{

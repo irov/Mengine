@@ -19,7 +19,8 @@ namespace Mengine
 
 	public:
 		virtual bool hasOption( const Char * _key ) const = 0;
-		virtual const Char * getOptionValue( const Char * _key ) const = 0;
+        virtual const Char * getOptionValue( const Char * _key ) const = 0;
+        virtual bool testOptionValue( const Char * _key, const Char * _value ) const = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 #   define OPTIONS_SERVICE()\
@@ -30,5 +31,8 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 #	define GET_OPTION_VALUE( key )\
 	OPTIONS_SERVICE()->getOptionValue( key )
+    //////////////////////////////////////////////////////////////////////////
+#	define TEST_OPTION_VALUE( key, value )\
+	OPTIONS_SERVICE()->testOptionValue( key, value )
 }
 

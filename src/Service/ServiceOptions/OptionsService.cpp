@@ -86,4 +86,16 @@ namespace Mengine
 
 		return nullptr;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    bool OptionsService::testOptionValue( const Char * _key, const Char * _value ) const
+    {
+        const Char * value = this->getOptionValue( _key );
+
+        if( strcmp( value, _value ) != 0 )
+        {
+            return false;
+        }
+
+        return true;
+    }
 }

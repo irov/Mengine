@@ -420,27 +420,27 @@ namespace Mengine
 			m_logLevel = LM_ERROR;
 		}
 
-		if( HAS_OPTION( "log:0" ) == true )
+		if( TEST_OPTION_VALUE( "log", "0" ) == true )
 		{
 			m_logLevel = LM_INFO;
 		}
-		else if( HAS_OPTION( "log:1" ) == true )
+		else if( TEST_OPTION_VALUE( "log", "1" ) == true )
 		{
 			m_logLevel = LM_LOG;
 		}
-		else if( HAS_OPTION( "log:2" ) == true )
+		else if( TEST_OPTION_VALUE( "log", "2" ) == true )
 		{
 			m_logLevel = LM_WARNING;
 		}
-		else if( HAS_OPTION( "log:3" ) == true )
+		else if( TEST_OPTION_VALUE( "log", "3" ) == true )
 		{
 			m_logLevel = LM_ERROR;
 		}
-		else if( HAS_OPTION( "log:4" ) == true )
+		else if( TEST_OPTION_VALUE( "log", "4" ) == true )
 		{
 			m_logLevel = LM_CRITICAL;
 		}
-		else if( HAS_OPTION( "log:5" ) == true )
+		else if( TEST_OPTION_VALUE( "log", "5" ) == true )
 		{
 			m_logLevel = LM_FATAL;
 		}

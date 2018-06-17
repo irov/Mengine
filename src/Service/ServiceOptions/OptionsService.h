@@ -29,6 +29,7 @@ namespace Mengine
 	public:
 		bool hasOption( const Char * _key ) const override;
 		const Char * getOptionValue( const Char * _key ) const override;
+        bool testOptionValue( const Char * _key, const Char * _value ) const override;
 
 	protected:
 		struct Option

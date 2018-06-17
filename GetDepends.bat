@@ -53,7 +53,7 @@ call:gitdepend https://github.com/irov/math.git libmath
 call:gitdepend https://github.com/akheron/jansson.git jansson
 
 call:gitdependr https://github.com/python/cpython.git Python 2.7
-call:gitdependr https://github.com/python/cpython.git Python3 3.7
+call:gitdependr https://github.com/python/cpython.git Python3 v3.6.5
 
 call:svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 

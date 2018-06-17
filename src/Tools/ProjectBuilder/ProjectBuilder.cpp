@@ -57,13 +57,17 @@
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
+#	include "Config/String.h"
+
 #	include "Codec/ConverterFactory.h"
 
 #	include "Image.h"
 
 #   include "Logger\Logger.h"
 
-#	include <pybind/pybind.hpp>
+#	include "pybind/pybind.hpp"
+#	include "pybind/stl_type_cast.hpp"
+
 #	include "stdex/sha1.h"
 
 #	include <io.h>
@@ -730,6 +734,92 @@ static bool getCurrentUserRegValue( const WCHAR * _path, WCHAR * _value, DWORD _
 	return true;
 }
 //////////////////////////////////////////////////////////////////////////
+struct extract_String_type
+    : public pybind::type_cast_result<Mengine::String>
+{
+public:
+    bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, Mengine::String & _value, bool _nothrow ) override
+    {
+        (void)_kernel;
+        (void)_nothrow;
+
+        if( pybind::string_check( _obj ) == true )
+        {
+            uint32_t size;
+            const Mengine::String::value_type * string_char = pybind::string_to_char_and_size( _obj, size );
+
+            if( string_char == 0 )
+            {
+                return false;
+            }
+
+            _value.assign( string_char, size );
+        }
+        else
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+public:
+    PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<Mengine::String>::TCastRef _value ) override
+    {
+        (void)_kernel;
+
+        const Mengine::String::value_type * value_str = _value.c_str();
+        Mengine::String::size_type value_size = _value.size();
+
+        PyObject * py_value = pybind::string_from_char_size( value_str, (uint32_t)value_size );
+
+        return py_value;
+    }
+};
+//////////////////////////////////////////////////////////////////////////
+struct extract_WString_type
+    : public pybind::type_cast_result<Mengine::WString>
+{
+public:
+    bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, Mengine::WString & _value, bool _nothrow ) override
+    {
+        (void)_kernel;
+        (void)_nothrow;
+
+        if( pybind::unicode_check( _obj ) == true )
+        {
+            uint32_t size = 0;
+            const Mengine::WString::value_type * value_char = pybind::unicode_to_wchar_and_size( _obj, size );
+
+            if( value_char == nullptr )
+            {
+                return false;
+            }
+
+            _value.assign( value_char, size );
+        }
+        else
+        {
+            return false;
+        }
+
+        return true;
+    }
+
+public:
+    PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<Mengine::WString>::TCastRef _value ) override
+    {
+        (void)_kernel;
+
+        const Mengine::WString::value_type * value_str = _value.c_str();
+        Mengine::WString::size_type value_size = _value.size();
+
+        PyObject * py_value = pybind::unicode_from_wchar_size( value_str, (uint32_t)value_size );
+
+        return py_value;
+    }
+};
+//////////////////////////////////////////////////////////////////////////
 bool run()
 {
 	try
@@ -784,6 +874,12 @@ bool run()
     LOGGER_ERROR( "pybind::initialize complete" );
 
 	PyObject * py_tools_module = pybind::module_init( "ToolsBuilderPlugin" );
+
+    pybind::registration_type_cast<Mengine::String>(kernel, new extract_String_type);
+    pybind::registration_type_cast<Mengine::WString>(kernel, new extract_WString_type);
+
+    pybind::registration_stl_vector_type_cast<Mengine::String, stdex::vector<Mengine::String>>(kernel);
+    pybind::registration_stl_vector_type_cast<Mengine::WString, stdex::vector<Mengine::WString>>(kernel);
 
 	pybind::interface_<Mengine::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module)
 		.def_native("write", &Mengine::PythonLogger::py_write )

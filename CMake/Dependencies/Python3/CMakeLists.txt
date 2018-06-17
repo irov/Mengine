@@ -84,7 +84,7 @@ file(WRITE ${python32_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\
 
 configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
 configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
-configure_file(Modified/pylifecycle.c ${SOURCE_DIR}/Python/pylifecycle.c COPYONLY)
+#configure_file(Modified/pylifecycle.c ${SOURCE_DIR}/Python/pylifecycle.c COPYONLY)
 
 ############################## 
 
@@ -112,7 +112,6 @@ set(OBJECT_SRCS
         ${SOURCE_DIR}/Objects/bytearrayobject.c
         ${SOURCE_DIR}/Objects/bytesobject.c
         ${SOURCE_DIR}/Objects/capsule.c
-		${SOURCE_DIR}/Objects/call.c
 		${SOURCE_DIR}/Objects/cellobject.c
         ${SOURCE_DIR}/Objects/classobject.c
         ${SOURCE_DIR}/Objects/codeobject.c
@@ -161,8 +160,6 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/_warnings.c
                 ${SOURCE_DIR}/Python/asdl.c
                 ${SOURCE_DIR}/Python/ast.c
-				${SOURCE_DIR}/Python/ast_opt.c
-				${SOURCE_DIR}/Python/ast_unparse.c
                 ${SOURCE_DIR}/Python/bltinmodule.c
                 ${SOURCE_DIR}/Python/ceval.c
                 ${SOURCE_DIR}/Python/codecs.c
@@ -209,11 +206,8 @@ set(PYTHON_SRCS
                 ${SOURCE_DIR}/Python/pyhash.c    
                 ${SOURCE_DIR}/Python/pylifecycle.c
                 ${SOURCE_DIR}/Python/pystrhex.c
-				${SOURCE_DIR}/Python/pathconfig.c
-				${SOURCE_DIR}/Python/bootstrap_hash.c				
-				${SOURCE_DIR}/Python/context.c
 				${SOURCE_DIR}/Python/pyhash.c
-				${SOURCE_DIR}/Python/hamt.c
+				${SOURCE_DIR}/Python/random.c
                 
                 ${SOURCE_DIR}/PC/config.c
                 ${SOURCE_DIR}/PC/dl_nt.c
@@ -230,7 +224,6 @@ set(PYTHON_SRCS
  
                 
 set(MODULE_SRCS                
-				${SOURCE_DIR}/Modules/_abc.c
                 ${SOURCE_DIR}/Modules/_bisectmodule.c
                 ${SOURCE_DIR}/Modules/_codecsmodule.c
                 ${SOURCE_DIR}/Modules/_collectionsmodule.c

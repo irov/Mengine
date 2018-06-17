@@ -15,7 +15,7 @@ INCLUDE_DIRECTORIES(
         ${Mengine_SOURCE_DIR}/Utils 
 )
 
-ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+ADD_MENGINE_SHARED()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER Plugins

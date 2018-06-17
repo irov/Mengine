@@ -904,6 +904,11 @@ bool run()
 
 	if( py_run_module == nullptr )
 	{
+        LOGGER_ERROR( "Module '%s' Function '%s' error"
+            , utf8_ModuleName.c_str()
+            , utf8_FunctionName.c_str()
+        );
+
 		return false;
 	}
 

@@ -607,10 +607,7 @@ namespace Mengine
             Helper::unicodeToUtf8( out_path, utf8_out );
 
             FilePath c_out = Helper::stringizeFilePath( utf8_out );
-
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getDefaultFileGroup();
-
+            
             OutputStreamInterfacePtr output_stream = FILE_SERVICE()
                 ->openOutputFile( fileGroup, c_out );
 

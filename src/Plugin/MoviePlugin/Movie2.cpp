@@ -104,11 +104,6 @@ namespace Mengine
                     return false;
                 }
 
-                if( layer.name == "ID_NewPlayerName" )
-                {
-                    printf( "d" );
-                }
-
                 node->setName( layer.name );
                 node->setExternalRender( true );
 

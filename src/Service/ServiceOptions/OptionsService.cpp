@@ -91,6 +91,11 @@ namespace Mengine
     {
         const Char * value = this->getOptionValue( _key );
 
+        if( value == nullptr )
+        {
+            return false;
+        }
+
         if( strcmp( value, _value ) != 0 )
         {
             return false;

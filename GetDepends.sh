@@ -49,43 +49,51 @@ svndependr()
     svn checkout -q -r $3 $1 $2
 }
 
+gitdepend()
+{
+	cd $dependenciesdir
+	git clone --recurse-submodules $1 $2
+}
+
+gitdependr()
+{
+	cd $dependenciesdir
+	git clone --recurse-submodules -b $3 $1 $2
+}
+
 mkdir $dependenciesdir
 
-getdepend7 http://downloads.sourceforge.net/project/boost/boost/1.63.0/boost_1_63_0.7z boost_1_63_0.7z boost_1_63_0 boost
+getdepend http://www.ijg.org/files/jpegsr9c.zip jpegsr9c.zip jpeg-9c libjpeg
+getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
 
-getdepend http://download.sourceforge.net/libpng/lpng1628.zip lpng1628.zip lpng1628 libpng
-getdepend http://www.ijg.org/files/jpegsr9b.zip jpegsr9b.zip jpeg-9b libjpeg
-getdependt http://www.zlib.net/zlib-1.2.11.tar.gz zlib-1.2.11.tar zlib-1.2.11 zlib
-getdepend http://downloads.xiph.org/releases/ogg/libogg-1.3.2.zip libogg-1.3.2.zip libogg-1.3.2 libogg
-getdepend http://downloads.xiph.org/releases/vorbis/libvorbis-1.3.5.zip libvorbis-1.3.5.zip libvorbis-1.3.5 libvorbis
-getdepend http://downloads.xiph.org/releases/theora/libtheora-1.1.1.zip libtheora-1.1.1.zip libtheora-1.1.1 libtheora
+gitdepend https://github.com/boostorg/boost.git boost
+gitdepend https://github.com/madler/zlib.git zlib
+gitdepend https://github.com/xiph/ogg.git libogg
+gitdepend https://github.com/xiph/vorbis.git libvorbis
+gitdepend https://github.com/aseprite/freetype2.git freetype
+gitdepend https://github.com/webmproject/libwebp.git libwebp
+gitdepend https://github.com/zeux/pugixml.git pugixml
+gitdepend https://github.com/irov/pybind.git pybind
+gitdepend https://github.com/irov/metabuf.git metabuf
+gitdepend https://github.com/irov/stdex.git stdex
+gitdepend https://github.com/irov/movie.git libmovie
+gitdepend https://github.com/nemtrif/utfcpp.git utf8
+gitdepend https://github.com/lz4/lz4.git lz4
+gitdepend https://github.com/irov/fastpathfinder.git fastpathfinder
+gitdepend https://github.com/zzzzrrr/poly2tri poly2tri
+gitdepend https://github.com/erincatto/Box2D.git Box2D
+gitdepend https://github.com/irov/GOAP.git GOAP
+gitdepend https://github.com/curl/curl.git libcurl
+gitdepend https://github.com/irov/tinyini.git tinyini
+gitdepend https://github.com/spurious/SDL-mirror.git SDL2
+gitdepend https://github.com/frankinshtein/font-effects-lib.git libfe
+gitdepend https://github.com/irov/math.git libmath
+gitdepend https://github.com/akheron/jansson.git jansson
 
-getdepend https://www.astralax.ru/download/programm/dev/magic_mac.zip magic_mac.zip mac astralax
+gitdependr https://github.com/glennrp/libpng.git libpng libpng17
+gitdependr https://github.com/xiph/theora.git libtheora theora-1.1
+gitdependr https://github.com/kcat/openal-soft.git openal-soft v1.18
+gitdependr https://github.com/python/cpython.git Python 2.7
+gitdependr https://github.com/python/cpython.git Python3 v3.6.5
 
-getdependt https://storage.googleapis.com/downloads.webmproject.org/releases/webp/libwebp-0.6.0.tar.gz libwebp-0.6.0.tar.gz libwebp-0.6.0 libwebp
-getdependt http://kcat.strangesoft.net/openal-releases/openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2.tar.bz2 openal-soft-1.17.2 openal-soft
-
-getdependt https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz Python-2.7.13.tgz Python-2.7.13 Python
-getdependt https://www.python.org/ftp/python/3.4.3/Python-3.4.3.tgz Python-3.4.3.tgz Python-3.4.3 Python3
-
-getdepend https://www.libsdl.org/release/SDL2-2.0.5.zip SDL2-2.0.5.zip SDL2-2.0.5 SDL2
-getdepend https://www.libsdl.org/projects/SDL_net/release/SDL2_net-2.0.1.zip SDL2_net-2.0.1.zip SDL2_net-2.0.1 SDL2_net
-getdepend https://www.libsdl.org/projects/SDL_mixer/release/SDL2_mixer-2.0.1.zip SDL2_mixer-2.0.1.zip SDL2_mixer-2.0.1 SDL2_mixer
-
-svndepend https://github.com/zeux/pugixml.git/trunk pugixml
-svndepend https://github.com/irov/pybind.git/trunk pybind
-svndepend https://github.com/irov/metabuf.git/trunk metabuf
-svndepend https://github.com/irov/stdex.git/trunk stdex
-svndepend https://github.com/irov/movie.git/trunk libmovie
-svndepend https://github.com/nemtrif/utfcpp.git/trunk utf8
-svndepend https://github.com/lz4/lz4.git/trunk lz4
-svndepend https://github.com/irov/fastpathfinder.git/trunk fastpathfinder
-svndepend https://github.com/zzzzrrr/poly2tri/trunk poly2tri
 svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
-svndepend https://github.com/erincatto/Box2D.git/trunk/Box2D Box2D
-svndepend https://github.com/irov/GOAP.git/trunk GOAP
-svndepend https://github.com/curl/curl.git/trunk libcurl
-svndepend https://github.com/irov/tinyini.git/trunk tinyini
-
-
-svndepend https://github.com/EsotericSoftware/spine-runtimes.git/trunk/spine-c spine-c

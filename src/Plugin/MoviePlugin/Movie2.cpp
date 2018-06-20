@@ -1745,6 +1745,12 @@ namespace Mengine
                         
                         node->render( _renderService, &state );
                     }break;
+                case AE_MOVIE_LAYER_TYPE_SOCKET:
+                    {
+                        HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(mesh.element_data);
+
+                        node->render( _renderService, &state );
+                    }break;
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {

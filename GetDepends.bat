@@ -19,43 +19,40 @@ IF NOT EXIST "7za.exe" (
 	unzip -o 7za920.zip 7za.exe
 )
 
-call:getdepend http://www.ijg.org/files/jpegsr9c.zip jpegsr9c.zip jpeg-9c libjpeg
-call:getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
+getdepend http://www.ijg.org/files/jpegsr9c.zip jpegsr9c.zip jpeg-9c libjpeg
+getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
 
-call:gitdepend https://github.com/boostorg/boost.git boost
+gitdepend https://github.com/boostorg/boost.git boost
+gitdepend https://github.com/madler/zlib.git zlib
+gitdepend https://github.com/xiph/ogg.git libogg
+gitdepend https://github.com/xiph/vorbis.git libvorbis
+gitdepend https://github.com/aseprite/freetype2.git freetype
+gitdepend https://github.com/webmproject/libwebp.git libwebp
+gitdepend https://github.com/zeux/pugixml.git pugixml
+gitdepend https://github.com/irov/pybind.git pybind
+gitdepend https://github.com/irov/metabuf.git metabuf
+gitdepend https://github.com/irov/stdex.git stdex
+gitdepend https://github.com/irov/movie.git libmovie
+gitdepend https://github.com/nemtrif/utfcpp.git utf8
+gitdepend https://github.com/lz4/lz4.git lz4
+gitdepend https://github.com/irov/fastpathfinder.git fastpathfinder
+gitdepend https://github.com/zzzzrrr/poly2tri poly2tri
+gitdepend https://github.com/erincatto/Box2D.git Box2D
+gitdepend https://github.com/irov/GOAP.git GOAP
+gitdepend https://github.com/curl/curl.git libcurl
+gitdepend https://github.com/irov/tinyini.git tinyini
+gitdepend https://github.com/spurious/SDL-mirror.git SDL2
+gitdepend https://github.com/frankinshtein/font-effects-lib.git libfe
+gitdepend https://github.com/irov/math.git libmath
+gitdepend https://github.com/akheron/jansson.git jansson
 
-call:gitdependr https://github.com/glennrp/libpng.git libpng libpng17
-call:gitdependr https://github.com/glennrp/libpng.git libpng libpng17
-call:gitdepend https://github.com/madler/zlib.git zlib
-call:gitdepend https://github.com/xiph/ogg.git libogg
-call:gitdepend https://github.com/xiph/vorbis.git libvorbis
-call:gitdependr https://github.com/xiph/theora.git libtheora theora-1.1
-call:gitdepend https://github.com/aseprite/freetype2.git freetype
-call:gitdepend https://github.com/webmproject/libwebp.git libwebp
+gitdependr https://github.com/glennrp/libpng.git libpng libpng17
+gitdependr https://github.com/xiph/theora.git libtheora theora-1.1
+gitdependr https://github.com/kcat/openal-soft.git openal-soft v1.18
+gitdependr https://github.com/python/cpython.git Python 2.7
+gitdependr https://github.com/python/cpython.git Python3 v3.6.5
 
-call:gitdepend https://github.com/zeux/pugixml.git pugixml
-call:gitdepend https://github.com/irov/pybind.git pybind
-call:gitdepend https://github.com/irov/metabuf.git metabuf
-call:gitdepend https://github.com/irov/stdex.git stdex
-call:gitdepend https://github.com/irov/movie.git libmovie
-call:gitdepend https://github.com/nemtrif/utfcpp.git utf8
-call:gitdepend https://github.com/lz4/lz4.git lz4
-call:gitdepend https://github.com/irov/fastpathfinder.git fastpathfinder
-call:gitdepend https://github.com/zzzzrrr/poly2tri poly2tri
-call:gitdepend https://github.com/erincatto/Box2D.git Box2D
-call:gitdepend https://github.com/irov/GOAP.git GOAP
-call:gitdepend https://github.com/curl/curl.git libcurl
-call:gitdepend https://github.com/irov/tinyini.git tinyini
-call:gitdepend https://github.com/spurious/SDL-mirror.git SDL2
-call:gitdependr https://github.com/kcat/openal-soft.git openal-soft v1.18
-call:gitdepend https://github.com/frankinshtein/font-effects-lib.git libfe
-call:gitdepend https://github.com/irov/math.git libmath
-call:gitdepend https://github.com/akheron/jansson.git jansson
-
-call:gitdependr https://github.com/python/cpython.git Python 2.7
-call:gitdependr https://github.com/python/cpython.git Python3 v3.6.5
-
-call:svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
+svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 
 goto end
 
@@ -94,7 +91,7 @@ goto:eof
 @echo git clone: %~1
 
 IF NOT EXIST "%toolsdir%\%~2" (
-	git clone --recurse-submodules -b %3 %~1 "%toolsdir%\%~2"
+	git clone --recurse-submodules -b %~3 %~1 "%toolsdir%\%~2"
 )
 
 goto:eof

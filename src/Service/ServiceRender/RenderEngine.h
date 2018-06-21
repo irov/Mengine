@@ -165,7 +165,7 @@ namespace Mengine
 		void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) override;
 
     public:
-		void clear( uint32_t _color ) override;
+		void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
 		void setSeparateAlphaBlendMode() override;
 
 	public:

@@ -595,6 +595,19 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    static void __updateMatrixProxy( const NodePtr & _node, const float * _matrix, const ae_color_t & _color, ae_color_channel_t _opacity )
+    {
+        Node * nodeParent = _node->getParent();
+
+        MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+
+        mt::mat4f mp;
+        mp.from_f16( _matrix );
+        matrixProxy->setProxyMatrix( mp );
+
+        matrixProxy->setLocalColorRGBA( _color.r, _color.g, _color.b, _opacity );
+    }
+    //////////////////////////////////////////////////////////////////////////
     ae_bool_t Movie2::__movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
     {
         Movie2 * movie2 = (Movie2 *)_ud;
@@ -654,6 +667,8 @@ namespace Mengine
                     return AE_FALSE;
                 }
 
+                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
+
                 if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_HORIZONTAL_CENTER ) == AE_TRUE )
                 {
                     node->setHorizontalCenterAlign();
@@ -663,6 +678,7 @@ namespace Mengine
                 {
                     node->setVerticalCenterAlign();
                 }
+
 
                 *_nd = node.get();
 
@@ -932,16 +948,8 @@ namespace Mengine
         case AE_MOVIE_LAYER_TYPE_PARTICLE:
             {
                 ParticleEmitter2 * node = reinterpret_node_cast<ParticleEmitter2 *>(_callbackData->element);
-
-                Node * nodeParent = node->getParent();
-
-                MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                mt::mat4f mp;
-                mp.from_f16( _callbackData->matrix );
-                matrixProxy->setProxyMatrix( mp );
-
-                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+                
+                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
 
                 switch( _callbackData->state )
                 {
@@ -1107,59 +1115,27 @@ namespace Mengine
             {
                 Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(_callbackData->element);
 
-                Node * nodeParent = node->getParent();
-
-                MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                mt::mat4f mp;
-                mp.from_f16( _callbackData->matrix );
-                matrixProxy->setProxyMatrix( mp );
-
-                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
             }break;
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
         case AE_MOVIE_LAYER_TYPE_SPRITE:
             {
                 ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(_callbackData->element);
 
-                Node * nodeParent = node->getParent();
-
-                MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                mt::mat4f mp;
-                mp.from_f16( _callbackData->matrix );
-                matrixProxy->setProxyMatrix( mp );
-
-                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
             }break;
 #endif
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
                 TextField * node = reinterpret_node_cast<TextField *>(_callbackData->element);
 
-                Node * nodeParent = node->getParent();
-
-                MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                mt::mat4f mp;
-                mp.from_f16( _callbackData->matrix );
-                matrixProxy->setProxyMatrix( mp );
-
-                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
             }break;
         case AE_MOVIE_LAYER_TYPE_SOCKET:
             {
                 HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(_callbackData->element);
 
-                Node * nodeParent = node->getParent();
-
-                MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
-
-                mt::mat4f mp;
-                mp.from_f16( _callbackData->matrix );
-                matrixProxy->setProxyMatrix( mp );
-
-                matrixProxy->setLocalColorRGBA( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
             }break;
         default:
             {

@@ -769,15 +769,6 @@ namespace Mengine
             return false;
         }
 
-        RECT r;
-        r.left = 1315;
-        r.top = 433;
-        r.right = 1665;
-        r.bottom = 533;
-
-        DXCALL( m_pD3DDevice, SetRenderState, (D3DRS_SCISSORTESTENABLE, TRUE) );
-        DXCALL( m_pD3DDevice, SetScissorRect, (&r) );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1110,7 +1101,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::clear_( DWORD _color )
+    void DX9RenderSystem::clear_( uint8_t _r, uint8_t _g, uint8_t _b )
     {
         if( m_pD3DDevice == nullptr )
         {
@@ -1120,7 +1111,7 @@ namespace Mengine
             return;
         }
 
-        DXCALL( m_pD3DDevice, Clear, (0, NULL, D3DCLEAR_TARGET, _color, 0.f, 0) );
+        DXCALL( m_pD3DDevice, Clear, (0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( _r, _g, _b ), 0.f, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )
@@ -1903,11 +1894,11 @@ namespace Mengine
         mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up, _sign );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::clear( uint32_t _color, bool _force )
+    void DX9RenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force )
     {
         if( _force == true )
         {
-            this->clear_( _color );
+            this->clear_( _r, _g, _b );
         }
         else
         {
@@ -1922,7 +1913,7 @@ namespace Mengine
             {
                 this->updateViewport_( clear_viewport );
 
-                this->clear_( _color );
+                this->clear_( _r, _g, _b );
 
                 this->updateViewport_( m_viewport );
             }

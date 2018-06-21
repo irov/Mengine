@@ -556,7 +556,7 @@ namespace Mengine
 		virtual void onWindowChangeFullscreen( bool _fullscreen ) = 0;
 
 		virtual void setVSync( bool _vSync ) = 0;
-		virtual void clear( uint32_t _color, bool _force ) = 0;
+        virtual void clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force ) = 0;
 
         virtual bool supportTextureFormat( PixelFormat _format ) const = 0;
 		virtual bool supportTextureNonPow2() const = 0;
@@ -633,7 +633,7 @@ namespace Mengine
 		virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;
 
 	public:
-		virtual void clear( uint32_t _color ) = 0;
+		virtual void clear( uint8_t _r, uint8_t _g, uint8_t _b ) = 0;
 		virtual bool beginScene() = 0;
 		virtual void endScene() = 0;
 		virtual void swapBuffers() = 0;

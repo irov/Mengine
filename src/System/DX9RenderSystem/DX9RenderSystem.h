@@ -45,7 +45,7 @@ namespace Mengine
         void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) override;
         void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) override;
 
-		void clear( uint32_t _color, bool _force ) override;
+		void clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force ) override;
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
 		bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
@@ -149,7 +149,7 @@ namespace Mengine
     protected:
         void updateVSyncDPP_();
         bool resetDevice_();
-		void clear_( DWORD _color );
+		void clear_( uint8_t _r, uint8_t _g, uint8_t _b );
 
 	protected:
 		void updateViewport_( const Viewport & _viewport );

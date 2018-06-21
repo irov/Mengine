@@ -472,7 +472,7 @@ namespace Mengine
         }
 
         RENDER_SYSTEM()
-            ->clear( 0x00000000, true );
+            ->clear( 0, 0, 0, true );
 
         return true;
     }
@@ -1746,10 +1746,10 @@ namespace Mengine
         return m_vsync;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::clear( uint32_t _color )
+    void RenderEngine::clear( uint8_t _r, uint8_t _g, uint8_t _b )
     {
         RENDER_SYSTEM()
-            ->clear( _color, true );
+            ->clear( _r, _g, _b, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::setSeparateAlphaBlendMode()

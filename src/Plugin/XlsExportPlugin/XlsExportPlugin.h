@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/NotificationServiceInterface.h"
+#include "Kernel/Observable.h"
 
 #include "Core/PluginBase.h"
 #include "Core/ConstString.h"

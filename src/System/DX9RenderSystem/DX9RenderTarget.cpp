@@ -9,12 +9,12 @@ namespace Mengine
     DX9RenderTarget::DX9RenderTarget()
 		: m_width( 0 )
 		, m_height( 0 )
-		, m_device( nullptr )
+		, m_pD3DDevice( nullptr )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
-		, m_renderTexture( nullptr )
-		, m_surface( nullptr )
-		, m_oldSurface( nullptr )
+		, m_pD3DTexture( nullptr )
+		, m_pD3DSurface( nullptr )
+		, m_pD3DSurfaceOld( nullptr )
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -24,16 +24,16 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderTarget::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, PixelFormat _format )
 	{
-		m_device = _device;
+		m_pD3DDevice = _device;
 
 		m_width = _width;
 		m_height = _height;
         m_format = _format;
 
-        D3DFORMAT d3dformat = s_toD3DFormat( _format );
+        D3DFORMAT d3dformat = s_toD3DFormat( m_format );
 
 		LPDIRECT3DTEXTURE9 renderTexture;
-		IF_DXCALL( m_device, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, NULL) )
+		IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, NULL) )
 		{
 			return false;
 		}
@@ -52,7 +52,7 @@ namespace Mengine
             return false;
         }
 
-        m_renderTexture = renderTexture;
+        m_pD3DTexture = renderTexture;
 
 		return true;
 	}
@@ -64,8 +64,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	void DX9RenderTarget::finalize()
 	{
-		m_renderTexture->Release();
-		m_renderTexture = nullptr;
+		m_pD3DTexture->Release();
+		m_pD3DTexture = nullptr;
 
         this->_finalize();
 	}
@@ -103,7 +103,7 @@ namespace Mengine
 	bool DX9RenderTarget::begin()
 	{
 		LPDIRECT3DSURFACE9 surface;
-		DXCALL( m_renderTexture, GetSurfaceLevel, ( 0, &surface ) );
+		DXCALL( m_pD3DTexture, GetSurfaceLevel, ( 0, &surface ) );
 
 		if( surface == nullptr )
 		{
@@ -111,28 +111,28 @@ namespace Mengine
 		}
 
 		LPDIRECT3DSURFACE9 old_surface;
-		DXCALL( m_device, GetRenderTarget, ( 0, &old_surface ) );
+		DXCALL( m_pD3DDevice, GetRenderTarget, ( 0, &old_surface ) );
 
-		DXCALL( m_device, SetRenderTarget, ( 0, surface ) );
+		DXCALL( m_pD3DDevice, SetRenderTarget, ( 0, surface ) );
 
-		m_oldSurface = old_surface;
-		m_surface = surface;
+		m_pD3DSurfaceOld = old_surface;
+		m_pD3DSurface = surface;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void DX9RenderTarget::end()
 	{
-		DXCALL( m_device, SetRenderTarget, ( 0, m_oldSurface ) );
+		DXCALL( m_pD3DDevice, SetRenderTarget, ( 0, m_pD3DSurfaceOld ) );
 
-		if( m_oldSurface != nullptr )
+		if( m_pD3DSurfaceOld != nullptr )
 		{
-			m_oldSurface->Release();
-			m_oldSurface = nullptr;
+			m_pD3DSurfaceOld->Release();
+			m_pD3DSurfaceOld = nullptr;
 		}
 
-		m_surface->Release();
-		m_surface = nullptr;
+		m_pD3DSurface->Release();
+		m_pD3DSurface = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderTarget::getData( unsigned char * _buffer, size_t _pitch )
@@ -145,6 +145,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LPDIRECT3DTEXTURE9 DX9RenderTarget::getDX9RenderTexture() const
     {
-        return m_renderTexture;
-    }    
+        return m_pD3DTexture;
+    }
+    //////////////////////////////////////////////////////////////////////////        
+    void DX9RenderTarget::onRenderReset()
+    {
+        ULONG refCount = m_pD3DTexture->Release();
+        (void)refCount;
+
+        m_pD3DTexture = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////        
+    void DX9RenderTarget::onRenderRestore()
+    {
+        D3DFORMAT d3dformat = s_toD3DFormat( m_format );
+
+        LPDIRECT3DTEXTURE9 renderTexture;
+        IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, NULL) )
+        {
+            return;
+        }
+
+        m_pD3DTexture = renderTexture;
+    }
+
 }

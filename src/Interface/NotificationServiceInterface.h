@@ -8,20 +8,14 @@
 #include "Factory/FactorableUnique.h"
 #include "Factory/Factorable.h"
 
-#include "Core/Mixin.h"
+#include "Kernel/Observable.h"
+
 #include "Core/IntrusivePtr.h"
 
 #include <tuple>
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class Observable
-        : public Mixin
-    {
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Observable> ObservablePtr;
     //////////////////////////////////////////////////////////////////////////
     class ObserverCallableInterface
         : public FactorableUnique<Factorable>

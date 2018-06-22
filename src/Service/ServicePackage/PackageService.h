@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Interface/PackageInterface.h"
-#include "Interface/NotificationServiceInterface.h"
+
+#include "Kernel/Observable.h"
 
 #include "Core/ServiceBase.h"
 

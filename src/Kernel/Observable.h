@@ -1,0 +1,15 @@
+#pragma once
+
+#include "Core/Mixin.h"
+#include "Core/IntrusivePtr.h"
+
+namespace Mengine
+{
+    class Observable
+        : public Mixin
+    {
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Observable> ObservablePtr;
+    //////////////////////////////////////////////////////////////////////////
+}

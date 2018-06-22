@@ -17,7 +17,7 @@ namespace Mengine
 	bool DX9RenderTargetOffscreen::_initialize()
 	{
 		LPDIRECT3DSURFACE9 surfacePlain;
-		IF_DXCALL( m_device, CreateOffscreenPlainSurface, (m_hwWidth, m_hwHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfacePlain, NULL) )
+		IF_DXCALL( m_pD3DDevice, CreateOffscreenPlainSurface, (m_hwWidth, m_hwHeight, D3DFMT_A8R8G8B8, D3DPOOL_SYSTEMMEM, &surfacePlain, NULL) )
 		{
 			return false;
 		}
@@ -40,12 +40,12 @@ namespace Mengine
 			return false;
 		}
 
-		if( m_surface == nullptr )
+		if( m_pD3DSurface == nullptr )
 		{
 			return false;
 		}
 
-		DXCALL( m_device, GetRenderTargetData, (m_surface, m_surfacePlain) );
+		DXCALL( m_pD3DDevice, GetRenderTargetData, (m_pD3DSurface, m_surfacePlain) );
 
 		D3DLOCKED_RECT LockedRect;
 		DXCALL( m_surfacePlain, LockRect, ( &LockedRect, NULL, 0 ) );

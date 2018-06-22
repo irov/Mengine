@@ -4,6 +4,7 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/StringizeInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Logger/Logger.h"
 

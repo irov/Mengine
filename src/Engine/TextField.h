@@ -1,11 +1,11 @@
 # pragma once
 
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/TextInterface.h"
 
 #include "TextChar.h"
 
 #include "Kernel/Node.h"
+#include "Kernel/Observable.h"
 #include "Kernel/Materialable.h"
 
 #include "Core/ColourValue.h"

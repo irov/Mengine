@@ -261,6 +261,11 @@ Randomizer
 	MT19937Randomizer.cpp
 	MT19937Randomizer.h	
 )
+
+ADD_FILTER(
+Observable
+	Observable.h
+)
    
    
 INCLUDE_DIRECTORIES(

@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/NotificationServiceInterface.h"
+
+#include "Kernel/Observable.h"
 
 #include "Core/Resolution.h"
 #include "Core/Viewport.h"

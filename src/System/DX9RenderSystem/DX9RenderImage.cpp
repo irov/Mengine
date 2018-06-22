@@ -1,16 +1,19 @@
 #include "DX9RenderImage.h"
-
 #include "DX9ErrorHelper.h"
+
+#include "Interface/NotificationServiceInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX9RenderImage::DX9RenderImage()
-        : m_d3dTexture( nullptr )
+        : m_pD3DDevice( nullptr )
+        , m_pD3DTexture( nullptr )
         , m_mode( ERIM_NORMAL )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
         , m_hwChannels( 0 )
+        , m_hwDepth( 0 )
         , m_hwPixelFormat( PF_UNKNOWN )
         , m_hwWidthInv( 0.f )
         , m_hwHeightInv( 0.f )
@@ -19,18 +22,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderImage::~DX9RenderImage()
     {
-        if( m_d3dTexture != nullptr )
+        if( m_pD3DTexture != nullptr )
         {
-            ULONG ref = m_d3dTexture->Release();
+            ULONG ref = m_pD3DTexture->Release();
             (void)ref;
 
-            m_d3dTexture = nullptr;
-        }
+            m_pD3DTexture = nullptr;
+        }        
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::initialize( LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
+    void DX9RenderImage::initialize( LPDIRECT3DDEVICE9 _pD3DDevice, LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat )
     {
-        m_d3dTexture = _d3dInterface;
+        m_pD3DDevice = _pD3DDevice;
+        m_pD3DTexture = _d3dInterface;
 
         m_mode = _mode;
 
@@ -38,6 +42,7 @@ namespace Mengine
         m_hwWidth = _hwWidth;
         m_hwHeight = _hwHeight;
         m_hwChannels = _hwChannels;
+        m_hwDepth = _hwDepth;
         m_hwPixelFormat = _hwPixelFormat;
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
@@ -73,7 +78,7 @@ namespace Mengine
         rect.right = _rect.right;
 
         D3DLOCKED_RECT TRect;
-        IF_DXCALL( m_d3dTexture, LockRect, (_level, &TRect, &rect, flags) )
+        IF_DXCALL( m_pD3DTexture, LockRect, (_level, &TRect, &rect, flags) )
         {
             return nullptr;
         }
@@ -89,7 +94,7 @@ namespace Mengine
     {
         (void)_successful;
 
-        IF_DXCALL( m_d3dTexture, UnlockRect, (_level) )
+        IF_DXCALL( m_pD3DTexture, UnlockRect, (_level) )
         {
             return false;
         }
@@ -97,9 +102,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DTEXTURE9 DX9RenderImage::getDXTextureInterface() const
+    LPDIRECT3DDEVICE9 DX9RenderImage::getDirect3dDevice9() const
     {
-        return m_d3dTexture;
+        return m_pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LPDIRECT3DTEXTURE9 DX9RenderImage::getDirect3dTexture9() const
+    {
+        return m_pD3DTexture;
     }
     //////////////////////////////////////////////////////////////////////////
     ERenderImageMode DX9RenderImage::getMode() const
@@ -145,5 +155,15 @@ namespace Mengine
     uint32_t DX9RenderImage::getHWMipmaps() const
     {
         return m_hwMipmaps;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderImage::onRenderReset()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderImage::onRenderRestore()
+    {
+        //Empty
     }
 }

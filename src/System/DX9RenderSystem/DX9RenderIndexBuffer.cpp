@@ -48,7 +48,7 @@ namespace Mengine
         case BT_STREAM:
         case BT_DYNAMIC:
             {
-                m_pool = D3DPOOL_DEFAULT;
+                m_pool = D3DPOOL_MANAGED;
 
                 m_usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
             }break;

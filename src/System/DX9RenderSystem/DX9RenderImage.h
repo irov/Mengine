@@ -2,6 +2,8 @@
 
 #include "Interface/RenderSystemInterface.h"
 
+#include "DX9RenderResourceHandler.h"
+
 #include "Core/ServantBase.h"
 
 #include <d3d9.h>
@@ -10,20 +12,22 @@ namespace Mengine
 {
 	class DX9RenderImage
 		: public ServantBase<RenderImageInterface>
+        , public RenderResourceHandlerInterface
 	{
 	public:
 		DX9RenderImage();
         ~DX9RenderImage() override;
 
     public:
-        void initialize( LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat );
+        void initialize( LPDIRECT3DDEVICE9 _pD3DDevice, LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat );
 		
 	protected:
 		void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
 		const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
 
 	public:
-        LPDIRECT3DTEXTURE9 getDXTextureInterface() const;
+        LPDIRECT3DDEVICE9 getDirect3dDevice9() const;
+        LPDIRECT3DTEXTURE9 getDirect3dTexture9() const;
 
 	public:
 		ERenderImageMode getMode() const override;
@@ -44,9 +48,14 @@ namespace Mengine
 	public:
         Pointer lock( size_t * _pitch, uint32_t _level, const Rect & _rect, bool _readOnly ) override;
 		bool unlock( uint32_t _level, bool _successful ) override;
-		               		
+
+    protected:
+        void onRenderReset() override;
+        void onRenderRestore() override;
+
 	protected:
-        LPDIRECT3DTEXTURE9 m_d3dTexture;
+        LPDIRECT3DDEVICE9 m_pD3DDevice;
+        LPDIRECT3DTEXTURE9 m_pD3DTexture;
 
 		RenderImageProviderInterfacePtr m_renderImageProvider;
 
@@ -56,6 +65,7 @@ namespace Mengine
 		uint32_t m_hwWidth;
 		uint32_t m_hwHeight;
         uint32_t m_hwChannels;
+        uint32_t m_hwDepth;
 
         PixelFormat m_hwPixelFormat;
 

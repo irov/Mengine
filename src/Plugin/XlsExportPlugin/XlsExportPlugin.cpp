@@ -4,6 +4,7 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "WIN32/WindowsIncluder.h"
 

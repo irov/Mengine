@@ -1,5 +1,7 @@
 #include "RenderCamera.h"
 
+#include "Interface/NotificationServiceInterface.h"
+
 #include "Logger/Logger.h"
 
 namespace Mengine

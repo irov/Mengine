@@ -575,13 +575,14 @@ namespace Mengine
             return nullptr;
         }
 
-        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, _mipmaps, texDesc.Width, texDesc.Height, _channels, _format );
+        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, _mipmaps, texDesc.Width, texDesc.Height, _channels, _depth, _format );
 
-        LOGGER_INFO( "DX9RenderSystem.createImage: texture created %dx%d %d:%d"
+        LOGGER_INFO( "DX9RenderSystem.createImage: texture created %dx%d %d:%d depth %d"
             , texDesc.Width
             , texDesc.Height
             , texDesc.Format
             , _channels
+            , _depth
         );
 
         return dxTexture;
@@ -610,7 +611,7 @@ namespace Mengine
             return nullptr;
         }
 
-        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_DYNAMIC, 1, texDesc.Width, texDesc.Height, _channels, _format );
+        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_DYNAMIC, 1, texDesc.Width, texDesc.Height, _channels, _depth, _format );
 
         LOGGER_INFO( "DX9RenderSystem.createDynamicImage: texture created %dx%d %d:%d"
             , texDesc.Width
@@ -636,6 +637,8 @@ namespace Mengine
 
             return nullptr;
         }
+
+        m_renderResourceHandlers.push_back( target.get() );
 
         LOGGER_INFO( "DX9RenderSystem.createRenderTargetTexture: offscreen target created %dx%d %d"
             , _width
@@ -679,7 +682,7 @@ namespace Mengine
         PixelFormat format = targetTexture->getFormat();
         LPDIRECT3DTEXTURE9 dx9rendertexture = targetTexture->getDX9RenderTexture();
 
-        DX9RenderImagePtr image = this->createDX9RenderImage_( dx9rendertexture, ERIM_DYNAMIC, 1, width, height, 3, format );
+        DX9RenderImagePtr image = this->createDX9RenderImage_( dx9rendertexture, ERIM_DYNAMIC, 1, width, height, 3, 1, format );
 
         return image;
     }
@@ -972,7 +975,7 @@ namespace Mengine
 
         DX9RenderImagePtr texture = stdex::intrusive_static_cast<DX9RenderImagePtr>(_renderTarget);
 
-        IDirect3DTexture9 * dx_texture = texture->getDXTextureInterface();
+        IDirect3DTexture9 * dx_texture = texture->getDirect3dTexture9();
 
         IDirect3DSurface9 * dx_surface;
         IF_DXCALL( dx_texture, GetSurfaceLevel, (0, &dx_surface) )
@@ -1081,7 +1084,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture )
+    bool DX9RenderSystem::d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels, DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * _ppD3DTexture )
     {
         if( m_pD3DDevice == nullptr )
         {
@@ -1093,7 +1096,7 @@ namespace Mengine
 
         D3DFORMAT dx_format = s_toD3DFormat( Format );
 
-        IF_DXCALL( m_pD3DDevice, CreateTexture, (Width, Height, MipLevels, Usage, dx_format, Pool, ppTexture, NULL) )
+        IF_DXCALL( m_pD3DDevice, CreateTexture, (Width, Height, MipLevels, Usage, dx_format, Pool, _ppD3DTexture, NULL) )
         {
             return false;
         }
@@ -1233,9 +1236,14 @@ namespace Mengine
 
             return false;
         }
-
+        
         RENDER_SERVICE()
             ->onDeviceLostPrepare();
+
+        for( RenderResourceHandlerInterface * handler : m_renderResourceHandlers )
+        {
+            handler->onRenderReset();
+        }
 
         HRESULT hr = m_pD3DDevice->Reset( m_d3dpp );
 
@@ -1252,6 +1260,11 @@ namespace Mengine
             );
 
             return false;
+        }
+
+        for( RenderResourceHandlerInterface * handler : m_renderResourceHandlers )
+        {
+            handler->onRenderRestore();
         }
 
         RENDER_SERVICE()
@@ -1409,7 +1422,7 @@ namespace Mengine
         {
             DX9RenderImage * image = _texture.getT<DX9RenderImage *>();
 
-            IDirect3DTexture9 * dx_texture = image->getDXTextureInterface();
+            IDirect3DTexture9 * dx_texture = image->getDirect3dTexture9();
 
 #ifndef NDEBUG
             DWORD fillmode;
@@ -1925,15 +1938,17 @@ namespace Mengine
         //empty, not supported
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat )
+    DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat )
     {
         m_textureCount++;
 
         DX9RenderImagePtr dxTexture = m_factoryDX9Texture->createObject();
 
-        dxTexture->initialize( _d3dInterface, _mode, _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwPixelFormat );
+        dxTexture->initialize( m_pD3DDevice, _pD3DTexture, _mode, _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
 
-        uint32_t memoryUse = Helper::getTextureMemorySize( _hwWidth, _hwHeight, _hwChannels, 1, _hwPixelFormat );
+        m_renderResourceHandlers.push_back( dxTexture.get() );
+
+        uint32_t memoryUse = Helper::getTextureMemorySize( _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
 
         m_textureMemoryUse += memoryUse;
 

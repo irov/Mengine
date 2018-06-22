@@ -4,6 +4,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/FileSystemInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/ConfigInterface.h"
 
@@ -34,7 +35,8 @@ namespace Mengine
     //}
     //////////////////////////////////////////////////////////////////////////
     RenderEngine::RenderEngine()
-        : m_windowCreated( false )
+        : m_renderSystem(nullptr)
+        , m_windowCreated( false )
         , m_vsync( false )
         , m_fullscreen( false )
         , m_currentTextureStages( 0 )
@@ -129,6 +131,8 @@ namespace Mengine
         m_factoryRenderBatch = new FactoryPool<RenderBatch, 16>();
         m_factoryRenderPass = new FactoryPool<RenderPass, 128>();
 
+        m_renderSystem = RENDER_SYSTEM();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -201,8 +205,8 @@ namespace Mengine
 
         uint32_t MultiSampleCount = CONFIG_VALUE( "Engine", "MultiSampleCount", 2U );
 
-        m_windowCreated = RENDER_SYSTEM()
-            ->createRenderWindow( m_windowResolution, _bits, m_fullscreen, m_vsync, _FSAAType, _FSAAQuality, MultiSampleCount );
+        m_windowCreated = 
+            m_renderSystem->createRenderWindow( m_windowResolution, _bits, m_fullscreen, m_vsync, _FSAAType, _FSAAQuality, MultiSampleCount );
 
         if( m_windowCreated == false )
         {
@@ -413,7 +417,7 @@ namespace Mengine
             return;
         }
 
-        RENDER_SYSTEM()
+        m_renderSystem
             ->changeWindowMode( m_windowResolution, m_fullscreen );
 
         //this->restoreRenderSystemStates_();
@@ -423,7 +427,7 @@ namespace Mengine
     {
         const RenderImageInterfacePtr & image = _texture->getImage();
 
-        RENDER_SYSTEM()
+        m_renderSystem
             ->screenshot( image, _rect );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -431,7 +435,7 @@ namespace Mengine
     {
         if( m_windowCreated == true )
         {
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->onWindowClose();
         }
     }
@@ -442,6 +446,9 @@ namespace Mengine
         {
             return;
         }
+
+        NOTIFICATION_SERVICE()
+            ->notify( NOTIFICATOR_RENDER_RESET );
 
         this->restoreRenderSystemStates_();
 
@@ -466,12 +473,12 @@ namespace Mengine
     {
         this->restoreRenderSystemStates_();
 
-        if( RENDER_SYSTEM()->beginScene() == false )
+        if( m_renderSystem->beginScene() == false )
         {
             return false;
         }
 
-        RENDER_SYSTEM()
+        m_renderSystem
             ->clear( 0, 0, 0, true );
 
         return true;
@@ -481,7 +488,7 @@ namespace Mengine
     {
         this->flushRender_();
 
-        RENDER_SYSTEM()
+        m_renderSystem
             ->endScene();
 
         m_debugInfo.frameCount += 1;
@@ -489,7 +496,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::swapBuffers()
     {
-        RENDER_SYSTEM()
+        m_renderSystem
             ->swapBuffers();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -520,7 +527,7 @@ namespace Mengine
                 current_texture_stage.addressV = texture_stage.addressV;
                 current_texture_stage.addressBorder = texture_stage.addressBorder;
 
-                RENDER_SYSTEM()->setTextureAddressing( stageId
+                m_renderSystem->setTextureAddressing( stageId
                     , current_texture_stage.addressU
                     , current_texture_stage.addressV
                     , current_texture_stage.addressBorder
@@ -535,7 +542,7 @@ namespace Mengine
                 current_texture_stage.magnification = texture_stage.magnification;
                 current_texture_stage.minification = texture_stage.minification;
 
-                RENDER_SYSTEM()->setTextureStageFilter( stageId
+                m_renderSystem->setTextureStageFilter( stageId
                     , current_texture_stage.minification
                     , current_texture_stage.mipmap
                     , current_texture_stage.magnification
@@ -547,7 +554,7 @@ namespace Mengine
         {
             m_alphaBlendEnable = m_currentStage->alphaBlendEnable;
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setAlphaBlendEnable( m_alphaBlendEnable );
         }
 
@@ -559,7 +566,7 @@ namespace Mengine
             m_currentBlendDst = m_currentStage->blendDst;
             m_currentBlendOp = m_currentStage->blendOp;
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
         }
 
@@ -567,7 +574,7 @@ namespace Mengine
         {
             m_currentProgram = m_currentStage->program;
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setProgram( m_currentProgram );
         }
     }
@@ -583,7 +590,7 @@ namespace Mengine
 
             const RenderImageInterfacePtr & image = _texture->getImage();
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setTexture( _stageId, image );
         }
     }
@@ -641,14 +648,14 @@ namespace Mengine
 
         this->updateMaterial_( material );
 
-        RENDER_SYSTEM()
+        m_renderSystem
             ->updateProgram( m_currentProgram );
 
         if( m_currentIndexBuffer != _renderObject->indexBuffer )
         {
             m_currentIndexBuffer = _renderObject->indexBuffer;
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setIndexBuffer( m_currentIndexBuffer );
         }
 
@@ -656,13 +663,13 @@ namespace Mengine
         {
             m_currentVertexBuffer = _renderObject->vertexBuffer;
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setVertexBuffer( m_currentVertexBuffer );
         }
 
         EPrimitiveType primitiveType = material->getPrimitiveType();
 
-        RENDER_SYSTEM()->drawIndexedPrimitive(
+        m_renderSystem->drawIndexedPrimitive(
             primitiveType,
             _renderObject->baseVertexIndex,
             _renderObject->minIndex,
@@ -695,16 +702,16 @@ namespace Mengine
 
         m_currentTexturesID[_stage] = 0;
 
-        RENDER_SYSTEM()
+        m_renderSystem
             ->setTexture( _stage, nullptr );
 
-        RENDER_SYSTEM()->setTextureAddressing( _stage
+        m_renderSystem->setTextureAddressing( _stage
             , stage.addressU
             , stage.addressV
             , stage.addressBorder
         );
 
-        RENDER_SYSTEM()->setTextureStageFilter( _stage
+        m_renderSystem->setTextureStageFilter( _stage
             , stage.minification
             , stage.mipmap
             , stage.magnification
@@ -762,20 +769,20 @@ namespace Mengine
         mt::mat4f worldTransform;
         mt::ident_m4( worldTransform );
 
-        RENDER_SYSTEM()->setProjectionMatrix( projTransform );
-        RENDER_SYSTEM()->setViewMatrix( viewTransform );
-        RENDER_SYSTEM()->setWorldMatrix( worldTransform );
-        RENDER_SYSTEM()->setVertexBuffer( m_currentVertexBuffer );
-        RENDER_SYSTEM()->setIndexBuffer( m_currentIndexBuffer );
-        RENDER_SYSTEM()->setProgram( m_currentProgram );
-        RENDER_SYSTEM()->setCullMode( CM_CULL_NONE );
-        //RENDER_SYSTEM()->setFillMode( FM_SOLID );
-        //RENDER_SYSTEM()->setFillMode( FM_WIREFRAME );
-        RENDER_SYSTEM()->setDepthBufferTestEnable( false );
-        RENDER_SYSTEM()->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
-        RENDER_SYSTEM()->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
-        RENDER_SYSTEM()->setAlphaBlendEnable( m_alphaBlendEnable );
-        RENDER_SYSTEM()->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
+        m_renderSystem->setProjectionMatrix( projTransform );
+        m_renderSystem->setViewMatrix( viewTransform );
+        m_renderSystem->setWorldMatrix( worldTransform );
+        m_renderSystem->setVertexBuffer( m_currentVertexBuffer );
+        m_renderSystem->setIndexBuffer( m_currentIndexBuffer );
+        m_renderSystem->setProgram( m_currentProgram );
+        m_renderSystem->setCullMode( CM_CULL_NONE );
+        //m_renderSystem->setFillMode( FM_SOLID );
+        //m_renderSystem->setFillMode( FM_WIREFRAME );
+        m_renderSystem->setDepthBufferTestEnable( false );
+        m_renderSystem->setDepthBufferWriteEnable( m_depthBufferWriteEnable );
+        m_renderSystem->setDepthBufferCmpFunc( CMPF_LESS_EQUAL );
+        m_renderSystem->setAlphaBlendEnable( m_alphaBlendEnable );
+        m_renderSystem->setBlendFactor( m_currentBlendSrc, m_currentBlendDst, m_currentBlendOp );
 
         LOGGER_INFO( "RenderEngine::restoreRenderSystemStates_ texture stages %d"
             , MENGINE_MAX_TEXTURE_STAGES
@@ -784,31 +791,31 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float zn, float zf )
     {
-        RENDER_SYSTEM()
+        m_renderSystem
             ->makeProjectionOrthogonal( _projectionMatrix, _viewport, zn, zf );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf )
     {
-        RENDER_SYSTEM()
+        m_renderSystem
             ->makeProjectionPerspective( _projectionMatrix, _fov, _aspect, zn, zf );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float zn, float zf )
     {
-        RENDER_SYSTEM()
+        m_renderSystem
             ->makeProjectionFrustum( _projectionMatrix, _viewport, zn, zf );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport )
     {
-        RENDER_SYSTEM()
+        m_renderSystem
             ->makeViewMatrixFromViewport( _viewMatrix, _viewport );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
     {
-        RENDER_SYSTEM()
+        m_renderSystem
             ->makeViewMatrixLookAt( _viewMatrix, _eye, _dir, _up, _sign );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -916,7 +923,7 @@ namespace Mengine
             Viewport renderViewport;
             this->calcRenderViewport_( viewport, renderViewport );
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setViewport( renderViewport );
         }
         else
@@ -930,7 +937,7 @@ namespace Mengine
             renderViewport.end.x = (float)width;
             renderViewport.end.y = (float)height;
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setViewport( renderViewport );
         }
 
@@ -938,17 +945,17 @@ namespace Mengine
         {
             //const mt::mat4f & worldMatrix = _renderPass.camera->getCameraWorldMatrix();
 
-            //RENDER_SYSTEM()
+            //m_renderSystem
             //	->setWorldMatrix( worldMatrix );
 
             const mt::mat4f & viewMatrix = _pass->camera->getCameraViewMatrix();
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setViewMatrix( viewMatrix );
 
             const mt::mat4f & projectionMatrix = _pass->camera->getCameraProjectionMatrix();
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setProjectionMatrix( projectionMatrix );
         }
         else
@@ -956,19 +963,19 @@ namespace Mengine
             //mt::mat4f worldMatrix;
             //mt::ident_m4( worldMatrix );
 
-            //RENDER_SYSTEM()
+            //m_renderSystem
             //	->setWorldMatrix( worldMatrix );
 
             mt::mat4f viewMatrix;
             mt::ident_m4( viewMatrix );
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setViewMatrix( viewMatrix );
 
             mt::mat4f projectionMatrix;
             mt::ident_m4( projectionMatrix );
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setProjectionMatrix( projectionMatrix );
         }
 
@@ -976,12 +983,12 @@ namespace Mengine
         {
             const Viewport & viewport = _pass->scissor->getScissorViewport();
 
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setScissor( viewport );
         }
         else
         {
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->removeScissor();
         }
 
@@ -1041,13 +1048,13 @@ namespace Mengine
 
         uint32_t elementSize = _vertexAttribute->getElementSize();
 
-        new_batch->vertexBuffer = RENDER_SYSTEM()
+        new_batch->vertexBuffer = m_renderSystem
             ->createVertexBuffer( elementSize, BT_STATIC );
 
         new_batch->vertexCount = 0;
         new_batch->vertexMemory = nullptr;
 
-        new_batch->indexBuffer = RENDER_SYSTEM()
+        new_batch->indexBuffer = m_renderSystem
             ->createIndexBuffer( sizeof( RenderIndex ), BT_STATIC );
 
         new_batch->indexCount = 0;
@@ -1736,7 +1743,7 @@ namespace Mengine
 
         if( m_windowCreated == true )
         {
-            RENDER_SYSTEM()
+            m_renderSystem
                 ->setVSync( m_vsync );
         }
     }
@@ -1748,13 +1755,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::clear( uint8_t _r, uint8_t _g, uint8_t _b )
     {
-        RENDER_SYSTEM()
+        m_renderSystem
             ->clear( _r, _g, _b, true );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::setSeparateAlphaBlendMode()
     {
-        RENDER_SYSTEM()
+        m_renderSystem
             ->setSeparateAlphaBlendMode();
     }
     //////////////////////////////////////////////////////////////////////////

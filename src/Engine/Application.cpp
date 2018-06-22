@@ -27,6 +27,7 @@
 #include "Interface/GraveyardInterface.h"
 #include "Interface/PackageInterface.h"
 #include "Interface/TimelineInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Logger/Logger.h"
 

@@ -2,6 +2,8 @@
 
 #include "Interface/RenderSystemInterface.h"
 
+#include "DX9RenderResourceHandler.h"
+
 #include "Core/ServantBase.h"
 
 #include <d3d9.h>
@@ -11,6 +13,7 @@ namespace Mengine
 	class DX9RenderTarget
         : public Factorable
         , public RenderTargetInterface
+        , public RenderResourceHandlerInterface
 	{
 	public:
         DX9RenderTarget();
@@ -43,6 +46,10 @@ namespace Mengine
     public:
         LPDIRECT3DTEXTURE9 getDX9RenderTexture() const;
 
+    protected:
+        void onRenderReset() override;
+        void onRenderRestore() override;
+
 	protected:
 		uint32_t m_width;
 		uint32_t m_height;
@@ -51,10 +58,10 @@ namespace Mengine
         uint32_t m_hwWidth;
         uint32_t m_hwHeight;
         
-		LPDIRECT3DDEVICE9 m_device;
-		LPDIRECT3DTEXTURE9 m_renderTexture;
-		LPDIRECT3DSURFACE9 m_surface;
-		LPDIRECT3DSURFACE9 m_oldSurface;
+		LPDIRECT3DDEVICE9 m_pD3DDevice;
+		LPDIRECT3DTEXTURE9 m_pD3DTexture;
+		LPDIRECT3DSURFACE9 m_pD3DSurface;
+		LPDIRECT3DSURFACE9 m_pD3DSurfaceOld;
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderTarget> DX9RenderTargetPtr;

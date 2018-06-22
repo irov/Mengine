@@ -16,6 +16,8 @@
 
 #include "Config/Vector.h"
 
+#include "stdex/intrusive_list.h"
+
 #include <d3d9.h>
 
 namespace Mengine
@@ -186,9 +188,9 @@ namespace Mengine
 		//void createSyncTargets_();
 
 		bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels,
-			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * ppTexture );
+			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * _ppD3DTexture );
 
-		DX9RenderImagePtr createDX9RenderImage_( IDirect3DTexture9 * _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, PixelFormat _hwPixelFormat );
+		DX9RenderImagePtr createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat );
 
 	protected:
 		void onDestroyDX9RenderImage_( DX9RenderImage * _image );
@@ -219,6 +221,9 @@ namespace Mengine
 
         typedef Vector<DX9RenderProgramPtr> TVectorRenderPrograms;
         TVectorRenderPrograms m_deferredCompilePrograms;
+
+        typedef stdex::intrusive_list<RenderResourceHandlerInterface> TIntrusiveListRenderResourceHandler;
+        TIntrusiveListRenderResourceHandler m_renderResourceHandlers;
 
 
 		mt::mat4f m_projectionMatrix;

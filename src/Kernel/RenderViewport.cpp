@@ -2,6 +2,7 @@
 
 #include "Interface/GameInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 namespace Mengine
 {

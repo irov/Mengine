@@ -251,6 +251,8 @@ namespace Mengine
 		void updateStage_( const RenderMaterialStage * _stage );
 
 	protected:
+        RenderSystemInterface * m_renderSystem;
+
 		bool m_windowCreated;
 		bool m_vsync;
 		Resolution m_windowResolution;

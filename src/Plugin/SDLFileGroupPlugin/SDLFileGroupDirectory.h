@@ -16,8 +16,12 @@ namespace Mengine
         ~SDLFileGroupDirectory();
 
     public:
-        bool initialize( const ConstString & _name, const ConstString & _category, const FilePath & _folderPath ) override;
+        bool initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _folderPath ) override;
         void finalize() override;
+
+    public:
+        const ConstString & getName() const override;
+        const FileGroupInterfacePtr & getCategory() const override;
 
     public:
         bool isPacked() const override;
@@ -46,7 +50,7 @@ namespace Mengine
 
     protected:        
 		ConstString m_name;
-		ConstString m_category;
+        FileGroupInterfacePtr m_category;
         FilePath m_folderPath;
         FilePath m_relationPath;
 

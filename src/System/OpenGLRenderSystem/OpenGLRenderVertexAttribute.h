@@ -50,7 +50,7 @@ namespace Mengine
             GLboolean normalized;
         };
 
-        typedef stdex::vector<Attribute> TVectorAttribute;
+        typedef Vector<Attribute> TVectorAttribute;
         TVectorAttribute m_attributes;
     };
     //////////////////////////////////////////////////////////////////////////

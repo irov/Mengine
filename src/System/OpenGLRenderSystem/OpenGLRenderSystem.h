@@ -111,8 +111,8 @@ namespace Mengine
         RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
         RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
 
-        RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
-        RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+        RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format ) override;
+        RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format ) override;
 
         RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget ) override;
 
@@ -144,11 +144,9 @@ namespace Mengine
 
         void setVSync( bool _vSync ) override;
 
-        void clear( uint32_t _color, bool _force ) override;
-
-        void setSeparateAlphaBlendMode() override;
-
-        size_t getTextureMemoryUse() const override;
+        void clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force ) override;
+        
+        uint32_t getTextureMemoryUse() const override;
         uint32_t getTextureCount() const override;
 
     protected:
@@ -174,13 +172,13 @@ namespace Mengine
         RenderVertexBufferInterfacePtr m_currentVertexBuffer;
         RenderIndexBufferInterfacePtr m_currentIndexBuffer;        
 
-        typedef stdex::vector<OpenGLRenderVertexShaderPtr> TVectorRenderVertexShaders;
+        typedef Vector<OpenGLRenderVertexShaderPtr> TVectorRenderVertexShaders;
         TVectorRenderVertexShaders m_deferredCompileVertexShaders;
 
-        typedef stdex::vector<OpenGLRenderFragmentShaderPtr> TVectorRenderFragmentShaders;
+        typedef Vector<OpenGLRenderFragmentShaderPtr> TVectorRenderFragmentShaders;
         TVectorRenderFragmentShaders m_deferredCompileFragmentShaders;
 
-        typedef stdex::vector<OpenGLRenderProgramPtr> TVectorDeferredRenderPrograms;
+        typedef Vector<OpenGLRenderProgramPtr> TVectorDeferredRenderPrograms;
         TVectorDeferredRenderPrograms m_deferredCompilePrograms;
 
         OpenGLRenderProgramPtr m_currentProgram;
@@ -190,16 +188,16 @@ namespace Mengine
 
         TextureStage m_textureStage[MENGINE_MAX_TEXTURE_STAGES];
 
-        typedef stdex::vector<OpenGLRenderImage *> TVectorCacheRenderImages;
+        typedef Vector<OpenGLRenderImage *> TVectorCacheRenderImages;
         TVectorCacheRenderImages m_cacheRenderImages;
 
-        typedef stdex::vector<OpenGLRenderVertexShader *> TVectorCacheRenderVertexShaders;
+        typedef Vector<OpenGLRenderVertexShader *> TVectorCacheRenderVertexShaders;
         TVectorCacheRenderVertexShaders m_cacheRenderVertexShaders;
 
-        typedef stdex::vector<OpenGLRenderFragmentShader *> TVectorCacheRenderFragmentShaders;
+        typedef Vector<OpenGLRenderFragmentShader *> TVectorCacheRenderFragmentShaders;
         TVectorCacheRenderFragmentShaders m_cacheRenderFragmentShaders;
 
-        typedef stdex::vector<OpenGLRenderProgram *> TVectorCacheRenderPrograms;
+        typedef Vector<OpenGLRenderProgram *> TVectorCacheRenderPrograms;
         TVectorCacheRenderPrograms m_cacheRenderPrograms;
 
         bool m_renderWindowCreate;

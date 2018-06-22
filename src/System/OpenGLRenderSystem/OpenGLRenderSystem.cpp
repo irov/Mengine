@@ -569,26 +569,26 @@ namespace Mengine
 
         m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix );
 
-        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
+        for( uint32_t stageId = 0; stageId != MENGINE_MAX_TEXTURE_STAGES; ++stageId )
         {
-            const TextureStage & textureStage = m_textureStage[i];
-#ifdef MENGINE_OPENGL_ES
-            GLCALL( glActiveTexture, (GL_TEXTURE0 + i) );
-#else
-            GLCALL( glActiveTexture_, (GL_TEXTURE0 + i) );
-#endif
+            const TextureStage & textureStage = m_textureStage[stageId];
+
             if( textureStage.texture == nullptr )
             {
+#ifdef MENGINE_OPENGL_ES
+                GLCALL( glActiveTexture, (GL_TEXTURE0 + stageId) );
+#else
+                GLCALL( glActiveTexture_, (GL_TEXTURE0 + stageId) );
+#endif
+
                 GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
 
                 continue;
             }
 
-            GLuint texture_uid = textureStage.texture->getUId();
+            textureStage.texture->bind( stageId );
 
-            GLCALL( glBindTexture, (GL_TEXTURE_2D, texture_uid) );
-
-            if( m_currentProgram->bindTexture( i ) == false )
+            if( m_currentProgram->bindTexture( stageId ) == false )
             {
                 continue;
             }
@@ -629,18 +629,18 @@ namespace Mengine
         m_currentIndexBuffer->disable();
         m_currentVertexBuffer->disable();
 
-        for( uint32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
+        for( uint32_t stageId = 0; stageId != MENGINE_MAX_TEXTURE_STAGES; ++stageId )
         {
-            TextureStage & textureStage = m_textureStage[i];
+            TextureStage & textureStage = m_textureStage[stageId];
 
             if( textureStage.texture == nullptr )
             {
                 break;
             }
 #ifdef MENGINE_OPENGL_ES
-            GLCALL( glActiveTexture, (GL_TEXTURE0 + i) );
+            GLCALL( glActiveTexture, (GL_TEXTURE0 + stageId) );
 #else
-            GLCALL( glActiveTexture_, (GL_TEXTURE0 + i) );
+            GLCALL( glActiveTexture_, (GL_TEXTURE0 + stageId) );
 #endif
 
             GLCALL( glBindTexture, (GL_TEXTURE_2D, 0) );
@@ -721,13 +721,8 @@ namespace Mengine
             GLCALL( glDisable, (GL_CULL_FACE) );
         }
     }
-    /////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::setSeparateAlphaBlendMode()
-    {
-
-    }
     //////////////////////////////////////////////////////////////////////////
-    size_t OpenGLRenderSystem::getTextureMemoryUse() const
+    uint32_t OpenGLRenderSystem::getTextureMemoryUse() const
     {
         return 0U;
     }
@@ -1123,9 +1118,11 @@ namespace Mengine
         //m_windowContext->setVSync( _vSync );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::clear( uint32_t _color, bool _force )
+    void OpenGLRenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force )
     {
-        GLUNUSED( _color );
+        GLUNUSED( _r );
+        GLUNUSED( _g );
+        GLUNUSED( _b );
         GLUNUSED( _force );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1191,19 +1188,21 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format )
+    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
     {
         GLUNUSED( _width );
         GLUNUSED( _height );
+        GLUNUSED( _channels );
         GLUNUSED( _format );
 
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format )
+    RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
     {
         GLUNUSED( _width );
         GLUNUSED( _height );
+        GLUNUSED( _channels );
         GLUNUSED( _format );
 
         return nullptr;

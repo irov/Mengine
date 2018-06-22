@@ -153,36 +153,36 @@ PLUGIN_EXPORT( BitmapFont );
 
 #ifdef MENGINE_PLUGIN_TTF
 #ifndef MENGINE_PLUGIN_TTF_DLL
-    PLUGIN_EXPORT( TTF );
+PLUGIN_EXPORT( TTF );
 #endif
 #endif
 
 #ifdef MENGINE_PLUGIN_SPINE
 #ifndef MENGINE_PLUGIN_SPINE_DLL
-    PLUGIN_EXPORT( Spine );
+PLUGIN_EXPORT( Spine );
 #endif
 #endif
 
 PLUGIN_EXPORT( Movie );
-PLUGIN_EXPORT( Box2D );
+//PLUGIN_EXPORT( Box2D );
 PLUGIN_EXPORT( OggVorbis );
-PLUGIN_EXPORT( PathFinder );
+//PLUGIN_EXPORT( PathFinder );
 PLUGIN_EXPORT( SDLFileGroup );
 
 #ifdef MENGINE_PLUGIN_ASTRALAX
 #ifndef MENGINE_PLUGIN_ASTRALAX_DLL
-    PLUGIN_EXPORT( AstralaxParticlePlugin2 );
+PLUGIN_EXPORT( AstralaxParticlePlugin2 );
 #endif
 #endif
 
 #ifdef MENGINE_PLUGIN_STEAM
 #ifndef MENGINE_PLUGIN_STEAM_DLL
-    PLUGIN_EXPORT( Steam );
+PLUGIN_EXPORT( Steam );
 #endif
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_LINEAR_ACCELERATION
-    PLUGIN_EXPORT( AndroidLinearAcceleration );
+PLUGIN_EXPORT( AndroidLinearAcceleration );
 #endif
 
 //////////////////////////////////////////////////////////////////////////
@@ -190,10 +190,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLApplication::SDLApplication()
-        : m_serviceProvider(nullptr)
-        , m_running(false)
-        , m_active(false)
-        , m_developmentMode(false)
+        : m_serviceProvider( nullptr )
+        , m_running( false )
+        , m_active( false )
+        , m_developmentMode( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -203,31 +203,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeFileEngine_()
     {
-        LOGGER_INFO("Inititalizing File Service...");
+        LOGGER_INFO( "Inititalizing File Service..." );
         SERVICE_CREATE( FileService );
 
-        LOGGER_INFO("Initialize SDL file group...");
+        LOGGER_INFO( "Initialize SDL file group..." );
         PLUGIN_CREATE( SDLFileGroup );
 
         // mount root
-        ConstString c_dir = Helper::stringizeString("dir");
+        ConstString c_dir = Helper::stringizeString( "dir" );
         if( FILE_SERVICE()
-            ->mountFileGroup( ConstString::none(), ConstString::none(), FilePath(ConstString::none()), c_dir ) == false )
+            ->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), c_dir, nullptr ) == false )
         {
-            LOGGER_ERROR("SDLApplication::setupFileService: failed to mount application directory"
-                );
+            LOGGER_ERROR( "SDLApplication::setupFileService: failed to mount application directory"
+            );
 
             return false;
         }
 
 #	ifndef MENGINE_MASTER_RELEASE
+        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
         ConstString c_dev = Helper::stringizeString( "dev" );
         // mount root
         if( FILE_SERVICE()
-            ->mountFileGroup( c_dev, ConstString::none(), FilePath(ConstString::none()), c_dir ) == false )
+            ->mountFileGroup( c_dev, defaultFileGroup, FilePath( ConstString::none() ), c_dir, nullptr ) == false )
         {
-            LOGGER_ERROR("SDLApplication::setupFileService: failed to mount dev directory"
-                );
+            LOGGER_ERROR( "SDLApplication::setupFileService: failed to mount dev directory"
+            );
 
             return false;
         }
@@ -238,14 +241,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
     {
-        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( "application.ini" );
+        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
 
+        FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( "application.ini" );
+        
         IniUtil::IniStore ini;
-        if( IniUtil::loadIni( ini, ConstString::none(), applicationPath ) == false )
+        if( IniUtil::loadIni( ini, defaultFileGroup, applicationPath ) == false )
         {
-            LOGGER_ERROR("SDLApplication::initializeConfigEngine_ Invalid load application settings %s"
+            LOGGER_ERROR( "SDLApplication::initializeConfigEngine_ Invalid load application settings %s"
                 , applicationPath.c_str()
-                );
+            );
 
             return false;
         }
@@ -254,9 +260,9 @@ namespace Mengine
 
         if( gameIniPath == nullptr )
         {
-            LOGGER_ERROR("SDLApplication::initializeConfigEngine_ Not found Game Path %s"
+            LOGGER_ERROR( "SDLApplication::initializeConfigEngine_ Not found Game Path %s"
                 , applicationPath.c_str()
-                );
+            );
 
             return false;
         }
@@ -268,7 +274,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeConfigEngine_()
     {
-        LOGGER_WARNING("Inititalizing Config Manager..." );
+        LOGGER_WARNING( "Inititalizing Config Manager..." );
         SERVICE_CREATE( ConfigService );
 
         FilePath gameIniPath;
@@ -277,12 +283,15 @@ namespace Mengine
             return false;
         }
 
+        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
+
         if( CONFIG_SERVICE()
-            ->loadConfig( ConstString::none(), gameIniPath ) == false )
+            ->loadConfig( defaultFileGroup, gameIniPath ) == false )
         {
-            LOGGER_ERROR("SDLApplication::initializeConfigEngine_ invalid load config %s"
+            LOGGER_ERROR( "SDLApplication::initializeConfigEngine_ invalid load config %s"
                 , gameIniPath.c_str()
-                );
+            );
 
             return false;
         }
@@ -304,14 +313,14 @@ namespace Mengine
         utf8_userPath[utf8_userPathLen] = '\0';
 
         FilePath cs_userPath = Helper::stringizeFilePath( utf8_userPath, utf8_userPathLen );
-		
+
         // mount user directory
         if( FILE_SERVICE()
-            ->mountFileGroup( Helper::stringizeString( "user" ), ConstString::none(), cs_userPath, Helper::stringizeString( "global" ) ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
         {
-            LOGGER_ERROR("SDLApplication: failed to mount user directory %s"
+            LOGGER_ERROR( "SDLApplication: failed to mount user directory %s"
                 , cs_userPath.c_str()
-                );
+            );
 
             return false;
         }
@@ -350,13 +359,13 @@ namespace Mengine
 #if defined(__ANDROID__)
         m_loggerStdio = new FactorableUnique<AndroidLogger>();
 #else
-		m_loggerStdio = new FactorableUnique<SDLStdioLogger>();
+        m_loggerStdio = new FactorableUnique<SDLStdioLogger>();
 #endif
 
-		m_loggerStdio->setVerboseFlag( LM_LOG );
+        m_loggerStdio->setVerboseFlag( LM_LOG );
 
-		LOGGER_SERVICE()
-			->registerLogger( m_loggerStdio );
+        LOGGER_SERVICE()
+            ->registerLogger( m_loggerStdio );
 
         m_loggerMessageBox = new FactorableUnique<SDLMessageBoxLogger>();
 
@@ -369,17 +378,17 @@ namespace Mengine
 
         bool developmentMode = HAS_OPTION( "dev" );
 
-        if( developmentMode == true  )
+        if( developmentMode == true )
         {
             m_logLevel = LM_LOG;
         }
         else
         {
             m_logLevel = LM_WARNING;
-        }        
+        }
 
         const Char * option_log = GET_OPTION_VALUE( "log" );
-        
+
         if( option_log != nullptr )
         {
             uint32_t option_log_value;
@@ -415,7 +424,7 @@ namespace Mengine
             LOGGER_SERVICE()
                 ->setVerboseLevel( LM_MAX );
 
-            LOGGER_INFO("Verbose logging mode enabled");
+            LOGGER_INFO( "Verbose logging mode enabled" );
         }
 
         return true;
@@ -427,7 +436,7 @@ namespace Mengine
 
         {
             LOGGER_INFO( "initialize Zip..." );
-            
+
             PLUGIN_CREATE( Zip );
         }
 
@@ -477,8 +486,8 @@ namespace Mengine
 
         if( SERVICE_CREATE( SoundService ) == false )
         {
-            LOGGER_ERROR("SDLApplication::initializeSoundEngine_ Failed to create Sound Engine"
-                );
+            LOGGER_ERROR( "SDLApplication::initializeSoundEngine_ Failed to create Sound Engine"
+            );
 
             return false;
         }
@@ -486,7 +495,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::initialize(const int argc, char** argv)
+    bool SDLApplication::initialize( const int argc, char** argv )
     {
         setlocale( LC_ALL, "C" );
 
@@ -495,7 +504,7 @@ namespace Mengine
         {
             return false;
         }
-        
+
         SERVICE_PROVIDER_SETUP( serviceProvider );
 
         m_serviceProvider = serviceProvider;
@@ -504,17 +513,17 @@ namespace Mengine
 
         SERVICE_CREATE( OptionsService );
 
-		TVectorString options;
+        TVectorString options;
 
-		for( int i = 1; i < argc; ++i )
-		{
-			const char * arg = argv[i];
+        for( int i = 1; i < argc; ++i )
+        {
+            const char * arg = argv[i];
 
-			options.push_back( arg );
-		}
+            options.push_back( arg );
+        }
 
-		OPTIONS_SERVICE()
-			->setArgs( options );
+        OPTIONS_SERVICE()
+            ->setArgs( options );
 
         SERVICE_CREATE( StringizeService );
 
@@ -524,7 +533,7 @@ namespace Mengine
         }
 
         SERVICE_CREATE( UnicodeSystem );
-        
+
         SERVICE_CREATE( SDLLayer );
         SERVICE_CREATE( Platform );
 
@@ -573,17 +582,17 @@ namespace Mengine
         {
             return false;
         }
-        
+
         SERVICE_CREATE( ScriptService );
         SERVICE_CREATE( ModuleService );
-		SERVICE_CREATE( CodecService );
+        SERVICE_CREATE( CodecService );
         SERVICE_CREATE( DataService );
-		SERVICE_CREATE( PrefetcherService );
+        SERVICE_CREATE( PrefetcherService );
         SERVICE_CREATE( MemoryService );
-		SERVICE_CREATE( ConverterService );
+        SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
 
-		SERVICE_CREATE( HttpSystem );
+        SERVICE_CREATE( HttpSystem );
 
         SERVICE_CREATE( TimerSystem );
         SERVICE_CREATE( TimerService );
@@ -614,7 +623,7 @@ namespace Mengine
         SERVICE_CREATE( PlayerService );
         SERVICE_CREATE( GameService );
         SERVICE_CREATE( TimelineService );
-        
+
         SERVICE_CREATE( Application );
 
 #   define MENGINE_ADD_PLUGIN( Name, Info )\
@@ -623,34 +632,34 @@ namespace Mengine
         LOGGER_ERROR( "Invalid %s", Info );}else{\
         LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
 
-        MENGINE_ADD_PLUGIN(ImageCodec, "initialize Plugin Image Codec...");
-        MENGINE_ADD_PLUGIN(SoundCodec, "initialize Plugin Sound Codec...");
-        MENGINE_ADD_PLUGIN(OggVorbis, "initialize Plugin Ogg Vorbis Codec...");
-        MENGINE_ADD_PLUGIN(Amplifier, "initialize Plugin Amplifier...");
-        MENGINE_ADD_PLUGIN(VideoCodec, "initialize Plugin Video Codec...");
+        MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec..." );
+        MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );
+        MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
+        MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier..." );
+        MENGINE_ADD_PLUGIN( VideoCodec, "initialize Plugin Video Codec..." );
 
-		MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin TTF..." );
+        MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin TTF..." );
 
 #ifdef MENGINE_PLUGIN_TTF
 #ifndef MENGINE_PLUGIN_TTF_DLL
-		MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
+        MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
 #endif
 #endif
 
 #ifdef MENGINE_PLUGIN_SPINE
 #ifndef MENGINE_PLUGIN_SPINE_DLL
-        MENGINE_ADD_PLUGIN(Spine, "initialize Plugin Spine...");
+        MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
 #endif
 #endif
-        MENGINE_ADD_PLUGIN(Movie, "initialize Plugin Movie...");
+        MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
         //MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
-        MENGINE_ADD_PLUGIN(Box2D, "initialize Plugin Box2D...");
+        //MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
 
-        MENGINE_ADD_PLUGIN(PathFinder, "initialize Plugin Path Finder...");
+        //MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
 
 #ifdef MENGINE_PLUGIN_ASTRALAX
 #ifndef MENGINE_PLUGIN_ASTRALAX_DLL
-		MENGINE_ADD_PLUGIN( AstralaxParticlePlugin2, "initialize Astralax Particle Plugin..." );
+        MENGINE_ADD_PLUGIN( AstralaxParticlePlugin2, "initialize Astralax Particle Plugin..." );
 #endif
 #endif
 
@@ -662,42 +671,42 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_LINEAR_ACCELERATION
-    MENGINE_ADD_PLUGIN( AndroidLinearAcceleration, "initialize Android Linear Acceleration..." );
+        MENGINE_ADD_PLUGIN( AndroidLinearAcceleration, "initialize Android Linear Acceleration..." );
 #endif
-        
+
 
 #   undef MENGINE_ADD_PLUGIN
 
         TVectorWString plugins;
-        CONFIG_VALUES("Plugins", "Name", plugins);
+        CONFIG_VALUES( "Plugins", "Name", plugins );
 
         for( TVectorWString::const_iterator
             it = plugins.begin(),
             it_end = plugins.end();
-        it != it_end;
-        ++it )
+            it != it_end;
+            ++it )
         {
             const WString & pluginName = *it;
 
             if( PLUGIN_SERVICE()
                 ->loadPlugin( pluginName ) == false )
             {
-                LOGGER_ERROR("Application Failed to load plugin %ls"
+                LOGGER_ERROR( "Application Failed to load plugin %ls"
                     , pluginName.c_str()
-                    );
+                );
 
                 return false;
             }
         }
 
 #ifndef NDEBUG
-		bool devplugins = true;
+        bool devplugins = true;
 #else
-		bool developmentMode = HAS_OPTION( "dev" );
-		bool devplugins = developmentMode;
+        bool developmentMode = HAS_OPTION( "dev" );
+        bool devplugins = developmentMode;
 #endif
 
-		bool nodevplugins = HAS_OPTION( "nodevplugins" );
+        bool nodevplugins = HAS_OPTION( "nodevplugins" );
 
         if( devplugins == true && nodevplugins == false )
         {
@@ -715,69 +724,75 @@ namespace Mengine
                 if( PLUGIN_SERVICE()
                     ->loadPlugin( pluginName ) == false )
                 {
-                    LOGGER_WARNING("Application Failed to load dev plugin %ls"
+                    LOGGER_WARNING( "Application Failed to load dev plugin %ls"
                         , pluginName.c_str()
-                        );
+                    );
                 }
             }
         }
 
-        SERVICE_CREATE(ParticleService);
+        SERVICE_CREATE( ParticleService );
 
         TVectorString modules;
-        CONFIG_VALUES("Modules", "Name", modules);
+        CONFIG_VALUES( "Modules", "Name", modules );
 
         for( TVectorString::const_iterator
             it = modules.begin(),
             it_end = modules.end();
-        it != it_end;
-        ++it )
+            it != it_end;
+            ++it )
         {
             const String & moduleName = *it;
 
             if( MODULE_SERVICE()
-                ->runModule( Helper::stringizeString(moduleName) ) == false )
+                ->runModule( Helper::stringizeString( moduleName ) ) == false )
             {
-                LOGGER_ERROR("Application Failed to run module %s"
+                LOGGER_ERROR( "Application Failed to run module %s"
                     , moduleName.c_str()
-                    );
+                );
 
                 return false;
             }
         }
 
-		FilePath renderMaterialsPathEmpty;
+        FilePath renderMaterialsPathEmpty;
         FilePath renderMaterialsPath = CONFIG_VALUE( "Engine", "RenderMaterials", renderMaterialsPathEmpty );
 
         if( renderMaterialsPath.empty() == false )
         {
+            const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
+                ->getDefaultFileGroup();
+
             if( RENDERMATERIAL_SERVICE()
-                ->loadMaterials( ConstString::none(), renderMaterialsPath ) == false )
+                ->loadMaterials( defaultFileGroup, renderMaterialsPath ) == false )
             {
                 return false;
             }
         }
 
-        LOGGER_INFO("Application Create...");
+        LOGGER_INFO( "Application Create..." );
 
         FilePath resourceIniPath;
         if( this->getApplicationPath_( "Resource", "Path", resourceIniPath ) == false )
         {
-            LOGGER_CRITICAL("Application invalid setup resource path"
-                );
+            LOGGER_CRITICAL( "Application invalid setup resource path"
+            );
 
             return false;
         }
+
+        const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
+            ->getDefaultFileGroup();
 
         if( APPLICATION_SERVICE()
-            ->initializeGame( ConstString::none(), resourceIniPath ) == false )
+            ->initializeGame( defaultFileGroup, resourceIniPath ) == false )
         {
-            LOGGER_CRITICAL("Application invalid initialize game"
-                );
+            LOGGER_CRITICAL( "Application invalid initialize game"
+            );
 
             return false;
         }
-               
+
         PLATFORM_SERVICE()
             ->setIcon( 0 );
 
@@ -828,10 +843,10 @@ namespace Mengine
 
         APPLICATION_SERVICE()
             ->turnSound( true );
-        
+
         GAME_SERVICE()
             ->run();
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -903,7 +918,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::TimerSystemInterface );
 
         SERVICE_FINALIZE( Mengine::PlatformInterface );
-        
+
         if( m_fileLog != nullptr )
         {
             LOGGER_SERVICE()
@@ -912,14 +927,14 @@ namespace Mengine
             m_fileLog = nullptr;
         }
 
-		if( m_loggerStdio != nullptr )
-		{
-			LOGGER_SERVICE()
-				->unregisterLogger( m_loggerStdio );
+        if( m_loggerStdio != nullptr )
+        {
+            LOGGER_SERVICE()
+                ->unregisterLogger( m_loggerStdio );
 
-			m_loggerStdio = nullptr;
-		}
-        
+            m_loggerStdio = nullptr;
+        }
+
         if( m_loggerMessageBox != nullptr )
         {
             LOGGER_SERVICE()

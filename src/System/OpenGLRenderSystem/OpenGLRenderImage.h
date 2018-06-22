@@ -21,6 +21,9 @@ namespace Mengine
         void finalize();
         
     public:
+        void bind( uint32_t _stage ) override;
+        
+    public:
         void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
         const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
 

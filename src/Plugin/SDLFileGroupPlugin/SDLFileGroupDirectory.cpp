@@ -27,7 +27,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupDirectory::initialize( const ConstString & _name, const ConstString & _category, const FilePath & _folderPath )
+    bool SDLFileGroupDirectory::initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _folderPath )
     {
 		m_name = _name;
 		m_category = _category;
@@ -41,7 +41,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLFileGroupDirectory::finalize()
     {
-        //Empty
+        m_category = nullptr;
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryInputStream );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryOutputStream );
+
+        m_factoryInputStream = nullptr;
+        m_factoryOutputStream = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & SDLFileGroupDirectory::getName() const
+    {
+        return m_name;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FileGroupInterfacePtr & SDLFileGroupDirectory::getCategory() const
+    {
+        return m_category;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupDirectory::isPacked() const

@@ -9,6 +9,7 @@ namespace Mengine
     DX9RenderTarget::DX9RenderTarget()
 		: m_width( 0 )
 		, m_height( 0 )
+        , m_channels( 0 )
 		, m_pD3DDevice( nullptr )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
@@ -22,12 +23,13 @@ namespace Mengine
     {
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderTarget::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, PixelFormat _format )
+	bool DX9RenderTarget::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
 	{
 		m_pD3DDevice = _device;
 
 		m_width = _width;
 		m_height = _height;
+        m_channels = _channels;
         m_format = _format;
 
         D3DFORMAT d3dformat = s_toD3DFormat( m_format );
@@ -46,6 +48,9 @@ namespace Mengine
 
         m_hwWidth = texDesc.Width;
         m_hwHeight = texDesc.Height;
+
+        m_hwWidthInv = 1.f / (float)m_hwWidth;
+        m_hwHeightInv = 1.f / (float)m_hwHeight;
 
         if( this->_initialize() == false )
         {
@@ -85,7 +90,17 @@ namespace Mengine
         return m_height;
     }
     //////////////////////////////////////////////////////////////////////////
-    PixelFormat DX9RenderTarget::getFormat() const
+    uint32_t DX9RenderTarget::getChannels() const
+    {
+        return m_channels;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t DX9RenderTarget::getDepth() const
+    {
+        return 1U;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PixelFormat DX9RenderTarget::getPixelFormat() const
     {
         return m_format;
     }
@@ -98,6 +113,16 @@ namespace Mengine
     uint32_t DX9RenderTarget::getHWHeight() const
     {
         return m_hwHeight;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float DX9RenderTarget::getHWWidthInv() const
+    {
+        return m_hwWidthInv;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float DX9RenderTarget::getHWHeightInv() const
+    {
+        return m_hwHeightInv;
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderTarget::begin()
@@ -143,7 +168,12 @@ namespace Mengine
         return false;
 	}
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DTEXTURE9 DX9RenderTarget::getDX9RenderTexture() const
+    LPDIRECT3DDEVICE9 DX9RenderTarget::getDirect3dDevice9() const
+    {
+        return m_pD3DDevice;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LPDIRECT3DTEXTURE9 DX9RenderTarget::getDirect3dTexture9() const
     {
         return m_pD3DTexture;
     }

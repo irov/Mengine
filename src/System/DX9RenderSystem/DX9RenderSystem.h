@@ -105,8 +105,8 @@ namespace Mengine
 		
 		
 		// create render target image
-        RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
-        RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) override;
+        RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format ) override;
+        RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format ) override;
 
         RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget ) override;
 
@@ -135,7 +135,6 @@ namespace Mengine
 		void onWindowClose() override;
 
 		void setVSync( bool _vSync ) override;
-		void setSeparateAlphaBlendMode() override;
 
 	public:
 		uint32_t getTextureMemoryUse() const override;
@@ -187,10 +186,11 @@ namespace Mengine
 
 		//void createSyncTargets_();
 
-		bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels,
-			DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * _ppD3DTexture );
+		bool d3dCreateTexture_( uint32_t Width, uint32_t Height, uint32_t MipLevels
+            , DWORD Usage, PixelFormat Format, D3DPOOL Pool, LPDIRECT3DTEXTURE9 * _ppD3DTexture );
 
-		DX9RenderImagePtr createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat );
+		DX9RenderImagePtr createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode
+            , uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat );
 
 	protected:
 		void onDestroyDX9RenderImage_( DX9RenderImage * _image );
@@ -209,7 +209,8 @@ namespace Mengine
         FactoryPtr m_factoryRenderProgram;
         FactoryPtr m_factoryVertexBuffer;
         FactoryPtr m_factoryIndexBuffer;
-        FactoryPtr m_factoryDX9Texture;
+        FactoryPtr m_factoryDX9Image;
+        FactoryPtr m_factoryDX9ImageTarget;
         FactoryPtr m_factoryDX9TargetTexture;
         FactoryPtr m_factoryDX9TargetOffscreen;
 

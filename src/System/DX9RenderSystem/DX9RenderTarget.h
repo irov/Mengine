@@ -11,8 +11,7 @@
 namespace Mengine
 {
 	class DX9RenderTarget
-        : public Factorable
-        , public RenderTargetInterface
+        : public ServantBase<RenderTargetInterface>
         , public RenderResourceHandlerInterface
 	{
 	public:
@@ -20,7 +19,7 @@ namespace Mengine
 		~DX9RenderTarget() override;
 
 	public:
-		bool initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, PixelFormat _format );
+		bool initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format );
 		void finalize();
 
     protected:
@@ -30,11 +29,17 @@ namespace Mengine
     public:
         uint32_t getWidth() const override;
         uint32_t getHeight() const override;
-        PixelFormat getFormat() const override;
+        uint32_t getChannels() const override;
+        uint32_t getDepth() const override;
+        PixelFormat getPixelFormat() const override;
 
     public:
         uint32_t getHWWidth() const override;
         uint32_t getHWHeight() const override;
+
+    public:
+        float getHWWidthInv() const override;
+        float getHWHeightInv() const override;
 
 	public:
 		bool begin() override;
@@ -44,7 +49,8 @@ namespace Mengine
         bool getData( unsigned char * _buffer, size_t _pitch ) override;
  
     public:
-        LPDIRECT3DTEXTURE9 getDX9RenderTexture() const;
+        LPDIRECT3DDEVICE9 getDirect3dDevice9() const;
+        LPDIRECT3DTEXTURE9 getDirect3dTexture9() const;
 
     protected:
         void onRenderReset() override;
@@ -53,10 +59,14 @@ namespace Mengine
 	protected:
 		uint32_t m_width;
 		uint32_t m_height;
+        uint32_t m_channels;
         PixelFormat m_format;
 
         uint32_t m_hwWidth;
         uint32_t m_hwHeight;
+
+        float m_hwWidthInv;
+        float m_hwHeightInv;
         
 		LPDIRECT3DDEVICE9 m_pD3DDevice;
 		LPDIRECT3DTEXTURE9 m_pD3DTexture;

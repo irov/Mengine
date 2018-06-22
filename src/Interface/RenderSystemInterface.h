@@ -68,6 +68,9 @@ namespace Mengine
 		: public ServantInterface
 	{
     public:
+        virtual void bind( uint32_t _stage ) = 0;
+
+    public:
         virtual void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) = 0;
         virtual const RenderImageProviderInterfacePtr & getRenderImageProvider() const = 0;
 
@@ -430,16 +433,22 @@ namespace Mengine
     typedef IntrusivePtr<RenderCameraInterface> RenderCameraInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderTargetInterface
-		: public Mixin
+        : public ServantInterface
 	{
     public:
         virtual uint32_t getWidth() const = 0;
         virtual uint32_t getHeight() const = 0;
-        virtual PixelFormat getFormat() const = 0;
+        virtual uint32_t getChannels() const = 0;
+        virtual uint32_t getDepth() const = 0;
+        virtual PixelFormat getPixelFormat() const = 0;
 
     public:
         virtual uint32_t getHWWidth() const = 0;
         virtual uint32_t getHWHeight() const = 0;
+
+    public:
+        virtual float getHWWidthInv() const = 0;
+        virtual float getHWHeightInv() const = 0;
 
 	public:
 		virtual bool begin() = 0;
@@ -524,8 +533,8 @@ namespace Mengine
 		virtual RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 		virtual RenderImageInterfacePtr createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
 
-        virtual RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, PixelFormat _format ) = 0;
-		virtual RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, PixelFormat _format ) = 0;
+        virtual RenderTargetInterfacePtr createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format ) = 0;
+		virtual RenderTargetInterfacePtr createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format ) = 0;
 
         virtual RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget ) = 0;
 
@@ -561,8 +570,6 @@ namespace Mengine
         virtual bool supportTextureFormat( PixelFormat _format ) const = 0;
 		virtual bool supportTextureNonPow2() const = 0;
 		virtual uint32_t getMaxCombinedTextureImageUnits() const = 0;
-
-		virtual void setSeparateAlphaBlendMode() = 0;
 
 		virtual uint32_t getTextureMemoryUse() const = 0;
 		virtual uint32_t getTextureCount() const = 0;
@@ -640,7 +647,6 @@ namespace Mengine
 		virtual void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) = 0;		
 		virtual void setVSync( bool _vSync ) = 0;
 		virtual bool getVSync() const = 0;
-		virtual void setSeparateAlphaBlendMode() = 0;
 
     public:
         virtual void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) = 0;

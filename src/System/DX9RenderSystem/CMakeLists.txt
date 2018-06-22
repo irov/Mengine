@@ -6,6 +6,8 @@ src
 	DX9RenderSystem.cpp
 	DX9RenderImage.h
 	DX9RenderImage.cpp
+	DX9RenderImageTarget.h
+	DX9RenderImageTarget.cpp
     DX9RenderTarget.h
     DX9RenderTarget.cpp
 	DX9RenderTargetOffscreen.h

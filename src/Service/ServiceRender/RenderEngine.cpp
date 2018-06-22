@@ -4,7 +4,6 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/NotificationServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/ConfigInterface.h"
 
@@ -446,10 +445,7 @@ namespace Mengine
         {
             return;
         }
-
-        NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_RENDER_RESET );
-
+        
         this->restoreRenderSystemStates_();
 
         m_nullTexture = nullptr;
@@ -1757,12 +1753,6 @@ namespace Mengine
     {
         m_renderSystem
             ->clear( _r, _g, _b, true );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::setSeparateAlphaBlendMode()
-    {
-        m_renderSystem
-            ->setSeparateAlphaBlendMode();
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::enableDebugFillrateCalcMode( bool _enable )

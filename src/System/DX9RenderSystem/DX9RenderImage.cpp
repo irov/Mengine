@@ -1,8 +1,6 @@
 #include "DX9RenderImage.h"
 #include "DX9ErrorHelper.h"
 
-#include "Interface/NotificationServiceInterface.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -47,6 +45,21 @@ namespace Mengine
 
         m_hwWidthInv = 1.f / (float)m_hwWidth;
         m_hwHeightInv = 1.f / (float)m_hwHeight;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderImage::bind( uint32_t _stage )
+    {
+#ifndef NDEBUG
+        DWORD fillmode;
+        DXCALL( m_pD3DDevice, GetRenderState, (D3DRS_FILLMODE, &fillmode) );
+
+        if( fillmode != D3DFILL_WIREFRAME )
+        {
+            DXCALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
+        }
+#else
+        DXCALL( m_pD3DDevice, SetTexture, (_stage, m_pD3DTexture) );
+#endif		
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderImage::setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider )

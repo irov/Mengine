@@ -187,7 +187,7 @@ namespace Mengine
         }
 
         RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM()
-            ->createRenderTargetTexture( (uint32_t)m_size.x, (uint32_t)m_size.y, PF_A8R8G8B8 );
+            ->createRenderTargetTexture( (uint32_t)m_size.x, (uint32_t)m_size.y, 3, PF_A8R8G8B8 );
 
         if( renderTarget == nullptr )
         {

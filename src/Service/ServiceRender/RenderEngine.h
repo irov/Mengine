@@ -166,7 +166,6 @@ namespace Mengine
 
     public:
 		void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
-		void setSeparateAlphaBlendMode() override;
 
 	public:
         void enableDebugFillrateCalcMode( bool _enable ) override;

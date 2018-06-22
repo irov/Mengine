@@ -21,6 +21,9 @@ namespace Mengine
     public:
         void initialize( LPDIRECT3DDEVICE9 _pD3DDevice, LPDIRECT3DTEXTURE9 _d3dInterface, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat );
 		
+    public:
+        void bind( uint32_t _stage ) override;
+
 	protected:
 		void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) override;
 		const RenderImageProviderInterfacePtr & getRenderImageProvider() const override;
@@ -28,7 +31,7 @@ namespace Mengine
 	public:
         LPDIRECT3DDEVICE9 getDirect3dDevice9() const;
         LPDIRECT3DTEXTURE9 getDirect3dTexture9() const;
-
+        
 	public:
 		ERenderImageMode getMode() const override;
 

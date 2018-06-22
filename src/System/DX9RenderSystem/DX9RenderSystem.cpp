@@ -2,6 +2,7 @@
 
 #include "Interface/StringizeInterface.h"
 #include "Interface/PlatformInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
@@ -72,7 +73,9 @@ namespace Mengine
     {
         m_frames = 0;
 
-        m_hd3d9 = ::LoadLibrary( L"d3d9.dll" );
+        WString d3d9_dll = CONFIG_VALUE( "Render", "D3D9_DLL", L"d3d9.dll" );
+
+        m_hd3d9 = ::LoadLibrary( d3d9_dll.c_str() );
 
         if( m_hd3d9 == nullptr )
         {

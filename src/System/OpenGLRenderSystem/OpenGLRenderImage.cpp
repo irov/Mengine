@@ -79,6 +79,9 @@ namespace Mengine
         m_format = _format;
         m_type = _type;
 
+        m_hwWidthInv = 1.f / (float)m_hwWidth;
+        m_hwHeightInv = 1.f / (float)m_hwHeight;
+
         m_pow2 = Helper::isTexturePOW2( m_hwWidth ) && Helper::isTexturePOW2( m_hwHeight );
 
         m_lockFirst = true;

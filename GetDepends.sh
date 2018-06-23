@@ -65,6 +65,7 @@ mkdir $dependenciesdir
 
 getdepend http://www.ijg.org/files/jpegsr9c.zip jpegsr9c.zip jpeg-9c libjpeg
 getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
+getdepend https://github.com/leenjewel/openssl_for_ios_and_android/releases/download/android_openssl-1.1.0f_curl-7.54.1/only_android_openssl-1.1.0f_curl-7.54.1.zip only_android_openssl-1.1.0f_curl-7.54.1.zip libs curl-android
 
 gitdepend https://github.com/boostorg/boost.git boost
 gitdepend https://github.com/madler/zlib.git zlib

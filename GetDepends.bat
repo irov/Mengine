@@ -19,40 +19,41 @@ IF NOT EXIST "7za.exe" (
 	unzip -o 7za920.zip 7za.exe
 )
 
-getdepend http://www.ijg.org/files/jpegsr9c.zip jpegsr9c.zip jpeg-9c libjpeg
-getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
+call:getdepend http://www.ijg.org/files/jpegsr9c.zip jpegsr9c.zip jpeg-9c libjpeg
+call:getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
+call:getdepend https://github.com/leenjewel/openssl_for_ios_and_android/releases/download/android_openssl-1.1.0f_curl-7.54.1/only_android_openssl-1.1.0f_curl-7.54.1.zip only_android_openssl-1.1.0f_curl-7.54.1.zip libs curl-android
 
-gitdepend https://github.com/boostorg/boost.git boost
-gitdepend https://github.com/madler/zlib.git zlib
-gitdepend https://github.com/xiph/ogg.git libogg
-gitdepend https://github.com/xiph/vorbis.git libvorbis
-gitdepend https://github.com/aseprite/freetype2.git freetype
-gitdepend https://github.com/webmproject/libwebp.git libwebp
-gitdepend https://github.com/zeux/pugixml.git pugixml
-gitdepend https://github.com/irov/pybind.git pybind
-gitdepend https://github.com/irov/metabuf.git metabuf
-gitdepend https://github.com/irov/stdex.git stdex
-gitdepend https://github.com/irov/movie.git libmovie
-gitdepend https://github.com/nemtrif/utfcpp.git utf8
-gitdepend https://github.com/lz4/lz4.git lz4
-gitdepend https://github.com/irov/fastpathfinder.git fastpathfinder
-gitdepend https://github.com/zzzzrrr/poly2tri poly2tri
-gitdepend https://github.com/erincatto/Box2D.git Box2D
-gitdepend https://github.com/irov/GOAP.git GOAP
-gitdepend https://github.com/curl/curl.git libcurl
-gitdepend https://github.com/irov/tinyini.git tinyini
-gitdepend https://github.com/spurious/SDL-mirror.git SDL2
-gitdepend https://github.com/frankinshtein/font-effects-lib.git libfe
-gitdepend https://github.com/irov/math.git libmath
-gitdepend https://github.com/akheron/jansson.git jansson
+call:gitdepend https://github.com/boostorg/boost.git boost
+call:gitdepend https://github.com/madler/zlib.git zlib
+call:gitdepend https://github.com/xiph/ogg.git libogg
+call:gitdepend https://github.com/xiph/vorbis.git libvorbis
+call:gitdepend https://github.com/aseprite/freetype2.git freetype
+call:gitdepend https://github.com/webmproject/libwebp.git libwebp
+call:gitdepend https://github.com/zeux/pugixml.git pugixml
+call:gitdepend https://github.com/irov/pybind.git pybind
+call:gitdepend https://github.com/irov/metabuf.git metabuf
+call:gitdepend https://github.com/irov/stdex.git stdex
+call:gitdepend https://github.com/irov/movie.git libmovie
+call:gitdepend https://github.com/nemtrif/utfcpp.git utf8
+call:gitdepend https://github.com/lz4/lz4.git lz4
+call:gitdepend https://github.com/irov/fastpathfinder.git fastpathfinder
+call:gitdepend https://github.com/zzzzrrr/poly2tri poly2tri
+call:gitdepend https://github.com/erincatto/Box2D.git Box2D
+call:gitdepend https://github.com/irov/GOAP.git GOAP
+call:gitdepend https://github.com/curl/curl.git libcurl
+call:gitdepend https://github.com/irov/tinyini.git tinyini
+call:gitdepend https://github.com/spurious/SDL-mirror.git SDL2
+call:gitdepend https://github.com/frankinshtein/font-effects-lib.git libfe
+call:gitdepend https://github.com/irov/math.git libmath
+call:gitdepend https://github.com/akheron/jansson.git jansson
 
-gitdependr https://github.com/glennrp/libpng.git libpng libpng17
-gitdependr https://github.com/xiph/theora.git libtheora theora-1.1
-gitdependr https://github.com/kcat/openal-soft.git openal-soft v1.18
-gitdependr https://github.com/python/cpython.git Python 2.7
-gitdependr https://github.com/python/cpython.git Python3 v3.6.5
+call:gitdependr https://github.com/glennrp/libpng.git libpng libpng17
+call:gitdependr https://github.com/xiph/theora.git libtheora theora-1.1
+call:gitdependr https://github.com/kcat/openal-soft.git openal-soft v1.18
+call:gitdependr https://github.com/python/cpython.git Python 2.7
+call:gitdependr https://github.com/python/cpython.git Python3 v3.6.5
 
-svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
+call:svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 
 goto end
 

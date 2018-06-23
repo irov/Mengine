@@ -31,7 +31,7 @@ ENDIF()
 
 IF(MENGINE_PLATFORM_ANDROID)
     INCLUDE_DIRECTORIES( 
-        ${THIRDPARTY_DIR}/openssl/armeabi-v7a/include
+        ${THIRDPARTY_DIR}/curl-android/armeabi-v7a/include
         )
 ENDIF()
 
@@ -67,9 +67,9 @@ ENDIF()
 IF(MENGINE_PLATFORM_ANDROID)
     SET( APPLICATION_LIBS
      ${APPLICATION_LIBS}
-     ${THIRDPARTY_DIR}/openssl/armeabi-v7a/lib/libcrypto.a
-     ${THIRDPARTY_DIR}/openssl/armeabi-v7a/lib/libcurl.a
-     ${THIRDPARTY_DIR}/openssl/armeabi-v7a/lib/libssl.a
+     ${THIRDPARTY_DIR}/curl-android/armeabi-v7a/lib/libcrypto.a
+     ${THIRDPARTY_DIR}/curl-android/armeabi-v7a/lib/libcurl.a
+     ${THIRDPARTY_DIR}/curl-android/armeabi-v7a/lib/libssl.a
     )
 ENDIF()
 

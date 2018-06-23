@@ -212,6 +212,11 @@ if( MENGINE_TARGET_SDL AND (MENGINE_PLATFORM_MAC OR MENGINE_PLATFORM_WIN32 OR ME
     endif()
     
     set(SDL_CMAKE_DEBUG_POSTFIX "" CACHE STRING "SDL_CMAKE_DEBUG_POSTFIX")
+	
+	if(MENGINE_PLATFORM_ANDROID)
+		configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLActivity.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java COPYONLY)
+		configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLSurface.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLSurface.java COPYONLY)
+	endif()
     
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/SDL2 )
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})

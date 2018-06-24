@@ -1,6 +1,6 @@
 #pragma once
 
-#include "DX9RenderTarget.h"
+#include "DX9RenderTargetTexture.h"
 
 #include "Core/ServantBase.h"
 
@@ -9,7 +9,7 @@
 namespace Mengine
 {
 	class DX9RenderTargetOffscreen
-		: public DX9RenderTarget
+		: public DX9RenderTargetTexture
 	{
 	public:
 		DX9RenderTargetOffscreen();

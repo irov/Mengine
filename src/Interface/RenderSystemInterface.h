@@ -551,9 +551,6 @@ namespace Mengine
 
 		virtual void changeWindowMode( const Resolution & _resolution, bool _fullscreen ) = 0;
 		
-		virtual bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) = 0;
-		virtual bool unlockRenderTarget() = 0;
-
 		//new
 		//virtual LightInterface * createLight( const String & _name ) = 0;
 		//virtual void releaseLight( LightInterface * _light ) = 0;

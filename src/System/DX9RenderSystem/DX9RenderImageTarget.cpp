@@ -1,7 +1,7 @@
 #include "DX9RenderImageTarget.h"
 #include "DX9ErrorHelper.h"
 
-#include "DX9RenderTarget.h"
+#include "DX9RenderTargetTexture.h"
 
 namespace Mengine
 {
@@ -14,7 +14,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImageTarget::initialize( const DX9RenderTargetPtr & _target )
+    void DX9RenderImageTarget::initialize( const DX9RenderTargetTexturePtr & _target )
     {
         m_target = _target;
     }

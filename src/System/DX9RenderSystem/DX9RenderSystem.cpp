@@ -8,7 +8,7 @@
 #include "DX9ErrorHelper.h"
 
 #include "DX9RenderImageTarget.h"
-#include "DX9RenderTarget.h"
+#include "DX9RenderTargetTexture.h"
 #include "DX9RenderTargetOffscreen.h"
 
 #include "Factory/FactoryPool.h"
@@ -37,7 +37,6 @@ namespace Mengine
         , m_adapterToUse( D3DADAPTER_DEFAULT )
         , m_deviceType( D3DDEVTYPE_HAL )
         , m_waitForVSync( false )
-        , m_oldRenderTarget( nullptr )
         , m_vertexBufferEnable( false )
         , m_indexBufferEnable( false )
         , m_frames( 0 )
@@ -201,7 +200,7 @@ namespace Mengine
         m_factoryDX9Image = Helper::makeFactoryPoolWithListener<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
         m_factoryDX9ImageTarget = new FactoryPool<DX9RenderImageTarget, 16>();
 
-        m_factoryDX9TargetTexture = new FactoryDefault<DX9RenderTarget>();
+        m_factoryDX9TargetTexture = new FactoryDefault<DX9RenderTargetTexture>();
         m_factoryDX9TargetOffscreen = new FactoryDefault<DX9RenderTargetOffscreen>();
 
         return true;
@@ -630,7 +629,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
     {
-        DX9RenderTargetPtr target = m_factoryDX9TargetTexture->createObject();
+        DX9RenderTargetTexturePtr target = m_factoryDX9TargetTexture->createObject();
 
         if( target->initialize( m_pD3DDevice, _width, _height, _channels, _format ) == false )
         {
@@ -680,7 +679,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget )
     {
-        DX9RenderTargetPtr dx9RenderTarget = stdex::intrusive_static_cast<DX9RenderTargetPtr>(_renderTarget);
+        DX9RenderTargetTexturePtr dx9RenderTarget = stdex::intrusive_static_cast<DX9RenderTargetTexturePtr>(_renderTarget);
 
         DX9RenderImageTargetPtr dx9TextureImageTarget = m_factoryDX9ImageTarget->createObject();
 
@@ -956,73 +955,6 @@ namespace Mengine
     uint32_t DX9RenderSystem::getTextureCount() const
     {
         return m_textureCount;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::lockRenderTarget( const RenderImageInterfacePtr & _renderTarget )
-    {
-        ERenderImageMode mode = _renderTarget->getMode();
-
-        if( mode != ERIM_RENDER_TARGET )
-        {
-            return false;
-        }
-
-        IF_DXCALL( m_pD3DDevice, GetRenderTarget, (0, &m_oldRenderTarget) )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::lockRenderTarget: can't get render target"
-            );
-
-            return false;
-        }
-
-        DX9RenderImagePtr texture = stdex::intrusive_static_cast<DX9RenderImagePtr>(_renderTarget);
-
-        IDirect3DTexture9 * dx_texture = texture->getDirect3dTexture9();
-
-        IDirect3DSurface9 * dx_surface;
-        IF_DXCALL( dx_texture, GetSurfaceLevel, (0, &dx_surface) )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::lockRenderTarget: can't get surface level"
-            );
-
-            return false;
-        }
-
-        IF_DXCALL( m_pD3DDevice, SetRenderTarget, (0, dx_surface) )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::lockRenderTarget: can't set render target"
-            );
-
-            return false;
-        }
-
-        dx_surface->Release();
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::unlockRenderTarget()
-    {
-        if( m_oldRenderTarget == nullptr )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::unlockRenderTarget: can't get surface level"
-            );
-
-            return false;
-        }
-
-        IF_DXCALL( m_pD3DDevice, SetRenderTarget, (0, m_oldRenderTarget) )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::unlockRenderTarget: can't set render target"
-            );
-
-            return false;
-        }
-
-        m_oldRenderTarget->Release();
-        m_oldRenderTarget = nullptr;
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::supportTextureFormat( PixelFormat _format ) const

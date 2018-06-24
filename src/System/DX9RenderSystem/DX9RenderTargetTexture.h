@@ -10,13 +10,13 @@
 
 namespace Mengine
 {
-	class DX9RenderTarget
+	class DX9RenderTargetTexture
         : public ServantBase<RenderTargetInterface>
         , public RenderResourceHandlerInterface
 	{
 	public:
-        DX9RenderTarget();
-		~DX9RenderTarget() override;
+        DX9RenderTargetTexture();
+		~DX9RenderTargetTexture() override;
 
 	public:
 		bool initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format );
@@ -74,5 +74,6 @@ namespace Mengine
 		LPDIRECT3DSURFACE9 m_pD3DSurfaceOld;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DX9RenderTarget> DX9RenderTargetPtr;
+    typedef IntrusivePtr<DX9RenderTargetTexture> DX9RenderTargetTexturePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

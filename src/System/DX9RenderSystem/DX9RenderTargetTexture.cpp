@@ -1,4 +1,4 @@
-#include "DX9RenderTarget.h"
+#include "DX9RenderTargetTexture.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
@@ -6,7 +6,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderTarget::DX9RenderTarget()
+    DX9RenderTargetTexture::DX9RenderTargetTexture()
 		: m_width( 0 )
 		, m_height( 0 )
         , m_channels( 0 )
@@ -19,28 +19,28 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-    DX9RenderTarget::~DX9RenderTarget()
+    DX9RenderTargetTexture::~DX9RenderTargetTexture()
     {
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderTarget::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
+	bool DX9RenderTargetTexture::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
 	{
-		m_pD3DDevice = _device;
+        m_pD3DDevice = _device;
 
-		m_width = _width;
-		m_height = _height;
+        m_width = _width;
+        m_height = _height;
         m_channels = _channels;
         m_format = _format;
 
         D3DFORMAT d3dformat = s_toD3DFormat( m_format );
 
-		LPDIRECT3DTEXTURE9 renderTexture;
-		IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, NULL) )
-		{
-			return false;
-		}
+        LPDIRECT3DTEXTURE9 renderTexture;
+        IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, NULL) )
+        {
+            return false;
+        }
 
-		D3DSURFACE_DESC texDesc;
+        D3DSURFACE_DESC texDesc;
         IF_DXCALL( renderTexture, GetLevelDesc, (0, &texDesc) )
         {
             return false;
@@ -62,105 +62,105 @@ namespace Mengine
 		return true;
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderTarget::_initialize()
+    bool DX9RenderTargetTexture::_initialize()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-	void DX9RenderTarget::finalize()
+	void DX9RenderTargetTexture::finalize()
 	{
-		m_pD3DTexture->Release();
-		m_pD3DTexture = nullptr;
+        m_pD3DTexture->Release();
+        m_pD3DTexture = nullptr;
 
         this->_finalize();
 	}
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderTarget::_finalize()
+    void DX9RenderTargetTexture::_finalize()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTarget::getWidth() const
+    uint32_t DX9RenderTargetTexture::getWidth() const
     {
         return m_width;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTarget::getHeight() const
+    uint32_t DX9RenderTargetTexture::getHeight() const
     {
         return m_height;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTarget::getChannels() const
+    uint32_t DX9RenderTargetTexture::getChannels() const
     {
         return m_channels;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTarget::getDepth() const
+    uint32_t DX9RenderTargetTexture::getDepth() const
     {
         return 1U;
     }
     //////////////////////////////////////////////////////////////////////////
-    PixelFormat DX9RenderTarget::getPixelFormat() const
+    PixelFormat DX9RenderTargetTexture::getPixelFormat() const
     {
         return m_format;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTarget::getHWWidth() const
+    uint32_t DX9RenderTargetTexture::getHWWidth() const
     {
         return m_hwWidth;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t DX9RenderTarget::getHWHeight() const
+    uint32_t DX9RenderTargetTexture::getHWHeight() const
     {
         return m_hwHeight;
     }
     //////////////////////////////////////////////////////////////////////////
-    float DX9RenderTarget::getHWWidthInv() const
+    float DX9RenderTargetTexture::getHWWidthInv() const
     {
         return m_hwWidthInv;
     }
     //////////////////////////////////////////////////////////////////////////
-    float DX9RenderTarget::getHWHeightInv() const
+    float DX9RenderTargetTexture::getHWHeightInv() const
     {
         return m_hwHeightInv;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderTarget::begin()
+	bool DX9RenderTargetTexture::begin()
 	{
-		LPDIRECT3DSURFACE9 surface;
-		DXCALL( m_pD3DTexture, GetSurfaceLevel, ( 0, &surface ) );
+        LPDIRECT3DSURFACE9 pD3DSurface;
+        DXCALL( m_pD3DTexture, GetSurfaceLevel, (0, &pD3DSurface) );
 
-		if( surface == nullptr )
-		{
-			return false;
-		}
+        if( pD3DSurface == nullptr )
+        {
+            return false;
+        }
+        
+        LPDIRECT3DSURFACE9 pD3DSurfaceOld;
+        DXCALL( m_pD3DDevice, GetRenderTarget, (0, &pD3DSurfaceOld) );
 
-		LPDIRECT3DSURFACE9 old_surface;
-		DXCALL( m_pD3DDevice, GetRenderTarget, ( 0, &old_surface ) );
+        DXCALL( m_pD3DDevice, SetRenderTarget, (0, pD3DSurface) );
 
-		DXCALL( m_pD3DDevice, SetRenderTarget, ( 0, surface ) );
-
-		m_pD3DSurfaceOld = old_surface;
-		m_pD3DSurface = surface;
+        m_pD3DSurfaceOld = pD3DSurfaceOld;
+        m_pD3DSurface = pD3DSurface;
 
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderTarget::end()
+	void DX9RenderTargetTexture::end()
 	{
-		DXCALL( m_pD3DDevice, SetRenderTarget, ( 0, m_pD3DSurfaceOld ) );
+        DXCALL( m_pD3DDevice, SetRenderTarget, (0, m_pD3DSurfaceOld) );
 
-		if( m_pD3DSurfaceOld != nullptr )
-		{
-			m_pD3DSurfaceOld->Release();
-			m_pD3DSurfaceOld = nullptr;
-		}
+        if( m_pD3DSurfaceOld != nullptr )
+        {
+            m_pD3DSurfaceOld->Release();
+            m_pD3DSurfaceOld = nullptr;
+        }
 
-		m_pD3DSurface->Release();
-		m_pD3DSurface = nullptr;
+        m_pD3DSurface->Release();
+        m_pD3DSurface = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderTarget::getData( unsigned char * _buffer, size_t _pitch )
+	bool DX9RenderTargetTexture::getData( unsigned char * _buffer, size_t _pitch )
 	{
         (void)_buffer;
         (void)_pitch;
@@ -168,17 +168,17 @@ namespace Mengine
         return false;
 	}
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DDEVICE9 DX9RenderTarget::getDirect3dDevice9() const
+    LPDIRECT3DDEVICE9 DX9RenderTargetTexture::getDirect3dDevice9() const
     {
         return m_pD3DDevice;
     }
     //////////////////////////////////////////////////////////////////////////
-    LPDIRECT3DTEXTURE9 DX9RenderTarget::getDirect3dTexture9() const
+    LPDIRECT3DTEXTURE9 DX9RenderTargetTexture::getDirect3dTexture9() const
     {
         return m_pD3DTexture;
     }
     //////////////////////////////////////////////////////////////////////////        
-    void DX9RenderTarget::onRenderReset()
+    void DX9RenderTargetTexture::onRenderReset()
     {
         ULONG refCount = m_pD3DTexture->Release();
         (void)refCount;
@@ -186,7 +186,7 @@ namespace Mengine
         m_pD3DTexture = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////        
-    void DX9RenderTarget::onRenderRestore()
+    void DX9RenderTargetTexture::onRenderRestore()
     {
         D3DFORMAT d3dformat = s_toD3DFormat( m_format );
 

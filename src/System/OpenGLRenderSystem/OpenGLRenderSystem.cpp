@@ -894,19 +894,6 @@ namespace Mengine
         return image;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderSystem::lockRenderTarget( const RenderImageInterfacePtr & _renderTarget )
-    {
-        GLUNUSED( _renderTarget );
-        //TODO
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderSystem::unlockRenderTarget()
-    {
-        //TODO
-        return false;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::beginScene()
     {
         this->clearFrameBuffer( FBT_COLOR | FBT_DEPTH, 0x00000000, 1.f, 0x00000000 );

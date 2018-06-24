@@ -8,8 +8,8 @@ src
 	DX9RenderImage.cpp
 	DX9RenderImageTarget.h
 	DX9RenderImageTarget.cpp
-    DX9RenderTarget.h
-    DX9RenderTarget.cpp
+    DX9RenderTargetTexture.h
+    DX9RenderTargetTexture.cpp
 	DX9RenderTargetOffscreen.h
 	DX9RenderTargetOffscreen.cpp
     DX9RenderVertexBuffer.h

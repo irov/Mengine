@@ -117,9 +117,6 @@ namespace Mengine
         RenderImageInterfacePtr createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget ) override;
 
     public:
-        bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) override;
-        bool unlockRenderTarget() override;
-
         bool beginScene() override;
         void endScene() override;
         void swapBuffers() override;

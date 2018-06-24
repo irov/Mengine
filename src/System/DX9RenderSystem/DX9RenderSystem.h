@@ -139,14 +139,7 @@ namespace Mengine
 	public:
 		uint32_t getTextureMemoryUse() const override;
 		uint32_t getTextureCount() const override;
-		
-	public:
-		bool lockRenderTarget( const RenderImageInterfacePtr & _renderTarget ) override;
-		bool unlockRenderTarget() override;
-
-	protected:
-		LPDIRECT3DSURFACE9 m_oldRenderTarget;
-
+        
     protected:
         void updateVSyncDPP_();
         bool resetDevice_();

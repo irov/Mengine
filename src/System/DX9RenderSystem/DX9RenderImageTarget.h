@@ -10,7 +10,7 @@
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class DX9RenderTarget> DX9RenderTargetPtr;
+    typedef IntrusivePtr<class DX9RenderTargetTexture> DX9RenderTargetTexturePtr;
 
 	class DX9RenderImageTarget
 		: public ServantBase<RenderImageInterface>
@@ -20,7 +20,7 @@ namespace Mengine
         ~DX9RenderImageTarget() override;
 
     public:
-        void initialize( const DX9RenderTargetPtr & _target );
+        void initialize( const DX9RenderTargetTexturePtr & _target );
 		
     public:
         void bind( uint32_t _stage ) override;
@@ -54,7 +54,7 @@ namespace Mengine
 		bool unlock( uint32_t _level, bool _successful ) override;
         
 	protected:
-        DX9RenderTargetPtr m_target;
+        DX9RenderTargetTexturePtr m_target;
 	};
 	//////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderImageTarget> DX9RenderImageTargetPtr;

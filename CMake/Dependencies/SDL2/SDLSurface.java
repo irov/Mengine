@@ -64,7 +64,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             setOnGenericMotionListener(SDLActivity.getMotionListener());
         }
 
-        if (Build.VERSION.SDK_INT >= 26) {
+        if ((Build.VERSION.SDK_INT >= 26) && !SDLActivity.isDeXMode()) {
             setOnCapturedPointerListener(new SDLCapturedPointerListener_API26());
         }
 
@@ -295,7 +295,8 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
         float x,y,p;
 
         // !!! FIXME: dump this SDK check after 2.0.4 ships and require API14.
-        if (event.getSource() == InputDevice.SOURCE_MOUSE && SDLActivity.mSeparateMouseAndTouch) {
+        // 12290 = Samsung DeX mode desktop mouse
+        if ((event.getSource() == InputDevice.SOURCE_MOUSE || event.getSource() == 12290) && SDLActivity.mSeparateMouseAndTouch) {
             if (Build.VERSION.SDK_INT < 14) {
                 mouseButton = 1; // all mouse buttons are the left button
             } else {

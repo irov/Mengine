@@ -19,6 +19,11 @@ namespace Mengine
         m_target = _target;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderImageTarget::finalize()
+    {
+        m_target = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DX9RenderImageTarget::bind( uint32_t _stage )
     {
         LPDIRECT3DDEVICE9 pD3DDevice = m_target->getDirect3dDevice9();

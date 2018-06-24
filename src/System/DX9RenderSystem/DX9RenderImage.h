@@ -12,7 +12,7 @@ namespace Mengine
 {
 	class DX9RenderImage
 		: public ServantBase<RenderImageInterface>
-        , public RenderResourceHandlerInterface
+        , public DX9RenderResourceHandler
 	{
 	public:
 		DX9RenderImage();

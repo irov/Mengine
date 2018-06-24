@@ -7,9 +7,17 @@
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
 
+#include "DX9RenderImage.h"
 #include "DX9RenderImageTarget.h"
 #include "DX9RenderTargetTexture.h"
 #include "DX9RenderTargetOffscreen.h"
+
+#include "DX9RenderVertexShader.h"
+#include "DX9RenderFragmentShader.h"
+#include "DX9RenderProgram.h"
+#include "DX9RenderVertexAttribute.h"
+#include "DX9RenderVertexBuffer.h"
+#include "DX9RenderIndexBuffer.h"
 
 #include "Factory/FactoryPool.h"
 #include "Factory/FactoryPoolWithListener.h"
@@ -198,10 +206,10 @@ namespace Mengine
         m_factoryIndexBuffer = new FactoryDefault<DX9RenderIndexBuffer>();
 
         m_factoryDX9Image = Helper::makeFactoryPoolWithListener<DX9RenderImage, 128>( this, &DX9RenderSystem::onDestroyDX9RenderImage_ );
-        m_factoryDX9ImageTarget = new FactoryPool<DX9RenderImageTarget, 16>();
+        m_factoryDX9ImageTarget = Helper::makeFactoryPoolWithListener<DX9RenderImageTarget, 16>( this, &DX9RenderSystem::onDestroyDX9RenderImageTarget_ );
 
-        m_factoryDX9TargetTexture = new FactoryDefault<DX9RenderTargetTexture>();
-        m_factoryDX9TargetOffscreen = new FactoryDefault<DX9RenderTargetOffscreen>();
+        m_factoryDX9TargetTexture = Helper::makeFactoryPoolWithListener<DX9RenderTargetTexture, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetTexture_ );
+        m_factoryDX9TargetOffscreen = Helper::makeFactoryPoolWithListener<DX9RenderTargetOffscreen, 16>( this, &DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_ );
 
         return true;
     }
@@ -734,9 +742,6 @@ namespace Mengine
 
         if( hr == D3DERR_DEVICELOST )
         {
-            LOGGER_WARNING( "DX9RenderSystem::beginScene: D3DERR_DEVICELOST"
-            );
-
             ::Sleep( 100 );
 
             return false;
@@ -1174,7 +1179,7 @@ namespace Mengine
         RENDER_SERVICE()
             ->onDeviceLostPrepare();
 
-        for( RenderResourceHandlerInterface * handler : m_renderResourceHandlers )
+        for( DX9RenderResourceHandler * handler : m_renderResourceHandlers )
         {
             handler->onRenderReset();
         }
@@ -1196,7 +1201,7 @@ namespace Mengine
             return false;
         }
 
-        for( RenderResourceHandlerInterface * handler : m_renderResourceHandlers )
+        for( DX9RenderResourceHandler * handler : m_renderResourceHandlers )
         {
             handler->onRenderRestore();
         }
@@ -1882,6 +1887,21 @@ namespace Mengine
         uint32_t memoryUse = Helper::getTextureMemorySize( hwWidth, hwHeight, hwChannels, 1, hwPixelFormat );
 
         m_textureMemoryUse -= memoryUse;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::onDestroyDX9RenderImageTarget_( DX9RenderImageTarget * _imageTarget )
+    {
+        _imageTarget->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::onDestroyDX9RenderTargetTexture_( DX9RenderTargetTexture * _targetTexture )
+    {
+        _targetTexture->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_( DX9RenderTargetOffscreen * _targetOffscreen )
+    {
+        _targetOffscreen->finalize();
     }
 }
 

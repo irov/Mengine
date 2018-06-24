@@ -21,6 +21,7 @@ namespace Mengine
 
     public:
         void initialize( const DX9RenderTargetTexturePtr & _target );
+        void finalize();
 		
     public:
         void bind( uint32_t _stage ) override;

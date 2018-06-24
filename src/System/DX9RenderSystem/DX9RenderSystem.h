@@ -2,13 +2,7 @@
 
 #include "Interface/RenderSystemInterface.h"
 
-#include "DX9RenderImage.h"
-#include "DX9RenderVertexShader.h"
-#include "DX9RenderFragmentShader.h"
-#include "DX9RenderProgram.h"
-#include "DX9RenderVertexAttribute.h"
-#include "DX9RenderVertexBuffer.h"
-#include "DX9RenderIndexBuffer.h"
+#include "DX9RenderResourceHandler.h"
 
 #include "Core/ServiceBase.h"
 
@@ -22,6 +16,15 @@
 
 namespace Mengine
 {
+    typedef IntrusivePtr<class DX9RenderImage> DX9RenderImagePtr;
+    typedef IntrusivePtr<class DX9RenderVertexShader> DX9RenderVertexShaderPtr;
+    typedef IntrusivePtr<class DX9RenderFragmentShader> DX9RenderFragmentShaderPtr;
+    typedef IntrusivePtr<class DX9RenderProgram> DX9RenderProgramPtr;
+
+    class DX9RenderImageTarget;
+    class DX9RenderTargetTexture;
+    class DX9RenderTargetOffscreen;
+
 	class DX9RenderSystem
 		: public ServiceBase<RenderSystemInterface>
 	{
@@ -187,6 +190,9 @@ namespace Mengine
 
 	protected:
 		void onDestroyDX9RenderImage_( DX9RenderImage * _image );
+        void onDestroyDX9RenderImageTarget_( DX9RenderImageTarget * _imageTarget );
+        void onDestroyDX9RenderTargetTexture_( DX9RenderTargetTexture * _targetTexture );
+        void onDestroyDX9RenderTargetOffscreen_( DX9RenderTargetOffscreen * _targetOffscreen );
 
 	protected:
 		UINT m_adapterToUse;
@@ -216,8 +222,8 @@ namespace Mengine
         typedef Vector<DX9RenderProgramPtr> TVectorRenderPrograms;
         TVectorRenderPrograms m_deferredCompilePrograms;
 
-        typedef stdex::intrusive_list<RenderResourceHandlerInterface> TIntrusiveListRenderResourceHandler;
-        TIntrusiveListRenderResourceHandler m_renderResourceHandlers;
+        typedef stdex::intrusive_list<DX9RenderResourceHandler> TIntrusiveListDX9RenderResourceHandler;
+        TIntrusiveListDX9RenderResourceHandler m_renderResourceHandlers;
 
 
 		mt::mat4f m_projectionMatrix;

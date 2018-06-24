@@ -251,11 +251,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::clearRenderTarget_()
     {
-        m_resourceImageMask.release();
-
-        m_resourceImageMask = nullptr;
-        m_renderTarget = nullptr;        
         m_materialImageMask = nullptr;
+
+        m_resourceImageMask.release();
+        m_resourceImageMask = nullptr;
+
+        this->setRenderTarget( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::_renderTarget( RenderServiceInterface * _renderService, const RenderContext * _state )

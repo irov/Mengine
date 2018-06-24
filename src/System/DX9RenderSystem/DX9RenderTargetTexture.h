@@ -12,7 +12,7 @@ namespace Mengine
 {
 	class DX9RenderTargetTexture
         : public ServantBase<RenderTargetInterface>
-        , public RenderResourceHandlerInterface
+        , public DX9RenderResourceHandler
 	{
 	public:
         DX9RenderTargetTexture();

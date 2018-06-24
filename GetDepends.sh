@@ -4,7 +4,7 @@ dependenciesdir=$basedir/dependencies
 getdepend()
 {
 	cd $dependenciesdir
-	if [ ! -f $4 ]; then
+	if [ ! -d $4 ]; then
 		if [ ! -f $2 ]; then
 			curl -L $1 > $2
 		fi
@@ -18,7 +18,7 @@ getdepend()
 getdependt()
 {
 	cd $dependenciesdir
-	if [ ! -f $4 ]; then
+	if [ ! -d $4 ]; then
 		if [ ! -f $2 ]; then
 			curl -L $1 > $2
 		fi
@@ -32,7 +32,7 @@ getdependt()
 getdepend7()
 {
 	cd $dependenciesdir
-	if [ ! -f $4 ]; then
+	if [ ! -d $4 ]; then
 		if [ ! -f $2 ]; then
 			curl -L $1 > $2
 		fi
@@ -46,7 +46,7 @@ getdepend7()
 svndepend()
 {
     cd $dependenciesdir
-	if [ ! -f $2 ]; then
+	if [ ! -d $2 ]; then
 		svn checkout -q $1 $2
 	fi
 }
@@ -54,7 +54,7 @@ svndepend()
 svndependr()
 {
     cd $dependenciesdir
-	if [ ! -f $2 ]; then
+	if [ ! -d $2 ]; then
 		svn checkout -q -r $3 $1 $2
 	fi
 }
@@ -62,7 +62,7 @@ svndependr()
 gitdepend()
 {
 	cd $dependenciesdir
-	if [ ! -f $2 ]; then
+	if [ ! -d $2 ]; then
 		git clone --recurse-submodules $1 $2
 	fi
 }
@@ -70,12 +70,14 @@ gitdepend()
 gitdependr()
 {
 	cd $dependenciesdir
-	if [ ! -f $2 ]; then
+	if [ ! -d $2 ]; then
 		git clone --recurse-submodules -b $3 $1 $2
 	fi
 }
 
-mkdir $dependenciesdir
+if [ ! -d $dependenciesdir ]; then
+    mkdir $dependenciesdir
+fi
 
 getdepend http://www.ijg.org/files/jpegsr9c.zip jpegsr9c.zip jpeg-9c libjpeg
 getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
@@ -112,3 +114,5 @@ gitdependr https://github.com/python/cpython.git Python 2.7
 gitdependr https://github.com/python/cpython.git Python3 v3.6.5
 
 svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
+
+echo Done

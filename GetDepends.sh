@@ -4,61 +4,75 @@ dependenciesdir=$basedir/dependencies
 getdepend()
 {
 	cd $dependenciesdir
-	if [ ! -f $2 ]; then
-        curl -L $1 > $2
-    fi
+	if [ ! -f $4 ]; then
+		if [ ! -f $2 ]; then
+			curl -L $1 > $2
+		fi
 
-	rm -rf $4
-	unzip $2
-	mv $3 $4
+		rm -rf $4
+		unzip $2
+		mv $3 $4
+	fi
 }
 
 getdependt()
 {
 	cd $dependenciesdir
-	if [ ! -f $2 ]; then
-        curl -L $1 > $2
-    fi
+	if [ ! -f $4 ]; then
+		if [ ! -f $2 ]; then
+			curl -L $1 > $2
+		fi
 
-	rm -rf $4
-	tar -xf $2
-	mv $3 $4
+		rm -rf $4
+		tar -xf $2
+		mv $3 $4
+	fi
 }
 
 getdepend7()
 {
 	cd $dependenciesdir
-	if [ ! -f $2 ]; then
-        curl -L $1 > $2
-    fi
+	if [ ! -f $4 ]; then
+		if [ ! -f $2 ]; then
+			curl -L $1 > $2
+		fi
 
-	rm -rf $4
-	./../wget/7za x -y $2
-	mv $3 $4
+		rm -rf $4
+		./../wget/7za x -y $2
+		mv $3 $4
+	fi
 }
 
 svndepend()
 {
     cd $dependenciesdir
-    svn checkout -q $1 $2
+	if [ ! -f $2 ]; then
+		svn checkout -q $1 $2
+	fi
 }
 
 svndependr()
 {
     cd $dependenciesdir
-    svn checkout -q -r $3 $1 $2
+	if [ ! -f $2 ]; then
+		svn checkout -q -r $3 $1 $2
+	fi
 }
 
 gitdepend()
 {
 	cd $dependenciesdir
-	git clone --recurse-submodules $1 $2
+	if [ ! -f $2 ]; then
+		git clone --recurse-submodules $1 $2
+	fi
 }
 
 gitdependr()
 {
 	cd $dependenciesdir
-	git clone --recurse-submodules -b $3 $1 $2
+	if [ ! -f $2 ]; then
+		git clone --recurse-submodules -b $3 $1 $2
+	fi
 }
 
 mkdir $dependenciesdir

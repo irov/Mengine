@@ -61,11 +61,11 @@ public class MengineActivity extends SDLActivity {
     }
 
     //FacebookStaticMethods
-    public static void performLogin(final FacebookLoginCallback facebookLoginCallback) {
+    public static void performLogin(FacebookLoginCallback facebookLoginCallback, String[] readPermissions) {
         if(_instance == null) {
             return;
         }
-        _instance.facebookInteractionLayer.performLogin(_instance, facebookLoginCallback);
+        _instance.facebookInteractionLayer.performLogin(_instance, facebookLoginCallback, readPermissions);
     }
 
     public static void getUser(FacebookAccessTokenWrapper accessTokenWrapper, FacebookUserCallback facebookUserCallback) {

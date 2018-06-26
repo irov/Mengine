@@ -20,6 +20,7 @@ import org.json.JSONObject;
 
 import java.util.Arrays;
 import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by sweatcoin7 on 6/25/18.
@@ -38,7 +39,7 @@ public class FacebookInteractionLayer {
         _callbackManager = callbackManager;
     }
 
-    public void performLogin(Activity activity, final FacebookLoginCallback facebookLoginCallback) {
+    public void performLogin(Activity activity, final FacebookLoginCallback facebookLoginCallback, String[] readPermissions) {
         LoginManager.getInstance().registerCallback(_callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -65,7 +66,13 @@ public class FacebookInteractionLayer {
                 facebookLoginCallback.onLoginError(exception);
             }
         });
-        LoginManager.getInstance().logInWithReadPermissions(activity, Arrays.asList(PROFILE, EMAIL));
+        List<String> permissions;
+        if(readPermissions == null) {
+            permissions = Arrays.asList(PROFILE, EMAIL);
+        } else {
+            permissions = Arrays.asList(readPermissions);
+        }
+        LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
     }
 
     public void getUser(final FacebookUserCallback facebookUserCallback) {

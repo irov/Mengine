@@ -19,11 +19,10 @@ import com.facebook.share.widget.ShareDialog;
 import org.json.JSONObject;
 
 import java.util.Arrays;
-import java.util.HashSet;
 import java.util.List;
 
 /**
- * Created by sweatcoin7 on 6/25/18.
+ * Created by Alex Korzh on 6/25/18.
  */
 
 public class FacebookInteractionLayer {
@@ -38,13 +37,17 @@ public class FacebookInteractionLayer {
     static native void setupFacebookJNI();
 
     static native void onLoginSuccess(String loginResult);
+
     static native void onLoginCancel();
+
     static native void onLoginError(String exception);
 
     static native void onUserFetchSuccess(String object, String response);
 
     static native void onShareSuccess(String postId);
+
     static native void onShareCancel();
+
     static native void onShareError(String exception);
 
     public FacebookInteractionLayer(CallbackManager callbackManager) {
@@ -71,7 +74,7 @@ public class FacebookInteractionLayer {
             }
         });
         List<String> permissions;
-        if(readPermissions == null) {
+        if (readPermissions == null) {
             permissions = Arrays.asList(PROFILE, EMAIL);
         } else {
             permissions = Arrays.asList(readPermissions);

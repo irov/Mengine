@@ -128,8 +128,12 @@ int Android_JNI_SetupThread(void)
 
 JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE(onLoginSuccess)(JNIEnv *env, jobject instance,
-        jobject loginResult) {
-//currentFacebookLoginCallback.onLoginSuccess();
+        jstring accessToken_) {
+const char *accessToken = (*env)->GetStringUTFChars(env, exception_, 0);
+
+currentFacebookLoginCallback.onLoginSuccess(accessToken);
+
+(*env)->ReleaseStringUTFChars(env, accessToken_, accessToken);
 }
 
 JNIEXPORT void JNICALL
@@ -191,7 +195,7 @@ currentFacebookShareCallback.onShareError(exception);
 //Methods to be called from Python
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 static void performLogin(FacebookLoginCallback* facebookLoginCallback, std::vector<char*>* readPermissions) {
-    currentFacebookLoginCallback = facebookLoginCallback;
+    currentFacebookLoginCallback = &facebookLoginCallback;
     JNIEnv *mEnv = Android_JNI_GetEnv();
     if(readPermissions != NULL) {
         jstring stringPermissions[readPermissions->size()];
@@ -205,14 +209,13 @@ static void performLogin(FacebookLoginCallback* facebookLoginCallback, std::vect
 }
 
 static void getUser(FacebookUserCallback* facebookUserCallback) {
-    currentFacebookUserCallback = facebookUserCallback;
+    currentFacebookUserCallback = &facebookUserCallback;
     JNIEnv *mEnv = Android_JNI_GetEnv();
-    // TODO
     (*env)->CallStaticVoidMethod(env, mActivityClass, mgetUser);
 }
 
 static void shareLink(char* link, FacebookShareCallback* facebookShareCallback) {
-    currentFacebookShareCallback = facebookShareCallback;
+    currentFacebookShareCallback = &facebookShareCallback;
     JNIEnv *mEnv = Android_JNI_GetEnv();
     jstring stringLink = (jstring)((*env)->NewStringUTF(env, link));
     (*env)->CallStaticVoidMethod(env, mActivityClass, mshareLink, stringLink);

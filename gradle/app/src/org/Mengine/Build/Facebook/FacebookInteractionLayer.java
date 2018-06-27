@@ -35,7 +35,7 @@ public class FacebookInteractionLayer {
     private CallbackManager _callbackManager;
     private AccessToken _accessToken;
 
-    native void onLoginSuccess(FacebookLoginResultWrapper loginResult);
+    native void onLoginSuccess(String loginResult);
     native void onLoginCancel();
     native void onLoginError(String exception);
 
@@ -53,17 +53,8 @@ public class FacebookInteractionLayer {
         LoginManager.getInstance().registerCallback(_callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
-                FacebookLoginResultWrapper wrappedResult = new FacebookLoginResultWrapper();
-                wrappedResult.recentlyGrantedPermissions =
-                        loginResult.getRecentlyGrantedPermissions()
-                                .toArray(new String[loginResult.getRecentlyGrantedPermissions().size()]);
-                wrappedResult.recentlyDeniedPermissions =
-                        loginResult.getRecentlyDeniedPermissions()
-                                .toArray(new String[loginResult.getRecentlyDeniedPermissions().size()]);
-                wrappedResult.accessToken = new FacebookAccessTokenWrapper(loginResult.getAccessToken());
-
-                onLoginSuccess(wrappedResult);
                 _accessToken = loginResult.getAccessToken();
+                onLoginSuccess(_accessToken.getToken());
             }
 
             @Override

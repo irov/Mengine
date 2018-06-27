@@ -21,7 +21,8 @@ public class MengineActivity extends SDLActivity {
     protected String[] getLibraries() {
         return new String[]{
                 "SDL2",
-                "SDLApplication"
+                "SDLApplication",
+                "AndroidNativeFacebookPlugin"
         };
     }
 

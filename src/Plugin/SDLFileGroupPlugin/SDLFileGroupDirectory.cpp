@@ -6,7 +6,7 @@
 
 #	include "SDLFileInputStream.h"
 #	include "SDLFileOutputStream.h"
-#	include "SDLFileMapped.h"
+#	include "SDLFileMappedStream.h"
 
 #   include "Factory/FactoryPool.h"
 

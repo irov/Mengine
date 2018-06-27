@@ -46,8 +46,6 @@ JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE(onShareError)(JNIEnv *env, jclass cls,
                                       jstring exception_);
 
-#include <jni.h>
-
 static pthread_key_t mThreadKey;
 static JavaVM *mJavaVM;
 
@@ -60,7 +58,7 @@ static FacebookLoginCallback *currentFacebookLoginCallback;
 static FacebookUserCallback *currentFacebookUserCallback;
 static FacebookShareCallback *currentFacebookShareCallback;
 
-static void Android_JNI_ThreadDestroyed(void *value) {
+static void JNI_ThreadDestroyed(void *value) {
     /* The thread is being destroyed, detach it from the Java VM and set the mThreadKey value to NULL as required */
     JNIEnv *env = (JNIEnv *) value;
     if (env != NULL) {
@@ -69,7 +67,7 @@ static void Android_JNI_ThreadDestroyed(void *value) {
     }
 }
 
-JNIEnv *Android_JNI_GetEnv(void) {
+JNIEnv *JNI_GetEnv(void) {
     /* From http://developer.android.com/guide/practices/jni.html
      * All threads are Linux threads, scheduled by the kernel.
      * They're usually started from managed code (using Thread.start), but they can also be created elsewhere and then
@@ -102,8 +100,8 @@ JNIEnv *Android_JNI_GetEnv(void) {
     return env;
 }
 
-int Android_JNI_SetupThread(void) {
-    Android_JNI_GetEnv();
+int JNI_SetupThread(void) {
+    JNI_GetEnv();
     return 1;
 }
 
@@ -117,10 +115,10 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
      * Create mThreadKey so we can keep track of the JNIEnv assigned to each thread
      * Refer to http://developer.android.com/guide/practices/design/jni.html for the rationale behind this
      */
-    if (pthread_key_create(&mThreadKey, Android_JNI_ThreadDestroyed) != 0) {
+    if (pthread_key_create(&mThreadKey, JNI_ThreadDestroyed) != 0) {
         return -1;
     }
-    Android_JNI_SetupThread();
+    JNI_SetupThread();
 
     return JNI_VERSION_1_4;
 }
@@ -231,7 +229,7 @@ namespace Mengine {
     performLogin(FacebookLoginCallback *facebookLoginCallback,
                  std::vector<char *> *readPermissions) {
         currentFacebookLoginCallback = facebookLoginCallback;
-        JNIEnv *mEnv = Android_JNI_GetEnv();
+        JNIEnv *mEnv = JNI_GetEnv();
         if (readPermissions != NULL) {
             jstring stringPermissions[readPermissions->size()];
             for (size_t i = 0; i < readPermissions->size(); i++) {
@@ -246,13 +244,13 @@ namespace Mengine {
 
     static void getUser(FacebookUserCallback *facebookUserCallback) {
         currentFacebookUserCallback = facebookUserCallback;
-        JNIEnv *mEnv = Android_JNI_GetEnv();
+        JNIEnv *mEnv = JNI_GetEnv();
         mEnv->CallStaticVoidMethod(mActivityClass, mgetUser);
     }
 
     static void shareLink(char *link, FacebookShareCallback *facebookShareCallback) {
         currentFacebookShareCallback = facebookShareCallback;
-        JNIEnv *mEnv = Android_JNI_GetEnv();
+        JNIEnv *mEnv = JNI_GetEnv();
         jstring stringLink = (jstring) (mEnv->NewStringUTF(link));
         mEnv->CallStaticVoidMethod(mActivityClass, mshareLink, stringLink);
     }

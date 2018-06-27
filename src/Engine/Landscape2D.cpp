@@ -80,7 +80,7 @@ namespace Mengine
 
         const RenderCameraInterfacePtr & camera = _state->camera;
 
-        const mt::mat4f & vpm = _state->camera->getCameraViewProjectionMatrix();
+        const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
 
 		for( Landscape2DElement & el : elementsWM )
 		{

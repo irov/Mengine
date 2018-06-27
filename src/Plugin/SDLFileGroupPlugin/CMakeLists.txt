@@ -10,8 +10,8 @@ src
     SDLFileInputStream.cpp
     SDLFileOutputStream.cpp
     SDLFileOutputStream.h
-    SDLFileMapped.h
-    SDLFileMapped.cpp
+    SDLFileMappedStream.h
+    SDLFileMappedStream.cpp
 )
 
 INCLUDE_DIRECTORIES(

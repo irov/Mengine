@@ -1,16 +1,12 @@
-//
-// Created by Alex Korzh on 6/26/18.
-//
+#include "AndroidNativeFacebookPlugin.h"
+
+#include "Core/ModuleFactory.h"
 
 #include <string.h>
 #include <stdio.h>
 #include <jni.h>
 #include <vector>
 #include <pthread.h>
-
-//#include "pybind/pybind.hpp"
-
-#include "AndroidNativeFacebookPlugin.h"
 
 #define FACEBOOK_JAVA_PREFIX                             org_Mengine_Build_Facebook
 #define CONCAT1(prefix, class, function)                 CONCAT2(prefix, class, function)
@@ -45,8 +41,6 @@ FACEBOOK_JAVA_INTERFACE(onShareCancel)(JNIEnv *env, jclass cls);
 JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE(onShareError)(JNIEnv *env, jclass cls,
                                       jstring exception_);
-
-#include <jni.h>
 
 static pthread_key_t mThreadKey;
 static JavaVM *mJavaVM;
@@ -211,9 +205,8 @@ FACEBOOK_JAVA_INTERFACE(onShareError)(JNIEnv *env, jclass cls,
     env->ReleaseStringUTFChars(exception_, exception);
 }
 
-#include "Core/ModuleFactory.h"
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY(AndroidNativeFacebookPlugin, Mengine::AndroidNativeFacebookPlugin)
+PLUGIN_FACTORY(AndroidNativeFacebook, Mengine::AndroidNativeFacebookPlugin)
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 //Methods to be called from Python
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

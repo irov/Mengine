@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/SoundCodecInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Config/Typedef.h"
 

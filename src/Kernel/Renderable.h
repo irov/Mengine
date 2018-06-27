@@ -1,14 +1,32 @@
 #pragma once
 
+#include "Interface/RenderViewportInterface.h"
+#include "Interface/RenderCameraInterface.h"
+#include "Interface/RenderScissorInterface.h"
+#include "Interface/RenderTargetInterface.h"
+#include "Interface/RenderMaterialInterface.h"
+
 #include "Core/Viewport.h"
 #include "Core/Mixin.h"
+#include "Core/RenderVertex2D.h"
+#include "Core/RenderIndex.h"
 #include "Core/IntrusivePtr.h"
+
+#include "math/box2.h"
 
 namespace Mengine
 {
-    class RenderServiceInterface;
-    struct RenderContext;
+    //////////////////////////////////////////////////////////////////////////
+    struct RenderContext
+    {
+        RenderViewportInterfacePtr viewport;
+        RenderCameraInterfacePtr camera;
+        RenderScissorInterfacePtr scissor;
+        RenderTargetInterfacePtr target;
 
+        uint32_t debugMask;
+    };
+    //////////////////////////////////////////////////////////////////////////
 	class Renderable
         : public Mixin
 	{
@@ -17,11 +35,11 @@ namespace Mengine
         ~Renderable();
 
 	public:
-		virtual void render( RenderServiceInterface * _renderService, const RenderContext * _state ) = 0;
+		virtual void render( const RenderContext * _state ) = 0;
 
 	public:
-		virtual void _render( RenderServiceInterface * _renderService, const RenderContext * _state );
-		virtual void _debugRender( RenderServiceInterface * _renderService, const RenderContext * _state );
+		virtual void _render( const RenderContext * _state );
+		virtual void _debugRender( const RenderContext * _state );
 
 	public:
 		virtual void setHide( bool _hide );
@@ -39,6 +57,24 @@ namespace Mengine
         virtual void _setHide( bool _hide );
 		virtual void _setLocalHide( bool _localHide );		
         virtual void _setExternalRender( bool _externalRender );
+
+    protected:
+        void addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount
+            , const RenderIndex * _indices, uint32_t _indexCount
+            , const mt::box2f * _bb, bool _debug ) const;
+
+        void addRenderQuad( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount
+            , const mt::box2f * _bb, bool _debug ) const;
+
+        void addRenderLine( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderVertex2D * _vertices, uint32_t _vertexCount
+            , const mt::box2f * _bb, bool _debug ) const;
+
+    protected:
+        RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) const;
+        const RenderMaterialInterfacePtr & getDebugMaterial() const;
 		
 	protected:
 		bool m_hide;

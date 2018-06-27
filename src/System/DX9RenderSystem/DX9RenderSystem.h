@@ -44,12 +44,6 @@ namespace Mengine
 		bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen
 			, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) override;
 		
-        void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
-        void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
-        void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) override;
-        void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) override;
-        void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) override;
-
 		void clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force ) override;
 		// Render frame into _image
 		// int rect[4] - rectangle represents desired frame area in pixels
@@ -57,7 +51,7 @@ namespace Mengine
 		// входные данные: матрица 4 на 4
 		void setProjectionMatrix( const mt::mat4f & _projection ) override;
 		void setViewMatrix( const mt::mat4f & _modelView ) override;
-		void setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture ) override;
+		void setTextureMatrix( uint32_t _stage, const mt::mat4f & _matrix ) override;
 		void setWorldMatrix( const mt::mat4f & _world ) override;
 
 	public:

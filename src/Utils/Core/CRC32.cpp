@@ -75,7 +75,7 @@ namespace Mengine
 		{
 			uint32_t crc = 0xFFFFFFFF;
 
-			const unsigned char * byte_buffer = reinterpret_cast<const unsigned char *>(_buffer);
+			const uint8_t * byte_buffer = reinterpret_cast<const uint8_t *>(_buffer);
 
 			while( _size-- )
 			{

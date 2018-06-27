@@ -1,6 +1,8 @@
 #include "Graveyard.h"
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderImageInterface.h"
+#include "Interface/RenderTextureInterface.h"
+#include "Interface/RenderTextureServiceInterface.h"
 
 #include "Interface/ConfigInterface.h"
 

@@ -1,7 +1,6 @@
 #include "ImageEncoderACF.h"
 #include "ImageVerifyACF.h"
 
-#include "Interface/FileSystemInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/StringizeInterface.h"
 
@@ -58,7 +57,7 @@ namespace Mengine
 		uint32_t mipmaps = dataInfo->mipmaps;
 		m_stream->write( &mipmaps, sizeof(mipmaps) );
 
-		const unsigned char * mipmap_buffer = reinterpret_cast<const unsigned char *>(_buffer);
+		const uint8_t * mipmap_buffer = reinterpret_cast<const uint8_t *>(_buffer);
 
 		for( uint32_t i = 0; i != mipmaps; ++i )
 		{   

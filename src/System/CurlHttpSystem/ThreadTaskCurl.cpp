@@ -1,6 +1,6 @@
 #include "ThreadTaskCurl.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 #include "Interface/ConfigInterface.h"
 
 #include "Logger/Logger.h"

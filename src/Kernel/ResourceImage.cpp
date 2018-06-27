@@ -1,6 +1,6 @@
 #include "ResourceImage.h"
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderTextureInterface.h"
 
 #include "Logger/Logger.h"
 

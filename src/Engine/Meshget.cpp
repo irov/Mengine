@@ -1,7 +1,5 @@
 #include "Meshget.h" 
 
-#include "Interface/RenderSystemInterface.h"
-
 #include "Kernel/ResourceImage.h"
 
 #include "Logger/Logger.h"
@@ -115,7 +113,7 @@ namespace Mengine
             ->onMeshgetUpdate( _current, _timing );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Meshget::_render( const RenderContext * _state )
 	{
 		if( m_positions.empty() == true )
 		{
@@ -133,8 +131,7 @@ namespace Mengine
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		_renderService
-			->addRenderObject( _state, material, vertices_buff, vertexCount, indices_buff, indicesCount, &bb, false );
+        this->addRenderObject( _state, material, vertices_buff, vertexCount, indices_buff, indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Meshget::_updateBoundingBox( mt::box2f & _boundingBox ) const

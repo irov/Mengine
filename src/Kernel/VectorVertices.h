@@ -13,17 +13,17 @@ namespace Mengine
         
 	public:
 		inline TVectorRenderVertex2D & getVertices();
-		inline void invalidateVertices( unsigned char _invalidate = 0xFE );
+		inline void invalidateVertices( uint8_t _invalidate = 0xFE );
 
 	protected:
 		void updateVertices_();
 	
 	protected:
-		virtual void _updateVertices( TVectorRenderVertex2D & _vertices, unsigned char _invalidate ) = 0;
+		virtual void _updateVertices( TVectorRenderVertex2D & _vertices, uint8_t _invalidate ) = 0;
 
 	private:
         TVectorRenderVertex2D m_vertices;
-		unsigned char m_invalidateVertices;
+        uint8_t m_invalidateVertices;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	inline TVectorRenderVertex2D & VectorVertices::getVertices()
@@ -36,7 +36,7 @@ namespace Mengine
 		return m_vertices;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline void VectorVertices::invalidateVertices( unsigned char _invalidate )
+	inline void VectorVertices::invalidateVertices( uint8_t _invalidate )
 	{
 		m_invalidateVertices |= _invalidate;
 	}

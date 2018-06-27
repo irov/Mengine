@@ -100,7 +100,7 @@ namespace Mengine
 		void _update( float _current, float _timing ) override;
 
 	protected:
-		void _render( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
+		void _render( const RenderContext * _state ) override;
 
 	protected:
 		void _changeParent( Node * _oldParent, Node * _newParent ) override;

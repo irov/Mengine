@@ -1,6 +1,7 @@
 #include "ConverterEngine.h"
 
 #include "Interface/StringizeInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Logger/Logger.h"
 

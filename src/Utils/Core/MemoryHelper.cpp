@@ -157,7 +157,7 @@ namespace Mengine
 				return nullptr;
 			}
 
-			unsigned char * memory = cache->getMemory();
+            uint8_t * memory = cache->getMemory();
 
 			size_t read_byte = stream->read( memory, size );
 

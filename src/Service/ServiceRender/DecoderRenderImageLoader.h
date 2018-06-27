@@ -1,7 +1,8 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderImageInterface.h"
 #include "Interface/ImageCodecInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Core/ServantBase.h"
 

@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/StreamInterface.h"
-#include "Interface/FileSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
 #include "ThreadTaskPrefetch.h"

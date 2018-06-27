@@ -932,11 +932,9 @@ namespace Mengine
         state.target = m_renderTarget;
         state.debugMask = debugMask;
 
-        RenderServiceInterface * renderService = RENDER_SERVICE();
-
         if( m_scene != nullptr )
         {
-            m_scene->render( renderService, &state );
+            m_scene->render( &state );
         }
 
         MODULE_SERVICE()
@@ -947,7 +945,7 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            m_arrow->render( renderService, &state );
+            m_arrow->render( &state );
         }
 
         if( m_showDebugText != 0 )
@@ -1430,7 +1428,7 @@ namespace Mengine
 
             m_debugText->setScale( mt::vec3f( scale, 1.f ) );
 
-            m_debugText->render( renderService, &state );
+            m_debugText->render( &state );
         }
     }
     //////////////////////////////////////////////////////////////////////////

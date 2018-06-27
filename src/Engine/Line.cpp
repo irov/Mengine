@@ -1,6 +1,5 @@
 #include "Line.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
 namespace Mengine
@@ -42,8 +41,15 @@ namespace Mengine
 	{
 		return m_width;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr Line::_updateMaterial() const
+    {
+        RenderMaterialInterfacePtr material = this->getMaterial3( EM_DEBUG, PT_TRIANGLELIST, 0, nullptr );
+
+        return material;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	void Line::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Line::_render( const RenderContext * _state )
 	{
 		const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -92,11 +98,9 @@ namespace Mengine
 			m_vertices[i].uv[1].y = 0.f;
 		}
 
-		RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-			->getMaterial3( EM_DEBUG, PT_TRIANGLELIST, 0, nullptr );
+        const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-		_renderService
-			->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );
+        this->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 

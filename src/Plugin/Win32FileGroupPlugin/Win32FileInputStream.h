@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileInputStreamInterface.h"
 #include "Interface/WindowsLayerInterface.h"
 
 #include "Core/ServantBase.h"
@@ -11,7 +11,7 @@ namespace Mengine
 {
 
 #ifndef MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE
-#	define MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE MENGINE_FILE_STREAM_BUFFER_SIZE
+#	define MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE 4096
 #endif
 
 	class Win32FileInputStream

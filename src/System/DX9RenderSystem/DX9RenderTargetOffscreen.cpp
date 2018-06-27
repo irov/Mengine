@@ -3,6 +3,8 @@
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
 
+#include "stdex/memorycopy.h"
+
 namespace Mengine
 {
 	DX9RenderTargetOffscreen::DX9RenderTargetOffscreen()
@@ -33,7 +35,7 @@ namespace Mengine
 		m_surfacePlain = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderTargetOffscreen::getData( unsigned char * _buffer, size_t _pitch )
+	bool DX9RenderTargetOffscreen::getData( void * _buffer, size_t _pitch )
 	{
 		if( m_surfacePlain == nullptr )
 		{
@@ -55,8 +57,8 @@ namespace Mengine
 			return false;
 		}
 
-		unsigned char * dstData = _buffer;
-		unsigned char * srcData = (unsigned char *)LockedRect.pBits;
+        uint8_t * dstData = reinterpret_cast<uint8_t *>(_buffer);
+        uint8_t * srcData = (uint8_t *)LockedRect.pBits;
 
 		for( DWORD i = 0; i != m_height; ++i )
 		{

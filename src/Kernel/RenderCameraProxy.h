@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderCameraInterface.h"
+
+#include "Factory/Factorable.h"
 
 namespace Mengine
 {
-	class Viewport;
-	
 	class RenderCameraProxy
         : public Factorable
         , public RenderCameraInterface

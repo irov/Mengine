@@ -3,6 +3,7 @@
 #include "Interface/XmlCodecInterface.h"
 #include "Interface/InputSystemInterface.h"
 #include "Interface/ArchiveInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Core/ServantBase.h"
 

@@ -253,7 +253,7 @@ namespace Mengine
 		m_invalidateVerticesWM = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Grid2D::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Grid2D::_render( const RenderContext * _state )
 	{
 		const RenderIndex * indices = &m_indices[0];
 		uint32_t indicesCount = (uint32_t)m_indices.size();
@@ -265,8 +265,7 @@ namespace Mengine
 
 		const mt::box2f & bb = this->getBoundingBox();
 		
-		_renderService
-			->addRenderObject( _state, material, vertices, verticesCount, indices, indicesCount, &bb, false );
+        this->addRenderObject( _state, material, vertices, verticesCount, indices, indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Grid2D::updateVerticesWM_()

@@ -3,8 +3,8 @@
 #include "Interface/CodecInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/FileSystemInterface.h"
 #include "Interface/WatchdogInterface.h"
+#include "Interface/FileSystemInterface.h"
 #include "Interface/ConfigInterface.h"
 
 #include "Factory/FactoryPool.h"
@@ -283,7 +283,7 @@ namespace Mengine
             return false;
         }
 
-        unsigned char * buffer_textureData = static_cast<unsigned char *>(textureData);
+        uint8_t * buffer_textureData = static_cast<uint8_t *>(textureData);
 
         buffer_textureData[0] = 0xFF;
         buffer_textureData[1] = 0x00;
@@ -305,11 +305,11 @@ namespace Mengine
 
         image->unlock( 0, true );
 
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+        const FileGroupInterfacePtr & defaulFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
         RENDERTEXTURE_SERVICE()
-            ->cacheFileTexture( fileGroup, STRINGIZE_FILEPATH_LOCAL( "__null__" ), texture );
+            ->cacheFileTexture( defaulFileGroup, STRINGIZE_FILEPATH_LOCAL( "__null__" ), texture );
 
         m_nullTexture = texture;
 
@@ -380,11 +380,11 @@ namespace Mengine
 
         image->unlock( 0, true );
 
-        const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+        const FileGroupInterfacePtr & defaulFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
         RENDERTEXTURE_SERVICE()
-            ->cacheFileTexture( fileGroup, STRINGIZE_FILEPATH_LOCAL( "WhitePixel" ), texture );
+            ->cacheFileTexture( defaulFileGroup, STRINGIZE_FILEPATH_LOCAL( "WhitePixel" ), texture );
 
         m_whitePixelTexture = texture;
 
@@ -783,37 +783,7 @@ namespace Mengine
         LOGGER_INFO( "RenderEngine::restoreRenderSystemStates_ texture stages %d"
             , MENGINE_MAX_TEXTURE_STAGES
         );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::makeProjectionOrthogonal( mt::mat4f& _projectionMatrix, const Viewport & _viewport, float zn, float zf )
-    {
-        m_renderSystem
-            ->makeProjectionOrthogonal( _projectionMatrix, _viewport, zn, zf );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf )
-    {
-        m_renderSystem
-            ->makeProjectionPerspective( _projectionMatrix, _fov, _aspect, zn, zf );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float zn, float zf )
-    {
-        m_renderSystem
-            ->makeProjectionFrustum( _projectionMatrix, _viewport, zn, zf );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::makeViewMatrixFromViewport( mt::mat4f& _viewMatrix, const Viewport & _viewport )
-    {
-        m_renderSystem
-            ->makeViewMatrixFromViewport( _viewMatrix, _viewport );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
-    {
-        m_renderSystem
-            ->makeViewMatrixLookAt( _viewMatrix, _eye, _dir, _up, _sign );
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::calcRenderViewport_( const Viewport & _viewport, Viewport & _renderViewport ) const
     {
@@ -1066,7 +1036,11 @@ namespace Mengine
         return batch;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::testRenderPass_( const RenderContext * _state, const RenderBatchPtr & _renderBatch ) const
+    bool RenderEngine::testRenderPass_( const RenderViewportInterfacePtr & _viewport
+        , const RenderCameraInterfacePtr & _camera
+        , const RenderScissorInterfacePtr & _scissor
+        , const RenderTargetInterfacePtr & _target
+        , const RenderBatchPtr & _renderBatch ) const
     {
         if( m_renderPasses.empty() == true )
         {
@@ -1076,10 +1050,10 @@ namespace Mengine
         const RenderPassPtr & pass = m_renderPasses.back();
 
         if( pass->batch != _renderBatch ||
-            pass->viewport != _state->viewport ||
-            pass->camera != _state->camera ||
-            pass->scissor != _state->scissor ||
-            pass->target != _state->target )
+            pass->viewport != _viewport ||
+            pass->camera != _camera ||
+            pass->scissor != _scissor ||
+            pass->target != _target )
         {
             return true;
         }
@@ -1087,7 +1061,12 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderPassPtr & RenderEngine::requestRenderPass_( const RenderContext * _state, const RenderMaterialInterfacePtr & _material, uint32_t _vertexCount, uint32_t _indexCount )
+    const RenderPassPtr & RenderEngine::requestRenderPass_( const RenderViewportInterfacePtr & _viewport
+        , const RenderCameraInterfacePtr & _camera
+        , const RenderScissorInterfacePtr & _scissor
+        , const RenderTargetInterfacePtr & _target
+        , const RenderMaterialInterfacePtr & _material
+        , uint32_t _vertexCount, uint32_t _indexCount )
     {
         const RenderMaterialStage * materialStage = _material->getStage();
 
@@ -1100,17 +1079,17 @@ namespace Mengine
         batch->vertexCount += _vertexCount;
         batch->indexCount += _indexCount;
 
-        if( this->testRenderPass_( _state, batch ) == true )
+        if( this->testRenderPass_( _viewport, _camera, _scissor, _target, batch ) == true )
         {
             RenderPassPtr pass = m_factoryRenderPass->createObject();
 
             pass->beginRenderObject = (uint32_t)m_renderObjects.size();
             pass->countRenderObject = 0U;
             pass->batch = batch;
-            pass->viewport = _state->viewport;
-            pass->camera = _state->camera;
-            pass->scissor = _state->scissor;
-            pass->target = _state->target;
+            pass->viewport = _viewport;
+            pass->camera = _camera;
+            pass->scissor = _scissor;
+            pass->target = _target;
 
             for( uint32_t i = 0U; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
             {
@@ -1125,33 +1104,36 @@ namespace Mengine
         return rp;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderMesh( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+    void RenderEngine::addRenderMesh( const RenderViewportInterfacePtr & _viewport
+        , const RenderCameraInterfacePtr & _camera
+        , const RenderScissorInterfacePtr & _scissor
+        , const RenderTargetInterfacePtr & _target
+        , const RenderMaterialInterfacePtr & _material
         , const RenderVertexBufferInterfacePtr & _vertexBuffer
         , const RenderIndexBufferInterfacePtr & _indexBuffer
         , uint32_t _indexCount )
     {
-        (void)_state;
+        (void)_viewport;
+        (void)_camera;
+        (void)_scissor;
+        (void)_target;
         (void)_material;
         (void)_vertexBuffer;
         (void)_indexBuffer;
         (void)_indexCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+    void RenderEngine::addRenderObject( const RenderViewportInterfacePtr & _viewport
+        , const RenderCameraInterfacePtr & _camera
+        , const RenderScissorInterfacePtr & _scissor
+        , const RenderTargetInterfacePtr & _target
+        , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const RenderIndex * _indices, uint32_t _indexCount
         , const mt::box2f * _bb, bool _debug )
     {
 #ifndef NDEBUG
-        if( _state == nullptr )
-        {
-            LOGGER_ERROR( "RenderEngine::renderObject2D _state == NULL"
-            );
-
-            return;
-        }
-
-        if( _state->viewport == nullptr )
+        if( _viewport == nullptr )
         {
             LOGGER_ERROR( "RenderEngine::renderObject2D viewport == NULL"
             );
@@ -1159,7 +1141,7 @@ namespace Mengine
             return;
         }
 
-        if( _state->camera == nullptr )
+        if( _camera == nullptr )
         {
             LOGGER_ERROR( "RenderEngine::renderObject2D camera == NULL"
             );
@@ -1201,7 +1183,7 @@ namespace Mengine
             return;
         }
 
-        const RenderPassPtr & rp = this->requestRenderPass_( _state, _material, _vertexCount, _indexCount );
+        const RenderPassPtr & rp = this->requestRenderPass_( _viewport, _camera, _scissor, _target, _material, _vertexCount, _indexCount );
 
         mt::box2f bb;
 
@@ -1231,7 +1213,7 @@ namespace Mengine
         
         RenderMaterialInterfacePtr ro_material = _material;
 
-        if( m_debugStepRenderMode == true && _debug == false )
+        if( m_debugStepRenderMode == true /*&& _debug == false*/ )
         {
             if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
             {
@@ -1262,11 +1244,7 @@ namespace Mengine
             if( m_iterateRenderObjects == m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
             {
                 RenderMaterialPtr new_material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial3( EM_COLOR_BLEND
-                        , ro_material->getPrimitiveType()
-                        , 0
-                        , nullptr
-                    );
+                    ->getMaterial3( EM_COLOR_BLEND, ro_material->getPrimitiveType(), 0, nullptr );
 
                 if( new_material == nullptr )
                 {
@@ -1280,11 +1258,7 @@ namespace Mengine
         if( m_debugRedAlertMode == true && _debug == false )
         {
             RenderMaterialInterfacePtr new_material = RENDERMATERIAL_SERVICE()
-                ->getMaterial3( EM_COLOR_BLEND
-                    , ro_material->getPrimitiveType()
-                    , 0
-                    , nullptr
-                );
+                ->getMaterial3( EM_COLOR_BLEND, ro_material->getPrimitiveType(), 0, nullptr );
 
             if( new_material == nullptr )
             {
@@ -1332,7 +1306,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderQuad( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+    void RenderEngine::addRenderQuad( const RenderViewportInterfacePtr & _viewport
+        , const RenderCameraInterfacePtr & _camera
+        , const RenderScissorInterfacePtr & _scissor
+        , const RenderTargetInterfacePtr & _target
+        , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const mt::box2f * _bb, bool _debug )
     {
@@ -1350,10 +1328,14 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesQuad.buff();
 
-        this->addRenderObject( _state, _material, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
+        this->addRenderObject( _viewport, _camera, _scissor, _target, _material, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderLine( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+    void RenderEngine::addRenderLine( const RenderViewportInterfacePtr & _viewport
+        , const RenderCameraInterfacePtr & _camera
+        , const RenderScissorInterfacePtr & _scissor
+        , const RenderTargetInterfacePtr & _target
+        , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const mt::box2f * _bb, bool _debug )
     {
@@ -1371,7 +1353,7 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesLine.buff();
 
-        this->addRenderObject( _state, _material, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
+        this->addRenderObject( _viewport, _camera, _scissor, _target, _material, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertex2D * RenderEngine::getDebugRenderVertex2D( uint32_t _count )

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/RenderEnumInterface.h"
+
 #include "Core/ConstString.h"
 #include "Core/IntrusivePtr.h"
 #include "Core/Mixin.h"
@@ -68,6 +70,12 @@ namespace Mengine
 	protected:
 		inline void invalidateMaterial();
 		inline bool isInvalidateMaterial() const;
+
+    protected:
+        RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
+            , EPrimitiveType _primitiveType
+            , uint32_t _textureCount
+            , const RenderTextureInterfacePtr * _textures ) const;
 
 	protected:
 		ConstString m_materialName;

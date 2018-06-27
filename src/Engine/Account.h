@@ -2,7 +2,7 @@
 
 #include "Interface/AccountInterface.h"
 #include "Interface/ArchiveInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Config/Typedef.h"
 

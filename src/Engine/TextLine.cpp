@@ -1,7 +1,5 @@
 #include "TextLine.h"
 
-#include "Interface/RenderSystemInterface.h"
-
 #include "Logger/Logger.h"
 
 #include <utf8.h>

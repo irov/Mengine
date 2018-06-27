@@ -1,7 +1,6 @@
 #include "PickDecoderHIT.h"
 #include "PickVerifyHIT.h"
 
-#include "Interface/FileSystemInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/StringizeInterface.h"
 

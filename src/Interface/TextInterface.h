@@ -2,7 +2,8 @@
 
 #include "Interface/ServantInterface.h"
 #include "Interface/ServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
+#include "Interface/RenderTextureInterface.h"
 
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"
@@ -51,8 +52,6 @@ namespace Mengine
 		EFP_CHAR_SCALE = 0x00000100,
 		EFP_MAX_VALUE = 0xffffffff
 	};
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 	struct Glyph
 	{	

@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShapeQuad::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+    void ShapeQuad::_render( const RenderContext * _state )
     {
         const RenderVertex2D * vertices = this->getVerticesWM();
 
@@ -25,8 +25,7 @@ namespace Mengine
 
         const mt::box2f & bb = this->getBoundingBox();
 
-        _renderService
-            ->addRenderQuad( _state, material, vertices, 4, &bb, false );
+        this->addRenderQuad( _state, material, vertices, 4, &bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void ShapeQuad::_updateBoundingBox( mt::box2f & _boundingBox ) const

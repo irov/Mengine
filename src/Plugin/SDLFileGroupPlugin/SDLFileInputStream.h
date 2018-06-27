@@ -1,12 +1,14 @@
 #pragma once
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileInputStreamInterface.h"
 
 #include "Core/ServantBase.h"
 
 #include "stdex/thread_guard.h"
 
 #include "SDL_rwops.h"
+
+#define MENGINE_FILE_STREAM_BUFFER_SIZE 4096
 
 namespace Mengine
 {

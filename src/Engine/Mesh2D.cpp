@@ -1,6 +1,5 @@
 #include "Mesh2D.h" 
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/ResourceInterface.h"
 
 #include "Kernel/ResourceImage.h"
@@ -106,7 +105,7 @@ namespace Mengine
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Mesh2D::_render( const RenderContext * _state )
 	{
 		if( m_vertexCount == 0 )
 		{
@@ -118,8 +117,7 @@ namespace Mengine
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		_renderService
-			->addRenderObject( _state, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount, &bb, false );
+        this->addRenderObject( _state, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox ) const

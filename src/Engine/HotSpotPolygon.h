@@ -34,7 +34,7 @@ namespace Mengine
 		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 
 	protected:
-		void _debugRender( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
+		void _debugRender( const RenderContext * _state ) override;
 
 	protected:        
 		Polygon m_polygon;

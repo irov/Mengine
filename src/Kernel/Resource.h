@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/FileSystemInterface.h"
-
 #include "Kernel/Loadable.h"
 
 #include "Kernel/Servant.h"
@@ -24,7 +22,9 @@
 namespace Mengine
 {
     class ResourceVisitor;
-	
+
+    typedef IntrusivePtr<class FileGroupInterface> FileGroupInterfacePtr;
+    	
 	class Resource
 		: public Servant
 		, public Compilable

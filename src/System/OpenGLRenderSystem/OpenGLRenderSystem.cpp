@@ -1201,72 +1201,72 @@ namespace Mengine
 
         return nullptr;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
-    {
-        mt::mat4f scale;
-        mt::make_scale_m4( scale, 1.f, 1.f, 1.f );
+    ////////////////////////////////////////////////////////////////////////////
+    //void OpenGLRenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
+    //{
+    //    mt::mat4f scale;
+    //    mt::make_scale_m4( scale, 1.f, 1.f, 1.f );
 
-        mt::mat4f translation;
-        mt::make_translation_m4( translation, 0.f, 0.f, 0.f );
+    //    mt::mat4f translation;
+    //    mt::make_translation_m4( translation, 0.f, 0.f, 0.f );
 
-        mt::mat4f transform;
-        mt::mul_m4_m4( transform, scale, translation );
+    //    mt::mat4f transform;
+    //    mt::mul_m4_m4( transform, scale, translation );
 
-        mt::mat4f ortho;
-        mt::make_projection_ortho_lh_m4( ortho, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
+    //    mt::mat4f ortho;
+    //    mt::make_projection_ortho_lh_m4( ortho, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
 
-        mt::mul_m4_m4( _projectionMatrix, transform, ortho );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float _zn, float _zf )
-    {
-        mt::mat4f scale;
-        mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
+    //    mt::mul_m4_m4( _projectionMatrix, transform, ortho );
+    //}
+    ////////////////////////////////////////////////////////////////////////////
+    //void OpenGLRenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float _zn, float _zf )
+    //{
+    //    mt::mat4f scale;
+    //    mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
 
-        mt::mat4f translation;
-        mt::make_translation_m4( translation, -0.5f, +0.5f, 0.0f );
+    //    mt::mat4f translation;
+    //    mt::make_translation_m4( translation, -0.5f, +0.5f, 0.0f );
 
-        mt::mat4f transform;
-        mt::mul_m4_m4( transform, scale, translation );
+    //    mt::mat4f transform;
+    //    mt::mul_m4_m4( transform, scale, translation );
 
-        mt::mat4f projection_fov;
-        mt::make_projection_fov_m4( projection_fov, _fov, _aspect, _zn, _zf );
+    //    mt::mat4f projection_fov;
+    //    mt::make_projection_fov_m4( projection_fov, _fov, _aspect, _zn, _zf );
 
-        mt::mul_m4_m4( _projectionMatrix, transform, projection_fov );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
-    {
-        mt::mat4f scale;
-        mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
+    //    mt::mul_m4_m4( _projectionMatrix, transform, projection_fov );
+    //}
+    ////////////////////////////////////////////////////////////////////////////
+    //void OpenGLRenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
+    //{
+    //    mt::mat4f scale;
+    //    mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
 
-        mt::mat4f translation;
-        mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
+    //    mt::mat4f translation;
+    //    mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
 
-        mt::mat4f transform;
-        mt::mul_m4_m4( transform, scale, translation );
+    //    mt::mat4f transform;
+    //    mt::mul_m4_m4( transform, scale, translation );
 
-        mt::mat4f frustum;
-        mt::make_projection_frustum_m4( frustum, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
+    //    mt::mat4f frustum;
+    //    mt::make_projection_frustum_m4( frustum, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
 
-        mt::mul_m4_m4( _projectionMatrix, transform, frustum );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport )
-    {
-        GLUNUSED( _viewport );
+    //    mt::mul_m4_m4( _projectionMatrix, transform, frustum );
+    //}
+    ////////////////////////////////////////////////////////////////////////////
+    //void OpenGLRenderSystem::makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport )
+    //{
+    //    GLUNUSED( _viewport );
 
-        mt::mat4f wm;
-        mt::ident_m4( wm );
+    //    mt::mat4f wm;
+    //    mt::ident_m4( wm );
 
-        mt::inv_m4_m4( _viewMatrix, wm );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
-    {
-        mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up, _sign );
-    }
+    //    mt::inv_m4_m4( _viewMatrix, wm );
+    //}
+    ////////////////////////////////////////////////////////////////////////////
+    //void OpenGLRenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
+    //{
+    //    mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up, _sign );
+    //}
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderImageDestroy_( OpenGLRenderImage * _image )
     {

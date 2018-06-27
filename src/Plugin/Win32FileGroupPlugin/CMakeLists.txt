@@ -10,8 +10,8 @@ src
 	Win32FileInputStream.cpp
 	Win32FileOutputStream.cpp
 	Win32FileOutputStream.h
-    Win32FileMapped.h
-    Win32FileMapped.cpp
+    Win32FileMappedStream.h
+    Win32FileMappedStream.cpp
 )
 
 INCLUDE_DIRECTORIES( 

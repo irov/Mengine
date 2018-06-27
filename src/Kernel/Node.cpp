@@ -1,7 +1,10 @@
 #include "Kernel/Node.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/MousePickerSystemInterface.h"
+
+#include "Interface/RenderCameraInterface.h"
+#include "Interface/RenderMaterialServiceInterface.h"
+
 #include "Interface/NodeInterface.h"
 
 #include "Logger/Logger.h"
@@ -856,7 +859,7 @@ namespace Mengine
         this->deactivate();
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::render( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Node::render( const RenderContext * _state )
 	{
 		if( this->isRenderable() == false )
 		{
@@ -917,30 +920,29 @@ namespace Mengine
 		{
 			if( this->getLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				this->_render( _renderService, &state );
+				this->_render( &state );
 			}
 
-			this->renderChild_( _renderService, &state );
+			this->renderChild_( &state );
 		}
 		//}
 
         if( m_renderTarget != nullptr )
         {
-            this->_renderTarget( _renderService, _state );
+            this->_renderTarget( _state );
         }
 
         if( _state->debugMask != 0 )
         {
 			if( this->getLocalHide() == false && this->isPersonalTransparent() == false )
 			{
-				this->_debugRender( _renderService, &state );
+				this->_debugRender( &state );
 			}
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Node::_renderTarget( RenderServiceInterface * _renderService, const RenderContext * _state )
+    void Node::_renderTarget( const RenderContext * _state )
     {
-        (void)_renderService;
         (void)_state;
 
         //Empty
@@ -1084,7 +1086,7 @@ namespace Mengine
         m_invalidateRendering = true;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Node::renderChild_( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Node::renderChild_( const RenderContext * _state )
 	{
 		for( TListNodeChild::unslug_iterator
 			it = m_children.ubegin(),
@@ -1099,7 +1101,7 @@ namespace Mengine
                 continue;
             }
 
-			node->render( _renderService, _state );
+			node->render( _state );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -1228,15 +1230,14 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_debugRender( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Node::_debugRender( const RenderContext * _state )
 	{
         if( (_state->debugMask & MENGINE_DEBUG_NODES) == 0 )
 		{
 			return;
 		}
 
-		RenderVertex2D * vertices = RENDER_SERVICE()
-			->getDebugRenderVertex2D( 4 * 2 );
+        RenderVertex2D * vertices = this->getDebugRenderVertex2D( 4 * 2 );
 
 		if( vertices == nullptr )
 		{
@@ -1285,11 +1286,9 @@ namespace Mengine
 			vertices[i].uv[1].y = 0.f;
 		}
 
-		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
-			->getDebugMaterial();
+		const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 		
-		_renderService
-			->addRenderLine( _state, debugMaterial
+        this->addRenderLine( _state, debugMaterial
 			, vertices
 			, 8
 			, nullptr

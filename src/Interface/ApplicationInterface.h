@@ -13,7 +13,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ModuleInterface.h"
 #include "Interface/GameInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 namespace Mengine
 {

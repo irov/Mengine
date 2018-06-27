@@ -3,6 +3,7 @@
 #include "Interface/ResourceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/OptionsInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Engine/ResourceImageDefault.h"
 #include "Engine/ResourceVideo.h"

@@ -4,6 +4,7 @@
 #include "Interface/ConverterInterface.h"
 #include "Interface/ResourceInterface.h"
 #include "Interface/StringizeInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Metacode/Metacode.h"
 

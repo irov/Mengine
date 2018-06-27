@@ -114,8 +114,7 @@ namespace Mengine
 			mt::vec3f wm_up;
 			mt::mul_v3_v3_m4_r( wm_up, m_cameraUp, wm );
 
-			RENDER_SERVICE()
-				->makeViewMatrixLookAt( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
+            mt::make_lookat_m4( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
 
 			mt::inv_m4_m4( m_viewMatrixInv, m_viewMatrix );
 		}
@@ -159,9 +158,8 @@ namespace Mengine
 			renderViewport = m_orthogonalViewport;
 		}
 
-		RENDER_SERVICE()
-			->makeProjectionOrthogonal( m_projectionMatrix, renderViewport, m_cameraNear, m_cameraFar );
-
+        mt::make_projection_ortho_lh_m4( m_projectionMatrix, renderViewport.begin.x + 0.5f, renderViewport.end.x + 0.5f, renderViewport.begin.y + 0.5f, renderViewport.end.y + 0.5f, m_cameraNear, m_cameraFar );
+        
 		mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
 	}
 }

@@ -4,7 +4,7 @@
 #include "Config/String.h"
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"

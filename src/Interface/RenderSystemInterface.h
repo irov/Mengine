@@ -2,9 +2,22 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
-#include "Interface/MemoryInterface.h"
-#include "Interface/FileSystemInterface.h"
+
 #include "Interface/RenderEnumInterface.h"
+#include "Interface/RenderImageInterface.h"
+#include "Interface/RenderTextureInterface.h"
+#include "Interface/RenderViewportInterface.h"
+#include "Interface/RenderCameraInterface.h"
+#include "Interface/RenderScissorInterface.h"
+#include "Interface/RenderTargetInterface.h"
+#include "Interface/RenderMaterialServiceInterface.h"
+#include "Interface/RenderTextureServiceInterface.h"
+#include "Interface/RenderIndexBufferInterface.h"
+#include "Interface/RenderVertexBufferInterface.h"
+#include "Interface/RenderProgramInterface.h"
+#include "Interface/RenderVertexShaderInterface.h"
+#include "Interface/RenderFragmentShaderInterface.h"
+#include "Interface/RenderVertexAttributeInterface.h"
 
 #include "Factory/Factorable.h"
 
@@ -22,443 +35,9 @@
 
 #include "math/mat4.h"
 #include "math/uv4.h"
-#include "math/plane.h"
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	typedef uint32_t VBHandle; // Vertex Buffer Handle
-	typedef uint32_t IBHandle; // Index Buffer Handle
-    //////////////////////////////////////////////////////////////////////////
-    struct RenderImageDesc
-    {
-        uint32_t mipmaps;
-        uint32_t width;
-        uint32_t height;
-        uint32_t channels;
-        uint32_t depth;
-        PixelFormat format;
-    };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderImageLoaderInterface
-		: public ServantInterface
-	{
-	public:
-		virtual RenderImageDesc getImageDesc() const = 0;
-
-	public:
-		virtual bool load( const RenderImageInterfacePtr & _image ) const = 0;
-        //virtual bool load( void * _buffer, uint32_t _pitch ) const = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class RenderImageProviderInterface
-        : public ServantInterface
-    {
-    public:
-        virtual RenderImageLoaderInterfacePtr getLoader() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderImageProviderInterface> RenderImageProviderInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderImageInterface
-		: public ServantInterface
-	{
-    public:
-        virtual void bind( uint32_t _stage ) = 0;
-
-    public:
-        virtual void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) = 0;
-        virtual const RenderImageProviderInterfacePtr & getRenderImageProvider() const = 0;
-
-	public:
-		virtual ERenderImageMode getMode() const = 0;
-		
-	public:
-        virtual uint32_t getHWMipmaps() const = 0;
-		virtual uint32_t getHWWidth() const = 0;
-		virtual uint32_t getHWHeight() const = 0;
-		virtual uint32_t getHWChannels() const = 0;
-		virtual uint32_t getHWDepth() const = 0;
-
-		virtual PixelFormat getHWPixelFormat() const = 0;
-
-    public:
-        virtual float getHWWidthInv() const = 0;
-        virtual float getHWHeightInv() const = 0;
-		
-	public:
-		virtual Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly = true ) = 0;
-		virtual bool unlock( uint32_t _level, bool _successful ) = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<RenderImageInterface> RenderImageInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderTextureInterface
-		: public ServantInterface
-	{
-	public:
-		virtual void release() = 0;
-
-	public:
-		virtual const RenderImageInterfacePtr & getImage() const = 0;
-
-	public:
-		virtual uint32_t getId() const = 0;
-        
-    public:
-		virtual const Rect & getRect() const = 0;
-
-		virtual const mt::uv4f & getUV() const = 0;
-
-		virtual void setCategory( const FileGroupInterfacePtr & _category ) = 0;
-		virtual const FileGroupInterfacePtr & getCategory() const = 0;
-
-		virtual void setFileName( const FilePath & _fileName ) = 0;
-		virtual const FilePath & getFileName() const = 0;
-
-    public:
-		virtual uint32_t getWidth() const = 0;
-		virtual uint32_t getHeight() const = 0;
-
-    public:
-        virtual float getWidthInv() const = 0;
-        virtual float getHeightInv() const = 0;
-
-	public:
-		virtual bool isPow2() const = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<RenderTextureInterface> RenderTextureInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    struct RenderTextureStage
-    {
-        RenderTextureStage()
-			: mipmap( TF_NONE )
-			, magnification( TF_LINEAR )
-			, minification( TF_LINEAR )
-			, addressU(TAM_CLAMP)
-			, addressV(TAM_CLAMP)
-			, addressBorder(0x00000000)
-        {
-        }
-
-		ETextureFilter mipmap;
-		ETextureFilter magnification;
-		ETextureFilter minification;
-
-		ETextureAddressMode addressU;
-		ETextureAddressMode addressV;
-		uint32_t addressBorder;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    class RenderVertexAttributeInterface
-        : public ServantInterface
-    {
-    public:
-        virtual const ConstString & getName() const = 0;
-        virtual uint32_t getElementSize() const = 0;
-
-    public:
-        virtual void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) = 0;
-
-    public:
-        virtual bool enable() = 0;
-        virtual void disable() = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderVertexAttributeInterface> RenderVertexAttributeInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderFragmentShaderInterface
-		: public ServantInterface
-	{
-	public:
-		virtual const ConstString & getName() const = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<RenderFragmentShaderInterface> RenderFragmentShaderInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderVertexShaderInterface
-		: public ServantInterface
-	{
-	public:
-		virtual const ConstString & getName() const = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<RenderVertexShaderInterface> RenderVertexShaderInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderProgramInterface
-		: public ServantInterface
-	{
-	public:
-		virtual const ConstString & getName() const = 0;
-
-    public:
-        virtual RenderVertexAttributeInterfacePtr getVertexAttribute() const = 0;
-		virtual RenderVertexShaderInterfacePtr getVertexShader() const = 0;
-		virtual RenderFragmentShaderInterfacePtr getFragmentShader() const = 0;		
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<RenderProgramInterface> RenderProgramInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	struct RenderMaterialStage
-	{
-		RenderMaterialStage()
-			: id(0)
-			, blendSrc( BF_SOURCE_ALPHA )
-			, blendDst( BF_ONE_MINUS_SOURCE_ALPHA )
-			, blendOp( BOP_ADD )
-			, alphaBlendEnable( false )
-		{
-		}
-
-		uint32_t id;
-
-		RenderTextureStage textureStage[MENGINE_MAX_TEXTURE_STAGES];
-
-		RenderProgramInterfacePtr program;
-
-		EBlendFactor blendSrc;
-		EBlendFactor blendDst;
-		EBlendOp blendOp;
-
-		bool alphaBlendEnable;
-	};
-    //////////////////////////////////////////////////////////////////////////
-    class RenderMaterialInterface
-		: public Factorable
-    {
-	public:
-		virtual const ConstString & getName() const = 0;
-		virtual uint32_t getId() const = 0;
-
-	public:
-		virtual void update( float _time, float _timing ) = 0;
-
-	public:
-		virtual EPrimitiveType getPrimitiveType() const = 0;
-		virtual uint32_t getTextureCount() const = 0;
-		virtual const RenderTextureInterfacePtr & getTexture( uint32_t _index ) const = 0;
-		virtual const RenderMaterialStage * getStage() const = 0;
-    };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<RenderMaterialInterface> RenderMaterialInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	const uint32_t VDECL_XYZ = 0x00000002;
-	const uint32_t VDECL_XYZRHW = 0x00000004;
-	const uint32_t VDECL_NORMAL = 0x00000010;
-	const uint32_t VDECL_DIFFUSE = 0x00000040;
-	const uint32_t VDECL_SPECULAR = 0x00000080;
-	const uint32_t VDECL_TEX1 = 0x00000100;
-	const uint32_t VDECL_TEX2 = 0x00000200;
-	//////////////////////////////////////////////////////////////////////////
-	static const uint32_t Vertex2D_declaration = VDECL_XYZ | VDECL_DIFFUSE | VDECL_TEX2;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderVertexBufferInterface
-		: public ServantInterface
-	{
-    public:
-        virtual uint32_t getVertexCount() const = 0;
-        virtual uint32_t getVertexSize() const = 0;
-
-    public:
-        virtual bool enable() = 0;
-        virtual void disable() = 0;
-
-    public:
-        virtual bool resize( uint32_t _count ) = 0;
-
-	public:
-		virtual MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) = 0;
-		virtual bool unlock() = 0;
-
-    public:
-        virtual void draw( const void * _buffer, size_t _size ) = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<RenderVertexBufferInterface> RenderVertexBufferInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderIndexBufferInterface
-		: public ServantInterface
-	{
-    public:
-        virtual uint32_t getIndexCount() const = 0;
-        virtual uint32_t getIndexSize() const = 0;
-
-    public:
-        virtual bool enable() = 0;
-        virtual void disable() = 0;
-
-    public:
-        virtual bool resize( uint32_t _count ) = 0;
-
-	public:
-		virtual MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) = 0;
-		virtual bool unlock() = 0;
-
-    public:
-        virtual void draw( const void * _buffer, size_t _size ) = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<RenderIndexBufferInterface> RenderIndexBufferInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class RenderMaterialServiceInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE("RenderMaterialManager")
-
-    public:
-        virtual bool loadMaterials( const FileGroupInterfacePtr& _pakName, const FilePath& _fileName ) = 0;
-		virtual bool unloadMaterials( const FileGroupInterfacePtr& _pakName, const FilePath& _fileName ) = 0;
-
-    public:
-        virtual const RenderVertexShaderInterfacePtr & getVertexShader( const ConstString & _name ) const = 0;
-        virtual const RenderFragmentShaderInterfacePtr & getFragmentShader( const ConstString & _name ) const = 0;
-        virtual const RenderVertexAttributeInterfacePtr & getVertexAttribute( const ConstString & _name ) const = 0;
-
-        virtual const RenderProgramInterfacePtr & getProgram( const ConstString & _name ) const = 0;
-
-	public:
-		virtual void setDefaultTextureFilter( ETextureFilter _mipmap, ETextureFilter _magnification, ETextureFilter _minification ) = 0;
-
-	public:
-		virtual const RenderMaterialStage * cacheStage( const RenderMaterialStage & _other ) = 0;
-
-	public:
-		virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
-			, EPrimitiveType _primitiveType
-			, uint32_t _textureCount
-			, const RenderTextureInterfacePtr * _textures ) = 0;
-
-		virtual RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
-			, const RenderMaterialStage * _stage
-			, EPrimitiveType _primitiveType
-			, uint32_t _textureCount
-			, const RenderTextureInterfacePtr * _textures ) = 0;
-
-        virtual RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
-            , EPrimitiveType _primitiveType
-            , uint32_t _textureCount
-            , const RenderTextureInterfacePtr * _textures ) = 0;
-
-	public:
-		virtual void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) = 0;
-		virtual const RenderMaterialInterfacePtr & getDebugMaterial() const = 0;
-
-	public:
-		virtual ETextureFilter getDefaultTextureFilterMipmap() const = 0;
-		virtual ETextureFilter getDefaultTextureFilterMagnification() const = 0;
-		virtual ETextureFilter getDefaultTextureFilterMinification() const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-#   define RENDERMATERIAL_SERVICE()\
-    ((Mengine::RenderMaterialServiceInterface*)SERVICE_GET(Mengine::RenderMaterialServiceInterface))
-    //////////////////////////////////////////////////////////////////////////
-    class VisitorRenderTextureInterface
-    {
-    public:
-        virtual void visitRenderTexture( const RenderTextureInterfacePtr & _texture ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    class RenderTextureServiceInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE("RenderTextureManager")
-
-    public:
-        virtual RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath& _fileName, const ConstString& _codec ) = 0;
-		virtual RenderTextureInterfacePtr createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height ) = 0;
-
-    public:
-        virtual RenderTextureInterfacePtr createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
-        virtual RenderTextureInterfacePtr createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) = 0;
-        
-	public:
-        virtual RenderTextureInterfacePtr getTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName ) const = 0;
-        
-        virtual bool hasTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, RenderTextureInterfacePtr * _texture ) const = 0;
-
-	public:
-		virtual size_t getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const = 0;
-
-    public:
-        virtual void cacheFileTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath& _fileName, const RenderTextureInterfacePtr & _texture ) = 0;
-
-    public:
-        virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr& _fileGroup, const ConstString & _codecName, const FilePath & _fileName ) = 0;
-
-    public:
-        virtual void visitTexture( VisitorRenderTextureInterface * _visitor ) const = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-#   define RENDERTEXTURE_SERVICE()\
-    ((Mengine::RenderTextureServiceInterface*)SERVICE_GET(Mengine::RenderTextureServiceInterface))
-	//////////////////////////////////////////////////////////////////////////
-	class RenderViewportInterface
-        : public Mixin
-	{
-	public:
-		virtual const Viewport & getViewport() const = 0;
-	};
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderViewportInterface> RenderViewportInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderScissorInterface
-        : public Mixin
-	{
-	public:
-		virtual const Viewport & getScissorViewport() const = 0;
-	};
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderScissorInterface> RenderScissorInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderCameraInterface
-        : public Mixin
-	{
-	public:
-		virtual const mt::mat4f & getCameraViewMatrix() const = 0;
-		virtual const mt::mat4f & getCameraViewMatrixInv() const = 0;
-
-		virtual const mt::mat4f & getCameraProjectionMatrix() const = 0;
-		virtual const mt::mat4f & getCameraProjectionMatrixInv() const = 0;
-
-	public:
-		virtual const mt::mat4f & getCameraViewProjectionMatrix() const = 0;
-        virtual const mt::mat4f & getCameraViewProjectionMatrixInv() const = 0;
-	};
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderCameraInterface> RenderCameraInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderTargetInterface
-        : public ServantInterface
-	{
-    public:
-        virtual uint32_t getWidth() const = 0;
-        virtual uint32_t getHeight() const = 0;
-        virtual uint32_t getChannels() const = 0;
-        virtual uint32_t getDepth() const = 0;
-        virtual PixelFormat getPixelFormat() const = 0;
-
-    public:
-        virtual uint32_t getHWWidth() const = 0;
-        virtual uint32_t getHWHeight() const = 0;
-
-    public:
-        virtual float getHWWidthInv() const = 0;
-        virtual float getHWHeightInv() const = 0;
-
-	public:
-		virtual bool begin() = 0;
-		virtual void end() = 0;
-
-	public:
-		virtual bool getData( unsigned char * _buffer, size_t _pitch ) = 0;
-	};
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<RenderTargetInterface> RenderTargetInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class RenderSystemInterface
         : public ServiceInterface
@@ -472,13 +51,6 @@ namespace Mengine
     public:
 		virtual bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen,
 			bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
-
-    public:
-        virtual void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) = 0;
-        virtual void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) = 0;
-        virtual void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) = 0;
-        virtual void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) = 0;
-        virtual void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) = 0;
 
     public:
 		// Render frame into _image
@@ -586,38 +158,43 @@ namespace Mengine
 		uint32_t batch;
     };
 	//////////////////////////////////////////////////////////////////////////
-	struct RenderContext
-	{
-		RenderViewportInterfacePtr viewport;
-		RenderCameraInterfacePtr camera;
-		RenderScissorInterfacePtr scissor;
-
-		RenderTargetInterfacePtr target;
-        
-        uint32_t debugMask;
-	};
-	//////////////////////////////////////////////////////////////////////////
 	class RenderServiceInterface
 		: public ServiceInterface
 	{
         SERVICE_DECLARE("RenderService")
 
     public:
-        virtual void addRenderMesh( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        virtual void addRenderMesh( const RenderViewportInterfacePtr & _viewport
+            , const RenderCameraInterfacePtr & _camera
+            , const RenderScissorInterfacePtr & _scissor
+            , const RenderTargetInterfacePtr & _target
+            , const RenderMaterialInterfacePtr & _material
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _indexCount ) = 0;
 
-		virtual void addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+		virtual void addRenderObject( const RenderViewportInterfacePtr & _viewport
+            , const RenderCameraInterfacePtr & _camera
+            , const RenderScissorInterfacePtr & _scissor
+            , const RenderTargetInterfacePtr & _target
+            , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indicesNum
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
-		virtual void addRenderQuad( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        virtual void addRenderQuad( const RenderViewportInterfacePtr & _viewport
+            , const RenderCameraInterfacePtr & _camera
+            , const RenderScissorInterfacePtr & _scissor
+            , const RenderTargetInterfacePtr & _target
+            , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
-		virtual void addRenderLine( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        virtual void addRenderLine( const RenderViewportInterfacePtr & _viewport
+            , const RenderCameraInterfacePtr & _camera
+            , const RenderScissorInterfacePtr & _scissor
+            , const RenderTargetInterfacePtr & _target
+            , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) = 0;
 
@@ -644,13 +221,6 @@ namespace Mengine
 		virtual void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) = 0;		
 		virtual void setVSync( bool _vSync ) = 0;
 		virtual bool getVSync() const = 0;
-
-    public:
-        virtual void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) = 0;
-        virtual void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) = 0;
-        virtual void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) = 0;
-        virtual void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) = 0;
-        virtual void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) = 0;
 
    public:
        virtual void enableDebugFillrateCalcMode( bool _enable ) = 0;

@@ -32,10 +32,10 @@ namespace Mengine
 		};		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Isometric::render( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Isometric::render( const RenderContext * _state )
 	{
 		stdex::helper::intrusive_sort_stable( m_children, FIsometricSortY() );
 
-		Node::render( _renderService, _state );
+		Node::render( _state );
 	}
 }

@@ -6,6 +6,8 @@
 #include "OpenALSoundBufferStream.h"
 #include "OpenALSoundSource.h"
 
+#include "Factory/Factory.h"
+
 #include "Core/ServiceBase.h"
 
 #include "AL/al.h"

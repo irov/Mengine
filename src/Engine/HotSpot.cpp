@@ -2,7 +2,6 @@
 
 #include "HotspotMousePickerVisitor.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/MousePickerSystemInterface.h"
 #include "Interface/PlayerInterface.h"
 

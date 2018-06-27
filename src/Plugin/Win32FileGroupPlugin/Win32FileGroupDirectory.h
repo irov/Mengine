@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Win32FileInputStream.h"
 #include "Win32FileOutputStream.h"
-#include "Win32FileMapped.h"
+#include "Win32FileMappedStream.h"
 
 #include "Factory/Factory.h"
 

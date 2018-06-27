@@ -131,7 +131,9 @@ FACEBOOK_JAVA_INTERFACE(onLoginSuccess)(JNIEnv *env, jobject instance,
         jstring accessToken_) {
 const char *accessToken = (*env)->GetStringUTFChars(env, exception_, 0);
 
-currentFacebookLoginCallback.onLoginSuccess(accessToken);
+if(currentFacebookLoginCallback != NULL) {
+    currentFacebookLoginCallback.onLoginSuccess(accessToken);
+}
 
 (*env)->ReleaseStringUTFChars(env, accessToken_, accessToken);
 }
@@ -139,16 +141,18 @@ currentFacebookLoginCallback.onLoginSuccess(accessToken);
 JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE(onLoginCancel)(JNIEnv *env,
 jobject instance) {
-currentFacebookLoginCallback.onLoginCancel();
+if(currentFacebookLoginCallback != NULL) {
+    currentFacebookLoginCallback.onLoginCancel();
+}
 }
 
 JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE(onLoginError)(JNIEnv *env, jobject instance,
         jstring exception_) {
 const char *exception = (*env)->GetStringUTFChars(env, exception_, 0);
-
-currentFacebookLoginCallback.onLoginError(exception);
-
+if(currentFacebookLoginCallback != NULL) {
+    currentFacebookLoginCallback.onLoginError(exception);
+}
 (*env)->ReleaseStringUTFChars(env, exception_, exception);
 }
 
@@ -159,8 +163,9 @@ FACEBOOK_JAVA_INTERFACE(onUserFetchSuccess)(JNIEnv *env, jobject instance,
 const char *object = (*env)->GetStringUTFChars(env, object_, 0);
 const char *response = (*env)->GetStringUTFChars(env, response_, 0);
 
-currentFacebookUserCallback.onUserFetchSuccess(object, response);
-
+if(currentFacebookUserCallback != NULL){
+    currentFacebookUserCallback.onUserFetchSuccess(object, response);
+}
 (*env)->ReleaseStringUTFChars(env, object_, object);
 (*env)->ReleaseStringUTFChars(env, response_, response);
 }
@@ -171,14 +176,17 @@ FACEBOOK_JAVA_INTERFACE(onShareSuccess)(JNIEnv *env, jobject instance,
         jstring postId_) {
 const char *postId = (*env)->GetStringUTFChars(env, postId_, 0);
 
-currentFacebookShareCallback.onShareSuccess(postId);
-
+if(currentFacebookShareCallback != NULL){
+    currentFacebookShareCallback.onShareSuccess(postId);
+}
 (*env)->ReleaseStringUTFChars(env, postId_, postId);
 }
 
 JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE(onShareCancel)(JNIEnv *env, jobject instance) {
-currentFacebookShareCallback.onShareCancel();
+if(currentFacebookShareCallback != NULL){
+    currentFacebookShareCallback.onShareCancel();
+}
 }
 
 JNIEXPORT void JNICALL
@@ -186,8 +194,9 @@ FACEBOOK_JAVA_INTERFACE(onShareError)(JNIEnv *env, jobject instance,
         jstring exception_) {
 const char *exception = (*env)->GetStringUTFChars(env, exception_, 0);
 
-currentFacebookShareCallback.onShareError(exception);
-
+if(currentFacebookShareCallback != NULL){
+    currentFacebookShareCallback.onShareError(exception);
+}
 (*env)->ReleaseStringUTFChars(env, exception_, exception);
 }
 

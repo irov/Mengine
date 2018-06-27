@@ -35,18 +35,21 @@ public class FacebookInteractionLayer {
     private CallbackManager _callbackManager;
     private AccessToken _accessToken;
 
-    native void onLoginSuccess(String loginResult);
-    native void onLoginCancel();
-    native void onLoginError(String exception);
+    static native void setupFacebookJNI();
 
-    native void onUserFetchSuccess(String object, String response);
+    static native void onLoginSuccess(String loginResult);
+    static native void onLoginCancel();
+    static native void onLoginError(String exception);
 
-    native void onShareSuccess(String postId);
-    native void onShareCancel();
-    native void onShareError(String exception);
+    static native void onUserFetchSuccess(String object, String response);
+
+    static native void onShareSuccess(String postId);
+    static native void onShareCancel();
+    static native void onShareError(String exception);
 
     public FacebookInteractionLayer(CallbackManager callbackManager) {
         _callbackManager = callbackManager;
+        setupFacebookJNI();
     }
 
     public void performLogin(Activity activity, String[] readPermissions) {

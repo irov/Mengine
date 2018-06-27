@@ -1,5 +1,7 @@
 #include "Kernel/Renderable.h"
 
+#include "Interface/RenderSystemInterface.h"
+
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -14,16 +16,14 @@ namespace Mengine
     {
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Renderable::_render( const RenderContext * _state )
 	{
-		(void)_renderService;
 		(void)_state;
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_debugRender( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Renderable::_debugRender( const RenderContext * _state )
 	{
-		(void)_renderService;
 		(void)_state;
 		//Empty
 	}
@@ -80,5 +80,61 @@ namespace Mengine
     {
         (void)_externalRender;
         //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Renderable::addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        , const RenderVertex2D * _vertices, uint32_t _vertexCount
+        , const RenderIndex * _indices, uint32_t _indexCount
+        , const mt::box2f * _bb, bool _debug ) const
+    {
+        const RenderViewportInterfacePtr & viewport = _state->viewport;
+        const RenderCameraInterfacePtr & camera = _state->camera;
+        const RenderScissorInterfacePtr & scissor = _state->scissor;
+        const RenderTargetInterfacePtr & target = _state->target;
+
+        RENDER_SERVICE()
+            ->addRenderObject( viewport, camera, scissor, target, _material, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Renderable::addRenderQuad( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        , const RenderVertex2D * _vertices, uint32_t _vertexCount
+        , const mt::box2f * _bb, bool _debug ) const
+    {
+        const RenderViewportInterfacePtr & viewport = _state->viewport;
+        const RenderCameraInterfacePtr & camera = _state->camera;
+        const RenderScissorInterfacePtr & scissor = _state->scissor;
+        const RenderTargetInterfacePtr & target = _state->target;
+
+        RENDER_SERVICE()
+            ->addRenderQuad( viewport, camera, scissor, target, _material, _vertices, _vertexCount, _bb, _debug );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Renderable::addRenderLine( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        , const RenderVertex2D * _vertices, uint32_t _vertexCount
+        , const mt::box2f * _bb, bool _debug ) const
+    {
+        const RenderViewportInterfacePtr & viewport = _state->viewport;
+        const RenderCameraInterfacePtr & camera = _state->camera;
+        const RenderScissorInterfacePtr & scissor = _state->scissor;
+        const RenderTargetInterfacePtr & target = _state->target;
+
+        RENDER_SERVICE()
+            ->addRenderLine( viewport, camera, scissor, target, _material, _vertices, _vertexCount, _bb, _debug );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderVertex2D * Renderable::getDebugRenderVertex2D( uint32_t _count ) const
+    {
+        RenderVertex2D * vertices = RENDER_SERVICE()
+            ->getDebugRenderVertex2D( _count );
+
+        return vertices;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderMaterialInterfacePtr & Renderable::getDebugMaterial() const
+    {
+        const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
+            ->getDebugMaterial();
+
+        return debugMaterial;
     }
 }

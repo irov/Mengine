@@ -46,13 +46,13 @@ namespace Mengine
 		
 		if( m_options.pitch == m_dataInfo.width * m_dataInfo.channels )
 		{
-			unsigned char * buffer_ptr = static_cast<unsigned char *>(_buffer);
+            uint8_t * buffer_ptr = static_cast<uint8_t *>(_buffer);
 
 			read_byte += m_stream->read( buffer_ptr, _bufferSize );
 		}
 		else
 		{
-			unsigned char * buffer_ptr = static_cast<unsigned char *>(_buffer);
+            uint8_t * buffer_ptr = static_cast<uint8_t *>(_buffer);
 
 			for( uint32_t j = 0; j != m_dataInfo.height; ++j )
 			{

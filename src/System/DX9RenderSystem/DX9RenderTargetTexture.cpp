@@ -160,7 +160,7 @@ namespace Mengine
         m_pD3DSurface = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderTargetTexture::getData( unsigned char * _buffer, size_t _pitch )
+	bool DX9RenderTargetTexture::getData( void * _buffer, size_t _pitch )
 	{
         (void)_buffer;
         (void)_pitch;

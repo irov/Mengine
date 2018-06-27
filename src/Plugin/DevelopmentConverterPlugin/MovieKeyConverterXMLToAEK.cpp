@@ -4,6 +4,7 @@
 #include "Interface/ArchiveInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/MovieKeyFrameInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Metacode/Metacode.h"
 

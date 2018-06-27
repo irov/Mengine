@@ -45,7 +45,7 @@ namespace Mengine
         void _deactivate() override;
 
     protected:
-        void _renderTarget( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
+        void _renderTarget( const RenderContext * _state ) override;
 
     protected:
         inline const RenderVertex2D * getVerticesImageMaskWM() const;

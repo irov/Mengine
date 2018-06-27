@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderTargetInterface.h"
 
 #include "DX9RenderResourceHandler.h"
 
@@ -46,7 +46,7 @@ namespace Mengine
 		void end() override;
 
     public:
-        bool getData( unsigned char * _buffer, size_t _pitch ) override;
+        bool getData( void * _buffer, size_t _pitch ) override;
  
     public:
         LPDIRECT3DDEVICE9 getDirect3dDevice9() const;

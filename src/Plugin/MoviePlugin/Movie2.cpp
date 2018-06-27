@@ -1646,7 +1646,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+    void Movie2::_render( const RenderContext * _state )
     {
         uint32_t mesh_iterator = 0;
         uint32_t vertex_iterator = 0;
@@ -1719,20 +1719,20 @@ namespace Mengine
                     {
                         Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_data);
                         
-                        node->render( _renderService, &state );
+                        node->render( &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
                         HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(mesh.element_data);
 
-                        node->render( _renderService, &state );
+                        node->render( &state );
                     }break;
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
                         ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_data);
 
-                        node->render( _renderService, &state );
+                        node->render( &state );
 
                     }break;
 #endif
@@ -1745,13 +1745,13 @@ namespace Mengine
                             printf( "Fds" );
                         }
 
-                        node->render( _renderService, &state );
+                        node->render( &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
                         ParticleEmitter2 * particleEmitter2 = reinterpret_node_cast<ParticleEmitter2 *>(mesh.element_data);
 
-                        particleEmitter2->render( _renderService, &state );
+                        particleEmitter2->render( &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {
@@ -1791,8 +1791,7 @@ namespace Mengine
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-                        _renderService
-                            ->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
@@ -1832,8 +1831,7 @@ namespace Mengine
 
                         m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-                        _renderService
-                            ->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
@@ -1901,8 +1899,7 @@ namespace Mengine
 
                         m.material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
 
-                        _renderService
-                            ->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
@@ -1943,8 +1940,7 @@ namespace Mengine
 
                         m.material = surfaceVideo->getMaterial();
 
-                        _renderService
-                            ->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 default:
                     break;
@@ -2010,8 +2006,7 @@ namespace Mengine
 
                         m.material = surfaceTrackMatte->getMaterial();
 
-                        _renderService
-                            ->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 default:
                     break;

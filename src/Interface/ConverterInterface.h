@@ -4,7 +4,7 @@
 
 #include "Interface/PluginInterface.h"
 #include "Interface/StreamInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Factory/Factorable.h"
 

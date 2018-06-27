@@ -1,7 +1,5 @@
 #include "ImageDecoderETC1.h"
 
-#include "Interface/FileSystemInterface.h"
-
 #include "Logger/Logger.h"
 
 #include <string.h>

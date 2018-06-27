@@ -42,7 +42,7 @@ namespace Mengine
 
         m_factoryInputStream = new FactoryPool<Win32FileInputStream, 8>();
         m_factoryOutputStream = new FactoryPool<Win32FileOutputStream, 4>();
-        m_factoryWin32MappedFile = new FactoryPool<Win32FileMapped, 4>();
+        m_factoryWin32MappedFile = new FactoryPool<Win32FileMappedStream, 4>();
 
         return true;
     }

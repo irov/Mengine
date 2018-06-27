@@ -41,7 +41,7 @@ namespace Mengine
 			return false;
 		}
 				
-		const unsigned char * binary_memory = memory->getMemory();
+		const void * binary_memory = memory->getMemory();
 		size_t binary_size = memory->getSize();
 
 		HM_FILE mf;
@@ -129,7 +129,7 @@ namespace Mengine
 		return ResourceImagePtr::none();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitterContainer2::loadContainer_( const unsigned char * _buffer, size_t _size, HM_FILE & _mf ) const
+	bool AstralaxEmitterContainer2::loadContainer_( const void * _buffer, size_t _size, HM_FILE & _mf ) const
 	{
 		(void)_size;
 

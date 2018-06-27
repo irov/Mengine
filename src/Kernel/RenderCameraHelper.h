@@ -1,6 +1,12 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderCameraInterface.h"
+#include "Interface/RenderViewportInterface.h"
+
+#include "Core/Resolution.h"
+
+#include "math/vec2.h"
+#include "math/box2.h"
 
 namespace Mengine
 {

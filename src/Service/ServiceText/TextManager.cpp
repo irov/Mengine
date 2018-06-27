@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/PrototypeManagerInterface.h"
 #include "Interface/NotificationServiceInterface.h"

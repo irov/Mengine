@@ -1,6 +1,5 @@
 #include "VideoConverterFFMPEGToOGV.h"
 
-#include "Interface/FileSystemInterface.h"
 #include "Interface/UnicodeInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/WindowsLayerInterface.h"

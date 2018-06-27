@@ -1056,7 +1056,7 @@ namespace Mengine
         DXCALL( m_pD3DDevice, Clear, (0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( _r, _g, _b ), 0.f, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )
+    void DX9RenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _matrix )
     {
         if( m_pD3DDevice == nullptr )
         {
@@ -1084,7 +1084,7 @@ namespace Mengine
         }
 
         D3DTRANSFORMSTATETYPE level = static_cast<D3DTRANSFORMSTATETYPE>(static_cast<DWORD>(D3DTS_TEXTURE0) + _stage);
-        IF_DXCALL( m_pD3DDevice, SetTransform, (level, (const D3DMATRIX*)_texture.buff()) )
+        IF_DXCALL( m_pD3DDevice, SetTransform, (level, (const D3DMATRIX*)_matrix.buff()) )
         {
             return;
         }
@@ -1798,37 +1798,7 @@ namespace Mengine
             m_d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
             m_d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
-    {
-        mt::make_projection_ortho_lh_m4( _projectionMatrix, _viewport.begin.x + 0.5f, _viewport.end.x + 0.5f, _viewport.begin.y + 0.5f, _viewport.end.y + 0.5f, _near, _far );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
-    {
-        mt::make_projection_frustum_m4( _projectionMatrix, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float _zn, float _zf )
-    {
-        mt::make_projection_fov_m4( _projectionMatrix, _fov, _aspect, _zn, _zf );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport )
-    {
-        (void)_viewport;
-
-        mt::mat4f wm;
-        mt::ident_m4( wm );
-
-        mt::inv_m4_m4( _viewMatrix, wm );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
-    {
-        mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up, _sign );
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force )
     {

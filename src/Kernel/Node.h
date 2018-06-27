@@ -4,7 +4,6 @@
 #include "Kernel/Scriptable.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Compilable.h"
-//#include "Kernel/GlobalHandleAdapter.h"
 #include "Kernel/Updatable.h"
 #include "Kernel/Renderable.h"
 #include "Kernel/BoundingBox.h"
@@ -55,11 +54,11 @@ namespace Mengine
 		~Node() override;
         
 	public:
-		void render( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
+		void render( const RenderContext * _state ) override;
 		inline bool isRenderable() const;
 
     public:
-        virtual void _renderTarget( RenderServiceInterface * _renderService, const RenderContext * _state );
+        virtual void _renderTarget( const RenderContext * _state );
 		
 	public:
 		void setRenderViewport( const RenderViewportInterfacePtr & _viewport );
@@ -94,7 +93,7 @@ namespace Mengine
         void _setExternalRender( bool _externalRender ) override;
 			
 	protected:
-		void _debugRender( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
+		void _debugRender( const RenderContext * _state ) override;
 	
 	protected:
 		RenderViewportInterfacePtr m_renderViewport;
@@ -105,7 +104,7 @@ namespace Mengine
         RenderTargetInterfacePtr m_renderTarget;
 
 	protected:
-		void renderChild_( RenderServiceInterface * _renderService, const RenderContext * _state );
+		void renderChild_( const RenderContext * _state );
 
 	public:
 		void calcScreenPosition( const RenderCameraInterfacePtr & _camera, mt::vec2f & _screen );

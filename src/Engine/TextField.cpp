@@ -1,6 +1,5 @@
 #include "TextField.h" 
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/ResourceInterface.h"
 #include "Interface/TextInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -318,8 +317,7 @@ namespace Mengine
 
                         line.advanceCharOffset( cd, charScale, offset2 );
 
-                        RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-                            ->getMaterial3( materialId, PT_TRIANGLELIST, 1, &cd.texture );
+                        RenderMaterialInterfacePtr material = this->getMaterial3( materialId, PT_TRIANGLELIST, 1, &cd.texture );
 
                         if( chunk.material == material )
                         {
@@ -355,7 +353,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+    void TextField::_render( const RenderContext * _state )
     {
         if( m_key.empty() == true )
         {
@@ -395,8 +393,7 @@ namespace Mengine
                 continue;
             }
 
-            _renderService
-                ->addRenderQuad( _state, chunk.material, chunk_vertices, chunk.vertex_count, &bb, false );
+            this->addRenderQuad( _state, chunk.material, chunk_vertices, chunk.vertex_count, &bb, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////

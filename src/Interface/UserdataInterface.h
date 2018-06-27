@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Core/ConstString.h"
 #include "Core/FilePath.h"

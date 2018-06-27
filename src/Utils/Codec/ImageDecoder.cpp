@@ -54,7 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImageDecoder::sweezleAlpha1( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch )
     {
-        unsigned char * sweezle_buffer = static_cast<unsigned char *>(_buffer);
+        uint8_t * sweezle_buffer = static_cast<uint8_t *>(_buffer);
 
         for( uint32_t h = _height; h != 0; --h )
         {
@@ -69,7 +69,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImageDecoder::sweezleAlpha3( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch )
     {
-        unsigned char * sweezle_buffer = static_cast<unsigned char *>(_buffer);
+        uint8_t * sweezle_buffer = static_cast<uint8_t *>(_buffer);
 
         for( uint32_t h = _height; h != 0; --h )
         {
@@ -77,8 +77,8 @@ namespace Mengine
 
             for( uint32_t w = _width; w != 0; --w )
             {
-                unsigned char * sweezle_buffer_rgba = sweezle_buffer + hp + (w - 1) * 4;
-                unsigned char * sweezle_buffer_rgb = sweezle_buffer + hp + (w - 1) * 3;
+                uint8_t * sweezle_buffer_rgba = sweezle_buffer + hp + (w - 1) * 4;
+                uint8_t * sweezle_buffer_rgb = sweezle_buffer + hp + (w - 1) * 3;
 
                 sweezle_buffer_rgba[0] = sweezle_buffer_rgb[0];
                 sweezle_buffer_rgba[1] = sweezle_buffer_rgb[1];

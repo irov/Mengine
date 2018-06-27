@@ -1,7 +1,6 @@
 #include "ImageDecoderACF.h"
 #include "ImageVerifyACF.h"
 
-#include "Interface/FileSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "Core/Stream.h"
@@ -115,8 +114,8 @@ namespace Mengine
 				return 0;
 			}
 
-			const unsigned char * source_buffer = static_cast<const unsigned char *>(memory);
-			unsigned char * dest_buffer = static_cast<unsigned char *>(_buffer);
+			const uint8_t * source_buffer = static_cast<const uint8_t *>(memory);
+            uint8_t * dest_buffer = static_cast<uint8_t *>(_buffer);
 
 			for( uint32_t j = 0; j != m_dataInfo.height; ++j )
 			{

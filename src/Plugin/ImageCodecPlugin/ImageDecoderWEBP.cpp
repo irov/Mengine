@@ -31,7 +31,7 @@ namespace Mengine
 		{
 			do
 			{
-				featuresBufferSize += MENGINE_FILE_STREAM_BUFFER_SIZE;
+				featuresBufferSize += 4096;
 
 				MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( featuresBufferSize, __FILE__, __LINE__ );
 				

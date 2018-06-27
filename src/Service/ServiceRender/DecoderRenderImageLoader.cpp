@@ -1,6 +1,7 @@
 #include "DecoderRenderImageLoader.h"
 
 #include "Interface/PrefetcherInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Logger/Logger.h"
 
@@ -131,7 +132,7 @@ namespace Mengine
         // copy pixels on the edge for better image quality
         if( dataInfo->width != mipmap_width )
         {
-            unsigned char * image_data = static_cast<unsigned char *>(textureBuffer);
+            uint8_t * image_data = static_cast<uint8_t *>(textureBuffer);
             size_t pixel_size = pitch / HWWidth;
 
             for( uint32_t j = 0; j != dataInfo->height; ++j )

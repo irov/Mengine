@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderTextureInterface.h"
+#include "Interface/RenderImageInterface.h"
 
 #include "math/vec4.h"
 
 #include "Core/ServantBase.h"
-#include "Core/ConstString.h"
 
 namespace Mengine
 {

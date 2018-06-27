@@ -21,7 +21,7 @@
 #endif
 
 #define THEORA_CLIP_RGB_COLOR( rgb_color_test, rgb_char_buffer ) \
-	rgb_char_buffer = (unsigned char)(THEORA_MAX( THEORA_MIN(rgb_color_test, 255), 0 ))
+	rgb_char_buffer = (uint8_t)(THEORA_MAX( THEORA_MIN(rgb_color_test, 255), 0 ))
 
 namespace Mengine
 {
@@ -421,7 +421,7 @@ namespace Mengine
 			return 0;
 		}
 
-		unsigned char * byte_buffer = static_cast<unsigned char *>(_buffer);
+        uint8_t * byte_buffer = static_cast<uint8_t *>(_buffer);
 
 		if( this->decodeBuffer_( yuvBuffer, byte_buffer, _bufferSize ) == false )
 		{
@@ -431,14 +431,14 @@ namespace Mengine
 		return 1;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool VideoDecoderTheora::decodeBuffer_( const yuv_buffer & _yuvBuffer, unsigned char * _buffer, size_t _size )
+	bool VideoDecoderTheora::decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * _buffer, size_t _size )
 	{
 		(void)_size;
 
 		if( m_options.alpha == false && m_options.pixelFormat == PF_X8R8G8B8 )
 		{
 			uint8_t * dstBitmap = _buffer;
-			unsigned char * dstBitmapOffset = _buffer + m_pitch;
+            uint8_t * dstBitmapOffset = _buffer + m_pitch;
 
             uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 4;
 			int yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;

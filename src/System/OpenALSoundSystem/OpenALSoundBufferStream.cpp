@@ -125,8 +125,6 @@ namespace Mengine
 			return false;
 		}
 
-		//m_dataBuffer = new unsigned char[m_bufferSize /*+ fixed_sound_buffer_size*/];
-
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////

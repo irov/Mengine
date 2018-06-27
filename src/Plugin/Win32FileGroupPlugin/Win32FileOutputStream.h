@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileOutputStreamInterface.h"
 #include "Interface/WindowsLayerInterface.h"
 
 #include "Core/ServantBase.h"

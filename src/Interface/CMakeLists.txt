@@ -20,8 +20,6 @@ src
 	VideoCodecInterface.h
 	ParticleSystemInterface.h
 	FileSystemInterface.h
-    RenderEnumInterface.h
-	RenderSystemInterface.h
 	PhysicSystemInterface.h
     TextInterface.h
 	StreamInterface.h
@@ -68,9 +66,41 @@ src
     NotificatorInterface.h
     LoaderInterface.h
     RandomizerInterface.h
+	FileInputStreamInterface.h
+	FileMappedStreamInterface.h
+	FileOutputStreamInterface.h
+	FileGroupInterface.h
+
     
 	dummy.cpp
 )
+
+ADD_FILTER(
+Render     
+    RenderEnumInterface.h
+	RenderSystemInterface.h
+	RenderImageInterface.h
+	RenderTextureInterface.h
+	RenderViewportInterface.h	
+	RenderCameraInterface.h
+	RenderScissorInterface.h
+	RenderTargetInterface.h
+	RenderMaterialServiceInterface.h
+	RenderTextureServiceInterface.h
+	RenderIndexBufferInterface.h
+	RenderVertexBufferInterface.h
+	RenderProgramInterface.h
+	RenderVertexShaderInterface.h
+	RenderFragmentShaderInterface.h
+	RenderVertexAttributeInterface.h
+	RenderMaterialInterface.h
+)
+
+ADD_FILTER(
+dummy     
+	dummy.cpp
+)
+
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
 
 

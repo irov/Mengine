@@ -1,11 +1,10 @@
 #include "HotspotImageConverterPNGToHIT.h"
 
-#include "Interface/FileSystemInterface.h"
 #include "Interface/UnicodeInterface.h"
 #include "Interface/StringizeInterface.h"
-
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/PickCodecInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Core/MemoryHelper.h"
 

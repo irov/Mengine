@@ -1,6 +1,5 @@
 #include "Arrow.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/InputSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 
@@ -347,7 +346,7 @@ namespace Mengine
         _adaptScreenPoint = _screenPoint * windowScale + windowOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::_debugRender( RenderServiceInterface * _renderService, const RenderContext * _state )
+    void Arrow::_debugRender( const RenderContext * _state )
     {
         if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
         {
@@ -367,8 +366,7 @@ namespace Mengine
                 uint32_t numpoints = 4;
                 uint32_t vertexCount = numpoints * 2;
 
-                RenderVertex2D * vertices = _renderService
-                    ->getDebugRenderVertex2D( vertexCount );
+                RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
 
                 if( vertices == nullptr )
                 {
@@ -421,11 +419,9 @@ namespace Mengine
                     }
                 }
 
-                const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
-                    ->getDebugMaterial();
+                const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
-                _renderService
-                    ->addRenderLine( _state, debugMaterial
+                this->addRenderLine( _state, debugMaterial
                         , vertices
                         , vertexCount
                         , nullptr
@@ -443,8 +439,7 @@ namespace Mengine
 
                 uint32_t vertexCount = numpoints * 2;
 
-                RenderVertex2D * vertices = _renderService
-                    ->getDebugRenderVertex2D( vertexCount );
+                RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
 
                 if( vertices == nullptr )
                 {
@@ -490,11 +485,9 @@ namespace Mengine
                     }
                 }
 
-                const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
-                    ->getDebugMaterial();
+                const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
-                _renderService
-                    ->addRenderLine( _state, debugMaterial
+                this->addRenderLine( _state, debugMaterial
                         , vertices
                         , (uint32_t)vertexCount
                         , nullptr

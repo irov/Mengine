@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderScissorInterface.h"
 
 #include "Kernel/Node.h"
 

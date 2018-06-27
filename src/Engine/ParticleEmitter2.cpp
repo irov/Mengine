@@ -2,9 +2,9 @@
 
 #include "Logger/Logger.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/StringizeInterface.h"
+#include "Interface/RenderMaterialServiceInterface.h"
 
 #include "Kernel/Scene.h"
 #include "Kernel/Layer.h"
@@ -342,7 +342,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void ParticleEmitter2::_render( const RenderContext * _state )
 	{
 		if( this->isPlay() == false )
 		{
@@ -431,8 +431,7 @@ namespace Mengine
 			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
 				->getMaterial2( STRINGIZE_STRING_LOCAL( "ParticleEmitter2"), stage, PT_TRIANGLELIST, mesh.textures, textures );
 
-			_renderService
-				->addRenderObject( _state, material, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, &bb, false );
+            this->addRenderObject( _state, material, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, &bb, false );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

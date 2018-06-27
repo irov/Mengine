@@ -259,14 +259,13 @@ namespace Mengine
         this->setRenderTarget( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layer2D::_renderTarget( RenderServiceInterface * _renderService, const RenderContext * _state )
+    void Layer2D::_renderTarget( const RenderContext * _state )
     {        
         const RenderVertex2D * verticesImageMask = this->getVerticesImageMaskWM();
         
         const mt::box2f & bb = this->getBoundingBox();
 
-        _renderService
-            ->addRenderQuad( _state, m_materialImageMask, verticesImageMask, 4, &bb, false );
+        this->addRenderQuad( _state, m_materialImageMask, verticesImageMask, 4, &bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::updateVerticesImageMaskWM() const

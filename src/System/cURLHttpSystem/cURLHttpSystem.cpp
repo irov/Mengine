@@ -1,6 +1,6 @@
 #include "cURLHttpSystem.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 

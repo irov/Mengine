@@ -1,8 +1,8 @@
 #include "Landscape2D.h" 
 #include "Layer2D.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/ResourceInterface.h"
+#include "Interface/RenderCameraInterface.h"
 
 #include "Kernel/ResourceImage.h"
 
@@ -71,17 +71,19 @@ namespace Mengine
 		m_verticesWM.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Landscape2D::_render( const RenderContext * _state )
 	{
 		TVectorLandscape2DElements & elementsWM = this->getElementWM();
 
 		mt::vec2f min_screen( 0.f, 0.f );
 		mt::vec2f max_screen( 1.f, 1.f );
 
+        const RenderCameraInterfacePtr & camera = _state->camera;
+
+        const mt::mat4f & vpm = _state->camera->getCameraViewProjectionMatrix();
+
 		for( Landscape2DElement & el : elementsWM )
 		{
-			const mt::mat4f & vpm = _state->camera->getCameraViewProjectionMatrix();
-
 			mt::vec2f v_wvp_minimum;
 			mt::mul_v2_v2_m4_homogenize( v_wvp_minimum, el.bb_wm.minimum, vpm );
 
@@ -143,8 +145,7 @@ namespace Mengine
 			{
 				const RenderVertex2D * vertices = this->getVerticesWM( elementVertexOffset );
 
-				_renderService
-					->addRenderQuad( _state, el.material, vertices, 4, &el.bb_wm, false );
+                this->addRenderQuad( _state, el.material, vertices, 4, &el.bb_wm, false );
 			}
 
 			elementVertexOffset += 4;

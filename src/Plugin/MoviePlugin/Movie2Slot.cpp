@@ -1,8 +1,6 @@
 #include "Movie2Slot.h"
 #include "Movie2.h"
 
-#include "Interface/RenderSystemInterface.h"
-
 #include "Logger/Logger.h"
 
 namespace Mengine
@@ -95,7 +93,7 @@ namespace Mengine
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie2Slot::_debugRender( Mengine::RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Movie2Slot::_debugRender( const RenderContext * _state )
 	{
         if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{
@@ -105,7 +103,7 @@ namespace Mengine
 		uint32_t numpoints = 4;
 		uint32_t vertexCount = numpoints * 2;
 
-		RenderVertex2D * vertices = _renderService->getDebugRenderVertex2D( vertexCount );
+		RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
 
 		if( vertices == nullptr )
 		{
@@ -158,10 +156,9 @@ namespace Mengine
 			}
 		}
 
-		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
-			->getDebugMaterial();
+        const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
-		_renderService->addRenderLine( _state, debugMaterial
+		this->addRenderLine( _state, debugMaterial
 			, vertices
 			, vertexCount
 			, nullptr

@@ -4,6 +4,7 @@
 #include "Interface/ArchiveInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Logger/Logger.h"
 
@@ -41,7 +42,7 @@ namespace Mengine
 		uint32_t relativeOffset;
 	};
     //////////////////////////////////////////////////////////////////////////
-    static uint32_t s_get_uint32( unsigned char * _buff )
+    static uint32_t s_get_uint32( uint8_t * _buff )
     {
         uint32_t x;
         x =  (uint32_t)_buff[0];
@@ -107,7 +108,7 @@ namespace Mengine
 
 		uint32_t header_position = (uint32_t)zipFile->tell();
 
-		unsigned char endof_central_dir[22];
+        uint8_t endof_central_dir[22];
 
 		if( zipFile->read( endof_central_dir, 22 ) != 22 )
 		{

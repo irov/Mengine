@@ -105,7 +105,7 @@ namespace Mengine
         uint32_t getCharCount() const;
 
     protected:
-        void _render( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
+        void _render( const RenderContext * _state ) override;
         
     protected:
         bool _activate() override;

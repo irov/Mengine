@@ -50,11 +50,11 @@ namespace Mengine
 
 		uint32_t m_bufferId;
 
-		unsigned char * m_data;
+        uint8_t * m_data;
 		size_t m_size;
 
-		unsigned char * m_pos;
-		unsigned char * m_end;		
+        uint8_t * m_pos;
+        uint8_t * m_end;
 
 		STDEX_THREAD_GUARD_INIT;
 	};

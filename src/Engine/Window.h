@@ -37,13 +37,13 @@ namespace Mengine
 	protected:
 		bool _compile() override;
 		void _release() override;
-		void _render( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
+		void _render( const RenderContext * _state ) override;
 		void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
 		void _invalidateWorldMatrix() override;
 		void _invalidateColor() override;
 
 	protected:
-		void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const override;
+		void _updateVertices( RenderVertex2D * _vertices, uint8_t _invalidateVertices ) const override;
 
 	protected:
 		ResourceHolder<ResourceWindow> m_resourceWindow;

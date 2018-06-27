@@ -283,7 +283,7 @@ namespace Mengine
 		mt::set_box_from_two_point( _boundingBox, minimal_wm, maximal_wm );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::_debugRender( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void HotSpotImage::_debugRender( const RenderContext * _state )
 	{
 		if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{
@@ -297,8 +297,7 @@ namespace Mengine
 
 		const mt::box2f & box = this->getBoundingBox();
 
-		RenderVertex2D * vertices = _renderService
-			->getDebugRenderVertex2D( 4 * 2 );
+        RenderVertex2D * vertices = this->getDebugRenderVertex2D( 4 * 2 );
 
 		if( vertices == nullptr )
 		{
@@ -341,10 +340,8 @@ namespace Mengine
 			vertices[i].uv[1].y = 0.f;
 		}
 
-		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
-			->getDebugMaterial();
+        const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
-		_renderService
-			->addRenderLine( _state, debugMaterial, vertices, 8, nullptr, true );
+        this->addRenderLine( _state, debugMaterial, vertices, 8, nullptr, true );
 	}
 }	

@@ -1,10 +1,21 @@
-//
-// Created by Alex Korzh on 6/27/18.
-//
+#pragma once
 
-class FacebookShareCallback {
-public:
-    virtual void onShareSuccess(const char *postId) = 0;
-    virtual void onShareCancel() = 0;
-    virtual void onShareError(char* exception) = 0;
-};
+#include "Core/Mixin.h"
+#include "Core/IntrusivePtr.h"
+
+#include "Config/String.h"
+
+namespace Mengine
+{
+    class FacebookShareCallback 
+        : public Mixin
+    {
+    public:
+        virtual void onShareSuccess( const String & _postId ) = 0;
+        virtual void onShareCancel() = 0;
+        virtual void onShareError( const String & _exception ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<FacebookShareCallback> FacebookShareCallbackPtr;
+    //////////////////////////////////////////////////////////////////////////
+}

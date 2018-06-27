@@ -1,8 +1,19 @@
-//
-// Created by Alex Korzh on 6/27/18.
-//
+#pragma once
 
-class FacebookUserCallback {
-public:
-    virtual void onUserFetchSuccess(char *userObject, char *response) = 0;
-};
+#include "Core/Mixin.h"
+#include "Core/IntrusivePtr.h"
+
+#include "Config/String.h"
+
+namespace Mengine
+{
+    class FacebookUserCallback 
+        : public Mixin
+    {
+    public:
+        virtual void onUserFetchSuccess( const String & _userObject, const String & _response ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<FacebookUserCallback> FacebookUserCallbackPtr;
+    //////////////////////////////////////////////////////////////////////////
+}

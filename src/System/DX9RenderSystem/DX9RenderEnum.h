@@ -1,5 +1,9 @@
 #pragma once
 
+#include "Interface/RenderEnumInterface.h"
+
+#include "Core/RenderIndex.h"
+
 namespace Mengine
 {
 	static const D3DFORMAT D32SFormats[] = {D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, (D3DFORMAT)0};

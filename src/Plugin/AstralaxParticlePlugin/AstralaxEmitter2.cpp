@@ -370,9 +370,11 @@ namespace Mengine
 		Magic_SetEmitterPositionMode( m_emitterId, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::changeEmitterImage( uint32_t _width, uint32_t _height, uint8_t * _data, size_t _bytes )
+	bool AstralaxEmitter2::changeEmitterImage( uint32_t _width, uint32_t _height, const void * _data, size_t _bytes )
 	{
-		if( Magic_ChangeImage( m_emitterId, -1, (int)_width, (int)_height, _data, (int)_bytes ) == MAGIC_ERROR )
+        unsigned char* magic_data = const_cast<unsigned char *>(reinterpret_cast<const unsigned char *>(_data));
+
+		if( Magic_ChangeImage( m_emitterId, -1, (int)_width, (int)_height, magic_data, (int)_bytes ) == MAGIC_ERROR )
 		{
 			return false;
 		}

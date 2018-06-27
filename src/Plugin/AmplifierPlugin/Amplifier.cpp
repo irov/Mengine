@@ -2,6 +2,7 @@
 
 #include "Interface/ResourceInterface.h"
 #include "Interface/StringizeInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Kernel/ResourceMusic.h"
 

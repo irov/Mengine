@@ -4,7 +4,6 @@
 
 #include "Interface/PluginInterface.h"
 #include "Interface/StreamInterface.h"
-#include "Interface/FileSystemInterface.h"
 
 #include "Factory/Factorable.h"
 
@@ -12,25 +11,24 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
 	struct CodecDataInfo 
 	{		
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	struct CodecOptions
 	{
 	};
-
-	class CodecServiceInterface;
-
+    //////////////////////////////////////////////////////////////////////////
 	class CodecFactoryInterface
 		: public ServantInterface
 	{
     public:
         virtual bool initialize() = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<CodecFactoryInterface> CodecFactoryInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class DecoderInterface
         : public ServantInterface
 	{
@@ -59,9 +57,9 @@ namespace Mengine
 		virtual bool seek( float _timing ) = 0;
 		virtual float tell() const = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DecoderInterface> DecoderInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class DecoderFactoryInterface
 		: public CodecFactoryInterface
 	{
@@ -72,9 +70,9 @@ namespace Mengine
 	public:
 		virtual DecoderInterfacePtr createDecoder() = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<DecoderFactoryInterface> DecoderFactoryInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class EncoderInterface
         : public ServantInterface
 	{
@@ -91,23 +89,23 @@ namespace Mengine
     public:
         virtual OutputStreamInterfacePtr getStream() const = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EncoderInterface> EncoderInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	class EncoderFactoryInterface
 		: public CodecFactoryInterface
 	{
 	public:
 		virtual EncoderInterfacePtr createEncoder() = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<EncoderFactoryInterface> EncoderFactoryInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	enum ECodecTargetFormat
 	{
 		ECTF_Texture
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	class CodecServiceInterface
 		: public ServiceInterface
 	{
@@ -174,7 +172,7 @@ namespace Mengine
 		virtual bool registerCodecExt( const String & _ext, const ConstString & _codecType ) = 0;
 		virtual const ConstString & findCodecType( const FilePath & _path ) const = 0;
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 #   define CODEC_SERVICE()\
     ((Mengine::CodecServiceInterface *)SERVICE_GET(Mengine::CodecServiceInterface))
 }

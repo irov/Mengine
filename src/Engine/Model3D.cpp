@@ -1,6 +1,5 @@
 #include "Model3D.h" 
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/ResourceInterface.h"
 #include "Interface/NodeInterface.h"
 
@@ -152,7 +151,7 @@ namespace Mengine
 		return material;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Model3D::_render( const RenderContext * _state )
 	{		
 		if( m_frame == nullptr )
 		{
@@ -164,8 +163,7 @@ namespace Mengine
 
 		const mt::box2f & bb = this->getBoundingBox();
 
-		_renderService
-			->addRenderObject( _state, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, &bb, false );
+        this->addRenderObject( _state, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, &bb, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Model3D::_activate()

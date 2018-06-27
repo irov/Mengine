@@ -130,29 +130,56 @@ namespace Mengine
 	public:
 		void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
-	public:
-        void addRenderMesh( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+    public:
+        void addRenderMesh( const RenderViewportInterfacePtr & _viewport
+            , const RenderCameraInterfacePtr & _camera
+            , const RenderScissorInterfacePtr & _scissor
+            , const RenderTargetInterfacePtr & _target
+            , const RenderMaterialInterfacePtr & _material
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _indexCount ) override;
 
-		void addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        void addRenderObject( const RenderViewportInterfacePtr & _viewport
+            , const RenderCameraInterfacePtr & _camera
+            , const RenderScissorInterfacePtr & _scissor
+            , const RenderTargetInterfacePtr & _target
+            , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const RenderIndex * _indices, uint32_t _indexCount 
 			, const mt::box2f * _bb, bool _debug ) override;
 
-		void addRenderQuad( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        void addRenderQuad( const RenderViewportInterfacePtr & _viewport
+            , const RenderCameraInterfacePtr & _camera
+            , const RenderScissorInterfacePtr & _scissor
+            , const RenderTargetInterfacePtr & _target
+            , const RenderMaterialInterfacePtr & _material
 			, const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) override;
 
-		void addRenderLine( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        void addRenderLine( const RenderViewportInterfacePtr & _viewport
+            , const RenderCameraInterfacePtr & _camera
+            , const RenderScissorInterfacePtr & _scissor
+            , const RenderTargetInterfacePtr & _target
+            , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
 			, const mt::box2f * _bb, bool _debug ) override;
 
     protected:
         const RenderBatchPtr & requestRenderBatch_( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount );
-        bool testRenderPass_( const RenderContext * _state, const RenderBatchPtr & _renderBatch ) const;
-        const RenderPassPtr & requestRenderPass_( const RenderContext * _state, const RenderMaterialInterfacePtr & _material, uint32_t _vertexCount, uint32_t _indexCount );
+
+        bool testRenderPass_( const RenderViewportInterfacePtr & _viewport
+            , const RenderCameraInterfacePtr & _camera
+            , const RenderScissorInterfacePtr & _scissor
+            , const RenderTargetInterfacePtr & _target
+            , const RenderBatchPtr & _renderBatch ) const;
+
+        const RenderPassPtr & requestRenderPass_( const RenderViewportInterfacePtr & _viewport
+            , const RenderCameraInterfacePtr & _camera
+            , const RenderScissorInterfacePtr & _scissor
+            , const RenderTargetInterfacePtr & _target
+            , const RenderMaterialInterfacePtr & _material
+            , uint32_t _vertexCount, uint32_t _indexCount );
 
 	public:
 		RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) override;
@@ -196,13 +223,6 @@ namespace Mengine
 
 	public:
 		bool isWindowCreated() const override;
-		
-	public:
-		void makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far ) override;
-		void makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float zn, float zf ) override;
-		void makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float zn, float zf ) override;
-		void makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport ) override;
-        void makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign ) override;
 		
 	public:
 		const RenderServiceDebugInfo & getDebugInfo() const override;

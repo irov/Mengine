@@ -7,6 +7,7 @@
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/ConfigInterface.h"
 #include "Interface/TextInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Metacode/Metacode.h"
 

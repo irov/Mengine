@@ -1,6 +1,6 @@
 #include "HotSpotBubbles.h"
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderCameraInterface.h"
 
 #include "Logger/Logger.h"
 

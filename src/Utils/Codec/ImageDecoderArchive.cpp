@@ -128,7 +128,7 @@ namespace Mengine
 				return 0;
 			}
 
-			unsigned char * buffer_ptr = static_cast<unsigned char *>(_dest);
+            uint8_t * buffer_ptr = static_cast<uint8_t *>(_dest);
 			for( uint32_t j = 0; j != m_dataInfo.height; ++j )
 			{
 				read_byte += m_stream->read( buffer_ptr, m_dataInfo.width * m_dataInfo.channels );

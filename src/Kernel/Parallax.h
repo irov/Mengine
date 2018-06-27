@@ -13,13 +13,14 @@ namespace Mengine
 
 	public:
 		Parallax();
+        ~Parallax() override;
 
 	public:
 		void setParallaxFactor( const mt::vec3f & _parallax );
 		const mt::vec3f & getParallaxFactor() const;
 
 	protected:
-		void render( RenderServiceInterface * _renderService, const RenderContext * _state ) override;
+		void render( const RenderContext * _state ) override;
 
 	protected:
 		mt::vec3f m_parallaxFactor;

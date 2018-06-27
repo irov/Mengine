@@ -193,26 +193,22 @@ namespace Mengine
             {
                 if( premultiply == false )
                 {
-                    material = RENDERMATERIAL_SERVICE()
-                        ->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND, PT_TRIANGLELIST, 2, textures );
+                    material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND, PT_TRIANGLELIST, 2, textures );
                 }
                 else
                 {
-                    material = RENDERMATERIAL_SERVICE()
-                        ->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
+                    material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
                 }
             }break;
         case ESTM_MODE_ALPHA_INVERTED:
             {
                 if( premultiply == false )
                 {
-                    material = RENDERMATERIAL_SERVICE()
-                        ->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND, PT_TRIANGLELIST, 2, textures );
+                    material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND, PT_TRIANGLELIST, 2, textures );
                 }
                 else
                 {
-                    material = RENDERMATERIAL_SERVICE()
-                        ->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
+                    material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
                 }
             }break;
         default:

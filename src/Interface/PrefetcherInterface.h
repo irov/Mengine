@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Core/IntrusivePtr.h"
 #include "Core/ConstString.h"

@@ -3,6 +3,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Factory/FactoryPool.h"
 

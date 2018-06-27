@@ -1,7 +1,11 @@
 #include "BitmapFont.h"
 
 #include "Interface/CodecInterface.h"
+
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderTextureInterface.h"
+
+#include "Interface/FileGroupInterface.h"
 
 #include "BitmapFontInterface.h"
 

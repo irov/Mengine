@@ -132,8 +132,7 @@ namespace Mengine
 		mt::vec3f wm_up;
 		mt::mul_v3_v3_m4_r( wm_up, m_cameraUp, wm );
 
-		RENDER_SERVICE()
-			->makeViewMatrixLookAt( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
+        mt::make_lookat_m4( m_viewMatrix, wm_position, wm_direction, wm_up, m_cameraRightSign );
 
 		mt::inv_m4_m4( m_viewMatrixInv, m_viewMatrix );
 	}
@@ -168,8 +167,7 @@ namespace Mengine
         projectViewport.end.x *= projection_factor_x;
         projectViewport.end.y *= projection_factor_y;
 
-        RENDER_SERVICE()
-            ->makeProjectionFrustum( m_projectionMatrix, projectViewport, m_cameraNear, m_cameraFar );
+        mt::make_projection_frustum_m4( m_projectionMatrix, projectViewport.begin.x, projectViewport.end.x, projectViewport.begin.y, projectViewport.end.y, m_cameraNear, m_cameraFar );
 
 		mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
 	}

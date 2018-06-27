@@ -1,6 +1,6 @@
 #include "Materialable.h"
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderMaterialServiceInterface.h"
 
 #include "Logger/Logger.h"
 #include "Kernel/ResourceImage.h"
@@ -291,8 +291,8 @@ namespace Mengine
                 }
             }
 
-			RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-				->getMaterial3( materialId, PT_TRIANGLELIST, texturesNum, textures );
+            RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+                ->getMaterial3( materialId, PT_TRIANGLELIST, texturesNum, textures );
 
 			return material;
 		}
@@ -575,4 +575,15 @@ namespace Mengine
 
 		return material;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr Materialable::getMaterial3( EMaterial _materialId
+        , EPrimitiveType _primitiveType
+        , uint32_t _textureCount
+        , const RenderTextureInterfacePtr * _textures ) const
+    {
+        const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
+            ->getMaterial3( _materialId, _primitiveType, _textureCount, _textures );
+
+        return material;
+    }
 }

@@ -3,10 +3,11 @@
 #include "TTFServiceInterface.h"
 
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Core/Stream.h"
 #include "Core/MemoryHelper.h"
+#include "Core/MemoryAllocator.h"
 #include "Core/IniUtil.h"
 
 #include "Logger/Logger.h"
@@ -490,29 +491,29 @@ namespace Mengine
                     , im_image_data
                     , effect_node_layout, &res );
 
-                fe_image res_bgra;
+                fe_image bgra_image;
 
 #ifdef MENGINE_RENDER_TEXTURE_RGBA
-                fe_image_create( &res_bgra, res.image.w, res.image.h, FE_IMG_R8G8B8A8 );
+                fe_image_create( &bgra_image, res.image.w, res.image.h, FE_IMG_R8G8B8A8 );
 #else
-                fe_image_create( &res_bgra, res.image.w, res.image.h, FE_IMG_B8G8R8A8 );
+                fe_image_create( &bgra_image, res.image.w, res.image.h, FE_IMG_B8G8R8A8 );
 #endif
 
-                fe_image_blit( &res.image, &res_bgra );
-
+                fe_image_blit( &res.image, &bgra_image );
+                
                 fe_image_free( &res.image );
 
                 switch( m_ttfFESample )
                 {
                 case 1:
                     {
-                        TTFFontTextureGlyphProvider provider( res_bgra.w, res_bgra.h, res_bgra.data, res_bgra.pitch, res_bgra.bytespp );
+                        TTFFontTextureGlyphProvider provider( bgra_image.w, bgra_image.h, bgra_image.data, bgra_image.pitch, bgra_image.bytespp );
 
                         mt::uv4f uv;
                         RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                            ->makeTextureGlyph( res_bgra.w, res_bgra.h, res_bgra.bytespp, &provider, uv );
+                            ->makeTextureGlyph( bgra_image.w, bgra_image.h, bgra_image.bytespp, &provider, uv );
 
-                        fe_image_free( &res_bgra );
+                        fe_image_free( &bgra_image );
 
                         if( texture == nullptr )
                         {
@@ -523,76 +524,108 @@ namespace Mengine
 
                         quad.offset.x = (float)res.x;
                         quad.offset.y = (float)-res.y;
-                        quad.size.x = (float)res_bgra.w;
-                        quad.size.y = (float)res_bgra.h;
+                        quad.size.x = (float)bgra_image.w;
+                        quad.size.y = (float)bgra_image.h;
                         quad.uv = uv;
                         quad.texture = texture;
                     }break;
+                //case 2:
+                //    {
+                //        uint32_t downsample_w = bgra_image.w / 2;
+                //        uint32_t downsample_h = bgra_image.h / 2;
+
+                //        uint8_t * downsample_data = (uint8_t *)Helper::allocateMemory( downsample_w * downsample_h * bgra_image.bytespp, "TTFFont::_prepareGlyph" );
+
+                //        for( uint32_t h = 0; h != downsample_h; ++h )
+                //        {
+                //            uint32_t hh = h << 1;
+                //            uint32_t hh0 = (hh + 0) * bgra_image.pitch;
+                //            uint32_t hh1 = (hh + 1) * bgra_image.pitch;
+
+                //            uint8_t* dh0 = bgra_image.data + hh0;
+                //            uint8_t* dh1 = bgra_image.data + hh1;
+
+                //            for( uint32_t w = 0; w != downsample_w; ++w )
+                //            {
+                //                uint32_t ww = w << 1;
+                //                uint32_t ww0 = (ww + 0) << 2;
+                //                uint32_t ww1 = (ww + 1) << 2;
+
+                //                uint8_t* d00 = dh0 + ww0;
+                //                uint8_t* d10 = dh0 + ww1;
+                //                uint8_t* d11 = dh1 + ww1;
+                //                uint8_t* d01 = dh1 + ww0;
+
+                //                uint32_t r0 = d00[0];
+                //                uint32_t r1 = d10[0];
+                //                uint32_t r2 = d11[0];
+                //                uint32_t r3 = d01[0];
+
+                //                uint32_t r = (r0 + r1 + r2 + r3) >> 2;
+
+                //                uint32_t g0 = d00[1];
+                //                uint32_t g1 = d10[1];
+                //                uint32_t g2 = d11[1];
+                //                uint32_t g3 = d01[1];
+
+                //                uint32_t g = (g0 + g1 + g2 + g3) >> 2;
+
+                //                uint32_t b0 = d00[2];
+                //                uint32_t b1 = d10[2];
+                //                uint32_t b2 = d11[2];
+                //                uint32_t b3 = d01[2];
+
+                //                uint32_t b = (b0 + b1 + b2 + b3) >> 2;
+
+                //                uint32_t a0 = d00[3];
+                //                uint32_t a1 = d10[3];
+                //                uint32_t a2 = d11[3];
+                //                uint32_t a3 = d01[3];
+
+                //                uint32_t a = (a0 + a1 + a2 + a3) >> 2;
+
+                //                uint32_t downsample_index = (w + h * downsample_w) << 2;
+
+                //                downsample_data[downsample_index + 0] = (uint8_t)r;
+                //                downsample_data[downsample_index + 1] = (uint8_t)g;
+                //                downsample_data[downsample_index + 2] = (uint8_t)b;
+                //                downsample_data[downsample_index + 3] = (uint8_t)a;
+                //            }
+                //        }
+                //        
+                //        TTFFontTextureGlyphProvider provider( downsample_w, downsample_h, downsample_data, downsample_w * bgra_image.bytespp, bgra_image.bytespp );
+
+                //        mt::uv4f uv;
+                //        RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
+                //            ->makeTextureGlyph( downsample_w, downsample_h, bgra_image.bytespp, &provider, uv );
+
+                //        Helper::freeMemory( downsample_data, "TTFFont::_prepareGlyph" );
+
+                //        fe_image_free( &bgra_image );
+
+                //        if( texture == nullptr )
+                //        {
+                //            return false;
+                //        }
+
+                //        TTFGlyphQuad & quad = ttf_glyph.quads[layoutIndex];
+
+                //        quad.offset.x = (float)(res.x / 2);
+                //        quad.offset.y = (float)(-res.y / 2);
+                //        quad.size.x = (float)downsample_w;
+                //        quad.size.y = (float)downsample_h;
+                //        quad.uv = uv;
+                //        quad.texture = texture;
+                //    }break;
                 case 2:
                     {
-                        uint32_t downsample_w = res_bgra.w / 2;
-                        uint32_t downsample_h = res_bgra.h / 2;
-
-                        uint8_t * downsample_data = (uint8_t *)Helper::allocateMemory( downsample_w * downsample_h * res_bgra.bytespp, "TTFFont::_prepareGlyph" );
-
-                        for( uint32_t h = 0; h != downsample_h; ++h )
-                        {
-                            uint32_t hh = h << 1;
-                            uint32_t hh0 = (hh + 0) * res_bgra.pitch;
-                            uint32_t hh1 = (hh + 1) * res_bgra.pitch;
-
-                            for( uint32_t w = 0; w != downsample_w; ++w )
-                            {
-                                uint32_t ww = w << 1;
-                                uint32_t ww0 = (ww + 0) << 2;
-                                uint32_t ww1 = (ww + 1) << 2;
-
-                                uint32_t r0 = res_bgra.data[ww0 + hh0 + 0];
-                                uint32_t r1 = res_bgra.data[ww1 + hh0 + 0];
-                                uint32_t r2 = res_bgra.data[ww1 + hh1 + 0];
-                                uint32_t r3 = res_bgra.data[ww0 + hh1 + 0];
-
-                                uint32_t r = (r0 + r1 + r2 + r3) >> 2;
-
-                                uint32_t g0 = res_bgra.data[ww0 + hh0 + 1];
-                                uint32_t g1 = res_bgra.data[ww1 + hh0 + 1];
-                                uint32_t g2 = res_bgra.data[ww1 + hh1 + 1];
-                                uint32_t g3 = res_bgra.data[ww0 + hh1 + 1];
-
-                                uint32_t g = (g0 + g1 + g2 + g3) >> 2;
-
-                                uint32_t b0 = res_bgra.data[ww0 + hh0 + 2];
-                                uint32_t b1 = res_bgra.data[ww1 + hh0 + 2];
-                                uint32_t b2 = res_bgra.data[ww1 + hh1 + 2];
-                                uint32_t b3 = res_bgra.data[ww0 + hh1 + 2];
-
-                                uint32_t b = (b0 + b1 + b2 + b3) >> 2;
-
-                                uint32_t a0 = res_bgra.data[ww0 + hh0 + 3];
-                                uint32_t a1 = res_bgra.data[ww1 + hh0 + 3];
-                                uint32_t a2 = res_bgra.data[ww1 + hh1 + 3];
-                                uint32_t a3 = res_bgra.data[ww0 + hh1 + 3];
-
-                                uint32_t a = (a0 + a1 + a2 + a3) >> 2;
-
-                                uint32_t downsample_index = (w + h * downsample_w) << 2;
-
-                                downsample_data[downsample_index + 0] = (uint8_t)r;
-                                downsample_data[downsample_index + 1] = (uint8_t)g;
-                                downsample_data[downsample_index + 2] = (uint8_t)b;
-                                downsample_data[downsample_index + 3] = (uint8_t)a;
-                            }
-                        }
-
-                        TTFFontTextureGlyphProvider provider( downsample_w, downsample_h, downsample_data, downsample_w * res_bgra.bytespp, res_bgra.bytespp );
+                        TTFFontTextureGlyphProvider provider( bgra_image.w, bgra_image.h, bgra_image.data, bgra_image.pitch, bgra_image.bytespp );
 
                         mt::uv4f uv;
                         RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                            ->makeTextureGlyph( downsample_w, downsample_h, res_bgra.bytespp, &provider, uv );
+                            ->makeTextureGlyph( bgra_image.w, bgra_image.h, bgra_image.bytespp, &provider, uv );
 
-                        Helper::freeMemory( downsample_data, "TTFFont::_prepareGlyph" );
-
-                        fe_image_free( &res_bgra );
+                        fe_image_free( &bgra_image );
 
                         if( texture == nullptr )
                         {
@@ -601,10 +634,10 @@ namespace Mengine
 
                         TTFGlyphQuad & quad = ttf_glyph.quads[layoutIndex];
 
-                        quad.offset.x = (float)res.x / m_ttfFESample;
-                        quad.offset.y = (float)-res.y / m_ttfFESample;
-                        quad.size.x = (float)downsample_w;
-                        quad.size.y = (float)downsample_h;
+                        quad.offset.x = (float)res.x * 0.5f;
+                        quad.offset.y = (float)-res.y * 0.5f;
+                        quad.size.x = (float)bgra_image.w * 0.5f;
+                        quad.size.y = (float)bgra_image.h * 0.5f;
                         quad.uv = uv;
                         quad.texture = texture;
                     }break;
@@ -699,7 +732,7 @@ namespace Mengine
 
             FT_Bitmap bitmap = glyph->bitmap;
 
-            unsigned char pixel_mode = bitmap.pixel_mode;
+            uint8_t pixel_mode = bitmap.pixel_mode;
 
             switch( pixel_mode )
             {

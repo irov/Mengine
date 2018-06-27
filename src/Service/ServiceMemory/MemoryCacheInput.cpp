@@ -53,7 +53,7 @@ namespace Mengine
 
 		m_bufferId = bufferId;
 
-		m_data = reinterpret_cast<unsigned char *>(memory);
+		m_data = reinterpret_cast<uint8_t *>(memory);
 		m_size = _size;
 
 		m_pos = m_data;
@@ -89,7 +89,6 @@ namespace Mengine
 		}
 
 		stdex::memorycopy( _buf, 0, m_pos, cnt );
-		//std::copy( m_pos, m_pos + cnt, (unsigned char *)_buf );
 
 		m_pos += cnt;
 

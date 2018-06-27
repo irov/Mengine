@@ -1,6 +1,5 @@
 #include "ImageDecoderPVRTC.h"
 #include "Logger/Logger.h"
-#include "Interface/FileSystemInterface.h"
 
 #include "Core/PixelFormat.h"
 

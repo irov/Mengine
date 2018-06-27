@@ -1,11 +1,11 @@
 #include "ImageConverterPVRToHTF.h"
 
 #include "Interface/ParticleSystemInterface.h"
-#include "Interface/FileSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Logger/Logger.h"
 
@@ -91,7 +91,7 @@ namespace Mengine
 
 		void * data_memory = data_buffer->getMemory();
 
-		unsigned char * miplevel_data_memory = reinterpret_cast<unsigned char *>(data_memory);
+        uint8_t * miplevel_data_memory = reinterpret_cast<uint8_t *>(data_memory);
 
 		for( uint32_t i = 0; i != dataInfo->mipmaps; ++i )
 		{

@@ -1,6 +1,5 @@
 #include "Point.h"
 
-#include "Interface/RenderSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
 namespace Mengine
@@ -62,8 +61,15 @@ namespace Mengine
 
 		Node::_destroy();
 	}
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr Point::_updateMaterial() const
+    {
+        RenderMaterialInterfacePtr material = this->getMaterial3( EM_DEBUG, PT_TRIANGLELIST, 0, nullptr );
+
+        return material;
+    }
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_render( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Point::_render( const RenderContext * _state )
 	{
 		if( m_linked == nullptr )
 		{
@@ -123,13 +129,12 @@ namespace Mengine
 			m_vertices[i].uv[1].y = 0.f;
 		}
 
-		RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
-			->getMaterial3( EM_DEBUG, PT_TRIANGLELIST, 0, nullptr );
+        const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-		_renderService->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );
+		this->addRenderQuad( _state, material, m_vertices, 4, nullptr, false );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Point::_debugRender( RenderServiceInterface * _renderService, const RenderContext * _state )
+	void Point::_debugRender( const RenderContext * _state )
 	{
         if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
 		{
@@ -138,8 +143,9 @@ namespace Mengine
 
 		const mt::vec3f & pos = this->getWorldPosition();
 
-		RenderVertex2D * vertices = _renderService
-			->getDebugRenderVertex2D( 4 * 2 );
+        const uint32_t vertexCount = 8;
+
+        RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
 
 		if( vertices == nullptr )
 		{
@@ -181,7 +187,7 @@ namespace Mengine
 		vertices[7].position.z = pos.z;
 
 
-		for( uint32_t i = 0; i != 8; ++i )
+		for( uint32_t i = 0; i != vertexCount; ++i )
 		{
 			vertices[i].color = 0xFF00FF00;
 			vertices[i].uv[0].x = 0.f;
@@ -190,11 +196,9 @@ namespace Mengine
 			vertices[i].uv[1].y = 0.f;
 		}
 
-		const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
-			->getDebugMaterial();
+        const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-		_renderService
-			->addRenderLine( _state, debugMaterial, vertices, 8, nullptr, true );
+        this->addRenderLine( _state, material, vertices, vertexCount, nullptr, true );
 	}
 	//////////////////////////////////////////////////////////////////////////
 

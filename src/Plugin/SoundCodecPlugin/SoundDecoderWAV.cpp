@@ -1,6 +1,6 @@
 #include "SoundDecoderWAV.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Core/Magic.h"
 #include "Logger/Logger.h"

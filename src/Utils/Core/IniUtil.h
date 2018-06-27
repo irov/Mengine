@@ -3,8 +3,8 @@
 #include "tinyini/tinyini.h"
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
 #include "Interface/StreamInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Core/Params.h"
 #include "Core/String.h"

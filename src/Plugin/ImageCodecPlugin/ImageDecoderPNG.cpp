@@ -31,7 +31,7 @@ namespace Mengine
 			);
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void PNGAPI s_readProc( png_structp _png_ptr, unsigned char * _data, png_size_t _size )
+	static void PNGAPI s_readProc( png_structp _png_ptr, uint8_t * _data, png_size_t _size )
 	{
 		png_voidp io_ptr = png_get_io_ptr( _png_ptr );
 		InputStreamInterface * stream = reinterpret_cast<InputStreamInterface *>( io_ptr );
@@ -102,7 +102,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ImageDecoderPNG::_prepareData()
 	{
-		unsigned char png_check[PNG_BYTES_TO_CHECK];
+        uint8_t png_check[PNG_BYTES_TO_CHECK];
 		m_stream->read( &png_check, PNG_BYTES_TO_CHECK );
 
 		if( png_sig_cmp(png_check, (png_size_t)0, PNG_BYTES_TO_CHECK) != 0 )

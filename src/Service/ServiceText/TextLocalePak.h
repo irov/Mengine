@@ -1,7 +1,7 @@
 # pragma once
 
 #include "Interface/MemoryInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Core/ConstString.h"
 #include "Core/String.h"

@@ -31,7 +31,7 @@ namespace Mengine
 			return m_vertices;
 		}
 
-		inline void invalidateVertices( unsigned char _invalidate = 0xFF ) const
+		inline void invalidateVertices( uint8_t _invalidate = 0xFF ) const
 		{
 			m_invalidateVertices |= _invalidate;
 		}
@@ -45,11 +45,11 @@ namespace Mengine
 		}
 	
 	protected:
-		virtual void _updateVertices( RenderVertex2D * _vertices, unsigned char _invalidateVertices ) const = 0;
+		virtual void _updateVertices( RenderVertex2D * _vertices, uint8_t _invalidateVertices ) const = 0;
 
 	private:
 		mutable RenderVertex2D m_vertices[VerticesCount];
-		mutable unsigned char m_invalidateVertices;
+		mutable uint8_t m_invalidateVertices;
 	};
 
 	typedef FixedVertices<4> QuadVertices;

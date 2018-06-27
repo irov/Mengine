@@ -51,7 +51,7 @@ namespace Mengine
         HM_EMITTER createEmitterId() const;
 
 	protected:
-		bool loadContainer_( const unsigned char * _buffer, size_t _size, HM_FILE & _mf ) const;
+		bool loadContainer_( const void * _buffer, size_t _size, HM_FILE & _mf ) const;
 					
     protected:
 		AstralaxParticleSystem2 * m_particleSystem;

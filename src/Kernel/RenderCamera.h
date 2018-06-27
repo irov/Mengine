@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderCameraInterface.h"
 
 #include "Kernel/Node.h"
 #include "Kernel/Observable.h"
 
 #include "Core/Viewport.h"
+#include "Core/Resolution.h"
 
 namespace Mengine
 {

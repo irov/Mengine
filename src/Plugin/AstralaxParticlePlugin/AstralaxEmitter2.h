@@ -66,7 +66,7 @@ namespace Mengine
 		void setEmitterTranslateWithParticle( bool _value ) override;
 
 	public:
-		bool changeEmitterImage( uint32_t _width, uint32_t _height, unsigned char* _data, size_t _bytes ) override;
+		bool changeEmitterImage( uint32_t _width, uint32_t _height, const void * _data, size_t _bytes ) override;
 		bool changeEmitterModel( float * _points, uint32_t _count ) override;
 		
 	public:

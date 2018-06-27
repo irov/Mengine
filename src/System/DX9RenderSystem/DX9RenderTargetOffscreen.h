@@ -20,7 +20,7 @@ namespace Mengine
 		void _finalize() override;
 
 	public:
-		bool getData( unsigned char * _buffer, size_t _pitch ) override;
+		bool getData( void * _buffer, size_t _pitch ) override;
 
 	protected:
 		LPDIRECT3DSURFACE9 m_surfacePlain;

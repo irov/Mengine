@@ -207,10 +207,11 @@ static void performLogin(FacebookLoginCallback* facebookLoginCallback, std::vect
 static void getUser(FacebookUserCallback* facebookUserCallback) {
     currentFacebookUserCallback = facebookUserCallback;
     JNIEnv *mEnv = Android_JNI_GetEnv();
+    // TODO
     (*env)->CallStaticVoidMethod(env, mActivityClass, mgetUser);
 }
 
-static void shareLink(char *link, FacebookShareCallback* facebookShareCallback) {
+static void shareLink(char* link, FacebookShareCallback* facebookShareCallback) {
     currentFacebookShareCallback = facebookShareCallback;
     JNIEnv *mEnv = Android_JNI_GetEnv();
     jstring stringLink = (jstring)((*env)->NewStringUTF(env, link));

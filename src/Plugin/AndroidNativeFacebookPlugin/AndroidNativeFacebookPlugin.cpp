@@ -8,39 +8,44 @@
 #include <vector>
 #include <pthread.h>
 
+extern "C" {
 #define FACEBOOK_JAVA_PREFIX                             org_Mengine_Build_Facebook
+#define MENGINE_JAVA_PREFIX                              org_Mengine_Build
 #define CONCAT1(prefix, class, function)                 CONCAT2(prefix, class, function)
 #define CONCAT2(prefix, class, function)                 Java_ ## prefix ## _ ## class ## _ ## function
+#define MENGINE_JAVA_INTERFACE(function)                 CONCAT1(MENGINE_JAVA_PREFIX, MengineActivity, function)
 #define FACEBOOK_JAVA_INTERFACE(function)                CONCAT1(FACEBOOK_JAVA_PREFIX, FacebookInteractionLayer, function)
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_setupFacebookJNI )(JNIEnv *mEnv, jclass cls);
+MENGINE_JAVA_INTERFACE( AndroidNativeFacebook_1setupFacebookJNI )(JNIEnv *mEnv, jclass cls);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginSuccess )(JNIEnv *env, jclass cls,
-    jobject loginResult);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginSuccess )(JNIEnv *env, jclass cls,
+    jstring accessToken_);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginCancel )(JNIEnv *env, jclass cls);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginCancel )(JNIEnv *env, jclass cls);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginError )(JNIEnv *env, jclass cls,
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginError )(JNIEnv *env, jclass cls,
     jstring exception_);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onUserFetchSuccess )(JNIEnv *env, jclass cls,
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onUserFetchSuccess )(JNIEnv *env, jclass cls,
     jstring object_, jstring response_);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onShareSuccess )(JNIEnv *env, jclass cls,
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareSuccess )(JNIEnv *env, jclass cls,
     jstring postId_);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onShareCancel )(JNIEnv *env, jclass cls);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareCancel )(JNIEnv *env, jclass cls);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onShareError )(JNIEnv *env, jclass cls,
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareError )(JNIEnv *env, jclass cls,
     jstring exception_);
+
+}
 
 static pthread_key_t mThreadKey;
 static JavaVM *mJavaVM;
@@ -122,19 +127,21 @@ JNIEXPORT jint JNICALL JNI_OnLoad( JavaVM *vm, void *reserved ) {
 
     return JNI_VERSION_1_4;
 }
+
+extern "C" {
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_setupFacebookJNI )(JNIEnv *mEnv, jclass cls)
+MENGINE_JAVA_INTERFACE( AndroidNativeFacebook_1setupFacebookJNI )(JNIEnv *mEnv, jclass cls)
 {
     mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
-    jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "performLogin", "([Ljava/lang/String;)" );
-    jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "getUser", "()" );
-    jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "shareLink", "(Ljava/lang/String;)" );
+    jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)V" );
+    jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()V" );
+    jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)V" );
 }
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL 
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginSuccess )(JNIEnv *env, jclass cls, jstring accessToken_)
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginSuccess )(JNIEnv *env, jclass cls, jstring accessToken_)
 {
     const char * accessToken = env->GetStringUTFChars( accessToken_, 0 );
 
@@ -150,7 +157,7 @@ FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginSuccess )(JNIEnv *env, jcl
 }
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginCancel )(JNIEnv *env, jclass cls) 
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginCancel )(JNIEnv *env, jclass cls)
 {
     Mengine::FacebookLoginCallbackPtr callback = g_currentFacebookLoginCallback;
     g_currentFacebookLoginCallback = nullptr;
@@ -162,7 +169,7 @@ FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginCancel )(JNIEnv *env, jcla
 }
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginError )(JNIEnv *env, jclass cls, jstring exception_) 
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginError )(JNIEnv *env, jclass cls, jstring exception_)
 {
     const char * exception = env->GetStringUTFChars( exception_, 0 );
 
@@ -178,7 +185,7 @@ FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginError )(JNIEnv *env, jclas
 }
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onUserFetchSuccess )(JNIEnv *env, jclass cls, jstring object_, jstring response_) 
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onUserFetchSuccess )(JNIEnv *env, jclass cls, jstring object_, jstring response_)
 {
     const char * object = env->GetStringUTFChars( object_, 0 );
     const char * response = env->GetStringUTFChars( response_, 0 );
@@ -196,7 +203,7 @@ FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onUserFetchSuccess )(JNIEnv *env,
 }
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onShareSuccess )(JNIEnv *env, jclass cls, jstring postId_) 
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareSuccess )(JNIEnv *env, jclass cls, jstring postId_)
 {
     const char * postId = env->GetStringUTFChars( postId_, 0 );
 
@@ -212,7 +219,7 @@ FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onShareSuccess )(JNIEnv *env, jcl
 }
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( onShareCancel )(JNIEnv *env, jclass cls) 
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareCancel )(JNIEnv *env, jclass cls)
 {
     Mengine::FacebookShareCallbackPtr callback = g_currentFacebookShareCallback;
     g_currentFacebookShareCallback = nullptr;
@@ -224,7 +231,7 @@ FACEBOOK_JAVA_INTERFACE( onShareCancel )(JNIEnv *env, jclass cls)
 }
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE( onShareError )(JNIEnv *env, jclass cls, jstring exception_)
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareError )(JNIEnv *env, jclass cls, jstring exception_)
 {
     const char * exception = env->GetStringUTFChars( exception_, 0 );
 
@@ -237,6 +244,8 @@ FACEBOOK_JAVA_INTERFACE( onShareError )(JNIEnv *env, jclass cls, jstring excepti
     }
 
     env->ReleaseStringUTFChars( exception_, exception );
+}
+    
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AndroidNativeFacebook, Mengine::AndroidNativeFacebookPlugin )

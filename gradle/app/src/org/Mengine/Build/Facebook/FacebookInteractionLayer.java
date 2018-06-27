@@ -34,8 +34,6 @@ public class FacebookInteractionLayer {
     private CallbackManager _callbackManager;
     private AccessToken _accessToken;
 
-    static native void setupFacebookJNI();
-
     static native void onLoginSuccess(String loginResult);
 
     static native void onLoginCancel();
@@ -52,7 +50,6 @@ public class FacebookInteractionLayer {
 
     public FacebookInteractionLayer(CallbackManager callbackManager) {
         _callbackManager = callbackManager;
-        setupFacebookJNI();
     }
 
     public void performLogin(Activity activity, String[] readPermissions) {

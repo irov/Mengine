@@ -8,17 +8,20 @@
 #include <vector>
 #include <pthread.h>
 
+extern "C" {
 #define FACEBOOK_JAVA_PREFIX                             org_Mengine_Build_Facebook
+#define MENGINE_JAVA_PREFIX                              org_Mengine_Build
 #define CONCAT1(prefix, class, function)                 CONCAT2(prefix, class, function)
 #define CONCAT2(prefix, class, function)                 Java_ ## prefix ## _ ## class ## _ ## function
+#define MENGINE_JAVA_INTERFACE(function)                 CONCAT1(MENGINE_JAVA_PREFIX, MengineActivity, function)
 #define FACEBOOK_JAVA_INTERFACE(function)                CONCAT1(FACEBOOK_JAVA_PREFIX, FacebookInteractionLayer, function)
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(setupFacebookJNI)(JNIEnv *mEnv, jclass cls);
+MENGINE_JAVA_INTERFACE(setupFacebookJNI)(JNIEnv *mEnv, jclass cls);
 
 JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE(onLoginSuccess)(JNIEnv *env, jclass cls,
-                                        jobject loginResult);
+                                        jstring accessToken_);
 
 JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE(onLoginCancel)(JNIEnv *env, jclass cls);
@@ -41,6 +44,7 @@ FACEBOOK_JAVA_INTERFACE(onShareCancel)(JNIEnv *env, jclass cls);
 JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE(onShareError)(JNIEnv *env, jclass cls,
                                       jstring exception_);
+}
 
 static pthread_key_t mThreadKey;
 static JavaVM *mJavaVM;
@@ -101,6 +105,8 @@ int FB_JNI_SetupThread(void) {
     return 1;
 }
 
+extern "C" {
+
 JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
     JNIEnv *env;
     mJavaVM = vm;
@@ -120,15 +126,15 @@ JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
 }
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(setupFacebookJNI)(JNIEnv *mEnv, jclass cls) {
+MENGINE_JAVA_INTERFACE(setupFacebookJNI)(JNIEnv *mEnv, jclass cls) {
     mActivityClass = (jclass) (mEnv->NewGlobalRef(cls));
 
     mperformLogin = mEnv->GetStaticMethodID(mActivityClass,
-                                            "performLogin", "([Ljava/lang/String;)");
+                                            "performLogin", "([Ljava/lang/String;)V");
     mgetUser = mEnv->GetStaticMethodID(mActivityClass,
-                                       "getUser", "()");
+                                       "getUser", "()V");
     mshareLink = mEnv->GetStaticMethodID(mActivityClass,
-                                         "shareLink", "(Ljava/lang/String;)");
+                                         "shareLink", "(Ljava/lang/String;)V");
 }
 
 
@@ -203,6 +209,8 @@ FACEBOOK_JAVA_INTERFACE(onShareError)(JNIEnv *env, jclass cls,
         currentFacebookShareCallback->onShareError(exception);
     }
     env->ReleaseStringUTFChars(exception_, exception);
+}
+
 }
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////

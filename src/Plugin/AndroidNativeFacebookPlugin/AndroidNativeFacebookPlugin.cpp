@@ -2,6 +2,8 @@
 
 #include "Core/ModuleFactory.h"
 
+#include "pybind/pybind.hpp"
+
 #include <string.h>
 #include <stdio.h>
 #include <jni.h>
@@ -244,6 +246,118 @@ PLUGIN_FACTORY( AndroidNativeFacebook, Mengine::AndroidNativeFacebookPlugin )
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        class PythonFacebookLoginCallback
+            : public FactorableUnique<Factorable>
+            , public FacebookLoginCallback
+        {
+        public:
+            PythonFacebookLoginCallback( const pybind::object & _cb, const pybind::args & _args )
+            {}
+
+        protected:
+            void onLoginSuccess( const String & _token ) override
+            {
+                m_cb.call_args( 0, _token, m_args );
+            }
+
+            void onLoginCancel() override
+            {
+                m_cb.call_args( 1, "", m_args );
+            }
+
+            void onLoginError( const String & _exception ) override
+            {
+                m_cb.call_args( 2, _exception, m_args );
+            }
+
+        protected:
+            pybind::object m_cb;
+            pybind::args m_args;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        bool androidFacebookPerformLogin( AndroidNativeFacebookPlugin * _plugin, const TVectorString & _permissions, const pybind::object & _cb, const pybind::args & _args )
+        {
+            bool successful = _plugin->performLogin( _permissions
+                , new PythonFacebookLoginCallback( _cb, _args )
+            );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonFacebookUserCallback
+            : public FactorableUnique<Factorable>
+            , public FacebookUserCallback
+        {
+        public:
+            PythonFacebookUserCallback( const pybind::object & _cb, const pybind::args & _args )
+                : m_cb( _cb )
+                , m_args( _args )
+            {}
+
+        protected:
+            void onUserFetchSuccess( const String & _userObject, const String & _response ) override
+            {
+                m_cb.call_args( _userObject, _response, m_args );
+            }
+
+        protected:
+            pybind::object m_cb;
+            pybind::args m_args;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        bool androidFacebookGetUser( AndroidNativeFacebookPlugin * _plugin, const pybind::object & _cb, const pybind::args & _args )
+        {
+            bool successful = _plugin->getUser(
+                new PythonFacebookUserCallback( _cb, _args )
+            );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonFacebookShareCallback
+            : public FactorableUnique<Factorable>
+            , public FacebookShareCallback
+        {
+        public:
+            PythonFacebookShareCallback( const pybind::object & _cb, const pybind::args & _args )
+                : m_cb( _cb )
+                , m_args( _args )
+            {}
+
+        protected:
+            void onShareSuccess( const String & _postId ) override
+            {
+                m_cb.call_args( 0, _postId, m_args );
+            }
+
+            void onShareCancel() override
+            {
+                m_cb.call_args( 1, "", m_args );
+            }
+
+            void onShareError( const String & _exception ) override
+            {
+                m_cb.call_args( 2, _exception, m_args );
+            }
+
+        protected:
+            pybind::object m_cb;
+            pybind::args m_args;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        bool androidFacebookShareLink( AndroidNativeFacebookPlugin * _plugin, const String & _link, const pybind::object & _cb, const pybind::args & _args )
+        {
+            bool successful = _plugin->shareLink( _link
+                , new PythonFacebookShareCallback( _cb, _args )
+            );
+
+            return successful;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     AndroidNativeFacebookPlugin::AndroidNativeFacebookPlugin()
     {
     }
@@ -252,7 +366,27 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeFacebookPlugin::performLogin( const FacebookLoginCallbackPtr & _callback, const TVectorString & _permissions )
+    bool AndroidNativeFacebookPlugin::_avaliable()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeFacebookPlugin::_initialize()
+    {
+        pybind::kernel_interface * kernel = pybind::get_kernel();
+
+        //pybind::def_functor( kernel, "androidFacebookPerformLogin", this, &Detail::androidFacebookPerformLogin );
+        //pybind::def_functor( kernel, "androidFacebookGetUser", this, &Detail::androidFacebookGetUser );
+        //pybind::def_functor( kernel, "androidFacebookShareLink", this, &Detail::androidFacebookShareLink );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AndroidNativeFacebookPlugin::_finalize()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeFacebookPlugin::performLogin( const TVectorString & _permissions, const FacebookLoginCallbackPtr & _callback )
     {
         if( g_currentFacebookLoginCallback != nullptr )
         {

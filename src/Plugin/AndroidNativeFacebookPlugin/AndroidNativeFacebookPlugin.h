@@ -19,8 +19,15 @@ namespace Mengine
         AndroidNativeFacebookPlugin();
         ~AndroidNativeFacebookPlugin() override;
 
+    protected:
+        bool _avaliable() override;
+
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
+
     public:
-        bool performLogin( const FacebookLoginCallbackPtr & _callback, const TVectorString & _permissions );
+        bool performLogin( const TVectorString & _permissions, const FacebookLoginCallbackPtr & _callback );
         bool getUser( const FacebookUserCallbackPtr & _callback );
         bool shareLink( const String & _link, const FacebookShareCallbackPtr & _callback );
     };

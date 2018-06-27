@@ -35,11 +35,21 @@ public class FacebookInteractionLayer {
     private CallbackManager _callbackManager;
     private AccessToken _accessToken;
 
+    native void onLoginSuccess(FacebookLoginResultWrapper loginResult);
+    native void onLoginCancel();
+    native void onLoginError(String exception);
+
+    native void onUserFetchSuccess(String object, String response);
+
+    native void onShareSuccess(String postId);
+    native void onShareCancel();
+    native void onShareError(String exception);
+
     public FacebookInteractionLayer(CallbackManager callbackManager) {
         _callbackManager = callbackManager;
     }
 
-    public void performLogin(Activity activity, final FacebookLoginCallback facebookLoginCallback, String[] readPermissions) {
+    public void performLogin(Activity activity, String[] readPermissions) {
         LoginManager.getInstance().registerCallback(_callbackManager, new FacebookCallback<LoginResult>() {
             @Override
             public void onSuccess(LoginResult loginResult) {
@@ -52,18 +62,18 @@ public class FacebookInteractionLayer {
                                 .toArray(new String[loginResult.getRecentlyDeniedPermissions().size()]);
                 wrappedResult.accessToken = new FacebookAccessTokenWrapper(loginResult.getAccessToken());
 
-                facebookLoginCallback.onLoginSuccess(wrappedResult);
+                onLoginSuccess(wrappedResult);
                 _accessToken = loginResult.getAccessToken();
             }
 
             @Override
             public void onCancel() {
-                facebookLoginCallback.onLoginCancel();
+                onLoginCancel();
             }
 
             @Override
             public void onError(FacebookException exception) {
-                facebookLoginCallback.onLoginError(exception);
+                onLoginError(exception.getMessage());
             }
         });
         List<String> permissions;
@@ -75,12 +85,12 @@ public class FacebookInteractionLayer {
         LoginManager.getInstance().logInWithReadPermissions(activity, permissions);
     }
 
-    public void getUser(final FacebookUserCallback facebookUserCallback) {
+    public void getUser() {
         GraphRequest request = GraphRequest.newMeRequest
                 (_accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        facebookUserCallback.onUserFetchSuccess(object.toString(), response.getRawResponse());
+                        onUserFetchSuccess(object.toString(), response.getRawResponse());
                     }
                 });
         Bundle parameters = new Bundle();
@@ -89,46 +99,22 @@ public class FacebookInteractionLayer {
         request.executeAsync();
     }
 
-    public void getUser(FacebookAccessTokenWrapper accessTokenWrapper, final FacebookUserCallback facebookUserCallback) {
-        AccessToken accessToken =
-                new AccessToken(accessTokenWrapper.token,
-                        accessTokenWrapper.applicationId,
-                        accessTokenWrapper.userId,
-                        new HashSet<>(Arrays.asList(accessTokenWrapper.permissions)),
-                        new HashSet<>(Arrays.asList(accessTokenWrapper.declinedPermissions)),
-                        null,
-                        null,
-                        null);
-
-        GraphRequest request = GraphRequest.newMeRequest
-                (accessToken, new GraphRequest.GraphJSONObjectCallback() {
-                    @Override
-                    public void onCompleted(JSONObject object, GraphResponse response) {
-                        facebookUserCallback.onUserFetchSuccess(object.toString(), response.getRawResponse());
-                    }
-                });
-        Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, name, email, gender");
-        request.setParameters(parameters);
-        request.executeAsync();
-    }
-
-    public void shareLink(Activity activity, String link, final FacebookShareCallback facebookShareCallback) {
+    public void shareLink(Activity activity, String link) {
         ShareDialog shareDialog = new ShareDialog(activity);
         shareDialog.registerCallback(_callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
-                facebookShareCallback.onShareSuccess(result.getPostId());
+                onShareSuccess(result.getPostId());
             }
 
             @Override
             public void onCancel() {
-                facebookShareCallback.onShareCancel();
+                onShareCancel();
             }
 
             @Override
             public void onError(FacebookException exception) {
-                facebookShareCallback.onShareError(exception);
+                onShareError(exception.getMessage());
             }
         });
         if (ShareDialog.canShow(ShareLinkContent.class)) {

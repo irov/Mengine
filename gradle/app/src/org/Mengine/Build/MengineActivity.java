@@ -6,11 +6,7 @@ import android.os.Bundle;
 import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger;
 
-import org.Mengine.Build.Facebook.FacebookAccessTokenWrapper;
 import org.Mengine.Build.Facebook.FacebookInteractionLayer;
-import org.Mengine.Build.Facebook.FacebookLoginCallback;
-import org.Mengine.Build.Facebook.FacebookShareCallback;
-import org.Mengine.Build.Facebook.FacebookUserCallback;
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
@@ -61,28 +57,24 @@ public class MengineActivity extends SDLActivity {
     }
 
     //FacebookStaticMethods
-    public static void performLogin(FacebookLoginCallback facebookLoginCallback, String[] readPermissions) {
+    public static void performLogin(String[] readPermissions) {
         if(_instance == null) {
             return;
         }
-        _instance.facebookInteractionLayer.performLogin(_instance, facebookLoginCallback, readPermissions);
+        _instance.facebookInteractionLayer.performLogin(_instance, readPermissions);
     }
 
-    public static void getUser(FacebookAccessTokenWrapper accessTokenWrapper, FacebookUserCallback facebookUserCallback) {
+    public static void getUser() {
         if(_instance == null) {
             return;
         }
-        if(accessTokenWrapper == null) {
-            _instance.facebookInteractionLayer.getUser(facebookUserCallback);
-        } else {
-            _instance.facebookInteractionLayer.getUser(accessTokenWrapper, facebookUserCallback);
-        }
+        _instance.facebookInteractionLayer.getUser();
     }
 
-    public static void shareLink(String link, FacebookShareCallback facebookShareCallback) {
+    public static void shareLink(String link) {
         if(_instance == null) {
             return;
         }
-        _instance.facebookInteractionLayer.shareLink(_instance, link, facebookShareCallback);
+        _instance.facebookInteractionLayer.shareLink(_instance, link);
     }
 }

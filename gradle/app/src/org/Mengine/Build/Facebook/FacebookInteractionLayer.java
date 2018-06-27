@@ -34,19 +34,19 @@ public class FacebookInteractionLayer {
     private CallbackManager _callbackManager;
     private AccessToken _accessToken;
 
-    static native void onLoginSuccess(String loginResult);
+    static native void AndroidNativeFacebook_onLoginSuccess(String loginResult);
 
-    static native void onLoginCancel();
+    static native void AndroidNativeFacebook_onLoginCancel();
 
-    static native void onLoginError(String exception);
+    static native void AndroidNativeFacebook_onLoginError(String exception);
 
-    static native void onUserFetchSuccess(String object, String response);
+    static native void AndroidNativeFacebook_onUserFetchSuccess(String object, String response);
 
-    static native void onShareSuccess(String postId);
+    static native void AndroidNativeFacebook_onShareSuccess(String postId);
 
-    static native void onShareCancel();
+    static native void AndroidNativeFacebook_onShareCancel();
 
-    static native void onShareError(String exception);
+    static native void AndroidNativeFacebook_onShareError(String exception);
 
     public FacebookInteractionLayer(CallbackManager callbackManager) {
         _callbackManager = callbackManager;
@@ -57,17 +57,17 @@ public class FacebookInteractionLayer {
             @Override
             public void onSuccess(LoginResult loginResult) {
                 _accessToken = loginResult.getAccessToken();
-                onLoginSuccess(_accessToken.getToken());
+                AndroidNativeFacebook_onLoginSuccess(_accessToken.getToken());
             }
 
             @Override
             public void onCancel() {
-                onLoginCancel();
+                AndroidNativeFacebook_onLoginCancel();
             }
 
             @Override
             public void onError(FacebookException exception) {
-                onLoginError(exception.getMessage());
+                AndroidNativeFacebook_onLoginError(exception.getMessage());
             }
         });
         List<String> permissions;
@@ -84,7 +84,7 @@ public class FacebookInteractionLayer {
                 (_accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        onUserFetchSuccess(object.toString(), response.getRawResponse());
+                        AndroidNativeFacebook_onUserFetchSuccess(object.toString(), response.getRawResponse());
                     }
                 });
         Bundle parameters = new Bundle();
@@ -98,17 +98,17 @@ public class FacebookInteractionLayer {
         shareDialog.registerCallback(_callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
-                onShareSuccess(result.getPostId());
+                AndroidNativeFacebook_onShareSuccess(result.getPostId());
             }
 
             @Override
             public void onCancel() {
-                onShareCancel();
+                AndroidNativeFacebook_onShareCancel();
             }
 
             @Override
             public void onError(FacebookException exception) {
-                onShareError(exception.getMessage());
+                AndroidNativeFacebook_onShareError(exception.getMessage());
             }
         });
         if (ShareDialog.canShow(ShareLinkContent.class)) {

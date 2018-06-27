@@ -14,56 +14,58 @@
 #define FACEBOOK_JAVA_INTERFACE(function)                CONCAT1(FACEBOOK_JAVA_PREFIX, FacebookInteractionLayer, function)
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(setupFacebookJNI)(JNIEnv *mEnv, jclass cls);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_setupFacebookJNI )(JNIEnv *mEnv, jclass cls);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onLoginSuccess)(JNIEnv *env, jclass cls,
-                                        jobject loginResult);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginSuccess )(JNIEnv *env, jclass cls,
+    jobject loginResult);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onLoginCancel)(JNIEnv *env, jclass cls);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginCancel )(JNIEnv *env, jclass cls);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onLoginError)(JNIEnv *env, jclass cls,
-                                      jstring exception_);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginError )(JNIEnv *env, jclass cls,
+    jstring exception_);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onUserFetchSuccess)(JNIEnv *env, jclass cls,
-                                            jstring object_, jstring response_);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onUserFetchSuccess )(JNIEnv *env, jclass cls,
+    jstring object_, jstring response_);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onShareSuccess)(JNIEnv *env, jclass cls,
-                                        jstring postId_);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onShareSuccess )(JNIEnv *env, jclass cls,
+    jstring postId_);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onShareCancel)(JNIEnv *env, jclass cls);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onShareCancel )(JNIEnv *env, jclass cls);
 
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onShareError)(JNIEnv *env, jclass cls,
-                                      jstring exception_);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onShareError )(JNIEnv *env, jclass cls,
+    jstring exception_);
 
 static pthread_key_t mThreadKey;
 static JavaVM *mJavaVM;
 
 static jclass mActivityClass;
-static jmethodID mperformLogin;
-static jmethodID mgetUser;
-static jmethodID mshareLink;
+static jmethodID jmethodID_performLogin;
+static jmethodID jmethodID_getUser;
+static jmethodID jmethodID_shareLink;
 
-static FacebookLoginCallback *currentFacebookLoginCallback;
-static FacebookUserCallback *currentFacebookUserCallback;
-static FacebookShareCallback *currentFacebookShareCallback;
-
-static void FB_JNI_ThreadDestroyed(void *value) {
+static Mengine::FacebookLoginCallbackPtr g_currentFacebookLoginCallback;
+static Mengine::FacebookUserCallbackPtr g_currentFacebookUserCallback;
+static Mengine::FacebookShareCallbackPtr g_currentFacebookShareCallback;
+//////////////////////////////////////////////////////////////////////////
+static void FB_JNI_ThreadDestroyed( void *value ) 
+{
     /* The thread is being destroyed, detach it from the Java VM and set the mThreadKey value to NULL as required */
-    JNIEnv *env = (JNIEnv *) value;
-    if (env != NULL) {
+    JNIEnv *env = (JNIEnv *)value;
+    if( env != NULL ) {
         mJavaVM->DetachCurrentThread();
-        pthread_setspecific(mThreadKey, NULL);
+        pthread_setspecific( mThreadKey, NULL );
     }
 }
-
-JNIEnv *FB_JNI_GetEnv(void) {
+//////////////////////////////////////////////////////////////////////////
+JNIEnv *FB_JNI_GetEnv( void ) 
+{
     /* From http://developer.android.com/guide/practices/jni.html
      * All threads are Linux threads, scheduled by the kernel.
      * They're usually started from managed code (using Thread.start), but they can also be created elsewhere and then
@@ -77,8 +79,8 @@ JNIEnv *FB_JNI_GetEnv(void) {
      */
 
     JNIEnv *env;
-    int status = mJavaVM->AttachCurrentThread(&env, NULL);
-    if (status < 0) {
+    int status = mJavaVM->AttachCurrentThread( &env, NULL );
+    if( status < 0 ) {
         return 0;
     }
 
@@ -91,162 +93,232 @@ JNIEnv *FB_JNI_GetEnv(void) {
      * Note: You can call this function any number of times for the same thread, there's no harm in it
      *       (except for some lost CPU cycles)
      */
-    pthread_setspecific(mThreadKey, (void *) env);
+    pthread_setspecific( mThreadKey, (void *)env );
 
     return env;
 }
-
-int FB_JNI_SetupThread(void) {
+//////////////////////////////////////////////////////////////////////////
+int FB_JNI_SetupThread( void ) 
+{
     FB_JNI_GetEnv();
+
     return 1;
 }
-
-JNIEXPORT jint JNICALL JNI_OnLoad(JavaVM *vm, void *reserved) {
+//////////////////////////////////////////////////////////////////////////
+JNIEXPORT jint JNICALL JNI_OnLoad( JavaVM *vm, void *reserved ) {
     JNIEnv *env;
     mJavaVM = vm;
-    if (mJavaVM->GetEnv((void **) &env, JNI_VERSION_1_4) != JNI_OK) {
+    if( mJavaVM->GetEnv( (void **)&env, JNI_VERSION_1_4 ) != JNI_OK ) {
         return -1;
     }
     /*
      * Create mThreadKey so we can keep track of the JNIEnv assigned to each thread
      * Refer to http://developer.android.com/guide/practices/design/jni.html for the rationale behind this
      */
-    if (pthread_key_create(&mThreadKey, FB_JNI_ThreadDestroyed) != 0) {
+    if( pthread_key_create( &mThreadKey, FB_JNI_ThreadDestroyed ) != 0 ) {
         return -1;
     }
     FB_JNI_SetupThread();
 
     return JNI_VERSION_1_4;
 }
-
+//////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(setupFacebookJNI)(JNIEnv *mEnv, jclass cls) {
-    mActivityClass = (jclass) (mEnv->NewGlobalRef(cls));
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_setupFacebookJNI )(JNIEnv *mEnv, jclass cls)
+{
+    mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
-    mperformLogin = mEnv->GetStaticMethodID(mActivityClass,
-                                            "performLogin", "([Ljava/lang/String;)");
-    mgetUser = mEnv->GetStaticMethodID(mActivityClass,
-                                       "getUser", "()");
-    mshareLink = mEnv->GetStaticMethodID(mActivityClass,
-                                         "shareLink", "(Ljava/lang/String;)");
+    jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "performLogin", "([Ljava/lang/String;)" );
+    jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "getUser", "()" );
+    jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "shareLink", "(Ljava/lang/String;)" );
 }
+//////////////////////////////////////////////////////////////////////////
+JNIEXPORT void JNICALL 
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginSuccess )(JNIEnv *env, jclass cls, jstring accessToken_)
+{
+    const char * accessToken = env->GetStringUTFChars( accessToken_, 0 );
 
-
-JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onLoginSuccess)(JNIEnv *env, jclass cls,
-                                        jstring accessToken_) {
-    char *accessToken = (char *) env->GetStringUTFChars(accessToken_, 0);
-
-    if (currentFacebookLoginCallback != NULL) {
-        currentFacebookLoginCallback->onLoginSuccess(accessToken);
+    Mengine::FacebookLoginCallbackPtr callback = g_currentFacebookLoginCallback;
+    g_currentFacebookLoginCallback = nullptr;
+    
+    if( callback != nullptr )
+    {
+        callback->onLoginSuccess( accessToken );
     }
 
-    env->ReleaseStringUTFChars(accessToken_, accessToken);
+    env->ReleaseStringUTFChars( accessToken_, accessToken );
 }
-
+//////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onLoginCancel)(JNIEnv *env, jclass cls) {
-    if (currentFacebookLoginCallback != NULL) {
-        currentFacebookLoginCallback->onLoginCancel();
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginCancel )(JNIEnv *env, jclass cls) 
+{
+    Mengine::FacebookLoginCallbackPtr callback = g_currentFacebookLoginCallback;
+    g_currentFacebookLoginCallback = nullptr;
+
+    if( callback != nullptr )
+    {
+        callback->onLoginCancel();
     }
 }
-
+//////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onLoginError)(JNIEnv *env, jclass cls,
-                                      jstring exception_) {
-    char *exception = (char *) env->GetStringUTFChars(exception_, 0);
-    if (currentFacebookLoginCallback != NULL) {
-        currentFacebookLoginCallback->onLoginError(exception);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onLoginError )(JNIEnv *env, jclass cls, jstring exception_) 
+{
+    const char * exception = env->GetStringUTFChars( exception_, 0 );
+
+    Mengine::FacebookLoginCallbackPtr callback = g_currentFacebookLoginCallback;
+    g_currentFacebookLoginCallback = nullptr;
+
+    if( callback != nullptr )
+    {
+        callback->onLoginError( exception );
     }
-    env->ReleaseStringUTFChars(exception_, exception);
+
+    env->ReleaseStringUTFChars( exception_, exception );
 }
-
-
+//////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onUserFetchSuccess)(JNIEnv *env, jclass cls,
-                                            jstring object_, jstring response_) {
-    char *object = (char *) env->GetStringUTFChars(object_, 0);
-    char *response = (char *) env->GetStringUTFChars(response_, 0);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onUserFetchSuccess )(JNIEnv *env, jclass cls, jstring object_, jstring response_) 
+{
+    const char * object = env->GetStringUTFChars( object_, 0 );
+    const char * response = env->GetStringUTFChars( response_, 0 );
 
-    if (currentFacebookUserCallback != NULL) {
-        currentFacebookUserCallback->onUserFetchSuccess(object, response);
+    Mengine::FacebookUserCallbackPtr callback = g_currentFacebookUserCallback;
+    g_currentFacebookUserCallback = nullptr;
+
+    if( callback != nullptr )
+    {
+        callback->onUserFetchSuccess( object, response );
     }
-    env->ReleaseStringUTFChars(object_, object);
-    env->ReleaseStringUTFChars(response_, response);
+
+    env->ReleaseStringUTFChars( object_, object );
+    env->ReleaseStringUTFChars( response_, response );
 }
-
-
+//////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onShareSuccess)(JNIEnv *env, jclass cls,
-                                        jstring postId_) {
-    char *postId = (char *) env->GetStringUTFChars(postId_, 0);
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_onShareSuccess )(JNIEnv *env, jclass cls, jstring postId_) 
+{
+    const char * postId = env->GetStringUTFChars( postId_, 0 );
 
-    if (currentFacebookShareCallback != NULL) {
-        currentFacebookShareCallback->onShareSuccess(postId);
+    Mengine::FacebookShareCallbackPtr callback = g_currentFacebookShareCallback;
+    g_currentFacebookShareCallback = nullptr;
+
+    if( callback != nullptr )
+    {
+        callback->onShareSuccess( postId );
     }
-    env->ReleaseStringUTFChars(postId_, postId);
-}
 
+    env->ReleaseStringUTFChars( postId_, postId );
+}
+//////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onShareCancel)(JNIEnv *env, jclass cls) {
-    if (currentFacebookShareCallback != NULL) {
-        currentFacebookShareCallback->onShareCancel();
+FACEBOOK_JAVA_INTERFACE( onShareCancel )(JNIEnv *env, jclass cls) 
+{
+    Mengine::FacebookShareCallbackPtr callback = g_currentFacebookShareCallback;
+    g_currentFacebookShareCallback = nullptr;
+
+    if( callback != nullptr )
+    {
+        callback->onShareCancel();
     }
 }
-
+//////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-FACEBOOK_JAVA_INTERFACE(onShareError)(JNIEnv *env, jclass cls,
-                                      jstring exception_) {
-    char *exception = (char *) env->GetStringUTFChars(exception_, 0);
+FACEBOOK_JAVA_INTERFACE( onShareError )(JNIEnv *env, jclass cls, jstring exception_)
+{
+    const char * exception = env->GetStringUTFChars( exception_, 0 );
 
-    if (currentFacebookShareCallback != NULL) {
-        currentFacebookShareCallback->onShareError(exception);
+    Mengine::FacebookShareCallbackPtr callback = g_currentFacebookShareCallback;
+    g_currentFacebookShareCallback = nullptr;
+
+    if( callback != nullptr )
+    {
+        callback->onShareError( exception );
     }
-    env->ReleaseStringUTFChars(exception_, exception);
-}
 
+    env->ReleaseStringUTFChars( exception_, exception );
+}
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY(AndroidNativeFacebook, Mengine::AndroidNativeFacebookPlugin)
+PLUGIN_FACTORY( AndroidNativeFacebook, Mengine::AndroidNativeFacebookPlugin )
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-//Methods to be called from Python
-///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
-namespace Mengine {
+namespace Mengine
+{
     //////////////////////////////////////////////////////////////////////////
-    AndroidNativeFacebookPlugin::AndroidNativeFacebookPlugin() {
+    AndroidNativeFacebookPlugin::AndroidNativeFacebookPlugin()
+    {
     }
-
     //////////////////////////////////////////////////////////////////////////
-    AndroidNativeFacebookPlugin::~AndroidNativeFacebookPlugin() {
+    AndroidNativeFacebookPlugin::~AndroidNativeFacebookPlugin()
+    {
     }
-
-    static void
-    performLogin(FacebookLoginCallback *facebookLoginCallback,
-                 std::vector<char *> *readPermissions) {
-        currentFacebookLoginCallback = facebookLoginCallback;
-        JNIEnv *mEnv = FB_JNI_GetEnv();
-        if (readPermissions != NULL) {
-            jstring stringPermissions[readPermissions->size()];
-            for (size_t i = 0; i < readPermissions->size(); i++) {
-                stringPermissions[i] = (jstring) (mEnv->NewStringUTF(
-                        (*readPermissions)[i]));
-            }
-            mEnv->CallStaticVoidMethod(mActivityClass, mperformLogin, stringPermissions);
-        } else {
-            mEnv->CallStaticVoidMethod(mActivityClass, mperformLogin, NULL);
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeFacebookPlugin::performLogin( const FacebookLoginCallbackPtr & _callback, const TVectorString & _permissions )
+    {
+        if( g_currentFacebookLoginCallback != nullptr )
+        {
+            return false;
         }
-    }
 
-    static void getUser(FacebookUserCallback *facebookUserCallback) {
-        currentFacebookUserCallback = facebookUserCallback;
-        JNIEnv *mEnv = FB_JNI_GetEnv();
-        mEnv->CallStaticVoidMethod(mActivityClass, mgetUser);
-    }
+        g_currentFacebookLoginCallback = _callback;
 
-    static void shareLink(char *link, FacebookShareCallback *facebookShareCallback) {
-        currentFacebookShareCallback = facebookShareCallback;
         JNIEnv *mEnv = FB_JNI_GetEnv();
-        jstring stringLink = (jstring) (mEnv->NewStringUTF(link));
-        mEnv->CallStaticVoidMethod(mActivityClass, mshareLink, stringLink);
+        
+        if( _permissions.empty() == false )
+        {
+            TVectorString::size_type permissionsCount = _permissions.size();
+
+            jstring jpermissions[permissionsCount];
+
+            uint32_t jpermissionIterator = 0;
+            for( const String & permission : _permissions )
+            {
+                const Char * permission_str = permission.c_str();
+
+                jpermissions[jpermissionIterator] = (jstring)(mEnv->NewStringUTF( permission_str ));
+            }
+
+            mEnv->CallStaticVoidMethod( mActivityClass, jmethodID_performLogin, jpermissions );
+        }
+        else
+        {
+            mEnv->CallStaticVoidMethod( mActivityClass, jmethodID_performLogin, nullptr );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeFacebookPlugin::getUser( const FacebookUserCallbackPtr & _callback )
+    {
+        if( g_currentFacebookUserCallback != nullptr )
+        {
+            return false;
+        }
+
+        g_currentFacebookUserCallback = _callback;
+
+        JNIEnv *mEnv = FB_JNI_GetEnv();
+
+        mEnv->CallStaticVoidMethod( mActivityClass, jmethodID_getUser );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeFacebookPlugin::shareLink( const String & _link, const FacebookShareCallbackPtr & _callback )
+    {
+        if( g_currentFacebookShareCallback != nullptr )
+        {
+            return false;
+        }
+
+        g_currentFacebookShareCallback = _callback;
+
+        JNIEnv *mEnv = FB_JNI_GetEnv();
+
+        const Char * link_str = _link.c_str();
+        jstring jlink = (jstring)(mEnv->NewStringUTF( link_str ));
+
+        mEnv->CallStaticVoidMethod( mActivityClass, jmethodID_shareLink, jlink );
+        
+        return true;
     }
 }

@@ -536,13 +536,29 @@ namespace Mengine
         SCRIPT_SERVICE()
 			->addGlobalModule( "_DEVELOPMENT", pybind::get_bool( developmentMode ) );
 
-#   ifdef MENGINE_MASTER_RELEASE
+#ifdef WIN32
+        SCRIPT_SERVICE()
+            ->addGlobalModule( "_WIN32", pybind::get_bool( true ) );
+#else
+        SCRIPT_SERVICE()
+            ->addGlobalModule( "_WIN32", pybind::get_bool( false ) );
+#endif
+
+#ifdef __ANDROID__
+        SCRIPT_SERVICE()
+            ->addGlobalModule( "_ANDROID", pybind::get_bool( true ) );
+#else
+        SCRIPT_SERVICE()
+            ->addGlobalModule( "_ANDROID", pybind::get_bool( false ) );
+#endif
+
+#ifdef MENGINE_MASTER_RELEASE
         SCRIPT_SERVICE()
             ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool(true) );
-#   else
+#else
         SCRIPT_SERVICE()
             ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool(false) );
-#   endif
+#endif
 
 		if( SCRIPT_SERVICE()
 			->bootstrapModules() == false )

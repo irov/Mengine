@@ -11,7 +11,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void onLoginSuccess( const String & _accessToken ) = 0;
+        virtual void onLoginSuccess( const String & _token ) = 0;
         virtual void onLoginCancel() = 0;
         virtual void onLoginError( const String & _exception ) = 0;
     };

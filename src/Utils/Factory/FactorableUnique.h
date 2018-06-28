@@ -10,7 +10,9 @@ namespace Mengine
 		, public MemoryAllocator<T>
 	{
 	public:
-		FactorableUnique()
+        template<class ... Args>
+		FactorableUnique( Args ... args )
+            : T( args ... )
 		{
 		}
 

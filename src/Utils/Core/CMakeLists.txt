@@ -108,6 +108,8 @@ src
    
     Magic.h    
     Mixin.h
+	
+	Callback.h
     
     MixerValue.h
     MixerValue.cpp

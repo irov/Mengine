@@ -64,7 +64,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Point::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->getMaterial3( EM_DEBUG, PT_TRIANGLELIST, 0, nullptr );
+        RenderMaterialInterfacePtr material = this->getMaterial3( EM_DEBUG, PT_LINELIST, 0, nullptr );
 
         return material;
     }
@@ -152,7 +152,7 @@ namespace Mengine
 			return;
 		}
 
-		float debugWidth = 5.f;
+		float debugWidth = 2.5f;
 
 		vertices[0].position.x = pos.x - debugWidth;
 		vertices[0].position.y = pos.y - debugWidth;

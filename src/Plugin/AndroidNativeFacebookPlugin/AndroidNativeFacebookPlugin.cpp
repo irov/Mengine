@@ -414,7 +414,9 @@ namespace Mengine
             {
                 const Char * permission_str = permission.c_str();
 
-                jpermissions[jpermissionIterator] = (jstring)(mEnv->NewStringUTF( permission_str ));
+                jstring jpermission_str = mEnv->NewStringUTF( permission_str );
+
+                jpermissions[jpermissionIterator++] = jpermission_str;
             }
 
             mEnv->CallStaticVoidMethod( mActivityClass, jmethodID_performLogin, jpermissions );
@@ -455,7 +457,7 @@ namespace Mengine
         JNIEnv *mEnv = FB_JNI_GetEnv();
 
         const Char * link_str = _link.c_str();
-        jstring jlink = (jstring)(mEnv->NewStringUTF( link_str ));
+        jstring jlink = mEnv->NewStringUTF( link_str );
 
         mEnv->CallStaticVoidMethod( mActivityClass, jmethodID_shareLink, jlink );
         

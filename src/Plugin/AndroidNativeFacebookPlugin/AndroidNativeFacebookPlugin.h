@@ -27,6 +27,7 @@ namespace Mengine
         void _finalize() override;
 
     public:
+        bool isLoggedIn();
         bool performLogin( const TVectorString & _permissions, const FacebookLoginCallbackPtr & _callback );
         bool getUser( const FacebookUserCallbackPtr & _callback );
         bool shareLink( const String & _link, const FacebookShareCallbackPtr & _callback );

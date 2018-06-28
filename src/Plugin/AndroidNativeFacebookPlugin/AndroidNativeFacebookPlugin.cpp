@@ -401,29 +401,30 @@ namespace Mengine
 
         g_currentFacebookLoginCallback = _callback;
 
-        JNIEnv *mEnv = FB_JNI_GetEnv();
+        JNIEnv *env = FB_JNI_GetEnv();
         
         if( _permissions.empty() == false )
         {
             TVectorString::size_type permissionsCount = _permissions.size();
 
-            jstring jpermissions[permissionsCount];
+            jclass jclass_string = env->FindClass("java/lang/String");
+            jobjectArray jpermissions = env->NewObjectArray(permissionsCount, jclass_string, NULL);
 
             uint32_t jpermissionIterator = 0;
             for( const String & permission : _permissions )
             {
                 const Char * permission_str = permission.c_str();
 
-                jstring jpermission_str = mEnv->NewStringUTF( permission_str );
+                jstring jpermission = env->NewStringUTF( permission_str );
 
-                jpermissions[jpermissionIterator++] = jpermission_str;
+                env->SetObjectArrayElement(jpermissions, jpermissionIterator++, jpermission);
             }
 
-            mEnv->CallStaticVoidMethod( mActivityClass, jmethodID_performLogin, jpermissions );
+            env->CallStaticVoidMethod( mActivityClass, jmethodID_performLogin, jpermissions );
         }
         else
         {
-            mEnv->CallStaticVoidMethod( mActivityClass, jmethodID_performLogin, nullptr );
+            env->CallStaticVoidMethod( mActivityClass, jmethodID_performLogin, nullptr );
         }
 
         return true;
@@ -438,9 +439,9 @@ namespace Mengine
 
         g_currentFacebookUserCallback = _callback;
 
-        JNIEnv *mEnv = FB_JNI_GetEnv();
+        JNIEnv * env = FB_JNI_GetEnv();
 
-        mEnv->CallStaticVoidMethod( mActivityClass, jmethodID_getUser );
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_getUser );
 
         return true;
     }
@@ -454,12 +455,12 @@ namespace Mengine
 
         g_currentFacebookShareCallback = _callback;
 
-        JNIEnv *mEnv = FB_JNI_GetEnv();
+        JNIEnv * env = FB_JNI_GetEnv();
 
         const Char * link_str = _link.c_str();
-        jstring jlink = mEnv->NewStringUTF( link_str );
+        jstring jlink = env->NewStringUTF( link_str );
 
-        mEnv->CallStaticVoidMethod( mActivityClass, jmethodID_shareLink, jlink );
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_shareLink, jlink );
         
         return true;
     }

@@ -1183,6 +1183,14 @@ namespace Mengine
             return;
         }
 
+        if( m_debugStepRenderMode == true /*&& _debug == false*/ )
+        {
+            if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
+            {
+                return;
+            }
+        }
+
         const RenderPassPtr & rp = this->requestRenderPass_( _viewport, _camera, _scissor, _target, _material, _vertexCount, _indexCount );
 
         mt::box2f bb;
@@ -1212,14 +1220,6 @@ namespace Mengine
         mt::transpose_box( bb_homogenize, vp.begin );
         
         RenderMaterialInterfacePtr ro_material = _material;
-
-        if( m_debugStepRenderMode == true /*&& _debug == false*/ )
-        {
-            if( m_iterateRenderObjects++ >= m_limitRenderObjects && m_limitRenderObjects > 0 && m_stopRenderObjects == false )
-            {
-                return;
-            }
-        }
 
         m_debugInfo.object += 1;
 

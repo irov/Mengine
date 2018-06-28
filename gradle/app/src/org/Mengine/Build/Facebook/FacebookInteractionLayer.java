@@ -50,6 +50,11 @@ public class FacebookInteractionLayer {
 
     public FacebookInteractionLayer(CallbackManager callbackManager) {
         _callbackManager = callbackManager;
+        _accessToken = AccessToken.getCurrentAccessToken();
+    }
+
+    public boolean isLoggedIn() {
+        return _accessToken != null && !_accessToken.isExpired();
     }
 
     public void performLogin(Activity activity, String[] readPermissions) {
@@ -84,7 +89,9 @@ public class FacebookInteractionLayer {
                 (_accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
-                        AndroidNativeFacebook_onUserFetchSuccess(object.toString(), response.getRawResponse());
+                        String objectString = object != null ? object.toString() : "";
+                        String responseString = response != null ? response.toString() : "";
+                        AndroidNativeFacebook_onUserFetchSuccess(objectString, responseString);
                     }
                 });
         Bundle parameters = new Bundle();
@@ -93,11 +100,12 @@ public class FacebookInteractionLayer {
         request.executeAsync();
     }
 
-    public void shareLink(Activity activity, String link) {
+    public void shareLink(final Activity activity, String link) {
         ShareDialog shareDialog = new ShareDialog(activity);
         shareDialog.registerCallback(_callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
+                String post = result.getPostId() != null ? result.getPostId() : "";
                 AndroidNativeFacebook_onShareSuccess(result.getPostId());
             }
 

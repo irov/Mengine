@@ -1036,11 +1036,11 @@ namespace Mengine
         return batch;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::testRenderPass_( const RenderViewportInterfacePtr & _viewport
+    bool RenderEngine::testRenderPass_( const RenderBatchPtr & _batch
+        , const RenderViewportInterfacePtr & _viewport
         , const RenderCameraInterfacePtr & _camera
         , const RenderScissorInterfacePtr & _scissor
-        , const RenderTargetInterfacePtr & _target
-        , const RenderBatchPtr & _renderBatch ) const
+        , const RenderTargetInterfacePtr & _target ) const
     {
         if( m_renderPasses.empty() == true )
         {
@@ -1049,7 +1049,7 @@ namespace Mengine
 
         const RenderPassPtr & pass = m_renderPasses.back();
 
-        if( pass->batch != _renderBatch ||
+        if( pass->batch != _batch ||
             pass->viewport != _viewport ||
             pass->camera != _camera ||
             pass->scissor != _scissor ||
@@ -1079,7 +1079,7 @@ namespace Mengine
         batch->vertexCount += _vertexCount;
         batch->indexCount += _indexCount;
 
-        if( this->testRenderPass_( _viewport, _camera, _scissor, _target, batch ) == true )
+        if( this->testRenderPass_( batch, _viewport, _camera, _scissor, _target ) == true )
         {
             RenderPassPtr pass = m_factoryRenderPass->createObject();
 

@@ -168,11 +168,11 @@ namespace Mengine
     protected:
         const RenderBatchPtr & requestRenderBatch_( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount );
 
-        bool testRenderPass_( const RenderViewportInterfacePtr & _viewport
+        bool testRenderPass_( const RenderBatchPtr & _batch
+            , const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
             , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
-            , const RenderBatchPtr & _renderBatch ) const;
+            , const RenderTargetInterfacePtr & _target ) const;
 
         const RenderPassPtr & requestRenderPass_( const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera

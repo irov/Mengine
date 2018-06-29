@@ -53,6 +53,7 @@ static pthread_key_t mThreadKey;
 static JavaVM *mJavaVM;
 
 static jclass mActivityClass;
+static jmethodID jmethodID_isLoggedIn;
 static jmethodID jmethodID_performLogin;
 static jmethodID jmethodID_getUser;
 static jmethodID jmethodID_shareLink;
@@ -140,6 +141,7 @@ MENGINE_JAVA_INTERFACE( AndroidNativeFacebook_1setupFacebookJNI )(JNIEnv *mEnv, 
     jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)V" );
     jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()V" );
     jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)V" );
+    jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
 }
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL 
@@ -390,6 +392,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeFacebookPlugin::_finalize()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeFacebookPlugin::isLoggedIn()
+    {
+        JNIEnv * env = FB_JNI_GetEnv();
+
+        jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_isLoggedIn );
+
+        bool returnValue = (bool)jReturnValue;
+
+        return returnValue;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeFacebookPlugin::performLogin( const TVectorString & _permissions, const FacebookLoginCallbackPtr & _callback )

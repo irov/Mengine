@@ -60,22 +60,29 @@ public class MengineActivity extends SDLActivity {
     }
 
     //FacebookStaticMethods
+    public static boolean facebookIsLoggedIn() {
+        if (_instance == null) {
+            return false;
+        }
+        return _instance.facebookInteractionLayer.isLoggedIn();
+    }
+
     public static void facebookPerformLogin(String[] readPermissions) {
-        if(_instance == null) {
+        if (_instance == null) {
             return;
         }
         _instance.facebookInteractionLayer.performLogin(_instance, readPermissions);
     }
 
     public static void facebookGetUser() {
-        if(_instance == null) {
+        if (_instance == null) {
             return;
         }
         _instance.facebookInteractionLayer.getUser();
     }
 
     public static void facebookShareLink(String link) {
-        if(_instance == null) {
+        if (_instance == null) {
             return;
         }
         _instance.facebookInteractionLayer.shareLink(_instance, link);

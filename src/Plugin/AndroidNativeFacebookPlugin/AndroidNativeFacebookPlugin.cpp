@@ -265,6 +265,8 @@ namespace Mengine
         {
         public:
             PythonFacebookLoginCallback( const pybind::object & _cb, const pybind::args & _args )
+                : m_cb(_cb)
+                , m_args(_args)
             {}
 
         protected:

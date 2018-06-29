@@ -10,7 +10,10 @@ import org.Mengine.Build.Facebook.FacebookInteractionLayer;
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
-public class MengineActivity extends SDLActivity {
+import com.unity3d.ads.mediation.IUnityAdsExtendedListener;
+import com.unity3d.ads.UnityAds;
+
+public class MengineActivity extends SDLActivity implements IUnityAdsExtendedListener {
 
     public FacebookInteractionLayer facebookInteractionLayer;
 
@@ -59,7 +62,9 @@ public class MengineActivity extends SDLActivity {
         return new MengineSurface(context);
     }
 
-    //FacebookStaticMethods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //Facebook Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public static boolean facebookIsLoggedIn() {
         if (_instance == null) {
             return false;
@@ -86,5 +91,39 @@ public class MengineActivity extends SDLActivity {
             return;
         }
         _instance.facebookInteractionLayer.shareLink(_instance, link);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //Unity Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+
+    @Override
+    public void onUnityAdsReady(String s) {
+
+    }
+
+    @Override
+    public void onUnityAdsStart(String s) {
+
+    }
+
+    @Override
+    public void onUnityAdsFinish(String s, UnityAds.FinishState finishState) {
+
+    }
+
+    @Override
+    public void onUnityAdsError(UnityAds.UnityAdsError unityAdsError, String s) {
+
+    }
+
+    @Override
+    public void onUnityAdsClick(String s) {
+
+    }
+
+    @Override
+    public void onUnityAdsPlacementStateChanged(String s, UnityAds.PlacementState placementState, UnityAds.PlacementState placementState1) {
+
     }
 }

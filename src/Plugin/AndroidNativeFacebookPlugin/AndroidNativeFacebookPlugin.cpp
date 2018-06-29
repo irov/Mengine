@@ -366,6 +366,13 @@ namespace Mengine
 
             return successful;
         }
+        //////////////////////////////////////////////////////////////////////////
+        bool androidFacebookIsLoggedIn( AndroidNativeFacebookPlugin * _plugin )
+        {
+            bool successful = _plugin->isLoggedIn();
+
+            return successful;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     AndroidNativeFacebookPlugin::AndroidNativeFacebookPlugin()
@@ -388,6 +395,7 @@ namespace Mengine
         pybind::def_function_proxy_args( kernel, "androidFacebookPerformLogin", &Detail::androidFacebookPerformLogin, this );
         pybind::def_function_proxy_args( kernel, "androidFacebookGetUser", &Detail::androidFacebookGetUser, this );
         pybind::def_function_proxy_args( kernel, "androidFacebookShareLink", &Detail::androidFacebookShareLink, this );
+        pybind::def_function_proxy( kernel, "androidFacebookIsLoggedIn", &Detail::androidFacebookIsLoggedIn, this );
 
         return true;
     }
@@ -480,3 +488,4 @@ namespace Mengine
         return true;
     }
 }
+  

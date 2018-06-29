@@ -288,6 +288,9 @@ namespace Mengine
 	{
 		PLAYER_SERVICE()
 			->render();
+
+        EVENTABLE_METHOD( this, EVENT_GAME_FRAME_END )
+            ->onGameFrameEnd();
 	}
     //////////////////////////////////////////////////////////////////////////
     namespace
@@ -476,6 +479,11 @@ namespace Mengine
             {
                 m_cb.call( _fillrate );
             }
+
+            void onGameFrameEnd() override
+            {
+                m_cb.call();
+            }
         };
     }
     //////////////////////////////////////////////////////////////////////////
@@ -527,6 +535,8 @@ namespace Mengine
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCloseWindow", EVENT_GAME_CLOSE );
 
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onOverFillrate", EVENT_GAME_OVER_FILLRATE );
+
+        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFrameEnd", EVENT_GAME_FRAME_END );
     }
 	//////////////////////////////////////////////////////////////////////////
 	bool Game::loadPersonality()

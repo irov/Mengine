@@ -1,5 +1,7 @@
 #include "AndroidLinearAccelerationPlugin.h"
 
+#include "Interface/PlatformInterface.h"
+
 #include "Core/ModuleFactory.h"
 
 #include "Logger/Logger.h"
@@ -27,9 +29,16 @@ extern "C" {
             JNIEnv *env, jclass jcls,
             jfloat x, jfloat y, jfloat z) {
 
-        fLastAccelerometer[0] = x;
-        fLastAccelerometer[1] = y;
-        fLastAccelerometer[2] = z;
+        float ax = PLATFORM_SERVICE()
+                ->getJoystickAxis(0);
+        float ay = PLATFORM_SERVICE()
+                ->getJoystickAxis(1);
+        float az = PLATFORM_SERVICE()
+                ->getJoystickAxis(2);
+
+        fLastAccelerometer[0] = ax;
+        fLastAccelerometer[1] = ay;
+        fLastAccelerometer[2] = az;
 
         if( fLastAccelerometerGravityInitialize == false ) {
             fLastAccelerometerGravityInitialize = true;

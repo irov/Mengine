@@ -999,6 +999,9 @@ namespace Mengine
 
                         node->resume( time );
                     }break;
+                default:
+                    {
+                    }break;
                 }
             }break;
         case AE_MOVIE_LAYER_TYPE_VIDEO:
@@ -1052,6 +1055,9 @@ namespace Mengine
                             ->getTime();
 
                         surface->resume( time );
+                    }break;
+                default:
+                    {
                     }break;
                 }
             }break;
@@ -1108,6 +1114,9 @@ namespace Mengine
                             ->getTime();
 
                         surface->resume( time );
+                    }break;
+                default:
+                    {
                     }break;
                 }
             }break;

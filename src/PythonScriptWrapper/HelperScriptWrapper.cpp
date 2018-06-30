@@ -410,6 +410,14 @@ namespace Mengine
             return value;
         }
 
+        float s_getJoystickAxis( uint32_t _index )
+        {
+            float axis = PLATFORM_SERVICE()
+                ->getJoystickAxis( _index );
+
+            return axis;
+        }
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE()
@@ -440,6 +448,35 @@ namespace Mengine
         {
             SCRIPT_SERVICE()
                 ->addGlobalModule( _name, _module );
+        }
+
+    public:
+        float filterpowf( const pybind::list & l, float _pow )
+        {
+            if( l.empty() == true )
+            {
+                return 0.f;
+            }
+
+            if( _pow == 0.f )
+            {
+                return 0.f;
+            }
+
+            float inv_pow = 1.f / _pow;
+
+            float s = 0.f;           
+
+            for( float v : l )
+            {
+                s += ::powf( v, inv_pow );
+            }
+
+            s /= (float)l.size();
+            
+            s = ::powf( s, _pow );
+
+            return s;
         }
 
     public:
@@ -2972,6 +3009,8 @@ namespace Mengine
         pybind::registration_stl_vector_type_cast<String, stdex::vector<String>>(kernel);
         pybind::registration_stl_vector_type_cast<WString, stdex::vector<WString>>(kernel);
 
+        pybind::def_functor( kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
+
         pybind::def_functor( kernel, "enumerator", helperScriptMethod, &HelperScriptMethod::mt_enumerator );
 
         pybind::def_functor( kernel, "rand", helperScriptMethod, &HelperScriptMethod::mt_rand );
@@ -3222,5 +3261,7 @@ namespace Mengine
         pybind::def_functor( kernel, "makeUID", helperScriptMethod, &HelperScriptMethod::s_makeUID );
 
         pybind::def_functor( kernel, "getTextFromID", helperScriptMethod, &HelperScriptMethod::s_getTextFromID );
+
+        pybind::def_functor( kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );
     }
 }

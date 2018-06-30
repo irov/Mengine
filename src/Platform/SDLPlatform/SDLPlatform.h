@@ -1,33 +1,33 @@
-#   pragma once
+#pragma once
 
-#   include "Interface/ApplicationInterface.h"
+#include "Interface/ApplicationInterface.h"
 
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/NotificationServiceInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/ThreadSystemInterface.h"
-#   include "Interface/RenderSystemInterface.h"
-#   include "Interface/SoundSystemInterface.h"
-#   include "Interface/PhysicSystemInterface.h"
-#   include "Interface/ScriptSystemInterface.h"
-#   include "Interface/ParticleSystemInterface.h"
-#   include "Interface/CodecInterface.h"
-#   include "Interface/ConverterInterface.h"
-#   include "Interface/InputSystemInterface.h"
-#   include "Interface/PluginInterface.h"
-#   include "Interface/ArchiveInterface.h"
-#   include "Interface/ModuleInterface.h"
-#   include "Interface/DataInterface.h"
-#   include "Interface/MemoryInterface.h"
-#   include "Interface/ConfigInterface.h"
-#   include "Interface/PrefetcherInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/NotificationServiceInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/ThreadSystemInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/SoundSystemInterface.h"
+#include "Interface/PhysicSystemInterface.h"
+#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ParticleSystemInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/ConverterInterface.h"
+#include "Interface/InputSystemInterface.h"
+#include "Interface/PluginInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/ModuleInterface.h"
+#include "Interface/DataInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/ConfigInterface.h"
+#include "Interface/PrefetcherInterface.h"
 
-#   include "Core/FileLogger.h"
-#   include "Core/ServiceBase.h"
+#include "Core/FileLogger.h"
+#include "Core/ServiceBase.h"
 
-#   include "SDLInput.h"
+#include "SDLInput.h"
 
-#   include "SDL.h"
+#include "SDL.h"
 
 namespace Mengine
 {
@@ -89,6 +89,9 @@ namespace Mengine
         void onEvent( const ConstString & _event, const TMapWParams & _params ) override;
 
     public:
+        float getJoystickAxis( uint32_t _index ) const override;
+
+    public:
         size_t getShortPathName( const WString & _path, WChar * _short, size_t _len ) const override;
 
     public:
@@ -126,6 +129,8 @@ namespace Mengine
         Tags m_platformName;
 
         SDL_Window * m_window;
+
+        SDL_Joystick * m_accelerometer;
         
         SDL_GLContext m_glContext;
 

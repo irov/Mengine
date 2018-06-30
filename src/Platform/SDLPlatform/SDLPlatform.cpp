@@ -152,9 +152,12 @@ namespace Mengine
         float axis = SDL_JoystickGetAxis( m_accelerometer, _index );
 
         const float inv_maxint32f = 1.f / 32767.f;
-
+        
         axis *= inv_maxint32f;
-
+        
+#ifdef TARGET_OS_IPHONE
+        axis *= SDL_IPHONE_MAX_GFORCE;
+#endif
         return axis;
     }
     //////////////////////////////////////////////////////////////////////////

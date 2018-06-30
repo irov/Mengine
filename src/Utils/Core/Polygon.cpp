@@ -230,7 +230,7 @@ namespace Mengine
 				return false;
 			}    /* three consecutive vertices in current polygon, <u,v,w> */
 
-			TVectorPoints::size_type u = v;
+			uint32_t u = v;
 			if( nv <= u )
 			{
 				u = 0;     /* previous */

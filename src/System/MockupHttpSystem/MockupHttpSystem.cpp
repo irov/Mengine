@@ -102,29 +102,16 @@ namespace Mengine
 		return task_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	HttpRequestID MockupHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver )
+	HttpRequestID MockupHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver )
 	{
 		(void)_login;
 		(void)_password;
 
-		if( FILE_SERVICE()
-			->hasFileGroup( _category, nullptr ) == false )
-		{
-			LOGGER_ERROR("MockupHttpSystem::downloadAsset url '%s' not found category '%s' for filepath '%s'"
-				, _url.c_str()
-				, _category.c_str()
-				, _path.c_str()
-				);
-
-			return 0;
-		}
-
-		if( FILE_SERVICE()
-			->existFile( _category, _path, nullptr ) == true )
+		if( _category->existFile( _path ) == true )
 		{
 			LOGGER_ERROR("MockupHttpSystem::downloadAsset url '%s' category '%s' file alredy exist '%s'"
 				, _url.c_str()
-				, _category.c_str()
+				, _category->getName().c_str()
 				, _path.c_str()
 				);
 
@@ -142,7 +129,7 @@ namespace Mengine
 		{
 			LOGGER_ERROR("MockupHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
 				, _url.c_str()
-				, _category.c_str()
+				, _category->getName().c_str()
 				, _path.c_str()
 				);
 

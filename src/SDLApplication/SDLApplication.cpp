@@ -97,8 +97,6 @@ SERVICE_EXTERN( RenderService );
 SERVICE_EXTERN( RenderTextureService );
 SERVICE_EXTERN( RenderMaterialService );
 
-SERVICE_EXTERN( PhysicSystem );
-
 SERVICE_EXTERN( UnicodeSystem );
 
 SERVICE_EXTERN( FileService );

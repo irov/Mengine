@@ -118,7 +118,6 @@
 #include "Logger/Logger.h"
 
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/PhysicSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Identity.h"
@@ -3244,15 +3243,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
 
-        //SCRIPT_CLASS_WRAPPING( FFCamera3D );
-        //SCRIPT_CLASS_WRAPPING( DiscreteEntity );
-        //SCRIPT_CLASS_WRAPPING( RigidBody3D );
-        //SCRIPT_CLASS_WRAPPING( Layer3D );
-        //SCRIPT_CLASS_WRAPPING( RigidBody2D );
-        //SCRIPT_CLASS_WRAPPING( PhysicalBody2D );
-        //SCRIPT_CLASS_WRAPPING( CapsuleController );
-        //SCRIPT_CLASS_WRAPPING( SceneNode3D );
-        //SCRIPT_CLASS_WRAPPING( Camera3D );
         //SCRIPT_CLASS_WRAPPING( RenderMesh );
         SCRIPT_CLASS_WRAPPING( Window );
 

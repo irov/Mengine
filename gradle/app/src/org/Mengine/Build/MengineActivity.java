@@ -7,15 +7,14 @@ import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger;
 
 import org.Mengine.Build.Facebook.FacebookInteractionLayer;
+import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
-import com.unity3d.ads.mediation.IUnityAdsExtendedListener;
-import com.unity3d.ads.UnityAds;
-
-public class MengineActivity extends SDLActivity implements IUnityAdsExtendedListener {
+public class MengineActivity extends SDLActivity {
 
     public FacebookInteractionLayer facebookInteractionLayer;
+    public UnityAdsInteractionLayer unityAdsInteractionLayer;
 
     private static MengineActivity _instance;
     private CallbackManager _callbackManager;
@@ -94,36 +93,19 @@ public class MengineActivity extends SDLActivity implements IUnityAdsExtendedLis
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    //Unity Methods
+    //UnityAds Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-
-    @Override
-    public void onUnityAdsReady(String s) {
-
+    public static void unitySetupAds (boolean debug) {
+        if (_instance == null) {
+            return;
+        }
+        _instance.unityAdsInteractionLayer.setupAds(_instance, debug);
     }
 
-    @Override
-    public void onUnityAdsStart(String s) {
-
-    }
-
-    @Override
-    public void onUnityAdsFinish(String s, UnityAds.FinishState finishState) {
-
-    }
-
-    @Override
-    public void onUnityAdsError(UnityAds.UnityAdsError unityAdsError, String s) {
-
-    }
-
-    @Override
-    public void onUnityAdsClick(String s) {
-
-    }
-
-    @Override
-    public void onUnityAdsPlacementStateChanged(String s, UnityAds.PlacementState placementState, UnityAds.PlacementState placementState1) {
-
+    public static void unityShowAd () {
+        if (_instance == null) {
+            return;
+        }
+        _instance.unityAdsInteractionLayer.showAd(_instance);
     }
 }

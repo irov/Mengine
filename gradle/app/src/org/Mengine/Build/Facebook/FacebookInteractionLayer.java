@@ -28,6 +28,7 @@ import java.util.List;
 public class FacebookInteractionLayer {
 
     private static final String TAG = "Facebook";
+
     private static final String EMAIL = "email";
     private static final String PROFILE = "public_profile";
 

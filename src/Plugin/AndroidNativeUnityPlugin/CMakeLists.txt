@@ -8,7 +8,7 @@ src
 	UnityShowAdCallback.h 
 )
 
-if( MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_DLL )
+if( MENGINE_PLUGIN_ANDROID_NATIVE_UNITY_DLL )
    add_definitions(-DMENGINE_PLUGIN_DLL)
 endif()
 

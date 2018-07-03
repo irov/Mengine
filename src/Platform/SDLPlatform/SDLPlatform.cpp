@@ -47,6 +47,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDLPlatform::SDLPlatform()
         : m_window( nullptr )
+        , m_accelerometer( nullptr )
         , m_glContext( nullptr )
         , m_sdlInput( nullptr )
         , m_icon( 0 )
@@ -141,6 +142,25 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    float SDLPlatform::getJoystickAxis( uint32_t _index ) const
+    {
+        if( m_accelerometer == nullptr )
+        {
+            return 0.f;
+        }
+
+        float axis = SDL_JoystickGetAxis( m_accelerometer, _index );
+
+        const float inv_maxint32f = 1.f / 32767.f;
+        
+        axis *= inv_maxint32f;
+        
+#ifdef TARGET_OS_IPHONE
+        axis *= SDL_IPHONE_MAX_GFORCE;
+#endif
+        return axis;
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t SDLPlatform::getShortPathName( const WString & _path, WChar * _short, size_t _len ) const
     {
         size_t pathSize = _path.size();
@@ -221,7 +241,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::_initializeService()
     {
-        if( SDL_Init( SDL_INIT_VIDEO ) < 0 )
+        if( SDL_Init( SDL_INIT_VIDEO | SDL_INIT_JOYSTICK ) < 0 )
         {
             LOGGER_CRITICAL( "SDL initialization failed" );
             return false;
@@ -274,6 +294,8 @@ namespace Mengine
         {
             return false;
         }
+
+        m_accelerometer = SDL_JoystickOpen( 0 );
 
         return true;
     }

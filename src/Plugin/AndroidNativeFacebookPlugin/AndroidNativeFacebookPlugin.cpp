@@ -17,10 +17,9 @@ extern "C" {
 #define CONCAT2(prefix, class, function)                 Java_ ## prefix ## _ ## class ## _ ## function
 #define MENGINE_JAVA_INTERFACE(function)                 CONCAT1(MENGINE_JAVA_PREFIX, MengineActivity, function)
 #define FACEBOOK_JAVA_INTERFACE(function)                CONCAT1(FACEBOOK_JAVA_PREFIX, FacebookInteractionLayer, function)
-#define UNITY_JAVA_INTERFACE(function)                   CONCAT1(UNITY_JAVA_INTERFACE, UnityAdsInteractionLayer, function)
 
 JNIEXPORT void JNICALL
-MENGINE_JAVA_INTERFACE( AndroidNativeFacebook_1setupExternalsJNI )(JNIEnv *env, jclass cls);
+MENGINE_JAVA_INTERFACE( AndroidNativeFacebook_1setupFacebookJNI )(JNIEnv *mEnv, jclass cls);
 
 JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginSuccess )(JNIEnv *env, jclass cls,
@@ -48,29 +47,7 @@ JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareError )(JNIEnv *env, jclass cls,
     jstring exception_);
 
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsClick )(JNIEnv *env, jclass cls, jstring s_);
-
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsPlacementStateChanged )(JNIEnv *env,
-    jclass cls, jstring s_, jint placementState_, jint placementState1_);
-
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsReady )(JNIEnv *env, jclass cls, jstring s_);
-
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsStart )(JNIEnv *env, jclass cls, jstring s_);
-
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsFinish )(JNIEnv *env, jclass cls, jstring s_,
-    jint finishState_);
-
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsError )(JNIEnv *env, jclass cls,
-    jint unityAdsError_, jstring s_);
-
 }
-
 
 static pthread_key_t mThreadKey;
 static JavaVM *mJavaVM;
@@ -80,9 +57,6 @@ static jmethodID jmethodID_isLoggedIn;
 static jmethodID jmethodID_performLogin;
 static jmethodID jmethodID_getUser;
 static jmethodID jmethodID_shareLink;
-
-static jmethodID jmethodID_setupAds;
-static jmethodID jmethodID_showAd;
 
 static Mengine::FacebookLoginCallbackPtr g_currentFacebookLoginCallback;
 static Mengine::FacebookUserCallbackPtr g_currentFacebookUserCallback;
@@ -160,16 +134,14 @@ JNIEXPORT jint JNICALL JNI_OnLoad( JavaVM *vm, void *reserved ) {
 extern "C" {
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL
-MENGINE_JAVA_INTERFACE( AndroidNativeFacebook_1setupExternalsJNI )(JNIEnv *env, jclass cls)
+MENGINE_JAVA_INTERFACE( AndroidNativeFacebook_1setupFacebookJNI )(JNIEnv *mEnv, jclass cls)
 {
-    mActivityClass = (jclass)(env->NewGlobalRef( cls ));
+    mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
-    jmethodID_performLogin = env->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)V" );
-    jmethodID_getUser = env->GetStaticMethodID( mActivityClass, "facebookGetUser", "()V" );
-    jmethodID_shareLink = env->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)V" );
-    jmethodID_isLoggedIn = env->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
-    jmethodID_setupAds = env->GetStaticMethodID( mActivityClass, "unitySetupAds", "(Z)V" );
-    jmethodID_showAd = env->GetStaticMethodID( mActivityClass, "unityShowAd", "()V" );
+    jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)V" );
+    jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()V" );
+    jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)V" );
+    jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
 }
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL 
@@ -277,62 +249,7 @@ FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareError )(JNIEnv *env, jcla
 
     env->ReleaseStringUTFChars( exception_, exception );
 }
-//////////////////////////////////////////////////////////////////////////
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsClick )(JNIEnv *env, jclass cls, jstring s_)
-{
-    const char * s = env->GetStringUTFChars( s_, 0 );
-
-    env->ReleaseStringUTFChars( s_, s );
-}
-//////////////////////////////////////////////////////////////////////////
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsPlacementStateChanged )(JNIEnv *env,
-    jclass cls, jstring s_, jint placementState_, jint placementState1_)
-{
-    const char * s = env->GetStringUTFChars( s_, 0 );
-    int placementState = static_cast<int>(placementState_);
-    int placementState1 = static_cast<int>(placementState1_);
-
-
-    env->ReleaseStringUTFChars( s_, s );
-}
-//////////////////////////////////////////////////////////////////////////
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsReady )(JNIEnv *env, jclass cls, jstring s_)
-{
-    const char * s = env->GetStringUTFChars( s_, 0 );
-
-    env->ReleaseStringUTFChars( s_, s );
-}
-//////////////////////////////////////////////////////////////////////////
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsStart )(JNIEnv *env, jclass cls, jstring s_)
-{
-    const char * s = env->GetStringUTFChars( s_, 0 );
-
-    env->ReleaseStringUTFChars( s_, s );
-}
-//////////////////////////////////////////////////////////////////////////
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsFinish )(JNIEnv *env, jclass cls, jstring s_,
-    jint finishState_)
-{
-    const char * s = env->GetStringUTFChars( s_, 0 );
-    int finishState = static_cast<int>(finishState_);
-
-    env->ReleaseStringUTFChars( s_, s );
-}
-//////////////////////////////////////////////////////////////////////////
-JNIEXPORT void JNICALL
-UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsError )(JNIEnv *env, jclass cls,
-    jint unityAdsError_, jstring s_)
-{
-    int unityAdsError = static_cast<int>(unityAdsError_);
-    const char * s = env->GetStringUTFChars( s_, 0 );
-
-    env->ReleaseStringUTFChars( s_, s );
-}
+    
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AndroidNativeFacebook, Mengine::AndroidNativeFacebookPlugin )
@@ -570,4 +487,4 @@ namespace Mengine
         
         return true;
     }
-}
+}  

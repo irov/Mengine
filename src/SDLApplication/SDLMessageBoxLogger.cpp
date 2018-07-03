@@ -15,7 +15,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLMessageBoxLogger::log( EMessageLevel _level, uint32_t _flag, const char * _data, size_t _size )
+    void SDLMessageBoxLogger::log( EMessageLevel _level, uint32_t _flag, const char * _data, uint32_t _size )
     {
         (void)_level;
         (void)_flag;

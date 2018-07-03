@@ -6,8 +6,8 @@ import android.hardware.*;
 import org.libsdl.app.SDLSurface;
 
 class MengineSurface extends SDLSurface {
-    public static native void onNativeAccel(float x, float y, float z);
-	public static native void onNativeLinearAccel(float x, float y, float z);
+    //public static native void onNativeAccel(float x, float y, float z);
+	//public static native void onNativeLinearAccel(float x, float y, float z);
 
 
     public MengineSurface(Context context) {
@@ -17,20 +17,13 @@ class MengineSurface extends SDLSurface {
 	@Override
     public void handlePause() {
         super.handlePause();
-        
-		mSensorManager.unregisterListener(this,
-			mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION));
-			
+        	
         //enableSensor(Sensor.TYPE_LINEAR_ACCELERATION, false);
     }
 
     @Override
     public void handleResume() {
         super.handleResume();
-        
-		mSensorManager.registerListener(this,
-			mSensorManager.getDefaultSensor(Sensor.TYPE_LINEAR_ACCELERATION),
-			SensorManager.SENSOR_DELAY_NORMAL, null);
 			
         //enableSensor(Sensor.TYPE_LINEAR_ACCELERATION, true);
     }
@@ -39,6 +32,7 @@ class MengineSurface extends SDLSurface {
     public void onSensorChanged(SensorEvent event) {
         super.onSensorChanged(event);
 
+		/*
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
             MengineSurface.onNativeAccel(
                     event.values[0] / SensorManager.GRAVITY_EARTH,
@@ -52,5 +46,6 @@ class MengineSurface extends SDLSurface {
                     event.values[1] / SensorManager.GRAVITY_EARTH,
                     event.values[2] / SensorManager.GRAVITY_EARTH);
         }
+		*/
     }
 }

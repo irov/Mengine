@@ -55,7 +55,6 @@ namespace Mengine
         bool initializeLoggerEngine_();
         bool initializeUnicodeEngine_();
         bool initializeParticleEngine2_();
-        bool initializePhysicEngine2D_();
         bool initializeRenderEngine_();
         bool initializeSoundEngine_();
         bool initializeSilentSoundEngine_();

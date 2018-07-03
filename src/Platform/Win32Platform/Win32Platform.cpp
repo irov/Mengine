@@ -1648,6 +1648,14 @@ namespace Mengine
 		(void)_params;
 		//Empty
 	}
+    //////////////////////////////////////////////////////////////////////////
+    float Win32Platform::getJoystickAxis( uint32_t _index ) const
+    {
+        (void)_index;
+        //FixMe
+
+        return 0.f;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::openUrlInDefaultBrowser( const WString & _url )
 	{

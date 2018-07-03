@@ -546,6 +546,14 @@ namespace Mengine
         SCRIPT_SERVICE()
 			->addGlobalModule( "_DEVELOPMENT", pybind::get_bool( developmentMode ) );
 
+#ifndef NDEBUG
+        SCRIPT_SERVICE()
+            ->addGlobalModule( "_DEBUG", pybind::get_bool( true ) );
+#else
+        SCRIPT_SERVICE()
+            ->addGlobalModule( "_DEBUG", pybind::get_bool( false ) );
+#endif
+
 #ifdef WIN32
         SCRIPT_SERVICE()
             ->addGlobalModule( "_WIN32", pybind::get_bool( true ) );

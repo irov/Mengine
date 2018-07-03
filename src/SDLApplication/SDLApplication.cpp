@@ -97,8 +97,6 @@ SERVICE_EXTERN( RenderService );
 SERVICE_EXTERN( RenderTextureService );
 SERVICE_EXTERN( RenderMaterialService );
 
-SERVICE_EXTERN( PhysicSystem );
-
 SERVICE_EXTERN( UnicodeSystem );
 
 SERVICE_EXTERN( FileService );
@@ -257,7 +255,7 @@ namespace Mengine
         IniUtil::IniStore ini;
         if( IniUtil::loadIni( ini, defaultFileGroup, applicationPath ) == false )
         {
-            LOGGER_ERROR( "SDLApplication::initializeConfigEngine_ Invalid load application settings %s"
+            LOGGER_ERROR( "SDLApplication::getApplicationPath_ Invalid load application settings %s"
                 , applicationPath.c_str()
             );
 
@@ -268,7 +266,7 @@ namespace Mengine
 
         if( gameIniPath == nullptr )
         {
-            LOGGER_ERROR( "SDLApplication::initializeConfigEngine_ Not found Game Path %s"
+            LOGGER_ERROR( "SDLApplication::getApplicationPath_ Not found Game Path %s"
                 , applicationPath.c_str()
             );
 

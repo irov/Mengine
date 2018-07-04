@@ -59,6 +59,7 @@ namespace Mengine
         EVENT_GAME_USER,
         EVENT_GAME_CLOSE,
         EVENT_GAME_OVER_FILLRATE,
+        EVENT_GAME_FRAME_END,
     };
     //////////////////////////////////////////////////////////////////////////
     class GameEventReceiver
@@ -101,6 +102,7 @@ namespace Mengine
         virtual void onGameUser( const ConstString & _event, const TMapWParams & _params ) = 0;
         virtual bool onGameClose() = 0;
         virtual void onGameOverFillrate( double _fillrate ) = 0;
+        virtual void onGameFrameEnd() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 	class Game

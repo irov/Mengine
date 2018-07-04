@@ -762,6 +762,15 @@ namespace Mengine
 
         PyObject * py_module = pybind::module_init( str_moduleName );
 
+        if( py_module == nullptr )
+        {
+            LOGGER_ERROR( "ScriptEngine::loadModuleBinary %s invalid module init"
+                , str_moduleName
+            );
+
+            return nullptr;
+        }
+
         PyObject * dict = pybind::module_dict( py_module );
 
         if( _packagePath == true )

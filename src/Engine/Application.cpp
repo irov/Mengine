@@ -7,7 +7,6 @@
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ParticleSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
-#include "Interface/PhysicSystemInterface.h"
 #include "Interface/ConfigInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/PrefetcherInterface.h"
@@ -311,8 +310,6 @@ namespace Mengine
         //NODE_FACTORY( TilePolygon );
         NODE_FACTORY( Point );
         NODE_FACTORY( Line );
-        //NODE_FACTORY( RigidBody2D );
-        //NODE_FACTORY( PhysicalBody2D );
         NODE_FACTORY( SoundEmitter );
         NODE_FACTORY( Mesh2D );
         NODE_FACTORY( Grid2D );
@@ -1310,16 +1307,6 @@ namespace Mengine
 
         TIMELINE_SERVICE()
             ->tick( timing );
-
-        //if( m_physicEngine )
-        //{
-        //	m_physicEngine->update( _timing );
-        //}
-
-        //if( m_physicEngine2D )
-        //{
-        //	m_physicEngine2D->update( timing );
-        //}
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::endUpdate()

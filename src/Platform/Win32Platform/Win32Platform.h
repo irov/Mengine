@@ -65,6 +65,9 @@ namespace Mengine
 	public:
 		void onEvent( const ConstString & _event, const TMapWParams & _params ) override;
 
+    public:
+        float getJoystickAxis( uint32_t _index ) const override;
+
 	public:
 		size_t getShortPathName( const WString & _path, WChar * _short, size_t _len ) const override;
 

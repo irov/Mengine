@@ -67,6 +67,9 @@ namespace Mengine
         virtual void onEvent( const ConstString & _event, const TMapWParams & _params ) = 0;
 
     public:
+        virtual float getJoystickAxis( uint32_t _index ) const = 0;
+
+    public:
 		virtual size_t getShortPathName( const WString & _path, WChar * _short, size_t _len ) const = 0;
 
     public:

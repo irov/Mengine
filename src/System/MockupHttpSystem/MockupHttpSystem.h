@@ -24,7 +24,7 @@ namespace Mengine
 	protected:
 		HttpRequestID getMessage( const String & _url, const HttpReceiverInterfacePtr & _receiver ) override;
 		HttpRequestID postMessage( const String & _url, const TMapParams & _params, const HttpReceiverInterfacePtr & _receiver ) override;
-		HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver ) override;
+		HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver ) override;
         HttpRequestID headerData( const String & _url, const TVectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver ) override;
         
 	protected:
@@ -43,7 +43,7 @@ namespace Mengine
             HttpReceiverInterfacePtr receiver;
 		};
 
-		typedef stdex::vector<HttpReceiverDesc> TVectorHttpReceiverDesc;
+		typedef Vector<HttpReceiverDesc> TVectorHttpReceiverDesc;
 		TVectorHttpReceiverDesc m_receiverDescs;
 
 		FactoryPtr m_factoryTaskDummy;

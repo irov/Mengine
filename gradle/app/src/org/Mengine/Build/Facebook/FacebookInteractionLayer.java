@@ -16,6 +16,7 @@ import com.facebook.share.Sharer;
 import com.facebook.share.model.ShareLinkContent;
 import com.facebook.share.widget.ShareDialog;
 
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.Arrays;
@@ -33,6 +34,7 @@ public class FacebookInteractionLayer {
 
     private CallbackManager _callbackManager;
     private AccessToken _accessToken;
+    private String _userId;
 
     static native void AndroidNativeFacebook_onLoginSuccess(String loginResult);
 
@@ -48,9 +50,12 @@ public class FacebookInteractionLayer {
 
     static native void AndroidNativeFacebook_onShareError(String exception);
 
+    static native void AndroidNativeFacebook_onProfilePictureLinkGet(String pictureURL);
+
     public FacebookInteractionLayer(CallbackManager callbackManager) {
         _callbackManager = callbackManager;
         _accessToken = AccessToken.getCurrentAccessToken();
+        _userId = "";
     }
 
     public boolean isLoggedIn() {
@@ -85,12 +90,23 @@ public class FacebookInteractionLayer {
     }
 
     public void getUser() {
+        if (!isLoggedIn()) {
+            AndroidNativeFacebook_onUserFetchSuccess("", "");
+            return;
+        }
         GraphRequest request = GraphRequest.newMeRequest
                 (_accessToken, new GraphRequest.GraphJSONObjectCallback() {
                     @Override
                     public void onCompleted(JSONObject object, GraphResponse response) {
                         String objectString = object != null ? object.toString() : "";
                         String responseString = response != null ? response.toString() : "";
+                        try {
+                            if (object != null) {
+                                _userId = object.getString("id");
+                            }
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
                         AndroidNativeFacebook_onUserFetchSuccess(objectString, responseString);
                     }
                 });
@@ -125,5 +141,34 @@ public class FacebookInteractionLayer {
                     .build();
             shareDialog.show(linkContent);
         }
+    }
+
+    public void getProfilePictureLink(final String typeParameter) {
+        if (!isLoggedIn() || _userId.isEmpty()) {
+            AndroidNativeFacebook_onProfilePictureLinkGet("");
+            return;
+        }
+        GraphRequest request = GraphRequest.newGraphPathRequest(
+                _accessToken,
+                "/" + _userId + "/picture" + typeParameter,
+                new GraphRequest.Callback() {
+                    @Override
+                    public void onCompleted(GraphResponse response) {
+                        String pictureURL = "";
+                        if (response != null) {
+                            JSONObject responseObject = response.getJSONObject();
+                            if (responseObject != null) {
+                                try {
+                                    pictureURL = responseObject.getJSONObject("data").getString("url");
+                                } catch (JSONException e) {
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        AndroidNativeFacebook_onProfilePictureLinkGet(pictureURL);
+                    }
+                });
+
+        request.executeAsync();
     }
 }

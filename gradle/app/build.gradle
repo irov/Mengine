@@ -88,4 +88,5 @@ dependencies {
     androidTestImplementation 'com.android.support.test.espresso:espresso-core:3.0.1'
     implementation project(':SDL2')
     implementation project(':OpenAL32')
+    implementation project(':unity-ads')
 }

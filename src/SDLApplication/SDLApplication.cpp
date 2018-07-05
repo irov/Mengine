@@ -187,6 +187,10 @@ PLUGIN_EXPORT( AndroidLinearAcceleration );
 PLUGIN_EXPORT( AndroidNativeFacebook );
 #endif
 
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITY
+PLUGIN_EXPORT( AndroidNativeUnity );
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -678,6 +682,10 @@ namespace Mengine
         
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK
         MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native...");
+#endif
+        
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITY
+        MENGINE_ADD_PLUGIN( AndroidNativeUnity, "initialize Android Unity Ads Native...");
 #endif
 
 #   undef MENGINE_ADD_PLUGIN

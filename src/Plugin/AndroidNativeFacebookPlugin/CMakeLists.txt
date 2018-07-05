@@ -27,7 +27,7 @@ set_target_properties (${MY_LIB_NAME} PROPERTIES
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
  ${MY_LIB_NAME}
- Engine
+ Engine 
 )
 
 SET( APPLICATION_DEPENDENCIES
@@ -37,13 +37,14 @@ SET( APPLICATION_DEPENDENCIES
 
 SET( APPLICATION_LIBS
     ${APPLICATION_LIBS}
-    Logger
-    Core
-    Codec
-    Archive
-    Factory
-    Kernel
-    Engine
+	Logger
+	Core
+	Codec
+	Archive
+	Factory
+	Kernel
+	Engine
+	AndroidUtils
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX}
     )
 

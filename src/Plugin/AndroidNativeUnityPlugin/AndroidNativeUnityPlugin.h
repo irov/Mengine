@@ -15,8 +15,16 @@ namespace Mengine
     public:
         AndroidNativeUnityPlugin();
         ~AndroidNativeUnityPlugin() override;
+
+    protected:
+        bool _avaliable() override;
+
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
+
     public:
-        bool setupAds( const bool debug, const UnitySetupCallbackPtr & _callback );
+        bool setupAds( bool _debug, const UnitySetupCallbackPtr & _callback );
         bool showAd( const UnityShowAdCallbackPtr & _callback );
     };
 }

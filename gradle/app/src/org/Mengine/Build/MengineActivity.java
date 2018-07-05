@@ -7,12 +7,14 @@ import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger;
 
 import org.Mengine.Build.Facebook.FacebookInteractionLayer;
+import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
 import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
 public class MengineActivity extends SDLActivity {
 
     public FacebookInteractionLayer facebookInteractionLayer;
+    public UnityAdsInteractionLayer unityAdsInteractionLayer;
 
     private static MengineActivity _instance;
     private CallbackManager _callbackManager;
@@ -59,7 +61,9 @@ public class MengineActivity extends SDLActivity {
         return new MengineSurface(context);
     }
 
-    //FacebookStaticMethods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //Facebook Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
     public static boolean facebookIsLoggedIn() {
         if (_instance == null) {
             return false;
@@ -87,11 +91,28 @@ public class MengineActivity extends SDLActivity {
         }
         _instance.facebookInteractionLayer.shareLink(_instance, link);
     }
-
+  
     public static void facebookGetProfilePictureLink(String typeParameter) {
         if (_instance == null) {
             return;
         }
         _instance.facebookInteractionLayer.getProfilePictureLink(typeParameter);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //UnityAds Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void unitySetupAds (boolean debug) {
+        if (_instance == null) {
+            return;
+        }
+        _instance.unityAdsInteractionLayer.setupAds(_instance, debug);
+    }
+
+    public static void unityShowAd () {
+        if (_instance == null) {
+            return;
+        }
+        _instance.unityAdsInteractionLayer.showAd(_instance);
     }
 }

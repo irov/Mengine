@@ -87,4 +87,11 @@ public class MengineActivity extends SDLActivity {
         }
         _instance.facebookInteractionLayer.shareLink(_instance, link);
     }
+
+    public static void facebookGetProfilePictureLink(String typeParameter) {
+        if (_instance == null) {
+            return;
+        }
+        _instance.facebookInteractionLayer.getProfilePictureLink(typeParameter);
+    }
 }

@@ -9,7 +9,7 @@
 
 #include "Config/VectorString.h"
 
-namespace Mengine 
+namespace Mengine
 {
     class AndroidNativeFacebookPlugin
         : public PluginBase
@@ -32,6 +32,6 @@ namespace Mengine
         bool performLogin( const TVectorString & _permissions, const FacebookLoginCallbackPtr & _callback );
         bool getUser( const FacebookUserCallbackPtr & _callback );
         bool shareLink( const String & _link, const FacebookShareCallbackPtr & _callback );
-        bool getProfilePictureLink(const String & _typeParameter, const FacebookProfilePictureURLCallbackPtr & _callback);
+        bool getProfilePictureLink( const String & _typeParameter, const FacebookProfilePictureURLCallbackPtr & _callback );
     };
 }

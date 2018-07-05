@@ -7,7 +7,7 @@ namespace Mengine
     {
         ColourValue_ARGB makeARGB( float _r, float _g, float _b, float _a )
         {
-            const float rgba_255 = 255.f;
+            const float rgba_255 = 255.5f;
 
 #ifdef MENGINE_RENDER_TEXTURE_RGBA			
             uint8_t b8 = static_cast<uint8_t>(_r * rgba_255);

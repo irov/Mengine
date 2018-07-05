@@ -47,6 +47,9 @@ JNIEXPORT void JNICALL
 FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareError )(JNIEnv *env, jclass cls,
     jstring exception_);
 
+JNIEXPORT void JNICALL
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onProfilePictureLinkGet )(JNIEnv *env, jclass cls,
+                                                               jstring pictureURL_);
 }
 
 static pthread_key_t mThreadKey;
@@ -57,10 +60,12 @@ static jmethodID jmethodID_isLoggedIn;
 static jmethodID jmethodID_performLogin;
 static jmethodID jmethodID_getUser;
 static jmethodID jmethodID_shareLink;
+static jmethodID jmethodID_getProfilePictureLink;
 
 static Mengine::FacebookLoginCallbackPtr g_currentFacebookLoginCallback;
 static Mengine::FacebookUserCallbackPtr g_currentFacebookUserCallback;
 static Mengine::FacebookShareCallbackPtr g_currentFacebookShareCallback;
+static Mengine::FacebookProfilePictureURLCallbackPtr g_currentFacebookProfilePictureURLCallback;
 //////////////////////////////////////////////////////////////////////////
 static void FB_JNI_ThreadDestroyed( void *value ) 
 {
@@ -142,6 +147,7 @@ MENGINE_JAVA_INTERFACE( AndroidNativeFacebook_1setupFacebookJNI )(JNIEnv *mEnv, 
     jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()V" );
     jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)V" );
     jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
+    jmethodID_getProfilePictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfilePictureLink", "(Ljava/lang/String;)V" );
 }
 //////////////////////////////////////////////////////////////////////////
 JNIEXPORT void JNICALL 
@@ -248,6 +254,22 @@ FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareError )(JNIEnv *env, jcla
     }
 
     env->ReleaseStringUTFChars( exception_, exception );
+}
+
+JNIEXPORT void JNICALL
+FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onProfilePictureLinkGet )(JNIEnv *env, jclass cls, jstring pictureURL_)
+{
+    const char * pictureURL = env->GetStringUTFChars( pictureURL_, 0 );
+
+    Mengine::FacebookProfilePictureURLCallbackPtr callback = g_currentFacebookProfilePictureURLCallback;
+    g_currentFacebookProfilePictureURLCallback = nullptr;
+
+    if( callback != nullptr )
+    {
+        callback->onProfilePictureLinkGet( pictureURL );
+    }
+
+    env->ReleaseStringUTFChars( pictureURL_, pictureURL );
 }
     
 }
@@ -487,4 +509,24 @@ namespace Mengine
         
         return true;
     }
-}  
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeFacebookPlugin::getProfilePictureLink(const String & _typeParameter, const FacebookProfilePictureURLCallbackPtr & _callback)
+    {
+        if( g_currentFacebookProfilePictureURLCallback != nullptr )
+        {
+            return false;
+        }
+
+        g_currentFacebookProfilePictureURLCallback = _callback;
+
+        JNIEnv * env = FB_JNI_GetEnv();
+
+        const Char * typeParameter_str = _typeParameter.c_str();
+        jstring jtypeParameter = env->NewStringUTF( typeParameter_str );
+
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_getProfilePictureLink, jtypeParameter );
+
+        return true;
+    }
+}
+  

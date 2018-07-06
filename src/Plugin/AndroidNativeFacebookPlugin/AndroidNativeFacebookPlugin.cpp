@@ -9,42 +9,6 @@
 #define FACEBOOK_JAVA_PREFIX org_Mengine_Build_Facebook
 #define FACEBOOK_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(FACEBOOK_JAVA_PREFIX, FacebookInteractionLayer, function)
 
-extern "C" {
-
-    JNIEXPORT void JNICALL
-    MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1setupFacebookJNI )(JNIEnv *mEnv, jclass cls);
-
-    JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginSuccess )(JNIEnv *env, jclass cls,
-            jstring accessToken_);
-
-    JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginCancel )(JNIEnv *env, jclass cls);
-
-    JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onLoginError )(JNIEnv *env, jclass cls,
-            jstring exception_);
-
-    JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onUserFetchSuccess )(JNIEnv *env, jclass cls,
-            jstring object_, jstring response_);
-
-    JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareSuccess )(JNIEnv *env, jclass cls,
-            jstring postId_);
-
-    JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareCancel )(JNIEnv *env, jclass cls);
-
-    JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onShareError )(JNIEnv *env, jclass cls,
-            jstring exception_);
-
-    JNIEXPORT void JNICALL
-        FACEBOOK_JAVA_INTERFACE( AndroidNativeFacebook_1onProfilePictureLinkGet )(JNIEnv *env, jclass cls,
-            jstring pictureURL_);
-}
-
 static jclass mActivityClass;
 static jmethodID jmethodID_isLoggedIn;
 static jmethodID jmethodID_performLogin;
@@ -234,7 +198,7 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        bool androidFacebookPerformLogin( AndroidNativeFacebookPlugin * _plugin, const TVectorString & _permissions, const pybind::object & _cb, const pybind::args & _args )
+        static bool androidFacebookPerformLogin( AndroidNativeFacebookPlugin * _plugin, const TVectorString & _permissions, const pybind::object & _cb, const pybind::args & _args )
         {
             bool successful = _plugin->performLogin( _permissions
                 , new FactorableUnique<PythonFacebookLoginCallback>( _cb, _args )
@@ -263,7 +227,7 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        bool androidFacebookGetUser( AndroidNativeFacebookPlugin * _plugin, const pybind::object & _cb, const pybind::args & _args )
+        static bool androidFacebookGetUser( AndroidNativeFacebookPlugin * _plugin, const pybind::object & _cb, const pybind::args & _args )
         {
             bool successful = _plugin->getUser(
                 new FactorableUnique<PythonFacebookUserCallback>( _cb, _args )
@@ -302,7 +266,7 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        bool androidFacebookShareLink( AndroidNativeFacebookPlugin * _plugin, const String & _link, const pybind::object & _cb, const pybind::args & _args )
+        static bool androidFacebookShareLink( AndroidNativeFacebookPlugin * _plugin, const String & _link, const pybind::object & _cb, const pybind::args & _args )
         {
             bool successful = _plugin->shareLink( _link
                 , new FactorableUnique<PythonFacebookShareCallback>( _cb, _args )
@@ -311,7 +275,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool androidFacebookIsLoggedIn( AndroidNativeFacebookPlugin * _plugin )
+        static bool androidFacebookIsLoggedIn( AndroidNativeFacebookPlugin * _plugin )
         {
             bool successful = _plugin->isLoggedIn();
 
@@ -338,7 +302,7 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        bool androidFacebookGetProfilePictureLink( AndroidNativeFacebookPlugin * _plugin, const String & _typeParameter, const pybind::object & _cb, const pybind::args & _args )
+        static bool androidFacebookGetProfilePictureLink( AndroidNativeFacebookPlugin * _plugin, const String & _typeParameter, const pybind::object & _cb, const pybind::args & _args )
         {
             bool successful = _plugin->getProfilePictureLink( _typeParameter
                 , new FactorableUnique<PythonFacebookGetProfilePictureLinkCallback>( _cb, _args )

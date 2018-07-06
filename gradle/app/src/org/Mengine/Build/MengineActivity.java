@@ -20,6 +20,8 @@ public class MengineActivity extends SDLActivity {
     private CallbackManager _callbackManager;
 
     static native void AndroidNativeFacebook_setupFacebookJNI();
+    static native void AndroidNativeUnity_setupUnityJNI();
+    
 
     @Override
     protected String[] getLibraries() {
@@ -39,8 +41,12 @@ public class MengineActivity extends SDLActivity {
         _instance = this;
 
         _callbackManager = CallbackManager.Factory.create();
+        
         AndroidNativeFacebook_setupFacebookJNI();
         facebookInteractionLayer = new FacebookInteractionLayer(_callbackManager);
+        
+        AndroidNativeUnity_setupUnityJNI();
+        unityAdsInteractionLayer = new UnityAdsInteractionLayer();
     }
 
     @Override

@@ -14,7 +14,7 @@ import com.unity3d.ads.webview.WebView;
 public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
 
     private static final String TAG = "UnityAds";
-
+    
     final private String _gameId = "2654327";
 
     static native void AndroidNativeUnity_onUnityAdsClick(String placementId);
@@ -29,7 +29,7 @@ public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
 
     static native void AndroidNativeUnity_onUnityAdsError(int unityAdsError, String message);
 
-    public UnityAdsInteractionLayer() {
+    public UnityAdsInteractionLayer() {        
         if (Build.VERSION.SDK_INT >= 19) {
             WebView.setWebContentsDebuggingEnabled(true);
         }

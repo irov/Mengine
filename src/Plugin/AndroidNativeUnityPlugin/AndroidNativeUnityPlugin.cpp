@@ -5,42 +5,11 @@
 
 #include "pybind/pybind.hpp"
 
-#include <string.h>
-#include <stdio.h>
 #include <jni.h>
 #include <vector>
-#include <pthread.h>
 
 #define UNITY_JAVA_PREFIX org_Mengine_Build_UnityAds
 #define UNITY_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(UNITY_JAVA_PREFIX, UnityAdsInteractionLayer, function)
-
-extern "C"
-{
-    JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1setupUnityJNI )(JNIEnv *env, jclass cls);
-
-    JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsClick )(JNIEnv *env, jclass cls, jstring s_);
-
-    JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsPlacementStateChanged )(JNIEnv *env,
-            jclass cls, jstring s_, jint placementState_, jint placementState1_);
-
-    JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsReady )(JNIEnv *env, jclass cls, jstring s_);
-
-    JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsStart )(JNIEnv *env, jclass cls, jstring s_);
-
-    JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsFinish )(JNIEnv *env, jclass cls, jstring s_,
-            jint finishState_);
-
-    JNIEXPORT void JNICALL
-        UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsError )(JNIEnv *env, jclass cls,
-            jint unityAdsError_, jstring s_);
-}
-
 
 static jclass mActivityClass;
 static jmethodID jmethodID_setupAds;
@@ -53,7 +22,7 @@ static Mengine::UnityShowAdCallbackPtr g_currentUnityShowAdCallback;
 extern "C" {
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1setupUnityJNI )(JNIEnv *env, jclass cls)
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeUnity_1setupUnityJNI )(JNIEnv *env, jclass cls)
     {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
@@ -193,7 +162,7 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        bool androidUnitySetupAds( AndroidNativeUnityPlugin * _plugin, bool _debug, const pybind::object & _cb, const pybind::args & _args )
+        static bool androidUnitySetupAds( AndroidNativeUnityPlugin * _plugin, bool _debug, const pybind::object & _cb, const pybind::args & _args )
         {
             bool successful = _plugin->setupAds( _debug
                 , new FactorableUnique<PythonUnitySetupCallback>( _cb, _args )
@@ -252,7 +221,7 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        bool androidUnityShowAd( AndroidNativeUnityPlugin * _plugin, const pybind::object & _cb, const pybind::args & _args )
+        static bool androidUnityShowAd( AndroidNativeUnityPlugin * _plugin, const pybind::object & _cb, const pybind::args & _args )
         {
             bool successful = _plugin->showAd( new FactorableUnique<PythonUnityShowAdCallback>( _cb, _args )
             );

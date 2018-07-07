@@ -27,7 +27,7 @@ extern "C" {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
         jmethodID_setupAds = env->GetStaticMethodID( mActivityClass, "unitySetupAds", "(Z)V" );
-        jmethodID_showAd = env->GetStaticMethodID( mActivityClass, "unityShowAd", "()V" );
+        jmethodID_showAd = env->GetStaticMethodID( mActivityClass, "unityShowAd", "(Ljava/lang/String;)V" );
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -275,7 +275,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeUnityPlugin::showAd( const UnityShowAdCallbackPtr & _callback )
+    bool AndroidNativeUnityPlugin::showAd(const String & _placementId, const UnityShowAdCallbackPtr & _callback )
     {
         if( g_currentUnityShowAdCallback != nullptr )
         {
@@ -286,7 +286,10 @@ namespace Mengine
 
         JNIEnv * env = Mengine_JNI_GetEnv();
 
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_showAd );
+        const Char * placementId_str = _placementId.c_str();
+        jstring jplacementId = env->NewStringUTF( placementId_str );
+
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_showAd, jplacementId );
 
         return true;
     }

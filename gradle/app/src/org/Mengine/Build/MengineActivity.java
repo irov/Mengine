@@ -115,10 +115,10 @@ public class MengineActivity extends SDLActivity {
         _instance.unityAdsInteractionLayer.setupAds(_instance, debug);
     }
 
-    public static void unityShowAd () {
+    public static void unityShowAd (String placementId) {
         if (_instance == null) {
             return;
         }
-        _instance.unityAdsInteractionLayer.showAd(_instance);
+        _instance.unityAdsInteractionLayer.showAd(_instance, placementId);
     }
 }

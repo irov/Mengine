@@ -2,10 +2,14 @@ package org.Mengine.Build.UnityAds;
 
 import android.app.Activity;
 import android.os.Build;
+import android.util.Log;
 
 import com.unity3d.ads.mediation.IUnityAdsExtendedListener;
 import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.webview.WebView;
+
+import java.util.HashSet;
+import java.util.List;
 
 /**
  * Created by sweatcoin7 on 7/1/18.
@@ -14,7 +18,7 @@ import com.unity3d.ads.webview.WebView;
 public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
 
     private static final String TAG = "UnityAds";
-    
+
     final private String _gameId = "2654327";
 
     static native void AndroidNativeUnity_onUnityAdsClick(String placementId);
@@ -29,20 +33,28 @@ public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
 
     static native void AndroidNativeUnity_onUnityAdsError(int unityAdsError, String message);
 
-    public UnityAdsInteractionLayer() {        
+    private HashSet<String> _alreadyInitializedPlacements;
+
+    public UnityAdsInteractionLayer() {
         if (Build.VERSION.SDK_INT >= 19) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
 
         UnityAds.setListener(this);
+        _alreadyInitializedPlacements = new HashSet<String>();
     }
 
     public void setupAds(Activity activity, boolean debug) {
         UnityAds.initialize(activity, _gameId, this, debug);
     }
 
-    public void showAd(Activity activity) {
-        UnityAds.show(activity);
+    public void showAd(Activity activity, String placementId) {
+        if (UnityAds.isReady(placementId)) {
+            UnityAds.show(activity, placementId);
+        }
+        if(_alreadyInitializedPlacements.contains(placementId)) {
+            _alreadyInitializedPlacements.remove(placementId);
+        }
     }
 
     @Override
@@ -57,7 +69,11 @@ public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
 
     @Override
     public void onUnityAdsReady(String placementId) {
+        if (_alreadyInitializedPlacements.contains(placementId)) {
+            return;
+        }
         AndroidNativeUnity_onUnityAdsReady(placementId);
+        _alreadyInitializedPlacements.add(placementId);
     }
 
     @Override

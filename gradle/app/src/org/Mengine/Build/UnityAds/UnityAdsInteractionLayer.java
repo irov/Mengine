@@ -2,14 +2,12 @@ package org.Mengine.Build.UnityAds;
 
 import android.app.Activity;
 import android.os.Build;
-import android.util.Log;
 
-import com.unity3d.ads.mediation.IUnityAdsExtendedListener;
 import com.unity3d.ads.UnityAds;
+import com.unity3d.ads.mediation.IUnityAdsExtendedListener;
 import com.unity3d.ads.webview.WebView;
 
 import java.util.HashSet;
-import java.util.List;
 
 /**
  * Created by sweatcoin7 on 7/1/18.

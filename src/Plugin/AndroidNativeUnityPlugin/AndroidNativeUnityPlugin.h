@@ -25,6 +25,6 @@ namespace Mengine
 
     public:
         bool setupAds( bool _debug, const UnitySetupCallbackPtr & _callback );
-        bool showAd( const UnityShowAdCallbackPtr & _callback );
+        bool showAd( const String & _placementId, const UnityShowAdCallbackPtr & _callback );
     };
 }

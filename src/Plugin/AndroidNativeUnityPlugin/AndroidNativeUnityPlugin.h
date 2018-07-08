@@ -2,8 +2,7 @@
 
 #include "Core/PluginBase.h"
 
-#include "UnitySetupCallback.h"
-#include "UnityShowAdCallback.h"
+#include "UnityAdEventHandler.h"
 
 namespace Mengine 
 {
@@ -24,7 +23,8 @@ namespace Mengine
         void _finalize() override;
 
     public:
-        bool setupAds( bool _debug, const UnitySetupCallbackPtr & _callback );
-        bool showAd( const String & _placementId, const UnityShowAdCallbackPtr & _callback );
+        bool setupAds( bool _debug );
+        bool showAd( const String & _placementId );
+        bool setAdsEventHandler( const UnityAdEventHandlerPtr & _callback );
     };
 }

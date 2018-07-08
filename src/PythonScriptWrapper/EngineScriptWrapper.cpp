@@ -4215,7 +4215,7 @@ namespace Mengine
 
         pybind::def_functor( kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
 
-        pybind::interface_<PythonValueFollower, pybind::bases<Affector> >( kernel, "PythonValueFollower" )
+        pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable> >( kernel, "PythonValueFollower" )
             .def( "setSpeed", &PythonValueFollower::setSpeed )
             .def( "getSpeed", &PythonValueFollower::getSpeed )
             .def( "setValue", &PythonValueFollower::setValue )

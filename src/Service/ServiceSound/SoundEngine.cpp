@@ -962,6 +962,17 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::setSourceVolume( const SoundIdentityInterfacePtr & _identity, float _volume, float _default, bool _force )
 	{
+        if( _identity == nullptr )
+        {
+            LOGGER_ERROR( "SoundEngine::setSourceVolume identity is nullptr (volume '%f' default '%f' force '%d')"
+                , _volume
+                , _default
+                , _force
+            );
+
+            return false;
+        }
+
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
         
         identity->volume.setValue( STRINGIZE_STRING_LOCAL( "General" ), _volume, _default, _force );
@@ -973,6 +984,14 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getSourceVolume( const SoundIdentityInterfacePtr & _identity ) const
 	{
+        if( _identity == nullptr )
+        {
+            LOGGER_ERROR( "SoundEngine::getSourceVolume identity is nullptr"
+            );
+
+            return 0.f;
+        }
+
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
         float volume = identity->volume.mixValue();
@@ -982,6 +1001,17 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::setSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer, float _volume, float _default )
 	{
+        if( _identity == nullptr )
+        {
+            LOGGER_ERROR( "SoundEngine::setSourceMixerVolume identity is nullptr (mixer '%s' volume '%f' default '%f')"
+                , _mixer.c_str()
+                , _volume
+                , _default
+            );
+
+            return false;
+        }
+
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
         identity->volume.setValue( _mixer, _volume, _default, true );
@@ -993,6 +1023,15 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getSourceMixerVolume( const SoundIdentityInterfacePtr & _identity, const ConstString & _mixer ) const
 	{
+        if( _identity == nullptr )
+        {
+            LOGGER_ERROR( "SoundEngine::getSourceMixerVolume identity is nullptr (mixer '%s')"
+                , _mixer.c_str()
+            );
+
+            return 0.f;
+        }
+
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
 		float volume = identity->volume.getValue( _mixer );
@@ -1002,6 +1041,14 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	float SoundEngine::getDuration( const SoundIdentityInterfacePtr & _identity ) const
 	{
+        if( _identity == nullptr )
+        {
+            LOGGER_ERROR( "SoundEngine::getDuration identity is nullptr"
+            );
+
+            return 0.f;
+        }
+
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
         const SoundSourceInterfacePtr & source = identity->getSoundSource();
@@ -1013,6 +1060,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::setPosMs( const SoundIdentityInterfacePtr & _identity, float _pos )
 	{
+        if( _identity == nullptr )
+        {
+            LOGGER_ERROR( "SoundEngine::setPosMs identity is nullptr (pos '%f')"
+                , _pos
+            );
+
+            return false;
+        }
+
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
         const SoundSourceInterfacePtr & source = identity->getSoundSource();

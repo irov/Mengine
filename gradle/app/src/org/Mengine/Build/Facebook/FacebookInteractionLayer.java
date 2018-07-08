@@ -112,7 +112,7 @@ public class FacebookInteractionLayer {
                     }
                 });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, name, email, gender");
+        parameters.putString("fields", "id, name, email, gender, picture");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -170,6 +170,9 @@ public class FacebookInteractionLayer {
                     }
                 });
 
+        Bundle parameters = new Bundle();
+        parameters.putBoolean("redirect", false);
+        request.setParameters(parameters);
         request.executeAsync();
     }
 }

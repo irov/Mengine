@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger;
 
+import org.Mengine.Build.AdMob.AdMobInteractionLayer;
 import org.Mengine.Build.Facebook.FacebookInteractionLayer;
 import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
 import org.libsdl.app.SDLActivity;
@@ -15,6 +16,7 @@ public class MengineActivity extends SDLActivity {
 
     public FacebookInteractionLayer facebookInteractionLayer;
     public UnityAdsInteractionLayer unityAdsInteractionLayer;
+    public AdMobInteractionLayer adMobInteractionLayer;
 
     private static MengineActivity _instance;
     private CallbackManager _callbackManager;
@@ -47,6 +49,8 @@ public class MengineActivity extends SDLActivity {
         
         AndroidNativeUnity_setupUnityJNI();
         unityAdsInteractionLayer = new UnityAdsInteractionLayer();
+
+        adMobInteractionLayer = new AdMobInteractionLayer(this);
     }
 
     @Override

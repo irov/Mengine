@@ -221,9 +221,9 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        static bool androidUnityShowAd( AndroidNativeUnityPlugin * _plugin, const pybind::object & _cb, const pybind::args & _args )
+        static bool androidUnityShowAd( AndroidNativeUnityPlugin * _plugin, const String & _placementId, const pybind::object & _cb, const pybind::args & _args )
         {
-            bool successful = _plugin->showAd( new FactorableUnique<PythonUnityShowAdCallback>( _cb, _args )
+            bool successful = _plugin->showAd( _placementId, new FactorableUnique<PythonUnityShowAdCallback>( _cb, _args )
             );
 
             return successful;

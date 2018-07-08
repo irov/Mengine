@@ -125,4 +125,35 @@ public class MengineActivity extends SDLActivity {
         }
         _instance.unityAdsInteractionLayer.showAd(_instance, placementId);
     }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //AdMob Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void admobSetupInterstitialAd () {
+        if (_instance == null) {
+            return;
+        }
+        _instance.adMobInteractionLayer.setupInterstitialAd();
+    }
+
+    public static void admobShowInterstitialAd () {
+        if (_instance == null) {
+            return;
+        }
+        _instance.adMobInteractionLayer.showInterstitialAd();
+    }
+
+    public static void admobSetupRewardedVideoAd () {
+        if (_instance == null) {
+            return;
+        }
+        _instance.adMobInteractionLayer.setupRewardedVideoAd();
+    }
+
+    public static void admobShowRewardedVideoAd () {
+        if (_instance == null) {
+            return;
+        }
+        _instance.adMobInteractionLayer.showRewardedVideoAd();
+    }
 }

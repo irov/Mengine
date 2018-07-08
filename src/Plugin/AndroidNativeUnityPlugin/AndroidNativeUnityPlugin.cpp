@@ -129,11 +129,18 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        class PythonUnityShowAdCallback
+        static bool androidUnityShowAd( AndroidNativeUnityPlugin * _plugin, const String & _placementId )
+        {
+            bool successful = _plugin->showAd( _placementId );
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        class PythonUnityAdEventHandler
             : public Callback<UnityAdEventHandler>
         {
         public:
-            PythonUnityShowAdCallback( const pybind::object & _cb, const pybind::args & _args )
+            PythonUnityAdEventHandler( const pybind::object & _cb, const pybind::args & _args )
                 : m_cb( _cb )
                 , m_args( _args )
             {}
@@ -141,42 +148,44 @@ namespace Mengine
         protected:
             void onUnityAdsReady( const String & _placementId ) override
             {
-                m_cb.call_args( 0, _placementId, m_args );
+                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
+
+                m_cb.call_args( _placementId, 0, m_args );
             }
 
             void onUnityAdsClick( const String & _placementId ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( _placementId, 0, pyparams, m_args );
+                m_cb.call_args( _placementId, 1, pyparams, m_args );
             }
 
             void onUnityAdsPlacementStateChanged( const String & _placementId, int _placementState, int _placementState1 ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _placementState, _placementState1 );
 
-                m_cb.call_args( _placementId, 1, pyparams, m_args );
+                m_cb.call_args( _placementId, 2, pyparams, m_args );
             }
 
             void onUnityAdsStart( const String & _placementId ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( _placementId, 2, pyparams, m_args );
+                m_cb.call_args( _placementId, 3, pyparams, m_args );
             }
 
             void onUnityAdsFinish( const String & _placementId, int _finishState ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _finishState );
 
-                m_cb.call_args( _placementId, 3, pyparams, m_args );
+                m_cb.call_args( _placementId, 4, pyparams, m_args );
             }
 
             void onUnityAdsError( int _unityAdsError, const String & _message ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _unityAdsError, _message );
 
-                m_cb.call_args( "", 4, pyparams, m_args );
+                m_cb.call_args( "", 5, pyparams, m_args );
             }
             
         protected:
@@ -184,9 +193,10 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        static bool androidUnityShowAd( AndroidNativeUnityPlugin * _plugin, const String & _placementId, const pybind::object & _cb, const pybind::args & _args )
+        static bool androidUnitySetAdsEventHandler( AndroidNativeUnityPlugin * _plugin, bool _debug, const pybind::object & _cb, const pybind::args & _args )
         {
-            bool successful = _plugin->showAd( _placementId, new FactorableUnique<PythonUnityShowAdCallback>( _cb, _args )
+            bool successful = _plugin->setAdsEventHandler(
+                    new FactorableUnique<PythonUnityAdEventHandler>( _cb, _args )
             );
 
             return successful;
@@ -210,8 +220,9 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        pybind::def_function_proxy_args( kernel, "androidUnitySetupAds", &Detail::androidUnitySetupAds, this );
-        pybind::def_function_proxy_args( kernel, "androidUnityShowAd", &Detail::androidUnityShowAd, this );
+        pybind::def_function_proxy( kernel, "androidUnitySetupAds", &Detail::androidUnitySetupAds, this );
+        pybind::def_function_proxy( kernel, "androidUnityShowAd", &Detail::androidUnityShowAd, this );
+        pybind::def_function_proxy_args( kernel, "androidUnitySetAdsEventHandler", &Detail::androidUnitySetAdsEventHandler, this );
 
         return true;
     }

@@ -29,6 +29,7 @@ import java.util.List;
 public class FacebookInteractionLayer {
 
     private static final String TAG = "Facebook";
+
     private static final String EMAIL = "email";
     private static final String PROFILE = "public_profile";
 
@@ -111,7 +112,7 @@ public class FacebookInteractionLayer {
                     }
                 });
         Bundle parameters = new Bundle();
-        parameters.putString("fields", "id, name, email, gender");
+        parameters.putString("fields", "id, name, email, gender, picture");
         request.setParameters(parameters);
         request.executeAsync();
     }
@@ -169,6 +170,9 @@ public class FacebookInteractionLayer {
                     }
                 });
 
+        Bundle parameters = new Bundle();
+        parameters.putBoolean("redirect", false);
+        request.setParameters(parameters);
         request.executeAsync();
     }
 }

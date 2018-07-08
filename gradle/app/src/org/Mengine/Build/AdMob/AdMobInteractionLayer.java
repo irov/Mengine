@@ -89,7 +89,7 @@ public class AdMobInteractionLayer {
             }
 
             @Override
-            public void onRewardedVideoAdFailedToLoad(int i) {
+            public void onRewardedVideoAdFailedToLoad(int errorCode) {
 
             }
 
@@ -100,25 +100,26 @@ public class AdMobInteractionLayer {
         });
     }
 
-    public void SetupInterstitialAd() {
+    public void setupInterstitialAd() {
         _interstitialAd.loadAd(new AdRequest.Builder().build());
     }
 
-    public void ShowInterstitialAd() {
+    public void showInterstitialAd() {
         if (!_interstitialAd.isLoaded()) {
             return;
         }
         _interstitialAd.show();
     }
 
-    public void SetupRewardedVideoAd() {
+    public void setupRewardedVideoAd() {
         _rewardedVideoAd.loadAd(ADUNITID,
                 new AdRequest.Builder().build());
     }
 
-    public void ShowRewardedVideoAd() {
-        if (_rewardedVideoAd.isLoaded()) {
-            _rewardedVideoAd.show();
+    public void showRewardedVideoAd() {
+        if (!_rewardedVideoAd.isLoaded()) {
+            return;
         }
+        _rewardedVideoAd.show();
     }
 }

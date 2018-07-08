@@ -4,8 +4,7 @@ ADD_FILTER(
 src
 	AndroidNativeUnityPlugin.h
 	AndroidNativeUnityPlugin.cpp
-	UnitySetupCallback.h
-	UnityShowAdCallback.h 
+	UnityAdEventHandler.h 
 )
 
 if( MENGINE_PLUGIN_ANDROID_NATIVE_UNITY_DLL )

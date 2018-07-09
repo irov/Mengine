@@ -24,6 +24,32 @@ public class AdMobInteractionLayer {
     private InterstitialAd _interstitialAd;
     private RewardedVideoAd _rewardedVideoAd;
 
+    static native void AndroidNativeUnity_onAdLoaded();
+
+    static native void AndroidNativeUnity_onAdFailedToLoad(int errorCode);
+
+    static native void AndroidNativeUnity_onAdOpened();
+
+    static native void AndroidNativeUnity_onAdLeftApplication();
+
+    static native void AndroidNativeUnity_onAdClosed();
+
+    static native void AndroidNativeUnity_onRewardedVideoAdLoaded();
+
+    static native void AndroidNativeUnity_onRewardedVideoAdOpened();
+
+    static native void AndroidNativeUnity_onRewardedVideoStarted();
+
+    static native void AndroidNativeUnity_onRewardedVideoAdClosed();
+
+    static native void AndroidNativeUnity_onRewarded(String rewardType, int rewardAmount);
+
+    static native void AndroidNativeUnity_onRewardedVideoAdLeftApplication();
+
+    static native void AndroidNativeUnity_onRewardedVideoAdFailedToLoad(int errorCode);
+
+    static native void AndroidNativeUnity_onRewardedVideoCompleted();
+
     public AdMobInteractionLayer(Activity activity) {
         MobileAds.initialize(activity, ADMOBAPPID);
 
@@ -32,27 +58,27 @@ public class AdMobInteractionLayer {
         _interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                // Code to be executed when an ad finishes loading.
+                AndroidNativeUnity_onAdLoaded();
             }
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
-                // Code to be executed when an ad request fails.
+                AndroidNativeUnity_onAdFailedToLoad(errorCode);
             }
 
             @Override
             public void onAdOpened() {
-                // Code to be executed when the ad is displayed.
+                AndroidNativeUnity_onAdOpened();
             }
 
             @Override
             public void onAdLeftApplication() {
-                // Code to be executed when the user has left the app.
+                AndroidNativeUnity_onAdLeftApplication();
             }
 
             @Override
             public void onAdClosed() {
-                // Code to be executed when when the interstitial ad is closed.
+                AndroidNativeUnity_onAdClosed();
             }
         });
 
@@ -60,42 +86,46 @@ public class AdMobInteractionLayer {
         _rewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
             @Override
             public void onRewardedVideoAdLoaded() {
-
+                AndroidNativeUnity_onRewardedVideoAdLoaded();
             }
 
             @Override
             public void onRewardedVideoAdOpened() {
-
+                AndroidNativeUnity_onRewardedVideoAdOpened();
             }
 
             @Override
             public void onRewardedVideoStarted() {
-
+                AndroidNativeUnity_onRewardedVideoStarted();
             }
 
             @Override
             public void onRewardedVideoAdClosed() {
-
+                AndroidNativeUnity_onRewardedVideoAdClosed();
             }
 
             @Override
             public void onRewarded(RewardItem rewardItem) {
-
+                if(rewardItem != null) {
+                    AndroidNativeUnity_onRewarded(rewardItem.getType(), rewardItem.getAmount());
+                } else {
+                    AndroidNativeUnity_onRewarded("", 0);
+                }
             }
 
             @Override
             public void onRewardedVideoAdLeftApplication() {
-
+                AndroidNativeUnity_onRewardedVideoAdLeftApplication();
             }
 
             @Override
             public void onRewardedVideoAdFailedToLoad(int errorCode) {
-
+                AndroidNativeUnity_onRewardedVideoAdFailedToLoad(errorCode);
             }
 
             @Override
             public void onRewardedVideoCompleted() {
-
+                AndroidNativeUnity_onRewardedVideoCompleted();
             }
         });
     }

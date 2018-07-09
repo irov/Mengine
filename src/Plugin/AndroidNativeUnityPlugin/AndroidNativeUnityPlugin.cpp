@@ -122,7 +122,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        static bool androidUnitySetupAds( AndroidNativeUnityPlugin * _plugin, bool _debug, const pybind::object & _cb, const pybind::args & _args )
+        static bool androidUnitySetupAds( AndroidNativeUnityPlugin * _plugin, bool _debug )
         {
             bool successful = _plugin->setupAds( _debug );
 
@@ -193,7 +193,7 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        static bool androidUnitySetAdsEventHandler( AndroidNativeUnityPlugin * _plugin, bool _debug, const pybind::object & _cb, const pybind::args & _args )
+        static bool androidUnitySetAdsEventHandler( AndroidNativeUnityPlugin * _plugin, const pybind::object & _cb, const pybind::args & _args )
         {
             bool successful = _plugin->setAdsEventHandler(
                     new FactorableUnique<PythonUnityAdEventHandler>( _cb, _args )

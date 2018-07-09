@@ -3148,13 +3148,28 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_colorTo( Node * _node, float _time, const ColourValue& _color, const pybind::object & _cb, const pybind::args & _args )
         {
+            if( _node == nullptr )
+            {
+                LOGGER_ERROR( "Node.colorTo _node is None" );
+
+                return 0;
+            }
+
             if( _node->isActivate() == false )
             {
+                LOGGER_ERROR( "Node.colorTo node '%s' is not activate"
+                    , _node->getName().c_str()
+                );
+
                 return 0;
             }
 
             if( _node->isAfterActive() == false )
             {
+                LOGGER_ERROR( "Node.colorTo node '%s' is not after activate"
+                    , _node->getName().c_str()
+                );
+
                 return 0;
             }
 
@@ -3169,6 +3184,10 @@ namespace Mengine
 
             if( affector == nullptr )
             {
+                LOGGER_ERROR( "Node.colorTo node '%s' invalid create affector"
+                    , _node->getName().c_str()
+                );
+
                 return 0;
             }
 
@@ -3176,30 +3195,96 @@ namespace Mengine
 
             if( _node->isActivate() == false )
             {
+                LOGGER_ERROR( "Node.colorTo node '%s' after color stop is inactivate"
+                    , _node->getName().c_str()
+                );
+
                 return 0;
             }
 
             AFFECTOR_ID id = _node->addAffector( affector );
+
+            if( id == 0 )
+            {
+                LOGGER_ERROR( "Node.colorTo node '%s' invalid add affector"
+                    , _node->getName().c_str()
+                );
+
+                return 0;
+            }
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_alphaTo( Node * _node, float _time, float _alpha, const pybind::object & _cb, const pybind::args & _args )
         {
+            if( _node == nullptr )
+            {
+                LOGGER_ERROR( "Node.alphaTo _node is None" );
+
+                return 0;
+            }
+
             if( _node->isActivate() == false )
             {
+                LOGGER_ERROR( "Node.alphaTo node '%s' is not activate"
+                    , _node->getName().c_str()
+                );
+
                 return 0;
             }
 
             if( _node->isAfterActive() == false )
             {
+                LOGGER_ERROR( "Node.alphaTo node '%s' is not after activate"
+                    , _node->getName().c_str()
+                );
+
                 return 0;
             }
 
             ColourValue color = _node->getLocalColor();
             color.setA( _alpha );
 
-            uint32_t id = s_Node_colorTo( _node, _time, color, _cb, _args );
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+            AffectorPtr affector =
+                m_nodeAffectorCreatorInterpolateLinearColour.create( ETA_COLOR
+                    , callback
+                    , [_node]( const ColourValue & _v ) { _node->setLocalColor( _v ); }
+                    , _node->getLocalColor(), color, _time
+                );
+
+            if( affector == nullptr )
+            {
+                LOGGER_ERROR( "Node.alphaTo node '%s' invalid create affector"
+                    , _node->getName().c_str()
+                );
+
+                return 0;
+            }
+
+            s_Node_colorStop( _node );
+
+            if( _node->isActivate() == false )
+            {
+                LOGGER_ERROR( "Node.alphaTo node '%s' after color stop is inactivate"
+                    , _node->getName().c_str()
+                );
+
+                return 0;
+            }
+
+            AFFECTOR_ID id = _node->addAffector( affector );
+
+            if( id == 0 )
+            {
+                LOGGER_ERROR( "Node.alphaTo node '%s' invalid add affector"
+                    , _node->getName().c_str()
+                );
+
+                return 0;
+            }
 
             return id;
         }

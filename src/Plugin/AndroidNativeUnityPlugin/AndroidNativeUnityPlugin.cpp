@@ -150,7 +150,7 @@ namespace Mengine
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( _placementId, 0, m_args );
+                m_cb.call_args( _placementId, 0, pyparams, m_args );
             }
 
             void onUnityAdsClick( const String & _placementId ) override

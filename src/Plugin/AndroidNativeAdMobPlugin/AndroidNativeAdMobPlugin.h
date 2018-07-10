@@ -10,7 +10,7 @@ namespace Mengine
     class AndroidNativeAdMobPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "AndroidNativeUnity" )
+        PLUGIN_DECLARE( "AndroidNativeAdMob" )
 
     public:
         AndroidNativeAdMobPlugin();

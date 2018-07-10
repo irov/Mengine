@@ -179,10 +179,6 @@ PLUGIN_EXPORT( Steam );
 #endif
 #endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_LINEAR_ACCELERATION
-PLUGIN_EXPORT( AndroidLinearAcceleration );
-#endif
-
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK
 PLUGIN_EXPORT( AndroidNativeFacebook );
 #endif
@@ -680,10 +676,6 @@ namespace Mengine
 #endif
 #endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_LINEAR_ACCELERATION
-        MENGINE_ADD_PLUGIN( AndroidLinearAcceleration, "initialize Android Linear Acceleration..." );
-#endif
-        
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK
         MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native...");
 #endif

@@ -7,7 +7,7 @@
 
 namespace Mengine 
 {
-    class AndroidNativeUnityPlugin
+    class AndroidNativeAdMobPlugin
         : public PluginBase
     {
         PLUGIN_DECLARE( "AndroidNativeUnity" )
@@ -25,10 +25,12 @@ namespace Mengine
 
     public:
         bool setupInterstitialAd();
-        bool showInterstitialAd();
+        bool showInterstitialAd();        
+        bool setInterstitialEventHandler( const AdMobInterstitialEventHandlerPtr & _callback );
+
+    public:
         bool setupRewardedVideoAd();
-        bool showRewardedVideoAd();
-        bool setInterstitialEventHandler( AdMobInterstitialEventHandlerPtr & _callback );
-        bool setRewardedVideoEventHandler( AdMobRewardedVideoEventHandlerPtr & _callback );
+        bool showRewardedVideoAd();        
+        bool setRewardedVideoEventHandler( const AdMobRewardedVideoEventHandlerPtr & _callback );
     };
 }

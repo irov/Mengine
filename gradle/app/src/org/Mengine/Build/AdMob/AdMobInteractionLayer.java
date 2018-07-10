@@ -24,31 +24,31 @@ public class AdMobInteractionLayer {
     private InterstitialAd _interstitialAd;
     private RewardedVideoAd _rewardedVideoAd;
 
-    static native void AndroidNativeUnity_onAdLoaded();
+    static native void AndroidNativeAdMob_onAdLoaded();
 
-    static native void AndroidNativeUnity_onAdFailedToLoad(int errorCode);
+    static native void AndroidNativeAdMob_onAdFailedToLoad(int errorCode);
 
-    static native void AndroidNativeUnity_onAdOpened();
+    static native void AndroidNativeAdMob_onAdOpened();
 
-    static native void AndroidNativeUnity_onAdLeftApplication();
+    static native void AndroidNativeAdMob_onAdLeftApplication();
 
-    static native void AndroidNativeUnity_onAdClosed();
+    static native void AndroidNativeAdMob_onAdClosed();
 
-    static native void AndroidNativeUnity_onRewardedVideoAdLoaded();
+    static native void AndroidNativeAdMob_onRewardedVideoAdLoaded();
 
-    static native void AndroidNativeUnity_onRewardedVideoAdOpened();
+    static native void AndroidNativeAdMob_onRewardedVideoAdOpened();
 
-    static native void AndroidNativeUnity_onRewardedVideoStarted();
+    static native void AndroidNativeAdMob_onRewardedVideoStarted();
 
-    static native void AndroidNativeUnity_onRewardedVideoAdClosed();
+    static native void AndroidNativeAdMob_onRewardedVideoAdClosed();
 
-    static native void AndroidNativeUnity_onRewarded(String rewardType, int rewardAmount);
+    static native void AndroidNativeAdMob_onRewarded(String rewardType, int rewardAmount);
 
-    static native void AndroidNativeUnity_onRewardedVideoAdLeftApplication();
+    static native void AndroidNativeAdMob_onRewardedVideoAdLeftApplication();
 
-    static native void AndroidNativeUnity_onRewardedVideoAdFailedToLoad(int errorCode);
+    static native void AndroidNativeAdMob_onRewardedVideoAdFailedToLoad(int errorCode);
 
-    static native void AndroidNativeUnity_onRewardedVideoCompleted();
+    static native void AndroidNativeAdMob_onRewardedVideoCompleted();
 
     public AdMobInteractionLayer(Activity activity) {
         MobileAds.initialize(activity, ADMOBAPPID);
@@ -58,27 +58,27 @@ public class AdMobInteractionLayer {
         _interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                AndroidNativeUnity_onAdLoaded();
+                AndroidNativeAdMob_onAdLoaded();
             }
 
             @Override
             public void onAdFailedToLoad(int errorCode) {
-                AndroidNativeUnity_onAdFailedToLoad(errorCode);
+                AndroidNativeAdMob_onAdFailedToLoad(errorCode);
             }
 
             @Override
             public void onAdOpened() {
-                AndroidNativeUnity_onAdOpened();
+                AndroidNativeAdMob_onAdOpened();
             }
 
             @Override
             public void onAdLeftApplication() {
-                AndroidNativeUnity_onAdLeftApplication();
+                AndroidNativeAdMob_onAdLeftApplication();
             }
 
             @Override
             public void onAdClosed() {
-                AndroidNativeUnity_onAdClosed();
+                AndroidNativeAdMob_onAdClosed();
             }
         });
 
@@ -86,46 +86,46 @@ public class AdMobInteractionLayer {
         _rewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
             @Override
             public void onRewardedVideoAdLoaded() {
-                AndroidNativeUnity_onRewardedVideoAdLoaded();
+                AndroidNativeAdMob_onRewardedVideoAdLoaded();
             }
 
             @Override
             public void onRewardedVideoAdOpened() {
-                AndroidNativeUnity_onRewardedVideoAdOpened();
+                AndroidNativeAdMob_onRewardedVideoAdOpened();
             }
 
             @Override
             public void onRewardedVideoStarted() {
-                AndroidNativeUnity_onRewardedVideoStarted();
+                AndroidNativeAdMob_onRewardedVideoStarted();
             }
 
             @Override
             public void onRewardedVideoAdClosed() {
-                AndroidNativeUnity_onRewardedVideoAdClosed();
+                AndroidNativeAdMob_onRewardedVideoAdClosed();
             }
 
             @Override
             public void onRewarded(RewardItem rewardItem) {
-                if(rewardItem != null) {
-                    AndroidNativeUnity_onRewarded(rewardItem.getType(), rewardItem.getAmount());
+                if (rewardItem != null) {
+                    AndroidNativeAdMob_onRewarded(rewardItem.getType(), rewardItem.getAmount());
                 } else {
-                    AndroidNativeUnity_onRewarded("", 0);
+                    AndroidNativeAdMob_onRewarded("", 0);
                 }
             }
 
             @Override
             public void onRewardedVideoAdLeftApplication() {
-                AndroidNativeUnity_onRewardedVideoAdLeftApplication();
+                AndroidNativeAdMob_onRewardedVideoAdLeftApplication();
             }
 
             @Override
             public void onRewardedVideoAdFailedToLoad(int errorCode) {
-                AndroidNativeUnity_onRewardedVideoAdFailedToLoad(errorCode);
+                AndroidNativeAdMob_onRewardedVideoAdFailedToLoad(errorCode);
             }
 
             @Override
             public void onRewardedVideoCompleted() {
-                AndroidNativeUnity_onRewardedVideoCompleted();
+                AndroidNativeAdMob_onRewardedVideoCompleted();
             }
         });
     }

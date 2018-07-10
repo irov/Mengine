@@ -6,6 +6,7 @@ import android.os.Bundle;
 import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger;
 
+import org.Mengine.Build.AdMob.AdMobInteractionLayer;
 import org.Mengine.Build.Facebook.FacebookInteractionLayer;
 import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
 import org.libsdl.app.SDLActivity;
@@ -15,13 +16,16 @@ public class MengineActivity extends SDLActivity {
 
     public FacebookInteractionLayer facebookInteractionLayer;
     public UnityAdsInteractionLayer unityAdsInteractionLayer;
+    public AdMobInteractionLayer adMobInteractionLayer;
 
     private static MengineActivity _instance;
     private CallbackManager _callbackManager;
 
     static native void AndroidNativeFacebook_setupFacebookJNI();
+
     static native void AndroidNativeUnity_setupUnityJNI();
-    
+
+    static native void AndroidNativeAdMob_setupAdMobJNI();
 
     @Override
     protected String[] getLibraries() {
@@ -41,12 +45,15 @@ public class MengineActivity extends SDLActivity {
         _instance = this;
 
         _callbackManager = CallbackManager.Factory.create();
-        
+
         AndroidNativeFacebook_setupFacebookJNI();
         facebookInteractionLayer = new FacebookInteractionLayer(_callbackManager);
-        
+
         AndroidNativeUnity_setupUnityJNI();
         unityAdsInteractionLayer = new UnityAdsInteractionLayer();
+
+        AndroidNativeAdMob_setupAdMobJNI();
+        adMobInteractionLayer = new AdMobInteractionLayer(this);
     }
 
     @Override
@@ -97,7 +104,7 @@ public class MengineActivity extends SDLActivity {
         }
         _instance.facebookInteractionLayer.shareLink(_instance, link);
     }
-  
+
     public static void facebookGetProfilePictureLink(String typeParameter) {
         if (_instance == null) {
             return;
@@ -108,17 +115,48 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //UnityAds Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void unitySetupAds (boolean debug) {
+    public static void unitySetupAds(boolean debug) {
         if (_instance == null) {
             return;
         }
         _instance.unityAdsInteractionLayer.setupAds(_instance, debug);
     }
 
-    public static void unityShowAd (String placementId) {
+    public static void unityShowAd(String placementId) {
         if (_instance == null) {
             return;
         }
         _instance.unityAdsInteractionLayer.showAd(_instance, placementId);
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //AdMob Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void admobSetupInterstitialAd() {
+        if (_instance == null) {
+            return;
+        }
+        _instance.adMobInteractionLayer.setupInterstitialAd();
+    }
+
+    public static void admobShowInterstitialAd() {
+        if (_instance == null) {
+            return;
+        }
+        _instance.adMobInteractionLayer.showInterstitialAd();
+    }
+
+    public static void admobSetupRewardedVideoAd() {
+        if (_instance == null) {
+            return;
+        }
+        _instance.adMobInteractionLayer.setupRewardedVideoAd();
+    }
+
+    public static void admobShowRewardedVideoAd() {
+        if (_instance == null) {
+            return;
+        }
+        _instance.adMobInteractionLayer.showRewardedVideoAd();
     }
 }

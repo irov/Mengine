@@ -35,7 +35,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onAdLoaded )( JNIEnv *env, jclass cls )
+        ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onAdLoaded )( JNIEnv *env, jclass cls )
     {
         if( g_currentAdMobInterstitialEventHandler != nullptr )
         {
@@ -44,7 +44,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onAdFailedToLoad )( JNIEnv *env, jclass cls, jint errorCode_ )
+        ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onAdFailedToLoad )( JNIEnv *env, jclass cls, jint errorCode_ )
     {
         int errorCode = static_cast<int>(errorCode_);
         
@@ -55,7 +55,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onAdOpened )( JNIEnv *env, jclass cls )
+        ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onAdOpened )( JNIEnv *env, jclass cls )
     {
         if( g_currentAdMobInterstitialEventHandler != nullptr )
         {
@@ -64,7 +64,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onAdLeftApplication )( JNIEnv *env, jclass cls )
+        ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onAdLeftApplication )( JNIEnv *env, jclass cls )
     {
         if( g_currentAdMobInterstitialEventHandler != nullptr )
         {
@@ -73,7 +73,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onAdClosed )( JNIEnv *env, jclass cls )
+        ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onAdClosed )( JNIEnv *env, jclass cls )
     {
         if( g_currentAdMobInterstitialEventHandler != nullptr )
         {
@@ -82,7 +82,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onRewardedVideoAdLoaded )( JNIEnv *env, jclass cls )
+        ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onRewardedVideoAdLoaded )( JNIEnv *env, jclass cls )
     {
         if( g_currentAdMobRewardedVideoEventHandler != nullptr )
         {
@@ -91,7 +91,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onRewardedVideoAdOpened )( JNIEnv *env, jclass cls )
+        ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onRewardedVideoAdOpened )( JNIEnv *env, jclass cls )
     {
         if( g_currentAdMobRewardedVideoEventHandler != nullptr )
         {
@@ -100,7 +100,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onRewardedVideoStarted )( JNIEnv *env, jclass cls )
+        ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onRewardedVideoStarted )( JNIEnv *env, jclass cls )
     {
         if( g_currentAdMobRewardedVideoEventHandler != nullptr )
         {
@@ -109,7 +109,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onRewardedVideoAdClosed )( JNIEnv *env, jclass cls )
+        ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onRewardedVideoAdClosed )( JNIEnv *env, jclass cls )
     {
         if( g_currentAdMobRewardedVideoEventHandler != nullptr )
         {
@@ -118,7 +118,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onRewarded )( JNIEnv *env, jclass cls, jstring rewardType_, jint rewardAmount_ )
+        ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onRewarded )( JNIEnv *env, jclass cls, jstring rewardType_, jint rewardAmount_ )
     {
         const char * rewardType = env->GetStringUTFChars( rewardType_, 0 );
         int rewardAmount = static_cast<int>(rewardAmount_);
@@ -132,7 +132,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-    ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onRewardedVideoAdLeftApplication )( JNIEnv *env, jclass cls )
+    ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onRewardedVideoAdLeftApplication )( JNIEnv *env, jclass cls )
     {
         if( g_currentAdMobRewardedVideoEventHandler != nullptr )
         {
@@ -141,7 +141,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-    ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onRewardedVideoAdFailedToLoad )( JNIEnv *env, jclass cls, jint errorCode_ )
+    ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onRewardedVideoAdFailedToLoad )( JNIEnv *env, jclass cls, jint errorCode_ )
     {
         int errorCode = static_cast<int>(errorCode_);
         
@@ -152,7 +152,7 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-    ADMOB_JAVA_INTERFACE( AndroidNativeUnity_1onRewardedVideoCompleted )( JNIEnv *env, jclass cls )
+    ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onRewardedVideoCompleted )( JNIEnv *env, jclass cls )
     {
         if( g_currentAdMobRewardedVideoEventHandler != nullptr )
         {

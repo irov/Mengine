@@ -67,7 +67,7 @@ add_python_module(errno     MOD_SRCS ${SOURCE_DIR}/Modules/errnomodule.c)
 add_python_module(_sre      MOD_SRCS ${SOURCE_DIR}/Modules/_sre.c)
 add_python_module(_codecs   MOD_SRCS ${SOURCE_DIR}/Modules/_codecsmodule.c)
 #add_python_module(zipimport MOD_SRCS ${SOURCE_DIR}/Modules/zipimport.c)
-#add_python_module(zlib MOD_SRCS ${SOURCE_DIR}/Modules/zlibmodule.c)
+add_python_module(zlib MOD_SRCS ${SOURCE_DIR}/Modules/zlibmodule.c)
 add_python_module(_symtable MOD_SRCS ${SOURCE_DIR}/Modules/symtablemodule.c)
 add_python_module(xxsubtype MOD_SRCS ${SOURCE_DIR}/Modules/xxsubtype.c)
 add_python_module(_struct MOD_SRCS ${SOURCE_DIR}/Modules/_struct.c)
@@ -232,6 +232,7 @@ set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_F
 include_directories(${SOURCE_DIR}/Include ${SOURCE_DIR})
 include_directories(${SOURCE_DIR}/Python)
 include_directories(${THIRDPARTY_DIR}/stdex/include)
+include_directories(${THIRDPARTY_DIR}/zlib)
 
 include_directories(${SOURCE_DIR}/PC)
 

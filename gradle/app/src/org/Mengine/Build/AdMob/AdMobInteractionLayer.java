@@ -61,52 +61,27 @@ public class AdMobInteractionLayer {
         _interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onAdLoaded();
-                    }
-                });
+                AndroidNativeAdMob_onAdLoaded();
             }
 
             @Override
             public void onAdFailedToLoad(final int errorCode) {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onAdFailedToLoad(errorCode);
-                    }
-                });
+                AndroidNativeAdMob_onAdFailedToLoad(errorCode);
             }
 
             @Override
             public void onAdOpened() {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onAdOpened();
-                    }
-                });
+                AndroidNativeAdMob_onAdOpened();
             }
 
             @Override
             public void onAdLeftApplication() {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onAdLeftApplication();
-                    }
-                });
+                AndroidNativeAdMob_onAdLeftApplication();
             }
 
             @Override
             public void onAdClosed() {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onAdClosed();
-                    }
-                });
+                AndroidNativeAdMob_onAdClosed();
             }
         });
 
@@ -114,86 +89,46 @@ public class AdMobInteractionLayer {
         _rewardedVideoAd.setRewardedVideoAdListener(new RewardedVideoAdListener() {
             @Override
             public void onRewardedVideoAdLoaded() {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onRewardedVideoAdLoaded();
-                    }
-                });
+                AndroidNativeAdMob_onRewardedVideoAdLoaded();
             }
 
             @Override
             public void onRewardedVideoAdOpened() {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onRewardedVideoAdOpened();
-                    }
-                });
+                AndroidNativeAdMob_onRewardedVideoAdOpened();
             }
 
             @Override
             public void onRewardedVideoStarted() {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onRewardedVideoStarted();
-                    }
-                });
+                AndroidNativeAdMob_onRewardedVideoStarted();
             }
 
             @Override
             public void onRewardedVideoAdClosed() {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onRewardedVideoAdClosed();
-                    }
-                });
+                AndroidNativeAdMob_onRewardedVideoAdClosed();
             }
 
             @Override
             public void onRewarded(final RewardItem rewardItem) {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        if (rewardItem != null) {
-                            AndroidNativeAdMob_onRewarded(rewardItem.getType(), rewardItem.getAmount());
-                        } else {
-                            AndroidNativeAdMob_onRewarded("", 0);
-                        }
-                    }
-                });
+                if (rewardItem != null) {
+                    AndroidNativeAdMob_onRewarded(rewardItem.getType(), rewardItem.getAmount());
+                } else {
+                    AndroidNativeAdMob_onRewarded("", 0);
+                }
             }
 
             @Override
             public void onRewardedVideoAdLeftApplication() {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onRewardedVideoAdLeftApplication();
-                    }
-                });
+                AndroidNativeAdMob_onRewardedVideoAdLeftApplication();
             }
 
             @Override
             public void onRewardedVideoAdFailedToLoad(final int errorCode) {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onRewardedVideoAdFailedToLoad(errorCode);
-                    }
-                });
+                AndroidNativeAdMob_onRewardedVideoAdFailedToLoad(errorCode);
             }
 
             @Override
             public void onRewardedVideoCompleted() {
-                ThreadUtil.performOnMainThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        AndroidNativeAdMob_onRewardedVideoCompleted();
-                    }
-                });
+                AndroidNativeAdMob_onRewardedVideoCompleted();
             }
         });
     }

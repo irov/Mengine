@@ -208,12 +208,12 @@ public class AdMobInteractionLayer {
     }
 
     public void showInterstitialAd() {
-        if (!_interstitialAd.isLoaded()) {
-            return;
-        }
         ThreadUtil.performOnMainThread(new Runnable() {
             @Override
             public void run() {
+                if (!_interstitialAd.isLoaded()) {
+                    return;
+                }
                 _interstitialAd.show();
             }
         });
@@ -230,12 +230,12 @@ public class AdMobInteractionLayer {
     }
 
     public void showRewardedVideoAd() {
-        if (!_rewardedVideoAd.isLoaded()) {
-            return;
-        }
         ThreadUtil.performOnMainThread(new Runnable() {
             @Override
             public void run() {
+                if (!_rewardedVideoAd.isLoaded()) {
+                    return;
+                }
                 _rewardedVideoAd.show();
             }
         });

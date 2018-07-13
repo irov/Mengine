@@ -62,9 +62,9 @@ public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
             public void run() {
                 if (UnityAds.isReady(placementId)) {
                     UnityAds.show(activity, placementId);
-                }
-                if (_alreadyInitializedPlacements.contains(placementId)) {
-                    _alreadyInitializedPlacements.remove(placementId);
+                    if (_alreadyInitializedPlacements.contains(placementId)) {
+                        _alreadyInitializedPlacements.remove(placementId);
+                    }
                 }
             }
         });

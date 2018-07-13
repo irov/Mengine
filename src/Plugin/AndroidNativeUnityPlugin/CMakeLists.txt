@@ -4,6 +4,8 @@ ADD_FILTER(
 src
 	AndroidNativeUnityPlugin.h
 	AndroidNativeUnityPlugin.cpp
+    AndroidNativeUnityModule.h
+    AndroidNativeUnityModule.cpp
 	UnityAdEventHandler.h 
 )
 

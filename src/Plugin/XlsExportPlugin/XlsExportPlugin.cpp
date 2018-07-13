@@ -10,8 +10,8 @@
 
 #include "pybind\pybind.hpp"
 
-#pragma comment ( lib, "Ws2_32.lib" )
-#pragma comment ( lib, "Crypt32.lib" )
+FILE _iob[] = { *stdin, *stdout, *stderr };
+extern "C" FILE * __cdecl __iob_func( void ) { return _iob; }
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( XlsExport, Mengine::XlsExportPlugin );

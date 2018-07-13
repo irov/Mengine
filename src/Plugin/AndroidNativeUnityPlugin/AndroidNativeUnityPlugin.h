@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Core/PluginBase.h"
+#include "Interface/ThreadInterface.h"
 
-#include "UnityAdEventHandler.h"
+#include "Core/PluginBase.h"
 
 namespace Mengine 
 {
@@ -21,10 +21,5 @@ namespace Mengine
     protected:
         bool _initialize() override;
         void _finalize() override;
-
-    public:
-        bool setupAds( bool _debug );
-        bool showAd( const String & _placementId );
-        bool setAdsEventHandler( const UnityAdEventHandlerPtr & _callback );
     };
 }

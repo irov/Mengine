@@ -11,24 +11,15 @@
 
 namespace Mengine 
 {
-    enum EUnityCommand
-    {
-        EUC_READY = 0,
-        EUC_CLICK,
-        EUC_CHANGED,
-        EUC_START,
-        EUC_FINISH,
-        EUC_ERROR,
-    };
     //////////////////////////////////////////////////////////////////////////
     typedef Lambda<void( const UnityAdEventHandlerPtr & )> LambdaUnityAdEventHandler;
     //////////////////////////////////////////////////////////////////////////
-    class AndroidNativeUnityModule
+    class AndroidNativeUnityAdsModule
         : public ModuleBase
     {
     public:
-        AndroidNativeUnityModule();
-        ~AndroidNativeUnityModule() override;
+        AndroidNativeUnityAdsModule();
+        ~AndroidNativeUnityAdsModule() override;
 
     protected:
         bool _initialize() override;
@@ -39,10 +30,7 @@ namespace Mengine
 
     public:
         void addCommand( const LambdaUnityAdEventHandler & _command );
-
-    public:
-        const UnityAdEventHandlerPtr & getEventHandler() const;
-
+        
     public:
         bool setupAds( bool _debug );
         bool showAd( const String & _placementId );
@@ -51,8 +39,8 @@ namespace Mengine
     protected:
         ThreadMutexInterfacePtr m_mutex;
         
-        typedef Vector<LambdaUnityAdEventHandler> VectorUnityCommand;
-        VectorUnityCommand m_commands;
+        typedef Vector<LambdaUnityAdEventHandler> VectorUnityAdCommand;
+        VectorUnityAdCommand m_commands;
 
         UnityAdEventHandlerPtr m_eventHandler;
     };

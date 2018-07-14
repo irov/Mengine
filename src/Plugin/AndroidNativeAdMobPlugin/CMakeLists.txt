@@ -2,6 +2,8 @@ set( MY_LIB_NAME AndroidNativeAdMobPlugin )
 
 ADD_FILTER(
 src
+    AndroidNativeAdMobModule.h
+    AndroidNativeAdMobModule.cpp
 	AndroidNativeAdMobPlugin.h
 	AndroidNativeAdMobPlugin.cpp
 	AdMobInterstitialEventHandler.h

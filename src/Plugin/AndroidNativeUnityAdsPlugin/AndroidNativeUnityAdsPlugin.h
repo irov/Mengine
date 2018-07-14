@@ -6,14 +6,14 @@
 
 namespace Mengine 
 {
-    class AndroidNativeUnityPlugin
+    class AndroidNativeUnityAdsPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "AndroidNativeUnity" )
+        PLUGIN_DECLARE( "AndroidNativeUnityAds" )
 
     public:
-        AndroidNativeUnityPlugin();
-        ~AndroidNativeUnityPlugin() override;
+        AndroidNativeUnityAdsPlugin();
+        ~AndroidNativeUnityAdsPlugin() override;
 
     protected:
         bool _avaliable() override;

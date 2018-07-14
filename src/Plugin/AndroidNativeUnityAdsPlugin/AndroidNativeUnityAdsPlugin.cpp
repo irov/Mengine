@@ -1,39 +1,39 @@
-#include "AndroidNativeAdMobPlugin.h"
-
-#include "AndroidNativeAdMobModule.h"
+#include "AndroidNativeUnityAdsPlugin.h"
 
 #include "Interface/StringizeInterface.h"
+
+#include "AndroidNativeUnityAdsModule.h"
 
 #include "Core/ModuleFactory.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( AndroidNativeAdMob, Mengine::AndroidNativeAdMobPlugin )
+PLUGIN_FACTORY( AndroidNativeUnityAds, Mengine::AndroidNativeUnityAdsPlugin )
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 namespace Mengine
-{
+{    
     //////////////////////////////////////////////////////////////////////////
-    AndroidNativeAdMobPlugin::AndroidNativeAdMobPlugin()
+    AndroidNativeUnityAdsPlugin::AndroidNativeUnityAdsPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AndroidNativeAdMobPlugin::~AndroidNativeAdMobPlugin()
+    AndroidNativeUnityAdsPlugin::~AndroidNativeUnityAdsPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeAdMobPlugin::_avaliable()
+    bool AndroidNativeUnityAdsPlugin::_avaliable()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeAdMobPlugin::_initialize()
+    bool AndroidNativeUnityAdsPlugin::_initialize()
     {
-        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidAdMob" )
-            , new ModuleFactory<AndroidNativeAdMobModule>() );
+        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidUnityAds" )
+            , new ModuleFactory<AndroidNativeUnityAdsModule>() );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativeAdMobPlugin::_finalize()
+    void AndroidNativeUnityAdsPlugin::_finalize()
     {
-    }
+    }    
 }

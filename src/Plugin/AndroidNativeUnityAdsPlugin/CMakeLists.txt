@@ -1,15 +1,15 @@
-set( MY_LIB_NAME AndroidNativeUnityPlugin )
+set( MY_LIB_NAME AndroidNativeUnityAdsPlugin )
 
 ADD_FILTER(
 src
-	AndroidNativeUnityPlugin.h
-	AndroidNativeUnityPlugin.cpp
-    AndroidNativeUnityModule.h
-    AndroidNativeUnityModule.cpp
+	AndroidNativeUnityAdsPlugin.h
+	AndroidNativeUnityAdsPlugin.cpp
+    AndroidNativeUnityAdsModule.h
+    AndroidNativeUnityAdsModule.cpp
 	UnityAdEventHandler.h 
 )
 
-if( MENGINE_PLUGIN_ANDROID_NATIVE_UNITY_DLL )
+if( MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_DLL )
    add_definitions(-DMENGINE_PLUGIN_DLL)
 endif()
 

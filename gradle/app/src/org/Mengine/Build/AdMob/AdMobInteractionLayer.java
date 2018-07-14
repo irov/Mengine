@@ -10,6 +10,8 @@ import com.google.android.gms.ads.reward.RewardItem;
 import com.google.android.gms.ads.reward.RewardedVideoAd;
 import com.google.android.gms.ads.reward.RewardedVideoAdListener;
 
+import org.Mengine.Build.ThreadUtil;
+
 /**
  * Created by sweatcoin7 on 7/8/18.
  */
@@ -19,7 +21,8 @@ public class AdMobInteractionLayer {
     private static final String TAG = "AdMob";
 
     private static final String ADMOBAPPID = "ca-app-pub-3940256099942544~3347511713";
-    private static final String ADUNITID = "ca-app-pub-3940256099942544/1033173712";
+    private static final String INTERADUNITID = "ca-app-pub-3940256099942544/1033173712";
+    private static final String VIDEOADUNITID = "ca-app-pub-3940256099942544/5224354917";
 
     private InterstitialAd _interstitialAd;
     private RewardedVideoAd _rewardedVideoAd;
@@ -54,7 +57,7 @@ public class AdMobInteractionLayer {
         MobileAds.initialize(activity, ADMOBAPPID);
 
         _interstitialAd = new InterstitialAd(activity);
-        _interstitialAd.setAdUnitId(ADUNITID);
+        _interstitialAd.setAdUnitId(INTERADUNITID);
         _interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
@@ -62,7 +65,7 @@ public class AdMobInteractionLayer {
             }
 
             @Override
-            public void onAdFailedToLoad(int errorCode) {
+            public void onAdFailedToLoad(final int errorCode) {
                 AndroidNativeAdMob_onAdFailedToLoad(errorCode);
             }
 
@@ -105,7 +108,7 @@ public class AdMobInteractionLayer {
             }
 
             @Override
-            public void onRewarded(RewardItem rewardItem) {
+            public void onRewarded(final RewardItem rewardItem) {
                 if (rewardItem != null) {
                     AndroidNativeAdMob_onRewarded(rewardItem.getType(), rewardItem.getAmount());
                 } else {
@@ -119,7 +122,7 @@ public class AdMobInteractionLayer {
             }
 
             @Override
-            public void onRewardedVideoAdFailedToLoad(int errorCode) {
+            public void onRewardedVideoAdFailedToLoad(final int errorCode) {
                 AndroidNativeAdMob_onRewardedVideoAdFailedToLoad(errorCode);
             }
 
@@ -131,25 +134,45 @@ public class AdMobInteractionLayer {
     }
 
     public void setupInterstitialAd() {
-        _interstitialAd.loadAd(new AdRequest.Builder().build());
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                _interstitialAd.loadAd(new AdRequest.Builder().build());
+            }
+        });
     }
 
     public void showInterstitialAd() {
-        if (!_interstitialAd.isLoaded()) {
-            return;
-        }
-        _interstitialAd.show();
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!_interstitialAd.isLoaded()) {
+                    return;
+                }
+                _interstitialAd.show();
+            }
+        });
     }
 
     public void setupRewardedVideoAd() {
-        _rewardedVideoAd.loadAd(ADUNITID,
-                new AdRequest.Builder().build());
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                _rewardedVideoAd.loadAd(VIDEOADUNITID,
+                        new AdRequest.Builder().build());
+            }
+        });
     }
 
     public void showRewardedVideoAd() {
-        if (!_rewardedVideoAd.isLoaded()) {
-            return;
-        }
-        _rewardedVideoAd.show();
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (!_rewardedVideoAd.isLoaded()) {
+                    return;
+                }
+                _rewardedVideoAd.show();
+            }
+        });
     }
 }

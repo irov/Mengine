@@ -9,6 +9,8 @@ import com.unity3d.ads.UnityAds;
 import com.unity3d.ads.mediation.IUnityAdsExtendedListener;
 import com.unity3d.ads.webview.WebView;
 
+import org.Mengine.Build.ThreadUtil;
+
 import java.util.HashSet;
 
 /**
@@ -44,39 +46,40 @@ public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
         _alreadyInitializedPlacements = new HashSet<String>();
     }
 
-    public void setupAds(Activity activity, boolean debug) {
-        UnityAds.initialize(activity, _gameId, this, debug);
+    public void setupAds(final Activity activity, final boolean debug) {
+        final IUnityAdsExtendedListener listener = this;
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                UnityAds.initialize(activity, _gameId, listener, debug);
+            }
+        });
     }
 
-    public void showAd(Activity activity, String placementId) {
-        if (UnityAds.isReady(placementId)) {
-            UnityAds.show(activity, placementId);
-        }
-        if (_alreadyInitializedPlacements.contains(placementId)) {
-            _alreadyInitializedPlacements.remove(placementId);
-        }
+    public void showAd(final Activity activity, final String placementId) {
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (UnityAds.isReady(placementId)) {
+                    UnityAds.show(activity, placementId);
+                    if (_alreadyInitializedPlacements.contains(placementId)) {
+                        _alreadyInitializedPlacements.remove(placementId);
+                    }
+                }
+            }
+        });
     }
 
     @Override
     public void onUnityAdsClick(final String placementId) {
-        performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                AndroidNativeUnity_onUnityAdsClick(placementId);
-            }
-        });
+        AndroidNativeUnity_onUnityAdsClick(placementId);
     }
 
     @Override
     public void onUnityAdsPlacementStateChanged(final String placementId,
                                                 final UnityAds.PlacementState placementState,
                                                 final UnityAds.PlacementState placementState1) {
-        performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                AndroidNativeUnity_onUnityAdsPlacementStateChanged(placementId, placementState.ordinal(), placementState1.ordinal());
-            }
-        });
+        AndroidNativeUnity_onUnityAdsPlacementStateChanged(placementId, placementState.ordinal(), placementState1.ordinal());
     }
 
     @Override
@@ -84,46 +87,23 @@ public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
         if (_alreadyInitializedPlacements.contains(placementId)) {
             return;
         }
-        performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                AndroidNativeUnity_onUnityAdsReady(placementId);
-            }
-        });
+        AndroidNativeUnity_onUnityAdsReady(placementId);
         _alreadyInitializedPlacements.add(placementId);
     }
 
     @Override
     public void onUnityAdsStart(final String placementId) {
-        performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                AndroidNativeUnity_onUnityAdsStart(placementId);
-            }
-        });
+        AndroidNativeUnity_onUnityAdsStart(placementId);
     }
 
     @Override
     public void onUnityAdsFinish(final String placementId, final UnityAds.FinishState finishState) {
-        performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                AndroidNativeUnity_onUnityAdsFinish(placementId, finishState.ordinal());
-            }
-        });
+        AndroidNativeUnity_onUnityAdsFinish(placementId, finishState.ordinal());
     }
 
     @Override
     public void onUnityAdsError(final UnityAds.UnityAdsError unityAdsError, final String message) {
-        performOnMainThread(new Runnable() {
-            @Override
-            public void run() {
-                AndroidNativeUnity_onUnityAdsError(unityAdsError.ordinal(), message);
-            }
-        });
+        AndroidNativeUnity_onUnityAdsError(unityAdsError.ordinal(), message);
     }
 
-    private void performOnMainThread(Runnable runnable) {
-        new Handler(Looper.getMainLooper()).post(runnable);
-    }
 }

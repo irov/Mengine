@@ -183,8 +183,8 @@ PLUGIN_EXPORT( Steam );
 PLUGIN_EXPORT( AndroidNativeFacebook );
 #endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITY
-PLUGIN_EXPORT( AndroidNativeUnity );
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS
+PLUGIN_EXPORT( AndroidNativeUnityAds );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB
@@ -680,8 +680,8 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native...");
 #endif
         
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITY
-        MENGINE_ADD_PLUGIN( AndroidNativeUnity, "initialize Android Unity Ads Native...");
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS
+        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "initialize Android Unity Ads Native...");
 #endif
         
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB

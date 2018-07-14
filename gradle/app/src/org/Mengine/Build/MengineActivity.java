@@ -29,6 +29,8 @@ public class MengineActivity extends SDLActivity {
 
     static native void AndroidNativeAdMob_setupAdMobJNI();
 
+    static native void AndroidNativeDevToDev_setupDevToDevJNI();
+
     @Override
     protected String[] getLibraries() {
         return new String[]{
@@ -57,6 +59,7 @@ public class MengineActivity extends SDLActivity {
         AndroidNativeAdMob_setupAdMobJNI();
         adMobInteractionLayer = new AdMobInteractionLayer(this);
 
+        AndroidNativeDevToDev_setupDevToDevJNI();
         devToDevInteractionLayer = new DevToDevInteractionLayer(this);
     }
 

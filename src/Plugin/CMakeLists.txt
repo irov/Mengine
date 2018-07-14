@@ -21,6 +21,10 @@ if( MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB )
     ADD_SUBDIRECTORY( AndroidNativeAdMobPlugin )
 endif()
 
+if( MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV )
+    ADD_SUBDIRECTORY( AndroidNativeDevToDevPlugin )
+endif()
+
 if( MENGINE_PLUGIN_ASTRALAX )
     ADD_SUBDIRECTORY( AstralaxParticlePlugin )
 endif()

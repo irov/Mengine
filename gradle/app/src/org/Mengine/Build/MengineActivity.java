@@ -7,6 +7,7 @@ import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger;
 
 import org.Mengine.Build.AdMob.AdMobInteractionLayer;
+import org.Mengine.Build.DevToDev.DevToDevInteractionLayer;
 import org.Mengine.Build.Facebook.FacebookInteractionLayer;
 import org.Mengine.Build.UnityAds.UnityAdsInteractionLayer;
 import org.libsdl.app.SDLActivity;
@@ -17,6 +18,7 @@ public class MengineActivity extends SDLActivity {
     public FacebookInteractionLayer facebookInteractionLayer;
     public UnityAdsInteractionLayer unityAdsInteractionLayer;
     public AdMobInteractionLayer adMobInteractionLayer;
+    public DevToDevInteractionLayer devToDevInteractionLayer;
 
     private static MengineActivity _instance;
     private CallbackManager _callbackManager;
@@ -54,6 +56,8 @@ public class MengineActivity extends SDLActivity {
 
         AndroidNativeAdMob_setupAdMobJNI();
         adMobInteractionLayer = new AdMobInteractionLayer(this);
+
+        devToDevInteractionLayer = new DevToDevInteractionLayer(this);
     }
 
     @Override
@@ -158,5 +162,57 @@ public class MengineActivity extends SDLActivity {
             return;
         }
         _instance.adMobInteractionLayer.showRewardedVideoAd();
+    }
+
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    //DevToDev Methods
+    ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void onTutorialEvent(int stateOrStep) {
+        if (_instance == null) {
+            return;
+        }
+        _instance.devToDevInteractionLayer.onTutorialEvent(stateOrStep);
+    }
+
+    public static void setCurrentLevel(int level) {
+        if (_instance == null) {
+            return;
+        }
+        _instance.devToDevInteractionLayer.setCurrentLevel(level);
+    }
+
+    public static void onLevelUp(int level) {
+        if (_instance == null) {
+            return;
+        }
+        _instance.devToDevInteractionLayer.onLevelUp(level);
+    }
+
+    public static void onCurrencyAccrual(String currencyName, int currencyAmount, int accrualType) {
+        if (_instance == null) {
+            return;
+        }
+        _instance.devToDevInteractionLayer.onCurrencyAccrual(currencyName, currencyAmount, accrualType);
+    }
+
+    public static void onRealPayment(String paymentId, float inAppPrice, String inAppName, String inAppCurrencyISOCode) {
+        if (_instance == null) {
+            return;
+        }
+        _instance.devToDevInteractionLayer.onRealPayment(paymentId, inAppPrice, inAppName, inAppCurrencyISOCode);
+    }
+
+    public static void onInAppPurchase(String purchaseId, String purchaseType, int purchaseAmount, int purchasePrice, String purchaseCurrency) {
+        if (_instance == null) {
+            return;
+        }
+        _instance.devToDevInteractionLayer.onInAppPurchase(purchaseId, purchaseType, purchaseAmount, purchasePrice, purchaseCurrency);
+    }
+
+    public static void onSimpleCustomEvent(String eventName) {
+        if (_instance == null) {
+            return;
+        }
+        _instance.devToDevInteractionLayer.onSimpleCustomEvent(eventName);
     }
 }

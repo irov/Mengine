@@ -5,9 +5,9 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <algorithm>
 

@@ -3,7 +3,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/PrototypeManagerInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "BitmapGlyphService.h"
 #include "BitmapFontPrototypeGenerator.h"

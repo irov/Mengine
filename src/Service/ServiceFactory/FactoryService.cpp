@@ -1,6 +1,6 @@
 #include "FactoryService.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <algorithm>
 

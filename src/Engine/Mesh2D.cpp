@@ -4,7 +4,7 @@
 
 #include "Kernel/ResourceImage.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "math/box2.h"
 #include "math/utils.h"

@@ -6,12 +6,12 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/Magic.h"
-#include "Core/FilePath.h"
-#include "Core/Stream.h"
-#include "Core/MemoryHelper.h"
+#include "Kernel/Magic.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/Stream.h"
+#include "Kernel/MemoryHelper.h"
 
 #include "Kernel/ResourceImage.h"
 

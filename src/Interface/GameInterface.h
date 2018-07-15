@@ -4,9 +4,9 @@
 #include "Interface/PlayerInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Core/Params.h"
+#include "Kernel/Params.h"
 
-#include "Core/Magic.h"
+#include "Kernel/Magic.h"
 
 namespace Mengine
 {

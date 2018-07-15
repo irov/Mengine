@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Config/String.h"
-#include "Core/FilePath.h"
+#include "Kernel/FilePath.h"
 
 namespace Mengine
 {

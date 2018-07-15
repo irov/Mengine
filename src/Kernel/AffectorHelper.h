@@ -4,10 +4,10 @@
 
 #include "Kernel/Affector.h"
 
-#include "Factory/Factory.h"
-#include "Factory/FactoryPool.h"
+#include "Kernel/Factory.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Core/ValueInterpolator.h"
+#include "Kernel/ValueInterpolator.h"
 
 namespace Mengine
 {

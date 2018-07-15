@@ -31,9 +31,9 @@
 #include "DataflowAEK.h"
 #include "DataflowMDL.h"
 
-#include "Codec/DecoderFactory.h"
-#include "Codec/EncoderFactory.h"
-#include "Codec/DataflowFactory.h"
+#include "Kernel/DecoderFactory.h"
+#include "Kernel/EncoderFactory.h"
+#include "Kernel/DataflowFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( ImageCodec, Mengine::ImageCodecPlugin );

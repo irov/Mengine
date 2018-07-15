@@ -2,7 +2,7 @@
 
 #include "Interface/ServantInterface.h"
 
-#include "Core/ConstString.h"
+#include "Kernel/ConstString.h"
 
 namespace Mengine
 {

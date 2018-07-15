@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Codec/VideoDecoder.h"
+#include "Kernel/VideoDecoder.h"
 
 #include "ogg/ogg.h"
 #include "theora/theora.h"

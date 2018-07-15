@@ -6,11 +6,11 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Core/IniUtil.h"
+#include "Kernel/IniUtil.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PackageService, Mengine::PackageService );

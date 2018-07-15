@@ -2,11 +2,11 @@
 
 #include "Interface/RenderSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "RenderMaterial.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 #include "Config/Map.h"
 

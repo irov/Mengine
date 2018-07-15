@@ -6,10 +6,10 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Core/MemoryHelper.h"
-#include "Core/PixelFormat.h"
+#include "Kernel/MemoryHelper.h"
+#include "Kernel/PixelFormat.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "stdex/xml_sax_parser.h"
 

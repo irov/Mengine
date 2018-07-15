@@ -3,9 +3,9 @@
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"
 

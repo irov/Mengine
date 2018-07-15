@@ -4,9 +4,9 @@
 #include "Interface/ConfigInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/Viewport.h"
+#include "Kernel/Viewport.h"
 
 #include "math/box2.h"
 

@@ -12,9 +12,9 @@
 #include "Config/Lambda.h"
 
 #include "Engine/ResourceSound.h"
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"
 

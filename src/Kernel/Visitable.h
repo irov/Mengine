@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Visitor.h"
+#include "Kernel/Visitor.h"
 
 namespace Mengine
 {    

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Resource.h"
-#include "Core/ColourValue.h"
+#include "Kernel/ColourValue.h"
 
 #include "math/mat4.h"
 

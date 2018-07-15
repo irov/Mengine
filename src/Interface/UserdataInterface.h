@@ -4,10 +4,10 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
 
-#include "Core/Magic.h"
+#include "Kernel/Magic.h"
 
 namespace Mengine
 {

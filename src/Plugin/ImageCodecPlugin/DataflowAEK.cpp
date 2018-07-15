@@ -4,16 +4,16 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Core/Stream.h"
-#include "Core/MemoryHelper.h"
+#include "Kernel/Stream.h"
+#include "Kernel/MemoryHelper.h"
 
 #include "Metacode/Metacode.h"
 
 #include "stdex/memory_reader.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

@@ -5,7 +5,7 @@
 
 #include "ResourceSound.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <math.h>
 

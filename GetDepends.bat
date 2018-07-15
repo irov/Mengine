@@ -46,13 +46,13 @@ call:gitdepend https://github.com/spurious/SDL-mirror.git SDL2
 call:gitdepend https://github.com/frankinshtein/font-effects-lib.git libfe
 call:gitdepend https://github.com/irov/math.git libmath
 call:gitdepend https://github.com/akheron/jansson.git jansson
-call:gitdepend https://github.com/ReadyTalk/win32.git openssl
 
 call:gitdependr https://github.com/glennrp/libpng.git libpng libpng17
 call:gitdependr https://github.com/xiph/theora.git libtheora theora-1.1
 call:gitdependr https://github.com/kcat/openal-soft.git openal-soft v1.18
 call:gitdependr https://github.com/python/cpython.git Python 2.7
 call:gitdependr https://github.com/python/cpython.git Python3 v3.6.5
+call:gitdependr https://github.com/openssl/openssl.git openssl OpenSSL_1_1_1-pre8
 
 call:svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 

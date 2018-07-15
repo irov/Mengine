@@ -6,11 +6,11 @@
 #include "Interface/RenderTargetInterface.h"
 #include "Interface/RenderMaterialInterface.h"
 
-#include "Core/Viewport.h"
-#include "Core/Mixin.h"
-#include "Core/RenderVertex2D.h"
-#include "Core/RenderIndex.h"
-#include "Core/IntrusivePtr.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/Mixin.h"
+#include "Kernel/RenderVertex2D.h"
+#include "Kernel/RenderIndex.h"
+#include "Kernel/IntrusivePtr.h"
 
 #include "math/box2.h"
 

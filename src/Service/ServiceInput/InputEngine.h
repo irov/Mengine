@@ -2,10 +2,10 @@
 
 #include "Interface/InputSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
-#include "Core/Resolution.h"
-#include "Core/Viewport.h"
+#include "Kernel/Resolution.h"
+#include "Kernel/Viewport.h"
 
 #include "math/vec2.h"
 

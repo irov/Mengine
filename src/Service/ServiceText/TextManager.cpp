@@ -8,12 +8,12 @@
 #include "Interface/PrototypeManagerInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Core/String.h"
-#include "Core/IniUtil.h"
+#include "Kernel/String.h"
+#include "Kernel/IniUtil.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "stdex/xml_sax_parser.h"
 

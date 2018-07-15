@@ -17,9 +17,9 @@
 
 #include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
 
-#include "Core/ModuleFactory.h"
+#include "Kernel/ModuleFactory.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <stdlib.h>
 

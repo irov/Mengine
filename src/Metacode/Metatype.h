@@ -6,12 +6,12 @@
 
 #include "stdex/memory_reader.h"
 
-#include "Core/ConstString.h"
-#include "Core/Tags.h"
-#include "Core/FilePath.h"
-#include "Core/ColourValue.h"
-#include "Core/Polygon.h"
-#include "Core/Viewport.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/Tags.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/Polygon.h"
+#include "Kernel/Viewport.h"
 
 #include "Config/Typedef.h"
 #include "Config/String.h"

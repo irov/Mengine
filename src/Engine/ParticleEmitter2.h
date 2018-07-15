@@ -10,7 +10,7 @@
 
 #include "math/mat3.h"
 
-#include "Core/Polygon.h"
+#include "Kernel/Polygon.h"
 
 #include "Config/Vector.h"
 

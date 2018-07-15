@@ -2,18 +2,18 @@
 
 #include "Interface/TextInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "TextLocalePak.h"
 
 #include "TextEntry.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
-#include "Core/ConstString.h"
-#include "Core/ConstStringHolderLocalString.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/ConstStringHolderLocalString.h"
 
-#include "Core/FilePath.h"
+#include "Kernel/FilePath.h"
 
 #include "Config/Map.h"
 #include "stdex/template_pool.h"

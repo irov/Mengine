@@ -4,7 +4,7 @@
 
 #include "Interface/MousePickerSystemInterface.h"
 
-#include "Core/Polygon.h"
+#include "Kernel/Polygon.h"
 
 namespace Mengine
 {

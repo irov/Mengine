@@ -7,7 +7,7 @@
 #include "FileGroupZip.h"
 #include "ArchivatorZip.h"
 
-#include "Factory/FactoryDefault.h"
+#include "Kernel/FactoryDefault.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Zip, Mengine::ZipPlugin )

@@ -5,7 +5,7 @@
 #include "Kernel/Resource.h"
 #include "Kernel/ResourceImage.h"
 
-#include "Core/Polygon.h"
+#include "Kernel/Polygon.h"
 
 #include "Config/Vector.h"
 

@@ -41,10 +41,7 @@ SET( APPLICATION_DEPENDENCIES
 
 SET( APPLICATION_LIBS
     ${APPLICATION_LIBS}
-    Logger
-    Core
-    Codec
-    Archive
+    Kernel
 )
 
 SET( APPLICATION_LIB_PATHS

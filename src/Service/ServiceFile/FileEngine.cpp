@@ -1,15 +1,15 @@
 #include "FileEngine.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Factory/FactoryDefault.h"
+#include "Kernel/FactoryDefault.h"
 
-#include "Core/String.h"
-#include "Core/FilePath.h"
+#include "Kernel/String.h"
+#include "Kernel/FilePath.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( FileService, Mengine::FileEngine );

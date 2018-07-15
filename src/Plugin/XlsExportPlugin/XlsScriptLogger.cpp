@@ -1,6 +1,6 @@
 #include "XlsScriptLogger.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"
 

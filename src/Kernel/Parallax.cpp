@@ -4,7 +4,7 @@
 #include "Interface/RenderScissorInterface.h"
 #include "Interface/RenderTargetInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <math.h>
 

@@ -349,11 +349,6 @@ SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
  ${MY_LIB_NAME}  
  Kernel
- Core
- Logger
- Codec
- Factory
- Archive
  Metacode 
  ServiceText
  ServiceGraveyard

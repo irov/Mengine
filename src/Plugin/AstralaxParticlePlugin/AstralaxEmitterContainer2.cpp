@@ -3,15 +3,15 @@
 
 #include "Interface/MemoryInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/String.h"
-#include "Core/Stream.h"
+#include "Kernel/String.h"
+#include "Kernel/Stream.h"
 
 #include "Kernel/ResourceImage.h"
 
-#include "Factory/FactoryPool.h"
-#include "Factory/FactoryPoolWithListener.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryPoolWithListener.h"
 
 namespace Mengine
 {

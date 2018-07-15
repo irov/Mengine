@@ -1,6 +1,6 @@
 #include "ParticleEmitter2.h" 
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/StringizeInterface.h"
@@ -19,7 +19,7 @@
 #include "math/box2.h"
 #include "math/angle.h"
 
-#include "Core/RenderUtils.h"
+#include "Kernel/RenderUtils.h"
 
 namespace Mengine
 {

@@ -2,8 +2,8 @@
 
 #include "Config/Typedef.h"
 
-#include "Core/ConstString.h"
-#include "Core/Mixin.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {

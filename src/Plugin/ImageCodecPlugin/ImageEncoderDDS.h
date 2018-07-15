@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Codec/ImageEncoder.h"
+#include "Kernel/ImageEncoder.h"
 
 namespace Mengine
 {

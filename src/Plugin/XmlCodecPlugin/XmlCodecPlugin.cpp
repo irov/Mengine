@@ -4,9 +4,9 @@
 
 #include "Interface/StringizeInterface.h"
 
-#include "Core/ConstString.h"
+#include "Kernel/ConstString.h"
 
-#include "Codec/DecoderFactory.h"
+#include "Kernel/DecoderFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( XmlCodec, Mengine::XmlCodecPlugin )

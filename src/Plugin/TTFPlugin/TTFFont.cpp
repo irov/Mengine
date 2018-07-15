@@ -5,12 +5,12 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Core/Stream.h"
-#include "Core/MemoryHelper.h"
-#include "Core/MemoryAllocator.h"
-#include "Core/IniUtil.h"
+#include "Kernel/Stream.h"
+#include "Kernel/MemoryHelper.h"
+#include "Kernel/MemoryAllocator.h"
+#include "Kernel/IniUtil.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "utf8.h"
 

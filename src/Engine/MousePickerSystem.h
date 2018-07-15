@@ -2,8 +2,8 @@
 
 #include "Interface/MousePickerSystemInterface.h"
 
-#include "Core/ServiceBase.h"
-#include "Core/Viewport.h"
+#include "Kernel/ServiceBase.h"
+#include "Kernel/Viewport.h"
 
 #include "Config/Vector.h"
 #include "Config/List.h"

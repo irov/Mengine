@@ -8,7 +8,7 @@
 
 #include "Kernel/ResourceImage.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

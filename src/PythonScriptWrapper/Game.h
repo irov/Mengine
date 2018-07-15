@@ -10,10 +10,10 @@
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
-#include "Core/Resolution.h"
-#include "Core/String.h"
+#include "Kernel/Resolution.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {

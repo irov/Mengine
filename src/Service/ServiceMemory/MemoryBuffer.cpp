@@ -1,6 +1,6 @@
 #include "MemoryBuffer.h"
 
-#include "Core/MemoryAllocator.h"
+#include "Kernel/MemoryAllocator.h"
 
 #include "stdex/memorycopy.h"
 

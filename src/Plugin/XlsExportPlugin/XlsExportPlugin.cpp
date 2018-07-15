@@ -1,6 +1,6 @@
 #include "XlsExportPlugin.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UnicodeInterface.h"

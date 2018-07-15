@@ -7,9 +7,9 @@
 #include "Win32ThreadIdentity.h"
 #include "Win32ThreadMutex.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "Config/Vector.h"
 

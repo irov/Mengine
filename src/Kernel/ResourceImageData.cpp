@@ -6,12 +6,12 @@
 
 #include "Metacode/Metacode.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/ConstString.h"
-#include "Core/String.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/String.h"
 
-#include "Core/MemoryAllocator.h"
+#include "Kernel/MemoryAllocator.h"
 
 namespace Mengine
 {

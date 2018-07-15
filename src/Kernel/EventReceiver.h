@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Factory/Factorable.h"
-#include "Core/IntrusivePtr.h"
+#include "Kernel/Factorable.h"
+#include "Kernel/IntrusivePtr.h"
 
 namespace Mengine
 {

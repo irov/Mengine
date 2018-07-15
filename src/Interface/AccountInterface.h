@@ -1,18 +1,17 @@
-#   pragma once
+#pragma once
 
-#   include "Interface/ServiceInterface.h"
-#   include "Interface/StreamInterface.h"
-#   include "Interface/MemoryInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/StreamInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#   include "Core/ConstString.h"
-#	include "Factory/Factorable.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/Factorable.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/Magic.h"
 
-#   include "Config/String.h"
+#include "Config/String.h"
 
-#	include "Core/FilePath.h"
-#	include "Core/Magic.h"
-
-#	include "pybind/object.hpp"
+#include "pybind/object.hpp"
 
 namespace Mengine
 {

@@ -2,7 +2,7 @@
 
 #include "Interface/CodecInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <string.h>
 

@@ -6,9 +6,9 @@
 #include "Box2DBody.h"
 #include "Box2DModule.h"
 
-#include "Core/ModuleFactory.h"
+#include "Kernel/ModuleFactory.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Box2D, Mengine::Box2DPlugin )

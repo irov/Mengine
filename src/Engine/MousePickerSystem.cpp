@@ -7,7 +7,7 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/Scene.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <algorithm>
 

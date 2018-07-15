@@ -4,7 +4,7 @@
 #include "OpenALSoundBufferBase.h"
 #include "OpenALSoundError.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <math.h>
 

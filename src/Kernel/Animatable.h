@@ -4,8 +4,8 @@
 
 #include "Config/Typedef.h"
 
-#include "Core/IntrusivePtr.h"
-#include "Core/Mixin.h"
+#include "Kernel/IntrusivePtr.h"
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {

@@ -1,6 +1,6 @@
 #include "Win32DynamicLibrary.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

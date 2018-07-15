@@ -115,7 +115,7 @@
 //#include "DiscreteEntity.h"
 
 //#include "SoundEngine.h"
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
@@ -135,9 +135,9 @@
 #include "PythonScheduleEvent.h"
 #include "DelaySchedulePipe.h"
 
-#include "Core/Polygon.h"
-#include "Core/MemoryHelper.h"
-#include "Core/ValueFollower.h"
+#include "Kernel/Polygon.h"
+#include "Kernel/MemoryHelper.h"
+#include "Kernel/ValueFollower.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -146,12 +146,12 @@
 #include "math/quat.h"
 #include "math/utils.h"
 
-#include "Core/Rect.h"
-#include "Core/String.h"
-#include "Core/Polygon.h"
-#include "Core/ValueFollower.h"
+#include "Kernel/Rect.h"
+#include "Kernel/String.h"
+#include "Kernel/Polygon.h"
+#include "Kernel/ValueFollower.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
 #include "stdex/xml_sax_parser.h"
 #include "utf8.h"

@@ -1,6 +1,6 @@
 #include "Win32ThreadIdentity.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <process.h>
 

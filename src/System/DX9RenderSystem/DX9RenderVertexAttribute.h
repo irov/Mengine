@@ -3,7 +3,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 #include "Config/Vector.h"
 

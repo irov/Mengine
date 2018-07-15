@@ -2,9 +2,9 @@
 
 #include "Interface/ServiceProviderInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/Typename.h"
+#include "Kernel/Typename.h"
 
 namespace Mengine
 {

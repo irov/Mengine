@@ -68,10 +68,7 @@ if(MENGINE_PLATFORM_ANDROID)
 endif()
 
 if(MENGINE_PLUGIN_ASTRALAX_DLL)    
-    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger)
-    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core)    
-    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Factory)
-    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Codec)      
+    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
 else()
     SET( APPLICATION_DEPENDENCIES
       ${APPLICATION_DEPENDENCIES}
@@ -85,11 +82,6 @@ else()
 
     SET( APPLICATION_LIBS
       ${APPLICATION_LIBS}
-      Logger
-      Core
-      Codec
-      Archive
-      Factory
       Kernel
       )
 

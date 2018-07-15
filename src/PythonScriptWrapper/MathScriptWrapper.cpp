@@ -14,11 +14,11 @@
 #include "math/uv4.h"
 #include "math/utils.h"
 
-#include "Core/ColourValue.h"
-#include "Core/Resolution.h"
-#include "Core/Viewport.h"
-#include "Core/Polygon.h"
-#include "Core/Rect.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/Resolution.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/Polygon.h"
+#include "Kernel/Rect.h"
 
 #include "pybind/stl_type_cast.hpp"
 

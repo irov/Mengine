@@ -2,9 +2,9 @@
 
 #include "Interface/RenderEnumInterface.h"
 
-#include "Core/ConstString.h"
-#include "Core/IntrusivePtr.h"
-#include "Core/Mixin.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/IntrusivePtr.h"
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {

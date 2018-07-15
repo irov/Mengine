@@ -4,9 +4,9 @@
 
 #include "ModuleSteam.h"
 
-#include "Core/ModuleFactory.h"
+#include "Kernel/ModuleFactory.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Steam, Mengine::SteamPlugin )

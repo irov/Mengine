@@ -3,7 +3,7 @@
 #include "Interface/FileInputStreamInterface.h"
 #include "Interface/WindowsLayerInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 #include "stdex/thread_guard.h"
 

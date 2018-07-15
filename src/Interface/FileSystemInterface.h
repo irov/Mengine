@@ -5,11 +5,11 @@
 
 #include "Interface/FileGroupInterface.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/String.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {

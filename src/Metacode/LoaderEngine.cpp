@@ -7,13 +7,13 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ConfigInterface.h"
 
-#include "Core/MemoryHelper.h"
-#include "Core/FilePath.h"
+#include "Kernel/MemoryHelper.h"
+#include "Kernel/FilePath.h"
 
 #include "metabuf/Metadata.hpp"
 #include "Metacode.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( LoaderService, Mengine::LoaderEngine );

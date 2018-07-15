@@ -2,7 +2,7 @@
 
 #include "Interface/FactoryInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "Config/Vector.h"
 

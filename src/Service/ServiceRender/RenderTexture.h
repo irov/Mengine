@@ -5,7 +5,7 @@
 
 #include "math/vec4.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 namespace Mengine
 {

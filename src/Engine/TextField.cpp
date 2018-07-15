@@ -5,10 +5,10 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/String.h"
-#include "Core/StringFormat.h"
+#include "Kernel/String.h"
+#include "Kernel/StringFormat.h"
 
 #include "TextLine.h"
 

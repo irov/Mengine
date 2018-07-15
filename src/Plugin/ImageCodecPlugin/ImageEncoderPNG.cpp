@@ -1,6 +1,6 @@
 #include "ImageEncoderPNG.h"
 
-#include "Utils/Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

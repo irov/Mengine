@@ -1,6 +1,6 @@
 #include "TextChar.h"
 
-#include "Core/String.h"
+#include "Kernel/String.h"
 
 #include <algorithm>
 

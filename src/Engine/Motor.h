@@ -4,8 +4,8 @@
 
 #include "Kernel/Updatable.h"
 
-#include "Factory/Factorable.h"
-#include "Core/ConstString.h"
+#include "Kernel/Factorable.h"
+#include "Kernel/ConstString.h"
 #include "math/vec3.h"
 
 #include "Config/Map.h"

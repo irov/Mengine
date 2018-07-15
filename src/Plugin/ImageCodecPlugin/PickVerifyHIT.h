@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/Magic.h"
+#include "Kernel/Magic.h"
 
 namespace Mengine
 {

@@ -2,10 +2,10 @@
 
 #include "Interface/ServantInterface.h"
 
-#include "Factory/Factorable.h"
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/ConstString.h"
+#include "Kernel/ConstString.h"
 
 namespace Mengine
 {

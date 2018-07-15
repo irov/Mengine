@@ -3,11 +3,11 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Core/ConstString.h"
-#include "Core/String.h"
-#include "Core/FilePath.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/String.h"
+#include "Kernel/FilePath.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {

@@ -3,9 +3,9 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/PrototypeManagerInterface.h"
 
-#include "Factory/FactorableUnique.h"
+#include "Kernel/FactorableUnique.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Kernel/Node.h"
 

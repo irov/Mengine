@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Codec/SoundDecoder.h"
+#include "Kernel/SoundDecoder.h"
 
 namespace Mengine
 {

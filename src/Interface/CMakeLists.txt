@@ -65,6 +65,7 @@ src
     LoaderInterface.h
     RandomizerInterface.h
     AnimationInterface.h
+    AccountInterface.h
     
 	dummy.cpp
 )

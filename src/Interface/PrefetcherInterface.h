@@ -3,10 +3,10 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Core/IntrusivePtr.h"
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/Visitor.h"
+#include "Kernel/IntrusivePtr.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/Visitor.h"
 
 namespace Mengine
 {

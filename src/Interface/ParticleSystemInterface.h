@@ -8,15 +8,15 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ArchiveInterface.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/ColourValue.h"
-#include "Core/Magic.h"
-#include "Core/RenderVertex2D.h"
-#include "Core/RenderIndex.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/Magic.h"
+#include "Kernel/RenderVertex2D.h"
+#include "Kernel/RenderIndex.h"
 
-#include "Factory/Factorable.h"
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
+#include "Kernel/Factorable.h"
 
 #include "math/vec2.h"
 #include "math/box2.h"

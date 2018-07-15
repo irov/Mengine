@@ -9,9 +9,9 @@
 
 #include "BitmapFontInterface.h"
 
-#include "Core/IniUtil.h"
+#include "Kernel/IniUtil.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

@@ -3,9 +3,9 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/Stream.h"
+#include "Kernel/Stream.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UserdataService, Mengine::UserdataService );

@@ -1,6 +1,6 @@
 #include "MovieFramePack.h"
 
-#include "Core/MemoryAllocator.h"
+#include "Kernel/MemoryAllocator.h"
 
 #include "math/angle.h"
 #include "math/utils.h"

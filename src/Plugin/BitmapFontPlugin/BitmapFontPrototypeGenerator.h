@@ -2,9 +2,9 @@
 
 #include "Interface/PrototypeManagerInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 namespace Mengine
 {

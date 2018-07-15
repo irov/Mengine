@@ -14,9 +14,9 @@
 #include "Kernel/Servant.h"
 #include "Kernel/Animatable.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/Viewport.h"
+#include "Kernel/Viewport.h"
 
 #include "stdex/intrusive_slug_list_size_ptr.h"
 #include "stdex/intrusive_slug_ptr.h"

@@ -3,9 +3,9 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/ServiceInterface.h"
 
-#include "Factory/Factorable.h"
-#include "Core/ConstString.h"
-#include "Core/Params.h"
+#include "Kernel/Factorable.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/Params.h"
 
 namespace Mengine
 {

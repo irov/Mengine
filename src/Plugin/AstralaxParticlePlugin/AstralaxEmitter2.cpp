@@ -3,7 +3,7 @@
 #include "AstralaxParticleSystem2.h"
 #include "AstralaxEmitterContainer2.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <limits>
 

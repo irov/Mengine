@@ -2,8 +2,8 @@
 
 #include "Interface/TextInterface.h"
 
-#include "Core/ConstString.h"
-#include "Core/ColourValue.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/ColourValue.h"
 
 #include "stdex/intrusive_tree.h"
 

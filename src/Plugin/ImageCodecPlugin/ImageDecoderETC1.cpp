@@ -1,6 +1,6 @@
 #include "ImageDecoderETC1.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <string.h>
 

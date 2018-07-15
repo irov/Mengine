@@ -5,12 +5,12 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/NotificatorInterface.h"
 
-#include "Factory/FactorableUnique.h"
-#include "Factory/Factorable.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/Factorable.h"
 
 #include "Kernel/Observable.h"
 
-#include "Core/IntrusivePtr.h"
+#include "Kernel/IntrusivePtr.h"
 
 #include <tuple>
 

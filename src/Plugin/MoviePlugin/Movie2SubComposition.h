@@ -5,7 +5,7 @@
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/Eventable.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
 #include "movie/movie.hpp"
 

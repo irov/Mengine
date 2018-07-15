@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
 #include "Interface/RenderScissorInterface.h"
 

@@ -3,7 +3,7 @@
 #include "Interface/CodecInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

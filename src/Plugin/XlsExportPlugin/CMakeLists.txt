@@ -31,9 +31,7 @@ set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER Plugins
 )
 
-TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Logger)
-TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Factory)
-TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Core)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
 
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind3${MENGINE_LIB_SUFFIX}
@@ -50,8 +48,10 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     )
     
 if(MSVC)
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
-        ${THIRDPARTY_DIR}/openssl/msvc/lib/libeay32.lib
-        ${THIRDPARTY_DIR}/openssl/msvc/lib/ssleay32.lib
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}    
+        ${THIRDPARTY_DIR}/openssl/libcrypto.lib
+        ${THIRDPARTY_DIR}/openssl/libssl.lib
+        #${THIRDPARTY_DIR}/openssl/msvc/lib/libeay32.lib
+        #${THIRDPARTY_DIR}/openssl/msvc/lib/ssleay32.lib
     )
 endif()

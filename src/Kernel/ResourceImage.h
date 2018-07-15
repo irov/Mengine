@@ -5,7 +5,7 @@
 
 #include "Kernel/Resource.h"
 
-#include "Core/ColourValue.h"
+#include "Kernel/ColourValue.h"
 
 #include "math/vec4.h"
 #include "math/uv4.h"

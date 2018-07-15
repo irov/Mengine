@@ -37,11 +37,6 @@ SET( APPLICATION_DEPENDENCIES
 
 SET( APPLICATION_LIBS
     ${APPLICATION_LIBS}
-	Logger
-	Core
-	Codec
-	Archive
-	Factory
 	Kernel
 	Engine
 	AndroidUtils	

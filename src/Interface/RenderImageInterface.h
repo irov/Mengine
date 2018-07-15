@@ -4,9 +4,9 @@
 
 #include "Interface/RenderEnumInterface.h"
 
-#include "Core/Pointer.h"
-#include "Core/Rect.h"
-#include "Core/PixelFormat.h"
+#include "Kernel/Pointer.h"
+#include "Kernel/Rect.h"
+#include "Kernel/PixelFormat.h"
 
 #include "Config/Typedef.h"
 

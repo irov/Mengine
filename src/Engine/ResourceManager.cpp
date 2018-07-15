@@ -9,7 +9,7 @@
 #include "Kernel/Loadable.h"
 #include "Kernel/Resource.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceService, Mengine::ResourceManager );

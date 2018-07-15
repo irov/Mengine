@@ -7,11 +7,11 @@
 
 #include "Config/String.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
 #include "Kernel/Servant.h"
 
-#include "Core/FontBase.h"
+#include "Kernel/FontBase.h"
 
 #include "ft2build.h"
 #include "freetype/freetype.h"

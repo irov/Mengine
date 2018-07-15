@@ -2,7 +2,7 @@
 
 #include "Interface/RenderEnumInterface.h"
 
-#include "Core/RenderIndex.h"
+#include "Kernel/RenderIndex.h"
 
 namespace Mengine
 {

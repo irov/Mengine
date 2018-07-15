@@ -3,7 +3,7 @@
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderViewportInterface.h"
 
-#include "Core/Resolution.h"
+#include "Kernel/Resolution.h"
 
 #include "math/vec2.h"
 #include "math/box2.h"

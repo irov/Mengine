@@ -4,9 +4,9 @@
 
 #include "Config/Typedef.h"
 
-#include "Core/ServiceBase.h"
-#include "Core/ConstString.h"
-#include "Core/IntrusivePtr.h"
+#include "Kernel/ServiceBase.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/IntrusivePtr.h"
 
 namespace Mengine
 {	

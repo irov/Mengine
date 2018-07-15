@@ -2,7 +2,7 @@
 
 #include "Interface/RenderMaterialServiceInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 #include "Kernel/ResourceImage.h"
 
 namespace Mengine

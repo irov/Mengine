@@ -1,6 +1,6 @@
 #include "TTFPrototypeGenerator.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
 #include "TTFFont.h"
 

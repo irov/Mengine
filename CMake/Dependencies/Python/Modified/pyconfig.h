@@ -309,7 +309,7 @@ typedef int pid_t;
 /* End of compilers - finish up */
 
 #ifndef NO_STDIO_H
-#	include <stdio.h>
+#include <stdio.h>
 #endif
 
 /* 64 bit ints are usually spelt __int64 unless compiler has overridden */

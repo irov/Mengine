@@ -5,8 +5,8 @@
 #include "Kernel/Node.h"
 #include "Kernel/Observable.h"
 
-#include "Core/Viewport.h"
-#include "Core/Resolution.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/Resolution.h"
 
 namespace Mengine
 {

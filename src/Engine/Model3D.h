@@ -9,9 +9,9 @@
 
 #include "ResourceModel3D.h"
 
-#include "Core/ColourValue.h"
-#include "Core/ValueInterpolator.h"
-#include "Core/RenderVertex2D.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/ValueInterpolator.h"
+#include "Kernel/RenderVertex2D.h"
 
 #include "math/mat3.h"
 #include "math/vec4.h"

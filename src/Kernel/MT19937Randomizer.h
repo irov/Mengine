@@ -2,7 +2,7 @@
 
 #include "Interface/RandomizerInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 #include <random>
 

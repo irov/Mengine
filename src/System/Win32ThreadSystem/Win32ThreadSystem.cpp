@@ -1,7 +1,7 @@
 #include "Win32ThreadSystem.h"
 
-#include "Factory/FactoryPool.h"
-#include "Logger/Logger.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/Logger.h"
 
 #include <algorithm>
 

@@ -3,9 +3,9 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
-#include "Core/RenderUtils.h"
+#include "Kernel/RenderUtils.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <math.h>
 

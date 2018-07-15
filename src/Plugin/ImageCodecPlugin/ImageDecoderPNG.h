@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Codec/ImageDecoder.h"
+#include "Kernel/ImageDecoder.h"
 
 #include "png.h"
 

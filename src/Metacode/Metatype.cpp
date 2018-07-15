@@ -4,7 +4,7 @@
 #include "Interface/UnicodeInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "LoaderEngine.h"
 

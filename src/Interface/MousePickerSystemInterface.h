@@ -2,7 +2,7 @@
 
 #include "Interface/InputSystemInterface.h"
 
-#include "Core/IntrusivePtr.h"
+#include "Kernel/IntrusivePtr.h"
 
 #include "Config/Vector.h"
 

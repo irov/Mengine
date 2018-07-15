@@ -4,12 +4,12 @@
 
 #include "Config/Floats.h"
 
-#include "Core/Magic.h"
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/RenderIndex.h"
+#include "Kernel/Magic.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/RenderIndex.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
 #include "math/vec3.h"
 

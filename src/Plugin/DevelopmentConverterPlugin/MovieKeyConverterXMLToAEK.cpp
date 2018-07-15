@@ -8,14 +8,14 @@
 
 #include "Metacode/Metacode.h"
 
-#include "Archive/ArchiveWrite.hpp"
+#include "Kernel/ArchiveWrite.hpp"
 
-#include "Core/Stream.h"
-#include "Core/MemoryAllocator.h"
+#include "Kernel/Stream.h"
+#include "Kernel/MemoryAllocator.h"
 
 #include "Metacode/Metacode.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Config/Vector.h"
 

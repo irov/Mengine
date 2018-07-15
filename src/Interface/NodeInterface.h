@@ -2,9 +2,9 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Core/ConstString.h"
-#include "Core/IntrusivePtr.h"
-#include "Core/Pointer.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/IntrusivePtr.h"
+#include "Kernel/Pointer.h"
 
 namespace Mengine
 {

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
 #include "Kernel/Identity.h"
 #include "Kernel/Servant.h"
@@ -12,7 +12,7 @@
 
 #include "math/vec2.h"
 #include "math/uv4.h"
-#include "Core/ColourValue.h"
+#include "Kernel/ColourValue.h"
 
 namespace Mengine
 {

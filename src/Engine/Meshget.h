@@ -7,9 +7,9 @@
 
 #include "Kernel/Surface.h"
 
-#include "Core/ColourValue.h"
-#include "Core/ValueInterpolator.h"
-#include "Core/RenderVertex2D.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/ValueInterpolator.h"
+#include "Kernel/RenderVertex2D.h"
 
 #include "Config/Vector.h"
 

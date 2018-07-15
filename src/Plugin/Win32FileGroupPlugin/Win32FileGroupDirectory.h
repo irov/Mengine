@@ -6,7 +6,7 @@
 #include "Win32FileOutputStream.h"
 #include "Win32FileMappedStream.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 namespace Mengine
 {

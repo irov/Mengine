@@ -10,12 +10,12 @@
 #include "RenderTexture.h"
 #include "DecoderRenderImageProvider.h"
 
-#include "Factory/FactoryPool.h"
-#include "Factory/FactoryPoolWithListener.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryPoolWithListener.h"
 
 #include "stdex/memorycopy.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderTextureService, Mengine::RenderTextureManager );

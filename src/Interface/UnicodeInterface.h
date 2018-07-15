@@ -5,8 +5,8 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
 
 namespace Mengine
 {

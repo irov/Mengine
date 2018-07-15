@@ -3,7 +3,7 @@
 #include "SilentSoundSystem.h"
 #include "SilentSoundBuffer.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <math.h>
 

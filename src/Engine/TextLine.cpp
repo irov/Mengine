@@ -1,6 +1,6 @@
 #include "TextLine.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <utf8.h>
 #include <math.h>

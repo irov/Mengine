@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Core/ColourValue.h"
-#include "Core/Mixin.h"
-#include "Core/IntrusivePtr.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/Mixin.h"
+#include "Kernel/IntrusivePtr.h"
 
 namespace Mengine
 {

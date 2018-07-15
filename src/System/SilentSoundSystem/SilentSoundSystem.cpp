@@ -1,9 +1,9 @@
 #include "SilentSoundSystem.h"
 
 #include "Config/Config.h"
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
 #include <algorithm>
 #include <stdio.h>

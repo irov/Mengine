@@ -4,12 +4,12 @@
 #include "Interface/ConfigInterface.h"
 #include "Interface/LoaderInterface.h"
 
-#include "Core/MemoryHelper.h"
+#include "Kernel/MemoryHelper.h"
 
-#include "Factory/FactoryPool.h"
-#include "Factory/FactoryPoolWithListener.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryPoolWithListener.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Metacode/Metacode.h"
 

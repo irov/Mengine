@@ -2,10 +2,10 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 #include "Kernel/EventReceiver.h"
-#include "Core/ConstString.h"
-#include "Core/Mixin.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/Mixin.h"
 
 #include "Config/Vector.h"
 

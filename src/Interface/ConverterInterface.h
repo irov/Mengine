@@ -6,9 +6,9 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/ConstString.h"
+#include "Kernel/ConstString.h"
 
 namespace Mengine
 {	

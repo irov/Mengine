@@ -2,7 +2,7 @@
 
 #include "Interface/ThreadInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 #include "Kernel/Visitable.h"
 
 #include <atomic>

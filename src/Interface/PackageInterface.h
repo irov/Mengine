@@ -4,9 +4,9 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Core/ConstString.h"
-#include "Core/Tags.h"
-#include "Core/FilePath.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/Tags.h"
+#include "Kernel/FilePath.h"
 
 namespace Mengine
 {

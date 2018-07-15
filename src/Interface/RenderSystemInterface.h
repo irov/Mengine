@@ -19,17 +19,17 @@
 #include "Interface/RenderFragmentShaderInterface.h"
 #include "Interface/RenderVertexAttributeInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/Viewport.h"
-#include "Core/Resolution.h"
-#include "Core/Rect.h"
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/PixelFormat.h"
-#include "Core/Pointer.h"
-#include "Core/RenderVertex2D.h"
-#include "Core/RenderIndex.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/Resolution.h"
+#include "Kernel/Rect.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/PixelFormat.h"
+#include "Kernel/Pointer.h"
+#include "Kernel/RenderVertex2D.h"
+#include "Kernel/RenderIndex.h"
 
 #include "Config/Typedef.h"
 

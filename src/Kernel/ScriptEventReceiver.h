@@ -2,7 +2,7 @@
 
 #include "Kernel/Eventable.h"
 
-#include "Factory/FactorableUnique.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "pybind/object.hpp"
 #include "pybind/module.hpp"

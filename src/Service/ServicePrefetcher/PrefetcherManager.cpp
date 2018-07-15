@@ -4,9 +4,9 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ConfigInterface.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PrefetcherService, Mengine::PrefetcherManager );

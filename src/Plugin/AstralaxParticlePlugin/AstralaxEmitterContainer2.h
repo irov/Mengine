@@ -4,11 +4,11 @@
 
 #include "AstralaxEmitter2.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 #include "Config/Vector.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 

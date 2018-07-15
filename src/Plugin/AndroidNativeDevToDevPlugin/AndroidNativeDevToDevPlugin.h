@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/PluginBase.h"
+#include "Kernel/PluginBase.h"
 
 #include "Config/String.h"
 

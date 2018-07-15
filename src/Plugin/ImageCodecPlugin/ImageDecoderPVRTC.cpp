@@ -1,7 +1,7 @@
 #include "ImageDecoderPVRTC.h"
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/PixelFormat.h"
+#include "Kernel/PixelFormat.h"
 
 namespace Mengine
 {

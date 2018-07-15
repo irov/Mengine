@@ -8,10 +8,10 @@
 #include "Kernel/Observable.h"
 #include "Kernel/Materialable.h"
 
-#include "Core/ColourValue.h"
-#include "Core/ValueInterpolator.h"
-#include "Core/ConstString.h"
-#include "Core/RenderVertex2D.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/ValueInterpolator.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/RenderVertex2D.h"
 
 #include "Config/Vector.h"
 

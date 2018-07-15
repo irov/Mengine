@@ -3,7 +3,7 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 #include "Config/Map.h"
 

@@ -3,7 +3,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/Materialable.h"
 
-#include "Core/RenderVertex2D.h"
+#include "Kernel/RenderVertex2D.h"
 
 namespace Mengine
 {

@@ -14,11 +14,11 @@
 
 #include "Kernel/Arrow.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
 #include "EntityPrototypeGenerator.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"
 

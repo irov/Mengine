@@ -4,8 +4,8 @@
 #include "Interface/UnicodeInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Factory/FactoryPool.h"
-#include "Logger/Logger.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/Logger.h"
 
 #include <algorithm>
 #include <stdio.h>

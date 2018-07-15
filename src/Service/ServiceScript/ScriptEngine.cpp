@@ -9,10 +9,10 @@
 #include "Interface/PrototypeManagerInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Factory/FactoryPool.h"
-#include "Factory/FactorableUnique.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/FactorableUnique.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "pybind/debug.hpp"
 

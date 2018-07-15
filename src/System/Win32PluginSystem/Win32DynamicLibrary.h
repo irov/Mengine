@@ -2,7 +2,7 @@
 
 #include "Interface/WindowsLayerInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 #include "Utils/WIN32/WindowsIncluder.h"
 

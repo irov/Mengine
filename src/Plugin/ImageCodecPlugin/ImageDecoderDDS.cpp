@@ -2,10 +2,10 @@
 
 #include "ImageCodecDDS.h"
 
-#include "Core/PixelFormat.h"
+#include "Kernel/PixelFormat.h"
 
-#include "Core/Magic.h"
-#include "Logger/Logger.h"
+#include "Kernel/Magic.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

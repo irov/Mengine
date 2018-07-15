@@ -5,9 +5,9 @@
 
 #include "Metacode/Metacode.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/String.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {

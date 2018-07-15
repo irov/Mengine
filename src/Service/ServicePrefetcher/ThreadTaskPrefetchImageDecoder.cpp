@@ -4,9 +4,9 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Factory/FactorableUnique.h"
+#include "Kernel/FactorableUnique.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

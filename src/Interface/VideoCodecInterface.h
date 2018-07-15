@@ -2,7 +2,7 @@
 
 #include "Interface/CodecInterface.h"
 
-#include "Core/PixelFormat.h"
+#include "Kernel/PixelFormat.h"
 
 namespace Mengine
 {

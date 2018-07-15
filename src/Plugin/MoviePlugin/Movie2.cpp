@@ -19,9 +19,9 @@
 #include "Kernel/Materialable.h"
 #include "Kernel/Layer.h"
 
-#include "Core/NodeHelper.h"
+#include "Kernel/NodeHelper.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "math/quat.h"
 

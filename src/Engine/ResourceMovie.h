@@ -8,8 +8,8 @@
 #include "math/vec3.h"
 #include "math/mat4.h"
 
-#include "Core/Viewport.h"
-#include "Core/Polygon.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/Polygon.h"
 
 #include "Config/Vector.h"
 

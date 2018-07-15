@@ -3,9 +3,9 @@
 #include "Interface/AmplifierInterface.h"
 #include "Interface/SoundSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
-#include "Core/ConstString.h"
+#include "Kernel/ConstString.h"
 
 #include "Config/Typedef.h"
 

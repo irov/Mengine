@@ -2,8 +2,8 @@
 
 #include "Interface/PrototypeManagerInterface.h"
 
-#include "Core/ServiceBase.h"
-#include "Core/ConstString.h"
+#include "Kernel/ServiceBase.h"
+#include "Kernel/ConstString.h"
 
 #include "Config/Vector.h"
 

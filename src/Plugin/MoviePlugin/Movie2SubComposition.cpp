@@ -1,7 +1,7 @@
 #include "Movie2SubComposition.h"
 #include "Movie2.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

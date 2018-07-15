@@ -46,6 +46,7 @@ call:gitdepend https://github.com/spurious/SDL-mirror.git SDL2
 call:gitdepend https://github.com/frankinshtein/font-effects-lib.git libfe
 call:gitdepend https://github.com/irov/math.git libmath
 call:gitdepend https://github.com/akheron/jansson.git jansson
+call:gitdepend https://github.com/ReadyTalk/win32.git openssl
 
 call:gitdependr https://github.com/glennrp/libpng.git libpng libpng17
 call:gitdependr https://github.com/xiph/theora.git libtheora theora-1.1

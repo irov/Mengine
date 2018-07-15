@@ -47,6 +47,4 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     Shlwapi.lib
     Ws2_32.lib
     Crypt32.lib
-    ${THIRDPARTY_DIR}/openssl/build/libeay32.lib
-    ${THIRDPARTY_DIR}/openssl/build/ssleay32.lib
     )

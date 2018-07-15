@@ -48,3 +48,10 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     Ws2_32.lib
     Crypt32.lib
     )
+    
+if(MSVC)
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
+        ${THIRDPARTY_DIR}/openssl/msvc/lib/libeay32.lib
+        ${THIRDPARTY_DIR}/openssl/msvc/lib/ssleay32.lib
+    )
+endif()

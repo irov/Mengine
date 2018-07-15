@@ -191,6 +191,10 @@ PLUGIN_EXPORT( AndroidNativeUnityAds );
 PLUGIN_EXPORT( AndroidNativeAdMob );
 #endif
 
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV
+PLUGIN_EXPORT( AndroidNativeDevToDevPlugin );
+#endif
+
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -686,6 +690,10 @@ namespace Mengine
         
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB
         MENGINE_ADD_PLUGIN( AndroidNativeAdMob, "initialize Android AdMob Native..." );
+#endif
+        
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV
+        MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native..." );
 #endif
 
 #   undef MENGINE_ADD_PLUGIN

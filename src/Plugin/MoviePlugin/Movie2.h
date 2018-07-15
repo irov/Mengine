@@ -1,17 +1,12 @@
 #pragma once
 
 #include "Kernel/Node.h"
-#include "Kernel/Animatable.h"
+#include "Kernel/BaseAnimation.h"
 #include "Kernel/Surface.h"
 
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/MatrixProxy.h"
-
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/HotSpotPolygon.h"
-#include "Engine/ParticleEmitter2.h"
-#include "Engine/TextField.h"
 
 #include "ResourceMovie2.h"
 #include "Movie2Slot.h"
@@ -25,10 +20,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class ShapeQuadFixed> ShapeQuadFixedPtr;
+    typedef IntrusivePtr<class HotSpotPolygon> HotSpotPolygonPtr;
+    typedef IntrusivePtr<class ParticleEmitter2> ParticleEmitter2Ptr;
+    typedef IntrusivePtr<class TextField> TextFieldPtr;
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Movie2> Movie2Ptr;
     //////////////////////////////////////////////////////////////////////////
     class Movie2EventReceiver
-        : public AnimatableEventReceiver
+        : public AnimationEventReceiver
     {
     public:
     };
@@ -42,8 +42,10 @@ namespace Mengine
 	class Movie2
 		: public Node
         , public Eventable
-		, public Animatable
+		, public BaseAnimation
 	{
+        DECLARE_ANIMATABLE();
+
         EVENT_RECEIVER( Movie2EventReceiver );
 
 	public:
@@ -91,8 +93,8 @@ namespace Mengine
 
 	protected:
 		void _setLoop( bool _value ) override;
-		void _setTiming( float _timing ) override;
-		float _getTiming() const override;
+		void _setTime( float _time ) override;
+		float _getTime() const override;
         void _setFirstFrame() override;
         void _setLastFrame() override;
 

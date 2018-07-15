@@ -8,6 +8,7 @@
 #include "Kernel/Scriptable.h"
 #include "Kernel/Materialable.h"
 #include "Kernel/Compilable.h"
+#include "Kernel/Animatable.h"
 
 #include "math/vec2.h"
 #include "math/uv4.h"
@@ -22,6 +23,7 @@ namespace Mengine
         , public Scriptable
         , public Materialable
         , public Compilable
+        , public Animatable
 	{
         DECLARE_VISITABLE_BASE();
 

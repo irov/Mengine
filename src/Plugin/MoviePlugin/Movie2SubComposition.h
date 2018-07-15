@@ -1,8 +1,11 @@
 #pragma once
 
-#include "Factory/Factorable.h"
-#include "Kernel/Eventable.h"
 #include "Kernel/Animatable.h"
+#include "Kernel/AnimationEventReceiver.h"
+#include "Kernel/BaseAnimation.h"
+#include "Kernel/Eventable.h"
+
+#include "Factory/Factorable.h"
 
 #include "movie/movie.hpp"
 
@@ -14,7 +17,7 @@ namespace Mengine
     typedef IntrusivePtr<class Movie2SubComposition> Movie2SubCompositionPtr;
     //////////////////////////////////////////////////////////////////////////
     class Movie2SubCompositionEventReceiver
-        : public AnimatableEventReceiver
+        : public AnimationEventReceiver
     {
     public:
     };
@@ -23,9 +26,12 @@ namespace Mengine
         : public Factorable
 		, public Eventable
         , public Animatable
+        , public BaseAnimation
 	{
-        EVENT_RECEIVER( Movie2SubCompositionEventReceiver );
+        DECLARE_ANIMATABLE()
 
+        EVENT_RECEIVER( Movie2SubCompositionEventReceiver );
+        
     public:
         Movie2SubComposition();
         ~Movie2SubComposition() override;

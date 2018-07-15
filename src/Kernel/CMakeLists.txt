@@ -96,7 +96,6 @@ Scriptable
 
 ADD_FILTER(
 Animatable
-	Animatable.cpp
 	Animatable.h
 )
 
@@ -146,6 +145,13 @@ Materialable
 	Materialable.cpp
 	Materialable.h
 )
+
+ADD_FILTER(
+Animation
+	BaseAnimation.h
+    BaseAnimation.cpp
+)
+
 
 ADD_FILTER(
 Parallax
@@ -254,6 +260,7 @@ ADD_FILTER(
 ScriptWrapper
 	ScriptWrapper.h
 	ScriptEventReceiver.h	
+    AnimationEventReceiver.h
 )
 
 ADD_FILTER(

@@ -159,7 +159,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_setTiming( float _timing )
+	void Movie::_setTime( float _timing )
 	{
 		if( m_resourceMovie.empty() == true )
 		{
@@ -183,7 +183,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Movie::_getTiming() const
+	float Movie::_getTime() const
 	{
 		if( this->isCompile() == false )
 		{
@@ -264,16 +264,16 @@ namespace Mengine
 	{
 		this->stopAnimation_();
         
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
-            ->onAnimatableStop( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+            ->onAnimationStop( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_end( uint32_t _enumerator )
 	{
 		this->stopAnimation_();
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
-            ->onAnimatableEnd( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+            ->onAnimationEnd( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::updateFrameNode_( const MovieLayer & _layer, const NodePtr & _node, uint32_t _frameId, bool _interpolate, bool _first )
@@ -381,7 +381,7 @@ namespace Mengine
 			return;
 		}
 
-		this->setTiming( 0.f );
+		this->setTime( 0.f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::_setLastFrame()
@@ -398,11 +398,13 @@ namespace Mengine
 		float duration = m_resourceMovie->getDuration();
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
-		this->setTiming( duration - frameDuration );
+		this->setTime( duration - frameDuration );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::addMovieNode_( const MovieLayer & _layer, const NodePtr & _node, const AnimatablePtr & _animatable, const SoundablePtr & _soundable, const MoviePtr & _movie )
-	{		
+	{	
+        (void)_animatable;
+
 		if( _layer.hasViewport == true )
 		{
 			RenderScissorPtr scissor = NODE_SERVICE() 
@@ -437,7 +439,8 @@ namespace Mengine
 			nd.node->setLocalHide( true );
 		}
 
-		nd.animatable = _animatable;
+        nd.animation = _node->getAnimation();
+		
 		nd.soundable = _soundable;
 		nd.movie = _movie;
 
@@ -2177,7 +2180,7 @@ namespace Mengine
 				this->setVisibleLayer_( layer, false );
 			}
 
-			if( layer.isAnimatable() == false )
+			if( layer.isAnimation() == false )
 			{
 				continue;
 			}
@@ -2187,13 +2190,13 @@ namespace Mengine
 				continue;
 			}
 
-			const AnimatablePtr & animatable = this->getLayerAnimatable_( layer );
+			const AnimationInterfacePtr & animation = this->getLayerAnimation_( layer );
 
 			if( layer.timeRemap == false )
 			{
-				if( animatable->isPlay() == true )
+				if( animation->isPlay() == true )
 				{
-					animatable->stop();
+                    animation->stop();
 				}
 			}
 		}
@@ -2221,7 +2224,7 @@ namespace Mengine
 				continue;
 			}
 
-			if( layer.isAnimatable() == false )
+			if( layer.isAnimation() == false )
 			{
 				continue;
 			}
@@ -2233,9 +2236,9 @@ namespace Mengine
 
 			if( layer.timeRemap == false )
 			{
-				const AnimatablePtr & animatable = this->getLayerAnimatable_( layer );
+				const AnimationInterfacePtr & animation = this->getLayerAnimation_( layer );
 
-				animatable->pause();
+				animation->pause();
 			}
 		}
 	}
@@ -2262,7 +2265,7 @@ namespace Mengine
 				continue;
 			}
 
-			if( layer.isAnimatable() == false )
+			if( layer.isAnimation() == false )
 			{
 				continue;
 			}
@@ -2274,12 +2277,12 @@ namespace Mengine
 
 			if( layer.timeRemap == false )
 			{
-				const AnimatablePtr & animatable = this->getLayerAnimatable_( layer );
+				const AnimationInterfacePtr & animation = this->getLayerAnimation_( layer );
 
 				float time = TIMELINE_SERVICE()
 					->getTime();
 
-				animatable->resume( time );
+				animation->resume( time );
 			}
 		}
 	}
@@ -2290,7 +2293,7 @@ namespace Mengine
 
 		for( const MovieLayer & layer : layers )
 		{
-			if( layer.isAnimatable() == false )
+			if( layer.isAnimation() == false )
 			{
 				continue;
 			}
@@ -2307,9 +2310,9 @@ namespace Mengine
 				continue;
 			}
 
-			const AnimatablePtr & animatable = this->getLayerAnimatable_( layer );
+			const AnimationInterfacePtr & animation = this->getLayerAnimation_( layer );
 
-			animatable->setTiming( 0.f );
+			animation->setTime( 0.f );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -2376,7 +2379,7 @@ namespace Mengine
             }
 
             ns.node = nullptr;
-            ns.animatable = nullptr;
+            ns.animation = nullptr;
             ns.soundable = nullptr;
             ns.movie = nullptr;
         }
@@ -2420,12 +2423,12 @@ namespace Mengine
 		{
             for( const Nodies & node : m_nodies )
 			{
-				if( node.animatable == nullptr )
+				if( node.animation == nullptr )
 				{
 					continue;
 				}
 
-				if( node.animatable->isInterrupt() == true )
+				if( node.animation->isInterrupt() == true )
 				{
 					return;
 				}
@@ -2494,7 +2497,7 @@ namespace Mengine
 				{
 					float beginTiming = m_frameTiming + loopSegment.x;
 
-					this->setTiming( beginTiming );
+					this->setTime( beginTiming );
 
 					lastFrame = m_currentFrame;
 
@@ -2569,7 +2572,7 @@ namespace Mengine
 
 			this->updateFrameNode_( _layer, _node, frameId, true, false );
 
-            if( _layer.isAnimatable() == true && _layer.isSubMovie() == false )
+            if( _layer.isAnimation() == true && _layer.isSubMovie() == false )
 			{
 				if( _layer.timeRemap == false )
 				{
@@ -2584,9 +2587,9 @@ namespace Mengine
 						return;
 					}
 
-					const AnimatablePtr & animatable = this->getLayerAnimatable_( _layer );
+					const AnimationInterfacePtr & animation = this->getLayerAnimation_( _layer );
 
-					animatable->setTiming( timing );
+					animation->setTime( timing );
 				}
 			}
 		}
@@ -2600,25 +2603,25 @@ namespace Mengine
 
 				this->setVisibleLayer_( _layer, true );
 
-				if( _layer.isAnimatable() == true && _layer.isSubMovie() == false )
+				if( _layer.isAnimation() == true && _layer.isSubMovie() == false )
 				{
-					const AnimatablePtr & animatable = this->getLayerAnimatable_( _layer );
+					const AnimationInterfacePtr & animation = this->getLayerAnimation_( _layer );
 
 					if( _layer.timeRemap == false )
 					{
-						if( animatable->isPlay() == true )
+						if( animation->isPlay() == true )
 						{
-							animatable->stop();
+							animation->stop();
 						}
 
 						uint32_t frame = _endFrame - indexIn;
 						float timing = float( frame ) * frameDuration;
 
-						animatable->setTiming( timing );
+						animation->setTime( timing );
 
 
-						float movieTiming = this->getTiming();
-						animatable->play( movieTiming );
+						float movieTiming = this->getTime();
+						animation->play( movieTiming );
 					}
 					else
 					{
@@ -2630,7 +2633,7 @@ namespace Mengine
 							return;
 						}
 
-						animatable->setTiming( timing );
+						animation->setTime( timing );
 					}
 				}
 			}
@@ -2638,19 +2641,19 @@ namespace Mengine
 			{
 				this->setVisibleLayer_( _layer, false );
 
-				if( _layer.isAnimatable() == true && _layer.isSubMovie() == false )
+				if( _layer.isAnimation() == true && _layer.isSubMovie() == false )
 				{
-					const AnimatablePtr & animatable = this->getLayerAnimatable_( _layer );
+					const AnimationInterfacePtr & animation = this->getLayerAnimation_( _layer );
 
 					if( _layer.timeRemap == false )
 					{
-						if( animatable->isPlay() == true && _layer.isUnstoppable() == false )
+						if( animation->isPlay() == true && _layer.isUnstoppable() == false )
 						{
-							animatable->stop();
+							animation->stop();
 
 							uint32_t frame = indexOut - indexIn;
 							float timing = frame * frameDuration;
-							animatable->setTiming( timing );
+							animation->setTime( timing );
 						}
 					}
 					else
@@ -2663,7 +2666,7 @@ namespace Mengine
 							return;
 						}
 
-						animatable->setTiming( timing );
+						animation->setTime( timing );
 					}
 				}
 			}
@@ -2673,9 +2676,9 @@ namespace Mengine
 
 				this->updateFrameNode_( _layer, _node, frameId, (_endFrame + 1) < indexOut, false );
 
-				if( _layer.isAnimatable() == true && _layer.isSubMovie() == false )
+				if( _layer.isAnimation() == true && _layer.isSubMovie() == false )
 				{
-					const AnimatablePtr & animatable = this->getLayerAnimatable_( _layer );
+					const AnimationInterfacePtr & animation = this->getLayerAnimation_( _layer );
 
 					if( _layer.timeRemap == false )
 					{
@@ -2690,7 +2693,7 @@ namespace Mengine
 							return;
 						}
 
-						animatable->setTiming( timing );
+						animation->setTime( timing );
 					}
 				}
 			}
@@ -2754,14 +2757,14 @@ namespace Mengine
 					this->setVisibleLayer_( layer, true );
 				}
 
-				if( layer.isAnimatable() == true && layer.isSubMovie() == false )
+				if( layer.isAnimation() == true && layer.isSubMovie() == false )
 				{
-					const AnimatablePtr & animatable = this->getLayerAnimatable_( layer );
+					const AnimationInterfacePtr & animation = this->getLayerAnimation_( layer );
 
 					if( layer.timeRemap == false )
 					{
 						float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
-						animatable->setTiming( timing );
+						animation->setTime( timing );
 					}
 					else
 					{
@@ -2773,7 +2776,7 @@ namespace Mengine
 							continue;
 						}
 
-						animatable->setTiming( timing );
+						animation->setTime( timing );
 					}
 				}
 			}
@@ -2825,29 +2828,29 @@ namespace Mengine
 					this->setVisibleLayer_( layer, true );
 				}
 
-				if( layer.isAnimatable() == true && layer.isSubMovie() == false )
+				if( layer.isAnimation() == true && layer.isSubMovie() == false )
 				{
-					const AnimatablePtr & animatable = this->getLayerAnimatable_( layer );
+					const AnimationInterfacePtr & animation = this->getLayerAnimation_( layer );
 
 					if( layer.timeRemap == false )
 					{
-						if( animatable->isPlay() == true && animatable->getLoop() == false )
+						if( animation->isPlay() == true && animation->getLoop() == false )
 						{
-							animatable->stop();
+							animation->stop();
 						}
 
 						float timing = frameId * frameDuration;
 
-						animatable->setTiming( timing );
+						animation->setTime( timing );
 
 						//float movieTiming = this->getTiming();
 
-						if( animatable->isPlay() == false )
+						if( animation->isPlay() == false )
 						{
 							float playTime = TIMELINE_SERVICE()
 								->getTime();
 
-							animatable->play( playTime );
+							animation->play( playTime );
 						}
 					}
 					else
@@ -2860,7 +2863,7 @@ namespace Mengine
 							continue;
 						}
 
-						animatable->setTiming( timing );
+						animation->setTime( timing );
 					}
 				}
 			}
@@ -2870,19 +2873,19 @@ namespace Mengine
 
 				this->setVisibleLayer_( layer, false );
 
-				if( layer.isAnimatable() == true && layer.isSubMovie() == false )
+				if( layer.isAnimation() == true && layer.isSubMovie() == false )
 				{
-					const AnimatablePtr & animatable = this->getLayerAnimatable_( layer );
+					const AnimationInterfacePtr & animation = this->getLayerAnimation_( layer );
 
 					if( layer.timeRemap == false )
 					{
-						if( animatable->isPlay() == true )
+						if( animation->isPlay() == true )
 						{
-							animatable->stop();
+							animation->stop();
 
 							///Test TestTestTestTest
 							float timing = frameId * frameDuration;
-							animatable->setTiming( timing );
+							animation->setTime( timing );
 						}
 					}
 					else
@@ -2895,7 +2898,7 @@ namespace Mengine
 							continue;
 						}
 
-						animatable->setTiming( timing );
+						animation->setTime( timing );
 					}
 				}
 			}
@@ -3086,7 +3089,7 @@ namespace Mengine
 				continue;
 			}
 
-			if( layer.isAnimatable() == false )
+			if( layer.isAnimation() == false )
 			{
 				continue;
 			}
@@ -3096,9 +3099,9 @@ namespace Mengine
 				continue;
 			}
 
-			const AnimatablePtr & animatable = this->getLayerAnimatable_( layer );
+			const AnimationInterfacePtr & animation = this->getLayerAnimation_( layer );
 
-			animatable->setLoop( _value );
+			animation->setLoop( _value );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -3123,14 +3126,14 @@ namespace Mengine
 				continue;
 			}
 
-			if( layer.isAnimatable() == false )
+			if( layer.isAnimation() == false )
 			{
 				continue;
 			}
 
-			const AnimatablePtr & animatable = this->getLayerAnimatable_( layer );
+			const AnimationInterfacePtr & animation = this->getLayerAnimation_( layer );
 
-			animatable->setAnimationSpeedFactor( _factor );
+			animation->setAnimationSpeedFactor( _factor );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -3147,14 +3150,14 @@ namespace Mengine
 				continue;
 			}
 
-			if( layer.isAnimatable() == false )
+			if( layer.isAnimation() == false )
 			{
 				continue;
 			}
 
-			const AnimatablePtr & animatable = this->getLayerAnimatable_( layer );
+			const AnimationInterfacePtr & animation = this->getLayerAnimation_( layer );
 
-			if( animatable->interrupt() == false )
+			if( animation->interrupt() == false )
 			{
 				return false;
 			}

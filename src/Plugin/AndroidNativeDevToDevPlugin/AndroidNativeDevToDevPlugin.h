@@ -2,7 +2,7 @@
 
 #include "Core/PluginBase.h"
 
-#include "Config/VectorString.h"
+#include "Config/String.h"
 
 namespace Mengine
 {
@@ -23,12 +23,12 @@ namespace Mengine
         void _finalize() override;
 
     public:
-        bool onTutorialEvent( const int _stateOrStep );
-        bool setCurrentLevel( const int _level );
-        bool onLevelUp( const int _level );
-        bool onCurrencyAccrual( const String & _currencyName, const int _currencyAmount, const int _accrualType );
-        bool onRealPayment( const String & _paymentId, const float _inAppPrice, const String & _inAppName, const String & _inAppCurrencyISOCode );
-        bool onInAppPurchase( const String & _purchaseId, const String & _purchaseType, const int _purchaseAmount, const int _purchasePrice, const String & _purchaseCurrency );
+        bool onTutorialEvent( int _stateOrStep );
+        bool setCurrentLevel( int _level );
+        bool onLevelUp( int _level );
+        bool onCurrencyAccrual( const String & _currencyName, int _currencyAmount, int _accrualType );
+        bool onRealPayment( const String & _paymentId, float _inAppPrice, const String & _inAppName, const String & _inAppCurrencyISOCode );
+        bool onInAppPurchase( const String & _purchaseId, const String & _purchaseType, int _purchaseAmount, int _purchasePrice, const String & _purchaseCurrency );
         bool onSimpleCustomEvent( const String & _eventName );
     };
 }

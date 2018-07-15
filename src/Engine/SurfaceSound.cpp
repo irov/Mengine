@@ -31,8 +31,8 @@ namespace Mengine
         {
             (void)_emitter;
 
-            EVENTABLE_METHOD( m_sound, EVENT_ANIMATABLE_PAUSE )
-                ->onAnimatablePause( m_id );
+            EVENTABLE_METHOD( m_sound, EVENT_ANIMATION_PAUSE )
+                ->onAnimationPause( m_id );
         }
 
         void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
@@ -282,8 +282,8 @@ namespace Mengine
                 ->stopEmitter( m_soundEmitter );
         }
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
-            ->onAnimatableStop( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+            ->onAnimationStop( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_end( uint32_t _enumerator )
@@ -294,8 +294,8 @@ namespace Mengine
                 ->stopEmitter( m_soundEmitter );
         }
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
-            ->onAnimatableEnd( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+            ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_setVolume( float _volume )
@@ -373,7 +373,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSound::_setTiming( float _timing )
+    void SurfaceSound::_setTime( float _timing )
     {
         if( this->isCompile() == false )
         {
@@ -396,6 +396,24 @@ namespace Mengine
 
         SOUND_SERVICE()
             ->setPosMs( m_soundEmitter, pos );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float SurfaceSound::_getTime() const
+    {
+        if( this->isCompile() == false )
+        {
+            return 0.f;
+        }
+
+        if( m_soundEmitter == nullptr )
+        {
+            return 0.f;
+        }
+        
+        float pos = SOUND_SERVICE()
+            ->getPosMs( m_soundEmitter );
+
+        return pos;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceSound::_updateMaterial() const

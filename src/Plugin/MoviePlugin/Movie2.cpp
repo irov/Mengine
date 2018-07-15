@@ -6,6 +6,11 @@
 #include "Interface/PrototypeManagerInterface.h"
 #include "Interface/ResourceInterface.h"
 
+#include "Engine/ShapeQuadFixed.h"
+#include "Engine/HotSpotPolygon.h"
+#include "Engine/ParticleEmitter2.h"
+#include "Engine/TextField.h"
+
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceVideo.h"
 #include "Engine/SurfaceSound.h"
@@ -427,42 +432,42 @@ namespace Mengine
 
         ae_play_movie_composition( m_composition, 0.f );
                 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_PLAY )
-            ->onAnimatablePlay( _enumerator, _time );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_PLAY )
+            ->onAnimationPlay( _enumerator, _time );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_restart( uint32_t _enumerator, float _time )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESTART )
-            ->onAnimatableRestart( _enumerator, _time );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESTART )
+            ->onAnimationRestart( _enumerator, _time );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_pause( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_PAUSE )
-            ->onAnimatablePause( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_PAUSE )
+            ->onAnimationPause( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_resume( uint32_t _enumerator, float _time )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESUME )
-            ->onAnimatableResume( _enumerator, _time );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESUME )
+            ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_stop( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
-            ->onAnimatableStop( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+            ->onAnimationStop( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_end( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
-            ->onAnimatableEnd( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+            ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_interrupt( uint32_t _enumerator )
@@ -471,8 +476,8 @@ namespace Mengine
 
         ae_interrupt_movie_composition( m_composition, AE_FALSE );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_INTERRUPT )
-            ->onAnimatableInterrupt( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_INTERRUPT )
+            ->onAnimationInterrupt( _enumerator );
 
         return true;
     }
@@ -958,7 +963,7 @@ namespace Mengine
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        node->setTiming( _callbackData->offset * 1000.f );
+                        node->setTime( _callbackData->offset * 1000.f );
 
                         if( _callbackData->loop == AE_TRUE )
                         {
@@ -1015,7 +1020,7 @@ namespace Mengine
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        surface->setTiming( _callbackData->offset * 1000.f );
+                        surface->setTime( _callbackData->offset * 1000.f );
 
                         if( _callbackData->loop == AE_TRUE )
                         {
@@ -1074,7 +1079,7 @@ namespace Mengine
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        surface->setTiming( _callbackData->offset * 1000.f );
+                        surface->setTime( _callbackData->offset * 1000.f );
 
                         if( _callbackData->loop == AE_TRUE )
                         {
@@ -1478,7 +1483,7 @@ namespace Mengine
 
         if( play == true )
         {
-            float timing = this->getTiming();
+            float timing = this->getTime();
 
             ae_play_movie_composition( composition, timing * 0.001f );
         }
@@ -1582,7 +1587,7 @@ namespace Mengine
         ae_set_movie_composition_loop( m_composition, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_setTiming( float _time )
+    void Movie2::_setTime( float _time )
     {
         if( this->isCompile() == false )
         {
@@ -1596,7 +1601,7 @@ namespace Mengine
         ae_set_movie_composition_time( m_composition, _time * 0.001f );
     }
     //////////////////////////////////////////////////////////////////////////
-    float Movie2::_getTiming() const
+    float Movie2::_getTime() const
     {
         if( this->isCompile() == false )
         {
@@ -1610,7 +1615,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_setFirstFrame()
     {
-        this->setTiming( 0.f );
+        this->setTime( 0.f );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_setLastFrame()
@@ -1629,7 +1634,7 @@ namespace Mengine
         float duration = ae_get_movie_composition_data_duration( compositionData );
         float frameDuration = ae_get_movie_composition_data_frame_duration( compositionData );
         
-        this->setTiming( duration * 1000.f - frameDuration * 1000.f );
+        this->setTime( duration * 1000.f - frameDuration * 1000.f );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_update( float _current, float _timing )

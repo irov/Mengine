@@ -2,8 +2,10 @@
 
 #include "Kernel/Surface.h"
 #include "Kernel/Eventable.h"
-#include "Kernel/Animatable.h"
 #include "Kernel/Soundable.h"
+
+#include "Kernel/AnimationEventReceiver.h"
+#include "Kernel/BaseAnimation.h"
 
 #include "ResourceSound.h"
 
@@ -17,16 +19,16 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class SurfaceSoundEventReceiver
-        : public AnimatableEventReceiver
+        : public AnimationEventReceiver
     {
     public:
     };
     //////////////////////////////////////////////////////////////////////////
     class SurfaceSound
 		: public Surface        
-        , public Eventable
-        , public Animatable		
+        , public Eventable        
 		, public Soundable
+        , public BaseAnimation
 	{
         EVENT_RECEIVER( SurfaceSoundEventReceiver );
 
@@ -62,7 +64,8 @@ namespace Mengine
 		void _stop( uint32_t _id ) override;
 		void _end( uint32_t _id ) override;
 		bool _interrupt( uint32_t _id ) override;
-		void _setTiming( float _timing ) override;
+		void _setTime( float _timing ) override;
+        float _getTime() const override;
 
     protected:
 		void _setVolume( float _volume ) override;

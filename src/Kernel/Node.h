@@ -12,6 +12,7 @@
 #include "Kernel/Affectorable.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Servant.h"
+#include "Kernel/Animatable.h"
 
 #include "Factory/Factorable.h"
 
@@ -46,6 +47,7 @@ namespace Mengine
 		, public Affectorable
         , public Visitable
 		, public Scriptable
+        , public Animatable
 	{
 		DECLARE_VISITABLE_BASE();
 

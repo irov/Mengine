@@ -109,7 +109,7 @@ namespace Mengine
 			return (state & MOVIE_LAYER_NODE) == MOVIE_LAYER_NODE;
         }
         
-		bool isAnimatable() const
+		bool isAnimation() const
         {
 			return (state & MOVIE_LAYER_ANIMATABLE) == MOVIE_LAYER_ANIMATABLE;
         }

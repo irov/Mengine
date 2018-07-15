@@ -2,7 +2,8 @@
 
 #include "Kernel/Surface.h"
 #include "Kernel/Eventable.h"
-#include "Kernel/Animatable.h"
+#include "Kernel/BaseAnimation.h"
+#include "Kernel/AnimationEventReceiver.h"
 
 #include "ResourceVideo.h"
 
@@ -16,15 +17,17 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class SurfaceVideoEventReceiver
-        : public AnimatableEventReceiver
+        : public AnimationEventReceiver
     {
     };
     //////////////////////////////////////////////////////////////////////////
 	class SurfaceVideo
-		: public Surface        
+		: public Surface
         , public Eventable        
-        , public Animatable
+        , public BaseAnimation
 	{
+        DECLARE_ANIMATABLE();
+
         EVENT_RECEIVER( SurfaceVideoEventReceiver );
 
 	public:
@@ -60,8 +63,8 @@ namespace Mengine
 		bool _update( float _current, float _timing ) override;
 
 	protected:
-		void _setTiming( float _timing ) override;
-		float _getTiming() const override;
+		void _setTime( float _timing ) override;
+		float _getTime() const override;
 
 		void _setFirstFrame() override;
 		void _setLastFrame() override;

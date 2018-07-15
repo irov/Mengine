@@ -7,6 +7,11 @@
 
 #include "Kernel/ScriptWrapper.h"
 
+#include "Engine/ShapeQuadFixed.h"
+#include "Engine/HotSpotPolygon.h"
+#include "Engine/ParticleEmitter2.h"
+#include "Engine/TextField.h"
+
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 

@@ -18,8 +18,7 @@ src
     PickCodecInterface.h
 	SoundCodecInterface.h
 	VideoCodecInterface.h
-	ParticleSystemInterface.h
-	FileSystemInterface.h
+	ParticleSystemInterface.h	
     TextInterface.h
 	StreamInterface.h
 	LoggerInterface.h
@@ -65,14 +64,19 @@ src
     NotificatorInterface.h
     LoaderInterface.h
     RandomizerInterface.h
+    AnimationInterface.h
+    
+	dummy.cpp
+)
+
+ADD_FILTER(
+File
+    FileSystemInterface.h
 	FileInputStreamInterface.h
 	FileMappedStreamInterface.h
 	FileOutputStreamInterface.h
 	FileGroupInterface.h
-
-    
-	dummy.cpp
-)
+)   
 
 ADD_FILTER(
 Render     

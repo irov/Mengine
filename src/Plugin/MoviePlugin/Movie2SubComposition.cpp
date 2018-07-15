@@ -40,50 +40,50 @@ namespace Mengine
     {
         ae_play_movie_sub_composition( m_composition, m_subcomposition, 0.f );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_PLAY )
-            ->onAnimatablePlay( _enumerator, _time );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_PLAY )
+            ->onAnimationPlay( _enumerator, _time );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::_restart( uint32_t _enumerator, float _time )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESTART )
-            ->onAnimatableRestart( _enumerator, _time );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESTART )
+            ->onAnimationRestart( _enumerator, _time );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_pause( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_PAUSE )
-            ->onAnimatablePause( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_PAUSE )
+            ->onAnimationPause( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_resume( uint32_t _enumerator, float _time )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESUME )
-            ->onAnimatableResume( _enumerator, _time );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESUME )
+            ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_stop( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
-            ->onAnimatableStop( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+            ->onAnimationStop( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_end( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
-            ->onAnimatableEnd( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+            ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::_interrupt( uint32_t _enumerator )
     {
         ae_interrupt_movie_sub_composition( m_composition, m_subcomposition, AE_FALSE );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_INTERRUPT )
-            ->onAnimatableInterrupt( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_INTERRUPT )
+            ->onAnimationInterrupt( _enumerator );
 
         return true;
     }

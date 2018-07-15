@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Kernel/Node.h"
-#include "Kernel/Animatable.h"
+#include "Kernel/BaseAnimation.h"
+#include "Kernel/AnimationEventReceiver.h"
 
 #include "ResourceParticle.h"
 
@@ -23,7 +24,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class ParticleEmitter2EventReceiver
-        : public AnimatableEventReceiver
+        : public AnimationEventReceiver
     {
     public:
     };
@@ -31,10 +32,12 @@ namespace Mengine
 	class ParticleEmitter2
 		: public Node
 		, public Eventable
-		, public Animatable
+		, public BaseAnimation
 		, public ParticlePositionProviderInterface
 		, public ParticleCameraProviderInterface
 	{
+        DECLARE_ANIMATABLE();
+
         EVENT_RECEIVER( ParticleEmitter2EventReceiver );
 
 	public:

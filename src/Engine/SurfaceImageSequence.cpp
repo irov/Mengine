@@ -98,7 +98,7 @@ namespace Mengine
 					}
 					else
 					{						
-						float adaptFrameTiming = this->getAdaptTiming(m_frameTiming);
+						float adaptFrameTiming = this->getAdaptTime(m_frameTiming);
 
 						float newFrameTiming;
                         m_currentFrame = this->getFrame_( adaptFrameTiming, newFrameTiming );
@@ -239,8 +239,8 @@ namespace Mengine
 			return;
 		}
         
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
-            ->onAnimatableStop( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+            ->onAnimationStop( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceImageSequence::_end( uint32_t _enumerator )
@@ -254,8 +254,8 @@ namespace Mengine
 			return;
 		}
         
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
-            ->onAnimatableEnd( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+            ->onAnimationEnd( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t SurfaceImageSequence::getFrame_( float _timing, float & _delthaTiming ) const
@@ -527,7 +527,7 @@ namespace Mengine
 		this->setCurrentFrame( lastFrame );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void SurfaceImageSequence::_setTiming( float _timing )
+	void SurfaceImageSequence::_setTime( float _timing )
 	{
 		if( this->isCompile() == false )
 		{
@@ -554,7 +554,7 @@ namespace Mengine
 		this->invalidateMaterial();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float SurfaceImageSequence::_getTiming() const
+	float SurfaceImageSequence::_getTime() const
 	{
 		if( this->isCompile() == false )
 		{

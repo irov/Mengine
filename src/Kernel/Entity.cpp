@@ -3,12 +3,12 @@
 #include "Interface/NodeInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/BaseEvent.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Entity::Entity()
-		: m_scriptEventable(nullptr)
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -26,15 +26,27 @@ namespace Mengine
 		return m_prototype;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Entity::setScriptEventable( Eventable * _eventable )
+	void Entity::setScriptEventable( const EventablePtr & _eventable )
 	{
 		m_scriptEventable = _eventable;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Eventable * Entity::getScriptEventable() const
+    const EventablePtr & Entity::getScriptEventable() const
 	{
 		return m_scriptEventable;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    EventInterfacePtr Entity::getScriptEvent() const
+    {
+        if( m_scriptEventable == nullptr )
+        {
+            return nullptr;
+        }
+
+        EventInterfacePtr event = m_scriptEventable->getEvent();
+
+        return event;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::setScriptObject( const pybind::object & _object )
 	{
@@ -47,9 +59,14 @@ namespace Mengine
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_activate()
-	{
-        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_PREPARATION, EntityEventReceiver )
-            ->onEntityPreparation( m_object );
+    {
+        EventInterfacePtr event = this->getScriptEvent();
+
+        if( event != nullptr )
+        {
+            EVENTABLE_METHODT( event, EVENT_ENTITY_PREPARATION, EntityEventReceiver )
+                ->onEntityPreparation( m_object );
+        }
 
 		bool successful = Node::_activate();
 
@@ -60,14 +77,24 @@ namespace Mengine
 	{
 		Node::_afterActivate();
 
-        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_ACTIVATE, EntityEventReceiver )
-            ->onEntityActivate(m_object);
+        EventInterfacePtr event = this->getScriptEvent();
+
+        if( event != nullptr )
+        {
+            EVENTABLE_METHODT( event, EVENT_ENTITY_ACTIVATE, EntityEventReceiver )
+                ->onEntityActivate( m_object );
+        }
 	}
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
-        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_PREPARATION_DEACTIVATE, EntityEventReceiver )
-            ->onEntityPreparationDeactivate( m_object );
+        EventInterfacePtr event = this->getScriptEvent();
+
+        if( event != nullptr )
+        {
+            EVENTABLE_METHODT( event, EVENT_ENTITY_PREPARATION_DEACTIVATE, EntityEventReceiver )
+                ->onEntityPreparationDeactivate( m_object );
+        }
 
         Node::_deactivate();		
     }
@@ -76,36 +103,61 @@ namespace Mengine
 	{
 		Node::_afterDeactivate();
 
-        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_DEACTIVATE, EntityEventReceiver )
-            ->onEntityDeactivate( m_object );
+        EventInterfacePtr event = this->getScriptEvent();
+
+        if( event != nullptr )
+        {
+            EVENTABLE_METHODT( event, EVENT_ENTITY_DEACTIVATE, EntityEventReceiver )
+                ->onEntityDeactivate( m_object );
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Entity::_compile()
 	{
-        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_COMPILE, EntityEventReceiver )
-            ->onEntityCompile( m_object );
+        EventInterfacePtr event = this->getScriptEvent();
+
+        if( event != nullptr )
+        {
+            EVENTABLE_METHODT( event, EVENT_ENTITY_COMPILE, EntityEventReceiver )
+                ->onEntityCompile( m_object );
+        }
 		
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_release()
 	{
-        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_RELEASE, EntityEventReceiver )
-            ->onEntityRelease( m_object );
+        EventInterfacePtr event = this->getScriptEvent();
+
+        if( event != nullptr )
+        {
+            EVENTABLE_METHODT( event, EVENT_ENTITY_RELEASE, EntityEventReceiver )
+                ->onEntityRelease( m_object );
+        }
 	}
     //////////////////////////////////////////////////////////////////////////
     void Entity::_update( float _current, float _timing )
     {
         Node::_update( _current, _timing );
 
-        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_UPDATE, EntityEventReceiver )
-            ->onEntityUpdate( m_object, _current, _timing );
+        EventInterfacePtr event = this->getScriptEvent();
+
+        if( event != nullptr )
+        {
+            EVENTABLE_METHODT( event, EVENT_ENTITY_UPDATE, EntityEventReceiver )
+                ->onEntityUpdate( m_object, _current, _timing );
+        }
     }
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::onCreate()
 	{
-        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_CREATE, EntityEventReceiver )
-            ->onEntityCreate( m_object, this );
+        EventInterfacePtr event = this->getScriptEvent();
+
+        if( event != nullptr )
+        {
+            EVENTABLE_METHODT( event, EVENT_ENTITY_CREATE, EntityEventReceiver )
+                ->onEntityCreate( m_object, this );
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Entity::_destroy()
@@ -114,8 +166,13 @@ namespace Mengine
 
 		Node * old_parent = this->getParent();
 
-        EVENTABLE_METHODT( m_scriptEventable, EVENT_ENTITY_DESTROY, EntityEventReceiver )
-            ->onEntityDestroy( m_object );
+        EventInterfacePtr event = this->getScriptEvent();
+
+        if( event != nullptr )
+        {
+            EVENTABLE_METHODT( event, EVENT_ENTITY_DESTROY, EntityEventReceiver )
+                ->onEntityDestroy( m_object );
+        }
 		
 		m_object.reset();
 

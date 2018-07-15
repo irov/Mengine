@@ -41,12 +41,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	class Movie2
 		: public Node
-        , public Eventable
+        , public BaseEvent
 		, public BaseAnimation
 	{
         DECLARE_ANIMATABLE();
-
-        EVENT_RECEIVER( Movie2EventReceiver );
+        DECLARE_EVENTABLE( Movie2EventReceiver );
 
 	public:
 		Movie2();

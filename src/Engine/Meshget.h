@@ -4,12 +4,11 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/Materialable.h"
-
 #include "Kernel/Surface.h"
-
 #include "Kernel/ColourValue.h"
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/RenderVertex2D.h"
+#include "Kernel/BaseEvent.h"
 
 #include "Config/Vector.h"
 
@@ -38,9 +37,9 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	class Meshget
 		: public Node
-		, public Eventable
+        , public BaseEvent
 	{
-        EVENT_RECEIVER( MeshgetEventReceiver );
+        DECLARE_EVENTABLE( MeshgetEventReceiver );
 
 	public:
 		Meshget();

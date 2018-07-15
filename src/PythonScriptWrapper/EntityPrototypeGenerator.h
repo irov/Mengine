@@ -3,8 +3,8 @@
 #include "Interface/PrototypeManagerInterface.h"
 
 #include "Kernel/ServantBase.h"
-
 #include "Kernel/Eventable.h"
+#include "Kernel/BaseEvent.h"
 #include "Kernel/Entity.h"
 
 namespace Mengine
@@ -12,8 +12,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	class EntityPrototypeGenerator
 		: public ServantBase<PrototypeGeneratorInterface>
-		, public Eventable
+        , public Eventable
+        , public BaseEvent
 	{
+        DECLARE_EVENTABLE( EntityEventReceiver );
+
 	public:
 		EntityPrototypeGenerator();
 		~EntityPrototypeGenerator() override;

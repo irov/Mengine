@@ -28,6 +28,13 @@ namespace Mengine
         template<class T_Receiver>
         void registerScriptEventReceiver( const pybind::dict & _kwds, Eventable * _eventable, const char * _method, uint32_t _event )
         {
+            EventInterfacePtr event = _eventable->getEvent();
+
+            if( event == nullptr )
+            {
+                return;
+            }
+
             if( _kwds.exist( _method ) == false )
             {
                 return;
@@ -37,7 +44,7 @@ namespace Mengine
 
             if( py_event.is_none() == true )
             {
-                _eventable->removeEventReceiver( _event );
+                event->removeEventReceiver( _event );
             }
             else
             {
@@ -45,7 +52,7 @@ namespace Mengine
 
                 receiver->initialize( py_event );
 
-                _eventable->registerEventReceiver( _event, receiver );
+                event->registerEventReceiver( _event, receiver );
             }
 
 #ifndef NDEBUG
@@ -56,6 +63,13 @@ namespace Mengine
         template<class T_Receiver>
         void registerScriptEventReceiverModule( const pybind::module & _module, Eventable * _eventable, const char * _method, uint32_t _event )
         {
+            EventInterfacePtr event = _eventable->getEvent();
+
+            if( event == nullptr )
+            {
+                return;
+            }
+
             if( _module.has_attr( _method ) == false )
             {
                 return;
@@ -65,7 +79,7 @@ namespace Mengine
 
             if( py_method.is_none() == true )
             {
-                _eventable->removeEventReceiver( _event );
+                event->removeEventReceiver( _event );
             }
             else
             {
@@ -73,13 +87,20 @@ namespace Mengine
 
                 receiver->initialize( py_method );
 
-                _eventable->registerEventReceiver( _event, receiver );
+                event->registerEventReceiver( _event, receiver );
             }
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
         void registerScriptEventReceiverMethod( const pybind::object & _obj, Eventable * _eventable, const char * _method, uint32_t _event )
         {
+            EventInterfacePtr event = _eventable->getEvent();
+
+            if( event == nullptr )
+            {
+                return;
+            }
+
             if( _obj.has_attr( _method ) == false )
             {
                 return;
@@ -89,7 +110,7 @@ namespace Mengine
 
             if( py_method.is_none() == true )
             {
-                _eventable->removeEventReceiver( _event );
+                event->removeEventReceiver( _event );
             }
             else
             {
@@ -97,7 +118,7 @@ namespace Mengine
 
                 receiver->initialize( py_method );
 
-                _eventable->registerEventReceiver( _event, receiver );
+                event->registerEventReceiver( _event, receiver );
             }            
         }
     }

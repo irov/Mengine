@@ -18,20 +18,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onAppMouseLeave()
     {
-        bool handle = EVENTABLE_METHODRT( m_scriptEventable, EVENT_APP_MOUSE_LEAVE, false, SceneEventReceiver )
-            ->onSceneAppMouseLeave( m_object );
+        EventInterfacePtr event = this->getScriptEvent();
 
-        if( handle == false )
+        if( event != nullptr )
         {
-            for( TSlugChild it( m_children ); it.eof() == false; )
+            bool handle = EVENTABLE_METHODRT( event, EVENT_APP_MOUSE_LEAVE, false, SceneEventReceiver )
+                ->onSceneAppMouseLeave( m_object );
+
+            if( handle == false )
             {
-                Scene * subScene = dynamic_cast<Scene *>(*it);
-
-                it.next_shuffle();
-
-                if( subScene != nullptr )
+                for( TSlugChild it( m_children ); it.eof() == false; )
                 {
-                    subScene->onAppMouseLeave();
+                    Scene * subScene = dynamic_cast<Scene *>(*it);
+
+                    it.next_shuffle();
+
+                    if( subScene != nullptr )
+                    {
+                        subScene->onAppMouseLeave();
+                    }
                 }
             }
         }
@@ -39,20 +44,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onAppMouseEnter()
     {
-        bool handle = EVENTABLE_METHODRT( m_scriptEventable, EVENT_APP_MOUSE_ENTER, false, SceneEventReceiver )
-            ->onSceneAppMouseEnter( m_object );
+        EventInterfacePtr event = this->getScriptEvent();
 
-        if( handle == false )
+        if( event != nullptr )
         {
-            for( TSlugChild it( m_children ); it.eof() == false; )
+            bool handle = EVENTABLE_METHODRT( event, EVENT_APP_MOUSE_ENTER, false, SceneEventReceiver )
+                ->onSceneAppMouseEnter( m_object );
+
+            if( handle == false )
             {
-                Scene * subScene = dynamic_cast<Scene *>(*it);
-
-                it.next_shuffle();
-
-                if( subScene != nullptr )
+                for( TSlugChild it( m_children ); it.eof() == false; )
                 {
-                    subScene->onAppMouseEnter();
+                    Scene * subScene = dynamic_cast<Scene *>(*it);
+
+                    it.next_shuffle();
+
+                    if( subScene != nullptr )
+                    {
+                        subScene->onAppMouseEnter();
+                    }
                 }
             }
         }
@@ -60,22 +70,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onFocus( bool _focus )
     {
-        bool handle = EVENTABLE_METHODRT( m_scriptEventable, EVENT_FOCUS, false, SceneEventReceiver )
-            ->onSceneAppFocus( m_object, _focus );
+        EventInterfacePtr event = this->getScriptEvent();
 
-        if( handle == false )
+        if( event != nullptr )
         {
-            for( TSlugChild it( m_children ); it.eof() == false; )
+            bool handle = EVENTABLE_METHODRT( event, EVENT_FOCUS, false, SceneEventReceiver )
+                ->onSceneAppFocus( m_object, _focus );
+
+            if( handle == false )
             {
-                Node * children = *it;
-
-                it.next_shuffle();
-
-                Scene * subScene = dynamic_cast<Scene *>(children);
-
-                if( subScene != nullptr )
+                for( TSlugChild it( m_children ); it.eof() == false; )
                 {
-                    subScene->onFocus( _focus );
+                    Node * children = *it;
+
+                    it.next_shuffle();
+
+                    Scene * subScene = dynamic_cast<Scene *>(children);
+
+                    if( subScene != nullptr )
+                    {
+                        subScene->onFocus( _focus );
+                    }
                 }
             }
         }

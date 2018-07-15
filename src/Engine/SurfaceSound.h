@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Kernel/Surface.h"
-#include "Kernel/Eventable.h"
 #include "Kernel/Soundable.h"
 
+#include "Kernel/BaseEvent.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/BaseAnimation.h"
 
-#include "ResourceSound.h"
+#include "Engine/ResourceSound.h"
 
 #include "Interface/SoundSystemInterface.h"
 
@@ -25,12 +25,12 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class SurfaceSound
-		: public Surface        
-        , public Eventable        
-		, public Soundable
+		: public Surface
+        , public Soundable
+        , public BaseEvent
         , public BaseAnimation
 	{
-        EVENT_RECEIVER( SurfaceSoundEventReceiver );
+        DECLARE_EVENTABLE( SurfaceSoundEventReceiver );
 
 	public:
 		SurfaceSound();

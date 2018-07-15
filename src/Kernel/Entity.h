@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/PrototypeManagerInterface.h"
+#include "Interface/EventInterface.h"
 
 #include "Kernel/Node.h"
-#include "Kernel/Eventable.h"
 
 #include "pybind/object.hpp"
 
@@ -54,12 +54,15 @@ namespace Mengine
 		const ConstString & getPrototype() const;
 
 	public:
-		void setScriptEventable( Eventable * _eventable );
-		Eventable * getScriptEventable() const;
+		void setScriptEventable( const EventablePtr & _eventable );
+        const EventablePtr & getScriptEventable() const;
 
 	public:
 		void setScriptObject( const pybind::object & _object );
 		const pybind::object & getScriptObject() const;
+
+    public:
+        EventInterfacePtr getScriptEvent() const;
 		
     public:
         void onCreate();
@@ -83,7 +86,7 @@ namespace Mengine
 	protected:
 		ConstString m_prototype;
 
-		Eventable * m_scriptEventable;
+        EventablePtr m_scriptEventable;
 		pybind::object m_object;
 	};
     //////////////////////////////////////////////////////////////////////////

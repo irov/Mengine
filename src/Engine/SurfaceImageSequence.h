@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Surface.h"
-#include "Kernel/Eventable.h"
+#include "Kernel/BaseEvent.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/ResourceHolder.h"
 #include "Kernel/AnimationEventReceiver.h"
@@ -27,12 +27,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	class SurfaceImageSequence
 		: public Surface        
-        , public Eventable
+        , public BaseEvent
         , public BaseAnimation		
 	{
         DECLARE_ANIMATABLE();
-
-        EVENT_RECEIVER( SurfaceImageSequenceEventReceiver );
+        DECLARE_EVENTABLE( SurfaceImageSequenceEventReceiver );
 
 	public:
 		SurfaceImageSequence();

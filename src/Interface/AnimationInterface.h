@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Mixin.h"
-#include "Kernel/Pointer.h"
+#include "Kernel/IntrusivePtr.h"
 
 namespace Mengine
 {

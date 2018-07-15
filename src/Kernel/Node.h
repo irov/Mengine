@@ -48,6 +48,7 @@ namespace Mengine
         , public Visitable
 		, public Scriptable
         , public Animatable
+        , public Eventable
 	{
 		DECLARE_VISITABLE_BASE();
 

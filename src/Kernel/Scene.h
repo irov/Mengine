@@ -2,6 +2,7 @@
 
 #include "Kernel/Entity.h"
 #include "Kernel/Scriptable.h"
+#include "Kernel/BaseEvent.h"
 #include "Kernel/Layer.h"
 
 #include "math/vec3.h"
@@ -31,8 +32,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Scene
 		: public Entity
+        , public BaseEvent
 	{
-        EVENT_RECEIVER( SceneEventReceiver );
+        DECLARE_EVENTABLE( SceneEventReceiver );
 
 	public:
 		Scene();

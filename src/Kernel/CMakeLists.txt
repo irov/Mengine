@@ -8,9 +8,9 @@ Servant
 
 ADD_FILTER(
 Eventable
-	Eventable.cpp
 	Eventable.h
-	EventReceiver.h
+    BaseEvent.h
+    BaseEvent.cpp
 )
 
 ADD_FILTER(

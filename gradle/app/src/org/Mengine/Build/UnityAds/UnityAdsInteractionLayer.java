@@ -21,7 +21,7 @@ public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
 
     private static final String TAG = "UnityAds";
 
-    final private String _gameId = "2654327";
+    private final String _gameId;
 
     static native void AndroidNativeUnity_onUnityAdsClick(String placementId);
 
@@ -37,10 +37,12 @@ public class UnityAdsInteractionLayer implements IUnityAdsExtendedListener {
 
     private HashSet<String> _alreadyInitializedPlacements;
 
-    public UnityAdsInteractionLayer() {
+    public UnityAdsInteractionLayer(String gameId) {
         if (Build.VERSION.SDK_INT >= 19) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
+
+        _gameId = gameId;
 
         UnityAds.setListener(this);
         _alreadyInitializedPlacements = new HashSet<String>();

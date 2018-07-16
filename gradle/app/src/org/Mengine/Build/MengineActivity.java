@@ -20,8 +20,9 @@ public class MengineActivity extends SDLActivity {
     public AdMobInteractionLayer adMobInteractionLayer;
     public DevToDevInteractionLayer devToDevInteractionLayer;
 
+    public CallbackManager callbackManager;
+
     private static MengineActivity _instance;
-    private CallbackManager _callbackManager;
 
     static native void AndroidNativeFacebook_setupFacebookJNI();
 
@@ -48,16 +49,11 @@ public class MengineActivity extends SDLActivity {
 
         _instance = this;
 
-        _callbackManager = CallbackManager.Factory.create();
-
         AndroidNativeFacebook_setupFacebookJNI();
-        facebookInteractionLayer = new FacebookInteractionLayer(_callbackManager);
 
         AndroidNativeUnity_setupUnityJNI();
-        unityAdsInteractionLayer = new UnityAdsInteractionLayer();
 
         AndroidNativeAdMob_setupAdMobJNI();
-        adMobInteractionLayer = new AdMobInteractionLayer(this);
 
         AndroidNativeDevToDev_setupDevToDevJNI();
         devToDevInteractionLayer = new DevToDevInteractionLayer(this);
@@ -73,7 +69,9 @@ public class MengineActivity extends SDLActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        _callbackManager.onActivityResult(requestCode, resultCode, data);
+        if(callbackManager != null) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     @Override
@@ -84,36 +82,45 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Facebook Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static boolean facebookIsLoggedIn() {
+    public static void facebookInitializePlugin() {
         if (_instance == null) {
+            return;
+        }
+
+        _instance.callbackManager = CallbackManager.Factory.create();
+        _instance.facebookInteractionLayer = new FacebookInteractionLayer(_instance.callbackManager);
+    }
+
+    public static boolean facebookIsLoggedIn() {
+        if (_instance == null || _instance.facebookInteractionLayer == null) {
             return false;
         }
         return _instance.facebookInteractionLayer.isLoggedIn();
     }
 
     public static void facebookPerformLogin(String[] readPermissions) {
-        if (_instance == null) {
+        if (_instance == null || _instance.facebookInteractionLayer == null) {
             return;
         }
         _instance.facebookInteractionLayer.performLogin(_instance, readPermissions);
     }
 
     public static void facebookGetUser() {
-        if (_instance == null) {
+        if (_instance == null || _instance.facebookInteractionLayer == null) {
             return;
         }
         _instance.facebookInteractionLayer.getUser();
     }
 
     public static void facebookShareLink(String link) {
-        if (_instance == null) {
+        if (_instance == null || _instance.facebookInteractionLayer == null) {
             return;
         }
         _instance.facebookInteractionLayer.shareLink(_instance, link);
     }
 
     public static void facebookGetProfilePictureLink(String typeParameter) {
-        if (_instance == null) {
+        if (_instance == null || _instance.facebookInteractionLayer == null) {
             return;
         }
         _instance.facebookInteractionLayer.getProfilePictureLink(typeParameter);
@@ -122,15 +129,22 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //UnityAds Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void unitySetupAds(boolean debug) {
+    public static void unityInitializePlugin(String gameId){
         if (_instance == null) {
+            return;
+        }
+        _instance.unityAdsInteractionLayer = new UnityAdsInteractionLayer(gameId);
+    }
+
+    public static void unitySetupAds(boolean debug) {
+        if (_instance == null || _instance.unityAdsInteractionLayer == null) {
             return;
         }
         _instance.unityAdsInteractionLayer.setupAds(_instance, debug);
     }
 
     public static void unityShowAd(String placementId) {
-        if (_instance == null) {
+        if (_instance == null || _instance.unityAdsInteractionLayer == null) {
             return;
         }
         _instance.unityAdsInteractionLayer.showAd(_instance, placementId);
@@ -139,29 +153,36 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //AdMob Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void admobSetupInterstitialAd() {
+    public static void admobInitializePlugin(String admobAppId, String interAdUnitId, String videoAdUnitId){
         if (_instance == null) {
+            return;
+        }
+        _instance.adMobInteractionLayer = new AdMobInteractionLayer(_instance, admobAppId, interAdUnitId, videoAdUnitId);
+    }
+
+    public static void admobSetupInterstitialAd() {
+        if (_instance == null || _instance.adMobInteractionLayer == null) {
             return;
         }
         _instance.adMobInteractionLayer.setupInterstitialAd();
     }
 
     public static void admobShowInterstitialAd() {
-        if (_instance == null) {
+        if (_instance == null || _instance.adMobInteractionLayer == null) {
             return;
         }
         _instance.adMobInteractionLayer.showInterstitialAd();
     }
 
     public static void admobSetupRewardedVideoAd() {
-        if (_instance == null) {
+        if (_instance == null || _instance.adMobInteractionLayer == null) {
             return;
         }
         _instance.adMobInteractionLayer.setupRewardedVideoAd();
     }
 
     public static void admobShowRewardedVideoAd() {
-        if (_instance == null) {
+        if (_instance == null || _instance.adMobInteractionLayer == null) {
             return;
         }
         _instance.adMobInteractionLayer.showRewardedVideoAd();

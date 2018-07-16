@@ -56,7 +56,6 @@ public class MengineActivity extends SDLActivity {
         AndroidNativeAdMob_setupAdMobJNI();
 
         AndroidNativeDevToDev_setupDevToDevJNI();
-        devToDevInteractionLayer = new DevToDevInteractionLayer(this);
     }
 
     @Override
@@ -191,50 +190,57 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //DevToDev Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void devtodevOnTutorialEvent(int stateOrStep) {
+    public static void devtodevInitializePlugin(String appId, String secret, String apiKey) {
         if (_instance == null) {
+            return;
+        }
+        _instance.devToDevInteractionLayer = new DevToDevInteractionLayer(_instance, appId, secret, apiKey);
+    }
+
+    public static void devtodevOnTutorialEvent(int stateOrStep) {
+        if (_instance == null || _instance.devToDevInteractionLayer == null) {
             return;
         }
         _instance.devToDevInteractionLayer.onTutorialEvent(stateOrStep);
     }
 
     public static void devtodevSetCurrentLevel(int level) {
-        if (_instance == null) {
+        if (_instance == null || _instance.devToDevInteractionLayer == null) {
             return;
         }
         _instance.devToDevInteractionLayer.setCurrentLevel(level);
     }
 
     public static void devtodevOnLevelUp(int level) {
-        if (_instance == null) {
+        if (_instance == null || _instance.devToDevInteractionLayer == null) {
             return;
         }
         _instance.devToDevInteractionLayer.onLevelUp(level);
     }
 
     public static void devtodevOnCurrencyAccrual(String currencyName, int currencyAmount, int accrualType) {
-        if (_instance == null) {
+        if (_instance == null || _instance.devToDevInteractionLayer == null) {
             return;
         }
         _instance.devToDevInteractionLayer.onCurrencyAccrual(currencyName, currencyAmount, accrualType);
     }
 
     public static void devtodevOnRealPayment(String paymentId, float inAppPrice, String inAppName, String inAppCurrencyISOCode) {
-        if (_instance == null) {
+        if (_instance == null || _instance.devToDevInteractionLayer == null) {
             return;
         }
         _instance.devToDevInteractionLayer.onRealPayment(paymentId, inAppPrice, inAppName, inAppCurrencyISOCode);
     }
 
     public static void devtodevOnInAppPurchase(String purchaseId, String purchaseType, int purchaseAmount, int purchasePrice, String purchaseCurrency) {
-        if (_instance == null) {
+        if (_instance == null || _instance.devToDevInteractionLayer == null) {
             return;
         }
         _instance.devToDevInteractionLayer.onInAppPurchase(purchaseId, purchaseType, purchaseAmount, purchasePrice, purchaseCurrency);
     }
 
     public static void devtodevOnSimpleCustomEvent(String eventName) {
-        if (_instance == null) {
+        if (_instance == null || _instance.devToDevInteractionLayer == null) {
             return;
         }
         _instance.devToDevInteractionLayer.onSimpleCustomEvent(eventName);

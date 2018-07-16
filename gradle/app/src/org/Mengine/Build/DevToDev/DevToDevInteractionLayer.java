@@ -10,12 +10,16 @@ import com.devtodev.core.data.consts.AccrualType;
  */
 
 public class DevToDevInteractionLayer {
-    private static final String APPID = "eb9820ae-f1aa-09f2-9295-5b1d931f7d64";
-    private static final String SECRET = "YeSsjbXTg6GAM5lPBEOI3Jx2ZNh7qcDR";
-    private static final String APIKEY = "ak-BVbZMln2aXWOLEuSD1tipYsr8kqN5dIA";
+    private final String _appId;
+    private final String _secret;
+    private final String _apiKey;
 
-    public DevToDevInteractionLayer(Activity activity) {
-        DevToDev.init(activity, APPID, SECRET);
+    public DevToDevInteractionLayer(Activity activity, String appId, String secret, String apiKey) {
+        _appId = appId;
+        _secret = secret;
+        _apiKey = apiKey;
+
+        DevToDev.init(activity, _appId, _secret);
     }
 
     public void onTutorialEvent(int stateOrStep) {

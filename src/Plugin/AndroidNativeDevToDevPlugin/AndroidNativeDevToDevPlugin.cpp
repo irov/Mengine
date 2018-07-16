@@ -10,6 +10,7 @@
 #define DEVTODEV_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(DEVTODEV_JAVA_PREFIX, DevToDevInteractionLayer, function)
 
 static jclass mActivityClass;
+static jmethodID jmethodID_initializePlugin;
 static jmethodID jmethodID_onTutorialEvent;
 static jmethodID jmethodID_setCurrentLevel;
 static jmethodID jmethodID_onLevelUp;
@@ -26,6 +27,7 @@ extern "C"
     {
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
+        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "devtodevInitializePlugin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
         jmethodID_onTutorialEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnTutorialEvent", "(I)V" );
         jmethodID_setCurrentLevel = mEnv->GetStaticMethodID( mActivityClass, "devtodevSetCurrentLevel", "(I)V" );
         jmethodID_onLevelUp = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnLevelUp", "(I)V" );
@@ -64,6 +66,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeDevToDevPlugin::_finalize()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeDevToDevPlugin::initializePlugin( const String & _appId, const String & _secret, const String & _apiKey )
+    {
+        JNIEnv * env = Mengine_JNI_GetEnv();
+        
+        const Char * appId_str = _appId.c_str();
+        jstring jappId = env->NewStringUTF( appId_str );
+        const Char * secret_str = _secret.c_str();
+        jstring jsecret = env->NewStringUTF( secret_str );
+        const Char * apiKey_str = _apiKey.c_str();
+        jstring japiKey = env->NewStringUTF( apiKey_str );
+        
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jappId, jsecret, japiKey );
+        
+        env->ReleaseStringUTFChars( jappId, appId_str );
+        env->ReleaseStringUTFChars( jsecret, secret_str );
+        env->ReleaseStringUTFChars( japiKey, apiKey_str );
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeDevToDevPlugin::onTutorialEvent( const int _stateOrStep )

@@ -68,7 +68,7 @@ public class MengineActivity extends SDLActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if(callbackManager != null) {
+        if (callbackManager != null) {
             callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
@@ -82,167 +82,146 @@ public class MengineActivity extends SDLActivity {
     //Facebook Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public static void facebookInitializePlugin() {
-        if (_instance == null) {
-            return;
+        if (_instance != null) {
+            _instance.callbackManager = CallbackManager.Factory.create();
+            _instance.facebookInteractionLayer = new FacebookInteractionLayer(_instance.callbackManager);
         }
-
-        _instance.callbackManager = CallbackManager.Factory.create();
-        _instance.facebookInteractionLayer = new FacebookInteractionLayer(_instance.callbackManager);
     }
 
     public static boolean facebookIsLoggedIn() {
-        if (_instance == null || _instance.facebookInteractionLayer == null) {
+        if (_instance != null && _instance.facebookInteractionLayer != null) {
+            return _instance.facebookInteractionLayer.isLoggedIn();
+        } else {
             return false;
         }
-        return _instance.facebookInteractionLayer.isLoggedIn();
     }
 
     public static void facebookPerformLogin(String[] readPermissions) {
-        if (_instance == null || _instance.facebookInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.facebookInteractionLayer != null) {
+            _instance.facebookInteractionLayer.performLogin(_instance, readPermissions);
         }
-        _instance.facebookInteractionLayer.performLogin(_instance, readPermissions);
     }
 
     public static void facebookGetUser() {
-        if (_instance == null || _instance.facebookInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.facebookInteractionLayer != null) {
+            _instance.facebookInteractionLayer.getUser();
         }
-        _instance.facebookInteractionLayer.getUser();
     }
 
     public static void facebookShareLink(String link) {
-        if (_instance == null || _instance.facebookInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.facebookInteractionLayer != null) {
+            _instance.facebookInteractionLayer.shareLink(_instance, link);
         }
-        _instance.facebookInteractionLayer.shareLink(_instance, link);
     }
 
     public static void facebookGetProfilePictureLink(String typeParameter) {
-        if (_instance == null || _instance.facebookInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.facebookInteractionLayer != null) {
+            _instance.facebookInteractionLayer.getProfilePictureLink(typeParameter);
         }
-        _instance.facebookInteractionLayer.getProfilePictureLink(typeParameter);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //UnityAds Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void unityInitializePlugin(String gameId){
-        if (_instance == null) {
-            return;
+    public static void unityInitializePlugin(String gameId) {
+        if (_instance != null) {
+            _instance.unityAdsInteractionLayer = new UnityAdsInteractionLayer(gameId);
         }
-        _instance.unityAdsInteractionLayer = new UnityAdsInteractionLayer(gameId);
     }
 
     public static void unitySetupAds(boolean debug) {
-        if (_instance == null || _instance.unityAdsInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.unityAdsInteractionLayer != null) {
+            _instance.unityAdsInteractionLayer.setupAds(_instance, debug);
         }
-        _instance.unityAdsInteractionLayer.setupAds(_instance, debug);
     }
 
     public static void unityShowAd(String placementId) {
-        if (_instance == null || _instance.unityAdsInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.unityAdsInteractionLayer != null) {
+            _instance.unityAdsInteractionLayer.showAd(_instance, placementId);
         }
-        _instance.unityAdsInteractionLayer.showAd(_instance, placementId);
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //AdMob Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void admobInitializePlugin(String admobAppId, String interAdUnitId, String videoAdUnitId){
-        if (_instance == null) {
-            return;
+    public static void admobInitializePlugin(String admobAppId, String interAdUnitId, String videoAdUnitId) {
+        if (_instance != null) {
+            _instance.adMobInteractionLayer = new AdMobInteractionLayer(_instance, admobAppId, interAdUnitId, videoAdUnitId);
         }
-        _instance.adMobInteractionLayer = new AdMobInteractionLayer(_instance, admobAppId, interAdUnitId, videoAdUnitId);
     }
 
     public static void admobSetupInterstitialAd() {
-        if (_instance == null || _instance.adMobInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.adMobInteractionLayer != null) {
+            _instance.adMobInteractionLayer.setupInterstitialAd();
         }
-        _instance.adMobInteractionLayer.setupInterstitialAd();
     }
 
     public static void admobShowInterstitialAd() {
-        if (_instance == null || _instance.adMobInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.adMobInteractionLayer != null) {
+            _instance.adMobInteractionLayer.showInterstitialAd();
         }
-        _instance.adMobInteractionLayer.showInterstitialAd();
     }
 
     public static void admobSetupRewardedVideoAd() {
-        if (_instance == null || _instance.adMobInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.adMobInteractionLayer != null) {
+            _instance.adMobInteractionLayer.setupRewardedVideoAd();
         }
-        _instance.adMobInteractionLayer.setupRewardedVideoAd();
     }
 
     public static void admobShowRewardedVideoAd() {
-        if (_instance == null || _instance.adMobInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.adMobInteractionLayer != null) {
+            _instance.adMobInteractionLayer.showRewardedVideoAd();
         }
-        _instance.adMobInteractionLayer.showRewardedVideoAd();
     }
 
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //DevToDev Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
     public static void devtodevInitializePlugin(String appId, String secret, String apiKey) {
-        if (_instance == null) {
-            return;
+        if (_instance != null) {
+            _instance.devToDevInteractionLayer = new DevToDevInteractionLayer(_instance, appId, secret, apiKey);
         }
-        _instance.devToDevInteractionLayer = new DevToDevInteractionLayer(_instance, appId, secret, apiKey);
     }
 
     public static void devtodevOnTutorialEvent(int stateOrStep) {
-        if (_instance == null || _instance.devToDevInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.devToDevInteractionLayer != null) {
+            _instance.devToDevInteractionLayer.onTutorialEvent(stateOrStep);
         }
-        _instance.devToDevInteractionLayer.onTutorialEvent(stateOrStep);
     }
 
     public static void devtodevSetCurrentLevel(int level) {
-        if (_instance == null || _instance.devToDevInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.devToDevInteractionLayer != null) {
+            _instance.devToDevInteractionLayer.setCurrentLevel(level);
         }
-        _instance.devToDevInteractionLayer.setCurrentLevel(level);
     }
 
     public static void devtodevOnLevelUp(int level) {
-        if (_instance == null || _instance.devToDevInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.devToDevInteractionLayer != null) {
+            _instance.devToDevInteractionLayer.onLevelUp(level);
         }
-        _instance.devToDevInteractionLayer.onLevelUp(level);
     }
 
     public static void devtodevOnCurrencyAccrual(String currencyName, int currencyAmount, int accrualType) {
-        if (_instance == null || _instance.devToDevInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.devToDevInteractionLayer != null) {
+            _instance.devToDevInteractionLayer.onCurrencyAccrual(currencyName, currencyAmount, accrualType);
         }
-        _instance.devToDevInteractionLayer.onCurrencyAccrual(currencyName, currencyAmount, accrualType);
     }
 
     public static void devtodevOnRealPayment(String paymentId, float inAppPrice, String inAppName, String inAppCurrencyISOCode) {
-        if (_instance == null || _instance.devToDevInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.devToDevInteractionLayer != null) {
+            _instance.devToDevInteractionLayer.onRealPayment(paymentId, inAppPrice, inAppName, inAppCurrencyISOCode);
         }
-        _instance.devToDevInteractionLayer.onRealPayment(paymentId, inAppPrice, inAppName, inAppCurrencyISOCode);
     }
 
     public static void devtodevOnInAppPurchase(String purchaseId, String purchaseType, int purchaseAmount, int purchasePrice, String purchaseCurrency) {
-        if (_instance == null || _instance.devToDevInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.devToDevInteractionLayer != null) {
+            _instance.devToDevInteractionLayer.onInAppPurchase(purchaseId, purchaseType, purchaseAmount, purchasePrice, purchaseCurrency);
         }
-        _instance.devToDevInteractionLayer.onInAppPurchase(purchaseId, purchaseType, purchaseAmount, purchasePrice, purchaseCurrency);
     }
 
     public static void devtodevOnSimpleCustomEvent(String eventName) {
-        if (_instance == null || _instance.devToDevInteractionLayer == null) {
-            return;
+        if (_instance != null && _instance.devToDevInteractionLayer != null) {
+            _instance.devToDevInteractionLayer.onSimpleCustomEvent(eventName);
         }
-        _instance.devToDevInteractionLayer.onSimpleCustomEvent(eventName);
     }
 }

@@ -422,6 +422,8 @@ namespace Mengine
         jstring jlink = env->NewStringUTF( link_str );
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_shareLink, jlink );
+        
+        env->ReleaseStringUTFChars( jlink, link_str );
 
         return true;
     }
@@ -441,6 +443,8 @@ namespace Mengine
         jstring jtypeParameter = env->NewStringUTF( typeParameter_str );
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_getProfilePictureLink, jtypeParameter );
+        
+        env->ReleaseStringUTFChars( jtypeParameter, typeParameter_str );
 
         return true;
     }

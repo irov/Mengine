@@ -315,6 +315,8 @@ namespace Mengine
         jstring jplacementId = env->NewStringUTF( placementId_str );
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_showAd, jplacementId );
+        
+        env->ReleaseStringUTFChars( jplacementId, placementId_str );
 
         return true;
     }

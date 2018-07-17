@@ -20,9 +20,9 @@ public class AdMobInteractionLayer {
 
     private static final String TAG = "AdMob";
 
-    private static final String ADMOBAPPID = "ca-app-pub-3940256099942544~3347511713";
-    private static final String INTERADUNITID = "ca-app-pub-3940256099942544/1033173712";
-    private static final String VIDEOADUNITID = "ca-app-pub-3940256099942544/5224354917";
+    private final String _admobAppId;
+    private final String _interAdUnitId;
+    private final String _videoAdUnitId;
 
     private InterstitialAd _interstitialAd;
     private RewardedVideoAd _rewardedVideoAd;
@@ -53,11 +53,15 @@ public class AdMobInteractionLayer {
 
     static native void AndroidNativeAdMob_onRewardedVideoCompleted();
 
-    public AdMobInteractionLayer(Activity activity) {
-        MobileAds.initialize(activity, ADMOBAPPID);
+    public AdMobInteractionLayer(Activity activity, String admobAppId, String interAdUnitId, String videoAdUnitId) {
+        _admobAppId = admobAppId;
+        _interAdUnitId = interAdUnitId;
+        _videoAdUnitId = videoAdUnitId;
+
+        MobileAds.initialize(activity, _admobAppId);
 
         _interstitialAd = new InterstitialAd(activity);
-        _interstitialAd.setAdUnitId(INTERADUNITID);
+        _interstitialAd.setAdUnitId(_interAdUnitId);
         _interstitialAd.setAdListener(new AdListener() {
             @Override
             public void onAdLoaded() {
@@ -158,7 +162,7 @@ public class AdMobInteractionLayer {
         ThreadUtil.performOnMainThread(new Runnable() {
             @Override
             public void run() {
-                _rewardedVideoAd.loadAd(VIDEOADUNITID,
+                _rewardedVideoAd.loadAd(_videoAdUnitId,
                         new AdRequest.Builder().build());
             }
         });

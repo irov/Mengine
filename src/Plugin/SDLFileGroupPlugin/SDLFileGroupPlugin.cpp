@@ -7,7 +7,7 @@
 
 #	include "SDLFileGroupDirectory.h"
 
-#   include "Factory/FactoryDefault.h"
+#   include "Kernel/FactoryDefault.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( SDLFileGroup, Mengine::SDLFileGroupPlugin)

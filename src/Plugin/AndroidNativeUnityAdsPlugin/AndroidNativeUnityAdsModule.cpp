@@ -2,8 +2,8 @@
 
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Core/Callback.h"
-#include "Factory/FactorableUnique.h"
+#include "Kernel/Callback.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "Android/AndroidUtils.h"
 
@@ -15,6 +15,7 @@
 #define UNITY_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(UNITY_JAVA_PREFIX, UnityAdsInteractionLayer, function)
 
 static jclass mActivityClass;
+static jmethodID jmethodID_initializePlugin;
 static jmethodID jmethodID_setupAds;
 static jmethodID jmethodID_showAd;
 
@@ -27,6 +28,7 @@ extern "C" {
     {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
+        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "unityInitializePlugin", "(Ljava/lang/String;)V" );
         jmethodID_setupAds = env->GetStaticMethodID( mActivityClass, "unitySetupAds", "(Z)V" );
         jmethodID_showAd = env->GetStaticMethodID( mActivityClass, "unityShowAd", "(Ljava/lang/String;)V" );
     }
@@ -296,14 +298,28 @@ namespace Mengine
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeUnityAdsModule::initializePlugin( const String & _gameId )
+    {
+        JNIEnv * env = Mengine_JNI_GetEnv();
+        
+        const Char * gameId_str = _gameId.c_str();
+        jstring jgameId = env->NewStringUTF( gameId_str );
+        
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jgameId );
+        
+        env->ReleaseStringUTFChars( jgameId, gameId_str );
+        
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeUnityAdsModule::setupAds( bool _debug )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
-
+        
         jboolean jdebug = static_cast<jboolean>(_debug);
-
+        
         env->CallStaticVoidMethod( mActivityClass, jmethodID_setupAds, jdebug );
-
+        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -315,6 +331,8 @@ namespace Mengine
         jstring jplacementId = env->NewStringUTF( placementId_str );
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_showAd, jplacementId );
+        
+        env->ReleaseStringUTFChars( jplacementId, placementId_str );
 
         return true;
     }

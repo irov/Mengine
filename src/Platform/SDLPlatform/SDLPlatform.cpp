@@ -20,14 +20,14 @@
 #include <cstdio>
 #include <clocale>
 
-#include "Core/FileLogger.h"
-#include "Core/IniUtil.h"
-#include "Core/FilePath.h"
+#include "Kernel/FileLogger.h"
+#include "Kernel/IniUtil.h"
+#include "Kernel/FilePath.h"
 
-#include "Factory/FactorableUnique.h"
-#include "Factory/FactoryDefault.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/FactoryDefault.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <ctime>
 #include <algorithm>

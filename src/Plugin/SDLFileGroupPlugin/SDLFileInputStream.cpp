@@ -5,7 +5,7 @@
 #include "Interface/SDLLayerInterface.h"
 #include "Interface/PlatformInterface.h"
 
-#include "Utils/Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "stdex/memorycopy.h"
 

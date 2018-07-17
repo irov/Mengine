@@ -2,7 +2,7 @@
 
 #include "OpenGLRenderError.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

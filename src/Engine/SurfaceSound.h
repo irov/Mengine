@@ -30,6 +30,7 @@ namespace Mengine
         , public BaseEvent
         , public BaseAnimation
 	{
+        DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE( SurfaceSoundEventReceiver );
 
 	public:

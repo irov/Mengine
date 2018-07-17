@@ -7,6 +7,11 @@ Servant
 )
 
 ADD_FILTER(
+Unknowable
+	Unknowable.h
+)
+
+ADD_FILTER(
 Eventable
 	Eventable.h
     BaseEvent.h

@@ -2,8 +2,8 @@
 
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Core/Callback.h"
-#include "Factory/FactorableUnique.h"
+#include "Kernel/Callback.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "Android/AndroidUtils.h"
 

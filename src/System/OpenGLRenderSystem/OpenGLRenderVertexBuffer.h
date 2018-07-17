@@ -4,7 +4,7 @@
 
 #include "OpenGLRenderExtension.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 namespace Mengine
 {

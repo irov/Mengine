@@ -6,7 +6,7 @@
 
 #	include "SDL_stdinc.h"
 
-#   include "Logger/Logger.h"
+#   include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UnicodeSystem, Mengine::SDLUnicodeSystem );

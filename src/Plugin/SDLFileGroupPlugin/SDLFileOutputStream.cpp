@@ -3,7 +3,7 @@
 #	include "Interface/UnicodeInterface.h"
 #   include "Interface/SDLLayerInterface.h"
 
-#   include "Utils/Logger/Logger.h"
+#   include "Kernel/Logger.h"
 
 #   include "SDL_rwops.h"
 

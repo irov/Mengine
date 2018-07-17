@@ -27,7 +27,7 @@ extern "C"
     {
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
-        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "devtodevInitializePlugin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
+        jmethodID_initializePlugin = mEnv->GetStaticMethodID( mActivityClass, "devtodevInitializePlugin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
         jmethodID_onTutorialEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnTutorialEvent", "(I)V" );
         jmethodID_setCurrentLevel = mEnv->GetStaticMethodID( mActivityClass, "devtodevSetCurrentLevel", "(I)V" );
         jmethodID_onLevelUp = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnLevelUp", "(I)V" );

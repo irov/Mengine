@@ -2,7 +2,7 @@
 
 #include "Interface/ThreadInterface.h"
 
-#include "Core/ModuleBase.h"
+#include "Kernel/ModuleBase.h"
 
 #include "UnityAdEventHandler.h"
 
@@ -32,6 +32,7 @@ namespace Mengine
         void addCommand( const LambdaUnityAdEventHandler & _command );
         
     public:
+        bool initializePlugin( const String & _gameId );
         bool setupAds( bool _debug );
         bool showAd( const String & _placementId );
         void setAdsEventHandler( const UnityAdEventHandlerPtr & _eventHandler );

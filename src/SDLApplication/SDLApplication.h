@@ -21,7 +21,7 @@
 #include "Interface/ConfigInterface.h"
 #include "Interface/PrefetcherInterface.h"
 
-#include "Core/FileLogger.h"
+#include "Kernel/FileLogger.h"
 
 namespace Mengine
 {

@@ -7,11 +7,11 @@
 
 #include "OpenGLRenderExtension.h"
 
-#include "Factory/FactoryDefault.h"
-#include "Factory/FactoryPool.h"
-#include "Factory/FactoryPoolWithListener.h"
+#include "Kernel/FactoryDefault.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryPoolWithListener.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <cmath>
 #include <algorithm>

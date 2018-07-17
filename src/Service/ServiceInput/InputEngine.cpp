@@ -3,7 +3,7 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <algorithm>
 

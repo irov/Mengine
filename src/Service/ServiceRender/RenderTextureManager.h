@@ -3,11 +3,11 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
-#include "Core/ConstString.h"
+#include "Kernel/ConstString.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 #include "Config/Map.h"
 

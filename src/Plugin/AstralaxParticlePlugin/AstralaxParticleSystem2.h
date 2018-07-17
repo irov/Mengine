@@ -3,14 +3,14 @@
 #include "Interface/ParticleSystemInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "Config/String.h"
 
 #include "AstralaxEmitterContainer2.h"
 #include "AstralaxEmitter2.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 #include "Config/Stringstream.h"
 #include "Config/Vector.h"

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Factory/Factorable.h"
-#include "Core/ConstString.h"
-#include "Core/ConstStringHolder.h"
+#include "Kernel/Factorable.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/ConstStringHolder.h"
 
 #include "pybind/pybind.hpp"
 

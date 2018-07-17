@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Codec/ImageDecoder.h"
+#include "Kernel/ImageDecoder.h"
 
 #include "Interface/ArchiveInterface.h"
 
-#include "Core/Magic.h"
+#include "Kernel/Magic.h"
 
 namespace Mengine
 {

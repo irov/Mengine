@@ -1,0 +1,29 @@
+
+set( MY_LIB_NAME Archive )
+
+ADD_FILTER(
+src
+	Archive.hpp
+	ArchiveWrite.hpp
+	ArchiveWrite.cpp
+)
+
+ADD_MENGINE_LIBRARY()
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Utils
+)
+
+INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils 
+) 
+
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ ${MY_LIB_NAME}
+)
+
+
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ PARENT_SCOPE
+)

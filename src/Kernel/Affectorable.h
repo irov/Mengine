@@ -5,8 +5,8 @@
 #include "stdex/intrusive_slug_list_size_ptr.h"
 #include "stdex/intrusive_slug_ptr.h"
 
-#include "Core/Mixin.h"
-#include "Core/IntrusivePtr.h"
+#include "Kernel/Mixin.h"
+#include "Kernel/IntrusivePtr.h"
 
 #include "math/vec3.h"
 

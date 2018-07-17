@@ -2,7 +2,7 @@
 
 #include "Interface/SoundSystemInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 #include "AL/al.h"
 

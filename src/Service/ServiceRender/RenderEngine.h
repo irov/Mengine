@@ -3,18 +3,18 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "RenderMaterial.h"
 
-#include "Core/Viewport.h"
-#include "Core/Resolution.h"
-#include "Core/ConstString.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/Resolution.h"
+#include "Kernel/ConstString.h"
 
 #include "stdex/static_array.h"
 #include "stdex/heap_array.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 #include "math/mat4.h"
 #include "math/vec4.h"
@@ -22,7 +22,7 @@
 #include "Config/Vector.h"
 #include "Config/List.h"
 
-#include "Core/ConstString.h"
+#include "Kernel/ConstString.h"
 
 #ifndef MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX
 #	define MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX 512

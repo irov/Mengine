@@ -4,10 +4,10 @@
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
 
 namespace Mengine
 {

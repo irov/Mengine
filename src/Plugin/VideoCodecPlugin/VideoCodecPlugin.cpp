@@ -4,7 +4,7 @@
 //#include "VideoDecoderVPX.h"
 #include "VideoDecoderTheora.h"
 
-#include "Codec/DecoderFactory.h"
+#include "Kernel/DecoderFactory.h"
 
 #include "Interface/StringizeInterface.h"
 

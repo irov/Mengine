@@ -4,10 +4,10 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/Magic.h"
-#include "Core/ConstString.h"
+#include "Kernel/Magic.h"
+#include "Kernel/ConstString.h"
 
 namespace Mengine
 {

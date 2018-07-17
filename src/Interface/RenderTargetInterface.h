@@ -2,7 +2,7 @@
 
 #include "Interface/ServantInterface.h"
 
-#include "Core/PixelFormat.h"
+#include "Kernel/PixelFormat.h"
 
 namespace Mengine
 {

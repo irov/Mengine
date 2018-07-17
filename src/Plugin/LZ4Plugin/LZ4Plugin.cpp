@@ -4,7 +4,7 @@
 
 #include "ArchivatorLZ4.h"
 
-#include "Factory/FactorableUnique.h"
+#include "Kernel/FactorableUnique.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( LZ4, Mengine::LZ4Plugin );

@@ -2,7 +2,7 @@
 
 #include "Interface/RenderCameraInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {

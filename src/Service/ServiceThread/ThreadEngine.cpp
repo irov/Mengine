@@ -5,9 +5,9 @@
 #include "Kernel/ThreadTask.h"
 #include "Kernel/ThreadTaskPacket.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "stdex/allocator.h"
 

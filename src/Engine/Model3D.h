@@ -3,15 +3,15 @@
 #include "Interface/Model3DInterface.h"
 
 #include "Kernel/Node.h"
-#include "Kernel/Animatable.h"
 #include "Kernel/Materialable.h"
-
+#include "Kernel/BaseAnimation.h"
 #include "Kernel/ResourceImage.h"
+
 #include "ResourceModel3D.h"
 
-#include "Core/ColourValue.h"
-#include "Core/ValueInterpolator.h"
-#include "Core/RenderVertex2D.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/ValueInterpolator.h"
+#include "Kernel/RenderVertex2D.h"
 
 #include "math/mat3.h"
 #include "math/vec4.h"
@@ -23,10 +23,13 @@ namespace Mengine
 	typedef IntrusivePtr<class RenderCameraProjection> RenderCameraProjectionPtr;
     //////////////////////////////////////////////////////////////////////////
 	class Model3D
-		: public Node
-		, public Animatable
+		: public Node		
 		, public Materialable
+        , public BaseAnimation
 	{
+    public:
+        DECLARE_ANIMATABLE();
+
 	public:
 		Model3D();
 		~Model3D() override;
@@ -36,8 +39,8 @@ namespace Mengine
 		const ResourceModel3DPtr & getResourceModel3D() const;
 
 	protected:
-		void _setTiming( float _timming ) override;
-		float _getTiming() const override;
+		void _setTime( float _timming ) override;
+		float _getTime() const override;
 
 		void _setFirstFrame() override;
 		void _setLastFrame() override;

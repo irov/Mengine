@@ -2,9 +2,9 @@
 
 #include "Win32DynamicLibrary.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PluginSystem, Mengine::Win32PluginSystem );

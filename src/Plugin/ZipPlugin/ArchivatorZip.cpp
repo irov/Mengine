@@ -1,6 +1,6 @@
 #include "ArchivatorZip.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "zlib.h"
 

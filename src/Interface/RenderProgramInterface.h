@@ -6,7 +6,7 @@
 #include "Interface/RenderVertexShaderInterface.h"
 #include "Interface/RenderFragmentShaderInterface.h"
 
-#include "Core/ConstString.h"
+#include "Kernel/ConstString.h"
 
 namespace Mengine
 {

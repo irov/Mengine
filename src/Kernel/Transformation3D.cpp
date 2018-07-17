@@ -2,7 +2,7 @@
 
 #include "math/angle.h"
 
-#include "Core/Exception.h"
+#include "Kernel/Exception.h"
 
 namespace Mengine
 {

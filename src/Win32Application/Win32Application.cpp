@@ -18,12 +18,12 @@
 #include "WindowsLayer/VistaWindowsLayer.h"
 #include "PythonScriptWrapper/PythonScriptWrapper.h"
 
-#include "Factory/FactorableUnique.h"
-#include "Factory/FactoryDefault.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/FactoryDefault.h"
 
-#include "Core/Date.h"
+#include "Kernel/Date.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <cstdio>
 #include <clocale>
@@ -35,8 +35,8 @@
 
 #include "CriticalErrorsMonitor.h"
 
-#include "Core/FileLogger.h"
-#include "Core/IniUtil.h"
+#include "Kernel/FileLogger.h"
+#include "Kernel/IniUtil.h"
 
 #include "resource.h"
 

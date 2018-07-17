@@ -8,13 +8,13 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ConfigInterface.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/IniUtil.h"
-#include "Core/String.h"
-#include "Core/UID.h"
+#include "Kernel/IniUtil.h"
+#include "Kernel/String.h"
+#include "Kernel/UID.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"

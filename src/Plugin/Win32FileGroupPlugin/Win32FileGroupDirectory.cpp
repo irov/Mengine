@@ -4,11 +4,11 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/UnicodeInterface.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/String.h"
+#include "Kernel/String.h"
 
 #include "WIN32/WindowsIncluder.h"
 

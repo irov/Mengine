@@ -12,7 +12,7 @@
 
 #include "Metacode/Metacode.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "stdex/memorycopy.h"
 

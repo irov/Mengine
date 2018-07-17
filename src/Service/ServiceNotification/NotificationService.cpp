@@ -1,8 +1,8 @@
 #include "NotificationService.h"
 
-#include "Core/Assertion.h"
+#include "Kernel/Assertion.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <algorithm>
 

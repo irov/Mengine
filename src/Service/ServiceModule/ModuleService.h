@@ -2,7 +2,7 @@
 
 #include "Interface/ModuleInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "Config/Map.h"
 #include "Config/Vector.h"

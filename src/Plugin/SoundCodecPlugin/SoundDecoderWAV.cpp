@@ -2,8 +2,8 @@
 
 #include "Interface/FileGroupInterface.h"
 
-#include "Core/Magic.h"
-#include "Logger/Logger.h"
+#include "Kernel/Magic.h"
+#include "Kernel/Logger.h"
 
 #include "math/utils.h"
 

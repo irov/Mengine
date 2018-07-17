@@ -3,7 +3,7 @@
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

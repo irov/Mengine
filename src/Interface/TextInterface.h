@@ -5,14 +5,14 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/RenderTextureInterface.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/GlyphChar.h"
-#include "Core/ColourValue.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/GlyphChar.h"
+#include "Kernel/ColourValue.h"
 
 #include "Config/String.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
 #include "math/vec4.h"
 #include "math/uv4.h"

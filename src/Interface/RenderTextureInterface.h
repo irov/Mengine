@@ -3,7 +3,7 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Core/Rect.h"
+#include "Kernel/Rect.h"
 
 #include "math/uv4.h"
 

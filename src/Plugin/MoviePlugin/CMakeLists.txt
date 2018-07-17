@@ -46,11 +46,6 @@ SET( APPLICATION_DEPENDENCIES
 
 SET( APPLICATION_LIBS
     ${APPLICATION_LIBS}
-    Logger
-    Core
-    Codec
-    Archive
-    Factory
     Kernel
     Engine
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}movie${MENGINE_LIB_SUFFIX}

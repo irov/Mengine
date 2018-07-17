@@ -3,7 +3,7 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "Config/Vector.h"
 #include "Config/Map.h"

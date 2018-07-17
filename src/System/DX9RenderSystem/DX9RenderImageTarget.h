@@ -4,7 +4,7 @@
 
 #include "DX9RenderResourceHandler.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 #include <d3d9.h>
 

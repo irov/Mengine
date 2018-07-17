@@ -6,10 +6,10 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
 
 #include <stdint.h>
 

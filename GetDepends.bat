@@ -52,6 +52,8 @@ call:gitdependr https://github.com/xiph/theora.git libtheora theora-1.1
 call:gitdependr https://github.com/kcat/openal-soft.git openal-soft v1.18
 call:gitdependr https://github.com/python/cpython.git Python 2.7
 call:gitdependr https://github.com/python/cpython.git Python3 v3.6.5
+call:gitdependr https://github.com/openssl/openssl.git openssl OpenSSL_1_1_1-pre8
+call:gitdependr https://github.com/guillaumeblanc/ozz-animation.git ozz 0.10.0 
 
 call:svndepend svn://svn.code.sf.net/p/polyclipping/code/trunk/cpp polyclipping
 

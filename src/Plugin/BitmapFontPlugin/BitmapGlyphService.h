@@ -4,7 +4,7 @@
 
 #include "Kernel/Servant.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 #include "Config/Map.h"
 

@@ -4,8 +4,8 @@
 #include "stdex/intrusive_slug_linked_ptr.h"
 #include "stdex/intrusive_slug_ptr.h"
 
-#include "Core/Mixin.h"
-#include "Core/IntrusivePtr.h"
+#include "Kernel/Mixin.h"
+#include "Kernel/IntrusivePtr.h"
 
 #include "math/mat4.h"
 

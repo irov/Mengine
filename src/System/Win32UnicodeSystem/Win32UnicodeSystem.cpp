@@ -2,7 +2,7 @@
 
 #include "Interface/WindowsLayerInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "WIN32/WindowsIncluder.h"
 

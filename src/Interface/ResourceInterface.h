@@ -3,15 +3,15 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Core/Visitor.h"
+#include "Kernel/Visitor.h"
 
 #include "Config/String.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/Pointer.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/Pointer.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 namespace Mengine
 {

@@ -3,10 +3,10 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Core/String.h"
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/Params.h"
+#include "Kernel/String.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/Params.h"
 
 #include "Config/Map.h"
 

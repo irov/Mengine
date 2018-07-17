@@ -1,6 +1,6 @@
 #include "BitmapFontPrototypeGenerator.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
 #include "BitmapFont.h"
 

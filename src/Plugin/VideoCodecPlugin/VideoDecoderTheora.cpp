@@ -1,6 +1,6 @@
 #include "VideoDecoderTheora.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #define THEORA_OGG_BUFFER_SIZE 4096
 

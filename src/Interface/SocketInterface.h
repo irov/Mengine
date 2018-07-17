@@ -2,9 +2,9 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/IntrusivePtr.h"
+#include "Kernel/IntrusivePtr.h"
 
 namespace Mengine
 {

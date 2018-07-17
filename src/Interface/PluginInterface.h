@@ -4,7 +4,7 @@
 #include "Interface/ServiceProviderInterface.h"
 #include "Interface/ServantInterface.h"
 
-#include "Factory/FactorableUnique.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "Config/String.h"
 

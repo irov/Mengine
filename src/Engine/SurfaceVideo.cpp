@@ -3,9 +3,9 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
-#include "Core/RenderUtils.h"
+#include "Kernel/RenderUtils.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <math.h>
 
@@ -283,8 +283,8 @@ namespace Mengine
 
 		m_needUpdate = false;
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
-            ->onAnimatableStop( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+            ->onAnimationStop( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_end( uint32_t _enumerator )
@@ -293,8 +293,8 @@ namespace Mengine
 
 		m_needUpdate = false;
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
-            ->onAnimatableEnd( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+            ->onAnimationEnd( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool SurfaceVideo::_play( uint32_t _enumerator, float _time )
@@ -318,14 +318,14 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_pause( uint32_t _enumerator )
 	{
-		EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
-			->onAnimatablePause( _enumerator );
+		EVENTABLE_METHOD( this, EVENT_ANIMATION_PAUSE )
+			->onAnimationPause( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_resume( uint32_t _enumerator, float _time )
 	{
-		EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
-			->onAnimatableResume( _enumerator, _time );
+		EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+			->onAnimationResume( _enumerator, _time );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::updateVideoBuffer_()
@@ -423,7 +423,7 @@ namespace Mengine
 		return needUpdate;
 	}
 	////////////////////////////////////////////////////////////////////
-	void SurfaceVideo::_setTiming( float _timing )
+	void SurfaceVideo::_setTime( float _timing )
 	{
 		if( this->isCompile() == false )
 		{
@@ -485,7 +485,7 @@ namespace Mengine
 		m_needUpdate = false;
 	}
 	////////////////////////////////////////////////////////////////////
-	float SurfaceVideo::_getTiming() const
+	float SurfaceVideo::_getTime() const
 	{
 		float timing = m_videoDecoder->tell();
 
@@ -494,14 +494,14 @@ namespace Mengine
 	////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_setFirstFrame()
 	{
-		this->setTiming( 0.f );
+		this->setTime( 0.f );
 	}
 	////////////////////////////////////////////////////////////////////
 	void SurfaceVideo::_setLastFrame()
 	{
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
-		this->_setTiming( dataInfo->duration );
+		this->_setTime( dataInfo->duration );
 	}
 	////////////////////////////////////////////////////////////////////
 	bool SurfaceVideo::fillVideoBuffer_()

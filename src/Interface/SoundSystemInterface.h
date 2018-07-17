@@ -6,11 +6,11 @@
 
 #include "Config/Typedef.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/MixerValue.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/MixerValue.h"
 
 #include "math/vec3.h"
 

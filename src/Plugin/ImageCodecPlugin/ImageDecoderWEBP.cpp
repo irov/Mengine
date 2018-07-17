@@ -2,9 +2,9 @@
 
 #include "Interface/MemoryInterface.h"
 
-#include "Core/MemoryHelper.h"
+#include "Kernel/MemoryHelper.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

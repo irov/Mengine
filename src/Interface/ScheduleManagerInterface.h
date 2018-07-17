@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {

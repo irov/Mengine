@@ -7,9 +7,9 @@
 #include "Config/Typedef.h"
 #include "Config/String.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/Tags.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/Tags.h"
 
 #include "Kernel/Servant.h"
 

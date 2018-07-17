@@ -115,7 +115,7 @@
 //#include "DiscreteEntity.h"
 
 //#include "SoundEngine.h"
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
@@ -135,9 +135,9 @@
 #include "PythonScheduleEvent.h"
 #include "DelaySchedulePipe.h"
 
-#include "Core/Polygon.h"
-#include "Core/MemoryHelper.h"
-#include "Core/ValueFollower.h"
+#include "Kernel/Polygon.h"
+#include "Kernel/MemoryHelper.h"
+#include "Kernel/ValueFollower.h"
 
 #include "math/angle.h"
 #include "math/vec4.h"
@@ -146,12 +146,12 @@
 #include "math/quat.h"
 #include "math/utils.h"
 
-#include "Core/Rect.h"
-#include "Core/String.h"
-#include "Core/Polygon.h"
-#include "Core/ValueFollower.h"
+#include "Kernel/Rect.h"
+#include "Kernel/String.h"
+#include "Kernel/Polygon.h"
+#include "Kernel/ValueFollower.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
 #include "stdex/xml_sax_parser.h"
 #include "utf8.h"
@@ -1464,14 +1464,242 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPythonSceneChangeCallback;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Animatable_play( Animatable * _animatable )
+        uint32_t s_Animation_play( const AnimationInterfacePtr & _animation )
         {
             float time = TIMELINE_SERVICE()
                 ->getTime();
 
-            uint32_t id = _animatable->play( time );
+            uint32_t id = _animation->play( time );
 
             return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Animation_resume( const AnimationInterfacePtr & _animation )
+        {
+            float time = TIMELINE_SERVICE()
+                ->getTime();
+
+            _animation->resume( time );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t s_Animatable_play( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            float time = TIMELINE_SERVICE()
+                ->getTime();
+
+            uint32_t id = animation->play( time );
+
+            return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_Animatable_stop( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+            
+            bool successful = animation->stop();
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_Animatable_pause( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            bool successful = animation->pause();
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Animatable_resume( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            float time = TIMELINE_SERVICE()
+                ->getTime();
+
+            animation->resume( time );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_Animatable_interrupt( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            bool successful = animation->interrupt();
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_Animatable_isInterrupt( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            bool successful = animation->isInterrupt();
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_Animatable_isPlay( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            bool successful = animation->isPlay();
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t s_Animatable_getPlayId( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            uint32_t id = animation->getPlayId();
+
+            return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Animatable_setAnimationSpeedFactor( Animatable * _animatable, float _factor )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            animation->setAnimationSpeedFactor( _factor );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        float s_Animatable_getAnimationSpeedFactor( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            float speedFactor = animation->getAnimationSpeedFactor();
+
+            return speedFactor;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Animatable_setFirstFrame( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            animation->setFirstFrame();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Animatable_setLastFrame( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            animation->setLastFrame();
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Animatable_setTiming( Animatable * _animatable, float _time )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            animation->setTime( _time );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        float s_Animatable_getTiming( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            float time = animation->getTime();
+
+            return time;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Animatable_setPlayCount( Animatable * _animatable, uint32_t _count )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            animation->setPlayCount( _count );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t s_Animatable_getPlayCount( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            uint32_t count = animation->getPlayCount();
+
+            return count;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t s_Animatable_getPlayIterator( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            uint32_t iterator = animation->getPlayIterator();
+
+            return iterator;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Animatable_setAutoPlay( Animatable * _animatable, bool _value )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            animation->setAutoPlay( _value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_Animatable_getAutoPlay( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            bool value = animation->getAutoPlay();
+
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Animatable_setLoop( Animatable * _animatable, bool _value )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            animation->setLoop( _value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool s_Animatable_getLoop( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            bool value = animation->getLoop();
+
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Animatable_setInterval( Animatable * _animatable, float _begin, float _end )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            animation->setInterval( _begin, _end );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        float s_Animatable_getIntervalBegin( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            float value = animation->getIntervalBegin();
+
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        float s_Animatable_getIntervalEnd( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            float value = animation->getIntervalEnd();
+
+            return value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Animatable_setIntervalStart( Animatable * _animatable, float _value )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            animation->setIntervalStart( _value );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        float s_Animatable_getIntervalStart( Animatable * _animatable )
+        {
+            AnimationInterfacePtr animation = _animatable->getAnimation();
+
+            float value = animation->getIntervalStart();
+
+            return value;
         }
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_SurfaceVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
@@ -1901,14 +2129,6 @@ namespace Mengine
 #endif
 
             return pybind::ret_none();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_Animatable_resume( Animatable * _animatable )
-        {
-            float time = TIMELINE_SERVICE()
-                ->getTime();
-
-            _animatable->resume( time );
         }
         //////////////////////////////////////////////////////////////////////////
         mt::vec3f s_Node_getWorldOffsetPosition( Node * _node, const mt::vec3f & _position )
@@ -3580,33 +3800,63 @@ namespace Mengine
             .def( "getPersonalAlpha", &Colorable::getPersonalAlpha )
             ;
 
+        pybind::interface_<AnimationInterface, pybind::bases<Mixin> >( kernel, "Animation" )
+            .def_proxy_static( "play", nodeScriptMethod, &NodeScriptMethod::s_Animation_play )
+            .def( "stop", &AnimationInterface::stop )
+            .def( "pause", &AnimationInterface::pause )
+            .def_proxy_static( "resume", nodeScriptMethod, &NodeScriptMethod::s_Animation_resume )
+            .def( "interrupt", &AnimationInterface::interrupt )
+            .def( "isInterrupt", &AnimationInterface::isInterrupt )
+            .def( "isPlay", &AnimationInterface::isPlay )
+            .def( "getPlayId", &AnimationInterface::getPlayId )
+            .def( "setAnimationSpeedFactor", &AnimationInterface::setAnimationSpeedFactor )
+            .def( "getAnimationSpeedFactor", &AnimationInterface::getAnimationSpeedFactor )
+            .def( "setFirstFrame", &AnimationInterface::setFirstFrame )
+            .def( "setLastFrame", &AnimationInterface::setLastFrame )
+            .def( "setTime", &AnimationInterface::setTime )
+            .def( "getTime", &AnimationInterface::getTime )
+            .def( "setPlayCount", &AnimationInterface::setPlayCount )
+            .def( "getPlayCount", &AnimationInterface::getPlayCount )
+            .def( "getPlayIterator", &AnimationInterface::getPlayIterator )
+            .def( "setAutoPlay", &AnimationInterface::setAutoPlay )
+            .def( "getAutoPlay", &AnimationInterface::getAutoPlay )
+            .def( "setLoop", &AnimationInterface::setLoop )
+            .def( "getLoop", &AnimationInterface::getLoop )
+            .def( "setInterval", &AnimationInterface::setInterval )
+            .def( "getIntervalBegin", &AnimationInterface::getIntervalBegin )
+            .def( "getIntervalEnd", &AnimationInterface::getIntervalEnd )
+            .def( "setIntervalStart", &AnimationInterface::setIntervalStart )
+            .def( "getIntervalStart", &AnimationInterface::getIntervalStart )
+            ;
+
         pybind::interface_<Animatable, pybind::bases<Mixin> >( kernel, "Animatable" )
-            .def_proxy_static( "play", nodeScriptMethod, &NodeScriptMethod::s_Animatable_play )
-            .def( "stop", &Animatable::stop )
-            .def( "pause", &Animatable::pause )
-            .def_proxy_static( "resume", nodeScriptMethod, &NodeScriptMethod::s_Animatable_resume )
-            .def( "interrupt", &Animatable::interrupt )
-            .def( "isInterrupt", &Animatable::isInterrupt )
-            .def( "isPlay", &Animatable::isPlay )
-            .def( "getPlayId", &Animatable::getPlayId )
-            .def( "setAnimationSpeedFactor", &Animatable::setAnimationSpeedFactor )
-            .def( "getAnimationSpeedFactor", &Animatable::getAnimationSpeedFactor )
-            .def( "setFirstFrame", &Animatable::setFirstFrame )
-            .def( "setLastFrame", &Animatable::setLastFrame )
-            .def( "setTiming", &Animatable::setTiming )
-            .def( "getTiming", &Animatable::getTiming )
-            .def( "setPlayCount", &Animatable::setPlayCount )
-            .def( "getPlayCount", &Animatable::getPlayCount )
-            .def( "getPlayIterator", &Animatable::getPlayIterator )
-            .def( "setAutoPlay", &Animatable::setAutoPlay )
-            .def( "getAutoPlay", &Animatable::getAutoPlay )
-            .def( "setLoop", &Animatable::setLoop )
-            .def( "getLoop", &Animatable::getLoop )
-            .def( "setInterval", &Animatable::setInterval )
-            .def( "getIntervalBegin", &Animatable::getIntervalBegin )
-            .def( "getIntervalEnd", &Animatable::getIntervalEnd )
-            .def( "setIntervalStart", &Animatable::setIntervalStart )
-            .def( "getIntervalStart", &Animatable::getIntervalStart )
+            .def( "getAnimation", &Animatable::getAnimation )
+            .def_proxy_static_deprecated( "play", nodeScriptMethod, &NodeScriptMethod::s_Animatable_play, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "stop", nodeScriptMethod, &NodeScriptMethod::s_Animatable_stop, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "pause", nodeScriptMethod, &NodeScriptMethod::s_Animatable_pause, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "resume", nodeScriptMethod, &NodeScriptMethod::s_Animatable_resume, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "interrupt", nodeScriptMethod, &NodeScriptMethod::s_Animatable_interrupt, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "isInterrupt", nodeScriptMethod, &NodeScriptMethod::s_Animatable_isInterrupt, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "isPlay", nodeScriptMethod, &NodeScriptMethod::s_Animatable_isPlay, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "getPlayId", nodeScriptMethod, &NodeScriptMethod::s_Animatable_getPlayId, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "setAnimationSpeedFactor", nodeScriptMethod, &NodeScriptMethod::s_Animatable_setAnimationSpeedFactor, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "getAnimationSpeedFactor", nodeScriptMethod, &NodeScriptMethod::s_Animatable_getAnimationSpeedFactor, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "setFirstFrame", nodeScriptMethod, &NodeScriptMethod::s_Animatable_setFirstFrame, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "setLastFrame", nodeScriptMethod, &NodeScriptMethod::s_Animatable_setLastFrame, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "setTiming", nodeScriptMethod, &NodeScriptMethod::s_Animatable_setTiming, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "getTiming", nodeScriptMethod, &NodeScriptMethod::s_Animatable_getTiming, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "setPlayCount", nodeScriptMethod, &NodeScriptMethod::s_Animatable_setPlayCount, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "getPlayCount", nodeScriptMethod, &NodeScriptMethod::s_Animatable_getPlayCount, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "getPlayIterator", nodeScriptMethod, &NodeScriptMethod::s_Animatable_getPlayIterator, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "setAutoPlay", nodeScriptMethod, &NodeScriptMethod::s_Animatable_setAutoPlay, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "getAutoPlay", nodeScriptMethod, &NodeScriptMethod::s_Animatable_getAutoPlay, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "setLoop", nodeScriptMethod, &NodeScriptMethod::s_Animatable_setLoop, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "getLoop", nodeScriptMethod, &NodeScriptMethod::s_Animatable_getLoop, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "setInterval", nodeScriptMethod, &NodeScriptMethod::s_Animatable_setInterval, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "getIntervalBegin", nodeScriptMethod, &NodeScriptMethod::s_Animatable_getIntervalBegin, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "getIntervalEnd", nodeScriptMethod, &NodeScriptMethod::s_Animatable_getIntervalEnd, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "setIntervalStart", nodeScriptMethod, &NodeScriptMethod::s_Animatable_setIntervalStart, "Please use getAnimation" )
+            .def_proxy_static_deprecated( "getIntervalStart", nodeScriptMethod, &NodeScriptMethod::s_Animatable_getIntervalStart, "Please use getAnimation" )
             ;
 
         pybind::interface_<Eventable, pybind::bases<Mixin> >( kernel, "Eventable" )

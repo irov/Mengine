@@ -1,6 +1,6 @@
 #include "ImageEncoderJPEG.h"
 
-#include "Utils/Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #define OUTPUT_BUF_SIZE 4096				// choose an efficiently fwrite'able size
 

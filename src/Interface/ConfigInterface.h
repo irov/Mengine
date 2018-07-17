@@ -6,12 +6,12 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/Resolution.h"
-#include "Core/AspectRatioViewports.h"
-#include "Core/ColourValue.h"
-#include "Core/Params.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/Resolution.h"
+#include "Kernel/AspectRatioViewports.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/Params.h"
 
 namespace Mengine
 {

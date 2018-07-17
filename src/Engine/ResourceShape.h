@@ -2,7 +2,7 @@
 
 #include "Kernel/Resource.h"
 
-#include "Core/Polygon.h"
+#include "Kernel/Polygon.h"
 
 namespace Mengine
 {

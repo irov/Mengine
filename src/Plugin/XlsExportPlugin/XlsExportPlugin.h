@@ -2,8 +2,8 @@
 
 #include "Kernel/Observable.h"
 
-#include "Core/PluginBase.h"
-#include "Core/ConstString.h"
+#include "Kernel/PluginBase.h"
+#include "Kernel/ConstString.h"
 
 #include "XlsScriptLogger.h"
 

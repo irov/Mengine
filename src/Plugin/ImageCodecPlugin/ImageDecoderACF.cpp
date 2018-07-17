@@ -3,12 +3,12 @@
 
 #include "Interface/StringizeInterface.h"
 
-#include "Core/Stream.h"
-#include "Core/MemoryHelper.h"
+#include "Kernel/Stream.h"
+#include "Kernel/MemoryHelper.h"
 
 #include "stdex/memorycopy.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

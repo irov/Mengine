@@ -5,7 +5,7 @@
 
 #include "Kernel/RenderCameraHelper.h"
 
-#include "Factory/FactorableUnique.h"
+#include "Kernel/FactorableUnique.h"
 
 namespace Mengine
 {

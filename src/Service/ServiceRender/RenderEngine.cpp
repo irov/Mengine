@@ -7,13 +7,13 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ConfigInterface.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Core/RenderUtils.h"
+#include "Kernel/RenderUtils.h"
 
 #include "math/convex8.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "stdex/memorycopy.h"
 #include "stdex/intrusive_ptr_base.h"

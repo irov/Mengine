@@ -9,9 +9,9 @@
 #include "ThreadTaskHeaderData.h"
 #include "ThreadTaskGetAsset.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "curl/curl.h"
 

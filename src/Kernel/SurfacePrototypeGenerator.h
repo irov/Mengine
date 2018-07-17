@@ -4,12 +4,12 @@
 
 #include "Kernel/Surface.h"
 
-#include "Core/ConstString.h"
-#include "Core/MemoryAllocator.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/MemoryAllocator.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

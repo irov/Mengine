@@ -2,7 +2,7 @@
 
 #include "Interface/ScheduleManagerInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 #include "Config/Vector.h"
 

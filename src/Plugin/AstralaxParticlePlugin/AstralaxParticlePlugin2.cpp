@@ -2,7 +2,7 @@
 
 #include "Interface/ParticleSystemInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ParticleSystem );

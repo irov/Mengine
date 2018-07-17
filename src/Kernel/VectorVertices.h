@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/RenderVertex2D.h"
+#include "Kernel/RenderVertex2D.h"
 
 #include "Config/Vector.h"
 

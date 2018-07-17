@@ -3,13 +3,13 @@
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 
-#include "Core/IntrusivePtr.h"
-#include "Core/Holder.h"
-#include "Core/Exception.h"
-#include "Core/Typename.h"
+#include "Kernel/IntrusivePtr.h"
+#include "Kernel/Holder.h"
+#include "Kernel/Exception.h"
+#include "Kernel/Typename.h"
 
 #ifndef NDEBUG
-#	include <typeinfo>
+#include <typeinfo>
 #endif
 
 namespace Mengine

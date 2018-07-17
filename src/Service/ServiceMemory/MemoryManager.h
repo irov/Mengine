@@ -3,7 +3,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "MemoryBuffer.h"
 #include "MemoryProxy.h"
@@ -12,7 +12,7 @@
 #include "MemoryProxyInput.h"
 #include "MemoryInput.h"
 
-#include "Factory/FactoryWithMutex.h"
+#include "Kernel/FactoryWithMutex.h"
 
 #include "Config/Vector.h"
 

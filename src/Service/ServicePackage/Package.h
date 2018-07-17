@@ -3,9 +3,9 @@
 #include "Interface/PackageInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 
-#include "Core/ServantBase.h"
-#include "Core/String.h"
-#include "Core/FilePath.h"
+#include "Kernel/ServantBase.h"
+#include "Kernel/String.h"
+#include "Kernel/FilePath.h"
 
 namespace Mengine
 {

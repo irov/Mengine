@@ -1,8 +1,8 @@
 #include "StringizeService.h"
 
-#include "Core/Hash.h"
+#include "Kernel/Hash.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
 #include <string.h>
 

@@ -3,11 +3,11 @@
 #include "Config/Typedef.h"
 #include "Config/String.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
-#include "Core/Resolution.h"
-#include "Core/Viewport.h"
-#include "Core/AspectRatioViewports.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/Resolution.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/AspectRatioViewports.h"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/PlatformInterface.h"

@@ -8,8 +8,8 @@
 #include "math/vec3.h"
 #include "math/mat4.h"
 
-#include "Core/Viewport.h"
-#include "Core/Polygon.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/Polygon.h"
 
 #include "Config/Vector.h"
 
@@ -109,7 +109,7 @@ namespace Mengine
 			return (state & MOVIE_LAYER_NODE) == MOVIE_LAYER_NODE;
         }
         
-		bool isAnimatable() const
+		bool isAnimation() const
         {
 			return (state & MOVIE_LAYER_ANIMATABLE) == MOVIE_LAYER_ANIMATABLE;
         }

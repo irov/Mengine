@@ -4,11 +4,11 @@
 
 #include "Kernel/ResourceImage.h"
 
-#include "Factory/FactoryPool.h"
-#include "Factory/FactoryPoolWithListener.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryPoolWithListener.h"
 
-#include "Core/String.h"
-#include "Logger/Logger.h"
+#include "Kernel/String.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ParticleSystem, Mengine::AstralaxParticleSystem2 );

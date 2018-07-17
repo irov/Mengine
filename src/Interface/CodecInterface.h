@@ -5,9 +5,9 @@
 #include "Interface/PluginInterface.h"
 #include "Interface/StreamInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/FilePath.h"
+#include "Kernel/FilePath.h"
 
 namespace Mengine
 {

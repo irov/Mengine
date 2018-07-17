@@ -2,7 +2,7 @@
 
 #include "Interface/ImageCodecInterface.h"
 
-#include "Codec/ImageEncoder.h"
+#include "Kernel/ImageEncoder.h"
 
 extern "C" 
 {

@@ -6,10 +6,11 @@
 
 #include "Config/Typedef.h"
 
-#include "Core/ServantBase.h"
-#include "Core/ConstString.h"
+#include "Kernel/ServantBase.h"
+#include "Kernel/ConstString.h"
 
 #include "Config/Map.h"
+
 
 #include "pybind/object.hpp"
 

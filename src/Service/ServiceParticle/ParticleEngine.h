@@ -2,12 +2,12 @@
 
 #include "Interface/ParticleSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include	"math/vec3.h"
 #include "math/mat3.h"
 
-#include "Core/ConstString.h"
+#include "Kernel/ConstString.h"
 
 namespace Mengine
 {

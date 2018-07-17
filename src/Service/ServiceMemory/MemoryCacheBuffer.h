@@ -3,12 +3,12 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/FilePath.h"
-#include "Core/ConstString.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/ConstString.h"
 
 namespace Mengine
 {

@@ -7,14 +7,19 @@
 
 #include "Kernel/ScriptWrapper.h"
 
+#include "Engine/ShapeQuadFixed.h"
+#include "Engine/HotSpotPolygon.h"
+#include "Engine/ParticleEmitter2.h"
+#include "Engine/TextField.h"
+
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 
 #include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
 
-#include "Core/ModuleFactory.h"
+#include "Kernel/ModuleFactory.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <stdlib.h>
 

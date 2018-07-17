@@ -5,10 +5,10 @@
 
 #include "Kernel/ResourceImage.h"
 
-#include "Core/ColourValue.h"
-#include "Core/ValueInterpolator.h"
-#include "Core/RenderVertex2D.h"
-#include "Core/RenderIndex.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/ValueInterpolator.h"
+#include "Kernel/RenderVertex2D.h"
+#include "Kernel/RenderIndex.h"
 
 #include "math/mat3.h"
 #include "math/vec4.h"

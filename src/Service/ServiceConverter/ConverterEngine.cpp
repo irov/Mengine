@@ -3,7 +3,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ConverterService, Mengine::ConverterEngine );

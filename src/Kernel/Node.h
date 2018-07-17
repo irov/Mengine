@@ -13,6 +13,7 @@
 #include "Kernel/Visitable.h"
 #include "Kernel/Servant.h"
 #include "Kernel/Animatable.h"
+#include "Kernel/Unknowable.h"
 
 #include "Kernel/Factorable.h"
 
@@ -49,6 +50,7 @@ namespace Mengine
 		, public Scriptable
         , public Animatable
         , public Eventable
+        , public Unknowable
 	{
 		DECLARE_VISITABLE_BASE();
 

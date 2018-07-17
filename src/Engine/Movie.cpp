@@ -439,7 +439,12 @@ namespace Mengine
 			nd.node->setLocalHide( true );
 		}
 
-        nd.animation = _node->getAnimation();
+        nd.animation = _animatable != nullptr ? _animatable->getAnimation() : nullptr;
+
+        if( _layer.isAnimation() == true && nd.animation == nullptr )
+        {
+            return false;
+        }
 		
 		nd.soundable = _soundable;
 		nd.movie = _movie;

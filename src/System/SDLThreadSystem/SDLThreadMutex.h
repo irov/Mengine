@@ -2,7 +2,7 @@
 
 #   include "Interface/ThreadSystemInterface.h"
 
-#   include "Core/ServantBase.h"
+#   include "Kernel/ServantBase.h"
 
 #	include "SDL_thread.h"
 

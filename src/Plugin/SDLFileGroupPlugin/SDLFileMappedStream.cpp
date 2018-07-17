@@ -3,7 +3,7 @@
 #	include "Interface/MemoryInterface.h"
 #	include "Interface/UnicodeInterface.h"
 
-#   include "Logger/Logger.h"
+#   include "Kernel/Logger.h"
 
 namespace Mengine
 {

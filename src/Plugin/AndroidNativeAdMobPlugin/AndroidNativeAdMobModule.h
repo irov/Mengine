@@ -2,7 +2,7 @@
 
 #include "Interface/ThreadInterface.h"
 
-#include "Core/ModuleBase.h"
+#include "Kernel/ModuleBase.h"
 
 #include "Config/Lambda.h"
 
@@ -30,6 +30,7 @@ namespace Mengine
         void _update( bool _focus ) override;
 
     public:
+        bool initializePlugin( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId );
         void addInterstitialCommand( const LambdaAdMobInterstitialEventHandler & _command );
         void addRewardedVideoCommand( const LambdaAdMobRewardedVideoEventHandler & _command );
 

@@ -22,12 +22,12 @@
 #include <cstdio>
 #include <clocale>
 
-#include "Factory/FactorableUnique.h"
-#include "Factory/FactoryDefault.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/FactoryDefault.h"
 
-#include "Core/FileLogger.h"
-#include "Core/IniUtil.h"
-#include "Core/Date.h"
+#include "Kernel/FileLogger.h"
+#include "Kernel/IniUtil.h"
+#include "Kernel/Date.h"
 
 #include "SDLMessageBoxLogger.h"
 

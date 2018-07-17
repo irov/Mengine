@@ -3,9 +3,9 @@
 #	include "SDLThreadIdentity.h"
 #   include "SDLThreadMutex.h"
 
-#   include "Factory/FactoryPool.h"
+#   include "Kernel/FactoryPool.h"
 
-#	include "Logger/Logger.h"
+#	include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ThreadSystem, Mengine::SDLThreadSystem );

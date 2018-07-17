@@ -1,7 +1,7 @@
 #include "OpenGLRenderVertexShader.h"
 #include "OpenGLRenderError.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Config/Char.h"
 

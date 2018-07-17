@@ -2,8 +2,8 @@
 
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Core/Callback.h"
-#include "Factory/FactorableUnique.h"
+#include "Kernel/Callback.h"
+#include "Kernel/FactorableUnique.h"
 
 #include "Android/AndroidUtils.h"
 
@@ -16,6 +16,7 @@
 #define ADMOB_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(ADMOB_JAVA_PREFIX, AdMobInteractionLayer, function)
 
 static jclass mActivityClass;
+static jmethodID jmethodID_initializePlugin;
 static jmethodID jmethodID_setupInterstitialAd;
 static jmethodID jmethodID_showInterstitialAd;
 static jmethodID jmethodID_setupRewardedVideoAd;
@@ -30,6 +31,7 @@ extern "C" {
     {
         mActivityClass = (jclass)(env->NewGlobalRef( cls ));
 
+        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "admobInitializePlugin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
         jmethodID_setupInterstitialAd = env->GetStaticMethodID( mActivityClass, "admobSetupInterstitialAd", "()V" );
         jmethodID_showInterstitialAd = env->GetStaticMethodID( mActivityClass, "admobShowInterstitialAd", "()V" );
         jmethodID_setupRewardedVideoAd = env->GetStaticMethodID( mActivityClass, "admobSetupRewardedVideoAd", "()V" );
@@ -442,6 +444,26 @@ namespace Mengine
         m_mutex->lock();
         m_rewardedVideoCommands.push_back( _command );
         m_mutex->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeAdMobModule::initializePlugin( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId )
+    {
+        JNIEnv * env = Mengine_JNI_GetEnv();
+        
+        const Char * admobAppId_str = _admobAppId.c_str();
+        jstring jadmobAppId = env->NewStringUTF( admobAppId_str );
+        const Char * interAdUnitId_str = _interAdUnitId.c_str();
+        jstring jinterAdUnitId = env->NewStringUTF( interAdUnitId_str );
+        const Char * videoAdUnitId_str = _videoAdUnitId.c_str();
+        jstring jvideoAdUnitId = env->NewStringUTF( videoAdUnitId_str );
+        
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jadmobAppId, jinterAdUnitId, jvideoAdUnitId );
+        
+        env->ReleaseStringUTFChars( jadmobAppId, admobAppId_str );
+        env->ReleaseStringUTFChars( jinterAdUnitId, interAdUnitId_str );
+        env->ReleaseStringUTFChars( jvideoAdUnitId, videoAdUnitId_str );
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeAdMobModule::setupInterstitialAd()

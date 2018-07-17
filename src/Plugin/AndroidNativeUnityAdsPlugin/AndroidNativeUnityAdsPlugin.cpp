@@ -4,7 +4,7 @@
 
 #include "AndroidNativeUnityAdsModule.h"
 
-#include "Core/ModuleFactory.h"
+#include "Kernel/ModuleFactory.h"
 
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AndroidNativeUnityAds, Mengine::AndroidNativeUnityAdsPlugin )

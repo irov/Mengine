@@ -30,7 +30,7 @@ extern "C"
     {
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
-        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "facebookInitializePlugin", "()V" );
+        jmethodID_initializePlugin = mEnv->GetStaticMethodID( mActivityClass, "facebookInitializePlugin", "()V" );
         jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)V" );
         jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()V" );
         jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)V" );

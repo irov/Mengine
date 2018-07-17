@@ -2,8 +2,8 @@
 
 #   include "Interface/PluginInterface.h"
 
-#   include "Core/ServiceBase.h"
-#   include "Factory/Factory.h"
+#   include "Kernel/ServiceBase.h"
+#   include "Kernel/Factory.h"
 
 namespace Mengine
 {

@@ -3,7 +3,7 @@
 #include "OpenGLRenderError.h"
 #include "OpenGLRenderEnum.h"
 
-#include "Core/MemoryAllocator.h"
+#include "Kernel/MemoryAllocator.h"
 
 namespace Mengine
 {

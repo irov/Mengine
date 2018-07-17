@@ -2,9 +2,9 @@
 
 #   include "SDLDynamicLibrary.h"
 
-#   include "Factory/FactoryPool.h"
+#   include "Kernel/FactoryPool.h"
 
-#   include "Logger/Logger.h"
+#   include "Kernel/Logger.h"
 
 #   include "Interface/UnicodeInterface.h"
 

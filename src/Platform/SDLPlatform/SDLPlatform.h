@@ -21,8 +21,8 @@
 #include "Interface/ConfigInterface.h"
 #include "Interface/PrefetcherInterface.h"
 
-#include "Core/FileLogger.h"
-#include "Core/ServiceBase.h"
+#include "Kernel/FileLogger.h"
+#include "Kernel/ServiceBase.h"
 
 #include "SDLInput.h"
 

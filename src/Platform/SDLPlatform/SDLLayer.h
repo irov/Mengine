@@ -2,7 +2,7 @@
 
 #   include "Interface/SDLLayerInterface.h"
 
-#   include "Core/ServiceBase.h"
+#   include "Kernel/ServiceBase.h"
 
 namespace Mengine
 {

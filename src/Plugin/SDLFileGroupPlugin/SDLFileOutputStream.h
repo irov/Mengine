@@ -2,7 +2,7 @@
 
 #	include "Interface/FileOutputStreamInterface.h"
 
-#   include "Core/ServantBase.h"
+#   include "Kernel/ServantBase.h"
 
 #   include "SDL_rwops.h"
 

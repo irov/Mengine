@@ -5,9 +5,9 @@
 #include "Interface/UnicodeInterface.h"
 #include "Interface/PlatformInterface.h"
 
-#include "Factory/FactoryDefault.h"
+#include "Kernel/FactoryDefault.h"
 
-#include "Core/FilePath.h"
+#include "Kernel/FilePath.h"
 
 #include "Win32FileGroupDirectory.h"
 

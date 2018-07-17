@@ -2,7 +2,7 @@
 
 #include "Interface/RenderSystemInterface.h"
 
-#include "Core/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 #include <d3d9.h>
 

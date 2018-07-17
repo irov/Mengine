@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Codec/SoundDecoder.h"
+#include "Kernel/SoundDecoder.h"
 
 #include "vorbis/vorbisfile.h"
 

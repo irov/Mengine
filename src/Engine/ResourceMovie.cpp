@@ -13,9 +13,9 @@
 
 #include "ResourceShape.h"
 
-#include "Core/Stream.h"
+#include "Kernel/Stream.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "math/mat4.h"
 

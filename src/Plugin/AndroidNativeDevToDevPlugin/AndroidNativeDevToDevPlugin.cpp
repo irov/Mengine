@@ -1,6 +1,6 @@
 #include "AndroidNativeDevToDevPlugin.h"
 
-#include "Core/Callback.h"
+#include "Kernel/Callback.h"
 
 #include "Android/AndroidUtils.h"
 
@@ -10,7 +10,6 @@
 #define DEVTODEV_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(DEVTODEV_JAVA_PREFIX, DevToDevInteractionLayer, function)
 
 static jclass mActivityClass;
-static jmethodID jmethodID_initializePlugin;
 static jmethodID jmethodID_onTutorialEvent;
 static jmethodID jmethodID_setCurrentLevel;
 static jmethodID jmethodID_onLevelUp;
@@ -27,7 +26,6 @@ extern "C"
     {
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
-        jmethodID_initializePlugin = env->GetStaticMethodID( mActivityClass, "devtodevInitializePlugin", "(Ljava/lang/String;Ljava/lang/String;Ljava/lang/String;)V" );
         jmethodID_onTutorialEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnTutorialEvent", "(I)V" );
         jmethodID_setCurrentLevel = mEnv->GetStaticMethodID( mActivityClass, "devtodevSetCurrentLevel", "(I)V" );
         jmethodID_onLevelUp = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnLevelUp", "(I)V" );
@@ -61,6 +59,14 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
+        pybind::def_functor( kernel, "androidDevToDevSetTutorialEvent", this, &AndroidNativeDevToDevPlugin::onTutorialEvent );
+        pybind::def_functor( kernel, "androidDevToDevSetCurrentLevel", this, &AndroidNativeDevToDevPlugin::setCurrentLevel );
+        pybind::def_functor( kernel, "androidDevToDevOnLevelUp", this, &AndroidNativeDevToDevPlugin::onLevelUp );
+        pybind::def_functor( kernel, "androidDevToDevOnCurrencyAccrual", this, &AndroidNativeDevToDevPlugin::onCurrencyAccrual );
+        pybind::def_functor( kernel, "androidDevToDevOnRealPayment", this, &AndroidNativeDevToDevPlugin::onRealPayment );
+        pybind::def_functor( kernel, "androidDevToDevOnInAppPurchase", this, &AndroidNativeDevToDevPlugin::onInAppPurchase );
+        pybind::def_functor( kernel, "androidDevToDevOnSimpleCustomEvent", this, &AndroidNativeDevToDevPlugin::onSimpleCustomEvent );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -68,27 +74,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeDevToDevPlugin::initializePlugin( const String & _appId, const String & _secret, const String & _apiKey )
-    {
-        JNIEnv * env = Mengine_JNI_GetEnv();
-        
-        const Char * appId_str = _appId.c_str();
-        jstring jappId = env->NewStringUTF( appId_str );
-        const Char * secret_str = _secret.c_str();
-        jstring jsecret = env->NewStringUTF( secret_str );
-        const Char * apiKey_str = _apiKey.c_str();
-        jstring japiKey = env->NewStringUTF( apiKey_str );
-        
-        env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jappId, jsecret, japiKey );
-        
-        env->ReleaseStringUTFChars( jappId, appId_str );
-        env->ReleaseStringUTFChars( jsecret, secret_str );
-        env->ReleaseStringUTFChars( japiKey, apiKey_str );
-        
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeDevToDevPlugin::onTutorialEvent( const int _stateOrStep )
+    bool AndroidNativeDevToDevPlugin::onTutorialEvent( int _stateOrStep )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
         
@@ -99,7 +85,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeDevToDevPlugin::setCurrentLevel( const int _level )
+    bool AndroidNativeDevToDevPlugin::setCurrentLevel( int _level )
     {
         JNIEnv *env = Mengine_JNI_GetEnv();
         
@@ -110,7 +96,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeDevToDevPlugin::onLevelUp( const int _level )
+    bool AndroidNativeDevToDevPlugin::onLevelUp( int _level )
     {
         JNIEnv *env = Mengine_JNI_GetEnv();
         
@@ -121,7 +107,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeDevToDevPlugin::onCurrencyAccrual( const String & _currencyName, const int _currencyAmount, const int _accrualType )
+    bool AndroidNativeDevToDevPlugin::onCurrencyAccrual( const String & _currencyName, int _currencyAmount, int _accrualType )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
         
@@ -132,12 +118,10 @@ namespace Mengine
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_onCurrencyAccrual, jcurrencyName, jcurrencyAmount, jaccrualType );
 
-        env->ReleaseStringUTFChars( jcurrencyName, currencyName_str );
-        
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeDevToDevPlugin::onRealPayment( const String & _paymentId, const float _inAppPrice, const String & _inAppName, const String & _inAppCurrencyISOCode )
+    bool AndroidNativeDevToDevPlugin::onRealPayment( const String & _paymentId, float _inAppPrice, const String & _inAppName, const String & _inAppCurrencyISOCode )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
@@ -150,15 +134,11 @@ namespace Mengine
         jstring jinAppCurrencyISOCode = env->NewStringUTF( inAppCurrencyISOCode_str );
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_onRealPayment, jpaymentId, jinAppPrice, jinAppName, jinAppCurrencyISOCode );
-        
-        env->ReleaseStringUTFChars( jpaymentId, paymentId_str );
-        env->ReleaseStringUTFChars( jinAppName, inAppName_str );
-        env->ReleaseStringUTFChars( jinAppCurrencyISOCode, inAppCurrencyISOCode_str );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeDevToDevPlugin::onInAppPurchase( const String & _purchaseId, const String & _purchaseType, const int _purchaseAmount, const int _purchasePrice, const String & _purchaseCurrency )
+    bool AndroidNativeDevToDevPlugin::onInAppPurchase( const String & _purchaseId, const String & _purchaseType, int _purchaseAmount, int _purchasePrice, const String & _purchaseCurrency )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 
@@ -172,10 +152,6 @@ namespace Mengine
         jstring jpurchaseCurrency = env->NewStringUTF( purchaseCurrency_str );
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_onInAppPurchase, jpurchaseId, jpurchaseType, jpurchaseAmount, jpurchasePrice, jpurchaseCurrency );
-        
-        env->ReleaseStringUTFChars( jpurchaseId, purchaseId_str );
-        env->ReleaseStringUTFChars( jpurchaseType, purchaseType_str );
-        env->ReleaseStringUTFChars( jpurchaseCurrency, purchaseCurrency_str );
 
         return true;
     }
@@ -188,8 +164,6 @@ namespace Mengine
         jstring jeventName = env->NewStringUTF( eventName_str );
         
         env->CallStaticVoidMethod( mActivityClass, jmethodID_onSimpleCustomEvent, jeventName );
-        
-        env->ReleaseStringUTFChars( jeventName, eventName_str );
         
         return true;
     }

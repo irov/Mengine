@@ -192,7 +192,7 @@ PLUGIN_EXPORT( AndroidNativeAdMob );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV
-PLUGIN_EXPORT( AndroidNativeDevToDevPlugin );
+PLUGIN_EXPORT( AndroidNativeDevToDev );
 #endif
 
 //////////////////////////////////////////////////////////////////////////

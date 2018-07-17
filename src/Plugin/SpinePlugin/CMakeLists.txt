@@ -40,11 +40,6 @@ SET( APPLICATION_LIBS
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}python${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX}    
-    Logger
-    Core
-    Math
-    Factory
-    Codec
     Kernel
     Metacode
     )

@@ -1,8 +1,8 @@
 #include "CriticalErrorsMonitor.h"
 
-#include "Core/Date.h"
+#include "Kernel/Date.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "stdex/stack.h"
 

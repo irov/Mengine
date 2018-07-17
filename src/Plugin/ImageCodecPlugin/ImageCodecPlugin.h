@@ -3,7 +3,7 @@
 #include "Interface/CodecInterface.h"
 #include "Interface/DataInterface.h"
 
-#include "Core/PluginBase.h"
+#include "Kernel/PluginBase.h"
 
 #include "Config/Vector.h"
 

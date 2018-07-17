@@ -3,13 +3,13 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/SoundSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "SoundIdentity.h"
 #include "ThreadWorkerSoundBufferUpdate.h"
 
-#include "Core/ConstString.h"
-#include "Factory/Factory.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/Factory.h"
 
 #include "Config/Vector.h"
 

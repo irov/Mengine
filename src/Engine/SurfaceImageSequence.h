@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Kernel/Surface.h"
-#include "Kernel/Eventable.h"
-#include "Kernel/Animatable.h"
+#include "Kernel/BaseEvent.h"
+#include "Kernel/BaseAnimation.h"
 #include "Kernel/ResourceHolder.h"
+#include "Kernel/AnimationEventReceiver.h"
 
 namespace Mengine
 {
@@ -12,12 +13,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum SurfaceImageSequenceEventFlag
     {
-        EVENT_SURFACE_IMAGESEQUENCE_FRAME_END = __EVENT_ANIMATABLE_LAST__,
+        EVENT_SURFACE_IMAGESEQUENCE_FRAME_END = __EVENT_ANIMATION_LAST__,
         EVENT_SURFACE_IMAGESEQUENCE_FRAME_TICK,
     };
     //////////////////////////////////////////////////////////////////////////
     class SurfaceImageSequenceEventReceiver
-        : public AnimatableEventReceiver
+        : public AnimationEventReceiver
     {
     public:
         virtual void onSurfaceImageSequenceFrameEnd( uint32_t _currentFrame ) = 0;
@@ -26,10 +27,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	class SurfaceImageSequence
 		: public Surface        
-        , public Eventable
-        , public Animatable		
+        , public BaseEvent
+        , public BaseAnimation		
 	{
-        EVENT_RECEIVER( SurfaceImageSequenceEventReceiver );
+        DECLARE_ANIMATABLE();
+        DECLARE_EVENTABLE( SurfaceImageSequenceEventReceiver );
 
 	public:
 		SurfaceImageSequence();
@@ -62,8 +64,8 @@ namespace Mengine
         const ColourValue & getColor() const override;
 
 	protected:
-		void _setTiming( float _timming ) override;
-		float _getTiming() const override;
+		void _setTime( float _timming ) override;
+		float _getTime() const override;
 
 		void _setFirstFrame() override;
 		void _setLastFrame() override;

@@ -3,8 +3,8 @@
 #include "Kernel/Layer.h"
 #include "Kernel/ResourceImage.h"
 
-#include "Core/Viewport.h"
-#include "Core/RenderVertex2D.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/RenderVertex2D.h"
 
 namespace Mengine
 {

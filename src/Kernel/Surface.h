@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
 #include "Kernel/Identity.h"
 #include "Kernel/Servant.h"
@@ -8,10 +8,12 @@
 #include "Kernel/Scriptable.h"
 #include "Kernel/Materialable.h"
 #include "Kernel/Compilable.h"
+#include "Kernel/Animatable.h"
+#include "Kernel/Eventable.h"
 
 #include "math/vec2.h"
 #include "math/uv4.h"
-#include "Core/ColourValue.h"
+#include "Kernel/ColourValue.h"
 
 namespace Mengine
 {
@@ -22,6 +24,8 @@ namespace Mengine
         , public Scriptable
         , public Materialable
         , public Compilable
+        , public Animatable
+        , public Eventable
 	{
         DECLARE_VISITABLE_BASE();
 

@@ -245,6 +245,7 @@ set(MODULE_SRCS
                 ${SOURCE_DIR}/Modules/_stat.c
                 ${SOURCE_DIR}/Modules/_winapi.c
                 ${SOURCE_DIR}/Modules/_operator.c
+                ${SOURCE_DIR}/Modules/_ssl.c
 
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_cn.c
                 ${SOURCE_DIR}/Modules/cjkcodecs/_codecs_hk.c
@@ -325,6 +326,8 @@ else()
 	set( MODULE_SRCS ${MODULE_SRCS} 
 	${SOURCE_DIR}/PC/getpathp.c	)	
 endif()
+
+include_directories(${THIRDPARTY_DIR}/openssl/include)
 
 set_source_files_properties(${SOURCE_DIR}/Python/getplatform.c PROPERTIES COMPILE_FLAGS -DPLATFORM=\\"${PY_PLATFORM}\\")
 set_source_files_properties(${SOURCE_DIR}/Modules/getpath.c PROPERTIES COMPILE_FLAGS  "-DPREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DEXEC_PREFIX=\\\"${CMAKE_INSTALL_PREFIX}\\\" -DVERSION=\\\"3.4.2\\\" -DVPATH=\\\"..\\\"  -DPYTHONPATH=\\\":plat-linux2:lib-tk\\\" " )

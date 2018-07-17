@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseEvent.h"
 
 #include "pybind/pybind.hpp"
 
@@ -25,9 +26,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	class ScriptHolder
 		: public Node
-		, public Eventable
+        , public BaseEvent
 	{
-        EVENT_RECEIVER( ScriptHolderEventReceiver );
+        DECLARE_EVENTABLE( ScriptHolderEventReceiver );
 
 	public:
 		ScriptHolder();

@@ -22,10 +22,10 @@
 
 #include "Kernel/Arrow.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/String.h"
-#include "Core/Stream.h"
+#include "Kernel/String.h"
+#include "Kernel/Stream.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AccountService );
@@ -35,217 +35,217 @@ SERVICE_FACTORY( GameService, Mengine::Game );
 namespace Mengine
 {
 
-	//////////////////////////////////////////////////////////////////////////
-	Game::Game()
-		: m_defaultArrow(nullptr)
-		, m_timingFactor(1.f)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Game::~Game()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleKeyEvent( const InputKeyEvent & _event )
-	{
-		bool handle = false;
+    //////////////////////////////////////////////////////////////////////////
+    Game::Game()
+        : m_defaultArrow( nullptr )
+        , m_timingFactor( 1.f )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Game::~Game()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Game::handleKeyEvent( const InputKeyEvent & _event )
+    {
+        bool handle = false;
 
-		if( handle == false )
-		{
-			mt::vec2f point( _event.x, _event.y );
+        if( handle == false )
+        {
+            mt::vec2f point( _event.x, _event.y );
 
-			mt::vec2f wp;
-			PLAYER_SERVICE()
-				->calcGlobalMouseWorldPosition( point, wp );
+            mt::vec2f wp;
+            PLAYER_SERVICE()
+                ->calcGlobalMouseWorldPosition( point, wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_KEY, handle )
                 ->onGameKey( _event.code, wp.x, wp.y, _event.isDown, _event.isRepeat );
-		}
+        }
 
-		if( handle == false )
-		{
-			handle = PLAYER_SERVICE()
-				->handleKeyEvent( _event );
-		}	
+        if( handle == false )
+        {
+            handle = PLAYER_SERVICE()
+                ->handleKeyEvent( _event );
+        }
 
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleTextEvent( const InputTextEvent & _event )
-	{
-		bool handle = false;
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Game::handleTextEvent( const InputTextEvent & _event )
+    {
+        bool handle = false;
 
-		if( handle == false )
-		{
-			mt::vec2f point( _event.x, _event.y );
+        if( handle == false )
+        {
+            mt::vec2f point( _event.x, _event.y );
 
-			mt::vec2f wp;
-			PLAYER_SERVICE()
-				->calcGlobalMouseWorldPosition( point, wp );
+            mt::vec2f wp;
+            PLAYER_SERVICE()
+                ->calcGlobalMouseWorldPosition( point, wp );
 
-			handle = EVENTABLE_METHODR( this, EVENT_GAME_TEXT, handle )
-				->onGameText( _event.key, wp.x, wp.y );
-		}
+            handle = EVENTABLE_METHODR( this, EVENT_GAME_TEXT, handle )
+                ->onGameText( _event.key, wp.x, wp.y );
+        }
 
-		if( handle == false )
-		{
-			handle = PLAYER_SERVICE()
-				->handleTextEvent( _event );
-		}
+        if( handle == false )
+        {
+            handle = PLAYER_SERVICE()
+                ->handleTextEvent( _event );
+        }
 
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
-	{
-		bool handle = false;
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Game::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
+    {
+        bool handle = false;
 
-		if( handle == false )
-		{
-			mt::vec2f point( _event.x, _event.y );
+        if( handle == false )
+        {
+            mt::vec2f point( _event.x, _event.y );
 
-			mt::vec2f wp;
-			PLAYER_SERVICE()
-				->calcGlobalMouseWorldPosition( point, wp );
+            mt::vec2f wp;
+            PLAYER_SERVICE()
+                ->calcGlobalMouseWorldPosition( point, wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON, handle )
                 ->onGameMouseButton( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
-		}
+        }
 
-		if( handle == false )
-		{
-			handle = PLAYER_SERVICE()
-				->handleMouseButtonEvent( _event );
-		}
-                    
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
-	{
-		bool handle = false;
+        if( handle == false )
+        {
+            handle = PLAYER_SERVICE()
+                ->handleMouseButtonEvent( _event );
+        }
 
-		if( handle == false )
-		{
-			mt::vec2f point( _event.x, _event.y );
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Game::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
+    {
+        bool handle = false;
 
-			mt::vec2f wp;
-			PLAYER_SERVICE()
-				->calcGlobalMouseWorldPosition( point, wp );
+        if( handle == false )
+        {
+            mt::vec2f point( _event.x, _event.y );
+
+            mt::vec2f wp;
+            PLAYER_SERVICE()
+                ->calcGlobalMouseWorldPosition( point, wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )
                 ->onGameMouseButtonBegin( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
-		}
+        }
 
-		if( handle == false )
-		{
-			handle = PLAYER_SERVICE()
-				->handleMouseButtonEventBegin( _event );
-		}	
+        if( handle == false )
+        {
+            handle = PLAYER_SERVICE()
+                ->handleMouseButtonEventBegin( _event );
+        }
 
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
-	{
-		bool handle = false;
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Game::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
+    {
+        bool handle = false;
 
-		if( handle == false )
-		{
-			mt::vec2f point( _event.x, _event.y );
+        if( handle == false )
+        {
+            mt::vec2f point( _event.x, _event.y );
 
-			mt::vec2f wp;
-			PLAYER_SERVICE()
-				->calcGlobalMouseWorldPosition( point, wp );
+            mt::vec2f wp;
+            PLAYER_SERVICE()
+                ->calcGlobalMouseWorldPosition( point, wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_END, handle )
                 ->onGameMouseButtonEnd( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
-		}
+        }
 
-		if( handle == false )
-		{
-			handle = PLAYER_SERVICE()
-				->handleMouseButtonEventEnd( _event );
-		}	
+        if( handle == false )
+        {
+            handle = PLAYER_SERVICE()
+                ->handleMouseButtonEventEnd( _event );
+        }
 
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseMove( const InputMouseMoveEvent & _event )
-	{
-		bool handle = false;
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Game::handleMouseMove( const InputMouseMoveEvent & _event )
+    {
+        bool handle = false;
 
-		if( handle == false )
-		{
-			mt::vec2f point( _event.x, _event.y );
-			mt::vec2f delta( _event.dx, _event.dy );
+        if( handle == false )
+        {
+            mt::vec2f point( _event.x, _event.y );
+            mt::vec2f delta( _event.dx, _event.dy );
 
-			mt::vec2f wp;
-			PLAYER_SERVICE()
-				->calcGlobalMouseWorldPosition( point, wp );
+            mt::vec2f wp;
+            PLAYER_SERVICE()
+                ->calcGlobalMouseWorldPosition( point, wp );
 
-			mt::vec2f wd;
-			PLAYER_SERVICE()
-				->calcGlobalMouseWorldDelta( point, delta, wd );
+            mt::vec2f wd;
+            PLAYER_SERVICE()
+                ->calcGlobalMouseWorldDelta( point, delta, wd );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_MOVE, handle )
                 ->onGameMouseMove( _event.touchId, wp.x, wp.y, wd.x, wd.y );
-		}
+        }
 
-		if( handle == false )
-		{
-			handle = PLAYER_SERVICE()
-				->handleMouseMove( _event );
-		}
+        if( handle == false )
+        {
+            handle = PLAYER_SERVICE()
+                ->handleMouseMove( _event );
+        }
 
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::handleMouseWheel( const InputMouseWheelEvent & _event )
-	{
-		bool handle = false;
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Game::handleMouseWheel( const InputMouseWheelEvent & _event )
+    {
+        bool handle = false;
 
-		if( handle == false )
-		{
+        if( handle == false )
+        {
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_WHEEL, handle )
                 ->onGameMouseWheel( _event.button, _event.x, _event.y, _event.wheel );
-		}
+        }
 
-		if( handle == false )
-		{
-			handle = PLAYER_SERVICE()
-				->handleMouseWheel( _event );
-		}
+        if( handle == false )
+        {
+            handle = PLAYER_SERVICE()
+                ->handleMouseWheel( _event );
+        }
 
-		return handle;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::mouseLeave( const InputMousePositionEvent & _event )
-	{		
+        return handle;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::mouseLeave( const InputMousePositionEvent & _event )
+    {
         EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_LEAVE )
             ->onGameAppMouseLeave();
 
-		PLAYER_SERVICE()
-			->onAppMouseLeave( _event );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::mouseEnter( const InputMousePositionEvent & _event )
-	{
+        PLAYER_SERVICE()
+            ->onAppMouseLeave( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::mouseEnter( const InputMousePositionEvent & _event )
+    {
         EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_ENTER )
             ->onGameAppMouseEnter( _event.x, _event.y );
-		
-		PLAYER_SERVICE()
-			->onAppMouseEnter( _event );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::mousePosition( const InputMousePositionEvent & _event )
-	{
-		PLAYER_SERVICE()
-			->onAppMousePosition( _event );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::update()
-	{
+
+        PLAYER_SERVICE()
+            ->onAppMouseEnter( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::mousePosition( const InputMousePositionEvent & _event )
+    {
+        PLAYER_SERVICE()
+            ->onAppMousePosition( _event );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::update()
+    {
 #ifndef NDEBUG
         const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
             ->getDebugInfo();
@@ -264,34 +264,34 @@ namespace Mengine
         }
 #endif
 
-		m_userEvents.insert( m_userEvents.end(), m_userEventsAdd.begin(), m_userEventsAdd.end() );
-		m_userEventsAdd.clear();
+        m_userEvents.insert( m_userEvents.end(), m_userEventsAdd.begin(), m_userEventsAdd.end() );
+        m_userEventsAdd.clear();
 
         for( const UserEvent & ev : m_userEvents )
-		{
+        {
             EVENTABLE_METHOD( this, EVENT_GAME_USER )
                 ->onGameUser( ev.id, ev.params );
-		}
+        }
 
-		m_userEvents.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::tick( float _time, float _timing )
-	{
-		float timing = _timing * m_timingFactor;
-		
-		PLAYER_SERVICE()
-			->tick( _time, timing );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::render()
-	{
-		PLAYER_SERVICE()
-			->render();
+        m_userEvents.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::tick( float _time, float _timing )
+    {
+        float timing = _timing * m_timingFactor;
+
+        PLAYER_SERVICE()
+            ->tick( _time, timing );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::render()
+    {
+        PLAYER_SERVICE()
+            ->render();
 
         EVENTABLE_METHOD( this, EVENT_GAME_FRAME_END )
             ->onGameFrameEnd();
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -330,10 +330,10 @@ namespace Mengine
                 return m_cb.call( (uint32_t)_code, _x, _y, _isDown, _isRepeat );
             }
 
-			bool onGameText( WChar _key, float _x, float _y ) override
-			{
-				return m_cb.call( _key, _x, _y );
-			}
+            bool onGameText( WChar _key, float _x, float _y ) override
+            {
+                return m_cb.call( _key, _x, _y );
+            }
 
             bool onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override
             {
@@ -425,10 +425,10 @@ namespace Mengine
                 m_cb.call();
             }
 
-			void onGameCreateGlobalAccount() override
-			{
-				m_cb.call();
-			}
+            void onGameCreateGlobalAccount() override
+            {
+                m_cb.call();
+            }
 
             void onGameLoadAccounts() override
             {
@@ -437,7 +437,7 @@ namespace Mengine
 
             void onGameCreateAccount( const ConstString & _accountID, bool _global ) override
             {
-				m_cb.call( _accountID, _global );
+                m_cb.call( _accountID, _global );
             }
 
             void onGameDeleteAccount( const ConstString & _accountID ) override
@@ -487,8 +487,8 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-	void Game::registerEventMethods_( const ScriptModuleInterfacePtr & _module )
-    {	
+    void Game::registerEventMethods_( const ScriptModuleInterfacePtr & _module )
+    {
         const pybind::base & base_module = _module->getModule();
 
         pybind::module py_module( base_module );
@@ -500,7 +500,7 @@ namespace Mengine
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onGameViewport", EVENT_GAME_VIEWPORT );
 
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleKeyEvent", EVENT_GAME_KEY );
-		Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleTextEvent", EVENT_GAME_TEXT );
+        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleTextEvent", EVENT_GAME_TEXT );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseButtonEvent", EVENT_GAME_MOUSE_BUTTON );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseButtonEventBegin", EVENT_GAME_MOUSE_BUTTON_BEGIN );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseButtonEventEnd", EVENT_GAME_MOUSE_BUTTON_END );
@@ -521,7 +521,7 @@ namespace Mengine
 
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFocus", EVENT_GAME_FOCUS );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateDefaultAccount", EVENT_GAME_CREATE_DEFAULT_ACCOUNT );
-		Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateGlobalAccount", EVENT_GAME_CREATE_GLOBAL_ACCOUNT );
+        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateGlobalAccount", EVENT_GAME_CREATE_GLOBAL_ACCOUNT );
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onLoadAccounts", EVENT_GAME_LOAD_ACCOUNTS );
 
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateAccount", EVENT_GAME_CREATE_ACCOUNT );
@@ -538,13 +538,13 @@ namespace Mengine
 
         Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFrameEnd", EVENT_GAME_FRAME_END );
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::loadPersonality()
-	{
-		bool developmentMode = HAS_OPTION( "dev" );
+    //////////////////////////////////////////////////////////////////////////
+    bool Game::loadPersonality()
+    {
+        bool developmentMode = HAS_OPTION( "dev" );
 
         SCRIPT_SERVICE()
-			->addGlobalModule( "_DEVELOPMENT", pybind::get_bool( developmentMode ) );
+            ->addGlobalModule( "_DEVELOPMENT", pybind::get_bool( developmentMode ) );
 
 #ifndef NDEBUG
         SCRIPT_SERVICE()
@@ -572,335 +572,335 @@ namespace Mengine
 
 #ifdef MENGINE_MASTER_RELEASE
         SCRIPT_SERVICE()
-            ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool(true) );
+            ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool( true ) );
 #else
         SCRIPT_SERVICE()
-            ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool(false) );
+            ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool( false ) );
 #endif
 
-		if( SCRIPT_SERVICE()
-			->bootstrapModules() == false )
-		{
-			LOGGER_ERROR("Game::loadPersonality invalid bootstrap modules"
-				);
+        if( SCRIPT_SERVICE()
+            ->bootstrapModules() == false )
+        {
+            LOGGER_ERROR( "Game::loadPersonality invalid bootstrap modules"
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		ConstString personality = CONFIG_VALUE( "Game", "PersonalityModule", STRINGIZE_FILEPATH_LOCAL( "Personality" ) );
+        ConstString personality = CONFIG_VALUE( "Game", "PersonalityModule", STRINGIZE_FILEPATH_LOCAL( "Personality" ) );
 
-		ScriptModuleInterfacePtr module = SCRIPT_SERVICE()
-			->importModule( personality );
+        ScriptModuleInterfacePtr module = SCRIPT_SERVICE()
+            ->importModule( personality );
 
-		if( module == nullptr )
-		{
-			LOGGER_ERROR("Game::loadPersonality invalid import module '%s'"
-				, personality.c_str()
-				);
+        if( module == nullptr )
+        {
+            LOGGER_ERROR( "Game::loadPersonality invalid import module '%s'"
+                , personality.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		this->registerEventMethods_( module );
+        this->registerEventMethods_( module );
 
 #ifndef NDEBUG
-		bool is_debug = true;
+        bool is_debug = true;
 #else
-		bool is_debug = false;
+        bool is_debug = false;
 #endif
-		
-        LOGGER_WARNING("Preparation debug(%d)"
+
+        LOGGER_WARNING( "Preparation debug(%d)"
             , is_debug
-            );
+        );
 
         bool result = EVENTABLE_METHODR( this, EVENT_GAME_PREPARATION, true )
             ->onGamePreparation( is_debug );
 
-		if( result == false )
-		{
-			return false;
-		}
+        if( result == false )
+        {
+            return false;
+        }
 
-		if( SCRIPT_SERVICE()
-			->initializeModules() == false )
-		{
-			return false;
-		}
+        if( SCRIPT_SERVICE()
+            ->initializeModules() == false )
+        {
+            return false;
+        }
 
-		m_defaultArrow = PROTOTYPE_SERVICE()
-			->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), STRINGIZE_STRING_LOCAL( "Default" ) );
+        m_defaultArrow = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), STRINGIZE_STRING_LOCAL( "Default" ) );
 
-		if( m_defaultArrow == nullptr )
-		{
-			LOGGER_WARNING("Game::initialize failed create defaultArrow 'Default'"
-				);
-		}
-		else
-		{
-			m_defaultArrow->setName( STRINGIZE_STRING_LOCAL( "Default" ) );
+        if( m_defaultArrow == nullptr )
+        {
+            LOGGER_WARNING( "Game::initialize failed create defaultArrow 'Default'"
+            );
+        }
+        else
+        {
+            m_defaultArrow->setName( STRINGIZE_STRING_LOCAL( "Default" ) );
 
-			PLAYER_SERVICE()
-				->setArrow( m_defaultArrow );
-		}
+            PLAYER_SERVICE()
+                ->setArrow( m_defaultArrow );
+        }
 
         bool EVENT_INITIALIZE_result = EVENTABLE_METHODR( this, EVENT_GAME_INITIALIZE, true )
             ->onGameInitialize();
 
-		if( EVENT_INITIALIZE_result == false )
-		{
-			return false;
-		}
+        if( EVENT_INITIALIZE_result == false )
+        {
+            return false;
+        }
 
-		if( ACCOUNT_SERVICE()
-			->loadAccounts() == false )
-		{
-			LOGGER_ERROR("Game::initialize failed load accounts"
-				);
-		}
+        if( ACCOUNT_SERVICE()
+            ->loadAccounts() == false )
+        {
+            LOGGER_ERROR( "Game::initialize failed load accounts"
+            );
+        }
 
-		bool hasGlobalAccount = ACCOUNT_SERVICE()
-			->hasGlobalAccount();
+        bool hasGlobalAccount = ACCOUNT_SERVICE()
+            ->hasGlobalAccount();
 
-		if( hasGlobalAccount == false )
-		{
-			EVENTABLE_METHOD( this, EVENT_GAME_CREATE_GLOBAL_ACCOUNT )
-				->onGameCreateGlobalAccount();
-		}
+        if( hasGlobalAccount == false )
+        {
+            EVENTABLE_METHOD( this, EVENT_GAME_CREATE_GLOBAL_ACCOUNT )
+                ->onGameCreateGlobalAccount();
+        }
 
-		bool hasCurrentAccount = ACCOUNT_SERVICE()
-			->hasCurrentAccount();
+        bool hasCurrentAccount = ACCOUNT_SERVICE()
+            ->hasCurrentAccount();
 
-		if( hasCurrentAccount == false )
-		{
+        if( hasCurrentAccount == false )
+        {
             EVENTABLE_METHOD( this, EVENT_GAME_CREATE_DEFAULT_ACCOUNT )
                 ->onGameCreateDefaultAccount();
-		}
+        }
 
         EVENTABLE_METHOD( this, EVENT_GAME_LOAD_ACCOUNTS )
             ->onGameLoadAccounts();
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::_initializeService()
-	{
-		CONFIG_SECTION( "Params", m_params );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Game::_initializeService()
+    {
+        CONFIG_SECTION( "Params", m_params );
 
-		SERVICE_CREATE( AccountService );
+        SERVICE_CREATE( AccountService );
 
-		GameAccountProviderPtr accountProvider = new FactorableUnique<GameAccountProvider>();
-		accountProvider->setGame(this);
+        GameAccountProviderPtr accountProvider = new FactorableUnique<GameAccountProvider>();
+        accountProvider->setGame( this );
 
-		ACCOUNT_SERVICE()
-			->setAccountProviderInterface(accountProvider);
+        ACCOUNT_SERVICE()
+            ->setAccountProviderInterface( accountProvider );
 
-		GameSoundVolumeProviderPtr soundVolumeProvider = new FactorableUnique<GameSoundVolumeProvider>();
-		soundVolumeProvider->setGame(this);
+        GameSoundVolumeProviderPtr soundVolumeProvider = new FactorableUnique<GameSoundVolumeProvider>();
+        soundVolumeProvider->setGame( this );
 
-		SOUND_SERVICE()
-			->addSoundVolumeProvider(soundVolumeProvider);
+        SOUND_SERVICE()
+            ->addSoundVolumeProvider( soundVolumeProvider );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::_finalizeService()
-	{	
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::_finalizeService()
+    {
         EVENTABLE_METHOD( this, EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();
 
-		SERVICE_FINALIZE( Mengine::AccountServiceInterface );
+        SERVICE_FINALIZE( Mengine::AccountServiceInterface );
 
-		SCRIPT_SERVICE()
-			->finalizeModules();
+        SCRIPT_SERVICE()
+            ->finalizeModules();
 
         EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE )
             ->onGameFinalize();
 
-		this->destroyArrow();
-				
+        this->destroyArrow();
+
         EVENTABLE_METHOD( this, EVENT_GAME_DESTROY )
             ->onGameDestroy();
-		
-		this->removeEvents();
 
-		m_userEventsAdd.clear();
-		m_userEvents.clear();
+        this->removeEvents();
 
-		m_params.clear();
+        m_userEventsAdd.clear();
+        m_userEvents.clear();
 
-		m_iconPath.clear();
-		m_currentPackName.clear();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::run()
-	{
-		LOGGER_WARNING("Run game"
-			);
+        m_params.clear();
 
-		EVENTABLE_METHOD(this, EVENT_GAME_RUN)
-			->onGameRun();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::destroyArrow()
-	{
-		m_defaultArrow = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::initializeRenderResources()
-	{
+        m_iconPath.clear();
+        m_currentPackName.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::run()
+    {
+        LOGGER_WARNING( "Run game"
+        );
+
+        EVENTABLE_METHOD( this, EVENT_GAME_RUN )
+            ->onGameRun();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::destroyArrow()
+    {
+        m_defaultArrow = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::initializeRenderResources()
+    {
         EVENTABLE_METHOD( this, EVENT_GAME_INITIALIZE_RENDER_RESOURCES )
             ->onGameInitializeRenderResources();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::finalizeRenderResources()
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::finalizeRenderResources()
+    {
         EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE_RENDER_RESOURCES )
             ->onGameFinalizeRenderResources();
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	void Game::turnSound( bool _turn )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::turnSound( bool _turn )
+    {
         (void)_turn;
-		
-		if( _turn == true )
-		{
-			if( AMPLIFIER_SERVICE() )
-			{
-				AMPLIFIER_SERVICE()->resumeMusic();
-			}
-		}
-		else
-		{
-			if( AMPLIFIER_SERVICE() )
-			{
-				AMPLIFIER_SERVICE()->pauseMusic();
-			}
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::setFocus( bool _focus )
-	{
-		if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
-		{
-			PLAYER_SERVICE()
-				->onFocus( _focus );
-		}				
+
+        if( _turn == true )
+        {
+            if( AMPLIFIER_SERVICE() )
+            {
+                AMPLIFIER_SERVICE()->resumeMusic();
+            }
+        }
+        else
+        {
+            if( AMPLIFIER_SERVICE() )
+            {
+                AMPLIFIER_SERVICE()->pauseMusic();
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::setFocus( bool _focus )
+    {
+        if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
+        {
+            PLAYER_SERVICE()
+                ->onFocus( _focus );
+        }
 
         EVENTABLE_METHOD( this, EVENT_GAME_FOCUS )
             ->onGameFocus( _focus );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::setFullscreen( const Resolution & _resolution, bool _fullscreen )
-	{
-		if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
-		{
-			PLAYER_SERVICE()
-				->onFullscreen( _resolution, _fullscreen );
-		}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::setFullscreen( const Resolution & _resolution, bool _fullscreen )
+    {
+        if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
+        {
+            PLAYER_SERVICE()
+                ->onFullscreen( _resolution, _fullscreen );
+        }
 
         EVENTABLE_METHOD( this, EVENT_GAME_FULLSCREEN )
             ->onGameFullscreen( _fullscreen );
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void Game::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
-		if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
-		{
-			PLAYER_SERVICE()
-				->onFixedContentResolution( _resolution, _fixed );
-		}
+        if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
+        {
+            PLAYER_SERVICE()
+                ->onFixedContentResolution( _resolution, _fixed );
+        }
 
         EVENTABLE_METHOD( this, EVENT_GAME_FIXED_CONTENT_RESOLUTION )
             ->onGameFixedContentResolution( _fixed );
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Game::setFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
-	{
-		if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
-		{
-			PLAYER_SERVICE()
-				->onFixedContentResolution( _resolution, _fixed );
-		}
+    //////////////////////////////////////////////////////////////////////////
+    void Game::setFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
+    {
+        if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
+        {
+            PLAYER_SERVICE()
+                ->onFixedContentResolution( _resolution, _fixed );
+        }
 
         EVENTABLE_METHOD( this, EVENT_GAME_FIXED_DISPLAY_RESOLUTION )
             ->onGameFixedDisplayResolution( _fixed );
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void Game::setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {
         EVENTABLE_METHOD( this, EVENT_GAME_RENDER_VIEWPORT )
             ->onGameRenderViewport( _viewport, _contentResolution );
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Game::setGameViewport( const Viewport & _viewport, float _aspect )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void Game::setGameViewport( const Viewport & _viewport, float _aspect )
+    {
         EVENTABLE_METHOD( this, EVENT_GAME_VIEWPORT )
             ->onGameViewport( _viewport, _aspect );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::close()
-	{
-		bool needQuit = EVENTABLE_METHODR( this, EVENT_GAME_VIEWPORT, true )
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Game::close()
+    {
+        bool needQuit = EVENTABLE_METHODR( this, EVENT_GAME_VIEWPORT, true )
             ->onGameClose();
-	
-		return needQuit;
-	}
+
+        return needQuit;
+    }
     //////////////////////////////////////////////////////////////////////////
     void Game::userEvent( const ConstString & _id, const TMapWParams & _params )
     {
-		UserEvent ev;
-		ev.id = _id;
-		ev.params = _params;
+        UserEvent ev;
+        ev.id = _id;
+        ev.params = _params;
 
-		m_userEvents.emplace_back( ev );
+        m_userEvents.emplace_back( ev );
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Game::setCursorMode( bool _mode )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void Game::setCursorMode( bool _mode )
+    {
         EVENTABLE_METHOD( this, EVENT_GAME_CURSOR_MODE )
             ->onGameCursorMode( _mode );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Game::getTimingFactor() const
-	{
-		return m_timingFactor;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Game::setTimingFactor( float _timingFactor )
-	{
-		m_timingFactor = _timingFactor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Game::getTimingFactor() const
+    {
+        return m_timingFactor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Game::setTimingFactor( float _timingFactor )
+    {
+        m_timingFactor = _timingFactor;
 
         EVENTABLE_METHOD( this, EVENT_GAME_ON_TIMING_FACTOR )
             ->onGameTimingFactor( _timingFactor );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	WString Game::getParam( const ConstString & _paramName ) const
-	{
-		TMapWParams::const_iterator it_find = m_params.find( _paramName );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    WString Game::getParam( const ConstString & _paramName ) const
+    {
+        TMapWParams::const_iterator it_find = m_params.find( _paramName );
 
         if( it_find == m_params.end() )
         {
-            LOGGER_ERROR("Game::getParam not found param '%s'"
+            LOGGER_ERROR( "Game::getParam not found param '%s'"
                 , _paramName.c_str()
-                );
+            );
 
             return WString();
         }
 
         const WString & param = it_find->second;
 
-		return param;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Game::hasParam( const ConstString & _paramName ) const
-	{
-		TMapWParams::const_iterator it_find = m_params.find( _paramName );
+        return param;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Game::hasParam( const ConstString & _paramName ) const
+    {
+        TMapWParams::const_iterator it_find = m_params.find( _paramName );
 
-		if( it_find == m_params.end() )
-		{
-			return false;
-		}
+        if( it_find == m_params.end() )
+        {
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

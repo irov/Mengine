@@ -3,7 +3,7 @@
 #include "Interface/UnicodeInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
-#include "Utils/Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "stdex/memorycopy.h"
 

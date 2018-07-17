@@ -2,7 +2,7 @@
 
 #include "Interface/LoggerInterface.h"
 
-#include "Core/PluginBase.h"
+#include "Kernel/PluginBase.h"
 
 namespace Mengine
 {

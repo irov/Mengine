@@ -1,6 +1,6 @@
 #include "ParticleEmitter2.h" 
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/StringizeInterface.h"
@@ -19,7 +19,7 @@
 #include "math/box2.h"
 #include "math/angle.h"
 
-#include "Core/RenderUtils.h"
+#include "Kernel/RenderUtils.h"
 
 namespace Mengine
 {
@@ -223,8 +223,8 @@ namespace Mengine
 			return false;
 		}
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_RESTART )
-            ->onAnimatableRestart( _enumerator, _time );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESTART )
+            ->onAnimationRestart( _enumerator, _time );
 
 		m_emitter->restart();
 
@@ -265,14 +265,14 @@ namespace Mengine
 
 		m_emitter->stop();
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_STOP )
-            ->onAnimatableStop( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+            ->onAnimationStop( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_end( uint32_t _enumerator )
 	{
-        EVENTABLE_METHOD( this, EVENT_ANIMATABLE_END )
-            ->onAnimatableEnd( _enumerator );
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+            ->onAnimationEnd( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ParticleEmitter2::_setLoop( bool _value )

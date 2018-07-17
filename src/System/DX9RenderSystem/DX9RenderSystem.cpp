@@ -19,15 +19,15 @@
 #include "DX9RenderVertexBuffer.h"
 #include "DX9RenderIndexBuffer.h"
 
-#include "Factory/FactoryPool.h"
-#include "Factory/FactoryPoolWithListener.h"
-#include "Factory/FactoryDefault.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryPoolWithListener.h"
+#include "Kernel/FactoryDefault.h"
 
 #include <algorithm>
 #include <cmath>
 #include <stdio.h>
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 
 //////////////////////////////////////////////////////////////////////////

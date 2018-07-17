@@ -4,8 +4,8 @@
 
 #include "math/vec2.h"
 #include "math/uv4.h"
-#include "Core/String.h"
-#include "Core/FilePath.h"
+#include "Kernel/String.h"
+#include "Kernel/FilePath.h"
 
 namespace Mengine
 {

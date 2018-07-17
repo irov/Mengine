@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Factory/FactorableUnique.h"
-#include "Factory/Factorable.h"
+#include "Kernel/FactorableUnique.h"
+#include "Kernel/Factorable.h"
 
 #include "Kernel/Affectorable.h"
 

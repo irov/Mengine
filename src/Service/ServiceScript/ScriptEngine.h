@@ -6,7 +6,7 @@
 
 #include "ConstStringHolderPythonString.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "ScriptLogger.h"
 #include "ScriptModule.h"
@@ -14,7 +14,7 @@
 
 #include "Kernel/Entity.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 #include "pybind/pybind.hpp"
 

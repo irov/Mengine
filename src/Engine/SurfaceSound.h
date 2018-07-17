@@ -1,11 +1,13 @@
 #pragma once
 
 #include "Kernel/Surface.h"
-#include "Kernel/Eventable.h"
-#include "Kernel/Animatable.h"
 #include "Kernel/Soundable.h"
 
-#include "ResourceSound.h"
+#include "Kernel/BaseEvent.h"
+#include "Kernel/AnimationEventReceiver.h"
+#include "Kernel/BaseAnimation.h"
+
+#include "Engine/ResourceSound.h"
 
 #include "Interface/SoundSystemInterface.h"
 
@@ -17,18 +19,19 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class SurfaceSoundEventReceiver
-        : public AnimatableEventReceiver
+        : public AnimationEventReceiver
     {
     public:
     };
     //////////////////////////////////////////////////////////////////////////
     class SurfaceSound
-		: public Surface        
-        , public Eventable
-        , public Animatable		
-		, public Soundable
+		: public Surface
+        , public Soundable
+        , public BaseEvent
+        , public BaseAnimation
 	{
-        EVENT_RECEIVER( SurfaceSoundEventReceiver );
+        DECLARE_ANIMATABLE();
+        DECLARE_EVENTABLE( SurfaceSoundEventReceiver );
 
 	public:
 		SurfaceSound();
@@ -62,7 +65,8 @@ namespace Mengine
 		void _stop( uint32_t _id ) override;
 		void _end( uint32_t _id ) override;
 		bool _interrupt( uint32_t _id ) override;
-		void _setTiming( float _timing ) override;
+		void _setTime( float _timing ) override;
+        float _getTime() const override;
 
     protected:
 		void _setVolume( float _volume ) override;

@@ -1,8 +1,11 @@
 #pragma once
 
 #include "Kernel/Node.h"
-#include "Kernel/Animatable.h"
 #include "Kernel/Soundable.h"
+
+#include "Kernel/BaseEvent.h"
+#include "Kernel/AnimationEventReceiver.h"
+#include "Kernel/BaseAnimation.h"
 
 #include "ResourceMovie.h"
 
@@ -37,13 +40,13 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	enum MovieEventFlag
 	{
-		EVENT_MOVIE_GET_INTERNAL = __EVENT_ANIMATABLE_LAST__,
+		EVENT_MOVIE_GET_INTERNAL = __EVENT_ANIMATION_LAST__,
 		EVENT_MOVIE_ACTIVATE_INTERNAL,
 		EVENT_MOVIE_DEACTIVATE_INTERNAL
 	};
     //////////////////////////////////////////////////////////////////////////
     class MovieEventReceiver
-        : public AnimatableEventReceiver
+        : public AnimationEventReceiver
     {
     public:
         virtual pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) = 0;
@@ -53,10 +56,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	class Movie
 		: public Node
-		, public Eventable
-		, public Animatable
+        , public BaseEvent
+		, public BaseAnimation
 	{
-        EVENT_RECEIVER( MovieEventReceiver );
+        DECLARE_ANIMATABLE();
+        DECLARE_EVENTABLE( MovieEventReceiver );
 
 	public:
 		Movie();
@@ -95,8 +99,8 @@ namespace Mengine
 		void setEnableMovieLayers( const ConstString & _name, bool _enable );
 
 	protected:
-		void _setTiming( float _timing ) override;
-		float _getTiming() const override;
+		void _setTime( float _timing ) override;
+		float _getTime() const override;
 				
 		void _setFirstFrame() override;
 		void _setLastFrame() override;
@@ -198,7 +202,7 @@ namespace Mengine
 
 	protected:
 		inline const NodePtr & getLayerNode_( const MovieLayer & _layer ) const;
-		inline const AnimatablePtr & getLayerAnimatable_( const MovieLayer & _layer ) const;
+		inline const AnimationInterfacePtr & getLayerAnimation_( const MovieLayer & _layer ) const;
 		inline const SoundablePtr & getLayerSoundable_( const MovieLayer & _layer ) const;
 		inline const MoviePtr & getLayerMovie_( const MovieLayer & _layer ) const;
 		inline const NodePtr & getLayerParent_( const MovieLayer & _layer ) const;
@@ -237,16 +241,13 @@ namespace Mengine
         struct Nodies
         {	
 			Nodies()
-				: node(nullptr)
-				, animatable(nullptr)
-				, soundable(nullptr)
-				, visible(false)
+				: visible(false)
 				, enable(true)
 				, child(false)
 			{}
 
             NodePtr node;
-			AnimatablePtr animatable;
+            AnimationInterfacePtr animation;
 			SoundablePtr soundable;
 			MoviePtr movie;
 
@@ -274,11 +275,11 @@ namespace Mengine
 		return ns.node;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const AnimatablePtr & Movie::getLayerAnimatable_( const MovieLayer & _layer ) const
+	inline const AnimationInterfacePtr & Movie::getLayerAnimation_( const MovieLayer & _layer ) const
 	{	
 		const Nodies & ns = m_nodies[_layer.index - 1];
 
-		return ns.animatable;
+		return ns.animation;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	inline const SoundablePtr & Movie::getLayerSoundable_( const MovieLayer & _layer ) const

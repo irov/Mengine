@@ -1,6 +1,6 @@
 #include "ArchivatorLZ4.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "lz4.h"
 #include "lz4hc.h"

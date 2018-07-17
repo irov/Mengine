@@ -2,6 +2,7 @@
 
 #include "Kernel/Scriptable.h"
 #include "Kernel/Eventable.h"
+#include "Kernel/BaseEvent.h"
 
 #include "Interface/GameInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -10,10 +11,10 @@
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
-#include "Core/Resolution.h"
-#include "Core/String.h"
+#include "Kernel/Resolution.h"
+#include "Kernel/String.h"
 
 namespace Mengine
 {
@@ -108,8 +109,9 @@ namespace Mengine
 	class Game
 		: public ServiceBase<GameServiceInterface>
 		, public Eventable
+        , public BaseEvent
 	{
-        EVENT_RECEIVER( GameEventReceiver );
+        DECLARE_EVENTABLE( GameEventReceiver );
 
 	public:
 		Game();

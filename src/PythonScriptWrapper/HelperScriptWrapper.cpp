@@ -21,17 +21,17 @@
 #include "math/vec3.h"
 #include "math/rand.h"
 
-#include "Core/Polygon.h"
-#include "Core/ColourValue.h"
-#include "Core/MemoryHelper.h"
-#include "Core/UID.h"
+#include "Kernel/Polygon.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/MemoryHelper.h"
+#include "Kernel/UID.h"
 
 #include "Engine/Account.h"
 
 #include "Engine/Movie.h"
 #include "Engine/HotSpotShape.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Engine/ResourceAnimation.h"
 
@@ -47,8 +47,8 @@
 
 #include "Kernel/Affector.h"
 
-#include "Core/String.h"
-#include "Core/CRC32.h"
+#include "Kernel/String.h"
+#include "Kernel/CRC32.h"
 
 #include "math/angle.h"
 

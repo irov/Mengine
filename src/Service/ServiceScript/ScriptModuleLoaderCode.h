@@ -8,8 +8,8 @@
 #include "Config/Typedef.h"
 #include "Config/String.h"
 
-#include "Core/ConstString.h"
-#include "Core/FilePath.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/FilePath.h"
 
 #include "pybind/pybind.hpp"
 

@@ -2,9 +2,9 @@
 
 #include "Interface/HttpSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 #include "Kernel/ThreadTask.h"
 

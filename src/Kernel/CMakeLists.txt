@@ -7,10 +7,15 @@ Servant
 )
 
 ADD_FILTER(
+Unknowable
+	Unknowable.h
+)
+
+ADD_FILTER(
 Eventable
-	Eventable.cpp
 	Eventable.h
-	EventReceiver.h
+    BaseEvent.h
+    BaseEvent.cpp
 )
 
 ADD_FILTER(
@@ -96,7 +101,6 @@ Scriptable
 
 ADD_FILTER(
 Animatable
-	Animatable.cpp
 	Animatable.h
 )
 
@@ -146,6 +150,13 @@ Materialable
 	Materialable.cpp
 	Materialable.h
 )
+
+ADD_FILTER(
+Animation
+	BaseAnimation.h
+    BaseAnimation.cpp
+)
+
 
 ADD_FILTER(
 Parallax
@@ -254,6 +265,7 @@ ADD_FILTER(
 ScriptWrapper
 	ScriptWrapper.h
 	ScriptEventReceiver.h	
+    AnimationEventReceiver.h
 )
 
 ADD_FILTER(
@@ -266,11 +278,234 @@ ADD_FILTER(
 Observable
 	Observable.h
 )
+
+ADD_FILTER(
+Core
+    Assertion.h
+    Assertion.cpp
+
+    CRC32.h
+    CRC32.cpp
+	
+	ServantBase.h
+	ServiceBase.h
+	
+	FontBase.h
+	FontBase.cpp
+    
+    Date.h
+    Date.cpp
+    
+    Exception.h
+    Visitor.h
+    
+    Polygon.h
+    Polygon.cpp    
+    
+	Viewport.h
+	Viewport.cpp
+	
+	Resolution.h
+	Resolution.cpp	
+
+	ColourValue.h
+	ColourValue.cpp
+        
+    GlyphChar.h
+    
+    IniUtil.h
+    IniUtil.cpp
+    
+    Hash.h
    
+    FilePath.h
+    FilePath.cpp
+    
+    FileLogger.cpp
+    FileLogger.h
+    
+    PixelFormat.h
+    PixelFormat.cpp
+    
+    MemoryAllocator.h
+    
+    MemoryHelper.h
+    MemoryHelper.cpp
+	
+    ValueInterpolator.h
+    ValueFollower.h
+    
+    String.h
+	String.cpp
+    
+    Tags.h
+    Tags.cpp
+    
+    StringFormat.h
+	StringFormat.cpp
+    
+    Params.h
+    
+	Rect.h
+	Rect.cpp
+    
+    Stream.h
+    Stream.cpp
+    
+    Pointer.h
+	
+    ConstString.h
+    ConstString.cpp
+	ConstStringHolder.h
+    ConstStringHolder.cpp
+	ConstStringHolderLocalString.h
+	ConstStringHolderLocalString.cpp
+	ConstStringTypes.h
+    
+    UID.h
+    UID.cpp        
+        
+    RenderUtils.h
+	RenderUtils.cpp
+    
+    OutputStreamWriter.h   
+    
+    IntrusiveTree.h
+    
+    PluginBase.h
+    PluginBase.cpp
+    
+    ModuleBase.h
+    ModuleBase.cpp
+    
+    ModuleFactory.h
+    
+    Holder.h
+    
+    RenderVertex2D.h
+    RenderIndex.h
    
+    Magic.h    
+    Mixin.h
+	
+	Callback.h
+    
+    MixerValue.h
+    MixerValue.cpp
+    
+    Typename.h
+    SHA1.h
+    
+    IntrusivePtr.h
+    IntrusivePtrBase.h
+    
+    LoggerBase.cpp
+    LoggerBase.h
+    
+    AspectRatioViewports.h
+)
+
+ADD_FILTER(
+Codec
+    Decoder.h
+    Encoder.h
+    PickEncoder.cpp
+    PickEncoder.h
+    PickDecoder.cpp
+    PickDecoder.h
+    VideoDecoder.h
+    VideoDecoder.cpp
+    SoundDecoder.h
+    SoundDecoder.cpp
+    ImageDecoder.h
+    ImageDecoder.cpp
+    ImageDecoderMemory.h
+    ImageDecoderMemory.cpp
+    ImageDecoderArchive.h
+    ImageDecoderArchive.cpp
+    ImageEncoder.cpp
+    ImageEncoder.h        
+
+    DecoderFactory.h
+    EncoderFactory.h    
+    ConverterFactory.h
+    DataflowFactory.h
+)
+
+ADD_FILTER(
+Factory
+    Factorable.h
+    Factorable.cpp  
+	FactorablePointer.h
+    FactorableUnique.h
+	Factory.h
+	Factory.cpp
+    FactoryWithListener.h
+    FactoryWithListener.cpp
+    FactoryWithMutex.h
+    FactoryWithMutex.cpp	
+    FactoryDefault.h    
+    FactoryPool.h
+    FactoryPoolWithListener.h
+)
+
+ADD_FILTER(
+Archive
+	Archive.hpp
+	ArchiveWrite.hpp
+	ArchiveWrite.cpp
+)
+
+ADD_FILTER(
+Logger
+	Logger.h
+	Logger.cpp
+)
+
 INCLUDE_DIRECTORIES(
     ${SOURCE_DIR}
     ${SOURCE_DIR}/Utils
+    ${THIRDPARTY_DIR}/boost/libs/config/include
+    ${THIRDPARTY_DIR}/boost/libs/assert/include
+    ${THIRDPARTY_DIR}/boost/libs/preprocessor/include
+    ${THIRDPARTY_DIR}/boost/libs/predef/include
+    ${THIRDPARTY_DIR}/boost/libs/numeric/conversion/include
+    ${THIRDPARTY_DIR}/boost/libs/type_traits/include
+    ${THIRDPARTY_DIR}/boost/libs/mpl/include
+    ${THIRDPARTY_DIR}/boost/libs/math/include
+    ${THIRDPARTY_DIR}/boost/libs/iterator/include
+    ${THIRDPARTY_DIR}/boost/libs/range/include
+    ${THIRDPARTY_DIR}/boost/libs/static_assert/include
+    ${THIRDPARTY_DIR}/boost/libs/throw_exception/include
+    ${THIRDPARTY_DIR}/boost/libs/throw_detail/include
+    ${THIRDPARTY_DIR}/boost/libs/core/include
+    ${THIRDPARTY_DIR}/boost/libs/detail/include
+    ${THIRDPARTY_DIR}/boost/libs/utility/include
+    ${THIRDPARTY_DIR}/boost/libs/integer/include
+    ${THIRDPARTY_DIR}/boost/libs/array/include
+    ${THIRDPARTY_DIR}/boost/libs/smart_ptr/include
+    ${THIRDPARTY_DIR}/boost/libs/concept_check/include
+    ${THIRDPARTY_DIR}/boost/libs/move/include
+    ${THIRDPARTY_DIR}/boost/libs/format/include
+    ${THIRDPARTY_DIR}/boost/libs/optional/include
+    ${THIRDPARTY_DIR}/boost/libs/container/include
+    ${THIRDPARTY_DIR}/boost/libs/variant/include
+    ${THIRDPARTY_DIR}/boost/libs/tuple/include
+    ${THIRDPARTY_DIR}/boost/libs/rational/include
+    ${THIRDPARTY_DIR}/boost/libs/algorithm/include
+    ${THIRDPARTY_DIR}/boost/libs/function/include
+    ${THIRDPARTY_DIR}/boost/libs/type_index/include
+    ${THIRDPARTY_DIR}/boost/libs/container_hash/include
+    ${THIRDPARTY_DIR}/boost/libs/bind/include
+    ${THIRDPARTY_DIR}/boost/libs/function_types/include
+    ${THIRDPARTY_DIR}/boost/libs/intrusive/include
+    ${THIRDPARTY_DIR}/boost/libs/tokenizer/include
+    ${THIRDPARTY_DIR}/boost/libs/geometry/include
+    ${THIRDPARTY_DIR}/boost/libs/lexical_cast/include
+    ${THIRDPARTY_DIR}/boost/libs/qvm/include
+    ${THIRDPARTY_DIR}/boost/libs/exception/include
+    ${THIRDPARTY_DIR}/utf8/source
+    ${THIRDPARTY_DIR}/tinyini/include
     ${THIRDPARTY_DIR}/metabuf
     ${THIRDPARTY_DIR}/libmath/include
     ${THIRDPARTY_DIR}/pybind/include

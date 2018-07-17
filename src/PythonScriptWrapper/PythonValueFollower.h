@@ -3,7 +3,7 @@
 #include "Kernel/Affector.h"
 #include "Kernel/Scriptable.h"
 
-#include "Core/ValueFollower.h"
+#include "Kernel/ValueFollower.h"
 
 #include "pybind/pybind.hpp"
 

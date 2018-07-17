@@ -29,11 +29,11 @@
 
 #include "Kernel/ScheduleManager.h"
 
-#include "Factory/FactoryDefault.h"
+#include "Kernel/FactoryDefault.h"
 
 #include "GlobalAffectorable.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "TextField.h"
 

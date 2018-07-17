@@ -2,11 +2,11 @@
 
 #include "BasePrototypeGenerator.h"
 
-#include "Core/ConstString.h"
+#include "Kernel/ConstString.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

@@ -5,11 +5,11 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/IntrusivePtr.h"
-#include "Core/Resolution.h"
-#include "Core/Viewport.h"
+#include "Kernel/IntrusivePtr.h"
+#include "Kernel/Resolution.h"
+#include "Kernel/Viewport.h"
 
 #include "math/vec2.h"
 

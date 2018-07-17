@@ -3,9 +3,9 @@
 
 #include "Interface/StringizeInterface.h"
 
-#include "Core/Stream.h"
+#include "Kernel/Stream.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

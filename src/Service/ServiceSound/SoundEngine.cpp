@@ -7,9 +7,9 @@
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/ConfigInterface.h"
 
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "math/utils.h"
 #include <algorithm>

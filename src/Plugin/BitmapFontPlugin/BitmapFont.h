@@ -5,7 +5,7 @@
 #include "Kernel/Compilable.h"
 #include "Kernel/Reference.h"
 
-#include "Core/FontBase.h"
+#include "Kernel/FontBase.h"
 
 #include "BitmapGlyph.h"
 

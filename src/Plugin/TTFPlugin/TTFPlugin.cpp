@@ -4,9 +4,9 @@
 #include "Interface/PrototypeManagerInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Core/PixelFormat.h"
+#include "Kernel/PixelFormat.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "TTFPrototypeGenerator.h"
 

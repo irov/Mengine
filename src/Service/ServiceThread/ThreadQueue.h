@@ -3,7 +3,7 @@
 #include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/ThreadTaskPacket.h"
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 #include "Config/List.h"
 

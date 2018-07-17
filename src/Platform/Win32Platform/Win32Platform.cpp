@@ -12,7 +12,7 @@
 
 #include "Utils/WIN32/WindowsIncluder.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <cstdio>
 #include <clocale>

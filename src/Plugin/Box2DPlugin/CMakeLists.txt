@@ -48,9 +48,6 @@ SET( APPLICATION_LIB_PATHS
 )
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} 
-    Logger
-    Core
-    Factory
     Kernel
     )
 

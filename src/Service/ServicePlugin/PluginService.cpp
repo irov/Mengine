@@ -2,7 +2,7 @@
 
 #include "Interface/UnicodeInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include <string.h>
 

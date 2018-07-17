@@ -6,11 +6,11 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/FilePath.h"
-#include "Core/String.h"
-#include "Core/MemoryHelper.h"
+#include "Kernel/FilePath.h"
+#include "Kernel/String.h"
+#include "Kernel/MemoryHelper.h"
 
 #include <string.h>
 #include <stdio.h>

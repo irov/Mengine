@@ -1,8 +1,9 @@
 #pragma once
 
 #include "Kernel/Surface.h"
-#include "Kernel/Eventable.h"
-#include "Kernel/Animatable.h"
+#include "Kernel/BaseEvent.h"
+#include "Kernel/BaseAnimation.h"
+#include "Kernel/AnimationEventReceiver.h"
 
 #include "ResourceVideo.h"
 
@@ -16,16 +17,17 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class SurfaceVideoEventReceiver
-        : public AnimatableEventReceiver
+        : public AnimationEventReceiver
     {
     };
     //////////////////////////////////////////////////////////////////////////
 	class SurfaceVideo
-		: public Surface        
-        , public Eventable        
-        , public Animatable
+		: public Surface
+        , public BaseEvent
+        , public BaseAnimation
 	{
-        EVENT_RECEIVER( SurfaceVideoEventReceiver );
+        DECLARE_ANIMATABLE();
+        DECLARE_EVENTABLE( SurfaceVideoEventReceiver );
 
 	public:
 		SurfaceVideo();
@@ -60,8 +62,8 @@ namespace Mengine
 		bool _update( float _current, float _timing ) override;
 
 	protected:
-		void _setTiming( float _timing ) override;
-		float _getTiming() const override;
+		void _setTime( float _timing ) override;
+		float _getTime() const override;
 
 		void _setFirstFrame() override;
 		void _setLastFrame() override;

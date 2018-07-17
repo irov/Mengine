@@ -9,7 +9,7 @@
 #include "Interface/NodeInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

@@ -4,7 +4,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/WindowsLayerInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

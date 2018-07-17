@@ -2,7 +2,7 @@
 
 #include "Config/String.h"
 
-#include "Core/ConstStringHolder.h"
+#include "Kernel/ConstStringHolder.h"
 
 namespace Mengine
 {

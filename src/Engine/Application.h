@@ -4,12 +4,12 @@
 
 #include "Kernel/Observable.h"
 
-#include "Core/Resolution.h"
-#include "Core/Viewport.h"
-#include "Core/ConstString.h"
-#include "Core/ServiceBase.h"
+#include "Kernel/Resolution.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/ServiceBase.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "math/vec4.h"
 

@@ -3,9 +3,9 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/PlatformInterface.h"
 
-#include "Core/Exception.h"
+#include "Kernel/Exception.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ConfigService, Mengine::ConfigManager );

@@ -4,7 +4,7 @@
 
 #include "Interface/StringizeInterface.h"
 
-#include "Codec/DecoderFactory.h"
+#include "Kernel/DecoderFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( SoundCodec, Mengine::SoundCodecPlugin );

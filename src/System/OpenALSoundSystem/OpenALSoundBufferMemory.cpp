@@ -2,11 +2,11 @@
 #include "OpenALSoundSystem.h"
 #include "OpenALSoundError.h"
 
-#include "Core/MemoryHelper.h"
+#include "Kernel/MemoryHelper.h"
 
 #include "Interface/SoundCodecInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

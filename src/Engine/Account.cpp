@@ -6,11 +6,11 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/ArchiveInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
-#include "Core/IniUtil.h"
-#include "Core/String.h"
-#include "Core/Stream.h"
+#include "Kernel/IniUtil.h"
+#include "Kernel/String.h"
+#include "Kernel/Stream.h"
 
 namespace Mengine
 {

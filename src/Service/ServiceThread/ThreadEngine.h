@@ -2,12 +2,12 @@
 
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "ThreadQueue.h"
 #include "ThreadMutexDummy.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 #include "Config/Vector.h"
 

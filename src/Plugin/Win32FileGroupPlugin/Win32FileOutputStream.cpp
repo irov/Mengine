@@ -2,7 +2,7 @@
 
 #include "Interface/UnicodeInterface.h"
 
-#include "Utils/Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {

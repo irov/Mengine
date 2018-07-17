@@ -2,11 +2,11 @@
 
 #include "Kernel/Entity.h"
 
-#include "Core/Resolution.h"
+#include "Kernel/Resolution.h"
 
 #include "math/vec4.h"
 
-#include "Core/Polygon.h"
+#include "Kernel/Polygon.h"
 
 namespace Mengine
 {

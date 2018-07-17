@@ -6,11 +6,11 @@
 #include "Interface/GlobalHandleSystemInterface.h"
 #include "Interface/ScheduleManagerInterface.h"
 
-#include "Core/ServiceBase.h"
-#include "Core/ConstString.h"
-#include "Core/Resolution.h"
+#include "Kernel/ServiceBase.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/Resolution.h"
 
-#include "Factory/Factory.h"
+#include "Kernel/Factory.h"
 
 #include "math/vec3.h"
 

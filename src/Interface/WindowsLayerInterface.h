@@ -6,7 +6,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/PluginInterface.h"
 
-#include "Core/FilePath.h"
+#include "Kernel/FilePath.h"
 
 #include <wtypes.h>
 

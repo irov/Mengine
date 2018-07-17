@@ -2,9 +2,9 @@
 
 #include "Interface/LoggerInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Config/Vector.h"
 

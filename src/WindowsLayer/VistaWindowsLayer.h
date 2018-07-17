@@ -4,7 +4,7 @@
 
 #include "Config/Typedef.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "WIN32/WindowsIncluder.h"
 

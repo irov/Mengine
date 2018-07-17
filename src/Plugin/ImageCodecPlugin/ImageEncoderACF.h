@@ -2,7 +2,7 @@
 
 #include "Interface/ArchiveInterface.h"
 
-#include "Codec/ImageEncoder.h"
+#include "Kernel/ImageEncoder.h"
 
 namespace Mengine
 {

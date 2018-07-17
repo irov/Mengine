@@ -2,7 +2,7 @@
 
 #include "Kernel/Resource.h"
 
-#include "Core/FilePath.h"
+#include "Kernel/FilePath.h"
 
 namespace Mengine
 {

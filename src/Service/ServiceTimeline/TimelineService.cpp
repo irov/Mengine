@@ -1,6 +1,6 @@
 #include "TimelineService.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( TimelineService, Mengine::TimelineService );

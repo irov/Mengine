@@ -4,13 +4,13 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/ArchiveInterface.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
-#include "Core/ConstString.h"
-#include "Core/ConstStringTypes.h"
-#include "Core/String.h"
+#include "Kernel/ConstString.h"
+#include "Kernel/ConstStringTypes.h"
+#include "Kernel/String.h"
 
-#include "Utils/Archive/Archive.hpp"
+#include "Kernel/Archive.hpp"
 
 #include "Config/Typedef.h"
 

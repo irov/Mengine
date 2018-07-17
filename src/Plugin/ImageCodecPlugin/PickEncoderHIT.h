@@ -2,7 +2,7 @@
 
 #include "Interface/ArchiveInterface.h"
 
-#include "Codec/PickEncoder.h"
+#include "Kernel/PickEncoder.h"
 
 namespace Mengine
 {

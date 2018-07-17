@@ -4,7 +4,7 @@
 
 #include "Kernel/Servant.h"
 
-#include "Core/ServiceBase.h"
+#include "Kernel/ServiceBase.h"
 
 #include "BitmapGlyph.h"
 

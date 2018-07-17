@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Core/ModuleBase.h"
+#include "Kernel/ModuleBase.h"
 
 #include "steam/steam_api.h"
 #include "steam/steam_gameserver.h"

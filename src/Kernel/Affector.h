@@ -2,7 +2,7 @@
 
 #include "Kernel/AffectorType.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
 #include "stdex/intrusive_slug_linked_ptr.h"
 

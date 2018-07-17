@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Core/IntrusivePtr.h"
-#include "Core/Mixin.h"
+#include "Kernel/IntrusivePtr.h"
+#include "Kernel/Mixin.h"
 
 #include "pybind/bindable.hpp"
 

@@ -28,15 +28,15 @@
 #include "Interface/TimelineInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "Watchdog.h"
 
 
 #include "Kernel/Scene.h"
 
-#include "Factory/FactoryDefault.h"
-#include "Factory/FactoryPool.h"
+#include "Kernel/FactoryDefault.h"
+#include "Kernel/FactoryPool.h"
 
 
 #include "Kernel/Entity.h"
@@ -119,17 +119,17 @@
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/SurfacePrototypeGenerator.h"
 
-#include "Codec/ImageDecoderMemory.h"
-#include "Codec/ImageDecoderArchive.h"
+#include "Kernel/ImageDecoderMemory.h"
+#include "Kernel/ImageDecoderArchive.h"
 
-#include "Codec/DecoderFactory.h"
+#include "Kernel/DecoderFactory.h"
 
 #include "Config/Config.h"
 #include "Config/Stringstream.h"
 #include "Config/List.h"
 
-#include "Core/String.h"
-#include "Core/IniUtil.h"
+#include "Kernel/String.h"
+#include "Kernel/IniUtil.h"
 
 #include "stdex/allocator.h"
 #include "stdex/allocator_report.h"

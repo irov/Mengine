@@ -12,10 +12,12 @@
 #include "Kernel/Affectorable.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Servant.h"
+#include "Kernel/Animatable.h"
+#include "Kernel/Unknowable.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/Viewport.h"
+#include "Kernel/Viewport.h"
 
 #include "stdex/intrusive_slug_list_size_ptr.h"
 #include "stdex/intrusive_slug_ptr.h"
@@ -46,6 +48,9 @@ namespace Mengine
 		, public Affectorable
         , public Visitable
 		, public Scriptable
+        , public Animatable
+        , public Eventable
+        , public Unknowable
 	{
 		DECLARE_VISITABLE_BASE();
 

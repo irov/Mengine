@@ -1,6 +1,6 @@
 #include "ImageDecoderJPEG.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #define INPUT_BUF_SIZE  4096				// choose an efficiently fread'able size 
 

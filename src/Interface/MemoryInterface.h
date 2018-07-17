@@ -3,9 +3,9 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/StreamInterface.h"
 
-#include "Factory/Factorable.h"
+#include "Kernel/Factorable.h"
 
-#include "Core/Pointer.h"
+#include "Kernel/Pointer.h"
 
 namespace Mengine
 {

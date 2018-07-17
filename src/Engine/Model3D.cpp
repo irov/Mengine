@@ -5,7 +5,7 @@
 
 #include "Kernel/RenderCameraProjection.h"
 
-#include "Logger/Logger.h"
+#include "Kernel/Logger.h"
 
 #include "math/box2.h"
 #include "math/utils.h"
@@ -168,7 +168,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Model3D::_activate()
 	{
-		this->setTiming( 0.f );
+		this->setTime( 0.f );
 
 		if( Node::_activate() == false )
 		{
@@ -329,7 +329,7 @@ namespace Mengine
 				{
 					if( this->getLoop() == true )
 					{
-						this->setTiming( m_frameTiming );                                   
+						this->setTime( m_frameTiming );                                   
 					}
 					else
 					{
@@ -348,7 +348,7 @@ namespace Mengine
 						}
 						else
 						{
-							this->setTiming( m_frameTiming );
+							this->setTime( m_frameTiming );
 						}					
 					}
 
@@ -556,7 +556,7 @@ namespace Mengine
 		this->setCurrentFrame_( lastFrame );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_setTiming( float _timing )
+	void Model3D::_setTime( float _timing )
 	{
 		if( this->isCompile() == false )
 		{
@@ -572,7 +572,7 @@ namespace Mengine
 		this->updateCurrentFrame_();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Model3D::_getTiming() const
+	float Model3D::_getTime() const
 	{
 		if( this->isCompile() == false )
 		{

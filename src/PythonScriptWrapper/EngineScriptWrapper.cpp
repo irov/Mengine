@@ -1558,7 +1558,7 @@ namespace Mengine
                 return false;
             }
 
-            char * memory = binary_buffer->getMemory();
+            char * memory = binary_buffer->getBuffer();
 
             PythonSaxCallback pysc( _kernel, _cb );
             if( stdex::xml_sax_parse( memory, pysc ) == false )
@@ -2077,7 +2077,7 @@ namespace Mengine
 
             size_t size = stream->size();
 
-            void * memory_buffer = _blob->newMemory( size, __FILE__, __LINE__ );
+            void * memory_buffer = _blob->newBuffer( size, __FILE__, __LINE__ );
 
             if( stream->read( memory_buffer, size ) != size )
             {
@@ -2109,7 +2109,7 @@ namespace Mengine
             }
 
             if( PLATFORM_SERVICE()
-                ->createDirectoryUserPicture( projectName, wc_fileName, memory->getMemory(), memory->getSize() ) == false )
+                ->createDirectoryUserPicture( projectName, wc_fileName, memory->getBuffer(), memory->getSize() ) == false )
             {
                 return false;
             }
@@ -2137,7 +2137,7 @@ namespace Mengine
             }
 
             if( PLATFORM_SERVICE()
-                ->createDirectoryUserMusic( projectName, wc_fileName, memory->getMemory(), memory->getSize() ) == false )
+                ->createDirectoryUserMusic( projectName, wc_fileName, memory->getBuffer(), memory->getSize() ) == false )
             {
                 return false;
             }

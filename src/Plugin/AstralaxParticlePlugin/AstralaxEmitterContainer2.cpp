@@ -41,7 +41,7 @@ namespace Mengine
 			return false;
 		}
 				
-		const void * binary_memory = memory->getMemory();
+		const void * binary_memory = memory->getBuffer();
 		size_t binary_size = memory->getSize();
 
 		HM_FILE mf;

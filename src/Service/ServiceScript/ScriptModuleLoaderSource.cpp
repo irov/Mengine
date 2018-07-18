@@ -45,7 +45,7 @@ namespace Mengine
 			return nullptr;
 		}
 
-		char * source_memory = source_buffer->getMemory();
+		char * source_memory = source_buffer->getBuffer();
 
 		if( file_size > 0 )
 		{

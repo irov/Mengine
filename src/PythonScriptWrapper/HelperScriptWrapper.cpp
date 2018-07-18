@@ -160,7 +160,7 @@ namespace Mengine
                 return false;
             }
 
-            void * memory_buffer = buffer->getMemory();
+            void * memory_buffer = buffer->getBuffer();
             size_t memory_size = buffer->getSize();
 
             if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
@@ -198,7 +198,7 @@ namespace Mengine
                 return pybind::ret_none();
             }
 
-            void * binaryBuffer_memory = binaryBuffer->getMemory();
+            void * binaryBuffer_memory = binaryBuffer->getBuffer();
             size_t binaryBuffer_size = binaryBuffer->getSize();
 
             PyObject * py_data = pybind::unpickle( _kernel, binaryBuffer_memory, binaryBuffer_size, _pickleTypes );
@@ -2603,7 +2603,7 @@ namespace Mengine
                 return false;
             }
 
-            void * memory_buffer = buffer->getMemory();
+            void * memory_buffer = buffer->getBuffer();
             size_t memory_size = buffer->getSize();
 
             if( pybind::pickle( _kernel, _data, _pickleTypes, memory_buffer, memory_size, size ) == false )
@@ -2666,7 +2666,7 @@ namespace Mengine
                 return pybind::ret_none();
             }
 
-            void * binaryBuffer_memory = binaryBuffer->getMemory();
+            void * binaryBuffer_memory = binaryBuffer->getBuffer();
             size_t binaryBuffer_size = binaryBuffer->getSize();
 
             PyObject * py_data = pybind::unpickle( _kernel, binaryBuffer_memory, binaryBuffer_size, _pickleTypes );

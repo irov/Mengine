@@ -63,7 +63,7 @@ namespace Mengine
 			return false;
 		}
 
-		void * binary_memory = binary_buffer->getMemory();
+		void * binary_memory = binary_buffer->getBuffer();
 		
 		size_t decode_size = m_soundDecoder->decode( binary_memory, size );
         

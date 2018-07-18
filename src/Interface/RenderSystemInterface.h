@@ -8,6 +8,7 @@
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderViewportInterface.h"
 #include "Interface/RenderCameraInterface.h"
+#include "Interface/RenderTransformationInterface.h"
 #include "Interface/RenderScissorInterface.h"
 #include "Interface/RenderTargetInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
@@ -166,6 +167,7 @@ namespace Mengine
     public:
         virtual void addRenderMesh( const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
+            , const RenderTransformationInterfacePtr & _transformation
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target
             , const RenderMaterialInterfacePtr & _material
@@ -175,6 +177,7 @@ namespace Mengine
 
 		virtual void addRenderObject( const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
+            , const RenderTransformationInterfacePtr & _transformation
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target
             , const RenderMaterialInterfacePtr & _material
@@ -184,6 +187,7 @@ namespace Mengine
 
         virtual void addRenderQuad( const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
+            , const RenderTransformationInterfacePtr & _transformation
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target
             , const RenderMaterialInterfacePtr & _material
@@ -192,6 +196,7 @@ namespace Mengine
 
         virtual void addRenderLine( const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
+            , const RenderTransformationInterfacePtr & _transformation
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target
             , const RenderMaterialInterfacePtr & _material

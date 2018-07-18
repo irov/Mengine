@@ -25,11 +25,11 @@ namespace Mengine
 		void setMemoryManager( MemoryManager * _memoryManager );
 
     public:
-        void setMemory( const void * _ptr, size_t _size, const char * _file, uint32_t _line ) override;
-		Pointer newMemory( size_t _size, const char * _file, uint32_t _line ) override;
+        void setBuffer( const void * _ptr, size_t _size, const char * _file, uint32_t _line ) override;
+		Pointer newBuffer( size_t _size, const char * _file, uint32_t _line ) override;
 		
     public:
-		inline Pointer getMemory() const override;
+		inline Pointer getBuffer() const override;
 
 		inline size_t getSize() const override;
 		inline bool empty() const override;
@@ -46,7 +46,7 @@ namespace Mengine
 		size_t m_size;
 	};
 	//////////////////////////////////////////////////////////////////////////	
-	inline Pointer MemoryCacheBuffer::getMemory() const
+	inline Pointer MemoryCacheBuffer::getBuffer() const
 	{
 		return m_data;
 	}

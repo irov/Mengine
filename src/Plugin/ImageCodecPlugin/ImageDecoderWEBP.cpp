@@ -40,7 +40,7 @@ namespace Mengine
 					return false;
 				}
 
-				uint8_t * featuresMemory = buffer->getMemory();
+				uint8_t * featuresMemory = buffer->getBuffer();
 
 				if( featuresMemory == nullptr )
 				{
@@ -124,7 +124,7 @@ namespace Mengine
 				return false;
 			}
 
-			const uint8_t * buffer_memory = buffer->getMemory();
+			const uint8_t * buffer_memory = buffer->getBuffer();
 
 			if( buffer_memory == nullptr )
 			{

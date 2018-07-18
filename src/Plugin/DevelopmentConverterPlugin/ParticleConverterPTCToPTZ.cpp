@@ -59,7 +59,7 @@ namespace Mengine
 			return false;
 		}
 			
-		const Blobject::value_type * data_memory = data_cache->getMemory();
+		const Blobject::value_type * data_memory = data_cache->getBuffer();
 		size_t data_size = data_cache->getSize();
 
 		if( data_memory == nullptr )

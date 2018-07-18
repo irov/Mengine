@@ -756,14 +756,9 @@ namespace Mengine
         m_currentIndexBuffer = nullptr;
         m_currentProgram = nullptr;
 
-        mt::mat4f viewTransform;
-        mt::ident_m4( viewTransform );
-
-        mt::mat4f projTransform;
-        mt::ident_m4( projTransform );
-
-        mt::mat4f worldTransform;
-        mt::ident_m4( worldTransform );
+        const mt::mat4f & viewTransform = mt::mat4f::identity();
+        const mt::mat4f & projTransform = mt::mat4f::identity();
+        const mt::mat4f & worldTransform = mt::mat4f::identity();
 
         m_renderSystem->setProjectionMatrix( projTransform );
         m_renderSystem->setViewMatrix( viewTransform );
@@ -880,11 +875,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::renderPass_( const RenderPassPtr & _pass )
+    void RenderEngine::renderPass_( const RenderPassPtr & _renderPass )
     {
-        if( _pass->viewport != nullptr )
+        if( _renderPass->viewport != nullptr )
         {
-            const Viewport & viewport = _pass->viewport->getViewport();
+            const Viewport & viewport = _renderPass->viewport->getViewport();
 
             Viewport renderViewport;
             this->calcRenderViewport_( viewport, renderViewport );
@@ -907,19 +902,19 @@ namespace Mengine
                 ->setViewport( renderViewport );
         }
 
-        if( _pass->camera != nullptr )
+        if( _renderPass->camera != nullptr )
         {
             //const mt::mat4f & worldMatrix = _renderPass.camera->getCameraWorldMatrix();
 
             //m_renderSystem
             //	->setWorldMatrix( worldMatrix );
 
-            const mt::mat4f & viewMatrix = _pass->camera->getCameraViewMatrix();
+            const mt::mat4f & viewMatrix = _renderPass->camera->getCameraViewMatrix();
 
             m_renderSystem
                 ->setViewMatrix( viewMatrix );
 
-            const mt::mat4f & projectionMatrix = _pass->camera->getCameraProjectionMatrix();
+            const mt::mat4f & projectionMatrix = _renderPass->camera->getCameraProjectionMatrix();
 
             m_renderSystem
                 ->setProjectionMatrix( projectionMatrix );
@@ -945,9 +940,24 @@ namespace Mengine
                 ->setProjectionMatrix( projectionMatrix );
         }
 
-        if( _pass->scissor != nullptr )
+        if( _renderPass->transformation != nullptr )
         {
-            const Viewport & viewport = _pass->scissor->getScissorViewport();
+            const mt::mat4f & worldMatrix = _renderPass->transformation->getTransformationWorldMatrix();
+
+            RENDER_SYSTEM()
+                ->setWorldMatrix( worldMatrix );
+        }
+        else
+        {
+            const mt::mat4f & worldMatrix = mt::mat4f::identity();
+
+            RENDER_SYSTEM()
+                ->setWorldMatrix( worldMatrix );
+        }
+
+        if( _renderPass->scissor != nullptr )
+        {
+            const Viewport & viewport = _renderPass->scissor->getScissorViewport();
 
             m_renderSystem
                 ->setScissor( viewport );
@@ -958,9 +968,9 @@ namespace Mengine
                 ->removeScissor();
         }
 
-        if( _pass->target != nullptr )
+        if( _renderPass->target != nullptr )
         {
-            const RenderTargetInterfacePtr & target = _pass->target;
+            const RenderTargetInterfacePtr & target = _renderPass->target;
 
             if( target->begin() == false )
             {
@@ -968,11 +978,11 @@ namespace Mengine
             }
         }
 
-        this->renderObjects_( _pass );
+        this->renderObjects_( _renderPass );
 
-        if( _pass->target != nullptr )
+        if( _renderPass->target != nullptr )
         {
-            const RenderTargetInterfacePtr & target = _pass->target;
+            const RenderTargetInterfacePtr & target = _renderPass->target;
 
             target->end();
         }
@@ -1039,6 +1049,7 @@ namespace Mengine
     bool RenderEngine::testRenderPass_( const RenderBatchPtr & _batch
         , const RenderViewportInterfacePtr & _viewport
         , const RenderCameraInterfacePtr & _camera
+        , const RenderTransformationInterfacePtr & _transformation
         , const RenderScissorInterfacePtr & _scissor
         , const RenderTargetInterfacePtr & _target ) const
     {
@@ -1052,6 +1063,7 @@ namespace Mengine
         if( pass->batch != _batch ||
             pass->viewport != _viewport ||
             pass->camera != _camera ||
+            pass->transformation != _transformation ||
             pass->scissor != _scissor ||
             pass->target != _target )
         {
@@ -1063,6 +1075,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const RenderPassPtr & RenderEngine::requestRenderPass_( const RenderViewportInterfacePtr & _viewport
         , const RenderCameraInterfacePtr & _camera
+        , const RenderTransformationInterfacePtr & _transformation
         , const RenderScissorInterfacePtr & _scissor
         , const RenderTargetInterfacePtr & _target
         , const RenderMaterialInterfacePtr & _material
@@ -1079,7 +1092,7 @@ namespace Mengine
         batch->vertexCount += _vertexCount;
         batch->indexCount += _indexCount;
 
-        if( this->testRenderPass_( batch, _viewport, _camera, _scissor, _target ) == true )
+        if( this->testRenderPass_( batch, _viewport, _camera, _transformation, _scissor, _target ) == true )
         {
             RenderPassPtr pass = m_factoryRenderPass->createObject();
 
@@ -1106,6 +1119,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::addRenderMesh( const RenderViewportInterfacePtr & _viewport
         , const RenderCameraInterfacePtr & _camera
+        , const RenderTransformationInterfacePtr & _transformation
         , const RenderScissorInterfacePtr & _scissor
         , const RenderTargetInterfacePtr & _target
         , const RenderMaterialInterfacePtr & _material
@@ -1115,6 +1129,7 @@ namespace Mengine
     {
         (void)_viewport;
         (void)_camera;
+        (void)_transformation;
         (void)_scissor;
         (void)_target;
         (void)_material;
@@ -1125,6 +1140,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::addRenderObject( const RenderViewportInterfacePtr & _viewport
         , const RenderCameraInterfacePtr & _camera
+        , const RenderTransformationInterfacePtr & _transformation
         , const RenderScissorInterfacePtr & _scissor
         , const RenderTargetInterfacePtr & _target
         , const RenderMaterialInterfacePtr & _material
@@ -1191,7 +1207,7 @@ namespace Mengine
             }
         }
 
-        const RenderPassPtr & rp = this->requestRenderPass_( _viewport, _camera, _scissor, _target, _material, _vertexCount, _indexCount );
+        const RenderPassPtr & rp = this->requestRenderPass_( _viewport, _camera, _transformation, _scissor, _target, _material, _vertexCount, _indexCount );
 
         mt::box2f bb;
 
@@ -1308,6 +1324,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::addRenderQuad( const RenderViewportInterfacePtr & _viewport
         , const RenderCameraInterfacePtr & _camera
+        , const RenderTransformationInterfacePtr & _transformation
         , const RenderScissorInterfacePtr & _scissor
         , const RenderTargetInterfacePtr & _target
         , const RenderMaterialInterfacePtr & _material
@@ -1328,11 +1345,12 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesQuad.buff();
 
-        this->addRenderObject( _viewport, _camera, _scissor, _target, _material, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
+        this->addRenderObject( _viewport, _camera, _transformation, _scissor, _target, _material, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::addRenderLine( const RenderViewportInterfacePtr & _viewport
         , const RenderCameraInterfacePtr & _camera
+        , const RenderTransformationInterfacePtr & _transformation
         , const RenderScissorInterfacePtr & _scissor
         , const RenderTargetInterfacePtr & _target
         , const RenderMaterialInterfacePtr & _material
@@ -1353,7 +1371,7 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesLine.buff();
 
-        this->addRenderObject( _viewport, _camera, _scissor, _target, _material, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
+        this->addRenderObject( _viewport, _camera, _transformation, _scissor, _target, _material, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertex2D * RenderEngine::getDebugRenderVertex2D( uint32_t _count )
@@ -1656,7 +1674,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::insertRenderObject_( const RenderObject * _renderObject, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t _vbPos, uint32_t _ibPos ) const
     {
-        void * memory_buffer = _vertexBuffer->getMemory();
+        void * memory_buffer = _vertexBuffer->getBuffer();
         size_t memory_size = _vertexBuffer->getSize();
 
         if( stdex::memorycopy_safe( memory_buffer, _vbPos * _vertexSize, memory_size, _renderObject->vertexData, _renderObject->vertexCount * _vertexSize ) == false )
@@ -1677,7 +1695,7 @@ namespace Mengine
         //    }
         //}
 
-        RenderIndex * indexMemory = _indexBuffer->getMemory();
+        RenderIndex * indexMemory = _indexBuffer->getBuffer();
 
         RenderIndex * offsetIndicesBuffer = indexMemory + _ibPos;
 

@@ -65,11 +65,9 @@ namespace Mengine
         if( m_resourceShape == _resourceShape )
         {
             return;
-        }
+        }             
 
-        m_resourceShape = _resourceShape;
-
-        this->recompile();
+        this->recompile( [this, _resourceShape]() {m_resourceShape = _resourceShape; } );
     }
     //////////////////////////////////////////////////////////////////////////
 	const ResourceShapePtr & HotSpotShape::getResourceShape() const

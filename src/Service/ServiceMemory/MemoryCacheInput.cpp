@@ -39,7 +39,7 @@ namespace Mengine
         m_memoryManager = _memoryManager;
     }
 	//////////////////////////////////////////////////////////////////////////
-	Pointer MemoryCacheInput::cacheMemory( size_t _size, const char * _file, uint32_t _line )
+	Pointer MemoryCacheInput::cacheBuffer( size_t _size, const char * _file, uint32_t _line )
 	{
 		this->uncache_();
 
@@ -62,7 +62,7 @@ namespace Mengine
         return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Pointer MemoryCacheInput::getMemory() const
+	Pointer MemoryCacheInput::getBuffer() const
 	{
 		return m_data;
 	}

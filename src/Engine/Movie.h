@@ -3,7 +3,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/Soundable.h"
 
-#include "Kernel/BaseEvent.h"
+#include "Kernel/BaseEventation.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/BaseAnimation.h"
 
@@ -56,7 +56,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	class Movie
 		: public Node
-        , public BaseEvent
+        , public BaseEventation
 		, public BaseAnimation
 	{
         DECLARE_ANIMATABLE();

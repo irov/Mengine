@@ -30,9 +30,7 @@ namespace Mengine
 			return;
 		}
 
-		m_resourceHIT = _resourceHIT;
-
-		this->recompile();
+        this->recompile( [this, _resourceHIT]() {m_resourceHIT = _resourceHIT; } );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ResourceHITPtr & HotSpotImage::getResourceHIT() const

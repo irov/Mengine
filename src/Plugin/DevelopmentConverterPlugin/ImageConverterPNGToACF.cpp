@@ -97,7 +97,7 @@ namespace Mengine
 			return false;
 		}
 
-		void * data_memory = data_buffer->getMemory();
+		void * data_memory = data_buffer->getBuffer();
 
 		if( decoder->decode( data_memory, data_size ) == 0 )
 		{

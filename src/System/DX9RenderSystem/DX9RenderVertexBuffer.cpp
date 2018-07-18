@@ -128,7 +128,7 @@ namespace Mengine
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxy();
 
-        memory->setMemory( lock_memory, _count * m_vertexSize, __FILE__, __LINE__ );
+        memory->setBuffer( lock_memory, _count * m_vertexSize, __FILE__, __LINE__ );
 
 		return memory;
 	}

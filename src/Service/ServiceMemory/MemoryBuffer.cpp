@@ -23,14 +23,14 @@ namespace Mengine
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryBuffer::setMemory( const void * _ptr, size_t _size, const Char * _file, uint32_t _line )
+    void MemoryBuffer::setBuffer( const void * _ptr, size_t _size, const Char * _file, uint32_t _line )
     {
-        void * buffer = this->newMemory( _size, _file, _line );
+        void * buffer = this->newBuffer( _size, _file, _line );
 
         stdex::memorycopy( buffer, 0, _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryBuffer::newMemory( size_t _size, const char * _file, uint32_t _line )
+    Pointer MemoryBuffer::newBuffer( size_t _size, const char * _file, uint32_t _line )
     {
         (void)_file;
         (void)_line;

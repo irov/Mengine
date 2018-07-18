@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
-#include "Kernel/BaseEvent.h"
+#include "Kernel/BaseEventation.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/AnimationEventReceiver.h"
 
@@ -32,7 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	class ParticleEmitter2
 		: public Node
-		, public BaseEvent
+		, public BaseEventation
 		, public BaseAnimation
 		, public ParticlePositionProviderInterface
 		, public ParticleCameraProviderInterface

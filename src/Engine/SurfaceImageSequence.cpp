@@ -30,10 +30,8 @@ namespace Mengine
 		{
 			return;
 		}
-
-		m_resourceAnimation = _resourceAnimation;
-
-		this->recompile();
+        
+        this->recompile( [this, _resourceAnimation]() {m_resourceAnimation = _resourceAnimation; } );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ResourceAnimationPtr & SurfaceImageSequence::getResourceAnimation() const

@@ -57,7 +57,7 @@ namespace Mengine
 			return false;
 		}
 
-		uint8_t * buffer = memory->getMemory();
+		uint8_t * buffer = memory->getBuffer();
 
 		size_t decode_mipmapsize = decoder->decode( buffer, bufferSize );
 				
@@ -134,7 +134,7 @@ namespace Mengine
 			return false;
 		}
 
-		uint8_t * buffer = memory->getMemory();
+		uint8_t * buffer = memory->getBuffer();
 
         if( imageDecoder->decode( buffer, bufferSize ) == 0 )
         {

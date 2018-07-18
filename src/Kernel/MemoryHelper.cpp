@@ -31,7 +31,7 @@ namespace Mengine
 				return nullptr;
 			}
 
-			void * memory = memoryBuffer->newMemory( _size, _file, _line );
+			void * memory = memoryBuffer->newBuffer( _size, _file, _line );
 
 			if( memory == nullptr )
 			{
@@ -73,7 +73,7 @@ namespace Mengine
 				return nullptr;
 			}
 
-			void * memory = cache->newMemory( _size, _file, _line );
+			void * memory = cache->newBuffer( _size, _file, _line );
 
 			if( memory == nullptr )
 			{
@@ -92,7 +92,7 @@ namespace Mengine
 				return nullptr;
 			}
 
-			void * memory = cache->getMemory();
+			void * memory = cache->getBuffer();
 
 			size_t read_byte = _stream->read( memory, _size );
 
@@ -157,7 +157,7 @@ namespace Mengine
 				return nullptr;
 			}
 
-            uint8_t * memory = cache->getMemory();
+            uint8_t * memory = cache->getBuffer();
 
 			size_t read_byte = stream->read( memory, size );
 

@@ -660,7 +660,7 @@ namespace Mengine
             return nullptr;
         }
 
-        char * source_memory = _buffer->getMemory();
+        char * source_memory = _buffer->getBuffer();
 
         PyObject * code = pybind::code_compile_file( source_memory, str_moduleName );
 
@@ -721,7 +721,7 @@ namespace Mengine
             return nullptr;
         }
 
-        uint8_t * code_memory = _buffer->getMemory();
+        uint8_t * code_memory = _buffer->getBuffer();
         size_t code_size = _buffer->getSize();
 
         long file_magic = s_get_int( code_memory );

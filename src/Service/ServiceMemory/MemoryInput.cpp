@@ -25,7 +25,7 @@ namespace Mengine
         m_data = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Pointer MemoryInput::newMemory( size_t _size )
+	Pointer MemoryInput::newBuffer( size_t _size )
 	{
 		unsigned char * memory = Helper::reallocateArrayT<unsigned char>( m_data, _size );
 
@@ -47,7 +47,7 @@ namespace Mengine
         return m_data;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Pointer MemoryInput::getMemory() const
+	Pointer MemoryInput::getBuffer() const
 	{
 		return m_data;
 	}

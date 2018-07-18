@@ -417,7 +417,7 @@ namespace Mengine
 			return false;
 		}
 
-		char * memory = buffer->getMemory();
+		char * memory = buffer->getBuffer();
 
 		stream->read( memory, xml_buffer_size );
 		memory[xml_buffer_size] = '\0';

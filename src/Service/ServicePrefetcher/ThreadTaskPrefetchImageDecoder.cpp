@@ -94,7 +94,7 @@ namespace Mengine
 
 		size_t stream_size = m_stream->size();
 
-		void * memory = memoryInput->newMemory( stream_size );
+		void * memory = memoryInput->newBuffer( stream_size );
 
 		if( memory == nullptr )
 		{

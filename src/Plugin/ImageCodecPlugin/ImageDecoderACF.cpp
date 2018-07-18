@@ -104,7 +104,7 @@ namespace Mengine
 				return 0;
 			}
 
-			void * memory = buffer->getMemory();
+			void * memory = buffer->getBuffer();
 
 			if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, memory, dataSize, __FILE__, __LINE__ ) == false )
 			{

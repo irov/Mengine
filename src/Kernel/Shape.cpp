@@ -25,9 +25,7 @@ namespace Mengine
             return;
         }
 
-        m_surface = _surface;
-
-        this->recompile();
+        this->recompile( [this, _surface]() {m_surface = _surface; } );
     }
     //////////////////////////////////////////////////////////////////////////
     const SurfacePtr & Shape::getSurface() const

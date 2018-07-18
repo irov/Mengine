@@ -61,7 +61,7 @@ namespace Mengine
 			return false;
 		}
 				
-		void * data_memory = cache->getMemory();
+		void * data_memory = cache->getBuffer();
 		size_t uncompressSize = cache->getSize();
 
 		OutputStreamInterfacePtr output = FILE_SERVICE()

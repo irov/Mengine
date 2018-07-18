@@ -219,7 +219,7 @@ namespace Mengine
 			return false;
 		}
 
-		uint8_t * binary_memory = binary_buffer->getMemory();
+		uint8_t * binary_memory = binary_buffer->getBuffer();
 		
         size_t uncompress_size = 0;
         if( ARCHIVE_SERVICE()

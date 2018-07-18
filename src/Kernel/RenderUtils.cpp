@@ -36,5 +36,32 @@ namespace Mengine
 
             return memorySize;
         }
+        //////////////////////////////////////////////////////////////////////////
+        void multiplyColorBuffer( const ColourValue & _color, uint8_t * _out, const uint8_t * _in )
+        {
+            ColourValue_ARGB argb = _color.getAsARGB();
+
+#ifdef MENGINE_RENDER_TEXTURE_RGBA
+            uint8_t a8 = (argb >> 24) & 0xFF;
+            uint8_t b8 = (argb >> 16) & 0xFF;
+            uint8_t g8 = (argb >> 8) & 0xFF;
+            uint8_t r8 = (argb >> 0) & 0xFF;
+#else
+            uint8_t a8 = (argb >> 24) & 0xFF;
+            uint8_t r8 = (argb >> 16) & 0xFF;
+            uint8_t g8 = (argb >> 8) & 0xFF;
+            uint8_t b8 = (argb >> 0) & 0xFF;
+#endif
+
+            uint16_t aa = _in[0] * a8 / 255;
+            uint16_t rr = _in[1] * r8 / 255;
+            uint16_t gg = _in[2] * g8 / 255;
+            uint16_t bb = _in[3] * b8 / 255;
+
+            _out[0] = (uint8_t)aa;
+            _out[1] = (uint8_t)rr;
+            _out[2] = (uint8_t)gg;
+            _out[3] = (uint8_t)bb;
+        }
     }
 }

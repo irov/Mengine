@@ -423,7 +423,7 @@ namespace Mengine
 		
 		if( fi.compr_method == Z_NO_COMPRESSION )
 		{
-			void * buffer = memory->newMemory( fi.file_size );
+			void * buffer = memory->newBuffer( fi.file_size );
 
 			if( buffer == nullptr )
 			{
@@ -443,7 +443,7 @@ namespace Mengine
 		}
 		else
 		{
-			void * buffer = memory->newMemory( fi.unz_size );
+			void * buffer = memory->newBuffer( fi.unz_size );
 
 			if( buffer == nullptr )
 			{
@@ -469,7 +469,7 @@ namespace Mengine
 				return false;
 			}
 
-			void * compress_memory = compress_buffer->getMemory();
+			void * compress_memory = compress_buffer->getBuffer();
 
 			m_mutex->lock();
 			m_zipFile->seek( file_offset );

@@ -4,7 +4,7 @@
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/Eventable.h"
-#include "Kernel/BaseEvent.h"
+#include "Kernel/BaseEventation.h"
 #include "Kernel/Factorable.h"
 
 #include "movie/movie.hpp"
@@ -25,7 +25,7 @@ namespace Mengine
 	class Movie2SubComposition
         : public Factorable
 		, public Eventable
-        , public BaseEvent
+        , public BaseEventation
         , public Animatable
         , public BaseAnimation
 	{

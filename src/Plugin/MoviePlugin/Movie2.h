@@ -41,7 +41,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	class Movie2
 		: public Node
-        , public BaseEvent
+        , public BaseEventation
 		, public BaseAnimation
 	{
         DECLARE_ANIMATABLE();

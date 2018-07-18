@@ -86,7 +86,7 @@ namespace Mengine
 			return false;
 		}
 
-		void * memory = memoryInput->newMemory( stream_size );
+		void * memory = memoryInput->newBuffer( stream_size );
 
 		if( memory == nullptr )
 		{

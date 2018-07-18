@@ -3,7 +3,7 @@
 #include "Kernel/Surface.h"
 #include "Kernel/Soundable.h"
 
-#include "Kernel/BaseEvent.h"
+#include "Kernel/BaseEventation.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/BaseAnimation.h"
 
@@ -27,7 +27,7 @@ namespace Mengine
     class SurfaceSound
 		: public Surface
         , public Soundable
-        , public BaseEvent
+        , public BaseEventation
         , public BaseAnimation
 	{
         DECLARE_ANIMATABLE();

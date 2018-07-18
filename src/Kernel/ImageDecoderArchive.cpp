@@ -84,7 +84,7 @@ namespace Mengine
 				return 0;
 			}
 						
-			const void * cache_buffer = buffer->getMemory();
+			const void * cache_buffer = buffer->getBuffer();
 			size_t cache_size = buffer->getSize();
 
 			decodyByte = this->decompressData_( cache_buffer, cache_size, _buffer, m_uncompressSize );
@@ -120,7 +120,7 @@ namespace Mengine
 				return 0;
 			}
 			
-			void * cache_buffer = buffer->getMemory();
+			void * cache_buffer = buffer->getBuffer();
 
 			size_t decompressSize;
 			if( m_archivator->decompress( cache_buffer, _capacityDest, _source, _sourceSize, decompressSize ) == false )

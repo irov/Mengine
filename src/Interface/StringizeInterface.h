@@ -102,6 +102,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    inline ConstString operator "" _c( const Char * _value, size_t _size )
+    {
+        ConstString cstr = Helper::stringizeStringSize( _value, (ConstString::size_type)_size );
+
+        return cstr;
+    }
+    //////////////////////////////////////////////////////////////////////////
 #	define STRINGIZE_STRING_LOCAL( str )\
 	([]{\
         constexpr size_t value_size = (sizeof(str) - 1);\

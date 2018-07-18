@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config/Typedef.h"
+#include "Config/Lambda.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
@@ -22,7 +23,7 @@ namespace Mengine
 		virtual void release();
 
 	public:
-		bool recompile();
+		bool recompile( const Lambda<> & _lambda );
 		
 	protected:
 		virtual bool _compile();

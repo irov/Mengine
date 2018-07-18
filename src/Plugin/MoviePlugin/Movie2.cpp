@@ -46,9 +46,7 @@ namespace Mengine
             return;
         }
 
-        m_resourceMovie2 = _resourceMovie2;
-        
-        this->recompile();
+        this->recompile( [this, _resourceMovie2]() {m_resourceMovie2 = _resourceMovie2; } );
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceMovie2Ptr & Movie2::getResourceMovie2() const

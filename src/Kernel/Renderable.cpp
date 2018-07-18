@@ -81,6 +81,20 @@ namespace Mengine
         (void)_externalRender;
         //Empty
     }
+    void Renderable::addRenderMesh( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        , const RenderVertexBufferInterfacePtr & _vertexBuffer
+        , const RenderIndexBufferInterfacePtr & _indexBuffer
+        , uint32_t _indexCount ) const
+    {
+        const RenderViewportInterfacePtr & viewport = _state->viewport;
+        const RenderCameraInterfacePtr & camera = _state->camera;
+        const RenderTransformationInterfacePtr & transformation = _state->transformation;
+        const RenderScissorInterfacePtr & scissor = _state->scissor;
+        const RenderTargetInterfacePtr & target = _state->target;
+
+        RENDER_SERVICE()
+            ->addRenderMesh( viewport, camera, transformation, scissor, target, _material, _vertexBuffer, _indexBuffer, _indexCount );
+    }
     //////////////////////////////////////////////////////////////////////////
     void Renderable::addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
@@ -89,11 +103,12 @@ namespace Mengine
     {
         const RenderViewportInterfacePtr & viewport = _state->viewport;
         const RenderCameraInterfacePtr & camera = _state->camera;
+        const RenderTransformationInterfacePtr & transformation = _state->transformation;
         const RenderScissorInterfacePtr & scissor = _state->scissor;
         const RenderTargetInterfacePtr & target = _state->target;
 
         RENDER_SERVICE()
-            ->addRenderObject( viewport, camera, scissor, target, _material, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug );
+            ->addRenderObject( viewport, camera, transformation, scissor, target, _material, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     void Renderable::addRenderQuad( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
@@ -102,11 +117,12 @@ namespace Mengine
     {
         const RenderViewportInterfacePtr & viewport = _state->viewport;
         const RenderCameraInterfacePtr & camera = _state->camera;
+        const RenderTransformationInterfacePtr & transformation = _state->transformation;
         const RenderScissorInterfacePtr & scissor = _state->scissor;
         const RenderTargetInterfacePtr & target = _state->target;
 
         RENDER_SERVICE()
-            ->addRenderQuad( viewport, camera, scissor, target, _material, _vertices, _vertexCount, _bb, _debug );
+            ->addRenderQuad( viewport, camera, transformation, scissor, target, _material, _vertices, _vertexCount, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     void Renderable::addRenderLine( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
@@ -115,11 +131,12 @@ namespace Mengine
     {
         const RenderViewportInterfacePtr & viewport = _state->viewport;
         const RenderCameraInterfacePtr & camera = _state->camera;
+        const RenderTransformationInterfacePtr & transformation = _state->transformation;
         const RenderScissorInterfacePtr & scissor = _state->scissor;
         const RenderTargetInterfacePtr & target = _state->target;
 
         RENDER_SERVICE()
-            ->addRenderLine( viewport, camera, scissor, target, _material, _vertices, _vertexCount, _bb, _debug );
+            ->addRenderLine( viewport, camera, transformation, scissor, target, _material, _vertices, _vertexCount, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertex2D * Renderable::getDebugRenderVertex2D( uint32_t _count ) const

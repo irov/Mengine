@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/PrototypeManagerInterface.h"
-#include "Interface/EventInterface.h"
+#include "Interface/EventationInterface.h"
 
 #include "Kernel/Node.h"
 
@@ -62,7 +62,7 @@ namespace Mengine
 		const pybind::object & getScriptObject() const;
 
     public:
-        EventInterfacePtr getScriptEvent() const;
+        EventationInterfacePtr getScriptEventation() const;
 		
     public:
         void onCreate();

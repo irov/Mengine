@@ -127,7 +127,7 @@ namespace Mengine
 	{
 		MemoryProxyInputInterface * memory = stdex::intrusive_get<MemoryProxyInputInterface *>( _stream );
 		
-		void * memory_buffer = memory->setMemory( m_memory, _offset, _size );
+		void * memory_buffer = memory->setBuffer( m_memory, _offset, _size );
 		
 		if( _memory != nullptr )
 		{

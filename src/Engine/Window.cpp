@@ -568,9 +568,7 @@ namespace Mengine
             return;
         }
 
-        m_resourceWindow = _resourceWindow;
-
-        this->recompile();
+        this->recompile( [this, _resourceWindow]() {m_resourceWindow = _resourceWindow; } );
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceWindowPtr & Window::getResourceWindow() const

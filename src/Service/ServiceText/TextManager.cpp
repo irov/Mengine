@@ -376,7 +376,7 @@ namespace Mengine
 
         MemoryInterfacePtr xml_memory = pak->getXmlBuffer();
 
-        Char * xml_buff = xml_memory->getMemory();
+        Char * xml_buff = xml_memory->getBuffer();
 
         TextManagerLoadSaxCallback tmsc( this, _fileGroup, _path );
         if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
@@ -466,7 +466,7 @@ namespace Mengine
 
         MemoryInterfacePtr xml_memory = pak->getXmlBuffer();
 
-        Char * xml_buff = xml_memory->getMemory();
+        Char * xml_buff = xml_memory->getBuffer();
 
         TextManagerUnloadSaxCallback tmsc( this, _fileGroup, _path );
         if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )

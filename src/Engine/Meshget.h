@@ -8,7 +8,7 @@
 #include "Kernel/ColourValue.h"
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/RenderVertex2D.h"
-#include "Kernel/BaseEvent.h"
+#include "Kernel/BaseEventation.h"
 
 #include "Config/Vector.h"
 
@@ -37,7 +37,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	class Meshget
 		: public Node
-        , public BaseEvent
+        , public BaseEventation
 	{
         DECLARE_EVENTABLE( MeshgetEventReceiver );
 

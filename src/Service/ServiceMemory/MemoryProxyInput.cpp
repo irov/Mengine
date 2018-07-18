@@ -19,7 +19,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryProxyInput::setMemory( void * _memory, size_t _offset, size_t _size )
+    Pointer MemoryProxyInput::setBuffer( void * _memory, size_t _offset, size_t _size )
     {
         m_data = static_cast<uint8_t*>(_memory) + _offset;
         m_size = _size;
@@ -30,7 +30,7 @@ namespace Mengine
         return m_data;
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryProxyInput::getMemory() const
+    Pointer MemoryProxyInput::getBuffer() const
     {
         return m_data;
     }

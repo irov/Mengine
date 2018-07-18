@@ -65,32 +65,33 @@ namespace Mengine
 	{	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::setResourceMovie( const ResourceMoviePtr & _resourceMovie )
-	{
-		if( m_resourceMovie == _resourceMovie )
-		{
-			return;
-		}
-
-		m_resourceMovie = _resourceMovie;
+    void Movie::setResourceMovie( const ResourceMoviePtr & _resourceMovie )
+    {
+        if( m_resourceMovie == _resourceMovie )
+        {
+            return;
+        }
 
         this->destroyLayers_();
 
-		if( m_resourceMovie != nullptr )
-		{
-			if( this->createLayers_() == false )
-			{
-				LOGGER_ERROR("Movie.setResourceMovie: %s resource %s can't create layers"
-					, m_name.c_str()
-					, m_resourceMovie->getName().c_str()
-					);
+        this->recompile( [this, _resourceMovie]
+        { 
+            m_resourceMovie = _resourceMovie; 
+        
+            if( m_resourceMovie != nullptr )
+            {
+                if( this->createLayers_() == false )
+                {
+                    LOGGER_ERROR( "Movie.setResourceMovie: %s resource %s can't create layers"
+                        , m_name.c_str()
+                        , m_resourceMovie->getName().c_str()
+                    );
 
-				m_resourceMovie = nullptr;
-				return;
-			}            
-		}  
-
-		this->recompile();      
+                    m_resourceMovie = nullptr;
+                    return;
+                }
+            }
+        } );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ResourceMoviePtr & Movie::getResourceMovie() const

@@ -25,10 +25,8 @@ namespace Mengine
 		{
 			return;
 		}
-
-		m_resourceImage = _resourceImage;
-
-		this->recompile();
+        
+        this->recompile( [this, _resourceImage]() { m_resourceImage = _resourceImage; } );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ResourceImagePtr & SurfaceTrackMatte::getResourceImage() const
@@ -43,9 +41,7 @@ namespace Mengine
 			return;
 		}
 
-		m_resourceTrackMatteImage = _resourceTrackMatteImage;
-
-		this->recompile();
+        this->recompile( [this, _resourceTrackMatteImage]() {m_resourceTrackMatteImage = _resourceTrackMatteImage; } );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ResourceImagePtr & SurfaceTrackMatte::getResourceTrackMatteImage() const

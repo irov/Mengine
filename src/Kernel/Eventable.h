@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/EventInterface.h"
+#include "Interface/EventationInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -15,7 +15,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual EventInterfacePtr getEvent()
+        virtual EventationInterfacePtr getEventation()
         {
             return nullptr;
         };
@@ -28,5 +28,5 @@ namespace Mengine
 #   define DECLARE_EVENTABLE( Type )\
 public:\
     typedef Type EventReceiverType;\
-    Mengine::EventInterfacePtr getEvent() override{ return this; }\
+    Mengine::EventationInterfacePtr getEventation() override{ return this; }\
 protected:

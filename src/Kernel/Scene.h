@@ -2,7 +2,7 @@
 
 #include "Kernel/Entity.h"
 #include "Kernel/Scriptable.h"
-#include "Kernel/BaseEvent.h"
+#include "Kernel/BaseEventation.h"
 #include "Kernel/Layer.h"
 
 #include "math/vec3.h"
@@ -32,7 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Scene
 		: public Entity
-        , public BaseEvent
+        , public BaseEventation
 	{
         DECLARE_EVENTABLE( SceneEventReceiver );
 

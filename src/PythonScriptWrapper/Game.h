@@ -2,7 +2,7 @@
 
 #include "Kernel/Scriptable.h"
 #include "Kernel/Eventable.h"
-#include "Kernel/BaseEvent.h"
+#include "Kernel/BaseEventation.h"
 
 #include "Interface/GameInterface.h"
 #include "Interface/ApplicationInterface.h"
@@ -109,7 +109,7 @@ namespace Mengine
 	class Game
 		: public ServiceBase<GameServiceInterface>
 		, public Eventable
-        , public BaseEvent
+        , public BaseEventation
 	{
         DECLARE_EVENTABLE( GameEventReceiver );
 

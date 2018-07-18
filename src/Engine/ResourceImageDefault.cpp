@@ -224,7 +224,7 @@ namespace Mengine
 				return false;
 			}
 
-			void * buffer_memory = buffer->getMemory();
+			void * buffer_memory = buffer->getBuffer();
 
 			ImageCodecOptions options;
 			options.channels = 4;
@@ -382,7 +382,6 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize )
 	{
-        m_filePath = _imagePath;        
         m_codecType = _codecType;
 
 		if( m_codecType.empty() == true )
@@ -408,7 +407,7 @@ namespace Mengine
 		
 		m_hasAlpha = true;
 		
-        if( this->recompile() == false )
+        if( this->recompile( [this, _imagePath]() { m_filePath = _imagePath; } ) == false )
         {
             return false;
         }

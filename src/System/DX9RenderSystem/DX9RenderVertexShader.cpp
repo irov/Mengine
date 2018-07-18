@@ -37,7 +37,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderVertexShader::compile( IDirect3DDevice9 * _pD3DDevice )
 	{
-		const DWORD * dx_source = m_memory->getMemory();
+		const DWORD * dx_source = m_memory->getBuffer();
 
 		IF_DXCALL( _pD3DDevice, CreateVertexShader, (dx_source, &m_shader) )
 		{

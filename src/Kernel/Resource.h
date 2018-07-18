@@ -10,6 +10,7 @@
 #include "Kernel/Scriptable.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Comable.h"
+#include "Kernel/Unknowable.h"
 
 #include "Kernel/ResourceHolder.h"
 
@@ -33,6 +34,7 @@ namespace Mengine
 		, public Loadable
         , public Scriptable
 		, public Visitable
+        , public Unknowable
 	{
 		DECLARE_VISITABLE_BASE();
 

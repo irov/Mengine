@@ -66,7 +66,7 @@ src
     RandomizerInterface.h
     AnimationInterface.h
     AccountInterface.h
-    EventInterface.h
+    EventationInterface.h
     UnknownInterface.h
     
 	dummy.cpp
@@ -89,6 +89,7 @@ Render
 	RenderTextureInterface.h
 	RenderViewportInterface.h	
 	RenderCameraInterface.h
+    RenderTransformationInterface.h
 	RenderScissorInterface.h
 	RenderTargetInterface.h
 	RenderMaterialServiceInterface.h
@@ -99,7 +100,7 @@ Render
 	RenderVertexShaderInterface.h
 	RenderFragmentShaderInterface.h
 	RenderVertexAttributeInterface.h
-	RenderMaterialInterface.h
+	RenderMaterialInterface.h   
 )
 
 ADD_FILTER(

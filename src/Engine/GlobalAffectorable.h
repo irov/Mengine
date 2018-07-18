@@ -2,6 +2,7 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Factorable.h"
+#include "Kernel/IntrusiveDerivedPtr.h"
 
 #include "Kernel/Affectorable.h"
 

@@ -60,7 +60,7 @@ namespace Mengine
 			return nullptr;
 		}
 
-		uint8_t * code_memory = code_buffer->getMemory();
+		uint8_t * code_memory = code_buffer->getBuffer();
 
 		size_t uncompress_size;
 		if( ARCHIVE_SERVICE()

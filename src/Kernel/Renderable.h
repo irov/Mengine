@@ -2,8 +2,11 @@
 
 #include "Interface/RenderViewportInterface.h"
 #include "Interface/RenderCameraInterface.h"
+#include "Interface/RenderTransformationInterface.h"
 #include "Interface/RenderScissorInterface.h"
 #include "Interface/RenderTargetInterface.h"
+#include "Interface/RenderVertexBufferInterface.h"
+#include "Interface/RenderIndexBufferInterface.h"
 #include "Interface/RenderMaterialInterface.h"
 
 #include "Kernel/Viewport.h"
@@ -19,8 +22,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct RenderContext
     {
-        RenderViewportInterfacePtr viewport;
+        RenderViewportInterfacePtr viewport;        
         RenderCameraInterfacePtr camera;
+        RenderTransformationInterfacePtr transformation;
         RenderScissorInterfacePtr scissor;
         RenderTargetInterfacePtr target;
 
@@ -59,6 +63,11 @@ namespace Mengine
         virtual void _setExternalRender( bool _externalRender );
 
     protected:
+        void addRenderMesh( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderVertexBufferInterfacePtr & _vertexBuffer
+            , const RenderIndexBufferInterfacePtr & _indexBuffer
+            , uint32_t _indexCount ) const;
+
         void addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indexCount

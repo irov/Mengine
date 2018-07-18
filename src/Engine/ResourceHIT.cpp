@@ -128,7 +128,7 @@ namespace Mengine
 		}
 		
 		size_t mipmapsize = (size_t)dataInfo->mipmapsize;
-		void * buffer = mipmap->newMemory( mipmapsize, __FILE__, __LINE__ );
+		void * buffer = mipmap->newBuffer( mipmapsize, __FILE__, __LINE__ );
 
 		if( buffer == nullptr )
 		{
@@ -221,9 +221,12 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceHIT::setPath( const FilePath & _filePath )
 	{
-		m_filePath = _filePath;
+        if( m_filePath == _filePath )
+        {
+            return;
+        }
 
-        this->recompile();
+        this->recompile( [this, _filePath]() { m_filePath = _filePath; } );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ResourceHIT::testPoint( const mt::vec2f & _point, float _minAlpha ) const
@@ -371,7 +374,7 @@ namespace Mengine
             return nullptr;
         }
 
-		uint8_t * buffer_memory = m_mipmap->getMemory();
+		uint8_t * buffer_memory = m_mipmap->getBuffer();
 
 		uint8_t * buffer = buffer_memory + bufferOffset;
         

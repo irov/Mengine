@@ -99,6 +99,7 @@ namespace Mengine
 
 		RenderViewportInterfacePtr viewport;
 		RenderCameraInterfacePtr camera;
+        RenderTransformationInterfacePtr transformation;
 		RenderScissorInterfacePtr scissor;
 		
         RenderTargetInterfacePtr target;
@@ -133,6 +134,7 @@ namespace Mengine
     public:
         void addRenderMesh( const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
+            , const RenderTransformationInterfacePtr & _transformation
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target
             , const RenderMaterialInterfacePtr & _material
@@ -142,6 +144,7 @@ namespace Mengine
 
         void addRenderObject( const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
+            , const RenderTransformationInterfacePtr & _transformation
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target
             , const RenderMaterialInterfacePtr & _material
@@ -151,6 +154,7 @@ namespace Mengine
 
         void addRenderQuad( const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
+            , const RenderTransformationInterfacePtr & _transformation
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target
             , const RenderMaterialInterfacePtr & _material
@@ -159,6 +163,7 @@ namespace Mengine
 
         void addRenderLine( const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
+            , const RenderTransformationInterfacePtr & _transformation
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target
             , const RenderMaterialInterfacePtr & _material
@@ -171,11 +176,13 @@ namespace Mengine
         bool testRenderPass_( const RenderBatchPtr & _batch
             , const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
+            , const RenderTransformationInterfacePtr & _transformation
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target ) const;
 
         const RenderPassPtr & requestRenderPass_( const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
+            , const RenderTransformationInterfacePtr & _transformation
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target
             , const RenderMaterialInterfacePtr & _material

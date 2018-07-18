@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/EventInterface.h"
+#include "Interface/EventationInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -11,12 +11,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class BaseEvent
-        : public EventInterface
+    class BaseEventation
+        : public EventationInterface
     {
     public:
-        BaseEvent();
-        ~BaseEvent() override;
+        BaseEventation();
+        ~BaseEventation() override;
 
     public:
         bool registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver ) override;
@@ -70,7 +70,7 @@ namespace Mengine
         class FEventReciver;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<BaseEvent> BaseEventPtr;
+    typedef IntrusivePtr<BaseEventation> BaseEventPtr;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
@@ -111,7 +111,7 @@ namespace Mengine
         }
 
         template<class T>
-        static T * getThisEventReciever( EventInterface * _self, uint32_t _event )
+        static T * getThisEventReciever( EventationInterface * _self, uint32_t _event )
         {
             T * reciever = _self->getEventRecieverT<T *>( _event );
 
@@ -119,7 +119,7 @@ namespace Mengine
         }
 
         template<class T>
-        static T * getThisEventReciever( const EventInterfacePtr & _self, uint32_t _event )
+        static T * getThisEventReciever( const EventationInterfacePtr & _self, uint32_t _event )
         {
             T * reciever = _self->getEventRecieverT<T *>( _event );
 

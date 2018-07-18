@@ -87,7 +87,7 @@ namespace Mengine
 				return false;
 			}
 
-			void * compress_memory = compress_buffer->getMemory();
+			void * compress_memory = compress_buffer->getBuffer();
 
 			size_t read_data = _stream->read( compress_memory, compress_size );
 
@@ -128,7 +128,7 @@ namespace Mengine
 				return false;
 			}
 
-			void * binaryMemory = binaryBuffer->newMemory( binary_size, __FILE__, __LINE__ );
+			void * binaryMemory = binaryBuffer->newBuffer( binary_size, __FILE__, __LINE__ );
 
 			if( binaryMemory == nullptr )
 			{
@@ -198,7 +198,7 @@ namespace Mengine
 				return false;
 			}
 
-			void * compress_memory = compress_buffer->getMemory();
+			void * compress_memory = compress_buffer->getBuffer();
 
 			if( crc32 != 0 )
 			{
@@ -287,7 +287,7 @@ namespace Mengine
 				return false;
 			}
 
-			const void * compressBuffer = compress_memory->getMemory();
+			const void * compressBuffer = compress_memory->getBuffer();
 			size_t compressSize = compress_memory->getSize();
 
 			if( compressBuffer == nullptr )
@@ -393,7 +393,7 @@ namespace Mengine
 				return nullptr;
 			}
 
-			void * compress_memory = compress_buffer->getMemory();
+			void * compress_memory = compress_buffer->getBuffer();
 
 			size_t read_data = _stream->read( compress_memory, compress_size );
 
@@ -434,7 +434,7 @@ namespace Mengine
 				return nullptr;
 			}
 
-			void * binary_memory = binary_buffer->newMemory( binary_size, _file, _line );
+			void * binary_memory = binary_buffer->newBuffer( binary_size, _file, _line );
 
 			size_t uncompressSize = 0;
 			if( _archivator->decompress( binary_memory, binary_size, compress_memory, compress_size, uncompressSize ) == false )

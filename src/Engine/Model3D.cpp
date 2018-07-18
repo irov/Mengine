@@ -111,9 +111,7 @@ namespace Mengine
 			return;
 		}
 
-		m_resourceModel = _resourceModel;
-
-		this->recompile();
+        this->recompile( [this, _resourceModel]() {m_resourceModel = _resourceModel; } );
 
 		this->invalidateVertices();
 		this->invalidateBoundingBox();

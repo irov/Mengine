@@ -70,7 +70,7 @@ namespace Mengine
 
 		MovieFramePack * pack = stdex::intrusive_get<MovieFramePack *>(_data);
 
-		void * binaryBuffer_memory = binaryBuffer->getMemory();
+		void * binaryBuffer_memory = binaryBuffer->getBuffer();
 		size_t binaryBuffer_size = binaryBuffer->getSize();
 		
 		if( this->loadBuffer_( pack, binaryBuffer_memory, binaryBuffer_size ) == false )

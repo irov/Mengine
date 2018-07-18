@@ -499,9 +499,7 @@ namespace Mengine
 			return;
 		}
 
-		m_resourceParticle = _resourceParticle;
-
-		this->recompile();
+        this->recompile( [this, _resourceParticle]() {m_resourceParticle = _resourceParticle; } );
 	}
     //////////////////////////////////////////////////////////////////////////
 	const ResourceParticlePtr & ParticleEmitter2::getResourceParticle() const

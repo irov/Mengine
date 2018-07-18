@@ -37,10 +37,8 @@ namespace Mengine
 		{
 			return;
 		}
-
-		m_resourceImage = _resourceImage;
-
-		this->recompile();
+        
+        this->recompile( [this, _resourceImage]() {m_resourceImage = _resourceImage; } );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ResourceImagePtr & Grid2D::getResourceImage() const

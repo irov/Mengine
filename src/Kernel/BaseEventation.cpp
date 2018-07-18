@@ -1,20 +1,20 @@
-#include "BaseEvent.h"
+#include "BaseEventation.h"
 
 #include <algorithm>
 
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	BaseEvent::BaseEvent()
+	BaseEventation::BaseEventation()
 		: m_flag(0)
 	{
     }
 	//////////////////////////////////////////////////////////////////////////
-	BaseEvent::~BaseEvent()
+	BaseEventation::~BaseEventation()
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    class BaseEvent::FEventReciver
+    class BaseEventation::FEventReciver
     {
     public:
         FEventReciver( uint32_t _event )
@@ -32,7 +32,7 @@ namespace Mengine
         uint32_t m_event;
     };
     //////////////////////////////////////////////////////////////////////////
-    bool BaseEvent::registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver )
+    bool BaseEventation::registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver )
     {
 #ifndef NDEBUG
         if( _event >= (sizeof( m_flag ) * 8 - 1) )
@@ -61,7 +61,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseEvent::removeEventReceiver( uint32_t _event )
+    void BaseEventation::removeEventReceiver( uint32_t _event )
     {
 #ifndef NDEBUG
         if( _event >= (sizeof( m_flag ) * 8) )
@@ -82,7 +82,7 @@ namespace Mengine
         m_flag &= ~(1L << _event);
     }
     //////////////////////////////////////////////////////////////////////////
-    const EventReceiverPtr & BaseEvent::getEventReciever( uint32_t _event ) const
+    const EventReceiverPtr & BaseEventation::getEventReciever( uint32_t _event ) const
     {
 #ifndef NDEBUG
         if( _event >= (sizeof( m_flag ) * 8) )
@@ -103,7 +103,7 @@ namespace Mengine
         return receiver;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BaseEvent::hasEventReceiver( uint32_t _event ) const
+    bool BaseEventation::hasEventReceiver( uint32_t _event ) const
     {
 #ifndef NDEBUG
         if( _event >= (sizeof( m_flag ) * 8) )
@@ -115,7 +115,7 @@ namespace Mengine
         return (m_flag & (1ULL << _event)) != 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseEvent::removeEvents()
+    void BaseEventation::removeEvents()
     {
         m_receivers.clear();
         m_flag = 0;

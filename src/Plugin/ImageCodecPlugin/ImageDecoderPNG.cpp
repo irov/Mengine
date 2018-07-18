@@ -304,7 +304,7 @@ namespace Mengine
 					return 0;
 				}
 				
-				png_byte * row_memory = row_buffer->getMemory();
+				png_byte * row_memory = row_buffer->getBuffer();
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
@@ -342,7 +342,7 @@ namespace Mengine
 					return 0;
 				}
 				
-				png_byte * row_memory = row_buffer->getMemory();
+				png_byte * row_memory = row_buffer->getBuffer();
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 
@@ -367,7 +367,7 @@ namespace Mengine
 					return 0;
 				}
 
-				png_byte * row_memory = row_buffer->getMemory();
+				png_byte * row_memory = row_buffer->getBuffer();
 
 				png_bytep bufferCursor = (png_bytep)_buffer;
 

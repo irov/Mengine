@@ -31,10 +31,8 @@ namespace Mengine
 		{
 			return;
 		}
-
-		m_resourceVideo = _resourceVideo;
-
-		this->recompile();
+        
+        this->recompile( [this, _resourceVideo]() {m_resourceVideo = _resourceVideo; } );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	const ResourceVideoPtr & SurfaceVideo::getResourceVideo() const

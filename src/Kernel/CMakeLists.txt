@@ -14,8 +14,8 @@ Unknowable
 ADD_FILTER(
 Eventable
 	Eventable.h
-    BaseEvent.h
-    BaseEvent.cpp
+    BaseEventation.h
+    BaseEventation.cpp
 )
 
 ADD_FILTER(
@@ -397,12 +397,15 @@ Core
     SHA1.h
     
     IntrusivePtr.h
+    IntrusiveDerivedPtr.h
     IntrusivePtrBase.h
     
     LoggerBase.cpp
     LoggerBase.h
     
     AspectRatioViewports.h
+    
+    Range.h
 )
 
 ADD_FILTER(

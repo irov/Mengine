@@ -84,7 +84,7 @@ namespace Mengine
 			return false;
 		}
 
-		const void * compress_memory = compress_buffer->getMemory();
+		const void * compress_memory = compress_buffer->getBuffer();
 
 		size_t uncompressSize = 0;
 		if( _archivator->decompress( _memory, _capacity, compress_memory, _size, uncompressSize ) == false )
@@ -112,7 +112,7 @@ namespace Mengine
 			return nullptr;
 		}
 
-		const void * uncompress_memory = uncompress_buffer->getMemory();
+		const void * uncompress_memory = uncompress_buffer->getBuffer();
 		size_t uncompress_size = uncompress_buffer->getSize();
 				
 		MemoryInputInterfacePtr compress_memory = this->compressBuffer( _archivator, uncompress_memory, uncompress_size, _compress );
@@ -127,7 +127,7 @@ namespace Mengine
 		MemoryInputInterfacePtr memory = MEMORY_SERVICE()
 			->createMemoryInput();
 
-		void * buffer = memory->newMemory( compressSize2 );
+		void * buffer = memory->newBuffer( compressSize2 );
 
 		if( buffer == nullptr )
 		{
@@ -146,7 +146,7 @@ namespace Mengine
 			return nullptr;
 		}
         
-        void * new_memory = memory->newMemory( compressSize );
+        void * new_memory = memory->newBuffer( compressSize );
 
 		if( new_memory == nullptr )
 		{

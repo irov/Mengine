@@ -5,7 +5,7 @@
 #include "Interface/MousePickerSystemInterface.h"
 
 #include "Kernel/Polygon.h"
-#include "Kernel/BaseEvent.h"
+#include "Kernel/BaseEventation.h"
 
 namespace Mengine
 {
@@ -50,7 +50,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class HotSpot
 		: public Node
-        , public BaseEvent
+        , public BaseEventation
 		, public MousePickerTrapInterface
 	{
 		DECLARE_VISITABLE( Node );

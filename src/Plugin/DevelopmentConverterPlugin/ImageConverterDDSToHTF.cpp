@@ -99,7 +99,7 @@ namespace Mengine
 			return false;
 		}
 
-		void * data_memory = data_buffer->getMemory();
+		void * data_memory = data_buffer->getBuffer();
 
         uint8_t * miplevel_data_memory = reinterpret_cast<uint8_t *>(data_memory);
 

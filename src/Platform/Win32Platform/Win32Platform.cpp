@@ -1174,7 +1174,7 @@ namespace Mengine
 				return false;
 			}
 
-			void * memory = _buffer->getMemory();
+			void * memory = _buffer->getBuffer();
 			size_t size = _buffer->getSize();
 
 			if( stream->write( memory, size ) == false )

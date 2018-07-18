@@ -154,74 +154,72 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Landscape2D::setBackParts( const TVectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height)
 	{
-		m_images = _images;
+        this->recompile( [this, _images]() {m_images = _images; } );
 
-		m_elementCountX = _countX;
-		m_elementCountY = _countY;
-		m_elementWidth = _width;
-		m_elementHeight = _height;
+        m_elementCountX = _countX;
+        m_elementCountY = _countY;
+        m_elementWidth = _width;
+        m_elementHeight = _height;
 
-		uint32_t i = 0;
-		uint32_t j = 0;
+        uint32_t i = 0;
+        uint32_t j = 0;
 
         TVectorResourceImage::size_type elementCount = m_images.size();
-		m_elements.reserve( elementCount );
-		m_verticesWM.resize( elementCount * 4 );
+        m_elements.reserve( elementCount );
+        m_verticesWM.resize( elementCount * 4 );
 
         for( const ResourceImagePtr & image : m_images )
-		{
-			if( image == nullptr )
-			{
-				LOGGER_ERROR("Landscape2D::setBackParts %s invalid setup image for %d:%d"
-					, this->getName().c_str()
-					, i
-					, j
-					);
+        {
+            if( image == nullptr )
+            {
+                LOGGER_ERROR( "Landscape2D::setBackParts %s invalid setup image for %d:%d"
+                    , this->getName().c_str()
+                    , i
+                    , j
+                );
 
-				continue;
-			}
+                continue;
+            }
 
-			Landscape2DElement el;
+            Landscape2DElement el;
 
-			el.image = image;
+            el.image = image;
 
-			// left-upper
-			mt::vec2f p1;
-			p1.x = (i + 0) * m_elementWidth;
-			p1.y = (j + 0) * m_elementHeight;
+            // left-upper
+            mt::vec2f p1;
+            p1.x = (i + 0) * m_elementWidth;
+            p1.y = (j + 0) * m_elementHeight;
 
-			mt::vec2f p2;
-			p2.x = (i + 1) * m_elementWidth;
-			p2.y = (j + 0) * m_elementHeight;
+            mt::vec2f p2;
+            p2.x = (i + 1) * m_elementWidth;
+            p2.y = (j + 0) * m_elementHeight;
 
-			mt::vec2f p3;
-			p3.x = (i + 1) * m_elementWidth;
-			p3.y = (j + 1) * m_elementHeight;
+            mt::vec2f p3;
+            p3.x = (i + 1) * m_elementWidth;
+            p3.y = (j + 1) * m_elementHeight;
 
-			mt::vec2f p4;
-			p4.x = (i + 0) * m_elementWidth;
-			p4.y = (j + 1) * m_elementHeight;
+            mt::vec2f p4;
+            p4.x = (i + 0) * m_elementWidth;
+            p4.y = (j + 1) * m_elementHeight;
 
-			mt::reset( el.bb, p1 );
-			mt::add_internal_point( el.bb, p2 );
-			mt::add_internal_point( el.bb, p3 );
-			mt::add_internal_point( el.bb, p4 );
+            mt::reset( el.bb, p1 );
+            mt::add_internal_point( el.bb, p2 );
+            mt::add_internal_point( el.bb, p3 );
+            mt::add_internal_point( el.bb, p4 );
 
-			el.i = i;
-			el.j = j;
+            el.i = i;
+            el.j = j;
 
-			++i;
+            ++i;
 
-			if( i == m_elementCountX )
-			{
-				i = 0;
-				++j;
-			}
+            if( i == m_elementCountX )
+            {
+                i = 0;
+                ++j;
+            }
 
-			m_elements.emplace_back( el );
-		}	
-
-		this->recompile();
+            m_elements.emplace_back( el );
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Landscape2D::updateVerticesWM_()

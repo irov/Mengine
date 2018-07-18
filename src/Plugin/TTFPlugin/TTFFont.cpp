@@ -102,7 +102,7 @@ namespace Mengine
                 return false;
             }
 
-            const void * ttfEffectMemory_buffer = ttfEffectMemory->getMemory();
+            const void * ttfEffectMemory_buffer = ttfEffectMemory->getBuffer();
             size_t ttfEffectMemory_size = ttfEffectMemory->getSize();
 
             m_ttfFEBundle = fe_bundle_load( (const uint8_t *)ttfEffectMemory_buffer, (int)ttfEffectMemory_size );
@@ -146,7 +146,7 @@ namespace Mengine
 
 		MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, __FILE__, __LINE__ );
 
-		FT_Byte * memory_byte = memory->getMemory();
+		FT_Byte * memory_byte = memory->getBuffer();
 		size_t memory_size = memory->getSize();
 
 		if( memory_byte == nullptr )
@@ -678,7 +678,7 @@ namespace Mengine
     {
         MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, __FILE__, __LINE__ );
 
-        FT_Byte * memory_byte = memory->getMemory();
+        FT_Byte * memory_byte = memory->getBuffer();
         size_t memory_size = memory->getSize();
 
         if( memory_byte == nullptr )

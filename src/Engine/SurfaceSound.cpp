@@ -149,9 +149,7 @@ namespace Mengine
             return;
         }
 
-        m_resourceSound = _resourceSound;
-
-        this->recompile();
+        this->recompile( [this, _resourceSound]() {m_resourceSound = _resourceSound; } );
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceSoundPtr & SurfaceSound::getResourceSound() const

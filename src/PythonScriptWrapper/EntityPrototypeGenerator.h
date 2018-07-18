@@ -4,7 +4,7 @@
 
 #include "Kernel/ServantBase.h"
 #include "Kernel/Eventable.h"
-#include "Kernel/BaseEvent.h"
+#include "Kernel/BaseEventation.h"
 #include "Kernel/Entity.h"
 
 namespace Mengine
@@ -13,7 +13,7 @@ namespace Mengine
 	class EntityPrototypeGenerator
 		: public ServantBase<PrototypeGeneratorInterface>
         , public Eventable
-        , public BaseEvent
+        , public BaseEventation
 	{
         DECLARE_EVENTABLE( EntityEventReceiver );
 

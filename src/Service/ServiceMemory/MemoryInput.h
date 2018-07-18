@@ -17,10 +17,10 @@ namespace Mengine
 		~MemoryInput() override;
 
     public:
-        Pointer newMemory( size_t _size ) override;
+        Pointer newBuffer( size_t _size ) override;
 
 	public:
-		Pointer getMemory() const override;
+		Pointer getBuffer() const override;
 		size_t getSize() const override;
 
 	public:

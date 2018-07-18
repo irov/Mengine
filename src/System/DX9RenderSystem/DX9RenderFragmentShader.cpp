@@ -38,7 +38,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool DX9RenderFragmentShader::compile( IDirect3DDevice9 * _pD3DDevice )
 	{
-        const DWORD * shader_compile_data = m_memory->getMemory();
+        const DWORD * shader_compile_data = m_memory->getBuffer();
 
         IF_DXCALL( _pD3DDevice, CreatePixelShader, (shader_compile_data, &m_shader) )
         {

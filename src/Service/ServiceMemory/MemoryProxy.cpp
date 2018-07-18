@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryProxy::setMemory( void * _ptr, size_t _size, const Char * _file, uint32_t _line )
+    void MemoryProxy::setBuffer( void * _ptr, size_t _size, const Char * _file, uint32_t _line )
     {
         (void)_file;
         (void)_line;
@@ -31,7 +31,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryProxy::getMemory() const
+    Pointer MemoryProxy::getBuffer() const
     {
         return m_ptr;
     }

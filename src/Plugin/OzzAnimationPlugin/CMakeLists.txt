@@ -1,0 +1,115 @@
+set( MY_LIB_NAME OzzAnimationPlugin )
+
+ADD_FILTER(
+src
+    OzzAnimationPlugin.cpp
+    OzzAnimationPlugin.h
+    OzzAnimationPlugin.def
+    OzzAnimationInterface.h
+    OzzDetail.cpp
+    OzzDetail.h
+    ResourceOzzSkeleton.cpp
+    ResourceOzzSkeleton.h
+    ResourceOzzMesh.cpp
+    ResourceOzzMesh.h
+    ResourceOzzAnimation.cpp
+    ResourceOzzAnimation.h
+    SamplerOzzAnimation.cpp
+    SamplerOzzAnimation.h
+    NodeOzzAnimation.cpp
+    NodeOzzAnimation.h    
+)
+
+if( MENGINE_PLUGIN_OZZ_ANIMATION_DLL )
+    add_definitions(-DMENGINE_PLUGIN_DLL)
+endif()
+
+INCLUDE_DIRECTORIES( ${MENGINE_SOURCE_DIR}/Kernel )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/ozz/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )		
+
+if( MENGINE_PLUGIN_OZZ_DLL )    
+    ADD_MENGINE_SHARED()
+else()    
+    ADD_MENGINE_LIBRARY()
+endif()
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
+
+if( MENGINE_PLUGIN_OZZ_DLL )
+    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
+    
+    IF(CMAKE_BUILD_TYPE MATCHES "Debug")
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_base_d${MENGINE_LIB_SUFFIX})
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_options_d${MENGINE_LIB_SUFFIX})
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_geometry_d${MENGINE_LIB_SUFFIX})
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_d${MENGINE_LIB_SUFFIX})
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_d${MENGINE_LIB_SUFFIX})
+#        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_anim_tools_d${MENGINE_LIB_SUFFIX})
+#        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_skel_tools_d${MENGINE_LIB_SUFFIX})   
+    ELSE()
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_base_r${MENGINE_LIB_SUFFIX})
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_options_r${MENGINE_LIB_SUFFIX})
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_geometry_r${MENGINE_LIB_SUFFIX})
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_r${MENGINE_LIB_SUFFIX})
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_r${MENGINE_LIB_SUFFIX})
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_anim_tools_r${MENGINE_LIB_SUFFIX})
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_skel_tools_r${MENGINE_LIB_SUFFIX})
+    ENDIF()
+    
+    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})
+    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX})
+    
+else()
+    SET( APPLICATION_DEPENDENCIES
+     ${APPLICATION_DEPENDENCIES}
+     ${MY_LIB_NAME}
+     Kernel
+    )
+
+    SET( APPLICATION_DEPENDENCIES
+     ${APPLICATION_DEPENDENCIES}
+     PARENT_SCOPE
+    )
+
+    SET( APPLICATION_LIB_PATHS
+     ${APPLICATION_LIB_PATHS}
+    )
+
+    SET( APPLICATION_LIB_PATHS
+     ${APPLICATION_LIB_PATHS}
+     PARENT_SCOPE
+    )
+
+    IF(CMAKE_BUILD_TYPE MATCHES "Debug")
+        SET( APPLICATION_LIBS
+            ${APPLICATION_LIBS}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_base_d${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_options_d${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_geometry_d${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_d${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_d${MENGINE_LIB_SUFFIX}
+#            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_anim_tools_d${MENGINE_LIB_SUFFIX}
+#            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_skel_tools_d${MENGINE_LIB_SUFFIX}    
+        )
+    ELSE()
+        SET( APPLICATION_LIBS
+            ${APPLICATION_LIBS}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_base_r${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_options_r${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_geometry_r${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_r${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_r${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_anim_tools_r${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_skel_tools_r${MENGINE_LIB_SUFFIX}    
+        )
+    ENDIF()    
+
+    SET( APPLICATION_LIBS
+     ${APPLICATION_LIBS}
+     PARENT_SCOPE
+    )
+endif()

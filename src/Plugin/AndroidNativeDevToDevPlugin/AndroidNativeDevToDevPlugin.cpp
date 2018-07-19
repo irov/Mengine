@@ -61,6 +61,7 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
+        pybind::def_functor( kernel, "androidDevToDevInitialize", this, &AndroidNativeDevToDevPlugin::initializeSDK );
         pybind::def_functor( kernel, "androidDevToDevSetTutorialEvent", this, &AndroidNativeDevToDevPlugin::onTutorialEvent );
         pybind::def_functor( kernel, "androidDevToDevSetCurrentLevel", this, &AndroidNativeDevToDevPlugin::setCurrentLevel );
         pybind::def_functor( kernel, "androidDevToDevOnLevelUp", this, &AndroidNativeDevToDevPlugin::onLevelUp );
@@ -76,7 +77,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeDevToDevPlugin::initializePlugin( const String & _appId, const String & _secret, const String & _apiKey )
+    bool AndroidNativeDevToDevPlugin::initializeSDK( const String & _appId, const String & _secret, const String & _apiKey )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
         

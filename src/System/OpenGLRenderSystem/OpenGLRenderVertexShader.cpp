@@ -45,7 +45,7 @@ namespace Mengine
             return false;
         }
 
-        const Char * str_source = m_memory->getMemory();
+        const Char * str_source = m_memory->getBuffer();
         GLint str_size = (GLint)m_memory->getSize();
 
         GLCALL( glShaderSource, (shaderId, 1, &str_source, &str_size) );

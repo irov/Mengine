@@ -88,7 +88,7 @@ namespace Mengine
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryCacheBuffer();
 
-        memory->newMemory( bufferSize, __FILE__, __LINE__ );
+        memory->newBuffer( bufferSize, __FILE__, __LINE__ );
 
         m_lockMemory = memory;
 
@@ -97,7 +97,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderIndexBuffer::unlock()
     {
-        void * memory_buffer = m_lockMemory->getMemory();
+        void * memory_buffer = m_lockMemory->getBuffer();
 
         GLCALL( glBindBuffer, (GL_ELEMENT_ARRAY_BUFFER, m_id) );
         GLCALL( glBufferSubData, (GL_ELEMENT_ARRAY_BUFFER, m_lockOffset * m_indexSize, m_lockCount * m_indexSize, memory_buffer) );

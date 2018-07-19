@@ -23,7 +23,7 @@ namespace Mengine
         void _finalize() override;
 
     public:
-        bool initializePlugin( const String & _appId, const String & _secret, const String & _apiKey );
+        bool initializeSDK( const String & _appId, const String & _secret, const String & _apiKey );
         bool onTutorialEvent( int _stateOrStep );
         bool setCurrentLevel( int _level );
         bool onLevelUp( int _level );

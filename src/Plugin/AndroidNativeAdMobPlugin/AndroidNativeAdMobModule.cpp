@@ -209,21 +209,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
-    {   
-        //////////////////////////////////////////////////////////////////////////
-        static bool androidAdMobSetupInterstitialAd( AndroidNativeAdMobModule * _plugin )
-        {
-            bool successful = _plugin->setupInterstitialAd();
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool androidAdMobShowInterstitialAd( AndroidNativeAdMobModule * _plugin )
-        {
-            bool successful = _plugin->showInterstitialAd();
-
-            return successful;
-        }
+    {
         //////////////////////////////////////////////////////////////////////////
         class PythonAdMobInterstitialEventHandler
             : public Callback<AdMobInterstitialEventHandler>
@@ -280,20 +266,6 @@ namespace Mengine
             _plugin->setInterstitialEventHandler(
                 new FactorableUnique<PythonAdMobInterstitialEventHandler>( _cb, _args )
             );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool androidAdMobSetupRewardedVideoAd( AndroidNativeAdMobModule * _plugin )
-        {
-            bool successful = _plugin->setupRewardedVideoAd();
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool androidAdMobShowRewardedVideoAd( AndroidNativeAdMobModule * _plugin )
-        {
-            bool successful = _plugin->showRewardedVideoAd();
-
-            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAdMobRewardedVideoEventHandler
@@ -387,11 +359,13 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        pybind::def_function_proxy( kernel, "androidAdMobSetupInterstitialAd", &Detail::androidAdMobSetupInterstitialAd, this );
-        pybind::def_function_proxy( kernel, "androidAdMobShowInterstitialAd", &Detail::androidAdMobShowInterstitialAd, this );
+
+        pybind::def_functor( kernel, "androidAdMobInitialize", this, &AndroidNativeAdMobModule::initializeSDK );
+        pybind::def_functor( kernel, "androidAdMobSetupInterstitialAd", this, &AndroidNativeAdMobModule::setupInterstitialAd );
+        pybind::def_functor( kernel, "androidAdMobShowInterstitialAd", this, &AndroidNativeAdMobModule::showInterstitialAd );
         pybind::def_function_proxy_args( kernel, "androidAdMobSetInterstitialAdEventHandler", &Detail::androidAdMobSetInterstitialAdEventHandler, this );
-        pybind::def_function_proxy( kernel, "androidAdMobSetupRewardedVideoAd", &Detail::androidAdMobSetupRewardedVideoAd, this );
-        pybind::def_function_proxy( kernel, "androidAdMobShowRewardedVideoAd", &Detail::androidAdMobShowRewardedVideoAd, this );        
+        pybind::def_functor( kernel, "androidAdMobSetupRewardedVideoAd", this, &AndroidNativeAdMobModule::setupRewardedVideoAd );
+        pybind::def_functor( kernel, "androidAdMobShowRewardedVideoAd", this, &AndroidNativeAdMobModule::showRewardedVideoAd );
         pybind::def_function_proxy_args( kernel, "androidAdMobSetRewardedVideoAdEventHandler", &Detail::androidAdMobSetRewardedVideoAdEventHandler, this );
 
         m_mutex = THREAD_SERVICE()
@@ -446,7 +420,7 @@ namespace Mengine
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeAdMobModule::initializePlugin( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId )
+    bool AndroidNativeAdMobModule::initializeSDK( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
         

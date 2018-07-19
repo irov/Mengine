@@ -32,7 +32,7 @@ namespace Mengine
         void addCommand( const LambdaUnityAdEventHandler & _command );
         
     public:
-        bool initializePlugin( const String & _gameId );
+        bool initializeSDK( const String & _gameId );
         bool setupAds( bool _debug );
         bool showAd( const String & _placementId );
         void setAdsEventHandler( const UnityAdEventHandlerPtr & _eventHandler );

@@ -164,20 +164,6 @@ namespace Mengine
             EUC_ERROR,
         };
         //////////////////////////////////////////////////////////////////////////
-        static bool androidUnitySetupAds( AndroidNativeUnityAdsModule * _plugin, bool _debug )
-        {
-            bool successful = _plugin->setupAds( _debug );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        static bool androidUnityShowAd( AndroidNativeUnityAdsModule * _plugin, const String & _placementId )
-        {
-            bool successful = _plugin->showAd( _placementId );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
         class PythonUnityAdEventHandler
             : public Callback<UnityAdEventHandler>
         {
@@ -255,8 +241,9 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        pybind::def_function_proxy( kernel, "androidUnitySetupAds", &Detail::androidUnitySetupAds, this );
-        pybind::def_function_proxy( kernel, "androidUnityShowAd", &Detail::androidUnityShowAd, this );
+        pybind::def_functor( kernel, "androidUnityInitialize", this, &AndroidNativeUnityAdsModule::initializeSDK );
+        pybind::def_functor( kernel, "androidUnitySetupAds", this, &AndroidNativeUnityAdsModule::setupAds );
+        pybind::def_functor( kernel, "androidUnityShowAd", this, &AndroidNativeUnityAdsModule::showAd );
         pybind::def_function_proxy_args( kernel, "androidUnitySetAdsEventHandler", &Detail::androidUnitySetAdsEventHandler, this );
 
         m_mutex = THREAD_SERVICE()
@@ -298,7 +285,7 @@ namespace Mengine
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeUnityAdsModule::initializePlugin( const String & _gameId )
+    bool AndroidNativeUnityAdsModule::initializeSDK( const String & _gameId )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
         

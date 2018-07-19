@@ -229,7 +229,7 @@ namespace Mengine
             return nullptr;
         }
 
-        void * buffer = memory->newMemory( size, __FILE__, __LINE__ );
+        void * buffer = memory->newBuffer( size, __FILE__, __LINE__ );
 
         if( buffer == nullptr )
         {
@@ -294,7 +294,7 @@ namespace Mengine
             {
                 if( m_lockRect.full( m_hwWidth, m_hwHeight ) == true )
                 {
-                    void * buffer = m_lockMemory->getMemory();
+                    void * buffer = m_lockMemory->getBuffer();
 
                     GLuint textureMemorySize = Helper::getTextureMemorySize( miplevel_hwwidth, miplevel_hwheight, m_hwChannels, 1, m_hwPixelFormat );
 #ifdef MENGINE_OPENGL_ES
@@ -322,7 +322,7 @@ namespace Mengine
             }break;
         default:
             {
-                void * buffer = m_lockMemory->getMemory();
+                void * buffer = m_lockMemory->getBuffer();
 
                 if( m_lockRect.full( m_hwWidth, m_hwHeight ) == true )
                 {

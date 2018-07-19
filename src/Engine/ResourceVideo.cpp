@@ -99,18 +99,21 @@ namespace Mengine
 
 		const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
 
-		//if( dataInfo->frameWidth % 16 != 0 ||
-		//	dataInfo->frameHeight % 16 != 0 )
-		//{
-		//	LOGGER_ERROR("ResourceVideo::checkValidVideoDecoder_ invalid width or heigth '%d:%d' need '%d:%d' maybe div 16"
-		//		, dataInfo->frameWidth
-		//		, dataInfo->frameHeight
-		//		, (dataInfo->frameWidth / 16 + 1) * 16
-		//		, (dataInfo->frameHeight / 16 + 1) * 16
-		//		);
+        const uint32_t MENGINE_VIDEO_SIZE_DIV = 8;
 
-		//	return false;
-		//}
+        if( dataInfo->frameWidth % MENGINE_VIDEO_SIZE_DIV != 0 ||
+            dataInfo->frameHeight % MENGINE_VIDEO_SIZE_DIV != 0 )
+        {
+            LOGGER_ERROR( "ResourceVideo::checkValidVideoDecoder_ invalid width or heigth '%d:%d' need '%d:%d' maybe div %d"
+                , dataInfo->frameWidth
+                , dataInfo->frameHeight
+                , (dataInfo->frameWidth / MENGINE_VIDEO_SIZE_DIV + 1) * MENGINE_VIDEO_SIZE_DIV
+                , (dataInfo->frameHeight / MENGINE_VIDEO_SIZE_DIV + 1) * MENGINE_VIDEO_SIZE_DIV
+                , MENGINE_VIDEO_SIZE_DIV
+            );
+
+            return false;
+        }
 
 		uint32_t limitVideoWidth = CONFIG_VALUE( "Limit", "VideoWidth", 2048U );
 		uint32_t limitVideoHeight = CONFIG_VALUE( "Limit", "VideoHeight", 2048U );

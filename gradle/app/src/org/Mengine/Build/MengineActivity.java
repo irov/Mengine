@@ -20,17 +20,20 @@ public class MengineActivity extends SDLActivity {
     public AdMobInteractionLayer adMobInteractionLayer;
     public DevToDevInteractionLayer devToDevInteractionLayer;
 
-    public CallbackManager callbackManager;
+    private CallbackManager _callbackManager;
 
     private static MengineActivity _instance;
 
     static native void AndroidNativeFacebook_setupFacebookJNI();
 
     static native void AndroidNativeUnity_setupUnityJNI();
+    static native void AndroidNativeUnity_onSDKInitialized();
 
     static native void AndroidNativeAdMob_setupAdMobJNI();
+    static native void AndroidNativeAdMob_onSDKInitialized();
 
     static native void AndroidNativeDevToDev_setupDevToDevJNI();
+    static native void AndroidNativeDevToDev_onSDKInitialized();
 
     @Override
     protected String[] getLibraries() {
@@ -49,7 +52,10 @@ public class MengineActivity extends SDLActivity {
 
         _instance = this;
 
+        _callbackManager = CallbackManager.Factory.create();
+
         AndroidNativeFacebook_setupFacebookJNI();
+        facebookInteractionLayer = new FacebookInteractionLayer(_callbackManager);
 
         AndroidNativeUnity_setupUnityJNI();
 
@@ -68,8 +74,8 @@ public class MengineActivity extends SDLActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (callbackManager != null) {
-            callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (_callbackManager != null) {
+            _callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -81,13 +87,6 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Facebook Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void facebookInitializePlugin() {
-        if (_instance != null) {
-            _instance.callbackManager = CallbackManager.Factory.create();
-            _instance.facebookInteractionLayer = new FacebookInteractionLayer(_instance.callbackManager);
-        }
-    }
-
     public static boolean facebookIsLoggedIn() {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             return _instance.facebookInteractionLayer.isLoggedIn();
@@ -123,19 +122,26 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //UnityAds Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void unityInitializePlugin(String gameId) {
-        if (_instance != null) {
-            _instance.unityAdsInteractionLayer = new UnityAdsInteractionLayer(gameId);
-        }
+    public static void unityInitializePlugin(final String gameId) {
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (_instance != null && _instance.unityAdsInteractionLayer == null) {
+                    _instance.unityAdsInteractionLayer = new UnityAdsInteractionLayer(gameId);
+                    AndroidNativeUnity_onSDKInitialized();
+                }
+            }
+        });
     }
 
-    public static void unitySetupAds(boolean debug) {
+    public static void unitySetupAds(final boolean debug) {
         if (_instance != null && _instance.unityAdsInteractionLayer != null) {
             _instance.unityAdsInteractionLayer.setupAds(_instance, debug);
         }
     }
 
-    public static void unityShowAd(String placementId) {
+    public static void unityShowAd(final String placementId) {
+
         if (_instance != null && _instance.unityAdsInteractionLayer != null) {
             _instance.unityAdsInteractionLayer.showAd(_instance, placementId);
         }
@@ -144,10 +150,16 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //AdMob Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void admobInitializePlugin(String admobAppId, String interAdUnitId, String videoAdUnitId) {
-        if (_instance != null) {
-            _instance.adMobInteractionLayer = new AdMobInteractionLayer(_instance, admobAppId, interAdUnitId, videoAdUnitId);
-        }
+    public static void admobInitializePlugin(final String admobAppId, final String interAdUnitId, final String videoAdUnitId) {
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (_instance != null && _instance.adMobInteractionLayer == null) {
+                    _instance.adMobInteractionLayer = new AdMobInteractionLayer(_instance, admobAppId, interAdUnitId, videoAdUnitId);
+                    AndroidNativeAdMob_onSDKInitialized();
+                }
+            }
+        });
     }
 
     public static void admobSetupInterstitialAd() {
@@ -177,10 +189,16 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //DevToDev Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
-    public static void devtodevInitializePlugin(String appId, String secret, String apiKey) {
-        if (_instance != null) {
-            _instance.devToDevInteractionLayer = new DevToDevInteractionLayer(_instance, appId, secret, apiKey);
-        }
+    public static void devtodevInitializePlugin(final String appId, final String secret, final String apiKey) {
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (_instance != null && _instance.devToDevInteractionLayer == null) {
+                    _instance.devToDevInteractionLayer = new DevToDevInteractionLayer(_instance, appId, secret, apiKey);
+                    AndroidNativeDevToDev_onSDKInitialized();
+                }
+            }
+        });
     }
 
     public static void devtodevOnTutorialEvent(int stateOrStep) {

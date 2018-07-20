@@ -39,6 +39,18 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeAdMob_1onSDKInitialized )( JNIEnv *env, jclass cls )
+    {
+        if( s_androidNativeAdMobModule != nullptr )
+        {
+            s_androidNativeAdMobModule->addInterstitialCommand( []( const Mengine::AdMobInitializationCallbackPtr & _eventHandler )
+            {
+                _eventHandler->onSDKInitialized();
+            } );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL
         ADMOB_JAVA_INTERFACE( AndroidNativeAdMob_1onAdLoaded )( JNIEnv *env, jclass cls )
     {
         if( s_androidNativeAdMobModule != nullptr )
@@ -420,7 +432,7 @@ namespace Mengine
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeAdMobModule::initializeSDK( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId )
+    bool AndroidNativeAdMobModule::initializeSDK( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId, const AdMobInitializationCallbackPtr & _callback )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
         
@@ -431,11 +443,13 @@ namespace Mengine
         const Char * videoAdUnitId_str = _videoAdUnitId.c_str();
         jstring jvideoAdUnitId = env->NewStringUTF( videoAdUnitId_str );
         
+        m_initializationCallback = _callback;
+        
         env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jadmobAppId, jinterAdUnitId, jvideoAdUnitId );
         
-        env->ReleaseStringUTFChars( jadmobAppId, admobAppId_str );
-        env->ReleaseStringUTFChars( jinterAdUnitId, interAdUnitId_str );
-        env->ReleaseStringUTFChars( jvideoAdUnitId, videoAdUnitId_str );
+        env->DeleteLocalRef( jadmobAppId );
+        env->DeleteLocalRef( jinterAdUnitId );
+        env->DeleteLocalRef( jvideoAdUnitId );
         
         return true;
     }

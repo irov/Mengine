@@ -4,6 +4,7 @@ ADD_FILTER(
 src
 	AndroidNativeDevToDevPlugin.h
 	AndroidNativeDevToDevPlugin.cpp 
+	DevToDevInitializationCallback.h
 )
 
 if( MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_DLL )

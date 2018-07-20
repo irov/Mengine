@@ -34,6 +34,18 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeUnity_1onSDKInitialized )( JNIEnv *env, jclass cls )
+    {
+        if( s_androidNativeUnityModule != nullptr )
+        {
+            s_androidNativeUnityModule->addInterstitialCommand( []( const Mengine::UnityInitializationCallbackPtr & _eventHandler )
+                                                               {
+                                                                   _eventHandler->onSDKInitialized();
+                                                               } );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL
         UNITY_JAVA_INTERFACE( AndroidNativeUnity_1onUnityAdsClick )(JNIEnv *env, jclass cls, jstring placementId_)
     {
         const char * placementId = env->GetStringUTFChars( placementId_, 0 );
@@ -285,16 +297,18 @@ namespace Mengine
         m_mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeUnityAdsModule::initializeSDK( const String & _gameId )
+    bool AndroidNativeUnityAdsModule::initializeSDK( const String & _gameId, const UnityInitializationCallbackPtr & _callback )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
         
         const Char * gameId_str = _gameId.c_str();
         jstring jgameId = env->NewStringUTF( gameId_str );
         
+        m_initializationCallback = _callback;
+        
         env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jgameId );
         
-        env->ReleaseStringUTFChars( jgameId, gameId_str );
+        env->DeleteLocalRef( jgameId );
         
         return true;
     }
@@ -319,7 +333,7 @@ namespace Mengine
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_showAd, jplacementId );
         
-        env->ReleaseStringUTFChars( jplacementId, placementId_str );
+        env->DeleteLocalRef( jplacementId );
 
         return true;
     }

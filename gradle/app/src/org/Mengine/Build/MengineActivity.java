@@ -20,11 +20,12 @@ public class MengineActivity extends SDLActivity {
     public AdMobInteractionLayer adMobInteractionLayer;
     public DevToDevInteractionLayer devToDevInteractionLayer;
 
-    private CallbackManager _callbackManager;
+    public CallbackManager callbackManager;
 
     private static MengineActivity _instance;
 
     static native void AndroidNativeFacebook_setupFacebookJNI();
+    static native void AndroidNativeFacebook_onSDKInitialized();
 
     static native void AndroidNativeUnity_setupUnityJNI();
     static native void AndroidNativeUnity_onSDKInitialized();
@@ -52,10 +53,7 @@ public class MengineActivity extends SDLActivity {
 
         _instance = this;
 
-        _callbackManager = CallbackManager.Factory.create();
-
         AndroidNativeFacebook_setupFacebookJNI();
-        facebookInteractionLayer = new FacebookInteractionLayer(_callbackManager);
 
         AndroidNativeUnity_setupUnityJNI();
 
@@ -74,8 +72,8 @@ public class MengineActivity extends SDLActivity {
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
-        if (_callbackManager != null) {
-            _callbackManager.onActivityResult(requestCode, resultCode, data);
+        if (callbackManager != null) {
+            callbackManager.onActivityResult(requestCode, resultCode, data);
         }
     }
 
@@ -87,6 +85,19 @@ public class MengineActivity extends SDLActivity {
     ////////////////////////////////////////////////////////////////////////////////////////////////
     //Facebook Methods
     ////////////////////////////////////////////////////////////////////////////////////////////////
+    public static void facebookInitializePlugin() {
+        ThreadUtil.performOnMainThread(new Runnable() {
+            @Override
+            public void run() {
+                if (_instance != null && _instance.facebookInteractionLayer == null) {
+                    _instance.callbackManager = CallbackManager.Factory.create();
+                    _instance.facebookInteractionLayer = new FacebookInteractionLayer(_instance.callbackManager);
+                    AndroidNativeFacebook_onSDKInitialized();
+                }
+            }
+        });
+    }
+
     public static boolean facebookIsLoggedIn() {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             return _instance.facebookInteractionLayer.isLoggedIn();

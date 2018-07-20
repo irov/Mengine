@@ -10,6 +10,7 @@
 #define FACEBOOK_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(FACEBOOK_JAVA_PREFIX, FacebookInteractionLayer, function)
 
 static jclass mActivityClass;
+static jmethodID jmethodID_initializePlugin;
 static jmethodID jmethodID_isLoggedIn;
 static jmethodID jmethodID_performLogin;
 static jmethodID jmethodID_getUser;
@@ -20,6 +21,7 @@ static Mengine::FacebookLoginCallbackPtr g_currentFacebookLoginCallback;
 static Mengine::FacebookUserCallbackPtr g_currentFacebookUserCallback;
 static Mengine::FacebookShareCallbackPtr g_currentFacebookShareCallback;
 static Mengine::FacebookProfilePictureURLCallbackPtr g_currentFacebookProfilePictureURLCallback;
+static Mengine::FacebookInitializationCallbackPtr g_currentInitializationCallback;
 
 extern "C"
 {
@@ -29,11 +31,24 @@ extern "C"
     {
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
+        jmethodID_initializePlugin = mEnv->GetStaticMethodID( mActivityClass, "facebookInitializePlugin", "()V" );
         jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)V" );
         jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()V" );
         jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)V" );
         jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
         jmethodID_getProfilePictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfilePictureLink", "(Ljava/lang/String;)V" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1onSDKInitialized )(JNIEnv *mEnv, jclass cls)
+    {
+        Mengine::FacebookInitializationCallbackPtr callback = g_currentInitializationCallback;
+        g_currentInitializationCallback = nullptr;
+
+        if( callback != nullptr )
+        {
+            callback->onSDKInitialized();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -340,6 +355,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeFacebookPlugin::_finalize()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeFacebookPlugin::initializePlugin(const FacebookInitializationCallbackPtr & _callback)
+    {
+        JNIEnv * env = Mengine_JNI_GetEnv();
+        
+        g_currentInitializationCallback = _callback;
+        
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin );
+        
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeFacebookPlugin::isLoggedIn()

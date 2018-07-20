@@ -36,6 +36,16 @@ extern "C"
         jmethodID_onInAppPurchase = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnInAppPurchase", "(Ljava/lang/String;Ljava/lang/String;IILjava/lang/String;)V" );
         jmethodID_onSimpleCustomEvent = mEnv->GetStaticMethodID( mActivityClass, "devtodevOnSimpleCustomEvent", "(Ljava/lang/String;)V" );
     }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeDevToDev_1onSDKInitialized )(JNIEnv *mEnv, jclass cls)
+    {
+        mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
+        
+        if(m_initializationCallback != nullptr){
+            m_initializationCallback->onSDKInitialized();
+        }
+    }
 
 }
 ///////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
@@ -77,7 +87,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeDevToDevPlugin::initializeSDK( const String & _appId, const String & _secret, const String & _apiKey )
+    bool AndroidNativeDevToDevPlugin::initializeSDK( const String & _appId, const String & _secret, const String & _apiKey, const DevToDevInitializationCallbackPtr & _callback )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
         
@@ -88,11 +98,13 @@ namespace Mengine
         const Char * apiKey_str = _apiKey.c_str();
         jstring japiKey = env->NewStringUTF( apiKey_str );
         
+        m_initializationCallback = _callback;
+        
         env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jappId, jsecret, japiKey );
         
-        env->ReleaseStringUTFChars( jappId, appId_str );
-        env->ReleaseStringUTFChars( jsecret, secret_str );
-        env->ReleaseStringUTFChars( japiKey, apiKey_str );
+        env->DeleteLocalRef( jappId );
+        env->DeleteLocalRef( jsecret );
+        env->DeleteLocalRef( japiKey );
         
         return true;
     }
@@ -141,7 +153,7 @@ namespace Mengine
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_onCurrencyAccrual, jcurrencyName, jcurrencyAmount, jaccrualType );
         
-        env->ReleaseStringUTFChars( jcurrencyName, currencyName_str );
+        env->DeleteLocalRef( jcurrencyName );
 
         return true;
     }
@@ -160,9 +172,9 @@ namespace Mengine
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_onRealPayment, jpaymentId, jinAppPrice, jinAppName, jinAppCurrencyISOCode );
         
-        env->ReleaseStringUTFChars( jpaymentId, paymentId_str );
-        env->ReleaseStringUTFChars( jinAppName, inAppName_str );
-        env->ReleaseStringUTFChars( jinAppCurrencyISOCode, inAppCurrencyISOCode_str );
+        env->DeleteLocalRef( jpaymentId );
+        env->DeleteLocalRef( jinAppName );
+        env->DeleteLocalRef( jinAppCurrencyISOCode );
 
         return true;
     }
@@ -182,9 +194,9 @@ namespace Mengine
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_onInAppPurchase, jpurchaseId, jpurchaseType, jpurchaseAmount, jpurchasePrice, jpurchaseCurrency );
         
-        env->ReleaseStringUTFChars( jpurchaseId, purchaseId_str );
-        env->ReleaseStringUTFChars( jpurchaseType, purchaseType_str );
-        env->ReleaseStringUTFChars( jpurchaseCurrency, purchaseCurrency_str );
+        env->DeleteLocalRef( jpurchaseId );
+        env->DeleteLocalRef( jpurchaseType );
+        env->DeleteLocalRef( jpurchaseCurrency );
 
         return true;
     }
@@ -198,7 +210,7 @@ namespace Mengine
         
         env->CallStaticVoidMethod( mActivityClass, jmethodID_onSimpleCustomEvent, jeventName );
         
-        env->ReleaseStringUTFChars( jeventName, eventName_str );
+        env->DeleteLocalRef( jeventName );
         
         return true;
     }

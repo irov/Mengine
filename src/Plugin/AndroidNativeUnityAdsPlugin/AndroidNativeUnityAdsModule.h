@@ -32,7 +32,7 @@ namespace Mengine
         void addCommand( const LambdaUnityAdEventHandler & _command );
         
     public:
-        bool initializeSDK( const String & _gameId );
+        bool initializeSDK( const String & _gameId, const UnityInitializationCallbackPtr & _callback );
         bool setupAds( bool _debug );
         bool showAd( const String & _placementId );
         void setAdsEventHandler( const UnityAdEventHandlerPtr & _eventHandler );
@@ -44,5 +44,6 @@ namespace Mengine
         VectorUnityAdCommand m_commands;
 
         UnityAdEventHandlerPtr m_eventHandler;
+        UnityInitializationCallbackPtr m_initializationCallback;
     };
 }

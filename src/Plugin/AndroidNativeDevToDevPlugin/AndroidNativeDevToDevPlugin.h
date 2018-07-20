@@ -4,6 +4,8 @@
 
 #include "Config/String.h"
 
+#include "DevToDevInitializationCallback.h"
+
 namespace Mengine
 {
     class AndroidNativeDevToDevPlugin
@@ -23,7 +25,7 @@ namespace Mengine
         void _finalize() override;
 
     public:
-        bool initializeSDK( const String & _appId, const String & _secret, const String & _apiKey );
+        bool initializeSDK( const String & _appId, const String & _secret, const String & _apiKey, const DevToDevInitializationCallbackPtr & _callback );
         bool onTutorialEvent( int _stateOrStep );
         bool setCurrentLevel( int _level );
         bool onLevelUp( int _level );
@@ -31,5 +33,7 @@ namespace Mengine
         bool onRealPayment( const String & _paymentId, float _inAppPrice, const String & _inAppName, const String & _inAppCurrencyISOCode );
         bool onInAppPurchase( const String & _purchaseId, const String & _purchaseType, int _purchaseAmount, int _purchasePrice, const String & _purchaseCurrency );
         bool onSimpleCustomEvent( const String & _eventName );
+    protected:
+        DevToDevInitializationCallbackPtr m_initializationCallback;
     };
 }

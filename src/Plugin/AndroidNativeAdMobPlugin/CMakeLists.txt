@@ -8,6 +8,7 @@ src
 	AndroidNativeAdMobPlugin.cpp
 	AdMobInterstitialEventHandler.h
 	AdMobRewardedVideoEventHandler.h 
+	AdMobInitializationCallback.h
 )
 
 if( MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_DLL )

@@ -6,6 +6,7 @@
 
 #include "Config/Lambda.h"
 
+#include "AdMobInitializationCallback.h"
 #include "AdMobInterstitialEventHandler.h"
 #include "AdMobRewardedVideoEventHandler.h"
 
@@ -30,7 +31,7 @@ namespace Mengine
         void _update( bool _focus ) override;
 
     public:
-        bool initializeSDK( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId );
+        bool initializeSDK( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId, const AdMobInitializationCallbackPtr & _callback );
         void addInterstitialCommand( const LambdaAdMobInterstitialEventHandler & _command );
         void addRewardedVideoCommand( const LambdaAdMobRewardedVideoEventHandler & _command );
 
@@ -55,5 +56,6 @@ namespace Mengine
 
         AdMobInterstitialEventHandlerPtr m_interstitialEventHandler;
         AdMobRewardedVideoEventHandlerPtr m_rewardedVideoEventHandler;
+        AdMobInitializationCallbackPtr m_initializationCallback;
     };
 }

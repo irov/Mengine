@@ -2,9 +2,11 @@ set( MY_LIB_NAME AndroidNativeDevToDevPlugin )
 
 ADD_FILTER(
 src
+    AndroidNativeDevToDevModule.h
+    AndroidNativeDevToDevModule.cpp
 	AndroidNativeDevToDevPlugin.h
 	AndroidNativeDevToDevPlugin.cpp 
-	DevToDevInitializationCallback.h
+    DevToDevEventHandler.h
 )
 
 if( MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_DLL )

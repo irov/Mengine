@@ -34,14 +34,14 @@ extern "C" {
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
-        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeUnity_1onSDKInitialized )( JNIEnv *env, jclass cls )
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeUnity_1onSDKInitialized )(JNIEnv *env, jclass cls)
     {
         if( s_androidNativeUnityModule != nullptr )
         {
-            s_androidNativeUnityModule->addInterstitialCommand( []( const Mengine::UnityInitializationCallbackPtr & _eventHandler )
-                                                               {
-                                                                   _eventHandler->onSDKInitialized();
-                                                               } );
+            s_androidNativeUnityModule->addCommand( []( const Mengine::UnityAdsEventHandlerPtr & _eventHandler )
+            {
+                _eventHandler->onUnityAdsInitialized();
+            } );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -54,10 +54,10 @@ extern "C" {
         {
             Mengine::String placementId_str = placementId;
 
-            s_androidNativeUnityModule->addCommand( [placementId_str]( const Mengine::UnityAdEventHandlerPtr & _eventHandler )
+            s_androidNativeUnityModule->addCommand( [placementId_str]( const Mengine::UnityAdsEventHandlerPtr & _eventHandler )
             {
                 _eventHandler->onUnityAdsClick( placementId_str );
-            } );            
+            } );
         }
 
         env->ReleaseStringUTFChars( placementId_, placementId );
@@ -75,7 +75,7 @@ extern "C" {
         {
             Mengine::String placementId_str = placementId;
 
-            s_androidNativeUnityModule->addCommand( [placementId_str, placementState, placementState1]( const Mengine::UnityAdEventHandlerPtr & _eventHandler )
+            s_androidNativeUnityModule->addCommand( [placementId_str, placementState, placementState1]( const Mengine::UnityAdsEventHandlerPtr & _eventHandler )
             {
                 _eventHandler->onUnityAdsPlacementStateChanged( placementId_str, placementState, placementState1 );
             } );
@@ -93,7 +93,7 @@ extern "C" {
         {
             Mengine::String placementId_str = placementId;
 
-            s_androidNativeUnityModule->addCommand( [placementId_str]( const Mengine::UnityAdEventHandlerPtr & _eventHandler )
+            s_androidNativeUnityModule->addCommand( [placementId_str]( const Mengine::UnityAdsEventHandlerPtr & _eventHandler )
             {
                 _eventHandler->onUnityAdsReady( placementId_str );
             } );
@@ -111,7 +111,7 @@ extern "C" {
         {
             Mengine::String placementId_str = placementId;
 
-            s_androidNativeUnityModule->addCommand( [placementId_str]( const Mengine::UnityAdEventHandlerPtr & _eventHandler )
+            s_androidNativeUnityModule->addCommand( [placementId_str]( const Mengine::UnityAdsEventHandlerPtr & _eventHandler )
             {
                 _eventHandler->onUnityAdsStart( placementId_str );
             } );
@@ -130,7 +130,7 @@ extern "C" {
         {
             Mengine::String placementId_str = placementId;
 
-            s_androidNativeUnityModule->addCommand( [placementId_str, finishState]( const Mengine::UnityAdEventHandlerPtr & _eventHandler )
+            s_androidNativeUnityModule->addCommand( [placementId_str, finishState]( const Mengine::UnityAdsEventHandlerPtr & _eventHandler )
             {
                 _eventHandler->onUnityAdsFinish( placementId_str, finishState );
             } );
@@ -150,7 +150,7 @@ extern "C" {
         {
             Mengine::String message_str = message;
 
-            s_androidNativeUnityModule->addCommand( [unityAdsError, message_str]( const Mengine::UnityAdEventHandlerPtr & _eventHandler )
+            s_androidNativeUnityModule->addCommand( [unityAdsError, message_str]( const Mengine::UnityAdsEventHandlerPtr & _eventHandler )
             {
                 _eventHandler->onUnityAdsError( unityAdsError, message_str );
             } );
@@ -166,68 +166,65 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        enum EUnityAdsCommand
-        {
-            EUC_READY = 0,
-            EUC_CLICK,
-            EUC_CHANGED,
-            EUC_START,
-            EUC_FINISH,
-            EUC_ERROR,
-        };
-        //////////////////////////////////////////////////////////////////////////
-        class PythonUnityAdEventHandler
-            : public Callback<UnityAdEventHandler>
+        class PythonUnityAdsEventHandler
+            : public Callback<UnityAdsEventHandler>
         {
         public:
-            PythonUnityAdEventHandler( const pybind::object & _cb, const pybind::args & _args )
+            PythonUnityAdsEventHandler( const pybind::object & _cb, const pybind::args & _args )
                 : m_cb( _cb )
                 , m_args( _args )
             {}
 
         protected:
-            void onUnityAdsReady( const String & _placementId ) override
+            void onUnityAdsInitialized() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( _placementId, EUC_READY, pyparams, m_args );
+                m_cb.call_args( UNITYADS_INITIALIZE, pyparams, m_args );
+            }
+
+            void onUnityAdsReady( const String & _placementId ) override
+            {
+                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _placementId );
+
+                m_cb.call_args( UNITYADS_READY, pyparams, m_args );
             }
 
             void onUnityAdsClick( const String & _placementId ) override
             {
-                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
+                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _placementId );
 
-                m_cb.call_args( _placementId, EUC_CLICK, pyparams, m_args );
+                m_cb.call_args( UNITYADS_CLICK, pyparams, m_args );
             }
 
             void onUnityAdsPlacementStateChanged( const String & _placementId, int _placementState, int _placementState1 ) override
             {
-                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _placementState, _placementState1 );
+                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _placementId, _placementState, _placementState1 );
 
-                m_cb.call_args( _placementId, EUC_CHANGED, pyparams, m_args );
+                m_cb.call_args( UNITYADS_PLACEMENT_STATE_CHANGED, pyparams, m_args );
             }
 
             void onUnityAdsStart( const String & _placementId ) override
             {
-                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
+                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _placementId );
 
-                m_cb.call_args( _placementId, EUC_START, pyparams, m_args );
+                m_cb.call_args( UNITYADS_START, pyparams, m_args );
             }
 
             void onUnityAdsFinish( const String & _placementId, int _finishState ) override
             {
-                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _finishState );
+                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _placementId, _finishState );
 
-                m_cb.call_args( _placementId, EUC_FINISH, pyparams, m_args );
+                m_cb.call_args( UNITYADS_FINISH, pyparams, m_args );
             }
 
             void onUnityAdsError( int _unityAdsError, const String & _message ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _unityAdsError, _message );
 
-                m_cb.call_args( "", EUC_ERROR, pyparams, m_args );
+                m_cb.call_args( UNITYADS_ERROR, pyparams, m_args );
             }
-            
+
         protected:
             pybind::object m_cb;
             pybind::args m_args;
@@ -235,8 +232,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static void androidUnitySetAdsEventHandler( AndroidNativeUnityAdsModule * _module, const pybind::object & _cb, const pybind::args & _args )
         {
-            _module->setAdsEventHandler(
-                    new FactorableUnique<PythonUnityAdEventHandler>( _cb, _args )
+            _module->setEventHandler(
+                new FactorableUnique<PythonUnityAdsEventHandler>( _cb, _args )
             );
         }
     }
@@ -253,13 +250,16 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        pybind::def_functor( kernel, "androidUnityInitialize", this, &AndroidNativeUnityAdsModule::initializeSDK );
-        pybind::def_functor( kernel, "androidUnitySetupAds", this, &AndroidNativeUnityAdsModule::setupAds );
-        pybind::def_functor( kernel, "androidUnityShowAd", this, &AndroidNativeUnityAdsModule::showAd );
         pybind::def_function_proxy_args( kernel, "androidUnitySetAdsEventHandler", &Detail::androidUnitySetAdsEventHandler, this );
 
-        m_mutex = THREAD_SERVICE()
-                ->createMutex( __FILE__, __LINE__ );
+        pybind::def_functor( kernel, "androidUnityInitialize", this, &AndroidNativeUnityAdsModule::initializeSDK );
+        pybind::def_functor( kernel, "androidUnitySetupAds", this, &AndroidNativeUnityAdsModule::setupAds );
+        pybind::def_functor( kernel, "androidUnityShowAd", this, &AndroidNativeUnityAdsModule::showAd );        
+
+        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+            ->createMutex( __FILE__, __LINE__ );
+
+        m_eventation.setMutex( mutex );
 
         s_androidNativeUnityModule = this;
 
@@ -268,59 +268,42 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeUnityAdsModule::_finalize()
     {
-        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeUnityAdsModule::_update( bool _focus )
     {
-        VectorUnityAdCommand commands;
+        (void)_focus;
 
-        m_mutex->lock();
-        std::swap( m_commands, commands );
-        m_mutex->unlock();
-
-        if( m_eventHandler == nullptr )
-        {
-            return;
-        }
-
-        for( const LambdaUnityAdEventHandler & command : commands )
-        {
-            command( m_eventHandler );
-        }
+        m_eventation.invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativeUnityAdsModule::addCommand( const LambdaUnityAdEventHandler & _command )
+    void AndroidNativeUnityAdsModule::addCommand( const LambdaUnityAdsEventHandler & _command )
     {
-        m_mutex->lock();
-        m_commands.push_back( _command );
-        m_mutex->unlock();
+        m_eventation.addCommand( _command );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeUnityAdsModule::initializeSDK( const String & _gameId, const UnityInitializationCallbackPtr & _callback )
+    bool AndroidNativeUnityAdsModule::initializeSDK( const String & _gameId )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
-        
+
         const Char * gameId_str = _gameId.c_str();
         jstring jgameId = env->NewStringUTF( gameId_str );
-        
-        m_initializationCallback = _callback;
-        
+
         env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jgameId );
-        
+
         env->DeleteLocalRef( jgameId );
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeUnityAdsModule::setupAds( bool _debug )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
-        
+
         jboolean jdebug = static_cast<jboolean>(_debug);
-        
+
         env->CallStaticVoidMethod( mActivityClass, jmethodID_setupAds, jdebug );
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -332,14 +315,14 @@ namespace Mengine
         jstring jplacementId = env->NewStringUTF( placementId_str );
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_showAd, jplacementId );
-        
+
         env->DeleteLocalRef( jplacementId );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativeUnityAdsModule::setAdsEventHandler( const UnityAdEventHandlerPtr & _eventHandler )
+    void AndroidNativeUnityAdsModule::setEventHandler( const UnityAdsEventHandlerPtr & _handler )
     {
-        m_eventHandler = _eventHandler;
+        m_eventation.setEventHandler( _handler );
     }
 }

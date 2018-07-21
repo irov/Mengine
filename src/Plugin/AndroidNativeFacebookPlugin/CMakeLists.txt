@@ -4,9 +4,9 @@ ADD_FILTER(
 src
 	AndroidNativeFacebookPlugin.h
 	AndroidNativeFacebookPlugin.cpp
-	FacebookLoginCallback.h
-	FacebookShareCallback.h
-	FacebookUserCallback.h   
+    AndroidNativeFacebookModule.h
+	AndroidNativeFacebookModule.cpp
+    FacebookEventHandler.h
 )
 
 if( MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_DLL )

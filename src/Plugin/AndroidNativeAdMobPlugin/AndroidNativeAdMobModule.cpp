@@ -43,9 +43,9 @@ extern "C" {
     {
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addInterstitialCommand( []( const Mengine::AdMobInitializationCallbackPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( []( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onSDKInitialized();
+                _eventHandler->onAdMobInitialized();
             } );
         }
     }
@@ -55,9 +55,9 @@ extern "C" {
     {
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addInterstitialCommand( []( const Mengine::AdMobInterstitialEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( []( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onAdLoaded();
+                _eventHandler->onAdMobInterstitialAdLoaded();
             } );
         }
     }
@@ -69,9 +69,9 @@ extern "C" {
         
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addInterstitialCommand( [errorCode]( const Mengine::AdMobInterstitialEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( [errorCode]( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onAdFailedToLoad( errorCode );
+                _eventHandler->onAdMobInterstitialAdFailedToLoad( errorCode );
             } );
         }
     }
@@ -81,9 +81,9 @@ extern "C" {
     {
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addInterstitialCommand( []( const Mengine::AdMobInterstitialEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( []( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onAdOpened();
+                _eventHandler->onAdMobInterstitialAdOpened();
             } );
         }
     }
@@ -93,9 +93,9 @@ extern "C" {
     {
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addInterstitialCommand( []( const Mengine::AdMobInterstitialEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( []( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onAdLeftApplication();
+                _eventHandler->onAdMobInterstitialAdLeftApplication();
             } );
         }
     }
@@ -105,9 +105,9 @@ extern "C" {
     {
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addInterstitialCommand( []( const Mengine::AdMobInterstitialEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( []( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onAdClosed();
+                _eventHandler->onAdMobInterstitialAdClosed();
             } );
         }
     }
@@ -117,9 +117,9 @@ extern "C" {
     {
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addRewardedVideoCommand( []( const Mengine::AdMobRewardedVideoEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( []( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onRewardedVideoAdLoaded();
+                _eventHandler->onAdMobRewardedVideoAdLoaded();
             } );
         }
     }
@@ -129,9 +129,9 @@ extern "C" {
     {
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addRewardedVideoCommand( []( const Mengine::AdMobRewardedVideoEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( []( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onRewardedVideoAdOpened();
+                _eventHandler->onAdMobRewardedVideoAdOpened();
             } );
         }
     }
@@ -141,9 +141,9 @@ extern "C" {
     {
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addRewardedVideoCommand( []( const Mengine::AdMobRewardedVideoEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( []( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onRewardedVideoStarted();
+                _eventHandler->onAdMobRewardedVideoAdStarted();
             } );
         }
     }
@@ -153,9 +153,9 @@ extern "C" {
     {
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addRewardedVideoCommand( []( const Mengine::AdMobRewardedVideoEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( []( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onRewardedVideoAdClosed();
+                _eventHandler->onAdMobRewardedVideoAdClosed();
             } );
         }
     }
@@ -169,9 +169,9 @@ extern "C" {
         if( s_androidNativeAdMobModule != nullptr )
         {
             Mengine::String rewardType_str = rewardType;
-            s_androidNativeAdMobModule->addRewardedVideoCommand( [rewardType_str, rewardAmount]( const Mengine::AdMobRewardedVideoEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( [rewardType_str, rewardAmount]( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onRewarded( rewardType_str, rewardAmount );
+                _eventHandler->onAdMobRewardedVideoAdRewarded( rewardType_str, rewardAmount );
             } );
         }
         
@@ -183,9 +183,9 @@ extern "C" {
     {
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addRewardedVideoCommand( []( const Mengine::AdMobRewardedVideoEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( []( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onRewardedVideoAdLeftApplication();
+                _eventHandler->onAdMobRewardedVideoAdLeftApplication();
             } );
         }
     }
@@ -197,9 +197,9 @@ extern "C" {
         
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addRewardedVideoCommand( [errorCode]( const Mengine::AdMobRewardedVideoEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( [errorCode]( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onRewardedVideoAdFailedToLoad( errorCode );
+                _eventHandler->onAdMobRewardedVideoAdFailedToLoad( errorCode );
             } );
         }
     }
@@ -209,9 +209,9 @@ extern "C" {
     {
         if( s_androidNativeAdMobModule != nullptr )
         {
-            s_androidNativeAdMobModule->addRewardedVideoCommand( []( const Mengine::AdMobRewardedVideoEventHandlerPtr & _eventHandler )
+            s_androidNativeAdMobModule->addCommand( []( const Mengine::AdMobEventHandlerPtr & _eventHandler )
             {
-                _eventHandler->onRewardedVideoCompleted();
+                _eventHandler->onAdMobRewardedVideoAdCompleted();
             } );
         }
     }
@@ -223,123 +223,109 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        class PythonAdMobInterstitialEventHandler
-            : public Callback<AdMobInterstitialEventHandler>
+        class PythonAdMobEventHandler
+            : public Callback<AdMobEventHandler>
         {
         public:
-            PythonAdMobInterstitialEventHandler( const pybind::object & _cb, const pybind::args & _args )
+            PythonAdMobEventHandler( const pybind::object & _cb, const pybind::args & _args )
                 : m_cb( _cb )
                 , m_args( _args )
             {}
 
         protected:
-            void onAdLoaded() override
+            void onAdMobInitialized() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( 0, pyparams, m_args );
+                m_cb.call_args( ADMOB_INITIALIZE, pyparams, m_args );
             }
 
-            void onAdFailedToLoad( int _errorCode ) override
+        protected:
+            void onAdMobInterstitialAdLoaded() override
+            {
+                pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
+
+                m_cb.call_args( ADMOB_INTERSTITIALAD_LOAD, pyparams, m_args );
+            }
+
+            void onAdMobInterstitialAdFailedToLoad( int _errorCode ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _errorCode );
 
-                m_cb.call_args( 1, pyparams, m_args );
+                m_cb.call_args( ADMOB_INTERSTITIALAD_FAILED_LOAD, pyparams, m_args );
             }
 
-            void onAdOpened() override
+            void onAdMobInterstitialAdOpened() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( 2, pyparams, m_args );
+                m_cb.call_args( ADMOB_INTERSTITIALAD_OPENED, pyparams, m_args );
             }
 
-            void onAdLeftApplication() override
+            void onAdMobInterstitialAdLeftApplication() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( 3, pyparams, m_args );
+                m_cb.call_args( ADMOB_INTERSTITIALAD_LEFT_APPLICATION, pyparams, m_args );
             }
 
-            void onAdClosed() override
+            void onAdMobInterstitialAdClosed() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( 4, pyparams, m_args );
+                m_cb.call_args( ADMOB_INTERSTITIALAD_CLOSED, pyparams, m_args );
             }
 
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        static void androidAdMobSetInterstitialAdEventHandler( AndroidNativeAdMobModule * _plugin, const pybind::object & _cb, const pybind::args & _args )
-        {
-            _plugin->setInterstitialEventHandler(
-                new FactorableUnique<PythonAdMobInterstitialEventHandler>( _cb, _args )
-            );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonAdMobRewardedVideoEventHandler
-            : public Callback<AdMobRewardedVideoEventHandler>
-        {
-        public:
-            PythonAdMobRewardedVideoEventHandler( const pybind::object & _cb, const pybind::args & _args )
-                : m_cb( _cb )
-                , m_args( _args )
-            {}
-
-        protected:
-            void onRewardedVideoAdLoaded() override
+            void onAdMobRewardedVideoAdLoaded() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
                 m_cb.call_args( 0, pyparams, m_args );
             }
 
-            void onRewardedVideoAdOpened() override
+            void onAdMobRewardedVideoAdOpened() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
                 m_cb.call_args( 1, pyparams, m_args );
             }
 
-            void onRewardedVideoStarted() override
+            void onAdMobRewardedVideoAdStarted() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
                 m_cb.call_args( 2, pyparams, m_args );
             }
 
-            void onRewardedVideoAdClosed() override
+            void onAdMobRewardedVideoAdClosed() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
                 m_cb.call_args( 3, pyparams, m_args );
             }
 
-            void onRewarded( const String & _rewardType, int _rewardAmount ) override
+            void onAdMobRewardedVideoAdRewarded( const String & _rewardType, int _rewardAmount ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _rewardType, _rewardAmount );
 
                 m_cb.call_args( 4, pyparams, m_args );
             }
 
-            void onRewardedVideoAdLeftApplication() override
+            void onAdMobRewardedVideoAdLeftApplication() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
                 m_cb.call_args( 5, pyparams, m_args );
             }
 
-            void onRewardedVideoAdFailedToLoad( int _errorCode ) override
+            void onAdMobRewardedVideoAdFailedToLoad( int _errorCode ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _errorCode );
 
                 m_cb.call_args( 6, pyparams, m_args );
             }
 
-            void onRewardedVideoCompleted() override
+            void onAdMobRewardedVideoAdCompleted() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
@@ -351,10 +337,10 @@ namespace Mengine
             pybind::args m_args;
         };
         //////////////////////////////////////////////////////////////////////////
-        static void androidAdMobSetRewardedVideoAdEventHandler( AndroidNativeAdMobModule * _plugin, const pybind::object & _cb, const pybind::args & _args )
+        static void androidAdMobSetEventHandler( AndroidNativeAdMobModule * _module, const pybind::object & _cb, const pybind::args & _args )
         {
-            _plugin->setRewardedVideoEventHandler(
-                new FactorableUnique<PythonAdMobRewardedVideoEventHandler>( _cb, _args )
+            _module->setEventHandler(
+                new FactorableUnique<PythonAdMobEventHandler>( _cb, _args )
             );
         }
     }
@@ -372,16 +358,19 @@ namespace Mengine
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
 
-        pybind::def_functor( kernel, "androidAdMobInitialize", this, &AndroidNativeAdMobModule::initializeSDK );
+        pybind::def_function_proxy_args( kernel, "androidAdMobSetEventHandler", &Detail::androidAdMobSetEventHandler, this );
+        pybind::def_functor( kernel, "androidAdMobInitialize", this, &AndroidNativeAdMobModule::initializeSDK );        
+
         pybind::def_functor( kernel, "androidAdMobSetupInterstitialAd", this, &AndroidNativeAdMobModule::setupInterstitialAd );
         pybind::def_functor( kernel, "androidAdMobShowInterstitialAd", this, &AndroidNativeAdMobModule::showInterstitialAd );
-        pybind::def_function_proxy_args( kernel, "androidAdMobSetInterstitialAdEventHandler", &Detail::androidAdMobSetInterstitialAdEventHandler, this );
+        
         pybind::def_functor( kernel, "androidAdMobSetupRewardedVideoAd", this, &AndroidNativeAdMobModule::setupRewardedVideoAd );
         pybind::def_functor( kernel, "androidAdMobShowRewardedVideoAd", this, &AndroidNativeAdMobModule::showRewardedVideoAd );
-        pybind::def_function_proxy_args( kernel, "androidAdMobSetRewardedVideoAdEventHandler", &Detail::androidAdMobSetRewardedVideoAdEventHandler, this );
 
-        m_mutex = THREAD_SERVICE()
+        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
+
+        m_eventation.setMutex( mutex );
 
         s_androidNativeAdMobModule = this;
 
@@ -394,45 +383,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AndroidNativeAdMobModule::_update( bool _focus )
     {
-        VectorAdMobInterstitialCommand interstitialCommands;
-        VectorAdMobRewardedVideoCommand rewardedVideoCommands;
+        (void)_focus;
 
-        m_mutex->lock();
-        std::swap( m_interstitialCommands, interstitialCommands );
-        std::swap( m_rewardedVideoCommands, rewardedVideoCommands );
-        m_mutex->unlock();
-
-        if( m_interstitialEventHandler != nullptr )
-        {
-            for( const LambdaAdMobInterstitialEventHandler & command : interstitialCommands )
-            {
-                command( m_interstitialEventHandler );
-            }
-        }
-
-        if( m_rewardedVideoEventHandler != nullptr )
-        {
-            for( const LambdaAdMobRewardedVideoEventHandler & command : rewardedVideoCommands )
-            {
-                command( m_rewardedVideoEventHandler );
-            }
-        }
+        m_eventation.invoke();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativeAdMobModule::addInterstitialCommand( const LambdaAdMobInterstitialEventHandler & _command )
+    void AndroidNativeAdMobModule::addCommand( const LambdaAdMobEventHandler & _command )
     {
-        m_mutex->lock();
-        m_interstitialCommands.push_back( _command );
-        m_mutex->unlock();
-    }
-    void AndroidNativeAdMobModule::addRewardedVideoCommand( const LambdaAdMobRewardedVideoEventHandler & _command )
-    {
-        m_mutex->lock();
-        m_rewardedVideoCommands.push_back( _command );
-        m_mutex->unlock();
+        m_eventation.addCommand( _command );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeAdMobModule::initializeSDK( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId, const AdMobInitializationCallbackPtr & _callback )
+    bool AndroidNativeAdMobModule::initializeSDK( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId )
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
         
@@ -442,9 +403,7 @@ namespace Mengine
         jstring jinterAdUnitId = env->NewStringUTF( interAdUnitId_str );
         const Char * videoAdUnitId_str = _videoAdUnitId.c_str();
         jstring jvideoAdUnitId = env->NewStringUTF( videoAdUnitId_str );
-        
-        m_initializationCallback = _callback;
-        
+
         env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jadmobAppId, jinterAdUnitId, jvideoAdUnitId );
         
         env->DeleteLocalRef( jadmobAppId );
@@ -490,13 +449,8 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativeAdMobModule::setInterstitialEventHandler( const AdMobInterstitialEventHandlerPtr & _callback )
-    {       
-        m_interstitialEventHandler = _callback;        
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void AndroidNativeAdMobModule::setRewardedVideoEventHandler( const AdMobRewardedVideoEventHandlerPtr & _callback )
+    void AndroidNativeAdMobModule::setEventHandler( const AdMobEventHandlerPtr & _handler )
     {
-        m_rewardedVideoEventHandler = _callback;
+        m_eventation.setEventHandler( _handler );
     }
 }

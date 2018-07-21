@@ -4,10 +4,9 @@ ADD_FILTER(
 src
 	AndroidNativeUnityAdsPlugin.h
 	AndroidNativeUnityAdsPlugin.cpp
-    	AndroidNativeUnityAdsModule.h
-    	AndroidNativeUnityAdsModule.cpp
-	UnityAdEventHandler.h 
-	UnityInitializationCallback.h
+    AndroidNativeUnityAdsModule.h
+    AndroidNativeUnityAdsModule.cpp
+	UnityAdsEventHandler.h
 )
 
 if( MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_DLL )

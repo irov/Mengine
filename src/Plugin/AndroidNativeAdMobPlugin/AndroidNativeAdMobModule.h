@@ -1,24 +1,23 @@
 #pragma once
 
-#include "Interface/ThreadInterface.h"
+#include "AdMobEventHandler.h"
+
+#include "Android/AndroidEventation.h"
 
 #include "Kernel/ModuleBase.h"
 
 #include "Config/Lambda.h"
 
-#include "AdMobInitializationCallback.h"
-#include "AdMobInterstitialEventHandler.h"
-#include "AdMobRewardedVideoEventHandler.h"
-
 namespace Mengine 
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void( const AdMobInterstitialEventHandlerPtr & )> LambdaAdMobInterstitialEventHandler;
-    typedef Lambda<void( const AdMobRewardedVideoEventHandlerPtr & )> LambdaAdMobRewardedVideoEventHandler;
     //////////////////////////////////////////////////////////////////////////
     class AndroidNativeAdMobModule
         : public ModuleBase
     {
+    public:
+        typedef AndroidEventation<AdMobEventHandler> AdMobEventation;
+        typedef typename AdMobEventation::LambdaEventHandler LambdaAdMobEventHandler;
+
     public:
         AndroidNativeAdMobModule();
         ~AndroidNativeAdMobModule() override;
@@ -31,31 +30,23 @@ namespace Mengine
         void _update( bool _focus ) override;
 
     public:
-        bool initializeSDK( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId, const AdMobInitializationCallbackPtr & _callback );
-        void addInterstitialCommand( const LambdaAdMobInterstitialEventHandler & _command );
-        void addRewardedVideoCommand( const LambdaAdMobRewardedVideoEventHandler & _command );
+        void addCommand( const LambdaAdMobEventHandler & _command );
 
     public:
+        void setEventHandler( const AdMobEventHandlerPtr & _handler );
+
+    public:
+        bool initializeSDK( const String & _admobAppId, const String & _interAdUnitId, const String & _videoAdUnitId );        
+        
+    public:
         bool setupInterstitialAd();
-        bool showInterstitialAd();        
-        void setInterstitialEventHandler( const AdMobInterstitialEventHandlerPtr & _callback );
+        bool showInterstitialAd();                
 
     public:
         bool setupRewardedVideoAd();
-        bool showRewardedVideoAd();        
-        void setRewardedVideoEventHandler( const AdMobRewardedVideoEventHandlerPtr & _callback );
+        bool showRewardedVideoAd();
 
-    protected:
-        ThreadMutexInterfacePtr m_mutex;
-
-        typedef Vector<LambdaAdMobInterstitialEventHandler> VectorAdMobInterstitialCommand;
-        VectorAdMobInterstitialCommand m_interstitialCommands;
-
-        typedef Vector<LambdaAdMobRewardedVideoEventHandler> VectorAdMobRewardedVideoCommand;
-        VectorAdMobRewardedVideoCommand m_rewardedVideoCommands;
-
-        AdMobInterstitialEventHandlerPtr m_interstitialEventHandler;
-        AdMobRewardedVideoEventHandlerPtr m_rewardedVideoEventHandler;
-        AdMobInitializationCallbackPtr m_initializationCallback;
+    protected:        
+        AdMobEventation m_eventation;
     };
 }

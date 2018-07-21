@@ -3,17 +3,20 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
 
-#include "Config/String.h"
-
 namespace Mengine
 {
-    class FacebookUserCallback 
+    enum EnumDevToDevEventHandler
+    {
+        DEVTODEV_INITIALIZE,
+    };
+
+    class DevToDevEventHandler
         : public Mixin
     {
     public:
-        virtual void onUserFetchSuccess( const String & _userObject, const String & _response ) = 0;
+        virtual void onDevToDevInitialized() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<FacebookUserCallback> FacebookUserCallbackPtr;
+    typedef IntrusivePtr<DevToDevEventHandler> DevToDevEventHandlerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

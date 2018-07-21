@@ -7,9 +7,23 @@
 
 namespace Mengine
 {
-    class UnityAdEventHandler
+    enum EnumDevToDevEventHandler
+    {
+        UNITYADS_INITIALIZE,
+        UNITYADS_READY,
+        UNITYADS_CLICK,
+        UNITYADS_PLACEMENT_STATE_CHANGED,
+        UNITYADS_START,
+        UNITYADS_FINISH,
+        UNITYADS_ERROR,
+    };
+
+    class UnityAdsEventHandler
         : public Mixin
     {
+    public:
+        virtual void onUnityAdsInitialized() = 0;
+
     public:
         virtual void onUnityAdsReady( const String & _placementId ) = 0;
         virtual void onUnityAdsClick( const String & _placementId ) = 0;
@@ -19,6 +33,6 @@ namespace Mengine
         virtual void onUnityAdsError( int _unityAdsError, const String & _message ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<UnityAdEventHandler> UnityAdEventHandlerPtr;
+    typedef IntrusivePtr<UnityAdsEventHandler> UnityAdsEventHandlerPtr;
     //////////////////////////////////////////////////////////////////////////
 }

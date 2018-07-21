@@ -2,6 +2,7 @@ set( MY_LIB_NAME AndroidUtils )
 
 ADD_FILTER(
 src
+    AndroidEventation.h
     AndroidUtils.h
     AndroidUtils.cpp
 )

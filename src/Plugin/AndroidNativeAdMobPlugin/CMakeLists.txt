@@ -2,13 +2,11 @@ set( MY_LIB_NAME AndroidNativeAdMobPlugin )
 
 ADD_FILTER(
 src
+    AdMobEventHandler.h
     AndroidNativeAdMobModule.h
     AndroidNativeAdMobModule.cpp
 	AndroidNativeAdMobPlugin.h
 	AndroidNativeAdMobPlugin.cpp
-	AdMobInterstitialEventHandler.h
-	AdMobRewardedVideoEventHandler.h 
-	AdMobInitializationCallback.h
 )
 
 if( MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_DLL )

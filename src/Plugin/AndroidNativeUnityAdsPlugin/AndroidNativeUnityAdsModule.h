@@ -2,9 +2,11 @@
 
 #include "Interface/ThreadInterface.h"
 
-#include "Kernel/ModuleBase.h"
+#include "UnityAdsEventHandler.h"
 
-#include "UnityAdEventHandler.h"
+#include "Android/AndroidEventation.h"
+
+#include "Kernel/ModuleBase.h"
 
 #include "Config/Vector.h"
 #include "Config/Lambda.h"
@@ -12,11 +14,15 @@
 namespace Mengine 
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Lambda<void( const UnityAdEventHandlerPtr & )> LambdaUnityAdEventHandler;
+    typedef Lambda<void( const UnityAdsEventHandlerPtr & )> LambdaUnityAdEventHandler;
     //////////////////////////////////////////////////////////////////////////
     class AndroidNativeUnityAdsModule
         : public ModuleBase
     {
+    public:
+        typedef AndroidEventation<UnityAdsEventHandler> UnityAdsEventation;
+        typedef typename UnityAdsEventation::LambdaEventHandler LambdaUnityAdsEventHandler;
+
     public:
         AndroidNativeUnityAdsModule();
         ~AndroidNativeUnityAdsModule() override;
@@ -29,21 +35,17 @@ namespace Mengine
         void _update( bool _focus ) override;
 
     public:
-        void addCommand( const LambdaUnityAdEventHandler & _command );
-        
+        void addCommand( const LambdaUnityAdsEventHandler & _command );
+
     public:
-        bool initializeSDK( const String & _gameId, const UnityInitializationCallbackPtr & _callback );
+        void setEventHandler( const UnityAdsEventHandlerPtr & _handler );
+
+    public:
+        bool initializeSDK( const String & _gameId );
         bool setupAds( bool _debug );
         bool showAd( const String & _placementId );
-        void setAdsEventHandler( const UnityAdEventHandlerPtr & _eventHandler );
         
     protected:
-        ThreadMutexInterfacePtr m_mutex;
-        
-        typedef Vector<LambdaUnityAdEventHandler> VectorUnityAdCommand;
-        VectorUnityAdCommand m_commands;
-
-        UnityAdEventHandlerPtr m_eventHandler;
-        UnityInitializationCallbackPtr m_initializationCallback;
+        UnityAdsEventation m_eventation;
     };
 }

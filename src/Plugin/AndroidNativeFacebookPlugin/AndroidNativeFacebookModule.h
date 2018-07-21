@@ -40,6 +40,9 @@ namespace Mengine
         void setEventHandler( const FacebookEventHandlerPtr & _handler );
 
     public:
+        bool initializeSDK();
+
+    public:
         bool isLoggedIn();
         bool performLogin( const TVectorString & _permissions );
         bool getUser();

@@ -13,6 +13,7 @@
 #define FACEBOOK_JAVA_INTERFACE(function) MENGINE_JAVA_FUNCTION_INTERFACE(FACEBOOK_JAVA_PREFIX, FacebookInteractionLayer, function)
 
 static jclass mActivityClass;
+static jmethodID jmethodID_initializePlugin;
 static jmethodID jmethodID_isLoggedIn;
 static jmethodID jmethodID_performLogin;
 static jmethodID jmethodID_getUser;
@@ -29,11 +30,24 @@ extern "C"
     {
         mActivityClass = (jclass)(mEnv->NewGlobalRef( cls ));
 
+        jmethodID_initializePlugin = mEnv->GetStaticMethodID( mActivityClass, "facebookInitializePlugin", "()V" );
         jmethodID_performLogin = mEnv->GetStaticMethodID( mActivityClass, "facebookPerformLogin", "([Ljava/lang/String;)V" );
         jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()V" );
         jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)V" );
         jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
         jmethodID_getProfilePictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfilePictureLink", "(Ljava/lang/String;)V" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    JNIEXPORT void JNICALL
+        MENGINE_ACTIVITY_JAVA_INTERFACE( AndroidNativeFacebook_1onSDKInitialized )(JNIEnv *mEnv, jclass cls)
+    {
+        if( s_androidNativeFacebookModule != nullptr )
+        {
+            s_androidNativeFacebookModule->addCommand( []( const Mengine::FacebookEventHandlerPtr & _handler )
+            {
+                _handler->onFacebookInitialized();
+            } );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     JNIEXPORT void JNICALL
@@ -314,6 +328,15 @@ namespace Mengine
     void AndroidNativeFacebookModule::setEventHandler( const FacebookEventHandlerPtr & _handler )
     {
         m_eventation.setEventHandler( _handler );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AndroidNativeFacebookModule::initializeSDK()
+    {
+        JNIEnv * env = Mengine_JNI_GetEnv();
+
+        env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AndroidNativeFacebookModule::isLoggedIn()

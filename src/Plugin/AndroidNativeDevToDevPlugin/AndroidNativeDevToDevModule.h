@@ -37,7 +37,7 @@ namespace Mengine
         void setEventHandler( const DevToDevEventHandlerPtr & _handler );
 
     public:
-        bool initializeSDK( const String & _appId, const String & _secret, const String & _apiKey );        
+        bool initializeSDK( const String & _appId, const String & _secret, const String & _apiKey );
 
     public:
         bool onTutorialEvent( int _stateOrStep );

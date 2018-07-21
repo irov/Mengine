@@ -101,5 +101,5 @@ namespace Mengine
         mutable mt::mat4f m_renderWorldMatrix;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveDerivedPtr<NodeOzzAnimation, Node> NodeOzzAnimationPtr;
+    typedef IntrusivePtr<NodeOzzAnimation, Node> NodeOzzAnimationPtr;
 }

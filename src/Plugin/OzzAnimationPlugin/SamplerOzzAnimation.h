@@ -68,6 +68,6 @@ namespace Mengine
         float m_time;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveDerivedPtr<SamplerOzzAnimation, SamplerOzzAnimationInterface> SamplerOzzAnimationPtr;
+    typedef IntrusivePtr<SamplerOzzAnimation, SamplerOzzAnimationInterface> SamplerOzzAnimationPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -3,7 +3,6 @@
 #include "OzzAnimationInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/IntrusiveDerivedPtr.h"
 
 #include "ozz/animation/runtime/skeleton.h"
 
@@ -36,5 +35,5 @@ namespace Mengine
         ozz::animation::Skeleton m_skeleton;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveDerivedPtr<ResourceOzzSkeleton, Resource> ResourceOzzSkeletonPtr;
+    typedef IntrusivePtr<ResourceOzzSkeleton, Resource> ResourceOzzSkeletonPtr;
 }

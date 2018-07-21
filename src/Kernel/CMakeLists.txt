@@ -397,7 +397,6 @@ Core
     SHA1.h
     
     IntrusivePtr.h
-    IntrusiveDerivedPtr.h
     IntrusivePtrBase.h
     
     LoggerBase.cpp
@@ -406,6 +405,11 @@ Core
     AspectRatioViewports.h
     
     Range.h
+)
+
+ADD_FILTER(
+Unknown
+    UnknownResourceImageDataInterface.h
 )
 
 ADD_FILTER(
@@ -515,6 +519,8 @@ INCLUDE_DIRECTORIES(
     )     
 
 ADD_MENGINE_LIBRARY()
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX})
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

@@ -126,8 +126,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    static void s_pybind_logger( const char * _msg )
+    static void s_pybind_logger( void * _user, const char * _msg )
     {
+        (void)_user;
+
         LOGGER_ERROR( "%s"
             , _msg
         );
@@ -608,14 +610,20 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptEngine::setWrapper( const ConstString & _type, const ScriptWrapperInterfacePtr & _wrapper )
+    bool ScriptEngine::setWrapper( const ConstString & _type, const ScriptWrapperInterfacePtr & _wrapper )
     {
         if( _wrapper->initialize() == false )
         {
-            return;
+            LOGGER_ERROR( "ScriptEngine::setWrapper type '%s' invalid initialize"
+                , _type.c_str()
+            );
+
+            return false;
         }
 
         m_scriptWrapper.insert( std::make_pair( _type, _wrapper ) );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::removeWrapper( const ConstString& _type )

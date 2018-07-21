@@ -5,6 +5,8 @@
 #include "Interface/TimelineInterface.h"
 #include "Interface/NodeInterface.h"
 
+#include "Plugin/AstralaxParticlePlugin/UnknownParticleEmitter2Interface.h"
+
 #include "ResourceMovie.h"
 
 #include "ResourceImageDefault.h"
@@ -14,7 +16,6 @@
 #include "ResourceVideo.h"
 #include "ResourceSound.h"
 #include "ResourceShape.h"
-#include "ResourceParticle.h"
 
 
 #include "Kernel/Layer.h"
@@ -27,7 +28,6 @@
 #include "ShapeQuadFixed.h"
 #include "Mesh2D.h"
 #include "TextField.h"
-#include "ParticleEmitter2.h"
 #include "MovieSlot.h"
 #include "MovieNodeExtra.h"
 #include "MovieEvent.h"
@@ -1386,7 +1386,7 @@ namespace Mengine
             return false;
         }
 		
-		layer_hotspotimage->setResourceHIT( resourceHIT );
+		layer_hotspotimage->setResourceTestPick( resourceHIT );
 
 		if( this->addMovieNode_( _layer, layer_hotspotimage, nullptr, nullptr, nullptr ) == false )
 		{
@@ -1900,7 +1900,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::createMovieParticleEmitter2_( const MovieLayer & _layer )
 	{
-		ParticleEmitter2Ptr layer_particles = NODE_SERVICE()
+		NodePtr layer_particles = NODE_SERVICE()
 			->createNode( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
 
 		if( layer_particles == nullptr )
@@ -1908,7 +1908,11 @@ namespace Mengine
 			return false;
 		}
 
-		ResourceParticlePtr resourceParticle = RESOURCE_SERVICE()
+        UnknownParticleEmitter2InterfacePtr unknownParticleEmitter2 = layer_particles->getUnknown();
+
+        AnimationInterfacePtr animationParticleEmitter2 = layer_particles->getAnimation();
+
+		ResourcePtr resourceParticle = RESOURCE_SERVICE()
 			->getResourceReference( _layer.source );
 
 		if( resourceParticle == nullptr )
@@ -1916,26 +1920,26 @@ namespace Mengine
 			return false;
 		}
 
-		layer_particles->setResourceParticle( resourceParticle );
+        unknownParticleEmitter2->setResourceParticle( resourceParticle );
 
-		layer_particles->setIntervalStart( _layer.startInterval );
-		layer_particles->setPlayCount( _layer.playCount );
-		layer_particles->setStretch( _layer.stretch );
-		layer_particles->setLoop( _layer.loop );
+		animationParticleEmitter2->setIntervalStart( _layer.startInterval );
+		animationParticleEmitter2->setPlayCount( _layer.playCount );
+		animationParticleEmitter2->setStretch( _layer.stretch );
+		animationParticleEmitter2->setLoop( _layer.loop );
 
-		layer_particles->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
+        unknownParticleEmitter2->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
 
 		if( _layer.hasParam( MOVIE_LAYER_PARAM_PARTICLE_TRANSLATE ) == true )
 		{
-			layer_particles->setEmitterPositionRelative( true );
-			layer_particles->setEmitterCameraRelative( false );
-			layer_particles->setEmitterTranslateWithParticle( false );
+            unknownParticleEmitter2->setEmitterPositionRelative( true );
+            unknownParticleEmitter2->setEmitterCameraRelative( false );
+            unknownParticleEmitter2->setEmitterTranslateWithParticle( false );
 		}
 		else
 		{
-			layer_particles->setEmitterPositionRelative( false );
-			layer_particles->setEmitterCameraRelative( false );
-			layer_particles->setEmitterTranslateWithParticle( true );
+            unknownParticleEmitter2->setEmitterPositionRelative( false );
+            unknownParticleEmitter2->setEmitterCameraRelative( false );
+            unknownParticleEmitter2->setEmitterTranslateWithParticle( true );
 		}
 
 		if( this->addMovieNode_( _layer, layer_particles, layer_particles, nullptr, nullptr ) == false )

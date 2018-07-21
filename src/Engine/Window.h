@@ -3,6 +3,8 @@
 #include "Kernel/Node.h"
 #include "Kernel/FixedVertices.h"
 
+#include "Kernel/ResourceHolder.h"
+
 #include "ResourceWindow.h"
 
 namespace Mengine

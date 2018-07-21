@@ -2,7 +2,9 @@
 
 #include "HotSpot.h"
 
-#include "ResourceHIT.h"
+#include "ResourceTestPick.h"
+
+#include "Kernel/ResourceHolder.h"
 
 namespace Mengine
 {
@@ -14,8 +16,8 @@ namespace Mengine
 		~HotSpotImage() override;
 
 	public:
-		void setResourceHIT( const ResourceHITPtr & _resourceHIT );
-		const ResourceHITPtr & getResourceHIT() const;
+		void setResourceTestPick( const ResourceTestPickPtr & _resourceTestPick );
+		const ResourceTestPickPtr & getResourceTestPick() const;
 
 	public:
 		void setAlphaTest( float _value );
@@ -40,7 +42,7 @@ namespace Mengine
 		void _release() override;
 
 	protected:
-        ResourceHolder<ResourceHIT> m_resourceHIT;
+        ResourceHolder<ResourceTestPick> m_resourceTestPick;
 
 		float m_alphaTest;		
 	};

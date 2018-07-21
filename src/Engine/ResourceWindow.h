@@ -53,5 +53,5 @@ namespace Mengine
 		WindowElement m_images[ResourceWindow_Count];
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ResourceWindow> ResourceWindowPtr;
+	typedef IntrusiveResourcePtr<ResourceWindow> ResourceWindowPtr;
 }	

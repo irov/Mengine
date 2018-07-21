@@ -4,6 +4,7 @@
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/AnimationEventReceiver.h"
+#include "Kernel/ResourceHolder.h"
 
 #include "ResourceVideo.h"
 

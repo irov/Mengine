@@ -4,6 +4,8 @@
 
 #include "ResourceShape.h"
 
+#include "Kernel/ResourceHolder.h"
+
 namespace Mengine
 {
     class HotSpotShape

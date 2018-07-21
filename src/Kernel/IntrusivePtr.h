@@ -4,6 +4,6 @@
 
 namespace Mengine
 {
-    template<class T>
-    using IntrusivePtr = stdex::intrusive_ptr<T>;
+    template<class T, class D = void>
+    using IntrusivePtr = stdex::intrusive_ptr<T, D>;
 }

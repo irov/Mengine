@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Resource.h"
+#include "Kernel/Resource.h"
 
 namespace Mengine
 {
@@ -9,7 +9,7 @@ namespace Mengine
     class ResourceHolder
     {
 	public:
-		typedef IntrusivePtr<T> TPtr;
+		typedef IntrusiveResourcePtr<T> TPtr;
 
 	public:
 		ResourceHolder()
@@ -49,6 +49,13 @@ namespace Mengine
 		const TPtr & operator -> () const
         {
 			const TPtr & t = this->get();
+
+            return t;
+        }
+
+        operator const ResourcePtr & () const
+        {
+            const ResourcePtr & t = this->get();
 
             return t;
         }

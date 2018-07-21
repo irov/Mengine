@@ -8,7 +8,6 @@
 #include "Engine/ResourceImageDefault.h"
 #include "Engine/ResourceVideo.h"
 #include "Engine/ResourceSound.h"
-#include "Engine/ResourceParticle.h"
 
 #include "Metacode/Metacode.h"
 
@@ -606,6 +605,7 @@ namespace Mengine
 
         return resource.get();
     }
+#if AE_MOVIE_SDK_MAJOR_VERSION < 17
 	//////////////////////////////////////////////////////////////////////////
 	Resource * ResourceMovie2::createResourceImage_( const aeMovieResourceImage * _resource )
 	{
@@ -717,7 +717,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Resource * ResourceMovie2::createResourceParticle_( const aeMovieResourceParticle * _resource )
     {
-        ResourceParticlePtr particle = RESOURCE_SERVICE()
+        ResourcePtr particle = RESOURCE_SERVICE()
             ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 
         const FileGroupInterfacePtr & category = this->getCategory();
@@ -751,4 +751,5 @@ namespace Mengine
 
         return particle.get();
     }
+#endif
 }

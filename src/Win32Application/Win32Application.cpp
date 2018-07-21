@@ -864,7 +864,8 @@ namespace Mengine
 		//INPUT_SERVICE()
 		//	->setCursorPosition( 0, point );
 
-		if( APPLICATION_SERVICE()->createRenderWindow() == false )
+		if( APPLICATION_SERVICE()
+            ->createRenderWindow() == false )
 		{
 			LOGGER_CRITICAL("Application not create render window"
 				);

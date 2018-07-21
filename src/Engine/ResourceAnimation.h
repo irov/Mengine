@@ -7,7 +7,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ResourceImage> ResourceImagePtr;
+    typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
 	//////////////////////////////////////////////////////////////////////////
 	struct AnimationSequence
 	{
@@ -55,7 +55,7 @@ namespace Mengine
 		float m_duration;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ResourceAnimation> ResourceAnimationPtr;
+	typedef IntrusiveResourcePtr<ResourceAnimation> ResourceAnimationPtr;
 }
 
 

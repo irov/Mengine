@@ -23,19 +23,19 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void HotSpotImage::setResourceHIT( const ResourceHITPtr & _resourceHIT )
+	void HotSpotImage::setResourceTestPick( const ResourceTestPickPtr & _resourceTestPick )
 	{
-		if( m_resourceHIT == _resourceHIT )
+		if( m_resourceTestPick == _resourceTestPick )
 		{
 			return;
 		}
 
-        this->recompile( [this, _resourceHIT]() {m_resourceHIT = _resourceHIT; } );
+        this->recompile( [this, _resourceTestPick]() {m_resourceTestPick = _resourceTestPick; } );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const ResourceHITPtr & HotSpotImage::getResourceHIT() const
+	const ResourceTestPickPtr & HotSpotImage::getResourceTestPick() const
 	{
-		return m_resourceHIT;
+		return m_resourceTestPick;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::setAlphaTest( float _value )
@@ -50,7 +50,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t HotSpotImage::getWidth() const
 	{
-		if( m_resourceHIT == nullptr )
+		if( m_resourceTestPick == nullptr )
 		{
 			LOGGER_ERROR("HotSpot::getWidth %s not compiled"
 				, this->getName().c_str()
@@ -59,14 +59,14 @@ namespace Mengine
 			return 0;
 		}
 
-		uint32_t width = m_resourceHIT->getWidth();
+		uint32_t width = m_resourceTestPick->getImageWidth();
 
 		return width;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t HotSpotImage::getHeight() const
 	{
-		if( m_resourceHIT == nullptr )
+		if( m_resourceTestPick == nullptr )
 		{
 			LOGGER_ERROR("HotSpot::getHeight %s not compiled"
 				, this->getName().c_str()
@@ -75,7 +75,7 @@ namespace Mengine
 			return 0;
 		}
 
-		uint32_t height = m_resourceHIT->getHeight();
+		uint32_t height = m_resourceTestPick->getImageHeight();
 
 		return height;
 	}
@@ -87,7 +87,7 @@ namespace Mengine
 			return false;
 		}
 
-        if( m_resourceHIT == nullptr )
+        if( m_resourceTestPick == nullptr )
         {
             LOGGER_ERROR("HotSpotImage::_compile: '%s' resource is null"
                 , this->getName().c_str()
@@ -96,11 +96,11 @@ namespace Mengine
             return false;
         }
 
-        if( m_resourceHIT.compile() == false )
+        if( m_resourceTestPick.compile() == false )
         {
             LOGGER_ERROR("HotSpotImage::_compile: '%s' can't compile HIT resource '%s'"
                 , this->getName().c_str()
-                , m_resourceHIT->getName().c_str()
+                , m_resourceTestPick->getName().c_str()
                 );
 
             return false;
@@ -111,7 +111,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void HotSpotImage::_release()
 	{
-        m_resourceHIT.release();
+        m_resourceTestPick.release();
 
 		HotSpot::_release();
 	}
@@ -166,7 +166,7 @@ namespace Mengine
 		mt::vec2f pointIn2;
 		mt::mul_v2_v2_m4( pointIn2, pointIn1, invWM );
 
-		bool result = m_resourceHIT->testPoint( pointIn2, m_alphaTest );
+		bool result = m_resourceTestPick->testPoint( pointIn2, m_alphaTest );
 
 		return result != m_outward;
 	}
@@ -221,7 +221,7 @@ namespace Mengine
         mt::vec2f pointIn2;
         mt::mul_v2_v2_m4( pointIn2, pointIn1, invWM );
 		
-		bool result = m_resourceHIT->testRadius( pointIn2, _radius, m_alphaTest );
+		bool result = m_resourceTestPick->testRadius( pointIn2, _radius, m_alphaTest );
 
 		return result != m_outward;
 	}
@@ -266,8 +266,8 @@ namespace Mengine
 	{
 		const mt::mat4f & wm = this->getWorldMatrix();
 		
-		float hs_width = (float)m_resourceHIT->getWidth();
-		float hs_height = (float)m_resourceHIT->getHeight();
+		float hs_width = (float)m_resourceTestPick->getImageWidth();
+		float hs_height = (float)m_resourceTestPick->getImageHeight();
 
 		mt::vec2f minimal(0.f, 0.f);
 		mt::vec2f maximal(hs_width, hs_height);

@@ -2,13 +2,21 @@ set(MY_LIB_NAME AstralaxParticlePlugin)
 
 ADD_FILTER(
 src
-	AstralaxEmitter2.cpp
+	AstralaxParticleModule2.cpp
+    AstralaxParticleModule2.h	
+    AstralaxEmitter2.cpp
 	AstralaxEmitter2.h
 	AstralaxEmitterContainer2.cpp
 	AstralaxEmitterContainer2.h
 	AstralaxParticleSystem2.cpp
 	AstralaxParticleSystem2.h
+    ParticleEmitter2.cpp
+	ParticleEmitter2.h
+	ResourceParticle.cpp
+	ResourceParticle.h
     
+    UnknownParticleEmitter2Interface.h
+
     AstralaxParticlePlugin2.cpp
     AstralaxParticlePlugin2.h
     AstralaxParticlePlugin2.def
@@ -21,7 +29,8 @@ endif()
 add_definitions(-DMAGIC_3D)
 
 INCLUDE_DIRECTORIES( 
-    ${THIRDPARTY_DIR}/pybind/include 
+    ${THIRDPARTY_DIR}/pybind/include    
+    ${THIRDPARTY_DIR}/metabuf
     ${THIRDPARTY_DIR}/libmath/include
     )
 
@@ -92,4 +101,8 @@ else()
 endif()
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX})
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}metabuf${MENGINE_LIB_SUFFIX})
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}python${MENGINE_LIB_SUFFIX})
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}zlib${MENGINE_LIB_SUFFIX})
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX})
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX})

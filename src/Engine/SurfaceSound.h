@@ -7,6 +7,8 @@
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/BaseAnimation.h"
 
+#include "Kernel/ResourceHolder.h"
+
 #include "Engine/ResourceSound.h"
 
 #include "Interface/SoundSystemInterface.h"

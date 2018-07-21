@@ -2,6 +2,7 @@
 
 #include "Kernel/Layer.h"
 #include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceHolder.h"
 
 #include "Kernel/Viewport.h"
 #include "Kernel/RenderVertex2D.h"

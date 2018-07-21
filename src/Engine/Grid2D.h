@@ -4,6 +4,7 @@
 #include "Kernel/Materialable.h"
 
 #include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceHolder.h"
 
 #include "Kernel/ColourValue.h"
 #include "Kernel/ValueInterpolator.h"

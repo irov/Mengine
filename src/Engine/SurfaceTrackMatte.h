@@ -15,7 +15,7 @@ namespace Mengine
         ESTM_MODE_LUMA_INVERTED = 4,
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ResourceImage> ResourceImagePtr;
+    typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
     //////////////////////////////////////////////////////////////////////////
 	class SurfaceTrackMatte
 		: public Surface

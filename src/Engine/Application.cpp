@@ -44,7 +44,6 @@
 //#include "ScriptHolder.h"
 
 // All Node type
-#include "ParticleEmitter2.h"
 #include "HotSpot.h"
 #include "HotSpotPolygon.h"
 #include "HotSpotCircle.h"
@@ -298,7 +297,7 @@ namespace Mengine
         NODE_FACTORY( MatrixProxy );
 
         //NODE_FACTORY( ParticleEmitter );
-        NODE_FACTORY( ParticleEmitter2 );
+        //NODE_FACTORY( ParticleEmitter2 );
 
         NODE_FACTORY( HotSpotPolygon );
         NODE_FACTORY( HotSpotCircle );
@@ -451,9 +450,7 @@ namespace Mengine
         RESOURCE_FACTORY( ResourceMusic );
 
         RESOURCE_FACTORY( ResourceAnimation );
-
-        RESOURCE_FACTORY( ResourceParticle );
-
+        
         //RESOURCE_FACTORY( ResourceFont );
         //RESOURCE_FACTORY( ResourceGlyph );
 

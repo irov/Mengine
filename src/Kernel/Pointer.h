@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/IntrusivePtr.h"
-#include "Kernel/IntrusiveDerivedPtr.h"
 
 #ifndef NDEBUG
 #include "stdex/mpl.h"
@@ -105,20 +104,20 @@ namespace Mengine
         }
 
         template<class UD>
-        operator IntrusiveDerivedPtr<T, UD>() const
+        operator IntrusivePtr<T, UD>() const
         {
-            return IntrusiveDerivedPtr<T, UD>( m_pointer );
+            return IntrusivePtr<T, UD>( m_pointer );
         }
 
         template<class U, class UD>
-        operator IntrusiveDerivedPtr<U, UD>() const
+        operator IntrusivePtr<U, UD>() const
         {
             T * p = m_pointer.get();
 
 #ifndef NDEBUG
             if( p == nullptr )
             {
-                return IntrusiveDerivedPtr<U, UD>();
+                return IntrusivePtr<U, UD>();
             }
 
             if( stdex::mpl::is_dynamic_cast<U *>::test( p ) == false )
@@ -129,7 +128,7 @@ namespace Mengine
 
             U * u = static_cast<U *>(p);
 
-            return IntrusiveDerivedPtr<U, UD>( u );
+            return IntrusivePtr<U, UD>( u );
         }
 
     protected:

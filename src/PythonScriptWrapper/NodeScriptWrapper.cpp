@@ -56,7 +56,6 @@
 #include "Engine/MovieSlot.h"
 #include "Engine/MovieInternalObject.h"
 #include "Engine/MovieEvent.h"
-#include "Engine/ParticleEmitter2.h"
 #include "Engine/Model3D.h"
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
@@ -1852,41 +1851,6 @@ namespace Mengine
 
             return pybind::ret_none();
         }
-        ////////////////////////////////////////////////////////////////////////////        
-        PyObject * s_ParticleEmitter2_setEventListener( pybind::kernel_interface * _kernel, ParticleEmitter2 * _node, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
-
-            if( _kwds == nullptr )
-            {
-                return pybind::ret_none();
-            }
-
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( py_kwds, _node );
-
-#ifndef NDEBUG
-            if( py_kwds.empty() == false )
-            {
-                for( pybind::dict::iterator
-                    it = py_kwds.begin(),
-                    it_end = py_kwds.end();
-                    it != it_end;
-                    ++it )
-                {
-                    std::string k = it.key();
-
-                    LOGGER_ERROR( "ParticleEmitter2::setEventListener invalid kwds '%s'\n"
-                        , k.c_str()
-                    );
-                }
-
-                throw;
-            }
-#endif
-
-            return pybind::ret_none();
-        }
         //////////////////////////////////////////////////////////////////////////
         class PythonScriptHolderEventReceiver
             : public ScriptEventReceiver
@@ -3534,7 +3498,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Arrow );
         SCRIPT_CLASS_WRAPPING( TextField );
         SCRIPT_CLASS_WRAPPING( SoundEmitter );
-        SCRIPT_CLASS_WRAPPING( ParticleEmitter2 );
         SCRIPT_CLASS_WRAPPING( Movie );
         SCRIPT_CLASS_WRAPPING( MovieSlot );
         SCRIPT_CLASS_WRAPPING( MovieInternalObject );
@@ -3574,6 +3537,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceImageSubstractRGBAndAlpha );
         SCRIPT_CLASS_WRAPPING( ResourceImageSubstract );
         SCRIPT_CLASS_WRAPPING( ResourceInternalObject );
+        SCRIPT_CLASS_WRAPPING( ResourceTestPick );
         SCRIPT_CLASS_WRAPPING( ResourceHIT );
 
         SCRIPT_CLASS_WRAPPING( Surface );
@@ -3770,9 +3734,18 @@ namespace Mengine
         pybind::interface_<ResourceWindow, pybind::bases<Resource> >( kernel, "ResourceWindow", false )
             ;
 
-        pybind::interface_<ResourceHIT, pybind::bases<Resource> >( kernel, "ResourceHIT", false )
-            .def( "getWidth", &ResourceHIT::getWidth )
-            .def( "getHeight", &ResourceHIT::getHeight )
+        pybind::interface_<ResourceTestPick, pybind::bases<Resource> >( kernel, "ResourceTestPick", false )
+            .def_deprecated( "getWidth", &ResourceTestPick::getImageWidth, "use getImageWidth" )
+            .def_deprecated( "getHeight", &ResourceTestPick::getImageHeight, "use getImageHeight" )
+            .def( "getImageWidth", &ResourceTestPick::getImageWidth )
+            .def( "getImageHeight", &ResourceTestPick::getImageHeight )
+            ;
+
+        pybind::interface_<ResourceHIT, pybind::bases<ResourceTestPick> >( kernel, "ResourceHIT", false )
+            .def( "setFilePath", &ResourceHIT::setFilePath )
+            .def( "getFilePath", &ResourceHIT::getFilePath )
+            .def( "setCodecType", &ResourceHIT::setCodecType )
+            .def( "getCodecType", &ResourceHIT::getCodecType )
             ;
 
         pybind::interface_<Renderable, pybind::bases<Mixin> >( kernel, "Renderable" )
@@ -4079,26 +4052,7 @@ namespace Mengine
             ;
 
         {
-            pybind::interface_<ParticleEmitter2, pybind::bases<Node, Eventable, Animatable> >( kernel, "ParticleEmitter2", false )
-                .def( "setResourceParticle", &ParticleEmitter2::setResourceParticle )
-                .def( "getResourceParticle", &ParticleEmitter2::getResourceParticle )
 
-                .def( "setEmitterTranslateWithParticle", &ParticleEmitter2::setEmitterTranslateWithParticle )
-                .def( "setEmitterPositionRelative", &ParticleEmitter2::setEmitterPositionRelative )
-                .def( "setEmitterCameraRelative", &ParticleEmitter2::setEmitterCameraRelative )
-                .def( "setEmitterPositionProviderOriginOffset", &ParticleEmitter2::setEmitterPositionProviderOriginOffset )
-
-                .def( "changeEmitterImage", &ParticleEmitter2::changeEmitterImage )
-                .def( "removeEmitterImage", &ParticleEmitter2::removeEmitterImage )
-                .def( "changeEmitterPolygon", &ParticleEmitter2::changeEmitterPolygon )
-                .def( "removeEmitterPolygon", &ParticleEmitter2::removeEmitterPolygon )
-
-                .def( "getDuration", &ParticleEmitter2::getDuration )
-
-                .def( "setEmitterRandomMode", &ParticleEmitter2::setEmitterRandomMode )
-                .def( "getEmitterRandomMode", &ParticleEmitter2::getEmitterRandomMode )
-                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_ParticleEmitter2_setEventListener )
-                ;
 
             pybind::interface_<SoundEmitter, pybind::bases<Node> >( kernel, "SoundEmitter", false )
                 .def( "setSurfaceSound", &SoundEmitter::setSurfaceSound )
@@ -4238,8 +4192,10 @@ namespace Mengine
                 ;
 
             pybind::interface_<HotSpotImage, pybind::bases<HotSpot> >( kernel, "HotSpotImage", false )
-                .def( "setResourceHIT", &HotSpotImage::setResourceHIT )
-                .def( "getResourceHIT", &HotSpotImage::getResourceHIT )
+                .def_deprecated( "setResourceHIT", &HotSpotImage::setResourceTestPick, "use setResourceTestPick" )
+                .def_deprecated( "getResourceHIT", &HotSpotImage::getResourceTestPick, "use getResourceTestPick" )
+                .def( "setResourceTestPick", &HotSpotImage::setResourceTestPick )
+                .def( "getResourceTestPick", &HotSpotImage::getResourceTestPick )
                 .def( "setAlphaTest", &HotSpotImage::setAlphaTest )
                 .def( "getAlphaTest", &HotSpotImage::getAlphaTest )
                 .def( "getWidth", &HotSpotImage::getWidth )

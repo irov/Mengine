@@ -31,5 +31,5 @@ namespace Mengine
         Polygon m_polygon;
     };
 	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ResourceShape> ResourceShapePtr;
+	typedef IntrusiveResourcePtr<ResourceShape> ResourceShapePtr;
 }	

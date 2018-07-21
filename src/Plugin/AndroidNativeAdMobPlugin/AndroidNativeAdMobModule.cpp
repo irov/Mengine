@@ -357,7 +357,6 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-
         pybind::def_function_proxy_args( kernel, "androidAdMobSetEventHandler", &Detail::androidAdMobSetEventHandler, this );
         pybind::def_functor( kernel, "androidAdMobInitialize", this, &AndroidNativeAdMobModule::initializeSDK );        
 
@@ -405,7 +404,7 @@ namespace Mengine
         jstring jvideoAdUnitId = env->NewStringUTF( videoAdUnitId_str );
 
         env->CallStaticVoidMethod( mActivityClass, jmethodID_initializePlugin, jadmobAppId, jinterAdUnitId, jvideoAdUnitId );
-        
+
         env->DeleteLocalRef( jadmobAppId );
         env->DeleteLocalRef( jinterAdUnitId );
         env->DeleteLocalRef( jvideoAdUnitId );

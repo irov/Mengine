@@ -5,6 +5,7 @@
 #include "FacebookLoginCallback.h"
 #include "FacebookShareCallback.h"
 #include "FacebookUserCallback.h"
+#include "FacebookInitializationCallback.h"
 #include "FacebookProfilePictureURLCallback.h"
 
 #include "Config/VectorString.h"
@@ -28,6 +29,7 @@ namespace Mengine
         void _finalize() override;
 
     public:
+        bool initializePlugin(const FacebookInitializationCallbackPtr & _callback);
         bool isLoggedIn();
         bool performLogin( const TVectorString & _permissions, const FacebookLoginCallbackPtr & _callback );
         bool getUser( const FacebookUserCallbackPtr & _callback );

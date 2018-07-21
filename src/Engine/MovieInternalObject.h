@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/ResourceHolder.h"
 
 #include "ResourceInternalObject.h"
 

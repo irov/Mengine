@@ -86,12 +86,6 @@ Shape\\\\ShapeQuad
 SOURCE_GROUP( Object )
 
 ADD_FILTER(
-Object\\\\ParticleEmitter2
-	ParticleEmitter2.cpp
-	ParticleEmitter2.h
-)
-
-ADD_FILTER(
 Object\\\\HotSpot
 	HotSpot.cpp
 	HotSpot.h
@@ -245,12 +239,6 @@ Resource\\\\Cursor
 	ResourceCursorICO.h
     ResourceCursorSystem.cpp
     ResourceCursorSystem.h
-)
-
-ADD_FILTER(
-Resource\\\\Particle
-	ResourceParticle.cpp
-	ResourceParticle.h
 )
 
 ADD_FILTER(

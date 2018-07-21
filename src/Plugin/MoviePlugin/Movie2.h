@@ -3,6 +3,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/Surface.h"
+#include "Kernel/ResourceHolder.h"
 
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderViewport.h"
@@ -22,7 +23,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class ShapeQuadFixed> ShapeQuadFixedPtr;
     typedef IntrusivePtr<class HotSpotPolygon> HotSpotPolygonPtr;
-    typedef IntrusivePtr<class ParticleEmitter2> ParticleEmitter2Ptr;
     typedef IntrusivePtr<class TextField> TextFieldPtr;
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Movie2> Movie2Ptr;
@@ -121,11 +121,11 @@ namespace Mengine
         bool hasSprite( const ConstString & _name ) const;
 
     protected:
-        void addParticle_( uint32_t _index, const ParticleEmitter2Ptr & _particleEmitter );
-        const ParticleEmitter2Ptr & getParticle_( uint32_t _index ) const;
+        void addParticle_( uint32_t _index, const NodePtr & _particleEmitter );
+        const NodePtr & getParticle_( uint32_t _index ) const;
 
     public:
-        const ParticleEmitter2Ptr & findParticle( const ConstString & _name ) const;
+        const NodePtr & findParticle( const ConstString & _name ) const;
         bool hasParticle( const ConstString & _name ) const;
 
     protected:
@@ -229,7 +229,7 @@ namespace Mengine
         typedef Map<uint32_t, ShapeQuadFixedPtr> TMapSprites;
         TMapSprites m_sprites;
 
-        typedef Map<uint32_t, ParticleEmitter2Ptr> TMapParticleEmitter2s;
+        typedef Map<uint32_t, NodePtr> TMapParticleEmitter2s;
         TMapParticleEmitter2s m_particleEmitters;
 
         typedef Vector<MatrixProxyPtr> TVectorMatrixProxies;

@@ -37,54 +37,54 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-	class ScriptWrapper
-		: public ServantBase<ScriptWrapperInterface>
-	{
-	public:
-		bool initialize() override
-		{
-			pybind::kernel_interface * kernel = pybind::get_kernel();
+    class ScriptWrapper
+        : public ServantBase<ScriptWrapperInterface>
+    {
+    public:
+        bool initialize() override
+        {
+            pybind::kernel_interface * kernel = pybind::get_kernel();
 
-			pybind::registration_type_cast<T>(kernel, new Helper::ScriptExtract<T>());
+            pybind::registration_type_cast<T>(kernel, new Helper::ScriptExtract<T>());
 
-			return true;
-		}
+            return true;
+        }
 
-		void finalize() override
-		{
+        void finalize() override
+        {
 
-		}
+        }
 
-	protected:
+    protected:
         PyObject * wrap( Scriptable * _scriptable ) override
-		{
+        {
 #ifndef NDEBUG
-			if( dynamic_cast<T *>( _scriptable ) == nullptr )
+            if( dynamic_cast<T *>(_scriptable) == nullptr )
             {
-				LOGGER_ERROR("ScriptClassWrapper::wrap invalid type"
-					);
+                LOGGER_ERROR( "ScriptClassWrapper::wrap invalid type"
+                );
 
                 throw;
             }
 #endif
 
-            T * obj = static_cast<T *>( _scriptable );
+            T * obj = static_cast<T *>(_scriptable);
 
-			pybind::kernel_interface * kernel = pybind::get_kernel();
+            pybind::kernel_interface * kernel = pybind::get_kernel();
 
             PyObject * py_obj = kernel->scope_create_holder_t( obj );
 
-			//pybind::set_attr( py_embedded, "Mengine_name", pybind::ptr(_node->getName()) );
-			//pybind::set_attr( py_embedded, "Mengine_type", pybind::ptr(_node->getType()) );
-			//pybind::set_attr( py_embedded, "Mengine_tag", pybind::ptr(_node->getTag()) );
+            //pybind::set_attr( py_embedded, "Mengine_name", pybind::ptr(_node->getName()) );
+            //pybind::set_attr( py_embedded, "Mengine_type", pybind::ptr(_node->getType()) );
+            //pybind::set_attr( py_embedded, "Mengine_tag", pybind::ptr(_node->getTag()) );
 
-			return py_obj;
-		}
+            return py_obj;
+        }
 
-	protected:
-		void destroy() override
-		{
-			delete this;
-		}
-	};
+    protected:
+        void destroy() override
+        {
+            delete this;
+        }
+    };
 }

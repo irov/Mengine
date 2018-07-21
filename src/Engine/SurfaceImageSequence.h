@@ -9,7 +9,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ResourceAnimation> ResourceAnimationPtr;
+    typedef IntrusiveResourcePtr<class ResourceAnimation> ResourceAnimationPtr;
     //////////////////////////////////////////////////////////////////////////
     enum SurfaceImageSequenceEventFlag
     {

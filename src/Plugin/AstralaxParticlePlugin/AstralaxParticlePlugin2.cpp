@@ -2,7 +2,10 @@
 
 #include "Interface/ParticleSystemInterface.h"
 
+#include "AstralaxParticleModule2.h"
+
 #include "Kernel/Logger.h"
+#include "Kernel/ModuleFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( ParticleSystem );
@@ -25,6 +28,9 @@ namespace Mengine
 		LOGGER_INFO( "Initializing Particle System 3D..." );
 
 		SERVICE_CREATE( ParticleSystem );
+
+        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAstralaxParticle" )
+            , new ModuleFactory<AstralaxParticleModule2>() );
 
 		return true;
 	}

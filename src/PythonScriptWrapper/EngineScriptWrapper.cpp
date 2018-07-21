@@ -59,7 +59,6 @@
 #include "Engine/MovieSlot.h"
 #include "Engine/MovieInternalObject.h"
 #include "Engine/MovieEvent.h"
-#include "Engine/ParticleEmitter2.h"
 #include "Engine/Model3D.h"
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
@@ -861,11 +860,11 @@ namespace Mengine
                 return mt::vec2f( 0.f, 0.f );
             }
 
-            const ResourceHITPtr & resourceHIT = _hotspotImage->getResourceHIT();
+            const ResourceTestPickPtr & resourceHIT = _hotspotImage->getResourceTestPick();
 
             mt::vec2f size;
-            size.x = (float)resourceHIT->getWidth();
-            size.y = (float)resourceHIT->getHeight();
+            size.x = (float)resourceHIT->getImageWidth();
+            size.y = (float)resourceHIT->getImageHeight();
 
             return size;
         }

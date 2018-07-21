@@ -6,6 +6,7 @@
 #include "Kernel/Materialable.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/ResourceImage.h"
+#include "Kernel/ResourceHolder.h"
 
 #include "ResourceModel3D.h"
 

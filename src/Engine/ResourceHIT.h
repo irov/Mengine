@@ -41,12 +41,11 @@ namespace Mengine
 		bool testPoint( const mt::vec2f & _point, float _minAlpha ) const override;
 		bool testRadius( const mt::vec2f & _point, float _radius, float _minAlpha ) const override;
 
-	public:
-		uint32_t getWidth() const override;
-        uint32_t getHeight() const override;
+    protected:
+		uint32_t getImageWidth() const override;
+        uint32_t getImageHeight() const override;
 
-    public:
-		uint8_t * getBuffer() const override;
+		Pointer getImageBuffer() const override;
 
     protected:
 		uint8_t * getHitBuffer_( uint32_t _level ) const;
@@ -65,4 +64,5 @@ namespace Mengine
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<ResourceHIT> ResourceHITPtr;
+    //////////////////////////////////////////////////////////////////////////
 }	

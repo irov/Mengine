@@ -6,7 +6,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ResourceImage> ResourceImagePtr;
+    typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
     //////////////////////////////////////////////////////////////////////////
 	class SurfaceImage
 		: public Surface        

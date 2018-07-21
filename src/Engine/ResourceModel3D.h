@@ -46,7 +46,7 @@ namespace Mengine
 		ResourceImagePtr m_imageResource;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ResourceModel3D> ResourceModel3DPtr;
+	typedef IntrusiveResourcePtr<ResourceModel3D> ResourceModel3DPtr;
 	//////////////////////////////////////////////////////////////////////////
 	const Model3DInterfacePtr & ResourceModel3D::getModel() const
 	{

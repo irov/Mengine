@@ -3,7 +3,6 @@
 #include "OzzAnimationInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/IntrusiveDerivedPtr.h"
 
 #include "OzzDetail.h"
 
@@ -40,5 +39,5 @@ namespace Mengine
         Detail::Mesh m_mesh;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveDerivedPtr<ResourceOzzMesh, Resource> ResourceOzzMeshPtr;
+    typedef IntrusivePtr<ResourceOzzMesh, Resource> ResourceOzzMeshPtr;
 }

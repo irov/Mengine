@@ -8,7 +8,7 @@
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class ResourceImage> ResourceImagePtr;
+    typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
     typedef IntrusivePtr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
     typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
 

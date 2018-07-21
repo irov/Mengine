@@ -56,5 +56,5 @@ namespace Mengine
 		bool m_isStreamable;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ResourceSound> ResourceSoundPtr;
+	typedef IntrusiveResourcePtr<ResourceSound> ResourceSoundPtr;
 }

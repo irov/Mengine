@@ -6,9 +6,10 @@
 #include "Interface/PrototypeManagerInterface.h"
 #include "Interface/ResourceInterface.h"
 
+#include "Plugin/AstralaxParticlePlugin/UnknownParticleEmitter2Interface.h"
+
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
-#include "Engine/ParticleEmitter2.h"
 #include "Engine/TextField.h"
 
 #include "Engine/SurfaceImage.h"
@@ -20,6 +21,7 @@
 #include "Kernel/Layer.h"
 
 #include "Kernel/NodeHelper.h"
+#include "Kernel/ResourceImage.h"
 
 #include "Kernel/Logger.h"
 
@@ -207,7 +209,7 @@ namespace Mengine
             }
             else if( layer.type == STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) )
             {
-                ParticleEmitter2Ptr node = NODE_SERVICE()
+                NodePtr node = NODE_SERVICE()
                     ->createNode( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
 
                 if( node == nullptr )
@@ -218,9 +220,11 @@ namespace Mengine
                 node->setName( layer.name );
                 node->setExternalRender( true );
 
-                node->setEmitterPositionRelative( false );
-                node->setEmitterCameraRelative( false );
-                node->setEmitterTranslateWithParticle( false );
+                UnknownParticleEmitter2InterfacePtr unknownParticleEmitter2 = node->getUnknown();
+
+                unknownParticleEmitter2->setEmitterPositionRelative( false );
+                unknownParticleEmitter2->setEmitterCameraRelative( false );
+                unknownParticleEmitter2->setEmitterTranslateWithParticle( false );
 
                 this->addParticle_( layer.index, node );
 
@@ -268,7 +272,7 @@ namespace Mengine
                 {
                     return false;
                 }
-                
+
                 surface->setResourceImage( resourceImage );
 
                 ShapeQuadFixedPtr node = NODE_SERVICE()
@@ -318,11 +322,11 @@ namespace Mengine
         {
             Movie2SubCompositionPtr node = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
-            
+
             node->setMovie( this );
-            
+
             node->setSubMovieComposition( m_composition, subcomposition.name );
-            
+
             this->addSubMovieComposition_( subcomposition.name, node );
         }
 
@@ -410,10 +414,10 @@ namespace Mengine
     {
         if( m_composition == nullptr )
         {
-            LOGGER_ERROR("Movie2::setEnableMovieLayers '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR( "Movie2::setEnableMovieLayers '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , _name.c_str()
-                );
+            );
 
             return;
         }
@@ -429,7 +433,7 @@ namespace Mengine
         }
 
         ae_play_movie_composition( m_composition, 0.f );
-                
+
         EVENTABLE_METHOD( this, EVENT_ANIMATION_PLAY )
             ->onAnimationPlay( _enumerator, _time );
 
@@ -637,7 +641,7 @@ namespace Mengine
         case AE_MOVIE_LAYER_TYPE_SPRITE:
             {
                 const ShapeQuadFixedPtr & node = movie2->getSprite_( node_index );
-                
+
                 if( node == nullptr )
                 {
                     LOGGER_ERROR( "Movie::createMovieSprite_ '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
@@ -721,7 +725,7 @@ namespace Mengine
                     const ae_vector2_t * v = polygon->points + index;
 
                     mt::vec2f v2( (*v)[0], (*v)[1] );
-                    
+
                     p.append( v2 );
                 }
 
@@ -733,24 +737,27 @@ namespace Mengine
             }break;
         case AE_MOVIE_LAYER_TYPE_PARTICLE:
             {
-                const ParticleEmitter2Ptr & node = movie2->getParticle_( node_index );
+                const NodePtr & node = movie2->getParticle_( node_index );
 
                 if( node == nullptr )
                 {
                     return AE_FALSE;
                 }
 
-                ResourceParticle * resourceParticle = reinterpret_node_cast<ResourceParticle *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
+                Resource * resourceParticle = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
 
-                node->setResourceParticle( resourceParticle );
+                UnknownParticleEmitter2InterfacePtr unknownParticleEmitter = node->getUnknown();
+
+                unknownParticleEmitter->setResourceParticle( resourceParticle );
 
                 //EMaterialBlendMode blend_mode = getMovieBlendMode( layer );
 
-                ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer );
-                node->setStretch( layer_stretch );
+                AnimationInterfacePtr animation = node->getAnimation();
 
-                node->setLoop( _callbackData->incessantly );
-                
+                ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer );
+                animation->setStretch( layer_stretch );
+                animation->setLoop( _callbackData->incessantly );
+
                 *_nd = node.get();
 
                 return AE_TRUE;
@@ -783,7 +790,7 @@ namespace Mengine
                     surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
 
                     ae_track_matte_mode_t track_matte_mode = ae_get_movie_layer_data_track_matte_mode( _callbackData->layer );
-                    
+
                     switch( track_matte_mode )
                     {
                     case AE_MOVIE_TRACK_MATTE_ALPHA:
@@ -796,12 +803,12 @@ namespace Mengine
                         }break;
                     default:
                         break;
-                    }                    
+                    }
 
                     EMaterialBlendMode blend_mode = Helper::getMovieLayerBlendMode( layer );
 
                     surfaceTrackMatte->setBlendMode( blend_mode );
-                    
+
                     movie2->addSurface( surfaceTrackMatte );
 
                     *_nd = surfaceTrackMatte.get();
@@ -840,7 +847,7 @@ namespace Mengine
 
                     surfaceVideo->setBlendMode( blend_mode );
                     surfaceVideo->setPremultiplyAlpha( true );
-                    
+
                     movie2->addSurface( surfaceVideo );
 
                     *_nd = surfaceVideo.get();
@@ -866,7 +873,7 @@ namespace Mengine
                     ResourceSound * resourceSound = reinterpret_node_cast<ResourceSound *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
 
                     surfaceSound->setResourceSound( resourceSound );
-                    
+
                     movie2->addSurface( surfaceSound );
 
                     *_nd = surfaceSound.get();
@@ -904,7 +911,7 @@ namespace Mengine
             case AE_MOVIE_LAYER_TYPE_IMAGE:
                 {
                     //SurfaceTrackMatte * surfaceTrackMatte = (SurfaceTrackMatte *)_callbackData->element;
-                    
+
                     //movie2->removeSurface( surfaceTrackMatte );
                 }break;
             default:
@@ -943,16 +950,18 @@ namespace Mengine
     static ae_void_t __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, ae_voidptr_t _data )
     {
         (void)_data;
-        
+
         aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( _callbackData->layer );
 
         switch( layer_type )
         {
         case AE_MOVIE_LAYER_TYPE_PARTICLE:
             {
-                ParticleEmitter2 * node = reinterpret_node_cast<ParticleEmitter2 *>(_callbackData->element);
-                
+                Node * node = reinterpret_node_cast<Node *>(_callbackData->element);
+
                 __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
+
+                AnimationInterfacePtr animation = node->getAnimation();
 
                 switch( _callbackData->state )
                 {
@@ -961,13 +970,13 @@ namespace Mengine
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        node->setTime( _callbackData->offset * 1000.f );
+                        animation->setTime( _callbackData->offset * 1000.f );
 
                         if( _callbackData->loop == AE_TRUE )
                         {
-                            if( node->isPlay() == false )
+                            if( animation->isPlay() == false )
                             {
-                                if( node->play( time ) == 0 )
+                                if( animation->play( time ) == 0 )
                                 {
                                     return;
                                 }
@@ -975,7 +984,7 @@ namespace Mengine
                         }
                         else
                         {
-                            if( node->play( time ) == 0 )
+                            if( animation->play( time ) == 0 )
                             {
                                 return;
                             }
@@ -988,19 +997,19 @@ namespace Mengine
                     {
                         if( _callbackData->loop == AE_FALSE )
                         {
-                            node->stop();
+                            animation->stop();
                         }
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PAUSE:
                     {
-                        node->pause();
+                        animation->pause();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_RESUME:
                     {
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        node->resume( time );
+                        animation->resume( time );
                     }break;
                 default:
                     {
@@ -1381,7 +1390,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "Movie2::_compile: '%s' can't setup resource"
                 , this->getName().c_str()
-                );
+            );
 
             return false;
         }
@@ -1391,7 +1400,7 @@ namespace Mengine
             LOGGER_ERROR( "Movie2::_compile '%s' resource %s not compile"
                 , m_name.c_str()
                 , m_resourceMovie2->getName().c_str()
-                );
+            );
 
             return false;
         }
@@ -1402,11 +1411,11 @@ namespace Mengine
 
         if( compositionData == nullptr )
         {
-            LOGGER_ERROR("Movie2::_compile '%s' resource %s not found composition '%s'"
+            LOGGER_ERROR( "Movie2::_compile '%s' resource %s not found composition '%s'"
                 , m_name.c_str()
                 , m_resourceMovie2->getName().c_str()
                 , m_compositionName.c_str()
-                );
+            );
 
             return false;
         }
@@ -1505,7 +1514,7 @@ namespace Mengine
         }
 
         m_surfaces.clear();
-        
+
         m_resourceMovie2.release();
 
         Node::_release();
@@ -1568,7 +1577,7 @@ namespace Mengine
                 LOGGER_ERROR( "Movie2::_afterActivate '%s' resource '%s' auto play return 0"
                     , this->getName().c_str()
                     , this->m_resourceMovie2->getName().c_str()
-                    );
+                );
 
                 return;
             }
@@ -1622,7 +1631,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "Movie._setLastFrame: '%s' not activate"
                 , this->getName().c_str()
-                );
+            );
 
             return;
         }
@@ -1631,7 +1640,7 @@ namespace Mengine
 
         float duration = ae_get_movie_composition_data_duration( compositionData );
         float frameDuration = ae_get_movie_composition_data_frame_duration( compositionData );
-        
+
         this->setTime( duration * 1000.f - frameDuration * 1000.f );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1649,12 +1658,12 @@ namespace Mengine
         {
             return;
         }
-        
+
         ae_update_movie_composition( m_composition, _timing * 0.001f );
 
         for( const SurfacePtr & surface : m_surfaces )
         {
-            surface->update( _current, _timing  );
+            surface->update( _current, _timing );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1704,7 +1713,7 @@ namespace Mengine
             {
                 state.camera = _state->camera;
                 state.viewport = _state->viewport;
-                
+
                 state.target = _state->target;
             }
 
@@ -1730,7 +1739,7 @@ namespace Mengine
                 case AE_MOVIE_LAYER_TYPE_SLOT:
                     {
                         Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_data);
-                        
+
                         node->render( &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
@@ -1761,7 +1770,7 @@ namespace Mengine
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        ParticleEmitter2 * particleEmitter2 = reinterpret_node_cast<ParticleEmitter2 *>(mesh.element_data);
+                        Node * particleEmitter2 = reinterpret_node_cast<Node *>(mesh.element_data);
 
                         particleEmitter2->render( &state );
                     }break;
@@ -1776,7 +1785,7 @@ namespace Mengine
 
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
-                                                
+
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = vertices[index];
@@ -1816,7 +1825,7 @@ namespace Mengine
 
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
-                        
+
                         for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {
                             RenderVertex2D & v = vertices[index];
@@ -1825,7 +1834,7 @@ namespace Mengine
                             vp.from_f3( &mesh.position[index][0] );
 
                             mt::mul_v3_v3_m4( v.position, vp, wm );
-                            
+
                             v.uv[0].x = 0.f;
                             v.uv[0].y = 0.f;
                             v.uv[1].x = 0.f;
@@ -1856,7 +1865,7 @@ namespace Mengine
                         ResourceImage * resource_image = reinterpret_node_cast<ResourceImage *>(resource_reference);
 
                         Mesh & m = meshes_buffer[mesh_iterator++];
-                        
+
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -1896,7 +1905,7 @@ namespace Mengine
                                 RenderVertex2D & v = vertices[index];
 
                                 const mt::vec2f & uv = uvs[index];
-                                
+
                                 v.uv[0] = uv;
                                 v.uv[1] = uv;
                             }
@@ -1994,7 +2003,7 @@ namespace Mengine
 
                             mt::vec2f uv;
                             uv.from_f2( &mesh.uv[index][0] );
-                            
+
                             resourceImage->correctUVImage( v.uv[0], uv );
 
                             mt::vec2f uv_track_matte;
@@ -2005,7 +2014,7 @@ namespace Mengine
                             );
 
                             resourceTrackMatteImage->correctUVImage( v.uv[1], uv_track_matte );
-                            
+
                             v.color = total_mesh_color;
                         }
 
@@ -2096,30 +2105,30 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::addParticle_( uint32_t _index, const ParticleEmitter2Ptr & _particleEmitter )
+    void Movie2::addParticle_( uint32_t _index, const NodePtr & _particleEmitter )
     {
         m_particleEmitters.insert( std::make_pair( _index, _particleEmitter ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ParticleEmitter2Ptr & Movie2::getParticle_( uint32_t _index ) const
+    const NodePtr & Movie2::getParticle_( uint32_t _index ) const
     {
         TMapParticleEmitter2s::const_iterator it_found = m_particleEmitters.find( _index );
 
         if( it_found == m_particleEmitters.end() )
         {
-            return ParticleEmitter2Ptr::none();
+            return NodePtr::none();
         }
 
-        const ParticleEmitter2Ptr & particleEmitter = it_found->second;
+        const NodePtr & particleEmitter = it_found->second;
 
         return particleEmitter;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ParticleEmitter2Ptr & Movie2::findParticle( const ConstString & _name ) const
+    const NodePtr & Movie2::findParticle( const ConstString & _name ) const
     {
         for( const TMapParticleEmitter2s::value_type & value : m_particleEmitters )
         {
-            const ParticleEmitter2Ptr & particle = value.second;
+            const NodePtr & particle = value.second;
 
             if( particle->getName() != _name )
             {
@@ -2129,14 +2138,14 @@ namespace Mengine
             return particle;
         }
 
-        return ParticleEmitter2Ptr::none();
+        return NodePtr::none();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasParticle( const ConstString & _name ) const
     {
         for( const TMapParticleEmitter2s::value_type & value : m_particleEmitters )
         {
-            const ParticleEmitter2Ptr & particle = value.second;
+            const NodePtr & particle = value.second;
 
             if( particle->getName() != _name )
             {

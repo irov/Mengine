@@ -9,7 +9,6 @@
 
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
-#include "Engine/ParticleEmitter2.h"
 #include "Engine/TextField.h"
 
 #include "Kernel/NodePrototypeGenerator.h"
@@ -306,7 +305,10 @@ namespace Mengine
 
         m_hashkey = hashkey;
 
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
+
+        pybind::set_kernel( kernel );
 
         m_instance = ae_create_movie_instance( m_hashkey.c_str(), &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
 

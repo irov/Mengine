@@ -3,7 +3,6 @@
 #include "OzzAnimationInterface.h"
 
 #include "Kernel/Resource.h"
-#include "Kernel/IntrusiveDerivedPtr.h"
 
 #include "ozz/animation/runtime/animation.h"
 
@@ -36,5 +35,5 @@ namespace Mengine
         ozz::animation::Animation m_animation;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveDerivedPtr<ResourceOzzAnimation, Resource> ResourceOzzAnimationPtr;
+    typedef IntrusivePtr<ResourceOzzAnimation, Resource> ResourceOzzAnimationPtr;
 }

@@ -67,7 +67,7 @@ namespace Mengine
 		bool m_pow2;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusiveDerivedPtr<RenderTexture, RenderTextureInterface> RenderTexturePtr;
+	typedef IntrusivePtr<RenderTexture, RenderTextureInterface> RenderTexturePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline const FileGroupInterfacePtr & RenderTexture::getCategory() const
 	{

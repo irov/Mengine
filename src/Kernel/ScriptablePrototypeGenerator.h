@@ -3,6 +3,7 @@
 #include "BasePrototypeGenerator.h"
 
 #include "Kernel/ConstString.h"
+#include "Kernel/Scriptable.h"
 
 #include "Kernel/FactoryPool.h"
 

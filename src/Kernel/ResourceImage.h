@@ -23,6 +23,9 @@ namespace Mengine
 	public:
 		ResourceImage();
 		~ResourceImage() override;
+
+    public:
+        typedef Resource IntrusiveDerivedType;
 			
 	public:        
 		inline void setMaxSize( const mt::vec2f & _size );
@@ -92,7 +95,7 @@ namespace Mengine
         bool m_isPow2;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ResourceImage> ResourceImagePtr;
+	typedef IntrusivePtr<ResourceImage, Resource> ResourceImagePtr;
 	//////////////////////////////////////////////////////////////////////////
 	inline void ResourceImage::setMaxSize( const mt::vec2f & _maxSize )
 	{

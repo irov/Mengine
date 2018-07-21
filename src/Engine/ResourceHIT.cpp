@@ -381,17 +381,17 @@ namespace Mengine
         return buffer;
     }
 	//////////////////////////////////////////////////////////////////////////
-    uint32_t ResourceHIT::getWidth() const
+    uint32_t ResourceHIT::getImageWidth() const
     {
         return m_width;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ResourceHIT::getHeight() const
+    uint32_t ResourceHIT::getImageHeight() const
     {
         return m_height;
     }
 	//////////////////////////////////////////////////////////////////////////
-	uint8_t * ResourceHIT::getBuffer() const
+    Pointer ResourceHIT::getImageBuffer() const
     {
 		uint8_t * buffer = this->getHitBuffer_( 0 );
 

@@ -12,8 +12,6 @@
 #include "Kernel/Comable.h"
 #include "Kernel/Unknowable.h"
 
-#include "Kernel/ResourceHolder.h"
-
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
 
@@ -121,4 +119,7 @@ namespace Mengine
 	{
 		return m_cache;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    using IntrusiveResourcePtr = IntrusivePtr<T, Resource>;
 }

@@ -75,6 +75,12 @@ namespace Mengine
         {
         }
 
+        template<class U, class D>
+        PointerT( const IntrusivePtr<U, D> & _pointer )
+            : m_pointer( _pointer )
+        {
+        }
+
     public:
         operator IntrusivePtr<T>() const
         {

@@ -68,9 +68,6 @@ namespace Mengine
         RenderViewportPtr m_renderViewport;
 
         ResourceHolder<ResourceImage> m_resourceImageMask;
-        //RenderTargetInterfacePtr m_renderTarget;
-        //RenderImageInterfacePtr m_renderTargetImage;
-        //RenderTextureInterfacePtr m_renderTargetTexture;
 
         RenderMaterialInterfacePtr m_materialImageMask;
 

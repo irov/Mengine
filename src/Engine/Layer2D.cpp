@@ -17,8 +17,6 @@ namespace Mengine
 	Layer2D::Layer2D()
         : m_size( 0.f, 0.f )
         , m_viewport( 0.f, 0.f, 0.f, 0.f )
-        , m_renderCamera( nullptr )
-        , m_renderViewport( nullptr )
         , m_invalidateVerticesImageMaskColor( true )
         , m_invalidateVerticesImageMaskWM( true )
         , m_hasViewport( false )

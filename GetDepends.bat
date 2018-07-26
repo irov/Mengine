@@ -47,7 +47,7 @@ call:gitdepend https://github.com/frankinshtein/font-effects-lib.git libfe
 call:gitdepend https://github.com/irov/math.git libmath
 call:gitdepend https://github.com/akheron/jansson.git jansson
 
-call:gitdependr https://github.com/glennrp/libpng.git libpng libpng17
+call:gitdependr https://github.com/glennrp/libpng.git libpng v1.6.35
 call:gitdependr https://github.com/xiph/theora.git libtheora theora-1.1
 call:gitdependr https://github.com/kcat/openal-soft.git openal-soft v1.18
 call:gitdependr https://github.com/python/cpython.git Python 2.7

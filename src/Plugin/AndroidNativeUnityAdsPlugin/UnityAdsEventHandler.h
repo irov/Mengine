@@ -7,7 +7,7 @@
 
 namespace Mengine
 {
-    enum EnumDevToDevEventHandler
+    enum EnumUnityAdsEventHandler
     {
         UNITYADS_INITIALIZE,
         UNITYADS_READY,

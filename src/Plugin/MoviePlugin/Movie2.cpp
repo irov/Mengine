@@ -1706,15 +1706,13 @@ namespace Mengine
 
                 state.camera = camera->projection;
                 state.viewport = camera->viewport;
+                state.transformation = _state->transformation;
                 state.scissor = _state->scissor;
                 state.target = _state->target;
             }
             else
             {
-                state.camera = _state->camera;
-                state.viewport = _state->viewport;
-
-                state.target = _state->target;
+                state = *_state;
             }
 
             if( mesh.viewport != nullptr )
@@ -1760,11 +1758,6 @@ namespace Mengine
                 case AE_MOVIE_LAYER_TYPE_TEXT:
                     {
                         TextField * node = reinterpret_node_cast<TextField *>(mesh.element_data);
-
-                        if( node->getTextID() == "ID_NewPlayerName" )
-                        {
-                            printf( "Fds" );
-                        }
 
                         node->render( &state );
                     }break;

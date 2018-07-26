@@ -107,7 +107,7 @@ gitdepend https://github.com/frankinshtein/font-effects-lib.git libfe
 gitdepend https://github.com/irov/math.git libmath
 gitdepend https://github.com/akheron/jansson.git jansson
 
-gitdependr https://github.com/glennrp/libpng.git libpng libpng17
+gitdependr https://github.com/glennrp/libpng.git libpng v1.6.35
 gitdependr https://github.com/xiph/theora.git libtheora theora-1.1
 gitdependr https://github.com/kcat/openal-soft.git openal-soft v1.18
 gitdependr https://github.com/python/cpython.git Python 2.7

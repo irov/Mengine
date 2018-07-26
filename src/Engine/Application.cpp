@@ -654,7 +654,7 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_ERROR( "%.*s-%s [%s] (%.2f, %.2f) %d"
+            LOGGER_ERROR( "%.*s-%s [%s] (%.2f, %.2f) %d %s"
                 , _tab
                 , "                                         "
                 , child->getName().c_str()
@@ -662,6 +662,7 @@ namespace Mengine
                 , child->getWorldPosition().x
                 , child->getWorldPosition().y
                 , child->isRenderable()
+                , child->getAnimation() == nullptr ? "" : (child->getAnimation()->isPlay() == true ? "[Play]" : "[Stop]")
             );
 
             s_printChildren2( child, _tab + 1 );

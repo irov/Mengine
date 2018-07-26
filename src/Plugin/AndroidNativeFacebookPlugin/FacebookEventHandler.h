@@ -7,7 +7,7 @@
 
 namespace Mengine
 {
-    enum EnumDevToDevEventHandler
+    enum EnumFacebookEventHandler
     {
         FACEBOOK_INITIALIZE,
         FACEBOOK_LOGIN_SUCCESS,

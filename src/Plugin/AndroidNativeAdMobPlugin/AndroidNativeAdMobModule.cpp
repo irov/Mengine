@@ -280,56 +280,56 @@ namespace Mengine
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( 0, pyparams, m_args );
+                m_cb.call_args( ADMOB_REWARDEDVIDEOAD_LOAD, pyparams, m_args );
             }
 
             void onAdMobRewardedVideoAdOpened() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( 1, pyparams, m_args );
+                m_cb.call_args( ADMOB_REWARDEDVIDEOAD_OPENED, pyparams, m_args );
             }
 
             void onAdMobRewardedVideoAdStarted() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( 2, pyparams, m_args );
+                m_cb.call_args( ADMOB_REWARDEDVIDEOAD_STARTED, pyparams, m_args );
             }
 
             void onAdMobRewardedVideoAdClosed() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( 3, pyparams, m_args );
+                m_cb.call_args( ADMOB_REWARDEDVIDEOAD_CLOSED, pyparams, m_args );
             }
 
             void onAdMobRewardedVideoAdRewarded( const String & _rewardType, int _rewardAmount ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _rewardType, _rewardAmount );
 
-                m_cb.call_args( 4, pyparams, m_args );
+                m_cb.call_args( ADMOB_REWARDEDVIDEOAD_REWARDED, pyparams, m_args );
             }
 
             void onAdMobRewardedVideoAdLeftApplication() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( 5, pyparams, m_args );
+                m_cb.call_args( ADMOB_REWARDEDVIDEOAD_LEFT_APPLICATION, pyparams, m_args );
             }
 
             void onAdMobRewardedVideoAdFailedToLoad( int _errorCode ) override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel(), _errorCode );
 
-                m_cb.call_args( 6, pyparams, m_args );
+                m_cb.call_args( ADMOB_REWARDEDVIDEOAD_FAILED_LOAD, pyparams, m_args );
             }
 
             void onAdMobRewardedVideoAdCompleted() override
             {
                 pybind::tuple pyparams = pybind::make_tuple_t( m_cb.kernel() );
 
-                m_cb.call_args( 7, pyparams, m_args );
+                m_cb.call_args( ADMOB_REWARDEDVIDEOAD_COMPLETED, pyparams, m_args );
             }
 
         protected:

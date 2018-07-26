@@ -292,7 +292,8 @@ namespace Mengine
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
         pybind::def_function_proxy_args( kernel, "androidFacebookSetEventHandler", &Detail::androidFacebookSetEventHandler, this );
-
+                
+        pybind::def_functor( kernel, "androidFacebookInitialize", this, &AndroidNativeFacebookModule::initializeSDK );
         pybind::def_functor( kernel, "androidFacebookIsLoggedIn", this, &AndroidNativeFacebookModule::isLoggedIn );
         pybind::def_functor( kernel, "androidFacebookPerformLogin", this, &AndroidNativeFacebookModule::performLogin );
         pybind::def_functor( kernel, "androidFacebookGetUser", this, &AndroidNativeFacebookModule::getUser );

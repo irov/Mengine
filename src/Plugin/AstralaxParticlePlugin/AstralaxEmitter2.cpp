@@ -707,19 +707,20 @@ namespace Mengine
             float half_width = (m_rect.z - m_rect.x) * 0.5f;
             float half_height = (m_rect.w - m_rect.y) * 0.5f;
 
-            for( uint32_t i = 0; i != _flush.vertexCount; ++i )
-            {
-                RenderVertex2D & v = _vertices[i];
+            RenderVertex2D * vertices_iterator = _vertices;
+            RenderVertex2D * vertices_end = _vertices + _flush.vertexCount;
 
+            for( ; vertices_iterator != vertices_end; ++vertices_iterator )
+            {
                 mt::vec3f v_vpm;
-                mt::mul_v3_v3_m4_homogenize( v_vpm, v.position, vpm );
+                mt::mul_v3_v3_m4_homogenize( v_vpm, vertices_iterator->position, vpm );
 
                 mt::vec3f v_new;
                 v_new.x = (1.f + v_vpm.x) * half_width;
                 v_new.y = (1.f + v_vpm.y) * half_height;
                 v_new.z = v_vpm.z;
 
-                v.position = v_new;
+                vertices_iterator->position = v_new;
             }
         }
 

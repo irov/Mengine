@@ -56,7 +56,7 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	Movie::Movie()
-		: m_frameTiming(0.f)
+		: m_frameTime(0.f)
 		, m_currentFrame(0)        
 		, m_renderCameraProjection(nullptr)
 		, m_renderViewport(nullptr)
@@ -121,7 +121,7 @@ namespace Mengine
 		return m_parentMovie;
 	}	
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::getFrameTiming_( float _time, uint32_t & _frame, float & _timing ) const
+	void Movie::getFrameTime_( float _time, uint32_t & _frame, float & _delthaTime ) const
 	{
 		float duration = m_resourceMovie->getDuration();
 
@@ -138,29 +138,29 @@ namespace Mengine
 		if( frameCount == 0 )
 		{
 			_frame = 0;
-			_timing = 0.f;
+			_delthaTime = 0.f;
 		}
 		else if( loop == true )
 		{
 			_frame = frame % frameCount;
-			_timing = crop_timing - _frame * frameDuration;
+			_delthaTime = crop_timing - _frame * frameDuration;
 		}
 		else
 		{
 			if( frame >= frameCount )
 			{
 				_frame = frameCount - 1;
-				_timing = 0.f;
+				_delthaTime = 0.f;
 			}
 			else
 			{
 				_frame = frame;
-				_timing = crop_timing - _frame * frameDuration;
+				_delthaTime = crop_timing - _frame * frameDuration;
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::_setTime( float _timing )
+	void Movie::_setTime( float _time )
 	{
 		if( m_resourceMovie.empty() == true )
 		{
@@ -172,15 +172,15 @@ namespace Mengine
 		}
 
 		uint32_t frame;
-		float timing;
-		this->getFrameTiming_( _timing, frame, timing );
+		float frameTime;
+		this->getFrameTime_( _time, frame, frameTime );
 
 		m_currentFrame = frame;
-		m_frameTiming = timing;
+		m_frameTime = frameTime;
 
 		if( this->isActivate() == true )
 		{
-			this->updateTiming_();
+			this->updateTime_();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -197,7 +197,7 @@ namespace Mengine
 		
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
-		float timing = m_currentFrame * frameDuration + m_frameTiming;
+		float timing = m_currentFrame * frameDuration + m_frameTime;
 
 		return timing;
 	}
@@ -325,7 +325,7 @@ namespace Mengine
 		{
 			float frameDuration = m_resourceMovie->getFrameDuration();
 
-			float t = m_frameTiming / frameDuration;
+			float t = m_frameTime / frameDuration;
 
 			if( framePack->getLayerFrameInterpolate( _layer.index, _frameId, t, frame ) == false )
 			{
@@ -2370,7 +2370,7 @@ namespace Mengine
 		}
 		else
 		{
-			this->updateTiming_();
+			this->updateTime_();
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
@@ -2422,7 +2422,7 @@ namespace Mengine
 		float scretch = this->getStretch();
 		float realTiming = _timing * speedFactor / scretch;
 
-		m_frameTiming += realTiming;
+		m_frameTime += realTiming;
 
 		this->updateForward_( _current );
 	}
@@ -2474,9 +2474,9 @@ namespace Mengine
 
 		uint32_t lastFrame = m_currentFrame;
 
-		while( m_frameTiming >= frameDuration )
+		while( m_frameTime >= frameDuration )
 		{
-			m_frameTiming -= frameDuration;
+			m_frameTime -= frameDuration;
 
 			++m_currentFrame;
 
@@ -2505,7 +2505,7 @@ namespace Mengine
 				}
 				else
 				{
-					float beginTiming = m_frameTiming + loopSegment.x;
+					float beginTiming = m_frameTime + loopSegment.x;
 
 					this->setTime( beginTiming );
 
@@ -2731,7 +2731,7 @@ namespace Mengine
 		this->setLocalAlpha( _alpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Movie::updateTiming_()
+	void Movie::updateTime_()
 	{
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
@@ -2773,20 +2773,20 @@ namespace Mengine
 
 					if( layer.timeRemap == false )
 					{
-						float timing = (m_currentFrame - indexIn) * frameDuration + m_frameTiming;
-						animation->setTime( timing );
+						float time = (m_currentFrame - indexIn) * frameDuration + m_frameTime;
+						animation->setTime( time );
 					}
 					else
 					{
 						const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
-						float timing;
-						if( framePack->getLayerTimeRemap( layer.index, m_currentFrame - indexIn, timing ) == false )
+						float time;
+						if( framePack->getLayerTimeRemap( layer.index, m_currentFrame - indexIn, time ) == false )
 						{
 							continue;
 						}
 
-						animation->setTime( timing );
+						animation->setTime( time );
 					}
 				}
 			}

@@ -18,7 +18,7 @@ namespace Mengine
 		virtual float getTime() const = 0;		
 
 	public:
-		virtual void tick( float _timing ) = 0;
+		virtual void tick( float _time ) = 0;
 	};
 
 #   define TIMELINE_SERVICE()\

@@ -40,7 +40,7 @@ namespace Mengine
         PixelFormat format;
         bool clamp;
 
-        float getFrameTiming() const
+        float getFrameTime() const
         {
             return 1000.f / fps;
         }

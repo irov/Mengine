@@ -149,9 +149,9 @@ namespace Mengine
         , m_textEnable( true )
         , m_videoEnable( true )
         , m_debugMask( 0 )
-        , m_phycisTiming( 0.f )
-        , m_resetTiming( false )
-        , m_maxTiming( 100.f )
+        , m_phycisFrameTime( 0.f )
+        , m_resetFrameTime( false )
+        , m_maxFrameTime( 100.f )
         , m_focus( true )
         , m_freeze( false )
         , m_update( true )
@@ -1268,43 +1268,43 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::tick( float _timing )
+    void Application::tick( float _time )
     {
-        float timing = _timing;
+        float time = _time;
 
         if( m_debugPause == true )
         {
-            timing = 0.f;
+            time = 0.f;
         }
 
-        if( _timing > m_maxTiming )
+        if( _time > m_maxFrameTime )
         {
-            timing = m_maxTiming;
+            time = m_maxFrameTime;
         }
 
-        float time = TIMELINE_SERVICE()
+        float current = TIMELINE_SERVICE()
             ->getTime();
 
         GAME_SERVICE()
-            ->tick( time, timing );
+            ->tick( current, time );
 
         MODULE_SERVICE()
-            ->tick( time, timing );
+            ->tick( current, time );
 
         if( SERVICE_EXIST( Mengine::SoundServiceInterface ) == true )
         {
             SOUND_SERVICE()
-                ->tick( time, timing );
+                ->tick( current, time );
         }
 
         if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
         {
             GRAVEYARD_SERVICE()
-                ->tick( time, timing );
+                ->tick( current, time );
         }
 
         TIMELINE_SERVICE()
-            ->tick( timing );
+            ->tick( time );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::endUpdate()

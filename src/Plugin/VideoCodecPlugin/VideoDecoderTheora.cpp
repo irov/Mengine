@@ -857,7 +857,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderTheora::seekToFrame( float _time )
 	{
-		float frameTiming = m_dataInfo.getFrameTiming();
+		float frameTiming = m_dataInfo.getFrameTime();
 
 		ogg_packet packet;
 
@@ -925,10 +925,10 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool VideoDecoderTheora::_seek( float _time )
 	{
-		float frameTiming = m_dataInfo.getFrameTiming();
+		float frameTime = m_dataInfo.getFrameTime();
 
-		uint32_t frame_time = (uint32_t)(m_time / frameTiming);
-		uint32_t frame_seek = (uint32_t)(_time / frameTiming);
+		uint32_t frame_time = (uint32_t)(m_time / frameTime);
+		uint32_t frame_seek = (uint32_t)(_time / frameTime);
 
 		if( frame_time == frame_seek || frame_time == frame_seek + 1 )
 		{

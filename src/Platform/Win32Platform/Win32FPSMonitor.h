@@ -28,7 +28,7 @@ namespace Mengine
 		bool m_running;
 		bool m_active;
 
-		float m_frameTiming;
+		float m_frameTime;
 
 		DWORD  m_threadId;
 

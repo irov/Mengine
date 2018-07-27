@@ -238,14 +238,14 @@ namespace Mengine
 		m_start = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::update( float _timing, bool & _stop )
+	bool AstralaxEmitter2::update( float _time, bool & _stop )
 	{
 		if( m_start == false )
 		{
 			return false;
 		}
 
-        m_time += _timing;
+        m_time += _time;
 
 		if( m_cameraProvider != nullptr )
 		{
@@ -330,7 +330,7 @@ namespace Mengine
 			Magic_SetEmitterPosition( m_emitterId, &mp );
 		}
 
-		float total_timing = _timing /** m_updateSpeed*/;
+		float total_timing = _time /** m_updateSpeed*/;
 		
 		bool restart = Magic_Update( m_emitterId, total_timing );
 

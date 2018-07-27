@@ -30,7 +30,7 @@ namespace Mengine
         : public EventReceiver
     {
     public:
-        virtual void onMeshgetUpdate( float _current, float _timing ) = 0;
+        virtual void onMeshgetUpdate( float _current, float _time ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MeshgetEventReceiver> MeshgetEventReceiverPtr;
@@ -57,7 +57,7 @@ namespace Mengine
 		void _release() override;
 
 	protected:
-		void _update( float _current, float _timing ) override;
+		void _update( float _current, float _time ) override;
 		void _render( const RenderContext * _state ) override;
 
 	protected:

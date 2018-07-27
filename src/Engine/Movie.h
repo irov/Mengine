@@ -100,7 +100,7 @@ namespace Mengine
 		void setEnableMovieLayers( const ConstString & _name, bool _enable );
 
 	protected:
-		void _setTime( float _timing ) override;
+		void _setTime( float _time ) override;
 		float _getTime() const override;
 				
 		void _setFirstFrame() override;
@@ -137,7 +137,7 @@ namespace Mengine
         void _destroy() override;
 
 	protected:
-		void _update( float _current, float _timing ) override;
+		void _update( float _current, float _time ) override;
 
     protected:
         void _setLocalHide( bool _value ) override;
@@ -209,10 +209,10 @@ namespace Mengine
 		inline const NodePtr & getLayerParent_( const MovieLayer & _layer ) const;
 
 	protected:
-		void getFrameTiming_( float _time, uint32_t & _frame, float & _timing ) const;
+		void getFrameTime_( float _time, uint32_t & _frame, float & _timing ) const;
 
 	protected:		
-		void updateTiming_();
+		void updateTime_();
         void updateAnimatablePlay_();
 		void updateClipLastFrame_();
 		void updateStartInterval_();
@@ -260,7 +260,7 @@ namespace Mengine
 		typedef Vector<Nodies> TVectorNodies;
 		TVectorNodies m_nodies;
 				
-		float m_frameTiming;
+		float m_frameTime;
 		uint32_t m_currentFrame;
         
 		bool m_interruptEnd;

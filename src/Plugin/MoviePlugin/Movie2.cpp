@@ -1027,8 +1027,6 @@ namespace Mengine
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        surface->setTime( _callbackData->offset * 1000.f );
-
                         if( _callbackData->loop == AE_TRUE )
                         {
                             if( surface->isPlay() == false )
@@ -1046,6 +1044,8 @@ namespace Mengine
                                 return;
                             }
                         }
+
+                        surface->setTime( _callbackData->offset * 1000.f );
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {

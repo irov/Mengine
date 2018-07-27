@@ -24,7 +24,7 @@ namespace Mengine
 		SchedulePipeInterfacePtr pipe;
 
 		float delay;
-		float timing_delay;
+		float time_delay;
 		
 		uint32_t iterate;
 
@@ -62,25 +62,25 @@ namespace Mengine
 		bool isFreezeAll() const override;
 		bool isFreeze( uint32_t _id ) const override;
 
-		float time( uint32_t _id ) const override;
-		float left( uint32_t _id ) const override;
+		float getTimePassed( uint32_t _id ) const override;
+		float getTimeLeft( uint32_t _id ) const override;
 
 	public:
 		void setSpeedFactor( float _factor ) override;
 		float getSpeedFactor() const override;
 
 	public:
-		float getTiming() const override;
+		float getTime() const override;
 		
 	public:
-		void update( float _current, float _timing ) override;
+		void update( float _current, float _time ) override;
 
     protected:
         bool removeSchedule_( ScheduleEventDesc & _event );
 
 	protected:
 		float m_speedFactor;
-		float m_timing;
+		float m_time;
 
 		typedef Vector<ScheduleEventDesc> TListSchedules;
 		TListSchedules m_schedules;

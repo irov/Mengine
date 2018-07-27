@@ -13,7 +13,7 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	SurfaceVideo::SurfaceVideo()
-		: m_timing( 0.f )
+		: m_time( 0.f )
 		, m_needUpdate( false )
 		, m_updateFirstFrame(false)
 		, m_invalidVideoTexture( true )
@@ -98,7 +98,7 @@ namespace Mengine
         m_uv.p3 = mt::vec2f( 0.f, v );
 	}
 	//////////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::_update( float _current, float _timing )
+    bool SurfaceVideo::_update( float _current, float _time )
 	{
 		if( this->isPlay() == false )
 		{
@@ -116,17 +116,17 @@ namespace Mengine
 		if( m_playTime > _current )
 		{
 			float deltha = m_playTime - _current;
-			_timing -= deltha;
+			_time -= deltha;
 		}
 
 		float speedFactor = this->getAnimationSpeedFactor();
-		float timing = _timing * speedFactor;
+		float time = _time * speedFactor;
 
 		float scretch = this->getStretch();
 
-		float totalTiming = timing / scretch;
+		float totalTime = time / scretch;
 
-		m_needUpdate = this->sync_( totalTiming );
+		m_needUpdate = this->sync_( totalTime );
 
 		this->updateVideoBuffer_();
 
@@ -196,7 +196,7 @@ namespace Mengine
         this->updateSize_();
 		this->updateUV_();
 
-		m_timing = 0.f;
+		m_time = 0.f;
 		m_needUpdate = true;
 		m_updateFirstFrame = true;
 
@@ -300,8 +300,9 @@ namespace Mengine
         (void)_enumerator;
 		(void)_time;
 
-		m_timing = 0.f;
+		m_time = 0.f;
 		m_needUpdate = true;
+        m_updateFirstFrame = true;
 
 		return true;
 	}
@@ -344,21 +345,19 @@ namespace Mengine
 		}
 	}
 	////////////////////////////////////////////////////////////////////
-	bool SurfaceVideo::sync_( float _timing )
+	bool SurfaceVideo::sync_( float _time )
 	{
-		m_timing += _timing;
+		m_time += _time;
 
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
 		bool needUpdate = false;
 
-		float frameTiming = dataInfo->getFrameTiming();
+		float frameTime = dataInfo->getFrameTime();
 		float duration = dataInfo->duration;
 
-		while( m_timing >= frameTiming || m_updateFirstFrame == true )
+		while( m_time >= frameTime || m_updateFirstFrame == true )
 		{
-			m_updateFirstFrame = false;
-
 			float pts;
 			EVideoDecoderReadState state = m_videoDecoder->readNextFrame( pts );
 
@@ -372,6 +371,8 @@ namespace Mengine
 			{
 				if( this->getLoop() == false && --m_playIterator == 0 )
 				{
+                    m_videoDecoder->rewind();
+
 					this->stop();
 
 					return false;
@@ -387,9 +388,9 @@ namespace Mengine
 						time += m_intervalStart - intervalTime;
 					}
 
-					if( time > frameTiming )
+					if( time > frameTime )
 					{
-						time -= frameTiming;
+						time -= frameTime;
 					}
 
 					if( m_videoDecoder->seek( time ) == false )
@@ -406,8 +407,8 @@ namespace Mengine
 			{
 				LOGGER_ERROR("Video::_sync: '%s' error reading frame timing %4.2f total timing %4.2f"
 					, this->getName().c_str()
-					, _timing
-					, m_timing
+					, _time
+					, m_time
 					);
 
 				needUpdate = false;
@@ -415,13 +416,18 @@ namespace Mengine
 				break;
 			}
 
-			m_timing -= frameTiming;
+            if( m_updateFirstFrame == false )
+            {
+                m_time -= frameTime;
+            }
+
+            m_updateFirstFrame = false;
 		}
 
 		return needUpdate;
 	}
 	////////////////////////////////////////////////////////////////////
-	void SurfaceVideo::_setTime( float _timing )
+	void SurfaceVideo::_setTime( float _time )
 	{
 		if( this->isCompile() == false )
 		{
@@ -434,21 +440,21 @@ namespace Mengine
 
 		const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
-		float frameTiming = dataInfo->getFrameTiming();
+		float frameTime = dataInfo->getFrameTime();
 
 		float frameRate = m_resourceVideo->getFrameRate();
 
 		if( frameRate > 0.f )
 		{
-			frameTiming = 1000.f / frameRate;
+			frameTime = 1000.f / frameRate;
 		}
 
-		if( ::fabsf( m_timing - _timing ) < frameTiming )
+		if( ::fabsf( m_time - _time ) < frameTime )
 		{
 			return;
 		}
 
-		float seek_timing = _timing;
+		float seek_time = _time;
 
 		float duration = dataInfo->duration;
 
@@ -461,19 +467,19 @@ namespace Mengine
 			m_playIterator -= skipIterator;
 		}
 
-		m_timing = _timing;
+		m_time = _time;
 
-		while( m_timing > duration )
+		while( m_time > duration )
 		{
-			m_timing -= duration;
+			m_time -= duration;
 		}
 
-		if( m_videoDecoder->seek( seek_timing ) == false )
+		if( m_videoDecoder->seek( seek_time ) == false )
 		{
 			LOGGER_ERROR("Video::_setTiming %s:%s invalid seek to %f"
 				, this->getName().c_str()
 				, m_resourceVideo->getName().c_str()
-				, seek_timing
+				, seek_time
 				);
 
 			return;

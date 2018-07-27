@@ -123,10 +123,6 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticleModule2::_finalize()
 	{
-        pybind::kernel_interface * kernel = pybind::get_kernel();
-
-        kernel->remove_scope<ParticleEmitter2>();
-
         SCRIPT_SERVICE()
             ->removeWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
 
@@ -138,6 +134,10 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
+
+        pybind::kernel_interface * kernel = pybind::get_kernel();
+
+        kernel->remove_scope<ParticleEmitter2>();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxParticleModule2::_destroy()

@@ -45,10 +45,10 @@ namespace Mengine
         _out = _in;
     }
 	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceSolidColor::_update( float _current, float _timing )
+	bool SurfaceSolidColor::_update( float _current, float _time )
 	{	
         (void)_current;
-        (void)_timing;
+        (void)_time;
 
         return false;
 	}

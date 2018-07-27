@@ -67,9 +67,9 @@ namespace Mengine
 		//Empty;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::tick( float _time, float _timing )
+	void ModuleBase::tick( float _current, float _time )
 	{
-		this->_tick( _time, _timing );
+		this->_tick( _current, _time );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleBase::render( const RenderContext * _state, uint32_t _debugMask )
@@ -77,10 +77,10 @@ namespace Mengine
 		this->_render( _state, _debugMask );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::_tick( float _time, float _timing )
+	void ModuleBase::_tick( float _current, float _time )
 	{
+		(void)_current;
 		(void)_time;
-		(void)_timing;
 
 		//Empty
 	}

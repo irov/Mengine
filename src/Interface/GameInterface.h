@@ -22,7 +22,7 @@ namespace Mengine
 
     public:
 		virtual void update() = 0;
-		virtual void tick( float _time, float _timing ) = 0;
+		virtual void tick( float _current, float _time ) = 0;
 
 	public:
         virtual void render() = 0;
@@ -31,8 +31,8 @@ namespace Mengine
         virtual void setCursorMode( bool _mode ) = 0;
 
     public:
-        virtual float getTimingFactor() const = 0;
-        virtual void setTimingFactor( float _timingFactor ) = 0;
+        virtual float getTimeFactor() const = 0;
+        virtual void setTimeFactor( float _factor ) = 0;
 
     public:
         virtual WString getParam( const ConstString & _paramName ) const = 0;

@@ -119,11 +119,11 @@ namespace Mengine
 		virtual size_t _decode( void * _buffer, size_t _bufferSize ) = 0;
 
 	private:
-		bool seek( float _timing ) override
+		bool seek( float _time ) override
 		{
 			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::seek" );
 
-			bool successful = this->_seek( _timing );
+			bool successful = this->_seek( _time );
 
 			return successful;
 		}

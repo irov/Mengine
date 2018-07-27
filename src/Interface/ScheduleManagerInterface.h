@@ -22,7 +22,7 @@ namespace Mengine
 		: public Factorable
 	{
 	public:
-		virtual void onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _timing ) = 0;
+		virtual void onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _time ) = 0;
 		virtual void onScheduleComplete( uint32_t _id ) = 0;
 		virtual void onScheduleStop( uint32_t _id ) = 0;		
 	};
@@ -62,15 +62,15 @@ namespace Mengine
 		virtual bool isFreezeAll() const = 0;
         virtual bool isFreeze( uint32_t _id ) const = 0;
 
-        virtual float time( uint32_t _id ) const = 0;
-		virtual float left( uint32_t _id ) const = 0;
+        virtual float getTimePassed( uint32_t _id ) const = 0;
+		virtual float getTimeLeft( uint32_t _id ) const = 0;
 
 	public:
 		virtual void setSpeedFactor( float _factor ) = 0;
 		virtual float getSpeedFactor() const = 0;
 
 	public:
-		virtual float getTiming() const = 0;
+		virtual float getTime() const = 0;
 
     public:
         virtual void update( float _current, float _timing ) = 0;

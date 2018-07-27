@@ -23,7 +23,7 @@ namespace Mengine
 		, m_invalidateVerticesColor(true)
 		, m_vertexCount(0)
 		, m_indicesCount(0)
-		, m_frameTiming(0)
+		, m_frameTime(0)
 		, m_currentFrame(0)
 	{ 
 	}
@@ -291,7 +291,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_update( float _current, float _timing )
+	void Model3D::_update( float _current, float _time )
 	{
 		if( this->isPlay() == false )
 		{
@@ -301,7 +301,7 @@ namespace Mengine
 		if( m_playTime > _current )
 		{
 			float deltha = m_playTime - _current;
-			_timing -= deltha;
+			_time -= deltha;
 		}
 
 		const Model3DInterfacePtr & model = m_resourceModel->getModel();
@@ -311,15 +311,15 @@ namespace Mengine
 		
 		float speedFactor = this->getAnimationSpeedFactor();
 		float scretch = this->getStretch();
-		m_frameTiming += _timing * speedFactor / scretch;
+		m_frameTime += _time * speedFactor / scretch;
 		
 		uint32_t lastFrame = m_currentFrame;
 
 		if( m_currentFrame != frameCount )
 		{
-			while( m_frameTiming >= frameDelay )
+			while( m_frameTime >= frameDelay )
 			{
-				m_frameTiming -= frameDelay;
+				m_frameTime -= frameDelay;
 
 				++m_currentFrame;
 
@@ -327,7 +327,7 @@ namespace Mengine
 				{
 					if( this->getLoop() == true )
 					{
-						this->setTime( m_frameTiming );                                   
+						this->setTime( m_frameTime );                                   
 					}
 					else
 					{
@@ -336,7 +336,7 @@ namespace Mengine
 							m_currentFrame = frameCount - 1;
 							this->updateCurrentFrame_();
 
-							m_frameTiming = 0.f;
+							m_frameTime = 0.f;
 
 							lastFrame = m_currentFrame;
 
@@ -346,7 +346,7 @@ namespace Mengine
 						}
 						else
 						{
-							this->setTime( m_frameTiming );
+							this->setTime( m_frameTime );
 						}					
 					}
 
@@ -529,7 +529,7 @@ namespace Mengine
 		}
 
 		m_currentFrame = _frame;
-		m_frameTiming = 0.f;
+		m_frameTime = 0.f;
 
 		this->updateCurrentFrame_();
 	}
@@ -565,7 +565,7 @@ namespace Mengine
 			return;
 		}
 
-		m_currentFrame = this->getFrame_( _timing, m_frameTiming );
+		m_currentFrame = this->getFrame_( _timing, m_frameTime );
 
 		this->updateCurrentFrame_();
 	}
@@ -585,7 +585,7 @@ namespace Mengine
 
 		float frameDelay = model->getFrameDelay();
 
-		float timing = m_currentFrame * frameDelay + m_frameTiming;
+		float timing = m_currentFrame * frameDelay + m_frameTime;
 
 		return timing; 
 	}

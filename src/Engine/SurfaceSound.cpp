@@ -133,10 +133,10 @@ namespace Mengine
         m_resourceSound.release();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceSound::_update( float _time, float _timing )
+    bool SurfaceSound::_update( float _current, float _time )
     {
+        (void)_current;
         (void)_time;
-        (void)_timing;
         //Empty
 
         return false;
@@ -371,7 +371,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSound::_setTime( float _timing )
+    void SurfaceSound::_setTime( float _time )
     {
         if( this->isCompile() == false )
         {
@@ -386,8 +386,8 @@ namespace Mengine
         float lengthMs = SOUND_SERVICE()
             ->getDuration( m_soundEmitter );
 
-        float pos = _timing;
-        if( _timing > lengthMs )
+        float pos = _time;
+        if( _time > lengthMs )
         {
             pos = lengthMs;
         }

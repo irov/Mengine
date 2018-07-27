@@ -30,7 +30,7 @@ namespace Mengine
 		virtual void update( bool _focus ) = 0;
 
 	public:
-		virtual void tick( float _time, float _timing ) = 0;
+		virtual void tick( float _current, float _time ) = 0;
 		virtual void render( const RenderContext * _state, uint32_t _debugMask ) = 0;
 
 	public:
@@ -66,7 +66,7 @@ namespace Mengine
 		virtual void update( bool _focus ) = 0;
 
 	public:
-		virtual void tick( float _time, float _timing ) = 0;
+		virtual void tick( float _current, float _time ) = 0;
 		virtual void render( const RenderContext * _state, uint32_t _debugMask ) = 0;
 
 	public:

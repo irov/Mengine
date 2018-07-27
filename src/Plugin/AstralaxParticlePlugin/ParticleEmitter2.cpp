@@ -301,14 +301,14 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ParticleEmitter2::_update( float _current, float _timing )
+	void ParticleEmitter2::_update( float _current, float _time )
 	{
 		if( this->isPlay() == false )
 		{
 			return;
 		}
 
-		Node::_update( _current, _timing );
+		Node::_update( _current, _time );
 
 		bool enabled = APPLICATION_SERVICE()
 			->getParticleEnable();
@@ -321,18 +321,18 @@ namespace Mengine
 		if( m_playTime > _current )
 		{
 			float deltha = m_playTime - _current;
-			_timing -= deltha;
+			_time -= deltha;
 		}
 
 		float speedFactor = this->getAnimationSpeedFactor();
-		float timing = _timing * speedFactor;
+		float time = _time * speedFactor;
 
 		float scretch = this->getStretch();
 
-		float totalTiming = timing / scretch;
+		float totalTime = time / scretch;
 
 		bool stop;
-		m_emitter->update( totalTiming, stop );
+		m_emitter->update( totalTime, stop );
 
 		if( stop == true )
 		{

@@ -56,12 +56,12 @@ namespace Mengine
 		bool _interrupt( uint32_t _enumerator ) override;
 
 	protected:
-		uint32_t getFrame_( float _timing, float & _delthaTiming ) const;
+		uint32_t getFrame_( float _time, float & _delthaTime ) const;
 		void updateCurrentFrame_();
 		void setCurrentFrame_( uint32_t _frame );
 
 	protected:
-		void _update( float _current, float _timing ) override;
+		void _update( float _current, float _time ) override;
 		void _render( const RenderContext * _state ) override;
 
 		bool _activate() override;
@@ -99,7 +99,7 @@ namespace Mengine
 	protected:		
 		ResourceHolder<ResourceModel3D> m_resourceModel;
 
-		float m_frameTiming;
+		float m_frameTime;
 		uint32_t m_currentFrame;
 
 		RenderCameraProjectionPtr m_camera;

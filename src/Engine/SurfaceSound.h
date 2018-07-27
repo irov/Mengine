@@ -67,7 +67,7 @@ namespace Mengine
 		void _stop( uint32_t _id ) override;
 		void _end( uint32_t _id ) override;
 		bool _interrupt( uint32_t _id ) override;
-		void _setTime( float _timing ) override;
+		void _setTime( float _time ) override;
         float _getTime() const override;
 
     protected:
@@ -84,7 +84,7 @@ namespace Mengine
 		void _release() override;
 
 	protected:
-        bool _update( float _time, float _timing ) override;
+        bool _update( float _current, float _time ) override;
 
 	protected:
 		void _setLoop( bool _value ) override;

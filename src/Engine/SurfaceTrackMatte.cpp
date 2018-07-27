@@ -113,10 +113,10 @@ namespace Mengine
         _out = _in;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceTrackMatte::_update( float _current, float _timing )
+    bool SurfaceTrackMatte::_update( float _current, float _time )
     {
         (void)_current;
-        (void)_timing;
+        (void)_time;
 
         return false;
     }

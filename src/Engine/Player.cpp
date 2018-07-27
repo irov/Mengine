@@ -767,11 +767,11 @@ namespace Mengine
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Player::tick( float _time, float _timing )
+    void Player::tick( float _current, float _time )
     {
-        static float fpsTiming = 0.0f;
-        fpsTiming += _timing;
-        if( fpsTiming >= 1000.0f )
+        static float fpsTime = 0.0f;
+        fpsTime += _time;
+        if( fpsTime >= 1000.0f )
         {
             const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
                 ->getDebugInfo();
@@ -781,60 +781,60 @@ namespace Mengine
             RENDER_SERVICE()
                 ->resetFrameCount();
 
-            while( fpsTiming >= 1000.0f )
+            while( fpsTime >= 1000.0f )
             {
-                fpsTiming -= 1000.0f;
+                fpsTime -= 1000.0f;
             }
         }
 
         if( m_camera2D != nullptr )
         {
-            m_camera2D->update( _time, _timing );
+            m_camera2D->update( _current, _time );
         }
 
         if( m_arrowCamera2D != nullptr )
         {
-            m_arrowCamera2D->update( _time, _timing );
+            m_arrowCamera2D->update( _current, _time );
         }
 
         if( m_arrow != nullptr )
         {
-            m_arrow->update( _time, _timing );
+            m_arrow->update( _current, _time );
         }
 
         if( m_globalScene != nullptr )
         {
-            m_globalScene->update( _time, _timing );
+            m_globalScene->update( _current, _time );
         }
 
         if( m_scene != nullptr )
         {
-            m_scene->update( _time, _timing );
+            m_scene->update( _current, _time );
         }
 
         if( m_scheduleManager != nullptr )
         {
-            m_scheduleManager->update( _time, _timing );
+            m_scheduleManager->update( _current, _time );
         }
 
         if( m_scheduleManagerGlobal != nullptr )
         {
-            m_scheduleManagerGlobal->update( _time, _timing );
+            m_scheduleManagerGlobal->update( _current, _time );
         }
 
         for( const ScheduleManagerInterfacePtr & sm : m_schedulers )
         {
-            sm->update( _time, _timing );
+            sm->update( _current, _time );
         }
 
         if( m_affectorable != nullptr )
         {
-            m_affectorable->updateAffectors( _time, _timing );
+            m_affectorable->updateAffectors( _current, _time );
         }
 
         if( m_affectorableGlobal != nullptr )
         {
-            m_affectorableGlobal->updateAffectors( _time, _timing );
+            m_affectorableGlobal->updateAffectors( _current, _time );
         }
     }
     //////////////////////////////////////////////////////////////////////////

@@ -54,7 +54,7 @@ namespace Mengine
 		virtual bool rewind() = 0;
 
 	public:
-		virtual bool seek( float _timing ) = 0;
+		virtual bool seek( float _time ) = 0;
 		virtual float tell() const = 0;
 	};
     //////////////////////////////////////////////////////////////////////////

@@ -36,7 +36,7 @@ namespace Mengine
 		void _release() override;
 
     protected:
-        bool _update( float _current, float _timing ) override;
+        bool _update( float _current, float _time ) override;
 
 	protected:
 		RenderMaterialInterfacePtr _updateMaterial() const override;

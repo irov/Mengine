@@ -4360,11 +4360,13 @@ namespace Mengine
             .def( "freeze", &ScheduleManagerInterface::freeze )
             .def( "freezeAll", &ScheduleManagerInterface::freezeAll )
             .def( "isFreeze", &ScheduleManagerInterface::isFreeze )
-            .def( "time", &ScheduleManagerInterface::time )
-            .def( "left", &ScheduleManagerInterface::left )
+            .def_deprecated( "time", &ScheduleManagerInterface::getTimePassed, "use getTimePassed")
+            .def_deprecated( "left", &ScheduleManagerInterface::getTimeLeft, "use getTimeLeft" )
+            .def( "getTimePassed", &ScheduleManagerInterface::getTimePassed )
+            .def( "getTimeLeft", &ScheduleManagerInterface::getTimeLeft )
             .def( "setSpeedFactor", &ScheduleManagerInterface::setSpeedFactor )
             .def( "getSpeedFactor", &ScheduleManagerInterface::getSpeedFactor )
-            .def( "getTiming", &ScheduleManagerInterface::getTiming )
+            .def( "getTiming", &ScheduleManagerInterface::getTime )
             ;
     }
 }

@@ -52,10 +52,10 @@ namespace Mengine
 		virtual bool _prepare();
 
 	public:
-		virtual bool affect( float _current, float _timing );
+		virtual bool affect( float _current, float _time );
 
 	protected:
-		virtual bool _affect( float _current, float _timing ) = 0;
+		virtual bool _affect( float _current, float _time ) = 0;
 
 	public:
 		virtual void complete() = 0;

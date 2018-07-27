@@ -42,9 +42,9 @@ if(MINGW)
                                            -i${CMAKE_CURRENT_SOURCE_DIR}/Win32Application.rc
                                            -o ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)
     SET(SRC_FILES ${SRC_FILES} ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)
-  else(MINGW)
+else()
     SET(SRC_FILES ${SRC_FILES} Win32Application.rc)
-  endif(MINGW)
+endif()
 
 INCLUDE_DIRECTORIES( 
     ${Mengine_SOURCE_DIR}/Utils

@@ -60,10 +60,10 @@ namespace Mengine
         const ColourValue & getColor() const override;
 
 	protected:
-		bool _update( float _current, float _timing ) override;
+		bool _update( float _current, float _time ) override;
 
 	protected:
-		void _setTime( float _timing ) override;
+		void _setTime( float _time ) override;
 		float _getTime() const override;
 
 		void _setFirstFrame() override;
@@ -84,7 +84,7 @@ namespace Mengine
 	protected:
 		void updateVideoBuffer_();
 
-		bool sync_( float _timing );
+		bool sync_( float _time );
 		bool compileDecoder_();
 		bool fillVideoBuffer_();
 		void updateUV_();
@@ -97,7 +97,7 @@ namespace Mengine
 
 		VideoDecoderInterfacePtr m_videoDecoder;
 
-		float m_timing;
+		float m_time;
 
 		bool m_needUpdate;
 		bool m_updateFirstFrame;

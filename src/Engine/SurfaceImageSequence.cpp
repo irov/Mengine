@@ -15,7 +15,7 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
 	SurfaceImageSequence::SurfaceImageSequence()
-		: m_frameTiming(0.f)
+		: m_frameTime(0.f)
 		, m_currentFrame(0)
 	{
 	}
@@ -39,7 +39,7 @@ namespace Mengine
 		return m_resourceAnimation;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceImageSequence::_update( float _current, float _timing )
+	bool SurfaceImageSequence::_update( float _current, float _time )
 	{
 		if( this->isPlay() == false )
 		{
@@ -50,15 +50,15 @@ namespace Mengine
 
 		if( m_playTime > _current )
 		{
-			float deltha = m_playTime - _current;
-			_timing -= deltha;
+			float deltaTime = m_playTime - _current;
+			_time -= deltaTime;
 		}
 
 		uint32_t frameCount = m_resourceAnimation->getSequenceCount();
 
 		float speedFactor = this->getAnimationSpeedFactor();
 		float scretch = this->getStretch();
-		m_frameTiming += _timing * speedFactor / scretch;
+		m_frameTime += _time * speedFactor / scretch;
 
 		float frameDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
         
@@ -66,9 +66,9 @@ namespace Mengine
 
         if( m_currentFrame != frameCount )
         {
-            while( m_frameTiming >= frameDelay )
+            while( m_frameTime >= frameDelay )
             {
-                m_frameTiming -= frameDelay;
+                m_frameTime -= frameDelay;
 
                 EVENTABLE_METHOD( this, EVENT_SURFACE_IMAGESEQUENCE_FRAME_END )
                     ->onSurfaceImageSequenceFrameEnd( m_currentFrame );
@@ -86,7 +86,7 @@ namespace Mengine
 					if( (loop == false && --m_playIterator == 0) || interrupt == true )
 					{
 						m_currentFrame = frameCount - 1;						
-						m_frameTiming = 0.f;
+						m_frameTime = 0.f;
 						
 						lastFrame = m_currentFrame;
 						
@@ -96,11 +96,11 @@ namespace Mengine
 					}
 					else
 					{						
-						float adaptFrameTiming = this->getAdaptTime(m_frameTiming);
+						float adaptFrameTiming = this->getAdaptTime(m_frameTime);
 
 						float newFrameTiming;
                         m_currentFrame = this->getFrame_( adaptFrameTiming, newFrameTiming );
-						m_frameTiming = newFrameTiming;
+						m_frameTime = newFrameTiming;
                     }
 
                     //lastFrame = m_currentFrame;
@@ -256,24 +256,24 @@ namespace Mengine
             ->onAnimationEnd( _enumerator );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	uint32_t SurfaceImageSequence::getFrame_( float _timing, float & _delthaTiming ) const
+	uint32_t SurfaceImageSequence::getFrame_( float _time, float & _deltaTime ) const
 	{
-		if( _timing <= 0.f )
+		if( _time <= 0.f )
 		{
-			_delthaTiming = _timing;
+			_deltaTime = _time;
 
 			return 0;
 		}
 				
 		float duration = m_resourceAnimation->getSequenceDuration();
 
-		if( _timing >= duration )
+		if( _time >= duration )
 		{
-			_timing -= floorf( _timing / duration ) * duration;
+			_time -= floorf( _time / duration ) * duration;
 
-            if( fabsf(_timing) < 0.0001f )
+            if( fabsf(_time) < 0.0001f )
 			{
-				_delthaTiming = 0.f;
+				_deltaTime = 0.f;
 
 				return 0;
 			}
@@ -285,11 +285,11 @@ namespace Mengine
 		{
 			float delay = m_resourceAnimation->getSequenceDelay( frame );
 
-			_timing -= delay;
+			_time -= delay;
 
-			if( _timing < 0.f )
+			if( _time < 0.f )
 			{
-				_delthaTiming = _timing + delay;
+				_deltaTime = _time + delay;
 
 				return frame;
 			}
@@ -320,7 +320,7 @@ namespace Mengine
 	void SurfaceImageSequence::setCurrentFrame( uint32_t _frame )
 	{
 		m_currentFrame = _frame;
-		m_frameTiming = 0.f;
+		m_frameTime = 0.f;
 
 #ifndef NDEBUG
         if( this->isCompile() == true )
@@ -547,7 +547,7 @@ namespace Mengine
 			m_playIterator -= skipIterator;
 		}
 		
-		m_currentFrame = this->getFrame_( _timing, m_frameTiming );
+		m_currentFrame = this->getFrame_( _timing, m_frameTime );
 
 		this->invalidateMaterial();
 	}
@@ -572,7 +572,7 @@ namespace Mengine
 			timing += delay;
 		}
 
-		timing += m_frameTiming;
+		timing += m_frameTime;
 
 		return timing; 
 	}

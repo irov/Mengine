@@ -25,31 +25,31 @@ namespace Mengine
         virtual void onSurfaceImageSequenceFrameTick( uint32_t _currentFrame, uint32_t _frameCount ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-	class SurfaceImageSequence
-		: public Surface        
+    class SurfaceImageSequence
+        : public Surface
         , public BaseEventation
-        , public BaseAnimation		
-	{
+        , public BaseAnimation
+    {
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE( SurfaceImageSequenceEventReceiver );
 
-	public:
-		SurfaceImageSequence();
-		~SurfaceImageSequence() override;
+    public:
+        SurfaceImageSequence();
+        ~SurfaceImageSequence() override;
 
-	public:
-		void setResourceAnimation( const ResourceAnimationPtr & _resourceAnimation );
-		const ResourceAnimationPtr & getResourceAnimation() const;
+    public:
+        void setResourceAnimation( const ResourceAnimationPtr & _resourceAnimation );
+        const ResourceAnimationPtr & getResourceAnimation() const;
 
-	public:
-		uint32_t getFrameCount() const;
-		
-		float getFrameDelay( uint32_t  _frame ) const;		
+    public:
+        uint32_t getFrameCount() const;
 
-		void setCurrentFrame( uint32_t _frame );
-		uint32_t getCurrentFrame() const;
+        float getFrameDelay( uint32_t  _frame ) const;
 
-		uint32_t getFrame(float _timing, float & _delthaTiming) const;
+        void setCurrentFrame( uint32_t _frame );
+        uint32_t getCurrentFrame() const;
+
+        uint32_t getFrame( float _timing, float & _delthaTiming ) const;
 
     public:
         const mt::vec2f & getMaxSize() const override;
@@ -58,49 +58,49 @@ namespace Mengine
 
         uint32_t getUVCount() const override;
         const mt::uv4f & getUV( uint32_t _index ) const override;
-        
+
         void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) override;
 
         const ColourValue & getColor() const override;
 
-	protected:
-		void _setTime( float _timming ) override;
-		float _getTime() const override;
+    protected:
+        void _setTime( float _timming ) override;
+        float _getTime() const override;
 
-		void _setFirstFrame() override;
-		void _setLastFrame() override;
-
-	protected:
-		bool _play( uint32_t _enumerator, float _time ) override;
-		bool _restart( uint32_t _enumerator, float _time ) override;
-		void _pause( uint32_t _enumerator ) override;
-		void _resume( uint32_t _enumerator, float _time ) override;
-		void _stop( uint32_t _enumerator ) override;
-		void _end( uint32_t _enumerator ) override;
-		bool _interrupt( uint32_t _enumerator ) override;
-
-	protected:
-		bool _update( float _current, float _timing ) override;
+        void _setFirstFrame() override;
+        void _setLastFrame() override;
 
     protected:
-		bool _compile() override;
-		void _release() override;
+        bool _play( uint32_t _enumerator, float _time ) override;
+        bool _restart( uint32_t _enumerator, float _time ) override;
+        void _pause( uint32_t _enumerator ) override;
+        void _resume( uint32_t _enumerator, float _time ) override;
+        void _stop( uint32_t _enumerator ) override;
+        void _end( uint32_t _enumerator ) override;
+        bool _interrupt( uint32_t _enumerator ) override;
 
-	protected:
-		uint32_t getFrame_( float _timing, float & _delthaTiming ) const;
+    protected:
+        bool _update( float _current, float _timing ) override;
 
-	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
-	protected:
-		ResourceHolder<ResourceAnimation> m_resourceAnimation;
+    protected:
+        uint32_t getFrame_( float _time, float & _deltaTime ) const;
 
-		float m_frameTiming;
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
 
-		uint32_t m_currentFrame;
+    protected:
+        ResourceHolder<ResourceAnimation> m_resourceAnimation;
 
-		Vector<RenderMaterialInterfacePtr> m_materials;
-	};
+        float m_frameTime;
+
+        uint32_t m_currentFrame;
+
+        Vector<RenderMaterialInterfacePtr> m_materials;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SurfaceImageSequence> SurfaceImageSequencePtr;
 }

@@ -84,7 +84,7 @@ namespace Mengine
 		bool render() override;
 		void flush() override;
 		bool beginUpdate() override;
-		void tick( float _timing ) override;
+		void tick( float _time ) override;
 		void endUpdate() override;
 		void setFocus( bool _focus ) override;
 		void setFreeze( bool _freeze ) override;
@@ -212,9 +212,9 @@ namespace Mengine
 
         uint32_t m_debugMask;
 
-		bool m_resetTiming;
-		float m_phycisTiming;
-		float m_maxTiming;
+		bool m_resetFrameTime;
+		float m_phycisFrameTime;
+		float m_maxFrameTime;
 
 		ResourceCursorPtr m_cursorResource;
 

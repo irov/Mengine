@@ -77,6 +77,16 @@ namespace Mengine
     {   
         VideoDecoderInterfacePtr decoder = this->createVideoDecoder();
 
+        if( decoder == nullptr )
+        {
+            LOGGER_ERROR( "ResourceVideo::_isValid invalid create decoder '%s' path '%s'"
+                , this->getName().c_str()
+                , this->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
 		bool valid = this->checkValidVideoDecoder_( decoder );
 
 		this->destroyVideoDecoder( decoder );

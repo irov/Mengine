@@ -72,15 +72,15 @@ namespace Mengine
             m_follow = _follow;
         }
 
-        bool update( float _current, float _timing )
+        bool update( float _current, float _time )
         {
-            bool successful = this->_update( _current, _timing );
+            bool successful = this->_update( _current, _time );
 
             return successful;
         }
 
     protected:
-        virtual bool _update( float _current, float _timing ) = 0;
+        virtual bool _update( float _current, float _time ) = 0;
 
     protected:
         T m_value;
@@ -120,7 +120,7 @@ namespace Mengine
         }
 
     protected:
-        bool _update( float _current, float _timing ) override
+        bool _update( float _current, float _time ) override
         {
             (void)_current;
 
@@ -133,7 +133,7 @@ namespace Mengine
                 return true;
             }
 
-            float step = m_speed * _timing;
+            float step = m_speed * _time;
 
             if( step >= value_length )
             {

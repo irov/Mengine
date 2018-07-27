@@ -52,7 +52,9 @@ namespace Mengine
 
         void finalize() override
         {
+            pybind::kernel_interface * kernel = pybind::get_kernel();
 
+            pybind::unregistration_type_cast<T>(kernel);
         }
 
     protected:

@@ -861,12 +861,12 @@ namespace Mengine
             ->onGameCursorMode( _mode );
     }
     //////////////////////////////////////////////////////////////////////////
-    float Game::getTimingFactor() const
+    float Game::getTimeFactor() const
     {
         return m_timingFactor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setTimingFactor( float _timingFactor )
+    void Game::setTimeFactor( float _timingFactor )
     {
         m_timingFactor = _timingFactor;
 

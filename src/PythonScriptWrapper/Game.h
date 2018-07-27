@@ -176,8 +176,8 @@ namespace Mengine
 		bool hasParam( const ConstString & _paramName ) const override;
 
 	public:
-		float getTimingFactor() const override;
-		void setTimingFactor( float _timingFactor ) override;
+		float getTimeFactor() const override;
+		void setTimeFactor( float _timingFactor ) override;
 
 	public:
 		void destroyArrow();

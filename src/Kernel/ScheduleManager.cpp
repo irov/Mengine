@@ -41,7 +41,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ScheduleManager::ScheduleManager()
         : m_speedFactor(1.f)
-		, m_timing(0.f)
+		, m_time(0.f)
         , m_enumerator(0)
         , m_freezeAll(false)
 		, m_update(false)
@@ -66,7 +66,7 @@ namespace Mengine
 				
 		desc.delay = _delay;
 		
-		desc.timing_delay = 0.f;
+		desc.time_delay = 0.f;
 
 		desc.iterate = 0;
 
@@ -93,7 +93,7 @@ namespace Mengine
 		desc.pipe = _pipe;
 
 		desc.delay = 0.f;
-		desc.timing_delay = 0.f;
+		desc.time_delay = 0.f;
 
 		desc.iterate = 0;
 
@@ -141,7 +141,7 @@ namespace Mengine
 			return false;
 		}
 
-		desc->timing_delay = 0.f;
+		desc->time_delay = 0.f;
 		desc->iterate = 0;
 		desc->iterate_invalide = true;
 
@@ -231,13 +231,13 @@ namespace Mengine
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScheduleManager::update( float _current, float _timing )
+    void ScheduleManager::update( float _current, float _time )
     {
         (void)_current;
 
-		float total_timing = _timing * m_speedFactor;
+		float total_time = _time * m_speedFactor;
 
-		m_timing += total_timing;
+		m_time += total_time;
 
 		if( m_freezeAll == true )
 		{
@@ -270,15 +270,15 @@ namespace Mengine
 				continue;
 			}
 			
-			float old_timing = desc.timing_delay;
+			float old_timing = desc.time_delay;
 
-			desc.timing_delay += total_timing;
+			desc.time_delay += total_time;
 
 			switch( desc.type )
 			{
 			case EST_EVENT:
 				{
-					if( desc.timing_delay < desc.delay )
+					if( desc.time_delay < desc.delay )
 					{
 						continue;
 					}
@@ -318,7 +318,7 @@ namespace Mengine
 							desc.delay = delay;
 						}
 
-						if( desc.timing_delay < desc.delay )
+						if( desc.time_delay < desc.delay )
 						{
 							break;
 						}
@@ -329,7 +329,7 @@ namespace Mengine
 
 						uint32_t iterate = desc.iterate;
 
-						desc.timing_delay -= desc.delay;
+						desc.time_delay -= desc.delay;
 
 						desc.iterate++;
 						desc.iterate_invalide = true;
@@ -398,7 +398,7 @@ namespace Mengine
 		return m_freezeAll;
 	}
     //////////////////////////////////////////////////////////////////////////
-    float ScheduleManager::time( uint32_t _id ) const
+    float ScheduleManager::getTimePassed( uint32_t _id ) const
     {
 		const ScheduleEventDesc * event;
 
@@ -411,12 +411,12 @@ namespace Mengine
             return 0.f;
         }
 
-		float time = event->timing_delay;
+		float time = event->time_delay;
 
 		return time;
     }
 	//////////////////////////////////////////////////////////////////////////
-	float ScheduleManager::left( uint32_t _id ) const
+	float ScheduleManager::getTimeLeft( uint32_t _id ) const
 	{ 
 		const ScheduleEventDesc * event;
 
@@ -429,7 +429,7 @@ namespace Mengine
 			return 0.f;
 		}
 
-		float time = event->delay - event->timing_delay;
+		float time = event->delay - event->time_delay;
 
 		return time;
 	}
@@ -444,9 +444,9 @@ namespace Mengine
 		return m_speedFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float ScheduleManager::getTiming() const
+	float ScheduleManager::getTime() const
 	{
-		return m_timing;
+		return m_time;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool ScheduleManager::findScheduleEvent_( uint32_t _id, ScheduleEventDesc *& _desc )

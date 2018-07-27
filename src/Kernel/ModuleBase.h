@@ -38,11 +38,11 @@ namespace Mengine
 		virtual void _update( bool _focus );
 
 	protected:
-		void tick( float _time, float _timing ) override;
+		void tick( float _current, float _time ) override;
 		void render( const RenderContext * _state, uint32_t _debugMask ) override;
 
 	protected:
-		virtual void _tick( float _time, float _timing );
+		virtual void _tick( float _current, float _time );
 		virtual void _render( const RenderContext * _state, uint32_t _debugMask );
 		
 	protected:

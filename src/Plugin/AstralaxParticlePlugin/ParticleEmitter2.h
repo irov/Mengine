@@ -88,7 +88,7 @@ namespace Mengine
 		bool _compile() override;
 		void _release() override;
 
-		void _update( float _current, float _timing ) override;
+		void _update( float _current, float _time ) override;
 		void _render( const RenderContext * _state ) override;
 
 		void _updateBoundingBox( mt::box2f& _boundingBox ) const override;

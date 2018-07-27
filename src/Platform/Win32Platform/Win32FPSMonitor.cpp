@@ -18,7 +18,7 @@ namespace Mengine
 		, m_hFrameSignalThread(INVALID_HANDLE_VALUE)
 		, m_running(true)
 		, m_active(false)
-		, m_frameTiming(100)	
+		, m_frameTime(100)	
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -72,7 +72,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Win32FPSMonitor::setFrameTime( float _frameTiming )
 	{
-		m_frameTiming = _frameTiming;
+		m_frameTime = _frameTiming;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Win32FPSMonitor::monitor()
@@ -89,7 +89,7 @@ namespace Mengine
 		{
 			if( m_active == true )
 			{
-                unsigned long ms_frameTiming = (unsigned long)m_frameTiming;
+                unsigned long ms_frameTiming = (unsigned long)m_frameTime;
 				Sleep( ms_frameTiming );
 				SetEvent( m_hFrameSignalEvent );
 			}

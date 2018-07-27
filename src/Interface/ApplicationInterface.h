@@ -29,7 +29,7 @@ namespace Mengine
 		virtual bool render() = 0;
 		virtual void flush() = 0;
 		virtual bool beginUpdate() = 0;
-		virtual void tick( float _timing ) = 0;
+		virtual void tick( float _time ) = 0;
 		virtual void endUpdate() = 0;
 		virtual void setFocus( bool _focus ) = 0;
 		virtual void setFreeze( bool _freeze ) = 0;

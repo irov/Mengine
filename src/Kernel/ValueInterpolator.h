@@ -10,7 +10,7 @@ namespace Mengine
     public:
         ValueAccumulator()
             : m_started( false )
-            , m_timing( 0.f )
+            , m_time( 0.f )
         {
         }
 
@@ -25,11 +25,11 @@ namespace Mengine
             return m_started;
         }
 
-        virtual bool update( float _current, float _timing, T * _out ) = 0;
+        virtual bool update( float _current, float _time, T * _out ) = 0;
 
     protected:
         bool m_started;
-        float m_timing;
+        float m_time;
 
         T m_pos;
         T m_delta;
@@ -46,7 +46,7 @@ namespace Mengine
 
             ValueAccumulator<T>::m_pos = _pos;
             ValueAccumulator<T>::m_delta = _acc * _speed;
-            ValueAccumulator<T>::m_timing = 0.f;
+            ValueAccumulator<T>::m_time = 0.f;
 
             if( _speed < mt::constant::eps )
             {
@@ -58,7 +58,7 @@ namespace Mengine
             return true;
         }
 
-        bool update( float _current, float _timing, T * _out )
+        bool update( float _current, float _time, T * _out )
         {
             (void)_current;
 
@@ -68,9 +68,9 @@ namespace Mengine
                 return true;
             }
 
-            ValueAccumulator<T>::m_timing += _timing;
+            ValueAccumulator<T>::m_time += _time;
 
-            ValueAccumulator<T>::m_pos += ValueAccumulator<T>::m_delta * _timing;
+            ValueAccumulator<T>::m_pos += ValueAccumulator<T>::m_delta * _time;
 
             *_out = ValueAccumulator<T>::m_pos;
 
@@ -84,8 +84,8 @@ namespace Mengine
     public:
         ValueInterpolator()
             : m_started( false )
-            , m_timing( 0.f )
             , m_time( 0.f )
+            , m_duration( 0.f )
         {
         }
 
@@ -105,21 +105,21 @@ namespace Mengine
             return m_prev;
         }
 
-        void step( float _timing, T * _out )
+        void step( float _time, T * _out )
         {
-            if( _timing > m_time )
+            if( _time > m_duration )
             {
                 *_out = m_value2;
 
                 return;
             }
 
-            float dt = m_timing / m_time;
+            float dt = m_time / m_duration;
 
             this->_update( dt, _out );
         }
 
-        bool update( float _current, float _timing, T * _out )
+        bool update( float _current, float _time, T * _out )
         {
             (void)_current;
 
@@ -130,12 +130,12 @@ namespace Mengine
                 return true;
             }
 
-            m_timing += _timing;
+            m_time += _time;
 
-            if( m_timing > m_time )
+            if( m_time > m_duration )
             {
+                m_duration = 0.f;
                 m_time = 0.f;
-                m_timing = 0.f;
                 *_out = m_value2;
                 m_delta = m_value2 - m_prev;
                 m_started = false;
@@ -143,7 +143,7 @@ namespace Mengine
                 return true;
             }
 
-            float dt = m_timing / m_time;
+            float dt = m_time / m_duration;
 
             this->_update( dt, _out );
 
@@ -158,13 +158,13 @@ namespace Mengine
 
     protected:
         bool m_started;
-        float m_timing;
+        float m_time;
 
         T m_value1;
         T m_value2;
         T m_prev;
         T m_delta;
-        float m_time;
+        float m_duration;
     };
 
     template <typename T>
@@ -180,8 +180,8 @@ namespace Mengine
             ValueInterpolator<T>::m_value2 = _value2;
             ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
             ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_time = _time;
-            ValueInterpolator<T>::m_timing = 0.f;
+            ValueInterpolator<T>::m_duration = _time;
+            ValueInterpolator<T>::m_time = 0.f;
 
             if( _time < mt::constant::eps )
             {
@@ -204,7 +204,7 @@ namespace Mengine
         : public ValueInterpolator<T>
     {
     public:
-        bool start( const T& _value1, const T& _value2, const T& _v0, float _time )
+        bool start( const T& _value1, const T& _value2, const T& _v0, float _duration )
         {
             ValueInterpolator<T>::m_started = false;
 
@@ -212,19 +212,19 @@ namespace Mengine
             ValueInterpolator<T>::m_value2 = _value2;
             ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
             ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_time = _time;
-            ValueInterpolator<T>::m_timing = 0.f;
+            ValueInterpolator<T>::m_duration = _duration;
+            ValueInterpolator<T>::m_time = 0.f;
 
             m_v0 = _v0;
 
-            if( _time < mt::constant::eps )
+            if( _duration < mt::constant::eps )
             {
                 return false;
             }
 
             ValueInterpolator<T>::m_started = true;
-            float invTime = 1.0f / ValueInterpolator<T>::m_time;
-            m_a = (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1 - m_v0 * ValueInterpolator<T>::m_time) * 2.0f * invTime * invTime;
+            float invTime = 1.0f / ValueInterpolator<T>::m_duration;
+            m_a = (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1 - m_v0 * ValueInterpolator<T>::m_duration) * 2.0f * invTime * invTime;
 
             return true;
         }
@@ -233,7 +233,7 @@ namespace Mengine
         {
             (void)_dt;
 
-            *_out = ValueInterpolator<T>::m_value1 + m_v0 * ValueInterpolator<T>::m_timing + m_a * 0.5f * ValueInterpolator<T>::m_timing * ValueInterpolator<T>::m_timing;
+            *_out = ValueInterpolator<T>::m_value1 + m_v0 * ValueInterpolator<T>::m_time + m_a * 0.5f * ValueInterpolator<T>::m_time * ValueInterpolator<T>::m_time;
         }
 
     protected:
@@ -317,8 +317,8 @@ namespace Mengine
             ValueInterpolator<T>::m_value2 = _value2;
             ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
             ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_time = _time;
-            ValueInterpolator<T>::m_timing = 0.f;
+            ValueInterpolator<T>::m_duration = _time;
+            ValueInterpolator<T>::m_time = 0.f;
 
             if( _time < 0.00001f )
             {
@@ -401,8 +401,8 @@ namespace Mengine
             ValueInterpolator<T>::m_value2 = _value2;
             ValueInterpolator<T>::m_prev = ValueInterpolator<T>::m_value1;
             ValueInterpolator<T>::m_delta = ValueInterpolator<T>::m_prev - ValueInterpolator<T>::m_value1;
-            ValueInterpolator<T>::m_time = _time;
-            ValueInterpolator<T>::m_timing = 0.f;
+            ValueInterpolator<T>::m_duration = _time;
+            ValueInterpolator<T>::m_time = 0.f;
 
             m_v0 = _v0;
 
@@ -418,14 +418,14 @@ namespace Mengine
 
         void step( float _timing, T * _out )
         {
-            if( _timing > ValueInterpolator<T>::m_time )
+            if( _timing > ValueInterpolator<T>::m_duration )
             {
                 *_out = ValueInterpolator<T>::m_value2;
 
                 return;
             }
 
-            float t_time = _timing / ValueInterpolator<T>::m_time;
+            float t_time = _timing / ValueInterpolator<T>::m_duration;
 
             calculateParabolicPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v0, t_time );
         }

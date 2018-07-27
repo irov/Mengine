@@ -468,7 +468,7 @@ namespace Mengine
                 return 0.f;
             }
 
-            float time = sm->time( _id );
+            float time = sm->getTimePassed( _id );
 
             return time;
         }
@@ -586,15 +586,15 @@ namespace Mengine
                 return 0.f;
             }
 
-            float time = sm->time( _id );
+            float time = sm->getTimePassed( _id );
 
             return time;
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_setTimingFactor( float _factor )
+        void s_setTimeFactor( float _factor )
         {
             GAME_SERVICE()
-                ->setTimingFactor( _factor );
+                ->setTimeFactor( _factor );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_addHomeless( Node * _node )
@@ -613,10 +613,10 @@ namespace Mengine
             return is;
         }
         //////////////////////////////////////////////////////////////////////////
-        float s_getTimingFactor()
+        float s_getTimeFactor()
         {
             float factor = GAME_SERVICE()
-                ->getTimingFactor();
+                ->getTimeFactor();
 
             return factor;
         }
@@ -4108,8 +4108,11 @@ namespace Mengine
         pybind::def_functor( kernel, "testPlatformTags", nodeScriptMethod, &EngineScriptMethod::s_testPlatformTags );
         pybind::def_functor( kernel, "hasPlatformTag", nodeScriptMethod, &EngineScriptMethod::s_hasPlatformTag );
         pybind::def_functor( kernel, "hasTouchpad", nodeScriptMethod, &EngineScriptMethod::s_hasTouchpad );
-        pybind::def_functor( kernel, "getTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimingFactor );
-        pybind::def_functor( kernel, "setTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_setTimingFactor );
+        pybind::def_functor_deprecated( kernel, "getTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimeFactor, "use getTimeFactor");
+        pybind::def_functor_deprecated( kernel, "setTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_setTimeFactor, "use setTimeFactor" );
+        pybind::def_functor( kernel, "getTimeFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimeFactor );
+        pybind::def_functor( kernel, "setTimeFactor", nodeScriptMethod, &EngineScriptMethod::s_setTimeFactor );
+
 
         pybind::def_functor( kernel, "addHomeless", nodeScriptMethod, &EngineScriptMethod::s_addHomeless );
         pybind::def_functor( kernel, "isHomeless", nodeScriptMethod, &EngineScriptMethod::s_isHomeless );

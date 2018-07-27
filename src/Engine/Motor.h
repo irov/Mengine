@@ -12,37 +12,37 @@
 
 namespace Mengine
 {
-	class Node;
+    class Node;
 
-	class Motor
-		: public Factorable
-		, public Updatable
-	{
-	public:
-		Motor();
-		~Motor() override;
-        
-	public:
-		void setNode(Node * _node);
-		Node * getNode() const;
+    class Motor
+        : public Factorable
+        , public Updatable
+    {
+    public:
+        Motor();
+        ~Motor() override;
 
-	public:
-		void addVelocity(const ConstString & _name, const mt::vec3f & _velocity);
-		bool hasVelocity(const ConstString & _name) const;
-		mt::vec3f getVelocity(const ConstString & _name) const;
+    public:
+        void setNode( Node * _node );
+        Node * getNode() const;
 
-	protected:
-		void _update(float _current, float _timing) override;
+    public:
+        void addVelocity( const ConstString & _name, const mt::vec3f & _velocity );
+        bool hasVelocity( const ConstString & _name ) const;
+        mt::vec3f getVelocity( const ConstString & _name ) const;
 
-	protected:
-		Node * m_node;
+    protected:
+        void _update( float _current, float _time ) override;
 
-		struct VelocityDesc
-		{
-			mt::vec3f velocity;
-		};
+    protected:
+        Node * m_node;
 
-		typedef Map<ConstString, VelocityDesc> TMapVelocity;
-		TMapVelocity m_velocities;
-	};
+        struct VelocityDesc
+        {
+            mt::vec3f velocity;
+        };
+
+        typedef Map<ConstString, VelocityDesc> TMapVelocity;
+        TMapVelocity m_velocities;
+    };
 }

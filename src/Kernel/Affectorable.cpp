@@ -88,7 +88,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affectorable::updateAffectors( float _current, float _timing )
+	void Affectorable::updateAffectors( float _current, float _time )
 	{
         (void)_current;
 
@@ -96,7 +96,7 @@ namespace Mengine
 
 		if( single_affector != nullptr )
 		{
-			this->updateAffector_( single_affector, _current, _timing );
+			this->updateAffector_( single_affector, _current, _time );
 		}
 		else
 		{
@@ -106,16 +106,16 @@ namespace Mengine
 
 				it.next_shuffle();
 
-				this->updateAffector_( affector, _current, _timing );
+				this->updateAffector_( affector, _current, _time );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affectorable::updateAffector_( const AffectorPtr & _affector, float _current, float _timing )
+	void Affectorable::updateAffector_( const AffectorPtr & _affector, float _current, float _time )
 	{
 		(void)_current;
 
-		bool end = _affector->affect( _current, _timing );
+		bool end = _affector->affect( _current, _time );
 
 		if( end == true )
 		{

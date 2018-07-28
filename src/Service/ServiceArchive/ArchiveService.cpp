@@ -27,7 +27,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ArchiveService::unregisterArchivator( const ConstString & _type )
 	{
-		TMapArchivators::iterator it_found = m_archivators.find( _type );
+		MapArchivators::iterator it_found = m_archivators.find( _type );
 
 		if( it_found == m_archivators.end() )
 		{
@@ -43,7 +43,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ArchiveService::hasArchivator( const ConstString & _type ) const
 	{
-		TMapArchivators::const_iterator it_found = m_archivators.find( _type );
+		MapArchivators::const_iterator it_found = m_archivators.find( _type );
 
 		if( it_found == m_archivators.end() )
 		{
@@ -55,7 +55,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	const ArchivatorInterfacePtr & ArchiveService::getArchivator( const ConstString & _type ) const
 	{
-		TMapArchivators::const_iterator it_found = m_archivators.find( _type );
+		MapArchivators::const_iterator it_found = m_archivators.find( _type );
 
 		if( it_found == m_archivators.end() )
 		{

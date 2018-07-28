@@ -71,7 +71,7 @@ namespace Mengine
 
 		this->_finalize();
 
-		for (TVectorModuleFactory::iterator
+		for (VectorModuleFactory::iterator
 			it = m_moduleFactories.begin(),
 			it_end = m_moduleFactories.end();
 			it != it_end;

@@ -31,8 +31,8 @@ namespace Mengine
 
 	public:
 		virtual HttpRequestID getMessage( const String & _url, const HttpReceiverInterfacePtr & _receiver ) = 0;
-		virtual HttpRequestID postMessage( const String & _url, const TMapParams & _params, const HttpReceiverInterfacePtr & _receiver ) = 0;
-        virtual HttpRequestID headerData( const String & _url, const TVectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver ) = 0;
+		virtual HttpRequestID postMessage( const String & _url, const MapParams & _params, const HttpReceiverInterfacePtr & _receiver ) = 0;
+        virtual HttpRequestID headerData( const String & _url, const VectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver ) = 0;
 
     public:
         virtual HttpRequestID downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _category, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver ) = 0;

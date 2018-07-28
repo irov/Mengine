@@ -104,8 +104,8 @@ namespace Mengine
             TTFGlyphQuad quads[4];
         };
 		
-		typedef Vector<TTFGlyph> TVectorTTFGlyphs;
-		TVectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
+		typedef Vector<TTFGlyph> VectorTTFGlyphs;
+		VectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
 
         uint32_t m_ttfFESample;
 

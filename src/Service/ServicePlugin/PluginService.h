@@ -41,7 +41,7 @@ namespace Mengine
             PluginInterfacePtr plugin;
         };
 
-		typedef Vector<PluginDesc> TVectorPlugins;
-		TVectorPlugins m_plugins;
+		typedef Vector<PluginDesc> VectorPlugins;
+		VectorPlugins m_plugins;
 	};
 }

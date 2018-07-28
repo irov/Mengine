@@ -93,17 +93,17 @@ namespace Mengine
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::message( const ConstString & _messageName, const TMapWParams & _params )
+	void ModuleBase::message( const ConstString & _messageName, const MapWParams & _params )
 	{
 		this->_message( _messageName, _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::messageAll( const ConstString & _messageName, const TMapWParams & _params )
+	void ModuleBase::messageAll( const ConstString & _messageName, const MapWParams & _params )
 	{
 		this->_messageAll( _messageName, _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::_message( const ConstString & _messageName, const TMapWParams & _params )
+	void ModuleBase::_message( const ConstString & _messageName, const MapWParams & _params )
 	{
 		(void)_messageName;
 		(void)_params;
@@ -111,7 +111,7 @@ namespace Mengine
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::_messageAll( const ConstString & _messageName, const TMapWParams & _params )
+	void ModuleBase::_messageAll( const ConstString & _messageName, const MapWParams & _params )
 	{
 		(void)_messageName;
 		(void)_params;

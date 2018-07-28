@@ -367,9 +367,9 @@ namespace Mengine
     bool TTFFont::_prepareGlyph( GlyphCode _code )
     {
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-        TVectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
+        VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        TVectorTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
+        VectorTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
 
         if( it_found != glyphs.end() )
         {
@@ -759,9 +759,9 @@ namespace Mengine
 	bool TTFFont::hasGlyph( GlyphCode _code ) const
 	{
 		uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-		const TVectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
+		const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-		TVectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
+		VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
 
 		if( it_found == glyphs.end() )
 		{
@@ -774,9 +774,9 @@ namespace Mengine
 	bool TTFFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
 	{
 		uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-		const TVectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
+		const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-		TVectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
+		VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
 
 		if( it_found == glyphs.end() )
 		{

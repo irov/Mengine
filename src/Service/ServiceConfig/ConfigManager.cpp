@@ -73,7 +73,7 @@ namespace Mengine
 			stdex::array_string<128> platform_section;
 			platform_section.append( _section );
 			
-			const TVectorConstString & tags = _platform.getTags();
+			const VectorConstString & tags = _platform.getTags();
 
             for( const ConstString & tag : tags )
 			{
@@ -102,7 +102,7 @@ namespace Mengine
 			stdex::array_string<128> platform_section;
 			platform_section.append( _section );
 
-			const TVectorConstString & tags = _platform.getTags();
+			const VectorConstString & tags = _platform.getTags();
 
             stdex::array_string<128> platform_section_found;
 
@@ -187,22 +187,22 @@ namespace Mengine
 		return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConfigManager::getValues( const Char * _section, const Char * _key, TVectorAspectRatioViewports & _value ) const
+	void ConfigManager::getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _value ) const
 	{
 		Helper::s_calcValueT( m_ini, m_platformTags, _section, _key, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConfigManager::getValues( const Char * _section, const Char * _key, TVectorWString & _value ) const
+	void ConfigManager::getValues( const Char * _section, const Char * _key, VectorWString & _value ) const
 	{
 		Helper::s_calcValueT( m_ini, m_platformTags, _section, _key, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConfigManager::getValues( const Char * _section, const Char * _key, TVectorString & _value ) const
+	void ConfigManager::getValues( const Char * _section, const Char * _key, VectorString & _value ) const
 	{
 		Helper::s_calcValueT( m_ini, m_platformTags, _section, _key, _value );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ConfigManager::getSection( const Char * _section, TMapWParams & _params ) const
+	void ConfigManager::getSection( const Char * _section, MapWParams & _params ) const
 	{
 		IniUtil::getIniAllSettings( m_ini, _section, _params );
 	}

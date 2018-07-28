@@ -203,8 +203,8 @@ namespace Mengine
 
 		Resolution m_contentResolution;
 
-		typedef Map<float, Viewport> TMapAspectRatioViewports;
-		TMapAspectRatioViewports m_aspectRatioViewports;
+		typedef Map<float, Viewport> MapAspectRatioViewports;
+		MapAspectRatioViewports m_aspectRatioViewports;
 
 		bool m_fixedContentResolution;
 		bool m_fixedDisplayResolution;

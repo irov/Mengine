@@ -12,16 +12,16 @@ namespace Mengine
 		ThreadTaskPostMessage();
 		
 	public:
-		bool initialize( const String & _url, const TMapParams & _params );
+		bool initialize( const String & _url, const MapParams & _params );
 
 	protected:
 		void _onCURL( CURL * _curl ) override;
 
 	protected:		
 		String m_url;
-        TMapParams m_params;
+        MapParams m_params;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadTaskPostMessage> ThreadTaskPostMessagePtr;
+	typedef IntrusivePtr<ThreadTaskPostMessage> ThreadTaskPostMessagePtr;
 	//////////////////////////////////////////////////////////////////////////
 }

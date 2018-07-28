@@ -249,7 +249,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool FileGroupZip::existFile( const FilePath & _fileName ) const
 	{
-		TMapFileInfo::const_iterator it_found = m_files.find( _fileName );
+		MapFileInfo::const_iterator it_found = m_files.find( _fileName );
 
 		if( it_found == m_files.end() )
 		{
@@ -329,7 +329,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _fileName, bool _streaming )
 	{
-		TMapFileInfo::const_iterator it_found = m_files.find( _fileName );
+		MapFileInfo::const_iterator it_found = m_files.find( _fileName );
 
 		if( it_found == m_files.end() )
 		{
@@ -361,7 +361,7 @@ namespace Mengine
 			return false;
 		}
 
-		TMapFileInfo::const_iterator it_found = m_files.find( _fileName );
+		MapFileInfo::const_iterator it_found = m_files.find( _fileName );
 
 		if( it_found == m_files.end() )
 		{

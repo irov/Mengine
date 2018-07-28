@@ -25,7 +25,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryService::unregisterFactory( const Factory * _factory )
     {
-        TVectorFactories::iterator it_found = std::find( m_factories.begin(), m_factories.end(), _factory );
+        VectorFactories::iterator it_found = std::find( m_factories.begin(), m_factories.end(), _factory );
 
         if( it_found == m_factories.end() )
         {

@@ -37,12 +37,12 @@ namespace Mengine
 		virtual Resolution getValue( const Char * _section, const Char * _key, const Resolution & _default ) const = 0;		
 
 	public:
-		virtual void getValues( const Char * _section, const Char * _key, TVectorAspectRatioViewports & _value ) const = 0;
-		virtual void getValues( const Char * _section, const Char * _key, TVectorWString & _value ) const = 0;
-		virtual void getValues( const Char * _section, const Char * _key, TVectorString & _value ) const = 0;
+		virtual void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _value ) const = 0;
+		virtual void getValues( const Char * _section, const Char * _key, VectorWString & _value ) const = 0;
+		virtual void getValues( const Char * _section, const Char * _key, VectorString & _value ) const = 0;
 
 	public:
-		virtual void getSection( const Char * _section, TMapWParams & _params ) const = 0;
+		virtual void getSection( const Char * _section, MapWParams & _params ) const = 0;
 	};
 
 #   define CONFIG_SERVICE()\

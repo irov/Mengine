@@ -88,8 +88,8 @@ namespace Mengine
             bool ignored;
         };
 
-        typedef Vector<PakResourceDesc> TVectorPakResourceDesc;
-        TVectorPakResourceDesc m_resourcesDesc;
+        typedef Vector<PakResourceDesc> VectorPakResourceDesc;
+        VectorPakResourceDesc m_resourcesDesc;
 
         ConstString m_name;
         ConstString m_type;
@@ -103,7 +103,7 @@ namespace Mengine
         FileGroupInterfacePtr m_category;
         FilePath m_path;
 
-        TVectorScriptModulePack m_scriptsPackages;
+        VectorScriptModulePack m_scriptsPackages;
 
         struct PakFontDesc
         {
@@ -111,8 +111,8 @@ namespace Mengine
             Tags platform;
         };
 
-        typedef std::vector<PakFontDesc> TVectorPakFontDesc;
-        TVectorPakFontDesc m_pathFonts;
+        typedef std::vector<PakFontDesc> VectorPakFontDesc;
+        VectorPakFontDesc m_pathFonts;
 
         struct PakTextDesc
         {
@@ -120,8 +120,8 @@ namespace Mengine
             Tags platform;
         };
 
-        typedef std::vector<PakTextDesc> TVectorPakTextDesc;
-        TVectorPakTextDesc m_pathTexts;
+        typedef std::vector<PakTextDesc> VectorPakTextDesc;
+        VectorPakTextDesc m_pathTexts;
 
         struct PakDataDesc
         {
@@ -130,8 +130,8 @@ namespace Mengine
             Tags platform;
         };
 
-        typedef Vector<PakDataDesc> TVectorPakDataDesc;
-        TVectorPakDataDesc m_datas;
+        typedef Vector<PakDataDesc> VectorPakDataDesc;
+        VectorPakDataDesc m_datas;
 
         struct PakMaterialDesc
         {
@@ -139,8 +139,8 @@ namespace Mengine
             Tags platform;
         };
 
-        typedef Vector<PakMaterialDesc> TVectorPakMaterialDesc;
-        TVectorPakMaterialDesc m_pathMaterials;
+        typedef Vector<PakMaterialDesc> VectorPakMaterialDesc;
+        VectorPakMaterialDesc m_pathMaterials;
 
         bool m_preload;
         bool m_load;

@@ -77,12 +77,12 @@ namespace Mengine
 
         uint32_t m_enumerator;
 
-		typedef Vector<InputMousePositionProviderDesc> TVectorMousePositionProviders;
-		TVectorMousePositionProviders m_mousePositionProviders;
+		typedef Vector<InputMousePositionProviderDesc> VectorMousePositionProviders;
+		VectorMousePositionProviders m_mousePositionProviders;
 				
-		typedef Vector<InputUnionEvent> TVectorInputEvent;
-		TVectorInputEvent m_eventsAdd;
-		TVectorInputEvent m_events;
+		typedef Vector<InputUnionEvent> VectorInputEvents;
+		VectorInputEvents m_eventsAdd;
+		VectorInputEvents m_events;
 
 		bool m_keyBuffer[256];
 		bool m_mouseBuffer[3];

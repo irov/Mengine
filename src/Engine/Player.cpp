@@ -98,7 +98,7 @@ namespace Mengine
 
             void resourceRelease( Resource * _resource )
             {
-                TVectorResourceDesc::iterator it_remove =
+                VectorResourceDesc::iterator it_remove =
                     std::find( m_resources.begin(), m_resources.end(), _resource );
 
                 if( it_remove == m_resources.end() )
@@ -116,8 +116,8 @@ namespace Mengine
             }
 
         protected:
-            typedef Vector<Resource *> TVectorResourceDesc;
-            TVectorResourceDesc m_resources;
+            typedef Vector<Resource *> VectorResourceDesc;
+            VectorResourceDesc m_resources;
         };
 
         typedef IntrusivePtr<PlayerResourceUselessCompile> PlayerResourceUselessCompilePtr;
@@ -147,7 +147,7 @@ namespace Mengine
         }
 
         MODULE_SERVICE()
-            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), TMapWParams() );
+            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), MapWParams() );
 
         ScenePtr oldScene = m_scene;
 
@@ -228,7 +228,7 @@ namespace Mengine
     bool Player::restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb )
     {
         MODULE_SERVICE()
-            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), TMapWParams() );
+            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), MapWParams() );
 
         if( m_arrow != nullptr )
         {
@@ -422,7 +422,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Player::destroySchedulerManager( const ScheduleManagerInterfacePtr & _scheduler )
     {
-        TVectorUserScheduler::iterator it_found = std::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
+        VectorUserScheduler::iterator it_found = std::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
 
         if( it_found == m_schedulers.end() )
         {
@@ -1119,14 +1119,14 @@ namespace Mengine
 
                         uint32_t iterator = 0;
 
-                        for( TMapPybindScope::const_reverse_iterator
+                        for( MapPybindScope::const_reverse_iterator
                             it = m_scopes.rbegin(),
                             it_end = m_scopes.rend();
                             it != it_end;
                             ++it )
                         {
                             uint32_t c = it->first;
-                            const TVectorConstString & l = it->second;
+                            const VectorConstString & l = it->second;
 
                             for( stdex::vector<ConstString>::const_iterator
                                 it_list = l.begin(),
@@ -1155,8 +1155,8 @@ namespace Mengine
 
                 protected:
                     ConstString m_category;
-                    typedef Map<uint32_t, TVectorConstString> TMapPybindScope;
-                    TMapPybindScope m_scopes;
+                    typedef Map<uint32_t, VectorConstString> MapPybindScope;
+                    MapPybindScope m_scopes;
                 };
 
 
@@ -1211,16 +1211,16 @@ namespace Mengine
 
                         uint32_t iterator = 0;
 
-                        for( TMapPybindScope::const_reverse_iterator
+                        for( MapPybindScope::const_reverse_iterator
                             it = m_scopes.rbegin(),
                             it_end = m_scopes.rend();
                             it != it_end;
                             ++it )
                         {
                             uint32_t c = it->first;
-                            const TVectorString & l = it->second;
+                            const VectorString & l = it->second;
 
-                            for( TVectorString::const_iterator
+                            for( VectorString::const_iterator
                                 it_list = l.begin(),
                                 it_list_end = l.end();
                                 it_list != it_list_end;
@@ -1246,8 +1246,8 @@ namespace Mengine
                     }
 
                 protected:
-                    typedef Map<uint32_t, TVectorString> TMapPybindScope;
-                    TMapPybindScope m_scopes;
+                    typedef Map<uint32_t, VectorString> MapPybindScope;
+                    MapPybindScope m_scopes;
                 };
 
                 pybind::kernel_interface * kernel = pybind::get_kernel();
@@ -1295,16 +1295,16 @@ namespace Mengine
 
                         uint32_t iterator = 0;
 
-                        for( TMapPybindScope::const_reverse_iterator
+                        for( MapPybindScope::const_reverse_iterator
                             it = m_scopes.rbegin(),
                             it_end = m_scopes.rend();
                             it != it_end;
                             ++it )
                         {
                             uint32_t c = it->first;
-                            const TVectorString & l = it->second;
+                            const VectorString & l = it->second;
 
-                            for( TVectorString::const_iterator
+                            for( VectorString::const_iterator
                                 it_list = l.begin(),
                                 it_list_end = l.end();
                                 it_list != it_list_end;
@@ -1330,8 +1330,8 @@ namespace Mengine
                     }
 
                 protected:
-                    typedef Map<uint32_t, TVectorString> TMapPybindScope;
-                    TMapPybindScope m_scopes;
+                    typedef Map<uint32_t, VectorString> MapPybindScope;
+                    MapPybindScope m_scopes;
                 };
                 
                 MyVisitorFactoryService mvcts;
@@ -1343,8 +1343,8 @@ namespace Mengine
             }
             else if( m_showDebugText == 6 )
             {
-                typedef Map<int32_t, TVectorString> TMapPybindScope;
-                TMapPybindScope scopes;
+                typedef Map<int32_t, VectorString> MapPybindScope;
+                MapPybindScope scopes;
 
                 uint32_t count = stdex_allocator_report_count();
 
@@ -1359,16 +1359,16 @@ namespace Mengine
 
                 uint32_t iterator = 0;
 
-                for( TMapPybindScope::const_reverse_iterator
+                for( MapPybindScope::const_reverse_iterator
                     it = scopes.rbegin(),
                     it_end = scopes.rend();
                     it != it_end;
                     ++it )
                 {
                     int32_t c = it->first;
-                    const TVectorString & l = it->second;
+                    const VectorString & l = it->second;
 
-                    for( TVectorString::const_iterator
+                    for( VectorString::const_iterator
                         it_list = l.begin(),
                         it_list_end = l.end();
                         it_list != it_list_end;
@@ -1396,7 +1396,7 @@ namespace Mengine
 
             String text = ss.str();
 
-            TVectorString args;
+            VectorString args;
             args.emplace_back( text );
             m_debugText->setTextFormatArgs( args );
 

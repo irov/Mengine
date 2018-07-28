@@ -62,8 +62,8 @@ namespace Mengine
 			bool lock;
 		};
 
-		typedef Vector<CacheBufferMemory> TVectorCacheBufferMemory;
-		TVectorCacheBufferMemory m_buffers;
+		typedef Vector<CacheBufferMemory> VectorCacheBufferMemory;
+		VectorCacheBufferMemory m_buffers;
 
 		CacheBufferID m_enumeratorId;
 			

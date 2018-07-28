@@ -494,7 +494,7 @@ namespace Mengine
             return false;
         }
 
-        TVectorConstString fonts;
+        VectorConstString fonts;
         IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts );
 
         for( const ConstString & fontName : fonts )
@@ -581,7 +581,7 @@ namespace Mengine
             return false;
         }
 
-        TVectorConstString fonts;
+        VectorConstString fonts;
         IniUtil::getIniValue( ini, "GAME_FONTS", "Font", fonts );
 
         for( const ConstString & fontName : fonts )
@@ -616,7 +616,7 @@ namespace Mengine
         , uint32_t _params
         , bool _isOverride )
     {
-        TMapTextEntry::iterator it_found = m_texts.find( _key );
+        MapTextEntry::iterator it_found = m_texts.find( _key );
 
         if( it_found != m_texts.end() )
         {
@@ -656,7 +656,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::removeTextEntry( const ConstString& _key )
     {
-        TMapTextEntry::iterator it_found = m_texts.find( _key );
+        MapTextEntry::iterator it_found = m_texts.find( _key );
 
         if( it_found == m_texts.end() )
         {
@@ -698,7 +698,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     const TextEntryInterfacePtr & TextManager::getTextEntry( const ConstString& _key ) const
     {
-        TMapTextEntry::const_iterator it_found = m_texts.find( _key );
+        MapTextEntry::const_iterator it_found = m_texts.find( _key );
 
         if( it_found == m_texts.end() )
         {
@@ -716,7 +716,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::existText( const ConstString& _key, TextEntryInterfacePtr * _entry ) const
     {
-        TMapTextEntry::const_iterator it_found = m_texts.find( _key );
+        MapTextEntry::const_iterator it_found = m_texts.find( _key );
 
         if( it_found == m_texts.end() )
         {
@@ -735,7 +735,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextManager::existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const
     {
-        TMapTextFont::const_iterator it_found = m_fonts.find( _name );
+        MapTextFont::const_iterator it_found = m_fonts.find( _name );
 
         if( it_found == m_fonts.end() )
         {
@@ -751,7 +751,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TextFontInterfacePtr TextManager::getFont( const ConstString & _name ) const
     {
-        TMapTextFont::const_iterator it_found = m_fonts.find( _name );
+        MapTextFont::const_iterator it_found = m_fonts.find( _name );
 
         if( it_found == m_fonts.end() )
         {
@@ -765,7 +765,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextManager::visitFonts( VisitorTextFontInterface * _vistitor )
     {
-        for( TMapTextFont::iterator
+        for( MapTextFont::iterator
             it = m_fonts.begin(),
             it_end = m_fonts.end();
             it != it_end;
@@ -809,7 +809,7 @@ namespace Mengine
             }
         }
 
-        for( TMapTextEntry::const_iterator
+        for( MapTextEntry::const_iterator
             it = m_texts.begin(),
             it_end = m_texts.end();
             it != it_end;

@@ -52,6 +52,6 @@ namespace Mengine
 		
 		FilePath m_protocolPath;
 
-		mutable TVectorConstString m_bufferConstString;
+		mutable VectorConstString m_bufferConstString;
 	};
 }

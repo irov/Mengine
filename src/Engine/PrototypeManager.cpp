@@ -25,7 +25,7 @@ namespace Mengine
     {
         for( uint32_t index = 0; index != MENGINE_PROTOTYPE_HASH_SIZE; ++index )
         {
-            TVectorPrototypes & prototypes = m_prototypes[index];
+            VectorPrototypes & prototypes = m_prototypes[index];
 
             prototypes.clear();
         }
@@ -53,7 +53,7 @@ namespace Mengine
 
         uint32_t hash_id = getPrototypeHashId( _category, _prototype );
 
-        TVectorPrototypes & prototypes = m_prototypes[hash_id];
+        VectorPrototypes & prototypes = m_prototypes[hash_id];
 
         CategoryKey key;
         key.category = _category;
@@ -74,9 +74,9 @@ namespace Mengine
     {
         uint32_t hash_id = getPrototypeHashId( _category, _prototype );
 
-        TVectorPrototypes & prototypes = m_prototypes[hash_id];
+        VectorPrototypes & prototypes = m_prototypes[hash_id];
 
-        for( TVectorPrototypes::iterator 
+        for( VectorPrototypes::iterator 
             it = prototypes.begin(),
             it_end = prototypes.end();
             it != it_end;
@@ -103,7 +103,7 @@ namespace Mengine
 	{
         uint32_t hash_id = getPrototypeHashId( _category, _prototype );
 
-        const TVectorPrototypes & prototypes = m_prototypes[hash_id];
+        const VectorPrototypes & prototypes = m_prototypes[hash_id];
 
 		for( const CategoryKey & key : prototypes )
 		{
@@ -143,7 +143,7 @@ namespace Mengine
     {
         for( uint32_t index = 0; index != MENGINE_PROTOTYPE_HASH_SIZE; ++index )
         {
-            const TVectorPrototypes & prototypes = m_prototypes[index];
+            const VectorPrototypes & prototypes = m_prototypes[index];
 
             for( const CategoryKey & key : prototypes )
             {

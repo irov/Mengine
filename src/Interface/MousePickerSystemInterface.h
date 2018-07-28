@@ -50,7 +50,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MousePickerTrapInterface> MousePickerTrapInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<MousePickerTrapInterfacePtr> TVectorPickerTraps;
+    typedef Vector<MousePickerTrapInterfacePtr> VectorPickerTraps;
     //////////////////////////////////////////////////////////////////////////
     class MousePickerSystemInterface
         : public ServiceInterface
@@ -76,7 +76,7 @@ namespace Mengine
         virtual void clear() = 0;
 
     public:
-        virtual bool pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps ) = 0;
+        virtual bool pickTrap( const mt::vec2f& _point, VectorPickerTraps & _traps ) = 0;
 
     public:
         virtual PickerTrapState * regTrap( const MousePickerTrapInterfacePtr & _trap ) = 0;

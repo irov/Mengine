@@ -25,7 +25,7 @@ namespace Mengine
 		void _update( bool _focus ) override;
 
 	protected:
-		void _message( const ConstString & _messageName, const TMapWParams & _params ) override;
+		void _message( const ConstString & _messageName, const MapWParams & _params ) override;
 
 	protected:
 		ISteamClient * m_client;
@@ -33,7 +33,7 @@ namespace Mengine
 		ISteamUserStats	* m_userStats;
 		ISteamFriends * m_friends;
 
-		typedef Map<String, ConstString> TMapISO639_1;
-		TMapISO639_1 m_iso639_1;
+		typedef Map<String, ConstString> MapISO639_1;
+		MapISO639_1 m_iso639_1;
 	};
 }

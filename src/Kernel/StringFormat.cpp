@@ -42,7 +42,7 @@ namespace Mengine
             return 0U;
         }
         //////////////////////////////////////////////////////////////////////////
-        String getStringFormat( const String & _format, const TVectorString & _arguments )
+        String getStringFormat( const String & _format, const VectorString & _arguments )
         {
             const Char * str_format = _format.c_str();
 

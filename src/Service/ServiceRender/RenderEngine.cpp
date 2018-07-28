@@ -144,7 +144,7 @@ namespace Mengine
 
         this->restoreRenderSystemStates_();
 
-        for( TArrayRenderObject::iterator
+        for( ArrayRenderObject::iterator
             it = m_renderObjects.begin(),
             it_end = m_renderObjects.end();
             it != it_end;
@@ -990,8 +990,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::renderObjects_( const RenderPassPtr & _renderPass )
     {
-        TArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
-        TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
+        ArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
+        ArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
 
         for( ; it_begin != it_end; ++it_begin )
         {
@@ -1473,12 +1473,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos )
+    void RenderEngine::batchRenderObjectNormal_( ArrayRenderObject::iterator _begin, ArrayRenderObject::iterator _end, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos )
     {
         uint32_t vbPos = _vbPos;
         uint32_t ibPos = _ibPos;
 
-        TArrayRenderObject::iterator it_batch_begin = _begin;
+        ArrayRenderObject::iterator it_batch_begin = _begin;
         ++it_batch_begin;
 
         RenderMaterialInterface * ro_material = _ro->material;
@@ -1546,19 +1546,19 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::batchRenderObjectSmart_( const RenderPassPtr & _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos )
+    void RenderEngine::batchRenderObjectSmart_( const RenderPassPtr & _renderPass, ArrayRenderObject::iterator _begin, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos )
     {
         uint32_t vbPos = _vbPos;
         uint32_t ibPos = _ibPos;
 
-        TArrayRenderObject::iterator it_batch_start_end = _begin;
+        ArrayRenderObject::iterator it_batch_start_end = _begin;
         ++it_batch_start_end;
 
-        TArrayRenderObject::iterator it_batch = _begin;
+        ArrayRenderObject::iterator it_batch = _begin;
         ++it_batch;
 
         uint32_t materialSmartId = _ro->materialSmartId;
-        TArrayRenderObject::const_iterator it_end = _renderPass->materialEnd[materialSmartId];
+        ArrayRenderObject::const_iterator it_end = _renderPass->materialEnd[materialSmartId];
 
         if( _begin == it_end )
         {
@@ -1621,8 +1621,8 @@ namespace Mengine
         uint32_t vbPos = _vbPos;
         uint32_t ibPos = _ibPos;
 
-        TArrayRenderObject::iterator it = m_renderObjects.advance( _renderPass->beginRenderObject );
-        TArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
+        ArrayRenderObject::iterator it = m_renderObjects.advance( _renderPass->beginRenderObject );
+        ArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
 
         for( ; it != it_end; ++it )
         {

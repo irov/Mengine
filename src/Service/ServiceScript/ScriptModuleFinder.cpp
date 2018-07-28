@@ -67,7 +67,7 @@ namespace Mengine
 		pybind::incref( m_embed );
 	}
     //////////////////////////////////////////////////////////////////////////
-	void ScriptModuleFinder::addModulePath( const ConstString & _pack, const TVectorConstString & _pathes )
+	void ScriptModuleFinder::addModulePath( const ConstString & _pack, const VectorConstString & _pathes )
     {
         ModulePathes mp;
         mp.pack = _pack;

@@ -41,6 +41,8 @@ namespace Mengine
 	{
 		m_events.clear();
         m_eventsAdd.clear();
+
+        m_mousePositionProviders.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void InputEngine::update()
@@ -297,7 +299,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     void InputEngine::removeMousePositionProvider( uint32_t _id )
 	{
-        TVectorMousePositionProviders::iterator it_found = 
+        VectorMousePositionProviders::iterator it_found = 
             std::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), FMousePositionProviderFind( _id ) );
 
         if( it_found == m_mousePositionProviders.end() )

@@ -36,7 +36,7 @@ namespace Mengine
             , _type.c_str()
             );
 
-		TMapConverterSystem::iterator it_found = m_mapConverterSystem.find( _type );
+		MapConverterSystem::iterator it_found = m_mapConverterSystem.find( _type );
 
 		if( it_found == m_mapConverterSystem.end() )
 		{
@@ -54,7 +54,7 @@ namespace Mengine
             , _type.c_str()
             );
 
-		TMapConverterSystem::iterator it_find = m_mapConverterSystem.find( _type );
+		MapConverterSystem::iterator it_find = m_mapConverterSystem.find( _type );
 
 		if( it_find == m_mapConverterSystem.end() )
 		{

@@ -79,14 +79,14 @@ namespace Mengine
 		bool directFontRelease( const ConstString & _name ) override;
 
     protected:
-		typedef Map<ConstString, TextEntryInterfacePtr> TMapTextEntry;
-		TMapTextEntry m_texts;
+		typedef Map<ConstString, TextEntryInterfacePtr> MapTextEntry;
+		MapTextEntry m_texts;
 
-		typedef Map<ConstString, TextFontInterfacePtr> TMapTextFont;
-		TMapTextFont m_fonts;
+		typedef Map<ConstString, TextFontInterfacePtr> MapTextFont;
+		MapTextFont m_fonts;
 
-		typedef Vector<TextLocalePackPtr> TVectorPaks;
-		TVectorPaks m_packs;
+		typedef Vector<TextLocalePackPtr> VectorTextLocalePaks;
+		VectorTextLocalePaks m_packs;
 		
 		ConstString m_defaultFontName;
 

@@ -1136,7 +1136,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Win32Platform::notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const MemoryInterfacePtr & _buffer )
 	{
-		TMapCursors::iterator it_found = m_cursors.find( _path );
+		MapCursors::iterator it_found = m_cursors.find( _path );
 
 		if( it_found == m_cursors.end() )
 		{
@@ -1374,7 +1374,7 @@ namespace Mengine
             fullPath[1] = L'\0';        	
         }
 
-		TVectorWString paths;
+		VectorWString paths;
 
 		for( ;; )
 		{
@@ -1393,7 +1393,7 @@ namespace Mengine
 			}
 		}
 
-        for( TVectorWString::const_reverse_iterator
+        for( VectorWString::const_reverse_iterator
             it = paths.rbegin(),
             it_end = paths.rend();
             it != it_end;
@@ -1642,7 +1642,7 @@ namespace Mengine
 		//Empty - for iPad
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Win32Platform::onEvent( const ConstString & _event, const TMapWParams & _params )
+	void Win32Platform::onEvent( const ConstString & _event, const MapWParams & _params )
 	{
 		(void)_event;
 		(void)_params;

@@ -42,7 +42,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool UserdataService::addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path )
 	{
-		TMapDatas::const_iterator it_found = m_datas.find( _name );
+		MapDatas::const_iterator it_found = m_datas.find( _name );
 
 		if( it_found != m_datas.end() )
 		{
@@ -64,7 +64,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool UserdataService::removeUserdata( const ConstString & _name )
 	{
-		TMapDatas::iterator it_found = m_datas.find( _name );
+		MapDatas::iterator it_found = m_datas.find( _name );
 
 		if( it_found == m_datas.end() )
 		{
@@ -78,7 +78,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool UserdataService::hasUserdata( const ConstString & _name ) const
 	{
-		TMapDatas::const_iterator it_found = m_datas.find( _name );
+		MapDatas::const_iterator it_found = m_datas.find( _name );
 
 		if( it_found == m_datas.end() )
 		{
@@ -97,7 +97,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr UserdataService::loadUserdata( const ConstString & _name ) const
 	{
-		TMapDatas::const_iterator it_found = m_datas.find( _name );
+		MapDatas::const_iterator it_found = m_datas.find( _name );
 
 		if( it_found == m_datas.end() )
 		{
@@ -139,7 +139,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool UserdataService::writeUserdata( const ConstString & _name, const void * _data, size_t _size ) const
 	{
-		TMapDatas::const_iterator it_found = m_datas.find( _name );
+		MapDatas::const_iterator it_found = m_datas.find( _name );
 
 		if( it_found == m_datas.end() )
 		{

@@ -32,8 +32,8 @@ namespace Mengine
 		void _onComplete( bool _successful ) override;
 
 	protected:
-		typedef Vector<ThreadTaskPtr> TVectorThreadTasks;
-		TVectorThreadTasks m_tasks;
+		typedef Vector<ThreadTaskPtr> VectorThreadTasks;
+		VectorThreadTasks m_tasks;
 	};
 
 	typedef IntrusivePtr<ThreadTaskPacket> ThreadTaskPacketPtr;

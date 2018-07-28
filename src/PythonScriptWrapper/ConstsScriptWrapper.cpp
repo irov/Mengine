@@ -177,7 +177,7 @@ namespace Mengine
 	{
 		pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        pybind::registration_stl_vector_type_cast<ConstString, TVectorConstString>(kernel);
+        pybind::registration_stl_vector_type_cast<ConstString, VectorConstString>(kernel);
 
 		pybind::structhash_<ConstString>( kernel, "ConstString" )
             .def_compare( &s_ConstString_compare )

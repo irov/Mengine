@@ -12,7 +12,7 @@
 #include "Kernel/ConstString.h"
 
 #include "stdex/static_array.h"
-#include "stdex/heap_array.h"
+#include "stdex/dynamic_array.h"
 
 #include "Kernel/Factory.h"
 
@@ -319,27 +319,27 @@ namespace Mengine
 
 		RenderServiceDebugInfo m_debugInfo;	    // debug info
 
-		typedef stdex::heap_array<RenderIndex> TArrayRenderIndices;
-		TArrayRenderIndices m_indicesQuad;
-        TArrayRenderIndices m_indicesLine;
+		typedef stdex::dynamic_array<RenderIndex> DynamicArrayRenderIndices;
+		DynamicArrayRenderIndices m_indicesQuad;
+        DynamicArrayRenderIndices m_indicesLine;
 
 		Viewport m_renderViewport;
 
         FactoryPtr m_factoryRenderBatch;
         FactoryPtr m_factoryRenderPass;
        
-        typedef stdex::heap_array<RenderObject> TArrayRenderObject;
-        TArrayRenderObject m_renderObjects;
+        typedef stdex::dynamic_array<RenderObject> ArrayRenderObject;
+        ArrayRenderObject m_renderObjects;
 
-        typedef Vector<RenderBatchPtr> TVectorRenderBatch;
-        TVectorRenderBatch m_renderBatches;
+        typedef Vector<RenderBatchPtr> VectorRenderBatch;
+        VectorRenderBatch m_renderBatches;
 
-        typedef Vector<RenderPassPtr> TVectorRenderPass;
-        TVectorRenderPass m_renderPasses;
+        typedef Vector<RenderPassPtr> VectorRenderPass;
+        VectorRenderPass m_renderPasses;
 
-		typedef TVectorRenderVertex2D TArrayRenderVertex2D;
-		typedef List<TArrayRenderVertex2D> TListDebugVertices;
-		TListDebugVertices m_debugVertices;
+		typedef VectorRenderVertex2D TArrayRenderVertex2D;
+		typedef List<TArrayRenderVertex2D> ListDebugVertices;
+		ListDebugVertices m_debugVertices;
               
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;
@@ -353,7 +353,7 @@ namespace Mengine
 		uint32_t m_iterateRenderObjects;
 		
 	protected:
-		void batchRenderObjectNormal_( TArrayRenderObject::iterator _begin, TArrayRenderObject::iterator _end, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
-		void batchRenderObjectSmart_( const RenderPassPtr & _renderPass, TArrayRenderObject::iterator _begin, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
+		void batchRenderObjectNormal_( ArrayRenderObject::iterator _begin, ArrayRenderObject::iterator _end, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
+		void batchRenderObjectSmart_( const RenderPassPtr & _renderPass, ArrayRenderObject::iterator _begin, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos );
 	};
 }

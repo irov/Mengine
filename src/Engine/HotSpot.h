@@ -131,8 +131,6 @@ namespace Mengine
 	protected:
 		PickerTrapState * m_picker;
 
-		//typedef std::vector<pybind::object> TVectorHandleMouseEnter
-
 		bool m_defaultHandle;
 	};
     //////////////////////////////////////////////////////////////////////////

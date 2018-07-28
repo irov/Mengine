@@ -116,7 +116,7 @@ namespace Mengine
 
         uint32_t id = container->getId();
 
-        TMapHashEmitterContainers::iterator it_found = m_containers.find( id );
+        MapHashEmitterContainers::iterator it_found = m_containers.find( id );
 
         if( it_found == m_containers.end() )
         {
@@ -176,7 +176,7 @@ namespace Mengine
                 }break;
             case MAGIC_CHANGE_ATLAS_CREATE:
                 {
-                    TMapHashEmitterContainers::const_iterator it_found = m_containers.find( c.ptc_id );
+                    MapHashEmitterContainers::const_iterator it_found = m_containers.find( c.ptc_id );
                     
                     if( it_found == m_containers.end() )
                     {
@@ -191,7 +191,7 @@ namespace Mengine
                 }break;
             case MAGIC_CHANGE_ATLAS_DELETE:
                 {
-                    TVectorAtlasDesc::iterator it_remove = m_atlases.begin();
+                    VectorAtlasDesc::iterator it_remove = m_atlases.begin();
                     std::advance( it_remove, c.index );
                     m_atlases.erase( it_remove );
                 }break;
@@ -349,9 +349,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & AstralaxParticleSystem2::getResourceImage( int _index ) const
     {
-        TVectorAtlasDesc::size_type atlases_size = m_atlases.size();
+        VectorAtlasDesc::size_type atlases_size = m_atlases.size();
 
-        if( atlases_size <= (TVectorAtlasDesc::size_type)_index )
+        if( atlases_size <= (VectorAtlasDesc::size_type)_index )
         {
             LOGGER_ERROR( "AstralaxParticleSystem2::getResourceImage index %d but size is %d"
                 , _index
@@ -974,7 +974,7 @@ namespace Mengine
     {
         uint32_t id = _container->getId();
 
-        TMapHashEmitterContainers::iterator it_found = m_containers.find( id );
+        MapHashEmitterContainers::iterator it_found = m_containers.find( id );
 
         AstralaxEmitterContainerDesc & desc = it_found->second;
         --desc.reference;

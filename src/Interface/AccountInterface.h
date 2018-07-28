@@ -50,7 +50,7 @@ namespace Mengine
 		virtual bool hasBinaryFile( const FilePath & _filename ) const = 0;
     };
 
-	typedef stdex::intrusive_ptr<AccountInterface> AccountInterfacePtr;
+	typedef IntrusivePtr<AccountInterface> AccountInterfacePtr;
 
     class AccountProviderInterface
 		: public ServantInterface
@@ -66,7 +66,7 @@ namespace Mengine
         virtual void onUnselectAccount( const ConstString & _accountID ) = 0;
     };
 
-	typedef stdex::intrusive_ptr<AccountProviderInterface> AccountProviderInterfacePtr;
+	typedef IntrusivePtr<AccountProviderInterface> AccountProviderInterfacePtr;
 
 	class AccountVisitorInterface
 	{

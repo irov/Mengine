@@ -54,8 +54,8 @@ namespace Mengine
             bool normalized;
         };
 
-        typedef Vector<Attribute> TVectorAttribute;
-        TVectorAttribute m_attributes;
+        typedef Vector<Attribute> VectorAttribute;
+        VectorAttribute m_attributes;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<DX9RenderVertexAttribute> DX9RenderVertexAttributePtr;

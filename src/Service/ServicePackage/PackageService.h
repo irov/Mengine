@@ -45,12 +45,12 @@ namespace Mengine
 		void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
 
 	protected:
-		typedef Vector<PackagePtr> TVectorPackage;
-		TVectorPackage m_packages;
+		typedef Vector<PackagePtr> VectorPackages;
+		VectorPackages m_packages;
 
 		FactoryPtr m_factoryPackage;
 
 	protected:
-		bool loadLocalePacksByName_( TVectorPackage & _packs, const ConstString & _locale, const Tags & _platformTags ) const;
+		bool loadLocalePacksByName_( VectorPackages & _packs, const ConstString & _locale, const Tags & _platformTags ) const;
     };
 }

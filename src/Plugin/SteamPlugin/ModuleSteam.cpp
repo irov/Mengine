@@ -163,7 +163,7 @@ namespace Mengine
 			, CurrentGameLanguage
 			);
 		
-		TMapISO639_1::const_iterator it_locale_found = m_iso639_1.find( CurrentGameLanguage );
+		MapISO639_1::const_iterator it_locale_found = m_iso639_1.find( CurrentGameLanguage );
 		
 		if( it_locale_found != m_iso639_1.end() )
 		{
@@ -252,13 +252,13 @@ namespace Mengine
 		//bool status = m_userStats->RequestCurrentStats();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleSteam::_message( const ConstString & _messageName, const TMapWParams & _params )
+	void ModuleSteam::_message( const ConstString & _messageName, const MapWParams & _params )
 	{
 		m_userStats->RequestCurrentStats();
 
 		if( _messageName == "SetAchievement" )
 		{
-			TMapWParams::const_iterator it_value_found = _params.find( STRINGIZE_STRING_LOCAL( "Value" ) );
+			MapWParams::const_iterator it_value_found = _params.find( STRINGIZE_STRING_LOCAL( "Value" ) );
 
 			if( it_value_found == _params.end() )
 			{
@@ -287,7 +287,7 @@ namespace Mengine
 		}
 		else if( _messageName == "SetStat" )
 		{
-			TMapWParams::const_iterator it_name_found = _params.find( STRINGIZE_STRING_LOCAL( "Name" ) );
+			MapWParams::const_iterator it_name_found = _params.find( STRINGIZE_STRING_LOCAL( "Name" ) );
 
 			if( it_name_found == _params.end() )
 			{
@@ -305,7 +305,7 @@ namespace Mengine
 
 			const char * str_name = utf8_name.c_str();
 
-			TMapWParams::const_iterator it_value_found = _params.find( STRINGIZE_STRING_LOCAL( "Value" ) );
+			MapWParams::const_iterator it_value_found = _params.find( STRINGIZE_STRING_LOCAL( "Value" ) );
 
 			if( it_value_found == _params.end() )
 			{
@@ -323,7 +323,7 @@ namespace Mengine
 
 			const char * str_value = utf8_value.c_str();
 
-			TMapWParams::const_iterator it_type_found = _params.find( STRINGIZE_STRING_LOCAL( "Type" ) );
+			MapWParams::const_iterator it_type_found = _params.find( STRINGIZE_STRING_LOCAL( "Type" ) );
 
 			if( it_type_found == _params.end() )
 			{

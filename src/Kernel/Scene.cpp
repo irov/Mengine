@@ -27,7 +27,7 @@ namespace Mengine
 
             if( handle == false )
             {
-                for( TSlugChild it( m_children ); it.eof() == false; )
+                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
                 {
                     Scene * subScene = dynamic_cast<Scene *>(*it);
 
@@ -53,7 +53,7 @@ namespace Mengine
 
             if( handle == false )
             {
-                for( TSlugChild it( m_children ); it.eof() == false; )
+                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
                 {
                     Scene * subScene = dynamic_cast<Scene *>(*it);
 
@@ -79,7 +79,7 @@ namespace Mengine
 
             if( handle == false )
             {
-                for( TSlugChild it( m_children ); it.eof() == false; )
+                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
                 {
                     Node * children = *it;
 

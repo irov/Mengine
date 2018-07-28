@@ -52,8 +52,8 @@ namespace Mengine
 
 		ConstString m_converterType;
 
-		typedef Vector<ResourceImagePtr> TVectorResourceImages;
-		TVectorResourceImages m_resourceImages;
+		typedef Vector<ResourceImagePtr> VectorResourceImages;
+		VectorResourceImages m_resourceImages;
 
 		ParticleEmitterContainerInterface2Ptr m_container;
 	};

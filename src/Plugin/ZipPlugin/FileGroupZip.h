@@ -68,7 +68,7 @@ namespace Mengine
 			uint32_t compr_method;
 		};
 
-		typedef Map<FilePath, FileInfo> TMapFileInfo;
-		TMapFileInfo m_files;
+		typedef Map<FilePath, FileInfo> MapFileInfo;
+		MapFileInfo m_files;
 	};
 }	

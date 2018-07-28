@@ -63,8 +63,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<ResourceImage *> TVectorResourceImage;
-    typedef Vector<HotSpotPolygon *> TVectorHotSpotPolygon;
+    typedef Vector<ResourceImage *> VectorResourceImage;
+    typedef Vector<HotSpotPolygon *> VectorHotSpotPolygons;
     //////////////////////////////////////////////////////////////////////////
     class HelperScriptMethod
     {
@@ -265,9 +265,9 @@ namespace Mengine
 
         void s_printChildren2( Node * _node, uint32_t _tab )
         {
-            TListNodeChild & children = _node->getChildren();
+            IntrusiveSlugListNodeChild & children = _node->getChildren();
 
-            for( TSlugChild it( children ); it.eof() == false; )
+            for( IntrusiveSlugChild it( children ); it.eof() == false; )
             {
                 Node * child = *it;
 
@@ -801,7 +801,7 @@ namespace Mengine
             _p1.correct();
             _p2.correct();
 
-            TVectorPolygon output;
+            VectorPolygon output;
             _p1.difference( _p2, output );
 
             if( output.empty() == true )
@@ -1160,7 +1160,7 @@ namespace Mengine
             : public AccountVisitorInterface
         {
         public:
-            MyAccountVisitorInterface( TVectorConstString & _accounts )
+            MyAccountVisitorInterface( VectorConstString & _accounts )
                 : m_accounts( _accounts )
             {
             }
@@ -1174,7 +1174,7 @@ namespace Mengine
             }
 
         protected:
-            TVectorConstString & m_accounts;
+            VectorConstString & m_accounts;
 
         private:
             void operator = ( const MyAccountVisitorInterface & )
@@ -1183,9 +1183,9 @@ namespace Mengine
             }
         };
 
-        TVectorConstString s_getAccounts()
+        VectorConstString s_getAccounts()
         {
-            TVectorConstString v_accounts;
+            VectorConstString v_accounts;
             MyAccountVisitorInterface mav( v_accounts );
 
             ACCOUNT_SERVICE()
@@ -1320,7 +1320,7 @@ namespace Mengine
             return s_changeAccountSettingFloat( accountID, _setting, _value );
         }
 
-        bool s_changeSettingStrings( const ConstString & _setting, const TVectorWString & _values )
+        bool s_changeSettingStrings( const ConstString & _setting, const VectorWString & _values )
         {
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
@@ -1572,7 +1572,7 @@ namespace Mengine
             return result;
         }
 
-        bool s_changeAccountSettingStrings( const ConstString & _accountID, const ConstString & _setting, const TVectorWString & _values )
+        bool s_changeAccountSettingStrings( const ConstString & _accountID, const ConstString & _setting, const VectorWString & _values )
         {
             AccountInterfacePtr account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -1749,7 +1749,7 @@ namespace Mengine
             return s_changeAccountSettingFloat( accountID, _setting, _value );
         }
 
-        bool s_changeGlobalSettingStrings( const ConstString & _setting, const TVectorWString & _values )
+        bool s_changeGlobalSettingStrings( const ConstString & _setting, const VectorWString & _values )
         {
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
@@ -2194,7 +2194,7 @@ namespace Mengine
                 return l.ret();
             }
 
-            TVectorWString strings;
+            VectorWString strings;
             Helper::wsplit( strings, setting, true, L" ,,, " );
 
             pybind::list l = pybind::make_list_container_t( _kernel, strings );
@@ -2884,7 +2884,7 @@ namespace Mengine
         {
             (void)_kernel;
 
-            const TVectorConstString & tags = _value.getTags();
+            const VectorConstString & tags = _value.getTags();
 
             PyObject * py_tags = pybind::list_new( 0 );
 
@@ -2997,11 +2997,11 @@ namespace Mengine
         pybind::registration_type_cast<Blobject>(kernel, new extract_TBlobject_type);
         pybind::registration_type_cast<Tags>(kernel, new extract_Tags_type);
 
-        pybind::registration_stl_vector_type_cast<ResourceImage *, TVectorResourceImage>(kernel);
-        pybind::registration_stl_vector_type_cast<HotSpotPolygon *, TVectorHotSpotPolygon>(kernel);
+        pybind::registration_stl_vector_type_cast<ResourceImage *, VectorResourceImage>(kernel);
+        pybind::registration_stl_vector_type_cast<HotSpotPolygon *, VectorHotSpotPolygons>(kernel);
 
-        pybind::registration_stl_map_type_cast<ConstString, WString, TMapWParams>(kernel);
-        pybind::registration_stl_map_type_cast<ConstString, String, TMapParams>(kernel);
+        pybind::registration_stl_map_type_cast<ConstString, WString, MapWParams>(kernel);
+        pybind::registration_stl_map_type_cast<ConstString, String, MapParams>(kernel);
 
         pybind::registration_type_cast<String>(kernel, new extract_String_type);
         pybind::registration_type_cast<WString>(kernel, new extract_WString_type);

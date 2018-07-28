@@ -37,6 +37,6 @@ namespace Mengine
 		OutputStreamInterfacePtr m_stream;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadTaskGetAsset> ThreadTaskGetAssetPtr;
+	typedef IntrusivePtr<ThreadTaskGetAsset> ThreadTaskGetAssetPtr;
 	//////////////////////////////////////////////////////////////////////////
 }

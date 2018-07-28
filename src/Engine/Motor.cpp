@@ -34,7 +34,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Motor::hasVelocity( const ConstString & _name ) const
     {
-        TMapVelocity::const_iterator it_found = m_velocities.find( _name );
+        MapVelocity::const_iterator it_found = m_velocities.find( _name );
 
         if( it_found == m_velocities.end() )
         {
@@ -46,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     mt::vec3f Motor::getVelocity( const ConstString & _name ) const
     {
-        TMapVelocity::const_iterator it_found = m_velocities.find( _name );
+        MapVelocity::const_iterator it_found = m_velocities.find( _name );
 
         if( it_found == m_velocities.end() )
         {
@@ -69,7 +69,7 @@ namespace Mengine
 
         mt::vec3f velocity( 0.f, 0.f, 0.f );
 
-        for( TMapVelocity::const_iterator
+        for( MapVelocity::const_iterator
             it = m_velocities.begin(),
             it_end = m_velocities.end();
             it != it_end;

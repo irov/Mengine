@@ -20,8 +20,8 @@ namespace Mengine
 		void _finalize() override;
 
 	protected:
-		typedef Vector<DecoderFactoryInterfacePtr> TVectorVideoDecoders;
-		TVectorVideoDecoders m_decoders;
+		typedef Vector<DecoderFactoryInterfacePtr> VectorDecoderFactories;
+		VectorDecoderFactories m_decoderFactories;
 	};
 }
 

@@ -153,7 +153,7 @@ namespace Mengine
         m_vertices.resize( m_countX * m_countY );
         m_verticesWM.resize( m_countX * m_countY );
 
-        TVectorRenderVertex2D::iterator vertices_iterator = m_vertices.begin();
+        VectorRenderVertex2D::iterator vertices_iterator = m_vertices.begin();
 
         float pos_step_x = m_width / float( m_countX - 1 );
         float pos_step_y = m_height / float( m_countY - 1 );
@@ -182,7 +182,7 @@ namespace Mengine
 
         m_indices.resize( (m_countX - 1) * (m_countY - 1) * 6 );
 
-        TVectorRenderIndices::iterator indices_iterator = m_indices.begin();
+        VectorRenderIndices::iterator indices_iterator = m_indices.begin();
 
         for( uint32_t j = 0; j != (m_countY - 1); ++j )
         {
@@ -270,10 +270,10 @@ namespace Mengine
     {
         m_invalidateVerticesWM = false;
 
-        TVectorRenderVertex2D::const_iterator it = m_vertices.begin();
-        TVectorRenderVertex2D::const_iterator it_end = m_vertices.end();
+        VectorRenderVertex2D::const_iterator it = m_vertices.begin();
+        VectorRenderVertex2D::const_iterator it_end = m_vertices.end();
 
-        TVectorRenderVertex2D::iterator it_w = m_verticesWM.begin();
+        VectorRenderVertex2D::iterator it_w = m_verticesWM.begin();
 
         ColourValue color;
         this->calcTotalColor( color );

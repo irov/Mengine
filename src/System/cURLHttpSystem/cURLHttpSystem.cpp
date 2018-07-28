@@ -101,7 +101,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLHttpSystem::postMessage( const String & _url, const TMapParams & _params, const HttpReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLHttpSystem::postMessage( const String & _url, const MapParams & _params, const HttpReceiverInterfacePtr & _receiver )
     {
         uint32_t task_id = ++m_enumeratorReceivers;
 
@@ -131,7 +131,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLHttpSystem::headerData( const String & _url, const TVectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLHttpSystem::headerData( const String & _url, const VectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver )
     {
         uint32_t task_id = ++m_enumeratorReceivers;
 
@@ -206,7 +206,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLHttpSystem::cancelRequest( HttpRequestID _id )
     {
-        for( TVectorHttpReceiverDesc::iterator
+        for( VectorHttpReceiverDesc::iterator
             it = m_receiverDescs.begin(),
             it_end = m_receiverDescs.end();
             it != it_end;
@@ -229,7 +229,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLHttpSystem::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _response, uint32_t _code, bool _successful )
     {
-        for( TVectorHttpReceiverDesc::iterator
+        for( VectorHttpReceiverDesc::iterator
             it = m_receiverDescs.begin(),
             it_end = m_receiverDescs.end();
             it != it_end;

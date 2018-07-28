@@ -34,8 +34,8 @@ namespace Mengine
 		virtual void render( const RenderContext * _state, uint32_t _debugMask ) = 0;
 
 	public:
-		virtual void message( const ConstString & _messageName, const TMapWParams & _params ) = 0;
-		virtual void messageAll( const ConstString & _messageName, const TMapWParams & _params ) = 0;
+		virtual void message( const ConstString & _messageName, const MapWParams & _params ) = 0;
+		virtual void messageAll( const ConstString & _messageName, const MapWParams & _params ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<ModuleInterface> ModuleInterfacePtr;
@@ -70,8 +70,8 @@ namespace Mengine
 		virtual void render( const RenderContext * _state, uint32_t _debugMask ) = 0;
 
 	public:
-		virtual void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params ) = 0;
-		virtual void messageAll( const ConstString & _messageName, const TMapWParams & _params ) = 0;
+		virtual void message( const ConstString & _moduleName, const ConstString & _messageName, const MapWParams & _params ) = 0;
+		virtual void messageAll( const ConstString & _messageName, const MapWParams & _params ) = 0;
 	};
     //////////////////////////////////////////////////////////////////////////
 #   define MODULE_SERVICE()\

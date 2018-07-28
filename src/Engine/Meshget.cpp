@@ -121,7 +121,7 @@ namespace Mengine
 		uint32_t vertexCount = (uint32_t)m_positions.size();
 		uint32_t indicesCount = (uint32_t)m_indices.size();
 
-		const TVectorRenderVertex2D & vertices = this->getVerticesWM();
+		const VectorRenderVertex2D & vertices = this->getVerticesWM();
 		const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
 
 		const RenderVertex2D * vertices_buff = &vertices[0];
@@ -141,13 +141,13 @@ namespace Mengine
 			return;
 		}
 
-		const TVectorRenderVertex2D & vertices = this->getVerticesWM();
+		const VectorRenderVertex2D & vertices = this->getVerticesWM();
 
 		mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
-        TVectorPosition::size_type vertexCount = m_positions.size();
+        VectorPosition::size_type vertexCount = m_positions.size();
 				
-		for( TVectorPosition::size_type i = 1; i != vertexCount; ++i )
+		for( VectorPosition::size_type i = 1; i != vertexCount; ++i )
 		{
 			const mt::vec3f & v = m_positions[i];
 
@@ -191,9 +191,9 @@ namespace Mengine
         const ColourValue & textureColour = m_surface->getColor();
 		color *= textureColour;
 
-        TVectorPosition::size_type vertexCount = m_positions.size();
+        VectorPosition::size_type vertexCount = m_positions.size();
 
-		for( TVectorPosition::size_type i = 0; i != vertexCount; ++i )
+		for( VectorPosition::size_type i = 0; i != vertexCount; ++i )
 		{
 			const mt::vec4f & c = m_colors[i];
 
@@ -212,9 +212,9 @@ namespace Mengine
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        TVectorPosition::size_type vertexCount = m_positions.size();
+        VectorPosition::size_type vertexCount = m_positions.size();
         
-		for( TVectorPosition::size_type i = 0; i != vertexCount; ++i )
+		for( VectorPosition::size_type i = 0; i != vertexCount; ++i )
 		{
 			const mt::vec3f & pos = m_positions[i];
 			const mt::vec2f & uv = m_uvs[i];

@@ -34,7 +34,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	BitmapGlyphPtr BitmapGlyphService::getGlyph( const FileGroupInterfacePtr & _category, const FilePath & _path )
 	{
-		TMapBitmapGlyph::iterator it_found = m_glyphs.find( _path );
+		MapBitmapGlyph::iterator it_found = m_glyphs.find( _path );
 
 		if( it_found != m_glyphs.end() )
 		{

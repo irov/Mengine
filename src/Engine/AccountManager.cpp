@@ -123,7 +123,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	AccountInterfacePtr AccountManager::createAccount_( const ConstString& _accountID )
 	{
-		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
+		MapAccounts::iterator it_find = m_accounts.find( _accountID );
 
 		if( it_find != m_accounts.end() )
 		{
@@ -172,7 +172,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////	
 	AccountInterfacePtr AccountManager::createGlobalAccount_( const ConstString& _accountID )
 	{
-		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
+		MapAccounts::iterator it_find = m_accounts.find( _accountID );
 
 		if( it_find != m_accounts.end() )
 		{
@@ -259,7 +259,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::deleteAccount( const ConstString& _accountID )
 	{
-		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
+		MapAccounts::iterator it_find = m_accounts.find( _accountID );
 
 		if( it_find == m_accounts.end() )
 		{
@@ -290,7 +290,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool AccountManager::selectAccount( const ConstString& _accountID )
 	{
-		TMapAccounts::iterator it_find = m_accounts.find( _accountID );
+		MapAccounts::iterator it_find = m_accounts.find( _accountID );
 
 		if( it_find == m_accounts.end() )
 		{
@@ -335,7 +335,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	AccountInterfacePtr AccountManager::getAccount( const ConstString& _accountID )
 	{
-		TMapAccounts::iterator it_found = m_accounts.find( _accountID );
+		MapAccounts::iterator it_found = m_accounts.find( _accountID );
 		
 		if( it_found == m_accounts.end() )
 		{
@@ -353,7 +353,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void AccountManager::visitAccounts( AccountVisitorInterface * _visitor ) const
 	{
-		for( TMapAccounts::const_iterator
+		for( MapAccounts::const_iterator
 			it = m_accounts.begin(),
 			it_end = m_accounts.end();
 		it != it_end;
@@ -533,7 +533,7 @@ namespace Mengine
                 );
         }   
         
-        TVectorConstString values;
+        VectorConstString values;
 		if( IniUtil::getIniValue( ini, "ACCOUNTS", "Account", values ) == false )
         {
             LOGGER_INFO( "AccountManager::loadAccounts get ACCOUNTS failed '%s'"
@@ -666,7 +666,7 @@ namespace Mengine
 
         IniUtil::writeIniSection( file, "[ACCOUNTS]" );
 
-		for( TMapAccounts::iterator 
+		for( MapAccounts::iterator 
 			it = m_accounts.begin(), 
 			it_end = m_accounts.end();
 		it != it_end;
@@ -677,7 +677,7 @@ namespace Mengine
             IniUtil::writeIniSetting( file, "Account", accountID );
 		}
 
-        for( TMapAccounts::iterator 
+        for( MapAccounts::iterator 
             it = m_accounts.begin(), 
             it_end = m_accounts.end();
         it != it_end;

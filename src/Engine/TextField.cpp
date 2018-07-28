@@ -105,13 +105,13 @@ namespace Mengine
 
         m_textEntry = nullptr;
 
-        TVectorTextLineLayout layouts;
+        VectorTextLineLayout layouts;
         m_layouts.swap( layouts );
 
-        TVectorRenderVertex2D vertexDataText;
+        VectorRenderVertex2D vertexDataText;
         m_vertexDataText.swap( vertexDataText );
 
-        TVectorRenderVertex2D vertexDataTextWM;
+        VectorRenderVertex2D vertexDataTextWM;
         m_vertexDataTextWM.swap( vertexDataTextWM );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -130,7 +130,7 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    const TextField::TVectorTextLineLayout & TextField::getTextLayots() const
+    const TextField::VectorTextLineLayout & TextField::getTextLayots() const
     {
         if( this->isInvalidateTextLines() == true )
         {
@@ -147,12 +147,12 @@ namespace Mengine
         this->invalidateVerticesWM_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, TVectorRenderVertex2D & _vertexData )
+    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, VectorRenderVertex2D & _vertexData )
     {
         _vertexData.clear();
         m_chunks.clear();
 
-        const TVectorTextLineLayout & layouts = this->getTextLayots();
+        const VectorTextLineLayout & layouts = this->getTextLayots();
 
         if( layouts.empty() == true )
         {
@@ -251,7 +251,7 @@ namespace Mengine
 
         cacheFontARGB[0] = colorBaseFont.getAsARGB();
 
-        for( TVectorCacheFonts::size_type index = 1; index != m_cacheFonts.size(); ++index )
+        for( VectorCacheFonts::size_type index = 1; index != m_cacheFonts.size(); ++index )
         {
             CacheFont & cache = m_cacheFonts[index];
 
@@ -277,12 +277,12 @@ namespace Mengine
 
         uint32_t textLineAlignOffsetIterator = 0U;
 
-        for( const TVectorTextLine2 & lines2 : layouts )
+        for( const VectorTextLine2 & lines2 : layouts )
         {
             float alignOffsetX = m_textLineAlignOffsets[textLineAlignOffsetIterator++];
             offset.x = alignOffsetX;
 
-            for( const TVectorTextLine & lines : lines2 )
+            for( const VectorTextLine & lines : lines2 )
             {
                 mt::vec2f offset2;
 
@@ -290,7 +290,7 @@ namespace Mengine
                 {
                     offset2 = offset;
 
-                    const TVectorCharData & charsData = line.getCharsData();
+                    const VectorCharData & charsData = line.getCharsData();
 
                     for( const CharData & cd : charsData )
                     {
@@ -373,20 +373,20 @@ namespace Mengine
             return;
         }
 
-        const TVectorRenderVertex2D & textVertices = this->getTextVertices( font );
+        const VectorRenderVertex2D & textVertices = this->getTextVertices( font );
 
         if( textVertices.empty() == true )
         {
             return;
         }
 
-        const TVectorRenderVertex2D::value_type * vertices = &textVertices.front();
+        const VectorRenderVertex2D::value_type * vertices = &textVertices.front();
 
         const mt::box2f & bb = this->getBoundingBox();
 
         for( const Chunk & chunk : m_chunks )
         {
-            const TVectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.vertex_begin;
+            const VectorRenderVertex2D::value_type * chunk_vertices = vertices + chunk.vertex_begin;
 
             if( chunk_vertices[0].color == 16777215 )
             {
@@ -552,18 +552,18 @@ namespace Mengine
         return m_textSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesMaxCount_( TVectorTextLines & _textLines ) const
+    void TextField::updateTextLinesMaxCount_( VectorTextLines & _textLines ) const
     {
         uint32_t charIterator = 0;
-        for( TVectorTextLines::iterator
+        for( VectorTextLines::iterator
             it_lines = _textLines.begin(),
             it_lines_end = _textLines.end();
             it_lines != it_lines_end;
             ++it_lines )
         {
-            TVectorTextChunks & chars = *it_lines;
+            VectorTextChunks & chars = *it_lines;
 
-            for( TVectorTextChunks::iterator
+            for( VectorTextChunks::iterator
                 it_chars = chars.begin(),
                 it_chars_end = chars.end();
                 it_chars != it_chars_end;
@@ -582,12 +582,12 @@ namespace Mengine
 
                 chunk.value = chunk.value.substr( 0, m_maxCharCount - charIterator );
 
-                TVectorTextChunks::iterator it_chars_erase = it_chars;
+                VectorTextChunks::iterator it_chars_erase = it_chars;
                 std::advance( it_chars_erase, 1 );
 
                 chars.erase( it_chars_erase, chars.end() );
 
-                TVectorTextLines::iterator it_lines_erase = it_lines;
+                VectorTextLines::iterator it_lines_erase = it_lines;
                 std::advance( it_lines_erase, 1 );
 
                 _textLines.erase( it_lines_erase, _textLines.end() );
@@ -597,17 +597,17 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const TVectorTextLines & _textLines, mt::vec2f & _size, uint32_t & _charCount, uint32_t & _layoutCount ) const
+    void TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f & _size, uint32_t & _charCount, uint32_t & _layoutCount ) const
     {
         float fontHeight = _font->getFontAscent();
 
         float charOffset = this->calcCharOffset();
         float lineOffset = this->calcLineOffset();
 
-        TVectorTextLineLayout layouts;
-        for( const TVectorTextChunks & textChunks : _textLines )
+        VectorTextLineLayout layouts;
+        for( const VectorTextChunks & textChunks : _textLines )
         {
-            TVectorTextLine2 textLine2;
+            VectorTextLine2 textLine2;
             for( const TextChunk & textChunk : textChunks )
             {
                 const CacheFont & cache = m_cacheFonts[textChunk.fontId];
@@ -616,7 +616,7 @@ namespace Mengine
 
                 uint32_t layoutCount = chunkFont->getLayoutCount();
 
-                TVectorTextLine textLine;
+                VectorTextLine textLine;
                 for( uint32_t layoutIndex = 0; layoutIndex != layoutCount; ++layoutIndex )
                 {
                     TextLine tl( layoutIndex, charOffset );
@@ -644,12 +644,12 @@ namespace Mengine
         m_textLineAlignOffsets.clear();
 
         float maxlen = 0.f;
-        for( const TVectorTextLine2 & lines2 : layouts )
+        for( const VectorTextLine2 & lines2 : layouts )
         {
             float line_length = 0.f;
             uint32_t line_chars = 0;
 
-            for( const TVectorTextLine & lines : lines2 )
+            for( const VectorTextLine & lines : lines2 )
             {
                 const TextLine & line = lines[0];
 
@@ -669,7 +669,7 @@ namespace Mengine
 
         _size.x = maxlen;
 
-        TVectorTextLineLayout::size_type lineCount = layouts.size();
+        VectorTextLineLayout::size_type lineCount = layouts.size();
 
         if( lineCount > 0 )
         {
@@ -727,7 +727,7 @@ namespace Mengine
 
         m_cacheFonts.emplace_back( baseCacheFont );
 
-        TVectorTextChunks textChars;
+        VectorTextChunks textChars;
         Helper::test( textChars, cacheText, m_cacheFonts, 0 );
 
         for( const CacheFont & cache : m_cacheFonts )
@@ -752,13 +752,13 @@ namespace Mengine
             }
         }
 
-        TVectorU32String line_delims;
+        VectorU32String line_delims;
         line_delims.emplace_back( U"\n" );
         line_delims.emplace_back( U"\r\n" );
         line_delims.emplace_back( U"\n\r" );
         line_delims.emplace_back( U"\n\r\t" );
 
-        TVectorTextLines textLines;
+        VectorTextLines textLines;
         Helper::split( textLines, textChars, line_delims );
 
         float charScale = this->calcCharScale();
@@ -769,19 +769,19 @@ namespace Mengine
         {
             U32String space_delim = U" ";
 
-            TVectorU32String space_delims;
+            VectorU32String space_delims;
             if( m_wrap == true )
             {
                 space_delims.emplace_back( space_delim );
                 space_delims.emplace_back( U"\r" );
             }
 
-            TVectorTextLines new_textLines;
-            for( const TVectorTextChunks & textChunks : textLines )
+            VectorTextLines new_textLines;
+            for( const VectorTextChunks & textChunks : textLines )
             {
                 float length = 0.f;
 
-                TVectorTextChunks new_textChunks;
+                VectorTextChunks new_textChunks;
                 for( const TextChunk & textChunk : textChunks )
                 {
                     const U32String & text = textChunk.value;
@@ -789,7 +789,7 @@ namespace Mengine
 
                     const TextFontInterfacePtr & font = cache.font;
 
-                    TVectorU32String words;
+                    VectorU32String words;
                     Helper::u32split2( words, text, false, space_delims );
 
                     TextChunk new_textChunk;
@@ -885,9 +885,9 @@ namespace Mengine
         //    font->prepareText( s_font );
         //}
 
-        for( const TVectorTextChunks & textChunks : textLines )
+        for( const VectorTextChunks & textChunks : textLines )
         {
-            TVectorTextLine2 textLine2;
+            VectorTextLine2 textLine2;
             for( const TextChunk & textChunk : textChunks )
             {
                 const CacheFont & cache = m_cacheFonts[textChunk.fontId];
@@ -896,7 +896,7 @@ namespace Mengine
 
                 uint32_t layoutCount = chunkFont->getLayoutCount();
 
-                TVectorTextLine textLine;
+                VectorTextLine textLine;
                 for( uint32_t layoutIndex = 0; layoutIndex != layoutCount; ++layoutIndex )
                 {
                     TextLine tl( layoutIndex, charOffset );
@@ -1261,10 +1261,10 @@ namespace Mengine
         //}
     }
     //////////////////////////////////////////////////////////////////////////
-    float TextField::getHorizontAlignOffset_( const TVectorTextLine2 & _lines ) const
+    float TextField::getHorizontAlignOffset_( const VectorTextLine2 & _lines ) const
     {
         float length = 0.f;
-        for( const TVectorTextLine & line : _lines )
+        for( const VectorTextLine & line : _lines )
         {
             length += line[0].getLength();
         }
@@ -1342,7 +1342,7 @@ namespace Mengine
         return key;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::setTextFormatArgs( const TVectorString & _args )
+    void TextField::setTextFormatArgs( const VectorString & _args )
     {
         if( m_textFormatArgs == _args )
         {
@@ -1363,7 +1363,7 @@ namespace Mengine
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    const TVectorString & TextField::getTextFormatArgs() const
+    const VectorString & TextField::getTextFormatArgs() const
     {
         return m_textFormatArgs;
     }
@@ -1568,14 +1568,14 @@ namespace Mengine
         this->updateVertexDataWM_( m_vertexDataTextWM, m_vertexDataText );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertexDataWM_( TVectorRenderVertex2D & _outVertex, const TVectorRenderVertex2D & _fromVertex )
+    void TextField::updateVertexDataWM_( VectorRenderVertex2D & _outVertex, const VectorRenderVertex2D & _fromVertex )
     {
         _outVertex.assign( _fromVertex.begin(), _fromVertex.end() );
 
-        TVectorRenderVertex2D::const_iterator it = _fromVertex.begin();
-        TVectorRenderVertex2D::const_iterator it_end = _fromVertex.end();
+        VectorRenderVertex2D::const_iterator it = _fromVertex.begin();
+        VectorRenderVertex2D::const_iterator it_end = _fromVertex.end();
 
-        TVectorRenderVertex2D::iterator it_w = _outVertex.begin();
+        VectorRenderVertex2D::iterator it_w = _outVertex.begin();
 
         mt::mat4f wm = this->getWorldMatrix();
 

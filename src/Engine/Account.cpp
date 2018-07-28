@@ -74,7 +74,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Account::addSetting( const ConstString & _setting, const WString& _defaultValue, const pybind::object & _applyFunc )
 	{
-		TMapSettings::iterator it = m_settings.find( _setting );
+		MapSettings::iterator it = m_settings.find( _setting );
 		
 		if( it != m_settings.end() )
 		{
@@ -97,7 +97,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Account::changeSetting( const ConstString & _setting, const WString& _value )
 	{
-		TMapSettings::iterator it_found = m_settings.find( _setting );
+		MapSettings::iterator it_found = m_settings.find( _setting );
 
 		if( it_found == m_settings.end() )
 		{
@@ -123,7 +123,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	WString Account::getSetting( const ConstString & _setting ) const
 	{
-		TMapSettings::const_iterator it_found = m_settings.find( _setting );
+		MapSettings::const_iterator it_found = m_settings.find( _setting );
 
 		if( it_found == m_settings.end() )
 		{
@@ -142,7 +142,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Account::hasSetting( const ConstString & _setting ) const
     {
-		TMapSettings::const_iterator it_found = m_settings.find( _setting );
+		MapSettings::const_iterator it_found = m_settings.find( _setting );
 
 		if( it_found == m_settings.end() )
 		{
@@ -219,7 +219,7 @@ namespace Mengine
 
 		m_uid = uid;
 
-		for( TMapSettings::iterator 
+		for( MapSettings::iterator 
 			it = m_settings.begin(), 
 			it_end = m_settings.end();
 		it != it_end;
@@ -271,7 +271,7 @@ namespace Mengine
         
         IniUtil::writeIniSection( file, "[SETTINGS]" );
         
-		for( TMapSettings::const_iterator 
+		for( MapSettings::const_iterator 
 			it = m_settings.begin(), 
 			it_end = m_settings.end();
 		it != it_end;
@@ -288,7 +288,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Account::apply()
 	{
-		for( TMapSettings::iterator 
+		for( MapSettings::iterator 
 			it = m_settings.begin(), 
 			it_end = m_settings.end();
 		it != it_end;

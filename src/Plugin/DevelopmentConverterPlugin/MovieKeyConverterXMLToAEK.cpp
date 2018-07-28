@@ -26,18 +26,18 @@
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	typedef Vector<MovieFrameSource> TVectorMovieFrameSource;
+	typedef Vector<MovieFrameSource> VectorMovieFrameSource;
 	//////////////////////////////////////////////////////////////////////////
 	struct ConverterMovieLayerFrame
 	{
-		TVectorMovieFrameSource frames;
+		VectorMovieFrameSource frames;
 		uint32_t count;
 
 		MovieFrameSource source;
 		uint8_t immutable;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef Vector<ConverterMovieLayerFrame> TVectorConverterMovieFrameLayer;
+	typedef Vector<ConverterMovieLayerFrame> VectorConverterMovieFrameLayer;
 	//////////////////////////////////////////////////////////////////////////
 	MovieKeyConverterXMLToAEK::MovieKeyConverterXMLToAEK()
 	{
@@ -149,7 +149,7 @@ namespace Mengine
 
 		aw << maxIndex;
 
-		TVectorConverterMovieFrameLayer frameLayers;
+		VectorConverterMovieFrameLayer frameLayers;
 		frameLayers.resize( maxIndex );
 
 		for( ConverterMovieLayerFrame & layer : frameLayers )
@@ -417,7 +417,7 @@ namespace Mengine
 			}
 			else
 			{
-				const TVectorMovieFrameSource & frames = frame.frames;
+				const VectorMovieFrameSource & frames = frame.frames;
 
 #	define WRITE_FRAME_SOURCE( Type, Member )\
 												{ \
@@ -555,7 +555,7 @@ namespace Mengine
 				imagePolygon.append( v3 );
 				imagePolygon.correct();
 
-				TVectorPolygon output;
+				VectorPolygon output;
 				if( subtract == false )
 				{
 					if( polygon.intersection( imagePolygon, output ) == false )
@@ -626,7 +626,7 @@ namespace Mengine
 
 					p2t_points.reserve( max_points );
 
-					TVectorIndices shape_indices;
+					VectorIndices shape_indices;
 
                     for( const Polygon & shape_vertex : output )
 					{
@@ -698,7 +698,7 @@ namespace Mengine
 					}
 
                     std::vector<p2t::Point>::size_type shapeVertexCount = p2t_points.size();
-                    TVectorIndices::size_type shapeIndicesCount = shape_indices.size();
+                    VectorIndices::size_type shapeIndicesCount = shape_indices.size();
 
 					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
 					{

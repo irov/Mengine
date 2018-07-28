@@ -68,9 +68,9 @@ namespace Mengine
         FactoryPtr m_factoryThreadTaskPrefetchSoundDecoder;
         FactoryPtr m_factoryThreadTaskPrefetchDataflow;
 		
-		typedef std::pair<ConstString, FilePath> TKeyPrefetchReceiver;
-		typedef Map<TKeyPrefetchReceiver, PrefetchReceiver> TMapPrefetchReceiver;
-		TMapPrefetchReceiver m_prefetchReceiver;
+		typedef std::pair<ConstString, FilePath> KeyPrefetchReceiver;
+		typedef Map<KeyPrefetchReceiver, PrefetchReceiver> MapPrefetchReceiver;
+		MapPrefetchReceiver m_prefetchReceiver;
 
         bool m_avaliable;
 	};

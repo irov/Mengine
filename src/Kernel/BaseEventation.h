@@ -61,8 +61,8 @@ namespace Mengine
             EventReceiverPtr receiver;
         };
 
-        typedef Vector<EventReceiverDesc> TVectorEventReceivers;
-        TVectorEventReceivers m_receivers;
+        typedef Vector<EventReceiverDesc> VectorEventReceivers;
+        VectorEventReceivers m_receivers;
 
         uint64_t m_flag;
 

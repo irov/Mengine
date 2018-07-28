@@ -5,11 +5,11 @@
 
 namespace Mengine
 {
-    typedef Vector<Char> TVectorChar;
-    typedef Vector<String> TVectorString;
+    typedef Vector<Char> VectorChar;
+    typedef Vector<String> VectorString;
 	
-    typedef Vector<WChar> TVectorWChar;
-    typedef Vector<WString> TVectorWString;
+    typedef Vector<WChar> VectorWChar;
+    typedef Vector<WString> VectorWString;
 
-	typedef Vector<U32String> TVectorU32String;
+	typedef Vector<U32String> VectorU32String;
 }

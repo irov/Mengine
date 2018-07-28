@@ -24,7 +24,7 @@ namespace Mengine
 		void _finalizeService() override;
 
 	public:
-		void setArgs( const TVectorString & _args ) override;
+		void setArgs( const VectorString & _args ) override;
 
 	public:
 		bool hasOption( const Char * _key ) const override;
@@ -38,8 +38,8 @@ namespace Mengine
 			Char value[MENGINE_OPTIONS_VALUE_SIZE];
 		};
 
-		typedef Vector<Option> TVectorOptions;
-		TVectorOptions m_options;
+		typedef Vector<Option> VectorOptions;
+		VectorOptions m_options;
 	};
 }
 

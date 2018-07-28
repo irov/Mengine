@@ -185,7 +185,7 @@ namespace Mengine
 		THIS_IMPL = (*(BoostPolygon *)(_polygon.m_impl));
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Polygon::triangulate_indices( TVectorIndices & _result ) const
+	bool Polygon::triangulate_indices( VectorIndices & _result ) const
 	{
 		/* allocate and initialize list of Vertices in polygon */
         Polygon::size_type n = boost::geometry::num_points( THIS_IMPL );
@@ -255,9 +255,9 @@ namespace Mengine
 				uint32_t b = V[v];
 				uint32_t c = V[w];
 
-				_result.emplace_back( (TVectorIndices::value_type)a );
-				_result.emplace_back( (TVectorIndices::value_type)b );
-				_result.emplace_back( (TVectorIndices::value_type)c );
+				_result.emplace_back( (VectorIndices::value_type)a );
+				_result.emplace_back( (VectorIndices::value_type)b );
+				_result.emplace_back( (VectorIndices::value_type)c );
 
 				m++;
 
@@ -277,7 +277,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Polygon::triangulate( TVectorPoints & _result ) const
+	bool Polygon::triangulate( VectorPoints & _result ) const
 	{
 		/* allocate and initialize list of Vertices in polygon */
         Polygon::size_type n = boost::geometry::num_points( THIS_IMPL );
@@ -765,7 +765,7 @@ namespace Mengine
 		return boost::geometry::intersects( THIS_IMPL, boost_box );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Polygon::intersection( const Polygon & _polygon, TVectorPolygon & _out ) const
+	bool Polygon::intersection( const Polygon & _polygon, VectorPolygon & _out ) const
 	{
 		std::deque<BoostPolygon> output;
 
@@ -792,7 +792,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Polygon::difference( const Polygon & _polygon, TVectorPolygon & _out ) const
+	bool Polygon::difference( const Polygon & _polygon, VectorPolygon & _out ) const
 	{
 		std::deque<BoostPolygon> output;
 

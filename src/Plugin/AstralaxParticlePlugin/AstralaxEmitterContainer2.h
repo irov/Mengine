@@ -62,8 +62,8 @@ namespace Mengine
 		
 		MemoryInterfacePtr m_memory;
 
-		typedef Vector<ResourceImagePtr> TVectorResourceImage;
-		TVectorResourceImage m_resourceImages;
+		typedef Vector<ResourceImagePtr> VectorResourceImage;
+		VectorResourceImage m_resourceImages;
 	};
 
 	typedef IntrusivePtr<AstralaxEmitterContainer2> AstralaxEmitterContainer2Ptr;

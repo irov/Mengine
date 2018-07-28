@@ -169,7 +169,7 @@ namespace Mengine
 			return false;
 		}
 
-		for( TVectorPlugins::iterator
+		for( VectorPlugins::iterator
 			it = m_plugins.begin(),
 			it_end = m_plugins.end();
 		it != it_end;

@@ -18,7 +18,7 @@ namespace Mengine
 		RenderCameraInterfacePtr camera;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef Vector<PickerTrapStateDesc> TVectorPickerTrapStates;
+	typedef Vector<PickerTrapStateDesc> VectorPickerTrapStates;
 	//////////////////////////////////////////////////////////////////////////
 	class MousePickerSystem
 		: public ServiceBase<MousePickerSystemInterface>
@@ -49,7 +49,7 @@ namespace Mengine
 		void clear() override;
 
     public:
-		bool pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps ) override;
+		bool pickTrap( const mt::vec2f& _point, VectorPickerTraps & _traps ) override;
 		
 	public:
 		PickerTrapState * regTrap( const MousePickerTrapInterfacePtr & _trap ) override;		
@@ -77,7 +77,7 @@ namespace Mengine
 		uint32_t getPickerTrapCount() const override;
 
 	private:
-		bool proccesTraps_( float _x, float _y, TVectorPickerTrapStates & _states );
+		bool proccesTraps_( float _x, float _y, VectorPickerTrapStates & _states );
 		void updateDead_();
 
 	private:
@@ -90,10 +90,10 @@ namespace Mengine
 		RenderCameraInterfacePtr m_camera;
 		RenderScissorInterfacePtr m_scissor;
 
-		typedef List<PickerTrapState> TPickerTrapState;
-		TPickerTrapState m_pickerTrapState;
+		typedef List<PickerTrapState> ListPickerTrapState;
+		ListPickerTrapState m_pickerTrapState;
 
-		TVectorPickerTrapStates m_states;
+		VectorPickerTrapStates m_states;
 
 		uint32_t m_pickerTrapCount;
 

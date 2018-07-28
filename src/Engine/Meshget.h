@@ -76,27 +76,27 @@ namespace Mengine
 		void updateVerticesColor() const;
 
 	protected:
-		inline const TVectorRenderVertex2D & getVerticesWM() const;
+		inline const VectorRenderVertex2D & getVerticesWM() const;
         
 	protected:
         SurfacePtr m_surface;
 		
-		typedef Vector<mt::vec3f> TVectorPosition;
-		typedef Vector<mt::vec2f> TVectorUV;
-		typedef Vector<mt::vec4f> TVectorColor;
-		TVectorPosition m_positions;
-		TVectorUV m_uvs;
-		TVectorColor m_colors;
+		typedef Vector<mt::vec3f> VectorPosition;
+		typedef Vector<mt::vec2f> VectorUV;
+		typedef Vector<mt::vec4f> VectorColor;
+		VectorPosition m_positions;
+		VectorUV m_uvs;
+		VectorColor m_colors;
 
-		TVectorRenderIndices m_indices;
+		VectorRenderIndices m_indices;
 
-		mutable TVectorRenderVertex2D m_verticesWM;
+		mutable VectorRenderVertex2D m_verticesWM;
 			
 		mutable bool m_invalidateVerticesWM;
 		mutable bool m_invalidateVerticesColor;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	inline const TVectorRenderVertex2D & Meshget::getVerticesWM() const
+	inline const VectorRenderVertex2D & Meshget::getVerticesWM() const
 	{
 		if( m_invalidateVerticesWM == true )
 		{

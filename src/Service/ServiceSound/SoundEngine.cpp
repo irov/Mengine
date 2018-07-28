@@ -121,7 +121,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool SoundEngine::removeSoundVolumeProvider(const SoundVolumeProviderInterfacePtr & _soundVolumeProvider )
 	{
-		TVectorSoundVolumeProviders::iterator it_found = std::find( m_soundVolumeProviders.begin(), m_soundVolumeProviders.end(), _soundVolumeProvider );
+		VectorSoundVolumeProviders::iterator it_found = std::find( m_soundVolumeProviders.begin(), m_soundVolumeProviders.end(), _soundVolumeProvider );
 
 		if( it_found == m_soundVolumeProviders.end() )
 		{
@@ -502,7 +502,7 @@ namespace Mengine
 
         uint32_t id = _element->getId();
 
-        for( TVectorSoundSource::iterator
+        for( VectorSoundSource::iterator
             it = m_soundIdentities.begin(),
             it_end = m_soundIdentities.end();
             it != it_end;
@@ -608,7 +608,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	namespace
 	{
-		typedef Vector<SoundIdentityInterfacePtr> TVectorSoundListeners;
+		typedef Vector<SoundIdentityInterfacePtr> VectorSoundListeners;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void SoundEngine::tick( float _current, float _timing )
@@ -638,7 +638,7 @@ namespace Mengine
 			process = true;
 		}
 
-		TVectorSoundListeners m_listeners;
+		VectorSoundListeners m_listeners;
 
         for( const SoundIdentityPtr & identity : m_soundIdentities )
 		{
@@ -1241,7 +1241,7 @@ namespace Mengine
     {
         this->stopSounds_();
 
-        TVectorSoundSource remove_soundIdentities = m_soundIdentities;
+        VectorSoundSource remove_soundIdentities = m_soundIdentities;
 
         for( const SoundIdentityPtr & identity : remove_soundIdentities )
         {

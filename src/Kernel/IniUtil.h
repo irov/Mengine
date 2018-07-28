@@ -52,12 +52,12 @@ namespace Mengine
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorString & _values );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorConstString & _values );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorWString & _values );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorAspectRatioViewports & _values );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorString & _values );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorWString & _values );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values );
         //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, TMapWParams & _values );
+        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapWParams & _values );
         //////////////////////////////////////////////////////////////////////////
         bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const ConstString & _value );
         bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const WString & _value );

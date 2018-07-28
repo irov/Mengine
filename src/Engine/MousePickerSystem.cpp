@@ -22,7 +22,7 @@ namespace Mengine
 		class PickerVisitor
 		{
 		public:
-			PickerVisitor( TVectorPickerTrapStates & _traps )
+			PickerVisitor( VectorPickerTrapStates & _traps )
 				: m_traps(_traps)
 				, m_currentViewport(nullptr)
 				, m_currentCamera(nullptr)				
@@ -56,7 +56,7 @@ namespace Mengine
 				
 				this->accept( _node );
 
-				TListNodeChild & child = _node->getChildren();
+				IntrusiveSlugListNodeChild & child = _node->getChildren();
 
 				NodePtr single_child = child.single();
 
@@ -66,7 +66,7 @@ namespace Mengine
 				}
 				else if( child.countSlugs() == 0 )
 				{
-					for( TListNodeChild::unslug_iterator 
+					for( IntrusiveSlugListNodeChild::unslug_iterator 
 						it = child.ubegin(),
 						it_end = child.uend();
 					it != it_end;
@@ -79,7 +79,7 @@ namespace Mengine
 				}
 				else
 				{
-					for( TSlugChild it(child); it.eof() == false; )
+					for( IntrusiveSlugChild it(child); it.eof() == false; )
 					{
 						NodePtr children = (*it);
 
@@ -121,7 +121,7 @@ namespace Mengine
 			}
 
 		protected:
-			TVectorPickerTrapStates & m_traps;
+			VectorPickerTrapStates & m_traps;
 
 			RenderViewportInterfacePtr m_currentViewport;
 			RenderCameraInterfacePtr m_currentCamera;
@@ -194,9 +194,9 @@ namespace Mengine
 		m_scissor = _scissor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::pickTrap( const mt::vec2f& _point, TVectorPickerTraps & _traps )
+	bool MousePickerSystem::pickTrap( const mt::vec2f& _point, VectorPickerTraps & _traps )
 	{
-		TVectorPickerTrapStates states;
+		VectorPickerTrapStates states;
 		states.reserve(m_pickerTrapCount);
 
 		if( this->proccesTraps_( _point.x, _point.y, states ) == false )
@@ -204,7 +204,7 @@ namespace Mengine
 			return false;
 		}
 
-		for( TVectorPickerTrapStates::reverse_iterator
+		for( VectorPickerTrapStates::reverse_iterator
 			it = states.rbegin(),
 			it_end = states.rend();
 		it != it_end;
@@ -272,7 +272,7 @@ namespace Mengine
 		const mt::vec2f & pos = INPUT_SERVICE()
 			->getCursorPosition( 0 );
 
-		TVectorPickerTrapStates states;
+		VectorPickerTrapStates states;
 		states.reserve(m_pickerTrapCount);
 
 		this->proccesTraps_( pos.x, pos.y, states );
@@ -285,7 +285,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::unregTrap( PickerTrapState * _ref )
 	{
-		for( TPickerTrapState::iterator
+		for( ListPickerTrapState::iterator
 			it = m_pickerTrapState.begin(),
 			it_end = m_pickerTrapState.end();
 		it != it_end;
@@ -320,7 +320,7 @@ namespace Mengine
 			return false;
 		}
 
-		for( TVectorPickerTrapStates::reverse_iterator
+		for( VectorPickerTrapStates::reverse_iterator
 			it = m_states.rbegin(),
 			it_end = m_states.rend();
 		it != it_end;
@@ -355,7 +355,7 @@ namespace Mengine
 			return false;
 		}
 
-		for( TVectorPickerTrapStates::reverse_iterator
+		for( VectorPickerTrapStates::reverse_iterator
 			it = m_states.rbegin(),
 			it_end = m_states.rend();
 			it != it_end;
@@ -390,7 +390,7 @@ namespace Mengine
 			return false;
 		}
 
-		for( TVectorPickerTrapStates::reverse_iterator
+		for( VectorPickerTrapStates::reverse_iterator
 			it = m_states.rbegin(),
 			it_end = m_states.rend();
 		it != it_end;
@@ -448,7 +448,7 @@ namespace Mengine
 			return false;
 		}
 
-		for( TVectorPickerTrapStates::reverse_iterator
+		for( VectorPickerTrapStates::reverse_iterator
 			it = m_states.rbegin(),
 			it_end = m_states.rend();
 		it != it_end;
@@ -510,7 +510,7 @@ namespace Mengine
 			return false;
 		}
 
-		for( TVectorPickerTrapStates::reverse_iterator
+		for( VectorPickerTrapStates::reverse_iterator
 			it = m_states.rbegin(),
 			it_end = m_states.rend();
 		it != it_end;
@@ -575,7 +575,7 @@ namespace Mengine
 			return false;
 		}
 
-		for( TVectorPickerTrapStates::reverse_iterator
+		for( VectorPickerTrapStates::reverse_iterator
 			it = m_states.rbegin(),
 			it_end = m_states.rend();
 		it != it_end;
@@ -632,7 +632,7 @@ namespace Mengine
 			return false;
 		}
 
-		for( TVectorPickerTrapStates::reverse_iterator
+		for( VectorPickerTrapStates::reverse_iterator
 			it = m_states.rbegin(),
 			it_end = m_states.rend();
 		it != it_end;
@@ -701,7 +701,7 @@ namespace Mengine
 		PickerVisitor pv(m_states);
 		pv.visit( m_viewport, m_camera, m_scene );
 
-		for( TVectorPickerTrapStates::reverse_iterator
+		for( VectorPickerTrapStates::reverse_iterator
 			it = m_states.rbegin(),
 			it_end = m_states.rend();
 		it != it_end;
@@ -725,7 +725,7 @@ namespace Mengine
 		}		
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MousePickerSystem::proccesTraps_( float _x, float _y, TVectorPickerTrapStates & _states )
+	bool MousePickerSystem::proccesTraps_( float _x, float _y, VectorPickerTrapStates & _states )
 	{
 		if( m_arrow == nullptr )
 		{
@@ -759,7 +759,7 @@ namespace Mengine
         
 		bool handle = false;
 
-		for( TVectorPickerTrapStates::reverse_iterator
+		for( VectorPickerTrapStates::reverse_iterator
 			it = _states.rbegin(),
 			it_end = _states.rend();
 		it != it_end;
@@ -822,7 +822,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void MousePickerSystem::updateDead_()
 	{
-		for( TPickerTrapState::iterator
+		for( ListPickerTrapState::iterator
 			it = m_pickerTrapState.begin();
 			it != m_pickerTrapState.end(); )
 		{
@@ -841,7 +841,7 @@ namespace Mengine
 	{
 		uint32_t count = 0;
 
-		for( TPickerTrapState::const_iterator
+		for( ListPickerTrapState::const_iterator
 			it = m_pickerTrapState.begin();
 			it != m_pickerTrapState.end();
 		++it )

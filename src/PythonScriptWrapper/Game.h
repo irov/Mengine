@@ -100,7 +100,7 @@ namespace Mengine
         virtual void onGameUselectAccount( const ConstString & _accountID ) = 0;
         virtual void onGameChangeSoundVolume( float _sound, float _music, float _voice ) = 0;
         virtual void onGameCursorMode( bool _mode ) = 0;
-        virtual void onGameUser( const ConstString & _event, const TMapWParams & _params ) = 0;
+        virtual void onGameUser( const ConstString & _event, const MapWParams & _params ) = 0;
         virtual bool onGameClose() = 0;
         virtual void onGameOverFillrate( double _fillrate ) = 0;
         virtual void onGameFrameEnd() = 0;
@@ -167,7 +167,7 @@ namespace Mengine
 
 		bool close() override;
 
-		void userEvent( const ConstString & _id, const TMapWParams & _params ) override;
+		void userEvent( const ConstString & _id, const MapWParams & _params ) override;
 
 		void turnSound( bool _turn ) override;
 
@@ -192,17 +192,17 @@ namespace Mengine
 
 		FilePath m_iconPath;
 				
-		TMapWParams m_params;
+		MapWParams m_params;
 
 		struct UserEvent
 		{
 			ConstString id;
-			TMapWParams params;
+			MapWParams params;
 		};
 
-		typedef std::vector<UserEvent> TVectorUserEvents;
-		TVectorUserEvents m_userEventsAdd;
-		TVectorUserEvents m_userEvents;
+		typedef std::vector<UserEvent> VectorUserEvents;
+		VectorUserEvents m_userEventsAdd;
+		VectorUserEvents m_userEvents;
 		
     protected:
 		void registerEventMethods_( const ScriptModuleInterfacePtr & _module );

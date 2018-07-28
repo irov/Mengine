@@ -39,8 +39,8 @@ namespace Mengine
         };
 
     protected:
-        typedef Vector<ResourceCacherDesc> TVectorResourceCacherDesc;
-        TVectorResourceCacherDesc m_cachers;
+        typedef Vector<ResourceCacherDesc> VectorResourceCacherDesc;
+        VectorResourceCacherDesc m_cachers;
 
         class FEraseCacher;
     };
@@ -80,7 +80,7 @@ namespace Mengine
     template<class T>
     void ResourceCacher<T>::removeCache( const T & _ptr )
     {
-        for( typename TVectorResourceCacherDesc::iterator
+        for( typename VectorResourceCacherDesc::iterator
             it = m_cachers.begin(),
             it_end = m_cachers.end();
             it != it_end;

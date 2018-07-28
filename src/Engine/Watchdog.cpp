@@ -17,7 +17,7 @@ namespace Mengine
 		clock_t cl = clock();
 		float sec = (float)(cl) / float(CLOCKS_PER_SEC);
 
-		TMapWatchers::iterator it_found = m_watchers.find( _tag );
+		MapWatchers::iterator it_found = m_watchers.find( _tag );
 		
 		if( it_found == m_watchers.end() )
 		{

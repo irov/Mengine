@@ -236,8 +236,8 @@ namespace Mengine
 		RenderCameraProjectionPtr m_renderCameraProjection;
 		RenderViewportPtr m_renderViewport;
 
-		typedef Vector<RenderScissorPtr> TVectorScissor;
-		TVectorScissor m_scissors;
+		typedef Vector<RenderScissorPtr> VectorRenderScissor;
+		VectorRenderScissor m_scissors;
 
         struct Nodies
         {	
@@ -257,8 +257,8 @@ namespace Mengine
 			bool child;
         };
 
-		typedef Vector<Nodies> TVectorNodies;
-		TVectorNodies m_nodies;
+		typedef Vector<Nodies> VectorNodies;
+		VectorNodies m_nodies;
 				
 		float m_frameTime;
 		uint32_t m_currentFrame;

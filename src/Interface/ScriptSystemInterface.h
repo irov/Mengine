@@ -47,7 +47,7 @@ namespace Mengine
 		Tags platform;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef Vector<ScriptModulePack> TVectorScriptModulePack;
+	typedef Vector<ScriptModulePack> VectorScriptModulePack;
 	//////////////////////////////////////////////////////////////////////////
 	class ScriptModuleInterface
 		: public Servant
@@ -81,8 +81,8 @@ namespace Mengine
 		virtual bool finalizeModules() = 0;
 
 	public:
-		virtual void addModulePath( const ConstString & _pack, const TVectorScriptModulePack & _modules ) = 0;
-		virtual void removeModulePath( const ConstString & _pack, const TVectorScriptModulePack & _modules ) = 0;
+		virtual void addModulePath( const ConstString & _pack, const VectorScriptModulePack & _modules ) = 0;
+		virtual void removeModulePath( const ConstString & _pack, const VectorScriptModulePack & _modules ) = 0;
 
 		virtual ScriptModuleInterfacePtr importModule( const ConstString& _name ) = 0;
 

@@ -41,13 +41,13 @@ namespace Mengine
         m_add.clear();
         m_remove.clear();
 
-        for( TMapObservers::const_iterator
+        for( MapObservers::const_iterator
             it = m_mapObserves.begin(),
             it_end = m_mapObserves.end();
             it != it_end;
             ++it )
         {
-            const TVectorObservers & observers = it->second;
+            const VectorObservers & observers = it->second;
 
             (void)observers;
 
@@ -92,14 +92,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor )
     {
-        TMapObservers::iterator it_find = m_mapObserves.find( _id );
+        MapObservers::iterator it_find = m_mapObserves.find( _id );
 
         if( it_find == m_mapObserves.end() )
         {
             return;
         }
 
-        const TVectorObservers & observers = it_find->second;
+        const VectorObservers & observers = it_find->second;
 
         m_mutex->lock();
 
@@ -134,16 +134,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::addObserver_( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable )
     {
-        TMapObservers::iterator it_find = m_mapObserves.find( _id );
+        MapObservers::iterator it_find = m_mapObserves.find( _id );
 
         if( it_find == m_mapObserves.end() )
         {
-            TVectorObservers new_observers;
+            VectorObservers new_observers;
 
             it_find = m_mapObserves.emplace( _id, new_observers ).first;
         }
 
-        TVectorObservers & observers = it_find->second;
+        VectorObservers & observers = it_find->second;
         
         ObserverDesc desc;
         desc.observer = _observer;
@@ -154,14 +154,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::removeObserver_( uint32_t _id, const ObservablePtr & _observer )
     {
-        TMapObservers::iterator it_find = m_mapObserves.find( _id );
+        MapObservers::iterator it_find = m_mapObserves.find( _id );
 
         if( it_find == m_mapObserves.end() )
         {
             return;
         }
 
-        TVectorObservers & observers = it_find->second;
+        VectorObservers & observers = it_find->second;
 
         for( ObserverDesc & desc : observers )
         {

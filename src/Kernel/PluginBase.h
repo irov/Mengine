@@ -50,7 +50,7 @@ namespace Mengine
 		bool m_dynamicLoad;
 		bool m_initialize;
 
-		typedef Vector<ConstString> TVectorModuleFactory;
-		TVectorModuleFactory m_moduleFactories;
+		typedef Vector<ConstString> VectorModuleFactory;
+		VectorModuleFactory m_moduleFactories;
 	};
 }

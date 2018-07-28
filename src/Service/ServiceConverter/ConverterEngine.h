@@ -31,7 +31,7 @@ namespace Mengine
         bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out ) override;
 
 	protected:
-		typedef Map<ConstString, ConverterFactoryInterfacePtr> TMapConverterSystem;
-		TMapConverterSystem m_mapConverterSystem;
+		typedef Map<ConstString, ConverterFactoryInterfacePtr> MapConverterSystem;
+		MapConverterSystem m_mapConverterSystem;
 	};
 }

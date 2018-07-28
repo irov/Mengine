@@ -123,9 +123,9 @@ namespace Mengine
 	protected:
 		Transformation3D * m_relationTransformation;
 
-        typedef stdex::intrusive_slug_list_size_ptr<Transformation3D> TListTransformation3D;
-        typedef stdex::intrusive_slug_ptr<Transformation3D> TSlugTransformation3D;
-		TListTransformation3D m_relationChild;
+        typedef stdex::intrusive_slug_list_size_ptr<Transformation3D> IntrusiveSlugListTransformation3D;
+        typedef stdex::intrusive_slug_ptr<Transformation3D> IntrusiveSlugTransformation3D;
+		IntrusiveSlugListTransformation3D m_relationChild;
 
 		mt::vec3f m_position;
 		mt::vec3f m_origin;
@@ -141,7 +141,7 @@ namespace Mengine
 		mutable bool m_invalidateWorldMatrix;
 	};
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<Transformation3D> Transformation3DPtr;
+    typedef IntrusivePtr<Transformation3D> Transformation3DPtr;
     //////////////////////////////////////////////////////////////////////////
     inline Transformation3DPtr Transformation3D::getRelationTransformation() const
     {

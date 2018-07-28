@@ -58,9 +58,9 @@ namespace Mengine
 		void updateImageParams_( uint32_t & _width, uint32_t & _height, uint32_t & _channels, uint32_t & _depth, PixelFormat & _format ) const;
 
     protected:
-		typedef std::pair<ConstString, FilePath> TMapRenderTextureKey;
-		typedef Map<TMapRenderTextureKey, RenderTextureInterface *> TMapRenderTextureEntry;
-		TMapRenderTextureEntry m_textures[MENGINE_TEXTURE_MANAGER_HASH_SIZE];
+		typedef std::pair<ConstString, FilePath> MapRenderTextureKey;
+		typedef Map<MapRenderTextureKey, RenderTextureInterface *> MapRenderTextureEntry;
+		MapRenderTextureEntry m_textures[MENGINE_TEXTURE_MANAGER_HASH_SIZE];
 
         FactoryPtr m_factoryRenderTexture;
         FactoryPtr m_factoryDecoderRenderImageProvider;
@@ -73,7 +73,7 @@ namespace Mengine
 		bool m_supportNonPow2;
 
     private:
-        TMapRenderTextureEntry & getHashEntry_(const ConstString & _fileName);
-        const TMapRenderTextureEntry & getHashEntry_(const ConstString & _fileName) const;
+        MapRenderTextureEntry & getHashEntry_(const ConstString & _fileName);
+        const MapRenderTextureEntry & getHashEntry_(const ConstString & _fileName) const;
     };
 }

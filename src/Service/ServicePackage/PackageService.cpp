@@ -67,7 +67,7 @@ namespace Mengine
 
 		ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
 
-		TVectorString frameworkPacksSettings;
+		VectorString frameworkPacksSettings;
 		IniUtil::getIniValue( ini, "GAME_RESOURCES", "FrameworkPack", frameworkPacksSettings );
 
         for( const String & resourcePack : frameworkPacksSettings )
@@ -109,7 +109,7 @@ namespace Mengine
 			}
 		}
 
-		TVectorString resourcePacksSettings;
+		VectorString resourcePacksSettings;
 		IniUtil::getIniValue( ini, "GAME_RESOURCES", "ResourcePack", resourcePacksSettings );
 
         for( const String & resourcePack : resourcePacksSettings )
@@ -151,7 +151,7 @@ namespace Mengine
 			}
 		}
 
-		TVectorString languagePackSettings;
+		VectorString languagePackSettings;
 		IniUtil::getIniValue( ini, "GAME_RESOURCES", "LanguagePack", languagePackSettings );
 
         for( const String & languagePack : languagePackSettings )
@@ -270,7 +270,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::removePackage( const ConstString & _name )
 	{
-		for( TVectorPackage::const_iterator
+		for( VectorPackages::const_iterator
 			it = m_packages.begin(),
 			it_end = m_packages.end();
 			it != it_end;
@@ -312,7 +312,7 @@ namespace Mengine
 		return nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool PackageService::loadLocalePacksByName_( TVectorPackage & _packs, const ConstString & _locale, const Tags & _platformTags ) const
+	bool PackageService::loadLocalePacksByName_( VectorPackages & _packs, const ConstString & _locale, const Tags & _platformTags ) const
 	{
 		bool hasLocale = false;
 
@@ -345,7 +345,7 @@ namespace Mengine
         LOGGER_WARNING( "Packages enable..."
         );
 
-		TVectorPackage packages;
+		VectorPackages packages;
 
         for( const PackagePtr & pack : m_packages )
 		{
@@ -418,7 +418,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::enableLocalePackage( const ConstString & _locale, const Tags & _platformTag )
 	{ 
-		TVectorPackage packages;
+		VectorPackages packages;
 
         for( const PackagePtr & package : m_packages )
 		{
@@ -452,7 +452,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PackageService::disableLocalePackage( const ConstString & _locale, const Tags & _platformTag )
 	{
-		TVectorPackage packages;
+		VectorPackages packages;
 
         for( const PackagePtr & package : m_packages )
 		{

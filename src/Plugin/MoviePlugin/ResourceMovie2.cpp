@@ -213,7 +213,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::hasComposition( const ConstString & _name ) const
     {
-        TMapCompositions::const_iterator it_found = m_compositions.find( _name );
+        MapCompositions::const_iterator it_found = m_compositions.find( _name );
 
         if( it_found == m_compositions.end() )
         {
@@ -225,7 +225,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float ResourceMovie2::getCompositionDuration( const ConstString & _name ) const
     {
-        TMapCompositions::const_iterator it_found = m_compositions.find( _name );
+        MapCompositions::const_iterator it_found = m_compositions.find( _name );
 
         if( it_found == m_compositions.end() )
         {
@@ -239,7 +239,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float ResourceMovie2::getCompositionFrameDuration( const ConstString & _name ) const
     {
-        TMapCompositions::const_iterator it_found = m_compositions.find( _name );
+        MapCompositions::const_iterator it_found = m_compositions.find( _name );
 
         if( it_found == m_compositions.end() )
         {
@@ -281,7 +281,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceMovie2Composition * ResourceMovie2::getCompositionDesc( const ConstString & _name ) const
     {
-        TMapCompositions::const_iterator it_found = m_compositions.find( _name );
+        MapCompositions::const_iterator it_found = m_compositions.find( _name );
 
         if( it_found == m_compositions.end() )
         {

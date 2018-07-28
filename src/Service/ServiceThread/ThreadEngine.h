@@ -72,11 +72,11 @@ namespace Mengine
 			bool complete;
 		};
 
-        typedef Vector<ThreadTaskDesc> TVectorThreadTaskDesc;
-        TVectorThreadTaskDesc m_tasks;
+        typedef Vector<ThreadTaskDesc> VectorThreadTaskDesc;
+        VectorThreadTaskDesc m_tasks;
 				
-		typedef Vector<ThreadQueuePtr> TVectorThreadQueues;
-		TVectorThreadQueues m_threadQueues;
+		typedef Vector<ThreadQueuePtr> VectorThreadQueues;
+		VectorThreadQueues m_threadQueues;
 
 		FactoryPtr m_factoryThreadQueue;
         FactoryPtr m_factoryThreadJob;
@@ -88,8 +88,8 @@ namespace Mengine
 			ThreadIdentityInterfacePtr identity;
 		};
 
-		typedef Vector<ThreadDesc> TVectorThreads;
-		TVectorThreads m_threads;
+		typedef Vector<ThreadDesc> VectorThreadDescs;
+		VectorThreadDescs m_threads;
 
 		bool m_avaliable;
 	};

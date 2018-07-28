@@ -213,7 +213,7 @@ namespace Mengine
         m_fixedContentResolution = CONFIG_VALUE( "Game", "FixedContentResolution", true );
         m_fixedDisplayResolution = CONFIG_VALUE( "Game", "FixedDisplayResolution", true );
 
-        TVectorAspectRatioViewports aspectRatioViewports;
+        VectorAspectRatioViewports aspectRatioViewports;
         CONFIG_VALUES( "Game", "AspectRatioViewport", aspectRatioViewports );
 
         for( const AspectRatioViewports & viewports : aspectRatioViewports )
@@ -641,9 +641,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static void s_printChildren2( const NodePtr & _node, uint32_t _tab )
     {
-        TListNodeChild & children = _node->getChildren();
+        IntrusiveSlugListNodeChild & children = _node->getChildren();
 
-        for( TSlugChild it( children ); it.eof() == false; )
+        for( IntrusiveSlugChild it( children ); it.eof() == false; )
         {
             NodePtr child = *it;
 
@@ -1512,7 +1512,7 @@ namespace Mengine
 
         float minimal_aspect = 100.f;
 
-        for( TMapAspectRatioViewports::const_iterator
+        for( MapAspectRatioViewports::const_iterator
             it = m_aspectRatioViewports.begin(),
             it_found = m_aspectRatioViewports.end();
             it != it_found;

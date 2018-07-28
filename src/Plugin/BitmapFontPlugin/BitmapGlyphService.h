@@ -27,8 +27,8 @@ namespace Mengine
 	protected:
 		FactoryPtr m_factoryTextGlyph;
 
-		typedef Map<ConstString, BitmapGlyphPtr> TMapBitmapGlyph;
-		TMapBitmapGlyph m_glyphs;
+		typedef Map<ConstString, BitmapGlyphPtr> MapBitmapGlyph;
+		MapBitmapGlyph m_glyphs;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<BitmapGlyphService> BitmapGlyphServicePtr;

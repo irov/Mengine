@@ -485,7 +485,7 @@ namespace Mengine
 			return false;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -531,7 +531,7 @@ namespace Mengine
 			return false;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
         for( const MovieLayer & layer : layers )
 		{
@@ -587,7 +587,7 @@ namespace Mengine
 			return false;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -641,7 +641,7 @@ namespace Mengine
 			return true;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -712,7 +712,7 @@ namespace Mengine
 			return;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -758,7 +758,7 @@ namespace Mengine
 			return true;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -807,7 +807,7 @@ namespace Mengine
 			return true;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -857,7 +857,7 @@ namespace Mengine
 			return true;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -891,7 +891,7 @@ namespace Mengine
 
 		m_nodies.resize( maxLayerIndex );
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -1065,7 +1065,7 @@ namespace Mengine
 			}
 		}
 
-		for( TVectorNodies::reverse_iterator
+		for( VectorNodies::reverse_iterator
 			it = m_nodies.rbegin(),
 			it_end = m_nodies.rend();
 		it != it_end;
@@ -1124,7 +1124,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::compileLayers_()
 	{
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
         for( const MovieLayer & layer : layers )
 		{
@@ -2014,15 +2014,12 @@ namespace Mengine
 	{	
 		this->removeParent_();
 
-		//const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
-		//this->releaseLayers_();
-
 		m_resourceMovie.release();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateCamera_()
 	{
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -2043,7 +2040,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Movie::setupSceneEffect_()
 	{
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
         Node * parent = Helper::findParentNodeT<Layer *>( this );
 
@@ -2081,7 +2078,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::enableSceneEffect_( bool _value )
 	{
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 		
         for( const MovieLayer & l : layers )
 		{
@@ -2102,7 +2099,7 @@ namespace Mengine
 	{
 		//float frameDuration = m_resourceMovie->getFrameDuration();
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -2142,7 +2139,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::removeParent_()
 	{
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -2174,7 +2171,7 @@ namespace Mengine
 			return;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
         for( const MovieLayer & layer : layers )
 		{
@@ -2223,7 +2220,7 @@ namespace Mengine
 			return;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -2264,7 +2261,7 @@ namespace Mengine
 			return;
 		}
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -2299,7 +2296,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateStartInterval_()
 	{
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -2521,7 +2518,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateForwardFrame_( float _time, uint32_t _beginFrame, uint32_t _endFrame )
 	{
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
         for( const MovieLayer & layer : layers )
 		{
@@ -2735,7 +2732,7 @@ namespace Mengine
 	{
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{
@@ -2801,7 +2798,7 @@ namespace Mengine
 	{
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
         for( const MovieLayer & layer : layers )
 		{
@@ -2919,7 +2916,7 @@ namespace Mengine
 	{
 		float frameDuration = m_resourceMovie->getFrameDuration();
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
         for( const MovieLayer & layer : layers )
 		{
@@ -3090,7 +3087,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateLoop_( bool _value )
 	{
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
         for( const MovieLayer & layer : layers )
 		{
@@ -3127,7 +3124,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Movie::updateAnimationSpeedFactor_( float _factor )
 	{
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
         for( const MovieLayer & layer : layers )
 		{
@@ -3151,7 +3148,7 @@ namespace Mengine
 	{
 		(void)_enumerator;
 
-		const TVectorMovieLayers & layers = m_resourceMovie->getLayers();
+		const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
 		for( const MovieLayer & layer : layers )
 		{

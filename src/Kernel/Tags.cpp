@@ -20,7 +20,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Tags::hasTag( const ConstString & _tag ) const
 	{
-		TVectorConstString::const_iterator it_found = std::find( m_tags.begin(), m_tags.end(), _tag );
+		VectorConstString::const_iterator it_found = std::find( m_tags.begin(), m_tags.end(), _tag );
 
 		return it_found != m_tags.end();
 	}
@@ -43,7 +43,7 @@ namespace Mengine
 		m_tags.clear();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorConstString & Tags::getTags() const
+	const VectorConstString & Tags::getTags() const
 	{
 		return m_tags;
 	}

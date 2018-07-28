@@ -45,9 +45,9 @@ namespace Mengine
 
         const ConstString & getTextID() const;
 
-        void setTextFormatArgs( const TVectorString & _args );
+        void setTextFormatArgs( const VectorString & _args );
         void removeTextFormatArgs();
-        const TVectorString & getTextFormatArgs() const;
+        const VectorString & getTextFormatArgs() const;
 
     public:
 		uint32_t getTextExpectedArgument() const;
@@ -126,13 +126,13 @@ namespace Mengine
         void invalidateVertices_() const;
 
         void updateVerticesWM_( const TextFontInterfacePtr & _font );
-        void updateVertexDataWM_( TVectorRenderVertex2D & _outVertex, const TVectorRenderVertex2D & _fromVertex );
+        void updateVertexDataWM_( VectorRenderVertex2D & _outVertex, const VectorRenderVertex2D & _fromVertex );
 
         void invalidateVerticesWM_() const;
 
-        inline const TVectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font );
+        inline const VectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font );
 
-        void updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, TVectorRenderVertex2D& _vertexData );
+        void updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, VectorRenderVertex2D& _vertexData );
 
     protected:
         void invalidateTextLines() const;
@@ -140,8 +140,8 @@ namespace Mengine
         inline bool isInvalidateTextLines() const;
 
         void updateTextLines_() const;
-        void updateTextLinesMaxCount_( TVectorTextLines & _textLines ) const;
-        void updateTextLinesDimension_( const TextFontInterfacePtr & _font, const TVectorTextLines & _textLines, mt::vec2f & _size, uint32_t & _charCount, uint32_t & _layoutCount ) const;
+        void updateTextLinesMaxCount_( VectorTextLines & _textLines ) const;
+        void updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f & _size, uint32_t & _charCount, uint32_t & _layoutCount ) const;
 
     protected:
         inline const TextEntryInterfacePtr & getTextEntry() const;
@@ -170,7 +170,7 @@ namespace Mengine
         ConstString m_key;
 
         mutable TextEntryInterfacePtr m_textEntry;
-        mutable TVectorString m_textFormatArgs;
+        mutable VectorString m_textFormatArgs;
 
         ETextHorizontAlign m_horizontAlign;
         ETextVerticalAlign m_verticalAlign;
@@ -202,13 +202,13 @@ namespace Mengine
 
         bool m_debugMode;
         
-        typedef Vector<TextLine> TVectorTextLine;
-        typedef Vector<TVectorTextLine> TVectorTextLine2;
-        typedef Vector<TVectorTextLine2> TVectorTextLineLayout;
-        mutable TVectorTextLineLayout m_layouts;
+        typedef Vector<TextLine> VectorTextLine;
+        typedef Vector<VectorTextLine> VectorTextLine2;
+        typedef Vector<VectorTextLine2> VectorTextLineLayout;
+        mutable VectorTextLineLayout m_layouts;
 
-        typedef Vector<float> TVectorTextLineAlignOffset;
-        mutable TVectorTextLineAlignOffset m_textLineAlignOffsets;
+        typedef Vector<float> VectorTextLineAlignOffset;
+        mutable VectorTextLineAlignOffset m_textLineAlignOffsets;
 
         struct Chunk
         {
@@ -218,13 +218,13 @@ namespace Mengine
             RenderMaterialInterfacePtr material;
         };
 
-        typedef Vector<Chunk> TVectorChunks;
-        TVectorChunks m_chunks;
+        typedef Vector<Chunk> VectorChunks;
+        VectorChunks m_chunks;
 
-        mutable TVectorCacheFonts m_cacheFonts;
+        mutable VectorCacheFonts m_cacheFonts;
 
-        TVectorRenderVertex2D m_vertexDataText;
-        TVectorRenderVertex2D m_vertexDataTextWM;
+        VectorRenderVertex2D m_vertexDataText;
+        VectorRenderVertex2D m_vertexDataTextWM;
 
         mutable bool m_invalidateVertices;
         mutable bool m_invalidateVerticesWM;
@@ -233,13 +233,13 @@ namespace Mengine
         mutable bool m_invalidateTextEntry;
 
     protected:
-        const TVectorTextLineLayout & getTextLayots() const;
-        float getHorizontAlignOffset_( const TVectorTextLine2 & _lines ) const;
+        const VectorTextLineLayout & getTextLayots() const;
+        float getHorizontAlignOffset_( const VectorTextLine2 & _lines ) const;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TextField> TextFieldPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const TVectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font )
+    inline const VectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font )
     {
         if( m_invalidateVerticesWM == true )
         {

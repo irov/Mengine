@@ -71,14 +71,14 @@ namespace Mengine
             const AstralaxEmitterContainer2 * container;
         };
 
-        typedef Map<uint32_t, AstralaxEmitterContainerDesc> TMapHashEmitterContainers;
-        TMapHashEmitterContainers m_containers;
+        typedef Map<uint32_t, AstralaxEmitterContainerDesc> MapHashEmitterContainers;
+        MapHashEmitterContainers m_containers;
 
         int m_materialCount;
         const RenderMaterialStage * m_stages[256];
 
-        typedef Vector<ResourceImagePtr> TVectorAtlasDesc;
-        TVectorAtlasDesc m_atlases;
+        typedef Vector<ResourceImagePtr> VectorAtlasDesc;
+        VectorAtlasDesc m_atlases;
 
         struct MagicStatesCache
         {
@@ -88,8 +88,8 @@ namespace Mengine
             RenderFragmentShaderInterfacePtr fragmentShader;
         };
 
-        typedef Vector<MagicStatesCache> TVectorRenderFragmentShaderCache;
-        TVectorRenderFragmentShaderCache m_renderFragmentShaderCache;
+        typedef Vector<MagicStatesCache> VectorRenderFragmentShaderCache;
+        VectorRenderFragmentShaderCache m_renderFragmentShaderCache;
 
     protected:
         void createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m );

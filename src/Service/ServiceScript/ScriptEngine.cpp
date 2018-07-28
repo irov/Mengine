@@ -108,8 +108,8 @@ namespace Mengine
             }
 
         protected:
-            typedef std::vector<uint32_t> TVectorStackMsgCount;
-            TVectorStackMsgCount m_counts;
+            typedef Vector<uint32_t> VectorStackMsgCount;
+            VectorStackMsgCount m_counts;
         };
     }
     //////////////////////////////////////////////////////////////////////////
@@ -245,7 +245,7 @@ namespace Mengine
         this->removeGlobalModule( "Menge" );
         this->removeGlobalModule( "_PYTHON_VERSION" );
 
-        for( TMapScriptWrapper::iterator
+        for( MapScriptWrapper::iterator
             it = m_scriptWrapper.begin(),
             it_end = m_scriptWrapper.end();
             it != it_end;
@@ -286,14 +286,14 @@ namespace Mengine
         return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptEngine::addModulePath( const ConstString & _pak, const TVectorScriptModulePack & _modules )
+    void ScriptEngine::addModulePath( const ConstString & _pak, const VectorScriptModulePack & _modules )
     {
         if( _modules.empty() == true )
         {
             return;
         }
 
-        TVectorConstString pathes;
+        VectorConstString pathes;
 
         for( const ScriptModulePack & pak : _modules )
         {
@@ -350,7 +350,7 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptEngine::removeModulePath( const ConstString & _pack, const TVectorScriptModulePack & _modules )
+    void ScriptEngine::removeModulePath( const ConstString & _pack, const VectorScriptModulePack & _modules )
     {
         m_moduleFinder->removeModulePath( _pack );
 
@@ -628,7 +628,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::removeWrapper( const ConstString& _type )
     {
-        TMapScriptWrapper::iterator it_found = m_scriptWrapper.find( _type );
+        MapScriptWrapper::iterator it_found = m_scriptWrapper.find( _type );
 
         if( it_found == m_scriptWrapper.end() )
         {
@@ -643,7 +643,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////|
     const ScriptWrapperInterfacePtr & ScriptEngine::getWrapper( const ConstString & _type ) const
     {
-        TMapScriptWrapper::const_iterator it_found = m_scriptWrapper.find( _type );
+        MapScriptWrapper::const_iterator it_found = m_scriptWrapper.find( _type );
 
         if( it_found == m_scriptWrapper.end() )
         {

@@ -75,7 +75,7 @@ namespace Mengine
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; )
+			for( IntrusiveSlugChild it(m_children); it.eof() == false; )
 			{
 				NodePtr children = (*it);
 
@@ -129,7 +129,7 @@ namespace Mengine
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; )
+			for( IntrusiveSlugChild it(m_children); it.eof() == false; )
 			{
 				NodePtr children = *it;
 
@@ -197,13 +197,13 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::destroyAllChild()
 	{
-		for( TSlugChild it( m_children ); it.eof() == false; )
+		for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
 		{
 			NodePtr node = (*it);
 
 			node->setParent_( nullptr );
 
-			TListNodeChild::iterator it_node( node );
+			IntrusiveSlugListNodeChild::iterator it_node( node );
 
 			it.next_shuffle();
 
@@ -213,11 +213,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeChildren()
 	{
-		for( TSlugChild it(m_children); it.eof() == false; )
+		for( IntrusiveSlugChild it(m_children); it.eof() == false; )
 		{
             NodePtr node = (*it);
 
-			TListNodeChild::iterator it_node( node );
+			IntrusiveSlugListNodeChild::iterator it_node( node );
 
 			it.next_shuffle();
 
@@ -306,7 +306,7 @@ namespace Mengine
 			return false;
 		}
 
-		TListNodeChild::iterator it_found = 
+		IntrusiveSlugListNodeChild::iterator it_found = 
 			stdex::helper::intrusive_find( m_children.begin(), m_children.end(), _after );
 
 		if( it_found == m_children.end() )
@@ -323,7 +323,7 @@ namespace Mengine
         return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-    void Node::addChild_( TListNodeChild::iterator _insert, const NodePtr & _node )
+    void Node::addChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node )
 	{
 		NodePtr parent = _node->getParent();
 
@@ -380,14 +380,14 @@ namespace Mengine
         stdex::intrusive_this_release( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::insertChild_( TListNodeChild::iterator _insert, const NodePtr & _node )
+	void Node::insertChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node )
 	{
 		m_children.insert( _insert, _node );
 	}
 	//////////////////////////////////////////////////////////////////////////
     void Node::eraseChild_( const NodePtr & _node )
 	{
-        TListNodeChild::iterator it_node(_node, true);
+        IntrusiveSlugListNodeChild::iterator it_node(_node, true);
 		m_children.erase( it_node );
 	}
 	//////////////////////////////////////////////////////////////////////////
@@ -405,7 +405,7 @@ namespace Mengine
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; )
+			for( IntrusiveSlugChild it(m_children); it.eof() == false; )
 			{
                 NodePtr children = (*it);
 
@@ -501,7 +501,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     NodePtr Node::findChild( const ConstString & _name, bool _recursion ) const
 	{
-		TListNodeChild::const_iterator it_found =
+		IntrusiveSlugListNodeChild::const_iterator it_found =
 			s_node_find_child( m_children, &Identity::getName, _name );
 
 		if( it_found != m_children.end() )
@@ -513,7 +513,7 @@ namespace Mengine
 
 		if( _recursion == true )
 		{
-			for( TListNodeChild::const_iterator 
+			for( IntrusiveSlugListNodeChild::const_iterator 
 				it = m_children.begin(), 
 				it_end = m_children.end();
 			it != it_end;
@@ -561,9 +561,9 @@ namespace Mengine
             return nullptr;
         }
         
-        TListNodeChild & parent_children = parent->getChildren();
+        IntrusiveSlugListNodeChild & parent_children = parent->getChildren();
 
-        TListNodeChild::iterator it_found =
+        IntrusiveSlugListNodeChild::iterator it_found =
             stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), this );
 
         if( it_found == parent_children.begin() )
@@ -587,9 +587,9 @@ namespace Mengine
             return nullptr;
         }
 
-        TListNodeChild & parent_children = parent->getChildren();
+        IntrusiveSlugListNodeChild & parent_children = parent->getChildren();
 
-        TListNodeChild::iterator it_found =
+        IntrusiveSlugListNodeChild::iterator it_found =
             stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), this );
 
         it_found++;
@@ -606,7 +606,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool Node::hasChild( const ConstString & _name, bool _recursive ) const
 	{
-		TListNodeChild::const_iterator it_found =
+		IntrusiveSlugListNodeChild::const_iterator it_found =
 			s_node_find_child( m_children, &Identity::getName, _name );
 
 		if( it_found != m_children.end() )
@@ -616,7 +616,7 @@ namespace Mengine
 
 		if( _recursive == true )
 		{		
-			for( TListNodeChild::const_iterator 
+			for( IntrusiveSlugListNodeChild::const_iterator 
 				it = m_children.begin(), 
 				it_end = m_children.end();
 			it != it_end;
@@ -687,7 +687,7 @@ namespace Mengine
 	{
         stdex::intrusive_this_acquire( this );
 
-		for( TSlugChild it(m_children); it.eof() == false; )
+		for( IntrusiveSlugChild it(m_children); it.eof() == false; )
 		{
 			NodePtr node = *it;
 
@@ -744,7 +744,7 @@ namespace Mengine
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; )
+			for( IntrusiveSlugChild it(m_children); it.eof() == false; )
 			{
 				NodePtr children = *it;
 
@@ -810,7 +810,7 @@ namespace Mengine
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; )
+			for( IntrusiveSlugChild it(m_children); it.eof() == false; )
 			{
 				NodePtr node = (*it);
 
@@ -1088,7 +1088,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::renderChild_( const RenderContext * _state )
 	{
-		for( TListNodeChild::unslug_iterator
+		for( IntrusiveSlugListNodeChild::unslug_iterator
 			it = m_children.ubegin(),
 			it_end = m_children.uend();
 		it != it_end;
@@ -1142,7 +1142,7 @@ namespace Mengine
 		}
 		else
 		{
-			for( TSlugChild it(m_children); it.eof() == false; )
+			for( IntrusiveSlugChild it(m_children); it.eof() == false; )
 			{
                 NodePtr node = (*it);
 

@@ -84,7 +84,7 @@ namespace Mengine
 			}
 			else
 			{
-				for( TSlugTransformation3D it( m_relationChild ); it.eof() == false; )
+				for( IntrusiveSlugTransformation3D it( m_relationChild ); it.eof() == false; )
 				{
                     Transformation3DPtr transform = *it;
 

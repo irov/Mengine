@@ -7,7 +7,7 @@
 
 namespace Mengine
 {
-	typedef Vector<ConstString> TVectorConstString;
+	typedef Vector<ConstString> VectorConstString;
 
 	class Tags
 	{
@@ -23,7 +23,7 @@ namespace Mengine
 		void clear();
 
 	public:
-		const TVectorConstString & getTags() const;
+		const VectorConstString & getTags() const;
 		
 	public:
 		void swap( Tags & _tags );
@@ -32,7 +32,7 @@ namespace Mengine
 		String to_str() const;
 
 	protected:		
-		TVectorConstString m_tags;
+		VectorConstString m_tags;
 	};
 }
 

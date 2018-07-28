@@ -75,7 +75,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ModuleService::runModule( const ConstString & _name )
 	{
-		TVectorModules::iterator it_exist = 
+		VectorModules::iterator it_exist = 
 			std::find_if( m_modules.begin(), m_modules.end(), FModuleFinder(_name) );
 
 		if( it_exist != m_modules.end() )
@@ -83,7 +83,7 @@ namespace Mengine
 			return false;
 		}
 				
-		TMapModuleFactory::iterator it_found = m_moduleFactory.find( _name );
+		MapModuleFactory::iterator it_found = m_moduleFactory.find( _name );
 
 		if( it_found == m_moduleFactory.end() )
 		{
@@ -111,7 +111,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ModuleService::stopModule( const ConstString & _name )
 	{
-		TVectorModules::iterator it_found = 
+		VectorModules::iterator it_found = 
 			std::find_if( m_modules.begin(), m_modules.end(), FModuleFinder(_name) );
 
 		if( it_found == m_modules.end() )
@@ -150,7 +150,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::message( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params )
+	void ModuleService::message( const ConstString & _moduleName, const ConstString & _messageName, const MapWParams & _params )
 	{
 		const ModuleInterfacePtr & module = this->findModule( _moduleName );
 
@@ -162,7 +162,7 @@ namespace Mengine
 		module->message( _messageName, _params );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::messageAll( const ConstString & _messageName, const TMapWParams & _params )
+	void ModuleService::messageAll( const ConstString & _messageName, const MapWParams & _params )
 	{
         for( const ModuleInterfacePtr & module : m_modules )
 		{

@@ -81,7 +81,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t TextLine::getCharsDataSize() const
     {
-        TVectorCharData::size_type charsDataSize = m_charsData.size();
+        VectorCharData::size_type charsDataSize = m_charsData.size();
 
         return (uint32_t)charsDataSize;
     }
@@ -91,7 +91,7 @@ namespace Mengine
         return m_length;
     }
     //////////////////////////////////////////////////////////////////////////
-    const TVectorCharData & TextLine::getCharsData() const
+    const VectorCharData & TextLine::getCharsData() const
     {
         return m_charsData;
     }

@@ -10,10 +10,10 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	typedef Vector<mt::vec2f> TVectorPoints;
-	typedef Vector<uint32_t> TVectorIndices;
+	typedef Vector<mt::vec2f> VectorPoints;
+	typedef Vector<uint32_t> VectorIndices;
     //////////////////////////////////////////////////////////////////////////
-	typedef Vector<class Polygon> TVectorPolygon;
+	typedef Vector<class Polygon> VectorPolygon;
 	//////////////////////////////////////////////////////////////////////////
 	class Polygon
 	{
@@ -40,8 +40,8 @@ namespace Mengine
 		void correct();
 
 	public:
-		bool triangulate( TVectorPoints & _result ) const;
-		bool triangulate_indices( TVectorIndices & _result ) const;
+		bool triangulate( VectorPoints & _result ) const;
+		bool triangulate_indices( VectorIndices & _result ) const;
 
 		void mul_wm( Polygon & _out, const mt::mat4f & _wm ) const;
 		void mul_wm_and_transpose( Polygon & _out, const mt::mat4f & _wm, const mt::vec2f & _pos ) const;
@@ -75,10 +75,10 @@ namespace Mengine
 		bool intersects( const mt::box2f & _box ) const;
 
 	public:
-		bool intersection( const Polygon & _polygon, TVectorPolygon & _out ) const;
+		bool intersection( const Polygon & _polygon, VectorPolygon & _out ) const;
 
 	public:
-		bool difference( const Polygon & _polygon, TVectorPolygon & _out ) const;
+		bool difference( const Polygon & _polygon, VectorPolygon & _out ) const;
 
 	public:
 		void * m_impl;

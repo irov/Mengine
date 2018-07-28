@@ -32,7 +32,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileEngine::_finalizeService()
     {
-        for( TMapFileSystem::reverse_iterator
+        for( MapFileSystem::reverse_iterator
             it = m_fileSystemMap.rbegin(),
             it_end = m_fileSystemMap.rend();
             it != it_end;
@@ -105,7 +105,7 @@ namespace Mengine
 			, _type.c_str()
 			);
         
-		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _name );
+		MapFileSystem::iterator it_find = m_fileSystemMap.find( _name );
 
 		if( it_find != m_fileSystemMap.end() )
 		{
@@ -157,7 +157,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     bool FileEngine::unmountFileGroup( const ConstString & _name )
 	{
-		TMapFileSystem::iterator it_find = m_fileSystemMap.find( _name );
+		MapFileSystem::iterator it_find = m_fileSystemMap.find( _name );
 		if( it_find == m_fileSystemMap.end() )
 		{
 			LOGGER_ERROR("FileEngine::unmountFileGroup '%s' not mount"
@@ -183,7 +183,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileEngine::hasFileGroup( const ConstString& _name, FileGroupInterfacePtr * _fileGroup ) const
     {
-		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _name );
+		MapFileSystem::const_iterator it_find = m_fileSystemMap.find( _name );
 
 		if( it_find == m_fileSystemMap.end() )
 		{
@@ -200,7 +200,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	const FileGroupInterfacePtr & FileEngine::getFileGroup( const ConstString & _name ) const
 	{
-		TMapFileSystem::const_iterator it_find = m_fileSystemMap.find( _name );
+		MapFileSystem::const_iterator it_find = m_fileSystemMap.find( _name );
 
 		if( it_find == m_fileSystemMap.end() )
 		{

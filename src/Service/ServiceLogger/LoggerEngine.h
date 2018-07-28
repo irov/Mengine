@@ -36,8 +36,8 @@ namespace Mengine
 		EMessageLevel m_verboseLevel;
         uint32_t m_verboseFlag;
 
-		typedef Vector<LoggerInterfacePtr> TVectorLoggers;
-		TVectorLoggers m_loggers;
+		typedef Vector<LoggerInterfacePtr> VectorLoggers;
+		VectorLoggers m_loggers;
 
         uint32_t m_countMessage[LM_MAX];
 	};

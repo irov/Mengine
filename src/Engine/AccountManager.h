@@ -82,8 +82,8 @@ namespace Mengine
         
         FileGroupInterfacePtr m_fileGroup;
 				
-		typedef Map<ConstString, AccountInterfacePtr> TMapAccounts;
-		TMapAccounts m_accounts;
+		typedef Map<ConstString, AccountInterfacePtr> MapAccounts;
+		MapAccounts m_accounts;
 		
 		FactoryPtr m_factoryAccounts;
 

@@ -159,7 +159,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t ResourceAnimation::getSequenceCount() const
 	{
-        TVectorAnimationSequence::size_type sequenceCount = m_sequence.size();
+        VectorAnimationSequence::size_type sequenceCount = m_sequence.size();
 
 		return (uint32_t)sequenceCount;
 	}
@@ -232,12 +232,12 @@ namespace Mengine
 		return lastIndex;	
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimation::setSequences( const TVectorAnimationSequence & _sequence )
+	void ResourceAnimation::setSequences( const VectorAnimationSequence & _sequence )
 	{
 		m_sequence = _sequence;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const TVectorAnimationSequence & ResourceAnimation::getSequences() const
+	const VectorAnimationSequence & ResourceAnimation::getSequences() const
 	{
 		return m_sequence;
 	}

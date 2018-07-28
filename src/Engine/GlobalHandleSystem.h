@@ -53,9 +53,9 @@ namespace Mengine
 		bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
 	protected:      		
-		typedef Vector<GlobalHandlerDesc> TVectorGlobalHandler;
-		TVectorGlobalHandler m_handlers;
-		TVectorGlobalHandler m_handlersAdd;
+		typedef Vector<GlobalHandlerDesc> VectorGlobalHandler;
+		VectorGlobalHandler m_handlers;
+		VectorGlobalHandler m_handlersAdd;
 
         uint32_t m_handlersEnumerator;
 	};

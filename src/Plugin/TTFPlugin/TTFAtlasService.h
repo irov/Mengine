@@ -13,8 +13,8 @@ namespace Mengine
 		uint32_t dimension;
         uint32_t channel;
 
-		typedef Vector<uint32_t> TVectorFreeIndices;
-		TVectorFreeIndices indices;
+		typedef Vector<uint32_t> VectorFreeIndices;
+		VectorFreeIndices indices;
         
 		RenderTextureInterfacePtr texture;
 	};
@@ -37,9 +37,9 @@ namespace Mengine
 		TTFAtlas * getAtlas_( uint32_t _index, uint32_t _channel );
 
 	public:
-		typedef Vector<TTFAtlas> TVectorAtlases;
-		typedef Vector<TVectorAtlases> TVectorAtlasess;
-		TVectorAtlasess m_atlasess[3];
+		typedef Vector<TTFAtlas> VectorAtlases;
+		typedef Vector<VectorAtlases> VectorAtlasess;
+		VectorAtlasess m_atlasess[3];
         
 		uint32_t m_minAtlasPow;
 		uint32_t m_maxAtlasPow;

@@ -37,11 +37,11 @@ namespace Mengine
 		ConstString m_threadName;
 		uint32_t m_packetSize;
 
-		typedef List<ThreadTaskInterfacePtr> TVectorThreadTask;
-		TVectorThreadTask m_threadTasks;
+		typedef List<ThreadTaskInterfacePtr> ListThreadTask;
+		ListThreadTask m_threadTasks;
 
-		typedef Vector<ThreadTaskInterfacePtr> TVectorCurrentThreadTask;
-		TVectorCurrentThreadTask m_currentTasks;
+		typedef Vector<ThreadTaskInterfacePtr> VectorThreadTasks;
+		VectorThreadTasks m_currentTasks;
 
 		FactoryPtr m_factoryPoolTaskPacket;
 

@@ -38,7 +38,7 @@ namespace Mengine
 			ValueFollowerLinear<float> follower;
 		};
 
-		typedef Vector<Element> TMixerElement;
-		TMixerElement m_mixer;
+		typedef Vector<Element> VectorMixerElement;
+		VectorMixerElement m_mixer;
 	};
 }

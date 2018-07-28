@@ -21,10 +21,10 @@ namespace Mengine
 	struct ModulePathes
 	{
 		ConstString pack;
-		TVectorConstString pathes;
+		VectorConstString pathes;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef Vector<ModulePathes> TVectorModulePathes;
+	typedef Vector<ModulePathes> VectorModulePathes;
 	//////////////////////////////////////////////////////////////////////////
     class ScriptModuleFinder
 		: public Servant
@@ -41,7 +41,7 @@ namespace Mengine
 		void setEmbed( PyObject * _embed );
 
     public:
-        void addModulePath( const ConstString & _pack, const TVectorConstString & _pathes );
+        void addModulePath( const ConstString & _pack, const VectorConstString & _pathes );
 		void removeModulePath( const ConstString & _pack );
 
     public:
@@ -64,7 +64,7 @@ namespace Mengine
 
 		ArchivatorInterfacePtr m_archivator;
 
-        TVectorModulePathes m_modulePaths;    
+        VectorModulePathes m_modulePaths;    
 
 		FactoryPtr m_factoryScriptModuleLoaderCode;
 
@@ -72,8 +72,8 @@ namespace Mengine
 		FactoryPtr m_factoryScriptModuleLoaderSource;
 #endif
 
-		typedef Vector<ScriptModuleLoaderPtr> TMapModuleLoaders;
-		TMapModuleLoaders m_loaders;
+		typedef Vector<ScriptModuleLoaderPtr> MapModuleLoaders;
+		MapModuleLoaders m_loaders;
 
 		mutable PathString m_cacheFullPath;
     };

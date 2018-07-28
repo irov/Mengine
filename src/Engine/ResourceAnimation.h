@@ -16,7 +16,7 @@ namespace Mengine
 		ConstString resourceName;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef Vector<AnimationSequence> TVectorAnimationSequence;
+	typedef Vector<AnimationSequence> VectorAnimationSequence;
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceAnimation
 		: public Resource
@@ -36,8 +36,8 @@ namespace Mengine
 		float getSequenceDuration() const;
 
 	public:
-		void setSequences( const TVectorAnimationSequence & _sequence );
-		const TVectorAnimationSequence & getSequences() const;
+		void setSequences( const VectorAnimationSequence & _sequence );
+		const VectorAnimationSequence & getSequences() const;
 
 	protected:
 		bool _loader( const Metabuf::Metadata * _parser ) override;
@@ -50,7 +50,7 @@ namespace Mengine
 		bool _isValid() const override;
 
 	protected:		
-		TVectorAnimationSequence m_sequence;
+		VectorAnimationSequence m_sequence;
 
 		float m_duration;
 	};

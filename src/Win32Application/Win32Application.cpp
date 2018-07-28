@@ -508,7 +508,7 @@ namespace Mengine
 		DWORD dwConversionFlags = 0;
 #   endif
 
-		TVectorString args;
+		VectorString args;
 		for( int i = 1; i != pNumArgs; ++i )
 		{
 			PWSTR arg = szArglist[i];
@@ -670,7 +670,7 @@ namespace Mengine
 
 		LOGGER_WARNING("initialize Application...");
 	
-		TVectorWString plugins;
+		VectorWString plugins;
 		CONFIG_VALUES("Plugins", "Name", plugins);
 
         for( const WString & pluginName : plugins )
@@ -729,7 +729,7 @@ namespace Mengine
 
 		if( devplugins == true && nodevplugins == false )
 		{
-			TVectorWString devPlugins;
+			VectorWString devPlugins;
 			CONFIG_VALUES("DevPlugins", "Name", devPlugins);
 
             for( const WString & pluginName : devPlugins )
@@ -749,7 +749,7 @@ namespace Mengine
         LOGGER_WARNING( "Modules Run..."
         );
 
-		TVectorString modules;
+		VectorString modules;
 		CONFIG_VALUES("Modules", "Name", modules);
 
         for( const String & moduleName : modules )

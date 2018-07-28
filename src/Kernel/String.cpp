@@ -12,7 +12,7 @@ namespace Mengine
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		void split( TVectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delim )
+		void split( VectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delim )
 		{
 			uint32_t numSplits = 0;
 			String::size_type start = 0;
@@ -105,12 +105,12 @@ namespace Mengine
 			} while( pos != T::npos );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void split2( TVectorString & _outStrings, const String& _str, bool _trimDelims, const TVectorString & _delims )
+		void split2( VectorString & _outStrings, const String& _str, bool _trimDelims, const VectorString & _delims )
 		{
 			t_split2( _outStrings, _str, _trimDelims, _delims );
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void u32split2( TVectorU32String & _outStrings, const U32String& _str, bool _trimDelims, const TVectorU32String & _delims )
+		void u32split2( VectorU32String & _outStrings, const U32String& _str, bool _trimDelims, const VectorU32String & _delims )
 		{
 			t_split2( _outStrings, _str, _trimDelims, _delims );
 		}
@@ -164,12 +164,12 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool u32split3( TVectorU32String & _outStrings, const U32String& _str, const TVectorU32String & _delims )
+        bool u32split3( VectorU32String & _outStrings, const U32String& _str, const VectorU32String & _delims )
         {
             return t_split3( _outStrings, _str, _delims );
         }
 		//////////////////////////////////////////////////////////////////////////
-		void wsplit( TVectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims )
+		void wsplit( VectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims )
 		{
 			uint32_t numSplits = 0;
 			WString::size_type start = 0;
@@ -200,7 +200,7 @@ namespace Mengine
 			} while (pos != WString::npos);
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void join( const String& _delim, const TVectorString& _stringArray, String & _outString )
+		void join( const String& _delim, const VectorString& _stringArray, String & _outString )
 		{
 			if( _stringArray.empty() == true )
 			{
@@ -208,13 +208,13 @@ namespace Mengine
 				return;
 			}
 
-			TVectorString::const_iterator it = _stringArray.begin();
+			VectorString::const_iterator it = _stringArray.begin();
 
 			_outString = *it;
 
 			++it;
 
-			for( TVectorString::const_iterator it_end = _stringArray.end();
+			for( VectorString::const_iterator it_end = _stringArray.end();
 				it != it_end;
 				++it )
 			{

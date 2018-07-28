@@ -41,7 +41,7 @@ namespace Mengine
         }
 #endif
 
-        TVectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
+        VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
 
         if( it_found == m_receivers.end() )
         {
@@ -70,7 +70,7 @@ namespace Mengine
         }
 #endif
 
-        TVectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
+        VectorEventReceivers::iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
 
         if( it_found == m_receivers.end() )
         {
@@ -91,7 +91,7 @@ namespace Mengine
         }
 #endif
 
-        TVectorEventReceivers::const_iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
+        VectorEventReceivers::const_iterator it_found = std::find_if( m_receivers.begin(), m_receivers.end(), FEventReciver( _event ) );
 
         if( it_found == m_receivers.end() )
         {

@@ -215,7 +215,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	InputHandlerInterfacePtr GlobalHandleSystem::removeGlobalHandler( uint32_t _id )
 	{
-		TVectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), FFindHandler( _id ) );
+		VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), FFindHandler( _id ) );
 
 		if( it_found_add != m_handlersAdd.end() )
         {
@@ -227,7 +227,7 @@ namespace Mengine
             return handler;
         }
 
-		TVectorGlobalHandler::iterator it_found = std::find_if( m_handlers.begin(), m_handlers.end(), FFindHandler( _id ) );
+		VectorGlobalHandler::iterator it_found = std::find_if( m_handlers.begin(), m_handlers.end(), FFindHandler( _id ) );
 
 		if( it_found == m_handlers.end() )
         {
@@ -248,7 +248,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool GlobalHandleSystem::enableGlobalHandler( uint32_t _id, bool _value )
 	{
-		TVectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), FFindHandler( _id ) );
+		VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), FFindHandler( _id ) );
 
 		if( it_found_add != m_handlersAdd.end() )
 		{
@@ -257,7 +257,7 @@ namespace Mengine
 			return true;
 		}
 
-		TVectorGlobalHandler::iterator it_found = std::find_if( m_handlers.begin(), m_handlers.end(), FFindHandler( _id ) );
+		VectorGlobalHandler::iterator it_found = std::find_if( m_handlers.begin(), m_handlers.end(), FFindHandler( _id ) );
 
 		if( it_found == m_handlers.end() )
 		{
@@ -275,7 +275,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void GlobalHandleSystem::update()
 	{
-		TVectorGlobalHandler::iterator it_mouse_erase = std::remove_if( m_handlers.begin(), m_handlers.end(), FDeadHandler() );
+		VectorGlobalHandler::iterator it_mouse_erase = std::remove_if( m_handlers.begin(), m_handlers.end(), FDeadHandler() );
 		m_handlers.erase( it_mouse_erase, m_handlers.end() );
 
 		m_handlers.insert( m_handlers.begin(), m_handlersAdd.begin(), m_handlersAdd.end() );

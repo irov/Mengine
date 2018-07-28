@@ -86,7 +86,7 @@ namespace Mengine
         return m_dataflowType;
     }
     //////////////////////////////////////////////////////////////////////////
-    const TVectorMovieLayers & ResourceMovie::getLayers() const
+    const VectorMovieLayers & ResourceMovie::getLayers() const
     {
         return m_layers;
     }

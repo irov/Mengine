@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskPostMessage::initialize( const String & _url, const TMapParams & _params )
+	bool ThreadTaskPostMessage::initialize( const String & _url, const MapParams & _params )
 	{
 		m_url = _url;
 		m_params = _params;
@@ -31,7 +31,7 @@ namespace Mengine
 		struct curl_httppost * lastptr = nullptr;
 		curl_httppost * formpost = nullptr;
 
-		for( TMapParams::const_iterator
+		for( MapParams::const_iterator
 			it = m_params.begin(),
 			it_end = m_params.end();
 			it != it_end;
@@ -57,7 +57,7 @@ namespace Mengine
         {
             std::stringstream ss;
 
-            for( TMapParams::const_iterator
+            for( MapParams::const_iterator
                 it = m_params.begin(),
                 it_end = m_params.end();
                 it != it_end;

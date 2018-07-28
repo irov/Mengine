@@ -36,8 +36,8 @@ namespace Mengine
         typedef stdex::template_pool<ConstStringHolderMemory, 1024> PoolConstStringHolderMemory;
         PoolConstStringHolderMemory m_poolHolderStringMemory;
 
-        typedef stdex::intrusive_list<ConstStringHolder> TIntrusiveListConstStringHolder;
-        TIntrusiveListConstStringHolder m_holdres[4096];
+        typedef stdex::intrusive_list<ConstStringHolder> IntrusiveListConstStringHolder;
+        IntrusiveListConstStringHolder m_holdres[4096];
 
 		struct InternalHolder
 		{
@@ -51,6 +51,6 @@ namespace Mengine
         ConstStringHolder * testHolder_( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash );
 		ConstStringHolder * stringizeHolder_(const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash);
 		void addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash );
-        TIntrusiveListConstStringHolder & getList_( ConstStringHolder::hash_type _hash );
+        IntrusiveListConstStringHolder & getList_( ConstStringHolder::hash_type _hash );
 	};
 }

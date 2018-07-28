@@ -80,9 +80,9 @@ namespace Mengine
 	{
         (void)_time;
 
-		TVectorTextureGrave::iterator it_erase = std::remove_if( m_textures.begin(), m_textures.end(), FGraveyardDead( _timing ) );
+		VectorTextureGrave::iterator it_erase = std::remove_if( m_textures.begin(), m_textures.end(), FGraveyardDead( _timing ) );
 
-		for( TVectorTextureGrave::iterator
+		for( VectorTextureGrave::iterator
 			it = it_erase,
 			it_end = m_textures.end();
 		it != it_end;
@@ -187,7 +187,7 @@ namespace Mengine
 			return nullptr;
 		}					
 
-		TVectorTextureGrave::iterator it_found = std::find_if( m_textures.begin(), m_textures.end(), FGraveyardFind( _fileGroup, _filePath ) );
+		VectorTextureGrave::iterator it_found = std::find_if( m_textures.begin(), m_textures.end(), FGraveyardFind( _fileGroup, _filePath ) );
 
 		if( it_found == m_textures.end() )
 		{

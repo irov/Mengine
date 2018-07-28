@@ -48,7 +48,7 @@ namespace Mengine
 		uint32_t m_count;
 		float m_graveyardTime;
 
-		typedef Vector<RenderTextureGraveEntry> TVectorTextureGrave;
-		TVectorTextureGrave m_textures;
+		typedef Vector<RenderTextureGraveEntry> VectorTextureGrave;
+		VectorTextureGrave m_textures;
 	};
 }

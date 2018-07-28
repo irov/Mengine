@@ -178,7 +178,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ThreadEngine::destroyThread( const ConstString & _threadName )
 	{
-		for( TVectorThreads::iterator
+		for( VectorThreadDescs::iterator
 			it = m_threads.begin(),
 			it_end = m_threads.end();
 		it != it_end;
@@ -254,7 +254,7 @@ namespace Mengine
 	{
 		_task->cancel();
 
-        for( TVectorThreadTaskDesc::const_iterator
+        for( VectorThreadTaskDesc::const_iterator
             it = m_tasks.begin(),
             it_end = m_tasks.end();
             it != it_end;
@@ -336,7 +336,7 @@ namespace Mengine
 	{
 		_queue->cancel();
 
-		for( TVectorThreadQueues::iterator
+		for( VectorThreadQueues::iterator
 			it = m_threadQueues.begin(),
 			it_end = m_threadQueues.end();
 			it != it_end;
@@ -394,7 +394,7 @@ namespace Mengine
 			}
 		}
 
-		for( TVectorThreadTaskDesc::size_type 
+		for( VectorThreadTaskDesc::size_type 
 			it_task = 0,
 			it_task_end = m_tasks.size();
 		it_task != it_task_end;
@@ -416,7 +416,7 @@ namespace Mengine
 			}
 		}
 
-		for( TVectorThreadQueues::size_type 
+		for( VectorThreadQueues::size_type 
 			it_task = 0,
 			it_task_end = m_threadQueues.size();
 		it_task != it_task_end;

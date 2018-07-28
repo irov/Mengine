@@ -82,9 +82,9 @@ namespace Mengine
 		float m_speedFactor;
 		float m_time;
 
-		typedef Vector<ScheduleEventDesc> TListSchedules;
-		TListSchedules m_schedules;
-		TListSchedules m_schedulesAdd;
+		typedef Vector<ScheduleEventDesc> ListSchedules;
+		ListSchedules m_schedules;
+		ListSchedules m_schedulesAdd;
 
 		uint32_t m_enumerator;
 

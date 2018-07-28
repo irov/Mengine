@@ -35,7 +35,7 @@ namespace Mengine
 		RenderTextureInterfacePtr texture;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef Vector<CharData> TVectorCharData;
+	typedef Vector<CharData> VectorCharData;
     //////////////////////////////////////////////////////////////////////////
 	class TextLine
 	{
@@ -47,7 +47,7 @@ namespace Mengine
         bool initialize( uint32_t _fontId, const TextFontInterfacePtr & _font, const U32String & _text );
 
 	public:
-		const TVectorCharData & getCharsData() const;
+		const VectorCharData & getCharsData() const;
 
     public:
 		float getLength() const;
@@ -64,7 +64,7 @@ namespace Mengine
 		mutable float m_charOffset;
 		mutable float m_offset;
 		
-		mutable TVectorCharData m_charsData;
+		mutable VectorCharData m_charsData;
 		mutable bool m_invalidateTextLine;
 	};
 };

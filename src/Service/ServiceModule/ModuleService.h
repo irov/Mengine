@@ -36,17 +36,17 @@ namespace Mengine
 		void render( const RenderContext * _state, uint32_t _debugMask ) override;
 
 	public:
-		void message( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params ) override;
-		void messageAll( const ConstString & _messageName, const TMapWParams & _params ) override;
+		void message( const ConstString & _moduleName, const ConstString & _messageName, const MapWParams & _params ) override;
+		void messageAll( const ConstString & _messageName, const MapWParams & _params ) override;
 
 	protected:
 		const ModuleInterfacePtr & findModule( const ConstString & _moduleName ) const;
 
     protected:
-		typedef Map<ConstString, ModuleFactoryInterfacePtr> TMapModuleFactory;
-        TMapModuleFactory m_moduleFactory;
+		typedef Map<ConstString, ModuleFactoryInterfacePtr> MapModuleFactory;
+        MapModuleFactory m_moduleFactory;
 
-		typedef Vector<ModuleInterfacePtr> TVectorModules;
-		TVectorModules m_modules;
+		typedef Vector<ModuleInterfacePtr> VectorModules;
+		VectorModules m_modules;
     };
 }

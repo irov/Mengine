@@ -73,7 +73,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Landscape2D::_render( const RenderContext * _state )
 	{
-		TVectorLandscape2DElements & elementsWM = this->getElementWM();
+		VectorLandscape2DElements & elementsWM = this->getElementWM();
 
 		mt::vec2f min_screen( 0.f, 0.f );
 		mt::vec2f max_screen( 1.f, 1.f );
@@ -152,7 +152,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Landscape2D::setBackParts( const TVectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height)
+	void Landscape2D::setBackParts( const VectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height)
 	{
         this->recompile( [this, _images]() {m_images = _images; } );
 
@@ -164,7 +164,7 @@ namespace Mengine
         uint32_t i = 0;
         uint32_t j = 0;
 
-        TVectorResourceImage::size_type elementCount = m_images.size();
+        VectorResourceImage::size_type elementCount = m_images.size();
         m_elements.reserve( elementCount );
         m_verticesWM.resize( elementCount * 4 );
 

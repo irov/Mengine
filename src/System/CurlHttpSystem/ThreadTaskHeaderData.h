@@ -12,17 +12,17 @@ namespace Mengine
         ThreadTaskHeaderData();
 		
 	public:
-		bool initialize( const String & _url, const TVectorString & _headers, const String & _data );
+		bool initialize( const String & _url, const VectorString & _headers, const String & _data );
 
 	protected:
         void _onCURL( CURL * _curl ) override;
 
 	protected:		
 		String m_url;
-        TVectorString m_headers;
+        VectorString m_headers;
         String m_data;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef stdex::intrusive_ptr<ThreadTaskHeaderData> ThreadTaskHeaderDataPtr;
+	typedef IntrusivePtr<ThreadTaskHeaderData> ThreadTaskHeaderDataPtr;
 	//////////////////////////////////////////////////////////////////////////
 }

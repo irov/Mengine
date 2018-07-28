@@ -97,11 +97,11 @@ namespace Mengine
 
         FilePath m_filePath;
 
-		typedef Vector<ResourcePtr> TVectorResources;
-		TVectorResources m_resources;
+		typedef Vector<ResourcePtr> VectorResources;
+		VectorResources m_resources;
 
-        typedef Map<ConstString, ResourceMovie2Composition> TMapCompositions;
-        TMapCompositions m_compositions;
+        typedef Map<ConstString, ResourceMovie2Composition> MapCompositions;
+        MapCompositions m_compositions;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<ResourceMovie2, Resource> ResourceMovie2Ptr;

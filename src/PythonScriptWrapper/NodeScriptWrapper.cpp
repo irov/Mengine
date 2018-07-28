@@ -197,7 +197,7 @@ namespace Mengine
 
             size_t args_count = pybind::tuple_size( _args );
 
-            TVectorString cs_args;
+            VectorString cs_args;
             cs_args.reserve( args_count );
 
             for( uint32_t it = 0; it != args_count; ++it )
@@ -257,11 +257,11 @@ namespace Mengine
             return pybind::ret_true();
         }
         //////////////////////////////////////////////////////////////////////////
-        TVectorWString s_TextField_getTextFormatArgs( TextField * _textField )
+        VectorWString s_TextField_getTextFormatArgs( TextField * _textField )
         {
-            TVectorWString ws_args;
+            VectorWString ws_args;
 
-            const TVectorString & str_args = _textField->getTextFormatArgs();
+            const VectorString & str_args = _textField->getTextFormatArgs();
 
             size_t args_count = str_args.size();
             ws_args.reserve( args_count );
@@ -2132,15 +2132,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         pybind::list s_Node_getAllChildren( pybind::kernel_interface * _kernel, Node * _node )
         {
-            TListNodeChild & children = _node->getChildren();
+            IntrusiveSlugListNodeChild & children = _node->getChildren();
 
-            TListNodeChild::size_type size = children.size();
+            IntrusiveSlugListNodeChild::size_type size = children.size();
 
             pybind::list py_children( _kernel, size );
 
             uint32_t index = 0;
 
-            for( TSlugChild it( children ); it.eof() == false; )
+            for( IntrusiveSlugChild it( children ); it.eof() == false; )
             {
                 Node * child = *it;
 

@@ -37,7 +37,7 @@ namespace Mengine
 	//typedef ConstString FilePath; //UTF8
 	typedef stdex::array_string<MENGINE_MAX_PATH> PathString;
 
-    typedef Vector<FilePath> TVectorFilePath;
+    typedef Vector<FilePath> VectorFilePath;
 
 	namespace Helper
 	{

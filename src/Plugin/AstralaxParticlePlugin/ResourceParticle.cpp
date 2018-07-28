@@ -46,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t ResourceParticle::getResourceImageCount() const
     {
-        TVectorResourceImages::size_type resourceImageCount = m_resourceImages.size();
+        VectorResourceImages::size_type resourceImageCount = m_resourceImages.size();
 
         return (uint32_t)resourceImageCount;
     }

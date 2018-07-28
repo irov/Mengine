@@ -386,7 +386,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSubComposition( const ConstString & _name ) const
     {
-        TMapSubCompositions::const_iterator it_found = m_subCompositions.find( _name );
+        MapSubCompositions::const_iterator it_found = m_subCompositions.find( _name );
 
         if( it_found == m_subCompositions.end() )
         {
@@ -398,7 +398,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Movie2SubCompositionPtr & Movie2::getSubComposition( const ConstString & _name ) const
     {
-        TMapSubCompositions::const_iterator it_found = m_subCompositions.find( _name );
+        MapSubCompositions::const_iterator it_found = m_subCompositions.find( _name );
 
         if( it_found == m_subCompositions.end() )
         {
@@ -1330,7 +1330,7 @@ namespace Mengine
         c.projection = _projection;
         c.viewport = _viewport;
 
-        TMapCamera::iterator it_found = m_cameras.insert( std::make_pair( _name, c ) ).first;
+        MapCameras::iterator it_found = m_cameras.insert( std::make_pair( _name, c ) ).first;
 
         Camera * new_camera = &it_found->second;
 
@@ -1339,7 +1339,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::removeCamera( const ConstString & _name )
     {
-        TMapCamera::iterator it_found = m_cameras.find( _name );
+        MapCameras::iterator it_found = m_cameras.find( _name );
 
         if( it_found == m_cameras.end() )
         {
@@ -1358,7 +1358,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasCamera( const ConstString & _name ) const
     {
-        TMapCamera::const_iterator it_found = m_cameras.find( _name );
+        MapCameras::const_iterator it_found = m_cameras.find( _name );
 
         if( it_found == m_cameras.end() )
         {
@@ -1370,7 +1370,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::getCamera( const ConstString & _name, Camera ** _camera )
     {
-        TMapCamera::iterator it_found = m_cameras.find( _name );
+        MapCameras::iterator it_found = m_cameras.find( _name );
 
         if( it_found == m_cameras.end() )
         {
@@ -2040,7 +2040,7 @@ namespace Mengine
     {
         _surface->release();
 
-        TVectorSurfaces::iterator it_found = std::find( m_surfaces.begin(), m_surfaces.end(), _surface );
+        VectorSurfaces::iterator it_found = std::find( m_surfaces.begin(), m_surfaces.end(), _surface );
 
         m_surfaces.erase( it_found );
     }
@@ -2052,7 +2052,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ShapeQuadFixedPtr & Movie2::getSprite_( uint32_t _index ) const
     {
-        TMapSprites::const_iterator it_found = m_sprites.find( _index );
+        MapSprites::const_iterator it_found = m_sprites.find( _index );
 
         if( it_found == m_sprites.end() )
         {
@@ -2066,7 +2066,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ShapeQuadFixedPtr & Movie2::findSprite( const ConstString & _name ) const
     {
-        for( const TMapSprites::value_type & value : m_sprites )
+        for( const MapSprites::value_type & value : m_sprites )
         {
             const ShapeQuadFixedPtr & sprite = value.second;
 
@@ -2083,7 +2083,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSprite( const ConstString & _name ) const
     {
-        for( const TMapSprites::value_type & value : m_sprites )
+        for( const MapSprites::value_type & value : m_sprites )
         {
             const ShapeQuadFixedPtr & sprite = value.second;
 
@@ -2105,7 +2105,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const NodePtr & Movie2::getParticle_( uint32_t _index ) const
     {
-        TMapParticleEmitter2s::const_iterator it_found = m_particleEmitters.find( _index );
+        MapParticleEmitter2s::const_iterator it_found = m_particleEmitters.find( _index );
 
         if( it_found == m_particleEmitters.end() )
         {
@@ -2119,7 +2119,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const NodePtr & Movie2::findParticle( const ConstString & _name ) const
     {
-        for( const TMapParticleEmitter2s::value_type & value : m_particleEmitters )
+        for( const MapParticleEmitter2s::value_type & value : m_particleEmitters )
         {
             const NodePtr & particle = value.second;
 
@@ -2136,7 +2136,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasParticle( const ConstString & _name ) const
     {
-        for( const TMapParticleEmitter2s::value_type & value : m_particleEmitters )
+        for( const MapParticleEmitter2s::value_type & value : m_particleEmitters )
         {
             const NodePtr & particle = value.second;
 
@@ -2158,7 +2158,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Movie2SlotPtr & Movie2::getSlot_( uint32_t _index ) const
     {
-        TMapSlots::const_iterator it_found = m_slots.find( _index );
+        MapSlots::const_iterator it_found = m_slots.find( _index );
 
         if( it_found == m_slots.end() )
         {
@@ -2172,7 +2172,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Movie2SlotPtr & Movie2::findSlot( const ConstString & _name ) const
     {
-        for( const TMapSlots::value_type & value : m_slots )
+        for( const MapSlots::value_type & value : m_slots )
         {
             const Movie2SlotPtr & slot = value.second;
 
@@ -2189,7 +2189,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSlot( const ConstString & _name ) const
     {
-        for( const TMapSlots::value_type & value : m_slots )
+        for( const MapSlots::value_type & value : m_slots )
         {
             const Movie2SlotPtr & slot = value.second;
 
@@ -2206,7 +2206,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::visitSlots( VisitorMovie2Layer * _visitor )
     {
-        for( const TMapSlots::value_type & value : m_slots )
+        for( const MapSlots::value_type & value : m_slots )
         {
             _visitor->visitMovieLayer( this, value.first, value.second );
         }
@@ -2219,7 +2219,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const HotSpotPolygonPtr & Movie2::getSocket_( uint32_t _index ) const
     {
-        TMapSockets::const_iterator it_found = m_sockets.find( _index );
+        MapSockets::const_iterator it_found = m_sockets.find( _index );
 
         if( it_found == m_sockets.end() )
         {
@@ -2233,7 +2233,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const HotSpotPolygonPtr & Movie2::findSocket( const ConstString & _name ) const
     {
-        for( const TMapSockets::value_type & value : m_sockets )
+        for( const MapSockets::value_type & value : m_sockets )
         {
             const HotSpotPolygonPtr & socket = value.second;
 
@@ -2250,7 +2250,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSocket( const ConstString & _name ) const
     {
-        for( const TMapSockets::value_type & value : m_sockets )
+        for( const MapSockets::value_type & value : m_sockets )
         {
             const HotSpotPolygonPtr & socket = value.second;
 
@@ -2267,7 +2267,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::visitSockets( VisitorMovie2Layer * _visitor )
     {
-        for( const TMapSockets::value_type & value : m_sockets )
+        for( const MapSockets::value_type & value : m_sockets )
         {
             _visitor->visitMovieLayer( this, value.first, value.second );
         }
@@ -2280,7 +2280,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const TextFieldPtr & Movie2::getText_( uint32_t _index ) const
     {
-        TMapTexts::const_iterator it_found = m_texts.find( _index );
+        MapTexts::const_iterator it_found = m_texts.find( _index );
 
         if( it_found == m_texts.end() )
         {
@@ -2294,7 +2294,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const TextFieldPtr & Movie2::findText( const ConstString & _name ) const
     {
-        for( const TMapTexts::value_type & value : m_texts )
+        for( const MapTexts::value_type & value : m_texts )
         {
             const TextFieldPtr & text = value.second;
 
@@ -2311,7 +2311,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasText( const ConstString & _name ) const
     {
-        for( const TMapTexts::value_type & value : m_texts )
+        for( const MapTexts::value_type & value : m_texts )
         {
             const TextFieldPtr & text = value.second;
 
@@ -2328,7 +2328,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::visitTexts( VisitorMovie2Layer * _visitor )
     {
-        for( const TMapTexts::value_type & value : m_texts )
+        for( const MapTexts::value_type & value : m_texts )
         {
             _visitor->visitMovieLayer( this, value.first, value.second );
         }

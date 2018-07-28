@@ -248,7 +248,7 @@ namespace Mengine
 
         m_bufferConstString.resize( stringCount );
 
-        for( TVectorConstString::iterator
+        for( VectorConstString::iterator
             it = m_bufferConstString.begin(),
             it_end = m_bufferConstString.end();
         it != it_end;

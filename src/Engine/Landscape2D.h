@@ -18,7 +18,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	typedef Vector<ResourceImagePtr> TVectorResourceImage;
+	typedef Vector<ResourceImagePtr> VectorResourceImage;
     //////////////////////////////////////////////////////////////////////////
 	struct RenderMaterial;
 	struct RenderMaterialGroup;    
@@ -33,7 +33,7 @@ namespace Mengine
 		mt::box2f bb_wm;
 	};
     //////////////////////////////////////////////////////////////////////////
-	typedef Vector<Landscape2DElement> TVectorLandscape2DElements;
+	typedef Vector<Landscape2DElement> VectorLandscape2DElements;
     //////////////////////////////////////////////////////////////////////////
 	class Landscape2D 
 		: public Node
@@ -44,7 +44,7 @@ namespace Mengine
 		~Landscape2D() override;
 
 	public:
-		void setBackParts( const TVectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height );
+		void setBackParts( const VectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height );
 
 	protected:
 		bool _compile() override;
@@ -62,7 +62,7 @@ namespace Mengine
 
 	protected:
 		inline const RenderVertex2D * getVerticesWM( uint32_t _offset );
-		inline TVectorLandscape2DElements & getElementWM();
+		inline VectorLandscape2DElements & getElementWM();
 		       
 	protected:
 		bool compileResources_();
@@ -71,16 +71,16 @@ namespace Mengine
 		RenderMaterialInterfacePtr _updateMaterial() const override;
 
 	protected:
-		TVectorResourceImage m_images;
+		VectorResourceImage m_images;
 
 		uint32_t m_elementCountX;
 		uint32_t m_elementCountY;
 		float m_elementWidth;
 		float m_elementHeight;
 
-		TVectorLandscape2DElements m_elements;
+		VectorLandscape2DElements m_elements;
 				
-		TVectorRenderVertex2D m_verticesWM;
+		VectorRenderVertex2D m_verticesWM;
 		
 		mutable bool m_invalidateVerticesWM;
 		mutable bool m_invalidateElementWM;
@@ -96,7 +96,7 @@ namespace Mengine
 		return &m_verticesWM[_offset];
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline TVectorLandscape2DElements & Landscape2D::getElementWM()
+	inline VectorLandscape2DElements & Landscape2D::getElementWM()
 	{
 		if( m_invalidateElementWM == true )
 		{

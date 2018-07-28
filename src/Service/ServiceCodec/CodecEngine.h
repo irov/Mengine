@@ -42,13 +42,13 @@ namespace Mengine
         const ConstString & findCodecType( const FilePath & _path ) const override;
 
 	protected:
-		typedef Map<ConstString, DecoderFactoryInterfacePtr> TMapDecoderSystem;
-		TMapDecoderSystem m_mapDecoderSystem;
+		typedef Map<ConstString, DecoderFactoryInterfacePtr> MapDecoderSystem;
+		MapDecoderSystem m_mapDecoderSystem;
 
-		typedef Map<ConstString, EncoderFactoryInterfacePtr> TMapEncoderSystem;
-		TMapEncoderSystem m_mapEncoderSystem;
+		typedef Map<ConstString, EncoderFactoryInterfacePtr> MapEncoderSystem;
+		MapEncoderSystem m_mapEncoderSystem;
 
-		typedef Map<String, ConstString> TMapCodecTypes;
-		TMapCodecTypes m_codecTypes;
+		typedef Map<String, ConstString> MapCodecTypes;
+		MapCodecTypes m_codecTypes;
 	};
 }

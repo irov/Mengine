@@ -20,7 +20,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void MixerValue::setValue( const ConstString & _type, float _value, float _from, bool _force )
 	{
-		for( TMixerElement::iterator
+		for( VectorMixerElement::iterator
 			it = m_mixer.begin(),
 			it_end = m_mixer.end();
 		it != it_end;
@@ -60,7 +60,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	float MixerValue::getValue( const ConstString & _type ) const
 	{
-		for( TMixerElement::const_iterator
+		for( VectorMixerElement::const_iterator
 			it = m_mixer.begin(),
 			it_end = m_mixer.end();
 		it != it_end;
@@ -85,7 +85,7 @@ namespace Mengine
 	{
 		float volume = 1.f;
 
-		for( TMixerElement::const_iterator
+		for( VectorMixerElement::const_iterator
 			it = m_mixer.begin(),
 			it_end = m_mixer.end();
 		it != it_end;
@@ -105,7 +105,7 @@ namespace Mengine
 	{
 		bool process = false;
 
-		for( TMixerElement::iterator
+		for( VectorMixerElement::iterator
 			it = m_mixer.begin(),
 			it_end = m_mixer.end();
 		it != it_end;

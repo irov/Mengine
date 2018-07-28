@@ -23,7 +23,7 @@ namespace Mengine
         void visitFactories( VisitorFactoryService * _visitor ) override;
 
     protected:
-        typedef Vector<const Factory *> TVectorFactories;
-        TVectorFactories m_factories;
+        typedef Vector<const Factory *> VectorFactories;
+        VectorFactories m_factories;
     };
 }

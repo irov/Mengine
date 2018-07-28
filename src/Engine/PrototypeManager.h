@@ -43,7 +43,7 @@ namespace Mengine
             PrototypeGeneratorInterfacePtr generator;
         };
 
-        typedef Vector<CategoryKey> TVectorPrototypes;
-        TVectorPrototypes m_prototypes[MENGINE_PROTOTYPE_HASH_SIZE];
+        typedef Vector<CategoryKey> VectorPrototypes;
+        VectorPrototypes m_prototypes[MENGINE_PROTOTYPE_HASH_SIZE];
 	};
 }

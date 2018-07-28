@@ -97,38 +97,38 @@ namespace Mengine
 		ETextureFilter m_defaultTextureFilterMagnification;
 		ETextureFilter m_defaultTextureFilterMinification;		
 
-		typedef Map<ConstString, const RenderMaterialStage *> TMapRenderStage;
-        TMapRenderStage m_materialStageIndexer;
+		typedef Map<ConstString, const RenderMaterialStage *> MapRenderStage;
+        MapRenderStage m_materialStageIndexer;
 
 		RenderMaterialStage m_stages[MENGINE_MATERIAL_RENDER_STAGE_MAX];
 		uint32_t m_stageCount;
 
-		typedef Vector<RenderMaterial *> TVectorRenderMaterial;
-		TVectorRenderMaterial m_materials[MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE];
+		typedef Vector<RenderMaterial *> VectorRenderMaterial;
+		VectorRenderMaterial m_materials[MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE];
 
 		FactoryPtr m_factoryMaterial;
 
-		typedef Vector<uint32_t> TVectorMaterialIndexer;
-		TVectorMaterialIndexer m_materialEnumerators;
+		typedef Vector<uint32_t> VectorMaterialIndexer;
+		VectorMaterialIndexer m_materialEnumerators;
 
 		RenderMaterialInterfacePtr m_debugMaterial;
 
-		typedef Map<ConstString, RenderVertexShaderInterfacePtr> TMapRenderVertexShaders;
-		TMapRenderVertexShaders m_vertexShaders;
+		typedef Map<ConstString, RenderVertexShaderInterfacePtr> MapRenderVertexShaders;
+		MapRenderVertexShaders m_vertexShaders;
 
-		typedef Map<ConstString, RenderFragmentShaderInterfacePtr> TMapRenderFragmentShaders;
-		TMapRenderFragmentShaders m_fragmentShaders;
+		typedef Map<ConstString, RenderFragmentShaderInterfacePtr> MapRenderFragmentShaders;
+		MapRenderFragmentShaders m_fragmentShaders;
 
-        typedef Map<ConstString, RenderVertexAttributeInterfacePtr> TMapRenderVertexAttributes;
-        TMapRenderVertexAttributes m_vertexAttributes;
+        typedef Map<ConstString, RenderVertexAttributeInterfacePtr> MapRenderVertexAttributes;
+        MapRenderVertexAttributes m_vertexAttributes;
 
-		typedef Map<ConstString, RenderProgramInterfacePtr> TMapRenderPrograms;
-		TMapRenderPrograms m_programs;
+		typedef Map<ConstString, RenderProgramInterfacePtr> MapRenderPrograms;
+		MapRenderPrograms m_programs;
 
         const RenderMaterialStage * m_defaultStages[EM_MATERIAL_COUNT];
 		ConstString m_defaultStageNames[EM_MATERIAL_COUNT];
 
-        typedef Map<ConstString, EMaterial> TMapDefaultStagesName;
-        TMapDefaultStagesName m_defaultStagesEnum;
+        typedef Map<ConstString, EMaterial> MapDefaultStagesName;
+        MapDefaultStagesName m_defaultStagesEnum;
     };
 }

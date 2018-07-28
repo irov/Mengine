@@ -361,7 +361,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorString & _values )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorString & _values )
         {
             uint32_t count = _ini.countSettingValues( _section, _key );
 
@@ -375,7 +375,7 @@ namespace Mengine
             return true;
         }
 		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorConstString & _values )
+		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values )
 		{
 			uint32_t count = _ini.countSettingValues( _section, _key );
 
@@ -391,7 +391,7 @@ namespace Mengine
 			return true;
 		}
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorWString & _values )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorWString & _values )
         {
             uint32_t count = _ini.countSettingValues( _section, _key );
 
@@ -408,7 +408,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, TVectorAspectRatioViewports & _values )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values )
         {
             uint32_t count = _ini.countSettingValues( _section, _key );
 
@@ -442,7 +442,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, TMapWParams & _values )
+        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapWParams & _values )
         {
             uint32_t count = _ini.countSettings( _section );
 

@@ -134,15 +134,15 @@ namespace Mengine
 
         FactoryPtr m_factorySoundEmitter;
 
-		typedef Vector<SoundIdentityPtr> TVectorSoundSource;
-		TVectorSoundSource m_soundIdentities;
+		typedef Vector<SoundIdentityPtr> VectorSoundSource;
+		VectorSoundSource m_soundIdentities;
 		
         ThreadJobPtr m_threadJobSoundBufferUpdate;
 
         FactoryPtr m_factoryWorkerTaskSoundBufferUpdate;
 
-		typedef Vector<SoundVolumeProviderInterfacePtr> TVectorSoundVolumeProviders;
-		TVectorSoundVolumeProviders m_soundVolumeProviders;
+		typedef Vector<SoundVolumeProviderInterfacePtr> VectorSoundVolumeProviders;
+		VectorSoundVolumeProviders m_soundVolumeProviders;
 
 		bool m_supportStream;
 		bool m_muted;

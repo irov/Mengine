@@ -83,12 +83,12 @@ namespace Mengine
 		size_t minSize = (size_t)(0);
 		size_t maxSize = (size_t)(-1);
 
-		const TVectorCacheBufferMemory::size_type invalidIndex = (TVectorCacheBufferMemory::size_type)-1;
+		const VectorCacheBufferMemory::size_type invalidIndex = (VectorCacheBufferMemory::size_type)-1;
 		
-		TVectorCacheBufferMemory::size_type minIndex = invalidIndex;
-		TVectorCacheBufferMemory::size_type maxIndex = invalidIndex;
+		VectorCacheBufferMemory::size_type minIndex = invalidIndex;
+		VectorCacheBufferMemory::size_type maxIndex = invalidIndex;
 
-		for( TVectorCacheBufferMemory::size_type
+		for( VectorCacheBufferMemory::size_type
 			it = 0,
 			it_end = m_buffers.size();
 		it != it_end;

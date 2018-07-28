@@ -14,5 +14,5 @@ namespace Mengine
         Viewport viewport;
     };
 
-    typedef Vector<AspectRatioViewports> TVectorAspectRatioViewports;
+    typedef Vector<AspectRatioViewports> VectorAspectRatioViewports;
 }

@@ -20,7 +20,7 @@ namespace Mengine
 		float watch( const String & _tag ) override;
 
 	protected:
-		typedef Map<String, float> TMapWatchers;
-		TMapWatchers m_watchers;
+		typedef Map<String, float> MapWatchers;
+		MapWatchers m_watchers;
 	};
 }

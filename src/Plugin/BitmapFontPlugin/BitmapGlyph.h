@@ -62,8 +62,8 @@ namespace Mengine
 		float m_textureInvWidth;
 		float m_textureInvHeight;
 
-		typedef std::vector<BitmapGlyphChar> TVectorGlyphChar;
-        TVectorGlyphChar m_chars[257];
+		typedef std::vector<BitmapGlyphChar> VectorGlyphChar;
+        VectorGlyphChar m_chars[257];
 
         struct KerningDesc
         {
@@ -72,8 +72,8 @@ namespace Mengine
             float kerning;
         };
 
-        typedef std::vector<KerningDesc> TVectorKerning;
-        TVectorKerning m_kernings[257];
+        typedef std::vector<KerningDesc> VectorKerning;
+        VectorKerning m_kernings[257];
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<BitmapGlyph> BitmapGlyphPtr;

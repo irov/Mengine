@@ -449,7 +449,7 @@ namespace Mengine
     bool BitmapGlyph::existGlyphCode( GlyphCode _code ) const
     {
         uint32_t hash_code = _code % 257;
-        const TVectorGlyphChar & glyps = m_chars[hash_code];
+        const VectorGlyphChar & glyps = m_chars[hash_code];
 
         for( const BitmapGlyphChar & glyph : glyps )
         {			
@@ -467,7 +467,7 @@ namespace Mengine
 	const BitmapGlyphChar * BitmapGlyph::getGlyphChar( GlyphCode _code ) const
 	{
         uint32_t hash_code = _code % 257;
-        const TVectorGlyphChar & glyps = m_chars[hash_code];
+        const VectorGlyphChar & glyps = m_chars[hash_code];
 
         for( const BitmapGlyphChar & glyph : glyps )
         {			
@@ -501,7 +501,7 @@ namespace Mengine
 		glyphChar.size = _size;
 
         uint32_t hash_code = _code % 257;
-        TVectorGlyphChar & glyps = m_chars[hash_code];
+        VectorGlyphChar & glyps = m_chars[hash_code];
 
         glyps.emplace_back( glyphChar );
 
@@ -511,7 +511,7 @@ namespace Mengine
     void BitmapGlyph::addKerning( GlyphCode _char, GlyphCode _next, float _kerning )
     {
         uint32_t hash_code = (_char + _next) % 257;
-        TVectorKerning & kerning = m_kernings[hash_code];
+        VectorKerning & kerning = m_kernings[hash_code];
 
         KerningDesc desc;
         desc.code = _char;
@@ -524,7 +524,7 @@ namespace Mengine
     float BitmapGlyph::getKerning( GlyphCode _char, GlyphCode _next ) const
     {
         uint32_t hash_code = (_char + _next) % 257;
-        const TVectorKerning & kerning = m_kernings[hash_code];
+        const VectorKerning & kerning = m_kernings[hash_code];
 
         for( const KerningDesc & desc : kerning )
         {

@@ -191,8 +191,8 @@ namespace Mengine
         float m_duration;
         float m_frameDuration;
 
-        TVectorRenderVertex2D m_vertices;
-        TVectorRenderIndices m_indices;
+        VectorRenderVertex2D m_vertices;
+        VectorRenderIndices m_indices;
 
         struct Mesh
         {
@@ -205,35 +205,35 @@ namespace Mengine
             RenderMaterialInterfacePtr material;
         };
 
-		typedef Vector<Mesh> TVectorMesh;
-		TVectorMesh m_meshes;
+		typedef Vector<Mesh> VectorMeshes;
+		VectorMeshes m_meshes;
 
-		typedef Map<ConstString, Camera> TMapCamera;
-		TMapCamera m_cameras;
+		typedef Map<ConstString, Camera> MapCameras;
+		MapCameras m_cameras;
 
-        typedef Map<ConstString, Movie2SubCompositionPtr> TMapSubCompositions;
-        TMapSubCompositions m_subCompositions;
+        typedef Map<ConstString, Movie2SubCompositionPtr> MapSubCompositions;
+        MapSubCompositions m_subCompositions;
 
-		typedef Vector<SurfacePtr> TVectorSurfaces;
-		TVectorSurfaces m_surfaces;
+		typedef Vector<SurfacePtr> VectorSurfaces;
+		VectorSurfaces m_surfaces;
 
-        typedef Map<uint32_t, Movie2SlotPtr> TMapSlots;
-        TMapSlots m_slots;
+        typedef Map<uint32_t, Movie2SlotPtr> MapSlots;
+        MapSlots m_slots;
 
-        typedef Map<uint32_t, HotSpotPolygonPtr> TMapSockets;
-        TMapSockets m_sockets;
+        typedef Map<uint32_t, HotSpotPolygonPtr> MapSockets;
+        MapSockets m_sockets;
 
-        typedef Map<uint32_t, TextFieldPtr> TMapTexts;
-        TMapTexts m_texts;
+        typedef Map<uint32_t, TextFieldPtr> MapTexts;
+        MapTexts m_texts;
 
-        typedef Map<uint32_t, ShapeQuadFixedPtr> TMapSprites;
-        TMapSprites m_sprites;
+        typedef Map<uint32_t, ShapeQuadFixedPtr> MapSprites;
+        MapSprites m_sprites;
 
-        typedef Map<uint32_t, NodePtr> TMapParticleEmitter2s;
-        TMapParticleEmitter2s m_particleEmitters;
+        typedef Map<uint32_t, NodePtr> MapParticleEmitter2s;
+        MapParticleEmitter2s m_particleEmitters;
 
-        typedef Vector<MatrixProxyPtr> TVectorMatrixProxies;
-        TVectorMatrixProxies m_matrixProxies;
+        typedef Vector<MatrixProxyPtr> VectorMatrixProxies;
+        VectorMatrixProxies m_matrixProxies;
 
     protected:
         static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud );

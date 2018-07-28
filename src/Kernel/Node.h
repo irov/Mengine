@@ -32,8 +32,8 @@ namespace Mengine
 	
 	typedef IntrusivePtr<class Node> NodePtr;
 
-    typedef stdex::intrusive_slug_list_size_ptr<Node> TListNodeChild;
-	typedef stdex::intrusive_slug_ptr<Node> TSlugChild;
+    typedef stdex::intrusive_slug_list_size_ptr<Node> IntrusiveSlugListNodeChild;
+	typedef stdex::intrusive_slug_ptr<Node> IntrusiveSlugChild;
     
 	class Node
         : public stdex::intrusive_slug_linked_ptr<Node>
@@ -138,8 +138,8 @@ namespace Mengine
 		
 		void destroyAllChild();
 
-		inline TListNodeChild & getChildren();
-		inline const TListNodeChild & getChildren() const;
+		inline IntrusiveSlugListNodeChild & getChildren();
+		inline const IntrusiveSlugListNodeChild & getChildren() const;
 
         NodePtr findChild( const ConstString & _name, bool _recursion ) const;
         NodePtr getSiblingPrev();
@@ -163,12 +163,12 @@ namespace Mengine
 	protected:
 		Node * m_parent;
 
-		TListNodeChild m_children;
+		IntrusiveSlugListNodeChild m_children;
 
 	private:
-		void addChild_( TListNodeChild::iterator _insert, const NodePtr & _node );
+		void addChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node );
 
-		void insertChild_( TListNodeChild::iterator _insert, const NodePtr & _node );
+		void insertChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node );
 		void eraseChild_( const NodePtr & _node );
 
 	public:
@@ -303,12 +303,12 @@ namespace Mengine
 		return m_rendering;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline TListNodeChild & Node::getChildren()
+	inline IntrusiveSlugListNodeChild & Node::getChildren()
 	{
 		return m_children;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	inline const TListNodeChild & Node::getChildren() const
+	inline const IntrusiveSlugListNodeChild & Node::getChildren() const
 	{
 		return m_children;
 	}

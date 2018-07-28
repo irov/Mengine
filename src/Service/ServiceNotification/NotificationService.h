@@ -39,9 +39,9 @@ namespace Mengine
             ObserverCallableInterfacePtr callable;
         };
 
-        typedef Vector<ObserverDesc> TVectorObservers;
-        typedef Map<uint32_t, TVectorObservers> TMapObservers;
-		TMapObservers m_mapObserves;
+        typedef Vector<ObserverDesc> VectorObservers;
+        typedef Map<uint32_t, VectorObservers> MapObservers;
+		MapObservers m_mapObserves;
 
         struct ObserverQueue
         {
@@ -50,9 +50,9 @@ namespace Mengine
             ObserverCallableInterfacePtr callable;
         };
 
-        typedef Vector<ObserverQueue> TVectorObserverQueues;
-        TVectorObserverQueues m_add;
-        TVectorObserverQueues m_remove;
+        typedef Vector<ObserverQueue> VectorObserverQueues;
+        VectorObserverQueues m_add;
+        VectorObserverQueues m_remove;
 
 		uint32_t m_visiting;
 

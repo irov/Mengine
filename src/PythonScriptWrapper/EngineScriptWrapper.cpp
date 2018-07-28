@@ -167,7 +167,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::vector<HotSpotPolygon *> TVectorHotSpotPolygon;
+    typedef Vector<HotSpotPolygon *> VectorHotSpotPolygons;
     //////////////////////////////////////////////////////////////////////////
     class EngineScriptMethod
     {
@@ -1298,7 +1298,7 @@ namespace Mengine
                 ->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_platformEvent( const ConstString & _event, const TMapWParams & _params )
+        void s_platformEvent( const ConstString & _event, const MapWParams & _params )
         {
             PLATFORM_SERVICE()
                 ->onEvent( _event, _params );
@@ -1368,7 +1368,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        HttpRequestID s_postMessage( const String & _url, const TMapParams & _params, const pybind::object & _cb, const pybind::args & _args )
+        HttpRequestID s_postMessage( const String & _url, const MapParams & _params, const pybind::object & _cb, const pybind::args & _args )
         {
             PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject();
 
@@ -1380,7 +1380,7 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        HttpRequestID s_headerData( const String & _url, const TVectorString & _headers, const String & _data, const pybind::object & _cb, const pybind::args & _args )
+        HttpRequestID s_headerData( const String & _url, const VectorString & _headers, const String & _data, const pybind::object & _cb, const pybind::args & _args )
         {
             PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject();
 
@@ -2027,7 +2027,7 @@ namespace Mengine
             return trimetric;
         }
         //////////////////////////////////////////////////////////////////////////
-        Polygon s_hotspotCorrect( HotSpotPolygon * _base, const TVectorHotSpotPolygon & _overlap )
+        Polygon s_hotspotCorrect( HotSpotPolygon * _base, const VectorHotSpotPolygons & _overlap )
         {
             (void)_base;
             //const Polygon & base_polygon = _base->getPolygon();
@@ -2038,7 +2038,7 @@ namespace Mengine
             {
                 const Polygon & overlap_polygon = overlap_hotspot->getPolygon();
 
-                TVectorPolygon output;
+                VectorPolygon output;
                 correct_polygon.intersection( overlap_polygon, output );
 
                 if( output.empty() == true )
@@ -2328,7 +2328,7 @@ namespace Mengine
 
             pybind::list py_list( _kernel );
 
-            const TVectorMovieLayers & layers = resourceMovie->getLayers();
+            const VectorMovieLayers & layers = resourceMovie->getLayers();
 
             for( const MovieLayer & layer : layers )
             {
@@ -2825,7 +2825,7 @@ namespace Mengine
             _affector->stop();
         }
         //////////////////////////////////////////////////////////////////////////		
-        void s_moduleMessage( const ConstString & _moduleName, const ConstString & _messageName, const TMapWParams & _params )
+        void s_moduleMessage( const ConstString & _moduleName, const ConstString & _messageName, const MapWParams & _params )
         {
             MODULE_SERVICE()
                 ->message( _moduleName, _messageName, _params );
@@ -2954,7 +2954,7 @@ namespace Mengine
             const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
                 ->getMousePickerSystem();
 
-            TVectorPickerTraps traps;
+            VectorPickerTraps traps;
             mousePickerSystem->pickTrap( _point, traps );
 
             pybind::list pyret( _kernel );
@@ -3676,7 +3676,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_hasMovieElement2( const ResourceMoviePtr & _resource, const ConstString & _slotName, const ConstString & _typeName )
         {
-            const TVectorMovieLayers & layers = _resource->getLayers();
+            const VectorMovieLayers & layers = _resource->getLayers();
 
             for( const MovieLayer & layer : layers )
             {
@@ -3759,7 +3759,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_visitChild( Node * _node, const pybind::object & _cb )
         {
-            TListNodeChild & child = _node->getChildren();
+            IntrusiveSlugListNodeChild & child = _node->getChildren();
 
             pybind::foreach_t( _cb, child.begin(), child.end() );
         }

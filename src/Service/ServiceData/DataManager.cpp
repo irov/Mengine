@@ -28,7 +28,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     const DataflowInterfacePtr & DataManager::getDataflow( const ConstString & _type ) const
 	{
-		TMapDataflow::const_iterator it_found = m_dataflows.find( _type );
+		MapDataflow::const_iterator it_found = m_dataflows.find( _type );
 
 		if( it_found == m_dataflows.end() )
 		{

@@ -26,7 +26,7 @@ namespace Mengine
 		DataInterfacePtr dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream ) override;
 
 	protected:
-		typedef Map<ConstString, DataflowInterfacePtr> TMapDataflow;
-		TMapDataflow m_dataflows;
+		typedef Map<ConstString, DataflowInterfacePtr> MapDataflow;
+		MapDataflow m_dataflows;
 	};
 }

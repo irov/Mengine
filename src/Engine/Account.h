@@ -73,8 +73,8 @@ namespace Mengine
             pybind::object cb;
         };
 
-		typedef Map<ConstString, Setting> TMapSettings;
-		TMapSettings m_settings;
+		typedef Map<ConstString, Setting> MapSettings;
+		MapSettings m_settings;
 	};
     //////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<Account> AccountPtr;

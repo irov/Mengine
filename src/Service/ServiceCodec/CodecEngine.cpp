@@ -50,7 +50,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	DecoderInterfacePtr CodecEngine::createDecoder( const ConstString& _type )
 	{
-		TMapDecoderSystem::iterator it_found = m_mapDecoderSystem.find( _type );
+		MapDecoderSystem::iterator it_found = m_mapDecoderSystem.find( _type );
 
 		if( it_found == m_mapDecoderSystem.end() )
 		{
@@ -79,7 +79,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EncoderInterfacePtr CodecEngine::createEncoder( const ConstString& _type )
     {
-		TMapEncoderSystem::iterator it_found = m_mapEncoderSystem.find( _type );
+		MapEncoderSystem::iterator it_found = m_mapEncoderSystem.find( _type );
 
 		if( it_found == m_mapEncoderSystem.end() )
 		{
@@ -99,7 +99,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool CodecEngine::registerCodecExt( const String & _ext, const ConstString & _codecType )
 	{
-		TMapCodecTypes::iterator it_found = m_codecTypes.find( _ext );
+		MapCodecTypes::iterator it_found = m_codecTypes.find( _ext );
 
 		if( it_found != m_codecTypes.end() )
 		{
@@ -132,7 +132,7 @@ namespace Mengine
 
 		String ext( dot_find + 1 );
         
-        TMapCodecTypes::const_iterator it_found = m_codecTypes.find( ext );
+        MapCodecTypes::const_iterator it_found = m_codecTypes.find( ext );
 
 		if( it_found == m_codecTypes.end() )
 		{

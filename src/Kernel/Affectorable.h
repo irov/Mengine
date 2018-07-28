@@ -46,10 +46,10 @@ namespace Mengine
 		void updateAffector_( const AffectorPtr & _affector, float _current, float _timing );
         
 	protected:
-		typedef stdex::intrusive_slug_list_size_ptr<Affector> TVectorAffector;
+		typedef stdex::intrusive_slug_list_size_ptr<Affector> VectorAffector;
         typedef stdex::intrusive_slug_ptr<Affector> TSlugAffector;
 
-		TVectorAffector m_affectors;
+		VectorAffector m_affectors;
 
 		float m_angularSpeed;
 		mt::vec3f m_linearSpeed;

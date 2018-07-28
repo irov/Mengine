@@ -37,9 +37,9 @@ namespace Mengine
 #   ifndef MENGINE_MASTER_RELEASE
 		for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
 		{
-			const TMapResource & resources = m_resources[i];
+			const MapResources & resources = m_resources[i];
 
-			for( TMapResource::const_iterator
+			for( MapResources::const_iterator
 				it = resources.begin(),
 				it_end = resources.end();
 			it != it_end;
@@ -66,7 +66,7 @@ namespace Mengine
 
 		for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
 		{
-			TMapResource & resources = m_resources[i];
+			MapResources & resources = m_resources[i];
 
 			resources.clear();
 		}		
@@ -513,20 +513,20 @@ namespace Mengine
 
 		ConstString::hash_type hash = _name.hash();
 		uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
-		TMapResource & resources = m_resources[table];
+		MapResources & resources = m_resources[table];
 
-		std::pair<TMapResource::iterator, bool> insert_result = resources.insert( std::make_pair( _name, entry ) );
+		std::pair<MapResources::iterator, bool> insert_result = resources.insert( std::make_pair( _name, entry ) );
 
-		TResourceCacheKey cache_key = std::make_pair( _category->getName(), _groupName );
+		ResourceCacheKey cache_key = std::make_pair( _category->getName(), _groupName );
 
-		TMapResourceCache::iterator it_cache_found = m_resourcesCache.find( cache_key );
+		MapResourceCache::iterator it_cache_found = m_resourcesCache.find( cache_key );
 
 		if( it_cache_found == m_resourcesCache.end() )
 		{
-			it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( cache_key, TVectorResources() ) );
+			it_cache_found = m_resourcesCache.insert( it_cache_found, std::make_pair( cache_key, VectorResources() ) );
 		}
 		
-		TVectorResources & cahce_resources = it_cache_found->second;
+		VectorResources & cahce_resources = it_cache_found->second;
 
 		cahce_resources.emplace_back( resource );
 
@@ -537,11 +537,11 @@ namespace Mengine
 			const FileGroupInterfacePtr & insert_category = insert_entry.resource->getCategory();
 			const ConstString & insert_group = insert_entry.resource->getGroupName();
 
-			TResourceCacheKey remove_cache_key = std::make_pair( insert_category->getName(), insert_group );
+			ResourceCacheKey remove_cache_key = std::make_pair( insert_category->getName(), insert_group );
 
-			TMapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
+			MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
 
-			TVectorResources::iterator it_remove_found = std::remove(
+			VectorResources::iterator it_remove_found = std::remove(
 				it_remove_cache_found->second.begin(),
 				it_remove_cache_found->second.end(),
 				insert_entry.resource );
@@ -565,7 +565,7 @@ namespace Mengine
 
 		ConstString::hash_type hash = name.hash();
 		uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
-		TMapResource & resources = m_resources[table];
+		MapResources & resources = m_resources[table];
 		if( resources.erase( name ) == false )
 		{
 			return false;
@@ -574,16 +574,16 @@ namespace Mengine
 		const FileGroupInterfacePtr & category = _resource->getCategory();
 		const ConstString & group = _resource->getGroupName();
 
-		TResourceCacheKey remove_cache_key = std::make_pair( category->getName(), group );
+		ResourceCacheKey remove_cache_key = std::make_pair( category->getName(), group );
 
-		TMapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
+		MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
 				
 		if( it_remove_cache_found == m_resourcesCache.end() )
 		{
 			return false;
 		}
 
-		TVectorResources::iterator it_found = std::remove(
+		VectorResources::iterator it_found = std::remove(
 			it_remove_cache_found->second.begin(),
 			it_remove_cache_found->second.end(),
 			_resource );
@@ -779,9 +779,9 @@ namespace Mengine
 	{
 		for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
 		{
-			const TMapResource & resources = m_resources[i];
+			const MapResources & resources = m_resources[i];
 
-			for( TMapResource::const_iterator
+			for( MapResources::const_iterator
 				it = resources.begin(),
 				it_end = resources.end();
 			it != it_end;
@@ -798,16 +798,16 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void ResourceManager::visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, Visitor * _visitor ) const
 	{		
-		TResourceCacheKey cache_key = std::make_pair( _category->getName(), _group );
+		ResourceCacheKey cache_key = std::make_pair( _category->getName(), _group );
 
-		TMapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( cache_key );
+		MapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( cache_key );
 
 		if( it_cache_found == m_resourcesCache.end() )
 		{
 			return;
 		}
 
-		const TVectorResources & resources = it_cache_found->second;
+		const VectorResources & resources = it_cache_found->second;
 
 		for( const ResourcePtr & resource : resources )
 		{
@@ -867,9 +867,9 @@ namespace Mengine
 
 		for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
 		{
-			const TMapResource & resources = m_resources[i];
+			const MapResources & resources = m_resources[i];
 
-			for( TMapResource::const_iterator
+			for( MapResources::const_iterator
 				it = resources.begin(),
 				it_end = resources.end();
 			it != it_end;
@@ -906,9 +906,9 @@ namespace Mengine
 	{
 		ConstString::hash_type hash = _name.hash();
 		uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
-		TMapResource & resources = m_resources[table];
+		MapResources & resources = m_resources[table];
 
-		TMapResource::iterator it_found = resources.find( _name );
+		MapResources::iterator it_found = resources.find( _name );
 
 		if( it_found == resources.end() )
 		{
@@ -924,9 +924,9 @@ namespace Mengine
 	{
 		ConstString::hash_type hash = _name.hash();
 		uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
-		const TMapResource & resources = m_resources[table];
+		const MapResources & resources = m_resources[table];
 
-		TMapResource::const_iterator it_found = resources.find( _name );
+		MapResources::const_iterator it_found = resources.find( _name );
 
 		if( it_found == resources.end() )
 		{

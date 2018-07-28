@@ -39,8 +39,8 @@ namespace Mengine
 			bool outward;
 		};
 
-		typedef Vector<Bubble> TVectorBubbles;
-		TVectorBubbles m_bubbles;
+		typedef Vector<Bubble> VectorBubbles;
+		VectorBubbles m_bubbles;
 
 		uint32_t m_enumerator;
 

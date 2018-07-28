@@ -21,6 +21,6 @@ namespace Mengine
         mt::vec2f uv[MENGINE_RENDER_VERTEX_UV_COUNT];
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<RenderVertex2D> TVectorRenderVertex2D;
+    typedef Vector<RenderVertex2D> VectorRenderVertex2D;
     //////////////////////////////////////////////////////////////////////////
 }

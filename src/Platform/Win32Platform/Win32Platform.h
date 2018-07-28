@@ -63,7 +63,7 @@ namespace Mengine
 		bool notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const MemoryInterfacePtr & _buffer ) override;
 
 	public:
-		void onEvent( const ConstString & _event, const TMapWParams & _params ) override;
+		void onEvent( const ConstString & _event, const MapWParams & _params ) override;
 
     public:
         float getJoystickAxis( uint32_t _index ) const override;
@@ -137,8 +137,8 @@ namespace Mengine
 
 		HCURSOR m_cursor;
 
-		typedef Map<ConstString, HCURSOR> TMapCursors;
-		TMapCursors m_cursors;
+		typedef Map<ConstString, HCURSOR> MapCursors;
+		MapCursors m_cursors;
 
 		bool m_lastMouse;
 		int m_lastMouseX;

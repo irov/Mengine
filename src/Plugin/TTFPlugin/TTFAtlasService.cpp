@@ -43,7 +43,7 @@ namespace Mengine
 	{
 		for( uint32_t i = 0; i != 3; ++i )
 		{
-            TVectorAtlasess & atlas = m_atlasess[i];
+            VectorAtlasess & atlas = m_atlasess[i];
 
 			atlas.clear();
 		}
@@ -131,7 +131,7 @@ namespace Mengine
 
         uint32_t unpow_channel = unpow_channel_mask[_channel];
 
-		TVectorAtlases & atlases = m_atlasess[unpow_channel][atlasIndex];
+		VectorAtlases & atlases = m_atlasess[unpow_channel][atlasIndex];
 
         for( TTFAtlas & atlas : atlases )
         {

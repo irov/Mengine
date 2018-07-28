@@ -82,10 +82,10 @@ namespace Mengine
 		uint32_t m_countX;
 		uint32_t m_countY;
 		
-		TVectorRenderVertex2D m_vertices;
-		TVectorRenderVertex2D m_verticesWM;
+		VectorRenderVertex2D m_vertices;
+		VectorRenderVertex2D m_verticesWM;
 
-		TVectorRenderIndices m_indices;
+		VectorRenderIndices m_indices;
 				
 		mutable bool m_invalidateVerticesWM;
     };

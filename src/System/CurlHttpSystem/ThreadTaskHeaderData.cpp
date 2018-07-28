@@ -13,7 +13,7 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskHeaderData::initialize( const String & _url, const TVectorString & _headers, const String & _data )
+	bool ThreadTaskHeaderData::initialize( const String & _url, const VectorString & _headers, const String & _data )
 	{
 		m_url = _url;
         m_headers = _headers;
@@ -32,7 +32,7 @@ namespace Mengine
         struct curl_slist * curl_header_list = NULL;
         if( m_headers.empty() == false )
         {
-            for( TVectorString::const_iterator
+            for( VectorString::const_iterator
                 it = m_headers.begin(),
                 it_end = m_headers.end();
                 it != it_end;
@@ -54,7 +54,7 @@ namespace Mengine
         {
             std::stringstream ss;
 
-            for( TVectorString::const_iterator
+            for( VectorString::const_iterator
                 it = m_headers.begin(),
                 it_end = m_headers.end();
                 it != it_end;

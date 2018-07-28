@@ -51,7 +51,7 @@ namespace Mengine
 
         for( uint32_t i = 0; i != 4096; ++i )
         {
-            TIntrusiveListConstStringHolder & holdres = m_holdres[i];
+            IntrusiveListConstStringHolder & holdres = m_holdres[i];
 
             holdres.clear();
         }
@@ -193,9 +193,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ConstStringHolder * StringizeService::testHolder_( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash )
     {
-        TIntrusiveListConstStringHolder & list = this->getList_( _hash );
+        IntrusiveListConstStringHolder & list = this->getList_( _hash );
 
-        for( TIntrusiveListConstStringHolder::iterator
+        for( IntrusiveListConstStringHolder::iterator
             it = list.begin(),
             it_end = list.end();
             it != it_end;
@@ -232,15 +232,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StringizeService::addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash )
     {
-        TIntrusiveListConstStringHolder & list = this->getList_( _hash );
+        IntrusiveListConstStringHolder & list = this->getList_( _hash );
 
         list.push_back( _holder );
     }
     //////////////////////////////////////////////////////////////////////////
-    StringizeService::TIntrusiveListConstStringHolder & StringizeService::getList_( ConstStringHolder::hash_type _hash )
+    StringizeService::IntrusiveListConstStringHolder & StringizeService::getList_( ConstStringHolder::hash_type _hash )
     {
         uint32_t branch = (uint32_t)_hash % 4096;
-        TIntrusiveListConstStringHolder & list = m_holdres[branch];
+        IntrusiveListConstStringHolder & list = m_holdres[branch];
 
         return list;
     }

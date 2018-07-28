@@ -46,12 +46,12 @@ namespace Mengine
 		virtual void _render( const RenderContext * _state, uint32_t _debugMask );
 		
 	protected:
-		void message( const ConstString & _messageName, const TMapWParams & _params ) override;
-		void messageAll (const ConstString & _messageName, const TMapWParams & _params) override;
+		void message( const ConstString & _messageName, const MapWParams & _params ) override;
+		void messageAll (const ConstString & _messageName, const MapWParams & _params) override;
 
 	protected:
-		virtual void _message( const ConstString & _messageName, const TMapWParams & _params );
-		virtual void _messageAll( const ConstString & _messageName, const TMapWParams & _params );
+		virtual void _message( const ConstString & _messageName, const MapWParams & _params );
+		virtual void _messageAll( const ConstString & _messageName, const MapWParams & _params );
 
 	protected:
 		ConstString m_name;

@@ -7,6 +7,6 @@
 
 namespace Mengine
 {
-	typedef Map<ConstString, String> TMapParams;
-	typedef Map<ConstString, WString> TMapWParams;
+	typedef Map<ConstString, String> MapParams;
+	typedef Map<ConstString, WString> MapWParams;
 }

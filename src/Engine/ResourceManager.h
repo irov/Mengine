@@ -21,7 +21,7 @@ namespace Mengine
 		bool isLocked;
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef Vector<ResourcePtr> TVectorResources;
+	typedef Vector<ResourcePtr> VectorResources;
 	//////////////////////////////////////////////////////////////////////////
 	class ResourceManager
 		: public ServiceBase<ResourceServiceInterface>
@@ -73,11 +73,11 @@ namespace Mengine
 		const ResourceEntry * findResource_( const ConstString & _name ) const;
 
 	protected:
-		typedef Map<ConstString, ResourceEntry> TMapResource;
-		TMapResource m_resources[MENGINE_RESOURCE_MANAGER_HASH_SIZE];
+		typedef Map<ConstString, ResourceEntry> MapResources;
+		MapResources m_resources[MENGINE_RESOURCE_MANAGER_HASH_SIZE];
 
-		typedef std::pair<ConstString, ConstString> TResourceCacheKey;
-		typedef Map<TResourceCacheKey, TVectorResources> TMapResourceCache;
-		TMapResourceCache m_resourcesCache;
+		typedef std::pair<ConstString, ConstString> ResourceCacheKey;
+		typedef Map<ResourceCacheKey, VectorResources> MapResourceCache;
+		MapResourceCache m_resourcesCache;
 	};
 }

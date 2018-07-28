@@ -160,7 +160,7 @@ namespace Mengine
     {
 		for( uint32_t i = 0; i != MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE; ++i )
 		{
-			TVectorRenderMaterial & material = m_materials[i];
+			VectorRenderMaterial & material = m_materials[i];
 
 			material.clear();
 		}
@@ -509,7 +509,7 @@ namespace Mengine
 
 			m_materialStageIndexer.insert( std::make_pair( name, cache_stage ) );
 
-            TMapDefaultStagesName::const_iterator it_stage_found = m_defaultStagesEnum.find( name );
+            MapDefaultStagesName::const_iterator it_stage_found = m_defaultStagesEnum.find( name );
 
             if( it_stage_found != m_defaultStagesEnum.end() )
             {
@@ -793,7 +793,7 @@ namespace Mengine
 		, uint32_t _textureCount
 		, const RenderTextureInterfacePtr * _textures )
 	{
-		TMapRenderStage::const_iterator it_found = m_materialStageIndexer.find( _materialName );
+		MapRenderStage::const_iterator it_found = m_materialStageIndexer.find( _materialName );
 
 		if( it_found == m_materialStageIndexer.end() )
 		{
@@ -834,7 +834,7 @@ namespace Mengine
 
 		uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
-		TVectorRenderMaterial & materials = m_materials[material_table_index];
+		VectorRenderMaterial & materials = m_materials[material_table_index];
 
         for( const RenderMaterial * material : materials )
 		{
@@ -875,7 +875,7 @@ namespace Mengine
 
         uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
-        TVectorRenderMaterial & materials = m_materials[material_table_index];
+        VectorRenderMaterial & materials = m_materials[material_table_index];
 
         for( const RenderMaterial * material : materials )
         {
@@ -943,9 +943,9 @@ namespace Mengine
 
 		uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
-		TVectorRenderMaterial & materials = m_materials[material_table_index];
+		VectorRenderMaterial & materials = m_materials[material_table_index];
 
-		for( TVectorRenderMaterial::iterator
+		for( VectorRenderMaterial::iterator
 			it = materials.begin(),
 			it_end = materials.end();
 		it != it_end;
@@ -970,7 +970,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 	const RenderMaterialStage * RenderMaterialManager::createRenderStageGroup( const ConstString & _name, const RenderMaterialStage & _stage )
     {
-		TMapRenderStage::const_iterator it_found = m_materialStageIndexer.find( _name );
+		MapRenderStage::const_iterator it_found = m_materialStageIndexer.find( _name );
 
 		if( it_found != m_materialStageIndexer.end() )
         {
@@ -1062,7 +1062,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	const RenderVertexShaderInterfacePtr & RenderMaterialManager::getVertexShader( const ConstString & _name ) const
 	{
-		TMapRenderVertexShaders::const_iterator it_found = m_vertexShaders.find( _name );
+		MapRenderVertexShaders::const_iterator it_found = m_vertexShaders.find( _name );
 
 		if( it_found == m_vertexShaders.end() )
 		{
@@ -1076,7 +1076,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	const RenderFragmentShaderInterfacePtr & RenderMaterialManager::getFragmentShader( const ConstString & _name ) const
 	{
-		TMapRenderFragmentShaders::const_iterator it_found = m_fragmentShaders.find( _name );
+		MapRenderFragmentShaders::const_iterator it_found = m_fragmentShaders.find( _name );
 
 		if( it_found == m_fragmentShaders.end() )
 		{
@@ -1090,7 +1090,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const RenderVertexAttributeInterfacePtr & RenderMaterialManager::getVertexAttribute( const ConstString & _name ) const
     {
-        TMapRenderVertexAttributes::const_iterator it_found = m_vertexAttributes.find( _name );
+        MapRenderVertexAttributes::const_iterator it_found = m_vertexAttributes.find( _name );
 
         if( it_found == m_vertexAttributes.end() )
         {
@@ -1104,7 +1104,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	const RenderProgramInterfacePtr & RenderMaterialManager::getProgram( const ConstString & _name ) const
 	{
-		TMapRenderPrograms::const_iterator it_found = m_programs.find( _name );
+		MapRenderPrograms::const_iterator it_found = m_programs.find( _name );
 
 		if( it_found == m_programs.end() )
 		{

@@ -19,14 +19,14 @@ namespace Mengine
         TextFontInterfacePtr font;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<TextChunk> TVectorTextChunks;
-    typedef Vector<TVectorTextChunks> TVectorTextLines;
-    typedef Vector<CacheFont> TVectorCacheFonts;
+    typedef Vector<TextChunk> VectorTextChunks;
+    typedef Vector<VectorTextChunks> VectorTextLines;
+    typedef Vector<CacheFont> VectorCacheFonts;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        bool test( TVectorTextChunks & _out, const U32String & _in, TVectorCacheFonts & _cacheFonts, uint32_t _font );
-        void substr( TVectorTextChunks & _out, const TVectorTextChunks & _str, TVectorTextChunks::size_type _offset, TVectorTextChunks::size_type _size );
-        void split( TVectorTextLines & _lines, const TVectorTextChunks & _chunks, const TVectorU32String & _delims );
+        bool test( VectorTextChunks & _out, const U32String & _in, VectorCacheFonts & _cacheFonts, uint32_t _font );
+        void substr( VectorTextChunks & _out, const VectorTextChunks & _str, VectorTextChunks::size_type _offset, VectorTextChunks::size_type _size );
+        void split( VectorTextLines & _lines, const VectorTextChunks & _chunks, const VectorU32String & _delims );
     }
 };

@@ -29,7 +29,7 @@ namespace Mengine
 	protected:
 		float m_time;
 
-		typedef Vector<float> TVectorTime;
-		TVectorTime m_offsets;
+		typedef Vector<float> VectorTime;
+		VectorTime m_offsets;
 	};
 };

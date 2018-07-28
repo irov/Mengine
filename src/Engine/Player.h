@@ -151,8 +151,8 @@ namespace Mengine
 
         FactoryPtr m_factoryScheduleManager;
 
-		typedef Vector<ScheduleManagerInterfacePtr> TVectorUserScheduler;
-		TVectorUserScheduler m_schedulers;               
+		typedef Vector<ScheduleManagerInterfacePtr> VectorUserScheduler;
+		VectorUserScheduler m_schedulers;               
 
         GlobalAffectorablePtr m_affectorable;
         GlobalAffectorablePtr m_affectorableGlobal;

@@ -338,7 +338,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void PrefetcherManager::unfetch( const FileGroupInterfacePtr& _fileGroup, const FilePath& _filePath )
 	{
-		TMapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
+		MapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
 		if( it_found == m_prefetchReceiver.end() )
 		{
@@ -359,7 +359,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PrefetcherManager::visitPrefetches( Visitor * _visitor ) const
     {
-        for( TMapPrefetchReceiver::const_iterator
+        for( MapPrefetchReceiver::const_iterator
             it = m_prefetchReceiver.begin(),
             it_end = m_prefetchReceiver.end();
             it != it_end;
@@ -375,7 +375,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool PrefetcherManager::hasPrefetch( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
 	{ 
-        TMapPrefetchReceiver::const_iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
+        MapPrefetchReceiver::const_iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
 		if( it_found == m_prefetchReceiver.end() )
 		{

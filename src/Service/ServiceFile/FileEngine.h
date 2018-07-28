@@ -46,7 +46,7 @@ namespace Mengine
 		typedef Map<ConstString, FactoryPtr> TFactoryFileGroups;
 		TFactoryFileGroups m_factoryFileGroups;
 
-		typedef Map<ConstString, FileGroupInterfacePtr> TMapFileSystem;
-		TMapFileSystem m_fileSystemMap;
+		typedef Map<ConstString, FileGroupInterfacePtr> MapFileSystem;
+		MapFileSystem m_fileSystemMap;
 	};
 }

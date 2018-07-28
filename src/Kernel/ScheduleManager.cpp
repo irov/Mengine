@@ -109,7 +109,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ScheduleManager::exist( uint32_t _id ) const 
 	{
-		TListSchedules::const_iterator it_find =
+		ListSchedules::const_iterator it_find =
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind( _id ) );
 
 		if( it_find != m_schedules.end() )
@@ -117,7 +117,7 @@ namespace Mengine
 			return true;
 		}
 
-		TListSchedules::const_iterator it_find_add =
+		ListSchedules::const_iterator it_find_add =
 			std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
 
 		if( it_find_add != m_schedulesAdd.end() )
@@ -175,7 +175,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ScheduleManager::removeAll()
     {
-        for( TListSchedules::iterator 
+        for( ListSchedules::iterator 
 			it = m_schedules.begin(),
 			it_end = m_schedules.end();
         it != it_end;
@@ -186,9 +186,9 @@ namespace Mengine
             this->removeSchedule_( event );
         }
 
-		TListSchedules schedulesAdd = m_schedulesAdd;
+		ListSchedules schedulesAdd = m_schedulesAdd;
 
-		for( TListSchedules::iterator
+		for( ListSchedules::iterator
 			it = schedulesAdd.begin(),
 			it_end = schedulesAdd.end();
 		it != it_end;
@@ -249,10 +249,10 @@ namespace Mengine
 		m_schedules.insert( m_schedules.end(), m_schedulesAdd.begin(), m_schedulesAdd.end() );
 		m_schedulesAdd.clear();
 
-		TListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead() );
+		ListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead() );
 		m_schedules.erase( it_erase, m_schedules.end() );
 
-		for( TListSchedules::iterator
+		for( ListSchedules::iterator
 			it = m_schedules.begin(),
 			it_end = m_schedules.end();
 		it != it_end;
@@ -451,7 +451,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ScheduleManager::findScheduleEvent_( uint32_t _id, ScheduleEventDesc *& _desc )
 	{
-		TListSchedules::iterator it_find = 
+		ListSchedules::iterator it_find = 
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
 
 		if( it_find != m_schedules.end() )
@@ -461,7 +461,7 @@ namespace Mengine
 			return true;
 		}
 				
-		TListSchedules::iterator it_find_add =
+		ListSchedules::iterator it_find_add =
 			std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
 
 		if( it_find_add != m_schedulesAdd.end() )
@@ -476,7 +476,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::findScheduleEvent_( uint32_t _id, const ScheduleEventDesc *& _desc ) const
     {
-		TListSchedules::const_iterator it_find =
+		ListSchedules::const_iterator it_find =
 			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind( _id ) );
 
 		if( it_find != m_schedules.end() )
@@ -486,7 +486,7 @@ namespace Mengine
 			return true;
 		}
 
-		TListSchedules::const_iterator it_find_add =
+		ListSchedules::const_iterator it_find_add =
 			std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
 
 		if( it_find_add != m_schedulesAdd.end() )

@@ -50,8 +50,8 @@ namespace Mengine
 		void removeGlobalModule( const Char * _name ) override;
 
 	public:
-        void addModulePath( const ConstString & _pak, const TVectorScriptModulePack & _modules ) override;
-		void removeModulePath( const ConstString & _pack, const TVectorScriptModulePack & _modules ) override;
+        void addModulePath( const ConstString & _pak, const VectorScriptModulePack & _modules ) override;
+		void removeModulePath( const ConstString & _pack, const VectorScriptModulePack & _modules ) override;
 
 	public:
 		bool bootstrapModules() override;
@@ -83,17 +83,17 @@ namespace Mengine
 
 		PyObject * m_moduleMenge;
 
-		TVectorScriptModulePack m_bootstrapperModules;
+		VectorScriptModulePack m_bootstrapperModules;
 
 		ScriptLogger * m_loggerWarning;
 		ScriptLogger * m_loggerError;
 
-		typedef Map<ConstString, PyObject *> TMapModules;
-		typedef Map<ConstString, TMapModules> TMapCategoryPrototypies;
-		TMapCategoryPrototypies m_prototypies;
+		typedef Map<ConstString, PyObject *> MapModules;
+		typedef Map<ConstString, MapModules> MapCategoryPrototypies;
+		MapCategoryPrototypies m_prototypies;
 
-		typedef Map<ConstString, ScriptWrapperInterfacePtr> TMapScriptWrapper;
-		TMapScriptWrapper m_scriptWrapper;
+		typedef Map<ConstString, ScriptWrapperInterfacePtr> MapScriptWrapper;
+		MapScriptWrapper m_scriptWrapper;
 
         typedef stdex::template_pool<ConstStringHolderPythonString, 1024> PoolConstStringHolderPythonString;
         PoolConstStringHolderPythonString m_poolPythonString;

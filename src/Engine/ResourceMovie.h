@@ -165,7 +165,7 @@ namespace Mengine
 		}
 	};
 	//////////////////////////////////////////////////////////////////////////
-	typedef Vector<MovieLayer> TVectorMovieLayers;
+	typedef Vector<MovieLayer> VectorMovieLayers;
 	//////////////////////////////////////////////////////////////////////////
 	struct MovieLayerCamera3D
 	{
@@ -215,7 +215,7 @@ namespace Mengine
 		const ConstString & getDataflowType() const;
 
     public:
-		const TVectorMovieLayers & getLayers() const;
+		const VectorMovieLayers & getLayers() const;
 		const MovieLayerCamera3D & getCamera3D() const;
 
 	public:
@@ -288,7 +288,7 @@ namespace Mengine
 
 		mt::vec2f m_size;
 
-		TVectorMovieLayers m_layers;
+		VectorMovieLayers m_layers;
 
 		bool m_hasCamera3D;
 		MovieLayerCamera3D m_camera3D;

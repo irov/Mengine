@@ -37,12 +37,12 @@ namespace Mengine
 		Resolution getValue( const Char * _section, const Char * _key, const Resolution & _default ) const override;
 
 	public:
-		void getValues( const Char * _section, const Char * _key, TVectorAspectRatioViewports & _value ) const override;
-		void getValues( const Char * _section, const Char * _key, TVectorWString & _value ) const override;
-		void getValues( const Char * _section, const Char * _key, TVectorString & _value ) const override;
+		void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _value ) const override;
+		void getValues( const Char * _section, const Char * _key, VectorWString & _value ) const override;
+		void getValues( const Char * _section, const Char * _key, VectorString & _value ) const override;
 
 	public:
-		void getSection( const Char * _section, TMapWParams & _params ) const override;
+		void getSection( const Char * _section, MapWParams & _params ) const override;
 
 	protected:
 		Tags m_platformTags;

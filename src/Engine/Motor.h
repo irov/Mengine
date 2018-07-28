@@ -42,7 +42,7 @@ namespace Mengine
             mt::vec3f velocity;
         };
 
-        typedef Map<ConstString, VelocityDesc> TMapVelocity;
-        TMapVelocity m_velocities;
+        typedef Map<ConstString, VelocityDesc> MapVelocity;
+        MapVelocity m_velocities;
     };
 }

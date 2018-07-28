@@ -699,7 +699,7 @@ namespace Mengine
             return true;
         }
 
-		TVectorPoints points;
+		VectorPoints points;
 		if( m_polygon.triangulate( points ) == false )
 		{
 			LOGGER_ERROR("ParticleEmitter::changeEmitterPolygon '%s' wrong polygon"
@@ -719,7 +719,7 @@ namespace Mengine
 		}
         
         float * triangles_ptr = points.front().buff();
-        TVectorPoints::size_type triangles_size = points.size() / 3;
+        VectorPoints::size_type triangles_size = points.size() / 3;
 
 		if( _emitter->changeEmitterModel( triangles_ptr, (uint32_t)triangles_size ) == false )
 		{

@@ -28,9 +28,9 @@ namespace Mengine
     void Movie2Slot::_destroy()
     {
 #ifndef NDEBUG
-        TListNodeChild & child = this->getChildren();
+        IntrusiveSlugListNodeChild & child = this->getChildren();
 
-        for( TListNodeChild::iterator
+        for( IntrusiveSlugListNodeChild::iterator
             it = child.begin(),
             it_end = child.end();
         it != it_end;

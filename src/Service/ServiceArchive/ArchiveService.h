@@ -31,7 +31,7 @@ namespace Mengine
 		MemoryInputInterfacePtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress ) override;
 
     protected:
-		typedef Map<ConstString, ArchivatorInterfacePtr> TMapArchivators;
-		TMapArchivators m_archivators;
+		typedef Map<ConstString, ArchivatorInterfacePtr> MapArchivators;
+		MapArchivators m_archivators;
 	};
 }

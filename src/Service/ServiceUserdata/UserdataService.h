@@ -38,7 +38,7 @@ namespace Mengine
 			FilePath path;
 		};
 
-		typedef Map<ConstString, UserdataDesc> TMapDatas;
-		TMapDatas m_datas;
+		typedef Map<ConstString, UserdataDesc> MapDatas;
+		MapDatas m_datas;
     };
 }

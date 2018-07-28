@@ -207,17 +207,17 @@ namespace Mengine
         FactoryPtr m_factoryDX9TargetTexture;
         FactoryPtr m_factoryDX9TargetOffscreen;
 
-        typedef Vector<DX9RenderVertexShaderPtr> TVectorRenderVertexShaders;
-        TVectorRenderVertexShaders m_deferredCompileVertexShaders;
+        typedef Vector<DX9RenderVertexShaderPtr> VectorRenderVertexShaders;
+        VectorRenderVertexShaders m_deferredCompileVertexShaders;
 
-        typedef Vector<DX9RenderFragmentShaderPtr> TVectorRenderFragmentShaders;
-        TVectorRenderFragmentShaders m_deferredCompileFragmentShaders;
+        typedef Vector<DX9RenderFragmentShaderPtr> VectorRenderFragmentShaders;
+        VectorRenderFragmentShaders m_deferredCompileFragmentShaders;
 
-        typedef Vector<DX9RenderProgramPtr> TVectorRenderPrograms;
-        TVectorRenderPrograms m_deferredCompilePrograms;
+        typedef Vector<DX9RenderProgramPtr> VectorRenderPrograms;
+        VectorRenderPrograms m_deferredCompilePrograms;
 
-        typedef stdex::intrusive_list<DX9RenderResourceHandler> TIntrusiveListDX9RenderResourceHandler;
-        TIntrusiveListDX9RenderResourceHandler m_renderResourceHandlers;
+        typedef stdex::intrusive_list<DX9RenderResourceHandler> IntrusiveListDX9RenderResourceHandler;
+        IntrusiveListDX9RenderResourceHandler m_renderResourceHandlers;
 
 
 		mt::mat4f m_projectionMatrix;

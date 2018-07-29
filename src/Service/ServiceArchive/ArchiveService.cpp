@@ -73,7 +73,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool ArchiveService::decompressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, size_t _size, void * _memory, size_t _capacity, size_t & _uncompress )
 	{
-		MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, __FILE__, __LINE__ );
+		MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheStreamSize( _stream, _size, "ArchiveService", __FILE__, __LINE__ );
 
 		if( compress_buffer == nullptr )
 		{
@@ -102,7 +102,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	MemoryInputInterfacePtr ArchiveService::compressStream( const ArchivatorInterfacePtr & _archivator, const InputStreamInterfacePtr & _stream, EArchivatorCompress _compress )
 	{
-		MemoryInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( _stream, __FILE__, __LINE__ );
+		MemoryInterfacePtr uncompress_buffer = Helper::createMemoryCacheStream( _stream, "ArchiveService", __FILE__, __LINE__ );
 
 		if( uncompress_buffer == nullptr )
 		{

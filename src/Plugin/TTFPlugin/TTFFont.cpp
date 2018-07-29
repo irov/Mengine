@@ -90,7 +90,7 @@ namespace Mengine
 	{
         if( m_ttfFEPath.empty() == false )
         {
-            MemoryInterfacePtr ttfEffectMemory = Helper::createMemoryFile( m_category, m_ttfFEPath, false, __FILE__, __LINE__ );
+            MemoryInterfacePtr ttfEffectMemory = Helper::createMemoryFile( m_category, m_ttfFEPath, false, "TTFFont", __FILE__, __LINE__ );
 
             if( ttfEffectMemory == nullptr )
             {
@@ -144,7 +144,7 @@ namespace Mengine
             }
         }
 
-		MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, "TTFFont", __FILE__, __LINE__ );
 
 		FT_Byte * memory_byte = memory->getBuffer();
 		size_t memory_size = memory->getSize();
@@ -676,7 +676,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_validateGlyphes( const U32String & _codes ) const
     {
-        MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, "TTFFont", __FILE__, __LINE__ );
 
         FT_Byte * memory_byte = memory->getBuffer();
         size_t memory_size = memory->getSize();

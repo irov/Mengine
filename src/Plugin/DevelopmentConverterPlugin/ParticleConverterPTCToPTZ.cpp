@@ -52,7 +52,7 @@ namespace Mengine
 		FilePath full_input = Helper::concatenationFilePath( pakPath, m_options.inputFileName );
 		FilePath full_output = Helper::concatenationFilePath( pakPath, m_options.outputFileName );
 		        
-		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroup, full_input, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr data_cache = Helper::createMemoryCacheFile( m_fileGroup, full_input, false, "ParticleConverterPTCToPTZ", __FILE__, __LINE__ );
 
 		if( data_cache == nullptr )
 		{

@@ -52,7 +52,7 @@ namespace Mengine
 		m_length = dataInfo->length;
 		size_t size = dataInfo->size;
 		
-		MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( size, __FILE__, __LINE__ );
+		MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( size, "OALSoundBufferMemory", __FILE__, __LINE__ );
 
 		if( binary_buffer == nullptr )
 		{

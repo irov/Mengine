@@ -44,7 +44,7 @@ namespace Mengine
 	public:
 		virtual void getSection( const Char * _section, MapWParams & _params ) const = 0;
 	};
-
+    
 #   define CONFIG_SERVICE()\
     ((Mengine::ConfigServiceInterface *)SERVICE_GET(Mengine::ConfigServiceInterface))
 

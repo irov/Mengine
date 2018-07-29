@@ -90,7 +90,7 @@ namespace Mengine
 		
 		size_t data_size = dataInfo->getSize();
 
-		MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_size, __FILE__, __LINE__ );
+		MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_size, "ImageConverterPNGToACF", __FILE__, __LINE__ );
 
 		if( data_buffer == nullptr )
 		{

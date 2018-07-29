@@ -212,7 +212,7 @@ namespace Mengine
         uint32_t compress_size;
         _stream->read( &compress_size, sizeof(compress_size) );
 
-		MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( bin_size, __FILE__, __LINE__ );
+		MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( bin_size, "LoaderEngine::importBin_", __FILE__, __LINE__ );
 
 		if( binary_buffer == nullptr )
 		{

@@ -9,6 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryBuffer::MemoryBuffer()
         : m_memory( nullptr )
+        , m_doc( nullptr )
         , m_size( 0 )
 #ifndef NDEBUG
         , m_file( nullptr )
@@ -19,23 +20,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MemoryBuffer::~MemoryBuffer()
     {
-        Helper::freeMemory( m_memory, "MemoryBuffer" );
+        Helper::freeMemory( m_memory, m_doc );
         m_memory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryBuffer::setBuffer( const void * _ptr, size_t _size, const Char * _file, uint32_t _line )
+    void MemoryBuffer::setBuffer( const void * _ptr, size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
     {
-        void * buffer = this->newBuffer( _size, _file, _line );
+        void * buffer = this->newBuffer( _size, _doc, _file, _line );
 
         stdex::memorycopy( buffer, 0, _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryBuffer::newBuffer( size_t _size, const char * _file, uint32_t _line )
+    Pointer MemoryBuffer::newBuffer( size_t _size, const Char * _doc, const char * _file, uint32_t _line )
     {
         (void)_file;
         (void)_line;
 
-        void * new_memory = Helper::reallocateMemory( m_memory, _size, "MemoryBuffer" );
+        void * new_memory = Helper::reallocateMemory( m_memory, _size, _doc );
 
         if( new_memory == nullptr )
         {
@@ -46,6 +47,7 @@ namespace Mengine
         }
 
         m_memory = new_memory;
+        m_doc = _doc;
         m_size = _size;
 
 #ifndef NDEBUG

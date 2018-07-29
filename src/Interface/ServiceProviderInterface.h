@@ -22,7 +22,7 @@ namespace Mengine
     class ServiceProviderInterface
     {
     public:
-        ServiceProviderInterface() {};
+        ServiceProviderInterface() noexcept {};
         virtual ~ServiceProviderInterface() {};
 
     public:

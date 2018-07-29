@@ -25,8 +25,8 @@ namespace Mengine
 		void setMemoryManager( MemoryManager * _memoryManager );
 
     public:
-        void setBuffer( const void * _ptr, size_t _size, const char * _file, uint32_t _line ) override;
-		Pointer newBuffer( size_t _size, const char * _file, uint32_t _line ) override;
+        void setBuffer( const void * _ptr, size_t _size, const Char * _doc, const Char * _file, uint32_t _line ) override;
+		Pointer newBuffer( size_t _size, const Char * _doc, const Char * _file, uint32_t _line ) override;
 		
     public:
 		inline Pointer getBuffer() const override;

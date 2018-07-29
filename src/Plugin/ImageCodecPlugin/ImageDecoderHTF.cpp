@@ -82,7 +82,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	size_t ImageDecoderHTF::_decode( void * _buffer, size_t _bufferSize )
 	{
-		if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, __FILE__, __LINE__ ) == false )
+		if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, "ImageDecoderHTF", __FILE__, __LINE__ ) == false )
 		{
 			LOGGER_ERROR("ImageDecoderHTF::decode invalid load"
 				);

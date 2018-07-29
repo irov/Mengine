@@ -50,7 +50,7 @@ namespace Mengine
 		FilePath full_input = Helper::concatenationFilePath( pakPath, m_options.inputFileName );
 		FilePath full_output = Helper::concatenationFilePath( pakPath, m_options.outputFileName );
 
-		MemoryInterfacePtr cache = Helper::createMemoryCacheFile( m_fileGroup, full_input, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr cache = Helper::createMemoryCacheFile( m_fileGroup, full_input, false, "ModelConverterMDLToMDZ", __FILE__, __LINE__ );
 
 		if( cache == nullptr )
 		{

@@ -16,7 +16,7 @@ namespace Mengine
     struct VideoCodecDataInfo
         : public CodecDataInfo
     {
-        VideoCodecDataInfo()
+        VideoCodecDataInfo() noexcept
             : frameWidth( 0 )
             , frameHeight( 0 )
             , width( 0 )

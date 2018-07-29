@@ -53,7 +53,7 @@ namespace Mengine
 		uint32_t compress_size;
 		_stream->read( &compress_size, sizeof( compress_size ) );
 
-		MemoryInterfacePtr code_buffer = Helper::createMemoryCacheBuffer( code_size, __FILE__, __LINE__ );
+		MemoryInterfacePtr code_buffer = Helper::createMemoryCacheBuffer( code_size, "ScriptModuleLoaderCode", __FILE__, __LINE__ );
 
 		if( code_buffer == nullptr )
 		{

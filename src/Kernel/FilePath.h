@@ -24,7 +24,7 @@ namespace Mengine
 		: public ConstString
 	{
 	public:
-		FilePath() 
+		FilePath() noexcept
 		{
 		}
 

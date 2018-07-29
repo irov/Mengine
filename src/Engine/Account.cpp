@@ -370,7 +370,7 @@ namespace Mengine
         }
 		
 		MemoryInterfacePtr binaryBuffer;		
-		if( Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), binaryBuffer, __FILE__, __LINE__ ) == false )
+		if( Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), binaryBuffer, "Account::loadBinaryFile", __FILE__, __LINE__ ) == false )
 		{
 			LOGGER_ERROR("Account::loadBinaryFile: account %s invalid load stream archive %s"
 				, m_id.c_str()

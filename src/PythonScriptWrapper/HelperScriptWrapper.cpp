@@ -153,7 +153,7 @@ namespace Mengine
             size_t size;
             pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size );
 
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, __FILE__, __LINE__ );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, "Python::writeGameData", __FILE__, __LINE__ );
 
             if( buffer == nullptr )
             {
@@ -2591,7 +2591,7 @@ namespace Mengine
                 return false;
             }
 
-            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, __FILE__, __LINE__ );
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( size, "Python::writeAccountPickleFile", __FILE__, __LINE__ );
 
             if( buffer == nullptr )
             {

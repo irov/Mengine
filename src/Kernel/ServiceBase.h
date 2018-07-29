@@ -10,7 +10,7 @@ namespace Mengine
         : public ServantBase<T>
     {
     public:
-        ServiceBase()
+        ServiceBase() noexcept
             : m_initializeService( false )
             , m_stopService( false )
         {

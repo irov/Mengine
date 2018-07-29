@@ -379,7 +379,7 @@ namespace Mengine
 
         // Reallocate vertex buffer.
         const uint32_t vbo_size = skinned_data_size;
-        void* vbo_map = m_vertexMemory->newBuffer( vbo_size, __FILE__, __LINE__ );
+        void* vbo_map = m_vertexMemory->newBuffer( vbo_size, "NodeOzzAnimation", __FILE__, __LINE__ );
 
         // Iterate mesh parts and fills vbo.
         // Runs a skinning job per mesh part. Triangle indices are shared

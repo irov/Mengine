@@ -217,7 +217,7 @@ namespace Mengine
 		{
             uint32_t texture_size = dataInfo->getSize();
 
-			MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( texture_size, __FILE__, __LINE__ );
+			MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( texture_size, "ResourceImageDefault", __FILE__, __LINE__ );
 
 			if( buffer == nullptr )
 			{

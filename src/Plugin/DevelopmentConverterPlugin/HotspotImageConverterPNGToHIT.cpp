@@ -50,7 +50,7 @@ namespace Mengine
 
 		uint32_t bufferSize = (uint32_t)dataInfo->mipmapsize;
 
-		MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, "HotspotImageConverterPNGToHIT", __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
@@ -123,7 +123,7 @@ namespace Mengine
 
 		uint32_t bufferSize = width * height + mimmap_size;
 		
-		MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, "HotspotImageConverterPNGToHIT", __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{

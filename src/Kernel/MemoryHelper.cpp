@@ -7,11 +7,11 @@ namespace Mengine
 	namespace Helper
 	{
 		//////////////////////////////////////////////////////////////////////////
-		MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const Char * _file, uint32_t _line )
+		MemoryInterfacePtr createMemoryStream( const InputStreamInterfacePtr & _stream, const Char * _doc, const Char * _file, uint32_t _line )
 		{
 			size_t stream_size = _stream->size();
 
-			MemoryInterfacePtr memoryBuffer = Helper::createMemoryStreamSize( _stream, stream_size, _file, _line );
+			MemoryInterfacePtr memoryBuffer = Helper::createMemoryStreamSize( _stream, stream_size, _doc, _file, _line );
 
 			if( memoryBuffer == nullptr )
 			{
@@ -21,7 +21,7 @@ namespace Mengine
 			return memoryBuffer;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const Char * _file, uint32_t _line )
+		MemoryInterfacePtr createMemoryStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
 		{
 			MemoryBufferInterfacePtr memoryBuffer = MEMORY_SERVICE()
 				->createMemoryBuffer();
@@ -31,7 +31,7 @@ namespace Mengine
 				return nullptr;
 			}
 
-			void * memory = memoryBuffer->newBuffer( _size, _file, _line );
+			void * memory = memoryBuffer->newBuffer( _size, _doc, _file, _line );
 
 			if( memory == nullptr )
 			{
@@ -48,7 +48,7 @@ namespace Mengine
 			return memoryBuffer;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _file, uint32_t _line )
+		MemoryInterfacePtr createMemoryFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _doc, const Char * _file, uint32_t _line )
 		{
 			InputStreamInterfacePtr fileStream = FILE_SERVICE()
 				->openInputFile( _category, _filePath, _stream );
@@ -58,12 +58,12 @@ namespace Mengine
 				return nullptr;
 			}
 
-            MemoryInterfacePtr memory = Helper::createMemoryStream( fileStream, _file, _line );
+            MemoryInterfacePtr memory = Helper::createMemoryStream( fileStream, _doc, _file, _line );
 
 			return memory;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheBuffer( size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
 		{
             MemoryBufferInterfacePtr cache = MEMORY_SERVICE()
 				->createMemoryCacheBuffer();
@@ -73,7 +73,7 @@ namespace Mengine
 				return nullptr;
 			}
 
-			void * memory = cache->newBuffer( _size, _file, _line );
+			void * memory = cache->newBuffer( _size, _doc, _file, _line );
 
 			if( memory == nullptr )
 			{
@@ -83,9 +83,9 @@ namespace Mengine
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheStreamSize( const InputStreamInterfacePtr & _stream, size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
 		{
-            MemoryInterfacePtr cache = Helper::createMemoryCacheBuffer( _size, _file, _line );
+            MemoryInterfacePtr cache = Helper::createMemoryCacheBuffer( _size, _doc, _file, _line );
 
 			if( cache == nullptr )
 			{
@@ -104,11 +104,11 @@ namespace Mengine
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheStream( const InputStreamInterfacePtr & _stream, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheStream( const InputStreamInterfacePtr & _stream, const Char * _doc, const Char * _file, uint32_t _line )
 		{
 			size_t size = _stream->size();
 
-            MemoryInterfacePtr cache = Helper::createMemoryCacheStreamSize( _stream, size, _file, _line );
+            MemoryInterfacePtr cache = Helper::createMemoryCacheStreamSize( _stream, size, _doc, _file, _line );
 
 			if( cache == nullptr )
 			{
@@ -118,7 +118,7 @@ namespace Mengine
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheFile( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _doc, const Char * _file, uint32_t _line )
 		{
 			InputStreamInterfacePtr stream = FILE_SERVICE()
 				->openInputFile( _category, _filePath, _stream );
@@ -128,7 +128,7 @@ namespace Mengine
 				return nullptr;
 			}
 
-            MemoryInterfacePtr cache = Helper::createMemoryCacheStream( stream, _file, _line );
+            MemoryInterfacePtr cache = Helper::createMemoryCacheStream( stream, _doc, _file, _line );
 
 			if( cache == nullptr )
 			{
@@ -138,7 +138,7 @@ namespace Mengine
 			return cache;
 		}
 		//////////////////////////////////////////////////////////////////////////
-        MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr createMemoryCacheFileString( const FileGroupInterfacePtr & _category, const FilePath & _filePath, bool _stream, const Char * _doc, const Char * _file, uint32_t _line )
 		{
 			InputStreamInterfacePtr stream = FILE_SERVICE()
 				->openInputFile( _category, _filePath, _stream );
@@ -150,7 +150,7 @@ namespace Mengine
 
 			size_t size = stream->size();
 
-            MemoryInterfacePtr cache = Helper::createMemoryCacheBuffer( size + 1, _file, _line );
+            MemoryInterfacePtr cache = Helper::createMemoryCacheBuffer( size + 1, _doc, _file, _line );
 
 			if( cache == nullptr )
 			{

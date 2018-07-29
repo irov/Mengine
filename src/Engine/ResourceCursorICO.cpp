@@ -29,7 +29,7 @@ namespace Mengine
 	{
 		const FileGroupInterfacePtr & category = this->getCategory();
 		
-		m_buffer = Helper::createMemoryFile( category, m_path, false, __FILE__, __LINE__ );
+		m_buffer = Helper::createMemoryFile( category, m_path, false, "ResourceCursorICO", __FILE__, __LINE__ );
 
 		return true;
 	}

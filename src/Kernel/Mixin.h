@@ -8,7 +8,7 @@ namespace Mengine
         : virtual public IntrusivePtrBase
     {
     public:
-        Mixin()
+        Mixin() noexcept
         {
         }
 

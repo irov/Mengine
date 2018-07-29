@@ -128,7 +128,7 @@ namespace Mengine
 		}
 		
 		size_t mipmapsize = (size_t)dataInfo->mipmapsize;
-		void * buffer = mipmap->newBuffer( mipmapsize, __FILE__, __LINE__ );
+		void * buffer = mipmap->newBuffer( mipmapsize, "ResourceHIT", __FILE__, __LINE__ );
 
 		if( buffer == nullptr )
 		{

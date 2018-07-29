@@ -31,7 +31,7 @@ namespace Mengine
     {
 		m_particleSystem = _particleSystem;
 
-		MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( _stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( _stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), "AstralaxEmitterContainer2", __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{

@@ -297,7 +297,7 @@ namespace Mengine
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 1 )
 			{
-				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, __FILE__, __LINE__ );
+				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, "ImageDecoderPNG", __FILE__, __LINE__ );
 
 				if( row_buffer == nullptr )
 				{
@@ -335,7 +335,7 @@ namespace Mengine
 		{				
 			if( m_dataInfo.channels == 1 && m_options.channels == 4 )
 			{
-				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, __FILE__, __LINE__ );
+				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, "ImageDecoderPNG", __FILE__, __LINE__ );
 
 				if( row_buffer == nullptr )
 				{
@@ -360,7 +360,7 @@ namespace Mengine
 			}
 			else if( m_dataInfo.channels == 4 && m_options.channels == 4 )
 			{
-				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, __FILE__, __LINE__ );
+				MemoryInterfacePtr row_buffer = Helper::createMemoryCacheBuffer( m_row_bytes, "ImageDecoderPNG", __FILE__, __LINE__ );
 
 				if( row_buffer == nullptr )
 				{

@@ -38,7 +38,7 @@ namespace Mengine
     {
 		size_t file_size = _stream->size();
 
-		MemoryInterfacePtr source_buffer = Helper::createMemoryCacheBuffer( file_size + 2, __FILE__, __LINE__ );
+		MemoryInterfacePtr source_buffer = Helper::createMemoryCacheBuffer( file_size + 2, "ScriptModuleLoaderSource", __FILE__, __LINE__ );
 
 		if( source_buffer == nullptr )
 		{

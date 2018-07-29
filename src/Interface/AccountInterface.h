@@ -55,10 +55,6 @@ namespace Mengine
     class AccountProviderInterface
 		: public ServantInterface
     {
-	public:
-		AccountProviderInterface(){};
-		virtual ~AccountProviderInterface(){};
-
     public:
         virtual void onCreateAccount( const ConstString & _accountID, bool _global ) = 0;
         virtual void onDeleteAccount( const ConstString & _accountID ) = 0;

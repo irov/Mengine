@@ -77,7 +77,7 @@ namespace Mengine
 
         uint32_t data_full_size = dataInfo->getFullSize();
 
-		MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_full_size, __FILE__, __LINE__ );
+		MemoryInterfacePtr data_buffer = Helper::createMemoryCacheBuffer( data_full_size, "ImageConverterPVRToHTF", __FILE__, __LINE__ );
 		
 		if( data_buffer == nullptr )
 		{

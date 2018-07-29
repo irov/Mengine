@@ -45,7 +45,7 @@ namespace Mengine
             return false;
         }
 
-        MemoryInterfacePtr memory = Helper::createMemoryStream( stream, __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryStream( stream, "ResourceOzzSkeleton", __FILE__, __LINE__ );
 
         if( memory == nullptr )
         {

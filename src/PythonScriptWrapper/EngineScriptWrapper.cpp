@@ -1550,7 +1550,7 @@ namespace Mengine
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
                 ->getFileGroup( _fileGroupName );
 
-            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _path, false, __FILE__, __LINE__ );
+            MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheFileString( fileGroup, _path, false, "Python::parseXml", __FILE__, __LINE__ );
 
             if( binary_buffer == nullptr )
             {
@@ -2076,7 +2076,7 @@ namespace Mengine
 
             size_t size = stream->size();
 
-            void * memory_buffer = _blob->newBuffer( size, __FILE__, __LINE__ );
+            void * memory_buffer = _blob->newBuffer( size, "Python::copyFile", __FILE__, __LINE__ );
 
             if( stream->read( memory_buffer, size ) != size )
             {

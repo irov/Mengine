@@ -208,14 +208,17 @@ namespace Mengine
 
         m_scene->enable();
 
-#   ifndef MENGINE_MASTER_RELEASE
-        unlessCompile->end();
-#   endif
-
         if( m_arrow != nullptr )
         {
             m_arrow->enable();
         }
+
+#   ifndef MENGINE_MASTER_RELEASE
+        unlessCompile->end();
+#   endif
+
+        MEMORY_SERVICE()
+            ->clearCacheBuffers();
 
         if( _cb != nullptr )
         {

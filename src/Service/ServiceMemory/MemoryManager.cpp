@@ -66,19 +66,19 @@ namespace Mengine
         m_factoryMemoryInput = nullptr;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CacheBufferID MemoryManager::lockBuffer( size_t _size, void ** _memory, const char * _file, uint32_t _line )
+	CacheBufferID MemoryManager::lockBuffer( size_t _size, void ** _memory, const char * _doc, const char * _file, uint32_t _line )
 	{
 		m_memoryCacheMutex->lock();
 
 		CacheBufferID buffer_id = 
-			this->lockBufferNoMutex_( _size, _memory, _file, _line );
+			this->lockBufferNoMutex_( _size, _memory, _doc, _file, _line );
 
 		m_memoryCacheMutex->unlock();
 
 		return buffer_id;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	CacheBufferID MemoryManager::lockBufferNoMutex_( size_t _size, void ** _memory, const char * _file, uint32_t _line )
+	CacheBufferID MemoryManager::lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc, const char * _file, uint32_t _line )
 	{
 		size_t minSize = (size_t)(0);
 		size_t maxSize = (size_t)(-1);
@@ -130,7 +130,8 @@ namespace Mengine
 		{
 			CacheBufferMemory & buffer = m_buffers[minIndex];
 						
-			void * memory = Helper::reallocateMemory( buffer.memory, _size, "MemoryManager" );
+            Helper::freeMemory( buffer.memory, buffer.doc );
+			void * memory = Helper::allocateMemory( _size, _doc );
 
 			if( memory == nullptr )
 			{
@@ -144,6 +145,7 @@ namespace Mengine
 			}
 					
 			buffer.memory = memory;
+            buffer.doc = _doc;
 			buffer.size = _size;
 			buffer.file = _file;
             buffer.line = _line;
@@ -154,7 +156,7 @@ namespace Mengine
 			return buffer.id;
 		}
 		
-		uint8_t * memory = (uint8_t *)Helper::allocateMemory( _size, "MemoryManager" );
+		uint8_t * memory = (uint8_t *)Helper::allocateMemory( _size, _doc );
 
 		if( memory == nullptr )
 		{
@@ -170,6 +172,7 @@ namespace Mengine
 		CacheBufferMemory buffer;
 		buffer.id = new_id;
 		buffer.memory = memory;
+        buffer.doc = _doc;
 		buffer.size = _size;
         buffer.file = _file;
         buffer.line = _line;
@@ -215,7 +218,7 @@ namespace Mengine
 					);
 			}
 
-			Helper::freeMemory( buffer.memory, "MemoryManager" );
+			Helper::freeMemory( buffer.memory, buffer.doc );
 		}
 
 		m_buffers.clear();

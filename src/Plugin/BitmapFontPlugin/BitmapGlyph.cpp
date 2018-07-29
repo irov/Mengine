@@ -410,7 +410,7 @@ namespace Mengine
 
 		size_t xml_buffer_size = stream->size();
 		
-		MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( xml_buffer_size + 1, __FILE__, __LINE__ );
+		MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( xml_buffer_size + 1, "BitmapGlyph", __FILE__, __LINE__ );
 
 		if( buffer == nullptr )
 		{

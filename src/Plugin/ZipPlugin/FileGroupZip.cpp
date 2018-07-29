@@ -456,7 +456,7 @@ namespace Mengine
 				return false;
 			}
 
-			MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( fi.file_size, __FILE__, __LINE__ );
+			MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( fi.file_size, "FileGroupZip", __FILE__, __LINE__ );
 			
 			if( compress_buffer == nullptr )
 			{

@@ -55,7 +55,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t PickDecoderHIT::_decode( void * _buffer, size_t _bufferSize )
     {
-        if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, __FILE__, __LINE__ ) == false )
+        if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, "PickDecoderHIT", __FILE__, __LINE__ ) == false )
         {
             LOGGER_ERROR( "PickEncoderHIT::decode invalid load magic header"
             );

@@ -33,19 +33,19 @@ namespace Mengine
 		}
 	}
     //////////////////////////////////////////////////////////////////////////
-    void MemoryCacheBuffer::setBuffer( const void * _ptr, size_t _size, const char * _file, uint32_t _line )
+    void MemoryCacheBuffer::setBuffer( const void * _ptr, size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
     {
-        void * buffer = this->newBuffer( _size, _file, _line );
+        void * buffer = this->newBuffer( _size, _doc, _file, _line );
 
         stdex::memorycopy( buffer, 0, _ptr, _size );
     }
 	//////////////////////////////////////////////////////////////////////////
-	Pointer MemoryCacheBuffer::newBuffer( size_t _size, const char * _file, uint32_t _line )
+	Pointer MemoryCacheBuffer::newBuffer( size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
 	{
 		this->uncache_();
 
 		void * memory;
-		uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, _file, _line );
+		uint32_t bufferId = m_memoryManager->lockBuffer( _size, &memory, _doc, _file, _line );
 
 		if( bufferId == INVALID_CACHE_BUFFER_ID )
 		{

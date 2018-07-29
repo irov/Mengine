@@ -1032,7 +1032,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	RenderVertexShaderInterfacePtr RenderMaterialManager::createVertexShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _compile )
 	{
-		MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, _filePath, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, _filePath, false, "RenderMaterialManager::createVertexShader_", __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
@@ -1047,7 +1047,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	RenderFragmentShaderInterfacePtr RenderMaterialManager::createFragmentShader_( const ConstString & _name, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _compile )
 	{ 
-		MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, _filePath, false, __FILE__, __LINE__ );
+		MemoryInterfacePtr memory = Helper::createMemoryFile( _fileGroup, _filePath, false, "RenderMaterialManager::createFragmentShader_", __FILE__, __LINE__ );
 		
 		if( memory == nullptr )
 		{

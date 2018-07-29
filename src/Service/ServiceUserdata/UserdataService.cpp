@@ -124,7 +124,7 @@ namespace Mengine
 		}
 
         MemoryInterfacePtr binaryBuffer;
-		if( Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), binaryBuffer, __FILE__, __LINE__ ) == false )
+		if( Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), binaryBuffer, "UserdataService::loadUserdata", __FILE__, __LINE__ ) == false )
 		{
 			LOGGER_ERROR("UserdataService::loadData: data %s invalid load stream archive %s"
 				, _name.c_str()

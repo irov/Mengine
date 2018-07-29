@@ -12,7 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct RenderTextureStage
     {
-        RenderTextureStage()
+        RenderTextureStage() noexcept
             : mipmap( TF_NONE )
             , magnification( TF_LINEAR )
             , minification( TF_LINEAR )

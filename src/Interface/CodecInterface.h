@@ -64,10 +64,6 @@ namespace Mengine
 		: public CodecFactoryInterface
 	{
 	public:
-		DecoderFactoryInterface(){};
-		virtual ~DecoderFactoryInterface(){};
-
-	public:
 		virtual DecoderInterfacePtr createDecoder() = 0;
 	};
     //////////////////////////////////////////////////////////////////////////

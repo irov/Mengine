@@ -9,7 +9,7 @@ namespace Mengine
 	struct SoundCodecDataInfo
 		: public CodecDataInfo
 	{
-		SoundCodecDataInfo()
+		SoundCodecDataInfo() noexcept
 			: size(0)
 			, frequency(0)
 			, channels(0)

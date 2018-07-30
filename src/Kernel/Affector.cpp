@@ -15,44 +15,44 @@ namespace Mengine
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::setAffectorType( EAffectorType _type )
+	void Affector::setAffectorType( EAffectorType _type ) noexcept
 	{
         m_type = _type;
     }
 	//////////////////////////////////////////////////////////////////////////
-	EAffectorType Affector::getAffectorType() const
+	EAffectorType Affector::getAffectorType() const noexcept
 	{
 		return m_type;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::setId( AFFECTOR_ID _id )
+	void Affector::setId( AFFECTOR_ID _id ) noexcept
 	{
 		m_id = _id;
 	}
     //////////////////////////////////////////////////////////////////////////
-    AFFECTOR_ID Affector::getId() const
+    AFFECTOR_ID Affector::getId() const noexcept
     {
         return m_id;
     }
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::setSpeedFactor( float _speedAffector )
+	void Affector::setSpeedFactor( float _speedAffector ) noexcept
 	{
 		m_speedFactor = _speedAffector;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	float Affector::getSpeedFactor() const
+	float Affector::getSpeedFactor() const noexcept
 	{
 		return m_speedFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affector::setFreeze( bool _value )
+	void Affector::setFreeze( bool _value ) noexcept
 	{
 		m_freeze = _value;
 
 		this->_setFreeze( m_freeze );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Affector::getFreeze() const
+	bool Affector::getFreeze() const noexcept
 	{
 		return m_freeze;
 	}

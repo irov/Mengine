@@ -12,18 +12,18 @@ namespace Mengine
         typedef ConstStringHolder::value_type value_type;
 
     public:
-        ConstString()
+        ConstString() noexcept
             : m_holder( nullptr )
         {
         }
 
-        ConstString( const ConstString & _cstr )
+        ConstString( const ConstString & _cstr ) noexcept
             : m_holder( _cstr.m_holder )
         {
         }
 
     public:
-        explicit ConstString( const ConstStringHolder * _holder )
+        explicit ConstString( const ConstStringHolder * _holder ) noexcept
             : m_holder( _holder )
         {
         }
@@ -39,7 +39,7 @@ namespace Mengine
                 return 0U;
             }
 
-            size_type holder_size = m_holder->size();
+            const size_type holder_size = m_holder->size();
 
             return holder_size;
         }
@@ -63,7 +63,7 @@ namespace Mengine
                 return true;
             }
 
-            bool holder_empty = m_holder->empty();
+            const bool holder_empty = m_holder->empty();
 
             return holder_empty;
         }
@@ -75,7 +75,7 @@ namespace Mengine
                 return 0;
             }
 
-            hash_type holder_hash = m_holder->hash();
+            const hash_type holder_hash = m_holder->hash();
 
             return holder_hash;
         }
@@ -86,41 +86,41 @@ namespace Mengine
         }
 
     public:
-        inline ConstString & operator = ( const ConstString & _right )
+        inline ConstString & operator = ( const ConstString & _right ) noexcept
         {
             m_holder = _right.m_holder;
 
             return *this;
         }
 
-        inline bool operator == ( const ConstString & _right ) const
+        inline bool operator == ( const ConstString & _right ) const noexcept
         {
             return m_holder == _right.m_holder;
         }
 
-        inline bool operator != ( const ConstString & _right ) const
+        inline bool operator != ( const ConstString & _right ) const noexcept
         {
             return !this->operator == ( _right );
         }
 
-        inline bool operator < ( const ConstString & _right ) const
+        inline bool operator < ( const ConstString & _right ) const noexcept
         {
             return m_holder < _right.m_holder;
         }
 
-        inline bool operator <= ( const ConstString & _right ) const
+        inline bool operator <= ( const ConstString & _right ) const noexcept
         {
             return m_holder <= _right.m_holder;
         }
 
-        inline bool operator > ( const ConstString & _right ) const
+        inline bool operator > ( const ConstString & _right ) const noexcept
         {
             const bool result = !(*this <= _right);
 
             return result;
         }
 
-        inline bool operator >= ( const ConstString & _right ) const
+        inline bool operator >= ( const ConstString & _right ) const noexcept
         {
             const bool result = !(*this < _right);
 
@@ -129,7 +129,7 @@ namespace Mengine
 
         struct less_type
         {
-            bool operator () ( const ConstString & _left, const ConstString & _right ) const
+            bool operator () ( const ConstString & _left, const ConstString & _right ) const noexcept
             {
                 return _left < _right;
             }

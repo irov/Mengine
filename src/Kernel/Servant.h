@@ -11,8 +11,8 @@ namespace Mengine
 		: public Factorable
 	{
 	public:
-		Servant();
-		~Servant() override;
+		Servant() noexcept;
+		~Servant() noexcept override;
 	};
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Servant> ServantPtr;

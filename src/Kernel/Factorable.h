@@ -29,7 +29,7 @@ namespace Mengine
 
     public:
         void setFactory( Factory * _factory );
-        inline Factory * getFactory() const;
+        inline Factory * getFactory() const noexcept;
 
     public:
         void setImmortal( bool _value );
@@ -67,7 +67,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Factorable> FactorablePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline Factory * Factorable::getFactory() const
+    inline Factory * Factorable::getFactory() const noexcept
     {
         return m_factory;
     }

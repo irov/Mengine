@@ -5,25 +5,25 @@
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	BaseEventation::BaseEventation()
+	BaseEventation::BaseEventation() noexcept
 		: m_flag(0)
 	{
     }
 	//////////////////////////////////////////////////////////////////////////
-	BaseEventation::~BaseEventation()
+	BaseEventation::~BaseEventation() noexcept
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
     class BaseEventation::FEventReciver
     {
     public:
-        FEventReciver( uint32_t _event )
+        FEventReciver( uint32_t _event ) noexcept
             : m_event( _event )
         {
         }
 
     public:
-        bool operator() ( const EventReceiverDesc & _desc ) const
+        bool operator() ( const EventReceiverDesc & _desc ) const noexcept
         {
             return _desc.event == m_event;
         }
@@ -115,7 +115,7 @@ namespace Mengine
         return (m_flag & (1ULL << _event)) != 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseEventation::removeEvents()
+    void BaseEventation::removeEvents() noexcept
     {
         m_receivers.clear();
         m_flag = 0;

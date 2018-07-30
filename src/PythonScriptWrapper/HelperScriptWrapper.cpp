@@ -3006,8 +3006,8 @@ namespace Mengine
         pybind::registration_type_cast<String>(kernel, new extract_String_type);
         pybind::registration_type_cast<WString>(kernel, new extract_WString_type);
 
-        pybind::registration_stl_vector_type_cast<String, stdex::vector<String>>(kernel);
-        pybind::registration_stl_vector_type_cast<WString, stdex::vector<WString>>(kernel);
+        pybind::registration_stl_vector_type_cast<String, Vector<String>>(kernel);
+        pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(kernel);
 
         pybind::def_functor( kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
 

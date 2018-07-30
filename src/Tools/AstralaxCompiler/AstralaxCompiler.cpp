@@ -11,8 +11,8 @@
 #	include <string>
 #	include <sstream>
 
-#	include "Core/Magic.h"
-#	include "Logger/Logger.h"
+#	include "Kernel/Magic.h"
+#	include "Kernel/Logger.h"
 #	include "ToolUtils/ToolUtils.h"
 
 //////////////////////////////////////////////////////////////////////////

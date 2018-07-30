@@ -59,11 +59,11 @@
 
 #	include "Config/String.h"
 
-#	include "Codec/ConverterFactory.h"
+#	include "Kernel/ConverterFactory.h"
 
 #	include "Image.h"
 
-#   include "Logger\Logger.h"
+#   include "Kernel/Logger.h"
 
 #	include "pybind/pybind.hpp"
 #	include "pybind/stl_type_cast.hpp"

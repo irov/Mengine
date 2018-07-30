@@ -25,7 +25,7 @@
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
-#	include "Logger/Logger.h"
+#	include "Kernel/Logger.h"
 #	include "ToolUtils/ToolUtils.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -250,22 +250,22 @@ namespace Mengine
 
         size_t bufferSize = width * height * channels;
 
-        MemoryBufferInterfacePtr memory_textureBuffer = MEMORY_SERVICE()
+        MemoryBufferInterfacePtr memory_texture = MEMORY_SERVICE()
             ->createMemoryBuffer();
 
-        if( memory_textureBuffer == nullptr )
+        if( memory_texture == nullptr )
         {
             return false;
         }
 
-        unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize, __FILE__, __LINE__ );
+        unsigned char * texture_buffer = memory_texture->newBuffer( bufferSize, "trimImage", __FILE__, __LINE__ );
 
-        if( textureBuffer == nullptr )
+        if( texture_buffer == nullptr )
         {
             return false;
         }
 
-        if( imageDecoder->decode( textureBuffer, bufferSize ) == 0U )
+        if( imageDecoder->decode( texture_buffer, bufferSize ) == 0U )
         {
             return false;
         }
@@ -293,7 +293,7 @@ namespace Mengine
                 for( uint32_t j = 0; j != height; ++j )
                 {
                     uint32_t index = i + j * width;
-                    unsigned char alpha = textureBuffer[index * 4 + 3];
+                    unsigned char alpha = texture_buffer[index * 4 + 3];
 
                     if( alpha == 0 )
                     {
@@ -370,15 +370,15 @@ namespace Mengine
         {
             size_t new_bufferSize = new_width * new_height * channels;
 
-            MemoryBufferInterfacePtr buffer = MEMORY_SERVICE()
+            MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
                 ->createMemoryBuffer();
 
-            if( buffer == nullptr )
+            if( memory == nullptr )
             {
                 return false;
             }
 
-            uint8_t * new_textureBuffer = buffer->newMemory( new_bufferSize, __FILE__, __LINE__ );
+            uint8_t * new_textureBuffer = memory->newBuffer( new_bufferSize, "trimImage", __FILE__, __LINE__ );
 
             if( new_textureBuffer == nullptr )
             {
@@ -417,10 +417,10 @@ namespace Mengine
                                 uint32_t new_index = i + j * new_width;
                                 uint32_t old_index = (min_i + (i - 1)) + (min_j + (j - 1)) * width;
 
-                                uint32_t r = textureBuffer[old_index * 4 + 0];
-                                uint32_t g = textureBuffer[old_index * 4 + 1];
-                                uint32_t b = textureBuffer[old_index * 4 + 2];
-                                uint32_t a = textureBuffer[old_index * 4 + 3];
+                                uint32_t r = texture_buffer[old_index * 4 + 0];
+                                uint32_t g = texture_buffer[old_index * 4 + 1];
+                                uint32_t b = texture_buffer[old_index * 4 + 2];
+                                uint32_t a = texture_buffer[old_index * 4 + 3];
 
                                 new_textureBuffer[new_index * 4 + 0] = (uint8_t)(r * a / 255);
                                 new_textureBuffer[new_index * 4 + 1] = (uint8_t)(g * a / 255);
@@ -438,10 +438,10 @@ namespace Mengine
                                 uint32_t new_index = i + j * new_width;
                                 uint32_t old_index = (min_i + (i - 1)) + (min_j + (j - 1)) * width;
 
-                                new_textureBuffer[new_index * 4 + 0] = textureBuffer[old_index * 4 + 0];
-                                new_textureBuffer[new_index * 4 + 1] = textureBuffer[old_index * 4 + 1];
-                                new_textureBuffer[new_index * 4 + 2] = textureBuffer[old_index * 4 + 2];
-                                new_textureBuffer[new_index * 4 + 3] = textureBuffer[old_index * 4 + 3];
+                                new_textureBuffer[new_index * 4 + 0] = texture_buffer[old_index * 4 + 0];
+                                new_textureBuffer[new_index * 4 + 1] = texture_buffer[old_index * 4 + 1];
+                                new_textureBuffer[new_index * 4 + 2] = texture_buffer[old_index * 4 + 2];
+                                new_textureBuffer[new_index * 4 + 3] = texture_buffer[old_index * 4 + 3];
                             }
                         }
                     }
@@ -457,10 +457,10 @@ namespace Mengine
                                 uint32_t new_index = i + j * new_width;
                                 uint32_t old_index = (min_i + i) + (min_j + j) * width;
 
-                                uint32_t r = textureBuffer[old_index * 4 + 0];
-                                uint32_t g = textureBuffer[old_index * 4 + 1];
-                                uint32_t b = textureBuffer[old_index * 4 + 2];
-                                uint32_t a = textureBuffer[old_index * 4 + 3];
+                                uint32_t r = texture_buffer[old_index * 4 + 0];
+                                uint32_t g = texture_buffer[old_index * 4 + 1];
+                                uint32_t b = texture_buffer[old_index * 4 + 2];
+                                uint32_t a = texture_buffer[old_index * 4 + 3];
 
                                 new_textureBuffer[new_index * 4 + 0] = (uint8_t)(r * a / 255);
                                 new_textureBuffer[new_index * 4 + 1] = (uint8_t)(g * a / 255);
@@ -478,10 +478,10 @@ namespace Mengine
                                 uint32_t new_index = i + j * new_width;
                                 uint32_t old_index = (min_i + i) + (min_j + j) * width;
 
-                                new_textureBuffer[new_index * 4 + 0] = textureBuffer[old_index * 4 + 0];
-                                new_textureBuffer[new_index * 4 + 1] = textureBuffer[old_index * 4 + 1];
-                                new_textureBuffer[new_index * 4 + 2] = textureBuffer[old_index * 4 + 2];
-                                new_textureBuffer[new_index * 4 + 3] = textureBuffer[old_index * 4 + 3];
+                                new_textureBuffer[new_index * 4 + 0] = texture_buffer[old_index * 4 + 0];
+                                new_textureBuffer[new_index * 4 + 1] = texture_buffer[old_index * 4 + 1];
+                                new_textureBuffer[new_index * 4 + 2] = texture_buffer[old_index * 4 + 2];
+                                new_textureBuffer[new_index * 4 + 3] = texture_buffer[old_index * 4 + 3];
                             }
                         }
                     }
@@ -597,7 +597,7 @@ namespace Mengine
 
                         for( uint32_t k = 0; k != channels; ++k )
                         {
-                            new_textureBuffer[index * channels + k] = textureBuffer[index * channels + k];
+                            new_textureBuffer[index * channels + k] = texture_buffer[index * channels + k];
                         }
                     }
                 }

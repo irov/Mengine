@@ -15,7 +15,7 @@
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
-#   include "Logger\Logger.h"
+#   include "Kernel\Logger.h"
 
 namespace Mengine
 {
@@ -93,7 +93,7 @@ namespace Mengine
 			return pybind::ret_none();
 		}
 
-		unsigned char * textureBuffer = memory_textureBuffer->newMemory( bufferSize, __FILE__, __LINE__ );
+		unsigned char * textureBuffer = memory_textureBuffer->newBuffer( bufferSize, "spreadingPngAlpha", __FILE__, __LINE__ );
 
 		if( textureBuffer == nullptr )
 		{

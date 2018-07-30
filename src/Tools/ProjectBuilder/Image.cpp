@@ -2,6 +2,7 @@
 
 #	include "Interface/InputSystemInterface.h"
 #	include "Interface/ImageCodecInterface.h"
+#	include "Interface/FileSystemInterface.h"
 #	include "Interface/ScriptSystemInterface.h"
 
 namespace Mengine
@@ -71,7 +72,7 @@ namespace Mengine
 			return false;
 		}
 		
-		void * memory = m_memory->newMemory( m_width * m_height * m_channels, __FILE__, __LINE__ );
+		void * memory = m_memory->newBuffer( m_width * m_height * m_channels, "Image::load", __FILE__, __LINE__ );
 
 		if( memory == nullptr )
 		{
@@ -142,10 +143,10 @@ namespace Mengine
 		di.depth = 1;
 		di.quality = 100;
 
-		void * memory = m_memory->getMemory();
+		void * memory_buffer = m_memory->getBuffer();
 		size_t memory_size = m_memory->getSize();
 
-		encoder->encode( memory, memory_size, &di );
+		encoder->encode( memory_buffer, memory_size, &di );
 
 		return true;
 	}
@@ -164,9 +165,9 @@ namespace Mengine
 			return false;
 		}
 
-		void * memory = m_memory->newMemory( m_width * m_height * m_channels, __FILE__, __LINE__ );
+		void * memory_buffer = m_memory->newBuffer( m_width * m_height * m_channels, "Image::create", __FILE__, __LINE__ );
 
-		if( memory == nullptr )
+		if( memory_buffer == nullptr )
 		{
 			return false;
 		}
@@ -242,7 +243,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	uint8_t * Image::getMemory() const
 	{
-		return m_memory->getMemory();
+		return m_memory->getBuffer();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	uint32_t Image::getWidth() const
@@ -355,7 +356,7 @@ namespace Mengine
 			max_color[k] = 0;
 		}
 
-		uint8_t * memory = m_memory->getMemory();
+		uint8_t * memory_buffer = m_memory->getBuffer();
 
 		for( uint32_t j = 0; j != m_height; ++j )
 		{
@@ -365,7 +366,7 @@ namespace Mengine
 
 				for( uint32_t k = 0; k != m_channels; ++k )
 				{
-					uint8_t color = memory[index + k];
+					uint8_t color = memory_buffer[index + k];
 
 					if( min_color[k] > color )
 					{
@@ -399,7 +400,7 @@ namespace Mengine
 			return true;
 		}
 
-		uint8_t * memory = m_memory->getMemory();
+		uint8_t * memory_buffer = m_memory->getBuffer();
 
 		uint8_t min_alpha = 255;
 
@@ -409,7 +410,7 @@ namespace Mengine
 			{
 				uint32_t index = (i + (j * m_width)) * 4;
 
-				uint8_t color = memory[index + 3];
+				uint8_t color = memory_buffer[index + 3];
 
 				if( min_alpha > color )
 				{
@@ -434,9 +435,9 @@ namespace Mengine
 		Image * imageAlpha = new Image();
 		imageAlpha->create(m_width, m_height, 1);
 
-		uint8_t * memory_this = m_memory->getMemory();
-		uint8_t * memory_rgb = imageRGB->getMemory();
-		uint8_t * memory_alpha = imageAlpha->getMemory();
+		uint8_t * memory_buffer_this = m_memory->getBuffer();
+		uint8_t * memory_buffer_rgb = imageRGB->getMemory();
+		uint8_t * memory_buffer_alpha = imageAlpha->getMemory();
 
 		for( uint32_t j = 0; j != m_height; ++j )
 		{
@@ -446,11 +447,11 @@ namespace Mengine
 				uint32_t index_rgb = (i + (j * m_width)) * 3;
 				uint32_t index_a = (i + (j * m_width)) * 1;
 
-				memory_rgb[index_rgb + 0] = memory_this[index + 0];
-				memory_rgb[index_rgb + 1] = memory_this[index + 1];
-				memory_rgb[index_rgb + 2] = memory_this[index + 2];
+				memory_buffer_rgb[index_rgb + 0] = memory_buffer_this[index + 0];
+				memory_buffer_rgb[index_rgb + 1] = memory_buffer_this[index + 1];
+				memory_buffer_rgb[index_rgb + 2] = memory_buffer_this[index + 2];
 
-				memory_alpha[index_a + 0] = memory_this[index + 3];
+				memory_buffer_alpha[index_a + 0] = memory_buffer_this[index + 3];
 			}
 		}
 

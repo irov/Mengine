@@ -88,7 +88,7 @@ namespace Mengine
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryCacheBuffer();
 
-        memory->newBuffer( bufferSize, __FILE__, __LINE__ );
+        memory->newBuffer( bufferSize, "OpenGLRenderIndexBuffer", __FILE__, __LINE__ );
 
         m_lockMemory = memory;
 

@@ -3,7 +3,7 @@
 #	include "Interface/ImageCodecInterface.h"
 #	include "Interface/MemoryInterface.h"
 
-#	include "Core/ColourValue.h"
+#	include "Kernel/ColourValue.h"
 
 #	include "pybind/pybind.hpp"
 

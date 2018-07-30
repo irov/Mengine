@@ -44,7 +44,7 @@ namespace Mengine
 
     public:
         bool isLoggedIn();
-        bool performLogin( const TVectorString & _permissions );
+        bool performLogin( const VectorString & _permissions );
         bool getUser();
         bool shareLink( const String & _link );
         bool getProfilePictureLink( const String & _typeParameter );

@@ -523,7 +523,7 @@ namespace Mengine
 
         SERVICE_CREATE( OptionsService );
 
-        TVectorString options;
+        VectorString options;
 
         for( int i = 1; i < argc; ++i )
         {
@@ -698,10 +698,10 @@ namespace Mengine
 
 #   undef MENGINE_ADD_PLUGIN
 
-        TVectorWString plugins;
+        VectorWString plugins;
         CONFIG_VALUES( "Plugins", "Name", plugins );
 
-        for( TVectorWString::const_iterator
+        for( VectorWString::const_iterator
             it = plugins.begin(),
             it_end = plugins.end();
             it != it_end;
@@ -731,10 +731,10 @@ namespace Mengine
 
         if( devplugins == true && nodevplugins == false )
         {
-            TVectorWString devPlugins;
+            VectorWString devPlugins;
             CONFIG_VALUES( "DevPlugins", "Name", devPlugins );
 
-            for( TVectorWString::const_iterator
+            for( VectorWString::const_iterator
                 it = devPlugins.begin(),
                 it_end = devPlugins.end();
                 it != it_end;
@@ -754,10 +754,10 @@ namespace Mengine
 
         SERVICE_CREATE( ParticleService );
 
-        TVectorString modules;
+        VectorString modules;
         CONFIG_VALUES( "Modules", "Name", modules );
 
-        for( TVectorString::const_iterator
+        for( VectorString::const_iterator
             it = modules.begin(),
             it_end = modules.end();
             it != it_end;

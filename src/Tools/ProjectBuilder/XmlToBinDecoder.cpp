@@ -15,7 +15,7 @@
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
-#   include "Logger/Logger.h"
+#   include "Kernel/Logger.h"
 
 #	include "xml2metabuf/Xml2Metabuf.hpp"
 #	include "xml2metabuf/Xml2Metacode.hpp"

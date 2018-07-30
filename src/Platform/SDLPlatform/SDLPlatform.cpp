@@ -615,7 +615,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLPlatform::onEvent( const ConstString & _event, const TMapWParams & _params )
+    void SDLPlatform::onEvent( const ConstString & _event, const MapWParams & _params )
     {
         PARAM_UNUSED( _event );
         PARAM_UNUSED( _params );
@@ -746,7 +746,7 @@ namespace Mengine
 
         Helper::pathRemoveBackslash( fullPath );
 
-        TVectorWString paths;
+        VectorWString paths;
 
         for( ;; )
         {
@@ -765,7 +765,7 @@ namespace Mengine
             }
         }
 
-        for( TVectorWString::reverse_iterator
+        for( VectorWString::reverse_iterator
             it = paths.rbegin(),
             it_end = paths.rend();
             it != it_end;

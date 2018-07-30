@@ -229,7 +229,7 @@ namespace Mengine
             return nullptr;
         }
 
-        void * buffer = memory->newBuffer( size, __FILE__, __LINE__ );
+        void * buffer = memory->newBuffer( size, "OpenGLRenderImage", __FILE__, __LINE__ );
 
         if( buffer == nullptr )
         {

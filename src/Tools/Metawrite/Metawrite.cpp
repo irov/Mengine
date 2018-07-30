@@ -25,7 +25,7 @@
 
 #   include "WindowsLayer/VistaWindowsLayer.h"
 
-#	include "Logger/Logger.h"
+#	include "Kernel/Logger.h"
 #	include "ToolUtils/ToolUtils.h"
 
 //////////////////////////////////////////////////////////////////////////

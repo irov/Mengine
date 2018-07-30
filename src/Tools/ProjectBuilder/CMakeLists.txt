@@ -71,6 +71,13 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX}
     )
     
+if(MSVC)
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}    
+        ${THIRDPARTY_DIR}/openssl/libcrypto.lib
+        ${THIRDPARTY_DIR}/openssl/libssl.lib
+    )
+endif()    
+    
 foreach(dependency ${APPLICATION_DEPENDENCIES})
 	#MESSAGE( ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
 	TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} debug ${dependency} )

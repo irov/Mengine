@@ -351,13 +351,13 @@ namespace Mengine
         return returnValue;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeFacebookModule::performLogin( const TVectorString & _permissions )
+    bool AndroidNativeFacebookModule::performLogin( const VectorString & _permissions )
     {
         JNIEnv *env = Mengine_JNI_GetEnv();
 
         if( _permissions.empty() == false )
         {
-            TVectorString::size_type permissionsCount = _permissions.size();
+            VectorString::size_type permissionsCount = _permissions.size();
 
             jclass jclass_string = env->FindClass( "java/lang/String" );
             jobjectArray jpermissions = env->NewObjectArray( permissionsCount, jclass_string, NULL );

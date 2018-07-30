@@ -1131,7 +1131,7 @@ namespace Mengine
                             uint32_t c = it->first;
                             const VectorConstString & l = it->second;
 
-                            for( stdex::vector<ConstString>::const_iterator
+                            for( Vector<ConstString>::const_iterator
                                 it_list = l.begin(),
                                 it_list_end = l.end();
                                 it_list != it_list_end;

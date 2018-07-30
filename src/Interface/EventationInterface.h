@@ -26,7 +26,7 @@ namespace Mengine
         virtual bool hasEventReceiver( uint32_t _event ) const = 0;
 
     public:
-        virtual void removeEvents() = 0;
+        virtual void removeEvents() noexcept = 0;
 
     public:
         template<class T>

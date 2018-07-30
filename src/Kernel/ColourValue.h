@@ -20,7 +20,7 @@ namespace Mengine
     class ColourValue
     {
     public:
-        ColourValue()
+        ColourValue() noexcept
             : m_r( 1.f )
             , m_g( 1.f )
             , m_b( 1.f )

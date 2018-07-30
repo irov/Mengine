@@ -9,7 +9,7 @@ namespace Mengine
     class ValueFollower
     {
     public:
-        ValueFollower()
+        ValueFollower() noexcept
             : m_value( T() )
             , m_follow( T() )
         {

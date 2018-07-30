@@ -33,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct RenderMaterialStage
     {
-        RenderMaterialStage()
+        RenderMaterialStage() noexcept
             : id( 0 )
             , blendSrc( BF_SOURCE_ALPHA )
             , blendDst( BF_ONE_MINUS_SOURCE_ALPHA )

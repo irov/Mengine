@@ -27,23 +27,23 @@ namespace Mengine
 		~Affector() override;
 
 	public:
-		void setAffectorType( EAffectorType _type );
-		EAffectorType getAffectorType() const;
+		void setAffectorType( EAffectorType _type ) noexcept;
+		EAffectorType getAffectorType() const noexcept;
 
 	public:
-		void setId( AFFECTOR_ID _id );
-		AFFECTOR_ID getId() const;
+		void setId( AFFECTOR_ID _id ) noexcept;
+		AFFECTOR_ID getId() const noexcept;
 
 	public:
-		void setFreeze( bool _value );
-		bool getFreeze() const;
+		void setFreeze( bool _value ) noexcept;
+		bool getFreeze() const noexcept;
 
 	protected:
 		virtual void _setFreeze( bool _value );
 
 	public:
-		void setSpeedFactor( float _speed );
-		float getSpeedFactor() const;
+		void setSpeedFactor( float _speed ) noexcept;
+		float getSpeedFactor() const noexcept;
 
 	public:
 		bool prepare();

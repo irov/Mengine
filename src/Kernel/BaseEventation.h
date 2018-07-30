@@ -15,8 +15,8 @@ namespace Mengine
         : public EventationInterface
     {
     public:
-        BaseEventation();
-        ~BaseEventation() override;
+        BaseEventation() noexcept;
+        ~BaseEventation() noexcept override;
 
     public:
         bool registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver ) override;
@@ -27,7 +27,7 @@ namespace Mengine
         bool hasEventReceiver( uint32_t _event ) const override;
 
     public:
-        void removeEvents() override;
+        void removeEvents() noexcept override;
 
     public:
         template<class T>

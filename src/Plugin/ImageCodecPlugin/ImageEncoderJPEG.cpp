@@ -22,7 +22,7 @@ namespace Mengine
     struct EncoderJPEGErrorManager
     {
         jpeg_error_mgr pub;
-        //jmp_buf setjmp_buffer;
+        jmp_buf setjmp_buffer;
     };
     //////////////////////////////////////////////////////////////////////////
     static void	s_jpegErrorExit( j_common_ptr _cinfo )
@@ -47,7 +47,7 @@ namespace Mengine
             jpeg_destroy( _cinfo );
 
             // Return control to the setjmp point
-            //longjmp( mErr->setjmp_buffer, 1 );
+            longjmp( mErr->setjmp_buffer, 1 );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -170,17 +170,15 @@ namespace Mengine
         errorMgr.pub.error_exit = &s_jpegErrorExit;
         errorMgr.pub.output_message = &s_jpegOutputMessage;
 
-        //#ifndef NDEBUG
-        //		if( setjmp( errorMgr.setjmp_buffer ) )
-        //		{
-        //			// If we get here, the JPEG code has signaled an error.
-        //			// We need to clean up the JPEG object and return.
-        //            LOGGER_ERROR( "ImageEncoderJPEG::_prepareData jmp"
-        //            );
-        //			
-        //			return 0;
-        //		}
-        //#endif
+        if( setjmp( errorMgr.setjmp_buffer ) )
+        {
+            // If we get here, the JPEG code has signaled an error.
+            // We need to clean up the JPEG object and return.
+            LOGGER_ERROR( "ImageEncoderJPEG::_prepareData jmp"
+            );
+
+            return 0;
+        }
 
         struct jpeg_compress_struct cinfo = { 0 };
         cinfo.err = jpeg_std_error( &errorMgr.pub );

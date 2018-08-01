@@ -439,5 +439,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		);
 	}
 
+    fclose( f_result );
+
 	return 0;
 }

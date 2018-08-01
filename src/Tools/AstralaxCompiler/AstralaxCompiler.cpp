@@ -120,7 +120,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	WCHAR lpCommandLine[32768];
 	wcscpy_s( lpCommandLine, system_cmd.c_str() );
-
+    
 	if( CreateProcess( szBuffer
 		, lpCommandLine
 		, NULL

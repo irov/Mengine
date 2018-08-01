@@ -669,21 +669,23 @@ namespace Mengine
                 return 0;
             }
 
-            fprintf_s( f_result, "base_width=%u\n", width );
-            fprintf_s( f_result, "base_height=%u\n", height );
-            fprintf_s( f_result, "trim_width=%u\n", new_width );
-            fprintf_s( f_result, "trim_height=%u\n", new_height );
-            fprintf_s( f_result, "offset_x=%d\n", offset_i );
-            fprintf_s( f_result, "offset_y=%d\n", offset_j );
+            fprintf_s( f_result, "%u\n", width );
+            fprintf_s( f_result, "%u\n", height );
+            fprintf_s( f_result, "%u\n", new_width );
+            fprintf_s( f_result, "%u\n", new_height );
+            fprintf_s( f_result, "%d\n", offset_i );
+            fprintf_s( f_result, "%d\n", offset_j );
+
+            fclose( f_result );
         }
         else
         {
-            printf( "base_width=%u\n", width );
-            printf( "base_height=%u\n", height );
-            printf( "trim_width=%u\n", new_width );
-            printf( "trim_height=%u\n", new_height );
-            printf( "offset_x=%d\n", offset_i );
-            printf( "offset_y=%d\n", offset_j );
+            printf( "%u\n", width );
+            printf( "%u\n", height );
+            printf( "%u\n", new_width );
+            printf( "%u\n", new_height );
+            printf( "%d\n", offset_i );
+            printf( "%d\n", offset_j );
         }
 
         return true;
@@ -702,81 +704,85 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     (void)nShowCmd;
 
     stdex_allocator_initialize();
-
-    Mengine::WString in_path = parse_kwds( lpCmdLine, L"--in_path", Mengine::WString() );
-    Mengine::WString out_path = parse_kwds( lpCmdLine, L"--out_path", Mengine::WString() );
-    Mengine::WString result_path = parse_kwds( lpCmdLine, L"--result_path", Mengine::WString() );
-    Mengine::WString border = parse_kwds( lpCmdLine, L"--border", Mengine::WString() );
-    Mengine::WString trim = parse_kwds( lpCmdLine, L"--trim", Mengine::WString() );
-    Mengine::WString premultiplied = parse_kwds( lpCmdLine, L"--premultiplied", Mengine::WString() );
-
-    if( in_path.empty() == true )
+        
     {
-        message_error( "not found 'in' param"
-        );
+        Mengine::WString in_path = parse_kwds( lpCmdLine, L"--in_path", Mengine::WString() );
+        Mengine::WString out_path = parse_kwds( lpCmdLine, L"--out_path", Mengine::WString() );
+        Mengine::WString result_path = parse_kwds( lpCmdLine, L"--result_path", Mengine::WString() );
+        Mengine::WString border = parse_kwds( lpCmdLine, L"--border", Mengine::WString() );
+        Mengine::WString trim = parse_kwds( lpCmdLine, L"--trim", Mengine::WString() );
+        Mengine::WString premultiplied = parse_kwds( lpCmdLine, L"--premultiplied", Mengine::WString() );
 
-        return 0;
-    }
-
-    if( in_path.front() == L'\"' && in_path.back() == L'\"' )
-    {
-        in_path = in_path.substr( 1, in_path.size() - 2 );
-    }
-
-    if( out_path.empty() == false && out_path.front() == L'\"' && out_path.back() == L'\"' )
-    {
-        out_path = out_path.substr( 1, out_path.size() - 2 );
-    }
-
-    if( result_path.empty() == false && result_path.front() == L'\"' && result_path.back() == L'\"' )
-    {
-        result_path = result_path.substr( 1, result_path.size() - 2 );
-    }
-
-    bool flag_border = false;
-    if( border == L"1" )
-    {
-        flag_border = true;
-    }
-
-    bool flag_trim = false;
-    if( trim == L"1" )
-    {
-        flag_trim = true;
-    }
-
-    bool flag_premultiplied = false;
-    if( premultiplied == L"1" )
-    {
-        flag_premultiplied = true;
-    }
-
-    try
-    {
-        if( Mengine::initializeEngine() == false )
+        if( in_path.empty() == true )
         {
-            message_error( "ImageTrimmer invalid initialize" );
+            message_error( "not found 'in' param"
+            );
 
-            return 0;
+            return EXIT_FAILURE;
+        }
+
+        if( in_path.front() == L'\"' && in_path.back() == L'\"' )
+        {
+            in_path = in_path.substr( 1, in_path.size() - 2 );
+        }
+
+        if( out_path.empty() == false && out_path.front() == L'\"' && out_path.back() == L'\"' )
+        {
+            out_path = out_path.substr( 1, out_path.size() - 2 );
+        }
+
+        if( result_path.empty() == false && result_path.front() == L'\"' && result_path.back() == L'\"' )
+        {
+            result_path = result_path.substr( 1, result_path.size() - 2 );
+        }
+
+        bool flag_border = false;
+        if( border == L"1" )
+        {
+            flag_border = true;
+        }
+
+        bool flag_trim = false;
+        if( trim == L"1" )
+        {
+            flag_trim = true;
+        }
+
+        bool flag_premultiplied = false;
+        if( premultiplied == L"1" )
+        {
+            flag_premultiplied = true;
+        }
+
+        try
+        {
+            if( Mengine::initializeEngine() == false )
+            {
+                message_error( "ImageTrimmer invalid initialize" );
+
+                return EXIT_FAILURE;
+            }
+        }
+        catch( const std::exception & se )
+        {
+            message_error( "Mengine exception %s"
+                , se.what()
+            );
+
+            return EXIT_FAILURE;
+        }
+
+        if( Mengine::trimImage( in_path, out_path, result_path, flag_border, flag_trim, flag_premultiplied ) == false )
+        {
+            message_error( "ImageTrimmer invalid trim %ls"
+                , in_path.c_str()
+            );
+
+            return EXIT_FAILURE;
         }
     }
-    catch( const std::exception & se )
-    {
-        message_error( "Mengine exception %s"
-            , se.what()
-        );
 
-        return 0;
-    }
+    stdex_allocator_finalize();
 
-    if( Mengine::trimImage( in_path, out_path, result_path, flag_border, flag_trim, flag_premultiplied ) == false )
-    {
-        message_error( "ImageTrimmer invalid trim %ls"
-            , in_path.c_str()
-        );
-
-        return 0;
-    }
-
-    return 0;
+    return EXIT_SUCCESS;
 }

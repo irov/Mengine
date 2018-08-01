@@ -558,6 +558,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         fprintf_s( f_result, "\n" );
     }
+
+    fclose( f_result );
 	
 	return 0;
 }

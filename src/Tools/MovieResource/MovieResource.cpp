@@ -109,15 +109,14 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                 pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
                 xmlResource.append_attribute( "Name" ).set_value( resource_image->name );
                 xmlResource.append_attribute( "Type" ).set_value( "ResourceImageDefault" );
-                //xmlResource.append_attribute( "Unique" ).set_value( 0U );
+                xmlResource.append_attribute( "Unique" ).set_value( 0U );
 
                 if( strstr( resource_image->name, ".ptc_" ) == nullptr )
                 {
                     pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
                     char xmlFilePath[MAX_PATH];
-                    sprintf( xmlFilePath, "Movies2/%s/%s"
-                        , provider->movie_name
+                    sprintf( xmlFilePath, "Movies2/.store_images/%s"
                         , resource_image->path
                     );
 
@@ -159,7 +158,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                 pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
                 xmlResource.append_attribute( "Name" ).set_value( resource_image->name );
                 xmlResource.append_attribute( "Type" ).set_value( "ResourceImageSubstract" );
-                //xmlResource.append_attribute( "Unique" ).set_value( 0U );
+                xmlResource.append_attribute( "Unique" ).set_value( 0U );
 
                 pugi::xml_node xmlResourceImage = xmlResource.append_child( "Image" );
                 xmlResourceImage.append_attribute( "Alpha" ).set_value( "1" );

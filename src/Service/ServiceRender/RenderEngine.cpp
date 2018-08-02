@@ -904,11 +904,6 @@ namespace Mengine
 
         if( _renderPass->camera != nullptr )
         {
-            //const mt::mat4f & worldMatrix = _renderPass.camera->getCameraWorldMatrix();
-
-            //m_renderSystem
-            //	->setWorldMatrix( worldMatrix );
-
             const mt::mat4f & viewMatrix = _renderPass->camera->getCameraViewMatrix();
 
             m_renderSystem
@@ -921,12 +916,6 @@ namespace Mengine
         }
         else
         {
-            //mt::mat4f worldMatrix;
-            //mt::ident_m4( worldMatrix );
-
-            //m_renderSystem
-            //	->setWorldMatrix( worldMatrix );
-
             mt::mat4f viewMatrix;
             mt::ident_m4( viewMatrix );
 

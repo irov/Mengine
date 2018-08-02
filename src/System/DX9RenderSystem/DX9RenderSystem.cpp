@@ -548,7 +548,13 @@ namespace Mengine
             return;
         }
 
-        m_modelViewMatrix = _modelViewMatrix;
+        mt::mat4f vmperfect;
+        float offset_x = -1.f / (m_viewport.end.x - m_viewport.begin.x);
+        float offset_y = 1.f / (m_viewport.end.y - m_viewport.begin.y);
+
+        mt::make_translation_m4( vmperfect, offset_x, offset_y, 0.f );
+
+        mt::mul_m4_m4( m_modelViewMatrix, _modelViewMatrix, vmperfect );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
@@ -895,7 +901,7 @@ namespace Mengine
     {
         m_viewport = _viewport;
 
-        this->updateViewport_( _viewport );
+        this->updateViewport_( m_viewport );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::updateViewport_( const Viewport & _viewport )

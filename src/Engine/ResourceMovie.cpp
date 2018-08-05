@@ -520,6 +520,8 @@ namespace Mengine
             ml.hasViewport = meta_layer2d.get_Viewport( &ml.viewport );
             meta_layer2d.get_Params( &ml.params );
 
+            ml.scale.z = 1.f;
+
             if( ml.loop == false )
             {
                 if( ml.in < 0.f )

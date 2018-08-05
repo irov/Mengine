@@ -296,7 +296,7 @@ namespace Mengine
 
 		RenderVertexBufferInterfacePtr m_currentVertexBuffer;
 		RenderIndexBufferInterfacePtr m_currentIndexBuffer;
-
+        
 		uint32_t m_currentTextureStages;
 		RenderTextureStage m_currentTextureStage[MENGINE_MAX_TEXTURE_STAGES];
 		
@@ -311,10 +311,9 @@ namespace Mengine
 
 		RenderViewportInterfacePtr m_currentRenderViewport;
 		RenderCameraInterfacePtr m_currentRenderCamera;
+        RenderTransformationInterfacePtr m_currentRenderTransformation;
 		RenderScissorInterfacePtr m_currentRenderScissor;
 		
-        RenderTargetInterfacePtr m_currentRenderTarget;
-
 		RenderProgramInterfacePtr m_currentProgram;
 
 		RenderServiceDebugInfo m_debugInfo;	    // debug info

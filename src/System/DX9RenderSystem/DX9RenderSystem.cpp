@@ -260,6 +260,10 @@ namespace Mengine
 
         m_windowResolution = _resolution;
 
+        mt::vec2f windowSize;
+        m_windowResolution.calcSize( windowSize );
+        m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
+
         m_fullscreen = _fullscreen;
         m_waitForVSync = _waitForVSync;
 
@@ -535,7 +539,13 @@ namespace Mengine
             return;
         }
 
-        m_projectionMatrix = _projectionMatrix;
+        mt::mat4f vmperfect;
+        float offset_x = -0.5f / (m_windowViewport.end.x - m_windowViewport.begin.x);
+        float offset_y = 0.5f / (m_windowViewport.end.y - m_windowViewport.begin.y);
+
+        mt::make_translation_m4( vmperfect, offset_x, offset_y, 0.f );
+
+        mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setViewMatrix( const mt::mat4f & _modelViewMatrix )
@@ -548,13 +558,7 @@ namespace Mengine
             return;
         }
 
-        mt::mat4f vmperfect;
-        float offset_x = -1.f / (m_viewport.end.x - m_viewport.begin.x);
-        float offset_y = 1.f / (m_viewport.end.y - m_viewport.begin.y);
-
-        mt::make_translation_m4( vmperfect, offset_x, offset_y, 0.f );
-
-        mt::mul_m4_m4( m_modelViewMatrix, _modelViewMatrix, vmperfect );
+        m_modelViewMatrix = _modelViewMatrix;
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
@@ -944,6 +948,10 @@ namespace Mengine
         m_fullscreen = _fullscreen;
 
         m_windowResolution = _resolution;
+
+        mt::vec2f windowSize;
+        m_windowResolution.calcSize( windowSize );
+        m_windowViewport = Viewport( mt::vec2f::identity(), windowSize );
 
         m_d3dpp = _fullscreen ? &m_d3dppFS : &m_d3dppW;
         m_d3dpp->BackBufferWidth = m_windowResolution.getWidth();

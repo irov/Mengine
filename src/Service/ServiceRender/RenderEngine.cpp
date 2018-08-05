@@ -171,9 +171,7 @@ namespace Mengine
         m_currentIndexBuffer = nullptr;
 
         m_currentProgram = nullptr;
-
-        m_currentRenderTarget = nullptr;
-
+        
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderPass );
 
@@ -730,10 +728,45 @@ namespace Mengine
         m_stopRenderObjects = false;
 
         m_currentRenderCamera = nullptr;
-        m_currentRenderViewport = nullptr;
-        m_currentRenderScissor = nullptr;
-        m_currentRenderTarget = nullptr;
 
+        mt::mat4f viewMatrix;
+        mt::ident_m4( viewMatrix );
+
+        m_renderSystem
+            ->setViewMatrix( viewMatrix );
+
+        mt::mat4f projectionMatrix;
+        mt::ident_m4( projectionMatrix );
+
+        m_renderSystem
+            ->setProjectionMatrix( projectionMatrix );
+        
+        m_currentRenderViewport = nullptr;
+
+        uint32_t width = m_contentResolution.getWidth();
+        uint32_t height = m_contentResolution.getHeight();
+
+        Viewport renderViewport;
+        renderViewport.begin.x = 0.f;
+        renderViewport.begin.y = 0.f;
+        renderViewport.end.x = (float)width;
+        renderViewport.end.y = (float)height;
+
+        m_renderSystem
+            ->setViewport( renderViewport );
+
+        m_currentRenderTransformation = nullptr;
+
+        const mt::mat4f & worldMatrix = mt::mat4f::identity();
+
+        RENDER_SYSTEM()
+            ->setWorldMatrix( worldMatrix );
+
+        m_currentRenderScissor = nullptr;
+
+        m_renderSystem
+            ->removeScissor();
+        
         m_currentMaterialId = 0;
         m_currentTextureStages = 0;
         m_currentStage = nullptr;
@@ -756,13 +789,6 @@ namespace Mengine
         m_currentIndexBuffer = nullptr;
         m_currentProgram = nullptr;
 
-        const mt::mat4f & viewTransform = mt::mat4f::identity();
-        const mt::mat4f & projTransform = mt::mat4f::identity();
-        const mt::mat4f & worldTransform = mt::mat4f::identity();
-
-        m_renderSystem->setProjectionMatrix( projTransform );
-        m_renderSystem->setViewMatrix( viewTransform );
-        m_renderSystem->setWorldMatrix( worldTransform );
         m_renderSystem->setVertexBuffer( m_currentVertexBuffer );
         m_renderSystem->setIndexBuffer( m_currentIndexBuffer );
         m_renderSystem->setProgram( m_currentProgram );
@@ -879,82 +905,122 @@ namespace Mengine
     {
         if( _renderPass->viewport != nullptr )
         {
-            const Viewport & viewport = _renderPass->viewport->getViewport();
+            if( m_currentRenderViewport != _renderPass->viewport )
+            {
+                const Viewport & viewport = _renderPass->viewport->getViewport();
 
-            Viewport renderViewport;
-            this->calcRenderViewport_( viewport, renderViewport );
+                Viewport renderViewport;
+                this->calcRenderViewport_( viewport, renderViewport );
 
-            m_renderSystem
-                ->setViewport( renderViewport );
+                m_renderSystem
+                    ->setViewport( renderViewport );
+
+                m_currentRenderViewport = _renderPass->viewport;
+            }
         }
         else
         {
-            uint32_t width = m_contentResolution.getWidth();
-            uint32_t height = m_contentResolution.getHeight();
+            if( m_currentRenderViewport != nullptr )
+            {
+                uint32_t width = m_contentResolution.getWidth();
+                uint32_t height = m_contentResolution.getHeight();
 
-            Viewport renderViewport;
-            renderViewport.begin.x = 0.f;
-            renderViewport.begin.y = 0.f;
-            renderViewport.end.x = (float)width;
-            renderViewport.end.y = (float)height;
+                Viewport renderViewport;
+                renderViewport.begin.x = 0.f;
+                renderViewport.begin.y = 0.f;
+                renderViewport.end.x = (float)width;
+                renderViewport.end.y = (float)height;
 
-            m_renderSystem
-                ->setViewport( renderViewport );
+                m_renderSystem
+                    ->setViewport( renderViewport );
+
+                m_currentRenderViewport = nullptr;
+            }
         }
 
         if( _renderPass->camera != nullptr )
         {
-            const mt::mat4f & viewMatrix = _renderPass->camera->getCameraViewMatrix();
+            if( m_currentRenderCamera != _renderPass->camera )
+            {
+                const mt::mat4f & viewMatrix = _renderPass->camera->getCameraViewMatrix();
 
-            m_renderSystem
-                ->setViewMatrix( viewMatrix );
+                m_renderSystem
+                    ->setViewMatrix( viewMatrix );
 
-            const mt::mat4f & projectionMatrix = _renderPass->camera->getCameraProjectionMatrix();
+                const mt::mat4f & projectionMatrix = _renderPass->camera->getCameraProjectionMatrix();
 
-            m_renderSystem
-                ->setProjectionMatrix( projectionMatrix );
+                m_renderSystem
+                    ->setProjectionMatrix( projectionMatrix );
+
+                m_currentRenderCamera = _renderPass->camera;
+            }
         }
         else
         {
-            mt::mat4f viewMatrix;
-            mt::ident_m4( viewMatrix );
+            if( m_currentRenderCamera != nullptr )
+            {
+                mt::mat4f viewMatrix;
+                mt::ident_m4( viewMatrix );
 
-            m_renderSystem
-                ->setViewMatrix( viewMatrix );
+                m_renderSystem
+                    ->setViewMatrix( viewMatrix );
 
-            mt::mat4f projectionMatrix;
-            mt::ident_m4( projectionMatrix );
+                mt::mat4f projectionMatrix;
+                mt::ident_m4( projectionMatrix );
 
-            m_renderSystem
-                ->setProjectionMatrix( projectionMatrix );
+                m_renderSystem
+                    ->setProjectionMatrix( projectionMatrix );
+
+                m_currentRenderCamera = nullptr;
+            }
         }
 
         if( _renderPass->transformation != nullptr )
         {
-            const mt::mat4f & worldMatrix = _renderPass->transformation->getTransformationWorldMatrix();
+            if( m_currentRenderTransformation != _renderPass->transformation )
+            {
+                const mt::mat4f & worldMatrix = _renderPass->transformation->getTransformationWorldMatrix();
 
-            RENDER_SYSTEM()
-                ->setWorldMatrix( worldMatrix );
+                RENDER_SYSTEM()
+                    ->setWorldMatrix( worldMatrix );
+
+                m_currentRenderTransformation = _renderPass->transformation;
+            }
         }
         else
         {
-            const mt::mat4f & worldMatrix = mt::mat4f::identity();
+            if( m_currentRenderTransformation != nullptr )
+            {
+                const mt::mat4f & worldMatrix = mt::mat4f::identity();
 
-            RENDER_SYSTEM()
-                ->setWorldMatrix( worldMatrix );
+                RENDER_SYSTEM()
+                    ->setWorldMatrix( worldMatrix );
+
+                m_currentRenderTransformation = nullptr;
+            }
         }
 
         if( _renderPass->scissor != nullptr )
         {
-            const Viewport & viewport = _renderPass->scissor->getScissorViewport();
+            if( m_currentRenderScissor != _renderPass->scissor )
+            {
+                const Viewport & viewport = _renderPass->scissor->getScissorViewport();
 
-            m_renderSystem
-                ->setScissor( viewport );
+                m_renderSystem
+                    ->setScissor( viewport );
+
+                m_currentRenderScissor = _renderPass->scissor;
+            }
         }
         else
         {
-            m_renderSystem
-                ->removeScissor();
+            if( m_currentRenderScissor != nullptr )
+            {
+                m_renderSystem
+                    ->removeScissor();
+
+                m_currentRenderScissor = nullptr;
+            }
         }
 
         if( _renderPass->target != nullptr )

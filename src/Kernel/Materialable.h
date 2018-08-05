@@ -8,10 +8,11 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
     typedef IntrusivePtr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
     typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
 	enum EMaterialBlendMode 
 	{	
 		EMB_NORMAL,
@@ -19,20 +20,20 @@ namespace Mengine
 		EMB_SCREEN,
 		EMB_MULTIPLY
 	};
-
+    //////////////////////////////////////////////////////////////////////////
 	namespace Helper
 	{
         RenderMaterialInterfacePtr makeSolidMaterial( const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _solid );
 		RenderMaterialInterfacePtr makeImageMaterial( const ResourceImagePtr & _resourceImage, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _disableTextureColor, bool _solid );
 		RenderMaterialInterfacePtr makeTextureMaterial( const RenderTextureInterfacePtr * _textures, uint32_t _textureCount, const ConstString & _materialName, EMaterialBlendMode _blendMode, bool _premultiply, bool _disableTextureColor, bool _solid );
 	}
-
+    //////////////////////////////////////////////////////////////////////////
 	class Materialable
         : public Mixin
 	{
 	public:
 		Materialable();
-		~Materialable();
+		~Materialable() override;
 
 	public:
 		void setMaterialName( const ConstString & _materialName );

@@ -13,23 +13,23 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Layer2D::Layer2D()
+    //////////////////////////////////////////////////////////////////////////
+    Layer2D::Layer2D()
         : m_size( 0.f, 0.f )
         , m_viewport( 0.f, 0.f, 0.f, 0.f )
         , m_invalidateVerticesImageMaskColor( true )
         , m_invalidateVerticesImageMaskWM( true )
         , m_hasViewport( false )
         , m_hasImageMask( false )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Layer2D::_activate()
-	{
-		if( Layer::_activate() == false )
-		{
-			return false;
-		}
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Layer2D::_activate()
+    {
+        if( Layer::_activate() == false )
+        {
+            return false;
+        }
 
         if( m_hasViewport == true )
         {
@@ -44,8 +44,8 @@ namespace Mengine
             }
         }
 
-		return true;
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::_deactivate()
     {
@@ -71,71 +71,71 @@ namespace Mengine
     {
         return m_size;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::setViewport( const Viewport & _viewport )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void Layer2D::setViewport( const Viewport & _viewport )
+    {
         if( m_hasViewport == true )
         {
             return;
         }
 
-		m_viewport = _viewport;
-		
-		m_hasViewport = true;
+        m_viewport = _viewport;
+
+        m_hasViewport = true;
 
         this->createViewport_();
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::createViewport_()
     {
-		if( m_renderCamera == nullptr )
-		{
-			m_renderCamera = NODE_SERVICE() 
-				->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+        if( m_renderCamera == nullptr )
+        {
+            m_renderCamera = NODE_SERVICE()
+                ->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
-			if( m_renderCamera == nullptr )
-			{
-				LOGGER_ERROR("Layer2D::createRenderViewport_ %s invalid create Camera2D"
-					, this->getName().c_str()
-					);
+            if( m_renderCamera == nullptr )
+            {
+                LOGGER_ERROR( "Layer2D::createRenderViewport_ %s invalid create Camera2D"
+                    , this->getName().c_str()
+                );
 
-				return;
-			}
+                return;
+            }
 
-			this->addChild( m_renderCamera );
-		}
+            this->addChild( m_renderCamera );
+        }
 
-		if( m_renderViewport == nullptr )
-		{
-			m_renderViewport = NODE_SERVICE() 
-				->createNode( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
+        if( m_renderViewport == nullptr )
+        {
+            m_renderViewport = NODE_SERVICE()
+                ->createNode( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
 
-			if( m_renderViewport == nullptr )
-			{
-				LOGGER_ERROR("Layer2D::createRenderViewport_ %s invalid create RenderViewport"
-					, this->getName().c_str()
-					);
+            if( m_renderViewport == nullptr )
+            {
+                LOGGER_ERROR( "Layer2D::createRenderViewport_ %s invalid create RenderViewport"
+                    , this->getName().c_str()
+                );
 
-				return;
-			}
+                return;
+            }
 
-			this->addChild( m_renderViewport );
-		}
+            this->addChild( m_renderViewport );
+        }
 
-		m_renderCamera->setProxyViewMatrix( true );
-		m_renderCamera->setOrthogonalViewport( m_viewport );
+        m_renderCamera->setProxyViewMatrix( true );
+        m_renderCamera->setOrthogonalViewport( m_viewport );
         m_renderViewport->setViewport( m_viewport );
-				
-		Node::setRenderCamera( m_renderCamera );
-		Node::setRenderViewport( m_renderViewport );
+
+        Node::setRenderCamera( m_renderCamera );
+        Node::setRenderViewport( m_renderViewport );
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Layer2D::removeViewport()
-	{
-		if( m_hasViewport == false )
-		{
-			return;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    void Layer2D::removeViewport()
+    {
+        if( m_hasViewport == false )
+        {
+            return;
+        }
 
         m_hasViewport = false;
 
@@ -143,13 +143,13 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::clearViewport_()
-    {	
+    {
         m_renderViewport = nullptr;
-		m_renderCamera = nullptr;
+        m_renderCamera = nullptr;
 
-		Node::setRenderCamera( nullptr );
-		Node::setRenderViewport( nullptr );
-	}
+        Node::setRenderCamera( nullptr );
+        Node::setRenderViewport( nullptr );
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Layer2D::setImageMask( const ResourceImagePtr & _resourceImageMask )
     {
@@ -201,7 +201,7 @@ namespace Mengine
         {
             return false;
         }
-        
+
         RenderTextureInterfacePtr renderTargetTexture = RENDERTEXTURE_SERVICE()
             ->createRenderTexture( renderTargetImage, (uint32_t)m_size.x, (uint32_t)m_size.y );
 
@@ -223,9 +223,9 @@ namespace Mengine
         {
             return false;
         }
-        
+
         m_materialImageMask = material;
-        
+
         float hwWidth = (float)renderTarget->getHWWidth();
         float hwHeight = (float)renderTarget->getHWHeight();
 
@@ -258,9 +258,9 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::_renderTarget( const RenderContext * _state )
-    {        
+    {
         const RenderVertex2D * verticesImageMask = this->getVerticesImageMaskWM();
-        
+
         const mt::box2f & bb = this->getBoundingBox();
 
         this->addRenderQuad( _state, m_materialImageMask, verticesImageMask, 4, &bb, false );

@@ -158,7 +158,7 @@ namespace Mengine
 			renderViewport = m_orthogonalViewport;
 		}
 
-        mt::make_projection_ortho_lh_m4( m_projectionMatrix, renderViewport.begin.x + 0.5f, renderViewport.end.x + 0.5f, renderViewport.begin.y + 0.5f, renderViewport.end.y + 0.5f, m_cameraNear, m_cameraFar );
+        mt::make_projection_ortho_lh_m4( m_projectionMatrix, renderViewport.begin.x, renderViewport.end.x, renderViewport.begin.y, renderViewport.end.y, m_cameraNear, m_cameraFar );
         
 		mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
 	}

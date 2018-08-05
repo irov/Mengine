@@ -154,6 +154,7 @@ namespace Mengine
 		HMODULE m_hd3d9;
 
 		Resolution m_windowResolution;
+        Viewport m_windowViewport;
 		bool m_fullscreen;
 
         IDirect3D9 * m_pD3D;

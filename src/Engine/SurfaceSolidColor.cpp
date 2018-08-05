@@ -87,9 +87,10 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	RenderMaterialInterfacePtr SurfaceSolidColor::_updateMaterial() const
 	{	
-        bool solid = m_color.isSolid();
+        //ToDo MaterialContex
+        //bool solid = m_color.isSolid();
 
-		RenderMaterialInterfacePtr material = this->makeSolidMaterial( solid );
+		RenderMaterialInterfacePtr material = this->makeSolidMaterial( false );
 
 		if( material == nullptr )
 		{

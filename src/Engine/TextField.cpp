@@ -367,7 +367,7 @@ namespace Mengine
         }
 
         const TextFontInterfacePtr & font = this->getFont();
-        
+
         if( font == nullptr )
         {
             return;
@@ -1387,7 +1387,7 @@ namespace Mengine
         try
         {
             uint32_t expected_args = Helper::getStringFormatExpectedArgs( textValue );
-            
+
             return expected_args;
         }
         catch( const std::exception & _ex )
@@ -1424,7 +1424,7 @@ namespace Mengine
         }
 
         const String & textValue = textEntry->getValue();
-                
+
         try
         {
             String fmt = Helper::getStringFormat( textValue, m_textFormatArgs );

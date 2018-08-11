@@ -11,6 +11,7 @@
 #include "Kernel/ColourValue.h"
 
 #include "Config/String.h"
+#include "Config/VectorString.h"
 
 #include "Kernel/Factorable.h"
 
@@ -180,6 +181,17 @@ namespace Mengine
 	public:
 		virtual bool existFont( const ConstString & _name, TextFontInterfacePtr & _font ) const = 0;
 		virtual TextFontInterfacePtr getFont( const ConstString & _name ) const = 0;
+
+    public:
+        virtual void setTextAlias( const ConstString& _alias, const ConstString& _key ) = 0;
+        virtual void removeTextAlias( const ConstString& _alias ) = 0;
+        virtual bool hasTextAlias( const ConstString& _alias ) const = 0;
+        virtual const ConstString & getTextAlias( const ConstString& _alias ) const = 0;
+
+    public:
+        virtual void setTextAliasArguments( const ConstString & _alias, const VectorString & _arguments ) = 0;
+        virtual void removeTextAliasArguments( const ConstString & _alias ) = 0;
+        virtual bool getTextAliasArguments( const ConstString & _alias, VectorString & _arguments ) const = 0;
 
 	public:
 		virtual void visitFonts( VisitorTextFontInterface * _vistitor ) = 0;

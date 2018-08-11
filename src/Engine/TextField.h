@@ -120,6 +120,7 @@ namespace Mengine
     protected:
         void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyDebugMode( bool _debugMode );
+        void notifyChangeTextAliasArguments( const ConstString & _alias );
 
     protected:
         void updateVertices_( const TextFontInterfacePtr & _font );

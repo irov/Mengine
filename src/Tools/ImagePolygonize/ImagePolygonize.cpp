@@ -289,49 +289,31 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         return 0;
     }
 
-    fprintf_s( f_result, "vertex_count=%u\n", vertex_count );
-    fprintf_s( f_result, "indices_count=%u\n", indices_count );
+    fprintf_s( f_result, "%u\n", vertex_count );
+    fprintf_s( f_result, "%u\n", indices_count );
 
-    fprintf_s( f_result, "positions=" );
+    fprintf_s( f_result, "" );
 
-	for( std::vector<float>::const_iterator
-		it = positions.begin(),
-		it_end = positions.end();
-	it != it_end;
-	++it )
+	for( float v : positions )
 	{
-		const float v = *it;
-
         fprintf_s( f_result, " %12f", v );
 	}
 
     fprintf_s( f_result, "\n" );
 
-    fprintf_s( f_result, "uvs=" );
+    fprintf_s( f_result, "" );
 
-	for( std::vector<float>::const_iterator
-		it = uvs.begin(),
-		it_end = uvs.end();
-	it != it_end;
-	++it )
+	for( float v : uvs )
 	{
-		const float v = *it;
-
         fprintf_s( f_result, " %12f", v );
 	}
 
     fprintf_s( f_result, "\n" );
 
-    fprintf_s( f_result, "indices=" );
+    fprintf_s( f_result, "" );
 
-	for( std::vector<uint16_t>::const_iterator
-		it = indices.begin(),
-		it_end = indices.end();
-	it != it_end;
-	++it )
+	for( uint16_t v : indices )
 	{
-		const uint16_t v = *it;
-
         fprintf_s( f_result, " %u", v );
 	}
 

@@ -43,7 +43,7 @@ namespace Mengine
         bool initializeSDK();
 
     public:
-        bool isLoggedIn();
+        bool isLoggedIn() const;
         bool performLogin( const VectorString & _permissions );
         bool getUser();
         bool shareLink( const String & _link );

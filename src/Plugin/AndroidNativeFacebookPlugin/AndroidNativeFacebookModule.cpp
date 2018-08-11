@@ -340,7 +340,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeFacebookModule::isLoggedIn()
+    bool AndroidNativeFacebookModule::isLoggedIn() const
     {
         JNIEnv * env = Mengine_JNI_GetEnv();
 

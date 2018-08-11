@@ -113,7 +113,7 @@ namespace Mengine
                 node->setExternalRender( true );
 
                 node->setTextID( layer.name );
-
+                
                 node->setPixelsnap( false );
 
                 this->addText_( layer.index, node );

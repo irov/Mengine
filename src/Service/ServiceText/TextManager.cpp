@@ -763,15 +763,76 @@ namespace Mengine
         return font;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextManager::setTextAlias( const ConstString& _alias, const ConstString& _key )
+    {
+        m_aliases[_alias] = _key;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextManager::removeTextAlias( const ConstString& _alias )
+    {
+        m_aliases.erase( _alias );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextManager::hasTextAlias( const ConstString& _alias ) const
+    {
+        MapTextAliases::const_iterator it_found = m_aliases.find( _alias );
+
+        if( it_found == m_aliases.end() )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & TextManager::getTextAlias( const ConstString& _alias ) const
+    {
+        MapTextAliases::const_iterator it_found = m_aliases.find( _alias );
+
+        if( it_found == m_aliases.end() )
+        {
+            return _alias;
+        }
+
+        const ConstString & textId = it_found->second;
+
+        return textId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextManager::setTextAliasArguments( const ConstString & _alias, const VectorString & _arguments )
+    {
+        m_aliasesArguments[_alias] = _arguments;
+
+        NOTIFICATION_SERVICE()
+            ->notify( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, _alias );        
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextManager::removeTextAliasArguments( const ConstString & _alias )
+    {
+        m_aliasesArguments.erase( _alias );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextManager::getTextAliasArguments( const ConstString & _alias, VectorString & _arguments ) const
+    {
+        MapTextAliasesArguments::const_iterator it_found = m_aliasesArguments.find( _alias );
+
+        if( it_found == m_aliasesArguments.end() )
+        {
+            return false;
+        }
+
+        const VectorString & arguments = it_found->second;
+
+        _arguments = arguments;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TextManager::visitFonts( VisitorTextFontInterface * _vistitor )
     {
-        for( MapTextFont::iterator
-            it = m_fonts.begin(),
-            it_end = m_fonts.end();
-            it != it_end;
-            ++it )
+        for( const MapTextFont::value_type & value : m_fonts )
         {
-            const TextFontInterfacePtr & font = it->second;
+            const TextFontInterfacePtr & font = value.second;
 
             _vistitor->onTextFont( font );
         }

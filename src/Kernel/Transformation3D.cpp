@@ -395,7 +395,7 @@ namespace Mengine
 
                 if( m_transformationFlag != 0 )
                 {
-                    mt::mul_m4_m4( _wm, localMatrix, relationMatrix );
+                    mt::mul_m4_m4_r( _wm, localMatrix, relationMatrix );
                 }
                 else
                 {
@@ -639,7 +639,7 @@ namespace Mengine
             mt::mat4f mat_rot;
             mt::make_rotate_m4_euler( mat_rot, _orientation.x, _orientation.y, _orientation.z );
 
-            mt::mul_m4_m4( _lm, mat_base, mat_rot );
+            mt::mul_m4_m4_r( _lm, mat_base, mat_rot );
         }
         else
         {
@@ -648,7 +648,7 @@ namespace Mengine
                 mt::mat4f mat_rot;
                 mt::make_rotate_z_axis_m4( mat_rot, _orientation.x );
 
-                mt::mul_m4_m4( _lm, mat_base, mat_rot );
+                mt::mul_m4_m4_r( _lm, mat_base, mat_rot );
             }
             else
             {
@@ -690,7 +690,7 @@ namespace Mengine
                 {
                     const mt::mat4f & localMatrix = this->getLocalMatrix();
 
-                    mt::mul_m4_m4( m_worldMatrix, localMatrix, relationMatrix );
+                    mt::mul_m4_m4_r( m_worldMatrix, localMatrix, relationMatrix );
                 }
                 else
                 {

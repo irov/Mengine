@@ -28,7 +28,7 @@ namespace Mengine
 			mt::mat4f relationMatrix;
 			mt::make_translation_m4_v3( relationMatrix, relationPosition );
 
-			mt::mul_m4_m4( m_worldMatrix, localMatrix, relationMatrix );
+			mt::mul_m4_m4_r( m_worldMatrix, localMatrix, relationMatrix );
 		}
 	}
 }

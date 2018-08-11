@@ -61,6 +61,9 @@ namespace Mengine
         NOTIFICATION_SERVICE()
             ->addObserverMethod( NOTIFICATOR_DEBUG_TEXT_MODE, this, &TextField::notifyDebugMode );
 
+        NOTIFICATION_SERVICE()
+            ->addObserverMethod( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, this, &TextField::notifyChangeTextAliasArguments );
+
         this->invalidateTextLines();
 
         return true;
@@ -75,6 +78,9 @@ namespace Mengine
 
         NOTIFICATION_SERVICE()
             ->removeObserver( NOTIFICATOR_DEBUG_TEXT_MODE, this );
+
+        NOTIFICATION_SERVICE()
+            ->removeObserver( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, this );
     }
     //////////////////////////////////////////////////////////////////////////
     bool TextField::_compile()
@@ -126,6 +132,16 @@ namespace Mengine
     void TextField::notifyDebugMode( bool _debugMode )
     {
         m_debugMode = _debugMode;
+
+        this->invalidateTextEntry();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::notifyChangeTextAliasArguments( const ConstString & _alias )
+    {
+        if( m_key != _alias )
+        {
+            return;
+        }
 
         this->invalidateTextEntry();
     }
@@ -984,8 +1000,11 @@ namespace Mengine
     {
         m_invalidateTextEntry = false;
 
+        const ConstString & aliasTestId = TEXT_SERVICE()
+            ->getTextAlias( m_key );
+
         m_textEntry = TEXT_SERVICE()
-            ->getTextEntry( m_key );
+            ->getTextEntry( aliasTestId );
 
         if( m_textEntry == nullptr )
         {
@@ -1424,6 +1443,9 @@ namespace Mengine
         }
 
         const String & textValue = textEntry->getValue();
+
+        TEXT_SERVICE()
+            ->getTextAliasArguments( m_key, m_textFormatArgs );
 
         try
         {

@@ -1245,7 +1245,7 @@ namespace Mengine
         }
 #endif
 
-        if( m_renderObjects.full() == true )
+        if(m_renderObjects.full())
         {
             LOGGER_ERROR( "RenderEngine::renderObject2D max render objects %u"
                 , m_renderObjects.size()

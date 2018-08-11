@@ -1,8 +1,8 @@
-set( MY_LIB_NAME PolygonizeSprite )
+set( MY_LIB_NAME ImagePolygonize )
 
 ADD_FILTER(
 src
-    PolygonizeSprite.cpp
+    ImagePolygonize.cpp
 )
 
 add_definitions(-DUNICODE)

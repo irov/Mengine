@@ -410,6 +410,89 @@ namespace Mengine
             return value;
         }
 
+        void s_setTextAlias( const ConstString & _aliasId, const ConstString & _textId )
+        {
+            TEXT_SERVICE()
+                ->setTextAlias( _aliasId, _textId );
+        }
+
+        void s_removeTextAlias( const ConstString & _aliasId )
+        {
+            TEXT_SERVICE()
+                ->removeTextAlias( _aliasId );
+        }
+
+        bool s_hasTextAlias( const ConstString & _aliasId )
+        {
+            bool exist = TEXT_SERVICE()
+                ->hasTextAlias( _aliasId );
+
+            return exist;
+        }
+
+        const ConstString & s_getTextAlias( const ConstString & _aliasId )
+        {
+            const ConstString & textId = TEXT_SERVICE()
+                ->getTextAlias( _aliasId );
+
+            return textId;
+        }
+
+        bool s_setTextAliasArguments( const ConstString & _aliasId, const pybind::args & _args )
+        {
+            size_t args_count = _args.size();
+
+            VectorString arguments;
+            arguments.reserve( args_count );
+
+            for( const pybind::object & py_obj : _args )
+            {
+                //PyObject * py_string = pybind::tuple_getitem( _args, it );
+
+                if( py_obj.is_string() == true )
+                {
+                    String key = py_obj.extract();
+
+                    arguments.emplace_back( key );
+                }
+                else if( py_obj.is_unicode() == true )
+                {
+                    WString key = py_obj.extract();
+
+                    String utf8_arg;
+                    Helper::unicodeToUtf8( key, utf8_arg );
+
+                    arguments.emplace_back( utf8_arg );
+                }
+                else
+                {
+                    const char * value = py_obj.str();
+
+                    if( value == nullptr )
+                    {
+                        LOGGER_ERROR( "textfield_setTextFormatArgs %s not suport arg %s"
+                            , py_obj.repr()
+                        );
+
+                        return false;
+                    }
+
+                    arguments.emplace_back( String( value ) );
+                }
+            }
+
+            TEXT_SERVICE()
+                ->setTextAliasArguments( _aliasId, arguments );
+
+            return true;
+        }
+
+        void s_removeTextAliasArguments( const ConstString & _aliasId )
+        {
+            TEXT_SERVICE()
+                ->removeTextAliasArguments( _aliasId );
+        }
+
         float s_getJoystickAxis( uint32_t _index )
         {
             float axis = PLATFORM_SERVICE()
@@ -3261,6 +3344,14 @@ namespace Mengine
         pybind::def_functor( kernel, "makeUID", helperScriptMethod, &HelperScriptMethod::s_makeUID );
 
         pybind::def_functor( kernel, "getTextFromID", helperScriptMethod, &HelperScriptMethod::s_getTextFromID );
+
+        pybind::def_functor( kernel, "setTextAlias", helperScriptMethod, &HelperScriptMethod::s_setTextAlias );
+        pybind::def_functor( kernel, "removeTextAlias", helperScriptMethod, &HelperScriptMethod::s_removeTextAlias );        
+        pybind::def_functor( kernel, "hasTextAlias", helperScriptMethod, &HelperScriptMethod::s_hasTextAlias );
+        pybind::def_functor( kernel, "getTextAlias", helperScriptMethod, &HelperScriptMethod::s_getTextAlias );
+
+        pybind::def_functor_args( kernel, "setTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_setTextAliasArguments );
+        pybind::def_functor( kernel, "removeTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_removeTextAliasArguments );
 
         pybind::def_functor( kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );
     }

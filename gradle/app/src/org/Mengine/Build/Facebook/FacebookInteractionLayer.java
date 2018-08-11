@@ -122,8 +122,8 @@ public class FacebookInteractionLayer {
         shareDialog.registerCallback(_callbackManager, new FacebookCallback<Sharer.Result>() {
             @Override
             public void onSuccess(Sharer.Result result) {
-                String post = result.getPostId() != null ? result.getPostId() : "";
-                AndroidNativeFacebook_onShareSuccess(result.getPostId());
+                String postId = result.getPostId() != null ? result.getPostId() : "";
+                AndroidNativeFacebook_onShareSuccess(postId);
             }
 
             @Override

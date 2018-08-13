@@ -63,6 +63,13 @@ public class FacebookInteractionLayer {
         return _accessToken != null && !_accessToken.isExpired();
     }
 
+    public String getAccessToken() {
+        if (!isLoggedIn()){
+            return "";
+        }
+        return _accessToken.getToken();
+    }
+
     public void performLogin(Activity activity, String[] readPermissions) {
         LoginManager.getInstance().registerCallback(_callbackManager, new FacebookCallback<LoginResult>() {
             @Override

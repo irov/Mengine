@@ -15,6 +15,7 @@
 static jclass mActivityClass;
 static jmethodID jmethodID_initializePlugin;
 static jmethodID jmethodID_isLoggedIn;
+static jmethodID jmethodID_GetAccessToken;
 static jmethodID jmethodID_performLogin;
 static jmethodID jmethodID_getUser;
 static jmethodID jmethodID_shareLink;
@@ -35,6 +36,7 @@ extern "C"
         jmethodID_getUser = mEnv->GetStaticMethodID( mActivityClass, "facebookGetUser", "()V" );
         jmethodID_shareLink = mEnv->GetStaticMethodID( mActivityClass, "facebookShareLink", "(Ljava/lang/String;)V" );
         jmethodID_isLoggedIn = mEnv->GetStaticMethodID( mActivityClass, "facebookIsLoggedIn", "()Z" );
+        jmethodID_GetAccessToken = mEnv->GetStaticMethodID( mActivityClass, "facebookGetAccessToken", "()Ljava/lang/String;" );
         jmethodID_getProfilePictureLink = mEnv->GetStaticMethodID( mActivityClass, "facebookGetProfilePictureLink", "(Ljava/lang/String;)V" );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -347,6 +349,17 @@ namespace Mengine
         jboolean jReturnValue = env->CallStaticBooleanMethod( mActivityClass, jmethodID_isLoggedIn );
 
         bool returnValue = (bool)jReturnValue;
+
+        return returnValue;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const char * AndroidNativeFacebookModule::getAccessToken()
+    {
+        JNIEnv * env = Mengine_JNI_GetEnv();
+
+        jstring jReturnValue = (jstring)env->CallStaticObjectMethod( mActivityClass, jmethodID_GetAccessToken );
+
+        const char * returnValue = env->GetStringUTFChars( jReturnValue, 0 );
 
         return returnValue;
     }

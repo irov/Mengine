@@ -1217,7 +1217,10 @@ namespace Mengine
 
         for( DX9RenderResourceHandler * handler : m_renderResourceHandlers )
         {
-            handler->onRenderRestore();
+            if( handler->onRenderRestore() == false )
+            {
+                return false;
+            }
         }
 
         RENDER_SERVICE()
@@ -1268,6 +1271,8 @@ namespace Mengine
             return nullptr;
         }
 
+        m_renderResourceHandlers.push_back( buffer.get() );
+
         return buffer;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1303,6 +1308,8 @@ namespace Mengine
         {
             return nullptr;
         }
+
+        m_renderResourceHandlers.push_back( buffer.get() );
 
         return buffer;
     }

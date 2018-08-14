@@ -2,6 +2,8 @@
 
 #include "Interface/RenderSystemInterface.h"
 
+#include "DX9RenderResourceHandler.h"
+
 #include "Kernel/ServantBase.h"
 
 #include <d3d9.h>
@@ -10,6 +12,7 @@ namespace Mengine
 {
 	class DX9RenderIndexBuffer
 		: public ServantBase<RenderIndexBufferInterface>
+        , public DX9RenderResourceHandler
 	{
 	public:
 		DX9RenderIndexBuffer();
@@ -35,6 +38,10 @@ namespace Mengine
 
     protected:
         void draw( const void * _buffer, size_t _size ) override;
+
+    protected:
+        void onRenderReset() override;
+        bool onRenderRestore() override;
 
 	protected:
 		IDirect3DDevice9 * m_pD3DDevice;

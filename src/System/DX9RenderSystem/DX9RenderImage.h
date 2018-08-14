@@ -54,7 +54,7 @@ namespace Mengine
 
     protected:
         void onRenderReset() override;
-        void onRenderRestore() override;
+        bool onRenderRestore() override;
 
 	protected:
         LPDIRECT3DDEVICE9 m_pD3DDevice;

@@ -300,6 +300,17 @@ namespace Mengine
         pybind::def_functor( kernel, "androidFacebookShareLink", this, &AndroidNativeFacebookModule::shareLink );
         pybind::def_functor( kernel, "androidFacebookGetProfilePictureLink", this, &AndroidNativeFacebookModule::getProfilePictureLink );
 
+        pybind::enum_<EnumFacebookEventHandler>(kernel, "EnumFacebookEventHandler")
+                .add("FACEBOOK_INITIALIZE", FACEBOOK_INITIALIZE)
+                .add("FACEBOOK_LOGIN_SUCCESS", FACEBOOK_LOGIN_SUCCESS)
+                .add("FACEBOOK_LOGIN_CANCEL", FACEBOOK_LOGIN_CANCEL)
+                .add("FACEBOOK_SHARE_SUCCESS", FACEBOOK_SHARE_SUCCESS)
+                .add("FACEBOOK_SHARE_CANCEL", FACEBOOK_SHARE_CANCEL)
+                .add("FACEBOOK_SHARE_ERROR", FACEBOOK_SHARE_ERROR)
+                .add("FACEBOOK_USER_FETCH_SUCCESS", FACEBOOK_USER_FETCH_SUCCESS)
+                .add("FACEBOOK_PROFILE_PICTURE_LINK_GET", FACEBOOK_PROFILE_PICTURE_LINK_GET)
+                ;
+
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
 

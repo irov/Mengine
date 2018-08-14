@@ -499,10 +499,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     }
     else
     {
-        fprintf_s( f_result, "vertex_count=%u\n", mesh.vertexCount );
-        fprintf_s( f_result, "index_count=%u\n", mesh.indexCount );
+        fprintf_s( f_result, "%u\n", mesh.vertexCount );
+        fprintf_s( f_result, "%u\n", mesh.indexCount );
 
-        fprintf_s( f_result, "positions=" );
+        fprintf_s( f_result, "" );
 
         for( uint16_t i = 0; i != mesh.vertexCount; ++i )
         {
@@ -521,7 +521,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         fprintf_s( f_result, "\n" );
 
-        fprintf_s( f_result, "uvs=" );
+        fprintf_s( f_result, "" );
 
         for( uint16_t i = 0; i != mesh.vertexCount; ++i )
         {
@@ -540,7 +540,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         fprintf_s( f_result, "\n" );
 
-        fprintf_s( f_result, "indices=" );
+        fprintf_s( f_result, "" );
 
         for( uint16_t i = 0; i != mesh.indexCount; ++i )
         {

@@ -48,7 +48,7 @@ namespace Mengine
         case BT_STREAM:
         case BT_DYNAMIC:
             {
-                m_pool = D3DPOOL_MANAGED;
+                m_pool = D3DPOOL_DEFAULT;
 
                 m_usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
             }break;
@@ -71,6 +71,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::resize( uint32_t _count )
     {
+        if( m_indexCount >= _count )
+        {
+            return true;
+        }
+
         if( m_pIB != nullptr )
         {
             ULONG ref = m_pIB->Release();

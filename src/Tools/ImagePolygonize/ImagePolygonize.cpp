@@ -270,7 +270,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	}
 
 	uint32_t vertex_count = positions.size() / 2;
-	uint32_t indices_count = indices.size();
+	uint32_t index_count = indices.size();
 
     WCHAR infoCanonicalizeQuote[MAX_PATH];
     ForcePathQuoteSpaces( infoCanonicalizeQuote, result_path.c_str() );
@@ -290,7 +290,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     }
 
     fprintf_s( f_result, "%u\n", vertex_count );
-    fprintf_s( f_result, "%u\n", indices_count );
+    fprintf_s( f_result, "%u\n", index_count );
 
     fprintf_s( f_result, "" );
 

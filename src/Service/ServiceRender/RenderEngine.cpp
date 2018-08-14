@@ -26,7 +26,7 @@ SERVICE_FACTORY( RenderService, Mengine::RenderEngine );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    static const uint32_t RenderVertexBatchMax = 65536U;
+    static const uint32_t RenderVertexBatchMax = 65000U;
     //////////////////////////////////////////////////////////////////////////
     //static bool hasRenderObjectFlag( const RenderObject * ro, uint32_t _flag )
     //{
@@ -720,6 +720,15 @@ namespace Mengine
         m_renderBatches.clear();
         m_renderPasses.clear();
         m_renderObjects.clear();
+        
+        for( const RenderBatchPtr & batch : m_cacheRenderBatches )
+        {
+            batch->vertexCount = 0U;
+            batch->indexCount = 0U;
+
+            batch->vbPos = 0U;
+            batch->ibPos = 0U;
+        }
 
         m_debugVertices.clear();
 
@@ -1114,6 +1123,9 @@ namespace Mengine
         new_batch->vbPos = 0;
         new_batch->ibPos = 0;
 
+        new_batch->vertexBuffer->resize( RenderVertexBatchMax / 2 );
+        new_batch->indexBuffer->resize( RenderVertexBatchMax / 2 );
+
         m_cacheRenderBatches.emplace_back( new_batch );
 
         const RenderBatchPtr & batch = m_cacheRenderBatches.back();
@@ -1259,6 +1271,16 @@ namespace Mengine
         if( _indices == nullptr )
         {
             LOGGER_ERROR( "RenderEngine::renderObject2D _indices == NULL"
+            );
+
+            return;
+        }
+
+        if( _vertexCount >= RenderVertexBatchMax )
+        {
+            LOGGER_ERROR( "RenderEngine::renderObject2D _vertexCount(%u) >= RenderVertexBatchMax(%u)"
+                , _vertexCount
+                , RenderVertexBatchMax
             );
 
             return;
@@ -1478,7 +1500,9 @@ namespace Mengine
             
             if( vertexBuffer->resize( batch->vertexCount ) == false )
             {
-                LOGGER_ERROR( "failed to resize vertex buffer" );
+                LOGGER_ERROR( "failed to resize vertex buffer '%u'"
+                    , batch->vertexCount 
+                );
 
                 return false;
             }
@@ -1487,7 +1511,9 @@ namespace Mengine
 
             if( vertexMemory == nullptr )
             {
-                LOGGER_ERROR( "failed to lock vertex buffer" );
+                LOGGER_ERROR( "failed to lock vertex buffer '%u'"
+                    , batch->vertexCount
+                );
 
                 return false;
             }
@@ -1498,7 +1524,9 @@ namespace Mengine
 
             if( indexBuffer->resize( batch->indexCount ) == false )
             {
-                LOGGER_ERROR( "failed to resize index buffer" );
+                LOGGER_ERROR( "failed to resize index buffer '%u'"
+                    , batch->indexCount
+                );
 
                 return false;
             }
@@ -1507,7 +1535,9 @@ namespace Mengine
 
             if( indexMemory == nullptr )
             {
-                LOGGER_ERROR( "failed to lock index buffer" );
+                LOGGER_ERROR( "failed to lock index buffer '%u'",
+                    batch->indexCount 
+                );
 
                 return false;
             }

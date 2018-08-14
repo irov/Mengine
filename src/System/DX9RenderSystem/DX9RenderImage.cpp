@@ -175,8 +175,10 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderImage::onRenderRestore()
+    bool DX9RenderImage::onRenderRestore()
     {
         //Empty
+
+        return true;
     }
 }

@@ -173,4 +173,30 @@ namespace Mengine
     {
         DXCALL( m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) );
     }
+    //////////////////////////////////////////////////////////////////////////        
+    void DX9RenderVertexBuffer::onRenderReset()
+    {
+        if( m_pVB == nullptr )
+        {
+            return;
+        }
+
+        ULONG refCount = m_pVB->Release();
+        (void)refCount;
+
+        m_pVB = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////        
+    bool DX9RenderVertexBuffer::onRenderRestore()
+    {
+        IDirect3DVertexBuffer9 * pVB = nullptr;
+        IF_DXCALL( m_pD3DDevice, CreateVertexBuffer, (m_vertexCount * m_vertexSize, m_usage, 0, m_pool, &pVB, NULL) )
+        {
+            return false;
+        }
+
+        m_pVB = pVB;
+
+        return true;
+    }
 }

@@ -85,13 +85,13 @@ namespace Mengine
 
         m_indexCount = _count;
 
-        IDirect3DIndexBuffer9 * ib = nullptr;
-        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (m_indexCount * m_indexSize, m_usage, m_format, m_pool, &ib, NULL) )
+        IDirect3DIndexBuffer9 * pIB = nullptr;
+        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (m_indexCount * m_indexSize, m_usage, m_format, m_pool, &pIB, NULL) )
         {
             return false;
         }
 
-        m_pIB = ib;
+        m_pIB = pIB;
 
         return true;
     }
@@ -174,5 +174,31 @@ namespace Mengine
     void DX9RenderIndexBuffer::disable()
     {
         DXCALL( m_pD3DDevice, SetIndices, (nullptr) );
+    }
+    //////////////////////////////////////////////////////////////////////////        
+    void DX9RenderIndexBuffer::onRenderReset()
+    {
+        if( m_pIB == nullptr )
+        {
+            return;
+        }
+
+        ULONG refCount = m_pIB->Release();
+        (void)refCount;
+
+        m_pIB = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////        
+    bool DX9RenderIndexBuffer::onRenderRestore()
+    {
+        IDirect3DIndexBuffer9 * pIB = nullptr;
+        IF_DXCALL( m_pD3DDevice, CreateIndexBuffer, (m_indexCount * m_indexSize, m_usage, m_format, m_pool, &pIB, NULL) )
+        {
+            return false;
+        }
+
+        m_pIB = pIB;
+
+        return true;
     }
 }

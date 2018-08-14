@@ -54,7 +54,7 @@ namespace Mengine
 
     protected:
         void onRenderReset() override;
-        void onRenderRestore() override;
+        bool onRenderRestore() override;
 
 	protected:
 		uint32_t m_width;

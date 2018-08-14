@@ -186,17 +186,18 @@ namespace Mengine
         m_pD3DTexture = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////        
-    void DX9RenderTargetTexture::onRenderRestore()
+    bool DX9RenderTargetTexture::onRenderRestore()
     {
         D3DFORMAT d3dformat = s_toD3DFormat( m_format );
 
         LPDIRECT3DTEXTURE9 renderTexture;
         IF_DXCALL( m_pD3DDevice, CreateTexture, (m_width, m_height, 1, D3DUSAGE_RENDERTARGET, d3dformat, D3DPOOL_DEFAULT, &renderTexture, NULL) )
         {
-            return;
+            return false;
         }
 
         m_pD3DTexture = renderTexture;
-    }
 
+        return true;
+    }
 }

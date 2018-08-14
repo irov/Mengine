@@ -10,6 +10,6 @@ namespace Mengine
     {
     public:
         virtual void onRenderReset() = 0;
-        virtual void onRenderRestore() = 0;
+        virtual bool onRenderRestore() = 0;
     };
 }

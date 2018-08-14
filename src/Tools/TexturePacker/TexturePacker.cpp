@@ -33,7 +33,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 			, in_path.c_str()
 		);
 
-		return 0;
+		return EXIT_FAILURE;
 	}
 	
 	WCHAR wimage_path[MAX_PATH];
@@ -55,7 +55,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         message_error( "#not found 'texturepacker' param\n"
 			);
 
-		return 0;
+		return EXIT_FAILURE;
 	}
 
 	if( images_path.empty() == true )
@@ -63,7 +63,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         message_error( "#not found 'images' param\n"
 			);
 
-		return 0;
+		return EXIT_FAILURE;
 	}
 
 	std::wstring system_cmd;
@@ -183,7 +183,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             CloseHandle( hLogFile );
         }
 
-		return 0;
+		return EXIT_FAILURE;
 	}
         
 	CloseHandle( lpProcessInformation.hThread );
@@ -207,7 +207,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             CloseHandle( hLogFile );
         }
 
-		return 0;
+		return EXIT_FAILURE;
 	}
 
     if( hLogFile != INVALID_HANDLE_VALUE )
@@ -271,7 +271,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 				, sheetPath
 				);
 
-			return 0;
+			return EXIT_FAILURE;
 		}
 
 		fseek( f, 0, SEEK_END );
@@ -402,11 +402,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             , err
         );
 
-        return 0;
+        return EXIT_FAILURE;
     }
 
     uint32_t atlasCount = atlas_images.size();
-    fprintf_s( f_result, "images_count=%u\n", atlasCount );
+    fprintf_s( f_result, "%u\n", atlasCount );
 		
 	for( std::vector<AtlasImageDesc>::const_iterator
 		it = atlas_images.begin(),
@@ -416,7 +416,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	{
 		const AtlasImageDesc & image = *it;
 
-        fprintf_s( f_result, "image_data=%s;%s;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%u\n"
+        fprintf_s( f_result, "%s;%s;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%llu;%u\n"
             , image.name.c_str()
             , image.atlas.c_str()
             , image.aw
@@ -441,5 +441,5 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     fclose( f_result );
 
-	return 0;
+	return EXIT_SUCCESS;
 }

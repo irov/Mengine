@@ -8,6 +8,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexAttribute::DX9RenderVertexAttribute()
         : m_elementSize( 0 )
+        , m_pD3DDevice( nullptr )
         , m_vertexDeclaration( nullptr )
     {
     }

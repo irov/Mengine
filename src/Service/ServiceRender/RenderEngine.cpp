@@ -158,17 +158,20 @@ namespace Mengine
         m_renderObjects.clear();
         m_renderBatches.clear();
         m_renderPasses.clear();
-        //m_textures.clear();
+        m_debugVertices.clear();
+
+        m_cacheRenderBatches.clear();
 
         m_nullTexture = nullptr;
         m_whitePixelTexture = nullptr;
 
-        m_currentRenderViewport = nullptr;
-        m_currentRenderCamera = nullptr;
-        m_currentRenderScissor = nullptr;
-
         m_currentVertexBuffer = nullptr;
         m_currentIndexBuffer = nullptr;
+
+        m_currentRenderViewport = nullptr;
+        m_currentRenderCamera = nullptr;
+        m_currentRenderTransformation = nullptr;
+        m_currentRenderScissor = nullptr;
 
         m_currentProgram = nullptr;
         
@@ -1069,7 +1072,24 @@ namespace Mengine
             {
                 continue;
             }
-                        
+
+            return batch;
+        }
+
+        for( const RenderBatchPtr & batch : m_cacheRenderBatches )
+        {
+            if( batch->vertexAttribute != _vertexAttribute )
+            {
+                continue;
+            }
+
+            if( batch->vertexCount + _vertexCount >= RenderVertexBatchMax )
+            {
+                continue;
+            }
+
+            m_renderBatches.emplace_back( batch );
+
             return batch;
         }
 
@@ -1080,13 +1100,13 @@ namespace Mengine
         uint32_t elementSize = _vertexAttribute->getElementSize();
 
         new_batch->vertexBuffer = m_renderSystem
-            ->createVertexBuffer( elementSize, BT_STATIC );
+            ->createVertexBuffer( elementSize, BT_DYNAMIC );
 
         new_batch->vertexCount = 0;
         new_batch->vertexMemory = nullptr;
 
         new_batch->indexBuffer = m_renderSystem
-            ->createIndexBuffer( sizeof( RenderIndex ), BT_STATIC );
+            ->createIndexBuffer( sizeof( RenderIndex ), BT_DYNAMIC );
 
         new_batch->indexCount = 0;
         new_batch->indexMemory = nullptr;
@@ -1094,9 +1114,9 @@ namespace Mengine
         new_batch->vbPos = 0;
         new_batch->ibPos = 0;
 
-        m_renderBatches.emplace_back( new_batch );
+        m_cacheRenderBatches.emplace_back( new_batch );
 
-        const RenderBatchPtr & batch = m_renderBatches.back();
+        const RenderBatchPtr & batch = m_cacheRenderBatches.back();
 
         return batch;
     }
@@ -1452,11 +1472,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderEngine::makeBatches_()
     {
-        for( const RenderBatchPtr & batch : m_renderBatches )
+        for( const RenderBatchPtr & batch : m_cacheRenderBatches )
         {
             const RenderVertexBufferInterfacePtr & vertexBuffer = batch->vertexBuffer;
+            
+            if( vertexBuffer->resize( batch->vertexCount ) == false )
+            {
+                LOGGER_ERROR( "failed to resize vertex buffer" );
 
-            vertexBuffer->resize( batch->vertexCount );
+                return false;
+            }
 
             MemoryInterfacePtr vertexMemory = vertexBuffer->lock( 0, batch->vertexCount );
 
@@ -1471,7 +1496,12 @@ namespace Mengine
 
             const RenderIndexBufferInterfacePtr & indexBuffer = batch->indexBuffer;
 
-            indexBuffer->resize( batch->indexCount );
+            if( indexBuffer->resize( batch->indexCount ) == false )
+            {
+                LOGGER_ERROR( "failed to resize index buffer" );
+
+                return false;
+            }
 
             MemoryInterfacePtr indexMemory = indexBuffer->lock( 0, batch->indexCount );
 
@@ -1487,7 +1517,7 @@ namespace Mengine
 
         this->insertRenderPasses_();
 
-        for( const RenderBatchPtr & batch : m_renderBatches )
+        for( const RenderBatchPtr & batch : m_cacheRenderBatches )
         {
             const RenderVertexBufferInterfacePtr & vertexBuffer = batch->vertexBuffer;
 

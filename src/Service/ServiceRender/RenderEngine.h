@@ -339,6 +339,8 @@ namespace Mengine
 		typedef VectorRenderVertex2D TArrayRenderVertex2D;
 		typedef List<TArrayRenderVertex2D> ListDebugVertices;
 		ListDebugVertices m_debugVertices;
+
+        VectorRenderBatch m_cacheRenderBatches;
               
 		bool m_depthBufferWriteEnable;
 		bool m_alphaBlendEnable;

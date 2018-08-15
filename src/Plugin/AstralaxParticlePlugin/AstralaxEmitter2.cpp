@@ -55,6 +55,8 @@ namespace Mengine
         m_leftBorder = Magic_GetInterval1( m_emitterId );
         m_rightBorder = Magic_GetInterval2( m_emitterId );
 
+        m_is3d = Magic_Is3d( m_emitterId );
+
         
         m_duration = m_rightBorder - m_leftBorder;
         //m_duration = Magic_GetDuration( m_emitterId );
@@ -82,9 +84,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter2::setupBasePosition_()
     {
-		bool is3d = Magic_Is3d( m_emitterId );
-
-		if( is3d == false )
+		if( m_is3d == false )
 		{
             m_rect.x = -1024.f;
             m_rect.y = -1024.f;
@@ -185,9 +185,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::is3d() const
 	{
-		bool is3d = Magic_Is3d( m_emitterId );
-
-		return is3d;
+		return m_is3d;
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool AstralaxEmitter2::getCamera( ParticleCamera & _camera ) const
@@ -284,9 +282,7 @@ namespace Mengine
 		}
 		else
 		{
-			bool is3d = this->is3d();
-
-			if( is3d == true )
+			if( m_is3d == true )
 			{
 				MAGIC_VIEW view;
 				if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
@@ -675,9 +671,7 @@ namespace Mengine
         {
             mt::mat4f vpm;
 
-            bool is3d = this->is3d();
-
-            if( is3d == true )
+            if( m_is3d == true )
             {
                 ParticleCamera pc;
                 if( this->getCamera( pc ) == false )

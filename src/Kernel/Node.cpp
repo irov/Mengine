@@ -67,23 +67,26 @@ namespace Mengine
 
 		m_invalidateRendering = true;
 
-		NodePtr single = m_children.single();
+        if( m_children.empty() == false )
+        {
+            NodePtr single = m_children.single();
 
-		if( single != nullptr )
-		{
-			single->activate();
-		}
-		else
-		{
-			for( IntrusiveSlugChild it(m_children); it.eof() == false; )
-			{
-				NodePtr children = (*it);
+            if( single != nullptr )
+            {
+                single->activate();
+            }
+            else
+            {
+                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+                {
+                    NodePtr children = (*it);
 
-				it.next_shuffle();
+                    it.next_shuffle();
 
-				children->activate();
-			}
-		}
+                    children->activate();
+                }
+            }
+        }
 	
 		m_afterActive = true;
 
@@ -121,23 +124,26 @@ namespace Mengine
 
 		this->_deactivate();
 
-		NodePtr single = m_children.single();
+        if( m_children.empty() == false )
+        {
+            NodePtr single = m_children.single();
 
-		if( single != nullptr )
-		{
-			single->deactivate();
-		}
-		else
-		{
-			for( IntrusiveSlugChild it(m_children); it.eof() == false; )
-			{
-				NodePtr children = *it;
+            if( single != nullptr )
+            {
+                single->deactivate();
+            }
+            else
+            {
+                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+                {
+                    NodePtr children = *it;
 
-				it.next_shuffle();
+                    it.next_shuffle();
 
-				children->deactivate();
-			}
-		}
+                    children->deactivate();
+                }
+            }
+        }
 
 		m_active = false;
 		m_deactivating = false;
@@ -197,6 +203,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::destroyAllChild()
 	{
+        if( m_children.empty() == true )
+        {
+            return;
+        }
+
 		for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
 		{
 			NodePtr node = (*it);
@@ -213,6 +224,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::removeChildren()
 	{
+        if( m_children.empty() == true )
+        {
+            return;
+        }
+
 		for( IntrusiveSlugChild it(m_children); it.eof() == false; )
 		{
             NodePtr node = (*it);
@@ -394,6 +410,11 @@ namespace Mengine
 	void Node::visitChildren( Visitor * _visitor )
 	{
 		this->visit( _visitor );
+
+        if( m_children.empty() == true )
+        {
+            return;
+        }
 
         stdex::intrusive_this_acquire( this );
 
@@ -685,18 +706,21 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_freeze( bool _value )
 	{
-        stdex::intrusive_this_acquire( this );
+        if( m_children.empty() != true )
+        {
+            stdex::intrusive_this_acquire( this );
 
-		for( IntrusiveSlugChild it(m_children); it.eof() == false; )
-		{
-			NodePtr node = *it;
+            for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+            {
+                NodePtr node = *it;
 
-			it.next_shuffle();
+                it.next_shuffle();
 
-			node->freeze( _value );
-		}
+                node->freeze( _value );
+            }
 
-        stdex::intrusive_this_release( this );
+            stdex::intrusive_this_release( this );
+        }
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Node::setSpeedFactor( float _speedFactor )
@@ -736,6 +760,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::updateChildren_( float _current, float _timing )
 	{
+        if( m_children.empty() == true )
+        {
+            return;
+        }
+
 		NodePtr single = m_children.single();
 
 		if( single != nullptr )
@@ -802,23 +831,26 @@ namespace Mengine
 			this->deactivate();
 		}
 
-		NodePtr single = m_children.single();
+        if( m_children.empty() == false )
+        {
+            NodePtr single = m_children.single();
 
-		if( single != nullptr )
-		{
-			single->release();
-		}
-		else
-		{
-			for( IntrusiveSlugChild it(m_children); it.eof() == false; )
-			{
-				NodePtr node = (*it);
+            if( single != nullptr )
+            {
+                single->release();
+            }
+            else
+            {
+                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+                {
+                    NodePtr node = (*it);
 
-				it.next_shuffle();
+                    it.next_shuffle();
 
-				node->release();
-			}
-		}
+                    node->release();
+                }
+            }
+        }
 
 		Compilable::release();
 
@@ -1088,6 +1120,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::renderChild_( const RenderContext * _state )
 	{
+        if( m_children.empty() == true )
+        {
+            return;
+        }
+
 		for( IntrusiveSlugListNodeChild::unslug_iterator
 			it = m_children.ubegin(),
 			it_end = m_children.uend();
@@ -1134,23 +1171,26 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Node::_invalidateColor()
 	{
-		NodePtr single = m_children.single();
+        if( m_children.empty() == false )
+        {
+            NodePtr single = m_children.single();
 
-		if( single != nullptr )
-		{
-			single->invalidateColor();
-		}
-		else
-		{
-			for( IntrusiveSlugChild it(m_children); it.eof() == false; )
-			{
-                NodePtr node = (*it);
+            if( single != nullptr )
+            {
+                single->invalidateColor();
+            }
+            else
+            {
+                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+                {
+                    NodePtr node = (*it);
 
-				it.next_shuffle();
+                    it.next_shuffle();
 
-				node->invalidateColor();
-			}
-		}
+                    node->invalidateColor();
+                }
+            }
+        }
 
 		m_invalidateRendering = true;
 	}

@@ -163,7 +163,8 @@ namespace Mengine
 
         mutable mt::mat4f m_localMatrix;
         mutable mt::mat4f m_worldMatrix;
-        mutable uint8_t m_transformationFlag;
+
+        uint8_t m_transformationFlag;
         mutable bool m_identityWorldMatrix;
         mutable bool m_invalidateLocalMatrix;
         mutable bool m_invalidateWorldMatrix;

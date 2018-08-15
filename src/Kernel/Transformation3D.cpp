@@ -76,21 +76,24 @@ namespace Mengine
         {
             m_invalidateWorldMatrix = true;
 
-            Transformation3DPtr single = m_relationChild.single();
+            if( m_relationChild.empty() == false )
+            {
+                Transformation3DPtr single = m_relationChild.single();
 
-            if( single != nullptr )
-            {
-                single->invalidateWorldMatrix();
-            }
-            else
-            {
-                for( IntrusiveSlugTransformation3D it( m_relationChild ); it.eof() == false; )
+                if( single != nullptr )
                 {
-                    Transformation3DPtr transform = *it;
+                    single->invalidateWorldMatrix();
+                }
+                else
+                {
+                    for( IntrusiveSlugTransformation3D it( m_relationChild ); it.eof() == false; )
+                    {
+                        Transformation3DPtr transform = *it;
 
-                    it.next_shuffle();
+                        it.next_shuffle();
 
-                    transform->invalidateWorldMatrix();
+                        transform->invalidateWorldMatrix();
+                    }
                 }
             }
         }

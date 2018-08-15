@@ -92,9 +92,16 @@ else()
             ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_geometry_d${MENGINE_LIB_SUFFIX}
             ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_d${MENGINE_LIB_SUFFIX}
             ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_d${MENGINE_LIB_SUFFIX}
-#            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_anim_tools_d${MENGINE_LIB_SUFFIX}
-#            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_skel_tools_d${MENGINE_LIB_SUFFIX}    
         )
+    ELSEIF(CMAKE_BUILD_TYPE MATCHES "RelWithDebInfo")
+        SET( APPLICATION_LIBS
+            ${APPLICATION_LIBS}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_base_rd${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_options_rd${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_geometry_rd${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_rd${MENGINE_LIB_SUFFIX}
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_rd${MENGINE_LIB_SUFFIX}
+        )        
     ELSE()
         SET( APPLICATION_LIBS
             ${APPLICATION_LIBS}
@@ -103,8 +110,6 @@ else()
             ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_geometry_r${MENGINE_LIB_SUFFIX}
             ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_r${MENGINE_LIB_SUFFIX}
             ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_r${MENGINE_LIB_SUFFIX}
-            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_anim_tools_r${MENGINE_LIB_SUFFIX}
-            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}ozz_animation_offline_skel_tools_r${MENGINE_LIB_SUFFIX}    
         )
     ENDIF()    
 

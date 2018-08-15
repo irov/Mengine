@@ -112,6 +112,7 @@ namespace Mengine
 		bool m_start;
 		bool m_looped;
 
+        bool m_is3d;
 		bool m_relative;
 	};
 

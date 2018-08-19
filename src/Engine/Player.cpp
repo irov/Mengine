@@ -1131,14 +1131,8 @@ namespace Mengine
                             uint32_t c = it->first;
                             const VectorConstString & l = it->second;
 
-                            for( Vector<ConstString>::const_iterator
-                                it_list = l.begin(),
-                                it_list_end = l.end();
-                                it_list != it_list_end;
-                                ++it_list )
+                            for( const ConstString & s : l )
                             {
-                                const ConstString & s = *it_list;
-
                                 ss << "Prototype: " << s.c_str() << " " << c << std::endl;
 
                                 if( ++iterator == 15 )
@@ -1223,14 +1217,8 @@ namespace Mengine
                             uint32_t c = it->first;
                             const VectorString & l = it->second;
 
-                            for( VectorString::const_iterator
-                                it_list = l.begin(),
-                                it_list_end = l.end();
-                                it_list != it_list_end;
-                                ++it_list )
+                            for( const String & s : l )
                             {
-                                const String & s = *it_list;
-
                                 ss << "Python: " << s << " " << c << std::endl;
 
                                 if( ++iterator == 15 )
@@ -1307,14 +1295,8 @@ namespace Mengine
                             uint32_t c = it->first;
                             const VectorString & l = it->second;
 
-                            for( VectorString::const_iterator
-                                it_list = l.begin(),
-                                it_list_end = l.end();
-                                it_list != it_list_end;
-                                ++it_list )
+                            for( const String & s : l )
                             {
-                                const String & s = *it_list;
-
                                 ss << "Factory: " << s << " " << c << std::endl;
 
                                 if( ++iterator == 15 )
@@ -1371,14 +1353,8 @@ namespace Mengine
                     int32_t c = it->first;
                     const VectorString & l = it->second;
 
-                    for( VectorString::const_iterator
-                        it_list = l.begin(),
-                        it_list_end = l.end();
-                        it_list != it_list_end;
-                        ++it_list )
+                    for( const String & s : l )
                     {
-                        const String & s = *it_list;
-
                         ss2 << "Memory: " << s << " " << c << std::endl;
 
                         if( iterator++ == 15 )

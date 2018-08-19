@@ -22,6 +22,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct RenderContext
     {
+        RenderContext()
+            :debugMask( 0 )
+        {}
+
         RenderViewportInterfacePtr viewport;        
         RenderCameraInterfacePtr camera;
         RenderTransformationInterfacePtr transformation;

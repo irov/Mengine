@@ -366,7 +366,7 @@ namespace Mengine
             }
             else if( state == VDRS_END_STREAM )
             {
-                if( this->getLoop() == false && --m_playIterator == 0 )
+                if( this->getLoop() == false && (--m_playIterator == 0) )
                 {
                     m_videoDecoder->rewind();
 

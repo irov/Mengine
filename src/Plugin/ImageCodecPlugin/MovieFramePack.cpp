@@ -256,7 +256,7 @@ namespace Mengine
 			float value0 = layer.Member[ _frameIndex + 0 ]; \
 			float value1 = layer.Member[ _frameIndex + 1 ]; \
 			\
-			mt::linerp_f1( _frame.Member, value0, value1, _t ); \
+			_frame.Member = mt::linerp_f1( value0, value1, _t ); \
 		}
 
 		MOVIE_FRAME_SETUP_F1( opacity, MOVIE_KEY_FRAME_IMMUTABLE_OPACITY );
@@ -275,7 +275,7 @@ namespace Mengine
 			float correct_rotate_to;
 			mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
 
-			mt::linerp_f1( _frame.rotation.x, correct_rotate_from, correct_rotate_to, _t );
+            _frame.rotation.x = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
 		}
 
 		if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Y )
@@ -291,7 +291,7 @@ namespace Mengine
 			float correct_rotate_to;
 			mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
 
-			mt::linerp_f1( _frame.rotation.y, correct_rotate_from, correct_rotate_to, _t );
+            _frame.rotation.y = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
 		}
 
 		if( layer.immutable_mask & MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_Z )
@@ -307,7 +307,7 @@ namespace Mengine
 			float correct_rotate_to;
 			mt::angle_correct_interpolate_from_to( value0, value1, correct_rotate_from, correct_rotate_to );
 
-			mt::linerp_f1( _frame.rotation.z, correct_rotate_from, correct_rotate_to, _t );
+            _frame.rotation.z = mt::linerp_f1( correct_rotate_from, correct_rotate_to, _t );
 		}
 
 		return true;

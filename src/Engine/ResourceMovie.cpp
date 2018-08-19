@@ -31,6 +31,7 @@ namespace Mengine
         : m_frameDuration( 0.f )
         , m_duration( 0.f )
         , m_loopSegment( 0.f, -1.f )
+        , m_frameCount( 0 )
         , m_size( 0.f, 0.f )
         , m_maxLayerIndex( 0 )
         , m_hasCamera3D( false )
@@ -558,8 +559,6 @@ namespace Mengine
             MovieLayer & ml = m_layers.back();
 
             ml.state |= MOVIE_LAYER_THREED;
-
-            MovieLayerCamera3D camera;
 
             ml.name = meta_layer3d.get_Name();
             ml.source = meta_layer3d.get_Source();

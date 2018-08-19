@@ -22,30 +22,30 @@ namespace Mengine
     {
     };
     //////////////////////////////////////////////////////////////////////////
-	class SurfaceVideo
-		: public Surface
+    class SurfaceVideo
+        : public Surface
         , public BaseEventation
         , public BaseAnimation
-	{
+    {
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE( SurfaceVideoEventReceiver );
 
-	public:
-		SurfaceVideo();
-		~SurfaceVideo() override;
+    public:
+        SurfaceVideo();
+        ~SurfaceVideo() override;
 
-	public:
-		void setResourceVideo( const ResourceVideoPtr & _resourceVideo );
-		const ResourceVideoPtr & getResourceVideo() const;
+    public:
+        void setResourceVideo( const ResourceVideoPtr & _resourceVideo );
+        const ResourceVideoPtr & getResourceVideo() const;
 
-	public:
-		float getWidth() const;
-		float getHeight() const;
-		float getDuration() const;
-	
-	protected:
-		bool _compile() override;
-		void _release() override;
+    public:
+        float getWidth() const;
+        float getHeight() const;
+        float getDuration() const;
+
+    protected:
+        bool _compile() override;
+        void _release() override;
 
     public:
         const mt::vec2f & getMaxSize() const override;
@@ -59,53 +59,52 @@ namespace Mengine
 
         const ColourValue & getColor() const override;
 
-	protected:
-		bool _update( float _current, float _time ) override;
+    protected:
+        bool _update( float _current, float _time ) override;
 
-	protected:
-		void _setTime( float _time ) override;
-		float _getTime() const override;
+    protected:
+        void _setTime( float _time ) override;
+        float _getTime() const override;
 
-		void _setFirstFrame() override;
-		void _setLastFrame() override;
+        void _setFirstFrame() override;
+        void _setLastFrame() override;
 
-	protected:
-		bool _play( uint32_t _enumerator, float _time ) override;
-		bool _restart( uint32_t _enumerator, float _time ) override;
-		void _pause( uint32_t _enumerator ) override;
-		void _resume( uint32_t _enumerator, float _time ) override;
-		void _stop( uint32_t _enumerator ) override;
-		void _end( uint32_t _enumerator ) override;
-		bool _interrupt( uint32_t _enumerator ) override;
+    protected:
+        bool _play( uint32_t _enumerator, float _time ) override;
+        bool _restart( uint32_t _enumerator, float _time ) override;
+        void _pause( uint32_t _enumerator ) override;
+        void _resume( uint32_t _enumerator, float _time ) override;
+        void _stop( uint32_t _enumerator ) override;
+        void _end( uint32_t _enumerator ) override;
+        bool _interrupt( uint32_t _enumerator ) override;
 
-	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const override;
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
 
-	protected:
-		void updateVideoBuffer_();
+    protected:
+        void updateVideoBuffer_();
 
-		bool sync_( float _time );
-		bool compileDecoder_();
-		bool fillVideoBuffer_();
-		void updateUV_();
+        bool sync_( float _time );
+        bool createDecoder_();
+        bool fillVideoBuffer_();
+        void updateUV_();
         void updateSize_();
 
-	protected:
-		ResourceHolder<ResourceVideo> m_resourceVideo;
+    protected:
+        ResourceHolder<ResourceVideo> m_resourceVideo;
 
-		RenderTextureInterfacePtr m_textures[1];
+        RenderTextureInterfacePtr m_textures[1];
 
-		VideoDecoderInterfacePtr m_videoDecoder;
+        VideoDecoderInterfacePtr m_videoDecoder;
 
-		float m_time;
+        float m_time;
 
-		bool m_needUpdate;
-		bool m_updateFirstFrame;
-		bool m_invalidVideoTexture;
+        bool m_needUpdateVideoBuffer;
+        bool m_updateFirstFrame;
 
         mt::vec2f m_size;
-		mt::uv4f m_uv;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<SurfaceVideo> SurfaceVideoPtr;
+        mt::uv4f m_uv;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<SurfaceVideo> SurfaceVideoPtr;
 }

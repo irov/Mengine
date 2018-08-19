@@ -609,7 +609,7 @@ namespace Mengine
         MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
 
         mt::mat4f mp;
-        mp.from_f16( _matrix );
+        mp.from_f12( _matrix );
         matrixProxy->setProxyMatrix( mp );
 
         matrixProxy->setLocalColorRGBA( _color.r, _color.g, _color.b, _opacity );
@@ -1177,7 +1177,7 @@ namespace Mengine
 
         TrackMatteDesc * desc = new TrackMatteDesc;
 
-        desc->matrix.from_f16( _callbackData->matrix );
+        desc->matrix.from_f12( _callbackData->matrix );
         desc->mesh = *_callbackData->mesh;
         desc->mode = _callbackData->track_matte_mode;
 
@@ -1196,14 +1196,14 @@ namespace Mengine
             {
                 TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
 
-                desc->matrix.from_f16( _callbackData->matrix );
+                desc->matrix.from_f12( _callbackData->matrix );
                 desc->mesh = *_callbackData->mesh;
             }break;
         case AE_MOVIE_STATE_UPDATE_PROCESS:
             {
                 TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
 
-                desc->matrix.from_f16( _callbackData->matrix );
+                desc->matrix.from_f12( _callbackData->matrix );
                 desc->mesh = *_callbackData->mesh;
             }break;
         default:

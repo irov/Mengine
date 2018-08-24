@@ -35,10 +35,8 @@ namespace Mengine
 		return m_speed;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void RenderCameraOrthogonalTarget::_update( float _current, float _timing )
+	void RenderCameraOrthogonalTarget::_update( const UpdateContext * _context )
 	{
-		(void)_current;
-
 		if( m_camera == nullptr )
 		{
 			return;
@@ -78,7 +76,7 @@ namespace Mengine
 		mt::vec2f dir;
 		mt::norm_v2_v2( dir, target2d_wp - camera_vpwm_center );
 
-		float way_length = m_speed * _timing;
+		float way_length = m_speed * _context->time;
 
 		float real_way = (way_length > length) ? length : way_length;
 

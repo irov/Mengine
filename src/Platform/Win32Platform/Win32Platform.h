@@ -123,6 +123,9 @@ namespace Mengine
 		Tags m_platformTags;
 		Resolution m_windowResolution;
 
+        float m_activeFrameTime;
+        float m_inactiveFrameTime;
+
 		bool m_active;
 		bool m_update;
 		bool m_close;

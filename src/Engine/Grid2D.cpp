@@ -236,17 +236,9 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Grid2D::_update( float _current, float _time )
+    void Grid2D::_update( const UpdateContext * _context )
     {
-        (void)_current;
-
-        for( RenderVertex2D & v : m_vertices )
-        {
-            v.uv[0].x += 0.00001f * _time * cosf( m_angle );
-            v.uv[0].y += 0.00001f * _time * sinf( m_angle );
-            v.uv[1].x += 0.00001f * _time * cosf( m_angle );
-            v.uv[1].y += 0.00001f * _time * sinf( m_angle );
-        }
+        (void)_context;
 
         m_invalidateVerticesWM = true;
     }

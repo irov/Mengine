@@ -67,9 +67,9 @@ namespace Mengine
         m_surface->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Shape::_update( float _current, float _timing )
+    void Shape::_update( const UpdateContext * _context )
     {
-        bool invalidate = m_surface->update( _current, _timing );
+        bool invalidate = m_surface->update( _context );
 
         if( invalidate == true )
         {

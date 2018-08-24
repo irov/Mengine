@@ -48,9 +48,9 @@ namespace Mengine
                 m_cb.call( _self );
             }
 
-            void onEntityUpdate( const pybind::object & _self, float _current, float _timing ) override
+            void onEntityUpdate( const pybind::object & _self, uint32_t _revision, float _current, float _time ) override
             {
-                m_cb.call( _self, _current, _timing );
+                m_cb.call( _self, _revision, _current, _time );
             }
 
             void onEntityCreate( const pybind::object & _self, Node * _node ) override

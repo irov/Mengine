@@ -84,7 +84,7 @@ namespace Mengine
 		void _release() override;
 
 	protected:
-        bool _update( float _current, float _time ) override;
+        bool _update( const UpdateContext * _context ) override;
 
 	protected:
 		void _setLoop( bool _value ) override;

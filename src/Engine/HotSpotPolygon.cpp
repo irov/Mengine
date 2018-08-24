@@ -9,15 +9,15 @@
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderViewportInterface.h"
 
-#include "Kernel/Scene.h"
-#include "Layer2D.h"
+#include "Kernel/PolygonHelper.h"
 
 #include "Kernel/ResourceImage.h"
+#include "Kernel/Logger.h"
 
 #include "pybind/system.hpp"
 #include "pybind/extract.hpp"
 
-#include "Kernel/Logger.h"
+#include "stdex/span.h"
 
 namespace Mengine
 {
@@ -34,8 +34,6 @@ namespace Mengine
     void HotSpotPolygon::setPolygon( const Polygon & _polygon )
     {
         m_polygon = _polygon;
-
-        m_polygon.correct();
 
         this->invalidateBoundingBox();
     }
@@ -54,36 +52,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpotPolygon::_updateBoundingBox( mt::box2f & _boundingBox ) const
     {
-        uint32_t numPoints = m_polygon.num_points();
+        const VectorPoints & points = m_polygon.getPoints();
 
-        if( numPoints == 0 )
+        if( points.empty() == true )
         {
             Node::_updateBoundingBox( _boundingBox );
 
             return;
         }
 
-        const mt::vec2f * ring = m_polygon.outer_points();
-
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        const mt::vec2f & ring_point_0 = ring[0];
+        const mt::vec2f & v0 = points.front();
 
         mt::vec2f wmp_0;
-        mt::mul_v2_v2_m4( wmp_0, ring_point_0, wm );
+        mt::mul_v2_v2_m4( wmp_0, v0, wm );
 
         mt::reset( _boundingBox, wmp_0 );
 
-        for( uint32_t
-            it = 1,
-            it_end = numPoints;
-            it != it_end;
-            ++it )
+        for( const mt::vec2f & v : stdex::span::range( points, 1 ) )
         {
-            const mt::vec2f & ring_point_it = ring[it];
-
             mt::vec2f wmp_it;
-            mt::mul_v2_v2_m4( wmp_it, ring_point_it, wm );
+            mt::mul_v2_v2_m4( wmp_it, v, wm );
 
             mt::add_internal_point( _boundingBox, wmp_it );
         }
@@ -102,14 +92,14 @@ namespace Mengine
         }
 
         mt::box2f bb;
-        this->getPolygonScreen( _camera, _viewport, _contentResolution, &bb, &m_polygonScreen );
+        this->getScreenPolygon( _camera, _viewport, _contentResolution, &bb, &m_polygonScreen );
 
         if( mt::is_intersect( bb, _point ) == false )
         {
             return m_outward;
         }
 
-        if( m_polygonScreen.intersects( _point ) == false )
+        if( Helper::intersects( m_polygonScreen, _point ) == false )
         {
             return m_outward;
         }
@@ -117,7 +107,7 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HotSpotPolygon::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
+    bool HotSpotPolygon::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
     {
         if( m_global == true )
         {
@@ -130,15 +120,14 @@ namespace Mengine
         }
 
         mt::box2f bb;
-        this->getPolygonScreen( _camera, _viewport, _contentResolution, &bb, &m_polygonScreen );
+        this->getScreenPolygon( _camera, _viewport, _contentResolution, &bb, &m_polygonScreen );
 
-        if( mt::is_intersect( bb, _point, _radius ) == false )
+        if( mt::is_intersect( bb, _point, _radiusx, _radiusy ) == false )
         {
             return m_outward;
         }
 
-        //////TODO: check polygon and circle
-        if( m_polygonScreen.intersects( _point ) == false )
+        if( Helper::intersects( m_polygonScreen, _point, _radiusx, _radiusy ) == false )
         {
             return m_outward;
         }
@@ -169,14 +158,14 @@ namespace Mengine
         m_polygonTemp.to_box2f( bb_polygon );
 
         mt::box2f bb_screen;
-        this->getPolygonScreen( _camera, _viewport, _contentResolution, &bb_screen, &m_polygonScreen );
+        this->getScreenPolygon( _camera, _viewport, _contentResolution, &bb_screen, &m_polygonScreen );
 
         if( mt::is_intersect( bb_screen, bb_polygon ) == false )
         {
             return m_outward;
         }
 
-        if( m_polygonScreen.intersects( m_polygonTemp ) == false )
+        if( Helper::intersects( m_polygonScreen, m_polygonTemp ) == false )
         {
             return m_outward;
         }
@@ -184,7 +173,7 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotPolygon::getPolygonScreen( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * _bb, Polygon * _screen ) const
+    void HotSpotPolygon::getScreenPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * _bb, Polygon * _screen ) const
     {
         if( _bb != nullptr )
         {
@@ -213,13 +202,10 @@ namespace Mengine
 
         const Polygon & polygon = this->getPolygon();
 
-        uint32_t numpoints = polygon.num_points();
-        const mt::vec2f * points = polygon.outer_points();
+        const VectorPoints & points = polygon.getPoints();
 
-        for( uint32_t it = 0; it != numpoints; ++it )
+        for( const mt::vec2f & v : points )
         {
-            const mt::vec2f & v = points[it];
-
             mt::vec2f v_wvp;
             mt::mul_v2_v2_m4_homogenize( v_wvp, v, wvpm );
 
@@ -255,7 +241,7 @@ namespace Mengine
 
         const Polygon & polygon = this->getPolygon();
 
-        uint32_t numpoints = polygon.num_points();
+        uint32_t numpoints = polygon.size();
 
         if( numpoints == 0 )
         {
@@ -273,7 +259,7 @@ namespace Mengine
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        const mt::vec2f * ring = polygon.outer_points();
+        const VectorPoints & ring = polygon.getPoints();
 
         for( uint32_t i = 0; i != numpoints; ++i )
         {

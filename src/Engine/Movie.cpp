@@ -2391,34 +2391,20 @@ namespace Mengine
         Node::_destroy();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::_update( float _current, float _timing )
+    void Movie::_update( const UpdateContext * _context )
     {
+        Node::_update( _context );
+
         if( this->isPlay() == false )
         {
             return;
-        }
+        }       
+        
+        float totalTime = this->calcTotalTime( _context );
 
-        //if( this->getName() == "Movie_Effect"
-        //    //&& m_resourceMovieName != "Movie103_Courtyard_veronika_01"
-        //    //&& m_resourceMovieName != "Movie401_StreetToChurch_WallZOOM_otv"
-        //    )
-        //{
-        //    printf("!");
-        //}
+        m_frameTime += totalTime;
 
-        if( m_playTime > _current )
-        {
-            float deltha = m_playTime - _current;
-            _timing -= deltha;
-        }
-
-        float speedFactor = this->getAnimationSpeedFactor();
-        float scretch = this->getStretch();
-        float realTiming = _timing * speedFactor / scretch;
-
-        m_frameTime += realTiming;
-
-        this->updateForward_( _current );
+        this->updateForward_( _context->current );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie::updateForward_( float _time )

@@ -68,7 +68,7 @@ namespace Mengine
 		return m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotBubbles::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
+	bool HotSpotBubbles::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
 	{
 		(void)_contentResolution;
 		(void)_viewport;
@@ -93,7 +93,7 @@ namespace Mengine
 
 			float v_sqrlength = v.sqrlength();
 
-			if( v_sqrlength < (b.radius + _radius) * (b.radius + _radius) )
+            if( v_sqrlength < (b.radius + _radiusx) * (b.radius + _radiusy) )
 			{
 				return !m_outward;
 			}

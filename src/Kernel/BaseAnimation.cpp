@@ -266,6 +266,23 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    float BaseAnimation::calcTotalTime( const UpdateContext * _context ) const
+    {
+        float totalTime = _context->time;
+        if( m_playTime > _context->current )
+        {
+            float deltha = m_playTime - _context->current;
+            totalTime -= deltha;
+        }
+
+        float speedFactor = this->getAnimationSpeedFactor();
+        float scretch = this->getStretch();
+
+        totalTime *= speedFactor / scretch;
+
+        return totalTime;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseAnimation::end()
     {
         if( m_play == false )

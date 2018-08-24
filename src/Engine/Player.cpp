@@ -409,9 +409,9 @@ namespace Mengine
         Helper::screenToWorldPosition( m_renderCamera, _screenPoint, _worldPoint );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Player::calcGlobalMouseWorldDelta( const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha )
+    void Player::calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha )
     {
-        Helper::screenToWorldDelta( m_renderCamera, _screenPoint, _screenDeltha, _worldDeltha );
+        Helper::screenToWorldDelta( m_renderCamera, _screenDeltha, _worldDeltha );
     }
     //////////////////////////////////////////////////////////////////////////
     ScheduleManagerInterfacePtr Player::createSchedulerManager()
@@ -770,11 +770,11 @@ namespace Mengine
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Player::tick( float _current, float _time )
+    void Player::tick( const UpdateContext * _context )
     {
-        static float fpsTime = 0.0f;
-        fpsTime += _time;
-        if( fpsTime >= 1000.0f )
+        static float fpsTime = 0.f;
+        fpsTime += _context->time;
+        if( fpsTime >= 1000.f )
         {
             const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
                 ->getDebugInfo();
@@ -784,60 +784,60 @@ namespace Mengine
             RENDER_SERVICE()
                 ->resetFrameCount();
 
-            while( fpsTime >= 1000.0f )
+            while( fpsTime >= 1000.f )
             {
-                fpsTime -= 1000.0f;
+                fpsTime -= 1000.f;
             }
         }
 
         if( m_camera2D != nullptr )
         {
-            m_camera2D->update( _current, _time );
+            m_camera2D->update( _context );
         }
 
         if( m_arrowCamera2D != nullptr )
         {
-            m_arrowCamera2D->update( _current, _time );
+            m_arrowCamera2D->update( _context );
         }
 
         if( m_arrow != nullptr )
         {
-            m_arrow->update( _current, _time );
+            m_arrow->update( _context );
         }
 
         if( m_globalScene != nullptr )
         {
-            m_globalScene->update( _current, _time );
+            m_globalScene->update( _context );
         }
 
         if( m_scene != nullptr )
         {
-            m_scene->update( _current, _time );
+            m_scene->update( _context );
         }
 
         if( m_scheduleManager != nullptr )
         {
-            m_scheduleManager->update( _current, _time );
+            m_scheduleManager->update( _context );
         }
 
         if( m_scheduleManagerGlobal != nullptr )
         {
-            m_scheduleManagerGlobal->update( _current, _time );
+            m_scheduleManagerGlobal->update( _context );
         }
 
         for( const ScheduleManagerInterfacePtr & sm : m_schedulers )
         {
-            sm->update( _current, _time );
+            sm->update( _context );
         }
 
         if( m_affectorable != nullptr )
         {
-            m_affectorable->updateAffectors( _current, _time );
+            m_affectorable->updateAffectors( _context );
         }
 
         if( m_affectorableGlobal != nullptr )
         {
-            m_affectorableGlobal->updateAffectors( _current, _time );
+            m_affectorableGlobal->updateAffectors( _context );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -932,7 +932,7 @@ namespace Mengine
         }
 
         MODULE_SERVICE()
-            ->render( &state, debugMask );
+            ->render( &state );
 
         RENDER_SERVICE()
             ->endLimitRenderObjects();
@@ -944,8 +944,8 @@ namespace Mengine
 
         if( m_showDebugText != 0 )
         {
-            const RenderServiceDebugInfo & rdi =
-                RENDER_SERVICE()->getDebugInfo();
+            const RenderServiceDebugInfo & rdi = RENDER_SERVICE()
+                ->getDebugInfo();
 
             Stringstream ss;
 
@@ -1145,6 +1145,7 @@ namespace Mengine
                             {
                                 break;
                             }
+
                         }
 
                         return ss.str();

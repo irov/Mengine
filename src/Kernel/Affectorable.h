@@ -1,14 +1,15 @@
 #pragma once
 
+#include "Interface/UpdateInterface.h"
+
 #include "Kernel/AffectorType.h"
-
-#include "stdex/intrusive_slug_list_size_ptr.h"
-#include "stdex/intrusive_slug_ptr.h"
-
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
 
 #include "math/vec3.h"
+
+#include "stdex/intrusive_slug_list_size_ptr.h"
+#include "stdex/intrusive_slug_ptr.h"
 
 namespace Mengine
 { 
@@ -40,10 +41,10 @@ namespace Mengine
 		const mt::vec3f & getLinearSpeed() const;
 
 	public:
-		void updateAffectors( float _current, float _timing );
+		void updateAffectors( const UpdateContext * _context );
 
 	protected:
-		void updateAffector_( const AffectorPtr & _affector, float _current, float _timing );
+		void updateAffector_( const AffectorPtr & _affector, const UpdateContext * _context );
         
 	protected:
 		typedef stdex::intrusive_slug_list_size_ptr<Affector> VectorAffector;

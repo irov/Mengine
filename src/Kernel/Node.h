@@ -224,13 +224,13 @@ namespace Mengine
 		float getSpeedFactor() const;
 	
 	public:
-		void update( float _current, float _timing ) override;
+		void update( const UpdateContext * _context ) override;
 
 	protected:
-		void _update( float _current, float _timing ) override;
+		void _update( const UpdateContext * _context ) override;
 
 	protected:
-		void updateChildren_( float _current, float _timing );
+		void updateChildren_( const UpdateContext * _context );
 		
 	public:
 		virtual MousePickerTrapInterfacePtr getPickerTrap();

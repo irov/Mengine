@@ -80,7 +80,7 @@ namespace Mengine
         bool _interrupt( uint32_t _enumerator ) override;
 
     protected:
-        bool _update( float _current, float _timing ) override;
+        bool _update( const UpdateContext * _context ) override;
 
     protected:
         bool _compile() override;

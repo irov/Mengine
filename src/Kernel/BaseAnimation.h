@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/AnimationInterface.h"
+#include "Interface/UpdateInterface.h"
 
 namespace Mengine
 {
@@ -65,6 +66,9 @@ namespace Mengine
     public:
         uint32_t getPlayId() const override;
         float getPlayTime() const override;
+
+    protected:
+        float calcTotalTime( const UpdateContext * _context ) const;
 
     protected:
         void end();

@@ -34,7 +34,7 @@ namespace Mengine
         void resetValue( float _value );
 
     protected:
-        bool _affect( float _current, float _timing ) override;
+        bool _affect( const UpdateContext * _context, float * _used ) override;
 
     public:
         void complete() override;

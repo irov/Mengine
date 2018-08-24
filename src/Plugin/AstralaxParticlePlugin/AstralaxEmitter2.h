@@ -35,7 +35,7 @@ namespace Mengine
 		void pause() override;
 		void resume() override;
 		void restart() override;
-		bool update( float _time, bool & _stop ) override;
+		bool update( float _time, bool * _stop ) override;
 		void seek( float _time ) override;
 		void setLoop( bool _loop ) override;
 		bool getLoop() const override;

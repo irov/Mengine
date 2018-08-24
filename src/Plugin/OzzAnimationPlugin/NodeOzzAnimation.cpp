@@ -289,10 +289,8 @@ namespace Mengine
         m_resourceMesh->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeOzzAnimation::_update( float _current, float _timing )
+    void NodeOzzAnimation::_update( const UpdateContext * _context )
     {
-        (void)_current;
-
         for( const SamplerDesc & desc : m_samplerOzzAnimations )
         {
             const SamplerOzzAnimationPtr & sampler = desc.sampler;
@@ -302,7 +300,7 @@ namespace Mengine
                 continue;
             }
 
-            sampler->update( _current, _timing );
+            sampler->update( _context );
         }
 
         this->updateAnimation_();

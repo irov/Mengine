@@ -186,7 +186,7 @@ namespace Mengine
 
             mt::vec2f wd;
             PLAYER_SERVICE()
-                ->calcGlobalMouseWorldDelta( point, delta, wd );
+                ->calcGlobalMouseWorldDelta( delta, wd );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_MOVE, handle )
                 ->onGameMouseMove( _event.touchId, wp.x, wp.y, wd.x, wd.y );
@@ -276,12 +276,13 @@ namespace Mengine
         m_userEvents.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::tick( float _time, float _timing )
+    void Game::tick( const UpdateContext * _context )
     {
-        float timing = _timing * m_timingFactor;
+        UpdateContext gameContext = *_context;
+        gameContext.time *= m_timingFactor;
 
         PLAYER_SERVICE()
-            ->tick( _time, timing );
+            ->tick( &gameContext );
     }
     //////////////////////////////////////////////////////////////////////////
     void Game::render()

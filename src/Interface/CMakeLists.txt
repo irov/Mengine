@@ -68,6 +68,7 @@ src
     AccountInterface.h
     EventationInterface.h
     UnknownInterface.h
+    UpdateInterface.h
     
 	dummy.cpp
 )

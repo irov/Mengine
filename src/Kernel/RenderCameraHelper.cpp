@@ -28,25 +28,9 @@ namespace Mengine
 			_worldPoint = p_vm;
 		}
 		//////////////////////////////////////////////////////////////////////////
-		void screenToWorldDelta( const RenderCameraInterfacePtr & _renderCamera, const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha )
+        void screenToWorldDelta( const RenderCameraInterfacePtr & _renderCamera, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha )
 		{
-            (void)_screenPoint;
-
 		    const mt::mat4f & pm_inv = _renderCamera->getCameraProjectionMatrixInv();
-
-			//mt::vec2f p1 = (_screenPoint + _screenDeltha) * 2.f - mt::vec2f( 1.f, 1.f );
-			//p1.y = -p1.y;
-
-			//mt::vec2f p_pm;
-			//mt::mul_v2_v2_m4( p_pm, p1, pm_inv );
-
-			//mt::vec2f p2 = (_screenPoint)* 2.f - mt::vec2f( 1.f, 1.f );
-			//p2.y = -p2.y;
-
-			//mt::vec2f p_pm_base;
-			//mt::mul_v2_v2_m4( p_pm_base, p2, pm_inv );
-
-			//mt::vec2f deltha = p_pm - p_pm_base;
 
             mt::vec2f p3 = (_screenDeltha)* 2.f - mt::vec2f( 1.f, 1.f );
             p3.y = -p3.y;
@@ -56,6 +40,45 @@ namespace Mengine
 
 			_worldDeltha = p_pm_deltha;
 		}
+        //////////////////////////////////////////////////////////////////////////
+        void worldToScreenPosition( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::vec2f & _worldPosition, mt::vec2f & _screenPosition )
+        {
+            const mt::mat4f & vpm = _renderCamera->getCameraViewProjectionMatrix();
+            const Viewport & vp = _renderViewport->getViewport();
+
+            mt::vec2f vp_size;
+            vp.calcSize( vp_size );
+
+            mt::vec2f contentResolutionInvSize;
+            _contentResolution.calcInvSize( contentResolutionInvSize );
+
+            mt::vec2f v_screen;
+            mt::mul_v2_v2_m4_homogenize( v_screen, _worldPosition, vpm );
+
+            _screenPosition = (vp.begin + v_screen * vp_size) * contentResolutionInvSize;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void worldToScreenDelta( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::vec2f & _worldDelta, mt::vec2f & _screenDelta )
+        {
+            const mt::mat4f & vpm = _renderCamera->getCameraViewProjectionMatrix();
+            const Viewport & vp = _renderViewport->getViewport();
+
+            mt::vec2f vp_size;
+            vp.calcSize( vp_size );
+
+            mt::vec2f contentResolutionInvSize;
+            _contentResolution.calcInvSize( contentResolutionInvSize );
+
+            mt::vec2f v_screen;
+            mt::mul_v2_v2_m4_homogenize( v_screen, _worldDelta, vpm );
+                        
+            v_screen.x += 1.f;
+            v_screen.y = 1.f - v_screen.y;
+
+            v_screen *= mt::vec2f( 0.5f, 0.5f );
+
+            _screenDelta = (v_screen * vp_size) * contentResolutionInvSize;
+        }
         //////////////////////////////////////////////////////////////////////////
         void worldToScreenBox( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::box2f & _worldBox, mt::box2f & _screenBox )
         {

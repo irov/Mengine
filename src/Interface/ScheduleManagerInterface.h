@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
+#include "Interface/UpdateInterface.h"
 
 #include "Kernel/Factorable.h"
 
@@ -73,7 +74,7 @@ namespace Mengine
 		virtual float getTime() const = 0;
 
     public:
-        virtual void update( float _current, float _timing ) = 0;
+        virtual void update( const UpdateContext * _context ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ScheduleManagerInterface> ScheduleManagerInterfacePtr;

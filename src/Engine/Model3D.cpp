@@ -291,27 +291,21 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Model3D::_update( float _current, float _time )
+	void Model3D::_update( const UpdateContext * _context )
 	{
 		if( this->isPlay() == false )
 		{
 			return; 
 		}
 
-		if( m_playTime > _current )
-		{
-			float deltha = m_playTime - _current;
-			_time -= deltha;
-		}
+        float totalTime = this->calcTotalTime( _context );
+
+        m_frameTime += totalTime;
 
 		const Model3DInterfacePtr & model = m_resourceModel->getModel();
 
 		uint32_t frameCount = model->getFrameCount();
 		float frameDelay = model->getFrameDelay();
-		
-		float speedFactor = this->getAnimationSpeedFactor();
-		float scretch = this->getStretch();
-		m_frameTime += _time * speedFactor / scretch;
 		
 		uint32_t lastFrame = m_currentFrame;
 

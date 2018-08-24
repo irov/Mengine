@@ -5,9 +5,7 @@
 #include "Interface/MousePickerSystemInterface.h"
 #include "Interface/PlayerInterface.h"
 
-#include "Kernel/Scene.h"
-#include "Layer2D.h"
-
+#include "Kernel/RenderCameraHelper.h"
 #include "Kernel/Arrow.h"
 
 #include "pybind/system.hpp"
@@ -357,8 +355,10 @@ namespace Mengine
             {
                 float radius = _arrow->getRadius();
 
-                //m_result = m_hotspot->testRadius( m_camera, m_viewport, m_gameViewport, m_point, radius );
-                bool result = this->testRadius( _camera, _viewport, _contentResolution, _point, radius );
+                mt::vec2f rxy;
+                Helper::worldToScreenDelta( _camera, _viewport, _contentResolution, mt::vec2f( radius, radius ), rxy );
+
+                bool result = this->testRadius( _camera, _viewport, _contentResolution, _point, rxy.x, rxy.y );
 
                 return result;
             }break;

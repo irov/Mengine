@@ -247,7 +247,7 @@ namespace Mengine
 			return false;
 		}
 
-		uint8_t minAlpha = (uint8_t)(_minAlpha * 255.0f);
+		uint8_t minAlpha = (uint8_t)(_minAlpha * 255.f);
 		uint32_t index = j * m_width + i;
 		
 		uint8_t * alphaBuffer = this->getHitBuffer_( 0 );
@@ -339,7 +339,7 @@ namespace Mengine
             --j;
         }
 		
-		uint8_t minAlpha = (uint8_t)(_minAlpha * 255.0f);
+		uint8_t minAlpha = (uint8_t)(_minAlpha * 255.f);
 		uint32_t index = i + j * alphaWidth;
 				
 		uint8_t alpha = alphaBuffer[index];

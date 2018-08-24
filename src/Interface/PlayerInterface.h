@@ -5,6 +5,7 @@
 #include "Interface/MousePickerSystemInterface.h"
 #include "Interface/GlobalHandleSystemInterface.h"
 #include "Interface/NodeInterface.h"
+#include "Interface/UpdateInterface.h"
 
 namespace Mengine
 {
@@ -58,7 +59,7 @@ namespace Mengine
 		virtual void onFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) = 0;
 
 	public:
-		virtual void tick( float _current, float _time ) = 0;
+		virtual void tick( const UpdateContext * _context ) = 0;
 		virtual bool update() = 0;
 		virtual void render() = 0;
 
@@ -73,7 +74,7 @@ namespace Mengine
 
 	public:
 		virtual void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) = 0;
-		virtual void calcGlobalMouseWorldDelta( const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) = 0;
+		virtual void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) = 0;
 
 	public:
 		virtual ScheduleManagerInterfacePtr createSchedulerManager() = 0;

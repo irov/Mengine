@@ -10,6 +10,7 @@ src
     Typedef.h
     Floats.h
     Vector.h
+    Deque.h
     Map.h
     List.h
 	Config.h

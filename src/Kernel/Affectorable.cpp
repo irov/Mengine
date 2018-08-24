@@ -1,6 +1,8 @@
 #include "Kernel/Affectorable.h"
 #include "Kernel/Affector.h"
 
+#include "Interface/TimelineInterface.h"
+
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -88,15 +90,13 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affectorable::updateAffectors( float _current, float _time )
+	void Affectorable::updateAffectors( const UpdateContext * _context )
 	{
-        (void)_current;
-
 		AffectorPtr single_affector = m_affectors.single();
 
 		if( single_affector != nullptr )
 		{
-			this->updateAffector_( single_affector, _current, _time );
+			this->updateAffector_( single_affector, _context );
 		}
 		else
 		{
@@ -106,22 +106,27 @@ namespace Mengine
 
 				it.next_shuffle();
 
-				this->updateAffector_( affector, _current, _time );
+				this->updateAffector_( affector, _context );
 			}
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Affectorable::updateAffector_( const AffectorPtr & _affector, float _current, float _time )
+	void Affectorable::updateAffector_( const AffectorPtr & _affector, const UpdateContext * _context )
 	{
-		(void)_current;
-
-		bool end = _affector->affect( _current, _time );
+        float used = 0.f;
+		bool end = _affector->affect( _context, &used );
 
 		if( end == true )
 		{
 			m_affectors.remove( _affector );
 
+            TIMELINE_SERVICE()
+                ->beginOffset( used );
+
 			_affector->complete();
+
+            TIMELINE_SERVICE()
+                ->endOffset();
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

@@ -2,17 +2,6 @@
 
 #include "Kernel/Logger.h"
 
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(push, 0) 
-#   pragma warning(disable:4800)  
-#   endif
-
-#include "boost/format.hpp"
-
-#   ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
-#   pragma warning(pop) 
-#   endif
-
 #include "stdex/stl_allocator.h"
 
 namespace Mengine
@@ -20,51 +9,86 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        typedef boost::basic_format<Char, std::char_traits<Char>, stdex::stl_allocator<Char> > StringFormat;
-        //////////////////////////////////////////////////////////////////////////
         uint32_t getStringFormatExpectedArgs( const String & _format )
         {
-            const Char * str_format = _format.c_str();
+            uint32_t num_argumetns = 0;
 
-            try
+            String::size_type format_size = _format.size();
+            for( String::size_type index = 0; index < format_size; ++index )
             {
-                StringFormat fmt( str_format );
+                const Char ch = _format[index];
 
-                int expected_args = fmt.expected_args();
+                switch( ch )
+                {
+                case '%':
+                    {
+                        ++index;
 
-                return (uint32_t)expected_args;
+                        const Char ch1 = _format[index];
+                        switch( ch1 )
+                        {
+                        case '%':
+                            {
+                            }break;
+                        case 's':
+                            {
+                                num_argumetns++;
+                            }break;
+                        default:
+                            {
+                                return ~0U;
+                            }break;
+                        }
+                    }break;
+                default:
+                    {
+                    }break;
+                }
             }
-            catch( const boost::io::format_error & _ex )
-            {
-                MENGINE_THROW_EXCEPTION( "%s", _ex.what() );
-            }
 
-            return 0U;
+            return num_argumetns;
         }
         //////////////////////////////////////////////////////////////////////////
-        String getStringFormat( const String & _format, const VectorString & _arguments )
+        bool getStringFormat( String & _out, const String & _format, const VectorString & _arguments )
         {
-            const Char * str_format = _format.c_str();
+            uint32_t num_argumetns = 0;
 
-            try
+            String::size_type format_size = _format.size();
+            for( String::size_type index = 0; index < format_size; ++index )
             {
-                StringFormat fmt( str_format );
+                const Char ch = _format[index];
 
-                for( const String & arg : _arguments )
+                switch( ch )
                 {
-                    fmt % arg;
+                case '%':
+                    {
+                        ++index;
+
+                        const Char ch1 = _format[index];
+                        switch( ch1 )
+                        {
+                        case '%':
+                            {
+                                _out += '%';
+                            }break;
+                        case 's':
+                            {
+                                _out += _arguments[num_argumetns++];
+                            }break;
+                        default:
+                            {
+                                return false;
+                            }break;
+                        }
+                    }break;
+                default:
+                    {
+                        _out += ch;
+                    }break;
                 }
-
-                String fmt_str = fmt.str();
-
-                return fmt_str;
-            }
-            catch( const boost::io::format_error & _ex )
-            {
-                MENGINE_THROW_EXCEPTION( "%s", _ex.what() );
             }
 
-            return "";
+            return true;
         }
     }
 }

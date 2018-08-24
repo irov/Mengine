@@ -78,16 +78,17 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Affector::affect( float _current, float _time )
+	bool Affector::affect( const UpdateContext * _context, float * _used )
 	{
 		if( m_freeze == true )
 		{
             return false;
         }
 
-        float total_time = _time * m_speedFactor;
+        UpdateContext affectContext = *_context;
+        affectContext.time *= m_speedFactor;
 
-        bool isEnd = this->_affect( _current, total_time );
+        bool isEnd = this->_affect( &affectContext, _used );
 
 		return isEnd;
 	}

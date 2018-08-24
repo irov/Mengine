@@ -73,7 +73,7 @@ namespace Mengine
 		float getTime() const override;
 		
 	public:
-		void update( float _current, float _time ) override;
+		void update( const UpdateContext * _context ) override;
 
     protected:
         bool removeSchedule_( ScheduleEventDesc & _event );

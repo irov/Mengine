@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/UpdateInterface.h"
+
 #include "math/utils.h"
 
 namespace Mengine
@@ -72,15 +74,15 @@ namespace Mengine
             m_follow = _follow;
         }
 
-        bool update( float _current, float _time )
+        bool update( const UpdateContext * _context, float * _used )
         {
-            bool successful = this->_update( _current, _time );
+            bool successful = this->_update( _context, _used );
 
             return successful;
         }
 
     protected:
-        virtual bool _update( float _current, float _time ) = 0;
+        virtual bool _update( const UpdateContext * _context, float * _used ) = 0;
 
     protected:
         T m_value;
@@ -120,9 +122,9 @@ namespace Mengine
         }
 
     protected:
-        bool _update( float _current, float _time ) override
+        bool _update( const UpdateContext * _context, float * _used ) override
         {
-            (void)_current;
+            *_used = _context->time;
 
             float value_length = this->getLength();
 
@@ -133,7 +135,7 @@ namespace Mengine
                 return true;
             }
 
-            float step = m_speed * _time;
+            float step = m_speed * _context->time;
 
             if( step >= value_length )
             {

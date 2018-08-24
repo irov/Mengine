@@ -30,23 +30,23 @@ SERVICE_FACTORY( Platform, Mengine::Win32Platform );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	static const float s_activeFrameTime = 1000.f / 60.f;
-	static const float s_inactiveFrameTime = 100.f;
 	//////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WINDOW_CLASSNAME
 #	define MENGINE_WINDOW_CLASSNAME (L"MengineWindow")
 #endif
 	//////////////////////////////////////////////////////////////////////////
-	Win32Platform::Win32Platform()
-		: m_hInstance( NULL )
-		, m_hWnd( NULL )
-		, m_alreadyRunningMonitor( nullptr )
-		, m_fpsMonitor( nullptr )
-		, m_active( false )
-		, m_update( false )
-		, m_close( false )
-		, m_vsync( false )
-		, m_pauseUpdatingTime( -1.f )
+    Win32Platform::Win32Platform()
+        : m_hInstance( NULL )
+        , m_hWnd( NULL )
+        , m_alreadyRunningMonitor( nullptr )
+        , m_fpsMonitor( nullptr )
+        , m_active( false )
+        , m_update( false )
+        , m_close( false )
+        , m_vsync( false )
+        , m_pauseUpdatingTime( -1.f )
+        , m_activeFrameTime( 1000.f / 60.f )
+        , m_inactiveFrameTime( 100.f )
 		, m_cursorInArea( false )
 		, m_clickOutArea( false )
 		, m_isDoubleClick( false )
@@ -174,7 +174,7 @@ namespace Mengine
 		if( HAS_OPTION( "touchpad" ) )
 		{
 			m_touchpad = true;
-		}
+		}        
 
 		return true;
 	}
@@ -1014,6 +1014,8 @@ namespace Mengine
 
 		m_mouseEvent.initialize( m_hWnd );
 
+        m_activeFrameTime = CONFIG_VALUE( "Engine", "MaxActiveFrameTime", m_activeFrameTime );
+
 		bool vsync = APPLICATION_SERVICE()
 			->getVSync();
 
@@ -1025,7 +1027,7 @@ namespace Mengine
 			m_fpsMonitor->initialize();
 
 			m_fpsMonitor->setActive( true );
-			m_fpsMonitor->setFrameTime( s_activeFrameTime );
+			m_fpsMonitor->setFrameTime( m_activeFrameTime );
 		}
 
 		return true;
@@ -1112,6 +1114,18 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void Win32Platform::notifyVsyncChanged( bool _vsync )
 	{
+        bool novsync = HAS_OPTION( "novsync" );
+
+        if( novsync == true )
+        {
+            if( m_fpsMonitor != nullptr )
+            {
+                m_fpsMonitor->setActive( true );
+            }
+
+            return;
+        }
+
 		m_vsync = _vsync;
 
 		if( m_fpsMonitor != nullptr )
@@ -1719,15 +1733,17 @@ namespace Mengine
 
 		m_active = _active;
 
+        bool nopause = HAS_OPTION( "nopause" );
+
 		if( m_fpsMonitor != nullptr )
 		{
-			if( m_active == true )
+            if( m_active == true || nopause == true )
 			{
-				m_fpsMonitor->setFrameTime( s_activeFrameTime );
+				m_fpsMonitor->setFrameTime( m_activeFrameTime );
 			}
 			else
 			{
-				m_fpsMonitor->setFrameTime( s_inactiveFrameTime );
+				m_fpsMonitor->setFrameTime( m_inactiveFrameTime );
 			}
 		}
 
@@ -1748,8 +1764,6 @@ namespace Mengine
 			INPUT_SERVICE()
 				->pushMouseEnterEvent( 0, point.x, point.y, 0.f );
 		}
-
-		bool nopause = HAS_OPTION( "nopause" );
 
 		if( nopause == false )
 		{

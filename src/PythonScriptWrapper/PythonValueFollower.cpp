@@ -63,9 +63,9 @@ namespace Mengine
         m_valueFollower.reset( _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonValueFollower::_affect( float _current, float _timing )
+    bool PythonValueFollower::_affect( const UpdateContext * _context, float * _used )
     {
-        m_valueFollower.update( _current, _timing );
+        m_valueFollower.update( _context, _used );
 
         float value = m_valueFollower.getValue();
 

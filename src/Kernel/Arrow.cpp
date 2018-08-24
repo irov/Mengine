@@ -240,9 +240,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::calcPointDeltha( const RenderCameraInterfacePtr & _camera, const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) const
+    void Arrow::calcPointDeltha( const RenderCameraInterfacePtr & _camera, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) const
     {
-        Helper::screenToWorldDelta( _camera, _screenPoint, _screenDeltha, _worldDeltha );
+        Helper::screenToWorldDelta( _camera, _screenDeltha, _worldDeltha );
     }
     //////////////////////////////////////////////////////////////////////////
     void Arrow::calcMouseScreenPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _worldPoint, mt::vec2f & _screenPoint ) const
@@ -363,7 +363,7 @@ namespace Mengine
             }break;
         case EAT_RADIUS:
             {
-                uint32_t numpoints = 4;
+                const uint32_t numpoints = 32;
                 uint32_t vertexCount = numpoints * 2;
 
                 RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
@@ -375,14 +375,17 @@ namespace Mengine
 
                 const mt::mat4f & worldMat = this->getWorldMatrix();
 
-                mt::vec2f ring[4];
+                mt::vec2f ring[numpoints];
 
                 float radius = this->getRadius();
-                float half_radius = radius * 0.5f;
-                ring[0] = mt::vec2f( 0, -half_radius );
-                ring[1] = mt::vec2f( half_radius, 0 );
-                ring[2] = mt::vec2f( 0, half_radius );
-                ring[3] = mt::vec2f( -half_radius, 0 );
+
+                for( uint32_t i = 0; i != numpoints; ++i )
+                {
+                    float x = radius * MT_cosf( mt::constant::two_pi / float(numpoints) * float( i ) );
+                    float y = radius * MT_sinf( mt::constant::two_pi / float(numpoints) * float( i ) );
+
+                    ring[i] = mt::vec2f( x, y );
+                }
 
                 for( uint32_t i = 0; i != numpoints; ++i )
                 {
@@ -430,7 +433,7 @@ namespace Mengine
             }break;
         case EAT_POLYGON:
             {
-                uint32_t numpoints = m_polygon.num_points();
+                uint32_t numpoints = m_polygon.size();
 
                 if( numpoints == 0 )
                 {
@@ -448,14 +451,14 @@ namespace Mengine
 
                 const mt::mat4f & worldMat = this->getWorldMatrix();
 
-                const mt::vec2f * ring = m_polygon.outer_points();
+                const VectorPoints & points = m_polygon.getPoints();
 
                 for( uint32_t i = 0; i != numpoints; ++i )
                 {
                     uint32_t j = (i + 1) % numpoints;
 
                     mt::vec3f trP0;
-                    mt::mul_v3_v2_m4( trP0, ring[i], worldMat );
+                    mt::mul_v3_v2_m4( trP0, points[i], worldMat );
 
                     RenderVertex2D & v0 = vertices[i * 2 + 0];
 
@@ -470,7 +473,7 @@ namespace Mengine
                     }
 
                     mt::vec3f trP1;
-                    mt::mul_v3_v2_m4( trP1, ring[j], worldMat );
+                    mt::mul_v3_v2_m4( trP1, points[j], worldMat );
 
                     RenderVertex2D & v1 = vertices[i * 2 + 1];
 

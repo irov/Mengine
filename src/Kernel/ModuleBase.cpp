@@ -67,28 +67,26 @@ namespace Mengine
 		//Empty;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::tick( float _current, float _time )
+	void ModuleBase::tick( const UpdateContext * _context )
 	{
-		this->_tick( _current, _time );
+		this->_tick( _context );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::render( const RenderContext * _state, uint32_t _debugMask )
+	void ModuleBase::render( const RenderContext * _state )
 	{
-		this->_render( _state, _debugMask );
+		this->_render( _state );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::_tick( float _current, float _time )
+	void ModuleBase::_tick( const UpdateContext * _context )
 	{
-		(void)_current;
-		(void)_time;
+		(void)_context;
 
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleBase::_render( const RenderContext * _state, uint32_t _debugMask )
+	void ModuleBase::_render( const RenderContext * _state )
 	{
 		(void)_state;
-		(void)_debugMask;
 
 		//Empty
 	}

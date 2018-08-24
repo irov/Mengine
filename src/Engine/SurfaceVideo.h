@@ -60,7 +60,8 @@ namespace Mengine
         const ColourValue & getColor() const override;
 
     protected:
-        bool _update( float _current, float _time ) override;
+        void _activate() override;
+        bool _update( const UpdateContext * _context ) override;
 
     protected:
         void _setTime( float _time ) override;

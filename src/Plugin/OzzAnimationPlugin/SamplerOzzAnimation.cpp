@@ -54,22 +54,24 @@ namespace Mengine
         return m_locals;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::_update( float _current, float _timing )
+    void SamplerOzzAnimation::_update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {
             return;
         }
 
-        if( m_playTime > _current )
+        float time = _context->time;
+
+        if( m_playTime > _context->current )
         {
-            float deltha = m_playTime - _current;
-            _timing -= deltha;
+            float deltha = m_playTime - _context->current;
+            time -= deltha;
         }
 
         float speedFactor = this->getAnimationSpeedFactor();
         float scretch = this->getStretch();
-        float realTiming = _timing * speedFactor / scretch;
+        float realTiming = time * speedFactor / scretch;
 
         this->updateTiming_( realTiming );
         this->updateAnimation_();

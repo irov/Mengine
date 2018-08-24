@@ -39,7 +39,7 @@ namespace Mengine
 		return m_resourceAnimation;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceImageSequence::_update( float _current, float _time )
+	bool SurfaceImageSequence::_update( const UpdateContext * _context )
 	{
 		if( this->isPlay() == false )
 		{
@@ -48,17 +48,19 @@ namespace Mengine
 			return invalidate;
 		}
 
-		if( m_playTime > _current )
+        float time = _context->time;
+
+		if( m_playTime > _context->current )
 		{
-			float deltaTime = m_playTime - _current;
-			_time -= deltaTime;
+			float deltaTime = m_playTime - _context->current;
+			time -= deltaTime;
 		}
 
 		uint32_t frameCount = m_resourceAnimation->getSequenceCount();
 
 		float speedFactor = this->getAnimationSpeedFactor();
 		float scretch = this->getStretch();
-		m_frameTime += _time * speedFactor / scretch;
+		m_frameTime += time * speedFactor / scretch;
 
 		float frameDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
         

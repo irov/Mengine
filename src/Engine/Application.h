@@ -206,6 +206,8 @@ namespace Mengine
 		typedef Map<float, Viewport> MapAspectRatioViewports;
 		MapAspectRatioViewports m_aspectRatioViewports;
 
+        uint32_t m_updateRevision;
+
 		bool m_fixedContentResolution;
 		bool m_fixedDisplayResolution;
 		bool m_createRenderWindow;

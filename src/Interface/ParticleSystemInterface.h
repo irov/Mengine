@@ -94,7 +94,7 @@ namespace Mengine
 		virtual void restart() = 0;
 		virtual void seek( float _time ) = 0;
 	public:
-		virtual bool update( float _time, bool & _stop ) = 0;
+		virtual bool update( float _time, bool * _stop ) = 0;
 
 	public:
 		virtual void setLoop( bool _loop ) = 0;

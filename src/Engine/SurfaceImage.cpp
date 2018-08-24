@@ -63,10 +63,9 @@ namespace Mengine
         m_resourceImage.release();
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceImage::_update( float _current, float _time )
+    bool SurfaceImage::_update( const UpdateContext * _context )
     {
-        (void)_current;
-        (void)_time;
+        (void)_context;
 
         return false;
     }

@@ -61,7 +61,7 @@ namespace Mengine
 		void setCurrentFrame_( uint32_t _frame );
 
 	protected:
-		void _update( float _current, float _time ) override;
+		void _update( const UpdateContext * _context ) override;
 		void _render( const RenderContext * _state ) override;
 
 		bool _activate() override;

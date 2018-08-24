@@ -10,7 +10,7 @@
 #include "Kernel/ConstStringTypes.h"
 #include "Kernel/String.h"
 
-#include "Kernel/Archive.hpp"
+#include "Kernel/Archive.h"
 
 #include "Config/Typedef.h"
 

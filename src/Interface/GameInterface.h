@@ -3,10 +3,9 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/UpdateInterface.h"
 
 #include "Kernel/Params.h"
-
-#include "Kernel/Magic.h"
 
 namespace Mengine
 {
@@ -22,7 +21,7 @@ namespace Mengine
 
     public:
 		virtual void update() = 0;
-		virtual void tick( float _current, float _time ) = 0;
+		virtual void tick( const UpdateContext * _context ) = 0;
 
 	public:
         virtual void render() = 0;

@@ -79,11 +79,11 @@ if [ ! -d $dependenciesdir ]; then
     mkdir $dependenciesdir
 fi
 
+getdepend https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z boost_1_68_0.7z boost_1_68_0 boost
 getdepend http://www.ijg.org/files/jpegsr9c.zip jpegsr9c.zip jpeg-9c libjpeg
 getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
 getdepend https://github.com/leenjewel/openssl_for_ios_and_android/releases/download/android_openssl-1.1.0f_curl-7.54.1/only_android_openssl-1.1.0f_curl-7.54.1.zip only_android_openssl-1.1.0f_curl-7.54.1.zip libs curl-android
 
-gitdepend https://github.com/boostorg/boost.git boost
 gitdepend https://github.com/madler/zlib.git zlib
 gitdepend https://github.com/xiph/ogg.git libogg
 gitdepend https://github.com/xiph/vorbis.git libvorbis
@@ -97,7 +97,7 @@ gitdepend https://github.com/irov/movie.git libmovie
 gitdepend https://github.com/nemtrif/utfcpp.git utf8
 gitdepend https://github.com/lz4/lz4.git lz4
 gitdepend https://github.com/irov/fastpathfinder.git fastpathfinder
-gitdepend https://github.com/zzzzrrr/poly2tri poly2tri
+gitdepend https://github.com/jhasse/poly2tri.git poly2tri
 gitdepend https://github.com/erincatto/Box2D.git Box2D
 gitdepend https://github.com/irov/GOAP.git GOAP
 gitdepend https://github.com/curl/curl.git libcurl

@@ -58,10 +58,8 @@ namespace Mengine
         return desc.velocity;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Motor::_update( float _current, float _time )
+    void Motor::_update( const UpdateContext * _context )
     {
-        (void)_current;
-
         if( m_node == nullptr )
         {
             return;
@@ -77,7 +75,7 @@ namespace Mengine
         {
             const VelocityDesc & desc = it->second;
 
-            velocity += desc.velocity * _time;
+            velocity += desc.velocity * _context->time;
         }
 
         m_node->translate( velocity );

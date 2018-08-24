@@ -81,7 +81,7 @@ namespace Mengine
 		return m_outward;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotCircle::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radius ) const
+	bool HotSpotCircle::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
 	{
 		(void)_contentResolution;
 		(void)_viewport;
@@ -114,7 +114,7 @@ namespace Mengine
 
 		float v_sqrlength = v.sqrlength();
 
-		if( v_sqrlength < (m_radius + _radius) * (m_radius + _radius) )
+		if( v_sqrlength < (m_radius + _radiusx) * (m_radius + _radiusy) )
 		{
 			return !m_outward;
 		}

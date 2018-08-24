@@ -32,8 +32,8 @@ namespace Mengine
 		void update( bool _focus ) override;
 
 	public:
-		void tick( float _time, float _timing ) override;
-		void render( const RenderContext * _state, uint32_t _debugMask ) override;
+		void tick( const UpdateContext * _context ) override;
+		void render( const RenderContext * _state ) override;
 
 	public:
 		void message( const ConstString & _moduleName, const ConstString & _messageName, const MapWParams & _params ) override;

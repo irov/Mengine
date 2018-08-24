@@ -97,7 +97,12 @@ namespace Mengine
         m_uv.p3 = mt::vec2f( 0.f, v );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::_update( float _current, float _time )
+    void SurfaceVideo::_activate()
+    {
+        this->updateVideoBuffer_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SurfaceVideo::_update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {
@@ -112,18 +117,7 @@ namespace Mengine
             return false;
         }
 
-        if( m_playTime > _current )
-        {
-            float deltha = m_playTime - _current;
-            _time -= deltha;
-        }
-
-        float speedFactor = this->getAnimationSpeedFactor();
-        float time = _time * speedFactor;
-
-        float scretch = this->getStretch();
-
-        float totalTime = time / scretch;
+        float totalTime = this->calcTotalTime( _context );
 
         m_needUpdateVideoBuffer = this->sync_( totalTime );
 
@@ -562,6 +556,11 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceVideo::_updateMaterial() const
     {
+        if( m_needUpdateVideoBuffer == true )
+        {
+            return nullptr;
+        }
+
         RenderMaterialInterfacePtr material = this->makeTextureMaterial( m_textures, 1, false );
 
         if( material == nullptr )

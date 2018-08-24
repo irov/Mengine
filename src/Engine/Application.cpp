@@ -152,6 +152,7 @@ namespace Mengine
         , m_phycisFrameTime( 0.f )
         , m_resetFrameTime( false )
         , m_maxFrameTime( 100.f )
+        , m_updateRevision( 0 )
         , m_focus( true )
         , m_freeze( false )
         , m_update( true )
@@ -1270,6 +1271,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::tick( float _time )
     {
+        ++m_updateRevision;
+
         float time = _time;
 
         if( m_debugPause == true )
@@ -1285,22 +1288,27 @@ namespace Mengine
         float current = TIMELINE_SERVICE()
             ->getTime();
 
+        UpdateContext applicationContext;
+        applicationContext.revision = m_updateRevision;
+        applicationContext.current = current;
+        applicationContext.time = time;
+
         GAME_SERVICE()
-            ->tick( current, time );
+            ->tick( &applicationContext );
 
         MODULE_SERVICE()
-            ->tick( current, time );
+            ->tick( &applicationContext );
 
         if( SERVICE_EXIST( Mengine::SoundServiceInterface ) == true )
         {
             SOUND_SERVICE()
-                ->tick( current, time );
+                ->tick( &applicationContext );
         }
 
         if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
         {
             GRAVEYARD_SERVICE()
-                ->tick( current, time );
+                ->tick( &applicationContext );
         }
 
         TIMELINE_SERVICE()
@@ -2003,6 +2011,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::getVSync() const
     {
+        bool novsync = HAS_OPTION( "novsync" );
+
+        if( novsync == true )
+        {
+            return false;
+        }
+
         return m_vsync;
     }
     //////////////////////////////////////////////////////////////////////////

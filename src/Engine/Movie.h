@@ -137,7 +137,7 @@ namespace Mengine
         void _destroy() override;
 
 	protected:
-		void _update( float _current, float _time ) override;
+		void _update( const UpdateContext * _context ) override;
 
     protected:
         void _setLocalHide( bool _value ) override;

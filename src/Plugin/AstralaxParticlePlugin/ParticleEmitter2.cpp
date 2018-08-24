@@ -10,6 +10,8 @@
 //#include "Kernel/Layer.h"
 #include "Kernel/UnknownResourceImageDataInterface.h"
 
+#include "Kernel/PolygonHelper.h"
+
 #include "Interface/ParticleSystemInterface.h"
 
 #include "Interface/ResourceInterface.h"
@@ -112,7 +114,7 @@ namespace Mengine
         bool loop = this->getLoop();
         emitter->setLoop( loop );
 
-        uint32_t polygon_count = m_polygon.num_points();
+        Polygon::size_type polygon_count = m_polygon.size();
 
         if( polygon_count != 0 )
         {
@@ -301,14 +303,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::_update( float _current, float _time )
+    void ParticleEmitter2::_update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {
             return;
         }
 
-        Node::_update( _current, _time );
+        Node::_update( _context );
 
         bool enabled = APPLICATION_SERVICE()
             ->getParticleEnable();
@@ -318,21 +320,10 @@ namespace Mengine
             return;
         }
 
-        if( m_playTime > _current )
-        {
-            float deltha = m_playTime - _current;
-            _time -= deltha;
-        }
-
-        float speedFactor = this->getAnimationSpeedFactor();
-        float time = _time * speedFactor;
-
-        float scretch = this->getStretch();
-
-        float totalTime = time / scretch;
+        float totalTime = this->calcTotalTime( _context );
 
         bool stop;
-        m_emitter->update( totalTime, stop );
+        m_emitter->update( totalTime, &stop );
 
         if( stop == true )
         {
@@ -675,8 +666,6 @@ namespace Mengine
     {
         m_polygon = _polygon;
 
-        m_polygon.correct();
-
         if( this->isCompile() == false )
         {
             return true;
@@ -692,7 +681,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ParticleEmitter2::compilePolygon_( const ParticleEmitterInterfacePtr & _emitter )
     {
-        uint32_t n = m_polygon.num_points();
+        Polygon::size_type n = m_polygon.size();
 
         if( n == 0 )
         {
@@ -700,7 +689,7 @@ namespace Mengine
         }
 
         VectorPoints points;
-        if( m_polygon.triangulate( points ) == false )
+        if( Helper::triangulate( m_polygon, points ) == false )
         {
             LOGGER_ERROR( "ParticleEmitter::changeEmitterPolygon '%s' wrong polygon"
                 , m_name.c_str()

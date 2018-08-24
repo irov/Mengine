@@ -22,6 +22,7 @@
 #include "math/rand.h"
 
 #include "Kernel/Polygon.h"
+#include "Kernel/PolygonHelper.h"
 #include "Kernel/ColourValue.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/UID.h"
@@ -869,74 +870,57 @@ namespace Mengine
 
         pybind::list s_getPolygonPoints( pybind::kernel_interface * _kernel, const Polygon & _polygon )
         {
-            pybind::list py_list( _kernel );
+            const VectorPoints & points = _polygon.getPoints();
 
-            const mt::vec2f * ring = _polygon.outer_points();
-            Polygon::size_type ring_count = _polygon.outer_count();
-
-            py_list.append( ring, ring + ring_count );
+            pybind::list py_list = pybind::make_list_container_t( _kernel, points );
 
             return py_list;
         }
 
-        Polygon s_intersectionPolygons( Polygon _p1, Polygon _p2 )
+        const Polygon & s_intersectionPolygons( const Polygon & _p1, const Polygon & _p2 )
         {
-            _p1.correct();
-            _p2.correct();
-
-            VectorPolygon output;
-            _p1.difference( _p2, output );
+            VectorGeolygon output;
+            Helper::difference( _p1, _p2, output );
 
             if( output.empty() == true )
             {
                 return _p1;
             }
 
-            Polygon inter = output[0];
+            const Polygon & outer = output[0].getOuter();
 
-            inter.correct();
-
-            return inter;
+            return outer;
         }
-
-        bool s_intersectsPolygons( Polygon _p1, Polygon _p2 )
+        
+        bool s_intersectsPolygons( const Polygon & _p1, const Polygon & _p2 )
         {
-            _p1.correct();
-            _p2.correct();
-
-            bool intersect = _p1.intersects( _p2 );
+            bool intersect = Helper::intersects( _p1, _p2 );
 
             return intersect;
         }
 
         bool s_intersectsPolygonsWM( const mt::mat4f & _wm1, Polygon _p1, const mt::mat4f & _wm2, Polygon _p2 )
         {
-            _p1.correct();
-            _p2.correct();
-
             Polygon p1wm;
             _p1.mul_wm( p1wm, _wm1 );
 
             Polygon p2wm;
             _p2.mul_wm( p2wm, _wm2 );
 
-            bool intersect = p1wm.intersects( p2wm );
+            bool intersect = Helper::intersects( p1wm, p2wm );
 
             return intersect;
         }
 
         bool s_intersectsPolygonsWMP( const mt::vec3f & _wm1, Polygon _p1, const mt::vec3f & _wm2, Polygon _p2 )
         {
-            _p1.correct();
-            _p2.correct();
-
             Polygon p1wm;
             _p1.transpose( p1wm, _wm1.to_vec2f() );
 
             Polygon p2wm;
             _p2.transpose( p2wm, _wm2.to_vec2f() );
 
-            bool intersect = p1wm.intersects( p2wm );
+            bool intersect = Helper::intersects( p1wm, p2wm );
 
             return intersect;
         }
@@ -1033,14 +1017,14 @@ namespace Mengine
 
             mt::box2f b1;
             Polygon p1;
-            shape1->getPolygonScreen( shape1_camera, shape1_viewport, contentResolution, &b1, &p1 );
+            shape1->getScreenPolygon( shape1_camera, shape1_viewport, contentResolution, &b1, &p1 );
 
             const RenderCameraInterfacePtr & shape2_camera = shape2->getRenderCameraInheritance();
             const RenderViewportInterfacePtr & shape2_viewport = shape2->getRenderViewportInheritance();
 
             mt::box2f b2;
             Polygon p2;
-            shape2->getPolygonScreen( shape2_camera, shape2_viewport, contentResolution, &b2, &p2 );
+            shape2->getScreenPolygon( shape2_camera, shape2_viewport, contentResolution, &b2, &p2 );
 
             if( mt::is_intersect( b1, b2 ) == false )
             {
@@ -1054,8 +1038,6 @@ namespace Mengine
 
         bool s_intersectMoviesHotspotVsPolygon( const MoviePtr & _movie, const ConstString & _socket, Polygon _polygon )
         {
-            _polygon.correct();
-
             if( _movie == nullptr )
             {
                 LOGGER_ERROR( "s_intersectMoviesHotspotVsPolygon movie is NULL"
@@ -1104,7 +1086,7 @@ namespace Mengine
             const RenderViewportInterfacePtr & shape_viewport = shape->getRenderViewportInheritance();
 
             Polygon p1;
-            shape->getPolygonScreen( shape_camera, shape_viewport, contentResolution, nullptr, &p1 );
+            shape->getScreenPolygon( shape_camera, shape_viewport, contentResolution, nullptr, &p1 );
 
             bool result = s_intersectsPolygons( p1, _polygon );
 
@@ -1187,14 +1169,7 @@ namespace Mengine
 
         bool s_isPointInsidePolygon( const mt::vec2f & _point, const Polygon & _polygon )
         {
-            Polygon point_polygon;
-            point_polygon.append( _point );
-            point_polygon.correct();
-
-            Polygon correct_polygon( _polygon );
-            correct_polygon.correct();
-
-            bool result = point_polygon.intersects( correct_polygon );
+            bool result = Helper::intersects( _polygon, _point );
 
             return result;
         }

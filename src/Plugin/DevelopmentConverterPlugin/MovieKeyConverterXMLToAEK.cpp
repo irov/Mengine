@@ -8,7 +8,8 @@
 
 #include "Metacode/Metacode.h"
 
-#include "Kernel/ArchiveWrite.hpp"
+#include "Kernel/ArchiveWrite.h"
+#include "Kernel/PolygonHelper.h"
 
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryAllocator.h"
@@ -540,8 +541,7 @@ namespace Mengine
 			{
 				const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & meta_shape = *it_shape;
 
-				Polygon polygon = meta_shape.get_Polygon();
-				polygon.correct();
+				const Polygon & polygon = meta_shape.get_Polygon();
 
 				mt::vec2f v0( 0.f, 0.f );
 				mt::vec2f v1( imageMaxSize.x, 0.f );
@@ -553,12 +553,11 @@ namespace Mengine
 				imagePolygon.append( v1 );
 				imagePolygon.append( v2 );
 				imagePolygon.append( v3 );
-				imagePolygon.correct();
 
-				VectorPolygon output;
+				VectorGeolygon output;
 				if( subtract == false )
 				{
-					if( polygon.intersection( imagePolygon, output ) == false )
+                    if( Helper::intersection( polygon, imagePolygon, output ) == false )
 					{
 						LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
 							, layerIndex
@@ -569,7 +568,7 @@ namespace Mengine
 				}
 				else
 				{
-					if( imagePolygon.difference( polygon, output ) == false )
+					if( Helper::difference( imagePolygon, polygon, output ) == false )
 					{
 						LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
 							, layerIndex
@@ -597,19 +596,21 @@ namespace Mengine
 
                     uint32_t max_points = 0;
 
-                    for( const Polygon & shape_vertex : output )
+                    for( const Geolygon & geolygon : output )
 					{
-                        uint32_t outer_count = shape_vertex.outer_count();
+                        const Polygon & outer = geolygon.getOuter();
 
-						max_points += outer_count - 1;
+                        Polygon::size_type outer_count = outer.size();
 
-                        uint32_t inners_count = shape_vertex.inners_count();
+						max_points += outer_count;
 
-						for( uint32_t index = 0; index != inners_count; ++index )
+                        const VectorPolygon & inners = geolygon.getInners();
+
+                        for( const Polygon & inner : inners )
 						{
-                            uint32_t inner_count = shape_vertex.inner_count( index );
+                            uint32_t inner_count = inner.size();
 
-							max_points += inner_count - 1;
+							max_points += inner_count;
 						}
 					}
 
@@ -628,62 +629,50 @@ namespace Mengine
 
 					VectorIndices shape_indices;
 
-                    for( const Polygon & shape_vertex : output )
+                    for( const Geolygon & geolygon : output )
 					{
 						std::vector<p2t::Point*> p2t_polygon;
 
-                        uint32_t outer_count = shape_vertex.outer_count();
+                        const Polygon & outer = geolygon.getOuter();
 
-						for( uint32_t index = 0; index != outer_count - 1; ++index )
+						for( const mt::vec2f & v : outer )
 						{
-							const mt::vec2f & v = shape_vertex.outer_point( index );
+                            p2t_points.emplace_back( p2t::Point( v.x, v.y ) );
+                            p2t::Point * p = &p2t_points.back();
 
-							p2t_points.emplace_back( p2t::Point( v.x, v.y ) );
-							p2t::Point * p = &p2t_points.back();
-
-							p2t_polygon.emplace_back( p );
+                            p2t_polygon.emplace_back( p );
 						}
 
 						p2t::CDT * cdt = new p2t::CDT( p2t_polygon );
 
-                        uint32_t inners_count = shape_vertex.inners_count();
+                        const VectorPolygon & inners = geolygon.getInners();
 
-						for( uint32_t index_inners = 0; index_inners != inners_count; ++index_inners )
+                        for( const Polygon & inner : inners )
 						{
 							std::vector<p2t::Point*> p2t_hole;
 
-                            uint32_t inner_count = shape_vertex.inner_count( index_inners );
-
-							for( uint32_t index_inner = 0; index_inner != inner_count - 1; ++index_inner )
-							{
-								const mt::vec2f & v = shape_vertex.inner_point( index_inners, index_inner );
-
+							for( const mt::vec2f & v : inner )
+                            {
 								p2t_points.emplace_back( p2t::Point( v.x, v.y ) );
 								p2t::Point * p = &p2t_points.back();
 
 								p2t_hole.emplace_back( p );
 							}
 
-							cdt->AddHole( p2t_hole );
-						}
+                            cdt->AddHole( p2t_hole );
+                        }
 
 						cdt->Triangulate();
 
 						std::vector<p2t::Triangle*> triangles = cdt->GetTriangles();
 
-						for( std::vector<p2t::Triangle*>::iterator
-							it_triangle = triangles.begin(),
-							it_triangle_end = triangles.end();
-						it_triangle != it_triangle_end;
-						++it_triangle)
+                        for( p2t::Triangle * tr : triangles )
 						{
-							p2t::Triangle* tr = *it_triangle;
+                            p2t::Point * p0 = tr->GetPoint( 0 );
+                            p2t::Point * p1 = tr->GetPoint( 1 );
+                            p2t::Point * p2 = tr->GetPoint( 2 );
 
-							p2t::Point * p0 = tr->GetPoint( 0 );
-							p2t::Point * p1 = tr->GetPoint( 1 );
-							p2t::Point * p2 = tr->GetPoint( 2 );
-
-							p2t::Point * pb = &p2t_points[0];
+                            p2t::Point * pb = &p2t_points[0];
 
 							uint32_t i0 = (uint32_t)std::distance( pb, p0 );
 							uint32_t i1 = (uint32_t)std::distance( pb, p1 );
@@ -773,7 +762,7 @@ namespace Mengine
 
 			const Polygon & polygon = meta_polygon.get_Value();
 
-            uint32_t polygon_size = polygon.num_points();
+            uint32_t polygon_size = polygon.size();
 
 			if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
 			{
@@ -790,11 +779,8 @@ namespace Mengine
 
 			if( polygon_size > 0 )
 			{
-				const mt::vec2f * countour = polygon.outer_points();
-
-				for( uint32_t i = 0; i != polygon_size; ++i )
+				for( const mt::vec2f & p : polygon )
 				{
-					const mt::vec2f & p = countour[i];
 					aw << p.x;
 					aw << p.y;
 				}

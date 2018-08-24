@@ -101,7 +101,7 @@ namespace Mengine
 		return volume;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool MixerValue::update( float _current, float _timing )
+	bool MixerValue::update( const UpdateContext * _context )
 	{
 		bool process = false;
 
@@ -113,7 +113,8 @@ namespace Mengine
 		{
 			Element & m = *it;
 
-			if( m.follower.update( _current, _timing ) == false )
+            float used = 0.f;
+            if( m.follower.update( _context, &used ) == false )
 			{
 				process = true;
 			}

@@ -134,19 +134,19 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::tick( float _time, float _timing )
+	void ModuleService::tick( const UpdateContext * _context )
 	{
         for( const ModuleInterfacePtr & module : m_modules )
 		{
-            module->tick( _time, _timing );
+            module->tick( _context );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void ModuleService::render( const RenderContext * _state, uint32_t _debugMask )
+	void ModuleService::render( const RenderContext * _state )
 	{
         for( const ModuleInterfacePtr & module : m_modules )
 		{
-			module->render( _state, _debugMask );
+			module->render( _state );
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////

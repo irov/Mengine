@@ -25,7 +25,7 @@ namespace Mengine
             return m_started;
         }
 
-        virtual bool update( float _current, float _time, T * _out ) = 0;
+        virtual bool update( const UpdateContext * _context, T * _out, float * _used ) = 0;
 
     protected:
         bool m_started;
@@ -58,19 +58,20 @@ namespace Mengine
             return true;
         }
 
-        bool update( float _current, float _time, T * _out )
+        bool update( const UpdateContext * _context, T * _out, float * _used ) override
         {
-            (void)_current;
+            *_used = _context->time;
 
             if( ValueAccumulator<T>::m_started == false )
             {
                 *_out = ValueAccumulator<T>::m_pos;
+
                 return true;
             }
 
-            ValueAccumulator<T>::m_time += _time;
+            ValueAccumulator<T>::m_time += _context->time;
 
-            ValueAccumulator<T>::m_pos += ValueAccumulator<T>::m_delta * _time;
+            ValueAccumulator<T>::m_pos += ValueAccumulator<T>::m_delta * _context->time;
 
             *_out = ValueAccumulator<T>::m_pos;
 
@@ -119,21 +120,20 @@ namespace Mengine
             this->_update( dt, _out );
         }
 
-        bool update( float _current, float _time, T * _out )
+        bool update( const UpdateContext * _context, T * _out, float * _used )
         {
-            (void)_current;
-
             if( m_started == false )
             {
                 *_out = m_value2;
+                *_used = 0.f;
 
                 return true;
             }
 
-            m_time += _time;
-
-            if( m_time > m_duration )
+            if( m_time + _context->time >= m_duration )
             {
+                *_used = m_duration - m_time;
+
                 m_duration = 0.f;
                 m_time = 0.f;
                 *_out = m_value2;
@@ -143,12 +143,16 @@ namespace Mengine
                 return true;
             }
 
+            m_time += _context->time;
+
             float dt = m_time / m_duration;
 
             this->_update( dt, _out );
 
             m_delta = (*_out) - m_prev;
             m_prev = (*_out);
+
+            *_used = _context->time;
 
             return false;
         }
@@ -223,8 +227,8 @@ namespace Mengine
             }
 
             ValueInterpolator<T>::m_started = true;
-            float invTime = 1.0f / ValueInterpolator<T>::m_duration;
-            m_a = (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1 - m_v0 * ValueInterpolator<T>::m_duration) * 2.0f * invTime * invTime;
+            float invTime = 1.f / ValueInterpolator<T>::m_duration;
+            m_a = (ValueInterpolator<T>::m_value2 - ValueInterpolator<T>::m_value1 - m_v0 * ValueInterpolator<T>::m_duration) * 2.f * invTime * invTime;
 
             return true;
         }

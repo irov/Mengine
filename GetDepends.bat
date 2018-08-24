@@ -19,11 +19,11 @@ IF NOT EXIST "7za.exe" (
 	unzip -o 7za920.zip 7za.exe
 )
 
+call:getdepend https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z boost_1_68_0.7z boost_1_68_0 boost
 call:getdepend http://www.ijg.org/files/jpegsr9c.zip jpegsr9c.zip jpeg-9c libjpeg
 call:getdepend http://www.astralax.ru/download/programm/dev/magic_win.zip magic_win.zip win astralax
 call:getdepend https://github.com/leenjewel/openssl_for_ios_and_android/releases/download/android_openssl-1.1.0f_curl-7.54.1/only_android_openssl-1.1.0f_curl-7.54.1.zip only_android_openssl-1.1.0f_curl-7.54.1.zip libs curl-android
 
-call:gitdepend https://github.com/boostorg/boost.git boost
 call:gitdepend https://github.com/madler/zlib.git zlib
 call:gitdepend https://github.com/xiph/ogg.git libogg
 call:gitdepend https://github.com/xiph/vorbis.git libvorbis
@@ -37,7 +37,7 @@ call:gitdepend https://github.com/irov/movie.git libmovie
 call:gitdepend https://github.com/nemtrif/utfcpp.git utf8
 call:gitdepend https://github.com/lz4/lz4.git lz4
 call:gitdepend https://github.com/irov/fastpathfinder.git fastpathfinder
-call:gitdepend https://github.com/zzzzrrr/poly2tri poly2tri
+call:gitdepend https://github.com/jhasse/poly2tri.git poly2tri
 call:gitdepend https://github.com/erincatto/Box2D.git Box2D
 call:gitdepend https://github.com/irov/GOAP.git GOAP
 call:gitdepend https://github.com/curl/curl.git libcurl

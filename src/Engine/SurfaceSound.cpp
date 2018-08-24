@@ -133,11 +133,9 @@ namespace Mengine
         m_resourceSound.release();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceSound::_update( float _current, float _time )
+    bool SurfaceSound::_update( const UpdateContext * _context )
     {
-        (void)_current;
-        (void)_time;
-        //Empty
+        (void)_context;
 
         return false;
     }

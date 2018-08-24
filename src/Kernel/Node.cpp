@@ -1,5 +1,6 @@
 #include "Kernel/Node.h"
 
+#include "Interface/TimelineInterface.h"
 #include "Interface/MousePickerSystemInterface.h"
 
 #include "Interface/RenderCameraInterface.h"
@@ -733,7 +734,7 @@ namespace Mengine
 		return m_speedFactor;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::update( float _current, float _timing )
+	void Node::update( const UpdateContext * _context )
 	{
 		if( this->isActivate() == false )
 		{
@@ -745,20 +746,23 @@ namespace Mengine
 			return;
 		}
 
-		float total_timing = _timing * m_speedFactor;
+        this->setUpdateRevision( _context->revision );
 
         stdex::intrusive_this_acquire( this );
 
-		this->_update( _current, total_timing );
+        UpdateContext nodeUpdate = *_context;
+        nodeUpdate.time *= m_speedFactor;
+        
+        this->_update( &nodeUpdate );
 
-		Affectorable::updateAffectors( _current, total_timing );
+		Affectorable::updateAffectors( &nodeUpdate );
 		
-		this->updateChildren_( _current, total_timing );
-
+		this->updateChildren_( _context );
+        
         stdex::intrusive_this_release( this );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::updateChildren_( float _current, float _timing )
+    void Node::updateChildren_( const UpdateContext * _context )
 	{
         if( m_children.empty() == true )
         {
@@ -769,7 +773,7 @@ namespace Mengine
 
 		if( single != nullptr )
 		{
-			single->update( _current, _timing );
+			single->update( _context );
 		}
 		else
 		{
@@ -779,7 +783,7 @@ namespace Mengine
 
 				it.next_shuffle();
 			
-				children->update( _current, _timing );
+				children->update( _context );
 			}
 		}
 	}
@@ -804,10 +808,9 @@ namespace Mengine
 		//Empty
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Node::_update( float _current, float _timing )
-	{
-        (void)_current;
-        (void)_timing;
+	void Node::_update( const UpdateContext * _context )
+    {
+        (void)_context;
 
 		if( m_invalidateWorldMatrix == true )
 		{

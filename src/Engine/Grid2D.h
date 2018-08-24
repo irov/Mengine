@@ -53,7 +53,7 @@ namespace Mengine
 		void _release() override;
 
 	protected:
-		void _update( float _current, float _time ) override;
+		void _update( const UpdateContext * _context ) override;
 		void _render( const RenderContext * _state ) override;
 
     protected:

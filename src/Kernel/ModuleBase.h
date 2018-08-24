@@ -38,12 +38,12 @@ namespace Mengine
 		virtual void _update( bool _focus );
 
 	protected:
-		void tick( float _current, float _time ) override;
-		void render( const RenderContext * _state, uint32_t _debugMask ) override;
+		void tick( const UpdateContext * _context ) override;
+		void render( const RenderContext * _state ) override;
 
 	protected:
-		virtual void _tick( float _current, float _time );
-		virtual void _render( const RenderContext * _state, uint32_t _debugMask );
+		virtual void _tick( const UpdateContext * _context );
+		virtual void _render( const RenderContext * _state );
 		
 	protected:
 		void message( const ConstString & _messageName, const MapWParams & _params ) override;

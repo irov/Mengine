@@ -27,7 +27,7 @@ namespace Mengine
 		bool isFixedHorizont() const;
 
 	public:
-		void _update( float _current, float _timing ) override;
+		void _update( const UpdateContext * _context ) override;
 
 	protected:
 		RenderCameraOrthogonal * m_camera;

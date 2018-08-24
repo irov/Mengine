@@ -105,10 +105,10 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_update( float _current, float _time )
+	void Meshget::_update( const UpdateContext * _context )
 	{
         EVENTABLE_METHOD( this, EVENT_MESHGET_UPDATE )
-            ->onMeshgetUpdate( _current, _time );
+            ->onMeshgetUpdate( _context );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void Meshget::_render( const RenderContext * _state )

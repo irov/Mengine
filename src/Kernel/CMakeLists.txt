@@ -300,7 +300,12 @@ Core
     Visitor.h
     
     Polygon.h
-    Polygon.cpp    
+    Polygon.cpp
+    PolygonHelper.h
+    PolygonHelper.cpp
+    
+    Geolygon.h
+    Geolygon.cpp
     
 	Viewport.h
 	Viewport.cpp
@@ -458,8 +463,8 @@ Factory
 
 ADD_FILTER(
 Archive
-	Archive.hpp
-	ArchiveWrite.hpp
+	Archive.h
+	ArchiveWrite.h
 	ArchiveWrite.cpp
 )
 
@@ -511,6 +516,7 @@ INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}/boost/libs/lexical_cast/include
     ${THIRDPARTY_DIR}/boost/libs/qvm/include
     ${THIRDPARTY_DIR}/boost/libs/exception/include
+    ${THIRDPARTY_DIR}/fmt/include
     ${THIRDPARTY_DIR}/utf8/source
     ${THIRDPARTY_DIR}/tinyini/include
     ${THIRDPARTY_DIR}/metabuf
@@ -521,6 +527,7 @@ INCLUDE_DIRECTORIES(
 ADD_MENGINE_LIBRARY()
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX})
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}fmt${MENGINE_LIB_SUFFIX})
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

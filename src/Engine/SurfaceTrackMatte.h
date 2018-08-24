@@ -48,9 +48,6 @@ namespace Mengine
 
         void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) override;
 	
-    protected:
-        bool _update( float _current, float _time ) override;
-
 	protected:
 		bool _compile() override;
 		void _release() override;

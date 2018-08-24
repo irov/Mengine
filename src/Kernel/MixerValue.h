@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/UpdateInterface.h"
+
 #include "Kernel/ConstString.h"
 #include "Kernel/ValueFollower.h"
 
@@ -27,7 +29,7 @@ namespace Mengine
 		float mixValue() const;
 
 	public:
-		bool update( float _current, float _timing );
+		bool update( const UpdateContext * _context );
 
 	protected:
         float m_speed;

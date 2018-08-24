@@ -346,10 +346,10 @@ namespace Mengine
 
         /////////////////////////////////////////////////////////////////
 
-        quads[ResourceWindow_Background].a = mt::vec2f( 0.0f, 0.0f );
-        quads[ResourceWindow_Background].b = mt::vec2f( m_clientSize.x, 0.0f );
+        quads[ResourceWindow_Background].a = mt::vec2f( 0.f, 0.f );
+        quads[ResourceWindow_Background].b = mt::vec2f( m_clientSize.x, 0.f );
         quads[ResourceWindow_Background].c = mt::vec2f( m_clientSize.x, m_clientSize.y );
-        quads[ResourceWindow_Background].d = mt::vec2f( 0.0f, m_clientSize.y );
+        quads[ResourceWindow_Background].d = mt::vec2f( 0.f, m_clientSize.y );
 
         /////////////////////////////////////////////////////////////////
 

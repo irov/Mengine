@@ -604,7 +604,7 @@ namespace Mengine
 			m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y), wp );
 
 			mt::vec2f dp;
-			m_arrow->calcPointDeltha( camera, mt::vec2f( _event.x, _event.y ), mt::vec2f( _event.dx, _event.dy ), dp );
+			m_arrow->calcPointDeltha( camera, mt::vec2f( _event.dx, _event.dy ), dp );
 
 			InputMouseMoveEvent ne = _event;
 			ne.x = wp.x;

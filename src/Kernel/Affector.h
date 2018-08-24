@@ -1,7 +1,9 @@
 #pragma once
 
-#include "Kernel/AffectorType.h"
+#include "Interface/UpdateInterface.h"
 
+#include "Kernel/AffectorType.h"
+#include "Kernel/Updatable.h"
 #include "Kernel/Factorable.h"
 
 #include "stdex/intrusive_slug_linked_ptr.h"
@@ -52,10 +54,10 @@ namespace Mengine
 		virtual bool _prepare();
 
 	public:
-		virtual bool affect( float _current, float _time );
+		virtual bool affect( const UpdateContext * _context, float * _used );
 
 	protected:
-		virtual bool _affect( float _current, float _time ) = 0;
+		virtual bool _affect( const UpdateContext * _context, float * _used ) = 0;
 
 	public:
 		virtual void complete() = 0;

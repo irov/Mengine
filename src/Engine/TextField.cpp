@@ -1449,7 +1449,8 @@ namespace Mengine
 
         try
         {
-            String fmt = Helper::getStringFormat( textValue, m_textFormatArgs );
+            String fmt;
+            Helper::getStringFormat( fmt, textValue, m_textFormatArgs );
 
             _cacheText = font->prepareText( fmt );
         }

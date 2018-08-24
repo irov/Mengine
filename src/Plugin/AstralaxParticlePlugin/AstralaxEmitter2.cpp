@@ -236,7 +236,7 @@ namespace Mengine
 		m_start = true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxEmitter2::update( float _time, bool & _stop )
+	bool AstralaxEmitter2::update( float _time, bool * _stop )
 	{
 		if( m_start == false )
 		{
@@ -334,11 +334,11 @@ namespace Mengine
         { 
             m_start = false;
 
-			_stop = true;
+			*_stop = true;
         }
 		else
 		{
-			_stop = false;
+			*_stop = false;
 		}
 
         return true;

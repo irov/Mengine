@@ -136,16 +136,16 @@ namespace Mengine
         }
 	}
     //////////////////////////////////////////////////////////////////////////
-    void Entity::_update( float _current, float _timing )
+    void Entity::_update( const UpdateContext * _context )
     {
-        Node::_update( _current, _timing );
+        Node::_update( _context );
 
         EventationInterfacePtr event = this->getScriptEventation();
 
         if( event != nullptr )
         {
             EVENTABLE_METHODT( event, EVENT_ENTITY_UPDATE, EntityEventReceiver )
-                ->onEntityUpdate( m_object, _current, _timing );
+                ->onEntityUpdate( m_object, _context->revision, _context->current, _context->time );
         }
     }
 	//////////////////////////////////////////////////////////////////////////

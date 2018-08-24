@@ -32,7 +32,7 @@ namespace Mengine
 		void _finalizeService() override;
 
 	public:
-		void tick( float _time, float _timing ) override;
+		void tick( const UpdateContext * _context ) override;
 
 	public:
 		void clearTextures() override;

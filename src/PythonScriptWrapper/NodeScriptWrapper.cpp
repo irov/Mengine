@@ -1220,17 +1220,8 @@ namespace Mengine
 
             const mt::mat4f & wm = _hs->getWorldMatrix();
 
-            size_t outer_count = polygon.outer_count();
-            const mt::vec2f * outer_points = polygon.outer_points();
-
-            for( const mt::vec2f
-                *it = outer_points,
-                *it_end = outer_points + outer_count;
-                it != it_end;
-                ++it )
+            for( const mt::vec2f & v : polygon )
             {
-                const mt::vec2f & v = *it;
-
                 mt::vec2f v_wm;
                 mt::mul_v2_v2_m4( v_wm, v, wm );
 
@@ -1252,7 +1243,7 @@ namespace Mengine
             const RenderViewportInterfacePtr & viewport = _hs->getRenderViewportInheritance();
 
             mt::box2f b1;
-            _hs->getPolygonScreen( camera, viewport, contentResolution, &b1, nullptr );
+            _hs->getScreenPolygon( camera, viewport, contentResolution, &b1, nullptr );
 
             mt::vec2f c;
             mt::get_center_box( b1, c );
@@ -1496,7 +1487,7 @@ namespace Mengine
         bool s_Animatable_stop( Animatable * _animatable )
         {
             AnimationInterfacePtr animation = _animatable->getAnimation();
-            
+
             bool successful = animation->stop();
 
             return successful;
@@ -1811,9 +1802,9 @@ namespace Mengine
             , public MeshgetEventReceiver
         {
         public:
-            void onMeshgetUpdate( float _current, float _timing ) override
+            void onMeshgetUpdate( const UpdateContext * _context ) override
             {
-                m_cb.call( _current, _timing );
+                m_cb.call( _context->revision, _context->current, _context->time );
             }
         };
         //////////////////////////////////////////////////////////////////////////
@@ -2225,20 +2216,22 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _current, float _timing ) override
+            bool _affect( const UpdateContext * _context, float * _used ) override
             {
-                (void)_current;
-
-                m_time -= _timing;
-
-                if( m_time > 0.f )
+                if( m_time - _context->time < 0.f )
                 {
-                    m_node->translate( m_velocity * _timing );
+                    m_node->translate( m_velocity * _context->time );
+
+                    m_time -= _context->time;
+
+                    *_used = _context->time;
 
                     return false;
                 }
+                
+                m_node->translate( m_velocity * m_time );
 
-                m_node->translate( m_velocity * (m_time + _timing) );
+                *_used = m_time;
 
                 return true;
             }
@@ -2360,7 +2353,7 @@ namespace Mengine
                 return 0;
             }
 
-            float invTime = 1.0f / _time;
+            float invTime = 1.f / _time;
             const mt::vec3f & pos = _node->getLocalPosition();
             mt::vec3f linearSpeed = (_point - pos) * invTime;
 
@@ -2590,12 +2583,12 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _current, float _timing ) override
+            bool _affect( const UpdateContext * _context, float * _used ) override
             {
                 mt::vec3f position;
-                bool finish = m_interpolator.update( _current, _timing, &position );
+                bool finish = m_interpolator.update( _context, &position, _used );
 
-                this->updateDirection_( _current, _timing, position );
+                this->updateDirection_( _context, position );
                 this->updatePosition_( position );
 
                 if( finish == false )
@@ -2614,10 +2607,8 @@ namespace Mengine
             }
 
         protected:
-            void updateDirection_( float _current, float _timing, const mt::vec3f & _position )
+            void updateDirection_( const UpdateContext * _context, const mt::vec3f & _position )
             {
-                (void)_current;
-
                 const mt::vec3f & prev_position = m_node->getLocalPosition();
 
                 if( mt::sqrlength_v3_v3( prev_position, _position ) > mt::constant::eps )
@@ -2632,7 +2623,7 @@ namespace Mengine
                     return;
                 }
 
-                float t = length / _timing * m_speed;
+                float t = length / _context->time * m_speed;
 
                 if( t > 1.f )
                 {
@@ -2791,9 +2782,9 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _current, float _timing ) override
+            bool _affect( const UpdateContext * _context, float * _used ) override
             {
-                (void)_current;
+                *_used = _context->time;
 
                 mt::vec3f node_position = m_node->getLocalPosition();
                 mt::vec3f follow_position = m_target->getLocalPosition();
@@ -2818,7 +2809,7 @@ namespace Mengine
                     mt::angle_correct_interpolate_from_to( node_orientation.y, target_orientation.y, correct_rotate_from.y, correct_rotate_to.y );
                     mt::angle_correct_interpolate_from_to( node_orientation.z, target_orientation.z, correct_rotate_from.z, correct_rotate_to.z );
 
-                    float roatationSpeedStep = m_rotationAcceleration * _timing;
+                    float roatationSpeedStep = m_rotationAcceleration * _context->time;
 
                     if( m_rotationSpeed + roatationSpeedStep > m_rotationLimit )
                     {
@@ -2826,11 +2817,11 @@ namespace Mengine
                     }
                     else
                     {
-                        m_rotationSpeed += m_rotationAcceleration * _timing;
+                        m_rotationSpeed += m_rotationAcceleration * _context->time;
                     }
 
                     mt::vec3f new_orientation;
-                    mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _timing );
+                    mt::follow_v3( new_orientation, correct_rotate_from, correct_rotate_to, m_rotationSpeed * _context->time );
 
                     m_node->setOrientation( new_orientation );
 
@@ -2841,7 +2832,7 @@ namespace Mengine
                     mt::dir_v3_v3( current_direction, node_position, follow_position );
                 }
 
-                float directionSpeedStep = m_moveAcceleration * _timing;
+                float directionSpeedStep = m_moveAcceleration * _context->time;
 
                 if( m_moveSpeed + directionSpeedStep > m_moveLimit )
                 {
@@ -2849,10 +2840,10 @@ namespace Mengine
                 }
                 else
                 {
-                    m_moveSpeed += m_moveAcceleration * _timing;
+                    m_moveSpeed += m_moveAcceleration * _context->time;
                 }
 
-                float step = m_moveSpeed * _timing;
+                float step = m_moveSpeed * _context->time;
 
                 float length = mt::length_v3_v3( node_position, follow_position );
 
@@ -3029,9 +3020,9 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _current, float _timing ) override
+            bool _affect( const UpdateContext * _context, float * _used ) override
             {
-                (void)_current;
+                *_used = _context->time;
 
                 mt::vec3f node_position = m_node->getWorldPosition();
                 mt::vec3f follow_position = m_target->getWorldPosition();
@@ -3040,7 +3031,7 @@ namespace Mengine
 
                 mt::dir_v3_v3( current_direction, node_position, follow_position );
 
-                float directionSpeedStep = m_moveAcceleration * _timing;
+                float directionSpeedStep = m_moveAcceleration * _context->time;
 
                 if( m_moveSpeed + directionSpeedStep > m_moveLimit )
                 {
@@ -3048,10 +3039,10 @@ namespace Mengine
                 }
                 else
                 {
-                    m_moveSpeed += m_moveAcceleration * _timing;
+                    m_moveSpeed += m_moveAcceleration * _context->time;
                 }
 
-                float step = m_moveSpeed * _timing;
+                float step = m_moveSpeed * _context->time;
 
                 float length = mt::length_v3_v3( node_position, follow_position );
 
@@ -3224,7 +3215,7 @@ namespace Mengine
                 return 0;
             }
 
-            float invTime = 1.0f / _time;
+            float invTime = 1.f / _time;
             float angularSpeed = fabsf( correct_angle_from - correct_angle_to ) * invTime;
 
             _node->setAngularSpeed( angularSpeed );
@@ -4360,7 +4351,7 @@ namespace Mengine
             .def( "freeze", &ScheduleManagerInterface::freeze )
             .def( "freezeAll", &ScheduleManagerInterface::freezeAll )
             .def( "isFreeze", &ScheduleManagerInterface::isFreeze )
-            .def_deprecated( "time", &ScheduleManagerInterface::getTimePassed, "use getTimePassed")
+            .def_deprecated( "time", &ScheduleManagerInterface::getTimePassed, "use getTimePassed" )
             .def_deprecated( "left", &ScheduleManagerInterface::getTimeLeft, "use getTimeLeft" )
             .def( "getTimePassed", &ScheduleManagerInterface::getTimePassed )
             .def( "getTimeLeft", &ScheduleManagerInterface::getTimeLeft )

@@ -128,15 +128,15 @@ namespace Mengine
 			, alGetString( AL_RENDERER ) 
 			);
 	
-		float lposition[] = { 0.0f, 0.0f, 0.0f };
+		float lposition[] = { 0.f, 0.f, 0.f };
 		alListenerfv( AL_POSITION, lposition );
         OAL_CHECK_ERROR();
 
-        float lvelocity[] = { 0.0f, 0.0f, 0.0f };
+        float lvelocity[] = { 0.f, 0.f, 0.f };
 		alListenerfv( AL_VELOCITY, lvelocity );
         OAL_CHECK_ERROR();
 
-        float lorient[] = { 0.0f, 0.0f, 1.0f, 0.0f, 1.0f, 0.0f };
+        float lorient[] = { 0.f, 0.f, 1.f, 0.f, 1.f, 0.f };
 		alListenerfv( AL_ORIENTATION, lorient );
         OAL_CHECK_ERROR();
 

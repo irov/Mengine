@@ -231,11 +231,9 @@ namespace Mengine
 		return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScheduleManager::update( float _current, float _time )
+    void ScheduleManager::update( const UpdateContext * _context )
     {
-        (void)_current;
-
-		float total_time = _time * m_speedFactor;
+        float total_time = _context->time * m_speedFactor;
 
 		m_time += total_time;
 

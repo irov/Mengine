@@ -251,7 +251,6 @@ namespace Mengine
 
 		alSourceRewind( _source );
 		OAL_CHECK_ERROR();
-		//m_soundDecoder->seek( 0.0f );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	void OALSoundBufferStream::setUpdating_( bool _updating )

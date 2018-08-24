@@ -76,11 +76,9 @@ namespace Mengine
 		};
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Graveyard::tick( float _time, float _timing )
+	void Graveyard::tick( const UpdateContext * _context )
 	{
-        (void)_time;
-
-		VectorTextureGrave::iterator it_erase = std::remove_if( m_textures.begin(), m_textures.end(), FGraveyardDead( _timing ) );
+        VectorTextureGrave::iterator it_erase = std::remove_if( m_textures.begin(), m_textures.end(), FGraveyardDead( _context->time ) );
 
 		for( VectorTextureGrave::iterator
 			it = it_erase,

@@ -60,7 +60,7 @@ namespace Mengine
 
 	public:
 		void calcGlobalMouseWorldPosition( const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) override;
-		void calcGlobalMouseWorldDelta( const mt::vec2f & _screenPoint, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) override;
+		void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) override;
 
 	public:
 		ScheduleManagerInterfacePtr createSchedulerManager() override;
@@ -95,7 +95,7 @@ namespace Mengine
 		void finalizeRenderResources() override;
 
     public:
-		void tick( float _time, float _timing ) override;
+		void tick( const UpdateContext * _context ) override;
 		bool update() override;
 
 	public:

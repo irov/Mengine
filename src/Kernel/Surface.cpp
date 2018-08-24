@@ -13,10 +13,38 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool Surface::update( float _current, float _timing )
+    void Surface::activate()
     {
-        bool successful = this->_update( _current, _timing );
+        this->_activate();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Surface::deactivate()
+    {
+        this->_deactivate();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Surface::update( const UpdateContext * _context )
+    {
+        bool successful = this->_update( _context );
 
         return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Surface::_activate()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Surface::_deactivate()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Surface::_update( const UpdateContext * _context )
+    {
+        (void)_context;
+        //Empty;
+
+        return false;
     }
 }

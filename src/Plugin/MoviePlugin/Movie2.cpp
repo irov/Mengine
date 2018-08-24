@@ -1537,12 +1537,22 @@ namespace Mengine
             this->setOrigin( origin );
         }
 
+        for( const SurfacePtr & surface : m_surfaces )
+        {
+            surface->activate();
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_deactivate()
     {
         Node::_deactivate();
+
+        for( const SurfacePtr & surface : m_surfaces )
+        {
+            surface->deactivate();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_changeParent( Node * _oldParent, Node * _newParent )
@@ -1644,11 +1654,8 @@ namespace Mengine
         this->setTime( duration * 1000.f - frameDuration * 1000.f );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_update( float _current, float _timing )
+    void Movie2::_update( const UpdateContext * _context )
     {
-        (void)_current;
-        (void)_timing;
-
         if( this->isPlay() == false )
         {
             return;
@@ -1659,11 +1666,11 @@ namespace Mengine
             return;
         }
 
-        ae_update_movie_composition( m_composition, _timing * 0.001f );
+        ae_update_movie_composition( m_composition, _context->time * 0.001f );
 
         for( const SurfacePtr & surface : m_surfaces )
         {
-            surface->update( _current, _timing );
+            surface->update( _context );
         }
     }
     //////////////////////////////////////////////////////////////////////////

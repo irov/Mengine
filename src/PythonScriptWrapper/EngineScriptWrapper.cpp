@@ -101,6 +101,7 @@
 #include "Kernel/RenderCameraOrthogonalTarget.h"
 
 #include "Kernel/ResourceImage.h"
+#include "Kernel/PolygonHelper.h"
 
 #include "Engine/Layer2D.h"
 
@@ -261,7 +262,7 @@ namespace Mengine
             Polygon right_polygon_wm;
             right_poligon.mul_wm( right_polygon_wm, right_wm );
 
-            bool result = left_polygon_wm.intersects( right_polygon_wm );
+            bool result = Helper::intersects( left_polygon_wm, right_polygon_wm );
 
             return result;
         }
@@ -2038,15 +2039,15 @@ namespace Mengine
             {
                 const Polygon & overlap_polygon = overlap_hotspot->getPolygon();
 
-                VectorPolygon output;
-                correct_polygon.intersection( overlap_polygon, output );
+                VectorGeolygon output;
+                Helper::intersection( correct_polygon, overlap_polygon, output );
 
                 if( output.empty() == true )
                 {
                     return Polygon();
                 }
 
-                correct_polygon = output[0];
+                correct_polygon = output[0].getOuter();
             }
 
             return correct_polygon;
@@ -2387,20 +2388,20 @@ namespace Mengine
         public:
             AffectorGridBurnTransparency()
                 : m_pos( 0.f, 0.f )
-                , m_time( 0.f )
+                , m_duration( 0.f )
                 , m_radius( 0.f )
                 , m_ellipse( 0.f )
                 , m_penumbra( 0.f )
-                , m_timing( 0.f )
+                , m_time( 0.f )
             {
             }
 
         public:
-            void initialize( const Grid2DPtr & _grid, const mt::vec2f & _pos, float _time, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
+            void initialize( const Grid2DPtr & _grid, const mt::vec2f & _pos, float _duration, float _radius, float _ellipse, float _penumbra, const pybind::object & _cb )
             {
                 m_grid = _grid;
                 m_pos = _pos;
-                m_time = _time;
+                m_duration = _duration;
                 m_radius = _radius;
                 m_ellipse = _ellipse;
                 m_penumbra = _penumbra;
@@ -2408,20 +2409,20 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _current, float _timing ) override
+            bool _affect( const UpdateContext * _context, float * _used ) override
             {
-                (void)_current;
+                *_used = _context->time;
 
-                m_timing += _timing;
+                m_time += _context->time;
 
                 bool complete = false;
-                if( m_timing + _timing > m_time )
+                if( m_time + _context->time > m_duration )
                 {
-                    m_timing = m_time;
+                    m_time = m_duration;
                     complete = true;
                 }
 
-                float a1 = m_timing / m_time;
+                float a1 = m_time / m_duration;
 
                 float radius = m_radius * a1;
                 float penumbra = m_penumbra * a1;
@@ -2495,14 +2496,14 @@ namespace Mengine
             Grid2DPtr m_grid;
 
             mt::vec2f m_pos;
-            float m_time;
+            float m_duration;
             float m_radius;
             float m_ellipse;
             float m_penumbra;
 
             pybind::object m_cb;
 
-            float m_timing;
+            float m_time;
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<AffectorGridBurnTransparency> AffectorGridBurnTransparencyPtr;
@@ -2535,11 +2536,11 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _current, float _timing ) override
+            bool _affect( const UpdateContext * _context, float * _used ) override
             {
-                (void)_current;
+                *_used = _context->time;
 
-                bool complete = m_cb.call_args( _timing, m_args );
+                bool complete = m_cb.call_args( _context->time, m_args );
 
                 return complete;
             }
@@ -2711,17 +2712,15 @@ namespace Mengine
             }
 
         protected:
-            bool _affect( float _current, float _timing ) override
+            bool _affect( const UpdateContext * _context, float * _used ) override
             {
-                (void)_current;
-
                 const T_NodePtr & node = this->getNode();
 
                 T_Value current_value = m_getter( node );
 
                 m_follower.setValue( current_value );
 
-                m_follower.update( _current, _timing );
+                m_follower.update( _context, _used );
 
                 T_Value value = m_follower.getValue();
 
@@ -3151,7 +3150,7 @@ namespace Mengine
 
                 mt::vec2f wd;
                 PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldDelta( point, delta, wd );
+                    ->calcGlobalMouseWorldDelta( delta, wd );
 
                 pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, wd.x, wd.y, m_args );
 

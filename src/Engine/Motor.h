@@ -2,9 +2,8 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Kernel/Updatable.h"
-
 #include "Kernel/Factorable.h"
+#include "Kernel/Updatable.h"
 #include "Kernel/ConstString.h"
 #include "math/vec3.h"
 
@@ -32,7 +31,7 @@ namespace Mengine
         mt::vec3f getVelocity( const ConstString & _name ) const;
 
     protected:
-        void _update( float _current, float _time ) override;
+        void _update( const UpdateContext * _context ) override;
 
     protected:
         Node * m_node;

@@ -3,11 +3,9 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/FileGroupInterface.h"
-
-#include "Config/Typedef.h"
+#include "Interface/UpdateInterface.h"
 
 #include "Kernel/Factorable.h"
-
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/MixerValue.h"
@@ -147,7 +145,7 @@ namespace Mengine
         SERVICE_DECLARE("SoundService")
 
 	public:
-		virtual void tick( float _time, float _timing ) = 0;
+		virtual void tick( const UpdateContext * _context ) = 0;
 
 	public:
 		virtual bool supportStreamSound() const = 0;

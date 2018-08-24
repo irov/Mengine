@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/UpdateInterface.h"
+
 #include "Kernel/Factorable.h"
 
 #include "Kernel/Identity.h"
@@ -46,10 +48,16 @@ namespace Mengine
         virtual const ColourValue & getColor() const = 0;
         
     public:
-        bool update( float _current, float _timing );
+        void activate();
+        void deactivate();
+
+    public:
+        bool update( const UpdateContext * _context );
 
     protected:
-        virtual bool _update( float _current, float _timing ) = 0;
+        virtual void _activate();
+        virtual void _deactivate();
+        virtual bool _update( const UpdateContext * _context );
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<Surface> SurfacePtr;

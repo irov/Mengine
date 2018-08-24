@@ -38,7 +38,7 @@ namespace Mengine
         const ozz::Range<ozz::math::SoaTransform> & getLocals() const;
         
     public:
-        void _update( float _current, float _timing ) override;
+        void _update( const UpdateContext * _context ) override;
 
     protected:
         bool _compile() override;

@@ -44,14 +44,6 @@ namespace Mengine
 
         _out = _in;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceSolidColor::_update( float _current, float _time )
-	{	
-        (void)_current;
-        (void)_time;
-
-        return false;
-	}
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & SurfaceSolidColor::getMaxSize() const
     {

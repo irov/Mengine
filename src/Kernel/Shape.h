@@ -23,7 +23,7 @@ namespace Mengine
 		void _release() override;
 
     protected:
-        void _update( float _current, float _timing ) override;
+        void _update( const UpdateContext * _context ) override;
 
     protected:
         void _invalidateColor() override;

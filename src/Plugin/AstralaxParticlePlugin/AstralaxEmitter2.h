@@ -90,6 +90,8 @@ namespace Mengine
 		
 	protected:
 		AstralaxParticleSystem2 * m_particleSystem;
+
+        ParticleEmitterContainerInterface2Ptr m_container;
 		
 		HM_EMITTER m_emitterId;
 

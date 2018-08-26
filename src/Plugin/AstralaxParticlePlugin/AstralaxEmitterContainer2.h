@@ -39,16 +39,18 @@ namespace Mengine
         bool isValid() const override;
 
 	public:
-		uint32_t getId() const;
+		uint32_t getPtcId() const;
 
 	public:
 		void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) override;
 
 	public:
-		const ResourceImagePtr & getAtlasResourceImage( const char * _file ) const;
+		const ResourceImagePtr & getAtlasResourceImage( const Char * _file ) const;
 
 	public:
-        HM_EMITTER createEmitterId() const;
+        HM_EMITTER initialEmitterId() const;
+        HM_EMITTER createEmitterId();
+        void destroyEmitterId( HM_EMITTER _id );
 
 	protected:
 		bool loadContainer_( const void * _buffer, size_t _size, HM_FILE & _mf ) const;
@@ -57,8 +59,11 @@ namespace Mengine
 		AstralaxParticleSystem2 * m_particleSystem;
 
 		HM_FILE m_mf;
+        HM_EMITTER m_emitterId;
 
-		uint32_t m_id;
+        uint32_t m_dublicateCount;
+
+		uint32_t m_ptcId;
 		
 		MemoryInterfacePtr m_memory;
 

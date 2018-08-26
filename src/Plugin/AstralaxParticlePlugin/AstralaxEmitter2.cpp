@@ -34,12 +34,16 @@ namespace Mengine
 	bool AstralaxEmitter2::initialize( AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container )
     {
 		m_particleSystem = _particleSystem;
+        m_container = _container;
 
-        AstralaxEmitterContainer2Ptr astralaxContainer = stdex::intrusive_static_cast<AstralaxEmitterContainer2Ptr>(_container);
-        HM_EMITTER emitterId = astralaxContainer->createEmitterId();
+        HM_EMITTER emitterId = stdex::intrusive_static_cast<AstralaxEmitterContainer2Ptr>(m_container)
+            ->createEmitterId();
 
         if( emitterId == 0 )
         {
+            LOGGER_ERROR( "AstralaxEmitter2::initialize invalid create emitter"
+            );
+
             return false;
         }
 
@@ -56,7 +60,6 @@ namespace Mengine
         m_rightBorder = Magic_GetInterval2( m_emitterId );
 
         m_is3d = Magic_Is3d( m_emitterId );
-
         
         m_duration = m_rightBorder - m_leftBorder;
         //m_duration = Magic_GetDuration( m_emitterId );
@@ -77,9 +80,12 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void AstralaxEmitter2::finalize()
 	{
-		Magic_UnloadEmitter( m_emitterId );
+        stdex::intrusive_static_cast<AstralaxEmitterContainer2Ptr>(m_container)
+            ->destroyEmitterId( m_emitterId );
 
-		m_emitterId = 0;
+        m_emitterId = 0;
+
+        m_container = nullptr;
 	}
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter2::setupBasePosition_()

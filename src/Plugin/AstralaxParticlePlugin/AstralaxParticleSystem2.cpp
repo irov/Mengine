@@ -114,7 +114,7 @@ namespace Mengine
             return nullptr;
         }
 
-        uint32_t id = container->getId();
+        uint32_t id = container->getPtcId();
 
         MapHashEmitterContainers::iterator it_found = m_containers.find( id );
 
@@ -136,7 +136,9 @@ namespace Mengine
         AstralaxEmitterContainerDesc & desc = it_found->second;
         ++desc.reference;
 
-        return container;
+        AstralaxEmitterContainer2Ptr new_container( desc.container );
+
+        return new_container;
     }
     //////////////////////////////////////////////////////////////////////////
     ParticleEmitterInterfacePtr AstralaxParticleSystem2::createEmitter( const ParticleEmitterContainerInterface2Ptr & _container )
@@ -972,7 +974,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleSystem2::onEmitterContainerRelease_( AstralaxEmitterContainer2 * _container )
     {
-        uint32_t id = _container->getId();
+        uint32_t id = _container->getPtcId();
 
         MapHashEmitterContainers::iterator it_found = m_containers.find( id );
 
@@ -982,9 +984,9 @@ namespace Mengine
         if( desc.reference == 0 )
         {
             m_containers.erase( it_found );
-        }   
 
-        _container->finalize();
+            _container->finalize();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleSystem2::onEmitterRelease_( AstralaxEmitter2 * _emitter )

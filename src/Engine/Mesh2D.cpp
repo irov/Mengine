@@ -11,68 +11,68 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Mesh2D::Mesh2D()
-		: m_shape( nullptr )
-		, m_solid(false)
-		, m_invalidateVerticesLocal(true)
-		, m_invalidateVerticesWM(true)
-		, m_invalidateVerticesColor(true)
-		, m_vertexCount(0)
-		, m_indicesCount(0)
-	{ 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Mesh2D::~Mesh2D()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Mesh2D::_compile()
-	{
-		if( this->compileResource_() == false )
-		{
-			return false;
-		}
-      
+    //////////////////////////////////////////////////////////////////////////
+    Mesh2D::Mesh2D()
+        : m_shape( nullptr )
+        , m_solid( false )
+        , m_invalidateVerticesLocal( true )
+        , m_invalidateVerticesWM( true )
+        , m_invalidateVerticesColor( true )
+        , m_vertexCount( 0 )
+        , m_indicesCount( 0 )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Mesh2D::~Mesh2D()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Mesh2D::_compile()
+    {
+        if( this->compileResource_() == false )
+        {
+            return false;
+        }
+
         this->invalidateMaterial();
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Mesh2D::compileResource_()
-	{
-		if( m_resourceImage == nullptr )
-		{
-            LOGGER_ERROR("Mesh::compileResource_ '%s' image resource null"
-                , m_name.c_str() 
-                );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Mesh2D::compileResource_()
+    {
+        if( m_resourceImage == nullptr )
+        {
+            LOGGER_ERROR( "Mesh::compileResource_ '%s' image resource null"
+                , m_name.c_str()
+            );
 
             return false;
         }
 
         if( m_resourceImage.compile() == false )
         {
-            LOGGER_ERROR("Mesh::compileResource_ '%s' image resource %s not compile"
-                , m_name.c_str() 
+            LOGGER_ERROR( "Mesh::compileResource_ '%s' image resource %s not compile"
+                , m_name.c_str()
                 , m_resourceImage->getName().c_str()
-                );
+            );
 
             return false;
         }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::_release()
-	{
-		Node::_release();
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Mesh2D::_release()
+    {
+        Node::_release();
 
         m_resourceImage.release();
 
-		this->releaseMaterial();
-	}
+        this->releaseMaterial();
+    }
     //////////////////////////////////////////////////////////////////////////
-	void Mesh2D::setResourceImage( const ResourceImagePtr & _resourceImage )
+    void Mesh2D::setResourceImage( const ResourceImagePtr & _resourceImage )
     {
         if( m_resourceImage == _resourceImage )
         {
@@ -83,167 +83,167 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & Mesh2D::getResourceImage() const
-    {        
+    {
         return m_resourceImage;
     }
-	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr Mesh2D::_updateMaterial() const
-	{
-		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid );
-		
-		if( material == nullptr )
-		{
-			LOGGER_ERROR("Mesh::updateMaterial_ %s m_material is NULL"
-				, this->getName().c_str()
-				);
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr Mesh2D::_updateMaterial() const
+    {
+        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid );
 
-			return nullptr;
-		}
+        if( material == nullptr )
+        {
+            LOGGER_ERROR( "Mesh::updateMaterial_ %s m_material is NULL"
+                , this->getName().c_str()
+            );
 
-		return material;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::_render( const RenderContext * _state )
-	{
-		if( m_vertexCount == 0 )
-		{
-			return;
-		}
+            return nullptr;
+        }
 
-		const RenderVertex2D * vertices = this->getVerticesWM();
+        return material;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Mesh2D::_render( const RenderContext * _state )
+    {
+        if( m_vertexCount == 0 )
+        {
+            return;
+        }
+
+        const RenderVertex2D * vertices = this->getVerticesWM();
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-		const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f & bb = this->getBoundingBox();
 
         this->addRenderObject( _state, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount, &bb, false );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox ) const
-	{
-		if (m_vertexCount == 0)
-		{
-			mt::reset(_boundingBox, 0.f, 0.f);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    {
+        if( m_vertexCount == 0 )
+        {
+            mt::reset( _boundingBox, 0.f, 0.f );
 
-			return;
-		}
+            return;
+        }
 
-		const RenderVertex2D * vertices = this->getVerticesWM();
+        const RenderVertex2D * vertices = this->getVerticesWM();
 
-		mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
-		for( uint32_t i = 1; i != m_vertexCount; ++i )
-		{
-			mt::add_internal_point( _boundingBox, vertices[i].position.x, vertices[i].position.y );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::_invalidateWorldMatrix()
-	{
-		Node::_invalidateWorldMatrix();
+        for( uint32_t i = 1; i != m_vertexCount; ++i )
+        {
+            mt::add_internal_point( _boundingBox, vertices[i].position.x, vertices[i].position.y );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Mesh2D::_invalidateWorldMatrix()
+    {
+        Node::_invalidateWorldMatrix();
 
-		this->invalidateVerticesWM();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::invalidateVertices()
-	{
-		m_invalidateVerticesLocal = true;
+        this->invalidateVerticesWM();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Mesh2D::invalidateVertices()
+    {
+        m_invalidateVerticesLocal = true;
 
-		this->invalidateVerticesWM();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::invalidateVerticesWM()
-	{
-		m_invalidateVerticesWM = true;
+        this->invalidateVerticesWM();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Mesh2D::invalidateVerticesWM()
+    {
+        m_invalidateVerticesWM = true;
 
-		this->invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::updateVertices() const
-	{
-		m_invalidateVerticesLocal = false;
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Mesh2D::updateVertices() const
+    {
+        m_invalidateVerticesLocal = false;
 
-		for( uint32_t i = 0; i != m_vertexCount; ++i )
-		{
-			const mt::vec2f & uv = m_shape->uv[i];
+        for( uint32_t i = 0; i != m_vertexCount; ++i )
+        {
+            const mt::vec2f & uv = m_shape->uv[i];
 
             m_resourceImage->correctUVImage( m_verticesWM[i].uv[0], uv );
             m_resourceImage->correctUVAlpha( m_verticesWM[i].uv[1], uv );
-		}
-	}
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     void Mesh2D::_invalidateColor()
     {
         Node::_invalidateColor();
 
-		this->invalidateVerticesColor();
+        this->invalidateVerticesColor();
 
         bool solid = this->isSolidColor();
 
         if( m_solid != solid )
         {
-			m_solid = solid;
+            m_solid = solid;
 
             this->invalidateMaterial();
         }
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::invalidateVerticesColor()
-	{
-		m_invalidateVerticesColor = true;                
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::updateVerticesColor() const
-	{
-		m_invalidateVerticesColor = false;
+    //////////////////////////////////////////////////////////////////////////
+    void Mesh2D::invalidateVerticesColor()
+    {
+        m_invalidateVerticesColor = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Mesh2D::updateVerticesColor() const
+    {
+        m_invalidateVerticesColor = false;
 
-		ColourValue color;
-		this->calcTotalColor(color);
+        ColourValue color;
+        this->calcTotalColor( color );
 
-		const ColourValue & textureColour = m_resourceImage->getColor();
-		color *= textureColour;
+        const ColourValue & textureColour = m_resourceImage->getColor();
+        color *= textureColour;
 
-		uint32_t argb = color.getAsARGB();
+        uint32_t argb = color.getAsARGB();
 
-		for( RenderVertex2D
-			*it = m_verticesWM,
-			*it_end = m_verticesWM + m_vertexCount;
-		it != it_end;
-		++it )
-		{
-			RenderVertex2D & vtx = *it;
-			
-			vtx.color = argb;
-		}		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::setFrameShape( const MovieFrameShape * _shape )
-	{
-		m_shape = _shape;
+        for( RenderVertex2D
+            *it = m_verticesWM,
+            *it_end = m_verticesWM + m_vertexCount;
+            it != it_end;
+            ++it )
+        {
+            RenderVertex2D & vtx = *it;
 
-		m_vertexCount = m_shape->vertexCount;
-		m_indicesCount = m_shape->indexCount;
+            vtx.color = argb;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Mesh2D::setFrameShape( const MovieFrameShape * _shape )
+    {
+        m_shape = _shape;
 
-		this->invalidateVertices();
-		this->invalidateVerticesColor();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Mesh2D::updateVerticesWM() const
-	{
-		m_invalidateVerticesWM = false;
+        m_vertexCount = m_shape->vertexCount;
+        m_indicesCount = m_shape->indexCount;
 
-		if( m_invalidateVerticesLocal == true )
-		{
-			this->updateVertices();
-		}
+        this->invalidateVertices();
+        this->invalidateVerticesColor();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Mesh2D::updateVerticesWM() const
+    {
+        m_invalidateVerticesWM = false;
 
-		const mt::mat4f & wm = this->getWorldMatrix();
+        if( m_invalidateVerticesLocal == true )
+        {
+            this->updateVertices();
+        }
 
-		for( uint32_t i = 0; i != m_vertexCount; ++i )
-		{
-			const mt::vec2f & pos = m_shape->pos[i];
+        const mt::mat4f & wm = this->getWorldMatrix();
 
-			mt::vec3f & wm_pos = m_verticesWM[i].position;
-			mt::mul_v3_v2_m4( wm_pos, pos, wm);
-		}
-	}
+        for( uint32_t i = 0; i != m_vertexCount; ++i )
+        {
+            const mt::vec2f & pos = m_shape->pos[i];
+
+            mt::vec3f & wm_pos = m_verticesWM[i].position;
+            mt::mul_v3_v2_m4( wm_pos, pos, wm );
+        }
+    }
 }

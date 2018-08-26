@@ -27,7 +27,7 @@ namespace Mengine
     RenderImageLoaderInterfacePtr DecoderRenderImageProvider::getLoader() const
     {
         DecoderRenderImageLoaderPtr loader = new FactorableUnique<DecoderRenderImageLoader>();
-        
+
         if( loader->initialize( m_fileGroup, m_fileName, m_codecName ) == false )
         {
             return nullptr;
@@ -35,4 +35,4 @@ namespace Mengine
 
         return loader;
     }
-}	
+}

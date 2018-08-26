@@ -25,7 +25,7 @@ namespace Mengine
     protected:
         ConverterInterfacePtr createConverter() override
         {
-			ConverterInterfacePtr converter = m_factory->createObject();
+            ConverterInterfacePtr converter = m_factory->createObject();
 
             return converter;
         }
@@ -41,7 +41,7 @@ namespace Mengine
         }
 
     protected:
-		FactoryPtr m_factory;
+        FactoryPtr m_factory;
     };
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
@@ -64,7 +64,7 @@ namespace Mengine
 
             return converter;
         }
-        
+
         inline void unregisterConverter( const Char * _type )
         {
             CONVERTER_SERVICE()

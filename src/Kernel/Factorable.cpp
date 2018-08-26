@@ -24,11 +24,11 @@ namespace Mengine
         }
 
         if( m_reference != 0 )
-		{
-			MENGINE_THROW_EXCEPTION("m_reference %d != 0"
-				, m_reference
-				);
-		}
+        {
+            MENGINE_THROW_EXCEPTION( "m_reference %d != 0"
+                , m_reference
+            );
+        }
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
@@ -45,9 +45,9 @@ namespace Mengine
         m_immortal = _value;
 #endif
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Factorable::destroy()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void Factorable::destroy()
+    {
 #ifdef MENGINE_FACTORABLE_DEBUG
         if( m_immortal == true )
         {
@@ -78,7 +78,7 @@ namespace Mengine
 #endif
 
         m_factory->destroyObject( this );
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_FACTORABLE_DEBUG
     //////////////////////////////////////////////////////////////////////////
@@ -95,16 +95,16 @@ namespace Mengine
     uint32_t Factorable::getReference() const
     {
         return m_reference;
-    }  
+    }
     //////////////////////////////////////////////////////////////////////////
 #ifdef MENGINE_FACTORABLE_DEBUG
     void Factorable::_checkDestroy()
     {
         if( m_reference != 0 )
         {
-            MENGINE_THROW_EXCEPTION("m_reference %d != 0"
-				, m_reference
-				);
+            MENGINE_THROW_EXCEPTION( "m_reference %d != 0"
+                , m_reference
+            );
         }
     }
 #endif

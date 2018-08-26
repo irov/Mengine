@@ -4,17 +4,17 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class BitmapFontPlugin
-		: public PluginBase
-	{
-		PLUGIN_DECLARE( "BitmapFont" )
+    //////////////////////////////////////////////////////////////////////////
+    class BitmapFontPlugin
+        : public PluginBase
+    {
+        PLUGIN_DECLARE( "BitmapFont" )
 
-	public:
-		BitmapFontPlugin();
+    public:
+        BitmapFontPlugin();
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
-	};
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
+    };
 }

@@ -39,8 +39,8 @@ namespace Mengine
     bool TextManager::_initializeService()
     {
         m_factoryTextEntry = new FactoryPool<TextEntry, 128>();
-		m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>();
-		
+        m_factoryTextLocalePak = new FactoryPool<TextLocalePack, 4>();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -52,15 +52,15 @@ namespace Mengine
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextEntry );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTextLocalePak );
-        
+
         m_factoryTextEntry = nullptr;
-        m_factoryTextLocalePak = nullptr;        
+        m_factoryTextLocalePak = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     class TextManager::TextManagerLoadSaxCallback
     {
     public:
-		TextManagerLoadSaxCallback( TextManager * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
+        TextManagerLoadSaxCallback( TextManager * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
             : m_textManager( _textManager )
             , m_fileGroup( _fileGroup )
             , m_path( _path )
@@ -114,7 +114,7 @@ namespace Mengine
 
                 if( strcmp( str_key, "Key" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (ConstString::size_type)-1, text_key );
+                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, text_key );
 
                     //text_key = Helper::stringizeStringExternal( str_value, (size_t)-1 );
                 }
@@ -133,23 +133,23 @@ namespace Mengine
                             , text_key.c_str()
                             , str_value
                             , str_value_valid
-                            );
+                        );
 
                         String str( str_value, str_value_size );
-						utf8::replace_invalid( str.begin(), str.end(), std::back_inserter( text ) );
+                        utf8::replace_invalid( str.begin(), str.end(), std::back_inserter( text ) );
 
                         LOGGER_ERROR( "replace to |%s|"
-							, text.c_str()
-                            );
+                            , text.c_str()
+                        );
                     }
                     else
                     {
-						text = String( str_value, str_value_size );
+                        text = String( str_value, str_value_size );
                     }
                 }
                 else if( strcmp( str_key, "Font" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (ConstString::size_type)-1, fontName );
+                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, fontName );
 
                     params |= EFP_FONT;
                 }
@@ -163,7 +163,7 @@ namespace Mengine
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
-                            );
+                        );
                     }
 
                     charOffset = value;
@@ -180,7 +180,7 @@ namespace Mengine
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
-                            );
+                        );
                     }
 
                     lineOffset = value;
@@ -200,7 +200,7 @@ namespace Mengine
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
-                            );
+                        );
                     }
 
                     colorFont.setRGBA( r, g, b, a );
@@ -217,7 +217,7 @@ namespace Mengine
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
-                            );
+                        );
                     }
 
                     maxLength = value;
@@ -234,7 +234,7 @@ namespace Mengine
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
-                            );
+                        );
                     }
 
                     isOverride = (value != 0);
@@ -260,7 +260,7 @@ namespace Mengine
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
-                            );
+                        );
                     }
 
                     params |= EFP_VERTICAL_ALIGN;
@@ -286,7 +286,7 @@ namespace Mengine
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
-                            );
+                        );
                     }
 
                     params |= EFP_HORIZONTAL_ALIGN;
@@ -301,7 +301,7 @@ namespace Mengine
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
-                            );
+                        );
                     }
 
                     charScale = value;
@@ -318,7 +318,7 @@ namespace Mengine
                             , m_path.c_str()
                             , text_key.c_str()
                             , str_value
-                            );
+                        );
                     }
 
                     isEmpty = (value != 0);
@@ -330,7 +330,7 @@ namespace Mengine
                         , m_path.c_str()
                         , str_key
                         , text_key.c_str()
-                        );
+                    );
                 }
             }
 
@@ -340,7 +340,7 @@ namespace Mengine
                     , m_fileGroup->getName().c_str()
                     , m_path.c_str()
                     , text_key.c_str()
-                    );
+                );
             }
 
             m_textManager->addTextEntry( text_key, text, fontName, colorFont, lineOffset, charOffset, maxLength, horizontAlign, verticalAlign, charScale, params, isOverride );
@@ -367,7 +367,7 @@ namespace Mengine
             LOGGER_ERROR( "TextManager::loadTextEntry '%s:%s' invalid initialize pak"
                 , _fileGroup->getName().c_str()
                 , _path.c_str()
-                );
+            );
 
             return false;
         }
@@ -384,7 +384,7 @@ namespace Mengine
             LOGGER_ERROR( "TextManager::loadTextEntry '%s:%s' invalid parse pak"
                 , _fileGroup->getName().c_str()
                 , _path.c_str()
-                );
+            );
 
             return false;
         }
@@ -430,7 +430,7 @@ namespace Mengine
 
                 if( strcmp( str_key, "Key" ) == 0 )
                 {
-                    m_textManager->createLocalString_( str_value, (ConstString::size_type)-1, text_key );
+                    m_textManager->createLocalString_( str_value, (ConstString::size_type) - 1, text_key );
                     //text_key = Helper::stringizeString( str_value, (size_t)-1 );
                 }
             }
@@ -475,7 +475,7 @@ namespace Mengine
         }
 
         m_packs.erase(
-            std::remove_if( m_packs.begin(), m_packs.end(), [&_fileGroup]( const TextLocalePackPtr & _pack ) {if( _pack->getFileGroup() != _fileGroup ) { return false; }return true; })
+            std::remove_if( m_packs.begin(), m_packs.end(), [&_fileGroup]( const TextLocalePackPtr & _pack ) {if( _pack->getFileGroup() != _fileGroup ) { return false; }return true; } )
             , m_packs.end()
         );
 
@@ -489,7 +489,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "TextManager::loadFonts Invalid load settings '%s'"
                 , _path.c_str()
-                );
+            );
 
             return false;
         }
@@ -505,37 +505,37 @@ namespace Mengine
                     , _fileGroup->getName().c_str()
                     , _path.c_str()
                     , fontName.c_str()
-                    );
+                );
 
                 return false;
             }
 
-			ConstString fontType = STRINGIZE_STRING_LOCAL( "Bitmap" );
-			IniUtil::getIniValue( ini, fontName.c_str(), "Type", fontType );
+            ConstString fontType = STRINGIZE_STRING_LOCAL( "Bitmap" );
+            IniUtil::getIniValue( ini, fontName.c_str(), "Type", fontType );
 
             bool precompile = false;
             IniUtil::getIniValue( ini, fontName.c_str(), "Precompile", precompile );
 
-			TextFontInterfacePtr font = PROTOTYPE_SERVICE()
-				->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType );
+            TextFontInterfacePtr font = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType );
 
-			if( font == nullptr )
-			{
-				return false;
-			}
+            if( font == nullptr )
+            {
+                return false;
+            }
 
             font->setName( fontName );
 
-			if( font->initialize( _fileGroup, ini ) == false )
-			{
-				LOGGER_ERROR( "TextManager::loadFonts invalid initialize '%s:%s' font '%s'"
+            if( font->initialize( _fileGroup, ini ) == false )
+            {
+                LOGGER_ERROR( "TextManager::loadFonts invalid initialize '%s:%s' font '%s'"
                     , _fileGroup->getName().c_str()
-					, _path.c_str()
-					, fontName.c_str()
-					);
+                    , _path.c_str()
+                    , fontName.c_str()
+                );
 
-				return false;
-			}
+                return false;
+            }
 
             if( precompile == true )
             {
@@ -551,12 +551,12 @@ namespace Mengine
                 }
             }
 
-			LOGGER_INFO( "TextManager::loadFonts add font '%s' path '%s:%s'"
-				, fontName.c_str()
+            LOGGER_INFO( "TextManager::loadFonts add font '%s' path '%s:%s'"
+                , fontName.c_str()
                 , _fileGroup->getName().c_str()
-				, _path.c_str()
-				);
-			
+                , _path.c_str()
+            );
+
             m_fonts.insert( std::make_pair( fontName, font ) );
         }
 
@@ -576,7 +576,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "TextManager::unloadFonts Invalid load settings '%s'"
                 , _path.c_str()
-                );
+            );
 
             return false;
         }
@@ -592,7 +592,7 @@ namespace Mengine
                     , _fileGroup->getName().c_str()
                     , _path.c_str()
                     , fontName.c_str()
-                    );
+                );
 
                 return false;
             }
@@ -631,11 +631,11 @@ namespace Mengine
 
                 LOGGER_ERROR( "TextManager::addTextEntry: duplicate key found %s with text:"
                     , _key.c_str()
-                    );
+                );
 
                 LOGGER_ERROR( "'%ls'"
                     , ws_text.c_str()
-                    );
+                );
 
                 return false;
             }
@@ -667,35 +667,35 @@ namespace Mengine
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::directFontCompile( const ConstString & _name )
-	{
-		TextFontInterfacePtr font = this->getFont( _name );
+    //////////////////////////////////////////////////////////////////////////
+    bool TextManager::directFontCompile( const ConstString & _name )
+    {
+        TextFontInterfacePtr font = this->getFont( _name );
 
-		if( font == nullptr )
-		{
-			return false;
-		}
+        if( font == nullptr )
+        {
+            return false;
+        }
 
-		bool successful = font->compileFont();
+        bool successful = font->compileFont();
 
-		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TextManager::directFontRelease( const ConstString & _name )
-	{
-		TextFontInterfacePtr font = this->getFont( _name );
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextManager::directFontRelease( const ConstString & _name )
+    {
+        TextFontInterfacePtr font = this->getFont( _name );
 
-		if( font == nullptr )
-		{
-			return false;
-		}
+        if( font == nullptr )
+        {
+            return false;
+        }
 
-		font->releaseFont();
+        font->releaseFont();
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const TextEntryInterfacePtr & TextManager::getTextEntry( const ConstString& _key ) const
     {
         MapTextEntry::const_iterator it_found = m_texts.find( _key );
@@ -704,7 +704,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "TextManager::getTextEntry: TextManager can't find string associated with key - '%s'"
                 , _key.c_str()
-                );
+            );
 
             return TextEntryInterfacePtr::none();
         }
@@ -804,7 +804,7 @@ namespace Mengine
         m_aliasesArguments[_alias] = _arguments;
 
         NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, _alias );        
+            ->notify( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, _alias );
     }
     //////////////////////////////////////////////////////////////////////////
     void TextManager::removeTextAliasArguments( const ConstString & _alias )
@@ -853,7 +853,7 @@ namespace Mengine
         if( m_defaultFontName.empty() == true )
         {
             LOGGER_ERROR( "TextManager::validate not setup default font name!"
-                );
+            );
 
             successful = false;
         }
@@ -864,7 +864,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "TextManager::validate not found default font %s"
                     , m_defaultFontName.c_str()
-                    );
+                );
 
                 successful = false;
             }
@@ -889,7 +889,7 @@ namespace Mengine
                     LOGGER_ERROR( "TextManager::loadResource not found font %s for text %s"
                         , fontName.c_str()
                         , textKey.c_str()
-                        );
+                    );
 
                     successful = false;
 
@@ -903,7 +903,7 @@ namespace Mengine
                     LOGGER_ERROR( "Text %s fontName %s invalid"
                         , textKey.c_str()
                         , fontName.c_str()
-                        );
+                    );
 
                     successful = false;
                 }

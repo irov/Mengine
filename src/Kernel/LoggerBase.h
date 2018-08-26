@@ -26,7 +26,7 @@ namespace Mengine
     public:
         bool validMessage( EMessageLevel _level, uint32_t _flag ) const override;
 
-    public:        
+    public:
         void flush() override;
 
     protected:

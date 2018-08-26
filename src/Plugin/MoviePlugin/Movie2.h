@@ -38,31 +38,31 @@ namespace Mengine
     public:
         virtual void visitMovieLayer( const Movie2Ptr & _movie, uint32_t _index, const NodePtr & _node ) = 0;
     };
-	//////////////////////////////////////////////////////////////////////////
-	class Movie2
-		: public Node
+    //////////////////////////////////////////////////////////////////////////
+    class Movie2
+        : public Node
         , public BaseEventation
-		, public BaseAnimation
-	{
+        , public BaseAnimation
+    {
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE( Movie2EventReceiver );
 
-	public:
-		Movie2();
-		~Movie2() override;
+    public:
+        Movie2();
+        ~Movie2() override;
 
     public:
-		void setResourceMovie2( const ResourceMovie2Ptr & _resourceMovie );
-		const ResourceMovie2Ptr & getResourceMovie2() const;
+        void setResourceMovie2( const ResourceMovie2Ptr & _resourceMovie );
+        const ResourceMovie2Ptr & getResourceMovie2() const;
 
-	public:
-		bool setCompositionName( const ConstString & _compositionName );
-		const ConstString & getCompositionName() const;
+    public:
+        bool setCompositionName( const ConstString & _compositionName );
+        const ConstString & getCompositionName() const;
 
-	public:
-		float getDuration() const;
-		bool setWorkAreaFromEvent( const ConstString & _eventName );
-		void removeWorkArea();
+    public:
+        float getDuration() const;
+        bool setWorkAreaFromEvent( const ConstString & _eventName );
+        void removeWorkArea();
 
     public:
         bool hasSubComposition( const ConstString & _name ) const;
@@ -71,45 +71,45 @@ namespace Mengine
     public:
         void setEnableMovieLayers( const ConstString & _name, bool _enable );
 
-	protected:
-		bool _play( uint32_t _enumerator, float _time ) override;
-		bool _restart( uint32_t _enumerator, float _time ) override;
-		void _pause( uint32_t _enumerator ) override;
-		void _resume( uint32_t _enumerator, float _time ) override;
-		void _stop( uint32_t _enumerator ) override;
-		void _end( uint32_t _enumerator ) override;
-		bool _interrupt( uint32_t _enumerator ) override;
+    protected:
+        bool _play( uint32_t _enumerator, float _time ) override;
+        bool _restart( uint32_t _enumerator, float _time ) override;
+        void _pause( uint32_t _enumerator ) override;
+        void _resume( uint32_t _enumerator, float _time ) override;
+        void _stop( uint32_t _enumerator ) override;
+        void _end( uint32_t _enumerator ) override;
+        bool _interrupt( uint32_t _enumerator ) override;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
-		
-	protected:
-		bool _activate() override;
-		void _deactivate() override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
-		void _afterActivate() override;
+    protected:
+        bool _activate() override;
+        void _deactivate() override;
 
-	protected:
-		void _setLoop( bool _value ) override;
-		void _setTime( float _time ) override;
-		float _getTime() const override;
+        void _afterActivate() override;
+
+    protected:
+        void _setLoop( bool _value ) override;
+        void _setTime( float _time ) override;
+        float _getTime() const override;
         void _setFirstFrame() override;
         void _setLastFrame() override;
 
-	protected:
-		void _update( const UpdateContext * _context ) override;
+    protected:
+        void _update( const UpdateContext * _context ) override;
 
-	protected:
-		void _render( const RenderContext * _state ) override;
+    protected:
+        void _render( const RenderContext * _state ) override;
 
-	protected:
-		void _changeParent( Node * _oldParent, Node * _newParent ) override;
-		void _addChild( const NodePtr & _node ) override;
-		void _removeChild( const NodePtr & _node ) override;
+    protected:
+        void _changeParent( Node * _oldParent, Node * _newParent ) override;
+        void _addChild( const NodePtr & _node ) override;
+        void _removeChild( const NodePtr & _node ) override;
 
-	public:
-		void addSurface( const SurfacePtr & _surface );
+    public:
+        void addSurface( const SurfacePtr & _surface );
         void removeSurface( const SurfacePtr & _surface );
 
     protected:
@@ -157,22 +157,22 @@ namespace Mengine
 
     public:
         void addSubMovieComposition_( const ConstString & _name, const Movie2SubCompositionPtr & _subComposition );
-      
+
     public:
         void addMatrixProxy_( const MatrixProxyPtr & _matrixProxy );
-        
-	public:
-		struct Camera
-		{
-			RenderCameraProjectionPtr projection;
-			RenderViewportPtr viewport;
-		};
 
-		Camera * addCamera( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport );
+    public:
+        struct Camera
+        {
+            RenderCameraProjectionPtr projection;
+            RenderViewportPtr viewport;
+        };
+
+        Camera * addCamera( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport );
         bool removeCamera( const ConstString & _name );
-		bool hasCamera( const ConstString & _name ) const;
+        bool hasCamera( const ConstString & _name ) const;
 
-		bool getCamera( const ConstString & _name, Camera ** _camera );
+        bool getCamera( const ConstString & _name, Camera ** _camera );
 
     protected:
         bool createCompositionLayers_();
@@ -181,12 +181,12 @@ namespace Mengine
     protected:
         void _destroy() override;
 
-	public:
-		ResourceHolder<ResourceMovie2> m_resourceMovie2;
+    public:
+        ResourceHolder<ResourceMovie2> m_resourceMovie2;
 
-		ConstString m_compositionName;
+        ConstString m_compositionName;
 
-		const aeMovieComposition * m_composition;
+        const aeMovieComposition * m_composition;
 
         float m_duration;
         float m_frameDuration;
@@ -205,17 +205,17 @@ namespace Mengine
             RenderMaterialInterfacePtr material;
         };
 
-		typedef Vector<Mesh> VectorMeshes;
-		VectorMeshes m_meshes;
+        typedef Vector<Mesh> VectorMeshes;
+        VectorMeshes m_meshes;
 
-		typedef Map<ConstString, Camera> MapCameras;
-		MapCameras m_cameras;
+        typedef Map<ConstString, Camera> MapCameras;
+        MapCameras m_cameras;
 
         typedef Map<ConstString, Movie2SubCompositionPtr> MapSubCompositions;
         MapSubCompositions m_subCompositions;
 
-		typedef Vector<SurfacePtr> VectorSurfaces;
-		VectorSurfaces m_surfaces;
+        typedef Vector<SurfacePtr> VectorSurfaces;
+        VectorSurfaces m_surfaces;
 
         typedef Map<uint32_t, Movie2SlotPtr> MapSlots;
         MapSlots m_slots;
@@ -237,7 +237,7 @@ namespace Mengine
 
     protected:
         static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud );
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Movie2> Movie2Ptr;
     //////////////////////////////////////////////////////////////////////////

@@ -6,44 +6,44 @@
 
 namespace Mengine
 {
-	class HotSpotBubbles
-		: public HotSpot
-	{
-	public:
-		HotSpotBubbles();
-		~HotSpotBubbles() override;
+    class HotSpotBubbles
+        : public HotSpot
+    {
+    public:
+        HotSpotBubbles();
+        ~HotSpotBubbles() override;
 
-	public:
-		uint32_t addBubble( const mt::vec2f & _pos, float _radius, float _ellipse, bool _outward );
+    public:
+        uint32_t addBubble( const mt::vec2f & _pos, float _radius, float _ellipse, bool _outward );
 
-	protected:
-		bool testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const override;
-		bool testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const override;
-		bool testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
+    protected:
+        bool testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const override;
+        bool testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const override;
+        bool testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
-	protected:
-		void _invalidateWorldMatrix() override;
+    protected:
+        void _invalidateWorldMatrix() override;
 
-	protected:
-		void invalidatemBubbleWM_();
-		void updateBubbleWM_() const;
+    protected:
+        void invalidatemBubbleWM_();
+        void updateBubbleWM_() const;
 
-	protected:
-		struct Bubble
-		{
-			uint32_t id;
-			mt::vec2f pos;
-			mutable mt::vec2f pos_wm;
-			float radius;
-			float ellipse;
-			bool outward;
-		};
+    protected:
+        struct Bubble
+        {
+            uint32_t id;
+            mt::vec2f pos;
+            mutable mt::vec2f pos_wm;
+            float radius;
+            float ellipse;
+            bool outward;
+        };
 
-		typedef Vector<Bubble> VectorBubbles;
-		VectorBubbles m_bubbles;
+        typedef Vector<Bubble> VectorBubbles;
+        VectorBubbles m_bubbles;
 
-		uint32_t m_enumerator;
+        uint32_t m_enumerator;
 
-		mutable bool m_invalidateBubbleWM;
-	};
-}	
+        mutable bool m_invalidateBubbleWM;
+    };
+}

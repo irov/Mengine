@@ -11,29 +11,29 @@
 
 namespace Mengine
 {
-	class TextLocalePack
-		: public Factorable
-	{
-	public:
-		TextLocalePack();
-		~TextLocalePack() override;
+    class TextLocalePack
+        : public Factorable
+    {
+    public:
+        TextLocalePack();
+        ~TextLocalePack() override;
 
-	public:
-		bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path );
-		
-	public:
-		const FileGroupInterfacePtr & getFileGroup() const;
-		const FilePath & getPath() const;
+    public:
+        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path );
 
-	public:
-		MemoryInterfacePtr getXmlBuffer() const;
+    public:
+        const FileGroupInterfacePtr & getFileGroup() const;
+        const FilePath & getPath() const;
 
-	protected:
+    public:
+        MemoryInterfacePtr getXmlBuffer() const;
+
+    protected:
         FileGroupInterfacePtr m_fileGroup;
-		FilePath m_path;
+        FilePath m_path;
 
-		MemoryBufferInterfacePtr m_memory;		
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<TextLocalePack> TextLocalePackPtr;
+        MemoryBufferInterfacePtr m_memory;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<TextLocalePack> TextLocalePackPtr;
 }

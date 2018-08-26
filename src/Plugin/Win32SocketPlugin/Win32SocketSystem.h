@@ -12,23 +12,23 @@
 
 namespace Mengine
 {
-	class Win32SocketSystem
-		: public ServiceBase<SocketSystemInterface>
-	{
-	public:
-		Win32SocketSystem();
-		~Win32SocketSystem() override;
+    class Win32SocketSystem
+        : public ServiceBase<SocketSystemInterface>
+    {
+    public:
+        Win32SocketSystem();
+        ~Win32SocketSystem() override;
 
-	public:
-		bool _initializeService() override;
-		void _finalizeService() override;
+    public:
+        bool _initializeService() override;
+        void _finalizeService() override;
 
-	protected:
-		SocketInterfacePtr createSocket() override;
+    protected:
+        SocketInterfacePtr createSocket() override;
 
-	protected:
-		WSADATA m_wsaData;
+    protected:
+        WSADATA m_wsaData;
 
-		FactoryPtr m_poolWin32Socket;
-	};
+        FactoryPtr m_poolWin32Socket;
+    };
 }

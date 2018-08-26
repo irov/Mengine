@@ -11,172 +11,172 @@
 
 namespace Mengine
 {
-	template<class TDecoderInterface>
-	class Decoder
-		: public ServantBase<TDecoderInterface>
-	{
-	public:
-		Decoder()
-			: m_rewindPos(0)
-			, m_initialize(false)
-		{
-		}
+    template<class TDecoderInterface>
+    class Decoder
+        : public ServantBase<TDecoderInterface>
+    {
+    public:
+        Decoder()
+            : m_rewindPos( 0 )
+            , m_initialize( false )
+        {
+        }
 
-	public:
-		bool initialize() override
-		{
-			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::initialize" );
+    public:
+        bool initialize() override
+        {
+            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::initialize" );
 
-			if( m_initialize == true )
-			{
-				LOGGER_ERROR("Decoder::initialize: alredy initialize!"
-					);
+            if( m_initialize == true )
+            {
+                LOGGER_ERROR( "Decoder::initialize: alredy initialize!"
+                );
 
-				return false;
-			}
+                return false;
+            }
 
-			m_initialize = this->_initialize();
+            m_initialize = this->_initialize();
 
-			return m_initialize;
-		}
+            return m_initialize;
+        }
 
-	protected:
-		virtual bool _initialize()
-		{
-			return true;
-		}
+    protected:
+        virtual bool _initialize()
+        {
+            return true;
+        }
 
-	public:
-		void finalize() override
-		{
-			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::finalize" );
+    public:
+        void finalize() override
+        {
+            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::finalize" );
 
-			if( m_initialize == false )
-			{
-				LOGGER_ERROR("Decoder::initialize: alredy finalize!"
-					);
+            if( m_initialize == false )
+            {
+                LOGGER_ERROR( "Decoder::initialize: alredy finalize!"
+                );
 
-				return;
-			}
+                return;
+            }
 
-			this->_finalize();
+            this->_finalize();
 
-			m_stream = nullptr;
-		}
-		
-	protected:
-		virtual void _finalize()
-		{
-			//Empty
-		}
+            m_stream = nullptr;
+        }
 
-	protected:
-		void _destroy() override
-		{
-			this->finalize();
-		}
+    protected:
+        virtual void _finalize()
+        {
+            //Empty
+        }
 
-	public:
-		const InputStreamInterfacePtr & getStream() const override
-		{
-			return m_stream;				 
-		}
+    protected:
+        void _destroy() override
+        {
+            this->finalize();
+        }
 
-	private:
-		bool prepareData( const InputStreamInterfacePtr & _stream ) override
-		{
-			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::prepareData" );
+    public:
+        const InputStreamInterfacePtr & getStream() const override
+        {
+            return m_stream;
+        }
 
-			m_stream = _stream;
+    private:
+        bool prepareData( const InputStreamInterfacePtr & _stream ) override
+        {
+            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::prepareData" );
 
-			if( this->_prepareData() == false )
-			{
-				return false;
-			}
-			
-			m_rewindPos = m_stream->tell();
+            m_stream = _stream;
 
-			return true;
-		}
+            if( this->_prepareData() == false )
+            {
+                return false;
+            }
 
-	protected:
-		virtual bool _prepareData()
-		{
-			return true;
-		}
+            m_rewindPos = m_stream->tell();
 
-	private:
-		size_t decode( void * _buffer, size_t _bufferSize ) override
-		{
-			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::decode" );
+            return true;
+        }
 
-			size_t byte = this->_decode( _buffer, _bufferSize );
+    protected:
+        virtual bool _prepareData()
+        {
+            return true;
+        }
 
-			return byte;
-		}
+    private:
+        size_t decode( void * _buffer, size_t _bufferSize ) override
+        {
+            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::decode" );
 
-	protected:
-		virtual size_t _decode( void * _buffer, size_t _bufferSize ) = 0;
+            size_t byte = this->_decode( _buffer, _bufferSize );
 
-	private:
-		bool seek( float _time ) override
-		{
-			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::seek" );
+            return byte;
+        }
 
-			bool successful = this->_seek( _time );
+    protected:
+        virtual size_t _decode( void * _buffer, size_t _bufferSize ) = 0;
 
-			return successful;
-		}
+    private:
+        bool seek( float _time ) override
+        {
+            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::seek" );
 
-	protected:
-		virtual bool _seek( float _timing )
-		{ 
-			(void)_timing;
+            bool successful = this->_seek( _time );
 
-			return false;
-		}
+            return successful;
+        }
 
-	private:
-		float tell() const override
-		{
-			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::tell" );
+    protected:
+        virtual bool _seek( float _timing )
+        {
+            (void)_timing;
 
-			float value = this->_tell();
+            return false;
+        }
 
-			return value;
-		}
+    private:
+        float tell() const override
+        {
+            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::tell" );
 
-	protected:
-		virtual float _tell() const
-		{
-			return 0.0;
-		}
+            float value = this->_tell();
 
-	private:
-		bool rewind() override
-		{			
-			STDEX_THREAD_GUARD_SCOPE( this, "Decoder::rewind" );
+            return value;
+        }
 
-			bool successful = this->_rewind();
+    protected:
+        virtual float _tell() const
+        {
+            return 0.0;
+        }
 
-			return successful;
-		}
+    private:
+        bool rewind() override
+        {
+            STDEX_THREAD_GUARD_SCOPE( this, "Decoder::rewind" );
 
-	protected:
-		virtual bool _rewind()
-		{
-			bool successful = m_stream->seek( m_rewindPos );
+            bool successful = this->_rewind();
 
-			return successful;
-		}
+            return successful;
+        }
 
-	protected:
-		InputStreamInterfacePtr m_stream;
+    protected:
+        virtual bool _rewind()
+        {
+            bool successful = m_stream->seek( m_rewindPos );
 
-		size_t m_rewindPos;
+            return successful;
+        }
 
-		bool m_initialize;
+    protected:
+        InputStreamInterfacePtr m_stream;
 
-		STDEX_THREAD_GUARD_INIT;
-	};    
+        size_t m_rewindPos;
+
+        bool m_initialize;
+
+        STDEX_THREAD_GUARD_INIT;
+    };
 }

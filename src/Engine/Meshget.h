@@ -20,11 +20,11 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	enum MeshgetEventFlag
-	{
-		EVENT_MESHGET_UPDATE = 0
-	};
+    //////////////////////////////////////////////////////////////////////////
+    enum MeshgetEventFlag
+    {
+        EVENT_MESHGET_UPDATE = 0
+    };
     //////////////////////////////////////////////////////////////////////////
     class MeshgetEventReceiver
         : public EventReceiver
@@ -34,80 +34,80 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MeshgetEventReceiver> MeshgetEventReceiverPtr;
-	//////////////////////////////////////////////////////////////////////////
-	class Meshget
-		: public Node
+    //////////////////////////////////////////////////////////////////////////
+    class Meshget
+        : public Node
         , public BaseEventation
-	{
+    {
         DECLARE_EVENTABLE( MeshgetEventReceiver );
 
-	public:
-		Meshget();
-		~Meshget() override;
+    public:
+        Meshget();
+        ~Meshget() override;
 
     public:
         void setSurface( const SurfacePtr & _surface );
         const SurfacePtr & getSurface() const;
 
-	public:
-		bool setVertices( const pybind::list & _positions, const pybind::list & _uv, const pybind::list & _colors, const pybind::list & _indices );
+    public:
+        bool setVertices( const pybind::list & _positions, const pybind::list & _uv, const pybind::list & _colors, const pybind::list & _indices );
 
-	protected:
-		bool _compile() override;
-		void _release() override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
-	protected:
-		void _update( const UpdateContext * _context ) override;
-		void _render( const RenderContext * _state ) override;
+    protected:
+        void _update( const UpdateContext * _context ) override;
+        void _render( const RenderContext * _state ) override;
 
-	protected:
-		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
+    protected:
+        void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 
-	protected:
-		void _invalidateColor() override;
-		void _invalidateWorldMatrix() override;
+    protected:
+        void _invalidateColor() override;
+        void _invalidateWorldMatrix() override;
 
-	protected:
-		void invalidateVerticesWM();
-		void updateVerticesWM() const;
+    protected:
+        void invalidateVerticesWM();
+        void updateVerticesWM() const;
 
-	protected:
-		void invalidateVerticesColor();
-		void updateVerticesColor() const;
+    protected:
+        void invalidateVerticesColor();
+        void updateVerticesColor() const;
 
-	protected:
-		inline const VectorRenderVertex2D & getVerticesWM() const;
-        
-	protected:
+    protected:
+        inline const VectorRenderVertex2D & getVerticesWM() const;
+
+    protected:
         SurfacePtr m_surface;
-		
-		typedef Vector<mt::vec3f> VectorPosition;
-		typedef Vector<mt::vec2f> VectorUV;
-		typedef Vector<mt::vec4f> VectorColor;
-		VectorPosition m_positions;
-		VectorUV m_uvs;
-		VectorColor m_colors;
 
-		VectorRenderIndices m_indices;
+        typedef Vector<mt::vec3f> VectorPosition;
+        typedef Vector<mt::vec2f> VectorUV;
+        typedef Vector<mt::vec4f> VectorColor;
+        VectorPosition m_positions;
+        VectorUV m_uvs;
+        VectorColor m_colors;
 
-		mutable VectorRenderVertex2D m_verticesWM;
-			
-		mutable bool m_invalidateVerticesWM;
-		mutable bool m_invalidateVerticesColor;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const VectorRenderVertex2D & Meshget::getVerticesWM() const
-	{
-		if( m_invalidateVerticesWM == true )
-		{
-			this->updateVerticesWM();
-		}
+        VectorRenderIndices m_indices;
 
-		if( m_invalidateVerticesColor == true )
-		{
-			this->updateVerticesColor();
-		}
+        mutable VectorRenderVertex2D m_verticesWM;
 
-		return m_verticesWM;
-	}
+        mutable bool m_invalidateVerticesWM;
+        mutable bool m_invalidateVerticesColor;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    inline const VectorRenderVertex2D & Meshget::getVerticesWM() const
+    {
+        if( m_invalidateVerticesWM == true )
+        {
+            this->updateVerticesWM();
+        }
+
+        if( m_invalidateVerticesColor == true )
+        {
+            this->updateVerticesColor();
+        }
+
+        return m_verticesWM;
+    }
 }

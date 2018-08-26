@@ -184,7 +184,7 @@ namespace Mengine
         }
 
         m_textures[0] = dynamicTexture;
-        
+
         this->invalidateMaterial();
         this->updateSize_();
         this->updateUV_();

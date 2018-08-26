@@ -15,48 +15,48 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptModuleLoaderSource::load_module( PyObject * _module )
-    {   
-		InputStreamInterfacePtr stream = m_group->createInputFile( m_path, false );
+    PyObject * ScriptModuleLoaderSource::load_module( PyObject * _module )
+    {
+        InputStreamInterfacePtr stream = m_group->createInputFile( m_path, false );
 
-		if( stream == nullptr )
-		{
-			return nullptr;
-		}
+        if( stream == nullptr )
+        {
+            return nullptr;
+        }
 
-		if( m_group->openInputFile( m_path, stream, 0, 0, false ) == false )
-		{
-			return nullptr;
-		}
-     	
-		PyObject * module = this->load_module_source_( _module, stream );
+        if( m_group->openInputFile( m_path, stream, 0, 0, false ) == false )
+        {
+            return nullptr;
+        }
 
-        return module;        
+        PyObject * module = this->load_module_source_( _module, stream );
+
+        return module;
     }
     //////////////////////////////////////////////////////////////////////////
-	PyObject * ScriptModuleLoaderSource::load_module_source_( PyObject * _module, const InputStreamInterfacePtr & _stream )
+    PyObject * ScriptModuleLoaderSource::load_module_source_( PyObject * _module, const InputStreamInterfacePtr & _stream )
     {
-		size_t file_size = _stream->size();
+        size_t file_size = _stream->size();
 
-		MemoryInterfacePtr source_buffer = Helper::createMemoryCacheBuffer( file_size + 2, "ScriptModuleLoaderSource", __FILE__, __LINE__ );
+        MemoryInterfacePtr source_buffer = Helper::createMemoryCacheBuffer( file_size + 2, "ScriptModuleLoaderSource", __FILE__, __LINE__ );
 
-		if( source_buffer == nullptr )
-		{
-			return nullptr;
-		}
+        if( source_buffer == nullptr )
+        {
+            return nullptr;
+        }
 
-		char * source_memory = source_buffer->getBuffer();
+        char * source_memory = source_buffer->getBuffer();
 
-		if( file_size > 0 )
-		{
-			_stream->read( source_memory, file_size );
-		}
+        if( file_size > 0 )
+        {
+            _stream->read( source_memory, file_size );
+        }
 
-		source_memory[file_size] = '\n';
-		source_memory[file_size + 1] = '\0';
+        source_memory[file_size] = '\n';
+        source_memory[file_size + 1] = '\0';
 
-		PyObject * py_module = SCRIPT_SERVICE()
-			->loadModuleSource( _module, m_packagePath, source_buffer );
+        PyObject * py_module = SCRIPT_SERVICE()
+            ->loadModuleSource( _module, m_packagePath, source_buffer );
 
         return py_module;
     }

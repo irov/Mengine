@@ -2228,7 +2228,7 @@ namespace Mengine
 
                     return false;
                 }
-                
+
                 m_node->translate( m_velocity * m_time );
 
                 *_used = m_time;

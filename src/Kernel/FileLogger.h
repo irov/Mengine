@@ -7,37 +7,37 @@
 
 namespace Mengine
 {
-	class FileLogger
-		: public ServantBase<LoggerInterface>
-	{
-	public:
-		FileLogger();
-		~FileLogger() override;
+    class FileLogger
+        : public ServantBase<LoggerInterface>
+    {
+    public:
+        FileLogger();
+        ~FileLogger() override;
 
-	public:
-		bool initialize() override;
-		void finalize() override;
-		
-	public:
-		void setVerboseLevel( EMessageLevel _level ) override;
+    public:
+        bool initialize() override;
+        void finalize() override;
+
+    public:
+        void setVerboseLevel( EMessageLevel _level ) override;
         void setVerboseFlag( uint32_t _flag ) override;
 
     public:
-		bool validMessage( EMessageLevel _level, uint32_t _flag ) const override;
+        bool validMessage( EMessageLevel _level, uint32_t _flag ) const override;
 
-	public:
-		OutputStreamInterfacePtr getStream() const;
-
-	protected:
-		void log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count ) override;
+    public:
+        OutputStreamInterfacePtr getStream() const;
 
     protected:
-		void flush() override;
+        void log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count ) override;
 
-	protected:
-		EMessageLevel m_verboseLevel;
+    protected:
+        void flush() override;
+
+    protected:
+        EMessageLevel m_verboseLevel;
         uint32_t m_verboseFlag;
 
-		OutputStreamInterfacePtr m_stream;
-	};
+        OutputStreamInterfacePtr m_stream;
+    };
 }

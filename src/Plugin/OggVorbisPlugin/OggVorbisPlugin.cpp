@@ -14,25 +14,25 @@ PLUGIN_FACTORY( OggVorbis, Mengine::OggVorbisPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	OggVorbisPlugin::OggVorbisPlugin()       
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool OggVorbisPlugin::_initialize()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    OggVorbisPlugin::OggVorbisPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OggVorbisPlugin::_initialize()
+    {
         Helper::registerDecoder<SoundDecoderOGGVorbis>( "oggSound" );
         Helper::registerDecoder<SoundDecoderOGGVorbis>( "ogvSound" );
-	
-		CODEC_SERVICE()
-			->registerCodecExt( "ogg", Helper::stringizeString("oggSound") );
+
+        CODEC_SERVICE()
+            ->registerCodecExt( "ogg", Helper::stringizeString( "oggSound" ) );
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OggVorbisPlugin::_finalize()
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OggVorbisPlugin::_finalize()
+    {
         Helper::unregisterDecoder( "oggSound" );
         Helper::unregisterDecoder( "ogvSound" );
-	}
+    }
 }

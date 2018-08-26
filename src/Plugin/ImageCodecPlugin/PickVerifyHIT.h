@@ -4,5 +4,5 @@
 
 namespace Mengine
 {
-	DECLARE_MAGIC_NUMBER(MAGIC_HIT, 'H', 'I', 'T', '1', 5);
+    DECLARE_MAGIC_NUMBER( MAGIC_HIT, 'H', 'I', 'T', '1', 5 );
 }

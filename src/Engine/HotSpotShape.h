@@ -16,8 +16,8 @@ namespace Mengine
         ~HotSpotShape() override;
 
     public:
-		void setResourceShape( const ResourceShapePtr & _resourceShape );
-		const ResourceShapePtr & getResourceShape() const;
+        void setResourceShape( const ResourceShapePtr & _resourceShape );
+        const ResourceShapePtr & getResourceShape() const;
 
     protected:
         bool _compile() override;
@@ -29,4 +29,4 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<HotSpotShape> HotSpotShapePtr;
     //////////////////////////////////////////////////////////////////////////
-}	
+}

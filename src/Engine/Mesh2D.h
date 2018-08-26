@@ -18,83 +18,83 @@
 
 namespace Mengine
 {
-	class Mesh2D
-		: public Node
-		, public Materialable
-	{
-	public:
-		Mesh2D();
-		~Mesh2D() override;
+    class Mesh2D
+        : public Node
+        , public Materialable
+    {
+    public:
+        Mesh2D();
+        ~Mesh2D() override;
 
     public:
-		void setResourceImage( const ResourceImagePtr & _resourceImage );
-		const ResourceImagePtr & getResourceImage() const;
-        
-	public:
-		void setFrameShape( const MovieFrameShape * _shape );
+        void setResourceImage( const ResourceImagePtr & _resourceImage );
+        const ResourceImagePtr & getResourceImage() const;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
+    public:
+        void setFrameShape( const MovieFrameShape * _shape );
 
-		void _render( const RenderContext * _state ) override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
-		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
+        void _render( const RenderContext * _state ) override;
+
+        void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
         void _invalidateColor() override;
-		void _invalidateWorldMatrix() override;
-		        
-	protected:
-		bool compileResource_();
+        void _invalidateWorldMatrix() override;
 
-	protected:
-		void invalidateVertices();
-		void updateVertices() const;
+    protected:
+        bool compileResource_();
 
-	protected:
-		void invalidateVerticesWM();
-		void updateVerticesWM() const;
+    protected:
+        void invalidateVertices();
+        void updateVertices() const;
 
-	protected:
-		void invalidateVerticesColor();
-		void updateVerticesColor() const;
+    protected:
+        void invalidateVerticesWM();
+        void updateVerticesWM() const;
 
-	protected:
-		inline const RenderVertex2D * getVerticesWM() const;
+    protected:
+        void invalidateVerticesColor();
+        void updateVerticesColor() const;
 
-	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const override;
+    protected:
+        inline const RenderVertex2D * getVerticesWM() const;
 
-	protected:
-		ResourceHolder<ResourceImage> m_resourceImage;
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
 
-		const MovieFrameShape * m_shape;
+    protected:
+        ResourceHolder<ResourceImage> m_resourceImage;
 
-		mutable RenderVertex2D m_verticesWM[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
-		
-		uint32_t m_vertexCount;
-		uint32_t m_indicesCount;
+        const MovieFrameShape * m_shape;
 
-		bool m_solid;
+        mutable RenderVertex2D m_verticesWM[MENGINE_MOVIE_SHAPE_MAX_VERTEX];
 
-		mutable bool m_invalidateVerticesLocal;
-		mutable bool m_invalidateVerticesWM;
-		mutable bool m_invalidateVerticesColor;
+        uint32_t m_vertexCount;
+        uint32_t m_indicesCount;
+
+        bool m_solid;
+
+        mutable bool m_invalidateVerticesLocal;
+        mutable bool m_invalidateVerticesWM;
+        mutable bool m_invalidateVerticesColor;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Mesh2D> Mesh2DPtr;
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderVertex2D * Mesh2D::getVerticesWM() const
-	{
-		if( m_invalidateVerticesWM == true )
-		{
-			this->updateVerticesWM();
-		}
+    //////////////////////////////////////////////////////////////////////////
+    inline const RenderVertex2D * Mesh2D::getVerticesWM() const
+    {
+        if( m_invalidateVerticesWM == true )
+        {
+            this->updateVerticesWM();
+        }
 
-		if( m_invalidateVerticesColor == true )
-		{
-			this->updateVerticesColor();
-		}
+        if( m_invalidateVerticesColor == true )
+        {
+            this->updateVerticesColor();
+        }
 
-		return m_verticesWM;
-	}
+        return m_verticesWM;
+    }
 }

@@ -3,30 +3,30 @@
 #include "Kernel/Visitor.h"
 
 namespace Mengine
-{    
-	class Visitable
-	{
-	public:
-		virtual void visit( Visitor * _visitor ) = 0;
+{
+    class Visitable
+    {
+    public:
+        virtual void visit( Visitor * _visitor ) = 0;
 
-	protected:
-		template<class T>
-		static bool s_concreteVisit( T * _visited, Visitor * _visitor )
-		{
-			typedef ConcreteVisitor<T> TConcreteVisitor;
+    protected:
+        template<class T>
+        static bool s_concreteVisit( T * _visited, Visitor * _visitor )
+        {
+            typedef ConcreteVisitor<T> TConcreteVisitor;
 
-			TConcreteVisitor * ptr = dynamic_cast<TConcreteVisitor*>(_visitor);
-			
-			if( ptr == nullptr )
-			{
-				return false;
-			}
+            TConcreteVisitor * ptr = dynamic_cast<TConcreteVisitor*>(_visitor);
 
-			ptr->accept( _visited );
+            if( ptr == nullptr )
+            {
+                return false;
+            }
 
-			return true;
-		}
-	};
+            ptr->accept( _visited );
+
+            return true;
+        }
+    };
 
 #define DECLARE_VISITABLE_BASE() \
 public:\

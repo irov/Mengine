@@ -18,91 +18,91 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	typedef Vector<ResourceImagePtr> VectorResourceImage;
+    typedef Vector<ResourceImagePtr> VectorResourceImage;
     //////////////////////////////////////////////////////////////////////////
-	struct RenderMaterial;
-	struct RenderMaterialGroup;    
+    struct RenderMaterial;
+    struct RenderMaterialGroup;
     //////////////////////////////////////////////////////////////////////////
-	struct Landscape2DElement
-	{
-		ResourceImagePtr image;
-		RenderMaterialInterfacePtr material;
-		uint32_t i;
-		uint32_t j;
-		mt::box2f bb;
-		mt::box2f bb_wm;
-	};
+    struct Landscape2DElement
+    {
+        ResourceImagePtr image;
+        RenderMaterialInterfacePtr material;
+        uint32_t i;
+        uint32_t j;
+        mt::box2f bb;
+        mt::box2f bb_wm;
+    };
     //////////////////////////////////////////////////////////////////////////
-	typedef Vector<Landscape2DElement> VectorLandscape2DElements;
+    typedef Vector<Landscape2DElement> VectorLandscape2DElements;
     //////////////////////////////////////////////////////////////////////////
-	class Landscape2D 
-		: public Node
-		, public Materialable
-	{
-	public:
-		Landscape2D();
-		~Landscape2D() override;
+    class Landscape2D
+        : public Node
+        , public Materialable
+    {
+    public:
+        Landscape2D();
+        ~Landscape2D() override;
 
-	public:
-		void setBackParts( const VectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height );
-
-	protected:
-		bool _compile() override;
-		void _release() override;
-
-	protected:
-		void _render( const RenderContext * _state ) override;
+    public:
+        void setBackParts( const VectorResourceImage & _images, uint32_t _countX, uint32_t _countY, float _width, float _height );
 
     protected:
-		void _invalidateWorldMatrix() override;
-		
-	protected:
-		void updateVerticesWM_();
-		void updateElementWM_();
+        bool _compile() override;
+        void _release() override;
 
-	protected:
-		inline const RenderVertex2D * getVerticesWM( uint32_t _offset );
-		inline VectorLandscape2DElements & getElementWM();
-		       
-	protected:
-		bool compileResources_();
+    protected:
+        void _render( const RenderContext * _state ) override;
 
-	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const override;
+    protected:
+        void _invalidateWorldMatrix() override;
 
-	protected:
-		VectorResourceImage m_images;
+    protected:
+        void updateVerticesWM_();
+        void updateElementWM_();
 
-		uint32_t m_elementCountX;
-		uint32_t m_elementCountY;
-		float m_elementWidth;
-		float m_elementHeight;
+    protected:
+        inline const RenderVertex2D * getVerticesWM( uint32_t _offset );
+        inline VectorLandscape2DElements & getElementWM();
 
-		VectorLandscape2DElements m_elements;
-				
-		VectorRenderVertex2D m_verticesWM;
-		
-		mutable bool m_invalidateVerticesWM;
-		mutable bool m_invalidateElementWM;
+    protected:
+        bool compileResources_();
+
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
+
+    protected:
+        VectorResourceImage m_images;
+
+        uint32_t m_elementCountX;
+        uint32_t m_elementCountY;
+        float m_elementWidth;
+        float m_elementHeight;
+
+        VectorLandscape2DElements m_elements;
+
+        VectorRenderVertex2D m_verticesWM;
+
+        mutable bool m_invalidateVerticesWM;
+        mutable bool m_invalidateElementWM;
     };
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderVertex2D * Landscape2D::getVerticesWM( uint32_t _offset )
-	{
-		if( m_invalidateVerticesWM == true )
-		{
-			this->updateVerticesWM_();
-		}
+    //////////////////////////////////////////////////////////////////////////
+    inline const RenderVertex2D * Landscape2D::getVerticesWM( uint32_t _offset )
+    {
+        if( m_invalidateVerticesWM == true )
+        {
+            this->updateVerticesWM_();
+        }
 
-		return &m_verticesWM[_offset];
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline VectorLandscape2DElements & Landscape2D::getElementWM()
-	{
-		if( m_invalidateElementWM == true )
-		{
-			this->updateElementWM_();
-		}
+        return &m_verticesWM[_offset];
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline VectorLandscape2DElements & Landscape2D::getElementWM()
+    {
+        if( m_invalidateElementWM == true )
+        {
+            this->updateElementWM_();
+        }
 
-		return m_elements;
-	}
+        return m_elements;
+    }
 }

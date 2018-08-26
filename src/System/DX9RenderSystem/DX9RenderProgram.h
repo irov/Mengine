@@ -10,40 +10,40 @@
 
 namespace Mengine
 {
-	class DX9RenderProgram
-		: public ServantBase<RenderProgramInterface>
-	{
-	public:
-		DX9RenderProgram();
-		~DX9RenderProgram() override;
+    class DX9RenderProgram
+        : public ServantBase<RenderProgramInterface>
+    {
+    public:
+        DX9RenderProgram();
+        ~DX9RenderProgram() override;
 
-	public:
-		const ConstString & getName() const override;
+    public:
+        const ConstString & getName() const override;
 
-	public:
+    public:
         RenderVertexAttributeInterfacePtr getVertexAttribute() const override;
-		RenderVertexShaderInterfacePtr getVertexShader() const override;
-		RenderFragmentShaderInterfacePtr getFragmentShader() const override;
+        RenderVertexShaderInterfacePtr getVertexShader() const override;
+        RenderFragmentShaderInterfacePtr getFragmentShader() const override;
 
-	public:
-		bool initialize( const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute );
+    public:
+        bool initialize( const ConstString & _name, const DX9RenderVertexShaderPtr & _vertexShader, const DX9RenderFragmentShaderPtr & _fragmentShader, const RenderVertexAttributeInterfacePtr & _vertexAttribute );
 
-	public:
-		bool compile( IDirect3DDevice9 * _pD3DDevice );
+    public:
+        bool compile( IDirect3DDevice9 * _pD3DDevice );
 
-	public:
-		bool enable( IDirect3DDevice9 * _pD3DDevice );
+    public:
+        bool enable( IDirect3DDevice9 * _pD3DDevice );
 
-	public:
-		void bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix );
-		
-	protected:
-		ConstString m_name;
+    public:
+        void bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix );
 
-		DX9RenderVertexShaderPtr m_vertexShader;
-		DX9RenderFragmentShaderPtr m_fragmentShader;
+    protected:
+        ConstString m_name;
+
+        DX9RenderVertexShaderPtr m_vertexShader;
+        DX9RenderFragmentShaderPtr m_fragmentShader;
         DX9RenderVertexAttributePtr m_vertexAttribute;
     };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<DX9RenderProgram> DX9RenderProgramPtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<DX9RenderProgram> DX9RenderProgramPtr;
 }

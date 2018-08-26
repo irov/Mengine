@@ -2,81 +2,81 @@
 
 namespace Mengine
 {
-	Win32Socket::Win32Socket()
-		:m_socket( INVALID_SOCKET )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Win32Socket::~Win32Socket()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32Socket::initialize( const Char * _ip, const Char * _port )
-	{
+    Win32Socket::Win32Socket()
+        :m_socket( INVALID_SOCKET )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Win32Socket::~Win32Socket()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Socket::initialize( const Char * _ip, const Char * _port )
+    {
         addrinfo hints;
-		ZeroMemory( &hints, sizeof( hints ) );
+        ZeroMemory( &hints, sizeof( hints ) );
 
-		hints.ai_family = AF_UNSPEC;
-		hints.ai_socktype = SOCK_STREAM;
-		hints.ai_protocol = IPPROTO_TCP;
+        hints.ai_family = AF_UNSPEC;
+        hints.ai_socktype = SOCK_STREAM;
+        hints.ai_protocol = IPPROTO_TCP;
 
         addrinfo *addrinfo;
-		INT getaddrinfo_result = ::getaddrinfo( _ip, _port, &hints, &addrinfo );
+        INT getaddrinfo_result = ::getaddrinfo( _ip, _port, &hints, &addrinfo );
 
-		if( getaddrinfo_result != 0 )
-		{
-			return false;
-		}
+        if( getaddrinfo_result != 0 )
+        {
+            return false;
+        }
 
-		SOCKET socket = ::socket( addrinfo->ai_family, addrinfo->ai_socktype, addrinfo->ai_protocol );
+        SOCKET socket = ::socket( addrinfo->ai_family, addrinfo->ai_socktype, addrinfo->ai_protocol );
 
-		int connect_result = ::connect( socket, addrinfo->ai_addr, (int)addrinfo->ai_addrlen );
+        int connect_result = ::connect( socket, addrinfo->ai_addr, (int)addrinfo->ai_addrlen );
 
-		freeaddrinfo( addrinfo );
+        freeaddrinfo( addrinfo );
 
-		if( connect_result != 0 )
-		{
-			return false;
-		}
+        if( connect_result != 0 )
+        {
+            return false;
+        }
 
-		m_socket = socket;
+        m_socket = socket;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32Socket::finalize()
-	{
-		closesocket( m_socket );
-		m_socket = INVALID_SOCKET;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32Socket::send( const void * _buffer, size_t _len )
-	{
-		const char * send_buffer = (const char *)_buffer;
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32Socket::finalize()
+    {
+        closesocket( m_socket );
+        m_socket = INVALID_SOCKET;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Socket::send( const void * _buffer, size_t _len )
+    {
+        const char * send_buffer = (const char *)_buffer;
 
-		int send_result = ::send( m_socket, send_buffer, (int)_len, 0 );
+        int send_result = ::send( m_socket, send_buffer, (int)_len, 0 );
 
-		if( send_result != 0 )
-		{
-			return false;
-		}
+        if( send_result != 0 )
+        {
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32Socket::receive( void * _buffer, size_t _capacity, size_t & _receiv )
-	{
-		char * receiv_buffer = (char *)_buffer;
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Socket::receive( void * _buffer, size_t _capacity, size_t & _receiv )
+    {
+        char * receiv_buffer = (char *)_buffer;
 
-		int result = ::recv( m_socket, receiv_buffer, (int)_capacity, 0 );
+        int result = ::recv( m_socket, receiv_buffer, (int)_capacity, 0 );
 
-		if( result < 0 )
-		{
-			return false;
-		}
-		
-		_receiv = (size_t)result;
+        if( result < 0 )
+        {
+            return false;
+        }
 
-		return true;
-	}
+        _receiv = (size_t)result;
+
+        return true;
+    }
 }

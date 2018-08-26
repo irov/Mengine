@@ -9,7 +9,7 @@ namespace Mengine
     class ResourceShape
         : public Resource
     {
-		DECLARE_VISITABLE( Resource );
+        DECLARE_VISITABLE( Resource );
 
     public:
         ResourceShape();
@@ -26,10 +26,10 @@ namespace Mengine
 
     protected:
         bool _isValid() const override;
-        
+
     protected:
         Polygon m_polygon;
     };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusiveResourcePtr<ResourceShape> ResourceShapePtr;
-}	
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveResourcePtr<ResourceShape> ResourceShapePtr;
+}

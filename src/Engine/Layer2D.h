@@ -13,21 +13,21 @@ namespace Mengine
     typedef IntrusivePtr<class RenderViewport> RenderViewportPtr;
     typedef IntrusivePtr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
 
-	class Layer2D
-		: public Layer
-	{
-		DECLARE_VISITABLE( Layer )
+    class Layer2D
+        : public Layer
+    {
+        DECLARE_VISITABLE( Layer )
 
-	public:
-		Layer2D();
+    public:
+        Layer2D();
 
     public:
         void setSize( const mt::vec2f & _size );
         const mt::vec2f & getSize() const;
 
-	public:
-		void setViewport( const Viewport & _viewport );
-		void removeViewport();
+    public:
+        void setViewport( const Viewport & _viewport );
+        void removeViewport();
 
     protected:
         void createViewport_();
@@ -59,12 +59,12 @@ namespace Mengine
         void _invalidateColor() override;
         void _invalidateWorldMatrix() override;
 
-	protected:
+    protected:
         mt::vec2f m_size;
 
-		Viewport m_viewport;
-		
-		RenderCameraOrthogonalPtr m_renderCamera;
+        Viewport m_viewport;
+
+        RenderCameraOrthogonalPtr m_renderCamera;
         RenderViewportPtr m_renderViewport;
 
         ResourceHolder<ResourceImage> m_resourceImageMask;
@@ -75,9 +75,9 @@ namespace Mengine
         mutable bool m_invalidateVerticesImageMaskColor;
         mutable bool m_invalidateVerticesImageMaskWM;
 
-		bool m_hasViewport;
+        bool m_hasViewport;
         bool m_hasImageMask;
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
     inline const RenderVertex2D * Layer2D::getVerticesImageMaskWM() const
     {

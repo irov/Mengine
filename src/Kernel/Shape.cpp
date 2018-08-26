@@ -8,9 +8,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Shape::Shape()
-		: m_invalidateVerticesLocal( true )
-		, m_invalidateVerticesWM( true )
-		, m_invalidateVerticesColor( true )
+        : m_invalidateVerticesLocal( true )
+        , m_invalidateVerticesWM( true )
+        , m_invalidateVerticesColor( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -37,19 +37,19 @@ namespace Mengine
     {
         if( m_surface == nullptr )
         {
-            LOGGER_ERROR("Shape::_compile '%s' can`t setup surface"
+            LOGGER_ERROR( "Shape::_compile '%s' can`t setup surface"
                 , this->getName().c_str()
-                );
+            );
 
             return false;
         }
 
         if( m_surface->compile() == false )
         {
-            LOGGER_ERROR("Shape::_compile '%s' can`t compile surface '%s'"
+            LOGGER_ERROR( "Shape::_compile '%s' can`t compile surface '%s'"
                 , this->getName().c_str()
                 , m_surface->getName().c_str()
-                );
+            );
 
             return false;
         }
@@ -96,12 +96,12 @@ namespace Mengine
     {
         m_invalidateVerticesWM = true;
 
-		this->invalidateBoundingBox();
+        this->invalidateBoundingBox();
     }
     //////////////////////////////////////////////////////////////////////////
     void Shape::invalidateVerticesColor()
     {
-        m_invalidateVerticesColor = true;                
+        m_invalidateVerticesColor = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Shape::_invalidateColor()

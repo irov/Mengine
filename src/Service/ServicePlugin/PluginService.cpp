@@ -20,217 +20,217 @@ namespace Mengine
     {
         for( PluginDesc & desc : m_plugins )
         {
-			desc.plugin->finalize();
+            desc.plugin->finalize();
         }
 
         m_plugins.clear();
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool PluginService::_initializeService()
-	{
-		//Empty
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginService::_initializeService()
+    {
+        //Empty
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void PluginService::_finalizeService()
-	{
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PluginService::_finalizeService()
+    {
         for( PluginDesc & desc : m_plugins )
-		{
-			desc.plugin->finalize();
-		}
+        {
+            desc.plugin->finalize();
+        }
 
-		m_plugins.clear();
-	}
+        m_plugins.clear();
+    }
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::loadPlugin( const WString & _dllName )
     {
-		LOGGER_WARNING("load Plugin %ls"
-			, _dllName.c_str()
+        LOGGER_WARNING( "load Plugin %ls"
+            , _dllName.c_str()
+        );
+
+        DynamicLibraryInterfacePtr dlib = PLUGIN_SYSTEM()
+            ->loadDynamicLibrary( _dllName );
+
+        if( dlib == nullptr )
+        {
+            LOGGER_ERROR( "PluginService::loadPlugin can't load %ls plugin [invalid load]"
+                , _dllName.c_str()
             );
 
-		DynamicLibraryInterfacePtr dlib = PLUGIN_SYSTEM()
-			->loadDynamicLibrary( _dllName );
+            return false;
+        }
 
-		if( dlib == nullptr )
-		{
-			LOGGER_ERROR("PluginService::loadPlugin can't load %ls plugin [invalid load]"
-				, _dllName.c_str()
-				);
+        const Char * symbol = "dllCreatePlugin";
 
-			return false;
-		}
+        TDynamicLibraryFunction function_dllCreatePlugin =
+            dlib->getSymbol( symbol );
 
-		const Char * symbol = "dllCreatePlugin";
+        if( function_dllCreatePlugin == nullptr )
+        {
+            LOGGER_ERROR( "PluginService::loadPlugin can't load %ls plugin symbol '%s'"
+                , _dllName.c_str()
+                , symbol
+            );
 
-		TDynamicLibraryFunction function_dllCreatePlugin =
-			dlib->getSymbol( symbol );
+            return false;
+        }
 
-		if( function_dllCreatePlugin == nullptr )
-		{
-			LOGGER_ERROR("PluginService::loadPlugin can't load %ls plugin symbol '%s'"
-				, _dllName.c_str()
-				, symbol
-				);
+        TPluginCreate dllCreatePlugin = (TPluginCreate)function_dllCreatePlugin;
 
-			return false;
-		}
+        if( this->createPlugin( dlib, dllCreatePlugin, true ) == false )
+        {
+            LOGGER_ERROR( "PluginService::loadPlugin can't load %ls plugin [invalid create]"
+                , _dllName.c_str()
+            );
 
-		TPluginCreate dllCreatePlugin = (TPluginCreate)function_dllCreatePlugin;
-		
-		if( this->createPlugin( dlib, dllCreatePlugin, true ) == false )
-		{
-			LOGGER_ERROR("PluginService::loadPlugin can't load %ls plugin [invalid create]"
-				, _dllName.c_str()
-				);
+            return false;
+        }
 
-			return false;
-		}
-		
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool PluginService::createPlugin(const DynamicLibraryInterfacePtr & _dlib, TPluginCreate _create, bool _dynamic )
-	{
-		if( _create == nullptr )
-		{
-			return false;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginService::createPlugin( const DynamicLibraryInterfacePtr & _dlib, TPluginCreate _create, bool _dynamic )
+    {
+        if( _create == nullptr )
+        {
+            return false;
+        }
 
         ServiceProviderInterface * serviceProvider = SERVICE_PROVIDER_GET();
 
-		PluginInterface * plugin;
-		if( _create( serviceProvider, &plugin, _dynamic ) == false )
-		{
-			LOGGER_ERROR("PluginService::createPlugin can't create plugin [invalid create]"
-				);
+        PluginInterface * plugin;
+        if( _create( serviceProvider, &plugin, _dynamic ) == false )
+        {
+            LOGGER_ERROR( "PluginService::createPlugin can't create plugin [invalid create]"
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		if( plugin == nullptr )
-		{
-			LOGGER_ERROR("PluginService::createPlugin can't create plugin [plugin is NULL]"
-				);
+        if( plugin == nullptr )
+        {
+            LOGGER_ERROR( "PluginService::createPlugin can't create plugin [plugin is NULL]"
+            );
 
-			return false;
-		}
-                
-		if( this->addPlugin( _dlib, plugin ) == false )
-		{
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool PluginService::addPlugin(const DynamicLibraryInterfacePtr & _dlib, const PluginInterfacePtr & _plugin )
-	{
-		if( _plugin == nullptr )
-		{
-			return false;
-		}
+        if( this->addPlugin( _dlib, plugin ) == false )
+        {
+            return false;
+        }
 
-		const Char * name = _plugin->getPluginName();
-		
-		if( this->hasPlugin( name ) == true )
-		{
-			return false;
-		}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginService::addPlugin( const DynamicLibraryInterfacePtr & _dlib, const PluginInterfacePtr & _plugin )
+    {
+        if( _plugin == nullptr )
+        {
+            return false;
+        }
 
-		if( _plugin->avaliable() == false )
-		{
-			return true;
-		}
+        const Char * name = _plugin->getPluginName();
 
-		if( _plugin->initialize() == false )
-		{
-			LOGGER_ERROR("PluginService::loadPlugin invalid initialize plugin '%s'"
-				, name
-				);
+        if( this->hasPlugin( name ) == true )
+        {
+            return false;
+        }
 
-			return false;
-		}
+        if( _plugin->avaliable() == false )
+        {
+            return true;
+        }
 
-		PluginDesc desc;
-		strcpy( desc.name, name );
-		desc.dlib = _dlib;
-		desc.plugin = _plugin;
+        if( _plugin->initialize() == false )
+        {
+            LOGGER_ERROR( "PluginService::loadPlugin invalid initialize plugin '%s'"
+                , name
+            );
 
-		m_plugins.emplace_back( desc );
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool PluginService::removePlugin( const PluginInterfacePtr & _plugin )
-	{
-		if( _plugin == nullptr )
-		{
-			return false;
-		}
+        PluginDesc desc;
+        strcpy( desc.name, name );
+        desc.dlib = _dlib;
+        desc.plugin = _plugin;
 
-		for( VectorPlugins::iterator
-			it = m_plugins.begin(),
-			it_end = m_plugins.end();
-		it != it_end;
-		++it )
-		{
-			PluginDesc & desc = *it;
+        m_plugins.emplace_back( desc );
 
-			if( desc.plugin == _plugin )
-			{
-				continue;
-			}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginService::removePlugin( const PluginInterfacePtr & _plugin )
+    {
+        if( _plugin == nullptr )
+        {
+            return false;
+        }
 
-			desc.plugin->finalize();
+        for( VectorPlugins::iterator
+            it = m_plugins.begin(),
+            it_end = m_plugins.end();
+            it != it_end;
+            ++it )
+        {
+            PluginDesc & desc = *it;
 
-			m_plugins.erase( it );
+            if( desc.plugin == _plugin )
+            {
+                continue;
+            }
 
-			return true;
-		}
+            desc.plugin->finalize();
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool PluginService::hasPlugin( const Char * _name ) const
-	{
+            m_plugins.erase( it );
+
+            return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginService::hasPlugin( const Char * _name ) const
+    {
         for( const PluginDesc & desc : m_plugins )
-		{
-			if( desc.plugin == nullptr )
-			{
-				continue;
-			}
+        {
+            if( desc.plugin == nullptr )
+            {
+                continue;
+            }
 
-			if( strcmp( desc.name, _name ) != 0 )
-			{
-				continue;
-			}
+            if( strcmp( desc.name, _name ) != 0 )
+            {
+                continue;
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const PluginInterfacePtr & PluginService::getPlugin( const Char * _name ) const
-	{
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const PluginInterfacePtr & PluginService::getPlugin( const Char * _name ) const
+    {
         for( const PluginDesc & desc : m_plugins )
-		{
-			if( desc.plugin == nullptr )
-			{
-				continue;
-			}
+        {
+            if( desc.plugin == nullptr )
+            {
+                continue;
+            }
 
-			if( strcmp( desc.name, _name ) != 0 )
-			{
-				continue;
-			}
+            if( strcmp( desc.name, _name ) != 0 )
+            {
+                continue;
+            }
 
-			const PluginInterfacePtr & plugin = desc.plugin;
+            const PluginInterfacePtr & plugin = desc.plugin;
 
-			return plugin;
-		}
+            return plugin;
+        }
 
-		return PluginInterfacePtr::none();
-	}
+        return PluginInterfacePtr::none();
+    }
 }

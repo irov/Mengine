@@ -18,11 +18,11 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	TTFFont::TTFFont()
-		: m_ftlibrary( nullptr )
-		, m_face( nullptr )
-		, m_ttfAscender( 0.f )
+    //////////////////////////////////////////////////////////////////////////
+    TTFFont::TTFFont()
+        : m_ftlibrary( nullptr )
+        , m_face( nullptr )
+        , m_ttfAscender( 0.f )
         , m_ttfDescender( 0.f )
         , m_ttfHeight( 0 )
         , m_ttfSpacing( 0.f )
@@ -30,44 +30,44 @@ namespace Mengine
         , m_ttfFEBundle( nullptr )
         , m_ttfFEEffect( nullptr )
         , m_ttfFESample( 1 )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	TTFFont::~TTFFont()
-	{		
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TTFFont::setFTLibrary( FT_Library _ftlibrary )
-	{
-		m_ftlibrary = _ftlibrary;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini )
-	{
-		m_category = _category;
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    TTFFont::~TTFFont()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFFont::setFTLibrary( FT_Library _ftlibrary )
+    {
+        m_ftlibrary = _ftlibrary;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini )
+    {
+        m_category = _category;
 
-		if( this->initializeBase_( _ini ) == false )
-		{
-			return false;
-		}
+        if( this->initializeBase_( _ini ) == false )
+        {
+            return false;
+        }
 
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", m_ttfPath ) == false )
-		{
-			LOGGER_ERROR("TextManager::loadFonts invalid font '%s' don't setup Glyph"
-				, m_name.c_str()
-				);
+        if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", m_ttfPath ) == false )
+        {
+            LOGGER_ERROR( "TextManager::loadFonts invalid font '%s' don't setup Glyph"
+                , m_name.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_ttfHeight ) == false )
-		{
-			LOGGER_ERROR("TextManager::loadFonts invalid font '%s' don't setup Height"
-				, m_name.c_str()
-				);
+        if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_ttfHeight ) == false )
+        {
+            LOGGER_ERROR( "TextManager::loadFonts invalid font '%s' don't setup Height"
+                , m_name.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
         if( IniUtil::getIniValue( _ini, m_name.c_str(), "FEPath", m_ttfFEPath ) == true )
         {
@@ -83,11 +83,11 @@ namespace Mengine
 
         IniUtil::getIniValue( _ini, m_name.c_str(), "FESample", m_ttfFESample );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::_compile()
-	{
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::_compile()
+    {
         if( m_ttfFEPath.empty() == false )
         {
             MemoryInterfacePtr ttfEffectMemory = Helper::createMemoryFile( m_category, m_ttfFEPath, false, "TTFFont", __FILE__, __LINE__ );
@@ -144,32 +144,32 @@ namespace Mengine
             }
         }
 
-		MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, "TTFFont", __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, "TTFFont", __FILE__, __LINE__ );
 
-		FT_Byte * memory_byte = memory->getBuffer();
-		size_t memory_size = memory->getSize();
+        FT_Byte * memory_byte = memory->getBuffer();
+        size_t memory_size = memory->getSize();
 
-		if( memory_byte == nullptr )
-		{
-			return false;
-		}
+        if( memory_byte == nullptr )
+        {
+            return false;
+        }
 
-		FT_Error err_code = FT_New_Memory_Face( m_ftlibrary, memory_byte, (FT_Long)memory_size, 0, &m_face );
+        FT_Error err_code = FT_New_Memory_Face( m_ftlibrary, memory_byte, (FT_Long)memory_size, 0, &m_face );
 
-		if( err_code != 0 )
-		{
-			LOGGER_ERROR("TTFFont::_compile invalid FT_New_Memory_Face font '%s' path '%s'"
-				, m_name.c_str()
-				, m_ttfPath.c_str()
-				);
+        if( err_code != 0 )
+        {
+            LOGGER_ERROR( "TTFFont::_compile invalid FT_New_Memory_Face font '%s' path '%s'"
+                , m_name.c_str()
+                , m_ttfPath.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		if( FT_Select_Charmap( m_face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
-		{
-			return false;
-		}
+        if( FT_Select_Charmap( m_face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
+        {
+            return false;
+        }
 
         if( FT_Set_Pixel_Sizes( m_face, 0, m_ttfHeight * m_ttfFESample ) != FT_Err_Ok )
         {
@@ -181,7 +181,7 @@ namespace Mengine
             return false;
         }
 
-		m_memory = memory;
+        m_memory = memory;
 
         FT_Pos ascender = m_face->size->metrics.ascender >> 6;
         FT_Pos descender = m_face->size->metrics.descender >> 6;
@@ -200,22 +200,22 @@ namespace Mengine
         float fHeight = static_cast<float>(height);
         m_ttfSpacing = fHeight - (m_ttfAscender + m_ttfDescender);
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TTFFont::_release()
-	{
-		FT_Done_Face( m_face );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFFont::_release()
+    {
+        FT_Done_Face( m_face );
 
-		m_memory = nullptr;
+        m_memory = nullptr;
 
         if( m_ttfFEBundle != nullptr )
         {
             fe_bundle_free( m_ttfFEBundle );
             m_ttfFEBundle = nullptr;
         }
-	}
-	//////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     class TTFFont::PFindGlyph
     {
     public:
@@ -263,7 +263,7 @@ namespace Mengine
 
                 it_texture_memory += _pitch; //y offset one pixel
                 it_texture_memory += _channel; //x offset one pixel
-                                
+
                 if( m_ttfchannel == 1 && _channel == 4 )
                 {
                     for( uint32_t h = 0; h != m_height; ++h )
@@ -362,8 +362,8 @@ namespace Mengine
             size_t m_ttfpitch;
             uint32_t m_ttfchannel;
         };
-	}
-	//////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_prepareGlyph( GlyphCode _code )
     {
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
@@ -375,29 +375,29 @@ namespace Mengine
         {
             const TTFGlyph & g = *it_found;
             (void)g;
-            
+
             return true;
         }
 
         FT_UInt glyph_index = FT_Get_Char_Index( m_face, _code );
 
         if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
-		{
-			return false;
-		}
+        {
+            return false;
+        }
 
-		FT_GlyphSlot glyph = m_face->glyph;
+        FT_GlyphSlot glyph = m_face->glyph;
 
-		const FT_Glyph_Metrics & metrics = glyph->metrics;
+        const FT_Glyph_Metrics & metrics = glyph->metrics;
 
         int32_t glyph_dx = (metrics.horiBearingX >> 6);
         int32_t glyph_dy = (metrics.horiBearingY >> 6);
         uint32_t glyph_w = (metrics.width >> 6);
         uint32_t glyph_h = (metrics.height >> 6);
 
-		float glyph_advance = static_cast<float>(metrics.horiAdvance >> 6);
+        float glyph_advance = static_cast<float>(metrics.horiAdvance >> 6);
 
-		FT_Bitmap glyph_bitmap = glyph->bitmap;
+        FT_Bitmap glyph_bitmap = glyph->bitmap;
 
         uint32_t bitmap_channel = 0;
 
@@ -436,7 +436,7 @@ namespace Mengine
         ttf_glyph.advance = glyph_advance / m_ttfFESample;
 
         if( glyph_bitmap.width == 0 || glyph_bitmap.rows == 0 )
-		{
+        {
             for( uint32_t index = 0; index != m_ttfLayoutCount; ++index )
             {
                 TTFGlyphQuad & quad = ttf_glyph.quads[index];
@@ -450,11 +450,11 @@ namespace Mengine
                 quad.texture = nullptr;
             }
 
-			glyphs.emplace_back( ttf_glyph );
+            glyphs.emplace_back( ttf_glyph );
 
-			return true;
-		}        
-        
+            return true;
+        }
+
         if( m_ttfFEEffect != nullptr )
         {
             int im_image_w = glyph_bitmap.width;
@@ -500,7 +500,7 @@ namespace Mengine
 #endif
 
                 fe_image_blit( &res.image, &bgra_image );
-                
+
                 fe_image_free( &res.image );
 
                 switch( m_ttfFESample )
@@ -529,94 +529,94 @@ namespace Mengine
                         quad.uv = uv;
                         quad.texture = texture;
                     }break;
-                //case 2:
-                //    {
-                //        uint32_t downsample_w = bgra_image.w / 2;
-                //        uint32_t downsample_h = bgra_image.h / 2;
+                    //case 2:
+                    //    {
+                    //        uint32_t downsample_w = bgra_image.w / 2;
+                    //        uint32_t downsample_h = bgra_image.h / 2;
 
-                //        uint8_t * downsample_data = (uint8_t *)Helper::allocateMemory( downsample_w * downsample_h * bgra_image.bytespp, "TTFFont::_prepareGlyph" );
+                    //        uint8_t * downsample_data = (uint8_t *)Helper::allocateMemory( downsample_w * downsample_h * bgra_image.bytespp, "TTFFont::_prepareGlyph" );
 
-                //        for( uint32_t h = 0; h != downsample_h; ++h )
-                //        {
-                //            uint32_t hh = h << 1;
-                //            uint32_t hh0 = (hh + 0) * bgra_image.pitch;
-                //            uint32_t hh1 = (hh + 1) * bgra_image.pitch;
+                    //        for( uint32_t h = 0; h != downsample_h; ++h )
+                    //        {
+                    //            uint32_t hh = h << 1;
+                    //            uint32_t hh0 = (hh + 0) * bgra_image.pitch;
+                    //            uint32_t hh1 = (hh + 1) * bgra_image.pitch;
 
-                //            uint8_t* dh0 = bgra_image.data + hh0;
-                //            uint8_t* dh1 = bgra_image.data + hh1;
+                    //            uint8_t* dh0 = bgra_image.data + hh0;
+                    //            uint8_t* dh1 = bgra_image.data + hh1;
 
-                //            for( uint32_t w = 0; w != downsample_w; ++w )
-                //            {
-                //                uint32_t ww = w << 1;
-                //                uint32_t ww0 = (ww + 0) << 2;
-                //                uint32_t ww1 = (ww + 1) << 2;
+                    //            for( uint32_t w = 0; w != downsample_w; ++w )
+                    //            {
+                    //                uint32_t ww = w << 1;
+                    //                uint32_t ww0 = (ww + 0) << 2;
+                    //                uint32_t ww1 = (ww + 1) << 2;
 
-                //                uint8_t* d00 = dh0 + ww0;
-                //                uint8_t* d10 = dh0 + ww1;
-                //                uint8_t* d11 = dh1 + ww1;
-                //                uint8_t* d01 = dh1 + ww0;
+                    //                uint8_t* d00 = dh0 + ww0;
+                    //                uint8_t* d10 = dh0 + ww1;
+                    //                uint8_t* d11 = dh1 + ww1;
+                    //                uint8_t* d01 = dh1 + ww0;
 
-                //                uint32_t r0 = d00[0];
-                //                uint32_t r1 = d10[0];
-                //                uint32_t r2 = d11[0];
-                //                uint32_t r3 = d01[0];
+                    //                uint32_t r0 = d00[0];
+                    //                uint32_t r1 = d10[0];
+                    //                uint32_t r2 = d11[0];
+                    //                uint32_t r3 = d01[0];
 
-                //                uint32_t r = (r0 + r1 + r2 + r3) >> 2;
+                    //                uint32_t r = (r0 + r1 + r2 + r3) >> 2;
 
-                //                uint32_t g0 = d00[1];
-                //                uint32_t g1 = d10[1];
-                //                uint32_t g2 = d11[1];
-                //                uint32_t g3 = d01[1];
+                    //                uint32_t g0 = d00[1];
+                    //                uint32_t g1 = d10[1];
+                    //                uint32_t g2 = d11[1];
+                    //                uint32_t g3 = d01[1];
 
-                //                uint32_t g = (g0 + g1 + g2 + g3) >> 2;
+                    //                uint32_t g = (g0 + g1 + g2 + g3) >> 2;
 
-                //                uint32_t b0 = d00[2];
-                //                uint32_t b1 = d10[2];
-                //                uint32_t b2 = d11[2];
-                //                uint32_t b3 = d01[2];
+                    //                uint32_t b0 = d00[2];
+                    //                uint32_t b1 = d10[2];
+                    //                uint32_t b2 = d11[2];
+                    //                uint32_t b3 = d01[2];
 
-                //                uint32_t b = (b0 + b1 + b2 + b3) >> 2;
+                    //                uint32_t b = (b0 + b1 + b2 + b3) >> 2;
 
-                //                uint32_t a0 = d00[3];
-                //                uint32_t a1 = d10[3];
-                //                uint32_t a2 = d11[3];
-                //                uint32_t a3 = d01[3];
+                    //                uint32_t a0 = d00[3];
+                    //                uint32_t a1 = d10[3];
+                    //                uint32_t a2 = d11[3];
+                    //                uint32_t a3 = d01[3];
 
-                //                uint32_t a = (a0 + a1 + a2 + a3) >> 2;
+                    //                uint32_t a = (a0 + a1 + a2 + a3) >> 2;
 
-                //                uint32_t downsample_index = (w + h * downsample_w) << 2;
+                    //                uint32_t downsample_index = (w + h * downsample_w) << 2;
 
-                //                downsample_data[downsample_index + 0] = (uint8_t)r;
-                //                downsample_data[downsample_index + 1] = (uint8_t)g;
-                //                downsample_data[downsample_index + 2] = (uint8_t)b;
-                //                downsample_data[downsample_index + 3] = (uint8_t)a;
-                //            }
-                //        }
-                //        
-                //        TTFFontTextureGlyphProvider provider( downsample_w, downsample_h, downsample_data, downsample_w * bgra_image.bytespp, bgra_image.bytespp );
+                    //                downsample_data[downsample_index + 0] = (uint8_t)r;
+                    //                downsample_data[downsample_index + 1] = (uint8_t)g;
+                    //                downsample_data[downsample_index + 2] = (uint8_t)b;
+                    //                downsample_data[downsample_index + 3] = (uint8_t)a;
+                    //            }
+                    //        }
+                    //        
+                    //        TTFFontTextureGlyphProvider provider( downsample_w, downsample_h, downsample_data, downsample_w * bgra_image.bytespp, bgra_image.bytespp );
 
-                //        mt::uv4f uv;
-                //        RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                //            ->makeTextureGlyph( downsample_w, downsample_h, bgra_image.bytespp, &provider, uv );
+                    //        mt::uv4f uv;
+                    //        RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
+                    //            ->makeTextureGlyph( downsample_w, downsample_h, bgra_image.bytespp, &provider, uv );
 
-                //        Helper::freeMemory( downsample_data, "TTFFont::_prepareGlyph" );
+                    //        Helper::freeMemory( downsample_data, "TTFFont::_prepareGlyph" );
 
-                //        fe_image_free( &bgra_image );
+                    //        fe_image_free( &bgra_image );
 
-                //        if( texture == nullptr )
-                //        {
-                //            return false;
-                //        }
+                    //        if( texture == nullptr )
+                    //        {
+                    //            return false;
+                    //        }
 
-                //        TTFGlyphQuad & quad = ttf_glyph.quads[layoutIndex];
+                    //        TTFGlyphQuad & quad = ttf_glyph.quads[layoutIndex];
 
-                //        quad.offset.x = (float)(res.x / 2);
-                //        quad.offset.y = (float)(-res.y / 2);
-                //        quad.size.x = (float)downsample_w;
-                //        quad.size.y = (float)downsample_h;
-                //        quad.uv = uv;
-                //        quad.texture = texture;
-                //    }break;
+                    //        quad.offset.x = (float)(res.x / 2);
+                    //        quad.offset.y = (float)(-res.y / 2);
+                    //        quad.size.x = (float)downsample_w;
+                    //        quad.size.y = (float)downsample_h;
+                    //        quad.uv = uv;
+                    //        quad.texture = texture;
+                    //    }break;
                 case 2:
                     {
                         TTFFontTextureGlyphProvider provider( bgra_image.w, bgra_image.h, bgra_image.data, bgra_image.pitch, bgra_image.bytespp );
@@ -644,7 +644,7 @@ namespace Mengine
                 default:
                     return false;
                 }
-            }            
+            }
         }
         else
         {
@@ -660,7 +660,7 @@ namespace Mengine
             }
 
             TTFGlyphQuad & quad = ttf_glyph.quads[0];
-            
+
             quad.offset.x = (float)glyph_dx;
             quad.offset.y = (float)-glyph_dy;
             quad.size.x = (float)glyph_w;
@@ -670,9 +670,9 @@ namespace Mengine
         }
 
         glyphs.emplace_back( ttf_glyph );
-		
-		return true;
-	}
+
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_validateGlyphes( const U32String & _codes ) const
     {
@@ -755,37 +755,37 @@ namespace Mengine
 
         return successful;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::hasGlyph( GlyphCode _code ) const
-	{
-		uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-		const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::hasGlyph( GlyphCode _code ) const
+    {
+        uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+        const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-		VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
+        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
 
-		if( it_found == glyphs.end() )
-		{
-			return false;
-		}
+        if( it_found == glyphs.end() )
+        {
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool TTFFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
-	{
-		uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
-		const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const
+    {
+        uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
+        const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-		VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
+        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
 
-		if( it_found == glyphs.end() )
-		{
-			return false;
-		}
+        if( it_found == glyphs.end() )
+        {
+            return false;
+        }
 
-		const TTFGlyph & glyph = *it_found;
+        const TTFGlyph & glyph = *it_found;
 
-		_glyph->advance = glyph.advance;
+        _glyph->advance = glyph.advance;
 
         const TTFGlyphQuad & quad = glyph.quads[_layout];
 
@@ -794,32 +794,32 @@ namespace Mengine
         _glyph->uv = quad.uv;
         _glyph->texture = quad.texture;
 
-		if( _next == 0 )
-		{
-			return true;
-		}
+        if( _next == 0 )
+        {
+            return true;
+        }
 
-		FT_UInt rindex = FT_Get_Char_Index( m_face, _next );
+        FT_UInt rindex = FT_Get_Char_Index( m_face, _next );
 
-		if( rindex == 0 )
-		{
-			return true;
-		}
+        if( rindex == 0 )
+        {
+            return true;
+        }
 
-		FT_Vector ttf_kerning;
-		FT_Get_Kerning( m_face, _code, _next, FT_KERNING_DEFAULT, &ttf_kerning );
+        FT_Vector ttf_kerning;
+        FT_Get_Kerning( m_face, _code, _next, FT_KERNING_DEFAULT, &ttf_kerning );
 
-		if( ttf_kerning.x == 0 )
-		{
-			return true;
-		}
+        if( ttf_kerning.x == 0 )
+        {
+            return true;
+        }
 
-		float kerning = (float)(ttf_kerning.x >> 6);
+        float kerning = (float)(ttf_kerning.x >> 6);
 
-		_glyph->advance += kerning;
+        _glyph->advance += kerning;
 
-		return true;
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     uint32_t TTFFont::getLayoutCount() const
     {

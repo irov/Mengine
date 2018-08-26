@@ -9,29 +9,29 @@
 
 namespace Mengine
 {
-	class XlsScriptLogger
-	{
-	public:
-		XlsScriptLogger( EMessageLevel _level );
+    class XlsScriptLogger
+    {
+    public:
+        XlsScriptLogger( EMessageLevel _level );
         virtual ~XlsScriptLogger();
 
-	public:
-		virtual void write( const char * _msg, uint32_t _size );
+    public:
+        virtual void write( const char * _msg, uint32_t _size );
 
-	public:
-		PyObject * py_write( PyObject * _args, PyObject * _kwds );
+    public:
+        PyObject * py_write( PyObject * _args, PyObject * _kwds );
         PyObject * py_flush( PyObject * _args, PyObject * _kwds );
-		
-	public:
-		void setSoftspace( int _softspace );
-		int getSoftspace() const;
 
-	public:
-		virtual PyObject * embedding( pybind::kernel_interface * _kernel, PyObject * _module );
+    public:
+        void setSoftspace( int _softspace );
+        int getSoftspace() const;
 
-	protected:
-		EMessageLevel m_level;
+    public:
+        virtual PyObject * embedding( pybind::kernel_interface * _kernel, PyObject * _module );
 
-		int m_softspace;
-	};
+    protected:
+        EMessageLevel m_level;
+
+        int m_softspace;
+    };
 }

@@ -26,39 +26,39 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	typedef Vector<MovieFrameSource> VectorMovieFrameSource;
-	//////////////////////////////////////////////////////////////////////////
-	struct ConverterMovieLayerFrame
-	{
-		VectorMovieFrameSource frames;
-		uint32_t count;
+    //////////////////////////////////////////////////////////////////////////
+    typedef Vector<MovieFrameSource> VectorMovieFrameSource;
+    //////////////////////////////////////////////////////////////////////////
+    struct ConverterMovieLayerFrame
+    {
+        VectorMovieFrameSource frames;
+        uint32_t count;
 
-		MovieFrameSource source;
-		uint8_t immutable;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef Vector<ConverterMovieLayerFrame> VectorConverterMovieFrameLayer;
-	//////////////////////////////////////////////////////////////////////////
-	MovieKeyConverterXMLToAEK::MovieKeyConverterXMLToAEK()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	MovieKeyConverterXMLToAEK::~MovieKeyConverterXMLToAEK()
-	{
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverterXMLToAEK::_initialize()
-	{
-		m_convertExt = ".aek";
+        MovieFrameSource source;
+        uint8_t immutable;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef Vector<ConverterMovieLayerFrame> VectorConverterMovieFrameLayer;
+    //////////////////////////////////////////////////////////////////////////
+    MovieKeyConverterXMLToAEK::MovieKeyConverterXMLToAEK()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MovieKeyConverterXMLToAEK::~MovieKeyConverterXMLToAEK()
+    {
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    bool MovieKeyConverterXMLToAEK::_initialize()
+    {
+        m_convertExt = ".aek";
 
         const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
-			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-		if( archivator == nullptr )
-		{
-			return false;
-		}
+        if( archivator == nullptr )
+        {
+            return false;
+        }
 
         m_archivator = archivator;
 
@@ -70,355 +70,355 @@ namespace Mengine
             return false;
         }
 
-		return true;
-	}
-	///////////////////////////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverterXMLToAEK::convert()
-	{
-		Blobject buffer;
-		if( this->loadFramePak_( buffer ) == false )
-		{
-			return false;
-		}
+        return true;
+    }
+    ///////////////////////////////////////////////////////////////////////////////////////////////
+    bool MovieKeyConverterXMLToAEK::convert()
+    {
+        Blobject buffer;
+        if( this->loadFramePak_( buffer ) == false )
+        {
+            return false;
+        }
 
-		if( this->writeFramePak_( buffer ) == false )
-		{
-			return false;
-		}
+        if( this->writeFramePak_( buffer ) == false )
+        {
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverterXMLToAEK::validateVersion( const InputStreamInterfacePtr & _stream ) const
-	{
-		MovieFramePackInterfacePtr framePack = DATA_SERVICE()
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MovieKeyConverterXMLToAEK::validateVersion( const InputStreamInterfacePtr & _stream ) const
+    {
+        MovieFramePackInterfacePtr framePack = DATA_SERVICE()
             ->dataflowT<MovieFramePackInterfacePtr>( m_dataflow, _stream );
 
-		if( framePack == nullptr )
-		{
-			return false;
-		}
+        if( framePack == nullptr )
+        {
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverterXMLToAEK::loadFramePak_( Blobject & _buffer )
-	{
-		bool exist = false;
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MovieKeyConverterXMLToAEK::loadFramePak_( Blobject & _buffer )
+    {
+        bool exist = false;
 
-		Metacode::Meta_Data::Meta_KeyFramesPack keyFramesPack;
+        Metacode::Meta_Data::Meta_KeyFramesPack keyFramesPack;
 
-		PathString binPath;
+        PathString binPath;
 
-		binPath += m_options.inputFileName;
-		binPath.replace_last( "bin" );
+        binPath += m_options.inputFileName;
+        binPath.replace_last( "bin" );
 
-		FilePath path_bin = Helper::stringizeFilePath( binPath );
+        FilePath path_bin = Helper::stringizeFilePath( binPath );
 
-		if( LOADER_SERVICE()
-			->load( m_options.fileGroup, path_bin, &keyFramesPack, exist ) == false )
-		{
-			if( exist == false )
-			{
-				LOGGER_ERROR("MovieKeyConverter::convert: KeyFramesFile '%s' not found"
-					, m_options.inputFileName.c_str()
-					);
-			}
-			else
-			{
-				LOGGER_ERROR("MovieKeyConverter::convert: KeyFramesFile invalid parse '%s' "
-					, m_options.inputFileName.c_str()
-					);
-			}
+        if( LOADER_SERVICE()
+            ->load( m_options.fileGroup, path_bin, &keyFramesPack, exist ) == false )
+        {
+            if( exist == false )
+            {
+                LOGGER_ERROR( "MovieKeyConverter::convert: KeyFramesFile '%s' not found"
+                    , m_options.inputFileName.c_str()
+                );
+            }
+            else
+            {
+                LOGGER_ERROR( "MovieKeyConverter::convert: KeyFramesFile invalid parse '%s' "
+                    , m_options.inputFileName.c_str()
+                );
+            }
 
-			return false;
-		}
+            return false;
+        }
 
 
-
-		ArchiveWrite aw( _buffer );
-
-		uint32_t true_metacode_version = Metacode::get_metacode_version();
-
-		aw << true_metacode_version;
+
+        ArchiveWrite aw( _buffer );
+
+        uint32_t true_metacode_version = Metacode::get_metacode_version();
+
+        aw << true_metacode_version;
 
-		uint32_t keyframes_version = keyFramesPack.get_Version();
+        uint32_t keyframes_version = keyFramesPack.get_Version();
 
-		aw << keyframes_version;
+        aw << keyframes_version;
 
-		uint32_t maxIndex = keyFramesPack.get_MaxIndex();
-
-		aw << maxIndex;
-
-		VectorConverterMovieFrameLayer frameLayers;
-		frameLayers.resize( maxIndex );
+        uint32_t maxIndex = keyFramesPack.get_MaxIndex();
+
+        aw << maxIndex;
+
+        VectorConverterMovieFrameLayer frameLayers;
+        frameLayers.resize( maxIndex );
 
-		for( ConverterMovieLayerFrame & layer : frameLayers )
-		{
-			layer.count = 0;
-			layer.immutable = 0;
-		}
+        for( ConverterMovieLayerFrame & layer : frameLayers )
+        {
+            layer.count = 0;
+            layer.immutable = 0;
+        }
 
-		const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames2D & includes_frames2d = keyFramesPack.get_Includes_KeyFrames2D();
+        const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames2D & includes_frames2d = keyFramesPack.get_Includes_KeyFrames2D();
 
-		for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames2D::const_iterator
-			it = includes_frames2d.begin(),
-			it_end = includes_frames2d.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D & meta_frames2d = *it;
+        for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames2D::const_iterator
+            it = includes_frames2d.begin(),
+            it_end = includes_frames2d.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D & meta_frames2d = *it;
 
-			uint32_t layerIndex = meta_frames2d.get_LayerIndex();
+            uint32_t layerIndex = meta_frames2d.get_LayerIndex();
 
-			ConverterMovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
-
-			bool immutable = false;
-			meta_frames2d.get_Immutable( &immutable );
-
-			frameLayer.immutable = immutable ? 1 : 0;
-
-			if( frameLayer.immutable == 1 )
-			{
-				const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_Includes_KeyFrame2D();
-
-				for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D::const_iterator
-					it_frame = includes_frame2d.begin(),
-					it_frame_end = includes_frame2d.end();
-				it_frame != it_frame_end;
-				++it_frame )
-				{
-					const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
-
-					mt::vec2f anchorPoint2d( 0.f, 0.f );
-					mt::vec2f position2d( 0.f, 0.f );
-					mt::vec2f scale2d( 0.f, 0.f );
-					float angle = 0.f;
-					float opacity = 1.f;
-
-					uint32_t count = 1;
-
-					float volume = 1.f;
-
-					meta_frame2d.get_AnchorPoint( &anchorPoint2d );
-					meta_frame2d.get_Position( &position2d );
-					meta_frame2d.get_Scale( &scale2d );
-					meta_frame2d.get_Rotation( &angle );
-					meta_frame2d.get_Opacity( &opacity );
-					meta_frame2d.get_Count( &count );
-					meta_frame2d.get_Volume( &volume );
-
-					MovieFrameSource frame;
-					frame.anchorPoint = mt::vec3f( anchorPoint2d, 0.f );
-					frame.position = mt::vec3f( position2d, 0.f );
-					frame.scale = mt::vec3f( scale2d, 1.f );
-					frame.opacity = opacity;
-					frame.volume = volume;
-
-					frame.rotation.x = -angle;
-					frame.rotation.y = 0.f;
-					frame.rotation.z = 0.f;
-
-					frameLayer.source = frame;
-					frameLayer.count = count;
-				}
-			}
-			else
-			{
-				uint32_t count = 0;
-				meta_frames2d.get_Count( &count );
-
-				frameLayer.count = count;
-
-				MovieFrameSource frame;
-				frame.anchorPoint = mt::vec3f( 0.f, 0.f, 0.f );
-				frame.position = mt::vec3f( 0.f, 0.f, 0.f );
-				frame.rotation = mt::vec3f( 0.f, 0.f, 0.f );
-				frame.scale = mt::vec3f( 1.f, 1.f, 1.f );
-				frame.opacity = 0.f;
-				frame.volume = 0.f;
-
-				bool frameLast = false;
-
-				const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_Includes_KeyFrame2D();
-
-				for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D::const_iterator
-					it_frame = includes_frame2d.begin(),
-					it_frame_end = includes_frame2d.end();
-				it_frame != it_frame_end;
-				++it_frame )
-				{
-					const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
-
-					uint32_t count_frame = 1;
-
-					mt::vec2f anchorPoint2d( 0.f, 0.f );
-					mt::vec2f position2d( 0.f, 0.f );
-					mt::vec2f scale2d( 1.f, 1.f );
-
-					float angle = 0.f;
-
-					float volume = 1.f;
-
-					if( frameLast == true )
-					{
-						angle = -frame.rotation.x;
-
-						anchorPoint2d = frame.anchorPoint.to_vec2f();
-						position2d = frame.position.to_vec2f();
-						scale2d = frame.scale.to_vec2f();
-						volume = frame.volume;
-					}
-					else
-					{
-						frameLast = true;
-					}
-
-					meta_frame2d.get_AnchorPoint( &anchorPoint2d );
-					meta_frame2d.get_Position( &position2d );
-					meta_frame2d.get_Scale( &scale2d );
-					meta_frame2d.get_Rotation( &angle );
-					meta_frame2d.get_Opacity( &frame.opacity );
-					meta_frame2d.get_Count( &count_frame );
-					meta_frame2d.get_Volume( &volume );
-
-					frame.anchorPoint = mt::vec3f( anchorPoint2d, 0.f );
-					frame.position = mt::vec3f( position2d, 0.f );
-					frame.scale = mt::vec3f( scale2d, 1.f );
-
-					frame.volume = volume;
-
-					frame.rotation.x = -angle;
-					frame.rotation.y = 0.f;
-					frame.rotation.z = 0.f;
-
-					for( uint32_t i = 0; i != count_frame; ++i )
-					{
-						frameLayer.frames.emplace_back( frame );
-					}
-				}
-
-				if( frameLayer.frames.size() != frameLayer.count )
-				{
-					return false;
-				}
-			}
-		}
-
-		const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames3D & includes_frames3d = keyFramesPack.get_Includes_KeyFrames3D();
-
-		for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames3D::const_iterator
-			it = includes_frames3d.begin(),
-			it_end = includes_frames3d.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D & meta_frames3d = *it;
-
-			uint32_t layerIndex = meta_frames3d.get_LayerIndex();
-
-			ConverterMovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
-
-			uint32_t count = 0;
-			meta_frames3d.get_Count( &count );
-
-			frameLayer.count = count;
-
-			bool immutable = false;
-			meta_frames3d.get_Immutable( &immutable );
-
-			frameLayer.immutable = immutable ? 1 : 0;
-
-			MovieFrameSource frame;
-			frame.anchorPoint = mt::vec3f( 0.f, 0.f, 0.f );
-			frame.position = mt::vec3f( 0.f, 0.f, 0.f );
-			frame.rotation = mt::vec3f( 0.f, 0.f, 0.f );
-			frame.scale = mt::vec3f( 1.f, 1.f, 1.f );
-			frame.opacity = 0.f;
-			frame.volume = 0.f;
-
-			mt::vec3f rotation( 0.f, 0.f, 0.f );
-			mt::vec3f orientation( 0.f, 0.f, 0.f );
-
-			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D::VectorMeta_KeyFrame3D & includes_frame3d = meta_frames3d.get_Includes_KeyFrame3D();
-
-			for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D::VectorMeta_KeyFrame3D::const_iterator
-				it_frame = includes_frame3d.begin(),
-				it_frame_end = includes_frame3d.end();
-			it_frame != it_frame_end;
-			++it_frame )
-			{
-				const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & meta_frame3d = *it_frame;
-
-				uint32_t count_frame = 1;
-
-				meta_frame3d.get_AnchorPoint( &frame.anchorPoint );
-				meta_frame3d.get_Position( &frame.position );
-				meta_frame3d.get_Rotation( &rotation );
-				meta_frame3d.get_Orientation( &orientation );
-				meta_frame3d.get_Scale( &frame.scale );
-				meta_frame3d.get_Opacity( &frame.opacity );
-				meta_frame3d.get_Count( &count_frame );
-
-				frame.volume = 1.f;
-				meta_frame3d.get_Volume( &frame.volume );
-
-				mt::quatf qo;
-				mt::make_quat_from_euler( qo, orientation );
-				
-				mt::quatf qr;
-				mt::make_quat_from_euler( qr, rotation );
-
-				mt::quatf qor;
-				mt::mul_q_q( qor, qo, qr );
-
-				mt::quat_to_euler( qor, frame.rotation );
-
-				if( frameLayer.immutable == 0 )
-				{
-					for( uint32_t i = 0; i != count_frame; ++i )
-					{
-						frameLayer.frames.emplace_back( frame );
-					}
-				}
-				else
-				{
-					frameLayer.source = frame;
-					frameLayer.count = count_frame;
-				}
-			}
-
-			if( frameLayer.immutable == 0 )
-			{
-				if( frameLayer.frames.size() != frameLayer.count )
-				{
-					return false;
-				}
-			}
-		}
-
-		for( const ConverterMovieLayerFrame & frame : frameLayers )
-		{
-			aw << frame.count;
-			aw << frame.immutable;
-
-			if( frame.count == 0 )
-			{
-				continue;
-			}
-
-			if( frame.immutable == 1 )
-			{
-				aw << frame.source.anchorPoint;
-				aw << frame.source.position;
-				aw << frame.source.rotation;
-				aw << frame.source.scale;
-				aw << frame.source.opacity;
-				aw << frame.source.volume;
-			}
-			else
-			{
-				const VectorMovieFrameSource & frames = frame.frames;
+            ConverterMovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
+
+            bool immutable = false;
+            meta_frames2d.get_Immutable( &immutable );
+
+            frameLayer.immutable = immutable ? 1 : 0;
+
+            if( frameLayer.immutable == 1 )
+            {
+                const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_Includes_KeyFrame2D();
+
+                for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D::const_iterator
+                    it_frame = includes_frame2d.begin(),
+                    it_frame_end = includes_frame2d.end();
+                    it_frame != it_frame_end;
+                    ++it_frame )
+                {
+                    const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
+
+                    mt::vec2f anchorPoint2d( 0.f, 0.f );
+                    mt::vec2f position2d( 0.f, 0.f );
+                    mt::vec2f scale2d( 0.f, 0.f );
+                    float angle = 0.f;
+                    float opacity = 1.f;
+
+                    uint32_t count = 1;
+
+                    float volume = 1.f;
+
+                    meta_frame2d.get_AnchorPoint( &anchorPoint2d );
+                    meta_frame2d.get_Position( &position2d );
+                    meta_frame2d.get_Scale( &scale2d );
+                    meta_frame2d.get_Rotation( &angle );
+                    meta_frame2d.get_Opacity( &opacity );
+                    meta_frame2d.get_Count( &count );
+                    meta_frame2d.get_Volume( &volume );
+
+                    MovieFrameSource frame;
+                    frame.anchorPoint = mt::vec3f( anchorPoint2d, 0.f );
+                    frame.position = mt::vec3f( position2d, 0.f );
+                    frame.scale = mt::vec3f( scale2d, 1.f );
+                    frame.opacity = opacity;
+                    frame.volume = volume;
+
+                    frame.rotation.x = -angle;
+                    frame.rotation.y = 0.f;
+                    frame.rotation.z = 0.f;
+
+                    frameLayer.source = frame;
+                    frameLayer.count = count;
+                }
+            }
+            else
+            {
+                uint32_t count = 0;
+                meta_frames2d.get_Count( &count );
+
+                frameLayer.count = count;
+
+                MovieFrameSource frame;
+                frame.anchorPoint = mt::vec3f( 0.f, 0.f, 0.f );
+                frame.position = mt::vec3f( 0.f, 0.f, 0.f );
+                frame.rotation = mt::vec3f( 0.f, 0.f, 0.f );
+                frame.scale = mt::vec3f( 1.f, 1.f, 1.f );
+                frame.opacity = 0.f;
+                frame.volume = 0.f;
+
+                bool frameLast = false;
+
+                const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D & includes_frame2d = meta_frames2d.get_Includes_KeyFrame2D();
+
+                for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::VectorMeta_KeyFrame2D::const_iterator
+                    it_frame = includes_frame2d.begin(),
+                    it_frame_end = includes_frame2d.end();
+                    it_frame != it_frame_end;
+                    ++it_frame )
+                {
+                    const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames2D::Meta_KeyFrame2D & meta_frame2d = *it_frame;
+
+                    uint32_t count_frame = 1;
+
+                    mt::vec2f anchorPoint2d( 0.f, 0.f );
+                    mt::vec2f position2d( 0.f, 0.f );
+                    mt::vec2f scale2d( 1.f, 1.f );
+
+                    float angle = 0.f;
+
+                    float volume = 1.f;
+
+                    if( frameLast == true )
+                    {
+                        angle = -frame.rotation.x;
+
+                        anchorPoint2d = frame.anchorPoint.to_vec2f();
+                        position2d = frame.position.to_vec2f();
+                        scale2d = frame.scale.to_vec2f();
+                        volume = frame.volume;
+                    }
+                    else
+                    {
+                        frameLast = true;
+                    }
+
+                    meta_frame2d.get_AnchorPoint( &anchorPoint2d );
+                    meta_frame2d.get_Position( &position2d );
+                    meta_frame2d.get_Scale( &scale2d );
+                    meta_frame2d.get_Rotation( &angle );
+                    meta_frame2d.get_Opacity( &frame.opacity );
+                    meta_frame2d.get_Count( &count_frame );
+                    meta_frame2d.get_Volume( &volume );
+
+                    frame.anchorPoint = mt::vec3f( anchorPoint2d, 0.f );
+                    frame.position = mt::vec3f( position2d, 0.f );
+                    frame.scale = mt::vec3f( scale2d, 1.f );
+
+                    frame.volume = volume;
+
+                    frame.rotation.x = -angle;
+                    frame.rotation.y = 0.f;
+                    frame.rotation.z = 0.f;
+
+                    for( uint32_t i = 0; i != count_frame; ++i )
+                    {
+                        frameLayer.frames.emplace_back( frame );
+                    }
+                }
+
+                if( frameLayer.frames.size() != frameLayer.count )
+                {
+                    return false;
+                }
+            }
+        }
+
+        const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames3D & includes_frames3d = keyFramesPack.get_Includes_KeyFrames3D();
+
+        for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_KeyFrames3D::const_iterator
+            it = includes_frames3d.begin(),
+            it_end = includes_frames3d.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D & meta_frames3d = *it;
+
+            uint32_t layerIndex = meta_frames3d.get_LayerIndex();
+
+            ConverterMovieLayerFrame & frameLayer = frameLayers[layerIndex - 1];
+
+            uint32_t count = 0;
+            meta_frames3d.get_Count( &count );
+
+            frameLayer.count = count;
+
+            bool immutable = false;
+            meta_frames3d.get_Immutable( &immutable );
+
+            frameLayer.immutable = immutable ? 1 : 0;
+
+            MovieFrameSource frame;
+            frame.anchorPoint = mt::vec3f( 0.f, 0.f, 0.f );
+            frame.position = mt::vec3f( 0.f, 0.f, 0.f );
+            frame.rotation = mt::vec3f( 0.f, 0.f, 0.f );
+            frame.scale = mt::vec3f( 1.f, 1.f, 1.f );
+            frame.opacity = 0.f;
+            frame.volume = 0.f;
+
+            mt::vec3f rotation( 0.f, 0.f, 0.f );
+            mt::vec3f orientation( 0.f, 0.f, 0.f );
+
+            const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D::VectorMeta_KeyFrame3D & includes_frame3d = meta_frames3d.get_Includes_KeyFrame3D();
+
+            for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D::VectorMeta_KeyFrame3D::const_iterator
+                it_frame = includes_frame3d.begin(),
+                it_frame_end = includes_frame3d.end();
+                it_frame != it_frame_end;
+                ++it_frame )
+            {
+                const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_KeyFrames3D::Meta_KeyFrame3D & meta_frame3d = *it_frame;
+
+                uint32_t count_frame = 1;
+
+                meta_frame3d.get_AnchorPoint( &frame.anchorPoint );
+                meta_frame3d.get_Position( &frame.position );
+                meta_frame3d.get_Rotation( &rotation );
+                meta_frame3d.get_Orientation( &orientation );
+                meta_frame3d.get_Scale( &frame.scale );
+                meta_frame3d.get_Opacity( &frame.opacity );
+                meta_frame3d.get_Count( &count_frame );
+
+                frame.volume = 1.f;
+                meta_frame3d.get_Volume( &frame.volume );
+
+                mt::quatf qo;
+                mt::make_quat_from_euler( qo, orientation );
+
+                mt::quatf qr;
+                mt::make_quat_from_euler( qr, rotation );
+
+                mt::quatf qor;
+                mt::mul_q_q( qor, qo, qr );
+
+                mt::quat_to_euler( qor, frame.rotation );
+
+                if( frameLayer.immutable == 0 )
+                {
+                    for( uint32_t i = 0; i != count_frame; ++i )
+                    {
+                        frameLayer.frames.emplace_back( frame );
+                    }
+                }
+                else
+                {
+                    frameLayer.source = frame;
+                    frameLayer.count = count_frame;
+                }
+            }
+
+            if( frameLayer.immutable == 0 )
+            {
+                if( frameLayer.frames.size() != frameLayer.count )
+                {
+                    return false;
+                }
+            }
+        }
+
+        for( const ConverterMovieLayerFrame & frame : frameLayers )
+        {
+            aw << frame.count;
+            aw << frame.immutable;
+
+            if( frame.count == 0 )
+            {
+                continue;
+            }
+
+            if( frame.immutable == 1 )
+            {
+                aw << frame.source.anchorPoint;
+                aw << frame.source.position;
+                aw << frame.source.rotation;
+                aw << frame.source.scale;
+                aw << frame.source.opacity;
+                aw << frame.source.volume;
+            }
+            else
+            {
+                const VectorMovieFrameSource & frames = frame.frames;
 
 #	define WRITE_FRAME_SOURCE( Type, Member )\
 												{ \
@@ -455,369 +455,369 @@ namespace Mengine
 													} \
 												}
 
-				WRITE_FRAME_SOURCE( mt::vec3f, anchorPoint );
-				WRITE_FRAME_SOURCE( mt::vec3f, position );
-				WRITE_FRAME_SOURCE( float, rotation.x );
-				WRITE_FRAME_SOURCE( float, rotation.y );
-				WRITE_FRAME_SOURCE( float, rotation.z );
-				WRITE_FRAME_SOURCE( mt::vec3f, scale );
-				WRITE_FRAME_SOURCE( float, opacity );
-				WRITE_FRAME_SOURCE( float, volume );
+                WRITE_FRAME_SOURCE( mt::vec3f, anchorPoint );
+                WRITE_FRAME_SOURCE( mt::vec3f, position );
+                WRITE_FRAME_SOURCE( float, rotation.x );
+                WRITE_FRAME_SOURCE( float, rotation.y );
+                WRITE_FRAME_SOURCE( float, rotation.z );
+                WRITE_FRAME_SOURCE( mt::vec3f, scale );
+                WRITE_FRAME_SOURCE( float, opacity );
+                WRITE_FRAME_SOURCE( float, volume );
 
 #	undef WRITE_FRAME_SOURCE
-			}
-		}
+            }
+        }
 
-		const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_TimeRemap & includes_timeremaps = keyFramesPack.get_Includes_TimeRemap();
+        const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_TimeRemap & includes_timeremaps = keyFramesPack.get_Includes_TimeRemap();
 
-		uint32_t remapsSize = (uint32_t)includes_timeremaps.size();
-		aw << remapsSize;
+        uint32_t remapsSize = (uint32_t)includes_timeremaps.size();
+        aw << remapsSize;
 
-		for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_TimeRemap::const_iterator
-			it = includes_timeremaps.begin(),
-			it_end = includes_timeremaps.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_TimeRemap & meta_timeremap = *it;
+        for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_TimeRemap::const_iterator
+            it = includes_timeremaps.begin(),
+            it_end = includes_timeremaps.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_TimeRemap & meta_timeremap = *it;
 
-			uint32_t layerIndex = meta_timeremap.get_LayerIndex();
+            uint32_t layerIndex = meta_timeremap.get_LayerIndex();
 
-			aw << layerIndex;
+            aw << layerIndex;
 
-			const Floats & floats = meta_timeremap.get_Time();
+            const Floats & floats = meta_timeremap.get_Time();
 
-			uint32_t floats_size = (uint32_t)floats.size();
-			aw << floats_size;
+            uint32_t floats_size = (uint32_t)floats.size();
+            aw << floats_size;
 
-			if( floats_size > 0 )
-			{
-				aw.writePODs( &floats[0], floats_size );
-			}
-		}
+            if( floats_size > 0 )
+            {
+                aw.writePODs( &floats[0], floats_size );
+            }
+        }
 
-		const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_ImageShape & includes_imageshapes = keyFramesPack.get_Includes_ImageShape();
+        const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_ImageShape & includes_imageshapes = keyFramesPack.get_Includes_ImageShape();
 
-		uint32_t shapesSize = (uint32_t)includes_imageshapes.size();
-		aw << shapesSize;
+        uint32_t shapesSize = (uint32_t)includes_imageshapes.size();
+        aw << shapesSize;
 
-		for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_ImageShape::const_iterator
-			it = includes_imageshapes.begin(),
-			it_end = includes_imageshapes.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape & meta_imageshape = *it;
+        for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_ImageShape::const_iterator
+            it = includes_imageshapes.begin(),
+            it_end = includes_imageshapes.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape & meta_imageshape = *it;
 
-			uint32_t layerIndex = meta_imageshape.get_LayerIndex();
+            uint32_t layerIndex = meta_imageshape.get_LayerIndex();
 
-			aw << layerIndex;
+            aw << layerIndex;
 
-			const mt::vec2f & imageMaxSize = meta_imageshape.get_ImageMaxSize();
+            const mt::vec2f & imageMaxSize = meta_imageshape.get_ImageMaxSize();
 
-			mt::vec2f imageSize;
-			if( meta_imageshape.get_ImageSize( &imageSize ) == false )
-			{
-				imageSize = imageMaxSize;
-			}
+            mt::vec2f imageSize;
+            if( meta_imageshape.get_ImageSize( &imageSize ) == false )
+            {
+                imageSize = imageMaxSize;
+            }
 
-			mt::vec2f imageOffset( 0.f, 0.f );
-			meta_imageshape.get_ImageOffset( &imageOffset );
+            mt::vec2f imageOffset( 0.f, 0.f );
+            meta_imageshape.get_ImageOffset( &imageOffset );
 
-			bool subtract = false;
-			meta_imageshape.get_Subtract( &subtract );
+            bool subtract = false;
+            meta_imageshape.get_Subtract( &subtract );
 
-			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape::VectorMeta_Shape & includes_shapes = meta_imageshape.get_Includes_Shape();
+            const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape::VectorMeta_Shape & includes_shapes = meta_imageshape.get_Includes_Shape();
 
-			uint32_t includes_shapes_size = (uint32_t)includes_shapes.size();
+            uint32_t includes_shapes_size = (uint32_t)includes_shapes.size();
 
-			aw << includes_shapes_size;
+            aw << includes_shapes_size;
 
-			for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape::VectorMeta_Shape::const_iterator
-				it_shape = includes_shapes.begin(),
-				it_shape_end = includes_shapes.end();
-			it_shape != it_shape_end;
-			++it_shape )
-			{
-				const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & meta_shape = *it_shape;
+            for( Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape::VectorMeta_Shape::const_iterator
+                it_shape = includes_shapes.begin(),
+                it_shape_end = includes_shapes.end();
+                it_shape != it_shape_end;
+                ++it_shape )
+            {
+                const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_ImageShape::Meta_Shape & meta_shape = *it_shape;
 
-				const Polygon & polygon = meta_shape.get_Polygon();
+                const Polygon & polygon = meta_shape.get_Polygon();
 
-				mt::vec2f v0( 0.f, 0.f );
-				mt::vec2f v1( imageMaxSize.x, 0.f );
-				mt::vec2f v2( imageMaxSize.x, imageMaxSize.y );
-				mt::vec2f v3( 0.f, imageMaxSize.y );
+                mt::vec2f v0( 0.f, 0.f );
+                mt::vec2f v1( imageMaxSize.x, 0.f );
+                mt::vec2f v2( imageMaxSize.x, imageMaxSize.y );
+                mt::vec2f v3( 0.f, imageMaxSize.y );
 
-				Polygon imagePolygon;
-				imagePolygon.append( v0 );
-				imagePolygon.append( v1 );
-				imagePolygon.append( v2 );
-				imagePolygon.append( v3 );
+                Polygon imagePolygon;
+                imagePolygon.append( v0 );
+                imagePolygon.append( v1 );
+                imagePolygon.append( v2 );
+                imagePolygon.append( v3 );
 
-				VectorGeolygon output;
-				if( subtract == false )
-				{
+                VectorGeolygon output;
+                if( subtract == false )
+                {
                     if( Helper::intersection( polygon, imagePolygon, output ) == false )
-					{
-						LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
-							, layerIndex
-							);
+                    {
+                        LOGGER_ERROR( "MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
+                            , layerIndex
+                        );
 
-						return false;
-					}
-				}
-				else
-				{
-					if( Helper::difference( imagePolygon, polygon, output ) == false )
-					{
-						LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
-							, layerIndex
-							);
+                        return false;
+                    }
+                }
+                else
+                {
+                    if( Helper::difference( imagePolygon, polygon, output ) == false )
+                    {
+                        LOGGER_ERROR( "MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
+                            , layerIndex
+                        );
 
-						return false;
-					}
-				}
+                        return false;
+                    }
+                }
 
-				MovieFrameShape shape;
-				if( output.empty() == true )
-				{
-					shape.pos = nullptr;
-					shape.uv = nullptr;
-					shape.indices = nullptr;
+                MovieFrameShape shape;
+                if( output.empty() == true )
+                {
+                    shape.pos = nullptr;
+                    shape.uv = nullptr;
+                    shape.indices = nullptr;
 
-					shape.vertexCount = 0;
-					shape.indexCount = 0;
+                    shape.vertexCount = 0;
+                    shape.indexCount = 0;
 
-					aw << shape.vertexCount;
-				}
-				else
-				{
-					std::vector<p2t::Point> p2t_points;
+                    aw << shape.vertexCount;
+                }
+                else
+                {
+                    std::vector<p2t::Point> p2t_points;
 
                     uint32_t max_points = 0;
 
                     for( const Geolygon & geolygon : output )
-					{
+                    {
                         const Polygon & outer = geolygon.getOuter();
 
                         Polygon::size_type outer_count = outer.size();
 
-						max_points += outer_count;
+                        max_points += outer_count;
 
                         const VectorPolygon & inners = geolygon.getInners();
 
                         for( const Polygon & inner : inners )
-						{
+                        {
                             uint32_t inner_count = inner.size();
 
-							max_points += inner_count;
-						}
-					}
+                            max_points += inner_count;
+                        }
+                    }
 
-					if( max_points >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
-					{
-						LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
-							, layerIndex
-							, max_points
-							, MENGINE_MOVIE_SHAPE_MAX_VERTEX
-							);
+                    if( max_points >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
+                    {
+                        LOGGER_ERROR( "MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
+                            , layerIndex
+                            , max_points
+                            , MENGINE_MOVIE_SHAPE_MAX_VERTEX
+                        );
 
-						return false;
-					}
+                        return false;
+                    }
 
-					p2t_points.reserve( max_points );
+                    p2t_points.reserve( max_points );
 
-					VectorIndices shape_indices;
+                    VectorIndices shape_indices;
 
                     for( const Geolygon & geolygon : output )
-					{
-						std::vector<p2t::Point*> p2t_polygon;
+                    {
+                        std::vector<p2t::Point*> p2t_polygon;
 
                         const Polygon & outer = geolygon.getOuter();
 
-						for( const mt::vec2f & v : outer )
-						{
+                        for( const mt::vec2f & v : outer )
+                        {
                             p2t_points.emplace_back( p2t::Point( v.x, v.y ) );
                             p2t::Point * p = &p2t_points.back();
 
                             p2t_polygon.emplace_back( p );
-						}
+                        }
 
-						p2t::CDT * cdt = new p2t::CDT( p2t_polygon );
+                        p2t::CDT * cdt = new p2t::CDT( p2t_polygon );
 
                         const VectorPolygon & inners = geolygon.getInners();
 
                         for( const Polygon & inner : inners )
-						{
-							std::vector<p2t::Point*> p2t_hole;
+                        {
+                            std::vector<p2t::Point*> p2t_hole;
 
-							for( const mt::vec2f & v : inner )
+                            for( const mt::vec2f & v : inner )
                             {
-								p2t_points.emplace_back( p2t::Point( v.x, v.y ) );
-								p2t::Point * p = &p2t_points.back();
+                                p2t_points.emplace_back( p2t::Point( v.x, v.y ) );
+                                p2t::Point * p = &p2t_points.back();
 
-								p2t_hole.emplace_back( p );
-							}
+                                p2t_hole.emplace_back( p );
+                            }
 
                             cdt->AddHole( p2t_hole );
                         }
 
-						cdt->Triangulate();
+                        cdt->Triangulate();
 
-						std::vector<p2t::Triangle*> triangles = cdt->GetTriangles();
+                        std::vector<p2t::Triangle*> triangles = cdt->GetTriangles();
 
                         for( p2t::Triangle * tr : triangles )
-						{
+                        {
                             p2t::Point * p0 = tr->GetPoint( 0 );
                             p2t::Point * p1 = tr->GetPoint( 1 );
                             p2t::Point * p2 = tr->GetPoint( 2 );
 
                             p2t::Point * pb = &p2t_points[0];
 
-							uint32_t i0 = (uint32_t)std::distance( pb, p0 );
-							uint32_t i1 = (uint32_t)std::distance( pb, p1 );
-							uint32_t i2 = (uint32_t)std::distance( pb, p2 );
+                            uint32_t i0 = (uint32_t)std::distance( pb, p0 );
+                            uint32_t i1 = (uint32_t)std::distance( pb, p1 );
+                            uint32_t i2 = (uint32_t)std::distance( pb, p2 );
 
-							shape_indices.emplace_back( i0 );
-							shape_indices.emplace_back( i1 );
-							shape_indices.emplace_back( i2 );
-						}
+                            shape_indices.emplace_back( i0 );
+                            shape_indices.emplace_back( i1 );
+                            shape_indices.emplace_back( i2 );
+                        }
 
-						delete cdt;
-					}
+                        delete cdt;
+                    }
 
                     std::vector<p2t::Point>::size_type shapeVertexCount = p2t_points.size();
                     VectorIndices::size_type shapeIndicesCount = shape_indices.size();
 
-					if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
-					{
-						LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
-							, layerIndex
-							, shapeIndicesCount
-							, MENGINE_MOVIE_SHAPE_MAX_INDICES
-							);
+                    if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
+                    {
+                        LOGGER_ERROR( "MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
+                            , layerIndex
+                            , shapeIndicesCount
+                            , MENGINE_MOVIE_SHAPE_MAX_INDICES
+                        );
 
-						return false;
-					}
+                        return false;
+                    }
 
-					shape.vertexCount = (uint16_t)shapeVertexCount;
-					shape.indexCount = (uint16_t)shapeIndicesCount;
+                    shape.vertexCount = (uint16_t)shapeVertexCount;
+                    shape.indexCount = (uint16_t)shapeIndicesCount;
 
-					shape.pos = Helper::allocateArrayT<mt::vec2f>( shapeVertexCount );
-					shape.uv = Helper::allocateArrayT<mt::vec2f>( shapeVertexCount );
+                    shape.pos = Helper::allocateArrayT<mt::vec2f>( shapeVertexCount );
+                    shape.uv = Helper::allocateArrayT<mt::vec2f>( shapeVertexCount );
 
-					shape.indices = Helper::allocateArrayT<RenderIndex>( shapeIndicesCount );
+                    shape.indices = Helper::allocateArrayT<RenderIndex>( shapeIndicesCount );
 
-					for( uint32_t i = 0; i != shapeVertexCount; ++i )
-					{
-						const p2t::Point & shape_pos = p2t_points[i];
+                    for( uint32_t i = 0; i != shapeVertexCount; ++i )
+                    {
+                        const p2t::Point & shape_pos = p2t_points[i];
 
-						shape.pos[i].x = (float)shape_pos.x;
-						shape.pos[i].y = (float)shape_pos.y;
+                        shape.pos[i].x = (float)shape_pos.x;
+                        shape.pos[i].y = (float)shape_pos.y;
 
-						shape.uv[i].x = ((float)shape_pos.x - imageOffset.x) / imageSize.x;
-						shape.uv[i].y = ((float)shape_pos.y - imageOffset.y) / imageSize.y;
-					}
+                        shape.uv[i].x = ((float)shape_pos.x - imageOffset.x) / imageSize.x;
+                        shape.uv[i].y = ((float)shape_pos.y - imageOffset.y) / imageSize.y;
+                    }
 
-					for( uint32_t i = 0; i != shapeIndicesCount; ++i )
-					{
-						shape.indices[i] = (RenderIndex)shape_indices[i];
-					}
+                    for( uint32_t i = 0; i != shapeIndicesCount; ++i )
+                    {
+                        shape.indices[i] = (RenderIndex)shape_indices[i];
+                    }
 
-					aw << shape.vertexCount;
+                    aw << shape.vertexCount;
 
-					if( shape.vertexCount > 0 )
-					{
-						aw.writePODs( shape.pos, shape.vertexCount );
-						aw.writePODs( shape.uv, shape.vertexCount );
+                    if( shape.vertexCount > 0 )
+                    {
+                        aw.writePODs( shape.pos, shape.vertexCount );
+                        aw.writePODs( shape.uv, shape.vertexCount );
 
-						aw << shape.indexCount;
+                        aw << shape.indexCount;
 
-						aw.writePODs( shape.indices, shape.indexCount );
-					}
+                        aw.writePODs( shape.indices, shape.indexCount );
+                    }
 
-					Helper::freeMemoryT( shape.pos );
-					Helper::freeMemoryT( shape.uv );
-					Helper::freeMemoryT( shape.indices );
-				}
-			}
-		}
+                    Helper::freeMemoryT( shape.pos );
+                    Helper::freeMemoryT( shape.uv );
+                    Helper::freeMemoryT( shape.indices );
+                }
+            }
+        }
 
-		const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_Polygon & includes_polygons = keyFramesPack.get_Includes_Polygon();
+        const Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_Polygon & includes_polygons = keyFramesPack.get_Includes_Polygon();
 
-		uint32_t polygonsSize = (uint32_t)includes_polygons.size();
-		aw << polygonsSize;
+        uint32_t polygonsSize = (uint32_t)includes_polygons.size();
+        aw << polygonsSize;
 
-		for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_Polygon::const_iterator
-			it = includes_polygons.begin(),
-			it_end = includes_polygons.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_Polygon & meta_polygon = *it;
+        for( Metacode::Meta_Data::Meta_KeyFramesPack::VectorMeta_Polygon::const_iterator
+            it = includes_polygons.begin(),
+            it_end = includes_polygons.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_KeyFramesPack::Meta_Polygon & meta_polygon = *it;
 
-			uint32_t layerIndex = meta_polygon.get_LayerIndex();
+            uint32_t layerIndex = meta_polygon.get_LayerIndex();
 
-			aw << layerIndex;
+            aw << layerIndex;
 
-			const Polygon & polygon = meta_polygon.get_Value();
+            const Polygon & polygon = meta_polygon.get_Value();
 
             uint32_t polygon_size = polygon.size();
 
-			if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
-			{
-				LOGGER_ERROR("MovieKeyConverterXMLToAEK::loadFramePak_ layer %d polygon vertex overflow %d (max $d)"
-					, layerIndex
-					, polygon_size
-					, MENGINE_MOVIE_POLYGON_MAX_VERTEX
-					);
+            if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
+            {
+                LOGGER_ERROR( "MovieKeyConverterXMLToAEK::loadFramePak_ layer %d polygon vertex overflow %d (max $d)"
+                    , layerIndex
+                    , polygon_size
+                    , MENGINE_MOVIE_POLYGON_MAX_VERTEX
+                );
 
-				return false;
-			}
+                return false;
+            }
 
-			aw << (uint8_t)polygon_size;
+            aw << (uint8_t)polygon_size;
 
-			if( polygon_size > 0 )
-			{
-				for( const mt::vec2f & p : polygon )
-				{
-					aw << p.x;
-					aw << p.y;
-				}
-			}
-		}
+            if( polygon_size > 0 )
+            {
+                for( const mt::vec2f & p : polygon )
+                {
+                    aw << p.x;
+                    aw << p.y;
+                }
+            }
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MovieKeyConverterXMLToAEK::writeFramePak_( const Blobject & _buffer )
-	{
-		OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-			->openOutputFile( m_options.fileGroup, m_options.outputFileName );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MovieKeyConverterXMLToAEK::writeFramePak_( const Blobject & _buffer )
+    {
+        OutputStreamInterfacePtr output_stream = FILE_SERVICE()
+            ->openOutputFile( m_options.fileGroup, m_options.outputFileName );
 
-		if( output_stream == nullptr )
-		{
-			LOGGER_ERROR("MovieKeyConverterXMLToAEK::writeFramePak_ invalid open file %s:%s"
-				, m_options.fileGroup->getName().c_str()
-				, m_options.outputFileName.c_str()
-				);
+        if( output_stream == nullptr )
+        {
+            LOGGER_ERROR( "MovieKeyConverterXMLToAEK::writeFramePak_ invalid open file %s:%s"
+                , m_options.fileGroup->getName().c_str()
+                , m_options.outputFileName.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		const void * buffer_memory = &_buffer[0];
-		size_t buffer_size = _buffer.size();
+        const void * buffer_memory = &_buffer[0];
+        size_t buffer_size = _buffer.size();
 
-		if( Helper::writeStreamArchiveData( output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
-		{
-			LOGGER_ERROR("MovieKeyConverterXMLToAEK::writeFramePak_ invalid write stream %s:%s"
-				, m_options.fileGroup->getName().c_str()
-				, m_options.outputFileName.c_str()
-				);
+        if( Helper::writeStreamArchiveData( output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
+        {
+            LOGGER_ERROR( "MovieKeyConverterXMLToAEK::writeFramePak_ invalid write stream %s:%s"
+                , m_options.fileGroup->getName().c_str()
+                , m_options.outputFileName.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
 }

@@ -6,11 +6,11 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ConstStringHolderMemory::ConstStringHolderMemory()
-		: m_buff( nullptr )
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    ConstStringHolderMemory::ConstStringHolderMemory()
+        : m_buff( nullptr )
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     ConstStringHolderMemory::~ConstStringHolderMemory()
     {
@@ -20,13 +20,13 @@ namespace Mengine
             m_buff = nullptr;
         }
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ConstStringHolderMemory::setValue( const Char * _value, ConstStringHolder::size_type _size, hash_type _hash )
-	{
-		m_buff = Helper::allocateArrayT<Char>( _size + 1 );
-		stdex::memorycopy( m_buff, 0, _value, _size );
-		m_buff[_size] = '\0';
+    //////////////////////////////////////////////////////////////////////////
+    void ConstStringHolderMemory::setValue( const Char * _value, ConstStringHolder::size_type _size, hash_type _hash )
+    {
+        m_buff = Helper::allocateArrayT<Char>( _size + 1 );
+        stdex::memorycopy( m_buff, 0, _value, _size );
+        m_buff[_size] = '\0';
 
-		this->setup( m_buff, _size, _hash );
-	}
+        this->setup( m_buff, _size, _hash );
+    }
 }

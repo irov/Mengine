@@ -8,28 +8,28 @@
 
 namespace Mengine
 {
-	class TimelineService
-		: public ServiceBase<TimelineServiceInterface>
-	{
-	public:
-		TimelineService();
-		~TimelineService() override;
+    class TimelineService
+        : public ServiceBase<TimelineServiceInterface>
+    {
+    public:
+        TimelineService();
+        ~TimelineService() override;
 
-	public:
-		void beginOffset( float _offset ) override;
-		float getOffset() const override;
-		void endOffset() override;
+    public:
+        void beginOffset( float _offset ) override;
+        float getOffset() const override;
+        void endOffset() override;
 
-	public:
-		float getTime() const override;	
+    public:
+        float getTime() const override;
 
-	public:
-		void tick( float _offset ) override;
+    public:
+        void tick( float _offset ) override;
 
-	protected:
-		float m_time;
+    protected:
+        float m_time;
 
-		typedef Vector<float> VectorTime;
-		VectorTime m_offsets;
-	};
+        typedef Vector<float> VectorTime;
+        VectorTime m_offsets;
+    };
 };

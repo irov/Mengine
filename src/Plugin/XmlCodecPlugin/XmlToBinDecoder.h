@@ -9,44 +9,44 @@
 
 namespace Mengine
 {
-	class XmlToBinDecoder
+    class XmlToBinDecoder
         : public ServantBase<XmlDecoderInterface>
-	{
-	public:
-		XmlToBinDecoder();
-	
+    {
+    public:
+        XmlToBinDecoder();
+
     public:
         bool initialize() override;
-		void finalize() override;
+        void finalize() override;
 
     protected:
         const InputStreamInterfacePtr & getStream() const override;
 
-	public:
-		bool setOptions( const CodecOptions * _options ) override;
+    public:
+        bool setOptions( const CodecOptions * _options ) override;
 
-	public:
-		void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
-		const XmlCodecDataInfo * getCodecDataInfo() const override;
+    public:
+        void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
+        const XmlCodecDataInfo * getCodecDataInfo() const override;
 
-	public:
-		bool prepareData( const InputStreamInterfacePtr & _stream ) override;
-		
-	public:		
-		size_t decode( void * _buffer, size_t _bufferSize ) override;
-		bool rewind() override;
+    public:
+        bool prepareData( const InputStreamInterfacePtr & _stream ) override;
 
-	public:
-		bool seek( float _timing ) override;
-		float tell() const override;
+    public:
+        size_t decode( void * _buffer, size_t _bufferSize ) override;
+        bool rewind() override;
 
-	protected:
-		ArchivatorInterfacePtr m_archivator;
+    public:
+        bool seek( float _timing ) override;
+        float tell() const override;
+
+    protected:
+        ArchivatorInterfacePtr m_archivator;
 
         FileGroupInterfacePtr m_fileGroup;
 
         InputStreamInterfacePtr m_stream;
 
-		XmlCodecOptions m_options;
-	};
+        XmlCodecOptions m_options;
+    };
 }

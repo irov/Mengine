@@ -29,11 +29,11 @@ namespace Mengine
 
     protected:
         ImageDecoderInterfacePtr createImageDecoder_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName ) const;
-        
+
     protected:
         ImageDecoderInterfacePtr m_decoder;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DecoderRenderImageLoader> DecoderRenderImageLoaderPtr;
     //////////////////////////////////////////////////////////////////////////
-}	
+}

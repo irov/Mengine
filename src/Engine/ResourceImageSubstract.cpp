@@ -9,10 +9,10 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ResourceImageSubstract::ResourceImageSubstract()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    ResourceImageSubstract::ResourceImageSubstract()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     ResourceImageSubstract::~ResourceImageSubstract()
     {
@@ -20,26 +20,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstract::_loader( const Metabuf::Metadata * _meta )
     {
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstract * metadata 
+        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstract * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
-        
+
         m_hasAlpha = true;
 
         m_resourceImageName = metadata->get_Image_Name();
 
-		m_uvImage = metadata->get_Image_UV();
-		m_uvAlpha = m_uvImage;
+        m_uvImage = metadata->get_Image_UV();
+        m_uvAlpha = m_uvImage;
 
         metadata->get_Image_UVRotate( &m_uvImageRotate );
         m_uvAlphaRotate = m_uvImageRotate;
 
         metadata->get_Image_Alpha( &m_hasAlpha );
 
-		m_maxSize = metadata->get_Image_MaxSize();
+        m_maxSize = metadata->get_Image_MaxSize();
 
-		m_size = m_maxSize;
-		metadata->get_Image_Size( &m_size );
-		metadata->get_Image_Offset( &m_offset );
+        m_size = m_maxSize;
+        metadata->get_Image_Size( &m_size );
+        metadata->get_Image_Offset( &m_offset );
 
         return true;
     }
@@ -48,9 +48,9 @@ namespace Mengine
     {
         if( m_resourceImageName.empty() == true )
         {
-            LOGGER_ERROR("ResourceImageSubstract::_compile '%s' not setup image resource"
+            LOGGER_ERROR( "ResourceImageSubstract::_compile '%s' not setup image resource"
                 , this->getName().c_str()
-                );
+            );
 
             return false;
         }
@@ -60,23 +60,23 @@ namespace Mengine
 
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR("ResourceImageSubstract::_compile '%s' category '%s' group '%s' invalid get image resource '%s'"
+            LOGGER_ERROR( "ResourceImageSubstract::_compile '%s' category '%s' group '%s' invalid get image resource '%s'"
                 , this->getName().c_str()
-				, this->getCategory()->getName().c_str()
-				, this->getGroupName().c_str()
+                , this->getCategory()->getName().c_str()
+                , this->getGroupName().c_str()
                 , m_resourceImageName.c_str()
-                );
+            );
 
             return false;
         }
-                       
+
         m_texture = m_resourceImage->getTexture();
         m_textureAlpha = m_resourceImage->getTextureAlpha();
 
         bool pow2 = m_texture->isPow2();
 
         this->setPow2( pow2 );
-      		        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

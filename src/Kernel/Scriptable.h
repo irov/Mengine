@@ -10,24 +10,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class ScriptWrapperInterface> ScriptWrapperInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-	class Scriptable
-		: public Mixin
+    class Scriptable
+        : public Mixin
         , public pybind::bindable
-	{	
-	public:
-		Scriptable();
-		~Scriptable() override;
+    {
+    public:
+        Scriptable();
+        ~Scriptable() override;
 
-	public:
-		void setScriptWrapper( const ScriptWrapperInterfacePtr & _scriptWrapper );		
+    public:
+        void setScriptWrapper( const ScriptWrapperInterfacePtr & _scriptWrapper );
         const ScriptWrapperInterfacePtr & getScriptWrapper() const;
-        	
-    protected:
-		PyObject * _embedded() override;
 
-	protected:
-		ScriptWrapperInterfacePtr m_scriptWrapper;
-	};
+    protected:
+        PyObject * _embedded() override;
+
+    protected:
+        ScriptWrapperInterfacePtr m_scriptWrapper;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Scriptable> ScriptablePtr;
     //////////////////////////////////////////////////////////////////////////

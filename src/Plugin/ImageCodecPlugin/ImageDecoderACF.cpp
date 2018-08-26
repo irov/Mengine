@@ -12,121 +12,121 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderACF::ImageDecoderACF()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ImageDecoderACF::~ImageDecoderACF()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderACF::_initialize()
-	{		
+    //////////////////////////////////////////////////////////////////////////
+    ImageDecoderACF::ImageDecoderACF()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ImageDecoderACF::~ImageDecoderACF()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ImageDecoderACF::_initialize()
+    {
         const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
-			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
+            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-		if( archivator == nullptr )
-		{
-			return false;
-		}
+        if( archivator == nullptr )
+        {
+            return false;
+        }
 
         m_archivator = archivator;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ImageDecoderACF::_prepareData()
-	{
-		if( Helper::loadStreamMagicHeader( m_stream, GET_MAGIC_NUMBER(MAGIC_ACF), GET_MAGIC_VERSION(MAGIC_ACF) ) == false )
-		{
-			LOGGER_ERROR("ImageDecoderACF::_prepareData invalid load magic header"
-				);
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ImageDecoderACF::_prepareData()
+    {
+        if( Helper::loadStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_ACF ), GET_MAGIC_VERSION( MAGIC_ACF ) ) == false )
+        {
+            LOGGER_ERROR( "ImageDecoderACF::_prepareData invalid load magic header"
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		uint32_t width;
-        m_stream->read( &width, sizeof(width) );
+        uint32_t width;
+        m_stream->read( &width, sizeof( width ) );
 
-		uint32_t height;
-		m_stream->read( &height, sizeof(height) );
+        uint32_t height;
+        m_stream->read( &height, sizeof( height ) );
 
-		uint32_t mipmaps;
-		m_stream->read( &mipmaps, sizeof(mipmaps) );
+        uint32_t mipmaps;
+        m_stream->read( &mipmaps, sizeof( mipmaps ) );
 
-		m_dataInfo.width = width;
-		m_dataInfo.height = height;
+        m_dataInfo.width = width;
+        m_dataInfo.height = height;
         m_dataInfo.channels = 1;
-		m_dataInfo.format = PF_A8;
-		m_dataInfo.mipmaps = mipmaps;
-      
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ImageDecoderACF::_decode( void * _buffer, size_t _bufferSize )
-	{
-		size_t dataSize;
-		if( Helper::loadStreamArchiveBufferSize( m_stream, dataSize ) == false )
-		{
-			LOGGER_ERROR("ImageDecoderACF::decode invalid load data size"
-				);
+        m_dataInfo.format = PF_A8;
+        m_dataInfo.mipmaps = mipmaps;
 
-			return 0;
-		}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t ImageDecoderACF::_decode( void * _buffer, size_t _bufferSize )
+    {
+        size_t dataSize;
+        if( Helper::loadStreamArchiveBufferSize( m_stream, dataSize ) == false )
+        {
+            LOGGER_ERROR( "ImageDecoderACF::decode invalid load data size"
+            );
 
-		if( dataSize > _bufferSize )
-		{
-			LOGGER_ERROR("ImageDecoderACF::decode overrlow data size %d need %d"
-				, dataSize
-				, _bufferSize
-				);
+            return 0;
+        }
 
-			return 0;
-		}
-		
-		if( m_options.pitch * m_dataInfo.height == dataSize )
-		{		
-			if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, "ImageDecoderACF", __FILE__, __LINE__ ) == false )
-			{
-				LOGGER_ERROR("ImageDecoderACF::decode invalid load"
-					);
+        if( dataSize > _bufferSize )
+        {
+            LOGGER_ERROR( "ImageDecoderACF::decode overrlow data size %d need %d"
+                , dataSize
+                , _bufferSize
+            );
 
-				return 0;
-			}
-		}
-		else
-		{
-			MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( dataSize, "ImageDecoderACF", __FILE__, __LINE__ );
+            return 0;
+        }
 
-			if( buffer == nullptr )
-			{
-				return 0;
-			}
+        if( m_options.pitch * m_dataInfo.height == dataSize )
+        {
+            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, _buffer, _bufferSize, "ImageDecoderACF", __FILE__, __LINE__ ) == false )
+            {
+                LOGGER_ERROR( "ImageDecoderACF::decode invalid load"
+                );
 
-			void * memory = buffer->getBuffer();
+                return 0;
+            }
+        }
+        else
+        {
+            MemoryInterfacePtr buffer = Helper::createMemoryCacheBuffer( dataSize, "ImageDecoderACF", __FILE__, __LINE__ );
 
-			if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, memory, dataSize, "ImageDecoderACF", __FILE__, __LINE__ ) == false )
-			{
-				LOGGER_ERROR("ImageDecoderACF::decode invalid load"
-					);
+            if( buffer == nullptr )
+            {
+                return 0;
+            }
 
-				return 0;
-			}
+            void * memory = buffer->getBuffer();
 
-			const uint8_t * source_buffer = static_cast<const uint8_t *>(memory);
+            if( Helper::loadStreamArchiveInplace( m_stream, m_archivator, memory, dataSize, "ImageDecoderACF", __FILE__, __LINE__ ) == false )
+            {
+                LOGGER_ERROR( "ImageDecoderACF::decode invalid load"
+                );
+
+                return 0;
+            }
+
+            const uint8_t * source_buffer = static_cast<const uint8_t *>(memory);
             uint8_t * dest_buffer = static_cast<uint8_t *>(_buffer);
 
-			for( uint32_t j = 0; j != m_dataInfo.height; ++j )
-			{
-				stdex::memorycopy( dest_buffer, 0, source_buffer, m_dataInfo.width * m_dataInfo.channels );
+            for( uint32_t j = 0; j != m_dataInfo.height; ++j )
+            {
+                stdex::memorycopy( dest_buffer, 0, source_buffer, m_dataInfo.width * m_dataInfo.channels );
 
-				source_buffer += m_dataInfo.width * m_dataInfo.channels;
-				dest_buffer += m_options.pitch;
-			}	
-		}
+                source_buffer += m_dataInfo.width * m_dataInfo.channels;
+                dest_buffer += m_options.pitch;
+            }
+        }
 
-		return _bufferSize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-}	
+        return _bufferSize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

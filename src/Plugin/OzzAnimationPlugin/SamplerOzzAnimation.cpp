@@ -164,7 +164,7 @@ namespace Mengine
         }
 
         const ozz::animation::Animation & ozz_animation = m_resourceAnimation->getOzzAnimation();
-                
+
         // Setup sampling job.
         ozz::animation::SamplingJob sampling_job;
         sampling_job.animation = &ozz_animation;

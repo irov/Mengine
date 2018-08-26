@@ -4,9 +4,9 @@
 
 namespace Mengine
 {
-	namespace Helper
-	{
-		void makeDateTime( String & _date );
-		void makeDateTimeW( WString & _date );
-	}
+    namespace Helper
+    {
+        void makeDateTime( String & _date );
+        void makeDateTimeW( WString & _date );
+    }
 }

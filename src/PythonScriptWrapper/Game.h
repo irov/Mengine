@@ -30,7 +30,7 @@ namespace Mengine
         EVENT_GAME_RENDER_VIEWPORT,
         EVENT_GAME_VIEWPORT,
         EVENT_GAME_KEY,
-		EVENT_GAME_TEXT,
+        EVENT_GAME_TEXT,
         EVENT_GAME_MOUSE_BUTTON,
         EVENT_GAME_MOUSE_BUTTON_BEGIN,
         EVENT_GAME_MOUSE_BUTTON_END,
@@ -48,11 +48,11 @@ namespace Mengine
         EVENT_GAME_FINALIZE,
         EVENT_GAME_DESTROY,
         EVENT_GAME_FOCUS,
-		EVENT_GAME_CREATE_DEFAULT_ACCOUNT,
-		EVENT_GAME_CREATE_GLOBAL_ACCOUNT,
-		EVENT_GAME_LOAD_ACCOUNTS,
+        EVENT_GAME_CREATE_DEFAULT_ACCOUNT,
+        EVENT_GAME_CREATE_GLOBAL_ACCOUNT,
+        EVENT_GAME_LOAD_ACCOUNTS,
         EVENT_GAME_CREATE_ACCOUNT,
-		EVENT_GAME_DELETE_ACCOUNT,
+        EVENT_GAME_DELETE_ACCOUNT,
         EVENT_GAME_SELECT_ACCOUNT,
         EVENT_GAME_UNSELECT_ACCOUNT,
         EVENT_GAME_CHANGE_SOUND_VOLUME,
@@ -73,7 +73,7 @@ namespace Mengine
         virtual void onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) = 0;
         virtual void onGameViewport( const Viewport & _viewport, float _aspect ) = 0;
         virtual bool onGameKey( KeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) = 0;
-		virtual bool onGameText( WChar _key, float _x, float _y ) = 0;
+        virtual bool onGameText( WChar _key, float _x, float _y ) = 0;
         virtual bool onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) = 0;
         virtual bool onGameMouseButtonBegin( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) = 0;
         virtual bool onGameMouseButtonEnd( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) = 0;
@@ -92,7 +92,7 @@ namespace Mengine
         virtual void onGameDestroy() = 0;
         virtual void onGameFocus( bool _focus ) = 0;
         virtual void onGameCreateDefaultAccount() = 0;
-		virtual void onGameCreateGlobalAccount() = 0;
+        virtual void onGameCreateGlobalAccount() = 0;
         virtual void onGameLoadAccounts() = 0;
         virtual void onGameCreateAccount( const ConstString & _accountID, bool _global ) = 0;
         virtual void onGameDeleteAccount( const ConstString & _accountID ) = 0;
@@ -106,105 +106,105 @@ namespace Mengine
         virtual void onGameFrameEnd() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-	class Game
-		: public ServiceBase<GameServiceInterface>
-		, public Eventable
+    class Game
+        : public ServiceBase<GameServiceInterface>
+        , public Eventable
         , public BaseEventation
-	{
+    {
         DECLARE_EVENTABLE( GameEventReceiver );
 
-	public:
-		Game();
-		~Game() override;
+    public:
+        Game();
+        ~Game() override;
 
     public:
         bool _initializeService() override;
         void _finalizeService() override;
 
-	public:
-		void run() override;
-
-	public:
-		void update() override;
-		void tick( const UpdateContext * _context ) override;
+    public:
+        void run() override;
 
     public:
-		void render() override;
+        void update() override;
+        void tick( const UpdateContext * _context ) override;
 
     public:
-		void initializeRenderResources() override;
-		void finalizeRenderResources() override;
+        void render() override;
 
-	public:
-		bool loadPersonality() override;
-		
-	public:
-		void setCursorMode( bool _mode ) override;
+    public:
+        void initializeRenderResources() override;
+        void finalizeRenderResources() override;
 
-	public:
-		bool handleKeyEvent( const InputKeyEvent & _event ) override;
-		bool handleTextEvent( const InputTextEvent & _event ) override;
+    public:
+        bool loadPersonality() override;
 
-	public:
-		bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
-		bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
-		bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;
-		bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
-		bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
-		
-	public:
-		void mousePosition( const InputMousePositionEvent & _event ) override;
-		void mouseEnter( const InputMousePositionEvent & _event ) override;
-		void mouseLeave( const InputMousePositionEvent & _event ) override;
+    public:
+        void setCursorMode( bool _mode ) override;
 
-	public:
-		void setFocus( bool _focus ) override;
-		void setFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
+    public:
+        bool handleKeyEvent( const InputKeyEvent & _event ) override;
+        bool handleTextEvent( const InputTextEvent & _event ) override;
+
+    public:
+        bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
+        bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
+
+    public:
+        void mousePosition( const InputMousePositionEvent & _event ) override;
+        void mouseEnter( const InputMousePositionEvent & _event ) override;
+        void mouseLeave( const InputMousePositionEvent & _event ) override;
+
+    public:
+        void setFocus( bool _focus ) override;
+        void setFullscreen( const Resolution & _resolution, bool _fullscreen ) override;
         void setFixedContentResolution( const Resolution & _resolution, bool _fixed ) override;
-		void setFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) override;
+        void setFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) override;
         void setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) override;
-		void setGameViewport( const Viewport & _viewport, float _aspect ) override;
+        void setGameViewport( const Viewport & _viewport, float _aspect ) override;
 
-		bool close() override;
+        bool close() override;
 
-		void userEvent( const ConstString & _id, const MapWParams & _params ) override;
+        void userEvent( const ConstString & _id, const MapWParams & _params ) override;
 
-		void turnSound( bool _turn ) override;
+        void turnSound( bool _turn ) override;
 
-	public:
-		WString getParam( const ConstString & _paramName ) const override;
-		bool hasParam( const ConstString & _paramName ) const override;
+    public:
+        WString getParam( const ConstString & _paramName ) const override;
+        bool hasParam( const ConstString & _paramName ) const override;
 
-	public:
-		float getTimeFactor() const override;
-		void setTimeFactor( float _timingFactor ) override;
+    public:
+        float getTimeFactor() const override;
+        void setTimeFactor( float _timingFactor ) override;
 
-	public:
-		void destroyArrow();
+    public:
+        void destroyArrow();
 
     protected:
-		ArrowPtr m_defaultArrow;
-		
-		ConstString m_currentPackName;
-		String m_currentResourcePath;
+        ArrowPtr m_defaultArrow;
 
-		float m_timingFactor;
+        ConstString m_currentPackName;
+        String m_currentResourcePath;
 
-		FilePath m_iconPath;
-				
-		MapWParams m_params;
+        float m_timingFactor;
 
-		struct UserEvent
-		{
-			ConstString id;
-			MapWParams params;
-		};
+        FilePath m_iconPath;
 
-		typedef std::vector<UserEvent> VectorUserEvents;
-		VectorUserEvents m_userEventsAdd;
-		VectorUserEvents m_userEvents;
-		
+        MapWParams m_params;
+
+        struct UserEvent
+        {
+            ConstString id;
+            MapWParams params;
+        };
+
+        typedef std::vector<UserEvent> VectorUserEvents;
+        VectorUserEvents m_userEventsAdd;
+        VectorUserEvents m_userEvents;
+
     protected:
-		void registerEventMethods_( const ScriptModuleInterfacePtr & _module );
-	};	
+        void registerEventMethods_( const ScriptModuleInterfacePtr & _module );
+    };
 }

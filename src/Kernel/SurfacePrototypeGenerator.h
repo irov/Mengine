@@ -13,33 +13,33 @@
 
 namespace Mengine
 {
-	template<class Type, uint32_t Count>
-	class SurfacePrototypeGenerator
-		: public ScriptablePrototypeGenerator<Type, Count>
-	{
-	protected:
-		PointerFactorable generate() override
-		{
+    template<class Type, uint32_t Count>
+    class SurfacePrototypeGenerator
+        : public ScriptablePrototypeGenerator<Type, Count>
+    {
+    protected:
+        PointerFactorable generate() override
+        {
             const FactoryPtr & factory = this->getFactory();
 
-			SurfacePtr surface = factory->createObject();
+            SurfacePtr surface = factory->createObject();
 
-			if( surface == nullptr )
-			{
-				LOGGER_ERROR("NodePrototypeGenerator::generate can't generate %s %s"
-					, this->getCategory().c_str()
-					, this->getPrototype().c_str()
-					);
+            if( surface == nullptr )
+            {
+                LOGGER_ERROR( "NodePrototypeGenerator::generate can't generate %s %s"
+                    , this->getCategory().c_str()
+                    , this->getPrototype().c_str()
+                );
 
-				return nullptr;
-			}
+                return nullptr;
+            }
 
             const ConstString & prototype = this->getPrototype();
-			surface->setType( prototype );
+            surface->setType( prototype );
 
             this->setupScriptable( surface );
 
-			return surface;
-		}
-	};
+            return surface;
+        }
+    };
 }

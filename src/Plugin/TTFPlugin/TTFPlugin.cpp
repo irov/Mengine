@@ -35,54 +35,54 @@ PLUGIN_FACTORY( TTF, Mengine::TTFPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	TTFPlugin::TTFPlugin()
-		: m_ftlibrary( nullptr )
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    TTFPlugin::TTFPlugin()
+        : m_ftlibrary( nullptr )
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     TTFPlugin::~TTFPlugin()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool TTFPlugin::_initialize()
-	{
-		SERVICE_CREATE( TTFAtlasService );
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFPlugin::_initialize()
+    {
+        SERVICE_CREATE( TTFAtlasService );
 
-		FT_Library ftlibrary;
-		FT_Error ft_err = FT_Init_FreeType( &ftlibrary );
+        FT_Library ftlibrary;
+        FT_Error ft_err = FT_Init_FreeType( &ftlibrary );
 
-		if( ft_err != 0 )
-		{
-			LOGGER_ERROR("TTFPlugin::_initialize invalid init FreeType '%d'"
-				, ft_err
-				);
+        if( ft_err != 0 )
+        {
+            LOGGER_ERROR( "TTFPlugin::_initialize invalid init FreeType '%d'"
+                , ft_err
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		TTFPrototypeGeneratorPtr generator = new FactorableUnique<TTFPrototypeGenerator>();
+        TTFPrototypeGeneratorPtr generator = new FactorableUnique<TTFPrototypeGenerator>();
 
-		generator->setFTLibrary( ftlibrary );
+        generator->setFTLibrary( ftlibrary );
 
-		PROTOTYPE_SERVICE()
-			->addPrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" )
-				, generator
-			);
+        PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" )
+                , generator
+            );
 
-		m_ftlibrary = ftlibrary;
+        m_ftlibrary = ftlibrary;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void TTFPlugin::_finalize()
-	{
-		PROTOTYPE_SERVICE()
-			->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFPlugin::_finalize()
+    {
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
 
-		SERVICE_FINALIZE( TTFAtlasServiceInterface );
+        SERVICE_FINALIZE( TTFAtlasServiceInterface );
 
-		FT_Done_FreeType( m_ftlibrary );
-		m_ftlibrary = nullptr;
-	}
+        FT_Done_FreeType( m_ftlibrary );
+        m_ftlibrary = nullptr;
+    }
 }

@@ -9,45 +9,45 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class EntityPrototypeGenerator
-		: public ServantBase<PrototypeGeneratorInterface>
+    //////////////////////////////////////////////////////////////////////////
+    class EntityPrototypeGenerator
+        : public ServantBase<PrototypeGeneratorInterface>
         , public Eventable
         , public BaseEventation
-	{
+    {
         DECLARE_EVENTABLE( EntityEventReceiver );
 
-	public:
-		EntityPrototypeGenerator();
-		~EntityPrototypeGenerator() override;
+    public:
+        EntityPrototypeGenerator();
+        ~EntityPrototypeGenerator() override;
 
-	public:
-		void setScriptGenerator( const pybind::object & _generator );
+    public:
+        void setScriptGenerator( const pybind::object & _generator );
 
-	public:
-		bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
+    public:
+        bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
 
-	public:
-		pybind::object preparePythonType();
+    public:
+        pybind::object preparePythonType();
 
-	protected:
-		PointerFactorable generate() override;
+    protected:
+        PointerFactorable generate() override;
 
-	public:
-		PyObject * getGenerator() const;
+    public:
+        PyObject * getGenerator() const;
 
-	protected:
-		uint32_t count() const override;
+    protected:
+        uint32_t count() const override;
 
-	protected:
-		ConstString m_category;
-		ConstString m_prototype;
-		pybind::object m_generator;
-		pybind::object m_type;
+    protected:
+        ConstString m_category;
+        ConstString m_prototype;
+        pybind::object m_generator;
+        pybind::object m_type;
 
-		uint32_t m_count;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;
-	
+        uint32_t m_count;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;
+
 }

@@ -12,12 +12,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	void Updatable::update( const UpdateContext * _context )
-	{
+    void Updatable::update( const UpdateContext * _context )
+    {
         m_updateRevision = _context->revision;
 
         this->_update( _context );
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void Updatable::setUpdateRevision( uint32_t _revision )
     {

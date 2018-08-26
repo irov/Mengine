@@ -8,20 +8,20 @@
 namespace Mengine
 {
     class Win32PluginSystem
-		: public ServiceBase<PluginSystemInterface>
+        : public ServiceBase<PluginSystemInterface>
     {
     public:
-		Win32PluginSystem();
-		~Win32PluginSystem() override;
-
-	public:
-		bool _initializeService() override;
-		void _finalizeService() override;
+        Win32PluginSystem();
+        ~Win32PluginSystem() override;
 
     public:
-		DynamicLibraryInterfacePtr loadDynamicLibrary( const WString & _dynamicLibraryName ) override;
+        bool _initializeService() override;
+        void _finalizeService() override;
 
-	protected:
-		FactoryPtr m_factoryDynamicLibraries;
-	};
+    public:
+        DynamicLibraryInterfacePtr loadDynamicLibrary( const WString & _dynamicLibraryName ) override;
+
+    protected:
+        FactoryPtr m_factoryDynamicLibraries;
+    };
 }

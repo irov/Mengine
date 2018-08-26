@@ -31,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::unlock()
     {
-        LeaveCriticalSection( &m_cs );        
+        LeaveCriticalSection( &m_cs );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadMutex::try_lock()

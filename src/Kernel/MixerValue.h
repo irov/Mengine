@@ -9,10 +9,10 @@
 
 namespace Mengine
 {
-	class MixerValue
-	{
-	public:
-		MixerValue();
+    class MixerValue
+    {
+    public:
+        MixerValue();
 
     public:
         void setSpeed( float _speed );
@@ -21,26 +21,26 @@ namespace Mengine
         void setDefault( float _default );
         float getDefault() const;
 
-	public:
-		void setValue( const ConstString & _type, float _value, float _from, bool _force );
-		float getValue( const ConstString & _type ) const;
+    public:
+        void setValue( const ConstString & _type, float _value, float _from, bool _force );
+        float getValue( const ConstString & _type ) const;
 
-	public:
-		float mixValue() const;
+    public:
+        float mixValue() const;
 
-	public:
-		bool update( const UpdateContext * _context );
+    public:
+        bool update( const UpdateContext * _context );
 
-	protected:
+    protected:
         float m_speed;
 
-		struct Element
-		{
-			ConstString type;
-			ValueFollowerLinear<float> follower;
-		};
+        struct Element
+        {
+            ConstString type;
+            ValueFollowerLinear<float> follower;
+        };
 
-		typedef Vector<Element> VectorMixerElement;
-		VectorMixerElement m_mixer;
-	};
+        typedef Vector<Element> VectorMixerElement;
+        VectorMixerElement m_mixer;
+    };
 }

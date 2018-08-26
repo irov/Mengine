@@ -82,7 +82,7 @@ namespace Mengine
 
             U32String::size_type new_begin = found_post + _post.size();
             U32String::size_type new_end = found_end;
-            
+
             if( new_begin != new_end )
             {
                 TextChunk c;
@@ -166,7 +166,7 @@ namespace Mengine
             {
                 VectorU32String outStrings;
                 if( Helper::u32split3( outStrings, chunk.value, _delims ) == false )
-                { 
+                {
                     collect.emplace_back( chunk );
 
                     continue;

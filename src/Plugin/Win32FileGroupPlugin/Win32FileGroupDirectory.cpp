@@ -14,28 +14,28 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Win32FileGroupDirectory::Win32FileGroupDirectory()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Win32FileGroupDirectory::~Win32FileGroupDirectory()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileGroupDirectory::initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _folderPath )
-	{
-		m_name = _name;
-		m_category = _category;
+    //////////////////////////////////////////////////////////////////////////
+    Win32FileGroupDirectory::Win32FileGroupDirectory()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Win32FileGroupDirectory::~Win32FileGroupDirectory()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _folderPath )
+    {
+        m_name = _name;
+        m_category = _category;
         m_folderPath = _folderPath;
 
         FilePath baseDirectoryPath;
 
         if( this->createDirectory( baseDirectoryPath ) == false )
         {
-            LOGGER_ERROR("Win32FileGroupDirectory::initialize: invalid create directory '%s'"
+            LOGGER_ERROR( "Win32FileGroupDirectory::initialize: invalid create directory '%s'"
                 , _folderPath.c_str()
-                );
+            );
 
             return false;
         }
@@ -67,36 +67,36 @@ namespace Mengine
     {
         return m_category;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileGroupDirectory::isPacked() const
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const FilePath & Win32FileGroupDirectory::getFolderPath() const
-	{
-		return m_folderPath;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileGroupDirectory::existFile( const FilePath & _fileName ) const
-	{
-		WChar filePath[MENGINE_MAX_PATH];
-		if( WINDOWSLAYER_SERVICE()
-			->concatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
-		{
-			LOGGER_ERROR("Win32FileSystem::existFile invlalid concatenate filePath '%s':'%s'"
-				, m_folderPath.c_str()
-				, _fileName.c_str()
-				);
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::isPacked() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & Win32FileGroupDirectory::getFolderPath() const
+    {
+        return m_folderPath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::existFile( const FilePath & _fileName ) const
+    {
+        WChar filePath[MENGINE_MAX_PATH];
+        if( WINDOWSLAYER_SERVICE()
+            ->concatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
+        {
+            LOGGER_ERROR( "Win32FileSystem::existFile invlalid concatenate filePath '%s':'%s'"
+                , m_folderPath.c_str()
+                , _fileName.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		bool result = WINDOWSLAYER_SERVICE()
-			->fileExists( filePath );
+        bool result = WINDOWSLAYER_SERVICE()
+            ->fileExists( filePath );
 
         return result;
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::existDirectory( const FilePath & _folderName ) const
     {
@@ -108,7 +108,7 @@ namespace Mengine
         accountString.append( folderPath );
         accountString.append( _folderName );
         accountString.append( '/' );
-        
+
         WString unicode_folderPath;
         if( Helper::utf8ToUnicode( accountString, unicode_folderPath ) == false )
         {
@@ -154,75 +154,75 @@ namespace Mengine
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming )
-	{
-		(void)_fileName;
-		(void)_streaming;
+    //////////////////////////////////////////////////////////////////////////
+    InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming )
+    {
+        (void)_fileName;
+        (void)_streaming;
 
         Win32FileInputStreamPtr inputStream = m_factoryInputStream->createObject();
-        
-		return inputStream;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileGroupDirectory::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
-	{
-		(void)_streaming;
+
+        return inputStream;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::openInputFile( const FilePath & _filePath, const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, bool _streaming )
+    {
+        (void)_streaming;
 
         if( _stream == nullptr )
         {
-            LOGGER_ERROR("Win32FileGroupDirectory::openInputFile failed _stream == NULL"
-                );
+            LOGGER_ERROR( "Win32FileGroupDirectory::openInputFile failed _stream == NULL"
+            );
 
             return false;
         }
 
-        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>(_stream);
+        FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
 
-		if( file->open( m_relationPath, m_folderPath, _filePath, _offset, _size ) == false )
+        if( file->open( m_relationPath, m_folderPath, _filePath, _offset, _size ) == false )
         {
-            LOGGER_ERROR("Win32FileGroupDirectory::openInputFile failed open file '%s':'%s'"
+            LOGGER_ERROR( "Win32FileGroupDirectory::openInputFile failed open file '%s':'%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
-                );
+            );
 
             return false;
         }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile()
-	{
-		Win32FileOutputStreamPtr outputStream = m_factoryOutputStream->createObject();
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile()
+    {
+        Win32FileOutputStreamPtr outputStream = m_factoryOutputStream->createObject();
 
-		return outputStream;
-	}
-	//////////////////////////////////////////////////////////////////////////	
-	bool Win32FileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream )
-	{
+        return outputStream;
+    }
+    //////////////////////////////////////////////////////////////////////////	
+    bool Win32FileGroupDirectory::openOutputFile( const FilePath & _filePath, const OutputStreamInterfacePtr & _stream )
+    {
         if( _stream == nullptr )
         {
-            LOGGER_ERROR("Win32FileGroupDirectory::openOutputFile failed _stream == NULL"
-                );
+            LOGGER_ERROR( "Win32FileGroupDirectory::openOutputFile failed _stream == NULL"
+            );
 
             return false;
         }
 
-        FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>(_stream);
+        FileOutputStreamInterface * file = stdex::intrusive_get<FileOutputStreamInterface *>( _stream );
 
         if( file->open( m_relationPath, m_folderPath, _filePath ) == false )
         {
-            LOGGER_ERROR("Win32FileGroupDirectory::openOutputFile failed open file '%s':'%s'"
+            LOGGER_ERROR( "Win32FileGroupDirectory::openOutputFile failed open file '%s':'%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
-                );
+            );
 
             return false;
         }
-        		
-		return true;
-	}
+
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     void Win32FileGroupDirectory::setRelationPath( const FilePath & _relationPath )
     {
@@ -233,5 +233,5 @@ namespace Mengine
     {
         return m_relationPath;
     }
-	//////////////////////////////////////////////////////////////////////////
-}	
+    //////////////////////////////////////////////////////////////////////////
+}

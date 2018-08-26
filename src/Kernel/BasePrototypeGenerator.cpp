@@ -4,19 +4,19 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	BasePrototypeGenerator::BasePrototypeGenerator()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    BasePrototypeGenerator::BasePrototypeGenerator()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     BasePrototypeGenerator::~BasePrototypeGenerator()
     {
     }
-	//////////////////////////////////////////////////////////////////////////	
-	bool BasePrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype )
-	{
-		m_category = _category;
-		m_prototype = _prototype;
+    //////////////////////////////////////////////////////////////////////////	
+    bool BasePrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype )
+    {
+        m_category = _category;
+        m_prototype = _prototype;
 
         FactoryPtr factory = this->_initializeFactory();
 
@@ -27,8 +27,8 @@ namespace Mengine
 
         m_factory = factory;
 
-		return true;
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     uint32_t BasePrototypeGenerator::count() const
     {
@@ -36,9 +36,9 @@ namespace Mengine
 
         return count;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void BasePrototypeGenerator::destroy()
-	{
-		delete this;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    void BasePrototypeGenerator::destroy()
+    {
+        delete this;
+    }
 }

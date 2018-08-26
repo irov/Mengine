@@ -40,18 +40,18 @@ PLUGIN_FACTORY( ImageCodec, Mengine::ImageCodecPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ImageCodecPlugin::ImageCodecPlugin()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ImageCodecPlugin::_initialize()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    ImageCodecPlugin::ImageCodecPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ImageCodecPlugin::_initialize()
+    {
         Helper::registerDecoder<ImageDecoderPNG>( "pngImage" );
         Helper::registerDecoder<ImageDecoderJPEG>( "jpegImage" );
-        
+
 #ifdef MENGINE_SUPPORT_DECODER_WEBP
-        Helper::registerDecoder<ImageDecoderWEBP>( "webpImage" );        
+        Helper::registerDecoder<ImageDecoderWEBP>( "webpImage" );
 #endif
 
         Helper::registerDecoder<ImageDecoderPVRTC>( "pvrImage" );
@@ -61,40 +61,40 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderHTF>( "htfImage" );
         Helper::registerDecoder<ImageDecoderACF>( "acfImage" );
 
-		CODEC_SERVICE()
-			->registerCodecExt( "png", STRINGIZE_STRING_LOCAL("pngImage") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "png", STRINGIZE_STRING_LOCAL( "pngImage" ) );
 
-		CODEC_SERVICE()
-			->registerCodecExt( "PNG", STRINGIZE_STRING_LOCAL("pngImage") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "PNG", STRINGIZE_STRING_LOCAL( "pngImage" ) );
 
-		CODEC_SERVICE()
-			->registerCodecExt( "jpg", STRINGIZE_STRING_LOCAL("jpegImage") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "jpg", STRINGIZE_STRING_LOCAL( "jpegImage" ) );
 
-		CODEC_SERVICE()
-			->registerCodecExt( "jpeg", STRINGIZE_STRING_LOCAL("jpegImage") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "jpeg", STRINGIZE_STRING_LOCAL( "jpegImage" ) );
 
 #ifdef MENGINE_SUPPORT_DECODER_WEBP
-		CODEC_SERVICE()
-			->registerCodecExt( "webp", STRINGIZE_STRING_LOCAL( "webpImage" ) );
+        CODEC_SERVICE()
+            ->registerCodecExt( "webp", STRINGIZE_STRING_LOCAL( "webpImage" ) );
 #endif
 
-		CODEC_SERVICE()
-			->registerCodecExt( "pvr", STRINGIZE_STRING_LOCAL("pvrImage") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "pvr", STRINGIZE_STRING_LOCAL( "pvrImage" ) );
 
-		CODEC_SERVICE()
-			->registerCodecExt( "dds", STRINGIZE_STRING_LOCAL("ddsImage") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "dds", STRINGIZE_STRING_LOCAL( "ddsImage" ) );
 
-		CODEC_SERVICE()
-			->registerCodecExt( "etc", STRINGIZE_STRING_LOCAL("etcImage") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "etc", STRINGIZE_STRING_LOCAL( "etcImage" ) );
 
-		CODEC_SERVICE()
-			->registerCodecExt( "crn", STRINGIZE_STRING_LOCAL("crnImage") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "crn", STRINGIZE_STRING_LOCAL( "crnImage" ) );
 
-		CODEC_SERVICE()
-			->registerCodecExt( "htf", STRINGIZE_STRING_LOCAL("htfImage") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "htf", STRINGIZE_STRING_LOCAL( "htfImage" ) );
 
-		CODEC_SERVICE()
-			->registerCodecExt( "acf", STRINGIZE_STRING_LOCAL("acfImage") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "acf", STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
         Helper::registerEncoder<ImageEncoderPNG>( "pngImage" );
         Helper::registerEncoder<ImageEncoderJPEG>( "jpegImage" );
@@ -106,25 +106,25 @@ namespace Mengine
         Helper::registerDecoder<PickDecoderHIT>( "hitPick" );
         Helper::registerEncoder<PickEncoderHIT>( "hitPick" );
 
-		CODEC_SERVICE()
-			->registerCodecExt( "hit", STRINGIZE_STRING_LOCAL("hitPick") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "hit", STRINGIZE_STRING_LOCAL( "hitPick" ) );
 
-		m_factoryAEK = new DataflowFactory<DataflowAEK>();
+        m_factoryAEK = new DataflowFactory<DataflowAEK>();
         m_factoryAEK->initialize();
 
-		DataflowInterfacePtr aek = m_factoryAEK->createDataflow();
+        DataflowInterfacePtr aek = m_factoryAEK->createDataflow();
 
-		DATA_SERVICE()
-			->registerDataflow( STRINGIZE_STRING_LOCAL("aekMovie"), aek );
+        DATA_SERVICE()
+            ->registerDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ), aek );
 
-		CODEC_SERVICE()
-			->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL("aekMovie") );
+        CODEC_SERVICE()
+            ->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageCodecPlugin::_finalize()
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImageCodecPlugin::_finalize()
+    {
         Helper::unregisterDecoder( "pngImage" );
         Helper::unregisterDecoder( "jpegImage" );
 
@@ -148,7 +148,7 @@ namespace Mengine
         Helper::unregisterDecoder( "hitPick" );
         Helper::unregisterEncoder( "hitPick" );
 
-		DATA_SERVICE()
-			->unregisterDataflow( STRINGIZE_STRING_LOCAL("aekMovie") );
-	}
+        DATA_SERVICE()
+            ->unregisterDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+    }
 }

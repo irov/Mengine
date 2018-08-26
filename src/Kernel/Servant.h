@@ -7,13 +7,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	class Servant
-		: public Factorable
-	{
-	public:
-		Servant() noexcept;
-		~Servant() noexcept override;
-	};
+    class Servant
+        : public Factorable
+    {
+    public:
+        Servant() noexcept;
+        ~Servant() noexcept override;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Servant> ServantPtr;
     //////////////////////////////////////////////////////////////////////////

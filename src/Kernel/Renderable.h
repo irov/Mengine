@@ -26,7 +26,7 @@ namespace Mengine
             :debugMask( 0 )
         {}
 
-        RenderViewportInterfacePtr viewport;        
+        RenderViewportInterfacePtr viewport;
         RenderCameraInterfacePtr camera;
         RenderTransformationInterfacePtr transformation;
         RenderScissorInterfacePtr scissor;
@@ -35,35 +35,35 @@ namespace Mengine
         uint32_t debugMask;
     };
     //////////////////////////////////////////////////////////////////////////
-	class Renderable
+    class Renderable
         : public Mixin
-	{
-	public:
-		Renderable();
+    {
+    public:
+        Renderable();
         ~Renderable();
 
-	public:
-		virtual void render( const RenderContext * _state ) = 0;
+    public:
+        virtual void render( const RenderContext * _state ) = 0;
 
-	public:
-		virtual void _render( const RenderContext * _state );
-		virtual void _debugRender( const RenderContext * _state );
+    public:
+        virtual void _render( const RenderContext * _state );
+        virtual void _debugRender( const RenderContext * _state );
 
-	public:
-		virtual void setHide( bool _hide );
-		inline bool getHide() const;
+    public:
+        virtual void setHide( bool _hide );
+        inline bool getHide() const;
 
-	public:
-		void setLocalHide( bool _localHide );
-		inline bool getLocalHide() const;
+    public:
+        void setLocalHide( bool _localHide );
+        inline bool getLocalHide() const;
 
     public:
         void setExternalRender( bool _externalRender );
         inline bool getExternalRender() const;
 
-	protected:
+    protected:
         virtual void _setHide( bool _hide );
-		virtual void _setLocalHide( bool _localHide );		
+        virtual void _setLocalHide( bool _localHide );
         virtual void _setExternalRender( bool _externalRender );
 
     protected:
@@ -88,24 +88,24 @@ namespace Mengine
     protected:
         RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) const;
         const RenderMaterialInterfacePtr & getDebugMaterial() const;
-		
-	protected:
-		bool m_hide;
-		bool m_localHide;
+
+    protected:
+        bool m_hide;
+        bool m_localHide;
         bool m_externalRender;
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Renderable> RenderablePtr;
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Renderable::getHide() const
-	{
-		return m_hide;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Renderable::getLocalHide() const
-	{
-		return m_localHide;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    inline bool Renderable::getHide() const
+    {
+        return m_hide;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline bool Renderable::getLocalHide() const
+    {
+        return m_localHide;
+    }
     //////////////////////////////////////////////////////////////////////////
     inline bool Renderable::getExternalRender() const
     {

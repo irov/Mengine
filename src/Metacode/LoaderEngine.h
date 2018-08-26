@@ -18,40 +18,40 @@
 
 namespace Mengine
 {
-	class LoaderEngine
-		: public ServiceBase<LoaderServiceInterface>
-	{
-	public:
-		LoaderEngine();
+    class LoaderEngine
+        : public ServiceBase<LoaderServiceInterface>
+    {
+    public:
+        LoaderEngine();
         ~LoaderEngine() override;
 
-	public:
-		bool _initializeService() override;
-		void _finalizeService() override;
+    public:
+        bool _initializeService() override;
+        void _finalizeService() override;
 
-	public:
-		void setProtocolPath( const FilePath & _protocolPath ) override;
+    public:
+        void setProtocolPath( const FilePath & _protocolPath ) override;
 
-	public:
-		bool load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const override;
-		bool validation( const FileGroupInterfacePtr & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const override;
+    public:
+        bool load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const override;
+        bool validation( const FileGroupInterfacePtr & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const override;
 
-	private:
-		bool importBin_( const InputStreamInterfacePtr & _bin, Metabuf::Metadata * _metadata, bool * _reimport ) const;
-		bool openBin_( const FileGroupInterfacePtr & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const;
+    private:
+        bool importBin_( const InputStreamInterfacePtr & _bin, Metabuf::Metadata * _metadata, bool * _reimport ) const;
+        bool openBin_( const FileGroupInterfacePtr & _pak, const FilePath & _path, InputStreamInterfacePtr & _file, bool & _exist ) const;
 
 #ifndef MENGINE_MASTER_RELEASE
-		bool makeBin_( const FileGroupInterfacePtr & _pak, const FilePath & _pathXml, const FilePath & _pathBin ) const;
+        bool makeBin_( const FileGroupInterfacePtr & _pak, const FilePath & _pathXml, const FilePath & _pathBin ) const;
 #endif
 
     public:
         const ConstString & getCacheConstString( uint32_t _index ) const;
 
-	protected:
-		ArchivatorInterfacePtr m_archivator;
-		
-		FilePath m_protocolPath;
+    protected:
+        ArchivatorInterfacePtr m_archivator;
 
-		mutable VectorConstString m_bufferConstString;
-	};
+        FilePath m_protocolPath;
+
+        mutable VectorConstString m_bufferConstString;
+    };
 }

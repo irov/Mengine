@@ -4,65 +4,65 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Renderable::Renderable()
-		: m_hide(false)
-		, m_localHide(false)
-        , m_externalRender(false)
-	{		
-	}
+    //////////////////////////////////////////////////////////////////////////
+    Renderable::Renderable()
+        : m_hide( false )
+        , m_localHide( false )
+        , m_externalRender( false )
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     Renderable::~Renderable()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_render( const RenderContext * _state )
-	{
-		(void)_state;
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_debugRender( const RenderContext * _state )
-	{
-		(void)_state;
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Renderable::setHide( bool _hide )
-	{
-		if( m_hide == _hide )
-		{
-			return;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    void Renderable::_render( const RenderContext * _state )
+    {
+        (void)_state;
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Renderable::_debugRender( const RenderContext * _state )
+    {
+        (void)_state;
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Renderable::setHide( bool _hide )
+    {
+        if( m_hide == _hide )
+        {
+            return;
+        }
 
-		m_hide = _hide;
+        m_hide = _hide;
 
-		this->_setHide( _hide );
-	}
+        this->_setHide( _hide );
+    }
     //////////////////////////////////////////////////////////////////////////
     void Renderable::_setHide( bool _hide )
     {
         (void)_hide;
         //Empty
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Renderable::setLocalHide( bool _localHide )
-	{
-		if( m_localHide == _localHide )
-		{
-			return;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    void Renderable::setLocalHide( bool _localHide )
+    {
+        if( m_localHide == _localHide )
+        {
+            return;
+        }
 
-		m_localHide = _localHide;
+        m_localHide = _localHide;
 
-		this->_setLocalHide( _localHide );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Renderable::_setLocalHide( bool _localHide )
-	{
+        this->_setLocalHide( _localHide );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Renderable::_setLocalHide( bool _localHide )
+    {
         (void)_localHide;
-		//Empty
-	}
+        //Empty
+    }
     //////////////////////////////////////////////////////////////////////////
     void Renderable::setExternalRender( bool _externalRender )
     {

@@ -310,13 +310,13 @@ namespace Mengine
         m_d3dppW.hDeviceWindow = windowHandle;
 
         m_d3dppW.Windowed = TRUE;
-        
+
         m_d3dppW.EnableAutoDepthStencil = FALSE;
         m_d3dppW.AutoDepthStencilFormat = D3DFMT_UNKNOWN;
 
         //m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
-        m_d3dppW.FullScreen_RefreshRateInHz = 0;      
+        m_d3dppW.FullScreen_RefreshRateInHz = 0;
 
         m_d3dppFS.MultiSampleType = multiSampleType;
         m_d3dppFS.MultiSampleQuality = 0;
@@ -381,7 +381,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "DX9RenderSystem::createRenderWindow can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE"
             );
-            
+
             hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
                 D3DCREATE_SOFTWARE_VERTEXPROCESSING,
                 m_d3dpp, &m_pD3DDevice );
@@ -885,7 +885,7 @@ namespace Mengine
         float by = (1.f - (b.y + 1.f) * 0.5f) * vs.y;
         float ex = (e.x + 1.f) * 0.5f * vs.x;
         float ey = (1.f - (e.y + 1.f) * 0.5f) * vs.y;
-        
+
         RECT r;
         r.left = (uint32_t)bx;
         r.top = (uint32_t)by;
@@ -1189,7 +1189,7 @@ namespace Mengine
 
             return false;
         }
-        
+
         RENDER_SERVICE()
             ->onDeviceLostPrepare();
 
@@ -1819,7 +1819,7 @@ namespace Mengine
             m_d3dppW.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
             m_d3dppFS.PresentationInterval = D3DPRESENT_INTERVAL_IMMEDIATE;
         }
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force )
     {
@@ -1854,9 +1854,9 @@ namespace Mengine
         DX9RenderImagePtr dx9RenderImage = m_factoryDX9Image->createObject();
 
         dx9RenderImage->initialize( m_pD3DDevice, _pD3DTexture, _mode, _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
-        
+
         m_renderResourceHandlers.push_back( dx9RenderImage.get() );
-        
+
         uint32_t memoryUse = Helper::getTextureMemorySize( _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
 
         m_textureMemoryUse += memoryUse;

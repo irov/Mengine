@@ -5,19 +5,19 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	class SurfaceSolidColor
-		: public Surface        
-	{
-	public:
+    class SurfaceSolidColor
+        : public Surface
+    {
+    public:
         SurfaceSolidColor();
-		~SurfaceSolidColor() override;
+        ~SurfaceSolidColor() override;
 
-	public:
-		void setSolidColor( const ColourValue & _color );
-		const ColourValue & getSolidColor() const;
+    public:
+        void setSolidColor( const ColourValue & _color );
+        const ColourValue & getSolidColor() const;
 
         void setSolidSize( const mt::vec2f & _size );
-        const mt::vec2f & getSolidSize() const;        
+        const mt::vec2f & getSolidSize() const;
 
     public:
         const mt::vec2f & getMaxSize() const override;
@@ -31,13 +31,13 @@ namespace Mengine
 
         void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) override;
 
-	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const override;
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
 
-	protected:
-		ColourValue m_color;
+    protected:
+        ColourValue m_color;
         mt::vec2f m_size;
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SurfaceSolidColor> SurfaceSolidColorPtr;
 }

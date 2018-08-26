@@ -8,23 +8,23 @@
 
 namespace Mengine
 {
-	class ImageDecoderACF
-		: public ImageDecoder
-	{
-	public:
-		ImageDecoderACF();
-		~ImageDecoderACF() override;
+    class ImageDecoderACF
+        : public ImageDecoder
+    {
+    public:
+        ImageDecoderACF();
+        ~ImageDecoderACF() override;
 
-	public:
-		bool _initialize() override;
-		
-	public:
-		bool _prepareData() override;
+    public:
+        bool _initialize() override;
 
-	public:
-		size_t _decode( void * _buffer, size_t _bufferSize ) override;
-	
-	private:       
-		ArchivatorInterfacePtr m_archivator;
-	};
-}	
+    public:
+        bool _prepareData() override;
+
+    public:
+        size_t _decode( void * _buffer, size_t _bufferSize ) override;
+
+    private:
+        ArchivatorInterfacePtr m_archivator;
+    };
+}

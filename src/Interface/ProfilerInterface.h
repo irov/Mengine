@@ -7,7 +7,7 @@ namespace Mengine
     class ProfilerServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE("ProfilerService")
+        SERVICE_DECLARE( "ProfilerService" )
 
     public:
         virtual void memoryBegin() = 0;

@@ -18,11 +18,11 @@ namespace Mengine
         struct FScheduleFind
         {
             FScheduleFind( uint32_t _id )
-                : m_id(_id)
+                : m_id( _id )
             {
             }
 
-			bool operator()( const ScheduleEventDesc & _event ) const
+            bool operator()( const ScheduleEventDesc & _event ) const
             {
                 return _event.id == m_id;
             }
@@ -32,19 +32,19 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         struct FScheduleDead
         {
-			bool operator ()( const ScheduleEventDesc & _event ) const
+            bool operator ()( const ScheduleEventDesc & _event ) const
             {
-				return _event.dead;
+                return _event.dead;
             }
-        };	
-    }	
+        };
+    }
     //////////////////////////////////////////////////////////////////////////
     ScheduleManager::ScheduleManager()
-        : m_speedFactor(1.f)
-		, m_time(0.f)
-        , m_enumerator(0)
-        , m_freezeAll(false)
-		, m_update(false)
+        : m_speedFactor( 1.f )
+        , m_time( 0.f )
+        , m_enumerator( 0 )
+        , m_freezeAll( false )
+        , m_update( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -52,101 +52,101 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	uint32_t ScheduleManager::event( float _delay, const ScheduleEventInterfacePtr & _listener )
+    uint32_t ScheduleManager::event( float _delay, const ScheduleEventInterfacePtr & _listener )
     {
-		uint32_t new_id = ++m_enumerator;
+        uint32_t new_id = ++m_enumerator;
 
         ScheduleEventDesc desc;
 
-		desc.id = new_id;
+        desc.id = new_id;
 
-		desc.event = _listener;
-		desc.timer = nullptr;
-		desc.pipe = nullptr;
-				
-		desc.delay = _delay;
-		
-		desc.time_delay = 0.f;
+        desc.event = _listener;
+        desc.timer = nullptr;
+        desc.pipe = nullptr;
 
-		desc.iterate = 0;
+        desc.delay = _delay;
 
-		desc.type = EST_EVENT;
-		desc.dead = false;
-		desc.freeze = false;
-		desc.iterate_invalide = true;
+        desc.time_delay = 0.f;
 
-		m_schedulesAdd.emplace_back( desc );
+        desc.iterate = 0;
 
-		return new_id;
+        desc.type = EST_EVENT;
+        desc.dead = false;
+        desc.freeze = false;
+        desc.iterate_invalide = true;
+
+        m_schedulesAdd.emplace_back( desc );
+
+        return new_id;
     }
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t ScheduleManager::timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimerInterfacePtr & _listener )
-	{
-		uint32_t new_id = ++m_enumerator;
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t ScheduleManager::timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimerInterfacePtr & _listener )
+    {
+        uint32_t new_id = ++m_enumerator;
 
-		ScheduleEventDesc desc;
+        ScheduleEventDesc desc;
 
-		desc.id = new_id;
+        desc.id = new_id;
 
-		desc.event = nullptr;
-		desc.timer = _listener;
-		desc.pipe = _pipe;
+        desc.event = nullptr;
+        desc.timer = _listener;
+        desc.pipe = _pipe;
 
-		desc.delay = 0.f;
-		desc.time_delay = 0.f;
+        desc.delay = 0.f;
+        desc.time_delay = 0.f;
 
-		desc.iterate = 0;
+        desc.iterate = 0;
 
-		desc.type = EST_TIMER;
-		desc.dead = false;
-		desc.freeze = false;		
-		desc.iterate_invalide = true;
+        desc.type = EST_TIMER;
+        desc.dead = false;
+        desc.freeze = false;
+        desc.iterate_invalide = true;
 
-		m_schedulesAdd.emplace_back( desc );
+        m_schedulesAdd.emplace_back( desc );
 
-		return new_id;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScheduleManager::exist( uint32_t _id ) const 
-	{
-		ListSchedules::const_iterator it_find =
-			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind( _id ) );
+        return new_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ScheduleManager::exist( uint32_t _id ) const
+    {
+        ListSchedules::const_iterator it_find =
+            std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind( _id ) );
 
-		if( it_find != m_schedules.end() )
-		{
-			return true;
-		}
+        if( it_find != m_schedules.end() )
+        {
+            return true;
+        }
 
-		ListSchedules::const_iterator it_find_add =
-			std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
+        ListSchedules::const_iterator it_find_add =
+            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
 
-		if( it_find_add != m_schedulesAdd.end() )
-		{
-			return true;
-		}
-		
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScheduleManager::refresh( uint32_t _id )
-	{
-		ScheduleEventDesc * desc;
+        if( it_find_add != m_schedulesAdd.end() )
+        {
+            return true;
+        }
 
-		if( this->findScheduleEvent_( _id, desc ) == false )
-		{
-			LOGGER_ERROR("ScheduleManager::remove not found shedule '%d'"
-				, _id
-				);
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ScheduleManager::refresh( uint32_t _id )
+    {
+        ScheduleEventDesc * desc;
 
-			return false;
-		}
+        if( this->findScheduleEvent_( _id, desc ) == false )
+        {
+            LOGGER_ERROR( "ScheduleManager::remove not found shedule '%d'"
+                , _id
+            );
 
-		desc->time_delay = 0.f;
-		desc->iterate = 0;
-		desc->iterate_invalide = true;
+            return false;
+        }
 
-		return true;
-	}
+        desc->time_delay = 0.f;
+        desc->iterate = 0;
+        desc->iterate_invalide = true;
+
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::remove( uint32_t _id )
     {
@@ -154,50 +154,50 @@ namespace Mengine
 
         if( this->findScheduleEvent_( _id, desc ) == false )
         {
-            LOGGER_ERROR("ScheduleManager::remove not found shedule '%d'"
+            LOGGER_ERROR( "ScheduleManager::remove not found shedule '%d'"
                 , _id
-                );
+            );
 
             return false;
         }
 
         if( this->removeSchedule_( *desc ) == false )
-		{
-			LOGGER_ERROR("ScheduleManager::remove not alredy remove or complete '%d'"
-				, _id
-				);
+        {
+            LOGGER_ERROR( "ScheduleManager::remove not alredy remove or complete '%d'"
+                , _id
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScheduleManager::removeAll()
     {
-        for( ListSchedules::iterator 
-			it = m_schedules.begin(),
-			it_end = m_schedules.end();
-        it != it_end;
-        ++it)
+        for( ListSchedules::iterator
+            it = m_schedules.begin(),
+            it_end = m_schedules.end();
+            it != it_end;
+            ++it )
         {
-			ScheduleEventDesc & event = *it;
+            ScheduleEventDesc & event = *it;
 
             this->removeSchedule_( event );
         }
 
-		ListSchedules schedulesAdd = m_schedulesAdd;
+        ListSchedules schedulesAdd = m_schedulesAdd;
 
-		for( ListSchedules::iterator
-			it = schedulesAdd.begin(),
-			it_end = schedulesAdd.end();
-		it != it_end;
-		++it )
-		{
-			ScheduleEventDesc & event = *it;
+        for( ListSchedules::iterator
+            it = schedulesAdd.begin(),
+            it_end = schedulesAdd.end();
+            it != it_end;
+            ++it )
+        {
+            ScheduleEventDesc & event = *it;
 
-			this->removeSchedule_( event );
-		}
+            this->removeSchedule_( event );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::removeSchedule_( ScheduleEventDesc & _event )
@@ -209,165 +209,165 @@ namespace Mengine
 
         _event.dead = true;
 
-		switch( _event.type )
-		{
-		case EST_EVENT:
-			{
-				ScheduleEventInterfacePtr listener = _event.event;
-				_event.event = nullptr;
+        switch( _event.type )
+        {
+        case EST_EVENT:
+            {
+                ScheduleEventInterfacePtr listener = _event.event;
+                _event.event = nullptr;
 
-				listener->onScheduleStop( _event.id );
-			}break;
-		case EST_TIMER:
-			{
-				ScheduleTimerInterfacePtr listener = _event.timer;
-				_event.timer = nullptr;
-				_event.pipe = nullptr;
+                listener->onScheduleStop( _event.id );
+            }break;
+        case EST_TIMER:
+            {
+                ScheduleTimerInterfacePtr listener = _event.timer;
+                _event.timer = nullptr;
+                _event.pipe = nullptr;
 
-				listener->onScheduleStop( _event.id );
-			}break;
-		}
+                listener->onScheduleStop( _event.id );
+            }break;
+        }
 
-		return true;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScheduleManager::update( const UpdateContext * _context )
     {
         float total_time = _context->time * m_speedFactor;
 
-		m_time += total_time;
+        m_time += total_time;
 
-		if( m_freezeAll == true )
-		{
-			return;
-		}
+        if( m_freezeAll == true )
+        {
+            return;
+        }
 
-		m_update = true;
+        m_update = true;
 
-		m_schedules.insert( m_schedules.end(), m_schedulesAdd.begin(), m_schedulesAdd.end() );
-		m_schedulesAdd.clear();
+        m_schedules.insert( m_schedules.end(), m_schedulesAdd.begin(), m_schedulesAdd.end() );
+        m_schedulesAdd.clear();
 
-		ListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead() );
-		m_schedules.erase( it_erase, m_schedules.end() );
+        ListSchedules::iterator it_erase = std::remove_if( m_schedules.begin(), m_schedules.end(), FScheduleDead() );
+        m_schedules.erase( it_erase, m_schedules.end() );
 
-		for( ListSchedules::iterator
-			it = m_schedules.begin(),
-			it_end = m_schedules.end();
-		it != it_end;
-		++it )
-		{
-			ScheduleEventDesc & desc = *it;
+        for( ListSchedules::iterator
+            it = m_schedules.begin(),
+            it_end = m_schedules.end();
+            it != it_end;
+            ++it )
+        {
+            ScheduleEventDesc & desc = *it;
 
-			if( desc.dead == true )
-			{
-				continue;
-			}
+            if( desc.dead == true )
+            {
+                continue;
+            }
 
-			if( desc.freeze == true )
-			{
-				continue;
-			}
-			
-			float old_timing = desc.time_delay;
+            if( desc.freeze == true )
+            {
+                continue;
+            }
 
-			desc.time_delay += total_time;
+            float old_timing = desc.time_delay;
 
-			switch( desc.type )
-			{
-			case EST_EVENT:
-				{
-					if( desc.time_delay < desc.delay )
-					{
-						continue;
-					}
+            desc.time_delay += total_time;
 
-					float timeOffset = desc.delay - old_timing;
+            switch( desc.type )
+            {
+            case EST_EVENT:
+                {
+                    if( desc.time_delay < desc.delay )
+                    {
+                        continue;
+                    }
 
-					TIMELINE_SERVICE()
-						->beginOffset( timeOffset );
+                    float timeOffset = desc.delay - old_timing;
 
-					desc.dead = true;
+                    TIMELINE_SERVICE()
+                        ->beginOffset( timeOffset );
 
-					desc.event->onScheduleComplete( desc.id );
+                    desc.dead = true;
 
-					TIMELINE_SERVICE()
-						->endOffset();
-				}break;
-			case EST_TIMER:
-				{
-					float acc_delay = 0.f;
+                    desc.event->onScheduleComplete( desc.id );
 
-					for( ;; )
-					{
-						if( desc.iterate_invalide == true )
-						{
-							float delay = desc.pipe->onSchedulePipe( desc.id, desc.iterate );
+                    TIMELINE_SERVICE()
+                        ->endOffset();
+                }break;
+            case EST_TIMER:
+                {
+                    float acc_delay = 0.f;
 
-							if( delay < 0.f )
-							{
-								desc.dead = true;
+                    for( ;; )
+                    {
+                        if( desc.iterate_invalide == true )
+                        {
+                            float delay = desc.pipe->onSchedulePipe( desc.id, desc.iterate );
 
-								desc.timer->onScheduleComplete( desc.id );
+                            if( delay < 0.f )
+                            {
+                                desc.dead = true;
 
-								break;
-							}
+                                desc.timer->onScheduleComplete( desc.id );
 
-							desc.iterate_invalide = false;
-							desc.delay = delay;
-						}
+                                break;
+                            }
 
-						if( desc.time_delay < desc.delay )
-						{
-							break;
-						}
+                            desc.iterate_invalide = false;
+                            desc.delay = delay;
+                        }
 
-						acc_delay += desc.delay;
+                        if( desc.time_delay < desc.delay )
+                        {
+                            break;
+                        }
 
-						float timeOffset = acc_delay - old_timing;
+                        acc_delay += desc.delay;
 
-						uint32_t iterate = desc.iterate;
+                        float timeOffset = acc_delay - old_timing;
 
-						desc.time_delay -= desc.delay;
+                        uint32_t iterate = desc.iterate;
 
-						desc.iterate++;
-						desc.iterate_invalide = true;
+                        desc.time_delay -= desc.delay;
 
-						TIMELINE_SERVICE()
-							->beginOffset( timeOffset );
+                        desc.iterate++;
+                        desc.iterate_invalide = true;
 
-						desc.timer->onScheduleUpdate( desc.id, iterate, desc.delay );
+                        TIMELINE_SERVICE()
+                            ->beginOffset( timeOffset );
 
-						TIMELINE_SERVICE()
-							->endOffset();
+                        desc.timer->onScheduleUpdate( desc.id, iterate, desc.delay );
 
-						if( desc.dead == true )
-						{
-							break;
-						}
-					}
-				}break;
-			}
-		}
+                        TIMELINE_SERVICE()
+                            ->endOffset();
 
-		m_update = false;
+                        if( desc.dead == true )
+                        {
+                            break;
+                        }
+                    }
+                }break;
+            }
+        }
+
+        m_update = false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::freeze( uint32_t _id, bool _freeze )
-    { 
+    {
         ScheduleEventDesc * event;
 
         if( this->findScheduleEvent_( _id, event ) == false )
         {
-            LOGGER_ERROR("ScheduleManager::freeze not found shedule '%d'"
+            LOGGER_ERROR( "ScheduleManager::freeze not found shedule '%d'"
                 , _id
-                );
+            );
 
             return false;
         }
 
         event->freeze = _freeze;
 
-		return true;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::isFreeze( uint32_t _id ) const
@@ -376,9 +376,9 @@ namespace Mengine
 
         if( this->findScheduleEvent_( _id, event ) == false )
         {
-            LOGGER_ERROR("ScheduleManager::isFreeze not found shedule '%d'"
+            LOGGER_ERROR( "ScheduleManager::isFreeze not found shedule '%d'"
                 , _id
-                );
+            );
 
             return false;
         }
@@ -390,110 +390,110 @@ namespace Mengine
     {
         m_freezeAll = _freeze;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool ScheduleManager::isFreezeAll() const
-	{
-		return m_freezeAll;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    bool ScheduleManager::isFreezeAll() const
+    {
+        return m_freezeAll;
+    }
     //////////////////////////////////////////////////////////////////////////
     float ScheduleManager::getTimePassed( uint32_t _id ) const
     {
-		const ScheduleEventDesc * event;
+        const ScheduleEventDesc * event;
 
-		if( this->findScheduleEvent_( _id, event ) == false )
+        if( this->findScheduleEvent_( _id, event ) == false )
         {
-            LOGGER_ERROR("ScheduleManager::time not found shedule '%d'"
+            LOGGER_ERROR( "ScheduleManager::time not found shedule '%d'"
                 , _id
-                );
+            );
 
             return 0.f;
         }
 
-		float time = event->time_delay;
+        float time = event->time_delay;
 
-		return time;
+        return time;
     }
-	//////////////////////////////////////////////////////////////////////////
-	float ScheduleManager::getTimeLeft( uint32_t _id ) const
-	{ 
-		const ScheduleEventDesc * event;
+    //////////////////////////////////////////////////////////////////////////
+    float ScheduleManager::getTimeLeft( uint32_t _id ) const
+    {
+        const ScheduleEventDesc * event;
 
-		if( this->findScheduleEvent_( _id, event ) == false )
-		{
-			LOGGER_ERROR("ScheduleManager::time not found shedule '%d'"
-				, _id
-				);
+        if( this->findScheduleEvent_( _id, event ) == false )
+        {
+            LOGGER_ERROR( "ScheduleManager::time not found shedule '%d'"
+                , _id
+            );
 
-			return 0.f;
-		}
+            return 0.f;
+        }
 
-		float time = event->delay - event->time_delay;
+        float time = event->delay - event->time_delay;
 
-		return time;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ScheduleManager::setSpeedFactor( float _factor )
-	{
-		m_speedFactor = _factor;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ScheduleManager::getSpeedFactor() const
-	{
-		return m_speedFactor;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ScheduleManager::getTime() const
-	{
-		return m_time;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ScheduleManager::findScheduleEvent_( uint32_t _id, ScheduleEventDesc *& _desc )
-	{
-		ListSchedules::iterator it_find = 
-			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind(_id) );
+        return time;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScheduleManager::setSpeedFactor( float _factor )
+    {
+        m_speedFactor = _factor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ScheduleManager::getSpeedFactor() const
+    {
+        return m_speedFactor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ScheduleManager::getTime() const
+    {
+        return m_time;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ScheduleManager::findScheduleEvent_( uint32_t _id, ScheduleEventDesc *& _desc )
+    {
+        ListSchedules::iterator it_find =
+            std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind( _id ) );
 
-		if( it_find != m_schedules.end() )
-		{
-			_desc = &*it_find;
+        if( it_find != m_schedules.end() )
+        {
+            _desc = &*it_find;
 
-			return true;
-		}
-				
-		ListSchedules::iterator it_find_add =
-			std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
+            return true;
+        }
 
-		if( it_find_add != m_schedulesAdd.end() )
-		{
-			_desc = &*it_find_add;
+        ListSchedules::iterator it_find_add =
+            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
 
-			return true;
-		}
+        if( it_find_add != m_schedulesAdd.end() )
+        {
+            _desc = &*it_find_add;
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
+            return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ScheduleManager::findScheduleEvent_( uint32_t _id, const ScheduleEventDesc *& _desc ) const
     {
-		ListSchedules::const_iterator it_find =
-			std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind( _id ) );
+        ListSchedules::const_iterator it_find =
+            std::find_if( m_schedules.begin(), m_schedules.end(), FScheduleFind( _id ) );
 
-		if( it_find != m_schedules.end() )
-		{
-			_desc = &*it_find;
+        if( it_find != m_schedules.end() )
+        {
+            _desc = &*it_find;
 
-			return true;
-		}
+            return true;
+        }
 
-		ListSchedules::const_iterator it_find_add =
-			std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
+        ListSchedules::const_iterator it_find_add =
+            std::find_if( m_schedulesAdd.begin(), m_schedulesAdd.end(), FScheduleFind( _id ) );
 
-		if( it_find_add != m_schedulesAdd.end() )
-		{
-			_desc = &*it_find_add;
+        if( it_find_add != m_schedulesAdd.end() )
+        {
+            _desc = &*it_find_add;
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
+        return false;
     }
 }

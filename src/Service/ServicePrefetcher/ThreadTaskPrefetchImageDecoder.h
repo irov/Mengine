@@ -7,31 +7,31 @@
 
 namespace Mengine
 {
-	class ThreadTaskPrefetchImageDecoder
-		: public ThreadTaskPrefetch
-	{
-	public:
-		ThreadTaskPrefetchImageDecoder();
+    class ThreadTaskPrefetchImageDecoder
+        : public ThreadTaskPrefetch
+    {
+    public:
+        ThreadTaskPrefetchImageDecoder();
         ~ThreadTaskPrefetchImageDecoder() override;
 
-	public:
-		void setImageCodec( const ConstString & _codec );
+    public:
+        void setImageCodec( const ConstString & _codec );
         const ConstString & getImageCodec() const;
 
-		
-	public:
-		const ImageDecoderInterfacePtr & getDecoder() const;
 
-	protected:
-		bool _onRun() override;
-		bool _onMain() override;
+    public:
+        const ImageDecoderInterfacePtr & getDecoder() const;
 
-	protected:
-		ConstString m_imageCodec;
-				
-	protected:
-		ImageDecoderInterfacePtr m_imageDecoder;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ThreadTaskPrefetchImageDecoder> ThreadTaskPrefetchImageDecoderPtr;
+    protected:
+        bool _onRun() override;
+        bool _onMain() override;
+
+    protected:
+        ConstString m_imageCodec;
+
+    protected:
+        ImageDecoderInterfacePtr m_imageDecoder;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ThreadTaskPrefetchImageDecoder> ThreadTaskPrefetchImageDecoderPtr;
 }

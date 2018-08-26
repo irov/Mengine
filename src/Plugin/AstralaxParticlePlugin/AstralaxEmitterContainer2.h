@@ -22,54 +22,54 @@
 
 namespace Mengine
 {
-	class AstralaxParticleSystem2;
+    class AstralaxParticleSystem2;
 
-	class AstralaxEmitterContainer2
-		: public ServantBase<ParticleEmitterContainerInterface2>
-	{
-	public:
-		AstralaxEmitterContainer2();
-		~AstralaxEmitterContainer2() override;
+    class AstralaxEmitterContainer2
+        : public ServantBase<ParticleEmitterContainerInterface2>
+    {
+    public:
+        AstralaxEmitterContainer2();
+        ~AstralaxEmitterContainer2() override;
 
     public:
-		bool initialize( AstralaxParticleSystem2 * _particleSystem, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator );
-		void finalize();
+        bool initialize( AstralaxParticleSystem2 * _particleSystem, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator );
+        void finalize();
 
     public:
         bool isValid() const override;
 
-	public:
-		uint32_t getPtcId() const;
+    public:
+        uint32_t getPtcId() const;
 
-	public:
-		void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) override;
+    public:
+        void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) override;
 
-	public:
-		const ResourceImagePtr & getAtlasResourceImage( const Char * _file ) const;
+    public:
+        const ResourceImagePtr & getAtlasResourceImage( const Char * _file ) const;
 
-	public:
+    public:
         HM_EMITTER initialEmitterId() const;
         HM_EMITTER createEmitterId();
         void destroyEmitterId( HM_EMITTER _id );
 
-	protected:
-		bool loadContainer_( const void * _buffer, size_t _size, HM_FILE & _mf ) const;
-					
     protected:
-		AstralaxParticleSystem2 * m_particleSystem;
+        bool loadContainer_( const void * _buffer, size_t _size, HM_FILE & _mf ) const;
 
-		HM_FILE m_mf;
+    protected:
+        AstralaxParticleSystem2 * m_particleSystem;
+
+        HM_FILE m_mf;
         HM_EMITTER m_emitterId;
 
         uint32_t m_dublicateCount;
 
-		uint32_t m_ptcId;
-		
-		MemoryInterfacePtr m_memory;
+        uint32_t m_ptcId;
 
-		typedef Vector<ResourceImagePtr> VectorResourceImage;
-		VectorResourceImage m_resourceImages;
-	};
+        MemoryInterfacePtr m_memory;
 
-	typedef IntrusivePtr<AstralaxEmitterContainer2> AstralaxEmitterContainer2Ptr;
+        typedef Vector<ResourceImagePtr> VectorResourceImage;
+        VectorResourceImage m_resourceImages;
+    };
+
+    typedef IntrusivePtr<AstralaxEmitterContainer2> AstralaxEmitterContainer2Ptr;
 }

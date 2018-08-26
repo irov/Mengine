@@ -2398,8 +2398,8 @@ namespace Mengine
         if( this->isPlay() == false )
         {
             return;
-        }       
-        
+        }
+
         float totalTime = this->calcTotalTime( _context );
 
         m_frameTime += totalTime;

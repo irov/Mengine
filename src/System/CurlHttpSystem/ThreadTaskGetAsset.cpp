@@ -7,97 +7,97 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ThreadTaskGetAsset::ThreadTaskGetAsset()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    ThreadTaskGetAsset::ThreadTaskGetAsset()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     ThreadTaskGetAsset::~ThreadTaskGetAsset()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskGetAsset::initialize( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath )
-	{
-		m_url = _url;
-		m_login = _login;
-		m_password = _password;
-		m_fileGroup = _fileGroup;
-		m_filePath = _filepath;
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadTaskGetAsset::initialize( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath )
+    {
+        m_url = _url;
+        m_login = _login;
+        m_password = _password;
+        m_fileGroup = _fileGroup;
+        m_filePath = _filepath;
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskGetAsset::_onRun()
-	{
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadTaskGetAsset::_onRun()
+    {
         if( m_fileGroup->createDirectory( m_filePath ) == false )
         {
             return false;
         }
 
-		m_stream = FILE_SERVICE()
-			->openOutputFile( m_fileGroup, m_filePath );
+        m_stream = FILE_SERVICE()
+            ->openOutputFile( m_fileGroup, m_filePath );
 
-		if( m_stream == nullptr )
-		{
-			return false;
-		}
+        if( m_stream == nullptr )
+        {
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static size_t WriteMemoryCallback( void * _contents, size_t _size, size_t _nmemb, void * _userp )
-	{
-		OutputStreamInterface * stream_ptr = (OutputStreamInterface *)_userp;
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static size_t WriteMemoryCallback( void * _contents, size_t _size, size_t _nmemb, void * _userp )
+    {
+        OutputStreamInterface * stream_ptr = (OutputStreamInterface *)_userp;
 
-		size_t realsize = _size * _nmemb;
+        size_t realsize = _size * _nmemb;
 
-		stream_ptr->write( _contents, realsize );
+        stream_ptr->write( _contents, realsize );
 
-		return realsize;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static int XFERInfoCallback( void * _userp
-		, curl_off_t _dltotal, curl_off_t _dlnow
-		, curl_off_t _ultotal, curl_off_t _ulnow 
-		)
-	{
-		(void)_dltotal;
-		(void)_dlnow;
-		(void)_ultotal;
-		(void)_ulnow;
+        return realsize;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static int XFERInfoCallback( void * _userp
+        , curl_off_t _dltotal, curl_off_t _dlnow
+        , curl_off_t _ultotal, curl_off_t _ulnow
+    )
+    {
+        (void)_dltotal;
+        (void)_dlnow;
+        (void)_ultotal;
+        (void)_ulnow;
 
-		ThreadTaskGetAsset * task = (ThreadTaskGetAsset *)_userp;
+        ThreadTaskGetAsset * task = (ThreadTaskGetAsset *)_userp;
 
-		if( task->isCancel() == true )
-		{
-			return 1;
-		}
+        if( task->isCancel() == true )
+        {
+            return 1;
+        }
 
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskGetAsset::_onCURL( CURL * _curl )
-	{		
-		curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskGetAsset::_onCURL( CURL * _curl )
+    {
+        curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
 
-		curl_easy_setopt( _curl, CURLOPT_USERNAME, m_login.c_str() );
-		curl_easy_setopt( _curl, CURLOPT_PASSWORD, m_password.c_str() );
+        curl_easy_setopt( _curl, CURLOPT_USERNAME, m_login.c_str() );
+        curl_easy_setopt( _curl, CURLOPT_PASSWORD, m_password.c_str() );
 
-		/* send all data to this function  */
-		curl_easy_setopt( _curl, CURLOPT_WRITEFUNCTION, &WriteMemoryCallback );
+        /* send all data to this function  */
+        curl_easy_setopt( _curl, CURLOPT_WRITEFUNCTION, &WriteMemoryCallback );
 
-		/* we pass our 'chunk' struct to the callback function */
-		OutputStreamInterface * stream_ptr = m_stream.get();
-		curl_easy_setopt( _curl, CURLOPT_WRITEDATA, (void *)stream_ptr );
+        /* we pass our 'chunk' struct to the callback function */
+        OutputStreamInterface * stream_ptr = m_stream.get();
+        curl_easy_setopt( _curl, CURLOPT_WRITEDATA, (void *)stream_ptr );
 
-		curl_easy_setopt( _curl, CURLOPT_XFERINFOFUNCTION, &XFERInfoCallback );
-		curl_easy_setopt( _curl, CURLOPT_XFERINFODATA, (void *)this );
+        curl_easy_setopt( _curl, CURLOPT_XFERINFOFUNCTION, &XFERInfoCallback );
+        curl_easy_setopt( _curl, CURLOPT_XFERINFODATA, (void *)this );
 
-		/* some servers don't like requests that are made without a user-agent
-		field, so we provide one */
-		//curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
-		
-		curl_easy_setopt( _curl, CURLOPT_NOPROGRESS, 0L );
+        /* some servers don't like requests that are made without a user-agent
+        field, so we provide one */
+        //curl_easy_setopt(curl_handle, CURLOPT_USERAGENT, "libcurl-agent/1.0");
+
+        curl_easy_setopt( _curl, CURLOPT_NOPROGRESS, 0L );
 
         if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
         {
@@ -107,15 +107,15 @@ namespace Mengine
                 , m_password.c_str()
                 , m_fileGroup->getName().c_str()
                 , m_filePath.c_str()
-                );
+            );
         }
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskGetAsset::_onComplete( bool _successful )
-	{
-		m_stream->flush();
-		m_stream = nullptr;
-		
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskGetAsset::_onComplete( bool _successful )
+    {
+        m_stream->flush();
+        m_stream = nullptr;
+
         ThreadTaskCurl::_onComplete( _successful );
-	}
+    }
 }

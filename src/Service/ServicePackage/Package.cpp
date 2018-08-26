@@ -19,651 +19,651 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Package::Package()
-		: m_preload(false)
-		, m_load(false)
-		, m_enable(false)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Package::setup( const ConstString & _name
-		, const ConstString & _type
-		, const ConstString & _locale
-		, const Tags & _platform
-		, const FilePath & _descriptionPath
-		, const FileGroupInterfacePtr & _category
-		, const FilePath & _path
-		, bool _preload	)
-	{
+    //////////////////////////////////////////////////////////////////////////
+    Package::Package()
+        : m_preload( false )
+        , m_load( false )
+        , m_enable( false )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::setup( const ConstString & _name
+        , const ConstString & _type
+        , const ConstString & _locale
+        , const Tags & _platform
+        , const FilePath & _descriptionPath
+        , const FileGroupInterfacePtr & _category
+        , const FilePath & _path
+        , bool _preload )
+    {
         m_name = _name;
-		m_type = _type;
-		m_locale = _locale;
-		m_platform = _platform;
-		m_descriptionPath = _descriptionPath;
-		m_category = _category;
-		m_path = _path;
-		m_preload = _preload;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Package::setPreload( bool _value )
-	{
-		m_preload = _value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::isPreload() const
-	{
-		return m_preload;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Package::getName() const
-	{
-		return m_name;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Package::setLocale( const ConstString & _locale )
-	{
-		m_locale = _locale;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Package::getLocale() const
-	{
-		return m_locale;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Package::setPlatfromTags( const Tags & _platform )
-	{
-		m_platform = _platform;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Tags & Package::getPlatfromTags() const
-	{
-		return m_platform;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Package::setPath( const FilePath & _path )
-	{
-		m_path = _path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const FilePath & Package::getPath() const
-	{
-		return m_path;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::load()
-	{		
-		if( this->mountFileGroup_() == false )
-		{
-			return false;
-		}
+        m_type = _type;
+        m_locale = _locale;
+        m_platform = _platform;
+        m_descriptionPath = _descriptionPath;
+        m_category = _category;
+        m_path = _path;
+        m_preload = _preload;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::setPreload( bool _value )
+    {
+        m_preload = _value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::isPreload() const
+    {
+        return m_preload;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & Package::getName() const
+    {
+        return m_name;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::setLocale( const ConstString & _locale )
+    {
+        m_locale = _locale;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & Package::getLocale() const
+    {
+        return m_locale;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::setPlatfromTags( const Tags & _platform )
+    {
+        m_platform = _platform;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Tags & Package::getPlatfromTags() const
+    {
+        return m_platform;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::setPath( const FilePath & _path )
+    {
+        m_path = _path;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & Package::getPath() const
+    {
+        return m_path;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::load()
+    {
+        if( this->mountFileGroup_() == false )
+        {
+            return false;
+        }
 
-		if( this->loadPak_() == false )
-		{
-			return false;
-		}
+        if( this->loadPak_() == false )
+        {
+            return false;
+        }
 
-		m_load = true;
+        m_load = true;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::isLoad() const
-	{
-		return m_load;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::mountFileGroup_()
-	{	
-		if( FILE_SERVICE()
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::isLoad() const
+    {
+        return m_load;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::mountFileGroup_()
+    {
+        if( FILE_SERVICE()
             ->mountFileGroup( m_name, m_category, m_path, m_type, &m_fileGroup ) == false )
-		{
-			LOGGER_ERROR("ResourcePak::mountFileGroup_ failed to mount pak '%s' path '%s'"
-				, m_name.c_str()
-				//, m_baseDir.c_str()
-				, m_path.c_str()
-				);
+        {
+            LOGGER_ERROR( "ResourcePak::mountFileGroup_ failed to mount pak '%s' path '%s'"
+                , m_name.c_str()
+                //, m_baseDir.c_str()
+                , m_path.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::unmountFileGroup_()
-	{
-		if( FILE_SERVICE()
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::unmountFileGroup_()
+    {
+        if( FILE_SERVICE()
             ->unmountFileGroup( m_name ) == false )
-		{
-			LOGGER_ERROR("ResourcePak::unmountFileGroup_ failed to mount pak '%s' path '%s'"
-				, m_name.c_str()
-				, m_path.c_str()
-				);
+        {
+            LOGGER_ERROR( "ResourcePak::unmountFileGroup_ failed to mount pak '%s' path '%s'"
+                , m_name.c_str()
+                , m_path.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::loadPak_()
-	{
-		if( SERVICE_EXIST( LoaderServiceInterface ) == false )
-		{
-			return false;
-		}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::loadPak_()
+    {
+        if( SERVICE_EXIST( LoaderServiceInterface ) == false )
+        {
+            return false;
+        }
 
-		if( m_descriptionPath.empty() == true )
-		{
-			return true;
-		}
+        if( m_descriptionPath.empty() == true )
+        {
+            return true;
+        }
 
-		Metacode::Meta_Data::Meta_Pak pak;
+        Metacode::Meta_Data::Meta_Pak pak;
 
-		bool exist = false;
-		if( LOADER_SERVICE()
+        bool exist = false;
+        if( LOADER_SERVICE()
             ->load( m_fileGroup, m_descriptionPath, &pak, exist ) == false )
-		{
-			LOGGER_ERROR("ResourcePak::load Invalid resource file '%s:%s' '%s'"
-				, m_path.c_str()
-				, m_name.c_str()
-				, m_descriptionPath.c_str()
-				);
+        {
+            LOGGER_ERROR( "ResourcePak::load Invalid resource file '%s:%s' '%s'"
+                , m_path.c_str()
+                , m_name.c_str()
+                , m_descriptionPath.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-        m_resourcesDesc.reserve( 32 );        
+        m_resourcesDesc.reserve( 32 );
 
-		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Scripts & includes_scripts = pak.get_Includes_Scripts();
+        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Scripts & includes_scripts = pak.get_Includes_Scripts();
 
-		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Scripts::const_iterator
-			it = includes_scripts.begin(),
-			it_end = includes_scripts.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_Data::Meta_Pak::Meta_Scripts & meta_scripts = *it;
+        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Scripts::const_iterator
+            it = includes_scripts.begin(),
+            it_end = includes_scripts.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_Pak::Meta_Scripts & meta_scripts = *it;
 
-			const FilePath & Path = meta_scripts.get_Path();
+            const FilePath & Path = meta_scripts.get_Path();
 
             ConstString Module;
             meta_scripts.get_Module( &Module );
             ConstString Initializer;
             meta_scripts.get_Initializer( &Initializer );
 
-			ConstString Finalizer;
-			meta_scripts.get_Finalizer( &Finalizer );
+            ConstString Finalizer;
+            meta_scripts.get_Finalizer( &Finalizer );
 
-			Tags Platform;
-			meta_scripts.get_Platform( &Platform );
+            Tags Platform;
+            meta_scripts.get_Platform( &Platform );
 
-			this->addScriptPak_( Path, Module, Initializer, Finalizer, Platform );
-		}
+            this->addScriptPak_( Path, Module, Initializer, Finalizer, Platform );
+        }
 
-		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts & includes_fonts = pak.get_Includes_Fonts();
+        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts & includes_fonts = pak.get_Includes_Fonts();
 
-		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts::const_iterator
-			it = includes_fonts.begin(),
-			it_end = includes_fonts.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_Data::Meta_Pak::Meta_Fonts & meta_fonts = *it;
+        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Fonts::const_iterator
+            it = includes_fonts.begin(),
+            it_end = includes_fonts.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_Pak::Meta_Fonts & meta_fonts = *it;
 
-			const FilePath & Path = meta_fonts.get_Path();
+            const FilePath & Path = meta_fonts.get_Path();
 
             Tags Platform;
             meta_fonts.get_Platform( &Platform );
 
-			this->addFontPath_( Path, Platform );
-		}
+            this->addFontPath_( Path, Platform );
+        }
 
-		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Resources & includes_resources = pak.get_Includes_Resources();
+        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Resources & includes_resources = pak.get_Includes_Resources();
 
-		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Resources::const_iterator
-			it = includes_resources.begin(),
-			it_end = includes_resources.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_Data::Meta_Pak::Meta_Resources & meta_resources = *it;
+        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Resources::const_iterator
+            it = includes_resources.begin(),
+            it_end = includes_resources.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_Pak::Meta_Resources & meta_resources = *it;
 
-			bool ignored = false;
-			meta_resources.get_Ignored( &ignored );
+            bool ignored = false;
+            meta_resources.get_Ignored( &ignored );
 
-			Tags platform;
-			meta_resources.get_Platform( &platform );
+            Tags platform;
+            meta_resources.get_Platform( &platform );
 
-			const Metacode::Meta_Data::Meta_Pak::Meta_Resources::VectorMeta_Resource & includes_resource = meta_resources.get_Includes_Resource();
-            
-			for( Metacode::Meta_Data::Meta_Pak::Meta_Resources::VectorMeta_Resource::const_iterator
-				it_include = includes_resource.begin(),
-				it_include_end = includes_resource.end();
-			it_include != it_include_end;
-			++it_include)
-			{
-				const Metacode::Meta_Data::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it_include;
+            const Metacode::Meta_Data::Meta_Pak::Meta_Resources::VectorMeta_Resource & includes_resource = meta_resources.get_Includes_Resource();
 
-				const FilePath & Path = meta_resource.get_Path();
-				this->addResource_( Path, platform, ignored );
-			}
-		}
+            for( Metacode::Meta_Data::Meta_Pak::Meta_Resources::VectorMeta_Resource::const_iterator
+                it_include = includes_resource.begin(),
+                it_include_end = includes_resource.end();
+                it_include != it_include_end;
+                ++it_include )
+            {
+                const Metacode::Meta_Data::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it_include;
 
-		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Texts & includes_tests = pak.get_Includes_Texts();
+                const FilePath & Path = meta_resource.get_Path();
+                this->addResource_( Path, platform, ignored );
+            }
+        }
 
-		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Texts::const_iterator
-			it = includes_tests.begin(),
-			it_end = includes_tests.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_Data::Meta_Pak::Meta_Texts & meta_texts = *it;
+        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Texts & includes_tests = pak.get_Includes_Texts();
 
-			Tags platform;
-			meta_texts.get_Platform( &platform );
+        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Texts::const_iterator
+            it = includes_tests.begin(),
+            it_end = includes_tests.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_Pak::Meta_Texts & meta_texts = *it;
 
-			const Metacode::Meta_Data::Meta_Pak::Meta_Texts::VectorMeta_Text & includes_text = meta_texts.get_Includes_Text();
+            Tags platform;
+            meta_texts.get_Platform( &platform );
 
-			for( Metacode::Meta_Data::Meta_Pak::Meta_Texts::VectorMeta_Text::const_iterator
-				it_include = includes_text.begin(),
-				it_include_end = includes_text.end();
-				it_include != it_include_end;
-			++it_include)
-			{
-				const Metacode::Meta_Data::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it_include;
+            const Metacode::Meta_Data::Meta_Pak::Meta_Texts::VectorMeta_Text & includes_text = meta_texts.get_Includes_Text();
 
-				const FilePath & Path = meta_text.get_Path();
-				this->addTextPath_( Path, platform );
-			}
-		}
+            for( Metacode::Meta_Data::Meta_Pak::Meta_Texts::VectorMeta_Text::const_iterator
+                it_include = includes_text.begin(),
+                it_include_end = includes_text.end();
+                it_include != it_include_end;
+                ++it_include )
+            {
+                const Metacode::Meta_Data::Meta_Pak::Meta_Texts::Meta_Text & meta_text = *it_include;
 
-		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Datas & includes_datas = pak.get_Includes_Datas();
+                const FilePath & Path = meta_text.get_Path();
+                this->addTextPath_( Path, platform );
+            }
+        }
 
-		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Datas::const_iterator
-			it = includes_datas.begin(),
-			it_end = includes_datas.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_Data::Meta_Pak::Meta_Datas & meta_datas = *it;
+        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Datas & includes_datas = pak.get_Includes_Datas();
 
-			Tags platform;
-			meta_datas.get_Platform( &platform );
+        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Datas::const_iterator
+            it = includes_datas.begin(),
+            it_end = includes_datas.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_Pak::Meta_Datas & meta_datas = *it;
 
-			const Metacode::Meta_Data::Meta_Pak::Meta_Datas::VectorMeta_Data & includes_data = meta_datas.get_Includes_Data();
+            Tags platform;
+            meta_datas.get_Platform( &platform );
 
-			for( Metacode::Meta_Data::Meta_Pak::Meta_Datas::VectorMeta_Data::const_iterator
-				it_include = includes_data.begin(),
-				it_include_end = includes_data.end();
-				it_include != it_include_end;
-			++it_include)
-			{
-				const Metacode::Meta_Data::Meta_Pak::Meta_Datas::Meta_Data & meta_data = *it_include;
+            const Metacode::Meta_Data::Meta_Pak::Meta_Datas::VectorMeta_Data & includes_data = meta_datas.get_Includes_Data();
 
-				const ConstString & name = meta_data.get_Name();
-				const FilePath & path = meta_data.get_Path();
+            for( Metacode::Meta_Data::Meta_Pak::Meta_Datas::VectorMeta_Data::const_iterator
+                it_include = includes_data.begin(),
+                it_include_end = includes_data.end();
+                it_include != it_include_end;
+                ++it_include )
+            {
+                const Metacode::Meta_Data::Meta_Pak::Meta_Datas::Meta_Data & meta_data = *it_include;
 
-				this->addData_( name, path, platform );
-			}
-		}
+                const ConstString & name = meta_data.get_Name();
+                const FilePath & path = meta_data.get_Path();
 
-		const Metacode::Meta_Data::Meta_Pak::VectorMeta_Materials & includes_materials = pak.get_Includes_Materials();
+                this->addData_( name, path, platform );
+            }
+        }
 
-		for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Materials::const_iterator
-			it = includes_materials.begin(),
-			it_end = includes_materials.end();
-		it != it_end;
-		++it )
-		{
-			const Metacode::Meta_Data::Meta_Pak::Meta_Materials & meta_materials = *it;
+        const Metacode::Meta_Data::Meta_Pak::VectorMeta_Materials & includes_materials = pak.get_Includes_Materials();
 
-			Tags platform;
-			meta_materials.get_Platform( &platform );
+        for( Metacode::Meta_Data::Meta_Pak::VectorMeta_Materials::const_iterator
+            it = includes_materials.begin(),
+            it_end = includes_materials.end();
+            it != it_end;
+            ++it )
+        {
+            const Metacode::Meta_Data::Meta_Pak::Meta_Materials & meta_materials = *it;
 
-			const Metacode::Meta_Data::Meta_Pak::Meta_Materials::VectorMeta_Material & includes_material = meta_materials.get_Includes_Material();
+            Tags platform;
+            meta_materials.get_Platform( &platform );
 
-			for( Metacode::Meta_Data::Meta_Pak::Meta_Materials::VectorMeta_Material::const_iterator
-				it_include = includes_material.begin(),
-				it_include_end = includes_material.end();
-				it_include != it_include_end;
-			++it_include)
-			{
-				const Metacode::Meta_Data::Meta_Pak::Meta_Materials::Meta_Material & meta_material = *it_include;
+            const Metacode::Meta_Data::Meta_Pak::Meta_Materials::VectorMeta_Material & includes_material = meta_materials.get_Includes_Material();
 
-				const FilePath & path = meta_material.get_Path();
+            for( Metacode::Meta_Data::Meta_Pak::Meta_Materials::VectorMeta_Material::const_iterator
+                it_include = includes_material.begin(),
+                it_include_end = includes_material.end();
+                it_include != it_include_end;
+                ++it_include )
+            {
+                const Metacode::Meta_Data::Meta_Pak::Meta_Materials::Meta_Material & meta_material = *it_include;
 
-				this->addMaterial_( path, platform );
-			}
-		}
+                const FilePath & path = meta_material.get_Path();
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::enable()
-	{
+                this->addMaterial_( path, platform );
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::enable()
+    {
         LOGGER_WARNING( "Package enable... '%s'"
             , m_name.c_str()
         );
 
-		if( m_enable == true )
-		{
-			LOGGER_ERROR("Package::enable already enable '%s:%s' '%s'"
-				, m_path.c_str()
-				, m_name.c_str()
-				, m_descriptionPath.c_str()
-				);
+        if( m_enable == true )
+        {
+            LOGGER_ERROR( "Package::enable already enable '%s:%s' '%s'"
+                , m_path.c_str()
+                , m_name.c_str()
+                , m_descriptionPath.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		//const Tags & platformTags = PLATFORM_SERVICE()
-		//	->getPlatformTags();
+        //const Tags & platformTags = PLATFORM_SERVICE()
+        //	->getPlatformTags();
 
-		SCRIPT_SERVICE()
-			->addModulePath( m_name, m_scriptsPackages );
+        SCRIPT_SERVICE()
+            ->addModulePath( m_name, m_scriptsPackages );
 
         for( const PakResourceDesc & desc : m_resourcesDesc )
-		{
+        {
             //PROFILER_SERVICE(m_serviceProvider)
             //    ->memoryBegin();
 
-			if( RESOURCE_SERVICE()
-				->loadResources( m_locale, m_fileGroup, desc.path, desc.ignored ) == false )
+            if( RESOURCE_SERVICE()
+                ->loadResources( m_locale, m_fileGroup, desc.path, desc.ignored ) == false )
             {
-                LOGGER_ERROR("Package::enable '%s:%s' invalid load resource '%s'"
+                LOGGER_ERROR( "Package::enable '%s:%s' invalid load resource '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
                     , desc.path.c_str()
-                    );
+                );
 
                 return false;
             }
 
-			//size_t memory = PROFILER_SERVICE()
-			//	->memoryEnd();
+            //size_t memory = PROFILER_SERVICE()
+            //	->memoryEnd();
 
-			//LOGGER_ERROR("resource desc %.04f -- %s"
-			//	, float( memory ) / (1024.f)
-			//	, desc.path.c_str()
-			//	);
-		}
+            //LOGGER_ERROR("resource desc %.04f -- %s"
+            //	, float( memory ) / (1024.f)
+            //	, desc.path.c_str()
+            //	);
+        }
 
         for( const PakFontDesc & desc : m_pathFonts )
-		{
-			if( this->loadFont_( desc.path ) == false )
-			{
-                LOGGER_ERROR("Package::enable '%s:%s' invalid load font '%s'"
-                    , m_path.c_str()
-                    , m_name.c_str()
-					, desc.path.c_str()
-                    );
-
-				return false;
-			}
-		}
-
-        for( const PakTextDesc & desc : m_pathTexts )
-		{
-			if( this->loadText_( desc.path ) == false )
+        {
+            if( this->loadFont_( desc.path ) == false )
             {
-                LOGGER_ERROR("Package::enable '%s:%s' invalid load text '%s'"
+                LOGGER_ERROR( "Package::enable '%s:%s' invalid load font '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
-					, desc.path.c_str()
-                    );
+                    , desc.path.c_str()
+                );
 
                 return false;
             }
-		}
+        }
+
+        for( const PakTextDesc & desc : m_pathTexts )
+        {
+            if( this->loadText_( desc.path ) == false )
+            {
+                LOGGER_ERROR( "Package::enable '%s:%s' invalid load text '%s'"
+                    , m_path.c_str()
+                    , m_name.c_str()
+                    , desc.path.c_str()
+                );
+
+                return false;
+            }
+        }
 
         for( const PakDataDesc & desc : m_datas )
-		{
-			if( this->addUserData_( desc.name, desc.path ) == false )
-			{
-                LOGGER_ERROR("Package::enable '%s:%s' invalid load userdata '%s' path '%s'"
+        {
+            if( this->addUserData_( desc.name, desc.path ) == false )
+            {
+                LOGGER_ERROR( "Package::enable '%s:%s' invalid load userdata '%s' path '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
                     , desc.name.c_str()
                     , desc.path.c_str()
-                    );
+                );
 
-				return false;
-			}
-		}
+                return false;
+            }
+        }
 
         for( const PakMaterialDesc & desc : m_pathMaterials )
-		{
-			if( this->loadMaterials_( desc.path ) == false )
-			{
-                LOGGER_ERROR("Package::enable '%s:%s' invalid load material '%s'"
+        {
+            if( this->loadMaterials_( desc.path ) == false )
+            {
+                LOGGER_ERROR( "Package::enable '%s:%s' invalid load material '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
-					, desc.path.c_str()
-                    );
+                    , desc.path.c_str()
+                );
 
-				return false;
-			}
-		}
+                return false;
+            }
+        }
 
-		m_enable = true;
+        m_enable = true;
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::validate()
-	{
-		bool successful = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::validate()
+    {
+        bool successful = true;
 
         for( const PakResourceDesc & desc : m_resourcesDesc )
-		{
-			if( desc.ignored == true )
-			{
-				continue;
-			}
+        {
+            if( desc.ignored == true )
+            {
+                continue;
+            }
 
-			if( RESOURCE_SERVICE()
-				->validateResources( m_locale, m_fileGroup, desc.path ) == false )
-			{
-				successful = false;
-			}
-		}
+            if( RESOURCE_SERVICE()
+                ->validateResources( m_locale, m_fileGroup, desc.path ) == false )
+            {
+                successful = false;
+            }
+        }
 
-		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::disable()
-	{
-		if( m_enable == false )
-		{
-			LOGGER_ERROR("Package::disable already disable '%s:%s' '%s'"
-				, m_path.c_str()
-				, m_name.c_str()
-				, m_descriptionPath.c_str()
-				);
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::disable()
+    {
+        if( m_enable == false )
+        {
+            LOGGER_ERROR( "Package::disable already disable '%s:%s' '%s'"
+                , m_path.c_str()
+                , m_name.c_str()
+                , m_descriptionPath.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		m_enable = false;
+        m_enable = false;
 
-		SCRIPT_SERVICE()
-			->removeModulePath( m_name, m_scriptsPackages );
+        SCRIPT_SERVICE()
+            ->removeModulePath( m_name, m_scriptsPackages );
 
         for( const PakResourceDesc & desc : m_resourcesDesc )
-		{
-			if( RESOURCE_SERVICE()
-				->unloadResources( m_locale, m_fileGroup, desc.path ) == false )
-			{
-				return false;
-			}
-		}
+        {
+            if( RESOURCE_SERVICE()
+                ->unloadResources( m_locale, m_fileGroup, desc.path ) == false )
+            {
+                return false;
+            }
+        }
 
         for( const PakFontDesc & desc : m_pathFonts )
-		{
-			if( this->unloadFont_( desc.path ) == false )
-			{
-				return false;
-			}
-		}
+        {
+            if( this->unloadFont_( desc.path ) == false )
+            {
+                return false;
+            }
+        }
 
         for( const PakTextDesc & desc : m_pathTexts )
-		{
-			if( this->unloadText_( desc.path ) == false )
-			{
-				return false;
-			}
-		}
+        {
+            if( this->unloadText_( desc.path ) == false )
+            {
+                return false;
+            }
+        }
 
         for( const PakDataDesc & desc : m_datas )
-		{
-			if( this->removeUserData_( desc.name ) == false )
-			{
-				return false;
-			}
-		}
+        {
+            if( this->removeUserData_( desc.name ) == false )
+            {
+                return false;
+            }
+        }
 
         for( const PakMaterialDesc & desc : m_pathMaterials )
-		{
-			if( this->unloadMaterials_( desc.path ) == false )
-			{
-				return false;
-			}
-		}
+        {
+            if( this->unloadMaterials_( desc.path ) == false )
+            {
+                return false;
+            }
+        }
 
-		if( this->unmountFileGroup_() == false )
-		{
-			return false;
-		}
+        if( this->unmountFileGroup_() == false )
+        {
+            return false;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::isEnable() const
-	{
-		return m_enable;
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
-	bool Package::loadText_( const FilePath & _path )
+    bool Package::isEnable() const
+    {
+        return m_enable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::loadText_( const FilePath & _path )
     {
         bool result = TEXT_SERVICE()
-			->loadTextEntry( m_fileGroup, _path );
+            ->loadTextEntry( m_fileGroup, _path );
 
         return result;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::unloadText_( const FilePath & _path )
-	{
-		bool result = TEXT_SERVICE()
-			->unloadTextEntry( m_fileGroup, _path );
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::unloadText_( const FilePath & _path )
+    {
+        bool result = TEXT_SERVICE()
+            ->unloadTextEntry( m_fileGroup, _path );
 
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::loadFont_( const FilePath & _path )
-	{
-		bool result = TEXT_SERVICE()
-			->loadFonts( m_fileGroup, _path );
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::loadFont_( const FilePath & _path )
+    {
+        bool result = TEXT_SERVICE()
+            ->loadFonts( m_fileGroup, _path );
 
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::unloadFont_( const FilePath & _path )
-	{
-		bool result = TEXT_SERVICE()
-			->unloadFonts( m_fileGroup, _path );
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::unloadFont_( const FilePath & _path )
+    {
+        bool result = TEXT_SERVICE()
+            ->unloadFonts( m_fileGroup, _path );
 
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::loadMaterials_( const FilePath & _path )
-	{
-		bool result = RENDERMATERIAL_SERVICE()
-			->loadMaterials( m_fileGroup, _path );
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::loadMaterials_( const FilePath & _path )
+    {
+        bool result = RENDERMATERIAL_SERVICE()
+            ->loadMaterials( m_fileGroup, _path );
 
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::unloadMaterials_( const FilePath & _path )
-	{
-		bool result = RENDERMATERIAL_SERVICE()
-			->unloadMaterials( m_fileGroup, _path );
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::unloadMaterials_( const FilePath & _path )
+    {
+        bool result = RENDERMATERIAL_SERVICE()
+            ->unloadMaterials( m_fileGroup, _path );
 
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::addUserData_( const ConstString & _name, const FilePath & _path )
-	{
-		bool result = USERDATA_SERVICE()
-			->addUserdata( _name, m_fileGroup, _path );
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::addUserData_( const ConstString & _name, const FilePath & _path )
+    {
+        bool result = USERDATA_SERVICE()
+            ->addUserdata( _name, m_fileGroup, _path );
 
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Package::removeUserData_( const ConstString & _name )
-	{
-		bool result = USERDATA_SERVICE()
-			->removeUserdata( _name );
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Package::removeUserData_( const ConstString & _name )
+    {
+        bool result = USERDATA_SERVICE()
+            ->removeUserdata( _name );
 
-		return result;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Package::addResource_( const FilePath & _path, const Tags & _platform, bool _ignored )
-	{
-		PakResourceDesc desc;
-		desc.path = _path;
-		desc.platform = _platform;
-		desc.ignored = _ignored;
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::addResource_( const FilePath & _path, const Tags & _platform, bool _ignored )
+    {
+        PakResourceDesc desc;
+        desc.path = _path;
+        desc.platform = _platform;
+        desc.ignored = _ignored;
 
-		m_resourcesDesc.emplace_back( desc );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Package::addTextPath_( const FilePath & _path, const Tags & _platform )
-	{
-		PakTextDesc desc;
-		desc.path = _path;
-		desc.platform = _platform;
+        m_resourcesDesc.emplace_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::addTextPath_( const FilePath & _path, const Tags & _platform )
+    {
+        PakTextDesc desc;
+        desc.path = _path;
+        desc.platform = _platform;
 
-		m_pathTexts.emplace_back( desc );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Package::addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform )
-	{
-		ScriptModulePack pak;
-		pak.path = _path;
-		pak.module = _module;
-		pak.initializer = _initializer;
-		pak.finalizer = _finalizer;
-		pak.platform = _platform;
+        m_pathTexts.emplace_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform )
+    {
+        ScriptModulePack pak;
+        pak.path = _path;
+        pak.module = _module;
+        pak.initializer = _initializer;
+        pak.finalizer = _finalizer;
+        pak.platform = _platform;
 
-		m_scriptsPackages.emplace_back( pak );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Package::addFontPath_( const FilePath & _path, const Tags & _platform )
-	{
-		PakFontDesc desc;
-		desc.path = _path;
-		desc.platform = _platform;
+        m_scriptsPackages.emplace_back( pak );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::addFontPath_( const FilePath & _path, const Tags & _platform )
+    {
+        PakFontDesc desc;
+        desc.path = _path;
+        desc.platform = _platform;
 
-		m_pathFonts.emplace_back( desc );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Package::addData_( const ConstString & _name, const FilePath & _path, const Tags & _platform )
-	{
-		PakDataDesc desc;
-		desc.name = _name;
-		desc.path = _path;
-		desc.platform = _platform;
+        m_pathFonts.emplace_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::addData_( const ConstString & _name, const FilePath & _path, const Tags & _platform )
+    {
+        PakDataDesc desc;
+        desc.name = _name;
+        desc.path = _path;
+        desc.platform = _platform;
 
-		m_datas.emplace_back( desc );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Package::addMaterial_( const FilePath & _path, const Tags & _platform )
-	{ 
-		PakMaterialDesc desc;
-		desc.path = _path;
-		desc.platform = _platform;
+        m_datas.emplace_back( desc );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Package::addMaterial_( const FilePath & _path, const Tags & _platform )
+    {
+        PakMaterialDesc desc;
+        desc.path = _path;
+        desc.platform = _platform;
 
-		m_pathMaterials.emplace_back( desc );
-	}
+        m_pathMaterials.emplace_back( desc );
+    }
 }

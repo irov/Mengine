@@ -19,8 +19,8 @@
 
 namespace Mengine
 {
-	class Surface
-		: public Servant
+    class Surface
+        : public Servant
         , public Identity
         , public Visitable
         , public Scriptable
@@ -28,12 +28,12 @@ namespace Mengine
         , public Compilable
         , public Animatable
         , public Eventable
-	{
+    {
         DECLARE_VISITABLE_BASE();
 
-	public:
-		Surface();
-		~Surface() override;
+    public:
+        Surface();
+        ~Surface() override;
 
     public:
         virtual const mt::vec2f & getMaxSize() const = 0;
@@ -46,7 +46,7 @@ namespace Mengine
         virtual void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) = 0;
 
         virtual const ColourValue & getColor() const = 0;
-        
+
     public:
         void activate();
         void deactivate();
@@ -58,7 +58,7 @@ namespace Mengine
         virtual void _activate();
         virtual void _deactivate();
         virtual bool _update( const UpdateContext * _context );
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<Surface> SurfacePtr;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Surface> SurfacePtr;
 }

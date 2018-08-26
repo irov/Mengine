@@ -6,11 +6,11 @@
 
 namespace Mengine
 {
-	class PickDecoder
-		: public Decoder<PickDecoderInterface>
-	{
-	public:
-		PickDecoder();
+    class PickDecoder
+        : public Decoder<PickDecoderInterface>
+    {
+    public:
+        PickDecoder();
 
     public:
         bool setOptions( const CodecOptions * _options ) override;
@@ -18,12 +18,12 @@ namespace Mengine
     protected:
         virtual bool _invalidateOptions();
 
-	public:
-		void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
-		const PickCodecDataInfo * getCodecDataInfo() const override;
+    public:
+        void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
+        const PickCodecDataInfo * getCodecDataInfo() const override;
 
-	protected:
-		PickCodecOptions m_options;
-		PickCodecDataInfo m_dataInfo;
-	};
+    protected:
+        PickCodecOptions m_options;
+        PickCodecDataInfo m_dataInfo;
+    };
 }

@@ -49,7 +49,7 @@ namespace Mengine
         void reset( const T & _value )
         {
             m_value = _value;
-            m_follow = _value;            
+            m_follow = _value;
         }
 
         void overtake()

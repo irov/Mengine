@@ -24,20 +24,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ScriptHolderEventReceiver> ScriptHolderEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
-	class ScriptHolder
-		: public Node
+    class ScriptHolder
+        : public Node
         , public BaseEventation
-	{
+    {
         DECLARE_EVENTABLE( ScriptHolderEventReceiver );
 
-	public:
-		ScriptHolder();
+    public:
+        ScriptHolder();
 
-	protected:
-		bool _activate() override;
-		void _deactivate() override;
+    protected:
+        bool _activate() override;
+        void _deactivate() override;
 
-	protected:
-		pybind::object m_script;
-	};
+    protected:
+        pybind::object m_script;
+    };
 }

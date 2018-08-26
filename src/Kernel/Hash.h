@@ -7,10 +7,10 @@
 
 namespace Mengine
 {
-	typedef int64_t HashType;
+    typedef int64_t HashType;
 
-	namespace Helper
-	{
+    namespace Helper
+    {
         constexpr uint64_t xmul12864( uint64_t a, uint64_t b )
         {
             const uint32_t al = (uint32_t)a;
@@ -60,5 +60,5 @@ namespace Mengine
 
             return x;
         }
-	}
+    }
 }

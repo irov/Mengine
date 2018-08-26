@@ -16,7 +16,7 @@
 namespace Mengine
 {
     class ScriptModuleLoaderSource
-		: public ScriptModuleLoader
+        : public ScriptModuleLoader
     {
     public:
         ScriptModuleLoaderSource();
@@ -24,7 +24,7 @@ namespace Mengine
     public:
         PyObject * load_module( PyObject * _module ) override;
 
-	protected:
-		PyObject * load_module_source_( PyObject * _module, const InputStreamInterfacePtr & _stream );
+    protected:
+        PyObject * load_module_source_( PyObject * _module, const InputStreamInterfacePtr & _stream );
     };
 }

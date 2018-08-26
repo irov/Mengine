@@ -451,7 +451,7 @@ namespace Mengine
         RESOURCE_FACTORY( ResourceMusic );
 
         RESOURCE_FACTORY( ResourceAnimation );
-        
+
         //RESOURCE_FACTORY( ResourceFont );
         //RESOURCE_FACTORY( ResourceGlyph );
 

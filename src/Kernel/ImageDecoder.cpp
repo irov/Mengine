@@ -4,10 +4,10 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ImageDecoder::ImageDecoder()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    ImageDecoder::ImageDecoder()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ImageDecoder::setOptions( const CodecOptions * _options )
     {
@@ -18,16 +18,16 @@ namespace Mengine
 
         if( m_options.pitch == 0 )
         {
-            LOGGER_ERROR("ImageDecoder::setOptions pitch == 0"
-                );
+            LOGGER_ERROR( "ImageDecoder::setOptions pitch == 0"
+            );
 
             return false;
         }
 
         if( m_options.channels == 0 )
         {
-            LOGGER_ERROR("ImageDecoder::setOptions channels == 0"
-                );
+            LOGGER_ERROR( "ImageDecoder::setOptions channels == 0"
+            );
 
             return false;
         }
@@ -41,16 +41,16 @@ namespace Mengine
     {
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	const ImageCodecDataInfo * ImageDecoder::getCodecDataInfo() const 
-	{
-		return &m_dataInfo;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ImageDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
-	{
-		m_dataInfo = *static_cast<const ImageCodecDataInfo *>(_dataInfo);
-	}
+    //////////////////////////////////////////////////////////////////////////
+    const ImageCodecDataInfo * ImageDecoder::getCodecDataInfo() const
+    {
+        return &m_dataInfo;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImageDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
+    {
+        m_dataInfo = *static_cast<const ImageCodecDataInfo *>(_dataInfo);
+    }
     //////////////////////////////////////////////////////////////////////////
     void ImageDecoder::sweezleAlpha1( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch )
     {

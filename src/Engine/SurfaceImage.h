@@ -8,16 +8,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
     //////////////////////////////////////////////////////////////////////////
-	class SurfaceImage
-		: public Surface        
-	{
-	public:
+    class SurfaceImage
+        : public Surface
+    {
+    public:
         SurfaceImage();
-		~SurfaceImage() override;
+        ~SurfaceImage() override;
 
-	public:
-		void setResourceImage( const ResourceImagePtr & _resourceImage );
-		const ResourceImagePtr & getResourceImage() const;
+    public:
+        void setResourceImage( const ResourceImagePtr & _resourceImage );
+        const ResourceImagePtr & getResourceImage() const;
 
     public:
         const mt::vec2f & getMaxSize() const override;
@@ -32,18 +32,18 @@ namespace Mengine
         const ColourValue & getColor() const override;
 
     protected:
-		bool _compile() override;
-		void _release() override;
+        bool _compile() override;
+        void _release() override;
 
     protected:
         bool _update( const UpdateContext * _context ) override;
 
-	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const override;
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
 
-	protected:
-		ResourceHolder<ResourceImage> m_resourceImage;
-	};
+    protected:
+        ResourceHolder<ResourceImage> m_resourceImage;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SurfaceImage> SurfaceImagePtr;
 }

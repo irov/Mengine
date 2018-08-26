@@ -17,88 +17,88 @@
 
 namespace Mengine
 {
-	class Grid2D
-		: public Node
-		, public Materialable
-	{
-	public:
-		Grid2D();
-		~Grid2D() override;
+    class Grid2D
+        : public Node
+        , public Materialable
+    {
+    public:
+        Grid2D();
+        ~Grid2D() override;
 
-	public:
-		void setResourceImage( const ResourceImagePtr & _resourceImage );
-		const ResourceImagePtr & getResourceImage() const;
+    public:
+        void setResourceImage( const ResourceImagePtr & _resourceImage );
+        const ResourceImagePtr & getResourceImage() const;
 
-	public:
-		void setAngle( const mt::vec2f & _offset, float _angle );
+    public:
+        void setAngle( const mt::vec2f & _offset, float _angle );
 
-	public:
-		void setWidth( float _width );
-		float getWidth() const;
+    public:
+        void setWidth( float _width );
+        float getWidth() const;
 
-		void setHeight( float _height );
-		float getHeight() const;
+        void setHeight( float _height );
+        float getHeight() const;
 
-		void setCountX( uint32_t _count );
-		uint32_t getCountX() const;
+        void setCountX( uint32_t _count );
+        uint32_t getCountX() const;
 
-		void setCountY( uint32_t _count );
-		uint32_t getCountY() const;
+        void setCountY( uint32_t _count );
+        uint32_t getCountY() const;
 
-		bool setGridColor( uint32_t _i, uint32_t _j, const ColourValue & _value );
-		bool getGridColor( uint32_t _i, uint32_t _j, ColourValue & _value ) const;
-
-	protected:
-		bool _compile() override;
-		void _release() override;
-
-	protected:
-		void _update( const UpdateContext * _context ) override;
-		void _render( const RenderContext * _state ) override;
+        bool setGridColor( uint32_t _i, uint32_t _j, const ColourValue & _value );
+        bool getGridColor( uint32_t _i, uint32_t _j, ColourValue & _value ) const;
 
     protected:
-		void _invalidateWorldMatrix() override;
+        bool _compile() override;
+        void _release() override;
 
-		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
-		
-	protected:
-		void updateVerticesWM_();
+    protected:
+        void _update( const UpdateContext * _context ) override;
+        void _render( const RenderContext * _state ) override;
 
-	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const override;
+    protected:
+        void _invalidateWorldMatrix() override;
 
-	protected:
-		inline const RenderVertex2D * getVerticesWM();
+        void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 
-	protected:
-		ResourceHolder<ResourceImage> m_resourceImage;
+    protected:
+        void updateVerticesWM_();
 
-		float m_width;
-		float m_height;
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
 
-		float m_angle;
-		mt::vec2f m_offset;
+    protected:
+        inline const RenderVertex2D * getVerticesWM();
 
-		uint32_t m_countX;
-		uint32_t m_countY;
-		
-		VectorRenderVertex2D m_vertices;
-		VectorRenderVertex2D m_verticesWM;
+    protected:
+        ResourceHolder<ResourceImage> m_resourceImage;
 
-		VectorRenderIndices m_indices;
-				
-		mutable bool m_invalidateVerticesWM;
+        float m_width;
+        float m_height;
+
+        float m_angle;
+        mt::vec2f m_offset;
+
+        uint32_t m_countX;
+        uint32_t m_countY;
+
+        VectorRenderVertex2D m_vertices;
+        VectorRenderVertex2D m_verticesWM;
+
+        VectorRenderIndices m_indices;
+
+        mutable bool m_invalidateVerticesWM;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Grid2D> Grid2DPtr;
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderVertex2D * Grid2D::getVerticesWM()
-	{
-		if( m_invalidateVerticesWM == true )
-		{
-			this->updateVerticesWM_();
-		}
+    //////////////////////////////////////////////////////////////////////////
+    inline const RenderVertex2D * Grid2D::getVerticesWM()
+    {
+        if( m_invalidateVerticesWM == true )
+        {
+            this->updateVerticesWM_();
+        }
 
-		return &m_verticesWM[0];
-	}
+        return &m_verticesWM[0];
+    }
 }

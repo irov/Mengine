@@ -40,7 +40,7 @@ namespace Mengine
         bool _initializeService() override;
         void _finalizeService() override;
 
-    public:        
+    public:
         ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName ) override;
         ParticleEmitterInterfacePtr createEmitter( const ParticleEmitterContainerInterface2Ptr & _container ) override;
 
@@ -64,7 +64,7 @@ namespace Mengine
 
         FactoryPtr m_factoryPoolAstralaxEmitterContainer;
         FactoryPtr m_factoryPoolAstralaxEmitter;
-        
+
         struct AstralaxEmitterContainerDesc
         {
             uint32_t reference;
@@ -95,5 +95,5 @@ namespace Mengine
         void createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m );
         void createFragmentShaderGLSource_( Stringstream & ss, const MAGIC_MATERIAL * m );
         RenderFragmentShaderInterfacePtr cacheFragmentShader_( const MAGIC_MATERIAL * m );
-	};
+    };
 }

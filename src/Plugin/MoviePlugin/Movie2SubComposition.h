@@ -22,16 +22,16 @@ namespace Mengine
     public:
     };
     //////////////////////////////////////////////////////////////////////////
-	class Movie2SubComposition
+    class Movie2SubComposition
         : public Factorable
-		, public Eventable
+        , public Eventable
         , public BaseEventation
         , public Animatable
         , public BaseAnimation
-	{
+    {
         DECLARE_ANIMATABLE()
         DECLARE_EVENTABLE( Movie2SubCompositionEventReceiver );
-        
+
     public:
         Movie2SubComposition();
         ~Movie2SubComposition() override;
@@ -42,7 +42,7 @@ namespace Mengine
 
     public:
         void setSubMovieComposition( const aeMovieComposition * _composition, const ConstString & _name );
-        
+
     protected:
         bool _play( uint32_t _enumerator, float _time ) override;
         bool _restart( uint32_t _enumerator, float _time ) override;
@@ -60,7 +60,7 @@ namespace Mengine
 
         const aeMovieComposition * m_composition;
         const aeMovieSubComposition * m_subcomposition;
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Movie2SubComposition> Movie2SubCompositionPtr;
     //////////////////////////////////////////////////////////////////////////

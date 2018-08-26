@@ -7,46 +7,46 @@
 
 #include "Config/List.h"
 
-namespace Mengine 
+namespace Mengine
 {
-	class ThreadQueue
-		: public ServantBase<ThreadQueueInterface>
-	{
-	public:
-		ThreadQueue();
-		~ThreadQueue() override;
+    class ThreadQueue
+        : public ServantBase<ThreadQueueInterface>
+    {
+    public:
+        ThreadQueue();
+        ~ThreadQueue() override;
 
-	public:
-		void setThreadName( const ConstString & _threadName );
-		void setThreadCount( uint32_t _count );
-		void setPacketSize( uint32_t _size );
+    public:
+        void setThreadName( const ConstString & _threadName );
+        void setThreadCount( uint32_t _count );
+        void setPacketSize( uint32_t _size );
 
-	public:
-		bool update();
-
-	protected:
-		void addTask( const ThreadTaskInterfacePtr & _task ) override;
-        			
-	protected:
-		void cancel() override;
-
-	protected:
-		void updateCurrentTask_( ThreadTaskInterfacePtr & _currentTask );
+    public:
+        bool update();
 
     protected:
-		ConstString m_threadName;
-		uint32_t m_packetSize;
+        void addTask( const ThreadTaskInterfacePtr & _task ) override;
 
-		typedef List<ThreadTaskInterfacePtr> ListThreadTask;
-		ListThreadTask m_threadTasks;
+    protected:
+        void cancel() override;
 
-		typedef Vector<ThreadTaskInterfacePtr> VectorThreadTasks;
-		VectorThreadTasks m_currentTasks;
+    protected:
+        void updateCurrentTask_( ThreadTaskInterfacePtr & _currentTask );
 
-		FactoryPtr m_factoryPoolTaskPacket;
+    protected:
+        ConstString m_threadName;
+        uint32_t m_packetSize;
 
-		bool m_cancel;
-	};
+        typedef List<ThreadTaskInterfacePtr> ListThreadTask;
+        ListThreadTask m_threadTasks;
 
-	typedef IntrusivePtr<ThreadQueue> ThreadQueuePtr;
+        typedef Vector<ThreadTaskInterfacePtr> VectorThreadTasks;
+        VectorThreadTasks m_currentTasks;
+
+        FactoryPtr m_factoryPoolTaskPacket;
+
+        bool m_cancel;
+    };
+
+    typedef IntrusivePtr<ThreadQueue> ThreadQueuePtr;
 }

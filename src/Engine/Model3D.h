@@ -21,115 +21,115 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<class RenderCameraProjection> RenderCameraProjectionPtr;
+    typedef IntrusivePtr<class RenderCameraProjection> RenderCameraProjectionPtr;
     //////////////////////////////////////////////////////////////////////////
-	class Model3D
-		: public Node		
-		, public Materialable
+    class Model3D
+        : public Node
+        , public Materialable
         , public BaseAnimation
-	{
+    {
     public:
         DECLARE_ANIMATABLE();
 
-	public:
-		Model3D();
-		~Model3D() override;
+    public:
+        Model3D();
+        ~Model3D() override;
 
-	public:
-		void setResourceModel3D( const ResourceModel3DPtr & _resourceImage );
-		const ResourceModel3DPtr & getResourceModel3D() const;
+    public:
+        void setResourceModel3D( const ResourceModel3DPtr & _resourceImage );
+        const ResourceModel3DPtr & getResourceModel3D() const;
 
-	protected:
-		void _setTime( float _timming ) override;
-		float _getTime() const override;
+    protected:
+        void _setTime( float _timming ) override;
+        float _getTime() const override;
 
-		void _setFirstFrame() override;
-		void _setLastFrame() override;
+        void _setFirstFrame() override;
+        void _setLastFrame() override;
 
-	protected:
-		bool _play( uint32_t _enumerator, float _time ) override;
-		bool _restart( uint32_t _enumerator, float _time ) override;
-		void _pause( uint32_t _enumerator ) override;
-		void _resume( uint32_t _enumerator, float _time ) override;
-		void _stop( uint32_t _enumerator ) override;
-		void _end( uint32_t _enumerator ) override;
-		bool _interrupt( uint32_t _enumerator ) override;
+    protected:
+        bool _play( uint32_t _enumerator, float _time ) override;
+        bool _restart( uint32_t _enumerator, float _time ) override;
+        void _pause( uint32_t _enumerator ) override;
+        void _resume( uint32_t _enumerator, float _time ) override;
+        void _stop( uint32_t _enumerator ) override;
+        void _end( uint32_t _enumerator ) override;
+        bool _interrupt( uint32_t _enumerator ) override;
 
-	protected:
-		uint32_t getFrame_( float _time, float & _delthaTime ) const;
-		void updateCurrentFrame_();
-		void setCurrentFrame_( uint32_t _frame );
+    protected:
+        uint32_t getFrame_( float _time, float & _delthaTime ) const;
+        void updateCurrentFrame_();
+        void setCurrentFrame_( uint32_t _frame );
 
-	protected:
-		void _update( const UpdateContext * _context ) override;
-		void _render( const RenderContext * _state ) override;
+    protected:
+        void _update( const UpdateContext * _context ) override;
+        void _render( const RenderContext * _state ) override;
 
-		bool _activate() override;
-		void _deactivate() override;
+        bool _activate() override;
+        void _deactivate() override;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
-				
-		void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
-		void _invalidateColor() override;
-		void _invalidateWorldMatrix() override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
-	protected:
-		bool compileResource_();
+        void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
+        void _invalidateColor() override;
+        void _invalidateWorldMatrix() override;
 
-	protected:
-		void invalidateVertices();
-		void updateVertices() const;
+    protected:
+        bool compileResource_();
 
-	protected:
-		void invalidateVerticesWM();
-		void updateVerticesWM() const;
+    protected:
+        void invalidateVertices();
+        void updateVertices() const;
 
-	protected:
-		void invalidateVerticesColor();
-		void updateVerticesColor() const;
+    protected:
+        void invalidateVerticesWM();
+        void updateVerticesWM() const;
 
-	protected:
-		inline const RenderVertex2D * getVerticesWM() const;
+    protected:
+        void invalidateVerticesColor();
+        void updateVerticesColor() const;
 
-	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const override;
+    protected:
+        inline const RenderVertex2D * getVerticesWM() const;
 
-	protected:		
-		ResourceHolder<ResourceModel3D> m_resourceModel;
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
 
-		float m_frameTime;
-		uint32_t m_currentFrame;
+    protected:
+        ResourceHolder<ResourceModel3D> m_resourceModel;
 
-		RenderCameraProjectionPtr m_camera;
+        float m_frameTime;
+        uint32_t m_currentFrame;
 
-		const Model3DFrame * m_frame;
-		
-		mutable RenderVertex2D * m_verticesWM;
+        RenderCameraProjectionPtr m_camera;
 
-		uint32_t m_vertexCount;
-		uint32_t m_indicesCount;
+        const Model3DFrame * m_frame;
 
-		bool m_solid;
+        mutable RenderVertex2D * m_verticesWM;
 
-		mutable bool m_invalidateVerticesLocal;
-		mutable bool m_invalidateVerticesWM;
-		mutable bool m_invalidateVerticesColor;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	inline const RenderVertex2D * Model3D::getVerticesWM() const
-	{
-		if( m_invalidateVerticesWM == true )
-		{
-			this->updateVerticesWM();
-		}
+        uint32_t m_vertexCount;
+        uint32_t m_indicesCount;
 
-		if( m_invalidateVerticesColor == true )
-		{
-			this->updateVerticesColor();
-		}
+        bool m_solid;
 
-		return m_verticesWM;
-	}
+        mutable bool m_invalidateVerticesLocal;
+        mutable bool m_invalidateVerticesWM;
+        mutable bool m_invalidateVerticesColor;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    inline const RenderVertex2D * Model3D::getVerticesWM() const
+    {
+        if( m_invalidateVerticesWM == true )
+        {
+            this->updateVerticesWM();
+        }
+
+        if( m_invalidateVerticesColor == true )
+        {
+            this->updateVerticesColor();
+        }
+
+        return m_verticesWM;
+    }
 }

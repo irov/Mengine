@@ -11,16 +11,16 @@
 
 namespace Mengine
 {
-	class DX9RenderVertexAttribute
-		: public ServantBase<RenderVertexAttributeInterface>
-	{
-	public:
+    class DX9RenderVertexAttribute
+        : public ServantBase<RenderVertexAttributeInterface>
+    {
+    public:
         DX9RenderVertexAttribute();
-		~DX9RenderVertexAttribute() override;
+        ~DX9RenderVertexAttribute() override;
 
     public:
         bool initialize( const ConstString & _name, uint32_t _elementSize );
-        
+
     public:
         bool compile( IDirect3DDevice9 * _pD3DDevice );
 
@@ -35,7 +35,7 @@ namespace Mengine
     public:
         void addAttribute( const ConstString & _uniform, uint32_t _size, EVertexAttributeType _type, bool _normalized, uint32_t _stride, uint32_t _offset ) override;
 
-	protected:
+    protected:
         ConstString m_name;
         uint32_t m_elementSize;
 
@@ -56,7 +56,7 @@ namespace Mengine
 
         typedef Vector<Attribute> VectorAttribute;
         VectorAttribute m_attributes;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<DX9RenderVertexAttribute> DX9RenderVertexAttributePtr;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<DX9RenderVertexAttribute> DX9RenderVertexAttributePtr;
 }

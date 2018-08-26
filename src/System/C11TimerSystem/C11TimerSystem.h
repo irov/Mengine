@@ -6,7 +6,7 @@
 
 namespace Mengine
 {
-    class C11TimerSystem 
+    class C11TimerSystem
         : public ServiceBase<TimerSystemInterface>
     {
     public:

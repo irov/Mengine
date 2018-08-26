@@ -15,7 +15,7 @@ namespace Mengine
     class UnicodeSystemInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE("UnicodeSystem");
+        SERVICE_DECLARE( "UnicodeSystem" );
 
     public:
         virtual bool unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size ) = 0;
@@ -132,13 +132,13 @@ namespace Mengine
 
             return result;
         }
-		//////////////////////////////////////////////////////////////////////////
-		inline bool utf8ToUnicode( const ConstString & _utf8, WString & _unicode )
-		{
-			bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
+        //////////////////////////////////////////////////////////////////////////
+        inline bool utf8ToUnicode( const ConstString & _utf8, WString & _unicode )
+        {
+            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );
 
-			return result;
-		}
+            return result;
+        }
         //////////////////////////////////////////////////////////////////////////
         inline bool utf8ToUnicode( const PathString & _utf8, WString & _unicode )
         {

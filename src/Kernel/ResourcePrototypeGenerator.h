@@ -11,33 +11,33 @@
 
 namespace Mengine
 {
-	template<class Type, uint32_t Count>
-	class ResourcePrototypeGenerator
-		: public ScriptablePrototypeGenerator<Type, Count>
-	{
-	protected:
-		PointerFactorable generate() override
-		{
+    template<class Type, uint32_t Count>
+    class ResourcePrototypeGenerator
+        : public ScriptablePrototypeGenerator<Type, Count>
+    {
+    protected:
+        PointerFactorable generate() override
+        {
             const FactoryPtr & factory = this->getFactory();
 
-			ResourcePtr resource = factory->createObject();
+            ResourcePtr resource = factory->createObject();
 
-			if( resource == nullptr )
-			{
-				LOGGER_ERROR("ResourcePrototypeGenerator can't generate %s %s"
-					, this->getCategory().c_str()
-					, this->getPrototype().c_str()
-					);
+            if( resource == nullptr )
+            {
+                LOGGER_ERROR( "ResourcePrototypeGenerator can't generate %s %s"
+                    , this->getCategory().c_str()
+                    , this->getPrototype().c_str()
+                );
 
-				return nullptr;
-			}
+                return nullptr;
+            }
 
             const ConstString & prototype = this->getPrototype();
-			resource->setType( prototype );
+            resource->setType( prototype );
 
             this->setupScriptable( resource );
 
-			return resource;
-		}
-	};
+            return resource;
+        }
+    };
 }

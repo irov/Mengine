@@ -105,7 +105,7 @@ namespace Mengine
             {
                 return;
             }
-                
+
             pybind::object py_method = _obj.get_attr( _method );
 
             if( py_method.is_none() == true )
@@ -119,7 +119,7 @@ namespace Mengine
                 receiver->initialize( py_method );
 
                 event->registerEventReceiver( _event, receiver );
-            }            
+            }
         }
     }
 }

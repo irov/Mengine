@@ -10,21 +10,21 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class TTFPlugin
-		: public PluginBase
-	{
-		PLUGIN_DECLARE( "TTF" )
+    //////////////////////////////////////////////////////////////////////////
+    class TTFPlugin
+        : public PluginBase
+    {
+        PLUGIN_DECLARE( "TTF" )
 
-	public:
-		TTFPlugin();
+    public:
+        TTFPlugin();
         ~TTFPlugin() override;
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
 
-	protected:
-		FT_Library m_ftlibrary;
-	};
+    protected:
+        FT_Library m_ftlibrary;
+    };
 }

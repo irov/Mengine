@@ -15,55 +15,55 @@ namespace Mengine
 {
     namespace IniUtil
     {
-		//////////////////////////////////////////////////////////////////////////
-		bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _category, const FilePath & _path )
-		{
-			InputStreamInterfacePtr stream = FILE_SERVICE()
-				->openInputFile( _category, _path, false );
+        //////////////////////////////////////////////////////////////////////////
+        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _category, const FilePath & _path )
+        {
+            InputStreamInterfacePtr stream = FILE_SERVICE()
+                ->openInputFile( _category, _path, false );
 
-			if( stream == nullptr )
-			{
+            if( stream == nullptr )
+            {
                 LOGGER_ERROR( "loadIni invalid open ini file '%s:%s'"
                     , _category->getName().c_str()
-					, _path.c_str()
-					);
+                    , _path.c_str()
+                );
 
-				return false;
-			}
+                return false;
+            }
 
-			_ini.path = _path;
+            _ini.path = _path;
 
-			return loadIni( _ini, stream );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input )
-		{
-			size_t size = _input->size();
+            return loadIni( _ini, stream );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input )
+        {
+            size_t size = _input->size();
 
-			if( size >= MENGINE_INI_BUFFER_SIZE )
-			{
+            if( size >= MENGINE_INI_BUFFER_SIZE )
+            {
                 LOGGER_ERROR( "IniUtil::loadIni ini size %u max %u"
-					, size
-					, MENGINE_INI_BUFFER_SIZE
-					);
+                    , size
+                    , MENGINE_INI_BUFFER_SIZE
+                );
 
-				return false;
-			}
+                return false;
+            }
 
-			_input->read( _ini.buff, size );
-			_ini.buff[size] = '\0';
+            _input->read( _ini.buff, size );
+            _ini.buff[size] = '\0';
 
-			if( _ini.load( _ini.buff ) == false )
-			{
+            if( _ini.load( _ini.buff ) == false )
+            {
                 LOGGER_ERROR( "IniUtil::loadIni ini invalid load '%s'"
-					, _ini.getError()
-					);
+                    , _ini.getError()
+                );
 
-				return false;
-			}
+                return false;
+            }
 
-			return true;
-		}
+            return true;
+        }
         //////////////////////////////////////////////////////////////////////////
         bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key )
         {
@@ -116,65 +116,65 @@ namespace Mengine
 
             return true;
         }
-		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath & _value )
-		{
-			const Char * ini_value = _ini.getSettingValue( _section, _key );
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath & _value )
+        {
+            const Char * ini_value = _ini.getSettingValue( _section, _key );
 
-			if( ini_value == nullptr )
-			{
-				return false;
-			}
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
 
 #ifndef NDEBUG
-			if( strstr( ini_value, "\\" ) != nullptr )
-			{
-				LOGGER_ERROR( "get ini '%s' filepath section '%s' key '%s' has invalid slash"
-					, _ini.path.c_str()
-					, _section
-					, _key
-					);
+            if( strstr( ini_value, "\\" ) != nullptr )
+            {
+                LOGGER_ERROR( "get ini '%s' filepath section '%s' key '%s' has invalid slash"
+                    , _ini.path.c_str()
+                    , _section
+                    , _key
+                );
 
-				MENGINE_THROW_EXCEPTION( "get ini '%s' filepath section '%s' key '%s' has invalid slash"
-					, _ini.path.c_str()
-					, _section
-					, _key
-				);
+                MENGINE_THROW_EXCEPTION( "get ini '%s' filepath section '%s' key '%s' has invalid slash"
+                    , _ini.path.c_str()
+                    , _section
+                    , _key
+                );
 
-				return false;
-			}
+                return false;
+            }
 #endif
 
-			const ConstString & cs_value = Helper::stringizeString( ini_value );
+            const ConstString & cs_value = Helper::stringizeString( ini_value );
 
-			_value = FilePath( cs_value );
+            _value = FilePath( cs_value );
 
-			return true;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags & _value )
-		{
-			const Char * ini_value = _ini.getSettingValue( _section, _key );
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags & _value )
+        {
+            const Char * ini_value = _ini.getSettingValue( _section, _key );
 
-			if( ini_value == nullptr )
-			{
-				return false;
-			}
-			
-			std::stringstream ss( ini_value );
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
 
-			std::string single_string;
-			while( ss >> single_string )
-			{
-				const char * str_single_string = single_string.c_str();
+            std::stringstream ss( ini_value );
 
-				ConstString cstr_value = Helper::stringizeString( str_single_string );
+            std::string single_string;
+            while( ss >> single_string )
+            {
+                const char * str_single_string = single_string.c_str();
 
-				_value.addTag( cstr_value );
-			}
+                ConstString cstr_value = Helper::stringizeString( str_single_string );
 
-			return true;
-		}
+                _value.addTag( cstr_value );
+            }
+
+            return true;
+        }
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution & _value )
         {
@@ -193,7 +193,7 @@ namespace Mengine
                     , _section
                     , _key
                     , ini_value
-                    );
+                );
 
                 return false;
             }
@@ -203,42 +203,42 @@ namespace Mengine
 
             return true;
         }
-		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ColourValue & _value )
-		{
-			const Char * ini_value = _ini.getSettingValue( _section, _key );
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ColourValue & _value )
+        {
+            const Char * ini_value = _ini.getSettingValue( _section, _key );
 
-			if( ini_value == nullptr )
-			{
-				return false;
-			}
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
 
-			float r;
-			float g;
-			float b;
-			float a;
-			if( sscanf( ini_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
-			{
-				LOGGER_ERROR( "getIniValue section %s key %s value %s invalid parse ColourValue"
-					, _section
-					, _key
-					, ini_value
-					);
+            float r;
+            float g;
+            float b;
+            float a;
+            if( sscanf( ini_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
+            {
+                LOGGER_ERROR( "getIniValue section %s key %s value %s invalid parse ColourValue"
+                    , _section
+                    , _key
+                    , ini_value
+                );
 
-				return false;
-			}
+                return false;
+            }
 
-			float coef = 1.f / 255.f;
+            float coef = 1.f / 255.f;
 
-			r *= coef;
-			g *= coef;
-			b *= coef;
-			a *= coef;
+            r *= coef;
+            g *= coef;
+            b *= coef;
+            a *= coef;
 
-			_value.setRGBA( r, g, b, a );
+            _value.setRGBA( r, g, b, a );
 
-			return true;
-		}
+            return true;
+        }
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, bool & _value )
         {
@@ -260,86 +260,86 @@ namespace Mengine
 
             return true;
         }
-		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t & _value )
-		{
-			const Char * ini_value = _ini.getSettingValue( _section, _key );
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t & _value )
+        {
+            const Char * ini_value = _ini.getSettingValue( _section, _key );
 
-			if( ini_value == nullptr )
-			{
-				return false;
-			}
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
 
-			int32_t tmp_value;
-			if( sscanf( ini_value, "%d", &tmp_value ) != 1 )
-			{
-				return false;
-			}
+            int32_t tmp_value;
+            if( sscanf( ini_value, "%d", &tmp_value ) != 1 )
+            {
+                return false;
+            }
 
-			_value = tmp_value;
+            _value = tmp_value;
 
-			return true;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t & _value )
-		{
-			const Char * ini_value = _ini.getSettingValue( _section, _key );
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t & _value )
+        {
+            const Char * ini_value = _ini.getSettingValue( _section, _key );
 
-			if( ini_value == nullptr )
-			{
-				return false;
-			}
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
 
-			uint32_t tmp_value;
-			if( sscanf( ini_value, "%u", &tmp_value ) != 1 )
-			{
-				return false;
-			}
+            uint32_t tmp_value;
+            if( sscanf( ini_value, "%u", &tmp_value ) != 1 )
+            {
+                return false;
+            }
 
-			_value = tmp_value;
+            _value = tmp_value;
 
-			return true;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t & _value )
-		{
-			const Char * ini_value = _ini.getSettingValue( _section, _key );
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t & _value )
+        {
+            const Char * ini_value = _ini.getSettingValue( _section, _key );
 
-			if( ini_value == nullptr )
-			{
-				return false;
-			}
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
 
-			uint64_t tmp_value;
-			if( sscanf( ini_value, "%llu", &tmp_value ) != 1 )
-			{
-				return false;
-			}
+            uint64_t tmp_value;
+            if( sscanf( ini_value, "%llu", &tmp_value ) != 1 )
+            {
+                return false;
+            }
 
-			_value = tmp_value;
+            _value = tmp_value;
 
-			return true;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float & _value )
-		{
-			const Char * ini_value = _ini.getSettingValue( _section, _key );
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float & _value )
+        {
+            const Char * ini_value = _ini.getSettingValue( _section, _key );
 
-			if( ini_value == nullptr )
-			{
-				return false;
-			}
+            if( ini_value == nullptr )
+            {
+                return false;
+            }
 
-			float tmp_value;
-			if( sscanf( ini_value, "%f", &tmp_value ) != 1 )
-			{
-				return false;
-			}
+            float tmp_value;
+            if( sscanf( ini_value, "%f", &tmp_value ) != 1 )
+            {
+                return false;
+            }
 
-			_value = tmp_value;
+            _value = tmp_value;
 
-			return true;
-		}
+            return true;
+        }
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double & _value )
         {
@@ -369,27 +369,27 @@ namespace Mengine
             {
                 const char * value = _ini.getSettingValues( _section, _key, index );
 
-                _values.emplace_back( String(value) );
+                _values.emplace_back( String( value ) );
             }
 
             return true;
         }
-		//////////////////////////////////////////////////////////////////////////
-		bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values )
-		{
-			uint32_t count = _ini.countSettingValues( _section, _key );
+        //////////////////////////////////////////////////////////////////////////
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values )
+        {
+            uint32_t count = _ini.countSettingValues( _section, _key );
 
-			for( uint32_t index = 0; index != count; ++index )
-			{
-				const char * value = _ini.getSettingValues( _section, _key, index );
+            for( uint32_t index = 0; index != count; ++index )
+            {
+                const char * value = _ini.getSettingValues( _section, _key, index );
 
-				ConstString cs = Helper::stringizeString( value );
+                ConstString cs = Helper::stringizeString( value );
 
-				_values.emplace_back( cs );
-			}
+                _values.emplace_back( cs );
+            }
 
-			return true;
-		}
+            return true;
+        }
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorWString & _values )
         {
@@ -425,13 +425,13 @@ namespace Mengine
                     , &arv.viewport.begin.y
                     , &arv.viewport.end.x
                     , &arv.viewport.end.y
-                    ) != 6 )
+                ) != 6 )
                 {
                     LOGGER_ERROR( "getIniValue section %s key %s value %s invalid parse aspect ration"
                         , _section
                         , _key
                         , ini_value
-                        );
+                    );
 
                     return false;
                 }
@@ -453,7 +453,7 @@ namespace Mengine
                 _ini.getSettings( _section, index, &key, &value );
 
                 ConstString c_key = Helper::stringizeString( key );
-                
+
                 WString w_value;
                 if( Helper::utf8ToUnicodeSize( value, UNICODE_UNSIZE, w_value ) == false )
                 {
@@ -469,7 +469,7 @@ namespace Mengine
         bool writeIniSection( const OutputStreamInterfacePtr & _file, const char * _section, uint32_t _sectionSize )
         {
             _file->write( _section, _sectionSize );
-            _file->write( "\n", sizeof("\n") - 1 );
+            _file->write( "\n", sizeof( "\n" ) - 1 );
 
             return true;
         }
@@ -488,9 +488,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const WString & _value )
         {
-            size_t len = strlen(_key);
+            size_t len = strlen( _key );
             _file->write( _key, len );
-            _file->write( " = ", sizeof(" = ") - 1 );
+            _file->write( " = ", sizeof( " = " ) - 1 );
 
             size_t utf8_size = 0;
 
@@ -504,7 +504,7 @@ namespace Mengine
             utf8_value[utf8_size] = '\0';
 
             _file->write( utf8_value, utf8_size );
-            _file->write( "\n", sizeof("\n") - 1 );
+            _file->write( "\n", sizeof( "\n" ) - 1 );
 
             return true;
         }

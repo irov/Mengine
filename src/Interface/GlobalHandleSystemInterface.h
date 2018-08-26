@@ -3,19 +3,19 @@
 #include "Interface/InputSystemInterface.h"
 
 namespace Mengine
-{    
+{
     class GlobalHandleSystemInterface
         : public ServiceInterface
-		, public InputHandlerInterface
+        , public InputHandlerInterface
     {
         SERVICE_DECLARE( "GlobalHandleSystem" )
 
     public:
-		virtual uint32_t addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc ) = 0;
-		virtual InputHandlerInterfacePtr removeGlobalHandler (uint32_t _id) = 0;
+        virtual uint32_t addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc ) = 0;
+        virtual InputHandlerInterfacePtr removeGlobalHandler( uint32_t _id ) = 0;
 
-	public:
-		virtual bool enableGlobalHandler( uint32_t _id, bool _value ) = 0;
+    public:
+        virtual bool enableGlobalHandler( uint32_t _id, bool _value ) = 0;
 
     public:
         virtual void update() = 0;

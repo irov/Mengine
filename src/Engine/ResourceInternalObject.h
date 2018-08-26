@@ -4,30 +4,30 @@
 
 namespace Mengine
 {
-	class ResourceInternalObject
-		: public Resource
-	{
-		DECLARE_VISITABLE( Resource );
+    class ResourceInternalObject
+        : public Resource
+    {
+        DECLARE_VISITABLE( Resource );
 
-	public:
-		ResourceInternalObject();
-		~ResourceInternalObject() override;
+    public:
+        ResourceInternalObject();
+        ~ResourceInternalObject() override;
 
-	public:
-		const ConstString & getInternalName() const;
-		const ConstString & getInternalGroup() const;
+    public:
+        const ConstString & getInternalName() const;
+        const ConstString & getInternalGroup() const;
 
-	protected:
-		bool _loader( const Metabuf::Metadata * _parser ) override;
+    protected:
+        bool _loader( const Metabuf::Metadata * _parser ) override;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
-	
-	protected:
-		ConstString m_internalName;
-		ConstString m_internalGroup;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusiveResourcePtr<ResourceInternalObject> ResourceInternalObjectPtr;
+    protected:
+        bool _compile() override;
+        void _release() override;
+
+    protected:
+        ConstString m_internalName;
+        ConstString m_internalGroup;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveResourcePtr<ResourceInternalObject> ResourceInternalObjectPtr;
 }

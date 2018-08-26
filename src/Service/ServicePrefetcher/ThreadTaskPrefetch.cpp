@@ -2,21 +2,21 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ThreadTaskPrefetch::ThreadTaskPrefetch()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    ThreadTaskPrefetch::ThreadTaskPrefetch()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     ThreadTaskPrefetch::~ThreadTaskPrefetch()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetch::initialize( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const PrefetcherObserverInterfacePtr & _observer )
-	{
-		m_fileGroup = _fileGroup;
-		m_filePath = _fileName;
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPrefetch::initialize( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const PrefetcherObserverInterfacePtr & _observer )
+    {
+        m_fileGroup = _fileGroup;
+        m_filePath = _fileName;
         m_observer = _observer;
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskPrefetch::_onPreparation()
     {
@@ -35,15 +35,15 @@ namespace Mengine
         m_observer->onPrefetchCancel();
         m_observer = nullptr;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskPrefetch::_onComplete( bool _successful )
-	{
-		(void) _successful;
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPrefetch::_onComplete( bool _successful )
+    {
+        (void)_successful;
 
-		m_fileGroup = nullptr;
-		m_stream = nullptr;
+        m_fileGroup = nullptr;
+        m_stream = nullptr;
 
         m_observer->onPrefetchComplete( _successful );
         m_observer = nullptr;
-	}
+    }
 }

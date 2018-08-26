@@ -2,5 +2,5 @@
 
 namespace Mengine
 {
-	typedef uint32_t GlyphCode;
+    typedef uint32_t GlyphCode;
 }

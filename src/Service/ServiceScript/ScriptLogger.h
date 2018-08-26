@@ -6,28 +6,28 @@
 
 namespace Mengine
 {
-	class ScriptLogger
-	{
-	public:
-		ScriptLogger();
+    class ScriptLogger
+    {
+    public:
+        ScriptLogger();
         virtual ~ScriptLogger();
 
-	public:
-		virtual void write( const char * _msg, uint32_t _size );
+    public:
+        virtual void write( const char * _msg, uint32_t _size );
 
-	public:
-		PyObject * py_write( PyObject * _args, PyObject * _kwds );
-		
-	public:
-		void setMessageLevel( EMessageLevel _level );
-		EMessageLevel getMessageLevel() const;
+    public:
+        PyObject * py_write( PyObject * _args, PyObject * _kwds );
 
-		void setSoftspace( int _softspace );
-		int getSoftspace() const;
+    public:
+        void setMessageLevel( EMessageLevel _level );
+        EMessageLevel getMessageLevel() const;
 
-	protected:
-		EMessageLevel m_level;
+        void setSoftspace( int _softspace );
+        int getSoftspace() const;
 
-		int m_softspace;
-	};
+    protected:
+        EMessageLevel m_level;
+
+        int m_softspace;
+    };
 }

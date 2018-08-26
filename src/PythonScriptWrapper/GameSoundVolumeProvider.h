@@ -6,8 +6,8 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class Game;
+    //////////////////////////////////////////////////////////////////////////
+    class Game;
     //////////////////////////////////////////////////////////////////////////
     class GameSoundVolumeProvider
         : public ServantBase<SoundVolumeProviderInterface>
@@ -15,9 +15,9 @@ namespace Mengine
     public:
         GameSoundVolumeProvider();
 
-	public:
-		void setGame(Game * _game);
-		Game * getGame() const;
+    public:
+        void setGame( Game * _game );
+        Game * getGame() const;
 
     protected:
         void onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute ) override;
@@ -25,6 +25,6 @@ namespace Mengine
     protected:
         Game * m_game;
     };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<GameSoundVolumeProvider> GameSoundVolumeProviderPtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<GameSoundVolumeProvider> GameSoundVolumeProviderPtr;
 }

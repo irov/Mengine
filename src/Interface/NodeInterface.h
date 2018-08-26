@@ -16,14 +16,14 @@ namespace Mengine
     class NodeServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE("NodeService")
+        SERVICE_DECLARE( "NodeService" )
 
     public:
         virtual PointerNode createNode( const ConstString& _type ) = 0;
 
     public:
         virtual void addHomeless( const NodePtr & _homeless ) = 0;
-		virtual bool isHomeless( const NodePtr & _node ) const = 0;
+        virtual bool isHomeless( const NodePtr & _node ) const = 0;
         virtual void clearHomeless() = 0;
     };
 

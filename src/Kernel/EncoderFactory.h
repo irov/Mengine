@@ -25,19 +25,19 @@ namespace Mengine
         EncoderInterfacePtr createEncoder() override
         {
             EncoderInterfacePtr encoder = m_factory->createObject();
-            
+
             return encoder;
         }
 
-	protected:
-		void destroy() override
-		{
+    protected:
+        void destroy() override
+        {
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
 
             m_factory = nullptr;
 
-			delete this;
-		}
+            delete this;
+        }
 
     protected:
         FactoryPtr m_factory;
@@ -50,10 +50,10 @@ namespace Mengine
         {
             EncoderFactoryInterfacePtr encoder = new EncoderFactory<T>();
 
-			if( encoder->initialize() == false )
-			{
-				return nullptr;
-			}
+            if( encoder->initialize() == false )
+            {
+                return nullptr;
+            }
 
             CODEC_SERVICE()
                 ->registerEncoder( Helper::stringizeString( _type ), encoder );

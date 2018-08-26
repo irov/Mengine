@@ -9,66 +9,66 @@
 #	define MENGINE_THREAD_JOB_WORK_COUNT 32
 #endif
 
-namespace Mengine 
+namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	class ThreadWorkerInterface
-		: public ServantInterface
-	{
-	public:
-		virtual bool onWork( uint32_t _id ) = 0;
-		virtual void onDone( uint32_t _id ) = 0;
-	};
+    class ThreadWorkerInterface
+        : public ServantInterface
+    {
+    public:
+        virtual bool onWork( uint32_t _id ) = 0;
+        virtual void onDone( uint32_t _id ) = 0;
+    };
     //////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ThreadWorkerInterface> ThreadWorkerInterfacePtr;
+    typedef IntrusivePtr<ThreadWorkerInterface> ThreadWorkerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-	enum EThreadStatus
-	{
-		ETS_WORK,
-		ETS_DONE,
-		ETS_FREE
-	};
+    enum EThreadStatus
+    {
+        ETS_WORK,
+        ETS_DONE,
+        ETS_FREE
+    };
     //////////////////////////////////////////////////////////////////////////
-	struct ThreadJobWorkerDesc
-	{
-		ThreadMutexInterfacePtr mutex;
+    struct ThreadJobWorkerDesc
+    {
+        ThreadMutexInterfacePtr mutex;
 
-		ThreadWorkerInterfacePtr worker;
+        ThreadWorkerInterfacePtr worker;
 
-		std::atomic_uint32_t id;
+        std::atomic_uint32_t id;
 
         std::atomic_uint32_t status;
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
-	class ThreadJob
-		: public ThreadTask
-	{
-	public:
-		ThreadJob();
-		~ThreadJob() override;
+    class ThreadJob
+        : public ThreadTask
+    {
+    public:
+        ThreadJob();
+        ~ThreadJob() override;
 
-	public:
-		bool initialize( uint32_t _sleep );
+    public:
+        bool initialize( uint32_t _sleep );
 
-	public:
-		uint32_t addWorker( const ThreadWorkerInterfacePtr &_worker );
-		void removeWorker( uint32_t _id );
+    public:
+        uint32_t addWorker( const ThreadWorkerInterfacePtr &_worker );
+        void removeWorker( uint32_t _id );
 
-	protected:
-		bool _onMain() override;
-		void _onUpdate() override;
+    protected:
+        bool _onMain() override;
+        void _onUpdate() override;
 
-	protected:
-		bool check_remove( uint32_t _id );
+    protected:
+        bool check_remove( uint32_t _id );
 
-	protected:
+    protected:
         uint32_t m_sleep;
-  
-		uint32_t m_enumerator;
-		
-		ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
-	};
+
+        uint32_t m_enumerator;
+
+        ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
+    };
     //////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ThreadJob> ThreadJobPtr;
+    typedef IntrusivePtr<ThreadJob> ThreadJobPtr;
     //////////////////////////////////////////////////////////////////////////
 }

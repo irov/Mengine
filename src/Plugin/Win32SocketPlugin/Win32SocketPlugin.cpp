@@ -11,27 +11,27 @@ PLUGIN_FACTORY( Win32SocketPlugin, Mengine::Win32SocketPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Win32SocketPlugin::Win32SocketPlugin()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32SocketPlugin::_initialize()
-	{
-		LOGGER_INFO( "Initializing Win32 Socket Plugin" );
+    //////////////////////////////////////////////////////////////////////////
+    Win32SocketPlugin::Win32SocketPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32SocketPlugin::_initialize()
+    {
+        LOGGER_INFO( "Initializing Win32 Socket Plugin" );
 
-		SERVICE_CREATE( SocketSystem );
+        SERVICE_CREATE( SocketSystem );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32SocketPlugin::_finalize()
-	{
-		SERVICE_FINALIZE( Mengine::SocketSystemInterface );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Win32SocketPlugin::_destroy()
-	{
-		SERVICE_DESTROY( Mengine::SocketSystemInterface );
-	}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32SocketPlugin::_finalize()
+    {
+        SERVICE_FINALIZE( Mengine::SocketSystemInterface );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Win32SocketPlugin::_destroy()
+    {
+        SERVICE_DESTROY( Mengine::SocketSystemInterface );
+    }
 }

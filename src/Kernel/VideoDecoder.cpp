@@ -2,10 +2,10 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	VideoDecoder::VideoDecoder()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    VideoDecoder::VideoDecoder()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     VideoDecoder::~VideoDecoder()
     {
@@ -27,14 +27,14 @@ namespace Mengine
     {
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void VideoDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
-	{
-		m_dataInfo = *static_cast<const VideoCodecDataInfo *>(_dataInfo);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const VideoCodecDataInfo * VideoDecoder::getCodecDataInfo() const 
-	{
-		return &m_dataInfo;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    void VideoDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
+    {
+        m_dataInfo = *static_cast<const VideoCodecDataInfo *>(_dataInfo);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const VideoCodecDataInfo * VideoDecoder::getCodecDataInfo() const
+    {
+        return &m_dataInfo;
+    }
 }

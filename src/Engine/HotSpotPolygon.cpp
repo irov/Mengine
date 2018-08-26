@@ -299,10 +299,10 @@ namespace Mengine
         const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
         this->addRenderLine( _state, debugMaterial
-                , vertices
-                , (uint32_t)vertexCount
-                , nullptr
-                , true
-            );
+            , vertices
+            , (uint32_t)vertexCount
+            , nullptr
+            , true
+        );
     }
 }

@@ -4,24 +4,24 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class ThreadTaskPostMessage
-		: public ThreadTaskCurl
-	{
-	public:
-		ThreadTaskPostMessage();
-		
-	public:
-		bool initialize( const String & _url, const MapParams & _params );
+    //////////////////////////////////////////////////////////////////////////
+    class ThreadTaskPostMessage
+        : public ThreadTaskCurl
+    {
+    public:
+        ThreadTaskPostMessage();
 
-	protected:
-		void _onCURL( CURL * _curl ) override;
+    public:
+        bool initialize( const String & _url, const MapParams & _params );
 
-	protected:		
-		String m_url;
+    protected:
+        void _onCURL( CURL * _curl ) override;
+
+    protected:
+        String m_url;
         MapParams m_params;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ThreadTaskPostMessage> ThreadTaskPostMessagePtr;
-	//////////////////////////////////////////////////////////////////////////
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ThreadTaskPostMessage> ThreadTaskPostMessagePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

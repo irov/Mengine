@@ -6,21 +6,21 @@
 
 namespace Mengine
 {
-	class ImageDecoder
-		: public Decoder<ImageDecoderInterface>
-	{
-	public:
-		ImageDecoder();
+    class ImageDecoder
+        : public Decoder<ImageDecoderInterface>
+    {
+    public:
+        ImageDecoder();
 
-	public:
-		bool setOptions( const CodecOptions * _options ) override;
+    public:
+        bool setOptions( const CodecOptions * _options ) override;
 
     protected:
         virtual bool _invalidateOptions();
 
-	public:
-		void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
-		const ImageCodecDataInfo * getCodecDataInfo() const override;
+    public:
+        void setCodecDataInfo( const CodecDataInfo * _dataInfo ) override;
+        const ImageCodecDataInfo * getCodecDataInfo() const override;
 
     protected:
         void sweezleAlpha1( uint32_t _width, uint32_t _height, void * _buffer, size_t _pitch );
@@ -28,6 +28,6 @@ namespace Mengine
 
     protected:
         ImageCodecOptions m_options;
-		ImageCodecDataInfo m_dataInfo;
-	};    
+        ImageCodecDataInfo m_dataInfo;
+    };
 }

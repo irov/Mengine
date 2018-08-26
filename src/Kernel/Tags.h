@@ -7,39 +7,39 @@
 
 namespace Mengine
 {
-	typedef Vector<ConstString> VectorConstString;
+    typedef Vector<ConstString> VectorConstString;
 
-	class Tags
-	{
+    class Tags
+    {
     public:
         Tags();
         ~Tags();
 
-	public:
-		void addTag( const ConstString & _tag );		
-		bool hasTag( const ConstString & _tag ) const;
-		bool inTags( const Tags & _tag ) const;
+    public:
+        void addTag( const ConstString & _tag );
+        bool hasTag( const ConstString & _tag ) const;
+        bool inTags( const Tags & _tag ) const;
 
-		void clear();
+        void clear();
 
-	public:
-		const VectorConstString & getTags() const;
-		
-	public:
-		void swap( Tags & _tags );
+    public:
+        const VectorConstString & getTags() const;
 
-	public:
-		String to_str() const;
+    public:
+        void swap( Tags & _tags );
 
-	protected:		
-		VectorConstString m_tags;
-	};
+    public:
+        String to_str() const;
+
+    protected:
+        VectorConstString m_tags;
+    };
 }
 
 namespace std
 {
-	template<> inline void swap( Mengine::Tags & _left, Mengine::Tags & _right )
-	{
-		_left.swap( _right );
-	}
+    template<> inline void swap( Mengine::Tags & _left, Mengine::Tags & _right )
+    {
+        _left.swap( _right );
+    }
 }

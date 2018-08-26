@@ -13,26 +13,26 @@
 
 namespace Mengine
 {
-	class ThreadEngine
+    class ThreadEngine
         : public ServiceBase<ThreadServiceInterface>
-	{
-	public:
-		ThreadEngine();
-		~ThreadEngine() override;
+    {
+    public:
+        ThreadEngine();
+        ~ThreadEngine() override;
 
     public:
         bool _initializeService() override;
         void _finalizeService() override;
 
-	public:
-		bool avaliable() const override;
+    public:
+        bool avaliable() const override;
 
     public:
         ThreadJobPtr createJob( uint32_t _sleep ) override;
 
-	public:
-		bool createThread( const ConstString & _threadName, int _priority, const char * _file, uint32_t _line ) override;
-		bool destroyThread( const ConstString & _threadName ) override;
+    public:
+        bool createThread( const ConstString & _threadName, int _priority, const char * _file, uint32_t _line ) override;
+        bool destroyThread( const ConstString & _threadName ) override;
 
     public:
         bool hasThread( const ConstString & _name ) const override;
@@ -44,53 +44,53 @@ namespace Mengine
     public:
         void stopTasks() override;
 
-	public:
-		ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize ) override;
-		void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
+    public:
+        ThreadQueueInterfacePtr runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize ) override;
+        void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
 
-	public:
+    public:
         void update() override;
 
     public:
-		ThreadMutexInterfacePtr createMutex( const char * _file, uint32_t _line ) override;
+        ThreadMutexInterfacePtr createMutex( const char * _file, uint32_t _line ) override;
 
     public:
         void sleep( uint32_t _ms ) override;
-		ptrdiff_t getCurrentThreadId() override;
+        ptrdiff_t getCurrentThreadId() override;
 
-	protected:
-		ThreadMutexInterfacePtr m_mutexAllocatorPool;
+    protected:
+        ThreadMutexInterfacePtr m_mutexAllocatorPool;
 
         uint32_t m_threadCount;
-		        
-		struct ThreadTaskDesc
-		{
-			ThreadTaskInterfacePtr task;
-			ThreadIdentityInterfacePtr identity;
-			ConstString threadName;
-			bool progress;
-			bool complete;
-		};
+
+        struct ThreadTaskDesc
+        {
+            ThreadTaskInterfacePtr task;
+            ThreadIdentityInterfacePtr identity;
+            ConstString threadName;
+            bool progress;
+            bool complete;
+        };
 
         typedef Vector<ThreadTaskDesc> VectorThreadTaskDesc;
         VectorThreadTaskDesc m_tasks;
-				
-		typedef Vector<ThreadQueuePtr> VectorThreadQueues;
-		VectorThreadQueues m_threadQueues;
 
-		FactoryPtr m_factoryThreadQueue;
+        typedef Vector<ThreadQueuePtr> VectorThreadQueues;
+        VectorThreadQueues m_threadQueues;
+
+        FactoryPtr m_factoryThreadQueue;
         FactoryPtr m_factoryThreadJob;
-		FactoryPtr m_factoryThreadMutexDummy;
+        FactoryPtr m_factoryThreadMutexDummy;
 
-		struct ThreadDesc
-		{
-			ConstString name;
-			ThreadIdentityInterfacePtr identity;
-		};
+        struct ThreadDesc
+        {
+            ConstString name;
+            ThreadIdentityInterfacePtr identity;
+        };
 
-		typedef Vector<ThreadDesc> VectorThreadDescs;
-		VectorThreadDescs m_threads;
+        typedef Vector<ThreadDesc> VectorThreadDescs;
+        VectorThreadDescs m_threads;
 
-		bool m_avaliable;
-	};
-}	
+        bool m_avaliable;
+    };
+}

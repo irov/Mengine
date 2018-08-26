@@ -19,29 +19,29 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	struct CrashDumpExceptionHandlerData
-	{
-		WString dumpPath;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	static CrashDumpExceptionHandlerData * g_crashDumpExceptionHandlerData = nullptr;
+    //////////////////////////////////////////////////////////////////////////
+    struct CrashDumpExceptionHandlerData
+    {
+        WString dumpPath;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    static CrashDumpExceptionHandlerData * g_crashDumpExceptionHandlerData = nullptr;
     //////////////////////////////////////////////////////////////////////////
     static bool s_writeCrashDump( EXCEPTION_POINTERS * pExceptionPointers )
     {
-		if( g_crashDumpExceptionHandlerData == nullptr )
-		{
-			return false;
-		}
-
-		HANDLE hFile = CreateFile( g_crashDumpExceptionHandlerData->dumpPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
-
-        if( hFile == INVALID_HANDLE_VALUE ) 
+        if( g_crashDumpExceptionHandlerData == nullptr )
         {
             return false;
         }
-        
-        HMODULE dbghelp_dll = ::LoadLibrary(L"dbghelp.dll");
+
+        HANDLE hFile = CreateFile( g_crashDumpExceptionHandlerData->dumpPath.c_str(), GENERIC_READ | GENERIC_WRITE, FILE_SHARE_WRITE | FILE_SHARE_READ, 0, CREATE_ALWAYS, 0, 0 );
+
+        if( hFile == INVALID_HANDLE_VALUE )
+        {
+            return false;
+        }
+
+        HMODULE dbghelp_dll = ::LoadLibrary( L"dbghelp.dll" );
 
         if( dbghelp_dll == NULL )
         {
@@ -50,14 +50,14 @@ namespace Mengine
             return false;
         }
 
-        typedef BOOL (WINAPI *MINIDUMPWRITEDUMP)(
+        typedef BOOL( WINAPI *MINIDUMPWRITEDUMP )(
             HANDLE hprocess, DWORD pid, HANDLE hfile, MINIDUMP_TYPE dumptype,
             CONST PMINIDUMP_EXCEPTION_INFORMATION exceptionparam,
             CONST PMINIDUMP_USER_STREAM_INFORMATION userstreamparam,
             CONST PMINIDUMP_CALLBACK_INFORMATION callbackparam
             );
 
-        MINIDUMPWRITEDUMP MiniDumpWriteDump = (MINIDUMPWRITEDUMP)::GetProcAddress(dbghelp_dll, "MiniDumpWriteDump");
+        MINIDUMPWRITEDUMP MiniDumpWriteDump = (MINIDUMPWRITEDUMP)::GetProcAddress( dbghelp_dll, "MiniDumpWriteDump" );
 
         if( MiniDumpWriteDump == NULL )
         {
@@ -76,9 +76,9 @@ namespace Mengine
         HANDLE hProcess = GetCurrentProcess();
         DWORD dwProcessId = GetCurrentProcessId();
 
-		MINIDUMP_TYPE dumptype = MINIDUMP_TYPE(MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithDataSegs | MiniDumpWithThreadInfo);
-        
-		BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, dumptype, &exinfo, NULL, NULL );
+        MINIDUMP_TYPE dumptype = MINIDUMP_TYPE( MiniDumpNormal | MiniDumpWithIndirectlyReferencedMemory | MiniDumpWithDataSegs | MiniDumpWithThreadInfo );
+
+        BOOL successful = MiniDumpWriteDump( hProcess, dwProcessId, hFile, dumptype, &exinfo, NULL, NULL );
 
         FreeLibrary( dbghelp_dll );
         ::CloseHandle( hFile );
@@ -91,48 +91,48 @@ namespace Mengine
         return true;
     }
 
-	//////////////////////////////////////////////////////////////////////////
-	static LONG WINAPI s_exceptionHandler( EXCEPTION_POINTERS* pExceptionPointers )
-	{       
+    //////////////////////////////////////////////////////////////////////////
+    static LONG WINAPI s_exceptionHandler( EXCEPTION_POINTERS* pExceptionPointers )
+    {
         s_writeCrashDump( pExceptionPointers );
 
-		std::string stack;
-		stdex::get_callstack( stack, pExceptionPointers->ContextRecord );
+        std::string stack;
+        stdex::get_callstack( stack, pExceptionPointers->ContextRecord );
 
         LOGGER_CRITICAL( "CriticalErrorsMonitor: catch exception and write dumb %ls\n\n\n %s\n\n\n"
-			, g_crashDumpExceptionHandlerData->dumpPath.c_str()
-			, stack.c_str()
-			);
-                
-		return EXCEPTION_EXECUTE_HANDLER;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void CriticalErrorsMonitor::run( const WString & _userPath )
-	{
-		WString dumpPath;
-		dumpPath += _userPath;
-		dumpPath += L"Dump";
-		dumpPath += L"_";
+            , g_crashDumpExceptionHandlerData->dumpPath.c_str()
+            , stack.c_str()
+        );
 
-		WString date;
-		Helper::makeDateTimeW( date );
-		
-		dumpPath += date;
-		dumpPath += L".dmp";
+        return EXCEPTION_EXECUTE_HANDLER;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void CriticalErrorsMonitor::run( const WString & _userPath )
+    {
+        WString dumpPath;
+        dumpPath += _userPath;
+        dumpPath += L"Dump";
+        dumpPath += L"_";
 
-		g_crashDumpExceptionHandlerData = new CrashDumpExceptionHandlerData;
-		g_crashDumpExceptionHandlerData->dumpPath = dumpPath;
+        WString date;
+        Helper::makeDateTimeW( date );
 
-		::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
-		::SetUnhandledExceptionFilter( &s_exceptionHandler );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void CriticalErrorsMonitor::stop()
-	{
-		if( g_crashDumpExceptionHandlerData != nullptr )
-		{
-			delete g_crashDumpExceptionHandlerData;
-			g_crashDumpExceptionHandlerData = nullptr;
-		}
-	}
+        dumpPath += date;
+        dumpPath += L".dmp";
+
+        g_crashDumpExceptionHandlerData = new CrashDumpExceptionHandlerData;
+        g_crashDumpExceptionHandlerData->dumpPath = dumpPath;
+
+        ::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
+        ::SetUnhandledExceptionFilter( &s_exceptionHandler );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void CriticalErrorsMonitor::stop()
+    {
+        if( g_crashDumpExceptionHandlerData != nullptr )
+        {
+            delete g_crashDumpExceptionHandlerData;
+            g_crashDumpExceptionHandlerData = nullptr;
+        }
+    }
 }

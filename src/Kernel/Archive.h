@@ -5,5 +5,5 @@
 
 namespace Mengine
 {
-	typedef Blobject Archive;
+    typedef Blobject Archive;
 }

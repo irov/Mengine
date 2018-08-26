@@ -12,72 +12,72 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 #	define MENGINE_RESOURCE_MANAGER_HASH_SIZE 4096
-	//////////////////////////////////////////////////////////////////////////
-	struct ResourceEntry
-	{
-		ResourcePtr resource;
-		bool isLocked;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef Vector<ResourcePtr> VectorResources;
-	//////////////////////////////////////////////////////////////////////////
-	class ResourceManager
-		: public ServiceBase<ResourceServiceInterface>
-	{
-	public:
-		ResourceManager();
-		~ResourceManager() override;
+    //////////////////////////////////////////////////////////////////////////
+    struct ResourceEntry
+    {
+        ResourcePtr resource;
+        bool isLocked;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef Vector<ResourcePtr> VectorResources;
+    //////////////////////////////////////////////////////////////////////////
+    class ResourceManager
+        : public ServiceBase<ResourceServiceInterface>
+    {
+    public:
+        ResourceManager();
+        ~ResourceManager() override;
 
-	public:
-		bool _initializeService() override;
-		void _finalizeService() override;
+    public:
+        bool _initializeService() override;
+        void _finalizeService() override;
 
-	public:
-		bool loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path, bool _ignored ) override;
-		bool unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) override;
+    public:
+        bool loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path, bool _ignored ) override;
+        bool unloadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) override;
 
-	public:
+    public:
         PointerResourceReference generateResource( const ConstString& _type ) const override;
 
         PointerResourceReference createResource( const ConstString & _locale, const FileGroupInterfacePtr& _category, const ConstString& _group, const ConstString& _name, const ConstString& _type ) override;
-		bool removeResource( const ResourcePtr & _resource ) override;
-
-	public:
-		bool hasResource( const ConstString& _name, ResourcePtr * _resource ) const override;
-		bool lockResource( const ConstString& _name );
-		bool unlockResource( const ConstString& _name );
-		bool validResourceType( const ConstString& _name, const ConstString& _type ) const override;
-
-		bool validResource( const ConstString& _name ) const override;
-
-        PointerResourceReference getResource( const ConstString& _name ) const override;
-        
-        PointerResourceReference getResourceReference( const ConstString& _name ) const override; //not compile resource
-
-		const ConstString & getResourceType( const ConstString & _name ) const;
+        bool removeResource( const ResourcePtr & _resource ) override;
 
     public:
-		bool validateResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) const override;
+        bool hasResource( const ConstString& _name, ResourcePtr * _resource ) const override;
+        bool lockResource( const ConstString& _name );
+        bool unlockResource( const ConstString& _name );
+        bool validResourceType( const ConstString& _name, const ConstString& _type ) const override;
 
-	public:
-		void visitResources( Visitor * _visitor ) const override;
-		void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, Visitor * _visitor ) const override;
+        bool validResource( const ConstString& _name ) const override;
 
-	public:
-		void dumpResources( const String & _tag ) override;
+        PointerResourceReference getResource( const ConstString& _name ) const override;
 
-	protected:
-		ResourceEntry * findResource_( const ConstString & _name );
-		const ResourceEntry * findResource_( const ConstString & _name ) const;
+        PointerResourceReference getResourceReference( const ConstString& _name ) const override; //not compile resource
 
-	protected:
-		typedef Map<ConstString, ResourceEntry> MapResources;
-		MapResources m_resources[MENGINE_RESOURCE_MANAGER_HASH_SIZE];
+        const ConstString & getResourceType( const ConstString & _name ) const;
 
-		typedef std::pair<ConstString, ConstString> ResourceCacheKey;
-		typedef Map<ResourceCacheKey, VectorResources> MapResourceCache;
-		MapResourceCache m_resourcesCache;
-	};
+    public:
+        bool validateResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) const override;
+
+    public:
+        void visitResources( Visitor * _visitor ) const override;
+        void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, Visitor * _visitor ) const override;
+
+    public:
+        void dumpResources( const String & _tag ) override;
+
+    protected:
+        ResourceEntry * findResource_( const ConstString & _name );
+        const ResourceEntry * findResource_( const ConstString & _name ) const;
+
+    protected:
+        typedef Map<ConstString, ResourceEntry> MapResources;
+        MapResources m_resources[MENGINE_RESOURCE_MANAGER_HASH_SIZE];
+
+        typedef std::pair<ConstString, ConstString> ResourceCacheKey;
+        typedef Map<ResourceCacheKey, VectorResources> MapResourceCache;
+        MapResourceCache m_resourcesCache;
+    };
 }

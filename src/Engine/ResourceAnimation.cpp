@@ -12,26 +12,26 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ResourceAnimation::ResourceAnimation()
-		: m_duration(0.f)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceAnimation::_loader( const Metabuf::Metadata * _meta )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    ResourceAnimation::ResourceAnimation()
+        : m_duration( 0.f )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceAnimation::_loader( const Metabuf::Metadata * _meta )
+    {
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceAnimation * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceAnimation *>(_meta);
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceAnimation::VectorMeta_Sequence & includes_sequence = metadata->get_Includes_Sequence();
 
-		m_duration = 0.f;
+        m_duration = 0.f;
 
         for( Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceAnimation::VectorMeta_Sequence::const_iterator
             it = includes_sequence.begin(),
             it_end = includes_sequence.end();
-        it != it_end;
-        ++it )
+            it != it_end;
+            ++it )
         {
             const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceAnimation::Meta_Sequence & meta_sequence = *it;
 
@@ -48,73 +48,73 @@ namespace Mengine
         }
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceAnimation::_compile()
-	{
-		if( m_sequence.empty() )
-		{
-			LOGGER_ERROR("ResourceAnimation::_compile: '%s' sequence count is empty"
-				, this->getName().c_str()
-				);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceAnimation::_compile()
+    {
+        if( m_sequence.empty() )
+        {
+            LOGGER_ERROR( "ResourceAnimation::_compile: '%s' sequence count is empty"
+                , this->getName().c_str()
+            );
 
-			return false;
-		}
-		
+            return false;
+        }
+
         for( AnimationSequence & sequence : m_sequence )
-		{			
-			ResourceImagePtr resource  = RESOURCE_SERVICE()
-				->getResource( sequence.resourceName );
+        {
+            ResourceImagePtr resource = RESOURCE_SERVICE()
+                ->getResource( sequence.resourceName );
 
-			if( resource == nullptr )
-			{
-				LOGGER_ERROR("ResourceAnimation::_compile: '%s' Image resource not found resource '%s'"
-					, this->getName().c_str()
-					, sequence.resourceName.c_str() 
-					);
+            if( resource == nullptr )
+            {
+                LOGGER_ERROR( "ResourceAnimation::_compile: '%s' Image resource not found resource '%s'"
+                    , this->getName().c_str()
+                    , sequence.resourceName.c_str()
+                );
 
-				return false;
-			}
+                return false;
+            }
 
-			sequence.resource = resource;			
-		}
+            sequence.resource = resource;
+        }
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimation::_release()
-	{
-		for( AnimationSequence & sequence : m_sequence )
-		{            		
-			sequence.resource->decrementReference();
-			sequence.resource = nullptr;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceAnimation::_isValid() const
-	{
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceAnimation::_release()
+    {
+        for( AnimationSequence & sequence : m_sequence )
+        {
+            sequence.resource->decrementReference();
+            sequence.resource = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceAnimation::_isValid() const
+    {
         size_t total_memory = 0;
 
         for( const AnimationSequence & sequence : m_sequence )
-		{
-			ResourceImagePtr resourceImage;
-			if( RESOURCE_SERVICE()
-				->hasResourceT<ResourceImagePtr>( sequence.resourceName, &resourceImage ) == false )
-			{
-				LOGGER_ERROR("ResourceAnimation::_isValid: '%s' not found image resource '%s'"
-					, this->getName().c_str()
-					, sequence.resourceName.c_str() 
-					);
+        {
+            ResourceImagePtr resourceImage;
+            if( RESOURCE_SERVICE()
+                ->hasResourceT<ResourceImagePtr>( sequence.resourceName, &resourceImage ) == false )
+            {
+                LOGGER_ERROR( "ResourceAnimation::_isValid: '%s' not found image resource '%s'"
+                    , this->getName().c_str()
+                    , sequence.resourceName.c_str()
+                );
 
-				return false;
-			}
+                return false;
+            }
 
             if( resourceImage->isValid() == false )
             {
-                LOGGER_ERROR("ResourceAnimation::_isValid %s invalid validate sequence resource '%s'"
+                LOGGER_ERROR( "ResourceAnimation::_isValid %s invalid validate sequence resource '%s'"
                     , this->getName().c_str()
                     , resourceImage->getName().c_str()
-                    );
+                );
 
                 return false;
             }
@@ -138,44 +138,44 @@ namespace Mengine
             size_t textureSize = Helper::getTextureMemorySize( width, height, HWChannels, HWDepth, HWPixelFormat );
 
             total_memory += textureSize;
-		}
+        }
 
-		uint32_t animationMemoryLimit = CONFIG_VALUE("Limit", "AnimationMemoryLimit", 4194304U ); //4kb
-		
-		if( total_memory > animationMemoryLimit && animationMemoryLimit != 0U )
-		{
-			LOGGER_ERROR("ResourceAnimation::_isValid: '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
-				, this->getName().c_str()
-				, float(total_memory) / (1024.f * 1024.f)
-				, float(animationMemoryLimit) / (1024.f * 1024.f)
-				, float(total_memory) / float(animationMemoryLimit)
-				);
+        uint32_t animationMemoryLimit = CONFIG_VALUE( "Limit", "AnimationMemoryLimit", 4194304U ); //4kb
 
-			return false;
-		}
+        if( total_memory > animationMemoryLimit && animationMemoryLimit != 0U )
+        {
+            LOGGER_ERROR( "ResourceAnimation::_isValid: '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
+                , this->getName().c_str()
+                , float( total_memory ) / (1024.f * 1024.f)
+                , float( animationMemoryLimit ) / (1024.f * 1024.f)
+                , float( total_memory ) / float( animationMemoryLimit )
+            );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t ResourceAnimation::getSequenceCount() const
-	{
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t ResourceAnimation::getSequenceCount() const
+    {
         VectorAnimationSequence::size_type sequenceCount = m_sequence.size();
 
-		return (uint32_t)sequenceCount;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceAnimation::getSequenceDelay( uint32_t _index ) const
-	{
+        return (uint32_t)sequenceCount;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceAnimation::getSequenceDelay( uint32_t _index ) const
+    {
 #ifndef NDEBUG
         uint32_t sequenceCount = this->getSequenceCount();
 
         if( _index >= sequenceCount )
         {
-            LOGGER_ERROR("ResourceAnimation::getSequenceDelay: '%s' sequence '%u' out of range '%u'"
+            LOGGER_ERROR( "ResourceAnimation::getSequenceDelay: '%s' sequence '%u' out of range '%u'"
                 , this->getName().c_str()
                 , _index
                 , sequenceCount
-                );
+            );
 
             return 0.f;
         }
@@ -185,21 +185,21 @@ namespace Mengine
 
         float delay = sequence.delay;
 
-		return delay;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceAnimation::getSequenceResourceName( uint32_t _index ) const
-	{
+        return delay;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ResourceAnimation::getSequenceResourceName( uint32_t _index ) const
+    {
 #ifndef NDEBUG
         uint32_t sequenceCount = this->getSequenceCount();
 
         if( _index >= sequenceCount )
         {
-            LOGGER_ERROR("ResourceAnimation::getSequenceResourceName: '%s' sequence '%u' out of range '%u'"
+            LOGGER_ERROR( "ResourceAnimation::getSequenceResourceName: '%s' sequence '%u' out of range '%u'"
                 , this->getName().c_str()
                 , _index
                 , sequenceCount
-                );
+            );
 
             return ConstString::none();
         }
@@ -209,51 +209,51 @@ namespace Mengine
 
         const ConstString & resourceName = sequence.resourceName;
 
-		return resourceName;
-	}	
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t ResourceAnimation::getLastFrameIndex() const
-	{
+        return resourceName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t ResourceAnimation::getLastFrameIndex() const
+    {
         uint32_t sequenceCount = this->getSequenceCount();
 
 #ifndef NDEBUG
         if( sequenceCount == 0 )
         {
-            LOGGER_ERROR("ResourceAnimation::getLastFrameIndex: '%s' invalid get last frame on empty sequences"
+            LOGGER_ERROR( "ResourceAnimation::getLastFrameIndex: '%s' invalid get last frame on empty sequences"
                 , this->getName().c_str()
-                );
+            );
 
             return 0;
         }
 #endif
 
-		uint32_t lastIndex = sequenceCount - 1;
+        uint32_t lastIndex = sequenceCount - 1;
 
-		return lastIndex;	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceAnimation::setSequences( const VectorAnimationSequence & _sequence )
-	{
-		m_sequence = _sequence;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const VectorAnimationSequence & ResourceAnimation::getSequences() const
-	{
-		return m_sequence;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ResourceImagePtr & ResourceAnimation::getSequenceResource( uint32_t _index ) const
-	{
+        return lastIndex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceAnimation::setSequences( const VectorAnimationSequence & _sequence )
+    {
+        m_sequence = _sequence;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const VectorAnimationSequence & ResourceAnimation::getSequences() const
+    {
+        return m_sequence;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & ResourceAnimation::getSequenceResource( uint32_t _index ) const
+    {
 #ifndef NDEBUG
         uint32_t sequenceCount = this->getSequenceCount();
 
         if( _index >= sequenceCount )
         {
-            LOGGER_ERROR("ResourceAnimation::getSequenceResource: '%s' sequence '%u' out of range '%u'"
+            LOGGER_ERROR( "ResourceAnimation::getSequenceResource: '%s' sequence '%u' out of range '%u'"
                 , this->getName().c_str()
                 , _index
                 , sequenceCount
-                );
+            );
 
             return ResourceImagePtr::none();
         }
@@ -261,13 +261,13 @@ namespace Mengine
 
         const AnimationSequence & sequence = m_sequence[_index];
 
-		const ResourceImagePtr & resource = sequence.resource;
+        const ResourceImagePtr & resource = sequence.resource;
 
-		return resource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float ResourceAnimation::getSequenceDuration() const
-	{
-		return m_duration;
-	}
+        return resource;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceAnimation::getSequenceDuration() const
+    {
+        return m_duration;
+    }
 }

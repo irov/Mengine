@@ -9,111 +9,111 @@
 
 namespace Mengine
 {
-	namespace Helper
-	{
-		//////////////////////////////////////////////////////////////////////////
-		void split( VectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delim )
-		{
-			uint32_t numSplits = 0;
-			String::size_type start = 0;
-			String::size_type pos = 0;
+    namespace Helper
+    {
+        //////////////////////////////////////////////////////////////////////////
+        void split( VectorString & _outStrings, const String& _str, bool _trimDelims, const String& _delim )
+        {
+            uint32_t numSplits = 0;
+            String::size_type start = 0;
+            String::size_type pos = 0;
 
-			do
-			{
-				pos = _str.find_first_of( _delim, start );
+            do
+            {
+                pos = _str.find_first_of( _delim, start );
 
-				if( pos == String::npos )
-				{
-					_outStrings.emplace_back( _str.substr( start ) );
-					break;
-				}
-				else
-				{
-					_outStrings.emplace_back( _str.substr( start, pos - start ) );
-					start = pos + 1;
-				}
+                if( pos == String::npos )
+                {
+                    _outStrings.emplace_back( _str.substr( start ) );
+                    break;
+                }
+                else
+                {
+                    _outStrings.emplace_back( _str.substr( start, pos - start ) );
+                    start = pos + 1;
+                }
 
-				if( _trimDelims == true )
-				{
-					start = _str.find_first_not_of( _delim, start );
-				}
+                if( _trimDelims == true )
+                {
+                    start = _str.find_first_not_of( _delim, start );
+                }
 
-				++numSplits;
+                ++numSplits;
 
-			} while( pos != String::npos );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		template<class T, class C = Vector<T> >
-		static void t_split2( C & _outStrings, const T & _str, bool _trimDelims, const C & _delims )
-		{
-			typename T::size_type start = 0;
-			typename T::size_type pos = 0;
+            } while( pos != String::npos );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T, class C = Vector<T> >
+        static void t_split2( C & _outStrings, const T & _str, bool _trimDelims, const C & _delims )
+        {
+            typename T::size_type start = 0;
+            typename T::size_type pos = 0;
 
-			do
-			{
-				pos = T::npos;
+            do
+            {
+                pos = T::npos;
 
-				for( typename C::const_iterator
-					it = _delims.begin(),
-					it_end = _delims.end();
-					it != it_end;
-					++it )
-				{
-					const T & delim = *it;
+                for( typename C::const_iterator
+                    it = _delims.begin(),
+                    it_end = _delims.end();
+                    it != it_end;
+                    ++it )
+                {
+                    const T & delim = *it;
 
-					typename T::size_type pos_delim = _str.find_first_of( delim, start );
+                    typename T::size_type pos_delim = _str.find_first_of( delim, start );
 
-					if( pos > pos_delim )
-					{
-						pos = pos_delim;
-					}
-				}
+                    if( pos > pos_delim )
+                    {
+                        pos = pos_delim;
+                    }
+                }
 
-				if( pos == T::npos )
-				{
-					_outStrings.emplace_back( _str.substr( start ) );
-					break;
-				}
-				else
-				{
-					_outStrings.emplace_back( _str.substr( start, pos - start ) );
-					start = pos + 1;
-				}
+                if( pos == T::npos )
+                {
+                    _outStrings.emplace_back( _str.substr( start ) );
+                    break;
+                }
+                else
+                {
+                    _outStrings.emplace_back( _str.substr( start, pos - start ) );
+                    start = pos + 1;
+                }
 
-				if( _trimDelims == true )
-				{
-					typename T::size_type pos_n = T::npos;
+                if( _trimDelims == true )
+                {
+                    typename T::size_type pos_n = T::npos;
 
-					for( typename C::const_iterator
-						it = _delims.begin(),
-						it_end = _delims.end();
-						it != it_end;
-						++it )
-					{
-						const T & delim = *it;
+                    for( typename C::const_iterator
+                        it = _delims.begin(),
+                        it_end = _delims.end();
+                        it != it_end;
+                        ++it )
+                    {
+                        const T & delim = *it;
 
-						typename T::size_type pos_delim = _str.find_first_not_of( delim, start );
+                        typename T::size_type pos_delim = _str.find_first_not_of( delim, start );
 
-						if( pos_n > pos_delim )
-						{
-							pos_n = pos_delim;
-						}
-					}
+                        if( pos_n > pos_delim )
+                        {
+                            pos_n = pos_delim;
+                        }
+                    }
 
-					start = pos_n;
-				}
-			} while( pos != T::npos );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		void split2( VectorString & _outStrings, const String& _str, bool _trimDelims, const VectorString & _delims )
-		{
-			t_split2( _outStrings, _str, _trimDelims, _delims );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		void u32split2( VectorU32String & _outStrings, const U32String& _str, bool _trimDelims, const VectorU32String & _delims )
-		{
-			t_split2( _outStrings, _str, _trimDelims, _delims );
-		}
+                    start = pos_n;
+                }
+            } while( pos != T::npos );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void split2( VectorString & _outStrings, const String& _str, bool _trimDelims, const VectorString & _delims )
+        {
+            t_split2( _outStrings, _str, _trimDelims, _delims );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void u32split2( VectorU32String & _outStrings, const U32String& _str, bool _trimDelims, const VectorU32String & _delims )
+        {
+            t_split2( _outStrings, _str, _trimDelims, _delims );
+        }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class C = Vector<T> >
         static bool t_split3( C & _outStrings, const T & _str, const C & _delims )
@@ -168,95 +168,95 @@ namespace Mengine
         {
             return t_split3( _outStrings, _str, _delims );
         }
-		//////////////////////////////////////////////////////////////////////////
-		void wsplit( VectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims )
-		{
-			uint32_t numSplits = 0;
-			WString::size_type start = 0;
-			WString::size_type pos = 0;
+        //////////////////////////////////////////////////////////////////////////
+        void wsplit( VectorWString & _outStrings, const WString& _str, bool _trimDelims, const WString& _delims )
+        {
+            uint32_t numSplits = 0;
+            WString::size_type start = 0;
+            WString::size_type pos = 0;
 
-			do 
-			{
-				pos = _str.find_first_of(_delims, start);
-			
-				if (pos == WString::npos )
-				{
-					_outStrings.emplace_back( _str.substr(start) );
-					break;
-				}
-				else
-				{
-					_outStrings.emplace_back( _str.substr(start, pos - start) );
-					start = pos + 1;
-				}
+            do
+            {
+                pos = _str.find_first_of( _delims, start );
 
-				if( _trimDelims == true )
-				{
-					start = _str.find_first_not_of(_delims, start);
-				}
+                if( pos == WString::npos )
+                {
+                    _outStrings.emplace_back( _str.substr( start ) );
+                    break;
+                }
+                else
+                {
+                    _outStrings.emplace_back( _str.substr( start, pos - start ) );
+                    start = pos + 1;
+                }
 
-				++numSplits;
+                if( _trimDelims == true )
+                {
+                    start = _str.find_first_not_of( _delims, start );
+                }
 
-			} while (pos != WString::npos);
-		}
-		//////////////////////////////////////////////////////////////////////////
-		void join( const String& _delim, const VectorString& _stringArray, String & _outString )
-		{
-			if( _stringArray.empty() == true )
-			{
-				_outString.clear();
-				return;
-			}
+                ++numSplits;
 
-			VectorString::const_iterator it = _stringArray.begin();
+            } while( pos != WString::npos );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void join( const String& _delim, const VectorString& _stringArray, String & _outString )
+        {
+            if( _stringArray.empty() == true )
+            {
+                _outString.clear();
+                return;
+            }
 
-			_outString = *it;
+            VectorString::const_iterator it = _stringArray.begin();
 
-			++it;
+            _outString = *it;
 
-			for( VectorString::const_iterator it_end = _stringArray.end();
-				it != it_end;
-				++it )
-			{
-				_outString += _delim;
-				_outString += (*it);
-			}
-		}
-		//////////////////////////////////////////////////////////////////////////
-		void trim( String& str, bool left/* = true*/, bool right/* = true */)
-		{
-			static const String delims = " \t\r";
+            ++it;
 
-			if( right )
-			{
-				str.erase( str.find_last_not_of( delims ) + 1 ); // trim right
-			}
+            for( VectorString::const_iterator it_end = _stringArray.end();
+                it != it_end;
+                ++it )
+            {
+                _outString += _delim;
+                _outString += (*it);
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void trim( String& str, bool left/* = true*/, bool right/* = true */ )
+        {
+            static const String delims = " \t\r";
 
-			if( left )
-			{
-				str.erase(0, str.find_first_not_of( delims ) ); // trim left
-			}
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool intToString( int32_t _value, String & _str )
-		{
-			Stringstream ss;
-			ss << _value;
+            if( right )
+            {
+                str.erase( str.find_last_not_of( delims ) + 1 ); // trim right
+            }
 
-			_str = ss.str();
+            if( left )
+            {
+                str.erase( 0, str.find_first_not_of( delims ) ); // trim left
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool intToString( int32_t _value, String & _str )
+        {
+            Stringstream ss;
+            ss << _value;
 
-            return true;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool unsignedToString( uint32_t _value, String & _str )
-		{
-			Stringstream ss;
-			ss << _value;
-
-			_str = ss.str();
+            _str = ss.str();
 
             return true;
-		}
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool unsignedToString( uint32_t _value, String & _str )
+        {
+            Stringstream ss;
+            ss << _value;
+
+            _str = ss.str();
+
+            return true;
+        }
         //////////////////////////////////////////////////////////////////////////
         bool floatToString( float _value, String & _str )
         {
@@ -267,36 +267,36 @@ namespace Mengine
 
             return true;
         }
-		//////////////////////////////////////////////////////////////////////////
-		bool intToWString( int32_t _value, WString & _str )
-		{
-			WStringstream ss;
-			ss << _value;
-
-            _str = ss.str();
-
-			return true;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool unsignedToWString( uint32_t _value, WString & _str )
-		{
-			WStringstream ss;
-			ss << _value;
+        //////////////////////////////////////////////////////////////////////////
+        bool intToWString( int32_t _value, WString & _str )
+        {
+            WStringstream ss;
+            ss << _value;
 
             _str = ss.str();
 
             return true;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool unsigned64ToWString( uint64_t _value, WString & _str )
-		{
-			WStringstream ss;
-			ss << _value;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool unsignedToWString( uint32_t _value, WString & _str )
+        {
+            WStringstream ss;
+            ss << _value;
 
-			_str = ss.str();
+            _str = ss.str();
 
-			return true;
-		}
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool unsigned64ToWString( uint64_t _value, WString & _str )
+        {
+            WStringstream ss;
+            ss << _value;
+
+            _str = ss.str();
+
+            return true;
+        }
         //////////////////////////////////////////////////////////////////////////
         bool floatToWString( float _value, WString & _str )
         {
@@ -490,20 +490,20 @@ namespace Mengine
 
             return true;
         }
-		//////////////////////////////////////////////////////////////////////////
-		bool wstringToUnsigned64( const WString & _str, uint64_t & _value )
-		{
-			WStringstream ss;
-			ss << _str;
-			ss >> _value;
+        //////////////////////////////////////////////////////////////////////////
+        bool wstringToUnsigned64( const WString & _str, uint64_t & _value )
+        {
+            WStringstream ss;
+            ss << _str;
+            ss >> _value;
 
-			if( ss.fail() == true )
-			{
-				return false;
-			}
+            if( ss.fail() == true )
+            {
+                return false;
+            }
 
-			return true;
-		}
+            return true;
+        }
         //////////////////////////////////////////////////////////////////////////
         bool wstringToFloat( const WString & _str, float & _value )
         {
@@ -518,5 +518,5 @@ namespace Mengine
 
             return true;
         }
-	}
+    }
 }

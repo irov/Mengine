@@ -8,7 +8,7 @@
 #include "Kernel/FactoryPool.h"
 
 namespace Mengine
-{     
+{
     template<class T>
     class DecoderFactory
         : public ServantBase<DecoderFactoryInterface>
@@ -23,21 +23,21 @@ namespace Mengine
 
     protected:
         DecoderInterfacePtr createDecoder() override
-        {	
+        {
             DecoderInterfacePtr decoder = m_factory->createObject();
 
             return decoder;
         }
 
-	protected:
-		void destroy() override
-		{
+    protected:
+        void destroy() override
+        {
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
 
             m_factory = nullptr;
 
-			delete this;
-		}
+            delete this;
+        }
 
     protected:
         FactoryPtr m_factory;

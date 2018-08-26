@@ -8,84 +8,84 @@ SERVICE_FACTORY( OptionsService, Mengine::OptionsService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	void OptionsService::setArgs( const VectorString & _args )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void OptionsService::setArgs( const VectorString & _args )
+    {
         for( const String & arg : _args )
-		{
-			const Char * option_str = arg.c_str();
+        {
+            const Char * option_str = arg.c_str();
 
-			const Char * option_key_str = strchr( option_str, '-' );
+            const Char * option_key_str = strchr( option_str, '-' );
 
-			if( option_key_str == nullptr )
-			{
-				continue;
-			}
+            if( option_key_str == nullptr )
+            {
+                continue;
+            }
 
-			option_key_str += 1;
+            option_key_str += 1;
 
-			const Char * option_value_str = strchr( option_key_str, ':' );
+            const Char * option_value_str = strchr( option_key_str, ':' );
 
-			Option op;
+            Option op;
 
-			if( option_value_str == nullptr )
-			{
-				strcpy( op.key, option_key_str );
+            if( option_value_str == nullptr )
+            {
+                strcpy( op.key, option_key_str );
 
-				op.value[0] = '\0';
-			}
-			else
-			{
-				size_t key_size = option_value_str - option_key_str;
+                op.value[0] = '\0';
+            }
+            else
+            {
+                size_t key_size = option_value_str - option_key_str;
 
-				strncpy( op.key, option_key_str, key_size );
-				op.key[key_size] = '\0';
+                strncpy( op.key, option_key_str, key_size );
+                op.key[key_size] = '\0';
 
-				strcpy( op.value, option_value_str + 1 );
-			}
+                strcpy( op.value, option_value_str + 1 );
+            }
 
-			m_options.push_back( op );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool OptionsService::_initializeService()
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OptionsService::_finalizeService()
-	{ 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool OptionsService::hasOption( const Char * _key ) const
-	{
+            m_options.push_back( op );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OptionsService::_initializeService()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OptionsService::_finalizeService()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OptionsService::hasOption( const Char * _key ) const
+    {
         for( const Option & op : m_options )
-		{
-			if( strcmp( op.key, _key ) != 0 )
-			{
-				continue;
-			}
+        {
+            if( strcmp( op.key, _key ) != 0 )
+            {
+                continue;
+            }
 
-			return true;
-		}
+            return true;
+        }
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const Char * OptionsService::getOptionValue( const Char * _key ) const
-	{
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const Char * OptionsService::getOptionValue( const Char * _key ) const
+    {
         for( const Option & op : m_options )
-		{
-			if( strcmp( op.key, _key ) != 0 )
-			{
-				continue;
-			}
+        {
+            if( strcmp( op.key, _key ) != 0 )
+            {
+                continue;
+            }
 
-			return op.value;
-		}
+            return op.value;
+        }
 
-		return nullptr;
-	}
+        return nullptr;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool OptionsService::testOptionValue( const Char * _key, const Char * _value ) const
     {

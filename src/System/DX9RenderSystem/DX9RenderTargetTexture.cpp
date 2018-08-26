@@ -7,24 +7,24 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DX9RenderTargetTexture::DX9RenderTargetTexture()
-		: m_width( 0 )
-		, m_height( 0 )
+        : m_width( 0 )
+        , m_height( 0 )
         , m_channels( 0 )
-		, m_pD3DDevice( nullptr )
+        , m_pD3DDevice( nullptr )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
-		, m_pD3DTexture( nullptr )
-		, m_pD3DSurface( nullptr )
-		, m_pD3DSurfaceOld( nullptr )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
+        , m_pD3DTexture( nullptr )
+        , m_pD3DSurface( nullptr )
+        , m_pD3DSurfaceOld( nullptr )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     DX9RenderTargetTexture::~DX9RenderTargetTexture()
     {
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderTargetTexture::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderTargetTexture::initialize( LPDIRECT3DDEVICE9 _device, uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
+    {
         m_pD3DDevice = _device;
 
         m_width = _width;
@@ -59,21 +59,21 @@ namespace Mengine
 
         m_pD3DTexture = renderTexture;
 
-		return true;
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderTargetTexture::_initialize()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-	void DX9RenderTargetTexture::finalize()
-	{
+    void DX9RenderTargetTexture::finalize()
+    {
         m_pD3DTexture->Release();
         m_pD3DTexture = nullptr;
 
         this->_finalize();
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderTargetTexture::_finalize()
     {
@@ -124,9 +124,9 @@ namespace Mengine
     {
         return m_hwHeightInv;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderTargetTexture::begin()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderTargetTexture::begin()
+    {
         LPDIRECT3DSURFACE9 pD3DSurface;
         DXCALL( m_pD3DTexture, GetSurfaceLevel, (0, &pD3DSurface) );
 
@@ -134,7 +134,7 @@ namespace Mengine
         {
             return false;
         }
-        
+
         LPDIRECT3DSURFACE9 pD3DSurfaceOld;
         DXCALL( m_pD3DDevice, GetRenderTarget, (0, &pD3DSurfaceOld) );
 
@@ -143,11 +143,11 @@ namespace Mengine
         m_pD3DSurfaceOld = pD3DSurfaceOld;
         m_pD3DSurface = pD3DSurface;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DX9RenderTargetTexture::end()
-	{
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderTargetTexture::end()
+    {
         DXCALL( m_pD3DDevice, SetRenderTarget, (0, m_pD3DSurfaceOld) );
 
         if( m_pD3DSurfaceOld != nullptr )
@@ -158,15 +158,15 @@ namespace Mengine
 
         m_pD3DSurface->Release();
         m_pD3DSurface = nullptr;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderTargetTexture::getData( void * _buffer, size_t _pitch )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderTargetTexture::getData( void * _buffer, size_t _pitch )
+    {
         (void)_buffer;
         (void)_pitch;
 
         return false;
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     LPDIRECT3DDEVICE9 DX9RenderTargetTexture::getDirect3dDevice9() const
     {

@@ -5,14 +5,14 @@
 
 namespace Mengine
 {
-	class MessageBoxLogger
-		: public LoggerBase
-	{
-	public:
-		MessageBoxLogger();
-		~MessageBoxLogger() override;
+    class MessageBoxLogger
+        : public LoggerBase
+    {
+    public:
+        MessageBoxLogger();
+        ~MessageBoxLogger() override;
 
-	public:
-		void log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count ) override;
-	};
+    public:
+        void log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count ) override;
+    };
 }

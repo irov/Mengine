@@ -549,7 +549,7 @@ namespace Mengine
 
             float inv_pow = 1.f / _pow;
 
-            float s = 0.f;           
+            float s = 0.f;
 
             for( float v : l )
             {
@@ -557,7 +557,7 @@ namespace Mengine
             }
 
             s /= (float)l.size();
-            
+
             s = ::powf( s, _pow );
 
             return s;
@@ -891,7 +891,7 @@ namespace Mengine
 
             return outer;
         }
-        
+
         bool s_intersectsPolygons( const Polygon & _p1, const Polygon & _p2 )
         {
             bool intersect = Helper::intersects( _p1, _p2 );
@@ -3321,7 +3321,7 @@ namespace Mengine
         pybind::def_functor( kernel, "getTextFromID", helperScriptMethod, &HelperScriptMethod::s_getTextFromID );
 
         pybind::def_functor( kernel, "setTextAlias", helperScriptMethod, &HelperScriptMethod::s_setTextAlias );
-        pybind::def_functor( kernel, "removeTextAlias", helperScriptMethod, &HelperScriptMethod::s_removeTextAlias );        
+        pybind::def_functor( kernel, "removeTextAlias", helperScriptMethod, &HelperScriptMethod::s_removeTextAlias );
         pybind::def_functor( kernel, "hasTextAlias", helperScriptMethod, &HelperScriptMethod::s_hasTextAlias );
         pybind::def_functor( kernel, "getTextAlias", helperScriptMethod, &HelperScriptMethod::s_getTextAlias );
 

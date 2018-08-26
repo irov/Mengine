@@ -332,7 +332,7 @@ namespace Mengine
     void Player::destroyCurrentScene()
     {
         ScenePtr destroyScene = m_scene;
-        
+
         if( m_scene != nullptr )
         {
             m_scene->disable();
@@ -364,7 +364,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Player::removeGlobalScene()
     {
-        m_globalScene = nullptr;        
+        m_globalScene = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     const ScenePtr & Player::getGlobalScene()
@@ -513,7 +513,7 @@ namespace Mengine
             m_globalScene->disable();
             m_globalScene = nullptr;
         }
-        
+
         if( m_camera2D != nullptr )
         {
             m_camera2D->disable();
@@ -525,7 +525,7 @@ namespace Mengine
             m_viewport2D->disable();
             m_viewport2D = nullptr;
         }
-        
+
         if( m_arrowCamera2D != nullptr )
         {
             m_arrowCamera2D->disable();
@@ -627,7 +627,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Player::finalizeRenderResources()
     {
-        m_debugText = nullptr;        
+        m_debugText = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Player::handleKeyEvent( const InputKeyEvent & _event )
@@ -1319,7 +1319,7 @@ namespace Mengine
                     typedef Map<uint32_t, VectorString> MapPybindScope;
                     MapPybindScope m_scopes;
                 };
-                
+
                 MyVisitorFactoryService mvcts;
                 FACTORY_SERVICE()
                     ->visitFactories( &mvcts );

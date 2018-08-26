@@ -4,16 +4,16 @@
 
 namespace Mengine
 {
-	class ZipPlugin
-		: public PluginBase
-	{
-		PLUGIN_DECLARE( "Zip" )
+    class ZipPlugin
+        : public PluginBase
+    {
+        PLUGIN_DECLARE( "Zip" )
 
-	public:
-		ZipPlugin();
+    public:
+        ZipPlugin();
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
-	};
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
+    };
 }

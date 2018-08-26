@@ -11,7 +11,7 @@ namespace Mengine
     class WatchdogInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE("Watchdog")
+        SERVICE_DECLARE( "Watchdog" )
 
     public:
         virtual float watch( const String & _tag ) = 0;

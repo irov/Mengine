@@ -10,28 +10,28 @@
 
 namespace Mengine
 {
-	class ConverterFactoryInterface;
-	class ConverterInterface;
+    class ConverterFactoryInterface;
+    class ConverterInterface;
 
 
-	class ConverterEngine
-		: public ServiceBase<ConverterServiceInterface>
-	{
-	public:
-		ConverterEngine();
-		~ConverterEngine() override;
+    class ConverterEngine
+        : public ServiceBase<ConverterServiceInterface>
+    {
+    public:
+        ConverterEngine();
+        ~ConverterEngine() override;
 
-	public:
-		bool registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _interface ) override;
-		bool unregisterConverter( const ConstString & _type ) override;
+    public:
+        bool registerConverter( const ConstString & _type, const ConverterFactoryInterfacePtr & _interface ) override;
+        bool unregisterConverter( const ConstString & _type ) override;
 
-		ConverterInterfacePtr createConverter( const ConstString & _type ) override; 
+        ConverterInterfacePtr createConverter( const ConstString & _type ) override;
 
     public:
         bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out ) override;
 
-	protected:
-		typedef Map<ConstString, ConverterFactoryInterfacePtr> MapConverterSystem;
-		MapConverterSystem m_mapConverterSystem;
-	};
+    protected:
+        typedef Map<ConstString, ConverterFactoryInterfacePtr> MapConverterSystem;
+        MapConverterSystem m_mapConverterSystem;
+    };
 }

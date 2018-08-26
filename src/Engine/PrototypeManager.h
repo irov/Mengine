@@ -13,21 +13,21 @@
 
 namespace Mengine
 {
-	class PrototypeManager
+    class PrototypeManager
         : public ServiceBase<PrototypeServiceInterface>
-	{
-	public:
-		PrototypeManager();
-		~PrototypeManager() override;
+    {
+    public:
+        PrototypeManager();
+        ~PrototypeManager() override;
 
-	public:
-		bool _initializeService() override;
-		void _finalizeService() override;
+    public:
+        bool _initializeService() override;
+        void _finalizeService() override;
 
-	public:
-		bool addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator ) override;
+    public:
+        bool addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator ) override;
         bool removePrototype( const ConstString & _category, const ConstString & _prototype ) override;
-		bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const override;
+        bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const override;
 
     public:
         PointerFactorable generatePrototype( const ConstString & _category, const ConstString & _prototype ) override;
@@ -35,7 +35,7 @@ namespace Mengine
     public:
         void visitGenerators( VisitorPrototypeGenerator * _visitor ) const override;
 
-	protected:
+    protected:
         struct CategoryKey
         {
             ConstString category;
@@ -45,5 +45,5 @@ namespace Mengine
 
         typedef Vector<CategoryKey> VectorPrototypes;
         VectorPrototypes m_prototypes[MENGINE_PROTOTYPE_HASH_SIZE];
-	};
+    };
 }

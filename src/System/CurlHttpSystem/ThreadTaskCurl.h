@@ -8,13 +8,13 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class ThreadTaskCurl
-		: public ThreadTask
-	{
-	public:
+    //////////////////////////////////////////////////////////////////////////
+    class ThreadTaskCurl
+        : public ThreadTask
+    {
+    public:
         ThreadTaskCurl();
-		
+
     public:
         void setRequestId( HttpRequestID _id );
         HttpRequestID getRequestId() const;
@@ -22,8 +22,8 @@ namespace Mengine
         void setReceiver( const HttpReceiverInterfacePtr & _receiver );
         const HttpReceiverInterfacePtr & getReceiver() const;
 
-	protected:
-		bool _onRun() override;
+    protected:
+        bool _onRun() override;
         bool _onMain() override;
 
     protected:
@@ -32,21 +32,21 @@ namespace Mengine
     protected:
         void setupWriteResponse( CURL * _curl );
 
-	protected:
-		void _onComplete( bool _successful ) override;
+    protected:
+        void _onComplete( bool _successful ) override;
 
-	public:        
-		void writeResponse( char * _ptr, size_t _size );
+    public:
+        void writeResponse( char * _ptr, size_t _size );
 
-	protected:		
-		HttpRequestID m_id;
+    protected:
+        HttpRequestID m_id;
         HttpReceiverInterfacePtr m_receiver;
 
-		uint32_t m_code;
+        uint32_t m_code;
         CURLcode m_status;
-		String m_response;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ThreadTaskCurl> ThreadTaskCurlPtr;
-	//////////////////////////////////////////////////////////////////////////
+        String m_response;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ThreadTaskCurl> ThreadTaskCurlPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

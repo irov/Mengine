@@ -7,28 +7,28 @@
 
 namespace Mengine
 {
-	class ThreadTaskPrefetchSoundDecoder
-		: public ThreadTaskPrefetch
-	{
-	public:
-		ThreadTaskPrefetchSoundDecoder();
-	
-	public:
-		void setSoundCodec( const ConstString & _codec );
-		
-	public:
-		const SoundDecoderInterfacePtr & getDecoder() const;
+    class ThreadTaskPrefetchSoundDecoder
+        : public ThreadTaskPrefetch
+    {
+    public:
+        ThreadTaskPrefetchSoundDecoder();
 
-	protected:
-		bool _onRun() override;
-		bool _onMain() override;
+    public:
+        void setSoundCodec( const ConstString & _codec );
 
-	protected:
-		ConstString m_codec;
-				
-	protected:
-		SoundDecoderInterfacePtr m_soundDecoder;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ThreadTaskPrefetchSoundDecoder> ThreadTaskPrefetchSoundDecoderPtr;
+    public:
+        const SoundDecoderInterfacePtr & getDecoder() const;
+
+    protected:
+        bool _onRun() override;
+        bool _onMain() override;
+
+    protected:
+        ConstString m_codec;
+
+    protected:
+        SoundDecoderInterfacePtr m_soundDecoder;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ThreadTaskPrefetchSoundDecoder> ThreadTaskPrefetchSoundDecoderPtr;
 }

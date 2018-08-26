@@ -17,24 +17,24 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	static ae_size_t __movie_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    static ae_size_t __movie_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size )
+    {
         (void)_carriage;
 
-		InputStreamInterface * stream = (InputStreamInterface *)_data;
+        InputStreamInterface * stream = (InputStreamInterface *)_data;
 
-		size_t bytes = stream->read( _buff, _size );
+        size_t bytes = stream->read( _buff, _size );
 
-		return bytes;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static ae_void_t __movie_copy_stream( ae_voidptr_t _data, ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size )
-	{
-		(void)_data;
+        return bytes;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ae_void_t __movie_copy_stream( ae_voidptr_t _data, ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size )
+    {
+        (void)_data;
 
-		stdex::memorycopy( _dst, 0U, _src, _size );
-	}
+        stdex::memorycopy( _dst, 0U, _src, _size );
+    }
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
     {
@@ -120,8 +120,8 @@ namespace Mengine
 
                 return AE_TRUE;
             }break;
-		default:
-			break;
+        default:
+            break;
         }
 
         *_rd = AE_NULL;
@@ -168,7 +168,7 @@ namespace Mengine
                     mt::vec2f uv;
                     const float * uv2 = _callbackData->uvs[index];
                     uv.from_f2( uv2 );
-                    
+
                     resource_image->correctUVImage( uvs[index], uv );
                 }
 
@@ -192,14 +192,14 @@ namespace Mengine
 
         Helper::freeMemoryT( reinterpret_cast<mt::vec2f *>(const_cast<void *>(_callbackData->uv_cache_data)) );
     }
-	//////////////////////////////////////////////////////////////////////////
-	ResourceMovie2::ResourceMovie2()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ResourceMovie2::~ResourceMovie2()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    ResourceMovie2::ResourceMovie2()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ResourceMovie2::~ResourceMovie2()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     void ResourceMovie2::setFilePath( const FilePath & _filePath )
     {
@@ -219,7 +219,7 @@ namespace Mengine
         {
             return false;
         }
-        
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -250,34 +250,34 @@ namespace Mengine
 
         return composition.frameDuration;
     }
-	//////////////////////////////////////////////////////////////////////////
-	const aeMovieData * ResourceMovie2::getMovieData() const
-	{
-		return m_movieData;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const aeMovieCompositionData * ResourceMovie2::getCompositionData( const ConstString & _name ) const
-	{
-		if( this->isCompile() == false )
-		{
-			return nullptr;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    const aeMovieData * ResourceMovie2::getMovieData() const
+    {
+        return m_movieData;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const aeMovieCompositionData * ResourceMovie2::getCompositionData( const ConstString & _name ) const
+    {
+        if( this->isCompile() == false )
+        {
+            return nullptr;
+        }
 
-		const aeMovieCompositionData * compositionData = ae_get_movie_composition_data( m_movieData, _name.c_str() );
+        const aeMovieCompositionData * compositionData = ae_get_movie_composition_data( m_movieData, _name.c_str() );
 
-		if( compositionData == nullptr )
-		{
+        if( compositionData == nullptr )
+        {
             LOGGER_ERROR( "ResourceMovie2::getCompositionData resource '%s' file '%s' not found composition data '%s'"
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
                 , _name.c_str()
             );
 
-			return nullptr;
-		}
-				
-		return compositionData;
-	}
+            return nullptr;
+        }
+
+        return compositionData;
+    }
     //////////////////////////////////////////////////////////////////////////
     const ResourceMovie2Composition * ResourceMovie2::getCompositionDesc( const ConstString & _name ) const
     {
@@ -292,17 +292,17 @@ namespace Mengine
 
         return &composition;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceMovie2::setMovieInstance( const aeMovieInstance * _instance )
-	{
-		m_movieInstance = _instance;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie2::_loader( const Metabuf::Metadata * _meta )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceMovie2::setMovieInstance( const aeMovieInstance * _instance )
+    {
+        m_movieInstance = _instance;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceMovie2::_loader( const Metabuf::Metadata * _meta )
+    {
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 *>(_meta);
-               
+
         m_filePath = metadata->get_File_Path();
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::VectorMeta_Composition & includes_composition = metadata->get_Includes_Composition();
@@ -352,40 +352,40 @@ namespace Mengine
         }
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ResourceMovie2::_compile()
-	{
-		if( Resource::_compile() == false )
-		{
-			return false;
-		}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceMovie2::_compile()
+    {
+        if( Resource::_compile() == false )
+        {
+            return false;
+        }
 
-		if( m_filePath.empty() == true )
-		{
-			LOGGER_ERROR("ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
-				, this->getName().c_str()
-				, this->getGroupName().c_str()
-				);
+        if( m_filePath.empty() == true )
+        {
+            LOGGER_ERROR( "ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
+                , this->getName().c_str()
+                , this->getGroupName().c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
-		InputStreamInterfacePtr stream = FILE_SERVICE()
-			->openInputFile( category, m_filePath, false );
+        InputStreamInterfacePtr stream = FILE_SERVICE()
+            ->openInputFile( category, m_filePath, false );
 
-		if( stream == nullptr )
-		{
-			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' can`t open file '%s'"
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "ResourceMovie2::_compile: '%s' group '%s' can`t open file '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
                 , this->getFilePath().c_str()
-				);
+            );
 
-			return false;
-		}
+            return false;
+        }
 
         aeMovieDataProviders data_providers;
         ae_clear_movie_data_providers( &data_providers );
@@ -395,41 +395,41 @@ namespace Mengine
         data_providers.cache_uv_provider = &__movie_cache_uv_provider;
         data_providers.cache_uv_deleter = &__movie_cache_uv_deleter;
 
-		aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, this );
+        aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, this );
 
-		aeMovieStream * movie_stream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, stream.get() );
+        aeMovieStream * movie_stream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, stream.get() );
 
         ae_uint32_t major_version;
         ae_uint32_t minor_version;
         ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movie_stream, &major_version, &minor_version );
 
-		if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
-		{
+        if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
+        {
             const ae_char_t * result_string_info = ae_get_result_string_info( result_load_movie_data );
 
-			LOGGER_ERROR("ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
-				, this->getName().c_str()
-				, this->getGroupName().c_str()
-				, this->getFilePath().c_str()
+            LOGGER_ERROR( "ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
+                , this->getName().c_str()
+                , this->getGroupName().c_str()
+                , this->getFilePath().c_str()
                 , result_string_info
                 , AE_MOVIE_SDK_MAJOR_VERSION
                 , AE_MOVIE_SDK_MINOR_VERSION
                 , major_version
                 , minor_version
-				);
+            );
 
-			return 0;
-		}
+            return 0;
+        }
 
-		ae_delete_movie_stream( movie_stream );
+        ae_delete_movie_stream( movie_stream );
 
-		m_movieData = movieData;
-		stream = nullptr;
+        m_movieData = movieData;
+        stream = nullptr;
 
 #ifndef MENGINE_MASTER_RELEASE
         bool developmentMode = HAS_OPTION( "dev" );
         bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
-        
+
         if( developmentMode == true && noresourceCheck == false )
         {
             for( const ResourcePtr & resource : m_resources )
@@ -449,20 +449,20 @@ namespace Mengine
             }
         }
 #endif
-	
+
         for( const ResourcePtr & resource : m_resources )
-		{
-			if( resource->compile() == false )
-			{
-				return false;
-			}
-		}
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceMovie2::_release()
-	{
+        {
+            if( resource->compile() == false )
+            {
+                return false;
+            }
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceMovie2::_release()
+    {
         for( const ResourcePtr & resource : m_resources )
         {
             resource->release();
@@ -475,15 +475,15 @@ namespace Mengine
 
         m_resources.clear();
 
-		ae_delete_movie_data( m_movieData );
+        ae_delete_movie_data( m_movieData );
 
-		Resource::_release();
-	}
+        Resource::_release();
+    }
     //////////////////////////////////////////////////////////////////////////    
     static ae_bool_t Mengine_movie_layer_data_visitor( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layerData, ae_voidptr_t _ud )
     {
         ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
-        
+
         const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _compositionData );
         const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _layerData );
 
@@ -514,10 +514,10 @@ namespace Mengine
     {
         if( m_filePath.empty() == true )
         {
-            LOGGER_ERROR("ResourceMovie::_isValid: '%s' group '%s' don`t have Key Frames Pack Path"
+            LOGGER_ERROR( "ResourceMovie::_isValid: '%s' group '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
-                );
+            );
 
             return false;
         }
@@ -529,11 +529,11 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR("ResourceMovie2::_isValid: '%s' group '%s' can`t open file '%s'"
+            LOGGER_ERROR( "ResourceMovie2::_isValid: '%s' group '%s' can`t open file '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
                 , this->getFilePath().c_str()
-                );
+            );
 
             return false;
         }
@@ -553,7 +553,7 @@ namespace Mengine
         {
             const ae_char_t * result_string_info = ae_get_result_string_info( result_load_movie_data );
 
-            LOGGER_ERROR("ResourceMovie2::_isValid: '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
+            LOGGER_ERROR( "ResourceMovie2::_isValid: '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
                 , this->getFilePath().c_str()
@@ -562,7 +562,7 @@ namespace Mengine
                 , AE_MOVIE_SDK_MINOR_VERSION
                 , major_version
                 , minor_version
-                );
+            );
 
             return false;
         }
@@ -606,29 +606,29 @@ namespace Mengine
         return resource.get();
     }
 #if AE_MOVIE_SDK_MAJOR_VERSION < 17
-	//////////////////////////////////////////////////////////////////////////
-	Resource * ResourceMovie2::createResourceImage_( const aeMovieResourceImage * _resource )
-	{
-		ResourceImageDefaultPtr image = RESOURCE_SERVICE()
-			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
+    //////////////////////////////////////////////////////////////////////////
+    Resource * ResourceMovie2::createResourceImage_( const aeMovieResourceImage * _resource )
+    {
+        ResourceImageDefaultPtr image = RESOURCE_SERVICE()
+            ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
 
-		const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
-		image->setCategory( category );
+        image->setCategory( category );
 
-		PathString full_path;
+        PathString full_path;
 
-		ConstString folder = Helper::getPathFolder( m_filePath );
+        ConstString folder = Helper::getPathFolder( m_filePath );
 
-		full_path += folder.c_str();
+        full_path += folder.c_str();
         full_path += _resource->path;
 
-		FilePath c_path = Helper::stringizeFilePath( full_path );
+        FilePath c_path = Helper::stringizeFilePath( full_path );
 
-		mt::uv4f uv_image;
-		mt::uv4f uv_alpha;
+        mt::uv4f uv_image;
+        mt::uv4f uv_alpha;
 
-		mt::vec2f size( _resource->trim_width, _resource->trim_height );
+        mt::vec2f size( _resource->trim_width, _resource->trim_height );
 
         if( image->setup( c_path, ConstString::none(), uv_image, uv_alpha, size ) == false )
         {
@@ -640,80 +640,80 @@ namespace Mengine
             return nullptr;
         }
 
-		return image.get();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Resource * ResourceMovie2::createResourceVideo_( const aeMovieResourceVideo * _resource )
-	{
-		ResourceVideoPtr video = RESOURCE_SERVICE()
-			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
+        return image.get();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Resource * ResourceMovie2::createResourceVideo_( const aeMovieResourceVideo * _resource )
+    {
+        ResourceVideoPtr video = RESOURCE_SERVICE()
+            ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
 
-		const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
-		video->setCategory( category );
+        video->setCategory( category );
 
-		PathString full_path;
+        PathString full_path;
 
-		ConstString folder = Helper::getPathFolder( m_filePath );
+        ConstString folder = Helper::getPathFolder( m_filePath );
 
-		full_path += folder.c_str();
-		full_path += _resource->path;
+        full_path += folder.c_str();
+        full_path += _resource->path;
 
-		FilePath fullPath = Helper::stringizeFilePath( full_path );
+        FilePath fullPath = Helper::stringizeFilePath( full_path );
 
-		video->setFilePath( fullPath );
+        video->setFilePath( fullPath );
 
-		video->setFrameRate( _resource->frameRate );
-		video->setDuration( _resource->duration );
+        video->setFrameRate( _resource->frameRate );
+        video->setDuration( _resource->duration );
 
-		if( _resource->has_alpha_channel == AE_TRUE )
-		{
-			video->setAlpha( true );
-			video->setCodecType( STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
-		}
-		else
-		{
-			video->setAlpha( false );
-			video->setCodecType( STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
-		}
+        if( _resource->has_alpha_channel == AE_TRUE )
+        {
+            video->setAlpha( true );
+            video->setCodecType( STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
+        }
+        else
+        {
+            video->setAlpha( false );
+            video->setCodecType( STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
+        }
 
         if( this->storeResource_( video ) == false )
         {
             return nullptr;
         }
 
-		return video.get();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Resource * ResourceMovie2::createResourceSound_( const aeMovieResourceSound * _resource )
-	{
-		ResourceSoundPtr sound = RESOURCE_SERVICE()
-			->generateResource( STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
+        return video.get();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Resource * ResourceMovie2::createResourceSound_( const aeMovieResourceSound * _resource )
+    {
+        ResourceSoundPtr sound = RESOURCE_SERVICE()
+            ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
 
-		const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getCategory();
 
-		sound->setCategory( category );
+        sound->setCategory( category );
 
-		PathString full_path;
+        PathString full_path;
 
-		ConstString folder = Helper::getPathFolder( m_filePath );
+        ConstString folder = Helper::getPathFolder( m_filePath );
 
-		full_path += folder.c_str();
-		full_path += _resource->path;
+        full_path += folder.c_str();
+        full_path += _resource->path;
 
-		FilePath c_path = Helper::stringizeFilePath( full_path );
-		
-		sound->setFilePath( c_path );
-		
-		sound->setCodecType( STRINGIZE_STRING_LOCAL( "oggSound" ) );
+        FilePath c_path = Helper::stringizeFilePath( full_path );
+
+        sound->setFilePath( c_path );
+
+        sound->setCodecType( STRINGIZE_STRING_LOCAL( "oggSound" ) );
 
         if( this->storeResource_( sound ) == false )
         {
             return nullptr;
         }
 
-		return sound.get();
-	}
+        return sound.get();
+    }
     //////////////////////////////////////////////////////////////////////////
     Resource * ResourceMovie2::createResourceParticle_( const aeMovieResourceParticle * _resource )
     {
@@ -740,10 +740,10 @@ namespace Mengine
             const aeMovieResourceImage * movieResourceImage = _resource->images[index];
 
             ResourceImage * resourceImage = static_cast<ResourceImage *>(movieResourceImage->data);
-            
+
             particle->addResourceImage( resourceImage );
         }
-                
+
         if( this->storeResource_( particle ) == false )
         {
             return nullptr;

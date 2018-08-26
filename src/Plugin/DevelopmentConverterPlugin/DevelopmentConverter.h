@@ -6,12 +6,12 @@
 
 namespace Mengine
 {
-	class DevelopmentConverter
+    class DevelopmentConverter
         : public ServantBase<ConverterInterface>
-	{
-	public:
-		DevelopmentConverter();
-		~DevelopmentConverter() override;
+    {
+    public:
+        DevelopmentConverter();
+        ~DevelopmentConverter() override;
 
     private:
         bool initialize() override;
@@ -19,20 +19,20 @@ namespace Mengine
     protected:
         virtual bool _initialize() = 0;
 
-	public:
-		const String & getConvertExt() const override;
+    public:
+        const String & getConvertExt() const override;
 
-	public:
-		void setOptions( ConverterOptions * _options ) override;
+    public:
+        void setOptions( ConverterOptions * _options ) override;
 
-	public:
-		bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
+    public:
+        bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
 
-	protected:
+    protected:
         FileGroupInterfacePtr m_fileGroup;
 
-		ConverterOptions m_options;
+        ConverterOptions m_options;
 
-		String m_convertExt;
-	};
+        String m_convertExt;
+    };
 }

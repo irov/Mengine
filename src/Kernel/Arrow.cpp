@@ -23,7 +23,7 @@ namespace Mengine
         ~ArrowInputMousePositionProvider() override
         {
         }
-        
+
     protected:
         void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) override
         {
@@ -381,8 +381,8 @@ namespace Mengine
 
                 for( uint32_t i = 0; i != numpoints; ++i )
                 {
-                    float x = radius * MT_cosf( mt::constant::two_pi / float(numpoints) * float( i ) );
-                    float y = radius * MT_sinf( mt::constant::two_pi / float(numpoints) * float( i ) );
+                    float x = radius * MT_cosf( mt::constant::two_pi / float( numpoints ) * float( i ) );
+                    float y = radius * MT_sinf( mt::constant::two_pi / float( numpoints ) * float( i ) );
 
                     ring[i] = mt::vec2f( x, y );
                 }
@@ -425,11 +425,11 @@ namespace Mengine
                 const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
                 this->addRenderLine( _state, debugMaterial
-                        , vertices
-                        , vertexCount
-                        , nullptr
-                        , true
-                    );
+                    , vertices
+                    , vertexCount
+                    , nullptr
+                    , true
+                );
             }break;
         case EAT_POLYGON:
             {
@@ -491,11 +491,11 @@ namespace Mengine
                 const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
                 this->addRenderLine( _state, debugMaterial
-                        , vertices
-                        , (uint32_t)vertexCount
-                        , nullptr
-                        , true
-                    );
+                    , vertices
+                    , (uint32_t)vertexCount
+                    , nullptr
+                    , true
+                );
             }break;
         }
     }

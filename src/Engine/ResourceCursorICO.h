@@ -4,28 +4,28 @@
 
 namespace Mengine
 {
-	class ResourceCursorICO
-		: public ResourceCursor
-	{
-		DECLARE_VISITABLE( ResourceCursor );
+    class ResourceCursorICO
+        : public ResourceCursor
+    {
+        DECLARE_VISITABLE( ResourceCursor );
 
-	public:
-		ResourceCursorICO();
+    public:
+        ResourceCursorICO();
 
-	public:
-		const FilePath & getPath() const override;
-		const MemoryInterfacePtr & getBuffer() const override;
+    public:
+        const FilePath & getPath() const override;
+        const MemoryInterfacePtr & getBuffer() const override;
 
-	public:
-		bool _compile() override;
-		void _release() override;
+    public:
+        bool _compile() override;
+        void _release() override;
 
-	protected:
-		bool _loader( const Metabuf::Metadata * _parser ) override;
+    protected:
+        bool _loader( const Metabuf::Metadata * _parser ) override;
 
-	protected:
-		FilePath m_path;
-				
-		MemoryInterfacePtr m_buffer;
-	};
+    protected:
+        FilePath m_path;
+
+        MemoryInterfacePtr m_buffer;
+    };
 }

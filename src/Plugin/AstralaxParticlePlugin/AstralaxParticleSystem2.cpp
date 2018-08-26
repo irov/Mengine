@@ -144,7 +144,7 @@ namespace Mengine
     ParticleEmitterInterfacePtr AstralaxParticleSystem2::createEmitter( const ParticleEmitterContainerInterface2Ptr & _container )
     {
         AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject();
-        
+
         if( emitter->initialize( this, _container ) == false )
         {
             return nullptr;
@@ -179,14 +179,14 @@ namespace Mengine
             case MAGIC_CHANGE_ATLAS_CREATE:
                 {
                     MapHashEmitterContainers::const_iterator it_found = m_containers.find( c.ptc_id );
-                    
+
                     if( it_found == m_containers.end() )
                     {
                         return false;
                     }
 
                     const AstralaxEmitterContainerDesc & desc = it_found->second;
-                    
+
                     const ResourceImagePtr & resourceImage = desc.container->getAtlasResourceImage( c.file );
 
                     m_atlases.emplace_back( resourceImage );
@@ -260,7 +260,7 @@ namespace Mengine
                         ->getVertexAttribute( STRINGIZE_STRING_LOCAL( "Vertex2D_UV1" ) );
 
                     vertexShader = RENDERMATERIAL_SERVICE()
-                        ->getVertexShader( STRINGIZE_STRING_LOCAL( "Vertex_Blend" ) );                    
+                        ->getVertexShader( STRINGIZE_STRING_LOCAL( "Vertex_Blend" ) );
                 }break;
             case 2:
                 {
@@ -326,7 +326,7 @@ namespace Mengine
     //            textureStage.alphaArg2 = dx_arg[state.argument_alpha2];
             }
 
-            
+
 
             const RenderMaterialStage * cache_stage = RENDERMATERIAL_SERVICE()
                 ->cacheStage( rs );
@@ -378,7 +378,7 @@ namespace Mengine
     void AstralaxParticleSystem2::createFragmentShaderDX9Source_( Stringstream & ss, const MAGIC_MATERIAL * m )
     {
         MAGIC_VERTEX_FORMAT vertex_format = m->format;
-        
+
         int textures = m->textures;
 
         for( int i = 0; i != textures; ++i )
@@ -407,7 +407,7 @@ namespace Mengine
 
         ss << "void main( in v2p IN, out p2f OUT )" << std::endl;
         ss << "{" << std::endl;
-        
+
         if( textures != 0 )
         {
             ss << "  float4 color;" << std::endl;
@@ -630,12 +630,12 @@ namespace Mengine
         {
             ss << "varying vec2 v_UV" << i << ";" << std::endl;
         }
-        
+
         ss << std::endl;
 
         ss << "void main(void)" << std::endl;
         ss << "{" << std::endl;
-        
+
         if( textures != 0 )
         {
             ss << "  vec4 color;" << std::endl;
@@ -943,7 +943,7 @@ namespace Mengine
             }break;
         default:
             {
-                
+
             }break;
         }
 
@@ -959,7 +959,7 @@ namespace Mengine
 
         memset( key.states + 0, 0, sizeof( MAGIC_TEXTURE_STATES ) );
         memset( key.states + 1, 0, sizeof( MAGIC_TEXTURE_STATES ) );
-        
+
         for( int i = 0; i != textures; ++i )
         {
             key.states[i] = m->states[i];

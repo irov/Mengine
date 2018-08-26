@@ -10,25 +10,25 @@
 
 namespace Mengine
 {
-	class DecoderRenderImageProvider
-		: public ServantBase<RenderImageProviderInterface>
-	{
-	public:
+    class DecoderRenderImageProvider
+        : public ServantBase<RenderImageProviderInterface>
+    {
+    public:
         DecoderRenderImageProvider();
-		~DecoderRenderImageProvider() override;
+        ~DecoderRenderImageProvider() override;
 
     public:
         void initialize( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName );
 
-	public:
+    public:
         RenderImageLoaderInterfacePtr getLoader() const override;
 
-	protected:        
+    protected:
         FileGroupInterfacePtr m_fileGroup;
         FilePath m_fileName;
         ConstString m_codecName;
     };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<DecoderRenderImageProvider> DecoderRenderImageProviderPtr;
-	//////////////////////////////////////////////////////////////////////////
-}	
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<DecoderRenderImageProvider> DecoderRenderImageProviderPtr;
+    //////////////////////////////////////////////////////////////////////////
+}

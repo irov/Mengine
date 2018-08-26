@@ -7,133 +7,133 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Win32FileMappedStream::Win32FileMappedStream()
-		: m_hFile(INVALID_HANDLE_VALUE)
-		, m_hMapping(INVALID_HANDLE_VALUE)
-		, m_memory(NULL)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Win32FileMappedStream::~Win32FileMappedStream()
-	{       
-		if( m_memory != NULL )
-		{
-			if( UnmapViewOfFile( m_memory ) == FALSE )
-			{
-				DWORD uError = GetLastError();
+    //////////////////////////////////////////////////////////////////////////
+    Win32FileMappedStream::Win32FileMappedStream()
+        : m_hFile( INVALID_HANDLE_VALUE )
+        , m_hMapping( INVALID_HANDLE_VALUE )
+        , m_memory( NULL )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Win32FileMappedStream::~Win32FileMappedStream()
+    {
+        if( m_memory != NULL )
+        {
+            if( UnmapViewOfFile( m_memory ) == FALSE )
+            {
+                DWORD uError = GetLastError();
 
-				LOGGER_ERROR("Win32MappedFileInputStream invalid UnmapViewOfFile %p error %d"
-					, m_memory
-					, uError
-					);
-			}
+                LOGGER_ERROR( "Win32MappedFileInputStream invalid UnmapViewOfFile %p error %d"
+                    , m_memory
+                    , uError
+                );
+            }
 
-			m_memory = NULL;
-		}
+            m_memory = NULL;
+        }
 
-		if( m_hMapping != INVALID_HANDLE_VALUE )
-		{
-			::CloseHandle( m_hMapping );
-			m_hMapping = INVALID_HANDLE_VALUE;
-		}
+        if( m_hMapping != INVALID_HANDLE_VALUE )
+        {
+            ::CloseHandle( m_hMapping );
+            m_hMapping = INVALID_HANDLE_VALUE;
+        }
 
         if( m_hFile != INVALID_HANDLE_VALUE )
         {
             ::CloseHandle( m_hFile );
             m_hFile = INVALID_HANDLE_VALUE;
         }
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileMappedStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileMappedStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath )
+    {
         WChar concatenatePath[MENGINE_MAX_PATH];
         if( WINDOWSLAYER_SERVICE()
-			->concatenateFilePath( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH ) == false )
+            ->concatenateFilePath( _relationPath, _folderPath, _filePath, concatenatePath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR("Win32MappedInputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "Win32MappedInputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
                 , _filePath.c_str()
-                );
+            );
 
             return false;
         }
 
-		m_hFile = WINDOWSLAYER_SERVICE()->createFile( 
+        m_hFile = WINDOWSLAYER_SERVICE()->createFile(
             concatenatePath, // file to open
-			GENERIC_READ, // open for reading
-			FILE_SHARE_READ, // share for reading, exclusive for mapping
-			OPEN_EXISTING // existing file only
+            GENERIC_READ, // open for reading
+            FILE_SHARE_READ, // share for reading, exclusive for mapping
+            OPEN_EXISTING // existing file only
+        );
+
+        if( m_hFile == INVALID_HANDLE_VALUE )
+        {
+            LOGGER_ERROR( "Win32MappedInputStream::open %ls invalid open"
+                , concatenatePath
             );
 
-		if ( m_hFile == INVALID_HANDLE_VALUE)
-		{
-            LOGGER_ERROR("Win32MappedInputStream::open %ls invalid open"
+            return false;
+        }
+
+        m_hMapping = CreateFileMapping( m_hFile, NULL, PAGE_READONLY, 0, 0, NULL );
+
+        if( m_hMapping == NULL )
+        {
+            DWORD error = GetLastError();
+
+            LOGGER_ERROR( "Win32MappedInputStream::open invalid create file mapping %ls error %d"
                 , concatenatePath
-                );
+                , error
+            );
 
-			return false;
-		}
+            ::CloseHandle( m_hFile );
+            m_hFile = INVALID_HANDLE_VALUE;
 
-		m_hMapping = CreateFileMapping( m_hFile, NULL, PAGE_READONLY, 0, 0, NULL );
+            return false;
+        }
 
-		if( m_hMapping == NULL )
-		{
-			DWORD error = GetLastError();
+        m_memory = MapViewOfFile( m_hMapping, FILE_MAP_READ, 0, 0, 0 );
 
-			LOGGER_ERROR("Win32MappedInputStream::open invalid create file mapping %ls error %d"
-				, concatenatePath
-				, error
-				);
+        if( m_memory == NULL )
+        {
+            DWORD error = GetLastError();
 
-			::CloseHandle( m_hFile );
-			m_hFile = INVALID_HANDLE_VALUE;
-		
-			return false;
-		}
+            LOGGER_ERROR( "Win32MappedInputStream::open invalid map view of file %ls error %d"
+                , concatenatePath
+                , error
+            );
 
-		m_memory = MapViewOfFile( m_hMapping, FILE_MAP_READ, 0, 0, 0 );
+            ::CloseHandle( m_hMapping );
+            m_hMapping = INVALID_HANDLE_VALUE;
 
-		if( m_memory == NULL )
-		{
-			DWORD error = GetLastError();
+            ::CloseHandle( m_hFile );
+            m_hFile = INVALID_HANDLE_VALUE;
 
-			LOGGER_ERROR("Win32MappedInputStream::open invalid map view of file %ls error %d"
-				, concatenatePath
-				, error
-				);
+            return false;
+        }
 
-			::CloseHandle( m_hMapping );
-			m_hMapping = INVALID_HANDLE_VALUE;
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    InputStreamInterfacePtr Win32FileMappedStream::createFileStream()
+    {
+        MemoryProxyInputInterfacePtr memory = MEMORY_SERVICE()
+            ->createMemoryProxyInput();
 
-			::CloseHandle( m_hFile );
-			m_hFile = INVALID_HANDLE_VALUE;
-			
-			return false;
-		}
+        return memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileMappedStream::openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory )
+    {
+        MemoryProxyInputInterface * memory = stdex::intrusive_get<MemoryProxyInputInterface *>( _stream );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr Win32FileMappedStream::createFileStream()
-	{
-		MemoryProxyInputInterfacePtr memory = MEMORY_SERVICE()
-			->createMemoryProxyInput();
+        void * memory_buffer = memory->setBuffer( m_memory, _offset, _size );
 
-		return memory;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32FileMappedStream::openFileStream( const InputStreamInterfacePtr & _stream, size_t _offset, size_t _size, void ** _memory )
-	{
-		MemoryProxyInputInterface * memory = stdex::intrusive_get<MemoryProxyInputInterface *>( _stream );
-		
-		void * memory_buffer = memory->setBuffer( m_memory, _offset, _size );
-		
-		if( _memory != nullptr )
-		{
-			*_memory = memory_buffer;
-		}
+        if( _memory != nullptr )
+        {
+            *_memory = memory_buffer;
+        }
 
-		return true;
-	}
-}	
+        return true;
+    }
+}

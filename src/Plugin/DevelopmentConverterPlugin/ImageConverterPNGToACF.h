@@ -6,17 +6,17 @@
 
 namespace Mengine
 {
-	class ImageConverterPNGToACF
-		: public DevelopmentConverter
-	{
-	public:
-		ImageConverterPNGToACF();
-		~ImageConverterPNGToACF() override;
-
-	public:
-		bool _initialize() override;
+    class ImageConverterPNGToACF
+        : public DevelopmentConverter
+    {
+    public:
+        ImageConverterPNGToACF();
+        ~ImageConverterPNGToACF() override;
 
     public:
-		bool convert() override;
+        bool _initialize() override;
+
+    public:
+        bool convert() override;
     };
-}	
+}

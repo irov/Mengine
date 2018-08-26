@@ -63,7 +63,7 @@ namespace Mengine
             VectorInversBindPoses inverse_bind_poses;
         };
 
-        class ScratchBuffer 
+        class ScratchBuffer
         {
         public:
             ScratchBuffer();
@@ -77,7 +77,7 @@ namespace Mengine
             size_t m_size;
         };
 
-        
+
         size_t getPartVertexCount( const Part & _part );
         size_t getPartInfluencesCount( const Part & _part );
 

@@ -9,13 +9,13 @@
 #include "Kernel/IntrusivePtr.h"
 
 namespace Mengine
-{	
+{
     //////////////////////////////////////////////////////////////////////////
-	class NodeManager
+    class NodeManager
         : public ServiceBase<NodeServiceInterface>
-	{
-	public:
-		NodeManager();
+    {
+    public:
+        NodeManager();
 
     public:
         bool _initializeService() override;
@@ -26,10 +26,10 @@ namespace Mengine
 
     public:
         void addHomeless( const NodePtr & _homeless ) override;
-		bool isHomeless( const NodePtr & _node ) const override;
+        bool isHomeless( const NodePtr & _node ) const override;
         void clearHomeless() override;
 
     protected:
         NodePtr m_homeless;
-	};
+    };
 }

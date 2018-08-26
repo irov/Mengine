@@ -6,27 +6,27 @@
 
 namespace Mengine
 {
-	class Parallax
-		: public Node
-	{
-		DECLARE_VISITABLE( Node )
+    class Parallax
+        : public Node
+    {
+        DECLARE_VISITABLE( Node )
 
-	public:
-		Parallax();
+    public:
+        Parallax();
         ~Parallax() override;
 
-	public:
-		void setParallaxFactor( const mt::vec3f & _parallax );
-		const mt::vec3f & getParallaxFactor() const;
+    public:
+        void setParallaxFactor( const mt::vec3f & _parallax );
+        const mt::vec3f & getParallaxFactor() const;
 
-	protected:
-		void render( const RenderContext * _state ) override;
+    protected:
+        void render( const RenderContext * _state ) override;
 
-	protected:
-		mt::vec3f m_parallaxFactor;
+    protected:
+        mt::vec3f m_parallaxFactor;
 
-		RenderCameraProxy m_parallaxCamera;
-	};
+        RenderCameraProxy m_parallaxCamera;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Parallax> ParallaxPtr;
     //////////////////////////////////////////////////////////////////////////

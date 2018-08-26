@@ -37,58 +37,58 @@ namespace Mengine
         virtual void onEntityCompile( const pybind::object & _self ) = 0;
         virtual void onEntityRelease( const pybind::object & _self ) = 0;
         virtual void onEntityUpdate( const pybind::object & _self, uint32_t _revision, float _current, float _time ) = 0;
-        
+
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EntityEventReceiver> EntityEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
-	class Entity
-		: public Node
-	{
+    class Entity
+        : public Node
+    {
     public:
         Entity();
         ~Entity() override;
 
-	public:
-		void setPrototype( const ConstString & _prototype );
-		const ConstString & getPrototype() const;
+    public:
+        void setPrototype( const ConstString & _prototype );
+        const ConstString & getPrototype() const;
 
-	public:
-		void setScriptEventable( const EventablePtr & _eventable );
+    public:
+        void setScriptEventable( const EventablePtr & _eventable );
         const EventablePtr & getScriptEventable() const;
 
-	public:
-		void setScriptObject( const pybind::object & _object );
-		const pybind::object & getScriptObject() const;
+    public:
+        void setScriptObject( const pybind::object & _object );
+        const pybind::object & getScriptObject() const;
 
     public:
         EventationInterfacePtr getScriptEventation() const;
-		
+
     public:
         void onCreate();
 
-	protected:
-		bool _activate() override;
-		void _afterActivate() override;
-        
+    protected:
+        bool _activate() override;
+        void _afterActivate() override;
+
         void _deactivate() override;
-		void _afterDeactivate() override;
-		
+        void _afterDeactivate() override;
+
         bool _compile() override;
-		void _release() override;
+        void _release() override;
 
     protected:
         void _update( const UpdateContext * _context ) override;
-			
-	public:
-		void _destroy() override;
-        
-	protected:
-		ConstString m_prototype;
+
+    public:
+        void _destroy() override;
+
+    protected:
+        ConstString m_prototype;
 
         EventablePtr m_scriptEventable;
-		pybind::object m_object;
-	};
+        pybind::object m_object;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Entity> EntityPtr;
     //////////////////////////////////////////////////////////////////////////

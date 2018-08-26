@@ -8,25 +8,25 @@
 
 namespace Mengine
 {
-	class Win32MouseEvent
-	{
-	public:
-		Win32MouseEvent();
-		~Win32MouseEvent();
+    class Win32MouseEvent
+    {
+    public:
+        Win32MouseEvent();
+        ~Win32MouseEvent();
 
-	public:
-		bool initialize( HWND _hWnd );
+    public:
+        bool initialize( HWND _hWnd );
 
-	public:
-		void verify();
-		void update();
+    public:
+        void verify();
+        void update();
 
-	public:
-		void stop();
+    public:
+        void stop();
 
-	protected:
-		HWND m_hWnd;
+    protected:
+        HWND m_hWnd;
 
         UINT_PTR m_uTimer;
-	};
+    };
 }

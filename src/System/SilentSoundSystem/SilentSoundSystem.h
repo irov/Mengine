@@ -10,45 +10,45 @@
 #include "SilentSoundSource.h"
 
 namespace Mengine
-{	
-	class SilentSoundSystem
-		: public ServiceBase<SoundSystemInterface>
-	{
-	public:
-		SilentSoundSystem();
-		~SilentSoundSystem() override;
+{
+    class SilentSoundSystem
+        : public ServiceBase<SoundSystemInterface>
+    {
+    public:
+        SilentSoundSystem();
+        ~SilentSoundSystem() override;
 
-	public:
-		bool _initializeService() override;
+    public:
+        bool _initializeService() override;
         void _finalizeService() override;
 
-	public:
-		void update() override;
+    public:
+        void update() override;
 
-	public:
-		bool isSilent() const override;
-		
-	public:
-		void onTurnSound( bool _turn ) override;
+    public:
+        bool isSilent() const override;
 
-	public:
-		SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) override;
-		SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable ) override;
+    public:
+        void onTurnSound( bool _turn ) override;
 
-	public:
-		uint32_t genSourceId();
-		void releaseSourceId( uint32_t _sourceId );
+    public:
+        SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) override;
+        SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable ) override;
 
-		uint32_t genBufferId();
-		void releaseBufferId( uint32_t _sourceId );
+    public:
+        uint32_t genSourceId();
+        void releaseSourceId( uint32_t _sourceId );
 
-	public:
-		void clearSourceId( uint32_t _sourceId );
+        uint32_t genBufferId();
+        void releaseBufferId( uint32_t _sourceId );
 
-	private:
+    public:
+        void clearSourceId( uint32_t _sourceId );
+
+    private:
         uint32_t m_enumerate;
 
         FactoryPtr m_factorySilentSoundBuffer;
-		FactoryPtr m_factorySilentSoundSource;
-	};
-}	
+        FactoryPtr m_factorySilentSoundSource;
+    };
+}

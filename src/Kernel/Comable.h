@@ -4,28 +4,28 @@
 
 namespace Mengine
 {
-	class Comable
-	{
-	public:
-		virtual COMInterface * getCOMInterface()
-		{
-			return nullptr;
-		}
+    class Comable
+    {
+    public:
+        virtual COMInterface * getCOMInterface()
+        {
+            return nullptr;
+        }
 
-		template<class T>
-		T * getCOMInterfaceT()
-		{
-			COMInterface * com = this->getCOMInterface();
+        template<class T>
+        T * getCOMInterfaceT()
+        {
+            COMInterface * com = this->getCOMInterface();
 #ifndef NDEBUG
-			if(dynamic_cast<T *>(com) == nullptr)
-			{
+            if( dynamic_cast<T *>(com) == nullptr )
+            {
                 throw;
-			}
+            }
 #endif
 
-			return static_cast<T *>(com);
-		}
-	};
+            return static_cast<T *>(com);
+        }
+    };
 
 #	define DECLARE_COMABLE()\
 public:\

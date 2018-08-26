@@ -58,25 +58,25 @@ namespace Mengine
             return pybind::ret_none();
         }
     }
-	//////////////////////////////////////////////////////////////////////////
-	AstralaxParticleModule2::AstralaxParticleModule2()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    AstralaxParticleModule2::AstralaxParticleModule2()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     AstralaxParticleModule2::~AstralaxParticleModule2()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool AstralaxParticleModule2::_initialize()
-	{
-		LOGGER_INFO( "Initializing Particle System ..." );
+    //////////////////////////////////////////////////////////////////////////
+    bool AstralaxParticleModule2::_initialize()
+    {
+        LOGGER_INFO( "Initializing Particle System ..." );
 
         if( SCRIPT_SERVICE()
             ->setWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new ScriptWrapper<ParticleEmitter2>() ) == false )
         {
             return false;
         }
-        
+
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new NodePrototypeGenerator<ParticleEmitter2, 128> ) == false )
         {
@@ -118,11 +118,11 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_ParticleEmitter2_setEventListener )
             ;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleModule2::_finalize()
-	{
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AstralaxParticleModule2::_finalize()
+    {
         SCRIPT_SERVICE()
             ->removeWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
 
@@ -138,9 +138,9 @@ namespace Mengine
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
         kernel->remove_scope<ParticleEmitter2>();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void AstralaxParticleModule2::_destroy()
-	{
-	}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void AstralaxParticleModule2::_destroy()
+    {
+    }
 }

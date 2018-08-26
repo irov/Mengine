@@ -6,25 +6,25 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     SurfaceSolidColor::SurfaceSolidColor()
-        : m_size(0.f, 0.f)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
+        : m_size( 0.f, 0.f )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     SurfaceSolidColor::~SurfaceSolidColor()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceSolidColor::setSolidColor( const ColourValue & _color )
-	{
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSolidColor::setSolidColor( const ColourValue & _color )
+    {
         m_color = _color;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ColourValue & SurfaceSolidColor::getSolidColor() const
-	{
-		return m_color;
-	}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ColourValue & SurfaceSolidColor::getSolidColor() const
+    {
+        return m_color;
+    }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSolidColor::setSolidSize( const mt::vec2f & _size )
     {
@@ -73,27 +73,27 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     const ColourValue & SurfaceSolidColor::getColor() const
-    {        
+    {
         return m_color;
     }
-	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr SurfaceSolidColor::_updateMaterial() const
-	{	
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr SurfaceSolidColor::_updateMaterial() const
+    {
         //ToDo MaterialContex
         //bool solid = m_color.isSolid();
 
-		RenderMaterialInterfacePtr material = this->makeSolidMaterial( false );
+        RenderMaterialInterfacePtr material = this->makeSolidMaterial( false );
 
-		if( material == nullptr )
-		{
-			LOGGER_ERROR("SurfaceSolidColor::updateMaterial_ %s m_material is NULL"
-				, this->getName().c_str()
-				);
+        if( material == nullptr )
+        {
+            LOGGER_ERROR( "SurfaceSolidColor::updateMaterial_ %s m_material is NULL"
+                , this->getName().c_str()
+            );
 
-			return nullptr;
-		}
+            return nullptr;
+        }
 
-		return material;
-	}
-	//////////////////////////////////////////////////////////////////////////
+        return material;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

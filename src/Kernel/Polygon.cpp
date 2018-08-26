@@ -2,29 +2,29 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Polygon::Polygon()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Polygon::~Polygon()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Polygon::Polygon( const Polygon & _polygon )
+    //////////////////////////////////////////////////////////////////////////
+    Polygon::Polygon()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Polygon::~Polygon()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Polygon::Polygon( const Polygon & _polygon )
         : m_points( _polygon.m_points )
-	{
-	}
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     Polygon::Polygon( Polygon && _polygon )
         : m_points( std::move( _polygon.m_points ) )
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Polygon::operator = (const Polygon & _polygon)
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void Polygon::operator = ( const Polygon & _polygon )
+    {
         m_points = _polygon.m_points;
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void Polygon::operator = ( Polygon && _polygon )
     {
@@ -36,7 +36,7 @@ namespace Mengine
         float polygon_area = 0.f;
 
         Polygon::size_type points_size = m_points.size();
-        
+
         for( Polygon::size_type i = 0; i < points_size; ++i )
         {
             Polygon::size_type j = (i + 1) % points_size;
@@ -51,11 +51,11 @@ namespace Mengine
 
         return polygon_area;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Polygon::append( const mt::vec2f & _v )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void Polygon::append( const mt::vec2f & _v )
+    {
         m_points.push_back( _v );
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void Polygon::reserve( size_type _size )
     {
@@ -66,88 +66,88 @@ namespace Mengine
     {
         m_points.clear();
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Polygon::mul_wm( Polygon & _out, const mt::mat4f & _wm ) const
-	{
-        Polygon::size_type points_size = this->size();
-
-        _out.reserve( points_size );
-
-        for( const mt::vec2f & v : m_points )
-		{
-			mt::vec2f v_wm;
-            mt::mul_v2_v2_m4( v_wm, v, _wm );
-            _out.append( v );
-		}	
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Polygon::mul_wm_and_transpose( Polygon & _out, const mt::mat4f & _wm, const mt::vec2f & _pos ) const
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void Polygon::mul_wm( Polygon & _out, const mt::mat4f & _wm ) const
+    {
         Polygon::size_type points_size = this->size();
 
         _out.reserve( points_size );
 
         for( const mt::vec2f & v : m_points )
         {
-			mt::vec2f v_wm;
+            mt::vec2f v_wm;
+            mt::mul_v2_v2_m4( v_wm, v, _wm );
+            _out.append( v );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Polygon::mul_wm_and_transpose( Polygon & _out, const mt::mat4f & _wm, const mt::vec2f & _pos ) const
+    {
+        Polygon::size_type points_size = this->size();
+
+        _out.reserve( points_size );
+
+        for( const mt::vec2f & v : m_points )
+        {
+            mt::vec2f v_wm;
             mt::mul_v2_v2_m4( v_wm, v, _wm );
             v_wm += _pos;
 
-			_out.append( v_wm );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Polygon::transpose( Polygon & _out, const mt::vec2f & _pos ) const
-	{
+            _out.append( v_wm );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Polygon::transpose( Polygon & _out, const mt::vec2f & _pos ) const
+    {
         Polygon::size_type points_size = this->size();
 
         _out.reserve( points_size );
 
         for( const mt::vec2f & v : m_points )
         {
-			mt::vec2f v_transpose;
+            mt::vec2f v_transpose;
             mt::add_v2_v2( v_transpose, v, _pos );
 
-			_out.append( v_transpose );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Polygon::transpose_and_scale( Polygon & _out, const mt::vec2f & _pos, const mt::vec2f & _scale ) const
-	{
+            _out.append( v_transpose );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Polygon::transpose_and_scale( Polygon & _out, const mt::vec2f & _pos, const mt::vec2f & _scale ) const
+    {
         Polygon::size_type points_size = this->size();
 
         _out.reserve( points_size );
 
         for( const mt::vec2f & v : m_points )
         {
-			mt::vec2f v_transpose;
+            mt::vec2f v_transpose;
             mt::add_v2_v2( v_transpose, v, _pos );
 
             mt::vec2f v_transpose_scale;
             mt::mul_v2_v2( v_transpose_scale, v_transpose, _scale );
 
-			_out.append( v_transpose_scale );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Polygon::to_box2f( mt::box2f & _box2f ) const
-	{
+            _out.append( v_transpose_scale );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Polygon::to_box2f( mt::box2f & _box2f ) const
+    {
         if( this->empty() == true )
-        { 
+        {
             return false;
         }
 
         const mt::vec2f & base_v = m_points.front();
 
-		mt::reset( _box2f, base_v );
-        
-        for( const mt::vec2f & v : m_points )
-		{
-			mt::add_internal_point( _box2f, v );
-		}
+        mt::reset( _box2f, base_v );
 
-		return true;
-	}
+        for( const mt::vec2f & v : m_points )
+        {
+            mt::add_internal_point( _box2f, v );
+        }
+
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     mt::vec2f & Polygon::operator [] ( int _index )
     {
@@ -187,19 +187,19 @@ namespace Mengine
     {
         return m_points.end();
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Polygon::empty() const
-	{		
+    //////////////////////////////////////////////////////////////////////////
+    bool Polygon::empty() const
+    {
         bool empty = m_points.empty();
 
         return empty;
-	}
-	//////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
     Polygon::size_type Polygon::size() const
-	{
+    {
         Polygon::size_type size = m_points.size();
 
         return size;
-	}
-	
+    }
+
 }

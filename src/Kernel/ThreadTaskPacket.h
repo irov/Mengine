@@ -6,35 +6,35 @@
 
 namespace Mengine
 {
-	class ThreadTaskPacket
-		: public ThreadTask
-	{
-	public:
-		ThreadTaskPacket();
+    class ThreadTaskPacket
+        : public ThreadTask
+    {
+    public:
+        ThreadTaskPacket();
 
-	public:
-		bool initialize( uint32_t _packetSize );
+    public:
+        bool initialize( uint32_t _packetSize );
 
-	public:
-		void addTask( const ThreadTaskPtr & _task );
-		const ThreadTaskPtr & getTask( uint32_t _index ) const;
-		uint32_t countTask() const;
-		
-	protected:
-		bool _onMain() override;
+    public:
+        void addTask( const ThreadTaskPtr & _task );
+        const ThreadTaskPtr & getTask( uint32_t _index ) const;
+        uint32_t countTask() const;
 
-	protected:
-		bool _onRun() override;
-		void _onCancel() override;
-		void _onUpdate() override;
+    protected:
+        bool _onMain() override;
 
-	protected:
-		void _onComplete( bool _successful ) override;
+    protected:
+        bool _onRun() override;
+        void _onCancel() override;
+        void _onUpdate() override;
 
-	protected:
-		typedef Vector<ThreadTaskPtr> VectorThreadTasks;
-		VectorThreadTasks m_tasks;
-	};
+    protected:
+        void _onComplete( bool _successful ) override;
 
-	typedef IntrusivePtr<ThreadTaskPacket> ThreadTaskPacketPtr;
+    protected:
+        typedef Vector<ThreadTaskPtr> VectorThreadTasks;
+        VectorThreadTasks m_tasks;
+    };
+
+    typedef IntrusivePtr<ThreadTaskPacket> ThreadTaskPacketPtr;
 }

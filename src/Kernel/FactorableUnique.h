@@ -4,17 +4,17 @@
 
 namespace Mengine
 {
-	template<class T>
-	class FactorableUnique
-		: public T
-		, public MemoryAllocator<T>
-	{
-	public:
+    template<class T>
+    class FactorableUnique
+        : public T
+        , public MemoryAllocator<T>
+    {
+    public:
         template<class ... Args>
-		FactorableUnique( Args ... args )
+        FactorableUnique( Args ... args )
             : T( args ... )
-		{
-		}
+        {
+        }
 
         ~FactorableUnique() override
         {
@@ -23,9 +23,9 @@ namespace Mengine
     public:
         void destroy() override
         {
-			this->_destroy();
+            this->_destroy();
 
-			delete this;
+            delete this;
         }
-	};
+    };
 }

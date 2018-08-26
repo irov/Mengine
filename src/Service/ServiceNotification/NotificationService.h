@@ -10,20 +10,20 @@
 
 namespace Mengine
 {
-	class NotificationService
-		: public ServiceBase<NotificationServiceInterface>
-	{
+    class NotificationService
+        : public ServiceBase<NotificationServiceInterface>
+    {
     public:
         NotificationService();
         ~NotificationService() override;
 
-	public:
-		bool _initializeService() override;
-		void _finalizeService() override;
+    public:
+        bool _initializeService() override;
+        void _finalizeService() override;
 
-	public:
-		void addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable ) override;
-		void removeObserver( uint32_t _id, const ObservablePtr & _observer ) override;
+    public:
+        void addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable ) override;
+        void removeObserver( uint32_t _id, const ObservablePtr & _observer ) override;
 
     public:
         void visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor ) override;
@@ -32,7 +32,7 @@ namespace Mengine
         void addObserver_( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable );
         void removeObserver_( uint32_t _id, const ObservablePtr & _observer );
 
-	protected:		
+    protected:
         struct ObserverDesc
         {
             ObservablePtr observer;
@@ -41,7 +41,7 @@ namespace Mengine
 
         typedef Vector<ObserverDesc> VectorObservers;
         typedef Map<uint32_t, VectorObservers> MapObservers;
-		MapObservers m_mapObserves;
+        MapObservers m_mapObserves;
 
         struct ObserverQueue
         {
@@ -54,8 +54,8 @@ namespace Mengine
         VectorObserverQueues m_add;
         VectorObserverQueues m_remove;
 
-		uint32_t m_visiting;
+        uint32_t m_visiting;
 
-		ThreadMutexInterfacePtr m_mutex;
-	};
+        ThreadMutexInterfacePtr m_mutex;
+    };
 }

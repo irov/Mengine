@@ -4,16 +4,16 @@
 
 namespace Mengine
 {
-	class LZ4Plugin
-		: public PluginBase
-	{
-		PLUGIN_DECLARE( "LZ4" );
+    class LZ4Plugin
+        : public PluginBase
+    {
+        PLUGIN_DECLARE( "LZ4" );
 
-	public:
-		LZ4Plugin();
+    public:
+        LZ4Plugin();
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;		
-	};
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
+    };
 }

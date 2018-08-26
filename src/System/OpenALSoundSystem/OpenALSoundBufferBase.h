@@ -8,49 +8,49 @@
 
 namespace Mengine
 {
-	class OALSoundSystem;
+    class OALSoundSystem;
 
-	class OALSoundBufferBase
-		: public ServantBase<SoundBufferInterface>
-	{
-	public:
-		OALSoundBufferBase();
-		~OALSoundBufferBase() override;
-       
-	public:
-		void initialize( OALSoundSystem * _soundSystem );
+    class OALSoundBufferBase
+        : public ServantBase<SoundBufferInterface>
+    {
+    public:
+        OALSoundBufferBase();
+        ~OALSoundBufferBase() override;
 
-	public:
-		const SoundDecoderInterfacePtr & getDecoder() const override;
+    public:
+        void initialize( OALSoundSystem * _soundSystem );
 
-	public:
-		virtual bool load( const SoundDecoderInterfacePtr & _soundDecoder ) = 0;
+    public:
+        const SoundDecoderInterfacePtr & getDecoder() const override;
 
-		virtual bool play( ALuint _source, bool _looped, float _pos ) = 0;
+    public:
+        virtual bool load( const SoundDecoderInterfacePtr & _soundDecoder ) = 0;
+
+        virtual bool play( ALuint _source, bool _looped, float _pos ) = 0;
         virtual bool resume( ALuint _source ) = 0;
-		virtual	void pause( ALuint _source ) = 0;
-		virtual void stop( ALuint _source ) = 0;
-		
-	public:
-		virtual bool setTimePos( ALuint _source, float _pos ) const = 0;
-		virtual bool getTimePos( ALuint _source, float & _pos ) const = 0;		
+        virtual	void pause( ALuint _source ) = 0;
+        virtual void stop( ALuint _source ) = 0;
 
-	public:
-		bool isStereo() const;
-		float getTimeTotal() const;
+    public:
+        virtual bool setTimePos( ALuint _source, float _pos ) const = 0;
+        virtual bool getTimePos( ALuint _source, float & _pos ) const = 0;
 
-	protected:
-		OALSoundSystem * m_soundSystem;
+    public:
+        bool isStereo() const;
+        float getTimeTotal() const;
 
-		SoundDecoderInterfacePtr m_soundDecoder;
+    protected:
+        OALSoundSystem * m_soundSystem;
+
+        SoundDecoderInterfacePtr m_soundDecoder;
 
         ALenum m_format;
 
-		int m_frequency;
-		int m_channels;
-		float m_length;
-		bool m_isStereo;		
-	};
+        int m_frequency;
+        int m_channels;
+        float m_length;
+        bool m_isStereo;
+    };
 
-	typedef IntrusivePtr<OALSoundBufferBase> OALSoundBufferBasePtr;
-}	
+    typedef IntrusivePtr<OALSoundBufferBase> OALSoundBufferBasePtr;
+}

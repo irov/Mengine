@@ -9,75 +9,75 @@
 
 namespace Mengine
 {
-	class ResourceVideo
-		: public Resource
-	{
-		DECLARE_VISITABLE( Resource );
+    class ResourceVideo
+        : public Resource
+    {
+        DECLARE_VISITABLE( Resource );
 
-	public:
-		ResourceVideo();
-		~ResourceVideo() override;
+    public:
+        ResourceVideo();
+        ~ResourceVideo() override;
 
-	public:
-		bool _loader( const Metabuf::Metadata * _parser ) override;
+    public:
+        bool _loader( const Metabuf::Metadata * _parser ) override;
         bool _convert() override;
 
     public:
-		void setFrameRate( float _frameRate );
-		float getFrameRate() const;
+        void setFrameRate( float _frameRate );
+        float getFrameRate() const;
 
-	public:
-		void setDuration( float _duration );
-		float getDuration() const;
+    public:
+        void setDuration( float _duration );
+        float getDuration() const;
 
-	public:
-		void setFilePath( const FilePath & _path );
-		const FilePath & getFilePath() const;
+    public:
+        void setFilePath( const FilePath & _path );
+        const FilePath & getFilePath() const;
 
-		void setCodecType( const ConstString & _type );
-		const ConstString & getCodecType() const;
+        void setCodecType( const ConstString & _type );
+        const ConstString & getCodecType() const;
 
     public:
         VideoDecoderInterfacePtr createVideoDecoder() const;
-		void destroyVideoDecoder( const VideoDecoderInterfacePtr & _decoder ) const;
-		
-	protected:
-		void _cache() override;
-		void _uncache() override;
+        void destroyVideoDecoder( const VideoDecoderInterfacePtr & _decoder ) const;
 
-	public:
-		void setAlpha( bool _alpha );
-		bool isAlpha() const;
+    protected:
+        void _cache() override;
+        void _uncache() override;
 
-	public:
-		const mt::vec2f& getFrameSize() const;
+    public:
+        void setAlpha( bool _alpha );
+        bool isAlpha() const;
+
+    public:
+        const mt::vec2f& getFrameSize() const;
         bool isNoSkeep() const;
 
     protected:
         bool _isValid() const override;
 
-	protected:
-		bool checkValidVideoDecoder_( const VideoDecoderInterfacePtr & _decoder ) const;
+    protected:
+        bool checkValidVideoDecoder_( const VideoDecoderInterfacePtr & _decoder ) const;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
-			
-	protected:
-		FilePath m_filePath;
-        
+    protected:
+        bool _compile() override;
+        void _release() override;
+
+    protected:
+        FilePath m_filePath;
+
         ConstString m_converterType;
-		ConstString m_codecType;
+        ConstString m_codecType;
 
         float m_frameRate;
-		float m_duration;
+        float m_duration;
 
-		typedef ResourceCacher<VideoDecoderInterfacePtr> TCacherVideoDecoder;
-		mutable TCacherVideoDecoder m_videoDecoderCacher;
+        typedef ResourceCacher<VideoDecoderInterfacePtr> TCacherVideoDecoder;
+        mutable TCacherVideoDecoder m_videoDecoderCacher;
 
         bool m_alpha;
         bool m_noSeek;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusiveResourcePtr<ResourceVideo> ResourceVideoPtr;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusiveResourcePtr<ResourceVideo> ResourceVideoPtr;
 }

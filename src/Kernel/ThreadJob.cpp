@@ -4,232 +4,232 @@
 
 #include "Kernel/Logger.h"
 
-namespace Mengine 
+namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ThreadJob::ThreadJob()
-		: m_sleep(1)
-		, m_enumerator(0)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ThreadJob::~ThreadJob()
-	{
-		for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
-		{
-			ThreadJobWorkerDesc & desc = m_workers[i];
+    //////////////////////////////////////////////////////////////////////////
+    ThreadJob::ThreadJob()
+        : m_sleep( 1 )
+        , m_enumerator( 0 )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadJob::~ThreadJob()
+    {
+        for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+        {
+            ThreadJobWorkerDesc & desc = m_workers[i];
 
-			desc.worker = nullptr;
-			desc.mutex = nullptr;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////        
-	bool ThreadJob::initialize( uint32_t _sleep )
-	{
-		m_sleep = _sleep;
+            desc.worker = nullptr;
+            desc.mutex = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////        
+    bool ThreadJob::initialize( uint32_t _sleep )
+    {
+        m_sleep = _sleep;
 
-		for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
-		{
-			ThreadJobWorkerDesc & desc = m_workers[i];
-			
+        for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+        {
+            ThreadJobWorkerDesc & desc = m_workers[i];
+
             ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
                 ->createMutex( __FILE__, __LINE__ );
 
-			desc.mutex = mutex;
+            desc.mutex = mutex;
 
-			desc.worker = nullptr;
-			desc.id = 0;
-			desc.status = ETS_FREE;
-		}
+            desc.worker = nullptr;
+            desc.id = 0;
+            desc.status = ETS_FREE;
+        }
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_thread_addWorker( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, uint32_t _id )
-	{	
-		if( desc.status != ETS_FREE )
-		{
-			return false;
-		}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static bool s_thread_addWorker( ThreadJobWorkerDesc & desc, const ThreadWorkerInterfacePtr & _worker, uint32_t _id )
+    {
+        if( desc.status != ETS_FREE )
+        {
+            return false;
+        }
 
-		bool successful = false;
+        bool successful = false;
 
-		desc.mutex->lock();
+        desc.mutex->lock();
 
-		if( desc.status == ETS_FREE )
-		{
-			desc.worker = _worker;
-			desc.id = _id;
-			desc.status = ETS_WORK;
+        if( desc.status == ETS_FREE )
+        {
+            desc.worker = _worker;
+            desc.id = _id;
+            desc.status = ETS_WORK;
 
-			successful = true;
-		}
+            successful = true;
+        }
 
-		desc.mutex->unlock();
+        desc.mutex->unlock();
 
-		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker )
-	{
-		if( _worker == nullptr )
-		{
-			return 0;
-		}
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t ThreadJob::addWorker( const ThreadWorkerInterfacePtr & _worker )
+    {
+        if( _worker == nullptr )
+        {
+            return 0;
+        }
 
-		uint32_t new_id = ++m_enumerator;
+        uint32_t new_id = ++m_enumerator;
 
-		for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
-		{
-			ThreadJobWorkerDesc & desc = m_workers[i];
-			
-			if( s_thread_addWorker( desc, _worker, new_id ) == false )
-			{
-				continue;
-			}
+        for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+        {
+            ThreadJobWorkerDesc & desc = m_workers[i];
 
-			return new_id;
-		}
+            if( s_thread_addWorker( desc, _worker, new_id ) == false )
+            {
+                continue;
+            }
 
-		LOGGER_ERROR("ThreadJob::addWorker overworkers more %d"
-			, MENGINE_THREAD_JOB_WORK_COUNT
-			);
+            return new_id;
+        }
 
-		return 0;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static bool s_thread_removeWorker( ThreadJobWorkerDesc & desc, uint32_t _id )
-	{
-		if( desc.id != _id )
-		{
-			return false;
-		}
-		
-		bool successful = false;
+        LOGGER_ERROR( "ThreadJob::addWorker overworkers more %d"
+            , MENGINE_THREAD_JOB_WORK_COUNT
+        );
 
-		ThreadWorkerInterfacePtr worker;
+        return 0;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static bool s_thread_removeWorker( ThreadJobWorkerDesc & desc, uint32_t _id )
+    {
+        if( desc.id != _id )
+        {
+            return false;
+        }
 
-		desc.mutex->lock();
+        bool successful = false;
 
-		if( desc.status != ETS_FREE )
-		{
-			worker = desc.worker;
+        ThreadWorkerInterfacePtr worker;
 
-			desc.id = 0;
-			desc.worker = nullptr;
-			desc.status = ETS_FREE;
+        desc.mutex->lock();
 
-			successful = true;
-		}
+        if( desc.status != ETS_FREE )
+        {
+            worker = desc.worker;
 
-		desc.mutex->unlock();
+            desc.id = 0;
+            desc.worker = nullptr;
+            desc.status = ETS_FREE;
 
-		if( successful == true )
-		{
-			worker->onDone( _id );
-		}
+            successful = true;
+        }
 
-		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadJob::removeWorker( uint32_t _id )
-	{
-		if( _id == 0 )
-		{
-			return;
-		}
+        desc.mutex->unlock();
 
-		for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
-		{
-			ThreadJobWorkerDesc & desc = m_workers[i];
-			
-			if( s_thread_removeWorker( desc, _id) == false )
-			{
-				continue;
-			}
-			
-			break;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void s_thread_mainWorker( ThreadJobWorkerDesc & desc )
-	{
-		if( desc.status != ETS_WORK )
-		{
-			return;
-		}
+        if( successful == true )
+        {
+            worker->onDone( _id );
+        }
 
-		desc.mutex->lock();
-		
-		if( desc.status == ETS_WORK )
-		{
-			if( desc.worker->onWork( desc.id ) == false )
-			{
-				desc.status = ETS_DONE;
-			}
-		}
-		
-		desc.mutex->unlock();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadJob::_onMain()
-	{
-		while( this->isCancel() == false )
-		{   
-			for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
-			{
-				ThreadJobWorkerDesc & desc = m_workers[i];
-		
-				s_thread_mainWorker( desc );
-			}
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadJob::removeWorker( uint32_t _id )
+    {
+        if( _id == 0 )
+        {
+            return;
+        }
 
-			THREAD_SERVICE()
-				->sleep( m_sleep );
-		}
+        for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+        {
+            ThreadJobWorkerDesc & desc = m_workers[i];
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	static void s_thread_updateWorker( ThreadJobWorkerDesc & desc )
-	{
-		if( desc.status != ETS_DONE )
-		{
-			return;
-		}
+            if( s_thread_removeWorker( desc, _id ) == false )
+            {
+                continue;
+            }
 
-		bool successful = false;
-		ThreadWorkerInterfacePtr worker;
-		uint32_t id = 0;
-		
-		desc.mutex->lock();
+            break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void s_thread_mainWorker( ThreadJobWorkerDesc & desc )
+    {
+        if( desc.status != ETS_WORK )
+        {
+            return;
+        }
 
-		if( desc.status == ETS_DONE )
-		{
-			worker = desc.worker;
-			id = desc.id;
+        desc.mutex->lock();
 
-			desc.worker = nullptr;
-			desc.id = 0;
-			desc.status = ETS_FREE;			
+        if( desc.status == ETS_WORK )
+        {
+            if( desc.worker->onWork( desc.id ) == false )
+            {
+                desc.status = ETS_DONE;
+            }
+        }
 
-			successful = true;
-		}
+        desc.mutex->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadJob::_onMain()
+    {
+        while( this->isCancel() == false )
+        {
+            for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+            {
+                ThreadJobWorkerDesc & desc = m_workers[i];
 
-		desc.mutex->unlock();
+                s_thread_mainWorker( desc );
+            }
 
-		if( successful == true )
-		{
-			worker->onDone( id );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadJob::_onUpdate()
-	{
-		for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
-		{
-			ThreadJobWorkerDesc & desc = m_workers[i];
+            THREAD_SERVICE()
+                ->sleep( m_sleep );
+        }
 
-			s_thread_updateWorker( desc );
-		}
-	}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void s_thread_updateWorker( ThreadJobWorkerDesc & desc )
+    {
+        if( desc.status != ETS_DONE )
+        {
+            return;
+        }
+
+        bool successful = false;
+        ThreadWorkerInterfacePtr worker;
+        uint32_t id = 0;
+
+        desc.mutex->lock();
+
+        if( desc.status == ETS_DONE )
+        {
+            worker = desc.worker;
+            id = desc.id;
+
+            desc.worker = nullptr;
+            desc.id = 0;
+            desc.status = ETS_FREE;
+
+            successful = true;
+        }
+
+        desc.mutex->unlock();
+
+        if( successful == true )
+        {
+            worker->onDone( id );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadJob::_onUpdate()
+    {
+        for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+        {
+            ThreadJobWorkerDesc & desc = m_workers[i];
+
+            s_thread_updateWorker( desc );
+        }
+    }
 }

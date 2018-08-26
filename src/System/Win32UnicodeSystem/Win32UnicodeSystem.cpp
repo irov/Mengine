@@ -11,10 +11,10 @@ SERVICE_FACTORY( UnicodeSystem, Mengine::Win32UnicodeSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Win32UnicodeSystem::Win32UnicodeSystem()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    Win32UnicodeSystem::Win32UnicodeSystem()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Win32UnicodeSystem::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {
@@ -41,13 +41,13 @@ namespace Mengine
             , int_utf8Capacity
             , NULL
             , NULL
-            );
+        );
 
         if( utf8_size == 0 && _unicodeSize != 0 )
         {
-            LOGGER_ERROR("Win32UnicodeSystem::unicodeToUtf8 %ls WideCharToMultiByte 0"
+            LOGGER_ERROR( "Win32UnicodeSystem::unicodeToUtf8 %ls WideCharToMultiByte 0"
                 , _unicode
-                );
+            );
 
             return false;
         }
@@ -65,9 +65,9 @@ namespace Mengine
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Win32UnicodeSystem::utf8ToUnicode( const char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32UnicodeSystem::utf8ToUnicode( const char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
+    {
         int int_utf8Size = static_cast<int>(_utf8Size);
         int int_unicodeCapacity = static_cast<int>(_unicodeCapacity);
 
@@ -83,20 +83,20 @@ namespace Mengine
             , int_utf8Size
             , _unicode
             , int_unicodeCapacity
-            );
-        
-		if( (wc_size == 0 || wc_size == 0xFFFD) && _utf8Size != 0 )
+        );
+
+        if( (wc_size == 0 || wc_size == 0xFFFD) && _utf8Size != 0 )
         {
             DWORD err = GetLastError();
 
             WString wstr_err;
             WINDOWSLAYER_SERVICE()
-                ->makeFormatMessage(err, wstr_err);
+                ->makeFormatMessage( err, wstr_err );
 
-            LOGGER_ERROR("Win32UnicodeSystem::utf8ToUnicode %s MultiByteToWideChar %ls"
+            LOGGER_ERROR( "Win32UnicodeSystem::utf8ToUnicode %s MultiByteToWideChar %ls"
                 , _utf8
                 , wstr_err.c_str()
-                );
+            );
 
             return false;
         }
@@ -112,6 +112,6 @@ namespace Mengine
             *_sizeUnicode = u_wc_size;
         }
 
-		return true;
-	}
+        return true;
+    }
 }

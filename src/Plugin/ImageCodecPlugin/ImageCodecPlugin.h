@@ -9,19 +9,19 @@
 
 namespace Mengine
 {
-	class ImageCodecPlugin
-		: public PluginBase
-	{
-		PLUGIN_DECLARE( "ImageCodec" )
+    class ImageCodecPlugin
+        : public PluginBase
+    {
+        PLUGIN_DECLARE( "ImageCodec" )
 
-	public:
-		ImageCodecPlugin();
+    public:
+        ImageCodecPlugin();
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
 
-	protected:
-		DataflowFactoryInterfacePtr m_factoryAEK;
-	};
+    protected:
+        DataflowFactoryInterfacePtr m_factoryAEK;
+    };
 }

@@ -49,7 +49,7 @@ namespace Mengine
             ->addPrototype( "Sampler"_c, "SamplerOzzAnimation"_c, new DefaultPrototypeGenerator<SamplerOzzAnimation, 16> ) == false )
         {
             return false;
-        }        
+        }
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( "Node"_c, "NodeOzzAnimation"_c, new NodePrototypeGenerator<NodeOzzAnimation, 16> ) == false )

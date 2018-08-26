@@ -4,9 +4,9 @@
 
 namespace Mengine
 {
-	class MovieSlot
-		: public Node
-	{
+    class MovieSlot
+        : public Node
+    {
     public:
         void setMovieName( const ConstString & _movieName );
 
@@ -20,15 +20,15 @@ namespace Mengine
         void _setPersonalColor( const ColourValue& _color ) override;
         void _setPersonalAlpha( float _alpha ) override;
 
-	protected:
-		void _changeParent( Node * _oldParent, Node * _newParent ) override;
+    protected:
+        void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
-	protected:
-		void _debugRender( const RenderContext * _state ) override;
+    protected:
+        void _debugRender( const RenderContext * _state ) override;
 
     protected:
         ConstString m_movieName;
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MovieSlot> MovieSlotPtr;
     //////////////////////////////////////////////////////////////////////////

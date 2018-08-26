@@ -86,7 +86,7 @@ namespace Mengine
 
             return;
         }
-        
+
         this->removeObserver_( _id, _observer );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -144,7 +144,7 @@ namespace Mengine
         }
 
         VectorObservers & observers = it_find->second;
-        
+
         ObserverDesc desc;
         desc.observer = _observer;
         desc.callable = _callable;
@@ -166,7 +166,7 @@ namespace Mengine
         for( ObserverDesc & desc : observers )
         {
             if( desc.observer != _observer )
-            { 
+            {
                 continue;
             }
 

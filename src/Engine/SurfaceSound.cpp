@@ -405,7 +405,7 @@ namespace Mengine
         {
             return 0.f;
         }
-        
+
         float pos = SOUND_SERVICE()
             ->getPosMs( m_soundEmitter );
 

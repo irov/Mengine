@@ -29,47 +29,47 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class Win32Application
-	{
-	public:
-		Win32Application();
-		~Win32Application();
+    //////////////////////////////////////////////////////////////////////////
+    class Win32Application
+    {
+    public:
+        Win32Application();
+        ~Win32Application();
 
-	public:
-		bool initialize();
-		void finalize();
+    public:
+        bool initialize();
+        void finalize();
 
-	public:
-		void update();
-		
-	public:
-		void loop();
+    public:
+        void update();
 
-	protected:												
-		bool initializeFileEngine_();
-		bool initializeUserDirectory_();
-		bool initializeLogFile_();
-		bool initializeLogEngine_();
-		bool initializeConfigEngine_();
-		bool initializeArchiveService_();
-		bool initializeModuleEngine_();
-		bool initializeDataManager_();
-		bool initializeMemoryManager_();
-		bool initializeHttpService_();
-		bool initializePrefetcherService_();
-		bool initializeTimerService_();
+    public:
+        void loop();
 
-	protected:
-		bool getApplicationPath_( const char * _section, const char * _key, ConstString & _value );
+    protected:
+        bool initializeFileEngine_();
+        bool initializeUserDirectory_();
+        bool initializeLogFile_();
+        bool initializeLogEngine_();
+        bool initializeConfigEngine_();
+        bool initializeArchiveService_();
+        bool initializeModuleEngine_();
+        bool initializeDataManager_();
+        bool initializeMemoryManager_();
+        bool initializeHttpService_();
+        bool initializePrefetcherService_();
+        bool initializeTimerService_();
 
-	protected:
-		bool makeUserPath_( WString & _wstring ) const;
+    protected:
+        bool getApplicationPath_( const char * _section, const char * _key, ConstString & _value );
+
+    protected:
+        bool makeUserPath_( WString & _wstring ) const;
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
 
         LoggerInterfacePtr m_fileLog;
         LoggerInterfacePtr m_loggerMessageBox;
-	};
-}	
+    };
+}

@@ -5,25 +5,25 @@
 #include "Config/Typedef.h"
 
 namespace Mengine
-{	
-	class ResourceImageSubstract
-		: public ResourceImage
-	{
-		DECLARE_VISITABLE( ResourceImage );
+{
+    class ResourceImageSubstract
+        : public ResourceImage
+    {
+        DECLARE_VISITABLE( ResourceImage );
 
-	public:
-		ResourceImageSubstract();
+    public:
+        ResourceImageSubstract();
         ~ResourceImageSubstract() override;
 
-	protected:
-		bool _loader( const Metabuf::Metadata * _parser ) override;
-
-	protected:
-		bool _compile() override;
-		void _release() override;
+    protected:
+        bool _loader( const Metabuf::Metadata * _parser ) override;
 
     protected:
-		ConstString m_resourceImageName;
-		ResourceImagePtr m_resourceImage;		
-	};
+        bool _compile() override;
+        void _release() override;
+
+    protected:
+        ConstString m_resourceImageName;
+        ResourceImagePtr m_resourceImage;
+    };
 }

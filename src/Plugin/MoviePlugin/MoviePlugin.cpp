@@ -221,7 +221,7 @@ namespace Mengine
                 }
 
                 const ConstString & name = _node->getName();
-                
+
                 m_list.append( pybind::make_tuple_t( m_kernel, _movie, name, hotspot ) );
             }
 
@@ -339,7 +339,7 @@ namespace Mengine
             ;
 
 
-        pybind::interface_<Movie2Slot, pybind::bases<Node> >( kernel, "Movie2Slot", false )            
+        pybind::interface_<Movie2Slot, pybind::bases<Node> >( kernel, "Movie2Slot", false )
             ;
 
 

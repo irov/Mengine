@@ -6,18 +6,18 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class SteamPlugin
-		: public PluginBase
-	{
-		PLUGIN_DECLARE( "Steam" )
+    //////////////////////////////////////////////////////////////////////////
+    class SteamPlugin
+        : public PluginBase
+    {
+        PLUGIN_DECLARE( "Steam" )
 
-	public:
-		SteamPlugin();
+    public:
+        SteamPlugin();
         ~SteamPlugin() override;
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
-	};
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
+    };
 }

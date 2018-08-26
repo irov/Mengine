@@ -19,7 +19,7 @@ namespace Mengine
         virtual bool initializeService() = 0;
         virtual void finalizeService() = 0;
         virtual bool isInitializeService() const = 0;
-                
+
 
     protected:
         virtual void stopService() = 0;
@@ -111,7 +111,7 @@ namespace Mengine
             return s_exist;
         }
     }
-//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 #define SERVICE_GET( Type )\
 	(Mengine::Helper::getService<Type>(__FILE__, __LINE__))
 //////////////////////////////////////////////////////////////////////////

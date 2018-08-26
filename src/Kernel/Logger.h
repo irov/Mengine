@@ -3,23 +3,23 @@
 #include "Interface/LoggerInterface.h"
 
 namespace Mengine
-{	
-	class LoggerOperator
-	{
-	public:
-		LoggerOperator( LoggerServiceInterface * _logger, EMessageLevel _level, uint32_t _flag );
+{
+    class LoggerOperator
+    {
+    public:
+        LoggerOperator( LoggerServiceInterface * _logger, EMessageLevel _level, uint32_t _flag );
 
-	public:
-		LoggerOperator & operator()( const Char * _format, ... );
+    public:
+        LoggerOperator & operator()( const Char * _format, ... );
 
-	public:
-		void logMessage( const Char * _format, uint32_t _size );
+    public:
+        void logMessage( const Char * _format, uint32_t _size );
 
-	protected:
-		LoggerServiceInterface * m_log;
-		EMessageLevel m_level;
+    protected:
+        LoggerServiceInterface * m_log;
+        EMessageLevel m_level;
         uint32_t m_flag;
-	};
+    };
 }
 
 #	define LOGGER_VERBOSE_LEVEL( LOGGER, LEVEL )\
@@ -42,7 +42,7 @@ namespace Mengine
 
 #	define LOGGER_WARNING\
 	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Mengine::LM_WARNING )
-	
+
 #	define LOGGER_INFO\
 	LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), Mengine::LM_INFO )
 

@@ -7,9 +7,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Movie2> Movie2Ptr;
     //////////////////////////////////////////////////////////////////////////
-	class Movie2Slot
-		: public Node
-	{
+    class Movie2Slot
+        : public Node
+    {
     public:
         Movie2Slot();
         ~Movie2Slot() override;
@@ -28,15 +28,15 @@ namespace Mengine
         void _setPersonalColor( const ColourValue& _color ) override;
         void _setPersonalAlpha( float _alpha ) override;
 
-	protected:
-		void _changeParent( Node * _oldParent, Node * _newParent ) override;
+    protected:
+        void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
-	protected:
-		void _debugRender( const RenderContext * _state ) override;
+    protected:
+        void _debugRender( const RenderContext * _state ) override;
 
     protected:
         Movie2Ptr m_movie;
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Movie2Slot> Movie2SlotPtr;
     //////////////////////////////////////////////////////////////////////////

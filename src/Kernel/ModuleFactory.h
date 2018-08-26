@@ -9,34 +9,34 @@
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	template<class T>
-	class ModuleFactory
-		: public ServantBase<ModuleFactoryInterface>
-	{
+    //////////////////////////////////////////////////////////////////////////
+    template<class T>
+    class ModuleFactory
+        : public ServantBase<ModuleFactoryInterface>
+    {
     public:
-		ModuleFactory()
+        ModuleFactory()
         {
             m_factory = new FactoryDefault<T>();
         }
 
-	public:
-		ModuleInterfacePtr createModule( const ConstString & _name ) override
-		{
-			ModuleInterfacePtr module = m_factory->createObject();
+    public:
+        ModuleInterfacePtr createModule( const ConstString & _name ) override
+        {
+            ModuleInterfacePtr module = m_factory->createObject();
 
-			module->setName(_name);
+            module->setName( _name );
 
-			return module;
-		}
+            return module;
+        }
 
-	protected:
-		void destroy() override
-		{
-			delete this;
-		}
+    protected:
+        void destroy() override
+        {
+            delete this;
+        }
 
-	protected:		
-		FactoryPtr m_factory;
-	};
+    protected:
+        FactoryPtr m_factory;
+    };
 }

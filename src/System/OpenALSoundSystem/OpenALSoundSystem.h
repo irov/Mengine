@@ -15,49 +15,49 @@
 
 namespace Mengine
 {
-	class OALSoundSource;
+    class OALSoundSource;
 
-	class OALSoundSystem
-		: public ServiceBase<SoundSystemInterface>
-	{
-	public:
-		OALSoundSystem();
-		~OALSoundSystem() override;
+    class OALSoundSystem
+        : public ServiceBase<SoundSystemInterface>
+    {
+    public:
+        OALSoundSystem();
+        ~OALSoundSystem() override;
 
-	public:
-		bool _initializeService() override;
+    public:
+        bool _initializeService() override;
         void _finalizeService() override;
 
-	public:
-		void update() override;
+    public:
+        void update() override;
 
-	public:
-		bool isSilent() const override;
-		
-	public:
-		void onTurnSound( bool _turn ) override;
+    public:
+        bool isSilent() const override;
 
-	public:
-		SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) override;
+    public:
+        void onTurnSound( bool _turn ) override;
 
-		SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) override;
-		//SoundBufferInterface* createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) override;
+    public:
+        SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) override;
 
-	public:
-		ALuint genSourceId();
-		void releaseSourceId( ALuint _sourceId );
+        SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) override;
+        //SoundBufferInterface* createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) override;
 
-		ALuint genBufferId();
-		void releaseBufferId( ALuint _bufferId );
+    public:
+        ALuint genSourceId();
+        void releaseSourceId( ALuint _sourceId );
 
-	private:
-		ALCcontext * m_context;
-		ALCdevice * m_device;
+        ALuint genBufferId();
+        void releaseBufferId( ALuint _bufferId );
+
+    private:
+        ALCcontext * m_context;
+        ALCdevice * m_device;
 
         FactoryPtr m_factoryOALSoundBuffer;
         FactoryPtr m_factoryOALSoundBufferStream;
         FactoryPtr m_factoryOALSoundSource;
 
-		bool m_threadAvaliable;
+        bool m_threadAvaliable;
     };
-}	
+}

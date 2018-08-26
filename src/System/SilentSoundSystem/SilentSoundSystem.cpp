@@ -14,26 +14,26 @@ SERVICE_FACTORY( SilentSoundSystem, Mengine::SilentSoundSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	SilentSoundSystem::SilentSoundSystem()
-		: m_enumerate(0)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SilentSoundSystem::~SilentSoundSystem()
-	{     
+    //////////////////////////////////////////////////////////////////////////
+    SilentSoundSystem::SilentSoundSystem()
+        : m_enumerate( 0 )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SilentSoundSystem::~SilentSoundSystem()
+    {
 
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SilentSoundSystem::_initializeService()
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SilentSoundSystem::_initializeService()
+    {
         LOGGER_INFO( "Starting Silent Sound System..." );
-        		
-		m_factorySilentSoundBuffer = new FactoryPool<SilentSoundBuffer, 32>();
-		m_factorySilentSoundSource = new FactoryPool<SilentSoundSource, 32>();
 
-		return true;
-	}
+        m_factorySilentSoundBuffer = new FactoryPool<SilentSoundBuffer, 32>();
+        m_factorySilentSoundSource = new FactoryPool<SilentSoundSource, 32>();
+
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundSystem::_finalizeService()
     {
@@ -43,83 +43,83 @@ namespace Mengine
         m_factorySilentSoundBuffer = nullptr;
         m_factorySilentSoundSource = nullptr;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSystem::update()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SilentSoundSystem::isSilent() const
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSystem::onTurnSound( bool _turn )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void SilentSoundSystem::update()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SilentSoundSystem::isSilent() const
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SilentSoundSystem::onTurnSound( bool _turn )
+    {
         (void)_turn;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
-	{		
-		SilentSoundSourcePtr soundSource = m_factorySilentSoundSource->createObject();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
+    {
+        SilentSoundSourcePtr soundSource = m_factorySilentSoundSource->createObject();
 
-		soundSource->initialize(this);
-		
-		soundSource->setHeadMode( _isHeadMode );
-		soundSource->setSoundBuffer( _buffer );
+        soundSource->initialize( this );
 
-		return soundSource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterfacePtr SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable )
-	{
+        soundSource->setHeadMode( _isHeadMode );
+        soundSource->setSoundBuffer( _buffer );
+
+        return soundSource;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SoundBufferInterfacePtr SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable )
+    {
         (void)_streamable;
 
-		SilentSoundBufferPtr buffer = m_factorySilentSoundBuffer->createObject();
+        SilentSoundBufferPtr buffer = m_factorySilentSoundBuffer->createObject();
 
-		if( buffer->load( _soundDecoder ) == false )
-		{
-			LOGGER_ERROR("SilentSoundSystem::createSoundBuffer: failed to load sound buffer from decoder"
-				);
+        if( buffer->load( _soundDecoder ) == false )
+        {
+            LOGGER_ERROR( "SilentSoundSystem::createSoundBuffer: failed to load sound buffer from decoder"
+            );
 
             return nullptr;
-		}
+        }
 
-		return buffer;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t SilentSoundSystem::genSourceId()
-	{
-		uint32_t new_id = ++m_enumerate;
-
-		return new_id;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSystem::releaseSourceId( uint32_t _sourceId )
-	{
-        (void)_sourceId;
-
-        //Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t SilentSoundSystem::genBufferId()
-	{
+        return buffer;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SilentSoundSystem::genSourceId()
+    {
         uint32_t new_id = ++m_enumerate;
 
         return new_id;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSystem::releaseBufferId( uint32_t _sourceId )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SilentSoundSystem::releaseSourceId( uint32_t _sourceId )
+    {
         (void)_sourceId;
 
         //Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SilentSoundSystem::clearSourceId( uint32_t _sourceId )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SilentSoundSystem::genBufferId()
+    {
+        uint32_t new_id = ++m_enumerate;
+
+        return new_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SilentSoundSystem::releaseBufferId( uint32_t _sourceId )
+    {
         (void)_sourceId;
 
-		//Empty
-	}
-}	
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SilentSoundSystem::clearSourceId( uint32_t _sourceId )
+    {
+        (void)_sourceId;
+
+        //Empty
+    }
+}

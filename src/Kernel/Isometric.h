@@ -4,16 +4,16 @@
 
 namespace Mengine
 {
-	class Isometric
-		: public Node
-	{
-		DECLARE_VISITABLE( Node )
+    class Isometric
+        : public Node
+    {
+        DECLARE_VISITABLE( Node )
 
-	public:
-		Isometric();
+    public:
+        Isometric();
         ~Isometric() override;
 
-	protected:
-		void render( const RenderContext * _state ) override;
-	};
+    protected:
+        void render( const RenderContext * _state ) override;
+    };
 }

@@ -14,11 +14,11 @@ namespace Mengine
     public:
         ConstStringHolderPythonString();
         ~ConstStringHolderPythonString();
-        
+
     public:
         void setPythonObject( PyObject * _value );
-        
-    protected:			
+
+    protected:
         PyObject * m_value;
     };
 }

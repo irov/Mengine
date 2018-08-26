@@ -6,51 +6,51 @@
 
 namespace Mengine
 {
-	template<uint32_t VerticesCount>
-	class FixedVertices
-	{
-	public:
-		FixedVertices()
-			: m_invalidateVertices(0xFF)
-		{
-		}
+    template<uint32_t VerticesCount>
+    class FixedVertices
+    {
+    public:
+        FixedVertices()
+            : m_invalidateVertices( 0xFF )
+        {
+        }
 
-	public:
-		void setVertices( const RenderVertex2D * _vertices )
-		{
-			stdex::memorycopy( m_vertices, _vertices, VerticesCount );
-		}
+    public:
+        void setVertices( const RenderVertex2D * _vertices )
+        {
+            stdex::memorycopy( m_vertices, _vertices, VerticesCount );
+        }
 
-		inline const RenderVertex2D * getVertices() const
-		{
-			if( m_invalidateVertices != 0 )
-			{
-				this->updateVertices_();
-			}
+        inline const RenderVertex2D * getVertices() const
+        {
+            if( m_invalidateVertices != 0 )
+            {
+                this->updateVertices_();
+            }
 
-			return m_vertices;
-		}
+            return m_vertices;
+        }
 
-		inline void invalidateVertices( uint8_t _invalidate = 0xFF ) const
-		{
-			m_invalidateVertices |= _invalidate;
-		}
+        inline void invalidateVertices( uint8_t _invalidate = 0xFF ) const
+        {
+            m_invalidateVertices |= _invalidate;
+        }
 
-	private:
-		inline void updateVertices_() const
-		{
-			this->_updateVertices( m_vertices, m_invalidateVertices );
+    private:
+        inline void updateVertices_() const
+        {
+            this->_updateVertices( m_vertices, m_invalidateVertices );
 
-			m_invalidateVertices = 0;
-		}
-	
-	protected:
-		virtual void _updateVertices( RenderVertex2D * _vertices, uint8_t _invalidateVertices ) const = 0;
+            m_invalidateVertices = 0;
+        }
 
-	private:
-		mutable RenderVertex2D m_vertices[VerticesCount];
-		mutable uint8_t m_invalidateVertices;
-	};
+    protected:
+        virtual void _updateVertices( RenderVertex2D * _vertices, uint8_t _invalidateVertices ) const = 0;
 
-	typedef FixedVertices<4> QuadVertices;
+    private:
+        mutable RenderVertex2D m_vertices[VerticesCount];
+        mutable uint8_t m_invalidateVertices;
+    };
+
+    typedef FixedVertices<4> QuadVertices;
 }

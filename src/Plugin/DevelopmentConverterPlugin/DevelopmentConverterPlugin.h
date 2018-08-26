@@ -5,17 +5,17 @@
 #include "Kernel/PluginBase.h"
 
 namespace Mengine
-{	
-	class DevelopmentConverterPlugin
-		: public PluginBase
-	{
-		PLUGIN_DECLARE( "DevelopmentConverter" )
+{
+    class DevelopmentConverterPlugin
+        : public PluginBase
+    {
+        PLUGIN_DECLARE( "DevelopmentConverter" )
 
-	public:
-		DevelopmentConverterPlugin();
+    public:
+        DevelopmentConverterPlugin();
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
-	};
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
+    };
 }

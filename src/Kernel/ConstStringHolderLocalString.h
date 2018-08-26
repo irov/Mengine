@@ -4,8 +4,8 @@
 
 namespace Mengine
 {
-	class ConstStringHolderLocalString
-		: public ConstStringHolder
-	{	
-	};
+    class ConstStringHolderLocalString
+        : public ConstStringHolder
+    {
+    };
 }

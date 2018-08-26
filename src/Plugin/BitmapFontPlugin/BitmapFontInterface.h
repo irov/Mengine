@@ -10,14 +10,14 @@
 
 namespace Mengine
 {
-	class BitmapGlyphServiceInterface
-		: public ServiceBase<ServiceInterface>
-	{
-		SERVICE_DECLARE( "BitmapGlyphService" )
+    class BitmapGlyphServiceInterface
+        : public ServiceBase<ServiceInterface>
+    {
+        SERVICE_DECLARE( "BitmapGlyphService" )
 
-	public:
-		virtual BitmapGlyphPtr getGlyph( const FileGroupInterfacePtr & _category, const FilePath & _path ) = 0;
-	};
+    public:
+        virtual BitmapGlyphPtr getGlyph( const FileGroupInterfacePtr & _category, const FilePath & _path ) = 0;
+    };
 }
 
 #   define BITMAPGLYPH_SERVICE()\

@@ -6,21 +6,21 @@
 
 namespace Mengine
 {
-	class TimerService
-		: public ServiceBase<TimerServiceInterface>
-	{
-	public:
-		TimerService();
-		~TimerService() override;
+    class TimerService
+        : public ServiceBase<TimerServiceInterface>
+    {
+    public:
+        TimerService();
+        ~TimerService() override;
 
-	public:
-		void resetDeltaTime() override;
-		float getDeltaTime() override;
-		
-	public:
-		uint64_t getMilliseconds() override;
+    public:
+        void resetDeltaTime() override;
+        float getDeltaTime() override;
 
-	protected:
-		uint64_t m_prevTime;
-	};
+    public:
+        uint64_t getMilliseconds() override;
+
+    protected:
+        uint64_t m_prevTime;
+    };
 };

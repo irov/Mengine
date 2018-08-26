@@ -9,45 +9,45 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	SurfaceTrackMatte::SurfaceTrackMatte()
+    //////////////////////////////////////////////////////////////////////////
+    SurfaceTrackMatte::SurfaceTrackMatte()
         : m_trackMatteMode( ESTM_MODE_NONE )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SurfaceTrackMatte::~SurfaceTrackMatte()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceTrackMatte::setResourceImage( const ResourceImagePtr & _resourceImage )
-	{
-		if( m_resourceImage == _resourceImage )
-		{
-			return;
-		}
-        
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SurfaceTrackMatte::~SurfaceTrackMatte()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceTrackMatte::setResourceImage( const ResourceImagePtr & _resourceImage )
+    {
+        if( m_resourceImage == _resourceImage )
+        {
+            return;
+        }
+
         this->recompile( [this, _resourceImage]() { m_resourceImage = _resourceImage; } );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ResourceImagePtr & SurfaceTrackMatte::getResourceImage() const
-	{
-		return m_resourceImage;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceTrackMatte::setResourceTrackMatteImage( const ResourceImagePtr & _resourceTrackMatteImage )
-	{
-		if( m_resourceTrackMatteImage == _resourceTrackMatteImage )
-		{
-			return;
-		}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & SurfaceTrackMatte::getResourceImage() const
+    {
+        return m_resourceImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceTrackMatte::setResourceTrackMatteImage( const ResourceImagePtr & _resourceTrackMatteImage )
+    {
+        if( m_resourceTrackMatteImage == _resourceTrackMatteImage )
+        {
+            return;
+        }
 
         this->recompile( [this, _resourceTrackMatteImage]() {m_resourceTrackMatteImage = _resourceTrackMatteImage; } );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ResourceImagePtr & SurfaceTrackMatte::getResourceTrackMatteImage() const
-	{
-		return m_resourceTrackMatteImage;
-	}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & SurfaceTrackMatte::getResourceTrackMatteImage() const
+    {
+        return m_resourceTrackMatteImage;
+    }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceTrackMatte::setTrackMatteMode( ESurfaceTrackMatteMode _trackMatteMode )
     {
@@ -112,64 +112,64 @@ namespace Mengine
 
         _out = _in;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceTrackMatte::_compile()
-	{
-		if( m_resourceImage == nullptr )
-		{
-			LOGGER_ERROR("SurfaceTrackMatte::_compile: '%s' resource is null"
-				, m_name.c_str()
-				);
+    //////////////////////////////////////////////////////////////////////////
+    bool SurfaceTrackMatte::_compile()
+    {
+        if( m_resourceImage == nullptr )
+        {
+            LOGGER_ERROR( "SurfaceTrackMatte::_compile: '%s' resource is null"
+                , m_name.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		if( m_resourceImage.compile() == false )
-		{
-			LOGGER_ERROR("SurfaceTrackMatte::_compile: '%s' resource '%s' is not compile"
-				, m_name.c_str()
-				, m_resourceImage->getName().c_str()
-				);
+        if( m_resourceImage.compile() == false )
+        {
+            LOGGER_ERROR( "SurfaceTrackMatte::_compile: '%s' resource '%s' is not compile"
+                , m_name.c_str()
+                , m_resourceImage->getName().c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		if( m_resourceTrackMatteImage == nullptr )
-		{
-			LOGGER_ERROR("SurfaceTrackMatte::_compile: '%s' resource is null"
-				, m_name.c_str()
-				);
+        if( m_resourceTrackMatteImage == nullptr )
+        {
+            LOGGER_ERROR( "SurfaceTrackMatte::_compile: '%s' resource is null"
+                , m_name.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		if( m_resourceTrackMatteImage.compile() == false )
-		{
-			LOGGER_ERROR("SurfaceTrackMatte::_compile: '%s' resource '%s' is not compile"
-				, m_name.c_str()
-				, m_resourceTrackMatteImage->getName().c_str()
-				);
+        if( m_resourceTrackMatteImage.compile() == false )
+        {
+            LOGGER_ERROR( "SurfaceTrackMatte::_compile: '%s' resource '%s' is not compile"
+                , m_name.c_str()
+                , m_resourceTrackMatteImage->getName().c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		this->invalidateMaterial();
+        this->invalidateMaterial();
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceTrackMatte::_release()
-	{
-		m_resourceImage.release();
-		m_resourceTrackMatteImage.release();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr SurfaceTrackMatte::_updateMaterial() const
-	{
-		RenderTextureInterfacePtr textures[2];
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceTrackMatte::_release()
+    {
+        m_resourceImage.release();
+        m_resourceTrackMatteImage.release();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr SurfaceTrackMatte::_updateMaterial() const
+    {
+        RenderTextureInterfacePtr textures[2];
 
-		textures[0] = m_resourceImage->getTexture();
-		textures[1] = m_resourceTrackMatteImage->getTexture();
+        textures[0] = m_resourceImage->getTexture();
+        textures[1] = m_resourceTrackMatteImage->getTexture();
 
         bool premultiply = m_resourceImage->isPremultiply();
 
@@ -201,14 +201,14 @@ namespace Mengine
             }break;
         default:
             {
-                LOGGER_ERROR("SurfaceTrackMatte::_updateMaterial '%s' invalid support track matte mode '%d'"
+                LOGGER_ERROR( "SurfaceTrackMatte::_updateMaterial '%s' invalid support track matte mode '%d'"
                     , this->getName().c_str()
                     , m_trackMatteMode
-                    );
+                );
             }break;
         }
 
         return material;
-	}
-	//////////////////////////////////////////////////////////////////////////
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -15,12 +15,12 @@
 
 namespace Mengine
 {
-	class BasePrototypeGenerator
-		: public ServantBase<PrototypeGeneratorInterface>
-		, public MemoryAllocator<BasePrototypeGenerator>
-	{
-	public:
-		BasePrototypeGenerator();
+    class BasePrototypeGenerator
+        : public ServantBase<PrototypeGeneratorInterface>
+        , public MemoryAllocator<BasePrototypeGenerator>
+    {
+    public:
+        BasePrototypeGenerator();
         ~BasePrototypeGenerator() override;
 
     protected:
@@ -28,8 +28,8 @@ namespace Mengine
         inline const ConstString & getPrototype() const;
         inline const FactoryPtr & getFactory() const;
 
-	protected:
-		bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
+    protected:
+        bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
 
     protected:
         virtual FactoryPtr _initializeFactory() = 0;
@@ -38,14 +38,14 @@ namespace Mengine
         uint32_t count() const override;
 
     protected:
-		void destroy() override;
+        void destroy() override;
 
-	protected:
-		ConstString m_category;
-		ConstString m_prototype;
+    protected:
+        ConstString m_category;
+        ConstString m_prototype;
 
         FactoryPtr m_factory;
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
     inline const ConstString & BasePrototypeGenerator::getCategory() const
     {

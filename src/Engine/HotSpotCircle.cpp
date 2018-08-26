@@ -8,207 +8,207 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	HotSpotCircle::HotSpotCircle()
-		: m_enumerator(0)
-		, m_radius(0.f)
-		, m_ellipse(1.f)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	HotSpotCircle::~HotSpotCircle()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpotCircle::setRadius( float _radius )
-	{		
-		m_radius = _radius;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float HotSpotCircle::getRadius() const
-	{
-		return m_radius;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpotCircle::setEllipse( float _ellipse )
-	{
-		m_ellipse = _ellipse;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float HotSpotCircle::getEllipse() const
-	{
-		return m_ellipse;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotCircle::testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
-	{
-		(void)_contentResolution;
-		(void)_viewport;
-		
-		if( m_global == true )
-		{
-			return !m_outward;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    HotSpotCircle::HotSpotCircle()
+        : m_enumerator( 0 )
+        , m_radius( 0.f )
+        , m_ellipse( 1.f )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HotSpotCircle::~HotSpotCircle()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpotCircle::setRadius( float _radius )
+    {
+        m_radius = _radius;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float HotSpotCircle::getRadius() const
+    {
+        return m_radius;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpotCircle::setEllipse( float _ellipse )
+    {
+        m_ellipse = _ellipse;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float HotSpotCircle::getEllipse() const
+    {
+        return m_ellipse;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool HotSpotCircle::testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
+    {
+        (void)_contentResolution;
+        (void)_viewport;
 
-		const mt::mat4f & wm = this->getWorldMatrix();
+        if( m_global == true )
+        {
+            return !m_outward;
+        }
 
-		const mt::mat4f & vpm = _camera->getCameraViewProjectionMatrix();
+        const mt::mat4f & wm = this->getWorldMatrix();
 
-		mt::mat4f wvpm;
-		mt::mul_m4_m4( wvpm, wm, vpm );
+        const mt::mat4f & vpm = _camera->getCameraViewProjectionMatrix();
 
-		mt::vec2f v_wvp;
-		mt::mul_v2_v2_m4_homogenize( v_wvp, mt::vec2f(0.f, 0.f), wvpm );
+        mt::mat4f wvpm;
+        mt::mul_m4_m4( wvpm, wm, vpm );
 
-		mt::vec2f v_wvpn;
-		v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
-		v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
+        mt::vec2f v_wvp;
+        mt::mul_v2_v2_m4_homogenize( v_wvp, mt::vec2f( 0.f, 0.f ), wvpm );
 
-		mt::vec2f contentResolutionSize;
-		_contentResolution.calcSize( contentResolutionSize );
+        mt::vec2f v_wvpn;
+        v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
+        v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
 
-		mt::vec2f v = (_point - v_wvpn) * contentResolutionSize;
+        mt::vec2f contentResolutionSize;
+        _contentResolution.calcSize( contentResolutionSize );
 
-		v.y /= m_ellipse;
+        mt::vec2f v = (_point - v_wvpn) * contentResolutionSize;
 
-		float v_sqrlength = v.sqrlength();
+        v.y /= m_ellipse;
 
-		if( v_sqrlength < m_radius * m_radius )
-		{
-			return !m_outward;
-		}
+        float v_sqrlength = v.sqrlength();
 
-		return m_outward;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotCircle::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
-	{
-		(void)_contentResolution;
-		(void)_viewport;
-		
-		if( m_global == true )
-		{
-			return !m_outward;
-		}
+        if( v_sqrlength < m_radius * m_radius )
+        {
+            return !m_outward;
+        }
 
-		const mt::mat4f & wm = this->getWorldMatrix();
+        return m_outward;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool HotSpotCircle::testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const
+    {
+        (void)_contentResolution;
+        (void)_viewport;
 
-		const mt::mat4f & vpm = _camera->getCameraViewProjectionMatrix();
+        if( m_global == true )
+        {
+            return !m_outward;
+        }
 
-		mt::mat4f wvpm;
-		mt::mul_m4_m4( wvpm, wm, vpm );
+        const mt::mat4f & wm = this->getWorldMatrix();
 
-		mt::vec2f v_wvp;
-		mt::mul_v2_v2_m4_homogenize( v_wvp, mt::vec2f( 0.f, 0.f ), wvpm );
+        const mt::mat4f & vpm = _camera->getCameraViewProjectionMatrix();
 
-		mt::vec2f v_wvpn;
-		v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
-		v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
+        mt::mat4f wvpm;
+        mt::mul_m4_m4( wvpm, wm, vpm );
 
-		mt::vec2f contentResolutionSize;
-		_contentResolution.calcSize( contentResolutionSize );
+        mt::vec2f v_wvp;
+        mt::mul_v2_v2_m4_homogenize( v_wvp, mt::vec2f( 0.f, 0.f ), wvpm );
 
-		mt::vec2f v = (_point - v_wvpn) * contentResolutionSize;
+        mt::vec2f v_wvpn;
+        v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
+        v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
 
-		v.y /= m_ellipse;
+        mt::vec2f contentResolutionSize;
+        _contentResolution.calcSize( contentResolutionSize );
 
-		float v_sqrlength = v.sqrlength();
+        mt::vec2f v = (_point - v_wvpn) * contentResolutionSize;
 
-		if( v_sqrlength < (m_radius + _radiusx) * (m_radius + _radiusy) )
-		{
-			return !m_outward;
-		}
+        v.y /= m_ellipse;
 
-		return m_outward;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool HotSpotCircle::testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
-	{
-		if( m_global == true )
-		{
-			return !m_outward;
-		}
+        float v_sqrlength = v.sqrlength();
 
-		//TODO:
-		(void)_polygon;
+        if( v_sqrlength < (m_radius + _radiusx) * (m_radius + _radiusy) )
+        {
+            return !m_outward;
+        }
 
-		bool test = this->testPoint( _camera, _viewport, _contentResolution, _point );
+        return m_outward;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool HotSpotCircle::testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const
+    {
+        if( m_global == true )
+        {
+            return !m_outward;
+        }
 
-		return test;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void HotSpotCircle::_debugRender( const RenderContext * _state )
-	{
-		if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
-		{
-			return;
-		}
+        //TODO:
+        (void)_polygon;
 
-		if( m_debugColor == 0x00000000 )
-		{
-			return;
-		}
+        bool test = this->testPoint( _camera, _viewport, _contentResolution, _point );
 
-		uint32_t numpoints = 16;
+        return test;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HotSpotCircle::_debugRender( const RenderContext * _state )
+    {
+        if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
+        {
+            return;
+        }
+
+        if( m_debugColor == 0x00000000 )
+        {
+            return;
+        }
+
+        uint32_t numpoints = 16;
 
         uint32_t vertexCount = numpoints * 2;
 
         RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
 
-		if( vertices == nullptr )
-		{
-			return;
-		}
+        if( vertices == nullptr )
+        {
+            return;
+        }
 
-		const mt::mat4f & wm = this->getWorldMatrix();
-		
-		for( uint32_t i = 0; i != numpoints; ++i )
-		{
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        for( uint32_t i = 0; i != numpoints; ++i )
+        {
             uint32_t j = (i + 1) % numpoints;
 
-			float x0 = ::cosf( mt::constant::two_pi / numpoints * i ) * m_radius;
-			float x1 = ::cosf( mt::constant::two_pi / numpoints * j ) * m_radius;
-			float y0 = ::sinf( mt::constant::two_pi / numpoints * i ) * m_radius;
-			float y1 = ::sinf( mt::constant::two_pi / numpoints * j ) * m_radius;
+            float x0 = ::cosf( mt::constant::two_pi / numpoints * i ) * m_radius;
+            float x1 = ::cosf( mt::constant::two_pi / numpoints * j ) * m_radius;
+            float y0 = ::sinf( mt::constant::two_pi / numpoints * i ) * m_radius;
+            float y1 = ::sinf( mt::constant::two_pi / numpoints * j ) * m_radius;
 
-			mt::vec3f trP0;
-			mt::mul_v3_v2_m4( trP0, mt::vec2f( x0, y0 ), wm );
+            mt::vec3f trP0;
+            mt::mul_v3_v2_m4( trP0, mt::vec2f( x0, y0 ), wm );
 
-			RenderVertex2D & v0 = vertices[i * 2 + 0];
+            RenderVertex2D & v0 = vertices[i * 2 + 0];
 
-			v0.position = trP0;
+            v0.position = trP0;
 
-			v0.color = m_debugColor;
+            v0.color = m_debugColor;
 
-			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
-			{
-				v0.uv[uv_index].x = 0.f;
-				v0.uv[uv_index].y = 0.f;
-			}
+            for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+            {
+                v0.uv[uv_index].x = 0.f;
+                v0.uv[uv_index].y = 0.f;
+            }
 
-			mt::vec3f trP1;
-			mt::mul_v3_v2_m4( trP1, mt::vec2f( x1, y1 ), wm );
+            mt::vec3f trP1;
+            mt::mul_v3_v2_m4( trP1, mt::vec2f( x1, y1 ), wm );
 
-			RenderVertex2D & v1 = vertices[i * 2 + 1];
+            RenderVertex2D & v1 = vertices[i * 2 + 1];
 
-			v1.position = trP1;
+            v1.position = trP1;
 
-			v1.color = m_debugColor;
+            v1.color = m_debugColor;
 
-			for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
-			{
-				v1.uv[uv_index].x = 0.f;
-				v1.uv[uv_index].y = 0.f;
-			}
-		}
+            for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+            {
+                v1.uv[uv_index].x = 0.f;
+                v1.uv[uv_index].y = 0.f;
+            }
+        }
 
         const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
         this->addRenderLine( _state, debugMaterial
-			, vertices
-			, (uint32_t)vertexCount
-			, nullptr
-			, true
-			);
-	}
-}	
+            , vertices
+            , (uint32_t)vertexCount
+            , nullptr
+            , true
+        );
+    }
+}

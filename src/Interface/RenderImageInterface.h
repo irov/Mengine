@@ -22,21 +22,21 @@ namespace Mengine
         uint32_t depth;
         PixelFormat format;
     };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderImageLoaderInterface
-		: public ServantInterface
-	{
-	public:
-		virtual RenderImageDesc getImageDesc() const = 0;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class RenderImageLoaderInterface
+        : public ServantInterface
+    {
+    public:
+        virtual RenderImageDesc getImageDesc() const = 0;
 
-	public:
-		virtual bool load( const RenderImageInterfacePtr & _image ) const = 0;
+    public:
+        virtual bool load( const RenderImageInterfacePtr & _image ) const = 0;
         //virtual bool load( void * _buffer, uint32_t _pitch ) const = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderImageProviderInterface
         : public ServantInterface
@@ -46,10 +46,10 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderImageProviderInterface> RenderImageProviderInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-	class RenderImageInterface
-		: public ServantInterface
-	{
+    //////////////////////////////////////////////////////////////////////////
+    class RenderImageInterface
+        : public ServantInterface
+    {
     public:
         virtual void bind( uint32_t _stage ) = 0;
 
@@ -57,27 +57,27 @@ namespace Mengine
         virtual void setRenderImageProvider( const RenderImageProviderInterfacePtr & _renderImageProvider ) = 0;
         virtual const RenderImageProviderInterfacePtr & getRenderImageProvider() const = 0;
 
-	public:
-		virtual ERenderImageMode getMode() const = 0;
-		
-	public:
-        virtual uint32_t getHWMipmaps() const = 0;
-		virtual uint32_t getHWWidth() const = 0;
-		virtual uint32_t getHWHeight() const = 0;
-		virtual uint32_t getHWChannels() const = 0;
-		virtual uint32_t getHWDepth() const = 0;
+    public:
+        virtual ERenderImageMode getMode() const = 0;
 
-		virtual PixelFormat getHWPixelFormat() const = 0;
+    public:
+        virtual uint32_t getHWMipmaps() const = 0;
+        virtual uint32_t getHWWidth() const = 0;
+        virtual uint32_t getHWHeight() const = 0;
+        virtual uint32_t getHWChannels() const = 0;
+        virtual uint32_t getHWDepth() const = 0;
+
+        virtual PixelFormat getHWPixelFormat() const = 0;
 
     public:
         virtual float getHWWidthInv() const = 0;
         virtual float getHWHeightInv() const = 0;
-		
-	public:
-		virtual Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly = true ) = 0;
-		virtual bool unlock( uint32_t _level, bool _successful ) = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<RenderImageInterface> RenderImageInterfacePtr;
+
+    public:
+        virtual Pointer lock( size_t * _pitch, uint32_t _level, const Rect& _rect, bool _readOnly = true ) = 0;
+        virtual bool unlock( uint32_t _level, bool _successful ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<RenderImageInterface> RenderImageInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

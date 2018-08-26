@@ -6,11 +6,11 @@
 
 namespace Mengine
 {
-	class VideoDecoder
+    class VideoDecoder
         : public Decoder<VideoDecoderInterface>
-	{
-	public:
-		VideoDecoder();
+    {
+    public:
+        VideoDecoder();
         ~VideoDecoder() override;
 
     public:
@@ -19,12 +19,12 @@ namespace Mengine
     protected:
         virtual bool _invalidateOptions();
 
-	public:
-		void setCodecDataInfo( const CodecDataInfo * ) override;
-		const VideoCodecDataInfo * getCodecDataInfo() const override;
-        
+    public:
+        void setCodecDataInfo( const CodecDataInfo * ) override;
+        const VideoCodecDataInfo * getCodecDataInfo() const override;
+
     protected:
-		VideoCodecOptions m_options;
-		VideoCodecDataInfo m_dataInfo;
-	};
+        VideoCodecOptions m_options;
+        VideoCodecDataInfo m_dataInfo;
+    };
 }

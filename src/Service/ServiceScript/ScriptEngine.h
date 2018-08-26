@@ -25,81 +25,81 @@
 
 namespace Mengine
 {
-	class ScriptEngine
-		: public ServiceBase<ScriptServiceInterface>
-	{
-	public:
-		ScriptEngine();
-		~ScriptEngine() override;
+    class ScriptEngine
+        : public ServiceBase<ScriptServiceInterface>
+    {
+    public:
+        ScriptEngine();
+        ~ScriptEngine() override;
 
-	public:
-		bool _initializeService() override;
-		void _finalizeService() override;
+    public:
+        bool _initializeService() override;
+        void _finalizeService() override;
 
-	protected:
-		pybind::kernel_interface * getKernel() override;
+    protected:
+        pybind::kernel_interface * getKernel() override;
 
-	public:
-		PyObject * initModule( const char * _name );
+    public:
+        PyObject * initModule( const char * _name );
 
-		ScriptModuleInterfacePtr importModule( const ConstString& _name ) override;
+        ScriptModuleInterfacePtr importModule( const ConstString& _name ) override;
 
-		void setCurrentModule( PyObject * _module ) override;
-        
-		void addGlobalModule( const Char * _name, PyObject * _module ) override;
-		void removeGlobalModule( const Char * _name ) override;
+        void setCurrentModule( PyObject * _module ) override;
 
-	public:
+        void addGlobalModule( const Char * _name, PyObject * _module ) override;
+        void removeGlobalModule( const Char * _name ) override;
+
+    public:
         void addModulePath( const ConstString & _pak, const VectorScriptModulePack & _modules ) override;
-		void removeModulePath( const ConstString & _pack, const VectorScriptModulePack & _modules ) override;
+        void removeModulePath( const ConstString & _pack, const VectorScriptModulePack & _modules ) override;
 
-	public:
-		bool bootstrapModules() override;
-		bool initializeModules() override;
-		bool finalizeModules() override;
+    public:
+        bool bootstrapModules() override;
+        bool initializeModules() override;
+        bool finalizeModules() override;
 
-	protected:
-		bool initializeModule_( const ScriptModulePack & _pack );
-		
+    protected:
+        bool initializeModule_( const ScriptModulePack & _pack );
+
     public:
         bool stringize( PyObject * _object, ConstString & _str ) override;
 
-	public:
-		bool setWrapper( const ConstString& _type, const ScriptWrapperInterfacePtr & _wrapper ) override;
-        void removeWrapper(const ConstString& _type) override;
+    public:
+        bool setWrapper( const ConstString& _type, const ScriptWrapperInterfacePtr & _wrapper ) override;
+        void removeWrapper( const ConstString& _type ) override;
         const ScriptWrapperInterfacePtr & getWrapper( const ConstString & _type ) const override;
-		
-	public:
-		PyObject * loadModuleSource( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) override;
-		PyObject * loadModuleBinary( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) override;
 
-	public:
-		static void handleException();
-	
-	private:
-		pybind::kernel_interface * m_kernel;
+    public:
+        PyObject * loadModuleSource( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) override;
+        PyObject * loadModuleBinary( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) override;
 
-		ScriptModuleFinderPtr m_moduleFinder;
+    public:
+        static void handleException();
 
-		PyObject * m_moduleMenge;
+    private:
+        pybind::kernel_interface * m_kernel;
 
-		VectorScriptModulePack m_bootstrapperModules;
+        ScriptModuleFinderPtr m_moduleFinder;
 
-		ScriptLogger * m_loggerWarning;
-		ScriptLogger * m_loggerError;
+        PyObject * m_moduleMenge;
 
-		typedef Map<ConstString, PyObject *> MapModules;
-		typedef Map<ConstString, MapModules> MapCategoryPrototypies;
-		MapCategoryPrototypies m_prototypies;
+        VectorScriptModulePack m_bootstrapperModules;
 
-		typedef Map<ConstString, ScriptWrapperInterfacePtr> MapScriptWrapper;
-		MapScriptWrapper m_scriptWrapper;
+        ScriptLogger * m_loggerWarning;
+        ScriptLogger * m_loggerError;
+
+        typedef Map<ConstString, PyObject *> MapModules;
+        typedef Map<ConstString, MapModules> MapCategoryPrototypies;
+        MapCategoryPrototypies m_prototypies;
+
+        typedef Map<ConstString, ScriptWrapperInterfacePtr> MapScriptWrapper;
+        MapScriptWrapper m_scriptWrapper;
 
         typedef stdex::template_pool<ConstStringHolderPythonString, 1024> PoolConstStringHolderPythonString;
         PoolConstStringHolderPythonString m_poolPythonString;
 
-		FactoryPtr m_factoryScriptModule;
-		
-		bool m_initializeModules;
-	};
+        FactoryPtr m_factoryScriptModule;
+
+        bool m_initializeModules;
+    };
 }

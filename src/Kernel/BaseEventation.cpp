@@ -4,15 +4,15 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	BaseEventation::BaseEventation() noexcept
-		: m_flag(0)
-	{
+    //////////////////////////////////////////////////////////////////////////
+    BaseEventation::BaseEventation() noexcept
+        : m_flag( 0 )
+    {
     }
-	//////////////////////////////////////////////////////////////////////////
-	BaseEventation::~BaseEventation() noexcept
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    BaseEventation::~BaseEventation() noexcept
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     class BaseEventation::FEventReciver
     {
@@ -97,7 +97,7 @@ namespace Mengine
         {
             return EventReceiverPtr::none();
         }
-        
+
         const EventReceiverPtr & receiver = it_found->receiver;
 
         return receiver;

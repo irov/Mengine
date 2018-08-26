@@ -12,16 +12,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class ModuleFactoryInterface> ModuleFactoryInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-	class PluginBase
-		: public ServantBase<PluginInterface>
-	{
-	public:
-		PluginBase();
-		~PluginBase() override;
+    class PluginBase
+        : public ServantBase<PluginInterface>
+    {
+    public:
+        PluginBase();
+        ~PluginBase() override;
 
     protected:
-		void setDynamicLoad( bool _dynamicLoad ) override;
-		bool isDynamicLoad() const override;
+        void setDynamicLoad( bool _dynamicLoad ) override;
+        bool isDynamicLoad() const override;
 
     protected:
         bool avaliable() override;
@@ -30,27 +30,27 @@ namespace Mengine
         virtual bool _avaliable();
 
     protected:
-		bool initialize() override;
-		void finalize() override;
+        bool initialize() override;
+        void finalize() override;
 
-	protected:
-		bool isInitialize() const override;
+    protected:
+        bool isInitialize() const override;
 
-	protected:
-		void destroy() override;
+    protected:
+        void destroy() override;
 
-	protected:
-		virtual bool _initialize();
-		virtual void _finalize();
+    protected:
+        virtual bool _initialize();
+        virtual void _finalize();
 
-	protected:
-		bool addModuleFactory(const ConstString & _name, const ModuleFactoryInterfacePtr & _factory);
+    protected:
+        bool addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory );
 
-	protected:
-		bool m_dynamicLoad;
-		bool m_initialize;
+    protected:
+        bool m_dynamicLoad;
+        bool m_initialize;
 
-		typedef Vector<ConstString> VectorModuleFactory;
-		VectorModuleFactory m_moduleFactories;
-	};
+        typedef Vector<ConstString> VectorModuleFactory;
+        VectorModuleFactory m_moduleFactories;
+    };
 }

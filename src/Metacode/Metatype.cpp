@@ -10,51 +10,51 @@
 
 namespace Metabuf
 {
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, bool & _value, void * _userData )
-	{
-		(void)_userData;
-
-		uint8_t bool_value;
-		ar.readPOD( bool_value );
-
-		_value = !!bool_value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, uint8_t & _value, void * _userData )
-	{
-		(void)_userData;
-
-		ar.readPOD( _value );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, uint16_t & _value, void * _userData )
-	{
-		(void)_userData;
-
-		ar.readPOD( _value );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, uint32_t & _value, void * _userData )
-	{
-		(void)_userData;
-
-		ar.readPOD( _value );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, float & _value, void * _userData )
-	{
-		(void)_userData;
-
-		ar.readPOD( _value );
-	}
-	//////////////////////////////////////////////////////////////////////////
-    void archive_read( Reader & ar, Mengine::String & _value, void * _userData )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, bool & _value, void * _userData )
+    {
         (void)_userData;
 
-		uint32_t size;
-		ar.readSize( size );
+        uint8_t bool_value;
+        ar.readPOD( bool_value );
+
+        _value = !!bool_value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, uint8_t & _value, void * _userData )
+    {
+        (void)_userData;
+
+        ar.readPOD( _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, uint16_t & _value, void * _userData )
+    {
+        (void)_userData;
+
+        ar.readPOD( _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, uint32_t & _value, void * _userData )
+    {
+        (void)_userData;
+
+        ar.readPOD( _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, float & _value, void * _userData )
+    {
+        (void)_userData;
+
+        ar.readPOD( _value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::String & _value, void * _userData )
+    {
+        (void)_userData;
+
+        uint32_t size;
+        ar.readSize( size );
 
         if( size == 0 )
         {
@@ -63,67 +63,67 @@ namespace Metabuf
             return;
         }
 
-		_value.resize( size );
+        _value.resize( size );
 
         ar.readPODs( &_value[0], size );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::ConstString & _value, void * _userData )
-	{
-		Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
-		
-		uint32_t index;
-		ar.readSize( index );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::ConstString & _value, void * _userData )
+    {
+        Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
 
-		_value = loader->getCacheConstString( index );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::FilePath & _value, void * _userData )
-	{
-		Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
+        uint32_t index;
+        ar.readSize( index );
 
-		uint32_t index;
-		ar.readSize( index );
+        _value = loader->getCacheConstString( index );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::FilePath & _value, void * _userData )
+    {
+        Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
 
-		const Mengine::ConstString & value = loader->getCacheConstString( index );
-				
+        uint32_t index;
+        ar.readSize( index );
+
+        const Mengine::ConstString & value = loader->getCacheConstString( index );
+
 #ifndef NDEBUG
-		const char * test_value = value.c_str();
+        const char * test_value = value.c_str();
 
-		const char * s = strstr( test_value, "\\" );
+        const char * s = strstr( test_value, "\\" );
 
-		if( s != nullptr )
-		{
-			LOGGER_ERROR( "archive_read read FilePath '%s' has invalid slash"
-				, test_value
-				);
+        if( s != nullptr )
+        {
+            LOGGER_ERROR( "archive_read read FilePath '%s' has invalid slash"
+                , test_value
+            );
 
-			MENGINE_THROW_EXCEPTION( "archive_read read FilePath '%s' has invalid slash"
-				, test_value
-			);
-		}
+            MENGINE_THROW_EXCEPTION( "archive_read read FilePath '%s' has invalid slash"
+                , test_value
+            );
+        }
 #endif
 
-		_value = Mengine::FilePath( value );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::Tags & _value, void * _userData )
-	{
-		Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
+        _value = Mengine::FilePath( value );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::Tags & _value, void * _userData )
+    {
+        Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
 
-		uint32_t count;
-		ar.readSize( count );
+        uint32_t count;
+        ar.readSize( count );
 
-		for( uint32_t i = 0; i != count; ++i )
-		{
-			uint32_t index;
-			ar.readSize( index );
+        for( uint32_t i = 0; i != count; ++i )
+        {
+            uint32_t index;
+            ar.readSize( index );
 
-			const Mengine::ConstString & tag = loader->getCacheConstString( index );
+            const Mengine::ConstString & tag = loader->getCacheConstString( index );
 
-			_value.addTag( tag );
-		}
-	}
+            _value.addTag( tag );
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::WChar & _value, void * _userData )
     {
@@ -152,17 +152,17 @@ namespace Metabuf
 
             return;
         }
-        
+
         _value = unicode[0];
     }
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::WString & _value, void * _userData )
-	{
+    {
         static Mengine::String utf8;
         archive_read( ar, utf8, _userData );
 
-        Mengine::Helper::utf8ToUnicode(  utf8, _value );
-	}
+        Mengine::Helper::utf8ToUnicode( utf8, _value );
+    }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::ColourValue & _value, void * _userData )
     {
@@ -179,11 +179,11 @@ namespace Metabuf
         (void)_userData;
 
         uint32_t count;
-        ar.readSize(count);
+        ar.readSize( count );
 
         if( count % 2 != 0 )
         {
-			stdex::throw_memory_reader_exception();
+            stdex::throw_memory_reader_exception();
 
             return;
         }
@@ -193,156 +193,156 @@ namespace Metabuf
             mt::vec2f v;
             archive_read( ar, v, _userData );
 
-			_value.append( v );
+            _value.append( v );
         }
     }
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::Viewport & _value, void * _userData )
-	{
-		(void)_userData;
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::Viewport & _value, void * _userData )
+    {
+        (void)_userData;
 
-		ar.readPODs( &_value.begin.x, 4 );
-	}
+        ar.readPODs( &_value.begin.x, 4 );
+    }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Floats & _value, void * _userData )
     {
         (void)_userData;
 
         uint32_t count;
-        ar.readSize(count);
+        ar.readSize( count );
 
-		if( count == 0 )
-		{
-			_value.clear();
+        if( count == 0 )
+        {
+            _value.clear();
 
-			return;
-		}
+            return;
+        }
 
         _value.resize( count );
-		
+
         ar.readPODs( &_value[0], count );
     }
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::Int8s & _value, void * _userData )
-	{
-		(void)_userData;
-
-		uint32_t count;
-		ar.readSize( count );
-
-		if( count == 0 )
-		{
-			_value.clear();
-
-			return;
-		}
-
-		_value.resize( count );
-
-		ar.readPODs( &_value[0], count );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::Int16s & _value, void * _userData )
-	{
-		(void)_userData;
-
-		uint32_t count;
-		ar.readSize( count );
-
-		if( count == 0 )
-		{
-			_value.clear();
-
-			return;
-		}
-
-		_value.resize( count );
-
-		ar.readPODs( &_value[0], count );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::Int32s & _value, void * _userData )
-	{
-		(void)_userData;
-
-		uint32_t count;
-		ar.readSize( count );
-
-		if( count == 0 )
-		{
-			_value.clear();
-
-			return;
-		}
-
-		_value.resize( count );
-
-		ar.readPODs( &_value[0], count );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::UInt8s & _value, void * _userData )
-	{
-		(void)_userData;
-
-		uint32_t count;
-		ar.readSize( count );
-
-		if( count == 0 )
-		{
-			_value.clear();
-
-			return;
-		}
-
-		_value.resize( count );
-
-		ar.readPODs( &_value[0], count );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::UInt16s & _value, void * _userData )
-	{
-		(void)_userData;
-
-		uint32_t count;
-		ar.readSize( count );
-
-		if( count == 0 )
-		{
-			_value.clear();
-
-			return;
-		}
-
-		_value.resize( count );
-
-		ar.readPODs( &_value[0], count );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::UInt32s & _value, void * _userData )
-	{
-		(void)_userData;
-
-		uint32_t count;
-		ar.readSize( count );
-
-		if( count == 0 )
-		{
-			_value.clear();
-
-			return;
-		}
-
-		_value.resize( count );
-
-		ar.readPODs( &_value[0], count );
-	}
-	//////////////////////////////////////////////////////////////////////////
-    void archive_read( Reader & ar, mt::vec2f & _value, void * _userData )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::Int8s & _value, void * _userData )
+    {
         (void)_userData;
 
-		ar.readPODs( &_value.x, 2 );
-	}
+        uint32_t count;
+        ar.readSize( count );
+
+        if( count == 0 )
+        {
+            _value.clear();
+
+            return;
+        }
+
+        _value.resize( count );
+
+        ar.readPODs( &_value[0], count );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::Int16s & _value, void * _userData )
+    {
+        (void)_userData;
+
+        uint32_t count;
+        ar.readSize( count );
+
+        if( count == 0 )
+        {
+            _value.clear();
+
+            return;
+        }
+
+        _value.resize( count );
+
+        ar.readPODs( &_value[0], count );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::Int32s & _value, void * _userData )
+    {
+        (void)_userData;
+
+        uint32_t count;
+        ar.readSize( count );
+
+        if( count == 0 )
+        {
+            _value.clear();
+
+            return;
+        }
+
+        _value.resize( count );
+
+        ar.readPODs( &_value[0], count );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::UInt8s & _value, void * _userData )
+    {
+        (void)_userData;
+
+        uint32_t count;
+        ar.readSize( count );
+
+        if( count == 0 )
+        {
+            _value.clear();
+
+            return;
+        }
+
+        _value.resize( count );
+
+        ar.readPODs( &_value[0], count );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::UInt16s & _value, void * _userData )
+    {
+        (void)_userData;
+
+        uint32_t count;
+        ar.readSize( count );
+
+        if( count == 0 )
+        {
+            _value.clear();
+
+            return;
+        }
+
+        _value.resize( count );
+
+        ar.readPODs( &_value[0], count );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::UInt32s & _value, void * _userData )
+    {
+        (void)_userData;
+
+        uint32_t count;
+        ar.readSize( count );
+
+        if( count == 0 )
+        {
+            _value.clear();
+
+            return;
+        }
+
+        _value.resize( count );
+
+        ar.readPODs( &_value[0], count );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, mt::vec2f & _value, void * _userData )
+    {
+        (void)_userData;
+
+        ar.readPODs( &_value.x, 2 );
+    }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, mt::vec3f & _value, void * _userData )
     {
@@ -364,70 +364,70 @@ namespace Metabuf
 
         ar.readPODs( &_value.v0.x, 16 );
     }
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, mt::box2f & _value, void * _userData )
-	{
-		(void)_userData;
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, mt::box2f & _value, void * _userData )
+    {
+        (void)_userData;
 
-		ar.readPODs( &_value.minimum.x, 4 );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, mt::uv4f & _value, void * _userData )
-	{
-		(void)_userData;
+        ar.readPODs( &_value.minimum.x, 4 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, mt::uv4f & _value, void * _userData )
+    {
+        (void)_userData;
 
-		ar.readPODs( &_value.p0.x, 8 );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::EBlendFactor & _value, void * _userData )
-	{
-		(void)_userData;
+        ar.readPODs( &_value.p0.x, 8 );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::EBlendFactor & _value, void * _userData )
+    {
+        (void)_userData;
 
-		uint32_t tmp_value;
-		ar.readPOD( tmp_value );
+        uint32_t tmp_value;
+        ar.readPOD( tmp_value );
 
-		_value = (Mengine::EBlendFactor)tmp_value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::EBlendOp & _value, void * _userData )
-	{
-		(void)_userData;
+        _value = (Mengine::EBlendFactor)tmp_value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::EBlendOp & _value, void * _userData )
+    {
+        (void)_userData;
 
-		uint32_t tmp_value;
-		ar.readPOD( tmp_value );
+        uint32_t tmp_value;
+        ar.readPOD( tmp_value );
 
-		_value = (Mengine::EBlendOp)tmp_value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::ETextureOp & _value, void * _userData )
-	{
-		(void)_userData;
+        _value = (Mengine::EBlendOp)tmp_value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::ETextureOp & _value, void * _userData )
+    {
+        (void)_userData;
 
-		uint32_t tmp_value;
-		ar.readPOD( tmp_value );
+        uint32_t tmp_value;
+        ar.readPOD( tmp_value );
 
-		_value = (Mengine::ETextureOp)tmp_value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::ETextureArgument & _value, void * _userData )
-	{
-		(void)_userData;
+        _value = (Mengine::ETextureOp)tmp_value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::ETextureArgument & _value, void * _userData )
+    {
+        (void)_userData;
 
-		uint32_t tmp_value;
-		ar.readPOD( tmp_value );
+        uint32_t tmp_value;
+        ar.readPOD( tmp_value );
 
-		_value = (Mengine::ETextureArgument)tmp_value;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void archive_read( Reader & ar, Mengine::ETextureAddressMode & _value, void * _userData )
-	{
-		(void)_userData;
+        _value = (Mengine::ETextureArgument)tmp_value;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void archive_read( Reader & ar, Mengine::ETextureAddressMode & _value, void * _userData )
+    {
+        (void)_userData;
 
-		uint32_t tmp_value;
-		ar.readPOD( tmp_value );
+        uint32_t tmp_value;
+        ar.readPOD( tmp_value );
 
-		_value = (Mengine::ETextureAddressMode)tmp_value;
-	}
+        _value = (Mengine::ETextureAddressMode)tmp_value;
+    }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::EVertexAttributeType & _value, void * _userData )
     {

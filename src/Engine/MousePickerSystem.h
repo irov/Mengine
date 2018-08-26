@@ -9,97 +9,97 @@
 #include "Config/List.h"
 
 namespace Mengine
-{	
-	struct PickerTrapStateDesc
-	{
-		PickerTrapState * state;
+{
+    struct PickerTrapStateDesc
+    {
+        PickerTrapState * state;
 
-		RenderViewportInterfacePtr viewport;
-		RenderCameraInterfacePtr camera;
-	};
+        RenderViewportInterfacePtr viewport;
+        RenderCameraInterfacePtr camera;
+    };
     //////////////////////////////////////////////////////////////////////////
-	typedef Vector<PickerTrapStateDesc> VectorPickerTrapStates;
-	//////////////////////////////////////////////////////////////////////////
-	class MousePickerSystem
-		: public ServiceBase<MousePickerSystemInterface>
-	{
-	public:
-		MousePickerSystem();
+    typedef Vector<PickerTrapStateDesc> VectorPickerTrapStates;
+    //////////////////////////////////////////////////////////////////////////
+    class MousePickerSystem
+        : public ServiceBase<MousePickerSystemInterface>
+    {
+    public:
+        MousePickerSystem();
         ~MousePickerSystem() override;
 
     public:
         bool _initializeService() override;
         void _finalizeService() override;
 
-	public:
-		void setBlock( bool _value ) override;
+    public:
+        void setBlock( bool _value ) override;
         void setHandleValue( bool _value ) override;
 
-	public:
-		void setArrow( const ArrowPtr & _arrow ) override;
-		void setScene( const ScenePtr & _scene ) override;
-
-	public:
-		void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;
-		void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
-		void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) override;
-
-	public:
-		void update() override;
-		void clear() override;
+    public:
+        void setArrow( const ArrowPtr & _arrow ) override;
+        void setScene( const ScenePtr & _scene ) override;
 
     public:
-		bool pickTrap( const mt::vec2f& _point, VectorPickerTraps & _traps ) override;
-		
-	public:
-		PickerTrapState * regTrap( const MousePickerTrapInterfacePtr & _trap ) override;		
-		void unregTrap( PickerTrapState * _id ) override;
+        void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;
+        void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
+        void setRenderScissor( const RenderScissorInterfacePtr & _scissor ) override;
 
-		void updateTraps() override;
-		void invalidateTraps() override;
+    public:
+        void update() override;
+        void clear() override;
 
-	public:
-		bool handleKeyEvent( const InputKeyEvent & _event ) override;
-		bool handleTextEvent( const InputTextEvent & _event ) override;
+    public:
+        bool pickTrap( const mt::vec2f& _point, VectorPickerTraps & _traps ) override;
 
-	public:
-		bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
-		bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
-		bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;
-		bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
-		bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
-				
-	public:
-		void handleMouseEnter( const InputMousePositionEvent & _event ) override;
-		void handleMouseLeave( const InputMousePositionEvent & _event ) override;
+    public:
+        PickerTrapState * regTrap( const MousePickerTrapInterfacePtr & _trap ) override;
+        void unregTrap( PickerTrapState * _id ) override;
 
-	public:
-		uint32_t getPickerTrapCount() const override;
+        void updateTraps() override;
+        void invalidateTraps() override;
 
-	private:
-		bool proccesTraps_( float _x, float _y, VectorPickerTrapStates & _states );
-		void updateDead_();
+    public:
+        bool handleKeyEvent( const InputKeyEvent & _event ) override;
+        bool handleTextEvent( const InputTextEvent & _event ) override;
 
-	private:
-		uint32_t m_enumerator;
+    public:
+        bool handleMouseButtonEvent( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseButtonEventBegin( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseButtonEventEnd( const InputMouseButtonEvent & _event ) override;
+        bool handleMouseMove( const InputMouseMoveEvent & _event ) override;
+        bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
-		ArrowPtr m_arrow;
-		ScenePtr m_scene;
+    public:
+        void handleMouseEnter( const InputMousePositionEvent & _event ) override;
+        void handleMouseLeave( const InputMousePositionEvent & _event ) override;
 
-		RenderViewportInterfacePtr m_viewport;
-		RenderCameraInterfacePtr m_camera;
-		RenderScissorInterfacePtr m_scissor;
+    public:
+        uint32_t getPickerTrapCount() const override;
 
-		typedef List<PickerTrapState> ListPickerTrapState;
-		ListPickerTrapState m_pickerTrapState;
+    private:
+        bool proccesTraps_( float _x, float _y, VectorPickerTrapStates & _states );
+        void updateDead_();
 
-		VectorPickerTrapStates m_states;
+    private:
+        uint32_t m_enumerator;
 
-		uint32_t m_pickerTrapCount;
+        ArrowPtr m_arrow;
+        ScenePtr m_scene;
 
-		bool m_block;
-		bool m_handleValue;
+        RenderViewportInterfacePtr m_viewport;
+        RenderCameraInterfacePtr m_camera;
+        RenderScissorInterfacePtr m_scissor;
 
-		bool m_invalidateTraps;
-	};
+        typedef List<PickerTrapState> ListPickerTrapState;
+        ListPickerTrapState m_pickerTrapState;
+
+        VectorPickerTrapStates m_states;
+
+        uint32_t m_pickerTrapCount;
+
+        bool m_block;
+        bool m_handleValue;
+
+        bool m_invalidateTraps;
+    };
 }

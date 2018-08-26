@@ -9,43 +9,43 @@
 
 namespace Mengine
 {
-	class MemoryProxyInput
-		: public ServantBase<MemoryProxyInputInterface>
-	{
-	public:
-		MemoryProxyInput();
-		~MemoryProxyInput() override;
+    class MemoryProxyInput
+        : public ServantBase<MemoryProxyInputInterface>
+    {
+    public:
+        MemoryProxyInput();
+        ~MemoryProxyInput() override;
 
     public:
-		Pointer setBuffer( void * _memory, size_t _offset, size_t _size ) override;
-		
-	public:
-		Pointer getBuffer() const override;
-		size_t getSize() const override;
+        Pointer setBuffer( void * _memory, size_t _offset, size_t _size ) override;
 
-	public:
-		size_t read( void * _buf, size_t _count ) override;
-		bool seek( size_t _pos ) override;
-		bool skip( size_t _pos ) override;
-		size_t tell() const override;
+    public:
+        Pointer getBuffer() const override;
+        size_t getSize() const override;
+
+    public:
+        size_t read( void * _buf, size_t _count ) override;
+        bool seek( size_t _pos ) override;
+        bool skip( size_t _pos ) override;
+        size_t tell() const override;
         size_t size() const override;
-		bool eof() const override;
+        bool eof() const override;
 
     public:
-		bool time( uint64_t & _time ) const override;
+        bool time( uint64_t & _time ) const override;
 
-	public:
-		bool memory( void ** _memory, size_t * _size ) override;
+    public:
+        bool memory( void ** _memory, size_t * _size ) override;
 
-	protected:
+    protected:
         uint8_t * m_data;
-		size_t m_size;
+        size_t m_size;
 
-		uint8_t * m_pos;
-		uint8_t * m_end;		
+        uint8_t * m_pos;
+        uint8_t * m_end;
 
-		STDEX_THREAD_GUARD_INIT;
-	};
+        STDEX_THREAD_GUARD_INIT;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryProxyInput> MemoryProxyInputPtr;
     //////////////////////////////////////////////////////////////////////////

@@ -8,11 +8,11 @@
 #include "Kernel/Logger.h"
 
 namespace Mengine
-{     
-	template<class T>
-	class DataflowFactory
-		: public ServantBase<DataflowFactoryInterface>
-	{
+{
+    template<class T>
+    class DataflowFactory
+        : public ServantBase<DataflowFactoryInterface>
+    {
     protected:
         bool initialize() override
         {
@@ -21,29 +21,29 @@ namespace Mengine
             return true;
         }
 
-	protected:
-		DataflowInterfacePtr createDataflow() override
-		{	
-			DataflowInterfacePtr decoder = m_factory->createObject();
+    protected:
+        DataflowInterfacePtr createDataflow() override
+        {
+            DataflowInterfacePtr decoder = m_factory->createObject();
 
-			if( decoder->initialize() == false )
-			{
-				LOGGER_ERROR("DataflowFactory::createDataflow invalid initalize"
-					);
+            if( decoder->initialize() == false )
+            {
+                LOGGER_ERROR( "DataflowFactory::createDataflow invalid initalize"
+                );
 
-				return nullptr;
-			}
+                return nullptr;
+            }
 
-			return decoder;
-		}
+            return decoder;
+        }
 
-	protected:
-		void destroy() override
-		{
-			delete this;
-		}
+    protected:
+        void destroy() override
+        {
+            delete this;
+        }
 
-	protected:
-		FactoryPtr m_factory;
-	};
+    protected:
+        FactoryPtr m_factory;
+    };
 }

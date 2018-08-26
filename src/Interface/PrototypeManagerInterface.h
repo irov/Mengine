@@ -10,36 +10,36 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     class PrototypeGeneratorInterface
-		: public ServantInterface
+        : public ServantInterface
     {
-	public:
-		virtual bool initialize( const ConstString & _category, const ConstString & _prototype ) = 0;
+    public:
+        virtual bool initialize( const ConstString & _category, const ConstString & _prototype ) = 0;
 
     public:
         virtual PointerFactorable generate() = 0;
 
-	public:
+    public:
         virtual uint32_t count() const = 0;
     };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<PrototypeGeneratorInterface> PrototypeGeneratorInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<PrototypeGeneratorInterface> PrototypeGeneratorInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class VisitorPrototypeGenerator
     {
     public:
         virtual void visit( const ConstString & _category, const ConstString & _type, const PrototypeGeneratorInterfacePtr & _factory ) = 0;
     };
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     class PrototypeServiceInterface
-		: public ServiceInterface
+        : public ServiceInterface
     {
-        SERVICE_DECLARE("PrototypeService")
+        SERVICE_DECLARE( "PrototypeService" )
 
     public:
         virtual bool addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator ) = 0;
-        virtual bool removePrototype(const ConstString & _category, const ConstString & _prototype) = 0;
+        virtual bool removePrototype( const ConstString & _category, const ConstString & _prototype ) = 0;
         virtual bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const = 0;
 
     public:
@@ -52,5 +52,5 @@ namespace Mengine
 
 #   define PROTOTYPE_SERVICE()\
 	((PrototypeServiceInterface *)SERVICE_GET(Mengine::PrototypeServiceInterface))
-    
+
 

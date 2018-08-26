@@ -6,11 +6,11 @@
 
 namespace Mengine
 {
-	class ImageEncoder
-		: public Encoder<ImageEncoderInterface>
-	{
-	public:
-		ImageEncoder();
+    class ImageEncoder
+        : public Encoder<ImageEncoderInterface>
+    {
+    public:
+        ImageEncoder();
 
     public:
         bool setOptions( CodecOptions * _options ) override;
@@ -18,7 +18,7 @@ namespace Mengine
     protected:
         virtual bool _invalidateOptions();
 
-	protected:
-		ImageCodecOptions m_options;
-	};
+    protected:
+        ImageCodecOptions m_options;
+    };
 }

@@ -44,7 +44,7 @@ namespace Mengine
             stdex::intrusive_this_acquire( m_self );
         }
 
-        ~MethodObserverCallable()           
+        ~MethodObserverCallable()
         {
             stdex::intrusive_this_release( m_self );
         }

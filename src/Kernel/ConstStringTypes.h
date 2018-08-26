@@ -6,5 +6,5 @@
 
 namespace Mengine
 {
-	typedef Vector<ConstString> VectorConstString;
-} 
+    typedef Vector<ConstString> VectorConstString;
+}

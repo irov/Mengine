@@ -69,20 +69,20 @@ namespace Mengine
         0xB40BBE37, 0xC30C8EA1, 0x5A05DF1B, 0x2D02EF8D
     };
 
-	namespace Helper
-	{
-		uint32_t make_crc32( const void * _buffer, size_t _size )
-		{
-			uint32_t crc = 0xFFFFFFFF;
+    namespace Helper
+    {
+        uint32_t make_crc32( const void * _buffer, size_t _size )
+        {
+            uint32_t crc = 0xFFFFFFFF;
 
-			const uint8_t * byte_buffer = reinterpret_cast<const uint8_t *>(_buffer);
+            const uint8_t * byte_buffer = reinterpret_cast<const uint8_t *>(_buffer);
 
-			while( _size-- )
-			{
-				crc = (crc >> 8) ^ Crc32Table[(crc ^ *byte_buffer++) & 0xFF];
-			}
+            while( _size-- )
+            {
+                crc = (crc >> 8) ^ Crc32Table[(crc ^ *byte_buffer++) & 0xFF];
+            }
 
-			return crc ^ 0xFFFFFFFF;
-		}
-	}
+            return crc ^ 0xFFFFFFFF;
+        }
+    }
 }

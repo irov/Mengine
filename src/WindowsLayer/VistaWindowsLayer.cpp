@@ -112,10 +112,10 @@ namespace Mengine
         {
             DWORD err_code = GetLastError();
 
-            LOGGER_ERROR("VistaWindowsLayer::createFile invalid create file %ls err %d"
+            LOGGER_ERROR( "VistaWindowsLayer::createFile invalid create file %ls err %d"
                 , pathCorrect
                 , err_code
-                );
+            );
 
             return INVALID_HANDLE_VALUE;
         }
@@ -139,9 +139,9 @@ namespace Mengine
 
         if( hFind == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR("File invalid find ??? (%ls)\n"
+            LOGGER_ERROR( "File invalid find ??? (%ls)\n"
                 , _path
-                );
+            );
 
             return false;
         }
@@ -150,11 +150,11 @@ namespace Mengine
 
         if( wcscmp( filename, wfd.cFileName ) != 0 )
         {
-            LOGGER_ERROR("File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
+            LOGGER_ERROR( "File invalid name lowercase|upcase:\npath - '%ls'\nneed file name - '%ls'\ncurrent file name - '%ls'\n\n"
                 , _path
                 , filename
                 , wfd.cFileName
-                );
+            );
 
             ::FindClose( hFind );
 
@@ -332,7 +332,7 @@ namespace Mengine
     bool VistaWindowsLayer::concatenateFilePath( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _concatenatePath, size_t _capacity )
     {
         size_t relationSize = _relationPath.size();
-        size_t folderSize = _folderPath.size();        
+        size_t folderSize = _folderPath.size();
         size_t fileSize = _filePath.size();
 
         size_t filePathSize = relationSize + folderSize + fileSize;
@@ -370,10 +370,10 @@ namespace Mengine
 
         if( err != 0 )
         {
-            LOGGER_ERROR("VistaWindowsLayer::cmd: command:\n%ls\nerror: %d"
+            LOGGER_ERROR( "VistaWindowsLayer::cmd: command:\n%ls\nerror: %d"
                 , _command.c_str()
                 , errno
-                );
+            );
 
             return false;
         }
@@ -400,11 +400,11 @@ namespace Mengine
             if( PLATFORM_SERVICE()
                 ->createDirectory( szPath ) == false )
             {
-                LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createDirectory %s"
+                LOGGER_ERROR( "VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createDirectory %s"
                     , pathCorrect
                     , fileCorrect
                     , szPath
-                    );
+                );
 
                 return false;
             }
@@ -420,11 +420,11 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createFile %s"
+            LOGGER_ERROR( "VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid createFile %s"
                 , pathCorrect
                 , fileCorrect
                 , szPath
-                );
+            );
 
             return false;
         }
@@ -436,11 +436,11 @@ namespace Mengine
 
         if( result == FALSE )
         {
-            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid writeFile %s"
+            LOGGER_ERROR( "VistaWindowsLayer::createDirectoryUserPicture: %ls:%ls invalid writeFile %s"
                 , pathCorrect
                 , fileCorrect
                 , szPath
-                );
+            );
 
             return false;
         }
@@ -458,21 +458,21 @@ namespace Mengine
             , 0
             , szPath ) ) )
         {
-            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+            LOGGER_ERROR( "VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
                 , _path.c_str()
                 , _file.c_str()
-                );
+            );
 
             return false;
         }
 
         if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
         {
-            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
+            LOGGER_ERROR( "VistaWindowsLayer::createDirectoryUserPicture: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
                 , _path.c_str()
                 , _file.c_str()
                 , szPath
-                );
+            );
 
             return false;
         }
@@ -490,21 +490,21 @@ namespace Mengine
             , 0
             , szPath ) ) )
         {
-            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
+            LOGGER_ERROR( "VistaWindowsLayer::createDirectoryUserMusic: %ls:%ls invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
                 , _path.c_str()
                 , _file.c_str()
-                );
+            );
 
             return false;
         }
 
         if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
         {
-            LOGGER_ERROR("VistaWindowsLayer::createDirectoryUserMusic: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
+            LOGGER_ERROR( "VistaWindowsLayer::createDirectoryUserMusic: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
                 , _path.c_str()
                 , _file.c_str()
                 , szPath
-                );
+            );
 
             return false;
         }

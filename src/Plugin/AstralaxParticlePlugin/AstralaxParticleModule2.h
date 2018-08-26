@@ -4,18 +4,18 @@
 
 namespace Mengine
 {
-	class AstralaxParticleModule2
-		: public ModuleBase
-	{
-	public:
-		AstralaxParticleModule2();
+    class AstralaxParticleModule2
+        : public ModuleBase
+    {
+    public:
+        AstralaxParticleModule2();
         ~AstralaxParticleModule2() override;
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
 
-	protected:
-		void _destroy() override;
-	};
+    protected:
+        void _destroy() override;
+    };
 }

@@ -36,7 +36,7 @@ namespace Mengine
 
     public:
         const ozz::Range<ozz::math::SoaTransform> & getLocals() const;
-        
+
     public:
         void _update( const UpdateContext * _context ) override;
 

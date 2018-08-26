@@ -11,12 +11,12 @@ namespace Mengine
     public:
         ShapeQuadFlex();
         ~ShapeQuadFlex() override;
-		
+
     public:
-		void setCustomSize( const mt::vec2f & _customSize );
-		void removeCustomSize();
-		bool hasCustomSize() const;
-		const mt::vec2f & getCustomSize() const;
+        void setCustomSize( const mt::vec2f & _customSize );
+        void removeCustomSize();
+        bool hasCustomSize() const;
+        const mt::vec2f & getCustomSize() const;
 
         void setCenterAlign( bool _centerAlign );
         bool getCenterAlign() const;
@@ -39,20 +39,20 @@ namespace Mengine
     protected:
         void updateVerticesLocal() const override;
 
-	protected:
-		mt::vec2f m_customSize;
+    protected:
+        mt::vec2f m_customSize;
 
         mt::vec4f m_percentVisibility;
-       
+
         mt::vec2f m_textureUVOffset;
         mt::vec2f m_textureUVScale;
 
-		bool m_centerAlign;
+        bool m_centerAlign;
 
-		bool m_flipX;
-		bool m_flipY;
+        bool m_flipX;
+        bool m_flipY;
 
-		bool m_solid;
+        bool m_solid;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ShapeQuadFlex> ShapeQuadFlexPtr;

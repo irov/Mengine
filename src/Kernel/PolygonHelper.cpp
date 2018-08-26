@@ -189,7 +189,7 @@ namespace Mengine
             }
 
             const BoostPolygon::inner_container_type & inners = _bp.inners();
-            
+
             VectorPolygon inners_polygon;
             for( const BoostPolygon::ring_type & ring_inner : inners )
             {

@@ -8,18 +8,18 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	class Updatable
+    class Updatable
         : public Mixin
-	{
+    {
     public:
         Updatable();
         ~Updatable() override;
 
-	public:
-		virtual void update( const UpdateContext * _context );
+    public:
+        virtual void update( const UpdateContext * _context );
 
-	protected:
-		virtual void _update( const UpdateContext * _context ) = 0;
+    protected:
+        virtual void _update( const UpdateContext * _context ) = 0;
 
     protected:
         void setUpdateRevision( uint32_t _revision );
@@ -27,7 +27,7 @@ namespace Mengine
 
     protected:
         uint32_t m_updateRevision;
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Updatable> UpdatablePtr;
     //////////////////////////////////////////////////////////////////////////

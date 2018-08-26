@@ -6,26 +6,26 @@
 
 namespace Mengine
 {
-	class ThreadMutexDummy
-		: public ServantBase<ThreadMutexInterface>
-	{
-	protected:
-		void lock() override 
-		{
-			//Empty
-		};
+    class ThreadMutexDummy
+        : public ServantBase<ThreadMutexInterface>
+    {
+    protected:
+        void lock() override
+        {
+            //Empty
+        };
 
-		void unlock() override 
-		{
-			//Empty
-		};
+        void unlock() override
+        {
+            //Empty
+        };
 
-	protected:
-		bool try_lock() override
-		{
-			//Empty
+    protected:
+        bool try_lock() override
+        {
+            //Empty
 
-			return true; 
-		};
-	};
+            return true;
+        };
+    };
 }

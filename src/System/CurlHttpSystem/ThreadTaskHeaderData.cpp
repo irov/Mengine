@@ -8,24 +8,24 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     ThreadTaskHeaderData::ThreadTaskHeaderData()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskHeaderData::initialize( const String & _url, const VectorString & _headers, const String & _data )
-	{
-		m_url = _url;
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadTaskHeaderData::initialize( const String & _url, const VectorString & _headers, const String & _data )
+    {
+        m_url = _url;
         m_headers = _headers;
         m_data = _data;
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskHeaderData::_onCURL( CURL * _curl )
-	{		
-		/* specify URL to get */
-		curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskHeaderData::_onCURL( CURL * _curl )
+    {
+        /* specify URL to get */
+        curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
 
         curl_easy_setopt( _curl, CURLOPT_POST, 1 );
 
@@ -47,7 +47,7 @@ namespace Mengine
         }
 
         curl_easy_setopt( _curl, CURLOPT_POSTFIELDS, m_data.c_str() );
-        
+
         this->setupWriteResponse( _curl );
 
         if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
@@ -66,10 +66,10 @@ namespace Mengine
 
             std::string header_str = ss.str();
 
-            LOGGER_STATISTIC("HTTP: header data url '%s' header:\n %s"
+            LOGGER_STATISTIC( "HTTP: header data url '%s' header:\n %s"
                 , m_url.c_str()
                 , header_str.c_str()
-                );
+            );
         }
-	}
+    }
 }

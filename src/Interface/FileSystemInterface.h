@@ -13,15 +13,15 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-    class FileServiceInterface 
+    //////////////////////////////////////////////////////////////////////////
+    class FileServiceInterface
         : public ServiceInterface
     {
         SERVICE_DECLARE( "FileService" )
 
-	public:
-		virtual void registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory ) = 0;
-		virtual void unregisterFileGroupFactory( const ConstString & _type ) = 0;
+    public:
+        virtual void registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory ) = 0;
+        virtual void unregisterFileGroupFactory( const ConstString & _type ) = 0;
 
     public:
         virtual bool mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup ) = 0;
@@ -33,10 +33,10 @@ namespace Mengine
 
         virtual const FileGroupInterfacePtr & getDefaultFileGroup() const = 0;
 
-	public:
-		virtual InputStreamInterfacePtr openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, bool _streamable ) = 0;
-		virtual OutputStreamInterfacePtr openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName ) = 0;
-	};
+    public:
+        virtual InputStreamInterfacePtr openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, bool _streamable ) = 0;
+        virtual OutputStreamInterfacePtr openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName ) = 0;
+    };
     //////////////////////////////////////////////////////////////////////////
 #   define FILE_SERVICE()\
     ((Mengine::FileServiceInterface *)SERVICE_GET(Mengine::FileServiceInterface))

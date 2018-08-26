@@ -90,7 +90,7 @@ namespace Mengine
 
         virtual void setResourceOzzMesh( const ResourcePtr & _resource ) = 0;
         virtual const ResourcePtr & getResourceOzzMesh() const = 0;
-        
+
     public:
         virtual void addOzzAnimationSampler( const ConstString & _name, const SamplerOzzAnimationInterfacePtr & _sampler ) = 0;
         virtual void removeOzzAnimationSampler( const ConstString & _name ) = 0;
@@ -98,7 +98,7 @@ namespace Mengine
         virtual const SamplerOzzAnimationInterfacePtr & findOzzAnimationSampler( const ConstString & _name ) const = 0;
 
         virtual uint32_t getOzzAnimationSamplerCount() const = 0;
-        virtual const SamplerOzzAnimationInterfacePtr & getOzzAnimationSampler( uint32_t _index ) const = 0;        
+        virtual const SamplerOzzAnimationInterfacePtr & getOzzAnimationSampler( uint32_t _index ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<UnknownNodeOzzAnimationInterface> UnknownNodeOzzAnimationInterfacePtr;

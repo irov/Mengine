@@ -12,29 +12,29 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class MoviePlugin
-		: public PluginBase
-	{
-		PLUGIN_DECLARE( "Movie" )
+    //////////////////////////////////////////////////////////////////////////
+    class MoviePlugin
+        : public PluginBase
+    {
+        PLUGIN_DECLARE( "Movie" )
 
-	public:
-		MoviePlugin();
+    public:
+        MoviePlugin();
         ~MoviePlugin() override;
 
-	protected:
-		bool _avaliable() override;
+    protected:
+        bool _avaliable() override;
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
 
     protected:
         PyObject * Movie2_setEventListener( pybind::kernel_interface * _kernel, Movie2 * _node, PyObject * _args, PyObject * _kwds );
 
-	protected:
-		const aeMovieInstance * m_instance;
+    protected:
+        const aeMovieInstance * m_instance;
 
-		String m_hashkey;
-	};
+        String m_hashkey;
+    };
 }

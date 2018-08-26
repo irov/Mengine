@@ -11,29 +11,29 @@
 
 namespace Mengine
 {
-	class BitmapFont
-		: public FontBase
-	{
-	public:
-		BitmapFont();
-		~BitmapFont() override;
+    class BitmapFont
+        : public FontBase
+    {
+    public:
+        BitmapFont();
+        ~BitmapFont() override;
 
     protected:
-		bool initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini ) override;
+        bool initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini ) override;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
     protected:
         uint32_t getLayoutCount() const override;
 
     public:
-		void setGlyph( const BitmapGlyphPtr & _glyph );
+        void setGlyph( const BitmapGlyphPtr & _glyph );
 
     protected:
-		bool hasGlyph( GlyphCode _code ) const override;
-		bool getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
+        bool hasGlyph( GlyphCode _code ) const override;
+        bool getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
 
     protected:
         float getFontAscent() const override;
@@ -46,19 +46,19 @@ namespace Mengine
 
     protected:
         bool _validateGlyphes( const U32String & _codes ) const override;
-		bool _prepareGlyph( GlyphCode _code ) override;
+        bool _prepareGlyph( GlyphCode _code ) override;
 
-	protected:
-		BitmapGlyphPtr m_glyph;
-		
+    protected:
+        BitmapGlyphPtr m_glyph;
+
         FileGroupInterfacePtr m_category;
-		FilePath m_pathFontImage;
+        FilePath m_pathFontImage;
 
         float m_height;
 
-		RenderTextureInterfacePtr m_textureFont;
-		RenderTextureInterfacePtr m_textureOutline;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<BitmapFont> BitmapFontPtr;
+        RenderTextureInterfacePtr m_textureFont;
+        RenderTextureInterfacePtr m_textureOutline;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<BitmapFont> BitmapFontPtr;
 }

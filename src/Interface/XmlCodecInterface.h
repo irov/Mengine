@@ -6,26 +6,26 @@
 
 namespace Mengine
 {
-	struct XmlCodecDataInfo
-		: public CodecDataInfo
-	{
-	};
+    struct XmlCodecDataInfo
+        : public CodecDataInfo
+    {
+    };
 
-	struct XmlCodecOptions
-		: public CodecOptions
-	{
-		FilePath pathProtocol;
-		FilePath pathXml;
-		FilePath pathBin;
-		//int version;
-	};
+    struct XmlCodecOptions
+        : public CodecOptions
+    {
+        FilePath pathProtocol;
+        FilePath pathXml;
+        FilePath pathBin;
+        //int version;
+    };
 
-	class XmlDecoderInterface
-		: public DecoderInterface
-	{
-	public:
-		virtual const XmlCodecDataInfo * getCodecDataInfo() const override = 0;
-	};
-    
+    class XmlDecoderInterface
+        : public DecoderInterface
+    {
+    public:
+        virtual const XmlCodecDataInfo * getCodecDataInfo() const override = 0;
+    };
+
     typedef IntrusivePtr<XmlDecoderInterface> XmlDecoderInterfacePtr;
-}	
+}

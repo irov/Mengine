@@ -4,15 +4,15 @@
 
 namespace Mengine
 {
-	class Layer
-		: public Node
-	{
-		DECLARE_VISITABLE( Node )
+    class Layer
+        : public Node
+    {
+        DECLARE_VISITABLE( Node )
 
-	public:
-		Layer();
-		~Layer() override;
-	};
+    public:
+        Layer();
+        ~Layer() override;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Layer> LayerPtr;
     //////////////////////////////////////////////////////////////////////////

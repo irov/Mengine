@@ -10,17 +10,17 @@
 
 namespace Mengine
 {
-	class Watchdog
+    class Watchdog
         : public ServiceBase<WatchdogInterface>
-	{
-	public:
-		Watchdog();
+    {
+    public:
+        Watchdog();
 
-	public:
-		float watch( const String & _tag ) override;
+    public:
+        float watch( const String & _tag ) override;
 
-	protected:
-		typedef Map<String, float> MapWatchers;
-		MapWatchers m_watchers;
-	};
+    protected:
+        typedef Map<String, float> MapWatchers;
+        MapWatchers m_watchers;
+    };
 }

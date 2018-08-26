@@ -31,22 +31,22 @@ namespace Mengine
     typedef IntrusivePtr<SceneEventReceiver> SceneEventReceiverPtr;
     //////////////////////////////////////////////////////////////////////////
     class Scene
-		: public Entity
+        : public Entity
         , public BaseEventation
-	{
+    {
         DECLARE_EVENTABLE( SceneEventReceiver );
 
-	public:
-		Scene();
-		~Scene() override;
-			
-	public:
-		void onAppMouseLeave();
-		void onAppMouseEnter();
+    public:
+        Scene();
+        ~Scene() override;
 
     public:
-		void onFocus( bool _focus );
-	};
+        void onAppMouseLeave();
+        void onAppMouseEnter();
+
+    public:
+        void onFocus( bool _focus );
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Scene> ScenePtr;
     //////////////////////////////////////////////////////////////////////////

@@ -7,24 +7,24 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	class FactoryWithMutex
-		: public Factory
-	{
-	public:
-        FactoryWithMutex(const char * _name);
-		~FactoryWithMutex() override;
+    class FactoryWithMutex
+        : public Factory
+    {
+    public:
+        FactoryWithMutex( const char * _name );
+        ~FactoryWithMutex() override;
 
-	public:
-		void setMutex( const ThreadMutexInterfacePtr & _mutex );
-		
-	public:
+    public:
+        void setMutex( const ThreadMutexInterfacePtr & _mutex );
+
+    public:
         PointerFactorable createObject() override;
-		void destroyObject( Factorable * _object ) override;
+        void destroyObject( Factorable * _object ) override;
 
-	protected:		
-		ThreadMutexInterfacePtr m_mutex;
-	};
+    protected:
+        ThreadMutexInterfacePtr m_mutex;
+    };
     //////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<FactoryWithMutex> FactoryWithMutexPtr;
+    typedef IntrusivePtr<FactoryWithMutex> FactoryWithMutexPtr;
     //////////////////////////////////////////////////////////////////////////
 }

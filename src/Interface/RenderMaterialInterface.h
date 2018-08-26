@@ -8,7 +8,7 @@
 #include "Interface/RenderTextureInterface.h"
 
 namespace Mengine
-{    
+{
     //////////////////////////////////////////////////////////////////////////
     struct RenderTextureStage
     {

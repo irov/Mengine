@@ -14,12 +14,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         struct FFindHandler
         {
-			FFindHandler( uint32_t _id )
-                : m_id(_id)
+            FFindHandler( uint32_t _id )
+                : m_id( _id )
             {
             }
 
-			bool operator()( const GlobalHandlerDesc & _handle ) const
+            bool operator()( const GlobalHandlerDesc & _handle ) const
             {
                 return _handle.id == m_id;
             }
@@ -29,15 +29,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         struct FDeadHandler
         {
-			bool operator ()( const GlobalHandlerDesc & _handle ) const
+            bool operator ()( const GlobalHandlerDesc & _handle ) const
             {
-				return _handle.dead;
+                return _handle.dead;
             }
-        };	
+        };
     }
     //////////////////////////////////////////////////////////////////////////
     GlobalHandleSystem::GlobalHandleSystem()
-        : m_handlersEnumerator(0)
+        : m_handlersEnumerator( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -55,9 +55,9 @@ namespace Mengine
         m_handlers.clear();
         m_handlersAdd.clear();
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::handleKeyEvent( const InputKeyEvent & _event )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    bool GlobalHandleSystem::handleKeyEvent( const InputKeyEvent & _event )
+    {
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
             if( desc.dead == true )
@@ -65,231 +65,231 @@ namespace Mengine
                 continue;
             }
 
-			if( desc.enable == false )
-			{
-				continue;
-			}
+            if( desc.enable == false )
+            {
+                continue;
+            }
 
-			desc.handler->handleKeyEvent( _event );
+            desc.handler->handleKeyEvent( _event );
         }
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::handleTextEvent( const InputTextEvent & _event )
-	{
-		for( const GlobalHandlerDesc & desc : m_handlers )
-		{
-			if( desc.dead == true )
-			{
-				continue;
-			}
-
-			if( desc.enable == false )
-			{
-				continue;
-			}
-
-			desc.handler->handleTextEvent( _event );
-		}
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
-	{
-		for( const GlobalHandlerDesc & desc : m_handlers )
-		{
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GlobalHandleSystem::handleTextEvent( const InputTextEvent & _event )
+    {
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
             if( desc.dead == true )
             {
                 continue;
             }
 
-			if( desc.enable == false )
-			{
-				continue;
-			}
+            if( desc.enable == false )
+            {
+                continue;
+            }
 
-			desc.handler->handleMouseButtonEvent( _event );
+            desc.handler->handleTextEvent( _event );
         }
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
-	{
-		for( const GlobalHandlerDesc & desc : m_handlers )
-		{
-			if( desc.dead == true )
-			{
-				continue;
-			}
-
-			if( desc.enable == false )
-			{
-				continue;
-			}
-
-			desc.handler->handleMouseButtonEventBegin( _event );
-		}	
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
-	{
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GlobalHandleSystem::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
+    {
         for( const GlobalHandlerDesc & desc : m_handlers )
-		{
-			if( desc.dead == true )
-			{
-				continue;
-			}
-
-			if( desc.enable == false )
-			{
-				continue;
-			}
-
-			desc.handler->handleMouseButtonEventEnd( _event );
-        }
-
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::handleMouseMove( const InputMouseMoveEvent & _event )
-	{
-        for( const GlobalHandlerDesc & desc : m_handlers )
-		{
+        {
             if( desc.dead == true )
             {
                 continue;
             }
 
-			if( desc.enable == false )
-			{
-				continue;
-			}
+            if( desc.enable == false )
+            {
+                continue;
+            }
 
-			desc.handler->handleMouseMove( _event );
+            desc.handler->handleMouseButtonEvent( _event );
         }
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::handleMouseWheel( const InputMouseWheelEvent & _event )
-	{
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GlobalHandleSystem::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
+    {
         for( const GlobalHandlerDesc & desc : m_handlers )
-		{
-			if( desc.dead == true )
-			{
-				continue;
-			}
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
 
-			if( desc.enable == false )
-			{
-				continue;
-			}
+            if( desc.enable == false )
+            {
+                continue;
+            }
 
-			desc.handler->handleMouseWheel( _event );
-		}
+            desc.handler->handleMouseButtonEventBegin( _event );
+        }
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	uint32_t GlobalHandleSystem::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc )
-	{
-		GlobalHandlerDesc desc;
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GlobalHandleSystem::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
+    {
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            desc.handler->handleMouseButtonEventEnd( _event );
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GlobalHandleSystem::handleMouseMove( const InputMouseMoveEvent & _event )
+    {
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            desc.handler->handleMouseMove( _event );
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GlobalHandleSystem::handleMouseWheel( const InputMouseWheelEvent & _event )
+    {
+        for( const GlobalHandlerDesc & desc : m_handlers )
+        {
+            if( desc.dead == true )
+            {
+                continue;
+            }
+
+            if( desc.enable == false )
+            {
+                continue;
+            }
+
+            desc.handler->handleMouseWheel( _event );
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t GlobalHandleSystem::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc )
+    {
+        GlobalHandlerDesc desc;
 
         uint32_t new_id = ++m_handlersEnumerator;
         desc.id = new_id;
 
-		desc.handler = _handler;
+        desc.handler = _handler;
         desc.doc = _doc;
-		desc.enable = true;
-		desc.dead = false;
+        desc.enable = true;
+        desc.dead = false;
 
-		m_handlersAdd.emplace_back( desc );
+        m_handlersAdd.emplace_back( desc );
 
         return new_id;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	InputHandlerInterfacePtr GlobalHandleSystem::removeGlobalHandler( uint32_t _id )
-	{
-		VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), FFindHandler( _id ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    InputHandlerInterfacePtr GlobalHandleSystem::removeGlobalHandler( uint32_t _id )
+    {
+        VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), FFindHandler( _id ) );
 
-		if( it_found_add != m_handlersAdd.end() )
+        if( it_found_add != m_handlersAdd.end() )
         {
-			InputHandlerInterfacePtr handler = it_found_add->handler;
+            InputHandlerInterfacePtr handler = it_found_add->handler;
             it_found_add->handler = nullptr;
 
-			m_handlersAdd.erase( it_found_add );
+            m_handlersAdd.erase( it_found_add );
 
             return handler;
         }
 
-		VectorGlobalHandler::iterator it_found = std::find_if( m_handlers.begin(), m_handlers.end(), FFindHandler( _id ) );
+        VectorGlobalHandler::iterator it_found = std::find_if( m_handlers.begin(), m_handlers.end(), FFindHandler( _id ) );
 
-		if( it_found == m_handlers.end() )
+        if( it_found == m_handlers.end() )
         {
-            LOGGER_ERROR("GlobalHandleSystem::removeGlobalMouseEventable not found %d"
+            LOGGER_ERROR( "GlobalHandleSystem::removeGlobalMouseEventable not found %d"
                 , _id
-                );
+            );
 
             return nullptr;
         }
-        
+
         InputHandlerInterfacePtr handler = it_found->handler;
 
         it_found->dead = true;
         it_found->handler = nullptr;
 
         return handler;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool GlobalHandleSystem::enableGlobalHandler( uint32_t _id, bool _value )
-	{
-		VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), FFindHandler( _id ) );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GlobalHandleSystem::enableGlobalHandler( uint32_t _id, bool _value )
+    {
+        VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), FFindHandler( _id ) );
 
-		if( it_found_add != m_handlersAdd.end() )
-		{
-			it_found_add->enable = _value;
+        if( it_found_add != m_handlersAdd.end() )
+        {
+            it_found_add->enable = _value;
 
-			return true;
-		}
+            return true;
+        }
 
-		VectorGlobalHandler::iterator it_found = std::find_if( m_handlers.begin(), m_handlers.end(), FFindHandler( _id ) );
+        VectorGlobalHandler::iterator it_found = std::find_if( m_handlers.begin(), m_handlers.end(), FFindHandler( _id ) );
 
-		if( it_found == m_handlers.end() )
-		{
-			LOGGER_ERROR("GlobalHandleSystem::enableGlobalHandler not found %d"
-				, _id
-				);
+        if( it_found == m_handlers.end() )
+        {
+            LOGGER_ERROR( "GlobalHandleSystem::enableGlobalHandler not found %d"
+                , _id
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		it_found->enable = _value;
+        it_found->enable = _value;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void GlobalHandleSystem::update()
-	{
-		VectorGlobalHandler::iterator it_mouse_erase = std::remove_if( m_handlers.begin(), m_handlers.end(), FDeadHandler() );
-		m_handlers.erase( it_mouse_erase, m_handlers.end() );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GlobalHandleSystem::update()
+    {
+        VectorGlobalHandler::iterator it_mouse_erase = std::remove_if( m_handlers.begin(), m_handlers.end(), FDeadHandler() );
+        m_handlers.erase( it_mouse_erase, m_handlers.end() );
 
-		m_handlers.insert( m_handlers.begin(), m_handlersAdd.begin(), m_handlersAdd.end() );
-		m_handlersAdd.clear();
-	}
+        m_handlers.insert( m_handlers.begin(), m_handlersAdd.begin(), m_handlersAdd.end() );
+        m_handlersAdd.clear();
+    }
     //////////////////////////////////////////////////////////////////////////
     void GlobalHandleSystem::clear()
     {
         this->update();
-        
-		if( m_handlers.empty() == false )
+
+        if( m_handlers.empty() == false )
         {
-            LOGGER_ERROR("GlobalHandleSystem::clear global handlers is not empty:"
-                );
+            LOGGER_ERROR( "GlobalHandleSystem::clear global handlers is not empty:"
+            );
 
             for( const GlobalHandlerDesc & desc : m_handlers )
             {

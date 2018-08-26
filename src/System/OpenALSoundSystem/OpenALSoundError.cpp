@@ -6,24 +6,24 @@
 
 namespace Mengine
 {
-	bool s_OALErrorCheck( const char * _file, int _line )
-	{
-		ALenum error = alGetError();
+    bool s_OALErrorCheck( const char * _file, int _line )
+    {
+        ALenum error = alGetError();
 
-		if( error == AL_NO_ERROR )
-		{
-			return true;
-		}
+        if( error == AL_NO_ERROR )
+        {
+            return true;
+        }
 
-		const char * message = alGetString( error );
+        const char * message = alGetString( error );
 
-		LOGGER_ERROR("OAL Error: (%s %d) %d:%s"
-			, _file
-			, _line
+        LOGGER_ERROR( "OAL Error: (%s %d) %d:%s"
+            , _file
+            , _line
             , error
-			, message
-			);	
+            , message
+        );
 
         return false;
-	}
+    }
 }

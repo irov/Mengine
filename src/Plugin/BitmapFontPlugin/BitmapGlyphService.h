@@ -10,26 +10,26 @@
 
 namespace Mengine
 {
-	class BitmapGlyphService
-		: public ServantBase<BitmapGlyphServiceInterface>
-	{
-	public:
-		BitmapGlyphService();
-		~BitmapGlyphService() override;
+    class BitmapGlyphService
+        : public ServantBase<BitmapGlyphServiceInterface>
+    {
+    public:
+        BitmapGlyphService();
+        ~BitmapGlyphService() override;
 
-	public:
-		bool _initializeService() override;
-		void _finalizeService() override;
+    public:
+        bool _initializeService() override;
+        void _finalizeService() override;
 
-	public:
-		BitmapGlyphPtr getGlyph( const FileGroupInterfacePtr & _category, const FilePath & _path ) override;
+    public:
+        BitmapGlyphPtr getGlyph( const FileGroupInterfacePtr & _category, const FilePath & _path ) override;
 
-	protected:
-		FactoryPtr m_factoryTextGlyph;
+    protected:
+        FactoryPtr m_factoryTextGlyph;
 
-		typedef Map<ConstString, BitmapGlyphPtr> MapBitmapGlyph;
-		MapBitmapGlyph m_glyphs;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<BitmapGlyphService> BitmapGlyphServicePtr;
+        typedef Map<ConstString, BitmapGlyphPtr> MapBitmapGlyph;
+        MapBitmapGlyph m_glyphs;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<BitmapGlyphService> BitmapGlyphServicePtr;
 }

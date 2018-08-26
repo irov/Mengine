@@ -7,29 +7,29 @@
 
 namespace Mengine
 {
-	class Reference
+    class Reference
         : public Mixin
-	{
-	public:
-		Reference();
+    {
+    public:
+        Reference();
 
-	public:
-		bool incrementReference();
-		bool decrementReference();
+    public:
+        bool incrementReference();
+        bool decrementReference();
 
-		inline uint32_t countReference() const;
+        inline uint32_t countReference() const;
 
-	protected:
-		virtual bool _incrementZero();
-		virtual void _decrementZero();
+    protected:
+        virtual bool _incrementZero();
+        virtual void _decrementZero();
 
     protected:
         virtual void _debugIncrementReference();
         virtual void _debugDecrementReference();
 
-	protected:
-		uint32_t m_refcounter;
-	};
+    protected:
+        uint32_t m_refcounter;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Reference> ReferencePtr;
     //////////////////////////////////////////////////////////////////////////

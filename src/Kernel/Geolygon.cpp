@@ -45,7 +45,7 @@ namespace Mengine
     {
         m_outer = std::move( _geolygon.m_outer );
         m_inners = std::move( _geolygon.m_inners );
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     const Polygon & Geolygon::getOuter() const
     {

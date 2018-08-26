@@ -24,7 +24,7 @@ namespace Mengine
         : public ServiceInterface
     {
     public:
-        SERVICE_DECLARE("WindowsLayer")
+        SERVICE_DECLARE( "WindowsLayer" )
 
     public:
         virtual bool setProcessDPIAware() = 0;
@@ -46,19 +46,19 @@ namespace Mengine
             , HINSTANCE _hInstance, LPVOID _param ) = 0;
 
         virtual HWND createWindowEx( DWORD _exStyle, const WChar * _className
-            , const WChar * _windowName,	DWORD _style, int _x, int _y
+            , const WChar * _windowName, DWORD _style, int _x, int _y
             , int _width, int _height, HWND _parent, HMENU _hMenu
-            , HINSTANCE _hInstance,	LPVOID _param ) = 0;
+            , HINSTANCE _hInstance, LPVOID _param ) = 0;
 
         virtual void destroyWindow( HWND _hwnd ) = 0;
         virtual LPVOID getCreateParams( LPARAM _lParam ) = 0;
-        virtual LONG setWindowLong( HWND _hWnd,	int _index,	LONG _newLong ) = 0;
-        virtual LONG getWindowLong( HWND _hWnd,	int _index ) = 0;
+        virtual LONG setWindowLong( HWND _hWnd, int _index, LONG _newLong ) = 0;
+        virtual LONG getWindowLong( HWND _hWnd, int _index ) = 0;
         virtual LONG_PTR setWindowLongPtr( HWND _hWnd, int _index, LONG_PTR _newLong ) = 0;
         virtual LONG_PTR getWindowLongPtr( HWND _hWnd, int _index ) = 0;
         virtual LRESULT defWindowProc( HWND _hWnd, UINT _msg, WPARAM _wParam, LPARAM _lParam ) = 0;
-		
-		virtual void updateMessage( HWND _hWnd ) = 0;
+
+        virtual void updateMessage( HWND _hWnd ) = 0;
 
         virtual int messageBox( HWND _hWnd, const WChar * _text, const WChar * _caption, UINT _type ) = 0;
 
@@ -69,10 +69,10 @@ namespace Mengine
         virtual bool makeFormatMessage( HRESULT _hresult, WString & _out ) = 0;
         virtual bool concatenateFilePath( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _concatenatePath, size_t _capacity ) = 0;
 
-		virtual bool cmd( const WString & _command ) = 0;
+        virtual bool cmd( const WString & _command ) = 0;
 
-		virtual bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
-		virtual bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
+        virtual bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
+        virtual bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
     };
 
 #   define WINDOWSLAYER_SERVICE()\

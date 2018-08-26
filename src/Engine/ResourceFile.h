@@ -6,27 +6,27 @@
 
 namespace Mengine
 {
-	class ResourceFile
-		: public Resource
-	{
-		DECLARE_VISITABLE( Resource );
+    class ResourceFile
+        : public Resource
+    {
+        DECLARE_VISITABLE( Resource );
 
-	public:
-		ResourceFile();
-		~ResourceFile() override;
+    public:
+        ResourceFile();
+        ~ResourceFile() override;
 
-	public:
-		bool _loader( const Metabuf::Metadata * _parser ) override;
+    public:
+        bool _loader( const Metabuf::Metadata * _parser ) override;
 
-	public:
-		bool _isValid() const override;
-        
-	public:
-		const FilePath & getFilePath() const;
+    public:
+        bool _isValid() const override;
 
-	protected:
-		FilePath m_path;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ResourceFile> ResourceFilePtr;
+    public:
+        const FilePath & getFilePath() const;
+
+    protected:
+        FilePath m_path;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ResourceFile> ResourceFilePtr;
 }

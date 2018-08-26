@@ -8,47 +8,47 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ShapeQuadFlex::ShapeQuadFlex()
-		: m_customSize( -1.f, -1.f )
-		, m_percentVisibility( 0.f, 0.f, 1.f, 1.f )
-		, m_textureUVOffset( 0.f, 0.f )
-		, m_textureUVScale( 1.f, 1.f )
-		, m_centerAlign( false )
-		, m_flipX( false )
-		, m_flipY( false )
-		, m_solid( false )
+        : m_customSize( -1.f, -1.f )
+        , m_percentVisibility( 0.f, 0.f, 1.f, 1.f )
+        , m_textureUVOffset( 0.f, 0.f )
+        , m_textureUVScale( 1.f, 1.f )
+        , m_centerAlign( false )
+        , m_flipX( false )
+        , m_flipY( false )
+        , m_solid( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     ShapeQuadFlex::~ShapeQuadFlex()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ShapeQuadFlex::setCustomSize( const mt::vec2f & _customSize )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void ShapeQuadFlex::setCustomSize( const mt::vec2f & _customSize )
+    {
         if( m_customSize == _customSize )
         {
             return;
         }
 
-		m_customSize = _customSize;		
+        m_customSize = _customSize;
 
-		this->invalidateVerticesLocal();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ShapeQuadFlex::removeCustomSize()
-	{ 
+        this->invalidateVerticesLocal();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ShapeQuadFlex::removeCustomSize()
+    {
         this->setCustomSize( mt::vec2f( -1.f, -1.f ) );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ShapeQuadFlex::hasCustomSize() const
-	{
-		return m_customSize.x >= 0.f || m_customSize.y >= 0.f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const mt::vec2f & ShapeQuadFlex::getCustomSize() const
-	{
-		return m_customSize;
-	}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ShapeQuadFlex::hasCustomSize() const
+    {
+        return m_customSize.x >= 0.f || m_customSize.y >= 0.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & ShapeQuadFlex::getCustomSize() const
+    {
+        return m_customSize;
+    }
     //////////////////////////////////////////////////////////////////////////
     void ShapeQuadFlex::setCenterAlign( bool _centerAlign )
     {
@@ -78,11 +78,11 @@ namespace Mengine
 
         this->invalidateVerticesLocal();
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool ShapeQuadFlex::getFlipX() const
-	{
-		return m_flipX;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    bool ShapeQuadFlex::getFlipX() const
+    {
+        return m_flipX;
+    }
     //////////////////////////////////////////////////////////////////////////
     void ShapeQuadFlex::setFlipY( bool _flipY )
     {
@@ -95,11 +95,11 @@ namespace Mengine
 
         this->invalidateVerticesLocal();
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool ShapeQuadFlex::getFlipY() const
-	{
-		return m_flipY;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    bool ShapeQuadFlex::getFlipY() const
+    {
+        return m_flipY;
+    }
     ///////////////////////////////////////////////////////////////////////////
     void ShapeQuadFlex::setPercentVisibility( const mt::vec4f& _percent )
     {
@@ -154,9 +154,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ShapeQuadFlex::updateVerticesLocal() const
     {
-		mt::vec2f maxSize;
-		mt::vec2f size;
-		mt::vec2f offset;
+        mt::vec2f maxSize;
+        mt::vec2f size;
+        mt::vec2f offset;
 
         if( this->hasCustomSize() == false )
         {
@@ -165,40 +165,40 @@ namespace Mengine
             offset = m_surface->getOffset();
         }
         else
-		{
-			maxSize = m_customSize;
-			size = m_customSize;
-			offset = mt::vec2f(0.f, 0.f);
-		}
+        {
+            maxSize = m_customSize;
+            size = m_customSize;
+            offset = mt::vec2f( 0.f, 0.f );
+        }
 
-		mt::vec4f percent_size = m_percentVisibility * size;
-				
-		mt::vec2f visOffset(percent_size.x, percent_size.y);
+        mt::vec4f percent_size = m_percentVisibility * size;
+
+        mt::vec2f visOffset( percent_size.x, percent_size.y );
 
         if( m_centerAlign == true )
         {
-            mt::vec2f alignOffset = - size * 0.5f;
+            mt::vec2f alignOffset = -size * 0.5f;
 
             visOffset += alignOffset;
         }
-				
-		if( m_flipX == true )
-		{
-			visOffset.x += maxSize.x - (percent_size.z + offset.x);
-		}
-		else
-		{
-			visOffset.x += offset.x;
-		}
 
-		if( m_flipY == true )
-		{
-			visOffset.y += maxSize.y - (percent_size.w + offset.y);
-		}
-		else
-		{
-			visOffset.y += offset.y;
-		}
+        if( m_flipX == true )
+        {
+            visOffset.x += maxSize.x - (percent_size.z + offset.x);
+        }
+        else
+        {
+            visOffset.x += offset.x;
+        }
+
+        if( m_flipY == true )
+        {
+            visOffset.y += maxSize.y - (percent_size.w + offset.y);
+        }
+        else
+        {
+            visOffset.y += offset.y;
+        }
 
         m_verticesLocal[0].x = visOffset.x + 0.f;
         m_verticesLocal[0].y = visOffset.y + 0.f;
@@ -224,18 +224,18 @@ namespace Mengine
         {
             mt::uv4_swap_v( uv_percentVisibility );
         }
-                
+
         uint32_t uvCount = m_surface->getUVCount();
 
         for( uint32_t i = 0; i != uvCount; ++i )
-		{            
-			for( uint32_t v = 0; v != 4; ++v )
-			{
+        {
+            for( uint32_t v = 0; v != 4; ++v )
+            {
                 mt::vec2f uv_correct;
                 m_surface->correctUV( i, uv_correct, uv_percentVisibility[v] );
-                
-				m_verticesWM[v].uv[i] = uv_correct * m_textureUVScale + m_textureUVOffset;
-			}
-		}
+
+                m_verticesWM[v].uv[i] = uv_correct * m_textureUVScale + m_textureUVOffset;
+            }
+        }
     }
 }

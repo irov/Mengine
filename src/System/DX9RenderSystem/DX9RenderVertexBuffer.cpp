@@ -7,33 +7,33 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	DX9RenderVertexBuffer::DX9RenderVertexBuffer()
-		: m_pD3DDevice( nullptr )
+    //////////////////////////////////////////////////////////////////////////
+    DX9RenderVertexBuffer::DX9RenderVertexBuffer()
+        : m_pD3DDevice( nullptr )
         , m_vertexSize( 0 )
-		, m_vertexCount( 0 )
-		, m_usage( 0 )
-		, m_format( D3DFMT_UNKNOWN )
-		, m_pool( D3DPOOL_MANAGED )
-		, m_pVB( nullptr )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	DX9RenderVertexBuffer::~DX9RenderVertexBuffer()
-	{
-		if( m_pVB != nullptr )
-		{
-			ULONG ref = m_pVB->Release();
-			(void)ref;
-			m_pVB = nullptr;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderVertexBuffer::initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _vertexSize, EBufferType _bufferType )
-	{
-		m_pD3DDevice = _pD3DDevice;
+        , m_vertexCount( 0 )
+        , m_usage( 0 )
+        , m_format( D3DFMT_UNKNOWN )
+        , m_pool( D3DPOOL_MANAGED )
+        , m_pVB( nullptr )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    DX9RenderVertexBuffer::~DX9RenderVertexBuffer()
+    {
+        if( m_pVB != nullptr )
+        {
+            ULONG ref = m_pVB->Release();
+            (void)ref;
+            m_pVB = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderVertexBuffer::initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _vertexSize, EBufferType _bufferType )
+    {
+        m_pD3DDevice = _pD3DDevice;
         m_vertexSize = _vertexSize;
-        		
+
         m_bufferType = _bufferType;
 
         switch( m_bufferType )
@@ -52,9 +52,9 @@ namespace Mengine
                 m_usage = D3DUSAGE_WRITEONLY | D3DUSAGE_DYNAMIC;
             }break;
         };
-        
-		return true;
-	}
+
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderVertexBuffer::getVertexCount() const
     {
@@ -92,19 +92,19 @@ namespace Mengine
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     MemoryInterfacePtr DX9RenderVertexBuffer::lock( uint32_t _offset, uint32_t _count )
-	{
-		if( _offset + _count > m_vertexCount )
-		{
-			LOGGER_ERROR("DX9RenderVertexBuffer::lock %d offset %d more max size %d"
-				, _count
-				, _offset
-				, m_vertexCount
-				);
+    {
+        if( _offset + _count > m_vertexCount )
+        {
+            LOGGER_ERROR( "DX9RenderVertexBuffer::lock %d offset %d more max size %d"
+                , _count
+                , _offset
+                , m_vertexCount
+            );
 
-			return nullptr;
-		}
+            return nullptr;
+        }
 
         DWORD d3d_flag;
         switch( m_bufferType )
@@ -119,37 +119,37 @@ namespace Mengine
             return nullptr;
         };
 
-		void * lock_memory = nullptr;
-		IF_DXCALL( m_pVB, Lock, (_offset * m_vertexSize, _count * m_vertexSize, &lock_memory, d3d_flag) )
-		{
-			LOGGER_ERROR("DX9RenderVertexBuffer::lock %d offset %d invalid lock"
-				, _count
-				, _offset
-				);
+        void * lock_memory = nullptr;
+        IF_DXCALL( m_pVB, Lock, (_offset * m_vertexSize, _count * m_vertexSize, &lock_memory, d3d_flag) )
+        {
+            LOGGER_ERROR( "DX9RenderVertexBuffer::lock %d offset %d invalid lock"
+                , _count
+                , _offset
+            );
 
-			return nullptr;
-		}
+            return nullptr;
+        }
 
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxy();
 
         memory->setBuffer( lock_memory, _count * m_vertexSize, __FILE__, __LINE__ );
 
-		return memory;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderVertexBuffer::unlock()
-	{
-		IF_DXCALL( m_pVB, Unlock, () )
-		{
-			LOGGER_ERROR("DX9RenderIndexBuffer::unlock invalid"
-				);
+        return memory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderVertexBuffer::unlock()
+    {
+        IF_DXCALL( m_pVB, Unlock, () )
+        {
+            LOGGER_ERROR( "DX9RenderIndexBuffer::unlock invalid"
+            );
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexBuffer::draw( const void * _buffer, size_t _size )
     {
@@ -158,16 +158,16 @@ namespace Mengine
 
         //ToDo
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool DX9RenderVertexBuffer::enable()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderVertexBuffer::enable()
+    {
         IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, m_pVB, 0, sizeof( RenderVertex2D )) )
         {
             return false;
         }
 
         return true;
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderVertexBuffer::disable()
     {

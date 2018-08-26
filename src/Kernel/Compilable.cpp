@@ -2,90 +2,90 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Compilable::Compilable()		
-		: m_compile(false)
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    Compilable::Compilable()
+        : m_compile( false )
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     Compilable::~Compilable()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Compilable::compile()
-	{
-		if( m_compile == true )
-		{
-			return true;
-		}
+    //////////////////////////////////////////////////////////////////////////
+    bool Compilable::compile()
+    {
+        if( m_compile == true )
+        {
+            return true;
+        }
 
-		m_compile = true;
+        m_compile = true;
 
-		if( this->_compile() == false )
-		{
-			//Force release
-			//release();
-			m_compile = false;
+        if( this->_compile() == false )
+        {
+            //Force release
+            //release();
+            m_compile = false;
 
-			return false;
-		}
+            return false;
+        }
 
-		return m_compile;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Compilable::release()
-	{
-		if( m_compile == false )
-		{
-			return;
-		}
-		
-		m_compile = false;
+        return m_compile;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Compilable::release()
+    {
+        if( m_compile == false )
+        {
+            return;
+        }
 
-		this->_release();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Compilable::_compile()
-	{
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Compilable::_release()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Compilable::recompile( const Lambda<> & _lambda )
-	{
-		if( this->isCompile() == false )
-		{
+        m_compile = false;
+
+        this->_release();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Compilable::_compile()
+    {
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Compilable::_release()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Compilable::recompile( const Lambda<> & _lambda )
+    {
+        if( this->isCompile() == false )
+        {
             (_lambda)();
 
-			return true;
-		}
+            return true;
+        }
 
-		this->_release();
+        this->_release();
 
         (_lambda)();
 
-		if( this->_compile() == false )
-		{		
-			m_compile = false;
+        if( this->_compile() == false )
+        {
+            m_compile = false;
 
             this->_uncompile();
 
-			return false;
-		}
+            return false;
+        }
 
-		this->_recompile();
+        this->_recompile();
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Compilable::_recompile()
-	{
-		//Empty
-	}
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Compilable::_recompile()
+    {
+        //Empty
+    }
     //////////////////////////////////////////////////////////////////////////
     void Compilable::_uncompile()
     {

@@ -27,26 +27,26 @@ namespace Mengine
 {
 #	define MENGINE_TTF_FONT_GLYPH_HASH_SIZE 37
 
-	class TTFFont
-		: public FontBase
-	{
-	public:
-		TTFFont();
-		~TTFFont() override;
+    class TTFFont
+        : public FontBase
+    {
+    public:
+        TTFFont();
+        ~TTFFont() override;
 
-	public:
-		void setFTLibrary( FT_Library _library );
+    public:
+        void setFTLibrary( FT_Library _library );
 
-	public:
-		bool initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini ) override;
+    public:
+        bool initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini ) override;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
-	public:
-		bool hasGlyph( GlyphCode _code ) const override;
-		bool getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
+    public:
+        bool hasGlyph( GlyphCode _code ) const override;
+        bool getGlyph( uint32_t _layout, GlyphCode _code, GlyphCode _next, Glyph * _glyph ) const override;
 
     protected:
         uint32_t getLayoutCount() const override;
@@ -60,19 +60,19 @@ namespace Mengine
     protected:
         bool getFontPremultiply() const override;
 
-	protected:
+    protected:
         bool _validateGlyphes( const U32String & _codes ) const override;
-		bool _prepareGlyph( GlyphCode _code ) override;
+        bool _prepareGlyph( GlyphCode _code ) override;
 
-	protected:
-		MemoryInterfacePtr m_memory;
+    protected:
+        MemoryInterfacePtr m_memory;
 
-		FT_Library m_ftlibrary;
-		FT_Face m_face;
+        FT_Library m_ftlibrary;
+        FT_Face m_face;
 
         FileGroupInterfacePtr m_category;
-		FilePath m_ttfPath;
-        
+        FilePath m_ttfPath;
+
         float m_ttfAscender;
         float m_ttfDescender;
         uint32_t m_ttfHeight;
@@ -94,7 +94,7 @@ namespace Mengine
             mt::uv4f uv;
             RenderTextureInterfacePtr texture;
         };
-        
+
         struct TTFGlyph
         {
             uint32_t ch;
@@ -103,14 +103,14 @@ namespace Mengine
 
             TTFGlyphQuad quads[4];
         };
-		
-		typedef Vector<TTFGlyph> VectorTTFGlyphs;
-		VectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
+
+        typedef Vector<TTFGlyph> VectorTTFGlyphs;
+        VectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
 
         uint32_t m_ttfFESample;
 
         class PFindGlyph;
-	};
+    };
 
-	typedef IntrusivePtr<TTFFont> TTFFontPtr;
+    typedef IntrusivePtr<TTFFont> TTFFontPtr;
 }

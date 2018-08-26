@@ -2,7 +2,7 @@
 
 #include "Kernel/ImageDecoder.h"
 
-extern "C" 
+extern "C"
 {
 #	define XMD_H
 #	undef FAR
@@ -17,28 +17,28 @@ extern "C"
 
 namespace Mengine
 {
-	class ImageDecoderJPEG
-		: public ImageDecoder
-	{
-	public:
-		ImageDecoderJPEG();
-		~ImageDecoderJPEG() override;
+    class ImageDecoderJPEG
+        : public ImageDecoder
+    {
+    public:
+        ImageDecoderJPEG();
+        ~ImageDecoderJPEG() override;
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
 
-	protected:
-		bool _prepareData() override;
+    protected:
+        bool _prepareData() override;
 
-	protected:
-		size_t _decode( void * _buffer, size_t _bufferSize ) override;
+    protected:
+        size_t _decode( void * _buffer, size_t _bufferSize ) override;
 
-	protected:
-		bool _rewind() override;
+    protected:
+        bool _rewind() override;
 
-	private:
-		jpeg_decompress_struct m_jpegObject;
-		jpeg_error_mgr m_errorMgr;
-	};
-}	
+    private:
+        jpeg_decompress_struct m_jpegObject;
+        jpeg_error_mgr m_errorMgr;
+    };
+}

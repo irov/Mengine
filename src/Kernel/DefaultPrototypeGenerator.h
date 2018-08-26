@@ -10,10 +10,10 @@
 
 namespace Mengine
 {
-	template<class Type, uint32_t Count>
-	class DefaultPrototypeGenerator
-		: public BasePrototypeGenerator
-	{
+    template<class Type, uint32_t Count>
+    class DefaultPrototypeGenerator
+        : public BasePrototypeGenerator
+    {
     protected:
         typedef IntrusivePtr<Type> TypePtr;
 
@@ -25,24 +25,24 @@ namespace Mengine
             return factory;
         }
 
-	protected:
-		PointerFactorable generate() override
-		{
+    protected:
+        PointerFactorable generate() override
+        {
             const FactoryPtr & factory = this->getFactory();
 
             TypePtr object = factory->createObject();
 
-			if( object == nullptr )
-			{
-				LOGGER_ERROR("DefaultPrototypeGenerator::generate can't generate %s %s"
-					, this->getCategory().c_str()
-					, this->getPrototype().c_str()
-					);
+            if( object == nullptr )
+            {
+                LOGGER_ERROR( "DefaultPrototypeGenerator::generate can't generate %s %s"
+                    , this->getCategory().c_str()
+                    , this->getPrototype().c_str()
+                );
 
-				return nullptr;
-			}
+                return nullptr;
+            }
 
-			return object;
-		}
-	};
+            return object;
+        }
+    };
 }

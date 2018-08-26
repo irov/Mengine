@@ -6,37 +6,37 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class ResourceMusic
-		: public Resource
-	{
-		DECLARE_VISITABLE( Resource );
+    //////////////////////////////////////////////////////////////////////////
+    class ResourceMusic
+        : public Resource
+    {
+        DECLARE_VISITABLE( Resource );
 
-	public:
-		ResourceMusic();
+    public:
+        ResourceMusic();
 
-	public:
-		const FilePath & getPath() const;
-		const ConstString & getCodec() const;
+    public:
+        const FilePath & getPath() const;
+        const ConstString & getCodec() const;
 
-		float getVolume() const;
-		bool isExternal() const;
+        float getVolume() const;
+        bool isExternal() const;
 
-	protected:
-		bool _loader( const Metabuf::Metadata * _parser ) override;
-		bool _convert() override;
+    protected:
+        bool _loader( const Metabuf::Metadata * _parser ) override;
+        bool _convert() override;
 
-	protected:
-		bool _isValid() const override;
+    protected:
+        bool _isValid() const override;
 
-	private:
-		FilePath m_path;
-		ConstString m_codec;
-		ConstString m_converter;
+    private:
+        FilePath m_path;
+        ConstString m_codec;
+        ConstString m_converter;
 
-		float m_volume;
-		bool m_external;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ResourceMusic> ResourceMusicPtr;
+        float m_volume;
+        bool m_external;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ResourceMusic> ResourceMusicPtr;
 }

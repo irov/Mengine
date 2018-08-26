@@ -9,34 +9,34 @@
 
 namespace Mengine
 {
-	class DX9RenderVertexShader
-		: public ServantBase<RenderVertexShaderInterface>
-	{
-	public:
-		DX9RenderVertexShader();
-		~DX9RenderVertexShader() override;
+    class DX9RenderVertexShader
+        : public ServantBase<RenderVertexShaderInterface>
+    {
+    public:
+        DX9RenderVertexShader();
+        ~DX9RenderVertexShader() override;
 
-	public:
-		const ConstString & getName() const override;
+    public:
+        const ConstString & getName() const override;
 
-	public:
-		bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile );
+    public:
+        bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile );
 
-	public:
-		bool compile( IDirect3DDevice9 * _pD3DDevice );
+    public:
+        bool compile( IDirect3DDevice9 * _pD3DDevice );
 
-	public:
-		bool enable( IDirect3DDevice9 * _pD3DDevice );
+    public:
+        bool enable( IDirect3DDevice9 * _pD3DDevice );
 
-	protected:
+    protected:
         IDirect3DVertexShader9 * m_shader;
 
-		ConstString m_name;
+        ConstString m_name;
 
-		MemoryInterfacePtr m_memory;
+        MemoryInterfacePtr m_memory;
 
-        bool m_compile;		
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<DX9RenderVertexShader> DX9RenderVertexShaderPtr;
+        bool m_compile;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<DX9RenderVertexShader> DX9RenderVertexShaderPtr;
 }

@@ -8,26 +8,26 @@
 #include "WIN32/WindowsIncluder.h"
 
 namespace Mengine
-{	
-	// already running policy
-	enum EAlreadyRunningPolicy
-	{
-		EARP_NONE,
-		EARP_SETFOCUS,
-		EARP_SHOWMESSAGE
-	};
+{
+    // already running policy
+    enum EAlreadyRunningPolicy
+    {
+        EARP_NONE,
+        EARP_SETFOCUS,
+        EARP_SHOWMESSAGE
+    };
 
-	class Win32AlreadyRunningMonitor
-	{
-	public:
-		Win32AlreadyRunningMonitor();
-		~Win32AlreadyRunningMonitor();
+    class Win32AlreadyRunningMonitor
+    {
+    public:
+        Win32AlreadyRunningMonitor();
+        ~Win32AlreadyRunningMonitor();
 
-	public:
-		bool run( int _policy, const WChar * _windowClassName, const WString & _title );
-		void stop();
+    public:
+        bool run( int _policy, const WChar * _windowClassName, const WString & _title );
+        void stop();
 
-	protected:
-		HANDLE m_mutex;		
-	};
+    protected:
+        HANDLE m_mutex;
+    };
 }

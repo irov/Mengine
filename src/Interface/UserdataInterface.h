@@ -11,23 +11,23 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	DECLARE_MAGIC_NUMBER( MAGIC_USER_DATA, 'G', 'M', 'D', '1', 1 );
-	//////////////////////////////////////////////////////////////////////////
-	class UserdataServiceInterface
-		: public ServiceInterface
-	{
-		SERVICE_DECLARE( "UserdataService" );
+    //////////////////////////////////////////////////////////////////////////
+    DECLARE_MAGIC_NUMBER( MAGIC_USER_DATA, 'G', 'M', 'D', '1', 1 );
+    //////////////////////////////////////////////////////////////////////////
+    class UserdataServiceInterface
+        : public ServiceInterface
+    {
+        SERVICE_DECLARE( "UserdataService" );
 
-	public:
-		virtual bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & path ) = 0;
-		virtual bool removeUserdata( const ConstString & _name ) = 0;
-		virtual bool hasUserdata( const ConstString & _name ) const = 0;
+    public:
+        virtual bool addUserdata( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & path ) = 0;
+        virtual bool removeUserdata( const ConstString & _name ) = 0;
+        virtual bool hasUserdata( const ConstString & _name ) const = 0;
 
-	public:
-		virtual MemoryInterfacePtr loadUserdata( const ConstString & _name ) const = 0;
-		virtual bool writeUserdata( const ConstString & _name, const void * _data, size_t _size ) const = 0;
-	};
+    public:
+        virtual MemoryInterfacePtr loadUserdata( const ConstString & _name ) const = 0;
+        virtual bool writeUserdata( const ConstString & _name, const void * _data, size_t _size ) const = 0;
+    };
 
 #   define USERDATA_SERVICE()\
     ((Mengine::UserdataServiceInterface*)SERVICE_GET(Mengine::UserdataServiceInterface))

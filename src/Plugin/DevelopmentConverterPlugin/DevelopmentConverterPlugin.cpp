@@ -23,13 +23,13 @@ PLUGIN_FACTORY( DevelopmentConverter, Mengine::DevelopmentConverterPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	DevelopmentConverterPlugin::DevelopmentConverterPlugin()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool DevelopmentConverterPlugin::_initialize()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    DevelopmentConverterPlugin::DevelopmentConverterPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DevelopmentConverterPlugin::_initialize()
+    {
         Helper::registerConverter<HotspotImageConverterPNGToHIT>( "png2hit" );
         Helper::registerConverter<SoundConverterFFMPEGToOGG>( "ffmpegToOggSound" );
         Helper::registerConverter<VideoConverterFFMPEGToWEBM>( "ffmpegToWebM" );
@@ -43,10 +43,10 @@ namespace Mengine
         Helper::registerConverter<ImageConverterPNGToACF>( "png2acf" );
 
         return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void DevelopmentConverterPlugin::_finalize()
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DevelopmentConverterPlugin::_finalize()
+    {
         Helper::unregisterConverter( "png2hit" );
         Helper::unregisterConverter( "ffmpegToOggSound" );
         Helper::unregisterConverter( "ffmpegToWebM" );
@@ -58,5 +58,5 @@ namespace Mengine
         Helper::unregisterConverter( "pvr2htf" );
         Helper::unregisterConverter( "dds2htf" );
         Helper::unregisterConverter( "png2acf" );
-	}
+    }
 }

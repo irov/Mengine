@@ -13,14 +13,14 @@ namespace Mengine
     public:
         Shape();
         ~Shape() override;
-		
+
     public:
         void setSurface( const SurfacePtr & _surface );
         const SurfacePtr & getSurface() const;
 
-	protected:
-		bool _compile() override;
-		void _release() override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
     protected:
         void _update( const UpdateContext * _context ) override;
@@ -30,16 +30,16 @@ namespace Mengine
         void _invalidateWorldMatrix() override;
 
     protected:
-        void invalidateVerticesLocal();        
+        void invalidateVerticesLocal();
         void invalidateVerticesWM();
         void invalidateVerticesColor();
 
-	protected:
+    protected:
         SurfacePtr m_surface;
 
-		mutable bool m_invalidateVerticesLocal;
-		mutable bool m_invalidateVerticesWM;
-		mutable bool m_invalidateVerticesColor;
+        mutable bool m_invalidateVerticesLocal;
+        mutable bool m_invalidateVerticesWM;
+        mutable bool m_invalidateVerticesColor;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Shape> ShapePtr;

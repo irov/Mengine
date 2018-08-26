@@ -12,7 +12,7 @@ namespace Mengine
     public:
         ShapeQuad();
         ~ShapeQuad() override;
-		
+
     protected:
         virtual void updateVerticesLocal() const = 0;
 
@@ -29,7 +29,7 @@ namespace Mengine
     protected:
         inline const RenderVertex2D * getVerticesWM() const;
 
-	protected:
+    protected:
         mutable mt::vec2f m_verticesLocal[4];
         mutable RenderVertex2D m_verticesWM[4];
     };

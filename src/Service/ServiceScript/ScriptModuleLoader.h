@@ -11,38 +11,38 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     class ScriptModuleLoader
-		: public Servant
+        : public Servant
     {
-	public:
-		ScriptModuleLoader();
-		~ScriptModuleLoader() override;
-
-	public:
-		void setModule( PyObject * _module );
-		PyObject * getModule() const;
-
-	public:
-		bool initialize( const FileGroupInterfacePtr & _group, const FilePath & _path, const ArchivatorInterfacePtr & _archivator );
-
-	public:
-		void setPackagePath( bool _packagePath );
+    public:
+        ScriptModuleLoader();
+        ~ScriptModuleLoader() override;
 
     public:
-		virtual PyObject * load_module( PyObject * _module ) = 0;
+        void setModule( PyObject * _module );
+        PyObject * getModule() const;
 
-	protected:
-		PyObject * m_module;
-		
-		FileGroupInterfacePtr m_group;
-		FilePath m_path;
+    public:
+        bool initialize( const FileGroupInterfacePtr & _group, const FilePath & _path, const ArchivatorInterfacePtr & _archivator );
 
-		ArchivatorInterfacePtr m_archivator;
-		
-		bool m_packagePath;
+    public:
+        void setPackagePath( bool _packagePath );
+
+    public:
+        virtual PyObject * load_module( PyObject * _module ) = 0;
+
+    protected:
+        PyObject * m_module;
+
+        FileGroupInterfacePtr m_group;
+        FilePath m_path;
+
+        ArchivatorInterfacePtr m_archivator;
+
+        bool m_packagePath;
     };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ScriptModuleLoader> ScriptModuleLoaderPtr;
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ScriptModuleLoader> ScriptModuleLoaderPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

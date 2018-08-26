@@ -6,16 +6,16 @@
 
 namespace Mengine
 {
-	class XmlCodecPlugin
-		: public PluginBase
-	{
-		PLUGIN_DECLARE( "XmlCodec" )
+    class XmlCodecPlugin
+        : public PluginBase
+    {
+        PLUGIN_DECLARE( "XmlCodec" )
 
-	public:
-		XmlCodecPlugin();
+    public:
+        XmlCodecPlugin();
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
-	};
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
+    };
 }

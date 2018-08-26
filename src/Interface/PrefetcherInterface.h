@@ -27,32 +27,32 @@ namespace Mengine
     typedef IntrusivePtr<class SoundDecoderInterface> SoundDecoderInterfacePtr;
     typedef IntrusivePtr<class DataInterface> DataInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-	class PrefetcherServiceInterface
-		: public ServiceInterface
-	{
-        SERVICE_DECLARE("PrefetcherService")
+    class PrefetcherServiceInterface
+        : public ServiceInterface
+    {
+        SERVICE_DECLARE( "PrefetcherService" )
 
-	public:
-		virtual void update() = 0;
+    public:
+        virtual void update() = 0;
 
-	public:
-		virtual bool prefetchImageDecoder( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer ) = 0;
-		virtual bool getImageDecoder( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, ImageDecoderInterfacePtr & _decoder ) const = 0;
-		
-	public:
-		virtual bool prefetchSoundDecoder( const FileGroupInterfacePtr & _pakName, const FilePath & _fileName, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer ) = 0;
-		virtual bool getSoundDecoder( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, SoundDecoderInterfacePtr & _decoder ) const = 0;
-		
-	public:
-		virtual bool prefetchData( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, const ConstString & _dataflowType, const PrefetcherObserverInterfacePtr & _observer ) = 0;
-		virtual bool getData( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, DataInterfacePtr & _data ) const = 0;
+    public:
+        virtual bool prefetchImageDecoder( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer ) = 0;
+        virtual bool getImageDecoder( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, ImageDecoderInterfacePtr & _decoder ) const = 0;
 
-	public:
-		virtual void unfetch( const FileGroupInterfacePtr& _pakName, const FilePath& _fileName ) = 0;
+    public:
+        virtual bool prefetchSoundDecoder( const FileGroupInterfacePtr & _pakName, const FilePath & _fileName, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer ) = 0;
+        virtual bool getSoundDecoder( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, SoundDecoderInterfacePtr & _decoder ) const = 0;
 
-	public:
+    public:
+        virtual bool prefetchData( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, const ConstString & _dataflowType, const PrefetcherObserverInterfacePtr & _observer ) = 0;
+        virtual bool getData( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, DataInterfacePtr & _data ) const = 0;
+
+    public:
+        virtual void unfetch( const FileGroupInterfacePtr& _pakName, const FilePath& _fileName ) = 0;
+
+    public:
         virtual void visitPrefetches( Visitor * _visitor ) const = 0;
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
 #   define PREFETCHER_SERVICE()\
 	((Mengine::PrefetcherServiceInterface*)SERVICE_GET(Mengine::PrefetcherServiceInterface))

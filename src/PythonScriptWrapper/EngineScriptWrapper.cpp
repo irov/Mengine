@@ -181,7 +181,7 @@ namespace Mengine
             m_factoryPythonScheduleEvent = new FactoryPool<PythonScheduleEvent, 8>();
             m_factoryPythonSceneChangeCallback = new FactoryPool<PythonSceneChangeCallback, 8>();
             m_factoryAffectorGridBurnTransparency = new FactoryPool<AffectorGridBurnTransparency, 4>();
-            m_factoryAffectorUser = new FactoryPool<AffectorUser, 4>();            
+            m_factoryAffectorUser = new FactoryPool<AffectorUser, 4>();
             m_factoryPyGlobalMouseMoveHandlers = new FactoryPool<PyGlobalMouseMoveHandler, 32>();
             m_factoryPyGlobalMouseHandlerButtons = new FactoryPool<PyGlobalMouseHandlerButton, 32>();
             m_factoryPyGlobalMouseHandlerButtonEnds = new FactoryPool<PyGlobalMouseHandlerButtonEnd, 32>();
@@ -2751,7 +2751,7 @@ namespace Mengine
             AffectorNodeFollowerCreator()
             {
                 m_factory = new FactoryPool<TAffectorNodeFollowerMethod, 4>();
-            }            
+            }
 
         public:
             AffectorFollowerPtr create( const T_NodePtr & _node, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed )
@@ -3001,7 +3001,7 @@ namespace Mengine
 
             return touchpad;
         }
-        
+
         //////////////////////////////////////////////////////////////////////////
         const RenderCameraInterfacePtr & s_getRenderCamera2D()
         {
@@ -4107,7 +4107,7 @@ namespace Mengine
         pybind::def_functor( kernel, "testPlatformTags", nodeScriptMethod, &EngineScriptMethod::s_testPlatformTags );
         pybind::def_functor( kernel, "hasPlatformTag", nodeScriptMethod, &EngineScriptMethod::s_hasPlatformTag );
         pybind::def_functor( kernel, "hasTouchpad", nodeScriptMethod, &EngineScriptMethod::s_hasTouchpad );
-        pybind::def_functor_deprecated( kernel, "getTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimeFactor, "use getTimeFactor");
+        pybind::def_functor_deprecated( kernel, "getTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimeFactor, "use getTimeFactor" );
         pybind::def_functor_deprecated( kernel, "setTimingFactor", nodeScriptMethod, &EngineScriptMethod::s_setTimeFactor, "use setTimeFactor" );
         pybind::def_functor( kernel, "getTimeFactor", nodeScriptMethod, &EngineScriptMethod::s_getTimeFactor );
         pybind::def_functor( kernel, "setTimeFactor", nodeScriptMethod, &EngineScriptMethod::s_setTimeFactor );
@@ -4242,7 +4242,7 @@ namespace Mengine
             .def( "getRandomf", &RandomizerInterface::getRandomf )
             .def( "getRandomRangef", &RandomizerInterface::getRandomRangef )
             ;
-        
+
         PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), new DefaultPrototypeGenerator<MT19937Randomizer, 8>() );
     }

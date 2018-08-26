@@ -8,20 +8,20 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class BitmapFontPrototypeGenerator
-		: public ServantBase<PrototypeGeneratorInterface>
-	{
-	public:
-		bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
+    //////////////////////////////////////////////////////////////////////////
+    class BitmapFontPrototypeGenerator
+        : public ServantBase<PrototypeGeneratorInterface>
+    {
+    public:
+        bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
 
-	public:
-		PointerFactorable generate() override;
+    public:
+        PointerFactorable generate() override;
 
-	public:
-		uint32_t count() const override;
+    public:
+        uint32_t count() const override;
 
-	protected:
-		FactoryPtr m_factoryFont;
-	};
+    protected:
+        FactoryPtr m_factoryFont;
+    };
 }

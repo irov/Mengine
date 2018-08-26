@@ -4,19 +4,19 @@
 
 namespace Mengine
 {
-	class PluginAmplifier
-		: public PluginBase
-	{
-		PLUGIN_DECLARE( "Amplifier" )
+    class PluginAmplifier
+        : public PluginBase
+    {
+        PLUGIN_DECLARE( "Amplifier" )
 
-	public:
-		PluginAmplifier();
+    public:
+        PluginAmplifier();
 
-	protected:
-		bool _initialize() override;
-		void _finalize() override;
+    protected:
+        bool _initialize() override;
+        void _finalize() override;
 
-	protected:
-		void _destroy() override;
-	};
+    protected:
+        void _destroy() override;
+    };
 }

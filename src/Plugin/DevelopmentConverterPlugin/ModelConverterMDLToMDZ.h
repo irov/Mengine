@@ -6,23 +6,23 @@
 
 namespace Mengine
 {
-	class ModelConverterMDLToMDZ
-		: public DevelopmentConverter
-	{
-	public:
-		ModelConverterMDLToMDZ();
-		~ModelConverterMDLToMDZ() override;
-
-	public:
-		bool _initialize() override;
+    class ModelConverterMDLToMDZ
+        : public DevelopmentConverter
+    {
+    public:
+        ModelConverterMDLToMDZ();
+        ~ModelConverterMDLToMDZ() override;
 
     public:
-		bool convert() override;
-        	
-	private:
-		bool convert_( const FilePath & _input, const FilePath & _output );
+        bool _initialize() override;
 
-	protected:
-		ArchivatorInterfacePtr m_archivator;
+    public:
+        bool convert() override;
+
+    private:
+        bool convert_( const FilePath & _input, const FilePath & _output );
+
+    protected:
+        ArchivatorInterfacePtr m_archivator;
     };
-}	
+}

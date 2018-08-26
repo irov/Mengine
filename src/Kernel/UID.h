@@ -4,8 +4,8 @@
 
 namespace Mengine
 {
-	namespace Helper
-	{
-		String makeUID( size_t _length );
-	}
+    namespace Helper
+    {
+        String makeUID( size_t _length );
+    }
 }

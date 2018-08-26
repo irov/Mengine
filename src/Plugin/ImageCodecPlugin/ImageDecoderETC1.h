@@ -4,7 +4,7 @@
 
 namespace Mengine
 {
-    class ImageDecoderETC1 
+    class ImageDecoderETC1
         : public ImageDecoder
     {
         struct ETC1Header

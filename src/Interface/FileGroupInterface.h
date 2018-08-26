@@ -8,12 +8,12 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class FileGroupInterface> FileGroupInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class FileGroupInterface
         : public ServantInterface
-    {	
+    {
     public:
         virtual bool initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path ) = 0;
         virtual void finalize() = 0;
@@ -23,9 +23,9 @@ namespace Mengine
         virtual const FileGroupInterfacePtr & getCategory() const = 0;
 
     public:
-		virtual bool isPacked() const = 0;
+        virtual bool isPacked() const = 0;
 
-	public:
+    public:
         virtual const FilePath & getRelationPath() const = 0;
         virtual const FilePath & getFolderPath() const = 0;
 
@@ -45,8 +45,8 @@ namespace Mengine
         virtual bool openOutputFile( const FilePath & _fileName, const OutputStreamInterfacePtr & _stream ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<FileGroupInterface> FileGroupInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<FileGroupInterface> FileGroupInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 }
 
 

@@ -6,19 +6,19 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Meshget::Meshget()
-		: m_invalidateVerticesWM( true )
-		, m_invalidateVerticesColor( true )
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	Meshget::~Meshget()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Meshget::_compile()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    Meshget::Meshget()
+        : m_invalidateVerticesWM( true )
+        , m_invalidateVerticesColor( true )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Meshget::~Meshget()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Meshget::_compile()
+    {
         if( m_surface == nullptr )
         {
             LOGGER_ERROR( "Meshget::_compile '%s' can`t setup surface"
@@ -38,18 +38,18 @@ namespace Mengine
             return false;
         }
 
-		this->invalidateVerticesWM();
+        this->invalidateVerticesWM();
         this->invalidateVerticesColor();
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_release()
-	{
-		Node::_release();
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meshget::_release()
+    {
+        Node::_release();
 
         m_surface->release();
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void Meshget::setSurface( const SurfacePtr & _surface )
     {
@@ -65,165 +65,165 @@ namespace Mengine
     {
         return m_surface;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool Meshget::setVertices( const pybind::list & _positions, const pybind::list & _uv, const pybind::list & _colors, const pybind::list & _indices )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    bool Meshget::setVertices( const pybind::list & _positions, const pybind::list & _uv, const pybind::list & _colors, const pybind::list & _indices )
+    {
         uint32_t positions_count = _positions.size();
         uint32_t uvs_count = _uv.size();
-		uint32_t colors_count = _colors.size();
-		
-		if( positions_count != uvs_count || positions_count != colors_count )
-		{
-			return false;
-		}
+        uint32_t colors_count = _colors.size();
 
-		m_positions.resize( positions_count );
-		m_uvs.resize( uvs_count );
-		m_colors.resize( colors_count );
+        if( positions_count != uvs_count || positions_count != colors_count )
+        {
+            return false;
+        }
 
-		for( uint32_t i = 0; i != positions_count; ++i )
-		{
-			m_positions[i] = _positions[i];
-			m_uvs[i] = _uv[i];
-			m_colors[i] = _colors[i];
-		}
+        m_positions.resize( positions_count );
+        m_uvs.resize( uvs_count );
+        m_colors.resize( colors_count );
 
-		uint32_t indices_count = _indices.size();
+        for( uint32_t i = 0; i != positions_count; ++i )
+        {
+            m_positions[i] = _positions[i];
+            m_uvs[i] = _uv[i];
+            m_colors[i] = _colors[i];
+        }
 
-		m_indices.resize( indices_count );
+        uint32_t indices_count = _indices.size();
 
-		for( uint32_t i = 0; i != indices_count; ++i )
-		{
-			m_indices[i] = _indices[i];
-		}
+        m_indices.resize( indices_count );
 
-		m_verticesWM.resize( positions_count );
+        for( uint32_t i = 0; i != indices_count; ++i )
+        {
+            m_indices[i] = _indices[i];
+        }
 
-		this->invalidateVerticesColor();
-		this->invalidateVerticesWM();
+        m_verticesWM.resize( positions_count );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_update( const UpdateContext * _context )
-	{
+        this->invalidateVerticesColor();
+        this->invalidateVerticesWM();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meshget::_update( const UpdateContext * _context )
+    {
         EVENTABLE_METHOD( this, EVENT_MESHGET_UPDATE )
             ->onMeshgetUpdate( _context );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_render( const RenderContext * _state )
-	{
-		if( m_positions.empty() == true )
-		{
-			return;
-		}
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meshget::_render( const RenderContext * _state )
+    {
+        if( m_positions.empty() == true )
+        {
+            return;
+        }
 
-		uint32_t vertexCount = (uint32_t)m_positions.size();
-		uint32_t indicesCount = (uint32_t)m_indices.size();
+        uint32_t vertexCount = (uint32_t)m_positions.size();
+        uint32_t indicesCount = (uint32_t)m_indices.size();
 
-		const VectorRenderVertex2D & vertices = this->getVerticesWM();
-		const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
+        const VectorRenderVertex2D & vertices = this->getVerticesWM();
+        const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
 
-		const RenderVertex2D * vertices_buff = &vertices[0];
-		const RenderIndex * indices_buff = &m_indices[0];
+        const RenderVertex2D * vertices_buff = &vertices[0];
+        const RenderIndex * indices_buff = &m_indices[0];
 
-		const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f & bb = this->getBoundingBox();
 
         this->addRenderObject( _state, material, vertices_buff, vertexCount, indices_buff, indicesCount, &bb, false );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_updateBoundingBox( mt::box2f & _boundingBox ) const
-	{
-		if( m_positions.empty() == true )
-		{
-			mt::ident_box( _boundingBox );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meshget::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    {
+        if( m_positions.empty() == true )
+        {
+            mt::ident_box( _boundingBox );
 
-			return;
-		}
+            return;
+        }
 
-		const VectorRenderVertex2D & vertices = this->getVerticesWM();
+        const VectorRenderVertex2D & vertices = this->getVerticesWM();
 
-		mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
+        mt::reset( _boundingBox, vertices[0].position.x, vertices[0].position.y );
 
         VectorPosition::size_type vertexCount = m_positions.size();
-				
-		for( VectorPosition::size_type i = 1; i != vertexCount; ++i )
-		{
-			const mt::vec3f & v = m_positions[i];
 
-			mt::add_internal_point( _boundingBox, v.x, v.y );
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_invalidateWorldMatrix()
-	{
-		Node::_invalidateWorldMatrix();
+        for( VectorPosition::size_type i = 1; i != vertexCount; ++i )
+        {
+            const mt::vec3f & v = m_positions[i];
 
-		this->invalidateVerticesWM();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Meshget::invalidateVerticesWM()
-	{
-		m_invalidateVerticesWM = true;
+            mt::add_internal_point( _boundingBox, v.x, v.y );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meshget::_invalidateWorldMatrix()
+    {
+        Node::_invalidateWorldMatrix();
 
-		this->invalidateBoundingBox();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Meshget::_invalidateColor()
-	{
-		Node::_invalidateColor();
+        this->invalidateVerticesWM();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meshget::invalidateVerticesWM()
+    {
+        m_invalidateVerticesWM = true;
 
-		this->invalidateVerticesColor();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Meshget::invalidateVerticesColor()
-	{
-		m_invalidateVerticesColor = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Meshget::updateVerticesColor() const
-	{
-		m_invalidateVerticesColor = false;
+        this->invalidateBoundingBox();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meshget::_invalidateColor()
+    {
+        Node::_invalidateColor();
 
-		ColourValue color;
-		this->calcTotalColor( color );
+        this->invalidateVerticesColor();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meshget::invalidateVerticesColor()
+    {
+        m_invalidateVerticesColor = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meshget::updateVerticesColor() const
+    {
+        m_invalidateVerticesColor = false;
+
+        ColourValue color;
+        this->calcTotalColor( color );
 
         const ColourValue & textureColour = m_surface->getColor();
-		color *= textureColour;
+        color *= textureColour;
 
         VectorPosition::size_type vertexCount = m_positions.size();
 
-		for( VectorPosition::size_type i = 0; i != vertexCount; ++i )
-		{
-			const mt::vec4f & c = m_colors[i];
+        for( VectorPosition::size_type i = 0; i != vertexCount; ++i )
+        {
+            const mt::vec4f & c = m_colors[i];
 
-			ColourValue v_color( c.x, c.y, c.z, c.w );
-			v_color *= color;
-			
-			uint32_t argb = v_color.getAsARGB();
+            ColourValue v_color( c.x, c.y, c.z, c.w );
+            v_color *= color;
 
-			m_verticesWM[i].color = argb;
-		}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Meshget::updateVerticesWM() const
-	{
-		m_invalidateVerticesWM = false;
+            uint32_t argb = v_color.getAsARGB();
+
+            m_verticesWM[i].color = argb;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Meshget::updateVerticesWM() const
+    {
+        m_invalidateVerticesWM = false;
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
         VectorPosition::size_type vertexCount = m_positions.size();
-        
-		for( VectorPosition::size_type i = 0; i != vertexCount; ++i )
-		{
-			const mt::vec3f & pos = m_positions[i];
-			const mt::vec2f & uv = m_uvs[i];
 
-			mt::vec3f & wm_pos = m_verticesWM[i].position;
-			mt::mul_v3_v3_m4( wm_pos, pos, wm );
+        for( VectorPosition::size_type i = 0; i != vertexCount; ++i )
+        {
+            const mt::vec3f & pos = m_positions[i];
+            const mt::vec2f & uv = m_uvs[i];
+
+            mt::vec3f & wm_pos = m_verticesWM[i].position;
+            mt::mul_v3_v3_m4( wm_pos, pos, wm );
 
             m_surface->correctUV( 0, m_verticesWM[i].uv[0], uv );
             m_surface->correctUV( 1, m_verticesWM[i].uv[1], uv );
-		}
-	}
+        }
+    }
 }

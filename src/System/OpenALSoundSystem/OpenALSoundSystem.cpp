@@ -16,66 +16,66 @@ SERVICE_FACTORY( SoundSystem, Mengine::OALSoundSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	OALSoundSystem::OALSoundSystem()
-		: m_context(nullptr)
-		, m_device(nullptr)
-		, m_threadAvaliable(false)
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	OALSoundSystem::~OALSoundSystem()
-	{     
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundSystem::_initializeService()
-	{
-		LOGGER_INFO( "Starting OpenAL Sound System..." );
+    //////////////////////////////////////////////////////////////////////////
+    OALSoundSystem::OALSoundSystem()
+        : m_context( nullptr )
+        , m_device( nullptr )
+        , m_threadAvaliable( false )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    OALSoundSystem::~OALSoundSystem()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OALSoundSystem::_initializeService()
+    {
+        LOGGER_INFO( "Starting OpenAL Sound System..." );
 
         m_device = alcOpenDevice( nullptr );
-			
-		if( m_device == nullptr )
-		{
-			LOGGER_ERROR( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
+
+        if( m_device == nullptr )
+        {
+            LOGGER_ERROR( "OALSoundSystem.initialize: Failed to open 'generic software' sound device try default..." );
 
             m_device = alcOpenDevice( "Generic Software" );
 
             OAL_CHECK_ERROR();
 
-			if( m_device == nullptr )
-			{
-				LOGGER_ERROR( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
+            if( m_device == nullptr )
+            {
+                LOGGER_ERROR( "OALSoundSystem.initialize: Failed to open default sound device try hardware" );
 
-	    		m_device = alcOpenDevice( "Generic Hardware" );
+                m_device = alcOpenDevice( "Generic Hardware" );
                 OAL_CHECK_ERROR();
 
-    			if( m_device == nullptr )
-	    		{
-		    		LOGGER_ERROR( "OALSoundSystem.initialize: Failed to open hardware sound device.." );
+                if( m_device == nullptr )
+                {
+                    LOGGER_ERROR( "OALSoundSystem.initialize: Failed to open hardware sound device.." );
 
-				    return false;
-			    }			
+                    return false;
+                }
             }
-		}
+        }
 
-		m_context = alcCreateContext( m_device, nullptr );
+        m_context = alcCreateContext( m_device, nullptr );
 
-		if( m_context == nullptr )
-		{
+        if( m_context == nullptr )
+        {
             LOGGER_ERROR( "OALSoundSystem: Failed to create context" );
 
-			alcCloseDevice( m_device );
+            alcCloseDevice( m_device );
             OAL_CHECK_ERROR();
 
-			m_device = nullptr;
+            m_device = nullptr;
 
-			return false;
-		}
+            return false;
+        }
 
         ALCboolean currentResult = alcMakeContextCurrent( m_context );
         OAL_CHECK_ERROR();
 
-		if( currentResult == ALC_FALSE )
+        if( currentResult == ALC_FALSE )
         {
             LOGGER_ERROR( "OALSoundSystem: Failed to make context current" );
 
@@ -89,73 +89,73 @@ namespace Mengine
 
             return false;
         }
-        
 
-		ALCint majorVersion;
-		alcGetIntegerv( m_device, ALC_MAJOR_VERSION, 1, &majorVersion );
 
-		ALCint minorVersion;
-		alcGetIntegerv( m_device, ALC_MINOR_VERSION, 1, &minorVersion );
+        ALCint majorVersion;
+        alcGetIntegerv( m_device, ALC_MAJOR_VERSION, 1, &majorVersion );
 
-		LOGGER_WARNING("OpenAL version %d.%d"
-			, majorVersion
-			, minorVersion
-			);
+        ALCint minorVersion;
+        alcGetIntegerv( m_device, ALC_MINOR_VERSION, 1, &minorVersion );
 
-		const ALCchar* defaultDeviceSprcifier = alcGetString( m_device, ALC_DEVICE_SPECIFIER );
+        LOGGER_WARNING( "OpenAL version %d.%d"
+            , majorVersion
+            , minorVersion
+        );
 
-		LOGGER_WARNING("OpenAL default device specifier [%s]"
-			, defaultDeviceSprcifier
-			);
+        const ALCchar* defaultDeviceSprcifier = alcGetString( m_device, ALC_DEVICE_SPECIFIER );
 
-		const ALCchar* captureDeviceSpecifier = alcGetString( m_device, ALC_CAPTURE_DEVICE_SPECIFIER );
+        LOGGER_WARNING( "OpenAL default device specifier [%s]"
+            , defaultDeviceSprcifier
+        );
 
-		LOGGER_WARNING("OpenAL capture device specifier [%s]"
-			, captureDeviceSpecifier
-			);
+        const ALCchar* captureDeviceSpecifier = alcGetString( m_device, ALC_CAPTURE_DEVICE_SPECIFIER );
 
-		LOGGER_WARNING( "OpenAL driver properties" );
+        LOGGER_WARNING( "OpenAL capture device specifier [%s]"
+            , captureDeviceSpecifier
+        );
 
-		LOGGER_WARNING( "Version: %s"
-			, alGetString( AL_VERSION ) 
-			);
+        LOGGER_WARNING( "OpenAL driver properties" );
 
-		LOGGER_WARNING( "Vendor: %s"
-			, alGetString( AL_VENDOR ) 
-			);
+        LOGGER_WARNING( "Version: %s"
+            , alGetString( AL_VERSION )
+        );
 
-		LOGGER_WARNING( "Renderer: %s"
-			, alGetString( AL_RENDERER ) 
-			);
-	
-		float lposition[] = { 0.f, 0.f, 0.f };
-		alListenerfv( AL_POSITION, lposition );
+        LOGGER_WARNING( "Vendor: %s"
+            , alGetString( AL_VENDOR )
+        );
+
+        LOGGER_WARNING( "Renderer: %s"
+            , alGetString( AL_RENDERER )
+        );
+
+        float lposition[] = { 0.f, 0.f, 0.f };
+        alListenerfv( AL_POSITION, lposition );
         OAL_CHECK_ERROR();
 
         float lvelocity[] = { 0.f, 0.f, 0.f };
-		alListenerfv( AL_VELOCITY, lvelocity );
+        alListenerfv( AL_VELOCITY, lvelocity );
         OAL_CHECK_ERROR();
 
         float lorient[] = { 0.f, 0.f, 1.f, 0.f, 1.f, 0.f };
-		alListenerfv( AL_ORIENTATION, lorient );
+        alListenerfv( AL_ORIENTATION, lorient );
         OAL_CHECK_ERROR();
 
-		m_threadAvaliable = THREAD_SYSTEM()
-			->avaliable();
+        m_threadAvaliable = THREAD_SYSTEM()
+            ->avaliable();
 
         m_factoryOALSoundBuffer = new FactoryPool<OALSoundBufferMemory, 32>();
         m_factoryOALSoundBufferStream = new FactoryPool<OALSoundBufferStream, 32>();
         m_factoryOALSoundSource = new FactoryPool<OALSoundSource, 32>();
 
-		return true;
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     void OALSoundSystem::_finalizeService()
     {
-		if( m_device != nullptr )
-		{
+        if( m_device != nullptr )
+        {
             alcMakeContextCurrent( nullptr );
-            
+
             if( m_context != nullptr )
             {
                 alcDestroyContext( m_context );
@@ -174,19 +174,19 @@ namespace Mengine
         m_factoryOALSoundBufferStream = nullptr;
         m_factoryOALSoundSource = nullptr;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::update()
-	{
-		//Empty
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool OALSoundSystem::isSilent() const
-	{
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::onTurnSound( bool _turn )
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void OALSoundSystem::update()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OALSoundSystem::isSilent() const
+    {
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OALSoundSystem::onTurnSound( bool _turn )
+    {
         (void)_turn;
         //if( _turn == false )
         //{
@@ -204,28 +204,28 @@ namespace Mengine
         //    alcProcessContext( m_context );
         //    //OAL_CHECK_ERROR();
         //}
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SoundSourceInterfacePtr OALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SoundSourceInterfacePtr OALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
+    {
         OALSoundSourcePtr soundSource = m_factoryOALSoundSource->createObject();
 
         soundSource->initialize( this );
-        		
-		soundSource->setHeadMode( _isHeadMode );
-		soundSource->setSoundBuffer( _buffer );
 
-		return soundSource;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	SoundBufferInterfacePtr OALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
-	{
-		OALSoundBufferBasePtr base = nullptr;
+        soundSource->setHeadMode( _isHeadMode );
+        soundSource->setSoundBuffer( _buffer );
+
+        return soundSource;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SoundBufferInterfacePtr OALSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream )
+    {
+        OALSoundBufferBasePtr base = nullptr;
 
         if( _isStream == false || m_threadAvaliable == false )
         {
             OALSoundBufferMemoryPtr buffer = m_factoryOALSoundBuffer->createObject();
-            
+
             buffer->initialize( this );
 
             base = buffer;
@@ -239,44 +239,44 @@ namespace Mengine
             base = buffer;
         }
 
-		if( base->load( _soundDecoder ) == false )
-		{
-			LOGGER_ERROR( "OALSoundSystem: Failed to create sound buffer from stream" 
-				);
+        if( base->load( _soundDecoder ) == false )
+        {
+            LOGGER_ERROR( "OALSoundSystem: Failed to create sound buffer from stream"
+            );
 
             return nullptr;
-		}
+        }
 
-		return base;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ALuint OALSoundSystem::genSourceId()
-	{
-		ALuint sourceId = 0;
-		alGenSources( 1, &sourceId );
-        OAL_CHECK_ERROR();
-
-		return sourceId;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::releaseSourceId( ALuint _sourceId )
-	{
-		alDeleteSources( 1, &_sourceId );
-        OAL_CHECK_ERROR();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ALuint OALSoundSystem::genBufferId()
-	{
-		ALuint bufferId = 0;
-		alGenBuffers( 1, &bufferId );
+        return base;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ALuint OALSoundSystem::genSourceId()
+    {
+        ALuint sourceId = 0;
+        alGenSources( 1, &sourceId );
         OAL_CHECK_ERROR();
 
-		return bufferId;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void OALSoundSystem::releaseBufferId( ALuint _bufferId )
-	{
-		alDeleteBuffers( 1, &_bufferId );
+        return sourceId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OALSoundSystem::releaseSourceId( ALuint _sourceId )
+    {
+        alDeleteSources( 1, &_sourceId );
         OAL_CHECK_ERROR();
-	}
-}	
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ALuint OALSoundSystem::genBufferId()
+    {
+        ALuint bufferId = 0;
+        alGenBuffers( 1, &bufferId );
+        OAL_CHECK_ERROR();
+
+        return bufferId;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OALSoundSystem::releaseBufferId( ALuint _bufferId )
+    {
+        alDeleteBuffers( 1, &_bufferId );
+        OAL_CHECK_ERROR();
+    }
+}

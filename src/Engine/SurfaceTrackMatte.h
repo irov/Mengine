@@ -17,20 +17,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
     //////////////////////////////////////////////////////////////////////////
-	class SurfaceTrackMatte
-		: public Surface
-	{
-	public:
-		SurfaceTrackMatte();
-		~SurfaceTrackMatte() override;
+    class SurfaceTrackMatte
+        : public Surface
+    {
+    public:
+        SurfaceTrackMatte();
+        ~SurfaceTrackMatte() override;
 
-	public:
-		void setResourceImage( const ResourceImagePtr & _resourceImage );
-		const ResourceImagePtr & getResourceImage() const;
+    public:
+        void setResourceImage( const ResourceImagePtr & _resourceImage );
+        const ResourceImagePtr & getResourceImage() const;
 
-	public:
-		void setResourceTrackMatteImage( const ResourceImagePtr & _resourceTrackMatteImage );
-		const ResourceImagePtr & getResourceTrackMatteImage() const;
+    public:
+        void setResourceTrackMatteImage( const ResourceImagePtr & _resourceTrackMatteImage );
+        const ResourceImagePtr & getResourceTrackMatteImage() const;
 
     public:
         void setTrackMatteMode( ESurfaceTrackMatteMode _trackMatteMode );
@@ -47,20 +47,20 @@ namespace Mengine
         const ColourValue & getColor() const override;
 
         void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) override;
-	
-	protected:
-		bool _compile() override;
-		void _release() override;
 
-	protected:
-		RenderMaterialInterfacePtr _updateMaterial() const override;
+    protected:
+        bool _compile() override;
+        void _release() override;
 
-	protected:
-		ResourceHolder<ResourceImage> m_resourceImage;
-		ResourceHolder<ResourceImage> m_resourceTrackMatteImage;
+    protected:
+        RenderMaterialInterfacePtr _updateMaterial() const override;
+
+    protected:
+        ResourceHolder<ResourceImage> m_resourceImage;
+        ResourceHolder<ResourceImage> m_resourceTrackMatteImage;
 
         ESurfaceTrackMatteMode m_trackMatteMode;
-	};
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SurfaceTrackMatte> SurfaceTrackMattePtr;
     //////////////////////////////////////////////////////////////////////////

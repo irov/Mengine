@@ -4,7 +4,7 @@
 
 #include "Kernel/ImageEncoder.h"
 
-extern "C" 
+extern "C"
 {
 #	define XMD_H
 #	undef FAR
@@ -17,17 +17,17 @@ extern "C"
 
 namespace Mengine
 {
-	class ImageEncoderJPEG
-		: public ImageEncoder
-	{
-	public:
-		ImageEncoderJPEG();
-		~ImageEncoderJPEG() override;
+    class ImageEncoderJPEG
+        : public ImageEncoder
+    {
+    public:
+        ImageEncoderJPEG();
+        ~ImageEncoderJPEG() override;
 
-	public:
-		bool _initialize() override;
+    public:
+        bool _initialize() override;
 
-	public:
-		size_t encode( const void * _buffer, size_t _size, const CodecDataInfo * _bufferDataInfo ) override;
-	};
-}	
+    public:
+        size_t encode( const void * _buffer, size_t _size, const CodecDataInfo * _bufferDataInfo ) override;
+    };
+}

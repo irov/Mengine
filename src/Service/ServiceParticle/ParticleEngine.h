@@ -11,32 +11,32 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class ParticleEngine2
+    //////////////////////////////////////////////////////////////////////////
+    class ParticleEngine2
         : public ServiceBase<ParticleServiceInterface2>
-	{
-	public:
-		ParticleEngine2();
-		~ParticleEngine2() override;
+    {
+    public:
+        ParticleEngine2();
+        ~ParticleEngine2() override;
 
-	public:
-		bool _initializeService() override;
-		void _finalizeService() override;
+    public:
+        bool _initializeService() override;
+        void _finalizeService() override;
 
-	public:
-		bool isAvailable() const override;
+    public:
+        bool isAvailable() const override;
 
-	public:
-		ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) override;
+    public:
+        ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) override;
 
-	public:
-		uint32_t getMaxParticlesCount() const override;		
+    public:
+        uint32_t getMaxParticlesCount() const override;
 
-	protected:
-		ArchivatorInterfacePtr m_archivator;
+    protected:
+        ArchivatorInterfacePtr m_archivator;
 
-		uint32_t m_maxParticlesNum;
+        uint32_t m_maxParticlesNum;
 
-		bool m_available;
-	};
+        bool m_available;
+    };
 };

@@ -15,26 +15,26 @@ namespace Mengine
     Entity::~Entity()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::setPrototype( const ConstString & _prototype )
-	{
-		m_prototype = _prototype;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & Entity::getPrototype() const
-	{
-		return m_prototype;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::setScriptEventable( const EventablePtr & _eventable )
-	{
-		m_scriptEventable = _eventable;
-	}
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::setPrototype( const ConstString & _prototype )
+    {
+        m_prototype = _prototype;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & Entity::getPrototype() const
+    {
+        return m_prototype;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::setScriptEventable( const EventablePtr & _eventable )
+    {
+        m_scriptEventable = _eventable;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const EventablePtr & Entity::getScriptEventable() const
-	{
-		return m_scriptEventable;
-	}
+    {
+        return m_scriptEventable;
+    }
     //////////////////////////////////////////////////////////////////////////
     EventationInterfacePtr Entity::getScriptEventation() const
     {
@@ -47,18 +47,18 @@ namespace Mengine
 
         return event;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::setScriptObject( const pybind::object & _object )
-	{
-		m_object = _object;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const pybind::object & Entity::getScriptObject() const
-	{
-		return m_object;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Entity::_activate()
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::setScriptObject( const pybind::object & _object )
+    {
+        m_object = _object;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const pybind::object & Entity::getScriptObject() const
+    {
+        return m_object;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Entity::_activate()
     {
         EventationInterfacePtr event = this->getScriptEventation();
 
@@ -68,14 +68,14 @@ namespace Mengine
                 ->onEntityPreparation( m_object );
         }
 
-		bool successful = Node::_activate();
+        bool successful = Node::_activate();
 
-		return successful;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::_afterActivate()
-	{
-		Node::_afterActivate();
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::_afterActivate()
+    {
+        Node::_afterActivate();
 
         EventationInterfacePtr event = this->getScriptEventation();
 
@@ -84,7 +84,7 @@ namespace Mengine
             EVENTABLE_METHODT( event, EVENT_ENTITY_ACTIVATE, EntityEventReceiver )
                 ->onEntityActivate( m_object );
         }
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
@@ -96,12 +96,12 @@ namespace Mengine
                 ->onEntityPreparationDeactivate( m_object );
         }
 
-        Node::_deactivate();		
+        Node::_deactivate();
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::_afterDeactivate()
-	{
-		Node::_afterDeactivate();
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::_afterDeactivate()
+    {
+        Node::_afterDeactivate();
 
         EventationInterfacePtr event = this->getScriptEventation();
 
@@ -110,10 +110,10 @@ namespace Mengine
             EVENTABLE_METHODT( event, EVENT_ENTITY_DEACTIVATE, EntityEventReceiver )
                 ->onEntityDeactivate( m_object );
         }
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool Entity::_compile()
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Entity::_compile()
+    {
         EventationInterfacePtr event = this->getScriptEventation();
 
         if( event != nullptr )
@@ -121,12 +121,12 @@ namespace Mengine
             EVENTABLE_METHODT( event, EVENT_ENTITY_COMPILE, EntityEventReceiver )
                 ->onEntityCompile( m_object );
         }
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::_release()
-	{
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::_release()
+    {
         EventationInterfacePtr event = this->getScriptEventation();
 
         if( event != nullptr )
@@ -134,7 +134,7 @@ namespace Mengine
             EVENTABLE_METHODT( event, EVENT_ENTITY_RELEASE, EntityEventReceiver )
                 ->onEntityRelease( m_object );
         }
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     void Entity::_update( const UpdateContext * _context )
     {
@@ -148,9 +148,9 @@ namespace Mengine
                 ->onEntityUpdate( m_object, _context->revision, _context->current, _context->time );
         }
     }
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::onCreate()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::onCreate()
+    {
         EventationInterfacePtr event = this->getScriptEventation();
 
         if( event != nullptr )
@@ -158,13 +158,13 @@ namespace Mengine
             EVENTABLE_METHODT( event, EVENT_ENTITY_CREATE, EntityEventReceiver )
                 ->onEntityCreate( m_object, this );
         }
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void Entity::_destroy()
-	{
-		this->release();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Entity::_destroy()
+    {
+        this->release();
 
-		Node * old_parent = this->getParent();
+        Node * old_parent = this->getParent();
 
         EventationInterfacePtr event = this->getScriptEventation();
 
@@ -173,24 +173,24 @@ namespace Mengine
             EVENTABLE_METHODT( event, EVENT_ENTITY_DESTROY, EntityEventReceiver )
                 ->onEntityDestroy( m_object );
         }
-		
-		m_object.reset();
 
-		Node * new_parent = this->getParent();
+        m_object.reset();
 
-		if( old_parent != new_parent )
-		{
-			LOGGER_ERROR("Entity::destroy %s:%s script event EVENT_DESTROY replace node to other hierarchy"
-				, this->getType().c_str()
-				, this->getName().c_str()
-				);
+        Node * new_parent = this->getParent();
 
-			return;
-		}
+        if( old_parent != new_parent )
+        {
+            LOGGER_ERROR( "Entity::destroy %s:%s script event EVENT_DESTROY replace node to other hierarchy"
+                , this->getType().c_str()
+                , this->getName().c_str()
+            );
 
-		this->destroyAllChild();
-		this->removeFromParent();
+            return;
+        }
 
-		this->unwrap();
-	}
+        this->destroyAllChild();
+        this->removeFromParent();
+
+        this->unwrap();
+    }
 }

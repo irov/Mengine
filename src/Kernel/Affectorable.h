@@ -12,51 +12,51 @@
 #include "stdex/intrusive_slug_ptr.h"
 
 namespace Mengine
-{ 
+{
     //////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<class Affector> AffectorPtr;
+    typedef IntrusivePtr<class Affector> AffectorPtr;
     //////////////////////////////////////////////////////////////////////////
-	class Affectorable
+    class Affectorable
         : public Mixin
-	{
-	public:
-		Affectorable();
-		virtual ~Affectorable();
-
-	public:
-		AFFECTOR_ID addAffector( const AffectorPtr & _affector );
-		bool stopAffector( AFFECTOR_ID _id );
-
-	public:
-		void stopAffectors( EAffectorType _type );
-            
+    {
     public:
-		void stopAllAffectors();
-        
-	public:
-		void setAngularSpeed( float _angular );
-		float getAngularSpeed() const;
+        Affectorable();
+        virtual ~Affectorable();
 
-		void setLinearSpeed( const mt::vec3f & _linearSpeed );
-		const mt::vec3f & getLinearSpeed() const;
+    public:
+        AFFECTOR_ID addAffector( const AffectorPtr & _affector );
+        bool stopAffector( AFFECTOR_ID _id );
 
-	public:
-		void updateAffectors( const UpdateContext * _context );
+    public:
+        void stopAffectors( EAffectorType _type );
 
-	protected:
-		void updateAffector_( const AffectorPtr & _affector, const UpdateContext * _context );
-        
-	protected:
-		typedef stdex::intrusive_slug_list_size_ptr<Affector> VectorAffector;
+    public:
+        void stopAllAffectors();
+
+    public:
+        void setAngularSpeed( float _angular );
+        float getAngularSpeed() const;
+
+        void setLinearSpeed( const mt::vec3f & _linearSpeed );
+        const mt::vec3f & getLinearSpeed() const;
+
+    public:
+        void updateAffectors( const UpdateContext * _context );
+
+    protected:
+        void updateAffector_( const AffectorPtr & _affector, const UpdateContext * _context );
+
+    protected:
+        typedef stdex::intrusive_slug_list_size_ptr<Affector> VectorAffector;
         typedef stdex::intrusive_slug_ptr<Affector> TSlugAffector;
 
-		VectorAffector m_affectors;
+        VectorAffector m_affectors;
 
-		float m_angularSpeed;
-		mt::vec3f m_linearSpeed;
+        float m_angularSpeed;
+        mt::vec3f m_linearSpeed;
 
-		uint32_t m_enumerator;
-	};
+        uint32_t m_enumerator;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Affectorable> AffectorablePtr;
     //////////////////////////////////////////////////////////////////////////

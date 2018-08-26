@@ -16,15 +16,15 @@
 namespace Mengine
 {
     class ScriptModuleLoaderCode
-		: public ScriptModuleLoader
+        : public ScriptModuleLoader
     {
     public:
         ScriptModuleLoaderCode();
 
     public:
-		PyObject * load_module( PyObject * _module ) override;
+        PyObject * load_module( PyObject * _module ) override;
 
-	protected:
-		PyObject * load_module_code_( PyObject * _module, const InputStreamInterfacePtr & _stream );
+    protected:
+        PyObject * load_module_code_( PyObject * _module, const InputStreamInterfacePtr & _stream );
     };
 }

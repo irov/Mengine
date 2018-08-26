@@ -6,26 +6,26 @@
 
 namespace Mengine
 {
-	class ParticleConverterPTCToPTZ
-		: public DevelopmentConverter
-	{
-	public:
-		ParticleConverterPTCToPTZ();
-		~ParticleConverterPTCToPTZ() override;
-
-	public:
-		bool _initialize() override;
+    class ParticleConverterPTCToPTZ
+        : public DevelopmentConverter
+    {
+    public:
+        ParticleConverterPTCToPTZ();
+        ~ParticleConverterPTCToPTZ() override;
 
     public:
-		bool convert() override;
-        	
-	protected:
-		bool convert_( const FilePath & _input, const FilePath & _output );
+        bool _initialize() override;
 
-	protected:
-		bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
+    public:
+        bool convert() override;
 
-	protected:
-		ArchivatorInterfacePtr m_archivator;
+    protected:
+        bool convert_( const FilePath & _input, const FilePath & _output );
+
+    protected:
+        bool validateVersion( const InputStreamInterfacePtr & _stream ) const override;
+
+    protected:
+        ArchivatorInterfacePtr m_archivator;
     };
-}	
+}

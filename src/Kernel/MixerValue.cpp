@@ -2,11 +2,11 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	MixerValue::MixerValue()
+    //////////////////////////////////////////////////////////////////////////
+    MixerValue::MixerValue()
         : m_speed( 0.0005f )
-	{
-	}
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     void MixerValue::setSpeed( float _speed )
     {
@@ -17,109 +17,109 @@ namespace Mengine
     {
         return m_speed;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void MixerValue::setValue( const ConstString & _type, float _value, float _from, bool _force )
-	{
-		for( VectorMixerElement::iterator
-			it = m_mixer.begin(),
-			it_end = m_mixer.end();
-		it != it_end;
-		++it )
-		{
-			Element & mixer = *it;
+    //////////////////////////////////////////////////////////////////////////
+    void MixerValue::setValue( const ConstString & _type, float _value, float _from, bool _force )
+    {
+        for( VectorMixerElement::iterator
+            it = m_mixer.begin(),
+            it_end = m_mixer.end();
+            it != it_end;
+            ++it )
+        {
+            Element & mixer = *it;
 
-			if( mixer.type != _type )
-			{
-				continue;
-			}
+            if( mixer.type != _type )
+            {
+                continue;
+            }
 
             if( _force == true )
             {
                 mixer.follower.setValue( _from );
             }
 
-			mixer.follower.setFollow( _value );
+            mixer.follower.setFollow( _value );
             mixer.follower.setSpeed( m_speed );
 
-			return;
-		}
+            return;
+        }
 
         if( _value == 1.f && _from == 1.f )
         {
             return;
         }
 
-		Element el;
-		el.type = _type;
+        Element el;
+        el.type = _type;
         el.follower.setValue( _from );
-		el.follower.setFollow( _value );
-		el.follower.setSpeed( m_speed );
+        el.follower.setFollow( _value );
+        el.follower.setSpeed( m_speed );
 
-		m_mixer.emplace_back( el );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float MixerValue::getValue( const ConstString & _type ) const
-	{
-		for( VectorMixerElement::const_iterator
-			it = m_mixer.begin(),
-			it_end = m_mixer.end();
-		it != it_end;
-		++it )
-		{
-			const Element & mixer = *it;
+        m_mixer.emplace_back( el );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float MixerValue::getValue( const ConstString & _type ) const
+    {
+        for( VectorMixerElement::const_iterator
+            it = m_mixer.begin(),
+            it_end = m_mixer.end();
+            it != it_end;
+            ++it )
+        {
+            const Element & mixer = *it;
 
-			if( mixer.type != _type )
-			{
-				continue;
-			}
+            if( mixer.type != _type )
+            {
+                continue;
+            }
 
-			float value = mixer.follower.getValue();
+            float value = mixer.follower.getValue();
 
-			return value;
-		}
+            return value;
+        }
 
-		return 1.f;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float MixerValue::mixValue() const
-	{
-		float volume = 1.f;
+        return 1.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float MixerValue::mixValue() const
+    {
+        float volume = 1.f;
 
-		for( VectorMixerElement::const_iterator
-			it = m_mixer.begin(),
-			it_end = m_mixer.end();
-		it != it_end;
-		++it )
-		{
-			const Element & mixer = *it;
+        for( VectorMixerElement::const_iterator
+            it = m_mixer.begin(),
+            it_end = m_mixer.end();
+            it != it_end;
+            ++it )
+        {
+            const Element & mixer = *it;
 
-			float value = mixer.follower.getValue();
+            float value = mixer.follower.getValue();
 
-			volume *= value;
-		}
+            volume *= value;
+        }
 
-		return volume;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool MixerValue::update( const UpdateContext * _context )
-	{
-		bool process = false;
+        return volume;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MixerValue::update( const UpdateContext * _context )
+    {
+        bool process = false;
 
-		for( VectorMixerElement::iterator
-			it = m_mixer.begin(),
-			it_end = m_mixer.end();
-		it != it_end;
-		++it )
-		{
-			Element & m = *it;
+        for( VectorMixerElement::iterator
+            it = m_mixer.begin(),
+            it_end = m_mixer.end();
+            it != it_end;
+            ++it )
+        {
+            Element & m = *it;
 
             float used = 0.f;
             if( m.follower.update( _context, &used ) == false )
-			{
-				process = true;
-			}
-		}
+            {
+                process = true;
+            }
+        }
 
-		return process;
-	}
+        return process;
+    }
 }

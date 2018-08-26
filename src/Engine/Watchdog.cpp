@@ -7,31 +7,31 @@ SERVICE_FACTORY( Watchdog, Mengine::Watchdog );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	Watchdog::Watchdog()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	float Watchdog::watch( const String & _tag )
-	{
-		clock_t cl = clock();
-		float sec = (float)(cl) / float(CLOCKS_PER_SEC);
+    //////////////////////////////////////////////////////////////////////////
+    Watchdog::Watchdog()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Watchdog::watch( const String & _tag )
+    {
+        clock_t cl = clock();
+        float sec = (float)(cl) / float( CLOCKS_PER_SEC );
 
-		MapWatchers::iterator it_found = m_watchers.find( _tag );
-		
-		if( it_found == m_watchers.end() )
-		{
-			m_watchers[_tag] = sec;
+        MapWatchers::iterator it_found = m_watchers.find( _tag );
 
-			return 0.f;
-		}
-		
-		float old_time = it_found->second;
+        if( it_found == m_watchers.end() )
+        {
+            m_watchers[_tag] = sec;
 
-		float time = sec - old_time;
+            return 0.f;
+        }
 
-		it_found->second = sec;
+        float old_time = it_found->second;
 
-		return time;
-	}
+        float time = sec - old_time;
+
+        it_found->second = sec;
+
+        return time;
+    }
 }

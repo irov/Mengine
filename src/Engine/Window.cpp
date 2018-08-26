@@ -26,7 +26,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     const bool c_WindowWrapV[ResourceWindow_Count] =
-    { 
+    {
         true //ResourceWindow_Background
         , false //ResourceWindow_LeftTop
         , false //ResourceWindow_Top

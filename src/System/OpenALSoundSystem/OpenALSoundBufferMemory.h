@@ -4,32 +4,32 @@
 
 namespace Mengine
 {
-	class OALSoundBufferMemory
-		: public OALSoundBufferBase
-	{
-	public:
-		OALSoundBufferMemory();
-		~OALSoundBufferMemory() override;
-        
+    class OALSoundBufferMemory
+        : public OALSoundBufferBase
+    {
+    public:
+        OALSoundBufferMemory();
+        ~OALSoundBufferMemory() override;
+
     public:
         bool update() override;
 
-	public:
-		bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;
+    public:
+        bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;
 
-		bool play( ALuint _source, bool _looped, float _pos ) override;
+        bool play( ALuint _source, bool _looped, float _pos ) override;
         bool resume( ALuint _source ) override;
-		void pause( ALuint _source ) override;
-		void stop( ALuint _source ) override;
+        void pause( ALuint _source ) override;
+        void stop( ALuint _source ) override;
 
-	public:
-		bool setTimePos( ALuint _source, float _pos ) const override;
-		bool getTimePos( ALuint _source, float & _pos ) const override;
+    public:
+        bool setTimePos( ALuint _source, float _pos ) const override;
+        bool getTimePos( ALuint _source, float & _pos ) const override;
 
-	protected:
-		ALuint m_alBufferId;
-	};
+    protected:
+        ALuint m_alBufferId;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<OALSoundBufferMemory> OALSoundBufferMemoryPtr;
     //////////////////////////////////////////////////////////////////////////
-}	
+}

@@ -10,13 +10,13 @@
 namespace Mengine
 {
 
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     ThreadTaskCurl::ThreadTaskCurl()
         : m_id( 0 )
         , m_code( 0 )
         , m_status( CURLE_OK )
-	{
-	}
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskCurl::setRequestId( HttpRequestID _id )
     {
@@ -37,11 +37,11 @@ namespace Mengine
     {
         return m_receiver;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskCurl::_onRun()
-	{
-		return true;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadTaskCurl::_onRun()
+    {
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadTaskCurl::_onMain()
     {
@@ -50,10 +50,10 @@ namespace Mengine
 
         this->_onCURL( curl );
 
-        curl_easy_setopt(curl, CURLOPT_SSL_VERIFYPEER, false);
+        curl_easy_setopt( curl, CURLOPT_SSL_VERIFYPEER, false );
 
         char errorbuf[CURL_ERROR_SIZE];
-        curl_easy_setopt(curl, CURLOPT_ERRORBUFFER, errorbuf);
+        curl_easy_setopt( curl, CURLOPT_ERRORBUFFER, errorbuf );
 
         CURLcode status = curl_easy_perform( curl );
 
@@ -86,14 +86,14 @@ namespace Mengine
         curl_easy_setopt( _curl, CURLOPT_WRITEDATA, (void *)this );
         curl_easy_setopt( _curl, CURLOPT_WRITEFUNCTION, &s_writeRequestPerformerResponse );
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskCurl::writeResponse( char * _ptr, size_t _size )
-	{
-		m_response.append( _ptr, _size );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskCurl::_onComplete( bool _successful )
-	{
-		m_receiver->onHttpRequestComplete( m_id, (uint32_t)m_status, m_response, m_code, _successful );
-	}
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskCurl::writeResponse( char * _ptr, size_t _size )
+    {
+        m_response.append( _ptr, _size );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskCurl::_onComplete( bool _successful )
+    {
+        m_receiver->onHttpRequestComplete( m_id, (uint32_t)m_status, m_response, m_code, _successful );
+    }
 }

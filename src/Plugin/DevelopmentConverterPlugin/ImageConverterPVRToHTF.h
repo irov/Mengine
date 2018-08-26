@@ -4,17 +4,17 @@
 
 namespace Mengine
 {
-	class ImageConverterPVRToHTF
-		: public DevelopmentConverter
-	{
-	public:
-		ImageConverterPVRToHTF();
-		~ImageConverterPVRToHTF() override;
-
-	public:
-		bool _initialize() override;
+    class ImageConverterPVRToHTF
+        : public DevelopmentConverter
+    {
+    public:
+        ImageConverterPVRToHTF();
+        ~ImageConverterPVRToHTF() override;
 
     public:
-		bool convert() override;
+        bool _initialize() override;
+
+    public:
+        bool convert() override;
     };
-}	
+}

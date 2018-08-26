@@ -475,7 +475,7 @@ namespace Mengine
 
             ColourValue color;
             this->calcTotalColor( color );
-            
+
             // Handles colors which aren't affected by skinning.
             // Optimal path used when the right number of colors is provided.
             if( part.colors.empty() == false )

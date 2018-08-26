@@ -8,38 +8,38 @@
 
 namespace Mengine
 {
-	class Compilable
+    class Compilable
         : public Mixin
-	{
-	public:
-		Compilable();
+    {
+    public:
+        Compilable();
         ~Compilable();
 
-	public:
-		inline bool isCompile() const;
+    public:
+        inline bool isCompile() const;
 
-	public:
-		virtual bool compile();
-		virtual void release();
+    public:
+        virtual bool compile();
+        virtual void release();
 
-	public:
-		bool recompile( const Lambda<> & _lambda );
-		
-	protected:
-		virtual bool _compile();
-		virtual void _release();
+    public:
+        bool recompile( const Lambda<> & _lambda );
 
-		virtual void _recompile();
+    protected:
+        virtual bool _compile();
+        virtual void _release();
+
+        virtual void _recompile();
         virtual void _uncompile();
 
-	protected:
-		bool m_compile;
-	};
+    protected:
+        bool m_compile;
+    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Compilable> CompilablePtr;
-	//////////////////////////////////////////////////////////////////////////
-	inline bool Compilable::isCompile() const
-	{
-		return m_compile;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    inline bool Compilable::isCompile() const
+    {
+        return m_compile;
+    }
 }

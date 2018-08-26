@@ -9,25 +9,25 @@
 #include "Kernel/FilePath.h"
 
 namespace Mengine
-{	
+{
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-	class GraveyardInterface
-		: public ServiceInterface
-	{
-        SERVICE_DECLARE("Graveyard")
+    class GraveyardInterface
+        : public ServiceInterface
+    {
+        SERVICE_DECLARE( "Graveyard" )
 
-	public:
-		virtual void tick( const UpdateContext * _context ) = 0;
+    public:
+        virtual void tick( const UpdateContext * _context ) = 0;
 
-	public:
-		virtual void clearTextures() = 0;
+    public:
+        virtual void clearTextures() = 0;
 
-	public:
-		virtual bool buryTexture( RenderTextureInterface * _texture ) = 0;
-		virtual RenderTextureInterfacePtr resurrectTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _path ) = 0;
-	};
+    public:
+        virtual bool buryTexture( RenderTextureInterface * _texture ) = 0;
+        virtual RenderTextureInterfacePtr resurrectTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _path ) = 0;
+    };
 
 #   define GRAVEYARD_SERVICE()\
     ((Mengine::GraveyardInterface*)SERVICE_GET(Mengine::GraveyardInterface))

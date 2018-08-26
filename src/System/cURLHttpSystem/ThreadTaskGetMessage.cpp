@@ -6,25 +6,25 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ThreadTaskGetMessage::ThreadTaskGetMessage()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    ThreadTaskGetMessage::ThreadTaskGetMessage()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     ThreadTaskGetMessage::~ThreadTaskGetMessage()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadTaskGetMessage::initialize( const String & _url )
-	{
-		m_url = _url;
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadTaskGetMessage::initialize( const String & _url )
+    {
+        m_url = _url;
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadTaskGetMessage::_onCURL( CURL * _curl )
-	{		
-		curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskGetMessage::_onCURL( CURL * _curl )
+    {
+        curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
 
         this->setupWriteResponse( _curl );
 
@@ -32,7 +32,7 @@ namespace Mengine
         {
             LOGGER_STATISTIC( "HTTP: get message url '%s'"
                 , m_url.c_str()
-                );
+            );
         }
-	}
+    }
 }

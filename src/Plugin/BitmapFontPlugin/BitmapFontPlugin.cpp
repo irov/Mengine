@@ -15,28 +15,28 @@ PLUGIN_FACTORY( BitmapFont, Mengine::BitmapFontPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	BitmapFontPlugin::BitmapFontPlugin()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool BitmapFontPlugin::_initialize()
-	{
-		SERVICE_CREATE( BitmapGlyphService );
+    //////////////////////////////////////////////////////////////////////////
+    BitmapFontPlugin::BitmapFontPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BitmapFontPlugin::_initialize()
+    {
+        SERVICE_CREATE( BitmapGlyphService );
 
-		PROTOTYPE_SERVICE()
-			->addPrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "Bitmap" )
-				, new FactorableUnique<BitmapFontPrototypeGenerator>()
-			);
+        PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "Bitmap" )
+                , new FactorableUnique<BitmapFontPrototypeGenerator>()
+            );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void BitmapFontPlugin::_finalize()
-	{
-		PROTOTYPE_SERVICE()
-			->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "Bitmap" ) );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BitmapFontPlugin::_finalize()
+    {
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "Bitmap" ) );
 
-		SERVICE_FINALIZE( BitmapGlyphServiceInterface );
-	}
+        SERVICE_FINALIZE( BitmapGlyphServiceInterface );
+    }
 }

@@ -2,10 +2,10 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	SoundDecoder::SoundDecoder()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    SoundDecoder::SoundDecoder()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     bool SoundDecoder::setOptions( const CodecOptions * _options )
     {
@@ -23,14 +23,14 @@ namespace Mengine
     {
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void SoundDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
-	{
-		m_dataInfo = *static_cast<const SoundCodecDataInfo *>(_dataInfo);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const SoundCodecDataInfo * SoundDecoder::getCodecDataInfo() const 
-	{
-		return &m_dataInfo;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    void SoundDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
+    {
+        m_dataInfo = *static_cast<const SoundCodecDataInfo *>(_dataInfo);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const SoundCodecDataInfo * SoundDecoder::getCodecDataInfo() const
+    {
+        return &m_dataInfo;
+    }
 }

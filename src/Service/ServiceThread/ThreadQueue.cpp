@@ -4,152 +4,152 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ThreadQueue::ThreadQueue()
-		: m_packetSize(1)
-        , m_cancel(false)
-	{
-		m_factoryPoolTaskPacket = new FactoryPool<ThreadTaskPacket, 4>();
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ThreadQueue::~ThreadQueue()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    ThreadQueue::ThreadQueue()
+        : m_packetSize( 1 )
+        , m_cancel( false )
+    {
+        m_factoryPoolTaskPacket = new FactoryPool<ThreadTaskPacket, 4>();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadQueue::~ThreadQueue()
+    {
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolTaskPacket );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadQueue::setThreadName( const ConstString & _threadName )
-	{
-		m_threadName = _threadName;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadQueue::setThreadCount( uint32_t _count )
-	{
-		m_currentTasks.resize( _count );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadQueue::setPacketSize( uint32_t _size )
-	{
-		m_packetSize = _size;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadQueue::addTask( const ThreadTaskInterfacePtr & _task )
-	{
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadQueue::setThreadName( const ConstString & _threadName )
+    {
+        m_threadName = _threadName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadQueue::setThreadCount( uint32_t _count )
+    {
+        m_currentTasks.resize( _count );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadQueue::setPacketSize( uint32_t _size )
+    {
+        m_packetSize = _size;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadQueue::addTask( const ThreadTaskInterfacePtr & _task )
+    {
         _task->preparation();
 
-		m_threadTasks.emplace_back( _task );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadQueue::cancel()
-	{
+        m_threadTasks.emplace_back( _task );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadQueue::cancel()
+    {
         for( ThreadTaskInterfacePtr & currentTask : m_currentTasks )
-		{
-			if( currentTask == nullptr )
-			{
-				continue;
-			}
+        {
+            if( currentTask == nullptr )
+            {
+                continue;
+            }
 
             THREAD_SERVICE()
                 ->joinTask( currentTask );
 
-			currentTask = nullptr;
-		}
+            currentTask = nullptr;
+        }
 
-		m_currentTasks.clear();
+        m_currentTasks.clear();
 
-		while( m_threadTasks.empty() == false )
-		{
-			ThreadTaskInterfacePtr threadTask = m_threadTasks.front();
-			m_threadTasks.pop_front();
+        while( m_threadTasks.empty() == false )
+        {
+            ThreadTaskInterfacePtr threadTask = m_threadTasks.front();
+            m_threadTasks.pop_front();
 
-			threadTask->cancel();
-		}
+            threadTask->cancel();
+        }
 
-		m_cancel = true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ThreadQueue::update()
-	{
-		if( m_cancel == true )
-		{
-			return true;
-		}
+        m_cancel = true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadQueue::update()
+    {
+        if( m_cancel == true )
+        {
+            return true;
+        }
 
         for( ThreadTaskInterfacePtr & currentTask : m_currentTasks )
-		{
-			this->updateCurrentTask_( currentTask );
-		}
+        {
+            this->updateCurrentTask_( currentTask );
+        }
 
-		return false;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void ThreadQueue::updateCurrentTask_( ThreadTaskInterfacePtr & _currentTask )
-	{
-		if( _currentTask == nullptr )
-		{
-			if( m_threadTasks.empty() == true )
-			{
-				return;
-			}
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadQueue::updateCurrentTask_( ThreadTaskInterfacePtr & _currentTask )
+    {
+        if( _currentTask == nullptr )
+        {
+            if( m_threadTasks.empty() == true )
+            {
+                return;
+            }
 
-			ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject();
-			
-			if( packet->initialize( m_packetSize ) == false )
-			{
-				return;
-			}
+            ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject();
 
-			uint32_t packetIterator = m_packetSize;
-						
-			while( m_threadTasks.empty() == false && packetIterator > 0 )
-			{
-				ThreadTaskInterfacePtr threadTask = m_threadTasks.front();
-				m_threadTasks.pop_front();
+            if( packet->initialize( m_packetSize ) == false )
+            {
+                return;
+            }
 
-				if( threadTask->isComplete() == true ||
-					threadTask->isCancel() == true )
-				{
-					continue;
-				}
+            uint32_t packetIterator = m_packetSize;
 
-				packet->addTask( threadTask );
+            while( m_threadTasks.empty() == false && packetIterator > 0 )
+            {
+                ThreadTaskInterfacePtr threadTask = m_threadTasks.front();
+                m_threadTasks.pop_front();
 
-				--packetIterator;
-			}
+                if( threadTask->isComplete() == true ||
+                    threadTask->isCancel() == true )
+                {
+                    continue;
+                }
 
-			if( packet->countTask() > 0 )
-			{
-				if( THREAD_SERVICE()
-					->addTask( m_threadName, packet ) == false )
-				{
-					uint32_t count = packet->countTask();
+                packet->addTask( threadTask );
 
-					for( uint32_t i = 0; i != count; ++i )
-					{
-						const ThreadTaskPtr & task = packet->getTask( i );
+                --packetIterator;
+            }
 
-						m_threadTasks.emplace_back( task );
-					}
+            if( packet->countTask() > 0 )
+            {
+                if( THREAD_SERVICE()
+                    ->addTask( m_threadName, packet ) == false )
+                {
+                    uint32_t count = packet->countTask();
 
-					return;
-				}
+                    for( uint32_t i = 0; i != count; ++i )
+                    {
+                        const ThreadTaskPtr & task = packet->getTask( i );
 
-				_currentTask = packet;
-			}
+                        m_threadTasks.emplace_back( task );
+                    }
 
-			if( _currentTask == nullptr )
-			{
-				return;
-			}
-		}
+                    return;
+                }
 
-		if( _currentTask->isComplete() == true ||
-			_currentTask->isCancel() == true )
-		{
-			_currentTask = nullptr;
+                _currentTask = packet;
+            }
 
-			return;
-		}
+            if( _currentTask == nullptr )
+            {
+                return;
+            }
+        }
 
-		return;
-	}
+        if( _currentTask->isComplete() == true ||
+            _currentTask->isCancel() == true )
+        {
+            _currentTask = nullptr;
+
+            return;
+        }
+
+        return;
+    }
 }

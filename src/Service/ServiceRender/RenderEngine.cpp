@@ -34,7 +34,7 @@ namespace Mengine
     //}
     //////////////////////////////////////////////////////////////////////////
     RenderEngine::RenderEngine()
-        : m_renderSystem(nullptr)
+        : m_renderSystem( nullptr )
         , m_windowCreated( false )
         , m_vsync( false )
         , m_fullscreen( false )
@@ -102,7 +102,7 @@ namespace Mengine
         m_debugInfo.fillrate = 0.f;
         m_debugInfo.object = 0;
         m_debugInfo.triangle = 0;
-        
+
         //m_megatextures = new Megatextures(2048.f, 2048.f, PF_A8R8G8B8);
 
         uint32_t batchMode = CONFIG_VALUE( "Engine", "RenderServiceBatchMode", 1 );
@@ -174,7 +174,7 @@ namespace Mengine
         m_currentRenderScissor = nullptr;
 
         m_currentProgram = nullptr;
-        
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderPass );
 
@@ -205,7 +205,7 @@ namespace Mengine
 
         uint32_t MultiSampleCount = CONFIG_VALUE( "Engine", "MultiSampleCount", 2U );
 
-        m_windowCreated = 
+        m_windowCreated =
             m_renderSystem->createRenderWindow( m_windowResolution, _bits, m_fullscreen, m_vsync, _FSAAType, _FSAAQuality, MultiSampleCount );
 
         if( m_windowCreated == false )
@@ -446,7 +446,7 @@ namespace Mengine
         {
             return;
         }
-        
+
         this->restoreRenderSystemStates_();
 
         m_nullTexture = nullptr;
@@ -687,7 +687,7 @@ namespace Mengine
         RenderTextureStage & stage = m_currentTextureStage[_stage];
 
         stage = RenderTextureStage();
-        
+
         stage.mipmap = RENDERMATERIAL_SERVICE()
             ->getDefaultTextureFilterMipmap();
 
@@ -720,7 +720,7 @@ namespace Mengine
         m_renderBatches.clear();
         m_renderPasses.clear();
         m_renderObjects.clear();
-        
+
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )
         {
             batch->vertexCount = 0U;
@@ -752,7 +752,7 @@ namespace Mengine
 
         m_renderSystem
             ->setProjectionMatrix( projectionMatrix );
-        
+
         m_currentRenderViewport = nullptr;
 
         uint32_t width = m_contentResolution.getWidth();
@@ -778,7 +778,7 @@ namespace Mengine
 
         m_renderSystem
             ->removeScissor();
-        
+
         m_currentMaterialId = 0;
         m_currentTextureStages = 0;
         m_currentStage = nullptr;
@@ -816,7 +816,7 @@ namespace Mengine
         LOGGER_INFO( "RenderEngine::restoreRenderSystemStates_ texture stages %d"
             , MENGINE_MAX_TEXTURE_STAGES
         );
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void RenderEngine::calcRenderViewport_( const Viewport & _viewport, Viewport & _renderViewport ) const
     {
@@ -1287,7 +1287,7 @@ namespace Mengine
         }
 #endif
 
-        if(m_renderObjects.full())
+        if( m_renderObjects.full() )
         {
             LOGGER_ERROR( "RenderEngine::renderObject2D max render objects %u"
                 , m_renderObjects.size()
@@ -1331,7 +1331,7 @@ namespace Mengine
 
         mt::scale_box( bb_homogenize, vp_scale );
         mt::transpose_box( bb_homogenize, vp.begin );
-        
+
         RenderMaterialInterfacePtr ro_material = _material;
 
         m_debugInfo.object += 1;
@@ -1497,11 +1497,11 @@ namespace Mengine
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )
         {
             const RenderVertexBufferInterfacePtr & vertexBuffer = batch->vertexBuffer;
-            
+
             if( vertexBuffer->resize( batch->vertexCount ) == false )
             {
                 LOGGER_ERROR( "failed to resize vertex buffer '%u'"
-                    , batch->vertexCount 
+                    , batch->vertexCount
                 );
 
                 return false;
@@ -1536,7 +1536,7 @@ namespace Mengine
             if( indexMemory == nullptr )
             {
                 LOGGER_ERROR( "failed to lock index buffer '%u'",
-                    batch->indexCount 
+                    batch->indexCount
                 );
 
                 return false;

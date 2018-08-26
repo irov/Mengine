@@ -8,41 +8,41 @@
 
 namespace Mengine
 {
-	struct TTFAtlas
-	{
-		uint32_t dimension;
+    struct TTFAtlas
+    {
+        uint32_t dimension;
         uint32_t channel;
 
-		typedef Vector<uint32_t> VectorFreeIndices;
-		VectorFreeIndices indices;
-        
-		RenderTextureInterfacePtr texture;
-	};
+        typedef Vector<uint32_t> VectorFreeIndices;
+        VectorFreeIndices indices;
 
-	class TTFAtlasService
-		: public ServiceBase<TTFAtlasServiceInterface>
-	{
-	public:
-		TTFAtlasService();
-		~TTFAtlasService() override;
+        RenderTextureInterfacePtr texture;
+    };
 
-	public:
-		bool _initializeService() override;
-		void _finalizeService() override;
+    class TTFAtlasService
+        : public ServiceBase<TTFAtlasServiceInterface>
+    {
+    public:
+        TTFAtlasService();
+        ~TTFAtlasService() override;
 
-	public:
-		RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv ) override;
-		
-	protected:
-		TTFAtlas * getAtlas_( uint32_t _index, uint32_t _channel );
+    public:
+        bool _initializeService() override;
+        void _finalizeService() override;
 
-	public:
-		typedef Vector<TTFAtlas> VectorAtlases;
-		typedef Vector<VectorAtlases> VectorAtlasess;
-		VectorAtlasess m_atlasess[3];
-        
-		uint32_t m_minAtlasPow;
-		uint32_t m_maxAtlasPow;
-		uint32_t m_maxAtlasWidth;
-	};
+    public:
+        RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv ) override;
+
+    protected:
+        TTFAtlas * getAtlas_( uint32_t _index, uint32_t _channel );
+
+    public:
+        typedef Vector<TTFAtlas> VectorAtlases;
+        typedef Vector<VectorAtlases> VectorAtlasess;
+        VectorAtlasess m_atlasess[3];
+
+        uint32_t m_minAtlasPow;
+        uint32_t m_maxAtlasPow;
+        uint32_t m_maxAtlasWidth;
+    };
 }

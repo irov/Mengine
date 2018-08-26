@@ -12,32 +12,32 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class TTFPrototypeGenerator
-		: public ServantBase<PrototypeGeneratorInterface>
-	{
-	public:
-		TTFPrototypeGenerator();
-		~TTFPrototypeGenerator() override;
+    //////////////////////////////////////////////////////////////////////////
+    class TTFPrototypeGenerator
+        : public ServantBase<PrototypeGeneratorInterface>
+    {
+    public:
+        TTFPrototypeGenerator();
+        ~TTFPrototypeGenerator() override;
 
-	public:
-		void setFTLibrary( FT_Library _ftlibrary );
+    public:
+        void setFTLibrary( FT_Library _ftlibrary );
 
-	public:
-		bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
+    public:
+        bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
 
-	public:
-		PointerFactorable generate() override;
+    public:
+        PointerFactorable generate() override;
 
-	public:
-		uint32_t count() const override;
+    public:
+        uint32_t count() const override;
 
-	protected:
-		FT_Library m_ftlibrary;
+    protected:
+        FT_Library m_ftlibrary;
 
-		FactoryPtr m_factoryFont;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<TTFPrototypeGenerator> TTFPrototypeGeneratorPtr;
-	//////////////////////////////////////////////////////////////////////////
+        FactoryPtr m_factoryFont;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<TTFPrototypeGenerator> TTFPrototypeGeneratorPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

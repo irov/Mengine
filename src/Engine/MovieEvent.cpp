@@ -6,35 +6,35 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MovieEvent::MovieEvent()
-        : m_resourceMovie(nullptr)
+        : m_resourceMovie( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     MovieEvent::~MovieEvent()
     {
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
-	void MovieEvent::setEvent( const pybind::object & _cb, const pybind::args & _args )
+    void MovieEvent::setEvent( const pybind::object & _cb, const pybind::args & _args )
     {
         m_cb = _cb;
-		m_args = _args;
+        m_args = _args;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void MovieEvent::removeEvent()
-	{
-		if( m_cb.is_invalid() == false && m_cb.is_callable() == true )
-		{
-			pybind::object cb = m_cb;
-			pybind::args args = m_args;
-
-			m_cb.reset();
-			m_args.reset();
-
-			cb.call_args( 0.f, false, args );
-		}
-	}
     //////////////////////////////////////////////////////////////////////////
-	void MovieEvent::setResourceMovie( const ResourceMoviePtr & _resourceMovie )
+    void MovieEvent::removeEvent()
+    {
+        if( m_cb.is_invalid() == false && m_cb.is_callable() == true )
+        {
+            pybind::object cb = m_cb;
+            pybind::args args = m_args;
+
+            m_cb.reset();
+            m_args.reset();
+
+            cb.call_args( 0.f, false, args );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MovieEvent::setResourceMovie( const ResourceMoviePtr & _resourceMovie )
     {
         m_resourceMovie = _resourceMovie;
     }
@@ -47,7 +47,7 @@ namespace Mengine
         {
             return;
         }
-        
+
         float layerIn = _layer.in;
         float layerOut = _layer.out;
 
@@ -63,15 +63,15 @@ namespace Mengine
 
         if( _beginFrame < indexIn && _endFrame >= indexIn )
         {
-			const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
+            const MovieFramePackInterfacePtr & framePack = m_resourceMovie->getFramePack();
 
             MovieFrameSource frame;
-			if( framePack->getLayerFrame( _layer.index, 0, frame ) == false )
+            if( framePack->getLayerFrame( _layer.index, 0, frame ) == false )
             {
                 return;
             }
-            
-			m_cb.call_args( frame.position, true, m_args );
+
+            m_cb.call_args( frame.position, true, m_args );
         }
     }
 }

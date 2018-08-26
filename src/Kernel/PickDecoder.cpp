@@ -2,10 +2,10 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	PickDecoder::PickDecoder()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    PickDecoder::PickDecoder()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     bool PickDecoder::setOptions( const CodecOptions * _options )
     {
@@ -23,14 +23,14 @@ namespace Mengine
     {
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void PickDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
-	{
-		m_dataInfo = *static_cast<const PickCodecDataInfo *>(_dataInfo);
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const PickCodecDataInfo * PickDecoder::getCodecDataInfo() const 
-	{
-		return &m_dataInfo;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    void PickDecoder::setCodecDataInfo( const CodecDataInfo * _dataInfo )
+    {
+        m_dataInfo = *static_cast<const PickCodecDataInfo *>(_dataInfo);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const PickCodecDataInfo * PickDecoder::getCodecDataInfo() const
+    {
+        return &m_dataInfo;
+    }
 }

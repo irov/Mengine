@@ -82,16 +82,16 @@ namespace Mengine
 
         using VectorSamplerOzzAnimations = Vector<SamplerDesc>;
         VectorSamplerOzzAnimations m_samplerOzzAnimations;
-        
+
         ozz::Range<ozz::math::SoaTransform> m_blendedLocals;
-                
+
         ozz::Range<ozz::math::Float4x4> m_models;
         ozz::Range<ozz::math::Float4x4> m_skinningMatrices;
 
         ozz::Range<ozz::math::SimdFloat4> m_upperBodyJointWeights;
 
         int m_upperBodyRoot;
-                
+
         MemoryBufferInterfacePtr m_vertexMemory;
         RenderVertexBufferInterfacePtr m_vertexBuffer;
         RenderIndexBufferInterfacePtr m_indexBuffer;

@@ -8,60 +8,60 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
     SurfaceImage::SurfaceImage()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     SurfaceImage::~SurfaceImage()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceImage::setResourceImage( const ResourceImagePtr & _resourceImage )
-	{
-		if( m_resourceImage == _resourceImage )
-		{
-			return;
-		}
-        
-        this->recompile( [this, _resourceImage]() {m_resourceImage = _resourceImage; } );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ResourceImagePtr & SurfaceImage::getResourceImage() const
-	{
-		return m_resourceImage;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool SurfaceImage::_compile()
-	{
-		if( m_resourceImage == nullptr )
-		{
-			LOGGER_ERROR("SurfaceImage::_compile: '%s' resource is null"
-				, this->getName().c_str()
-				);
-
-			return false;
-		}
-
-        if( m_resourceImage.compile() == false )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceImage::setResourceImage( const ResourceImagePtr & _resourceImage )
+    {
+        if( m_resourceImage == _resourceImage )
         {
-            LOGGER_ERROR("SurfaceImage::_compile: '%s' resource '%s' is not compile"
+            return;
+        }
+
+        this->recompile( [this, _resourceImage]() {m_resourceImage = _resourceImage; } );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & SurfaceImage::getResourceImage() const
+    {
+        return m_resourceImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SurfaceImage::_compile()
+    {
+        if( m_resourceImage == nullptr )
+        {
+            LOGGER_ERROR( "SurfaceImage::_compile: '%s' resource is null"
                 , this->getName().c_str()
-                , m_resourceImage->getName().c_str()
-                );
+            );
 
             return false;
         }
 
-		this->invalidateMaterial();
-		
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void SurfaceImage::_release()
-	{
+        if( m_resourceImage.compile() == false )
+        {
+            LOGGER_ERROR( "SurfaceImage::_compile: '%s' resource '%s' is not compile"
+                , this->getName().c_str()
+                , m_resourceImage->getName().c_str()
+            );
+
+            return false;
+        }
+
+        this->invalidateMaterial();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceImage::_release()
+    {
         m_resourceImage.release();
-	}
+    }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImage::_update( const UpdateContext * _context )
     {
@@ -74,9 +74,9 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR("SurfaceImage.getMaxSize: '%s' not compile"
+            LOGGER_ERROR( "SurfaceImage.getMaxSize: '%s' not compile"
                 , this->getName().c_str()
-                );
+            );
 
             return mt::vec2f::identity();
         }
@@ -90,9 +90,9 @@ namespace Mengine
     {
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR("SurfaceImage.getSize: '%s' not setup resource"
+            LOGGER_ERROR( "SurfaceImage.getSize: '%s' not setup resource"
                 , this->getName().c_str()
-                );
+            );
 
             return mt::vec2f::identity();
         }
@@ -106,9 +106,9 @@ namespace Mengine
     {
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR("SurfaceImage.getOffset: '%s' not setup resource"
+            LOGGER_ERROR( "SurfaceImage.getOffset: '%s' not setup resource"
                 , this->getName().c_str()
-                );
+            );
 
             return mt::vec2f::identity();
         }
@@ -122,9 +122,9 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR("SurfaceImage.getUVCount: '%s' not compile"
+            LOGGER_ERROR( "SurfaceImage.getUVCount: '%s' not compile"
                 , this->getName().c_str()
-                );
+            );
 
             return 0;
         }
@@ -150,9 +150,9 @@ namespace Mengine
     {
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR("SurfaceImage.getUV: '%s' not setup texture"
+            LOGGER_ERROR( "SurfaceImage.getUV: '%s' not setup texture"
                 , this->getName().c_str()
-                );
+            );
 
             return mt::uv4f::identity();
         }
@@ -198,7 +198,7 @@ namespace Mengine
             } break;
         case 1:
             {
-                m_resourceImage->correctUVAlpha( _out, _in );                
+                m_resourceImage->correctUVAlpha( _out, _in );
             } break;
         default:
             {
@@ -210,9 +210,9 @@ namespace Mengine
     {
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR("SurfaceImage.getColour: '%s' not setup texture"
+            LOGGER_ERROR( "SurfaceImage.getColour: '%s' not setup texture"
                 , this->getName().c_str()
-                );
+            );
 
             return ColourValue::identity();
         }
@@ -221,22 +221,22 @@ namespace Mengine
 
         return color;
     }
-	//////////////////////////////////////////////////////////////////////////
-	RenderMaterialInterfacePtr SurfaceImage::_updateMaterial() const
-	{	
-		RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false );
+    //////////////////////////////////////////////////////////////////////////
+    RenderMaterialInterfacePtr SurfaceImage::_updateMaterial() const
+    {
+        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false );
 
-		if( material == nullptr )
-		{
-			LOGGER_ERROR("SurfaceImage::updateMaterial_ %s resource %s m_material is NULL"
-				, this->getName().c_str()
-				, m_resourceImage->getName().c_str()
-				);
+        if( material == nullptr )
+        {
+            LOGGER_ERROR( "SurfaceImage::updateMaterial_ %s resource %s m_material is NULL"
+                , this->getName().c_str()
+                , m_resourceImage->getName().c_str()
+            );
 
-			return nullptr;
-		}
+            return nullptr;
+        }
 
-		return material;
-	}
-	//////////////////////////////////////////////////////////////////////////
+        return material;
+    }
+    //////////////////////////////////////////////////////////////////////////
 }

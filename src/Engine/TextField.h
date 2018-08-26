@@ -50,7 +50,7 @@ namespace Mengine
         const VectorString & getTextFormatArgs() const;
 
     public:
-		uint32_t getTextExpectedArgument() const;
+        uint32_t getTextExpectedArgument() const;
 
     protected:
         bool updateTextCache_( U32String & _cacheText ) const;
@@ -106,7 +106,7 @@ namespace Mengine
 
     protected:
         void _render( const RenderContext * _state ) override;
-        
+
     protected:
         bool _activate() override;
         void _deactivate() override;
@@ -202,7 +202,7 @@ namespace Mengine
         bool m_pixelsnap;
 
         bool m_debugMode;
-        
+
         typedef Vector<TextLine> VectorTextLine;
         typedef Vector<VectorTextLine> VectorTextLine2;
         typedef Vector<VectorTextLine2> VectorTextLineLayout;

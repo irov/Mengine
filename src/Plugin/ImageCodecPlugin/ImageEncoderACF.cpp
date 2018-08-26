@@ -10,71 +10,71 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderACF::ImageEncoderACF()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	ImageEncoderACF::~ImageEncoderACF()
-	{
-	}
-	//////////////////////////////////////////////////////////////////////////
-	bool ImageEncoderACF::_initialize()
-	{
+    //////////////////////////////////////////////////////////////////////////
+    ImageEncoderACF::ImageEncoderACF()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ImageEncoderACF::~ImageEncoderACF()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ImageEncoderACF::_initialize()
+    {
         const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
-			->getArchivator( STRINGIZE_STRING_LOCAL( "lz4") );
+            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
 
-		if( archivator == nullptr )
-		{
-			return false;
-		}
+        if( archivator == nullptr )
+        {
+            return false;
+        }
 
         m_archivator = archivator;
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	size_t ImageEncoderACF::encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo )
-	{
-		(void)_size;
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t ImageEncoderACF::encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo )
+    {
+        (void)_size;
 
-		if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER(MAGIC_ACF), GET_MAGIC_VERSION(MAGIC_ACF) ) == false )
-		{
-			LOGGER_ERROR("ImageEncoderACF::encode invalid write magic header"
-				);
+        if( Helper::writeStreamMagicHeader( m_stream, GET_MAGIC_NUMBER( MAGIC_ACF ), GET_MAGIC_VERSION( MAGIC_ACF ) ) == false )
+        {
+            LOGGER_ERROR( "ImageEncoderACF::encode invalid write magic header"
+            );
 
-			return 0;
-		}
+            return 0;
+        }
 
-		const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_bufferDataInfo);
-				
-		uint32_t width = dataInfo->width;
-        m_stream->write( &width, sizeof(width) );
+        const ImageCodecDataInfo * dataInfo = static_cast<const ImageCodecDataInfo *>(_bufferDataInfo);
 
-		uint32_t height = dataInfo->height;
-        m_stream->write( &height, sizeof(height) );
+        uint32_t width = dataInfo->width;
+        m_stream->write( &width, sizeof( width ) );
 
-		uint32_t mipmaps = dataInfo->mipmaps;
-		m_stream->write( &mipmaps, sizeof(mipmaps) );
+        uint32_t height = dataInfo->height;
+        m_stream->write( &height, sizeof( height ) );
 
-		const uint8_t * mipmap_buffer = reinterpret_cast<const uint8_t *>(_buffer);
+        uint32_t mipmaps = dataInfo->mipmaps;
+        m_stream->write( &mipmaps, sizeof( mipmaps ) );
 
-		for( uint32_t i = 0; i != mipmaps; ++i )
-		{   
+        const uint8_t * mipmap_buffer = reinterpret_cast<const uint8_t *>(_buffer);
+
+        for( uint32_t i = 0; i != mipmaps; ++i )
+        {
             uint32_t mipmap_size = dataInfo->getMipMapSize( i );
 
-			if( Helper::writeStreamArchiveBuffer( m_stream, m_archivator, false, mipmap_buffer, mipmap_size, EAC_BEST ) == false )
-			{
-				LOGGER_ERROR("ImageEncoderACF::encode invalid write buffer"
-					);
+            if( Helper::writeStreamArchiveBuffer( m_stream, m_archivator, false, mipmap_buffer, mipmap_size, EAC_BEST ) == false )
+            {
+                LOGGER_ERROR( "ImageEncoderACF::encode invalid write buffer"
+                );
 
-				return 0;
-			}
+                return 0;
+            }
 
-			mipmap_buffer += mipmap_size;
-		}
+            mipmap_buffer += mipmap_size;
+        }
 
-		return 1;
-	}
-	//////////////////////////////////////////////////////////////////////////
-}	
+        return 1;
+    }
+    //////////////////////////////////////////////////////////////////////////
+}

@@ -13,30 +13,30 @@ namespace Mengine
         : public ServantBase<RenderFragmentShaderInterface>
     {
     public:
-		DX9RenderFragmentShader();
-		~DX9RenderFragmentShader() override;
+        DX9RenderFragmentShader();
+        ~DX9RenderFragmentShader() override;
 
-	public:
-		const ConstString & getName() const override;
+    public:
+        const ConstString & getName() const override;
 
-	public:
-		bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile );
+    public:
+        bool initialize( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile );
 
-	public:
-		bool compile( IDirect3DDevice9 * _pD3DDevice );
+    public:
+        bool compile( IDirect3DDevice9 * _pD3DDevice );
 
-	public:
-		bool enable( IDirect3DDevice9 * _pD3DDevice );
+    public:
+        bool enable( IDirect3DDevice9 * _pD3DDevice );
 
-	protected:
+    protected:
         IDirect3DPixelShader9 * m_shader;
 
-		ConstString m_name;
+        ConstString m_name;
 
-		MemoryInterfacePtr m_memory;
+        MemoryInterfacePtr m_memory;
 
-        bool m_compile;		
+        bool m_compile;
     };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<DX9RenderFragmentShader> DX9RenderFragmentShaderPtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<DX9RenderFragmentShader> DX9RenderFragmentShaderPtr;
 }

@@ -127,7 +127,7 @@ namespace Mengine
 
         new_receiver.prefetcher = task;
 
-        m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup->getName(), _filePath ), new_receiver ) );
+        m_prefetchReceiver.emplace( std::make_pair( _fileGroup->getName(), _filePath ), new_receiver );
 
         m_threadQueue->addTask( task );
 
@@ -202,7 +202,7 @@ namespace Mengine
 
         new_receiver.prefetcher = task;
 
-        m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup->getName(), _filePath ), new_receiver ) );
+        m_prefetchReceiver.emplace( std::make_pair( _fileGroup->getName(), _filePath ), new_receiver );
 
         m_threadQueue->addTask( task );
 
@@ -292,7 +292,7 @@ namespace Mengine
 
         new_receiver.prefetcher = task;
 
-        m_prefetchReceiver.insert( std::make_pair( std::make_pair( _fileGroup->getName(), _filePath ), new_receiver ) );
+        m_prefetchReceiver.emplace( std::make_pair( _fileGroup->getName(), _filePath ), new_receiver );
 
         m_threadQueue->addTask( task );
 

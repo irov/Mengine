@@ -62,7 +62,7 @@ namespace Mengine
         float m_textureInvWidth;
         float m_textureInvHeight;
 
-        typedef std::vector<BitmapGlyphChar> VectorGlyphChar;
+        typedef Vector<BitmapGlyphChar> VectorGlyphChar;
         VectorGlyphChar m_chars[257];
 
         struct KerningDesc
@@ -72,7 +72,7 @@ namespace Mengine
             float kerning;
         };
 
-        typedef std::vector<KerningDesc> VectorKerning;
+        typedef Vector<KerningDesc> VectorKerning;
         VectorKerning m_kernings[257];
     };
     //////////////////////////////////////////////////////////////////////////

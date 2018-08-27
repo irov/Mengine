@@ -98,10 +98,7 @@ Object\\\\HotSpot
 	HotSpotShape.cpp
 	HotSpotShape.h
     HotSpotCircle.cpp
-    HotSpotCircle.h
-    
-    HotspotMousePickerVisitor.h
-    HotspotMousePickerVisitor.cpp
+    HotSpotCircle.h    
 )
 
 ADD_FILTER(

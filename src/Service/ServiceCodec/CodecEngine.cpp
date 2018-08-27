@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CodecEngine::registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory )
     {
-        m_mapDecoderSystem.insert( std::make_pair( _type, _factory ) );
+        m_mapDecoderSystem.emplace( _type, _factory );
 
         return true;
     }
@@ -36,7 +36,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CodecEngine::registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory )
     {
-        m_mapEncoderSystem.insert( std::make_pair( _type, _factory ) );
+        m_mapEncoderSystem.emplace( _type, _factory );
 
         return true;
     }
@@ -114,7 +114,7 @@ namespace Mengine
             return false;
         }
 
-        m_codecTypes.insert( std::make_pair( _ext, _codecType ) );
+        m_codecTypes.emplace( _ext, _codecType );
 
         return true;
     }

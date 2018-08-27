@@ -995,11 +995,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::mouseMove( const InputMouseMoveEvent& _event )
     {
-        float x = _event.x;
-        float y = _event.y;
-
+        float vx;
+        float vy;
         if( INPUT_SERVICE()
-            ->validCursorPosition( x, y ) == false )
+            ->validCursorPosition( _event.x, _event.y, &vx, &vy ) == false )
         {
             m_mouseEnter = false;
 
@@ -1011,8 +1010,8 @@ namespace Mengine
             InputMousePositionEvent ne;
             ne.type = IET_MOUSE_ENTER;
             ne.touchId = _event.touchId;
-            ne.x = x;
-            ne.y = y;
+            ne.x = vx;
+            ne.y = vy;
             ne.pressure = _event.pressure;
 
             this->mouseEnter( ne );
@@ -1042,11 +1041,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::mousePosition( const InputMousePositionEvent & _event )
     {
-        float x = _event.x;
-        float y = _event.y;
+        float vx;
+        float vy;
 
         if( INPUT_SERVICE()
-            ->validCursorPosition( x, y ) == false )
+            ->validCursorPosition( _event.x, _event.y, &vx, &vy ) == false )
         {
             m_mouseEnter = false;
 
@@ -1058,8 +1057,8 @@ namespace Mengine
             InputMousePositionEvent ne;
             ne.type = IET_MOUSE_ENTER;
             ne.touchId = _event.touchId;
-            ne.x = x;
-            ne.y = y;
+            ne.x = vx;
+            ne.y = vy;
             ne.pressure = _event.pressure;
 
             this->mouseEnter( ne );
@@ -1071,16 +1070,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::mouseEnter( const InputMousePositionEvent & _event )
     {
-        float x = _event.x;
-        float y = _event.y;
+        float vx;
+        float vy;
 
         if( INPUT_SERVICE()
-            ->validCursorPosition( x, y ) == false )
+            ->validCursorPosition( _event.x, _event.y, &vx, &vy ) == false )
         {
             return;
         }
 
         m_mouseEnter = true;
+
+        InputMousePositionEvent vevent = _event;
+        vevent.x = vx;
+        vevent.y = vy;
 
         GAME_SERVICE()
             ->mouseEnter( _event );

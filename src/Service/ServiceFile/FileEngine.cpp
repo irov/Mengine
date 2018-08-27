@@ -49,7 +49,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FileEngine::registerFileGroupFactory( const ConstString & _type, const FactoryPtr & _factory )
     {
-        m_factoryFileGroups.insert( std::make_pair( _type, _factory ) );
+        m_factoryFileGroups.emplace( _type, _factory );
     }
     //////////////////////////////////////////////////////////////////////////
     void FileEngine::unregisterFileGroupFactory( const ConstString & _type )
@@ -150,7 +150,7 @@ namespace Mengine
             *_fileGroup = fileGroup;
         }
 
-        m_fileSystemMap.insert( std::make_pair( _name, fileGroup ) );
+        m_fileSystemMap.emplace( _name, fileGroup );
 
         return true;
     }

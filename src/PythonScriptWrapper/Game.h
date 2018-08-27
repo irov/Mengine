@@ -200,7 +200,7 @@ namespace Mengine
             MapWParams params;
         };
 
-        typedef std::vector<UserEvent> VectorUserEvents;
+        typedef Vector<UserEvent> VectorUserEvents;
         VectorUserEvents m_userEventsAdd;
         VectorUserEvents m_userEvents;
 

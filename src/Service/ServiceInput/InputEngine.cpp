@@ -47,44 +47,44 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputEngine::update()
     {
-        m_events = m_eventsAdd;
+        std::swap( m_events, m_eventsAdd );
         m_eventsAdd.clear();
 
-        for( const InputUnionEvent & event : m_events )
+        for( const InputUnionEvent & ev : m_events )
         {
-            switch( event.type )
+            switch( ev.type )
             {
             case IET_KEY:
                 {
-                    this->keyEvent_( event.key );
+                    this->keyEvent_( ev.key );
                 }break;
             case IET_TEXT:
                 {
-                    this->textEvent_( event.text );
+                    this->textEvent_( ev.text );
                 }break;
             case IET_MOUSE_BUTTON:
                 {
-                    this->mouseButtonEvent_( event.button );
+                    this->mouseButtonEvent_( ev.button );
                 }break;
             case IET_MOUSE_WHELL:
                 {
-                    this->mouseWheelEvent_( event.wheel );
+                    this->mouseWheelEvent_( ev.wheel );
                 }break;
             case IET_MOUSE_MOVE:
                 {
-                    this->mouseMoveEvent_( event.move );
+                    this->mouseMoveEvent_( ev.move );
                 }break;
             case IET_MOUSE_POSITION:
                 {
-                    this->mousePositionEvent_( event.position );
+                    this->mousePositionEvent_( ev.position );
                 }break;
             case IET_MOUSE_ENTER:
                 {
-                    this->mouseEnterEvent_( event.position );
+                    this->mouseEnterEvent_( ev.position );
                 }break;
             case IET_MOUSE_LEAVE:
                 {
-                    this->mouseLeaveEvent_( event.position );
+                    this->mouseLeaveEvent_( ev.position );
                 }
             }
         }
@@ -195,34 +195,42 @@ namespace Mengine
         return m_mouseBuffer[_button];
     }
     //////////////////////////////////////////////////////////////////////////
-    bool InputEngine::validCursorPosition( float & _x, float & _y ) const
+    bool InputEngine::validCursorPosition( float _x, float _y, float * _vx, float * _vy ) const
     {
         bool inside = true;
 
         if( _x < 0.f )
         {
-            _x = 0.f;
+            *_vx = 0.f;
 
             inside = false;
         }
         else if( _x > 1.f )
         {
-            _x = 1.f;
+            *_vx = 1.f;
 
             inside = false;
+        }
+        else
+        {
+            *_vx = _x;
         }
 
         if( _y < 0.f )
         {
-            _y = 0.f;
+            *_vy = 0.f;
 
             inside = false;
         }
         else if( _y > 1.f )
         {
-            _y = 1.f;
+            *_vy = 1.f;
 
             inside = false;
+        }
+        else
+        {
+            *_vy = _y;
         }
 
         return inside;

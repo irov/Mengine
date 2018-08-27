@@ -460,7 +460,7 @@ namespace Mengine
                     return false;
                 }
 
-                _values.insert( std::make_pair( c_key, w_value ) );
+                _values.emplace( c_key, w_value );
             }
 
             return true;

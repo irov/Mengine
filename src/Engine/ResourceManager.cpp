@@ -515,7 +515,7 @@ namespace Mengine
         uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
         MapResources & resources = m_resources[table];
 
-        std::pair<MapResources::iterator, bool> insert_result = resources.insert( std::make_pair( _name, entry ) );
+        std::pair<MapResources::iterator, bool> insert_result = resources.emplace( _name, entry );
 
         ResourceCacheKey cache_key = std::make_pair( _category->getName(), _groupName );
 

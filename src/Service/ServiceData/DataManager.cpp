@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DataManager::registerDataflow( const ConstString& _type, const DataflowInterfacePtr & _dataflow )
     {
-        m_dataflows.insert( std::make_pair( _type, _dataflow ) );
+        m_dataflows.emplace( _type, _dataflow );
     }
     //////////////////////////////////////////////////////////////////////////
     void DataManager::unregisterDataflow( const ConstString& _type )

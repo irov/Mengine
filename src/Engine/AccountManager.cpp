@@ -153,7 +153,7 @@ namespace Mengine
 
         m_currentAccountID = newAccount->getID();
 
-        m_accounts.insert( std::make_pair( _accountID, newAccount ) );
+        m_accounts.emplace( _accountID, newAccount );
 
         if( m_accountProvider != nullptr )
         {
@@ -200,7 +200,7 @@ namespace Mengine
 
         m_globalAccountID = newAccount->getID();
 
-        m_accounts.insert( std::make_pair( _accountID, newAccount ) );
+        m_accounts.emplace( _accountID, newAccount );
 
         newAccount->apply();
 
@@ -556,7 +556,7 @@ namespace Mengine
                 return false;
             }
 
-            m_accounts.insert( std::make_pair( accountID, account ) );
+            m_accounts.emplace( accountID, account );
 
             if( this->loadAccount_( account ) == false )
             {

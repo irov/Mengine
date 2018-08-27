@@ -25,7 +25,7 @@ namespace Mengine
             , _type.c_str()
         );
 
-        m_mapConverterSystem.insert( std::make_pair( _type, _factory ) );
+        m_mapConverterSystem.emplace( _type, _factory );
 
         return true;
     }

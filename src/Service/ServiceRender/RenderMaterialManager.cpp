@@ -252,7 +252,7 @@ namespace Mengine
                 return false;
             }
 
-            m_fragmentShaders.insert( std::make_pair( name, shader ) );
+            m_fragmentShaders.emplace( name, shader );
         }
 
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexShader & includes_VertexShader = datablock.get_Includes_VertexShader();
@@ -293,7 +293,7 @@ namespace Mengine
                 return false;
             }
 
-            m_vertexShaders.insert( std::make_pair( name, shader ) );
+            m_vertexShaders.emplace( name, shader );
         }
 
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_VertexAttribute & includes_VertexAttribute = datablock.get_Includes_VertexAttribute();
@@ -333,7 +333,7 @@ namespace Mengine
                 vertexAttribute->addAttribute( attribute_uniform, attribute_size, attribute_type, attribute_normalized, attribute_stride, attribute_offset );
             }
 
-            m_vertexAttributes.insert( std::make_pair( name, vertexAttribute ) );
+            m_vertexAttributes.emplace( name, vertexAttribute );
         }
 
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Program & includes_Program = datablock.get_Includes_Program();
@@ -419,7 +419,7 @@ namespace Mengine
                 return false;
             }
 
-            m_programs.insert( std::make_pair( name, program ) );
+            m_programs.emplace( name, program );
         }
 
         const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Material & includes_Material = datablock.get_Includes_Material();
@@ -507,7 +507,7 @@ namespace Mengine
                 return false;
             }
 
-            m_materialStageIndexer.insert( std::make_pair( name, cache_stage ) );
+            m_materialStageIndexer.emplace( name, cache_stage );
 
             MapDefaultStagesName::const_iterator it_stage_found = m_defaultStagesEnum.find( name );
 

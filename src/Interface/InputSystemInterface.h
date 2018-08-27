@@ -384,7 +384,7 @@ namespace Mengine
 
         virtual void setCursorPosition( uint32_t _touchId, const mt::vec2f & _point ) = 0;
         virtual const mt::vec2f & getCursorPosition( uint32_t _touchId ) const = 0;
-        virtual bool validCursorPosition( float & _x, float & _y ) const = 0;
+        virtual bool validCursorPosition( float _x, float _y, float * _vx, float * _vy ) const = 0;
 
         virtual uint32_t addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider ) = 0;
         virtual void removeMousePositionProvider( uint32_t _id ) = 0;
@@ -398,137 +398,153 @@ namespace Mengine
     public:
         inline void pushMouseMoveEvent( uint32_t _touchId, float _x, float _y, float _dx, float _dy, float _pressure )
         {
-            if( this->validCursorPosition( _x, _y ) == false )
+            float vx;
+            float vy;
+            if( this->validCursorPosition( _x, _y, &vx, &vy ) == false )
             {
                 return;
             }
 
-            InputUnionEvent event;
-            event.move.type = IET_MOUSE_MOVE;
+            InputUnionEvent ev;
+            ev.move.type = IET_MOUSE_MOVE;
 
-            event.move.touchId = _touchId;
-            event.move.x = _x;
-            event.move.y = _y;
-            event.move.dx = _dx;
-            event.move.dy = _dy;
-            event.move.pressure = _pressure;
+            ev.move.touchId = _touchId;
+            ev.move.x = vx;
+            ev.move.y = vy;
+            ev.move.dx = _dx;
+            ev.move.dy = _dy;
+            ev.move.pressure = _pressure;
 
-            this->pushEvent( event );
+            this->pushEvent( ev );
         }
 
         inline void pushMouseButtonEvent( uint32_t _touchId, float _x, float _y, uint32_t _button, float _pressure, bool _isDown )
         {
-            if( this->validCursorPosition( _x, _y ) == false )
+            float vx;
+            float vy;
+            if( this->validCursorPosition( _x, _y, &vx, &vy ) == false )
             {
                 return;
             }
 
-            InputUnionEvent event;
-            event.button.type = IET_MOUSE_BUTTON;
+            InputUnionEvent ev;
+            ev.button.type = IET_MOUSE_BUTTON;
 
-            event.button.touchId = _touchId;
-            event.button.x = _x;
-            event.button.y = _y;
-            event.button.button = _button;
-            event.button.pressure = _pressure;
-            event.button.isDown = _isDown;
-            event.button.isPressed = true;
+            ev.button.touchId = _touchId;
+            ev.button.x = vx;
+            ev.button.y = vy;
+            ev.button.button = _button;
+            ev.button.pressure = _pressure;
+            ev.button.isDown = _isDown;
+            ev.button.isPressed = true;
 
-            this->pushEvent( event );
+            this->pushEvent( ev );
         }
 
         inline void pushKeyEvent( float _x, float _y, KeyCode _code, bool _isDown, bool _repeating )
         {
-            this->validCursorPosition( _x, _y );
+            float vx;
+            float vy;
+            this->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputUnionEvent event;
-            event.key.type = IET_KEY;
+            InputUnionEvent ev;
+            ev.key.type = IET_KEY;
 
-            event.key.x = _x;
-            event.key.y = _y;
-            event.key.code = _code;
-            event.key.isDown = _isDown;
-            event.key.isRepeat = _repeating;
+            ev.key.x = vx;
+            ev.key.y = vy;
+            ev.key.code = _code;
+            ev.key.isDown = _isDown;
+            ev.key.isRepeat = _repeating;
 
-            this->pushEvent( event );
+            this->pushEvent( ev );
         }
 
         inline void pushTextEvent( float _x, float _y, WChar _key )
         {
-            this->validCursorPosition( _x, _y );
+            float vx;
+            float vy;
+            this->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputUnionEvent event;
-            event.text.type = IET_TEXT;
+            InputUnionEvent ev;
+            ev.text.type = IET_TEXT;
 
-            event.text.x = _x;
-            event.text.y = _y;
-            event.text.key = _key;
+            ev.text.x = vx;
+            ev.text.y = vy;
+            ev.text.key = _key;
 
-            this->pushEvent( event );
+            this->pushEvent( ev );
         }
 
         inline void pushMouseLeaveEvent( uint32_t _touchId, float _x, float _y, float _pressure )
         {
-            this->validCursorPosition( _x, _y );
+            float vx;
+            float vy;
+            this->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputUnionEvent event;
-            event.position.type = IET_MOUSE_LEAVE;
+            InputUnionEvent ev;
+            ev.position.type = IET_MOUSE_LEAVE;
 
-            event.position.touchId = _touchId;
-            event.position.x = _x;
-            event.position.y = _y;
-            event.position.pressure = _pressure;
+            ev.position.touchId = _touchId;
+            ev.position.x = vx;
+            ev.position.y = vy;
+            ev.position.pressure = _pressure;
 
-            this->pushEvent( event );
+            this->pushEvent( ev );
         }
 
         //////////////////////////////////////////////////////////////////////////
         inline void pushMouseEnterEvent( uint32_t _touchId, float _x, float _y, float _pressure )
         {
-            this->validCursorPosition( _x, _y );
+            float vx;
+            float vy;
+            this->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputUnionEvent event;
-            event.position.type = IET_MOUSE_ENTER;
+            InputUnionEvent ev;
+            ev.position.type = IET_MOUSE_ENTER;
 
-            event.position.touchId = _touchId;
-            event.position.x = _x;
-            event.position.y = _y;
-            event.position.pressure = _pressure;
+            ev.position.touchId = _touchId;
+            ev.position.x = vx;
+            ev.position.y = vy;
+            ev.position.pressure = _pressure;
 
-            this->pushEvent( event );
+            this->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
         inline void pushMouseWheelEvent( float _x, float _y, uint32_t _button, int _whell )
         {
-            this->validCursorPosition( _x, _y );
+            float vx;
+            float vy;
+            this->validCursorPosition( _x, _y, &vx, &vy );
 
-            InputUnionEvent event;
-            event.wheel.type = IET_MOUSE_WHELL;
+            InputUnionEvent ev;
+            ev.wheel.type = IET_MOUSE_WHELL;
 
-            event.wheel.x = _x;
-            event.wheel.y = _y;
-            event.wheel.button = _button;
-            event.wheel.wheel = _whell;
+            ev.wheel.x = vx;
+            ev.wheel.y = vy;
+            ev.wheel.button = _button;
+            ev.wheel.wheel = _whell;
 
-            this->pushEvent( event );
+            this->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
         inline void pushMousePositionEvent( uint32_t _touchId, float _x, float _y, float _pressure )
         {
-            if( this->validCursorPosition( _x, _y ) == false )
+            float vx;
+            float vy;
+            if( this->validCursorPosition( _x, _y, &vx, &vy ) == false )
             {
                 return;
             }
 
-            InputUnionEvent event;
-            event.position.type = IET_MOUSE_POSITION;
+            InputUnionEvent ev;
+            ev.position.type = IET_MOUSE_POSITION;
 
-            event.position.touchId = _touchId;
-            event.position.x = _x;
-            event.position.y = _y;
-            event.position.pressure = _pressure;
+            ev.position.touchId = _touchId;
+            ev.position.x = vx;
+            ev.position.y = vy;
+            ev.position.pressure = _pressure;
 
-            this->pushEvent( event );
+            this->pushEvent( ev );
         }
     };
 

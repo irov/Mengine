@@ -35,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleService::registerModule( const ConstString & _name, const ModuleFactoryInterfacePtr & _module )
     {
-        m_moduleFactory.insert( std::make_pair( _name, _module ) );
+        m_moduleFactory.emplace( _name, _module );
 
         return true;
     }

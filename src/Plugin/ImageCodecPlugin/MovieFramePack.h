@@ -2,13 +2,12 @@
 
 #include "Interface/MovieKeyFrameInterface.h"
 
+#include "Config/Typedef.h"
+
 #include "math/vec2.h"
 #include "math/vec3.h"
 
 #include "Config/Vector.h"
-
-#include <stdint.h>
-#include <memory.h>
 
 namespace Mengine
 {

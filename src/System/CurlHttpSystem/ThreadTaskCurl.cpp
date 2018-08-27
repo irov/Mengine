@@ -5,8 +5,6 @@
 
 #include "Kernel/Logger.h"
 
-#include <sstream>
-
 namespace Mengine
 {
 

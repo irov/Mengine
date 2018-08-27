@@ -1,11 +1,10 @@
 #pragma once
 
+#include "Config/Typedef.h"
 #include "Config/Vector.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
-
-#include <stdint.h>
 
 #ifndef MENGINE_RENDER_VERTEX_UV_COUNT
 #   define MENGINE_RENDER_VERTEX_UV_COUNT 2

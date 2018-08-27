@@ -161,8 +161,6 @@
 #include "stdex/xml_sax_parser.h"
 #include "utf8.h"
 
-#include <sstream>
-
 #include <math.h>
 
 namespace Mengine

@@ -8,10 +8,6 @@
 #include "Kernel/Exception.h"
 #include "Kernel/Typename.h"
 
-#ifndef NDEBUG
-#include <typeinfo>
-#endif
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

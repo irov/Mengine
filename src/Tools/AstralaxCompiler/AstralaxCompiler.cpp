@@ -1,19 +1,19 @@
-#	include "ToolUtils/ToolUtils.h"
+#include "ToolUtils/ToolUtils.h"
 
-#   include "Interface/ParticleSystemInterface.h"
+#include "Interface/ParticleSystemInterface.h"
 
-#	include "magic.h"
+#include "magic.h"
 
-#   include "lz4.h"
-#   include "lz4hc.h"
+#include "lz4.h"
+#include "lz4hc.h"
 
-#	include <vector>
-#	include <string>
-#	include <sstream>
+#include <vector>
+#include <string>
+#include <sstream>
 
-#	include "Kernel/Magic.h"
-#	include "Kernel/Logger.h"
-#	include "ToolUtils/ToolUtils.h"
+#include "Kernel/Magic.h"
+#include "Kernel/Logger.h"
+#include "ToolUtils/ToolUtils.h"
 
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )

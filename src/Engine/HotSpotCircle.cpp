@@ -4,6 +4,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/Config.h"
+
 #include "math/angle.h"
 
 namespace Mengine

@@ -1,11 +1,11 @@
 #pragma once
 
+#include "Config/Atomic.h"
+
 #include "Interface/ThreadInterface.h"
 
 #include "Kernel/ServantBase.h"
 #include "Kernel/Visitable.h"
-
-#include <atomic>
 
 namespace Mengine
 {
@@ -48,11 +48,11 @@ namespace Mengine
         virtual void _onComplete( bool _successful );
 
     private:
-        std::atomic_bool m_run;
-        std::atomic_bool m_complete;
-        std::atomic_bool m_finish;
-        std::atomic_bool m_successful;
-        std::atomic_bool m_cancel;
+        Atomic<bool> m_run;
+        Atomic<bool> m_complete;
+        Atomic<bool> m_finish;
+        Atomic<bool> m_successful;
+        Atomic<bool> m_cancel;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadTask> ThreadTaskPtr;

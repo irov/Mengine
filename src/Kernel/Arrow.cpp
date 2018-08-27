@@ -7,6 +7,8 @@
 
 #include "Kernel/FactorableUnique.h"
 
+#include "Config/Config.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

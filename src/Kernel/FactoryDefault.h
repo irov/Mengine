@@ -2,8 +2,7 @@
 
 #include "Kernel/Factory.h"
 #include "Kernel/FactorableUnique.h"
-
-#include <typeinfo>
+#include "Kernel/Typename.h"
 
 namespace Mengine
 {

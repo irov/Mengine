@@ -1,12 +1,12 @@
 #include "IniUtil.h"
 
+#include "Config/Stringstream.h"
+
 #include "Interface/UnicodeInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "Kernel/Logger.h"
-
-#include <sstream>
 
 #include <stdio.h>
 #include <string.h>
@@ -161,7 +161,7 @@ namespace Mengine
                 return false;
             }
 
-            std::stringstream ss( ini_value );
+            Stringstream ss( ini_value );
 
             std::string single_string;
             while( ss >> single_string )

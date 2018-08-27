@@ -34,7 +34,6 @@
 #	include "XmlToBinDecoder.h"
 #	include "AlphaSpreading.h"
 #	include "XmlToAekConverter.h"
-#   include "ParseAem.h"
 
 #	include "Interface/StringizeInterface.h"
 #	include "Interface/UnicodeInterface.h"

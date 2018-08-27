@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Kernel/Factory.h"
+#include "Kernel/Typename.h"
 
 #include "stdex/template_pool.h"
-
-#include <typeinfo>
 
 namespace Mengine
 {

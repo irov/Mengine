@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Kernel/Factorable.h"
 
 #include "Kernel/IntrusivePtr.h"

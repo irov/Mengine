@@ -8,6 +8,10 @@ namespace Mengine
         : public Node
     {
     public:
+        MovieSlot();
+        ~MovieSlot() override;
+
+    public:
         void setMovieName( const ConstString & _movieName );
 
     protected:

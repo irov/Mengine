@@ -6,6 +6,8 @@
 
 #include "movie/movie.hpp"
 
+#include "Config/Typedef.h"
+
 namespace Mengine
 {
     class Movie2Scissor

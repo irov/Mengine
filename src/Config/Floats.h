@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Config/Vector.h"
+#include "Config/Typedef.h"
 
-#include <stdint.h>
+#include "Config/Vector.h"
 
 namespace Mengine
 {

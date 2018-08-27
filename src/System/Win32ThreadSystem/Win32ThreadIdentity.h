@@ -6,7 +6,7 @@
 
 #include "Kernel/ServantBase.h"
 
-#include <atomic>
+#include "Config/Atomic.h"
 
 namespace Mengine
 {
@@ -37,8 +37,8 @@ namespace Mengine
 
         ThreadTaskInterface * m_task;
 
-        std::atomic_bool m_complete;
-        std::atomic_bool m_exit;
+        Atomic<bool> m_complete;
+        Atomic<bool> m_exit;
 
 #ifndef NDEBUG
         const Char * m_file;

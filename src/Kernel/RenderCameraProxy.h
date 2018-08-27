@@ -4,6 +4,8 @@
 
 #include "Kernel/Factorable.h"
 
+#include "Config/Typedef.h"
+
 namespace Mengine
 {
     class RenderCameraProxy

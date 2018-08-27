@@ -2,6 +2,8 @@ set( MY_LIB_NAME MoviePlugin )
 
 ADD_FILTER(
 src
+    Movie2Interface.h
+    
 	MoviePlugin.h
 	MoviePlugin.cpp   
     

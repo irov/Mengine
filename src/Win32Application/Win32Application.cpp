@@ -44,8 +44,6 @@
 #include <algorithm>
 #include <functional>
 
-#include <sstream>
-
 #include <WinBase.h>
 #include <Psapi.h>
 #include <tlhelp32.h>

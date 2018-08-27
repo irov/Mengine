@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config/Typedef.h"
+#include "Config/Tuple.h"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/NotificatorInterface.h"
@@ -12,7 +13,7 @@
 
 #include "Kernel/IntrusivePtr.h"
 
-#include <tuple>
+#include <type_traits>
 
 namespace Mengine
 {
@@ -131,7 +132,7 @@ namespace Mengine
         }
 
     protected:
-        std::tuple<Args...> m_args;
+        Tuple<Args...> m_args;
     };
     //////////////////////////////////////////////////////////////////////////
     class NotificationServiceInterface

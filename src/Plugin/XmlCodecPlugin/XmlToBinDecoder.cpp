@@ -15,7 +15,7 @@
 #include "xml2metabuf/Xml2Metacode.hpp"
 
 #include <stdio.h>
-#include <utf8.h>
+#include "utf8.h"
 
 namespace Mengine
 {

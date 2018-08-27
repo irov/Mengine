@@ -14,6 +14,8 @@
 #include "Kernel/ResourceImage.h"
 #include "Kernel/Logger.h"
 
+#include "Config/Config.h"
+
 #include "pybind/system.hpp"
 #include "pybind/extract.hpp"
 

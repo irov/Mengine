@@ -12,8 +12,6 @@ src
     XmlToBinDecoder.h
     XmlToAekConverter.cpp
     XmlToAekConverter.h
-    ParseAem.cpp
-    ParseAem.h
 )
 
 add_definitions(-DUNICODE)

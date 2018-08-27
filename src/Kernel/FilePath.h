@@ -1,16 +1,15 @@
 #pragma once
 
+#include "Config/Typedef.h"
+#include "Config/String.h"
+#include "Config/Vector.h"
+
 #include "Interface/ServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "Kernel/ConstString.h"
 
-#include "Config/String.h"
-#include "Config/Vector.h"
-
 #include "stdex/array_string.h"
-
-#include <stdint.h>
 
 namespace Mengine
 {

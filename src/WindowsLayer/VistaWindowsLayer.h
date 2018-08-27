@@ -15,6 +15,7 @@ namespace Mengine
     {
     public:
         VistaWindowsLayer();
+        ~VistaWindowsLayer() override;
 
     public:
         bool setProcessDPIAware() override;

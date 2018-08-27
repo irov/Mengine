@@ -18,8 +18,6 @@
 
 #include "Config/Vector.h"
 
-#include <stdarg.h>
-
 namespace Mengine
 {
     class Scriptable;

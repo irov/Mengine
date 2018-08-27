@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Kernel/ThreadTask.h"
+#include "Config/Atomic.h"
 
-#include <list>
-#include <atomic>
+#include "Kernel/ThreadTask.h"
 
 #ifndef MENGINE_THREAD_JOB_WORK_COUNT
 #	define MENGINE_THREAD_JOB_WORK_COUNT 32
@@ -35,9 +34,9 @@ namespace Mengine
 
         ThreadWorkerInterfacePtr worker;
 
-        std::atomic_uint32_t id;
+        Atomic<uint32_t> id;
 
-        std::atomic_uint32_t status;
+        Atomic<uint32_t> status;
     };
     //////////////////////////////////////////////////////////////////////////
     class ThreadJob

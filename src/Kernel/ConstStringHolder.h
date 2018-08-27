@@ -1,12 +1,11 @@
 #pragma once
 
-#include "Kernel/Factorable.h"
-
+#include "Config/Typedef.h"
 #include "Config/Char.h"
 
-#include "stdex/intrusive_linked.h"
+#include "Kernel/Factorable.h"
 
-#include <stdint.h>
+#include "stdex/intrusive_linked.h"
 
 namespace Mengine
 {

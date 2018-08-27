@@ -19,6 +19,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    VistaWindowsLayer::~VistaWindowsLayer()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool VistaWindowsLayer::setProcessDPIAware()
     {
         HMODULE hUser32 = ::LoadLibrary( L"user32.dll" );

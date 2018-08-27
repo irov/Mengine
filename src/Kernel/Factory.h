@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Typedef.h"
+
 #include "Interface/ServiceInterface.h"
 
 #include "Kernel/Factorable.h"
@@ -10,8 +12,6 @@
 #include "Kernel/Pointer.h"
 
 #include "stdex/thread_guard.h"
-
-#include <stddef.h>
 
 namespace Mengine
 {

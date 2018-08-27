@@ -23,8 +23,6 @@
 #include <algorithm>
 #include <functional>
 
-#include <sstream>
-
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::Win32Platform );
 //////////////////////////////////////////////////////////////////////////
@@ -1235,7 +1233,7 @@ namespace Mengine
                 }
             }
 
-            it_found = m_cursors.insert( std::make_pair( _name, cursor ) ).first;
+            it_found = m_cursors.emplace( _name, cursor ).first;
         }
 
         m_cursor = it_found->second;

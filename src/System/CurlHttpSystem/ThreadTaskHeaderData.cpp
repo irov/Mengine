@@ -4,7 +4,7 @@
 
 #include "Kernel/Logger.h"
 
-#include <sstream>
+#include "Config/Stringstream.h"
 
 namespace Mengine
 {
@@ -52,7 +52,7 @@ namespace Mengine
 
         if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
         {
-            std::stringstream ss;
+            Stringstream ss;
 
             for( VectorString::const_iterator
                 it = m_headers.begin(),
@@ -64,7 +64,7 @@ namespace Mengine
                 ss << std::endl;
             }
 
-            std::string header_str = ss.str();
+            String header_str = ss.str();
 
             LOGGER_STATISTIC( "HTTP: header data url '%s' header:\n %s"
                 , m_url.c_str()

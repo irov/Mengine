@@ -2,6 +2,8 @@
 
 #include "Interface/StringizeInterface.h"
 
+#include "Config/Config.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

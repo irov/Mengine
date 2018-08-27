@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Config/Typedef.h"
+
 #include "Interface/DataInterface.h"
 
 #include "Kernel/Magic.h"
@@ -10,8 +12,6 @@
 #include "Kernel/Factorable.h"
 
 #include "math/vec3.h"
-
-#include <stdint.h>
 
 namespace Mengine
 {

@@ -39,7 +39,6 @@
 #include "Engine/Watchdog.h"
 
 #include <ctime>
-#include <sstream>
 #include <iomanip>
 
 #include "Kernel/ResourceImage.h"
@@ -356,7 +355,7 @@ namespace Mengine
 
             float dradius = _radius * _radius;
 
-            std::vector<mt::vec3f> points;
+            Vector<mt::vec3f> points;
 
             for( pybind::list::size_type i = 0; i != path_count; ++i )
             {
@@ -3049,7 +3048,6 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        //srand( (unsigned)std::time( NULL ) );
         HelperScriptMethod * helperScriptMethod = new HelperScriptMethod();
 
         pybind::registration_type_cast<Blobject>(kernel, new extract_TBlobject_type);

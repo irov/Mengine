@@ -4,7 +4,7 @@
 
 #include "Kernel/Logger.h"
 
-#include <sstream>
+#include "Config/Stringstream.h"
 
 namespace Mengine
 {
@@ -55,7 +55,7 @@ namespace Mengine
 
         if( CONFIG_VALUE( "HTTP", "Log", false ) == true )
         {
-            std::stringstream ss;
+            Stringstream ss;
 
             for( MapParams::const_iterator
                 it = m_params.begin(),
@@ -67,7 +67,7 @@ namespace Mengine
                 ss << std::endl;
             }
 
-            std::string params_str = ss.str();
+            String params_str = ss.str();
 
             LOGGER_STATISTIC( "HTTP: post message url '%s' params:\n %s"
                 , m_url.c_str()

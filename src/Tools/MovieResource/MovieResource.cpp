@@ -591,6 +591,30 @@ static void my_copy_stream( void * _data, const void * _src, void * _dst, size_t
     memcpy( _dst, _src, _size );
 }
 //////////////////////////////////////////////////////////////////////////
+static bool save_xml( const pugi::xml_document & xmldoc, const std::wstring & out_path )
+{
+    FILE * f_out = _wfopen( out_path.c_str(), L"wb" );
+
+    if( f_out == NULL )
+    {
+        message_error( "invalid open out path '%ls'\n"
+            , out_path.c_str()
+        );
+
+        return false;
+    }
+
+    std::stringstream ss;
+    xmldoc.save( ss );
+
+    std::string s = ss.str();
+
+    fprintf( f_out, s.c_str() );
+    fclose( f_out );
+
+    return true;
+}
+//////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
 	(void)hInstance;
@@ -607,7 +631,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 		message_error("not found 'in' param\n"
 			);
 
-		return -1;
+		return EXIT_FAILURE;
 	}
 
     if( out_path.empty() == true )
@@ -615,7 +639,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         message_error( "not found 'out' param\n"
         );
 
-        return -1;
+        return EXIT_FAILURE;
     }
 
     CHAR utf8_hash_crc[64];
@@ -637,7 +661,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         message_error( "invalid create movie instance\n"
         );
 
-        return -1;
+        return EXIT_FAILURE;
     }
 
     FILE * f_in = _wfopen( in_path.c_str(), L"rb" );
@@ -648,7 +672,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             , in_path.c_str()
         );
 
-        return -1;
+        return EXIT_FAILURE;
     }
 
     pugi::xml_document xmldoc;
@@ -673,6 +697,15 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     ae_uint32_t major_version;
     ae_uint32_t minor_version;
     ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movieStream, &major_version, &minor_version );
+
+    if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
+    {
+        message_error( "invalid load movie data '%s'\n"
+            , ae_get_result_string_info( result_load_movie_data )
+        );
+
+        return EXIT_FAILURE;
+    }
 
     pugi::xml_node xmlDataResource = xmlDataBlock.append_child( "Resource" );
 
@@ -740,33 +773,10 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     ae_delete_movie_instance( movieInstance );
     
-    if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
+    if( save_xml( xmldoc, out_path ) == false )
     {
-        message_error( "invalid load movie data '%s'\n"
-            , ae_get_result_string_info( result_load_movie_data )
-        );
-
-        return -1;
+        return EXIT_FAILURE;
     }
-
-    FILE * f_out = _wfopen( out_path.c_str(), L"wb" );
-
-    if( f_out == NULL )
-    {
-        message_error( "invalid open out path '%ls'\n"
-            , out_path.c_str()
-        );
-
-        return -1;
-    }
-
-    std::stringstream ss;
-    xmldoc.save( ss );
-
-    std::string s = ss.str();
-
-    fprintf( f_out, s.c_str() );
-    fclose( f_out );
-
-	return 0;
+ 
+	return EXIT_SUCCESS;
 }

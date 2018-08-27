@@ -3,9 +3,6 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
 
-#include <stddef.h>
-#include <stdint.h>
-
 #ifndef MENGINE_FACTORABLE_DEBUG_ENABLE
 #   ifndef NDEBUG
 #       define MENGINE_FACTORABLE_DEBUG

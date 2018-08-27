@@ -11,8 +11,6 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 
-#include <stdint.h>
-
 namespace Mengine
 {
     class DataInterface

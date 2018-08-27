@@ -155,8 +155,6 @@
 #include "stdex/xml_sax_parser.h"
 #include "utf8.h"
 
-#include <sstream>
-
 #include <math.h>
 
 namespace Mengine
@@ -1713,7 +1711,7 @@ namespace Mengine
                     it != it_end;
                     ++it )
                 {
-                    std::string k = it.key();
+                    String k = it.key();
 
                     LOGGER_ERROR( "SurfaceVideo::setEventListener invalid kwds '%s'\n"
                         , k.c_str()

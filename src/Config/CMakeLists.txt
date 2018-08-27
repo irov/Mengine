@@ -13,6 +13,8 @@ src
     Deque.h
     Map.h
     List.h
+    Tuple.h
+    Atomic.h
 	Config.h
 	cmake_dummy.cpp
 )

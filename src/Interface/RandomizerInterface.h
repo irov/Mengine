@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
+#include "Config/Typedef.h"
 
-#include <stdint.h>
+#include "Interface/ServantInterface.h"
 
 namespace Mengine
 {

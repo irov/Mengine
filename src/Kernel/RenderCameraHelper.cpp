@@ -69,6 +69,14 @@ namespace Mengine
             mt::vec2f contentResolutionInvSize;
             _contentResolution.calcInvSize( contentResolutionInvSize );
 
+            mt::vec2f v_screen0;
+            mt::mul_v2_v2z_m4_homogenize( v_screen0, vpm );
+
+            v_screen0.x += 1.f;
+            v_screen0.y = 1.f - v_screen0.y;
+
+            v_screen0 *= mt::vec2f( 0.5f, 0.5f );
+
             mt::vec2f v_screen;
             mt::mul_v2_v2_m4_homogenize( v_screen, _worldDelta, vpm );
 
@@ -77,7 +85,7 @@ namespace Mengine
 
             v_screen *= mt::vec2f( 0.5f, 0.5f );
 
-            _screenDelta = (v_screen * vp_size) * contentResolutionInvSize;
+            _screenDelta = (v_screen - v_screen0) * vp_size * contentResolutionInvSize;
         }
         //////////////////////////////////////////////////////////////////////////
         void worldToScreenBox( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::box2f & _worldBox, mt::box2f & _screenBox )

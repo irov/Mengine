@@ -1330,7 +1330,7 @@ namespace Mengine
         c.projection = _projection;
         c.viewport = _viewport;
 
-        MapCameras::iterator it_found = m_cameras.insert( std::make_pair( _name, c ) ).first;
+        MapCameras::iterator it_found = m_cameras.emplace( _name, c ).first;
 
         Camera * new_camera = &it_found->second;
 
@@ -1497,6 +1497,9 @@ namespace Mengine
 
         m_composition = composition;
 
+        float animationSpeedFactor = this->getAnimationSpeedFactor();
+        this->updateAnimationSpeedFactor_( animationSpeedFactor );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1654,6 +1657,31 @@ namespace Mengine
         this->setTime( duration * 1000.f - frameDuration * 1000.f );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2::_setAnimationSpeedFactor( float _factor )
+    {
+        if( this->isCompile() == false )
+        {
+            return;
+        }
+
+        this->updateAnimationSpeedFactor_( _factor );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::updateAnimationSpeedFactor_( float _factor )    
+    {
+        for( const SurfacePtr & surface : m_surfaces )
+        {
+            AnimationInterfacePtr animation = surface->getAnimation();
+
+            if( animation == nullptr )
+            {
+                continue;
+            }
+
+            animation->setAnimationSpeedFactor( _factor );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Movie2::_update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
@@ -1666,7 +1694,9 @@ namespace Mengine
             return;
         }
 
-        ae_update_movie_composition( m_composition, _context->time * 0.001f );
+        float totalTime = this->calcTotalTime( _context );
+
+        ae_update_movie_composition( m_composition, totalTime * 0.001f );
 
         for( const SurfacePtr & surface : m_surfaces )
         {
@@ -2054,7 +2084,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSprite_( uint32_t _index, const ShapeQuadFixedPtr & _sprite )
     {
-        m_sprites.insert( std::make_pair( _index, _sprite ) );
+        m_sprites.emplace( _index, _sprite );
     }
     //////////////////////////////////////////////////////////////////////////
     const ShapeQuadFixedPtr & Movie2::getSprite_( uint32_t _index ) const
@@ -2107,7 +2137,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addParticle_( uint32_t _index, const NodePtr & _particleEmitter )
     {
-        m_particleEmitters.insert( std::make_pair( _index, _particleEmitter ) );
+        m_particleEmitters.emplace( _index, _particleEmitter );
     }
     //////////////////////////////////////////////////////////////////////////
     const NodePtr & Movie2::getParticle_( uint32_t _index ) const
@@ -2160,7 +2190,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSlot_( uint32_t _index, const Movie2SlotPtr & _slot )
     {
-        m_slots.insert( std::make_pair( _index, _slot ) );
+        m_slots.emplace( _index, _slot );
     }
     //////////////////////////////////////////////////////////////////////////
     const Movie2SlotPtr & Movie2::getSlot_( uint32_t _index ) const
@@ -2221,7 +2251,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSocket_( uint32_t _index, const HotSpotPolygonPtr & _hotspot )
     {
-        m_sockets.insert( std::make_pair( _index, _hotspot ) );
+        m_sockets.emplace( _index, _hotspot );
     }
     //////////////////////////////////////////////////////////////////////////
     const HotSpotPolygonPtr & Movie2::getSocket_( uint32_t _index ) const
@@ -2282,7 +2312,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addText_( uint32_t _index, const TextFieldPtr & _text )
     {
-        m_texts.insert( std::make_pair( _index, _text ) );
+        m_texts.emplace( _index, _text );
     }
     //////////////////////////////////////////////////////////////////////////
     const TextFieldPtr & Movie2::getText_( uint32_t _index ) const
@@ -2343,7 +2373,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addSubMovieComposition_( const ConstString & _name, const Movie2SubCompositionPtr & _subComposition )
     {
-        m_subCompositions.insert( std::make_pair( _name, _subComposition ) );
+        m_subCompositions.emplace( _name, _subComposition );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::addMatrixProxy_( const MatrixProxyPtr & _matrixProxy )

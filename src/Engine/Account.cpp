@@ -90,7 +90,7 @@ namespace Mengine
         st.value = _defaultValue;
         st.cb = _applyFunc;
 
-        m_settings.insert( std::make_pair( _setting, st ) );
+        m_settings.emplace( _setting, st );
 
         return true;
     }

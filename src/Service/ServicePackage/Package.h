@@ -111,7 +111,7 @@ namespace Mengine
             Tags platform;
         };
 
-        typedef std::vector<PakFontDesc> VectorPakFontDesc;
+        typedef Vector<PakFontDesc> VectorPakFontDesc;
         VectorPakFontDesc m_pathFonts;
 
         struct PakTextDesc
@@ -120,7 +120,7 @@ namespace Mengine
             Tags platform;
         };
 
-        typedef std::vector<PakTextDesc> VectorPakTextDesc;
+        typedef Vector<PakTextDesc> VectorPakTextDesc;
         VectorPakTextDesc m_pathTexts;
 
         struct PakDataDesc

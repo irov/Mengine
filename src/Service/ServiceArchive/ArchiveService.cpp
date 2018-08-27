@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ArchiveService::registerArchivator( const ConstString & _type, const ArchivatorInterfacePtr & _archivator )
     {
-        m_archivators.insert( std::make_pair( _type, _archivator ) );
+        m_archivators.emplace( _type, _archivator );
     }
     //////////////////////////////////////////////////////////////////////////
     void ArchiveService::unregisterArchivator( const ConstString & _type )

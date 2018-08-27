@@ -621,7 +621,7 @@ namespace Mengine
             return false;
         }
 
-        m_scriptWrapper.insert( std::make_pair( _type, _wrapper ) );
+        m_scriptWrapper.emplace( _type, _wrapper );
 
         return true;
     }

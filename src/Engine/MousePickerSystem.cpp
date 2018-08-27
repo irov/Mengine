@@ -24,8 +24,10 @@ namespace Mengine
         public:
             PickerVisitor( VectorPickerTrapStates & _traps )
                 : m_traps( _traps )
-                , m_currentViewport( nullptr )
-                , m_currentCamera( nullptr )
+            {
+            }
+
+            ~PickerVisitor()
             {
             }
 
@@ -742,8 +744,10 @@ namespace Mengine
             return false;
         }
 
+        float vx;
+        float vy;
         if( INPUT_SERVICE()
-            ->validCursorPosition( _x, _y ) == false )
+            ->validCursorPosition( _x, _y, &vx, &vy ) == false )
         {
             return false;
         }
@@ -755,7 +759,7 @@ namespace Mengine
             ->getContentResolution();
 
         mt::vec2f adapt_screen_position;
-        m_arrow->adaptScreenPosition_( mt::vec2f( _x, _y ), adapt_screen_position );
+        m_arrow->adaptScreenPosition_( mt::vec2f( vx, vy ), adapt_screen_position );
 
         bool handle = false;
 

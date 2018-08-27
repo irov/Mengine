@@ -557,7 +557,7 @@ namespace Mengine
                 , _path.c_str()
             );
 
-            m_fonts.insert( std::make_pair( fontName, font ) );
+            m_fonts.emplace( fontName, font );
         }
 
         ConstString defaultFontName;
@@ -649,7 +649,7 @@ namespace Mengine
 
         textEntry->initialize( _key, _text, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
 
-        m_texts.insert( std::make_pair( _key, textEntry ) );
+        m_texts.emplace( _key, textEntry );
 
         return true;
     }

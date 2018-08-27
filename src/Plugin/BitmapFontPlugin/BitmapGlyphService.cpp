@@ -50,7 +50,7 @@ namespace Mengine
             return nullptr;
         }
 
-        m_glyphs.insert( std::make_pair( _path, glyph ) );
+        m_glyphs.emplace( _path, glyph );
 
         return glyph;
     }

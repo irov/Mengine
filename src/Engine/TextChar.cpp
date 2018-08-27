@@ -63,7 +63,7 @@ namespace Mengine
 
             U32String::size_type found_post = _in.find( _post, found_pre );
 
-            if( found_post == std::string::npos )
+            if( found_post == String::npos )
             {
                 return false;
             }
@@ -75,7 +75,7 @@ namespace Mengine
 
             U32String::size_type found_end = _in.find( _end, found_post );
 
-            if( found_end == std::string::npos )
+            if( found_end == String::npos )
             {
                 return false;
             }

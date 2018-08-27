@@ -202,7 +202,7 @@ namespace Mengine
             fi.unz_size = header.uncompressedSize;
             fi.compr_method = header.compressionMethod;
 
-            m_files.insert( std::make_pair( fileName, fi ) );
+            m_files.emplace( fileName, fi );
 
             zipFile->skip( header.compressedSize );
         }

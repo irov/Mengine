@@ -1746,9 +1746,10 @@ namespace Mengine
                     it != it_end;
                     ++it )
                 {
-                    std::string k = it.key();
+                    String k = it.key();
 
-                    LOGGER_ERROR( "SurfaceImageSequence::setEventListener invalid kwds '%s'\n"
+                    LOGGER_ERROR( "SurfaceImageSequence::setEventListener '%s' invalid kwds '%s'\n"
+                        , _surface->getName().c_str()
                         , k.c_str()
                     );
                 }
@@ -1781,9 +1782,10 @@ namespace Mengine
                     it != it_end;
                     ++it )
                 {
-                    std::string k = it.key();
+                    String k = it.key();
 
-                    LOGGER_ERROR( "SurfaceSound::setEventListener invalid kwds '%s'\n"
+                    LOGGER_ERROR( "SurfaceSound::setEventListener '%s' invalid kwds '%s'\n"
+                        , _surface->getName().c_str()
                         , k.c_str()
                     );
                 }
@@ -1827,9 +1829,10 @@ namespace Mengine
                     it != it_end;
                     ++it )
                 {
-                    std::string k = it.key();
+                    String k = it.key();
 
-                    LOGGER_ERROR( "Meshget::setEventListener invalid kwds '%s'\n"
+                    LOGGER_ERROR( "Meshget::setEventListener '%s' invalid kwds '%s'\n"
+                        , _node->getName().c_str()
                         , k.c_str()
                     );
                 }
@@ -1879,9 +1882,10 @@ namespace Mengine
                     it != it_end;
                     ++it )
                 {
-                    std::string k = it.key();
+                    String k = it.key();
 
-                    LOGGER_ERROR( "ScriptHolder::setEventListener invalid kwds '%s'\n"
+                    LOGGER_ERROR( "ScriptHolder::setEventListener '%s' invalid kwds '%s'\n"
+                        , _node->getName().c_str()
                         , k.c_str()
                     );
                 }
@@ -2001,7 +2005,8 @@ namespace Mengine
                     it != it_end;
                     ++it )
                 {
-                    std::string k = it.key();
+                    String k = it.key();
+
                     LOGGER_ERROR( "HotSpot::setEventListener %s kwds %s"
                         , _node->getName().c_str()
                         , k.c_str()
@@ -2070,9 +2075,10 @@ namespace Mengine
                     it != it_end;
                     ++it )
                 {
-                    std::string k = it.key();
+                    String k = it.key();
 
-                    LOGGER_ERROR( "Movie::setEventListener invalid kwds '%s'\n"
+                    LOGGER_ERROR( "Movie::setEventListener '%s' invalid kwds '%s'\n"
+                        , _node->getName().c_str()
                         , k.c_str()
                     );
                 }

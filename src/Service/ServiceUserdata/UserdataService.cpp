@@ -57,7 +57,7 @@ namespace Mengine
         desc.category = _category;
         desc.path = _path;
 
-        m_datas.insert( std::make_pair( _name, desc ) );
+        m_datas.emplace( _name, desc );
 
         return true;
     }

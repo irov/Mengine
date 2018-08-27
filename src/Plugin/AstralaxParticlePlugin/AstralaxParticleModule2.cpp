@@ -44,7 +44,7 @@ namespace Mengine
                     it != it_end;
                     ++it )
                 {
-                    std::string k = it.key();
+                    String k = it.key();
 
                     LOGGER_ERROR( "ParticleEmitter2::setEventListener invalid kwds '%s'\n"
                         , k.c_str()

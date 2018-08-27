@@ -841,7 +841,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Game::close()
     {
-        bool needQuit = EVENTABLE_METHODR( this, EVENT_GAME_VIEWPORT, true )
+        bool needQuit = EVENTABLE_METHODR( this, EVENT_GAME_CLOSE, true )
             ->onGameClose();
 
         return needQuit;

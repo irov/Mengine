@@ -592,7 +592,7 @@ namespace Mengine
                 }
                 else
                 {
-                    std::vector<p2t::Point> p2t_points;
+                    Vector<p2t::Point> p2t_points;
 
                     uint32_t max_points = 0;
 
@@ -631,6 +631,7 @@ namespace Mengine
 
                     for( const Geolygon & geolygon : output )
                     {
+                        //p2t::CDT take only std::vector
                         std::vector<p2t::Point*> p2t_polygon;
 
                         const Polygon & outer = geolygon.getOuter();
@@ -649,6 +650,7 @@ namespace Mengine
 
                         for( const Polygon & inner : inners )
                         {
+                            //cdt::AddHole take only std::vector
                             std::vector<p2t::Point*> p2t_hole;
 
                             for( const mt::vec2f & v : inner )
@@ -664,6 +666,7 @@ namespace Mengine
 
                         cdt->Triangulate();
 
+                        //cdt::GetTriangles return std::vector
                         std::vector<p2t::Triangle*> triangles = cdt->GetTriangles();
 
                         for( p2t::Triangle * tr : triangles )
@@ -686,7 +689,7 @@ namespace Mengine
                         delete cdt;
                     }
 
-                    std::vector<p2t::Point>::size_type shapeVertexCount = p2t_points.size();
+                    Vector<p2t::Point>::size_type shapeVertexCount = p2t_points.size();
                     VectorIndices::size_type shapeIndicesCount = shape_indices.size();
 
                     if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )

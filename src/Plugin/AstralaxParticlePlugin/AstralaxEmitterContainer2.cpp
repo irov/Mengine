@@ -19,7 +19,6 @@ namespace Mengine
     AstralaxEmitterContainer2::AstralaxEmitterContainer2()
         : m_particleSystem( nullptr )
         , m_mf( 0 )
-        , m_emitterId( 0 )
         , m_dublicateCount( 0 )
         , m_ptcId( 0 )
     {
@@ -27,6 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitterContainer2::~AstralaxEmitterContainer2()
     {
+        MENGINE_ASSERTION( m_mf == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitterContainer2::initialize( AstralaxParticleSystem2 * _particleSystem, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
@@ -68,24 +68,12 @@ namespace Mengine
 
         m_resourceImages.resize( atlasCount );
 
-        HM_EMITTER emitterId = this->initialEmitterId();
-
-        if( emitterId == 0 )
-        {
-            return false;
-        }
-
-        m_emitterId = emitterId;
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitterContainer2::finalize()
     {
         MENGINE_ASSERTION( m_dublicateCount == 0 );
-
-        Magic_UnloadEmitter( m_emitterId );
-        m_emitterId = 0;
 
         Magic_CloseFile( m_mf );
         m_mf = 0;
@@ -180,7 +168,21 @@ namespace Mengine
         {
             if( find.animate == 1 )
             {
-                HM_EMITTER id = Magic_LoadEmitter( m_mf, magicName );
+                HM_EMITTER id = 0;
+
+                try
+                {
+                    id = Magic_LoadEmitter( m_mf, magicName );
+                } 
+                catch( const std::exception & _ex )
+                {
+                    LOGGER_ERROR( "AstralaxEmitterContainer2::initialEmitterId invalid load emitter %s (catch exception '%s')"
+                        , magicName
+                        , _ex.what()
+                    );
+
+                    return 0;
+                }
 
                 if( id == 0 )
                 {
@@ -219,21 +221,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HM_EMITTER AstralaxEmitterContainer2::createEmitterId()
     {
-        HM_EMITTER dublicateId = Magic_DuplicateEmitter( m_emitterId );
-        //HM_EMITTER dublicateId = this->initialEmitterId();
+        HM_EMITTER emitterId = this->initialEmitterId();
 
-        if( dublicateId == 0 )
+        if( emitterId == 0 )
         {
             return 0;
         }
 
         ++m_dublicateCount;
 
-        return dublicateId;
+        return emitterId;
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitterContainer2::destroyEmitterId( HM_EMITTER _id )
     {
+        if( _id == 0 )
+        {
+            return;
+        }
+
         --m_dublicateCount;
 
         Magic_UnloadEmitter( _id );

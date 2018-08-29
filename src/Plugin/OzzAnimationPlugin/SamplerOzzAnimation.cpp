@@ -56,24 +56,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SamplerOzzAnimation::_update( const UpdateContext * _context )
     {
+        if( this->isCompile() == false )
+        {
+            return;
+        }
+
         if( this->isPlay() == false )
         {
             return;
         }
 
-        float time = _context->time;
+        float totalTiming = this->calcTotalTime( _context );
 
-        if( m_playTime > _context->current )
-        {
-            float deltha = m_playTime - _context->current;
-            time -= deltha;
-        }
-
-        float speedFactor = this->getAnimationSpeedFactor();
-        float scretch = this->getStretch();
-        float realTiming = time * speedFactor / scretch;
-
-        this->updateTiming_( realTiming );
+        this->updateTiming_( totalTiming );
         this->updateAnimation_();
     }
     //////////////////////////////////////////////////////////////////////////

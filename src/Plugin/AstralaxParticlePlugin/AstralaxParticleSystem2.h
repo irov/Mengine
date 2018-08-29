@@ -68,6 +68,7 @@ namespace Mengine
         struct AstralaxEmitterContainerDesc
         {
             uint32_t reference;
+            ConstString who;
             const AstralaxEmitterContainer2 * container;
         };
 

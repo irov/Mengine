@@ -1,8 +1,7 @@
 #pragma once
 
-#include "stdex/intrusive_slug_list_size_ptr.h"
-#include "stdex/intrusive_slug_linked_ptr.h"
-#include "stdex/intrusive_slug_ptr.h"
+#include "stdex/intrusive_list.h"
+#include "stdex/intrusive_linked.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
@@ -43,7 +42,7 @@ namespace Mengine
     typedef IntrusivePtr<class Transformation3D> Transformation3DPtr;
     //////////////////////////////////////////////////////////////////////////
     class Transformation3D
-        : public stdex::intrusive_slug_linked_ptr<Transformation3D>
+        : public stdex::intrusive_linked<Transformation3D>
         , public Mixin
     {
     public:
@@ -52,11 +51,11 @@ namespace Mengine
 
     public:
         void setRelationTransformation( const Transformation3DPtr & _relation );
-        inline Transformation3DPtr getRelationTransformation() const;
+        inline Transformation3D * getRelationTransformation() const;
 
     protected:
-        void addRelationChildren_( const Transformation3DPtr & _child );
-        void removeRelationChildren_( const Transformation3DPtr & _child );
+        void addRelationChildren_( Transformation3D * _child );
+        void removeRelationChildren_( Transformation3D * _child );
 
     public:
         inline const mt::mat4f & getWorldMatrix() const;
@@ -151,9 +150,8 @@ namespace Mengine
     protected:
         Transformation3D * m_relationTransformation;
 
-        typedef stdex::intrusive_slug_list_size_ptr<Transformation3D> IntrusiveSlugListTransformation3D;
-        typedef stdex::intrusive_slug_ptr<Transformation3D> IntrusiveSlugTransformation3D;
-        IntrusiveSlugListTransformation3D m_relationChild;
+        typedef stdex::intrusive_list<Transformation3D> IntrusiveListTransformation3D;
+        IntrusiveListTransformation3D m_relationChild;
 
         mt::vec3f m_position;
         mt::vec3f m_origin;
@@ -172,7 +170,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Transformation3D> Transformation3DPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline Transformation3DPtr Transformation3D::getRelationTransformation() const
+    inline Transformation3D * Transformation3D::getRelationTransformation() const
     {
         return m_relationTransformation;
     }

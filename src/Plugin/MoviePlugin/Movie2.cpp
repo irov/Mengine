@@ -2001,6 +2001,7 @@ namespace Mengine
             {
                 switch( mesh.layer_type )
                 {
+                case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
                     {
                         if( mesh.vertexCount == 0 )

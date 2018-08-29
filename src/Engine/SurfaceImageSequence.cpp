@@ -48,19 +48,11 @@ namespace Mengine
             return invalidate;
         }
 
-        float time = _context->time;
+        float totalTiming = this->calcTotalTime( _context );
 
-        if( m_playTime > _context->current )
-        {
-            float deltaTime = m_playTime - _context->current;
-            time -= deltaTime;
-        }
+        m_frameTime += totalTiming;
 
         uint32_t frameCount = m_resourceAnimation->getSequenceCount();
-
-        float speedFactor = this->getAnimationSpeedFactor();
-        float scretch = this->getStretch();
-        m_frameTime += time * speedFactor / scretch;
 
         float frameDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
 

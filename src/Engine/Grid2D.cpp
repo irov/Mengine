@@ -239,8 +239,6 @@ namespace Mengine
     void Grid2D::_update( const UpdateContext * _context )
     {
         (void)_context;
-
-        m_invalidateVerticesWM = true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::_render( const RenderContext * _state )

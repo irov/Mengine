@@ -171,6 +171,7 @@ namespace Mengine
         textures[0] = m_resourceImage->getTexture();
         textures[1] = m_resourceTrackMatteImage->getTexture();
 
+        EMaterialBlendMode blendMode = this->getBlendMode();
         bool premultiply = m_resourceImage->isPremultiply();
 
         RenderMaterialInterfacePtr material = nullptr;
@@ -179,24 +180,78 @@ namespace Mengine
         {
         case ESTM_MODE_ALPHA:
             {
-                if( premultiply == false )
+                switch( blendMode )
                 {
-                    material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND, PT_TRIANGLELIST, 2, textures );
-                }
-                else
-                {
-                    material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
+                case EMB_NORMAL:
+                    {
+                        if( premultiply == false )
+                        {
+                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND, PT_TRIANGLELIST, 2, textures );
+                        }
+                        else
+                        {
+                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
+                        }
+                    }break;
+                case EMB_ADD:
+                    {
+                        if( premultiply == false )
+                        {
+                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE, PT_TRIANGLELIST, 2, textures );
+                        }
+                        else
+                        {
+                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INTENSIVE_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
+                        }
+                    }break;
+                default:
+                    {
+                        LOGGER_ERROR( "SurfaceTrackMatte::_updateMaterial '%s' track matte mode '%d' invalid support blend mode '%d'"
+                            , this->getName().c_str()
+                            , m_trackMatteMode
+                            , blendMode
+                        );
+
+                        return nullptr;
+                    }break;
                 }
             }break;
         case ESTM_MODE_ALPHA_INVERTED:
             {
-                if( premultiply == false )
+                switch( blendMode )
                 {
-                    material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND, PT_TRIANGLELIST, 2, textures );
-                }
-                else
-                {
-                    material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
+                case EMB_NORMAL:
+                    {
+                        if( premultiply == false )
+                        {
+                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND, PT_TRIANGLELIST, 2, textures );
+                        }
+                        else
+                        {
+                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_BLEND_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
+                        }
+                    }break;
+                case EMB_ADD:
+                    {
+                        if( premultiply == false )
+                        {
+                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE, PT_TRIANGLELIST, 2, textures );
+                        }
+                        else
+                        {
+                            material = this->getMaterial3( EM_TEXTURE_TRACKMATTE_INVERTED_INTENSIVE_PREMULTIPLY, PT_TRIANGLELIST, 2, textures );
+                        }
+                    }break;
+                default:
+                    {
+                        LOGGER_ERROR( "SurfaceTrackMatte::_updateMaterial '%s' track matte mode '%d' invalid support blend mode '%d'"
+                            , this->getName().c_str()
+                            , m_trackMatteMode
+                            , blendMode
+                        );
+
+                        return nullptr;
+                    }break;
                 }
             }break;
         default:
@@ -205,6 +260,8 @@ namespace Mengine
                     , this->getName().c_str()
                     , m_trackMatteMode
                 );
+
+                return nullptr;
             }break;
         }
 

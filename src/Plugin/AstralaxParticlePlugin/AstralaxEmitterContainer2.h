@@ -59,7 +59,6 @@ namespace Mengine
         AstralaxParticleSystem2 * m_particleSystem;
 
         HM_FILE m_mf;
-        HM_EMITTER m_emitterId;
 
         uint32_t m_dublicateCount;
 

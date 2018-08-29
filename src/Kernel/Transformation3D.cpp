@@ -60,12 +60,12 @@ namespace Mengine
         this->invalidateWorldMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation3D::addRelationChildren_( const Transformation3DPtr & _child )
+    void Transformation3D::addRelationChildren_( Transformation3D * _child )
     {
         m_relationChild.push_back( _child );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation3D::removeRelationChildren_( const Transformation3DPtr & _child )
+    void Transformation3D::removeRelationChildren_( Transformation3D * _child )
     {
         m_relationChild.remove( _child );
     }
@@ -76,26 +76,10 @@ namespace Mengine
         {
             m_invalidateWorldMatrix = true;
 
-            if( m_relationChild.empty() == false )
+            for( Transformation3D * child : m_relationChild )
             {
-                Transformation3DPtr single = m_relationChild.single();
-
-                if( single != nullptr )
-                {
-                    single->invalidateWorldMatrix();
-                }
-                else
-                {
-                    for( IntrusiveSlugTransformation3D it( m_relationChild ); it.eof() == false; )
-                    {
-                        Transformation3DPtr transform = *it;
-
-                        it.next_shuffle();
-
-                        transform->invalidateWorldMatrix();
-                    }
-                }
-            }
+                child->invalidateWorldMatrix();
+            }        
         }
 
         this->_invalidateWorldMatrix();

@@ -122,14 +122,18 @@ namespace Mengine
         {
             AstralaxEmitterContainerDesc new_desc;
             new_desc.reference = 0;
+            new_desc.who = _whoName;
             new_desc.container = container.get();
 
             it_found = m_containers.emplace( id, new_desc ).first;
         }
         else
         {
-            LOGGER_PERFORMANCE( "AstralaxParticleSystem::createEmitterContainerFromMemory '%s' useless load container"
+            container->finalize();
+
+            LOGGER_PERFORMANCE( "AstralaxParticleSystem::createEmitterContainerFromMemory '%s' useless load container original is '%s'"
                 , _whoName.c_str()
+                , it_found->second.who.c_str()
             );
         }
 

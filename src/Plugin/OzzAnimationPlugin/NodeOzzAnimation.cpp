@@ -295,11 +295,6 @@ namespace Mengine
         {
             const SamplerOzzAnimationPtr & sampler = desc.sampler;
 
-            if( sampler->isCompile() == false )
-            {
-                continue;
-            }
-
             sampler->update( _context );
         }
 

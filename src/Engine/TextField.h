@@ -45,6 +45,9 @@ namespace Mengine
 
         const ConstString & getTextID() const;
 
+        void setTextAliasEnvironment( const ConstString & _aliasEnvironment );
+        const ConstString & getTextAliasEnvironment() const;
+
         void setTextFormatArgs( const VectorString & _args );
         void removeTextFormatArgs();
         const VectorString & getTextFormatArgs() const;
@@ -120,7 +123,7 @@ namespace Mengine
     protected:
         void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );
         void notifyDebugMode( bool _debugMode );
-        void notifyChangeTextAliasArguments( const ConstString & _alias );
+        void notifyChangeTextAliasArguments( const ConstString & _environment, const ConstString & _alias );
 
     protected:
         void updateVertices_( const TextFontInterfacePtr & _font );
@@ -169,6 +172,7 @@ namespace Mengine
 
     protected:
         ConstString m_key;
+        ConstString m_aliasEnvironment;
 
         mutable TextEntryInterfacePtr m_textEntry;
         mutable VectorString m_textFormatArgs;

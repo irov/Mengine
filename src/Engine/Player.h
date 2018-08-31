@@ -20,7 +20,7 @@ namespace Mengine
 {
     typedef IntrusivePtr<class Node> NodePtr;
     typedef IntrusivePtr<class Game> GamePtr;
-    typedef IntrusivePtr<class Scene> ScenePtr;
+    typedef IntrusivePtr<class Scene, Node> ScenePtr;
     typedef IntrusivePtr<class Arrow> ArrowPtr;
     typedef IntrusivePtr<class TextField> TextFieldPtr;
     typedef IntrusivePtr<class RenderViewport> RenderViewportPtr;

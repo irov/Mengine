@@ -2108,6 +2108,14 @@ namespace Mengine
             return length;
         }
         //////////////////////////////////////////////////////////////////////////
+        std::string s_Node_getDebugId( Node * _node )
+        {
+            char debugId[256];
+            sprintf( debugId, "%p", _node );
+
+            return std::string(debugId);
+        }
+        //////////////////////////////////////////////////////////////////////////
         NodePtr s_Node_createChildren( Node * _node, const ConstString & _type )
         {
             NodePtr newNode = NODE_SERVICE()
@@ -3904,6 +3912,8 @@ namespace Mengine
             .def( "setRenderTarget", &Node::setRenderTarget )
             .def( "getRenderTarget", &Node::getRenderTarget )
             .def( "getRenderTargetInheritance", &Node::getRenderTargetInheritance )
+
+            .def_proxy_static( "getDebugId", nodeScriptMethod, &NodeScriptMethod::s_Node_getDebugId )
 
             .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_createChildren )
             .def_proxy_static_kernel( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_getAllChildren )

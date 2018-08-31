@@ -410,35 +410,35 @@ namespace Mengine
             return value;
         }
 
-        void s_setTextAlias( const ConstString & _aliasId, const ConstString & _textId )
+        void s_setTextAlias( const ConstString & _aliasEnvironment, const ConstString & _aliasId, const ConstString & _textId )
         {
             TEXT_SERVICE()
-                ->setTextAlias( _aliasId, _textId );
+                ->setTextAlias( _aliasEnvironment, _aliasId, _textId );
         }
 
-        void s_removeTextAlias( const ConstString & _aliasId )
+        void s_removeTextAlias( const ConstString & _aliasEnvironment, const ConstString & _aliasId )
         {
             TEXT_SERVICE()
-                ->removeTextAlias( _aliasId );
+                ->removeTextAlias( _aliasEnvironment, _aliasId );
         }
 
-        bool s_hasTextAlias( const ConstString & _aliasId )
+        bool s_hasTextAlias( const ConstString & _aliasEnvironment, const ConstString & _aliasId )
         {
             bool exist = TEXT_SERVICE()
-                ->hasTextAlias( _aliasId );
+                ->hasTextAlias( _aliasEnvironment, _aliasId );
 
             return exist;
         }
 
-        const ConstString & s_getTextAlias( const ConstString & _aliasId )
+        const ConstString & s_getTextAlias( const ConstString & _aliasEnvironment, const ConstString & _aliasId )
         {
             const ConstString & textId = TEXT_SERVICE()
-                ->getTextAlias( _aliasId );
+                ->getTextAlias( _aliasEnvironment, _aliasId );
 
             return textId;
         }
 
-        bool s_setTextAliasArguments( const ConstString & _aliasId, const pybind::args & _args )
+        bool s_setTextAliasArguments( const ConstString & _aliasEnvironment, const ConstString & _aliasId, const pybind::args & _args )
         {
             size_t args_count = _args.size();
 
@@ -482,15 +482,15 @@ namespace Mengine
             }
 
             TEXT_SERVICE()
-                ->setTextAliasArguments( _aliasId, arguments );
+                ->setTextAliasArguments( _aliasEnvironment, _aliasId, arguments );
 
             return true;
         }
 
-        void s_removeTextAliasArguments( const ConstString & _aliasId )
+        void s_removeTextAliasArguments( const ConstString & _aliasEnvironment, const ConstString & _aliasId )
         {
             TEXT_SERVICE()
-                ->removeTextAliasArguments( _aliasId );
+                ->removeTextAliasArguments( _aliasEnvironment, _aliasId );
         }
 
         float s_getJoystickAxis( uint32_t _index )
@@ -3248,7 +3248,6 @@ namespace Mengine
 
         pybind::def_functor( kernel, "watchdog", helperScriptMethod, &HelperScriptMethod::s_watchdog );
 
-        pybind::def_functor( kernel, "is_class", helperScriptMethod, &HelperScriptMethod::s_is_class );
         pybind::def_functor( kernel, "addGlobalModule", helperScriptMethod, &HelperScriptMethod::s_addGlobalModule );
 
         pybind::def_function( kernel, "angle_norm", &mt::angle_norm );

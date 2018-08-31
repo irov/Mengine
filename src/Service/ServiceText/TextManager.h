@@ -50,15 +50,15 @@ namespace Mengine
         TextFontInterfacePtr getFont( const ConstString & _name ) const override;
 
     public:
-        void setTextAlias( const ConstString & _alias, const ConstString& _key ) override;
-        void removeTextAlias( const ConstString & _alias ) override;
-        bool hasTextAlias( const ConstString & _alias ) const override;
-        const ConstString & getTextAlias( const ConstString & _alias ) const override;
+        void setTextAlias( const ConstString & _environment, const ConstString & _alias, const ConstString& _key ) override;
+        void removeTextAlias( const ConstString & _environment, const ConstString & _alias ) override;
+        bool hasTextAlias( const ConstString & _environment, const ConstString & _alias ) const override;
+        const ConstString & getTextAlias( const ConstString & _environment, const ConstString & _alias ) const override;
 
     public:
-        void setTextAliasArguments( const ConstString & _alias, const VectorString & _arguments ) override;
-        void removeTextAliasArguments( const ConstString & _alias ) override;
-        bool getTextAliasArguments( const ConstString & _alias, VectorString & _arguments ) const override;
+        void setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments ) override;
+        void removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias ) override;
+        bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString & _arguments ) const override;
 
     public:
         void visitFonts( VisitorTextFontInterface * _vistitor ) override;
@@ -96,10 +96,12 @@ namespace Mengine
         typedef Map<ConstString, TextFontInterfacePtr> MapTextFont;
         MapTextFont m_fonts;
 
-        typedef Map<ConstString, ConstString> MapTextAliases;
+        typedef std::pair<ConstString, ConstString> PairAliasKey;
+
+        typedef Map<PairAliasKey, ConstString> MapTextAliases;
         MapTextAliases m_aliases;
 
-        typedef Map<ConstString, VectorString> MapTextAliasesArguments;
+        typedef Map<PairAliasKey, VectorString> MapTextAliasesArguments;
         MapTextAliasesArguments m_aliasesArguments;
 
         typedef Vector<TextLocalePackPtr> VectorTextLocalePaks;

@@ -655,11 +655,14 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_ERROR( "%.*s-%s [%s] (%.2f, %.2f) %d %s"
+            LOGGER_ERROR( "%.*s-%s [%s] |%p| (%.2f, %.2f) (%.2f, %.2f) %d %s"
                 , _tab
-                , "                                         "
+                , "                                         "                
                 , child->getName().c_str()
                 , child->getType().c_str()
+                , child.get()
+                , child->getLocalPosition().x
+                , child->getLocalPosition().y
                 , child->getWorldPosition().x
                 , child->getWorldPosition().y
                 , child->isRenderable()

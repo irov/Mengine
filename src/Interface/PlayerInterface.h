@@ -10,7 +10,7 @@
 namespace Mengine
 {
     typedef IntrusivePtr<class Node> NodePtr;
-    typedef IntrusivePtr<class Scene> ScenePtr;
+    typedef IntrusivePtr<class Scene, class Node> ScenePtr;
     typedef IntrusivePtr<class Arrow> ArrowPtr;
     typedef IntrusivePtr<class Affectorable> AffectorablePtr;
     typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;

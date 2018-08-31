@@ -60,6 +60,10 @@ namespace Mengine
         const ConstString & getCompositionName() const;
 
     public:
+        void setTextAliasEnvironment( const ConstString & _aliasEnvironment );
+        const ConstString & getTextAliasEnvironment() const;
+
+    public:
         float getDuration() const;
         bool setWorkAreaFromEvent( const ConstString & _eventName );
         void removeWorkArea();
@@ -226,6 +230,8 @@ namespace Mengine
 
         typedef Map<uint32_t, HotSpotPolygonPtr> MapSockets;
         MapSockets m_sockets;
+
+        ConstString m_aliasEnvironment;
 
         typedef Map<uint32_t, TextFieldPtr> MapTexts;
         MapTexts m_texts;

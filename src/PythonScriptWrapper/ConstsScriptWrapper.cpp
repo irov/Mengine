@@ -151,7 +151,7 @@ namespace Mengine
         (void)_kernel;
         (void)_user;
 
-        ConstString & cstr = *(ConstString*)_place;
+        FilePath & cstr = *(FilePath*)_place;
 
         if( pybind::string_check( _obj ) == true )
         {
@@ -165,7 +165,7 @@ namespace Mengine
         }
         else if( pybind::is_none( _obj ) == true )
         {
-            cstr = ConstString::none();
+            cstr = FilePath(ConstString::none());
 
             return true;
         }

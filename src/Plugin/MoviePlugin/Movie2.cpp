@@ -80,6 +80,33 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    const ConstString & Movie2::getCompositionName() const
+    {
+        return m_compositionName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2::setTextAliasEnvironment( const ConstString & _aliasEnvironment )
+    {
+        if( m_aliasEnvironment == _aliasEnvironment )
+        {
+            return;
+        }
+
+        m_aliasEnvironment = _aliasEnvironment;
+
+        for( MapTexts::value_type & value : m_texts )
+        {
+            const TextFieldPtr & text = value.second;
+            
+            text->setTextAliasEnvironment( m_aliasEnvironment );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & Movie2::getTextAliasEnvironment() const
+    {
+        return m_aliasEnvironment;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Movie2::createCompositionLayers_()
     {
         const ResourceMovie2Composition * composition = m_resourceMovie2->getCompositionDesc( m_compositionName );
@@ -113,6 +140,7 @@ namespace Mengine
                 node->setExternalRender( true );
 
                 node->setTextID( layer.name );
+                node->setTextAliasEnvironment( m_aliasEnvironment );
 
                 node->setPixelsnap( false );
 
@@ -342,11 +370,6 @@ namespace Mengine
         m_sprites.clear();
 
         m_matrixProxies.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & Movie2::getCompositionName() const
-    {
-        return m_compositionName;
     }
     //////////////////////////////////////////////////////////////////////////
     float Movie2::getDuration() const

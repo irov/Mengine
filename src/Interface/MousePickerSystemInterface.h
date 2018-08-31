@@ -12,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Arrow> ArrowPtr;
-    typedef IntrusivePtr<class Scene> ScenePtr;
+    typedef IntrusivePtr<class Scene, class Node> ScenePtr;
     typedef IntrusivePtr<class Scriptable> ScriptablePtr;
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class MousePickerTrapInterface> MousePickerTrapInterfacePtr;

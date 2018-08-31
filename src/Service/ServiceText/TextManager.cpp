@@ -763,19 +763,25 @@ namespace Mengine
         return font;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextManager::setTextAlias( const ConstString& _alias, const ConstString& _key )
+    void TextManager::setTextAlias( const ConstString & _environment, const ConstString& _alias, const ConstString& _key )
     {
-        m_aliases[_alias] = _key;
+        PairAliasKey key = std::make_pair( _environment, _alias );
+
+        m_aliases[key] = _key;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextManager::removeTextAlias( const ConstString& _alias )
+    void TextManager::removeTextAlias( const ConstString & _environment, const ConstString& _alias )
     {
-        m_aliases.erase( _alias );
+        PairAliasKey key = std::make_pair( _environment, _alias );
+
+        m_aliases.erase( key );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextManager::hasTextAlias( const ConstString& _alias ) const
+    bool TextManager::hasTextAlias( const ConstString & _environment, const ConstString& _alias ) const
     {
-        MapTextAliases::const_iterator it_found = m_aliases.find( _alias );
+        PairAliasKey key = std::make_pair( _environment, _alias );
+
+        MapTextAliases::const_iterator it_found = m_aliases.find( key );
 
         if( it_found == m_aliases.end() )
         {
@@ -785,9 +791,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & TextManager::getTextAlias( const ConstString& _alias ) const
+    const ConstString & TextManager::getTextAlias( const ConstString & _environment, const ConstString& _alias ) const
     {
-        MapTextAliases::const_iterator it_found = m_aliases.find( _alias );
+        PairAliasKey key = std::make_pair( _environment, _alias );
+
+        MapTextAliases::const_iterator it_found = m_aliases.find( key );
 
         if( it_found == m_aliases.end() )
         {
@@ -799,22 +807,28 @@ namespace Mengine
         return textId;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextManager::setTextAliasArguments( const ConstString & _alias, const VectorString & _arguments )
+    void TextManager::setTextAliasArguments( const ConstString & _environment, const ConstString & _alias, const VectorString & _arguments )
     {
-        m_aliasesArguments[_alias] = _arguments;
+        PairAliasKey key = std::make_pair( _environment, _alias );
+
+        m_aliasesArguments[key] = _arguments;
 
         NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, _alias );
+            ->notify( NOTIFICATOR_CHANGE_TEXT_ALIAS_ARGUMENTS, _environment, _alias );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextManager::removeTextAliasArguments( const ConstString & _alias )
+    void TextManager::removeTextAliasArguments( const ConstString & _environment, const ConstString & _alias )
     {
-        m_aliasesArguments.erase( _alias );
+        PairAliasKey key = std::make_pair( _environment, _alias );
+
+        m_aliasesArguments.erase( key );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextManager::getTextAliasArguments( const ConstString & _alias, VectorString & _arguments ) const
+    bool TextManager::getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString & _arguments ) const
     {
-        MapTextAliasesArguments::const_iterator it_found = m_aliasesArguments.find( _alias );
+        PairAliasKey key = std::make_pair( _environment, _alias );
+
+        MapTextAliasesArguments::const_iterator it_found = m_aliasesArguments.find( key );
 
         if( it_found == m_aliasesArguments.end() )
         {

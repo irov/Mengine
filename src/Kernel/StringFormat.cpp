@@ -73,6 +73,11 @@ namespace Mengine
                             }break;
                         case 's':
                             {
+                                if( num_argumetns >= _arguments.size() )
+                                {
+                                    return false;
+                                }
+
                                 _out += _arguments[num_argumetns++];
                             }break;
                         default:

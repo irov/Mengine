@@ -136,9 +136,9 @@ namespace Mengine
         this->invalidateTextEntry();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::notifyChangeTextAliasArguments( const ConstString & _alias )
+    void TextField::notifyChangeTextAliasArguments( const ConstString & _environment, const ConstString & _alias )
     {
-        if( m_key != _alias )
+        if( m_aliasEnvironment != _environment || m_key != _alias )
         {
             return;
         }
@@ -1001,7 +1001,7 @@ namespace Mengine
         m_invalidateTextEntry = false;
 
         const ConstString & aliasTestId = TEXT_SERVICE()
-            ->getTextAlias( m_key );
+            ->getTextAlias( m_aliasEnvironment, m_key );
 
         m_textEntry = TEXT_SERVICE()
             ->getTextEntry( aliasTestId );
@@ -1361,6 +1361,18 @@ namespace Mengine
         return key;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextField::setTextAliasEnvironment( const ConstString & _aliasEnvironment )
+    {
+        m_aliasEnvironment = _aliasEnvironment;
+
+        this->invalidateTextEntry();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & TextField::getTextAliasEnvironment() const
+    {
+        return m_aliasEnvironment;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TextField::setTextFormatArgs( const VectorString & _args )
     {
         if( m_textFormatArgs == _args )
@@ -1445,25 +1457,21 @@ namespace Mengine
         const String & textValue = textEntry->getValue();
 
         TEXT_SERVICE()
-            ->getTextAliasArguments( m_key, m_textFormatArgs );
+            ->getTextAliasArguments( m_aliasEnvironment, m_key, m_textFormatArgs );
 
-        try
+        String fmt;
+        if( Helper::getStringFormat( fmt, textValue, m_textFormatArgs ) == false )
         {
-            String fmt;
-            Helper::getStringFormat( fmt, textValue, m_textFormatArgs );
-
-            _cacheText = font->prepareText( fmt );
-        }
-        catch( const std::exception & _ex )
-        {
-            LOGGER_ERROR( "TextField::updateTextCache_ '%s:%s' except error '%s'"
+            LOGGER_ERROR( "TextField::updateTextCache_ '%s:%s' invalid string format with args '%d'"
                 , this->getName().c_str()
                 , this->getTextID().c_str()
-                , _ex.what()
+                , m_textFormatArgs.size()
             );
 
             return false;
         }
+
+        _cacheText = font->prepareText( fmt );
 
         return true;
     }

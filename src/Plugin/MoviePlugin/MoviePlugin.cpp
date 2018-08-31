@@ -317,6 +317,8 @@ namespace Mengine
             .def( "getResourceMovie2", &Movie2::getResourceMovie2 )
             .def( "setCompositionName", &Movie2::setCompositionName )
             .def( "getCompositionName", &Movie2::getCompositionName )
+            .def( "setTextAliasEnvironment", &Movie2::setTextAliasEnvironment )
+            .def( "getTextAliasEnvironment", &Movie2::getTextAliasEnvironment )
             .def( "getDuration", &Movie2::getDuration )
             .def( "setWorkAreaFromEvent", &Movie2::setWorkAreaFromEvent )
             .def( "removeWorkArea", &Movie2::removeWorkArea )

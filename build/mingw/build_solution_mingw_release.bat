@@ -5,7 +5,7 @@
 @popd
 
 @pushd ..\..\build_temp\build_mingw_application\Release
-mingw32-make.exe
+mingw32-make.exe -j4
 @popd
 
 @if NOT "%1"=="/NOPAUSE" pause

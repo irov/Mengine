@@ -1116,14 +1116,14 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_Transformation3D_setAngleDeg( Transformation3D * _transformation, float _angle )
+        void s_Transformation_setAngleDeg( Transformation * _transformation, float _angle )
         {
             float rad = _angle * mt::constant::deg2rad;
 
             _transformation->setOrientationX( rad );
         }
         //////////////////////////////////////////////////////////////////////////
-        void s_Transformation3D_removeRelationTransformation( Transformation3D * _transformation )
+        void s_Transformation_removeRelationTransformation( Transformation * _transformation )
         {
             _transformation->setRelationTransformation( nullptr );
         }
@@ -1137,7 +1137,7 @@ namespace Mengine
             return categoryName;
         }
         //////////////////////////////////////////////////////////////////////////
-        void Transformation3D_coordinate( Transformation3D * _transformation, const mt::vec3f & _coordinate )
+        void Transformation_coordinate( Transformation * _transformation, const mt::vec3f & _coordinate )
         {
             const mt::vec3f & origin = _transformation->getOrigin();
             _transformation->setOrigin( origin + _coordinate );
@@ -3588,54 +3588,52 @@ namespace Mengine
             .def( "getBoundingBox", &BoundingBox::getBoundingBox )
             ;
 
-        pybind::interface_<Transformation3D, pybind::bases<Mixin> >( kernel, "Transformation3D" )
-            .def( "setLocalPosition", &Transformation3D::setLocalPosition )
-            .def( "getLocalPosition", &Transformation3D::getLocalPosition )
-            .def( "setLocalPositionX", &Transformation3D::setLocalPositionX )
-            .def( "getLocalPositionX", &Transformation3D::getLocalPositionX )
-            .def( "setLocalPositionY", &Transformation3D::setLocalPositionY )
-            .def( "getLocalPositionY", &Transformation3D::getLocalPositionY )
-            .def( "setLocalPositionZ", &Transformation3D::setLocalPositionZ )
-            .def( "getLocalPositionZ", &Transformation3D::getLocalPositionZ )
-            //.def( "getLocalDirection", &Transformation3D::getLocalDirection )
-            //.def( "setLocalDirection", &Transformation3D::setLocalDirection )
-            .def( "setOrigin", &Transformation3D::setOrigin )
-            .def( "getOrigin", &Transformation3D::getOrigin )
-            .def( "setScale", &Transformation3D::setScale )
-            .def( "getScale", &Transformation3D::getScale )
-            .def( "setSkew", &Transformation3D::setSkew )
-            .def( "getSkew", &Transformation3D::getSkew )
-            .def( "setOrientationX", &Transformation3D::setOrientationX )
-            .def( "getOrientationX", &Transformation3D::getOrientationX )
-            .def( "setOrientationY", &Transformation3D::setOrientationY )
-            .def( "getOrientationY", &Transformation3D::getOrientationY )
-            .def( "setOrientationZ", &Transformation3D::setOrientationZ )
-            .def( "getOrientationZ", &Transformation3D::getOrientationZ )
-            .def( "setOrientation", &Transformation3D::setOrientation )
-            .def( "getOrientation", &Transformation3D::getOrientation )
+        pybind::interface_<Transformation, pybind::bases<Mixin> >( kernel, "Transformation" )
+            .def( "setLocalPosition", &Transformation::setLocalPosition )
+            .def( "getLocalPosition", &Transformation::getLocalPosition )
+            .def( "setLocalPositionX", &Transformation::setLocalPositionX )
+            .def( "getLocalPositionX", &Transformation::getLocalPositionX )
+            .def( "setLocalPositionY", &Transformation::setLocalPositionY )
+            .def( "getLocalPositionY", &Transformation::getLocalPositionY )
+            .def( "setLocalPositionZ", &Transformation::setLocalPositionZ )
+            .def( "getLocalPositionZ", &Transformation::getLocalPositionZ )
+            .def( "setOrigin", &Transformation::setOrigin )
+            .def( "getOrigin", &Transformation::getOrigin )
+            .def( "setScale", &Transformation::setScale )
+            .def( "getScale", &Transformation::getScale )
+            .def( "setSkew", &Transformation::setSkew )
+            .def( "getSkew", &Transformation::getSkew )
+            .def( "setOrientationX", &Transformation::setOrientationX )
+            .def( "getOrientationX", &Transformation::getOrientationX )
+            .def( "setOrientationY", &Transformation::setOrientationY )
+            .def( "getOrientationY", &Transformation::getOrientationY )
+            .def( "setOrientationZ", &Transformation::setOrientationZ )
+            .def( "getOrientationZ", &Transformation::getOrientationZ )
+            .def( "setOrientation", &Transformation::setOrientation )
+            .def( "getOrientation", &Transformation::getOrientation )
 
-            .def( "setAngle", &Transformation3D::setOrientationX )
-            .def( "getAngle", &Transformation3D::getOrientationX )
-            .def_proxy_static( "setAngleDeg", nodeScriptMethod, &NodeScriptMethod::s_Transformation3D_setAngleDeg )
+            .def( "setAngle", &Transformation::setOrientationX )
+            .def( "getAngle", &Transformation::getOrientationX )
+            .def_proxy_static( "setAngleDeg", nodeScriptMethod, &NodeScriptMethod::s_Transformation_setAngleDeg )
 
-            .def( "setDirection", &Transformation3D::setDirection )
-            .def( "setBillboard", &Transformation3D::setBillboard )
-            .def( "setAxes", &Transformation3D::setAxes )
+            .def( "setDirection", &Transformation::setDirection )
+            .def( "setBillboard", &Transformation::setBillboard )
+            .def( "setAxes", &Transformation::setAxes )
 
-            .def( "billboardAt", &Transformation3D::billboardAt )
-            .def( "lookAt", &Transformation3D::lookAt )
+            .def( "billboardAt", &Transformation::billboardAt )
+            .def( "lookAt", &Transformation::lookAt )
 
-            .def( "getAxisDirection", &Transformation3D::getAxisDirection )
-            .def( "getAxisLeft", &Transformation3D::getAxisLeft )
-            .def( "getAxisUp", &Transformation3D::getAxisUp )
+            .def( "getAxisDirection", &Transformation::getAxisDirection )
+            .def( "getAxisLeft", &Transformation::getAxisLeft )
+            .def( "getAxisUp", &Transformation::getAxisUp )
 
-            .def( "translate", &Transformation3D::translate )
-            .def( "rotate", &Transformation3D::rotate )
-            .def( "coordinate", &Transformation3D::coordinate )
+            .def( "translate", &Transformation::translate )
+            .def( "rotate", &Transformation::rotate )
+            .def( "coordinate", &Transformation::coordinate )
 
-            .def( "resetTransformation", &Transformation3D::resetTransformation )
-            .def( "setRelationTransformation", &Transformation3D::setRelationTransformation )
-            .def_proxy_static( "removeRelationTransformation", nodeScriptMethod, &NodeScriptMethod::s_Transformation3D_removeRelationTransformation )
+            .def( "resetTransformation", &Transformation::resetTransformation )
+            .def( "setRelationTransformation", &Transformation::setRelationTransformation )
+            .def_proxy_static( "removeRelationTransformation", nodeScriptMethod, &NodeScriptMethod::s_Transformation_removeRelationTransformation )
             ;
 
         pybind::interface_<Compilable, pybind::bases<Mixin> >( kernel, "Compilable" )
@@ -3860,7 +3858,7 @@ namespace Mengine
             .def( "getBlendMode", &Materialable::getBlendMode )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation3D, BoundingBox, Colorable, Compilable, Renderable, Affectorable> >( kernel, "Node", false )
+        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation, BoundingBox, Colorable, Compilable, Renderable, Affectorable> >( kernel, "Node", false )
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )

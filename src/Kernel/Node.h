@@ -7,7 +7,7 @@
 #include "Kernel/Updatable.h"
 #include "Kernel/Renderable.h"
 #include "Kernel/BoundingBox.h"
-#include "Kernel/Transformation3D.h"
+#include "Kernel/Transformation.h"
 #include "Kernel/Colorable.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/Visitable.h"
@@ -43,7 +43,7 @@ namespace Mengine
         , public Updatable
         , public Renderable
         , public BoundingBox
-        , public Transformation3D
+        , public Transformation
         , public Colorable
         , public Affectorable
         , public Visitable

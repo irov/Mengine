@@ -42,6 +42,16 @@ namespace Mengine
 
         aeMovieResourceTypeEnum resource_type = _resource->type;
 
+        if( resourceMovie2->getGroupName() == "Navigation" )
+        {
+            printf( "Fds" );
+        }
+
+        if( strcmp( _resource->name, "Movies2_Image_6d/809e0dfb2b992c435e43d5894c5b468eb0680a.png" ) == 0 )
+        {
+            printf("Fdsfsd");
+        }
+
         switch( resource_type )
         {
         case AE_MOVIE_RESOURCE_IMAGE:
@@ -181,6 +191,7 @@ namespace Mengine
 
         return AE_TRUE;
     }
+    //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_cache_uv_deleter( const aeMovieDataCacheUVDeleterCallbackData * _callbackData, ae_voidptr_t _ud )
     {
         (void)_ud;
@@ -194,6 +205,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie2::ResourceMovie2()
+        : m_movieInstance( nullptr )
+        , m_movieData( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -450,24 +463,11 @@ namespace Mengine
         }
 #endif
 
-        for( const ResourcePtr & resource : m_resources )
-        {
-            if( resource->compile() == false )
-            {
-                return false;
-            }
-        }
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceMovie2::_release()
     {
-        for( const ResourcePtr & resource : m_resources )
-        {
-            resource->release();
-        }
-
         for( const ResourcePtr & resource : m_resources )
         {
             resource->decrementReference();
@@ -476,6 +476,7 @@ namespace Mengine
         m_resources.clear();
 
         ae_delete_movie_data( m_movieData );
+        m_movieData = nullptr;
 
         Resource::_release();
     }

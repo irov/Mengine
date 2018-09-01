@@ -128,9 +128,9 @@ Renderable
 )
 
 ADD_FILTER(
-Transformation3D
-	Transformation3D.cpp
-	Transformation3D.h
+Transformation
+	Transformation.cpp
+	Transformation.h
 )
 
 ADD_FILTER(

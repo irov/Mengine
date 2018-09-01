@@ -1,10 +1,9 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
 INCLUDE( ../macro_template.cmake )
+INCLUDE( ../win32_template.cmake )
 
 PROJECT( Mengine_WIN32 )
-
-INCLUDE( ../win32_template.cmake )
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 

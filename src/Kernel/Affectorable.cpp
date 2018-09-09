@@ -1,8 +1,6 @@
 #include "Kernel/Affectorable.h"
 #include "Kernel/Affector.h"
 
-#include "Interface/TimelineInterface.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -28,7 +26,10 @@ namespace Mengine
 
         _affector->setId( id );
 
-        if( _affector->prepare() == false )
+        uint32_t updatableMode = this->getAffectorableUpdatableMode();
+        uint32_t updatableLeaf = this->getAffectorableUpdatableLeaf();
+
+        if( _affector->prepare( updatableMode, updatableLeaf ) == false )
         {
             return INVALID_AFFECTOR_ID;
         }
@@ -48,8 +49,6 @@ namespace Mengine
 
             if( affector->getId() == _id )
             {
-                m_affectors.remove( affector );
-
                 affector->stop();
 
                 return true;
@@ -69,8 +68,6 @@ namespace Mengine
 
             if( affector->getAffectorType() == _type )
             {
-                m_affectors.remove( affector );
-
                 affector->stop();
             }
         }
@@ -84,49 +81,7 @@ namespace Mengine
 
             it.next_shuffle();
 
-            m_affectors.remove( affector );
-
             affector->stop();
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Affectorable::updateAffectors( const UpdateContext * _context )
-    {
-        AffectorPtr single_affector = m_affectors.single();
-
-        if( single_affector != nullptr )
-        {
-            this->updateAffector_( single_affector, _context );
-        }
-        else
-        {
-            for( TSlugAffector it( m_affectors ); it.eof() == false; )
-            {
-                AffectorPtr affector = *it;
-
-                it.next_shuffle();
-
-                this->updateAffector_( affector, _context );
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Affectorable::updateAffector_( const AffectorPtr & _affector, const UpdateContext * _context )
-    {
-        float used = 0.f;
-        bool end = _affector->affect( _context, &used );
-
-        if( end == true )
-        {
-            m_affectors.remove( _affector );
-
-            TIMELINE_SERVICE()
-                ->beginOffset( used );
-
-            _affector->complete();
-
-            TIMELINE_SERVICE()
-                ->endOffset();
         }
     }
     //////////////////////////////////////////////////////////////////////////

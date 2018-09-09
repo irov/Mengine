@@ -210,7 +210,8 @@ namespace Mengine
 
         if( this->isActivate() == false )
         {
-            if( this->isHomeless() == true )
+            if( NODE_SERVICE()
+                ->isHomeless( this ) == true )
             {
                 LOGGER_ERROR( "Movie::_play: '%s' is homeless"
                     , this->getName().c_str()
@@ -2393,8 +2394,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::_update( const UpdateContext * _context )
     {
-        Node::_update( _context );
-
         if( this->isPlay() == false )
         {
             return;

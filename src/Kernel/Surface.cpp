@@ -13,6 +13,20 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Surface::initialize()
+    {
+        bool successful = this->_initialize();
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Surface::_initialize()
+    {
+        //Empty;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Surface::activate()
     {
         this->_activate();

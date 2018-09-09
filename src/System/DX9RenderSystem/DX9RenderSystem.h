@@ -44,7 +44,7 @@ namespace Mengine
         bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen
             , bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) override;
 
-        void clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force ) override;
+        void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
         // Render frame into _image
         // int rect[4] - rectangle represents desired frame area in pixels
         bool screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect ) override;
@@ -69,6 +69,10 @@ namespace Mengine
         RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount ) override;
         void setProgram( const RenderProgramInterfacePtr & _program ) override;
         void updateProgram( const RenderProgramInterfacePtr & _program ) override;
+        bool applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) override;
+
+    public:
+        RenderProgramVariableInterfacePtr createProgramVariable() override;
 
     public:
         void drawIndexedPrimitive( EPrimitiveType _type
@@ -140,7 +144,6 @@ namespace Mengine
     protected:
         void updateVSyncDPP_();
         bool resetDevice_();
-        void clear_( uint8_t _r, uint8_t _g, uint8_t _b );
 
     protected:
         void updateViewport_( const Viewport & _viewport );
@@ -190,6 +193,9 @@ namespace Mengine
         void onDestroyDX9RenderTargetOffscreen_( DX9RenderTargetOffscreen * _targetOffscreen );
 
     protected:
+        void updatePMWInvMatrix_();
+
+    protected:
         UINT m_adapterToUse;
         D3DDEVTYPE m_deviceType;
 
@@ -201,6 +207,7 @@ namespace Mengine
         FactoryPtr m_factoryRenderVertexShader;
         FactoryPtr m_factoryRenderFragmentShader;
         FactoryPtr m_factoryRenderProgram;
+        FactoryPtr m_factoryRenderProgramVariable;
         FactoryPtr m_factoryVertexBuffer;
         FactoryPtr m_factoryIndexBuffer;
         FactoryPtr m_factoryDX9Image;
@@ -224,6 +231,7 @@ namespace Mengine
         mt::mat4f m_projectionMatrix;
         mt::mat4f m_modelViewMatrix;
         mt::mat4f m_worldMatrix;
+        mt::mat4f m_totalPMWInvMatrix;
 
         uint32_t m_dxMaxCombinedTextureImageUnits;
 

@@ -1,5 +1,7 @@
 #include "Kernel/BaseAnimation.h"
 
+#include "Interface/UpdateInterface.h"
+
 #include "math/utils.h"
 
 namespace Mengine

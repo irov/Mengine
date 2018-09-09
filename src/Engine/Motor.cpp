@@ -1,5 +1,7 @@
 #include "Motor.h"
 
+#include "Interface/UpdateInterface.h"
+
 #include "Kernel/Node.h"
 
 namespace Mengine

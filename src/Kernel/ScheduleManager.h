@@ -3,6 +3,8 @@
 #include "Interface/ScheduleManagerInterface.h"
 
 #include "Kernel/ServantBase.h"
+#include "Kernel/Updatable.h"
+#include "Kernel/BaseUpdation.h"
 
 #include "Config/Vector.h"
 
@@ -36,10 +38,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ScheduleManager
         : public ServantBase<ScheduleManagerInterface>
+        , public Updatable
+        , public BaseUpdation
     {
+    public:
+        DECLARE_UPDATABLE();
+
     public:
         ScheduleManager();
         ~ScheduleManager() override;
+
+    public:
+        bool initialize( const ConstString & _name ) override;
+        void finalize() override;
+
+    public:
+        const ConstString & getName() const override;
 
     public:
         uint32_t event( float _delay, const ScheduleEventInterfacePtr & _listener ) override;
@@ -72,13 +86,17 @@ namespace Mengine
     public:
         float getTime() const override;
 
-    public:
-        void update( const UpdateContext * _context ) override;
+    protected:
+        void _update( const UpdateContext * _context ) override;
 
     protected:
         bool removeSchedule_( ScheduleEventDesc & _event );
 
     protected:
+        ConstString m_name;
+
+        uint32_t m_updataterId;
+
         float m_speedFactor;
         float m_time;
 

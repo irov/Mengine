@@ -241,7 +241,7 @@ namespace Mengine
 
         RenderTextureInterfacePtr texture = m_resourceImage->getTexture();
 
-        RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+        const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
             ->getMaterial( STRINGIZE_STRING_LOCAL( "Ozz_Texture_Blend" ), PT_TRIANGLELIST, 1, &texture );
 
         m_material = material;

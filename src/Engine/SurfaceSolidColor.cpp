@@ -82,7 +82,7 @@ namespace Mengine
         //ToDo MaterialContex
         //bool solid = m_color.isSolid();
 
-        RenderMaterialInterfacePtr material = this->makeSolidMaterial( false );
+        const RenderMaterialInterfacePtr & material = this->makeSolidMaterial( false );
 
         if( material == nullptr )
         {

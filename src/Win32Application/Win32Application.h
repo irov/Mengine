@@ -11,6 +11,7 @@
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/PhysicSystemInterface.h"
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderServiceInterface.h"
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ParticleSystemInterface.h"

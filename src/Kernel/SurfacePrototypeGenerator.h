@@ -39,6 +39,11 @@ namespace Mengine
 
             this->setupScriptable( surface );
 
+            if( surface->initialize() == false )
+            {
+                return nullptr;
+            }
+
             return surface;
         }
     };

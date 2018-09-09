@@ -7,7 +7,7 @@
 
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ResourceInterface.h"
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderServiceInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/TextInterface.h"

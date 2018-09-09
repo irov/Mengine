@@ -3,6 +3,7 @@
 #include "OzzAnimationInterface.h"
 
 #include "Kernel/BaseAnimation.h"
+#include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseEventation.h"
 
 #include "ResourceOzzAnimation.h"
@@ -15,6 +16,7 @@ namespace Mengine
     class SamplerOzzAnimation
         : public SamplerOzzAnimationInterface
         , public BaseAnimation
+        , public BaseUpdation
         , public BaseEventation
     {
         DECLARE_ANIMATABLE();

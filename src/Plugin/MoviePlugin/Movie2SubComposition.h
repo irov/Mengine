@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Kernel/Scriptable.h"
 #include "Kernel/Animatable.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/BaseAnimation.h"
@@ -28,6 +29,7 @@ namespace Mengine
         , public BaseEventation
         , public Animatable
         , public BaseAnimation
+        , public Scriptable
     {
         DECLARE_ANIMATABLE()
         DECLARE_EVENTABLE( Movie2SubCompositionEventReceiver );
@@ -41,7 +43,11 @@ namespace Mengine
         const Movie2Ptr & getMovie() const;
 
     public:
-        void setSubMovieComposition( const aeMovieComposition * _composition, const ConstString & _name );
+        void setSubMovieCompositionName( const ConstString & _subcompositionName );
+        const ConstString & getSubMovieCompositionName() const;
+
+    public:
+        bool initialize( const aeMovieComposition * _composition );
 
     protected:
         bool _play( uint32_t _enumerator, float _time ) override;
@@ -57,6 +63,7 @@ namespace Mengine
 
     protected:
         Movie2Ptr m_movie;
+        ConstString m_subcompositionName;
 
         const aeMovieComposition * m_composition;
         const aeMovieSubComposition * m_subcomposition;

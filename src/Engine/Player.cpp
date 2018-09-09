@@ -1,5 +1,6 @@
 #include "Player.h"
 
+#include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ParticleSystemInterface.h"
@@ -30,6 +31,8 @@
 #include "Kernel/ScheduleManager.h"
 
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryAssertion.h"
 
 #include "GlobalAffectorable.h"
 
@@ -414,9 +417,14 @@ namespace Mengine
         Helper::screenToWorldDelta( m_renderCamera, _screenDeltha, _worldDeltha );
     }
     //////////////////////////////////////////////////////////////////////////
-    ScheduleManagerInterfacePtr Player::createSchedulerManager()
+    ScheduleManagerInterfacePtr Player::createSchedulerManager( const ConstString & _name )
     {
         ScheduleManagerInterfacePtr sm = m_factoryScheduleManager->createObject();
+
+        if( sm->initialize( _name ) == false )
+        {
+            return nullptr;
+        }
 
         m_schedulers.emplace_back( sm );
 
@@ -478,13 +486,23 @@ namespace Mengine
         m_mousePickerSystem = SERVICE_GET( MousePickerSystemInterface );
         m_globalHandleSystem = SERVICE_GET( GlobalHandleSystemInterface );
 
-        m_factoryScheduleManager = new FactoryDefault<ScheduleManager>();
+        m_factoryScheduleManager = new FactoryPool<ScheduleManager, 16>();
 
         ScheduleManagerInterfacePtr scheduleManager = m_factoryScheduleManager->createObject();
+
+        if( scheduleManager->initialize( "LocalScheduleManager"_c ) == false )
+        {
+            return false;
+        }
 
         m_scheduleManager = scheduleManager;
 
         ScheduleManagerInterfacePtr scheduleManagerGlobal = m_factoryScheduleManager->createObject();
+
+        if( scheduleManagerGlobal->initialize( "GlobalScheduleManager"_c ) == false )
+        {
+            return false;
+        }
 
         m_scheduleManagerGlobal = scheduleManagerGlobal;
 
@@ -790,55 +808,8 @@ namespace Mengine
             }
         }
 
-        if( m_camera2D != nullptr )
-        {
-            m_camera2D->update( _context );
-        }
-
-        if( m_arrowCamera2D != nullptr )
-        {
-            m_arrowCamera2D->update( _context );
-        }
-
-        if( m_arrow != nullptr )
-        {
-            m_arrow->update( _context );
-        }
-
-        if( m_globalScene != nullptr )
-        {
-            m_globalScene->update( _context );
-        }
-
-        if( m_scene != nullptr )
-        {
-            m_scene->update( _context );
-        }
-
-        if( m_scheduleManager != nullptr )
-        {
-            m_scheduleManager->update( _context );
-        }
-
-        if( m_scheduleManagerGlobal != nullptr )
-        {
-            m_scheduleManagerGlobal->update( _context );
-        }
-
-        for( const ScheduleManagerInterfacePtr & sm : m_schedulers )
-        {
-            sm->update( _context );
-        }
-
-        if( m_affectorable != nullptr )
-        {
-            m_affectorable->updateAffectors( _context );
-        }
-
-        if( m_affectorableGlobal != nullptr )
-        {
-            m_affectorableGlobal->updateAffectors( _context );
-        }
+        UPDATE_SERVICE()
+            ->update( _context );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Player::update()

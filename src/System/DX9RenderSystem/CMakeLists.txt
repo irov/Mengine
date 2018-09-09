@@ -27,6 +27,8 @@ src
     DX9RenderEnum.h
     DX9ErrorHelper.h
     DX9ErrorHelper.cpp
+    DX9RenderProgramVariable.h
+    DX9RenderProgramVariable.cpp
 )
 
 add_definitions(-DUNICODE)

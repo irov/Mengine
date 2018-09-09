@@ -121,7 +121,7 @@ namespace Mengine
                         return;
                     }
 
-                    RenderMaterialInterfacePtr material = this->makeImageMaterial( el.image, false );
+                    const RenderMaterialInterfacePtr & material = this->makeImageMaterial( el.image, false );
 
                     if( material == nullptr )
                     {

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseUpdation.h"
 
 namespace Mengine
 {
@@ -9,7 +10,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Shape
         : public Node
+        , public BaseUpdation
     {
+        DECLARE_UPDATABLE();
+
     public:
         Shape();
         ~Shape() override;

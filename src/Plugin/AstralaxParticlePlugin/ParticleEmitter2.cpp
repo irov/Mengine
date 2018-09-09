@@ -310,8 +310,6 @@ namespace Mengine
             return;
         }
 
-        Node::_update( _context );
-
         bool enabled = APPLICATION_SERVICE()
             ->getParticleEnable();
 
@@ -417,10 +415,10 @@ namespace Mengine
             const RenderMaterialStage * stage = PARTICLE_SYSTEM2()
                 ->getMaterialStage( mesh.material );
 
-            RenderMaterialInterfacePtr material = RENDERMATERIAL_SERVICE()
+            const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                 ->getMaterial2( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), stage, PT_TRIANGLELIST, mesh.textures, textures );
 
-            this->addRenderObject( _state, material, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, &bb, false );
+            this->addRenderObject( _state, material, nullptr, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, &bb, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////

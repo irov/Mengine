@@ -7,6 +7,7 @@
 #include "Kernel/ConstString.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryAssertion.h"
 
 namespace Mengine
 {

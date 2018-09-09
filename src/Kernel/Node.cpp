@@ -5,8 +5,7 @@
 
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
-
-#include "Interface/NodeInterface.h"
+#include "Interface/UpdateInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -21,10 +20,10 @@ namespace Mengine
         , m_afterActive( false )
         , m_enable( true )
         , m_freeze( false )
-        , m_speedFactor( 1.f )
         , m_rendering( false )
         , m_invalidateRendering( true )
         , m_parent( nullptr )
+        , m_updatableProxyId( INVALID_UPDATABLE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -91,9 +90,16 @@ namespace Mengine
             }
         }
 
-        m_afterActive = true;
+        if( m_active == true )
+        {
+            m_afterActive = true;
 
-        this->_afterActivate();
+            this->_afterActivate();
+        }
+        else
+        {
+            m_active = false;
+        }
 
         stdex::intrusive_this_release( this );
 
@@ -194,6 +200,21 @@ namespace Mengine
         stdex::intrusive_this_release( this );
     }
     //////////////////////////////////////////////////////////////////////////
+    uint32_t Node::getLeaf() const
+    {
+        uint32_t leaf = 0;
+
+        Node * parent = m_parent;
+        while( parent )
+        {
+            ++leaf;
+
+            parent = parent->getParent();
+        }
+
+        return leaf;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Node::setParent_( Node * _parent )
     {
         Node * oldparent = m_parent;
@@ -265,14 +286,6 @@ namespace Mengine
         }
 
         bool result = m_parent->removeChild( this );
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Node::isHomeless() const
-    {
-        bool result = NODE_SERVICE()
-            ->isHomeless( this );
 
         return result;
     }
@@ -467,9 +480,6 @@ namespace Mengine
         }
 
         this->removeChild_( _node );
-
-        //NODE_SERVICE()
-        //	->addHomeless( _node );
 
         return true;
     }
@@ -727,81 +737,99 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::setSpeedFactor( float _speedFactor )
-    {
-        m_speedFactor = _speedFactor;
+    {        
+        //TODO: REMOVE
     }
     //////////////////////////////////////////////////////////////////////////
     float Node::getSpeedFactor() const
     {
-        return m_speedFactor;
+        return 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::update( const UpdateContext * _context )
-    {
-        if( this->isActivate() == false )
-        {
-            return;
-        }
+    //void Node::update( const UpdateContext * _context )
+    //{
+    //    if( this->isActivate() == false )
+    //    {
+    //        return;
+    //    }
 
-        if( this->isFreeze() == true )
-        {
-            return;
-        }
+    //    if( this->isFreeze() == true )
+    //    {
+    //        return;
+    //    }
 
-        this->setUpdateRevision( _context->revision );
+    //    this->setUpdateRevision( _context->revision );
 
-        stdex::intrusive_this_acquire( this );
+    //    stdex::intrusive_this_acquire( this );
 
-        UpdateContext nodeUpdate = *_context;
-        nodeUpdate.time *= m_speedFactor;
+    //    this->_update( _context );
 
-        this->_update( &nodeUpdate );
+        //Affectorable::updateAffectors( _context );
 
-        Affectorable::updateAffectors( &nodeUpdate );
+    //    this->updateChildren_( _context );
 
-        this->updateChildren_( _context );
+    //    stdex::intrusive_this_release( this );
+    //}
+    ////////////////////////////////////////////////////////////////////////////
+    //void Node::updateChildren_( const UpdateContext * _context )
+    //{
+    //    if( m_children.empty() == true )
+    //    {
+    //        return;
+    //    }
 
-        stdex::intrusive_this_release( this );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::updateChildren_( const UpdateContext * _context )
-    {
-        if( m_children.empty() == true )
-        {
-            return;
-        }
+    //    NodePtr single = m_children.single();
 
-        NodePtr single = m_children.single();
+    //    if( single != nullptr )
+    //    {
+    //        single->update( _context );
+    //    }
+    //    else
+    //    {
+    //        for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+    //        {
+    //            NodePtr children = *it;
 
-        if( single != nullptr )
-        {
-            single->update( _context );
-        }
-        else
-        {
-            for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
-            {
-                NodePtr children = *it;
+    //            it.next_shuffle();
 
-                it.next_shuffle();
-
-                children->update( _context );
-            }
-        }
-    }
+    //            children->update( _context );
+    //        }
+    //    }
+    //}
     //////////////////////////////////////////////////////////////////////////
     bool Node::_activate()
     {
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_afterActivate()
     {
         //Empty
+        UpdationInterfacePtr updation = this->getUpdation();
+
+        if( updation != nullptr )
+        {
+            uint32_t leaf = this->getLeaf();
+
+            m_updatableProxyId = UPDATE_SERVICE()
+                ->createUpdatater( 0U, leaf, updation );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_deactivate()
     {
+        UpdationInterfacePtr updation = this->getUpdation();
+        
+        if( updation != nullptr )
+        {
+            UPDATE_SERVICE()
+                ->removeUpdatater( m_updatableProxyId );
+
+            m_updatableProxyId = INVALID_UPDATABLE_ID;
+        }
+
         Affectorable::stopAllAffectors();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -809,16 +837,16 @@ namespace Mengine
     {
         //Empty
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_update( const UpdateContext * _context )
-    {
-        (void)_context;
+    ////////////////////////////////////////////////////////////////////////////
+    //void Node::_update( const UpdateContext * _context )
+    //{
+    //    (void)_context;
 
-        if( m_invalidateWorldMatrix == true )
-        {
-            this->updateWorldMatrix();
-        }
-    }
+    //    if( m_invalidateWorldMatrix == true )
+    //    {
+    //        this->updateWorldMatrix();
+    //    }
+    //}
     //////////////////////////////////////////////////////////////////////////
     bool Node::compile()
     {
@@ -1242,6 +1270,18 @@ namespace Mengine
         bool solid = mt::equal_f_f( worldAlpha * personalAlpha, 1.f );
 
         return solid;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Node::getAffectorableUpdatableMode() const
+    {
+        return 1U;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Node::getAffectorableUpdatableLeaf() const
+    {
+        uint32_t leaf = this->getLeaf();
+
+        return leaf;
     }
     //////////////////////////////////////////////////////////////////////////
     MousePickerTrapInterfacePtr Node::getPickerTrap()

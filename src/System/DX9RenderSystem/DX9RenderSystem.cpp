@@ -1,5 +1,6 @@
 #include "DX9RenderSystem.h"
 
+#include "Interface/RenderServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigInterface.h"
@@ -18,10 +19,12 @@
 #include "DX9RenderVertexAttribute.h"
 #include "DX9RenderVertexBuffer.h"
 #include "DX9RenderIndexBuffer.h"
+#include "DX9RenderProgramVariable.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/FactoryAssertion.h"
 
 #include <algorithm>
 #include <cmath>
@@ -60,6 +63,7 @@ namespace Mengine
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );
         mt::ident_m4( m_worldMatrix );
+        mt::ident_m4( m_totalPMWInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderSystem::~DX9RenderSystem()
@@ -202,6 +206,7 @@ namespace Mengine
         m_factoryRenderVertexShader = new FactoryPool<DX9RenderVertexShader, 16>();
         m_factoryRenderFragmentShader = new FactoryPool<DX9RenderFragmentShader, 16>();
         m_factoryRenderProgram = new FactoryPool<DX9RenderProgram, 16>();
+        m_factoryRenderProgramVariable = new FactoryPool<DX9RenderProgramVariable, 64>();
         m_factoryVertexBuffer = new FactoryDefault<DX9RenderVertexBuffer>();
         m_factoryIndexBuffer = new FactoryDefault<DX9RenderIndexBuffer>();
 
@@ -232,6 +237,7 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgramVariable );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryVertexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIndexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDX9Image );
@@ -242,6 +248,7 @@ namespace Mengine
         m_factoryRenderVertexShader = nullptr;
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderProgram = nullptr;
+        m_factoryRenderProgramVariable = nullptr;
         m_factoryVertexBuffer = nullptr;
         m_factoryIndexBuffer = nullptr;
 
@@ -546,6 +553,8 @@ namespace Mengine
         mt::make_translation_m4( vmperfect, offset_x, offset_y, 0.f );
 
         mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
+
+        this->updatePMWInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setViewMatrix( const mt::mat4f & _modelViewMatrix )
@@ -559,6 +568,8 @@ namespace Mengine
         }
 
         m_modelViewMatrix = _modelViewMatrix;
+
+        this->updatePMWInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
@@ -572,6 +583,8 @@ namespace Mengine
         }
 
         m_worldMatrix = _worldMatrix;
+
+        this->updatePMWInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
@@ -1055,19 +1068,6 @@ namespace Mengine
         }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::clear_( uint8_t _r, uint8_t _g, uint8_t _b )
-    {
-        if( m_pD3DDevice == nullptr )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::clear_ device not created"
-            );
-
-            return;
-        }
-
-        DXCALL( m_pD3DDevice, Clear, (0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( _r, _g, _b ), 0.f, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _matrix )
@@ -1783,8 +1783,40 @@ namespace Mengine
     {
         DX9RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX9RenderProgramPtr>(_program);
 
-        dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix );
+        dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalPMWInvMatrix );
     }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderSystem::applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program )
+    {
+        DX9RenderProgramVariablePtr dx9_variable = stdex::intrusive_static_cast<DX9RenderProgramVariablePtr>(_variable);
+
+        bool successful = dx9_variable->apply( m_pD3DDevice, _program );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariable()
+    {
+        DX9RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject();
+
+        if( variable == nullptr )
+        {
+            LOGGER_ERROR( "DX9RenderSystem::createProgramVariable invalid create program variable"
+            );
+
+            return nullptr;
+        }
+
+        if( variable->initialize() == false )
+        {
+            LOGGER_ERROR( "DX9RenderSystem::createProgramVariable invalid initialize program variable"
+            );
+
+            return nullptr;
+        }
+
+        return variable;
+    }   
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setVSync( bool _vSync )
     {
@@ -1821,30 +1853,17 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force )
+    void DX9RenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b )
     {
-        if( _force == true )
+        if( m_pD3DDevice == nullptr )
         {
-            this->clear_( _r, _g, _b );
+            LOGGER_ERROR( "DX9RenderSystem::clear_ device not created"
+            );
+
+            return;
         }
-        else
-        {
-            Viewport clear_viewport;
 
-            clear_viewport.begin.x = 0.f;
-            clear_viewport.begin.y = 0.f;
-            clear_viewport.end.x = (float)m_windowResolution.getWidth();
-            clear_viewport.end.y = (float)m_windowResolution.getHeight();
-
-            if( m_viewport.equalViewport( clear_viewport ) == false )
-            {
-                this->updateViewport_( clear_viewport );
-
-                this->clear_( _r, _g, _b );
-
-                this->updateViewport_( m_viewport );
-            }
-        }
+        DXCALL( m_pD3DDevice, Clear, (0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( _r, _g, _b ), 0.f, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat )
@@ -1893,6 +1912,13 @@ namespace Mengine
     void DX9RenderSystem::onDestroyDX9RenderTargetOffscreen_( DX9RenderTargetOffscreen * _targetOffscreen )
     {
         _targetOffscreen->finalize();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderSystem::updatePMWInvMatrix_()
+    {
+        mt::mat4f totalPMWMatrix = m_worldMatrix * m_modelViewMatrix * m_projectionMatrix;
+
+        mt::transpose_m4( m_totalPMWInvMatrix, totalPMWMatrix );
     }
 }
 

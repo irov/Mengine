@@ -7,8 +7,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Movie2SubComposition::Movie2SubComposition()
-        : m_movie( nullptr )
-        , m_composition( nullptr )
+        : m_composition( nullptr )
         , m_subcomposition( nullptr )
     {
     }
@@ -27,13 +26,29 @@ namespace Mengine
         return m_movie;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::setSubMovieComposition( const aeMovieComposition * _composition, const ConstString & _name )
+    void Movie2SubComposition::setSubMovieCompositionName( const ConstString & _subcompositionName )
     {
+        m_subcompositionName = _subcompositionName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & Movie2SubComposition::getSubMovieCompositionName() const
+    {
+        return m_subcompositionName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2SubComposition::initialize( const aeMovieComposition * _composition )
+    {
+        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( _composition, m_subcompositionName.c_str() );
+
+        if( subcomposition == AE_NULL )
+        {
+            return false;
+        }
+
         m_composition = _composition;
-
-        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( m_composition, _name.c_str() );
-
         m_subcomposition = subcomposition;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::_play( uint32_t _enumerator, float _time )

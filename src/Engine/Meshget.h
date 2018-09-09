@@ -9,6 +9,7 @@
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/RenderVertex2D.h"
 #include "Kernel/BaseEventation.h"
+#include "Kernel/BaseUpdation.h"
 
 #include "Config/Vector.h"
 
@@ -37,8 +38,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Meshget
         : public Node
+        , public BaseUpdation
         , public BaseEventation
     {
+        DECLARE_UPDATABLE();
         DECLARE_EVENTABLE( MeshgetEventReceiver );
 
     public:

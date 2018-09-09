@@ -93,13 +93,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgram::bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix )
+    void DX9RenderProgram::bindMatrix( IDirect3DDevice9 * _pD3DDevice, const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalPMWInvMatrix )
     {
-        mt::mat4f mvpMat = _worldMatrix * _viewMatrix * _projectionMatrix;
-        mt::mat4f mvpMat_tr;
-        mt::transpose_m4( mvpMat_tr, mvpMat );
-        DXCALL( _pD3DDevice, SetVertexShaderConstantF, (0, mvpMat_tr.buff(), 4) );
+        (void)_worldMatrix;
+        (void)_viewMatrix;
+        (void)_projectionMatrix;
 
-        //GLCALL( glUniformMatrix4fv, (m_transformLocation, 1, GL_FALSE, m_mvpMat.buff()) );
+        DXCALL( _pD3DDevice, SetVertexShaderConstantF, (0, _totalPMWInvMatrix.buff(), 4) );
     }
 }

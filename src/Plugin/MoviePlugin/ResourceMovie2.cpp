@@ -42,16 +42,6 @@ namespace Mengine
 
         aeMovieResourceTypeEnum resource_type = _resource->type;
 
-        if( resourceMovie2->getGroupName() == "Navigation" )
-        {
-            printf( "Fds" );
-        }
-
-        if( strcmp( _resource->name, "Movies2_Image_6d/809e0dfb2b992c435e43d5894c5b468eb0680a.png" ) == 0 )
-        {
-            printf("Fdsfsd");
-        }
-
         switch( resource_type )
         {
         case AE_MOVIE_RESOURCE_IMAGE:

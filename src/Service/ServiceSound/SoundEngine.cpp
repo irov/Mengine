@@ -8,6 +8,7 @@
 #include "Interface/ConfigInterface.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryAssertion.h"
 
 #include "Kernel/Logger.h"
 
@@ -371,11 +372,6 @@ namespace Mengine
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( _fileGroup, _filePath, _streamable );
-
-        if( _filePath == "SFX/02.ogg" )
-        {
-            printf( "1" );
-        }
 
         if( stream == nullptr )
         {

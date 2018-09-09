@@ -36,10 +36,6 @@ namespace Mengine
     protected:
         bool _affect( const UpdateContext * _context, float * _used ) override;
 
-    public:
-        void complete() override;
-        void stop() override;
-
     protected:
         pybind::object m_cb;
         pybind::args m_args;

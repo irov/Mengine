@@ -151,6 +151,7 @@
 #include "Kernel/ValueFollower.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryAssertion.h"
 
 #include "stdex/xml_sax_parser.h"
 #include "utf8.h"
@@ -2090,6 +2091,12 @@ namespace Mengine
             return pybind::ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
+        bool s_Node_isHomeless( Node * _node )
+        {
+            return NODE_SERVICE()
+                ->isHomeless( _node );
+        }
+        //////////////////////////////////////////////////////////////////////////
         mt::vec3f s_Node_getWorldOffsetPosition( Node * _node, const mt::vec3f & _position )
         {
             const mt::vec3f & wp = _node->getWorldPosition();
@@ -2246,11 +2253,6 @@ namespace Mengine
                 *_used = m_time;
 
                 return true;
-            }
-
-            void stop() override
-            {
-                this->end_( false );
             }
 
         protected:
@@ -2611,11 +2613,9 @@ namespace Mengine
                 return true;
             }
 
-            void stop() override
+            void _stop() override
             {
                 m_interpolator.stop();
-
-                this->end_( false );
             }
 
         protected:
@@ -2887,11 +2887,6 @@ namespace Mengine
                 return false;
             }
 
-            void stop() override
-            {
-                this->end_( false );
-            }
-
         protected:
             NodePtr m_node;
             NodePtr m_target;
@@ -3084,11 +3079,6 @@ namespace Mengine
                 m_node->setWorldPosition( new_position );
 
                 return false;
-            }
-
-            void stop() override
-            {
-                this->end_( false );
             }
 
         protected:
@@ -3565,15 +3555,6 @@ namespace Mengine
             .def_smart_pointer()
             ;
 
-        pybind::interface_<Affector, pybind::bases<Mixin> >( kernel, "Affector", true )
-            .def( "stop", &Affector::stop )
-            .def( "getId", &Affector::getId )
-            .def( "setFreeze", &Affector::setFreeze )
-            .def( "getFreeze", &Affector::getFreeze )
-            .def( "setSpeedFactor", &Affector::setSpeedFactor )
-            .def( "getSpeedFactor", &Affector::getSpeedFactor )
-            ;
-
         pybind::interface_<Scriptable, pybind::bases<Mixin> >( kernel, "Scriptable" )
             .def_bindable()
             ;
@@ -3749,6 +3730,13 @@ namespace Mengine
             .def( "getCodecType", &ResourceHIT::getCodecType )
             ;
 
+        pybind::interface_<UpdationInterface, pybind::bases<Mixin> >( kernel, "Updation" )
+            ;
+                
+        pybind::interface_<Updatable, pybind::bases<Mixin> >( kernel, "Updatable" )
+            .def( "getUpdation", &Updatable::getUpdation )
+            ;
+
         pybind::interface_<Renderable, pybind::bases<Mixin> >( kernel, "Renderable" )
             .def( "hide", &Renderable::setHide )
             .def( "isHide", &Renderable::getHide )
@@ -3866,8 +3854,8 @@ namespace Mengine
             .def( "isActivate", &Node::isActivate )
             .def( "freeze", &Node::freeze )
             .def( "isFreeze", &Node::isFreeze )
-            .def( "setSpeedFactor", &Node::setSpeedFactor )
-            .def( "getSpeedFactor", &Node::getSpeedFactor )
+            .def_deprecated( "setSpeedFactor", &Node::setSpeedFactor, "don't work, use getAnimation" )
+            .def_deprecated( "getSpeedFactor", &Node::getSpeedFactor, "don't work, use getAnimation" )
             .def( "isRenderable", &Node::isRenderable )
             .def( "addChildren", &Node::addChild )
             .def( "addChildrenFront", &Node::addChildFront )
@@ -3876,14 +3864,14 @@ namespace Mengine
             .def( "removeAllChild", &Node::removeChildren )
             .def( "removeFromParent", &Node::removeFromParent )
             .def( "destroyAllChild", &Node::destroyAllChild )
-            .def( "isHomeless", &Node::isHomeless )
+            //.def( "isHomeless", &Node::isHomeless )
+            .def_proxy_static( "isHomeless", nodeScriptMethod, &NodeScriptMethod::s_Node_isHomeless )
             //.def_static( "getChild", &ScriptMethod::s_getChild )
             .def( "findChildren", &Node::findChild )
             .def( "getSiblingPrev", &Node::getSiblingPrev )
             .def( "getSiblingNext", &Node::getSiblingNext )
             .def( "emptyChild", &Node::emptyChildren )
             .def( "hasChildren", &Node::hasChild )
-            .def( "update", &Node::update )
             .def( "getParent", &Node::getParent )
             .def( "hasParent", &Node::hasParent )
 
@@ -3939,6 +3927,15 @@ namespace Mengine
 
             .def_proxy_args_static( "accMoveTo", nodeScriptMethod, &NodeScriptMethod::s_Node_accMoveTo )
             .def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_accAngleTo )
+            ;
+
+        pybind::interface_<Affector, pybind::bases<Updatable> >( kernel, "Affector", true )
+            .def( "stop", &Affector::stop )
+            .def( "getId", &Affector::getId )
+            .def( "setFreeze", &Affector::setFreeze )
+            .def( "getFreeze", &Affector::getFreeze )
+            .def( "setSpeedFactor", &Affector::setSpeedFactor )
+            .def( "getSpeedFactor", &Affector::getSpeedFactor )
             ;
 
         pybind::interface_<Surface, pybind::bases<Scriptable, Identity, Materialable, Compilable> >( kernel, "Surface", false )

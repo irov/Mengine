@@ -2,6 +2,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseAnimation.h"
+#include "Kernel/BaseUpdation.h"
 #include "Kernel/Surface.h"
 #include "Kernel/ResourceHolder.h"
 
@@ -41,10 +42,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Movie2
         : public Node
+        , public BaseUpdation
         , public BaseEventation
         , public BaseAnimation
     {
         DECLARE_ANIMATABLE();
+        DECLARE_UPDATABLE();
         DECLARE_EVENTABLE( Movie2EventReceiver );
 
     public:
@@ -212,9 +215,6 @@ namespace Mengine
 
             RenderMaterialInterfacePtr material;
         };
-
-        typedef Vector<Mesh> VectorMeshes;
-        VectorMeshes m_meshes;
 
         typedef Map<ConstString, Camera> MapCameras;
         MapCameras m_cameras;

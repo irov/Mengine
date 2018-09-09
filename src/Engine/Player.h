@@ -63,7 +63,7 @@ namespace Mengine
         void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) override;
 
     public:
-        ScheduleManagerInterfacePtr createSchedulerManager() override;
+        ScheduleManagerInterfacePtr createSchedulerManager( const ConstString & _name ) override;
         bool destroySchedulerManager( const ScheduleManagerInterfacePtr & _scheduler ) override;
 
     public:

@@ -4,6 +4,7 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Updatable.h"
+#include "Kernel/BaseUpdation.h"
 #include "Kernel/ConstString.h"
 #include "math/vec3.h"
 
@@ -16,7 +17,11 @@ namespace Mengine
     class Motor
         : public Factorable
         , public Updatable
+        , public BaseUpdation
     {
+    public:
+        DECLARE_UPDATABLE();
+
     public:
         Motor();
         ~Motor() override;

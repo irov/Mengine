@@ -56,8 +56,6 @@ src
     OptionsInterface.h
     TimelineInterface.h
     SocketInterface.h
-    COMInterface.h
-    COMMengineInterface.h
 	FactoryInterface.h
     ResourceInterface.h
     UnicodeInterface.h
@@ -69,6 +67,8 @@ src
     EventationInterface.h
     UnknownInterface.h
     UpdateInterface.h
+    RenderProgramVariableInterface.h
+    RenderServiceInterface.h
     
 	dummy.cpp
 )

@@ -21,12 +21,7 @@ namespace Mengine
         return m_cb;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseAffector::complete()
-    {
-        this->end_( true );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseAffector::end_( bool _isEnd )
+    void BaseAffector::_complete( bool _isEnd )
     {
         if( m_cb != nullptr )
         {

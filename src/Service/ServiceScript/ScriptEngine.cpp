@@ -11,6 +11,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/FactoryAssertion.h"
 
 #include "Kernel/Logger.h"
 

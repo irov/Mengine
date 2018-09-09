@@ -37,8 +37,8 @@ namespace Mengine
 
         ThreadTaskInterface * m_task;
 
-        Atomic<bool> m_complete;
-        Atomic<bool> m_exit;
+        AtomicBool m_complete;
+        AtomicBool m_exit;
 
 #ifndef NDEBUG
         const Char * m_file;

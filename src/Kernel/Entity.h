@@ -20,7 +20,6 @@ namespace Mengine
         EVENT_ENTITY_DEACTIVATE,
         EVENT_ENTITY_COMPILE,
         EVENT_ENTITY_RELEASE,
-        EVENT_ENTITY_UPDATE,
         __EVENT_ENTITY_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
@@ -36,7 +35,6 @@ namespace Mengine
         virtual void onEntityDeactivate( const pybind::object & _self ) = 0;
         virtual void onEntityCompile( const pybind::object & _self ) = 0;
         virtual void onEntityRelease( const pybind::object & _self ) = 0;
-        virtual void onEntityUpdate( const pybind::object & _self, uint32_t _revision, float _current, float _time ) = 0;
 
     };
     //////////////////////////////////////////////////////////////////////////
@@ -76,9 +74,6 @@ namespace Mengine
 
         bool _compile() override;
         void _release() override;
-
-    protected:
-        void _update( const UpdateContext * _context ) override;
 
     public:
         void _destroy() override;

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/UpdateInterface.h"
-
 #include "Kernel/Factorable.h"
 
 #include "Kernel/Identity.h"
@@ -19,6 +17,9 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct UpdateContext;
+    //////////////////////////////////////////////////////////////////////////
     class Surface
         : public Servant
         , public Identity
@@ -46,6 +47,12 @@ namespace Mengine
         virtual void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) = 0;
 
         virtual const ColourValue & getColor() const = 0;
+
+    public:
+        bool initialize();
+
+    protected:
+        virtual bool _initialize();
 
     public:
         void activate();

@@ -8,6 +8,7 @@
 #include "Interface/RenderVertexBufferInterface.h"
 #include "Interface/RenderIndexBufferInterface.h"
 #include "Interface/RenderMaterialInterface.h"
+#include "Interface/RenderProgramVariableInterface.h"
 
 #include "Kernel/Viewport.h"
 #include "Kernel/Mixin.h"
@@ -73,6 +74,7 @@ namespace Mengine
             , uint32_t _indexCount ) const;
 
         void addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+            , const RenderProgramVariableInterfacePtr & _variable
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indexCount
             , const mt::box2f * _bb, bool _debug ) const;

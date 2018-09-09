@@ -1,12 +1,12 @@
 #pragma once
 
-#include "stdex/intrusive_list.h"
-#include "stdex/intrusive_linked.h"
-
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
 
 #include "math/mat4.h"
+
+#include "stdex/intrusive_list.h"
+#include "stdex/intrusive_linked.h"
 
 namespace Mengine
 {

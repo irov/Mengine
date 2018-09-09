@@ -27,8 +27,6 @@ namespace Mengine
         void _onCancel() override;
         void _onComplete( bool _successful ) override;
 
-
-
     protected:
         FilePath m_filePath;
 

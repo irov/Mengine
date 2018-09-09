@@ -2,6 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/TimelineInterface.h"
+#include "Interface/UpdateInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -40,7 +41,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     ScheduleManager::ScheduleManager()
-        : m_speedFactor( 1.f )
+        : m_updataterId( INVALID_UPDATABLE_ID )
+        , m_speedFactor( 1.f )
         , m_time( 0.f )
         , m_enumerator( 0 )
         , m_freezeAll( false )
@@ -50,6 +52,36 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ScheduleManager::~ScheduleManager()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ScheduleManager::initialize( const ConstString & _name )
+    {
+        m_name = _name;
+
+        UpdationInterfacePtr updation = this->getUpdation();
+
+        m_updataterId = UPDATE_SERVICE()
+            ->createUpdatater( 3U, 0U, updation );
+
+        if( m_updataterId == INVALID_UPDATABLE_ID )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScheduleManager::finalize()
+    {
+        UPDATE_SERVICE()
+            ->removeUpdatater( m_updataterId );
+
+        m_updataterId = INVALID_UPDATABLE_ID;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ScheduleManager::getName() const
+    {
+        return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t ScheduleManager::event( float _delay, const ScheduleEventInterfacePtr & _listener )
@@ -231,7 +263,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScheduleManager::update( const UpdateContext * _context )
+    void ScheduleManager::_update( const UpdateContext * _context )
     {
         float total_time = _context->time * m_speedFactor;
 

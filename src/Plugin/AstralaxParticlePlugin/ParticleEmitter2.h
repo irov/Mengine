@@ -3,6 +3,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseAnimation.h"
+#include "Kernel/BaseUpdation.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/ResourceHolder.h"
 
@@ -35,6 +36,7 @@ namespace Mengine
     class ParticleEmitter2
         : public Node
         , public BaseEventation
+        , public BaseUpdation
         , public BaseAnimation
         , public ParticlePositionProviderInterface
         , public ParticleCameraProviderInterface
@@ -42,6 +44,7 @@ namespace Mengine
     {
         DECLARE_UNKNOWABLE();
         DECLARE_ANIMATABLE();
+        DECLARE_UPDATABLE();
         DECLARE_EVENTABLE( ParticleEmitter2EventReceiver );
 
     public:

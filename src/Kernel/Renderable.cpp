@@ -1,6 +1,6 @@
 #include "Kernel/Renderable.h"
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderServiceInterface.h"
 
 namespace Mengine
 {
@@ -97,6 +97,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Renderable::addRenderObject( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+        , const RenderProgramVariableInterfacePtr & _variable
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const RenderIndex * _indices, uint32_t _indexCount
         , const mt::box2f * _bb, bool _debug ) const
@@ -108,7 +109,7 @@ namespace Mengine
         const RenderTargetInterfacePtr & target = _state->target;
 
         RENDER_SERVICE()
-            ->addRenderObject( viewport, camera, transformation, scissor, target, _material, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug );
+            ->addRenderObject( viewport, camera, transformation, scissor, target, _material, _variable, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     void Renderable::addRenderQuad( const RenderContext * _state, const RenderMaterialInterfacePtr & _material

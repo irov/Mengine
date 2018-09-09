@@ -5,6 +5,7 @@
 #include "Kernel/Node.h"
 #include "Kernel/Materialable.h"
 #include "Kernel/BaseAnimation.h"
+#include "Kernel/BaseUpdation.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/ResourceHolder.h"
 
@@ -26,6 +27,7 @@ namespace Mengine
     class Model3D
         : public Node
         , public Materialable
+        , public BaseUpdation
         , public BaseAnimation
     {
     public:
@@ -62,6 +64,8 @@ namespace Mengine
 
     protected:
         void _update( const UpdateContext * _context ) override;
+
+    protected:
         void _render( const RenderContext * _state ) override;
 
         bool _activate() override;

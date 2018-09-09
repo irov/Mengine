@@ -48,11 +48,11 @@ namespace Mengine
         virtual void _onComplete( bool _successful );
 
     private:
-        Atomic<bool> m_run;
-        Atomic<bool> m_complete;
-        Atomic<bool> m_finish;
-        Atomic<bool> m_successful;
-        Atomic<bool> m_cancel;
+        AtomicBool m_run;
+        AtomicBool m_complete;
+        AtomicBool m_finish;
+        AtomicBool m_successful;
+        AtomicBool m_cancel;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadTask> ThreadTaskPtr;

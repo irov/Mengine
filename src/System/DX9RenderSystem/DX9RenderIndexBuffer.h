@@ -20,6 +20,7 @@ namespace Mengine
 
     public:
         bool initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _indexSize, EBufferType _bufferType );
+        void finalize();
 
     protected:
         uint32_t getIndexCount() const override;

@@ -5,6 +5,7 @@
 #include "Interface/UnicodeInterface.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryAssertion.h"
 
 #include "Kernel/Logger.h"
 

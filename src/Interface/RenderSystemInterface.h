@@ -19,6 +19,7 @@
 #include "Interface/RenderVertexShaderInterface.h"
 #include "Interface/RenderFragmentShaderInterface.h"
 #include "Interface/RenderVertexAttributeInterface.h"
+#include "Interface/RenderProgramVariableInterface.h"
 
 #include "Kernel/Factorable.h"
 
@@ -82,6 +83,10 @@ namespace Mengine
         virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount ) = 0;
         virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
         virtual void updateProgram( const RenderProgramInterfacePtr & _program ) = 0;
+        virtual bool applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) = 0;
+        
+    public:
+        virtual RenderProgramVariableInterfacePtr createProgramVariable() = 0;
 
     public:
         virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
@@ -135,7 +140,7 @@ namespace Mengine
         virtual void onWindowChangeFullscreen( bool _fullscreen ) = 0;
 
         virtual void setVSync( bool _vSync ) = 0;
-        virtual void clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force ) = 0;
+        virtual void clear( uint8_t _r, uint8_t _g, uint8_t _b ) = 0;
 
         virtual bool supportTextureFormat( PixelFormat _format ) const = 0;
         virtual bool supportTextureNonPow2() const = 0;
@@ -146,112 +151,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDER_SYSTEM()\
-    ((Mengine::RenderSystemInterface*)SERVICE_GET(Mengine::RenderSystemInterface))
-    //////////////////////////////////////////////////////////////////////////
-    struct RenderServiceDebugInfo
-    {
-        uint32_t frameCount;
-        uint32_t dips;
-
-        float fillrate;
-        uint32_t object;
-        uint32_t triangle;
-        uint32_t batch;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    class RenderServiceInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE( "RenderService" )
-
-    public:
-        virtual void addRenderMesh( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderVertexBufferInterfacePtr & _vertexBuffer
-            , const RenderIndexBufferInterfacePtr & _indexBuffer
-            , uint32_t _indexCount ) = 0;
-
-        virtual void addRenderObject( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const RenderIndex * _indices, uint32_t _indicesNum
-            , const mt::box2f * _bb, bool _debug ) = 0;
-
-        virtual void addRenderQuad( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug ) = 0;
-
-        virtual void addRenderLine( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
-            , const RenderMaterialInterfacePtr & _material
-            , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const mt::box2f * _bb, bool _debug ) = 0;
-
-    public:
-        virtual RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) = 0;
-
-    public:
-        virtual void setBatchMode( ERenderBatchMode _mode ) = 0;
-        virtual ERenderBatchMode getBatchMode() const = 0;
-
-    public:
-        virtual bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
-            int _FSAAType, int _FSAAQuality ) = 0;
-
-        virtual void destroyRenderWindow() = 0;
-
-        virtual void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) = 0;
-
-    public:
-        virtual void clear( uint8_t _r, uint8_t _g, uint8_t _b ) = 0;
-        virtual bool beginScene() = 0;
-        virtual void endScene() = 0;
-        virtual void swapBuffers() = 0;
-        virtual void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect ) = 0;
-        virtual void setVSync( bool _vSync ) = 0;
-        virtual bool getVSync() const = 0;
-
-    public:
-        virtual void enableDebugFillrateCalcMode( bool _enable ) = 0;
-        virtual bool isDebugFillrateCalcMode() const = 0;
-
-        virtual void enableDebugStepRenderMode( bool _enable ) = 0;
-        virtual bool isDebugStepRenderMode() const = 0;
-
-        virtual void enableRedAlertMode( bool _enable ) = 0;
-        virtual bool isRedAlertMode() const = 0;
-
-        virtual void endLimitRenderObjects() = 0;
-        virtual void increfLimitRenderObjects() = 0;
-        virtual bool decrefLimitRenderObjects() = 0;
-
-    public:
-        virtual void onWindowClose() = 0;
-        virtual void onDeviceLostPrepare() = 0;
-        virtual void onDeviceLostRestore() = 0;
-        virtual bool isWindowCreated() const = 0;
-
-    public:
-        virtual const RenderServiceDebugInfo & getDebugInfo() const = 0;
-        virtual void resetFrameCount() = 0;
-    };
-
-#   define RENDER_SERVICE()\
-    ((Mengine::RenderServiceInterface*)SERVICE_GET(Mengine::RenderServiceInterface))
+    ((Mengine::RenderSystemInterface*)SERVICE_GET(Mengine::RenderSystemInterface))    
 }

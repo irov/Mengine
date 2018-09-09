@@ -129,7 +129,7 @@ namespace Mengine
 
         const mt::box2f & bb = this->getBoundingBox();
 
-        this->addRenderObject( _state, material, vertices_buff, vertexCount, indices_buff, indicesCount, &bb, false );
+        this->addRenderObject( _state, material, nullptr, vertices_buff, vertexCount, indices_buff, indicesCount, &bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void Meshget::_updateBoundingBox( mt::box2f & _boundingBox ) const

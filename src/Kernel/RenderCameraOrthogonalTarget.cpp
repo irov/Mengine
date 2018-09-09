@@ -1,5 +1,7 @@
 #include "RenderCameraOrthogonalTarget.h"
 
+#include "Interface/UpdateInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

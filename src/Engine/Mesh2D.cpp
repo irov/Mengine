@@ -89,7 +89,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Mesh2D::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid );
+        const RenderMaterialInterfacePtr & material = this->makeImageMaterial( m_resourceImage, m_solid );
 
         if( material == nullptr )
         {
@@ -115,7 +115,7 @@ namespace Mengine
 
         const mt::box2f & bb = this->getBoundingBox();
 
-        this->addRenderObject( _state, material, vertices, m_vertexCount, m_shape->indices, m_indicesCount, &bb, false );
+        this->addRenderObject( _state, material, nullptr, vertices, m_vertexCount, m_shape->indices, m_indicesCount, &bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void Mesh2D::_updateBoundingBox( mt::box2f & _boundingBox ) const

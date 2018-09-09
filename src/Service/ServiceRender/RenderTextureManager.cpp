@@ -12,6 +12,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
+#include "Kernel/FactoryAssertion.h"
 
 #include "stdex/memorycopy.h"
 

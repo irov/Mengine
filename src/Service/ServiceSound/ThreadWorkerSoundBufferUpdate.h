@@ -27,7 +27,7 @@ namespace Mengine
     protected:
         SoundBufferInterfacePtr m_soundBuffer;
 
-        Atomic<bool> m_done;
+        AtomicBool m_done;
     };
 
     typedef IntrusivePtr<ThreadWorkerSoundBufferUpdate> ThreadWorkerSoundBufferUpdatePtr;

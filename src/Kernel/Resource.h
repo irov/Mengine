@@ -9,7 +9,6 @@
 
 #include "Kernel/Scriptable.h"
 #include "Kernel/Visitable.h"
-#include "Kernel/Comable.h"
 #include "Kernel/Unknowable.h"
 
 #include "Kernel/Factorable.h"

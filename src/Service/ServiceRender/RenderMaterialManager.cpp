@@ -8,6 +8,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
+#include "Kernel/FactoryAssertion.h"
 
 #include "Kernel/Logger.h"
 
@@ -524,7 +525,7 @@ namespace Mengine
 
             if( is_debug == true )
             {
-                RenderMaterialInterfacePtr debugMaterial =
+                const RenderMaterialInterfacePtr & debugMaterial =
                     this->getMaterial( name, PT_LINELIST, 0, nullptr );
 
                 this->setDebugMaterial( debugMaterial );
@@ -649,7 +650,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_equalMaterial( const RenderMaterial * _material
+    static bool s_equalMaterial( const RenderMaterialPtr & _material
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
         , const RenderTextureInterfacePtr * _textures
@@ -792,7 +793,7 @@ namespace Mengine
         return &cache_other;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialInterfacePtr RenderMaterialManager::getMaterial( const ConstString & _materialName
+    const RenderMaterialInterfacePtr & RenderMaterialManager::getMaterial( const ConstString & _materialName
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
         , const RenderTextureInterfacePtr * _textures )
@@ -805,7 +806,7 @@ namespace Mengine
                 , _materialName.c_str()
             );
 
-            return nullptr;
+            return RenderMaterialInterfacePtr::none();
         }
 
         const RenderMaterialStage * stage = it_found->second;
@@ -819,16 +820,16 @@ namespace Mengine
                     , i
                 );
 
-                return nullptr;
+                return RenderMaterialInterfacePtr::none();
             }
         }
 
-        RenderMaterialInterfacePtr material = this->getMaterial2( _materialName, stage, _primitiveType, _textureCount, _textures );
+        const RenderMaterialInterfacePtr & material = this->getMaterial2( _materialName, stage, _primitiveType, _textureCount, _textures );
 
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialInterfacePtr RenderMaterialManager::getMaterial2( const ConstString & _materialName
+    const RenderMaterialInterfacePtr & RenderMaterialManager::getMaterial2( const ConstString & _materialName
         , const RenderMaterialStage * _stage
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
@@ -840,7 +841,7 @@ namespace Mengine
 
         VectorRenderMaterial & materials = m_materials[material_table_index];
 
-        for( const RenderMaterial * material : materials )
+        for( const RenderMaterialPtr & material : materials )
         {
             uint32_t test_material_hash = material->getHash();
 
@@ -864,10 +865,12 @@ namespace Mengine
 
         materials.emplace_back( material.get() );
 
-        return material;
+        const RenderMaterialInterfacePtr & new_material = materials.back();
+
+        return new_material;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderMaterialInterfacePtr RenderMaterialManager::getMaterial3( EMaterial _materialId
+    const RenderMaterialInterfacePtr & RenderMaterialManager::getMaterial3( EMaterial _materialId
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
         , const RenderTextureInterfacePtr * _textures )
@@ -881,7 +884,7 @@ namespace Mengine
 
         VectorRenderMaterial & materials = m_materials[material_table_index];
 
-        for( const RenderMaterial * material : materials )
+        for( const RenderMaterialPtr & material : materials )
         {
             uint32_t test_material_hash = material->getHash();
 
@@ -905,7 +908,9 @@ namespace Mengine
 
         materials.emplace_back( material.get() );
 
-        return material;
+        const RenderMaterialPtr & new_material = materials.back();
+
+        return new_material;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialManager::setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial )
@@ -955,7 +960,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const RenderMaterial * material = *it;
+            const RenderMaterialPtr & material = *it;
 
             if( material != _material )
             {

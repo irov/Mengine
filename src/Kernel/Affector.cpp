@@ -1,11 +1,15 @@
 #include "Kernel/Affector.h"
 
+#include "Interface/UpdateInterface.h"
+#include "Interface/TimelineInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Affector::Affector()
         : m_type( ETA_POSITION )
         , m_id( 0 )
+        , m_updataterId( INVALID_UPDATABLE_ID )
         , m_speedFactor( 1.f )
         , m_freeze( false )
     {
@@ -64,11 +68,19 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Affector::prepare()
+    bool Affector::prepare( uint32_t _updatableMode, uint32_t _updatableLeaf )
     {
-        bool successful = this->_prepare();
+        if( this->_prepare() == false )
+        {
+            return false;
+        }
 
-        return successful;
+        UpdationInterfacePtr updation = this->getUpdation();
+
+        m_updataterId = UPDATE_SERVICE()
+            ->createUpdatater( _updatableMode, _updatableLeaf, updation );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Affector::_prepare()
@@ -78,18 +90,58 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Affector::affect( const UpdateContext * _context, float * _used )
+    void Affector::_update( const UpdateContext * _context )
     {
-        if( m_freeze == true )
+        float used = 0.f;
+        bool finish = this->_affect( _context, &used );
+
+        if( finish == true )
         {
-            return false;
+            stdex::intrusive_this_acquire( this );
+
+            this->unlink();
+
+            TIMELINE_SERVICE()
+                ->beginOffset( used );
+
+            this->complete( true );
+
+            TIMELINE_SERVICE()
+                ->endOffset();
+
+            stdex::intrusive_this_release( this );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Affector::stop()
+    {
+        this->_stop();
 
-        UpdateContext affectContext = *_context;
-        affectContext.time *= m_speedFactor;
+        this->complete( false );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Affector::_stop()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Affector::complete( bool _isEnd )
+    {
+        (void)_isEnd;
 
-        bool isEnd = this->_affect( &affectContext, _used );
+        UPDATE_SERVICE()
+            ->removeUpdatater( m_updataterId );
 
-        return isEnd;
+        m_updataterId = INVALID_UPDATABLE_ID;
+
+        this->unlink();
+
+        this->_complete( _isEnd );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Affector::_complete( bool _isEnd )
+    {
+        (void)_isEnd;
+        //Empty
     }
 }

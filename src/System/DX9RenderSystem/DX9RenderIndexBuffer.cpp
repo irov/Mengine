@@ -22,12 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderIndexBuffer::~DX9RenderIndexBuffer()
     {
-        if( m_pIB != nullptr )
-        {
-            ULONG ref = m_pIB->Release();
-            (void)ref;
-            m_pIB = nullptr;
-        }
+        this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderIndexBuffer::initialize( IDirect3DDevice9 * _pD3DDevice, uint32_t _indexSize, EBufferType _bufferType )
@@ -57,6 +52,16 @@ namespace Mengine
         m_format = s_getD3DIndexFormat();
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderIndexBuffer::finalize()
+    {
+        if( m_pIB != nullptr )
+        {
+            ULONG ref = m_pIB->Release();
+            (void)ref;
+            m_pIB = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t DX9RenderIndexBuffer::getIndexCount() const

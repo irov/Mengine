@@ -11,6 +11,7 @@
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/TextField.h"
 
+#include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 
@@ -163,7 +164,7 @@ namespace Mengine
         public:
         };
         //////////////////////////////////////////////////////////////////////////
-        static PyObject * Movie2_setEventListener( pybind::kernel_interface * _kernel, Movie2 * _node, PyObject * _args, PyObject * _kwds )
+        static PyObject * s_Movie2_setEventListener( pybind::kernel_interface * _kernel, Movie2 * _node, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
 
@@ -230,7 +231,7 @@ namespace Mengine
             pybind::list m_list;
         };
         //////////////////////////////////////////////////////////////////////////    
-        static pybind::list Movie2_getSockets( pybind::kernel_interface * _kernel, Movie2 * _movie )
+        static pybind::list s_Movie2_getSockets( pybind::kernel_interface * _kernel, Movie2 * _movie )
         {
             pybind::list py_list( _kernel );
 
@@ -272,7 +273,7 @@ namespace Mengine
             pybind::list m_list;
         };
         //////////////////////////////////////////////////////////////////////////    
-        static pybind::list Movie2_getSlots( pybind::kernel_interface * _kernel, Movie2 * _movie )
+        static pybind::list s_Movie2_getSlots( pybind::kernel_interface * _kernel, Movie2 * _movie )
         {
             pybind::list py_list( _kernel );
 
@@ -280,6 +281,41 @@ namespace Mengine
             _movie->visitSockets( &visitor );
 
             return py_list;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static PyObject * s_Movie2SubComposition_setEventListener( pybind::kernel_interface * _kernel, Movie2SubComposition * _node, PyObject * _args, PyObject * _kwds )
+        {
+            (void)_args;
+
+            if( _kwds == nullptr )
+            {
+                return pybind::ret_none();
+            }
+
+            pybind::dict py_kwds( _kernel, _kwds );
+            Helper::registerAnimatableEventReceiver<PythonMovie2EventReceiver>( py_kwds, _node );
+
+#ifndef NDEBUG
+            if( py_kwds.empty() == false )
+            {
+                for( pybind::dict::iterator
+                    it = py_kwds.begin(),
+                    it_end = py_kwds.end();
+                    it != it_end;
+                    ++it )
+                {
+                    String k = it.key();
+
+                    LOGGER_ERROR( "Movie2SubComposition::setEventListener invalid kwds '%s'\n"
+                        , k.c_str()
+                    );
+                }
+
+                throw;
+            }
+#endif
+
+            return pybind::ret_none();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -324,9 +360,9 @@ namespace Mengine
             .def( "removeWorkArea", &Movie2::removeWorkArea )
             .def( "hasSubComposition", &Movie2::hasSubComposition )
             .def( "getSubComposition", &Movie2::getSubComposition )
-            .def_static_native_kernel( "setEventListener", &External::Movie2_setEventListener )
-            .def_static_kernel( "getSockets", &External::Movie2_getSockets )
-            .def_static_kernel( "getSlots", &External::Movie2_getSlots )
+            .def_static_native_kernel( "setEventListener", &External::s_Movie2_setEventListener )
+            .def_static_kernel( "getSockets", &External::s_Movie2_getSockets )
+            .def_static_kernel( "getSlots", &External::s_Movie2_getSlots )
             .def( "findSprite", &Movie2::findSprite )
             .def( "hasSprite", &Movie2::hasSprite )
             .def( "findParticle", &Movie2::findParticle )
@@ -344,6 +380,11 @@ namespace Mengine
         pybind::interface_<Movie2Slot, pybind::bases<Node> >( kernel, "Movie2Slot", false )
             ;
 
+        pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable> >( kernel, "Movie2SubComposition", false )
+            .def( "setSubMovieCompositionName", &Movie2SubComposition::setSubMovieCompositionName )
+            .def( "getSubMovieCompositionName", &Movie2SubComposition::getSubMovieCompositionName )
+            .def_static_native_kernel( "setEventListener", &External::s_Movie2SubComposition_setEventListener )
+            ;
 
         pybind::interface_<ResourceMovie2, pybind::bases<Resource> >( kernel, "ResourceMovie2", false )
             .def( "hasComposition", &ResourceMovie2::hasComposition )
@@ -358,6 +399,9 @@ namespace Mengine
             ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new ScriptWrapper<Movie2Slot>() );
 
         SCRIPT_SERVICE()
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new ScriptWrapper<Movie2SubComposition>() );
+
+        SCRIPT_SERVICE()
             ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new ScriptWrapper<ResourceMovie2>() );
 
         if( PROTOTYPE_SERVICE()
@@ -368,6 +412,12 @@ namespace Mengine
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new NodePrototypeGenerator<Movie2Slot, 128> ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new ScriptablePrototypeGenerator<Movie2SubComposition, 128> ) == false )
         {
             return false;
         }
@@ -397,6 +447,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );

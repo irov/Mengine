@@ -120,7 +120,7 @@
 //#include "SoundEngine.h"
 #include "Kernel/Logger.h"
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderServiceInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Identity.h"
@@ -156,6 +156,7 @@
 #include "Kernel/ValueFollower.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryAssertion.h"
 
 #include "pybind/stl_type_cast.hpp"
 #include "stdex/xml_sax_parser.h"
@@ -337,10 +338,10 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        ScheduleManagerInterfacePtr createScheduler()
+        ScheduleManagerInterfacePtr createScheduler( const ConstString & _name )
         {
             ScheduleManagerInterfacePtr sm = PLAYER_SERVICE()
-                ->createSchedulerManager();
+                ->createSchedulerManager( _name );
 
             return sm;
         }
@@ -2474,19 +2475,11 @@ namespace Mengine
                 return complete;
             }
 
-            void complete() override
+            void _complete( bool _isEnd ) override
             {
                 if( m_cb.is_callable() == true )
                 {
-                    m_cb.call( true );
-                }
-            }
-
-            void stop() override
-            {
-                if( m_cb.is_callable() == true )
-                {
-                    m_cb.call( false );
+                    m_cb.call( _isEnd );
                 }
             }
 
@@ -2541,14 +2534,6 @@ namespace Mengine
                 bool complete = m_cb.call_args( _context->time, m_args );
 
                 return complete;
-            }
-
-            void complete() override
-            {
-            }
-
-            void stop() override
-            {
             }
 
         protected:
@@ -2647,12 +2632,7 @@ namespace Mengine
             }
 
         protected:
-            void complete() override
-            {
-                //Empty
-            }
-
-            void stop() override
+            void _stop() override
             {
                 AFFECTOR_ID id = this->getId();
 

@@ -19,6 +19,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SurfaceTrackMatte::_initialize()
+    {
+        m_programVariable = RENDER_SYSTEM()
+            ->createProgramVariable();
+    
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SurfaceTrackMatte::setResourceImage( const ResourceImagePtr & _resourceImage )
     {
         if( m_resourceImage == _resourceImage )
@@ -47,6 +55,11 @@ namespace Mengine
     const ResourceImagePtr & SurfaceTrackMatte::getResourceTrackMatteImage() const
     {
         return m_resourceTrackMatteImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderProgramVariableInterfacePtr & SurfaceTrackMatte::getProgramVariable() const
+    {
+        return m_programVariable;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceTrackMatte::setTrackMatteMode( ESurfaceTrackMatteMode _trackMatteMode )

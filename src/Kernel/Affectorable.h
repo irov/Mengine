@@ -1,18 +1,18 @@
 #pragma once
 
-#include "Interface/UpdateInterface.h"
-
 #include "Kernel/AffectorType.h"
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
 
 #include "math/vec3.h"
 
-#include "stdex/intrusive_slug_list_size_ptr.h"
+#include "stdex/intrusive_slug_list_ptr.h"
 #include "stdex/intrusive_slug_ptr.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct UpdateContext;
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Affector> AffectorPtr;
     //////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ namespace Mengine
     {
     public:
         Affectorable();
-        virtual ~Affectorable();
+        ~Affectorable() override;
 
     public:
         AFFECTOR_ID addAffector( const AffectorPtr & _affector );
@@ -41,16 +41,14 @@ namespace Mengine
         const mt::vec3f & getLinearSpeed() const;
 
     public:
-        void updateAffectors( const UpdateContext * _context );
+        virtual uint32_t getAffectorableUpdatableMode() const = 0;
+        virtual uint32_t getAffectorableUpdatableLeaf() const = 0;
 
     protected:
-        void updateAffector_( const AffectorPtr & _affector, const UpdateContext * _context );
+        typedef stdex::intrusive_slug_list_ptr<Affector> IntrusiveSlugListAffector;
+        typedef stdex::intrusive_slug_ptr<IntrusiveSlugListAffector> TSlugAffector;
 
-    protected:
-        typedef stdex::intrusive_slug_list_size_ptr<Affector> VectorAffector;
-        typedef stdex::intrusive_slug_ptr<Affector> TSlugAffector;
-
-        VectorAffector m_affectors;
+        IntrusiveSlugListAffector m_affectors;
 
         float m_angularSpeed;
         mt::vec3f m_linearSpeed;

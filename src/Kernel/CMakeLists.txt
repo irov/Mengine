@@ -7,15 +7,72 @@ Servant
 )
 
 ADD_FILTER(
-Unknowable
+Mixin\\\\Unknowable
 	Unknowable.h
 )
 
 ADD_FILTER(
-Eventable
+Mixin\\\\Eventable
 	Eventable.h
     BaseEventation.h
     BaseEventation.cpp
+)
+
+ADD_FILTER(
+Mixin\\\\Scriptable
+	Scriptable.cpp
+	Scriptable.h
+)
+
+ADD_FILTER(
+Mixin\\\\Animatable
+	Animatable.h
+)
+
+ADD_FILTER(
+Mixin\\\\Soundable
+	Soundable.cpp
+	Soundable.h
+)
+
+ADD_FILTER(
+Mixin\\\\Updatable
+	Updatable.h
+)
+
+ADD_FILTER(
+Mixin\\\\Renderable
+	Renderable.cpp
+	Renderable.h
+)
+
+ADD_FILTER(
+Mixin\\\\Colorable
+	Colorable.cpp
+	Colorable.h
+)
+
+ADD_FILTER(
+Mixin\\\\Affectorable
+	Affectorable.cpp
+	Affectorable.h
+)
+
+ADD_FILTER(
+Mixin\\\\Materialable
+	Materialable.cpp
+	Materialable.h
+)
+
+ADD_FILTER(
+Mixin\\\\Observable
+	Observable.h
+)
+
+ADD_FILTER(
+BaseUpdation    
+    BaseUpdation.cpp
+    BaseUpdation.h
 )
 
 ADD_FILTER(
@@ -94,61 +151,9 @@ Identity
 )
 
 ADD_FILTER(
-Scriptable
-	Scriptable.cpp
-	Scriptable.h
-)
-
-ADD_FILTER(
-Animatable
-	Animatable.h
-)
-
-ADD_FILTER(
-Soundable
-	Soundable.cpp
-	Soundable.h
-)
-
-ADD_FILTER(
-Comable
-    Comable.h
-)
-
-ADD_FILTER(
-Updatable
-	Updatable.cpp
-	Updatable.h
-)
-
-ADD_FILTER(
-Renderable
-	Renderable.cpp
-	Renderable.h
-)
-
-ADD_FILTER(
 Transformation
 	Transformation.cpp
 	Transformation.h
-)
-
-ADD_FILTER(
-Colorable
-	Colorable.cpp
-	Colorable.h
-)
-
-ADD_FILTER(
-Affectorable
-	Affectorable.cpp
-	Affectorable.h
-)
-
-ADD_FILTER(
-Materialable
-	Materialable.cpp
-	Materialable.h
 )
 
 ADD_FILTER(
@@ -207,7 +212,7 @@ Resource
 	Compilable.cpp
 	Compilable.h
     ResourceCacher.h
-    ResourceHolder.h        
+    ResourceHolder.h
     Resource.cpp
     Resource.h
 )
@@ -272,11 +277,6 @@ ADD_FILTER(
 Randomizer
 	MT19937Randomizer.cpp
 	MT19937Randomizer.h	
-)
-
-ADD_FILTER(
-Observable
-	Observable.h
 )
 
 ADD_FILTER(
@@ -452,6 +452,8 @@ Factory
     FactorableUnique.h
 	Factory.h
 	Factory.cpp
+    FactoryAssertion.h
+    FactoryAssertion.cpp
     FactoryWithListener.h
     FactoryWithListener.cpp
     FactoryWithMutex.h

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
 #include "Kernel/ServiceBase.h"
@@ -101,8 +101,8 @@ namespace Mengine
         RenderCameraInterfacePtr camera;
         RenderTransformationInterfacePtr transformation;
         RenderScissorInterfacePtr scissor;
-
         RenderTargetInterfacePtr target;
+        RenderProgramVariableInterfacePtr variable;
 
         const RenderObject * materialEnd[MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX];
 
@@ -148,6 +148,7 @@ namespace Mengine
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target
             , const RenderMaterialInterfacePtr & _material
+            , const RenderProgramVariableInterfacePtr & _variable
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indexCount
             , const mt::box2f * _bb, bool _debug ) override;
@@ -178,7 +179,8 @@ namespace Mengine
             , const RenderCameraInterfacePtr & _camera
             , const RenderTransformationInterfacePtr & _transformation
             , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target ) const;
+            , const RenderTargetInterfacePtr & _target
+            , const RenderProgramVariableInterfacePtr & _variable ) const;
 
         const RenderPassPtr & requestRenderPass_( const RenderViewportInterfacePtr & _viewport
             , const RenderCameraInterfacePtr & _camera
@@ -186,6 +188,7 @@ namespace Mengine
             , const RenderScissorInterfacePtr & _scissor
             , const RenderTargetInterfacePtr & _target
             , const RenderMaterialInterfacePtr & _material
+            , const RenderProgramVariableInterfacePtr & _variable
             , uint32_t _vertexCount, uint32_t _indexCount );
 
     public:
@@ -296,9 +299,14 @@ namespace Mengine
 
         RenderVertexBufferInterfacePtr m_currentVertexBuffer;
         RenderIndexBufferInterfacePtr m_currentIndexBuffer;
+        RenderProgramVariableInterfacePtr m_currentProgramVariable;
 
-        uint32_t m_currentTextureStages;
-        RenderTextureStage m_currentTextureStage[MENGINE_MAX_TEXTURE_STAGES];
+        RenderProgramVariableInterfacePtr m_defaultProgramVariable;
+
+        uint32_t m_currentTextureStage;
+        RenderTextureStage m_textureStages[MENGINE_MAX_TEXTURE_STAGES];
+
+        RenderTextureStage m_defaultTextureStage;
 
         uint32_t m_currentMaterialId;
         const RenderMaterialStage * m_currentStage;

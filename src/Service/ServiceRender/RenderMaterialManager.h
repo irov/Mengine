@@ -50,18 +50,18 @@ namespace Mengine
         const RenderMaterialStage * cacheStage( const RenderMaterialStage & _other ) override;
 
     public:
-        RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
+        const RenderMaterialInterfacePtr & getMaterial( const ConstString & _materialName
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
             , const RenderTextureInterfacePtr * _textures ) override;
 
-        RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
+        const RenderMaterialInterfacePtr & getMaterial2( const ConstString & _materialName
             , const RenderMaterialStage * _stage
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
             , const RenderTextureInterfacePtr * _textures ) override;
 
-        RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
+        const RenderMaterialInterfacePtr & getMaterial3( EMaterial _materialId
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
             , const RenderTextureInterfacePtr * _textures ) override;
@@ -103,7 +103,7 @@ namespace Mengine
         RenderMaterialStage m_stages[MENGINE_MATERIAL_RENDER_STAGE_MAX];
         uint32_t m_stageCount;
 
-        typedef Vector<RenderMaterial *> VectorRenderMaterial;
+        typedef Vector<RenderMaterialPtr> VectorRenderMaterial;
         VectorRenderMaterial m_materials[MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE];
 
         FactoryPtr m_factoryMaterial;

@@ -84,6 +84,7 @@ SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( HttpSystem );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( NodeService );
+SERVICE_EXTERN( UpdateService );
 SERVICE_EXTERN( LoaderService );
 SERVICE_EXTERN( RenderService );
 SERVICE_EXTERN( RenderMaterialService );
@@ -634,6 +635,7 @@ namespace Mengine
 
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( NodeService );
+        SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
 
         PythonScriptWrapper::constsWrap();
@@ -914,6 +916,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::PackageServiceInterface );
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
         SERVICE_FINALIZE( Mengine::GraveyardInterface );
+        SERVICE_FINALIZE( Mengine::UpdateServiceInterface );
         SERVICE_FINALIZE( Mengine::NodeServiceInterface );
         SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
         SERVICE_FINALIZE( Mengine::TextServiceInterface );

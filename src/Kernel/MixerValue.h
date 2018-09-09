@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/UpdateInterface.h"
-
 #include "Kernel/ConstString.h"
 #include "Kernel/ValueFollower.h"
 
@@ -9,6 +7,9 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct UpdateContext;
+    //////////////////////////////////////////////////////////////////////////
     class MixerValue
     {
     public:

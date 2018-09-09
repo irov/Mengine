@@ -9,6 +9,7 @@
 #include "Kernel/Logger.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryAssertion.h"
 
 #include "Kernel/IniUtil.h"
 
@@ -30,8 +31,6 @@ namespace Mengine
     {
         NOTIFICATION_SERVICE()
             ->addObserverMethod( NOTIFICATOR_CHANGE_LOCALE, this, &PackageService::notifyChangeLocale );
-
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPackage );
 
         m_factoryPackage = new FactoryPool<Package, 8>();
 

@@ -353,7 +353,7 @@ namespace Mengine
 
             node->setMovie( this );
 
-            node->setSubMovieComposition( m_composition, subcomposition.name );
+            node->setSubMovieCompositionName( subcomposition.name );
 
             this->addSubMovieComposition_( subcomposition.name, node );
         }
@@ -1485,10 +1485,10 @@ namespace Mengine
         aeMovieCompositionRenderInfo info;
         ae_calculate_movie_composition_render_info( composition, &info );
 
-        if( info.max_render_node != 0 )
-        {
-            m_meshes.resize( info.max_render_node );
-        }
+        //if( info.max_render_node != 0 )
+        //{
+        //    m_meshes.resize( info.max_render_node );
+        //}
 
         if( info.max_vertex_count != 0 )
         {
@@ -1523,6 +1523,14 @@ namespace Mengine
         float animationSpeedFactor = this->getAnimationSpeedFactor();
         this->updateAnimationSpeedFactor_( animationSpeedFactor );
 
+        for( MapSubCompositions::value_type & value : m_subCompositions )
+        {
+            if( value.second->initialize( m_composition ) == false )
+            {
+                return false;
+            }
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1531,7 +1539,6 @@ namespace Mengine
         ae_delete_movie_composition( m_composition );
         m_composition = nullptr;
 
-        m_meshes.clear();
         m_cameras.clear();
 
         for( const SurfacePtr & surface : m_surfaces )
@@ -1729,13 +1736,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_render( const RenderContext * _state )
     {
-        uint32_t mesh_iterator = 0;
         uint32_t vertex_iterator = 0;
         uint32_t index_iterator = 0;
 
         RenderVertex2D * vertices_buffer = m_vertices.empty() == false ? &m_vertices.front() : nullptr;
         RenderIndex * indices_buffer = m_indices.empty() == false ? &m_indices.front() : nullptr;
-        Mesh * meshes_buffer = m_meshes.empty() == false ? &m_meshes.front() : nullptr;
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -1834,8 +1839,6 @@ namespace Mengine
                             continue;
                         }
 
-                        Mesh & m = meshes_buffer[mesh_iterator++];
-
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -1863,9 +1866,9 @@ namespace Mengine
 
                         EMaterialBlendMode blend_mode = Helper::getMovieBlendMode( mesh.blend_mode );
 
-                        m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+                        const RenderMaterialInterfacePtr & material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-                        this->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &state, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
@@ -1874,8 +1877,6 @@ namespace Mengine
                             continue;
                         }
 
-                        Mesh & m = meshes_buffer[mesh_iterator++];
-
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -1903,9 +1904,9 @@ namespace Mengine
 
                         EMaterialBlendMode blend_mode = Helper::getMovieBlendMode( mesh.blend_mode );
 
-                        m.material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
+                        const RenderMaterialInterfacePtr & material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-                        this->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &state, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
@@ -1916,9 +1917,7 @@ namespace Mengine
                         }
 
                         ResourceImage * resource_image = reinterpret_node_cast<ResourceImage *>(resource_reference);
-
-                        Mesh & m = meshes_buffer[mesh_iterator++];
-
+                        
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -1971,9 +1970,9 @@ namespace Mengine
 
                         EMaterialBlendMode blend_mode = Helper::getMovieBlendMode( mesh.blend_mode );
 
-                        m.material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
+                        const RenderMaterialInterfacePtr & material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
 
-                        this->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &state, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
@@ -1983,9 +1982,7 @@ namespace Mengine
                         }
 
                         SurfaceVideo * surfaceVideo = reinterpret_node_cast<SurfaceVideo *>(mesh.element_data);
-
-                        Mesh & m = meshes_buffer[mesh_iterator++];
-
+                        
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -2012,9 +2009,9 @@ namespace Mengine
 
                         stdex::memorycopy_pod( indices, 0, mesh.indices, mesh.indexCount );
 
-                        m.material = surfaceVideo->getMaterial();
+                        const RenderMaterialInterfacePtr & material = surfaceVideo->getMaterial();
 
-                        this->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &state, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 default:
                     break;
@@ -2033,9 +2030,7 @@ namespace Mengine
                         }
 
                         const SurfaceTrackMatte * surfaceTrackMatte = reinterpret_node_cast<const SurfaceTrackMatte *>(mesh.element_data);
-
-                        Mesh & m = meshes_buffer[mesh_iterator++];
-
+                        
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -2060,8 +2055,7 @@ namespace Mengine
 
                             resourceImage->correctUVImage( v.uv[0], uv );
 
-                            mt::vec2f uv_track_matte;
-                            uv_track_matte = mt::calc_point_uv(
+                            mt::vec2f uv_track_matte = mt::calc_point_uv(
                                 mt::vec2f( track_matte_mesh->position[0] ), mt::vec2f( track_matte_mesh->position[1] ), mt::vec2f( track_matte_mesh->position[2] ),
                                 mt::vec2f( track_matte_mesh->uv[0] ), mt::vec2f( track_matte_mesh->uv[1] ), mt::vec2f( track_matte_mesh->uv[2] ),
                                 vp.to_vec2f()
@@ -2079,9 +2073,11 @@ namespace Mengine
 
                         //EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
 
-                        m.material = surfaceTrackMatte->getMaterial();
+                        const RenderProgramVariableInterfacePtr & programVariable = surfaceTrackMatte->getProgramVariable();
 
-                        this->addRenderObject( &state, m.material, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
+
+                        this->addRenderObject( &state, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 default:
                     break;

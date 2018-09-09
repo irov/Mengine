@@ -1,10 +1,11 @@
 #pragma once
 
 #include "Interface/AnimationInterface.h"
-#include "Interface/UpdateInterface.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct UpdateContext;
     //////////////////////////////////////////////////////////////////////////
     class BaseAnimation
         : public AnimationInterface

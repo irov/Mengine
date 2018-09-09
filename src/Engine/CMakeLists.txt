@@ -299,12 +299,6 @@ Manager\\\\Prototype
 )
 
 ADD_FILTER(
-Manager\\\\Node
-	NodeManager.cpp
-	NodeManager.h
-)
-
-ADD_FILTER(
 Manager\\\\Account
 	AccountManager.cpp	
 	AccountManager.h

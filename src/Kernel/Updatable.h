@@ -12,28 +12,17 @@ namespace Mengine
         : public Mixin
     {
     public:
-        Updatable();
-        ~Updatable() override;
-
-    public:
-        virtual void update( const UpdateContext * _context );
-
-    protected:
-        virtual void _update( const UpdateContext * _context ) = 0;
-
-    protected:
-        void setUpdateRevision( uint32_t _revision );
-        inline uint32_t getUpdateRevision() const;
-
-    protected:
-        uint32_t m_updateRevision;
+        virtual UpdationInterfacePtr getUpdation()
+        {
+            return nullptr;
+        }
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Updatable> UpdatablePtr;
     //////////////////////////////////////////////////////////////////////////
-    inline uint32_t Updatable::getUpdateRevision() const
-    {
-        return m_updateRevision;
-    }
-    //////////////////////////////////////////////////////////////////////////
 }
+//////////////////////////////////////////////////////////////////////////
+#define DECLARE_UPDATABLE()\
+public:\
+    Mengine::UpdationInterfacePtr getUpdation() override{ return this; }\
+protected:

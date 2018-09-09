@@ -316,6 +316,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_afterActivate()
     {
+        Node::_afterActivate();
+
         if( this->getLocalHide() == false && this->isFreeze() == false )
         {
             this->activatePicker_();

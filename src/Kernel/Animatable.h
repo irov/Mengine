@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Interface/AnimationInterface.h"
-
 #include "Config/Typedef.h"
+
+#include "Interface/AnimationInterface.h"
 
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/Mixin.h"

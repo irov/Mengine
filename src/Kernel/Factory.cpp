@@ -3,6 +3,11 @@
 
 #include "Interface/FactoryInterface.h"
 
+#ifndef NDEBUG
+#   include "Kernel/Logger.h"
+#   include <stdlib.h>
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -68,4 +73,5 @@ namespace Mengine
 
         delete this;
     }
+    //////////////////////////////////////////////////////////////////////////
 }

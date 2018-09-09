@@ -1,15 +1,16 @@
 #pragma once
 
-#include "Interface/UpdateInterface.h"
-
 #include "Kernel/AffectorType.h"
 #include "Kernel/Updatable.h"
+#include "Kernel/BaseUpdation.h"
 #include "Kernel/Factorable.h"
 
 #include "stdex/intrusive_slug_linked_ptr.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    struct UpdateContext;
     //////////////////////////////////////////////////////////////////////////
     class AffectorCallbackInterface
         : public Factorable
@@ -23,7 +24,11 @@ namespace Mengine
     class Affector
         : public stdex::intrusive_slug_linked_ptr<Affector>
         , public Factorable
+        , public Updatable
+        , public BaseUpdation
     {
+        DECLARE_UPDATABLE();
+
     public:
         Affector();
         ~Affector() override;
@@ -48,24 +53,33 @@ namespace Mengine
         float getSpeedFactor() const noexcept;
 
     public:
-        bool prepare();
+        bool prepare( uint32_t _updatableMode, uint32_t _updatableLeaf );
 
     protected:
         virtual bool _prepare();
 
-    public:
-        virtual bool affect( const UpdateContext * _context, float * _used );
+    protected:
+        void _update( const UpdateContext * _context ) override;
 
     protected:
         virtual bool _affect( const UpdateContext * _context, float * _used ) = 0;
 
-    public:
-        virtual void complete() = 0;
-        virtual void stop() = 0;
+    public:        
+        void stop();
+
+    protected:
+        virtual void _stop();
+
+    protected:
+        void complete( bool _isEnd );
+
+        virtual void _complete( bool _isEnd );
 
     protected:
         EAffectorType m_type;
         AFFECTOR_ID m_id;
+
+        uint32_t m_updataterId;
 
         float m_speedFactor;
 

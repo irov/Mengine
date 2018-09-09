@@ -29,11 +29,11 @@ namespace Mengine
     typedef IntrusivePtr<class RenderScissorInterface> RenderScissorInterfacePtr;
     typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
     typedef IntrusivePtr<class RenderTargetInterface> RenderTargetInterfacePtr;
-
+        
     typedef IntrusivePtr<class Node> NodePtr;
 
     typedef stdex::intrusive_slug_list_size_ptr<Node> IntrusiveSlugListNodeChild;
-    typedef stdex::intrusive_slug_ptr<Node> IntrusiveSlugChild;
+    typedef stdex::intrusive_slug_ptr<IntrusiveSlugListNodeChild> IntrusiveSlugChild;
 
     class Node
         : public stdex::intrusive_slug_linked_ptr<Node>
@@ -134,8 +134,6 @@ namespace Mengine
         void removeChildren();
         bool removeFromParent();
 
-        bool isHomeless() const;
-
         void destroyAllChild();
 
         inline IntrusiveSlugListNodeChild & getChildren();
@@ -146,6 +144,9 @@ namespace Mengine
         NodePtr getSiblingNext();
         bool hasChild( const ConstString & _name, bool _recursive ) const;
         bool emptyChildren() const;
+
+    protected:
+        uint32_t getLeaf() const;
 
     protected:
         void removeChild_( const NodePtr & _node );
@@ -223,14 +224,21 @@ namespace Mengine
         void setSpeedFactor( float _speedFactor );
         float getSpeedFactor() const;
 
-    public:
-        void update( const UpdateContext * _context ) override;
+    //public:
+    //    void update( const UpdateContext * _context ) override;
+
+    //protected:
+    //    void _update( const UpdateContext * _context ) override;
 
     protected:
-        void _update( const UpdateContext * _context ) override;
+        uint32_t getAffectorableUpdatableMode() const override;
+        uint32_t getAffectorableUpdatableLeaf() const override;
 
     protected:
-        void updateChildren_( const UpdateContext * _context );
+        uint32_t m_updatableProxyId;
+
+    //protected:
+    //    void updateChildren_( const UpdateContext * _context );
 
     public:
         virtual MousePickerTrapInterfacePtr getPickerTrap();
@@ -240,8 +248,6 @@ namespace Mengine
         bool m_deactivating;
         bool m_afterActive;
         bool m_enable;
-
-        float m_speedFactor;
 
         bool m_freeze;
 

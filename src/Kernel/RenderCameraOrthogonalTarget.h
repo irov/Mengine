@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseUpdation.h"
 
 #include "Kernel/RenderCameraOrthogonal.h"
 
@@ -8,7 +9,10 @@ namespace Mengine
 {
     class RenderCameraOrthogonalTarget
         : public Node
+        , public BaseUpdation
     {
+        DECLARE_UPDATABLE();
+
     public:
         RenderCameraOrthogonalTarget();
         ~RenderCameraOrthogonalTarget() override;

@@ -1,6 +1,6 @@
 #include "Entity.h"
 
-#include "Interface/NodeInterface.h"
+#include "Interface/UpdateInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/BaseEventation.h"
@@ -133,19 +133,6 @@ namespace Mengine
         {
             EVENTABLE_METHODT( event, EVENT_ENTITY_RELEASE, EntityEventReceiver )
                 ->onEntityRelease( m_object );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Entity::_update( const UpdateContext * _context )
-    {
-        Node::_update( _context );
-
-        EventationInterfacePtr event = this->getScriptEventation();
-
-        if( event != nullptr )
-        {
-            EVENTABLE_METHODT( event, EVENT_ENTITY_UPDATE, EntityEventReceiver )
-                ->onEntityUpdate( m_object, _context->revision, _context->current, _context->time );
         }
     }
     //////////////////////////////////////////////////////////////////////////

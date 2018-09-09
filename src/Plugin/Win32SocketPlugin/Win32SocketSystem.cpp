@@ -1,6 +1,7 @@
 #include "Win32SocketSystem.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryAssertion.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SocketSystem, Mengine::Win32SocketSystem );

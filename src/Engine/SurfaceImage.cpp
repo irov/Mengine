@@ -224,7 +224,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceImage::_updateMaterial() const
     {
-        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false );
+        const RenderMaterialInterfacePtr & material = this->makeImageMaterial( m_resourceImage, false );
 
         if( material == nullptr )
         {

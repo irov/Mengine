@@ -15,6 +15,10 @@ namespace Mengine
     public:
         GlobalAffectorable();
         ~GlobalAffectorable() override;
+
+    protected:
+        uint32_t getAffectorableUpdatableMode() const override;
+        uint32_t getAffectorableUpdatableLeaf() const override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<GlobalAffectorable, Affectorable> GlobalAffectorablePtr;

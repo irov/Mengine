@@ -3,6 +3,7 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/PrototypeManagerInterface.h"
 #include "Interface/InputSystemInterface.h"
+#include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ParticleSystemInterface.h"
@@ -489,7 +490,8 @@ namespace Mengine
 
         bool fullscreen = this->getFullscreenMode();
 
-        RENDER_SERVICE()->setVSync( m_vsync );
+        RENDER_SERVICE()
+            ->setVSync( m_vsync );
 
         LOGGER_WARNING( "Application::createRenderWindow current resolution %d %d %s"
             , m_currentResolution.getWidth()

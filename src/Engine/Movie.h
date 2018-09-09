@@ -6,6 +6,7 @@
 #include "Kernel/BaseEventation.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/BaseAnimation.h"
+#include "Kernel/BaseUpdation.h"
 #include "Kernel/ResourceHolder.h"
 
 #include "ResourceMovie.h"
@@ -59,8 +60,10 @@ namespace Mengine
         : public Node
         , public BaseEventation
         , public BaseAnimation
+        , public BaseUpdation
     {
         DECLARE_ANIMATABLE();
+        DECLARE_UPDATABLE();
         DECLARE_EVENTABLE( MovieEventReceiver );
 
     public:

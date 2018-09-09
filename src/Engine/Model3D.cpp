@@ -135,7 +135,7 @@ namespace Mengine
             return nullptr;
         }
 
-        RenderMaterialInterfacePtr material = this->makeImageMaterial( resourceImage, m_solid );
+        const RenderMaterialInterfacePtr & material = this->makeImageMaterial( resourceImage, m_solid );
 
         if( material == nullptr )
         {
@@ -161,7 +161,7 @@ namespace Mengine
 
         const mt::box2f & bb = this->getBoundingBox();
 
-        this->addRenderObject( _state, material, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, &bb, false );
+        this->addRenderObject( _state, material, nullptr, vertices, m_vertexCount, m_frame->indecies, m_indicesCount, &bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Model3D::_activate()

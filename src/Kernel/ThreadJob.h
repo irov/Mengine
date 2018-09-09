@@ -34,9 +34,9 @@ namespace Mengine
 
         ThreadWorkerInterfacePtr worker;
 
-        Atomic<uint32_t> id;
+        AtomicUInt32 id;
 
-        Atomic<uint32_t> status;
+        AtomicUInt32 status;
     };
     //////////////////////////////////////////////////////////////////////////
     class ThreadJob

@@ -5,6 +5,7 @@
 #include "Interface/UpdateInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/ConstString.h"
 
 namespace Mengine
 {
@@ -43,6 +44,13 @@ namespace Mengine
         : public ServantInterface
     {
     public:
+        virtual bool initialize( const ConstString & _name ) = 0;
+        virtual void finalize() = 0;
+
+    public:
+        virtual const ConstString & getName() const = 0;
+
+    public:
         virtual uint32_t event( float _delay, const ScheduleEventInterfacePtr & _listener ) = 0;
 
     public:
@@ -72,9 +80,6 @@ namespace Mengine
 
     public:
         virtual float getTime() const = 0;
-
-    public:
-        virtual void update( const UpdateContext * _context ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ScheduleManagerInterface> ScheduleManagerInterfacePtr;

@@ -26,10 +26,12 @@ namespace Mengine
 {
     class NodeOzzAnimation
         : public Node
-        , public RenderTransformationInterface
+        , public BaseUpdation
+        , public RenderTransformationInterface        
         , public UnknownNodeOzzAnimationInterface
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_UPDATABLE();
         DECLARE_UNKNOWABLE();
 
     public:

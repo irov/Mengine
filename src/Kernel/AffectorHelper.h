@@ -24,10 +24,7 @@ namespace Mengine
         const AffectorCallbackInterfacePtr & getCallback() const;
 
     protected:
-        void complete() override;
-
-    protected:
-        void end_( bool _isEnd );
+        void _complete( bool _isEnd ) override;
 
     protected:
         AffectorCallbackInterfacePtr m_cb;
@@ -42,13 +39,17 @@ namespace Mengine
         {
         }
 
+        ~LambdaAffector() override
+        {
+        }
+
         void setup( const L & _lambda )
         {
             m_lambda = _lambda;
         }
 
         template<class T>
-        void update( const T & _value )
+        void process( const T & _value )
         {
             m_lambda( _value );
         }
@@ -67,21 +68,14 @@ namespace Mengine
             T value;
             bool finish = m_accumulator.update( _context, &value, _used );
 
-            this->update( value );
+            this->process( value );
 
-            if( finish == false )
-            {
-                return false;
-            }
-
-            return true;
+            return finish;
         }
 
-        void stop() override
+        void _stop() override
         {
             m_accumulator.stop();
-
-            this->end_( false );
         }
 
     protected:
@@ -98,21 +92,14 @@ namespace Mengine
             T value;
             bool finish = m_interpolator.update( _context, &value, _used );
 
-            this->update( value );
+            this->process( value );
 
-            if( finish == false )
-            {
-                return false;
-            }
-
-            return true;
+            return finish;
         }
 
-        void stop() override
+        void _stop() override
         {
             m_interpolator.stop();
-
-            this->end_( false );
         }
 
     protected:
@@ -218,7 +205,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                affector->update( _pos );
+                affector->process( _pos );
 
                 return affector;
             }
@@ -261,7 +248,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                affector->update( _start );
+                affector->process( _start );
 
                 return affector;
             }
@@ -304,7 +291,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                affector->update( _start );
+                affector->process( _start );
 
                 return affector;
             }
@@ -347,7 +334,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                affector->update( _start );
+                affector->process( _start );
 
                 return affector;
             }

@@ -12,6 +12,8 @@ namespace Mengine
         : public Node
         , public RenderScissorInterface
     {
+        DECLARE_VISITABLE( Node );
+
     public:
         RenderScissor();
         ~RenderScissor() override;

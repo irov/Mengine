@@ -39,10 +39,61 @@ namespace Mengine
         m_proxies.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t UpdateService::placeProxy_( const UpdationInterfacePtr & _updation )
+    UpdateService::LeafUpdatable * UpdateService::getLeafUpdatable( uint32_t _mode, uint32_t _deep )
+    {
+        switch( _mode )
+        {
+        case 0:
+            {
+                LeafUpdatable & leaf = m_leafs[_deep * 2 + 0];
+
+                return &leaf;
+            }break;
+        case 1:
+            {
+                LeafUpdatable & leaf = m_leafs[_deep * 2 + 1];
+                
+                return &leaf;
+            }break;
+        case 2:
+            {
+                LeafUpdatable & leaf = m_beforeLeaf[_deep];
+                
+                return &leaf;
+            }break;
+        case 3:
+            {
+                LeafUpdatable & leaf = m_afterLeaf[_deep];
+
+                return &leaf;
+            }break;
+        default:
+            {   
+            }break;
+        }
+
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t UpdateService::placeProxy_( uint32_t _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
     {
         UpdatableProxy proxy;
         proxy.updation = _updation;
+        proxy.mode = _mode;
+
+        switch( proxy.mode )
+        {
+        case 0:
+            proxy.deep = _deep * 2U + 0U;
+            break;
+        case 1:
+            proxy.deep = _deep * 2U + 1U;
+            break;
+        default:
+            proxy.deep = _deep;
+            break;
+        };
+
         proxy.state = 0;
 
         if( m_proxyFrees.empty() == true )
@@ -62,53 +113,76 @@ namespace Mengine
         return free_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t UpdateService::createUpdatater( uint32_t _mode, uint32_t _leaf, const UpdationInterfacePtr & _updation )
+    uint32_t UpdateService::createUpdatater( uint32_t _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
     {
-        uint32_t id = this->placeProxy_( _updation );
+        uint32_t id = this->placeProxy_( _mode, _deep, _updation );
         
-        switch( _mode )
-        {
-        case 0:
-            {
-                LeafUpdatable & leaf = m_leafs[_leaf * 2 + 0];
-                leaf.indeciesAdd.push_back( id );
-            }break;
-        case 1:
-            {
-                LeafUpdatable & leaf = m_leafs[_leaf * 2 + 1];
-                leaf.indeciesAdd.push_back( id );
-            }break;
-        case 2:
-            {
-                LeafUpdatable & leaf = m_beforeLeaf[_leaf];
-                leaf.indeciesAdd.push_back( id );
-            }break;
-        case 3:
-            {
-                LeafUpdatable & leaf = m_afterLeaf[_leaf];
-                leaf.indeciesAdd.push_back( id );
-            }break;
-        default:
-            {
-                LOGGER_ERROR( "UpdateService::createUpdatater unsupport mode '%d'"
-                    , _mode
-                );
+        LeafUpdatable * leaf = getLeafUpdatable( _mode, _deep );
 
-                return INVALID_UPDATABLE_ID;
-            }break;
+        if( leaf == nullptr )
+        {
+            LOGGER_ERROR( "UpdateService::createUpdatater unsupport mode '%d'"
+                , _mode
+            );
+
+            return INVALID_UPDATABLE_ID;
         }
 
+        leaf->indeciesAdd.push_back( id );
+
         return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void UpdateService::replaceUpdatater( uint32_t _id, uint32_t _deep )
+    {
+        UpdatableProxy & proxy = m_proxies[_id];
+
+        if( proxy.deep == _deep )
+        {
+            return;
+        }
+
+        if( proxy.state == 2 )
+        {
+            return;
+        }
+
+        LeafUpdatable * prev_leaf = getLeafUpdatable( proxy.mode, proxy.deep );
+
+        VectorUpdatableIndecies::iterator it_found = std::find( prev_leaf->indeciesAdd.begin(), prev_leaf->indeciesAdd.end(), _id );
+
+        if( it_found != prev_leaf->indeciesAdd.end() )
+        {
+            *it_found = prev_leaf->indeciesAdd.back();
+            prev_leaf->indeciesAdd.pop_back();
+        }
+
+        switch( proxy.mode )
+        {
+        case 0:
+            proxy.deep = _deep * 2U + 0U;
+            break;
+        case 1:
+            proxy.deep = _deep * 2U + 1U;
+            break;
+        default:
+            proxy.deep = _deep;
+            break;
+        };
+
+        LeafUpdatable * new_leaf = getLeafUpdatable( proxy.mode, proxy.deep );
+
+        new_leaf->indeciesAdd.push_back( _id );
     }
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::removeUpdatater( uint32_t _id )
     {
         UpdatableProxy & proxy = m_proxies[_id];
 
-        proxy.state = 3;
+        proxy.state = 2;
     }
     //////////////////////////////////////////////////////////////////////////
-    void UpdateService::updateLeaf_( LeafUpdatable & _leaf, const UpdateContext * _context )
+    void UpdateService::updateLeaf_( uint32_t _deep, LeafUpdatable & _leaf, const UpdateContext * _context )
     {
         _leaf.indecies.insert( _leaf.indecies.end(), _leaf.indeciesAdd.begin(), _leaf.indeciesAdd.end() );
         _leaf.indeciesAdd.clear();
@@ -122,13 +196,30 @@ namespace Mengine
 
             UpdatableProxy & proxy = m_proxies[id];
 
-            if( proxy.state == 1 )
+            if( proxy.deep != _deep )
+            {
+                if( it + 1 == it_end )
+                {
+                    _leaf.indecies.pop_back();
+                    break;
+                }
+                else
+                {
+                    *it = _leaf.indecies.back();
+                    _leaf.indecies.pop_back();
+
+                    it_end = _leaf.indecies.end();
+                }
+
+                continue;
+            }
+            else if( proxy.state == 1 )
             {
                 ++it;
 
                 continue;
             }
-            else if( proxy.state == 3 )
+            else if( proxy.state == 2 )
             {
                 proxy.updation = nullptr;
 
@@ -160,19 +251,28 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void UpdateService::update( const UpdateContext * _context )
     {
+        uint32_t enumerateBeforeDeep = 0U;
         for( LeafUpdatable & leaf : m_beforeLeaf )
         {
-            this->updateLeaf_( leaf, _context );
+            this->updateLeaf_( enumerateBeforeDeep, leaf, _context );
+
+            ++enumerateBeforeDeep;
         }
 
+        uint32_t enumerateDeep = 0U;
         for( LeafUpdatable & leaf : m_leafs )
         {
-            this->updateLeaf_( leaf, _context );
+            this->updateLeaf_( enumerateDeep, leaf, _context );
+
+            ++enumerateDeep;
         }
 
+        uint32_t enumerateAfterDeep = 0U;
         for( LeafUpdatable & leaf : m_afterLeaf )
         {
-            this->updateLeaf_( leaf, _context );
+            this->updateLeaf_( enumerateAfterDeep, leaf, _context );
+
+            ++enumerateAfterDeep;
         }
     }
 }

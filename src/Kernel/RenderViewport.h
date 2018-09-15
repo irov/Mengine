@@ -15,6 +15,8 @@ namespace Mengine
         , public RenderViewportInterface
         , public Observable
     {
+        DECLARE_VISITABLE( Node );
+
     public:
         RenderViewport();
         ~RenderViewport() override;

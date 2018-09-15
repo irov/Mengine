@@ -1,7 +1,5 @@
 #include "Motor.h"
 
-#include "Interface/UpdateInterface.h"
-
 #include "Kernel/Node.h"
 
 namespace Mengine
@@ -9,8 +7,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Motor::Motor()
         : m_node( nullptr )
-    {
-
+    {           
     }
     //////////////////////////////////////////////////////////////////////////
     Motor::~Motor()

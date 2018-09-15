@@ -72,7 +72,7 @@ namespace Mengine
         bool applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) override;
 
     public:
-        RenderProgramVariableInterfacePtr createProgramVariable() override;
+        RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount ) override;
 
     public:
         void drawIndexedPrimitive( EPrimitiveType _type

@@ -43,6 +43,8 @@ namespace Mengine
     class Entity
         : public Node
     {
+        DECLARE_VISITABLE( Node );
+
     public:
         Entity();
         ~Entity() override;

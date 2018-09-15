@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/Surface.h"
@@ -8,6 +9,8 @@
 
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderViewport.h"
+#include "Kernel/RenderVertex2D.h"
+#include "Kernel/RenderIndex.h"
 #include "Kernel/MatrixProxy.h"
 
 #include "ResourceMovie2.h"
@@ -43,11 +46,14 @@ namespace Mengine
     class Movie2
         : public Node
         , public BaseUpdation
+        , public BaseRender
         , public BaseEventation
         , public BaseAnimation
     {
+        DECLARE_VISITABLE( Node );
         DECLARE_ANIMATABLE();
         DECLARE_UPDATABLE();
+        DECLARE_RENDERABLE();
         DECLARE_EVENTABLE( Movie2EventReceiver );
 
     public:

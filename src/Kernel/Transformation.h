@@ -84,6 +84,9 @@ namespace Mengine
         float getLocalPositionZ() const;
 
     public:
+        bool isIdentityPosition() const;
+
+    public:
         void setOrigin( const mt::vec3f& _origin );
         inline const mt::vec3f & getOrigin() const;
 
@@ -104,6 +107,8 @@ namespace Mengine
 
         void setOrientation( const mt::vec3f & _orientation );
         inline const mt::vec3f & getOrientation() const;
+
+        bool isIdentityOrientation() const;
 
         void setDirection( const mt::vec3f & _direction, const mt::vec3f & _up );
         void setBillboard( const mt::vec3f & _direction, const mt::vec3f & _normal );

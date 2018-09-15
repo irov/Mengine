@@ -2,15 +2,15 @@
 
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/RenderNodeServiceInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ParticleSystemInterface.h"
 #include "Interface/ResourceInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/TimelineInterface.h"
 #include "Interface/FactoryInterface.h"
-
+#include "Interface/UpdateServiceInterface.h"
 #include "Interface/UnicodeInterface.h"
-
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/PrefetcherInterface.h"
@@ -21,6 +21,7 @@
 
 #include "Kernel/Scene.h"
 
+#include "Kernel/NodeRenderHelper.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
 #include "Kernel/RenderCameraOrthogonal.h"
@@ -890,28 +891,36 @@ namespace Mengine
         uint32_t debugMask = APPLICATION_SERVICE()
             ->getDebugMask();
 
-        RenderContext state;
-        state.viewport = m_renderViewport;
-        state.camera = m_renderCamera;
-        state.scissor = m_renderScissor;
-        state.target = m_renderTarget;
-        state.debugMask = debugMask;
+        RenderContext context;
+        context.viewport = m_renderViewport;
+        context.camera = m_renderCamera;
+        context.scissor = m_renderScissor;
+        context.target = m_renderTarget;
+        context.debugMask = debugMask;
 
-        if( m_scene != nullptr )
-        {
-            m_scene->render( &state );
-        }
+        //if( m_scene != nullptr )
+        //{
+        //    m_scene->render( &state );
+        //}
+
+        RENDERNODE_SERVICE()
+            ->renderNode( &context, m_scene );
 
         MODULE_SERVICE()
-            ->render( &state );
+            ->render( &context );
 
         RENDER_SERVICE()
             ->endLimitRenderObjects();
 
         if( m_arrow != nullptr )
         {
-            m_arrow->render( &state );
+            Helper::nodeRenderChildren( m_arrow, &context );
         }
+
+        //if( m_arrow != nullptr )
+        //{
+        //    m_arrow->render( &state );
+        //}
 
         if( m_showDebugText != 0 )
         {
@@ -1370,7 +1379,7 @@ namespace Mengine
 
             m_debugText->setScale( mt::vec3f( scale, 1.f ) );
 
-            m_debugText->render( &state );
+            m_debugText->render( &context );
         }
     }
     //////////////////////////////////////////////////////////////////////////

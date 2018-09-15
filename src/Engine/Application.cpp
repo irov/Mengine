@@ -295,7 +295,7 @@ namespace Mengine
 
         NODE_FACTORY( Gyroscope );
         NODE_FACTORY( Isometric );
-        NODE_FACTORY( Parallax );
+        //NODE_FACTORY( Parallax );
         NODE_FACTORY( MatrixProxy );
 
         //NODE_FACTORY( ParticleEmitter );
@@ -657,7 +657,7 @@ namespace Mengine
                 continue;
             }
 
-            LOGGER_ERROR( "%.*s-%s [%s] |%p| (%.2f, %.2f) (%.2f, %.2f) %d %s"
+            LOGGER_ERROR( "%.*s-%s [%s] |%p| lp (%.2f, %.2f, %.2f) lo (%.2f, %.2f, %.2f) wp (%.2f, %.2f, %.2f) %s"
                 , _tab
                 , "                                         "                
                 , child->getName().c_str()
@@ -665,9 +665,13 @@ namespace Mengine
                 , child.get()
                 , child->getLocalPosition().x
                 , child->getLocalPosition().y
+                , child->getLocalPosition().z
+                , child->getOrientation().x
+                , child->getOrientation().y
+                , child->getOrientation().z
                 , child->getWorldPosition().x
                 , child->getWorldPosition().y
-                , child->isRenderable()
+                , child->getWorldPosition().z
                 , child->getAnimation() == nullptr ? "" : (child->getAnimation()->isPlay() == true ? "[Play]" : "[Stop]")
             );
 

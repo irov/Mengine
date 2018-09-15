@@ -15,6 +15,8 @@ namespace Mengine
         , public RenderCameraInterface
         , public Observable
     {
+        DECLARE_VISITABLE( Node );
+
     public:
         RenderCamera();
         ~RenderCamera() override;

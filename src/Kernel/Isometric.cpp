@@ -31,11 +31,11 @@ namespace Mengine
             }
         };
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Isometric::render( const RenderContext * _state )
+    ////////////////////////////////////////////////////////////////////////
+    void Isometric::_update( const UpdateContext * _context )
     {
-        stdex::helper::intrusive_sort_stable( m_children, FIsometricSortY() );
+        (void)_context;
 
-        Node::render( _state );
+        stdex::helper::intrusive_sort_stable( m_children, FIsometricSortY() );
     }
 }

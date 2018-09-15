@@ -16,6 +16,7 @@
 #include "Config/Blobject.h"
 
 #include "Kernel/Node.h"
+#include "Kernel/NodeRenderHelper.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
@@ -1011,15 +1012,15 @@ namespace Mengine
             const Resolution & contentResolution = APPLICATION_SERVICE()
                 ->getContentResolution();
 
-            const RenderCameraInterfacePtr & shape1_camera = shape1->getRenderCameraInheritance();
-            const RenderViewportInterfacePtr & shape1_viewport = shape1->getRenderViewportInheritance();
+            const RenderCameraInterfacePtr & shape1_camera = Helper::getRenderCameraInheritance( shape1.get() );
+            const RenderViewportInterfacePtr & shape1_viewport = Helper::getRenderViewportInheritance( shape1.get() );
 
             mt::box2f b1;
             Polygon p1;
             shape1->getScreenPolygon( shape1_camera, shape1_viewport, contentResolution, &b1, &p1 );
 
-            const RenderCameraInterfacePtr & shape2_camera = shape2->getRenderCameraInheritance();
-            const RenderViewportInterfacePtr & shape2_viewport = shape2->getRenderViewportInheritance();
+            const RenderCameraInterfacePtr & shape2_camera = Helper::getRenderCameraInheritance( shape2.get() );
+            const RenderViewportInterfacePtr & shape2_viewport = Helper::getRenderViewportInheritance( shape2.get() );
 
             mt::box2f b2;
             Polygon p2;
@@ -1081,8 +1082,8 @@ namespace Mengine
             const Resolution & contentResolution = APPLICATION_SERVICE()
                 ->getContentResolution();
 
-            const RenderCameraInterfacePtr & shape_camera = shape->getRenderCameraInheritance();
-            const RenderViewportInterfacePtr & shape_viewport = shape->getRenderViewportInheritance();
+            const RenderCameraInterfacePtr & shape_camera = Helper::getRenderCameraInheritance( shape.get() );
+            const RenderViewportInterfacePtr & shape_viewport = Helper::getRenderViewportInheritance( shape.get() );
 
             Polygon p1;
             shape->getScreenPolygon( shape_camera, shape_viewport, contentResolution, nullptr, &p1 );

@@ -125,9 +125,11 @@ namespace Mengine
         m_renderCamera->setProxyViewMatrix( true );
         m_renderCamera->setOrthogonalViewport( m_viewport );
         m_renderViewport->setViewport( m_viewport );
+        
+        RenderInterfacePtr render = this->getRender();
 
-        Node::setRenderCamera( m_renderCamera );
-        Node::setRenderViewport( m_renderViewport );
+        render->setRenderCamera( m_renderCamera );
+        render->setRenderViewport( m_renderViewport );
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::removeViewport()
@@ -147,8 +149,10 @@ namespace Mengine
         m_renderViewport = nullptr;
         m_renderCamera = nullptr;
 
-        Node::setRenderCamera( nullptr );
-        Node::setRenderViewport( nullptr );
+        RenderInterfacePtr render = this->getRender();
+
+        render->setRenderCamera( nullptr );
+        render->setRenderViewport( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Layer2D::setImageMask( const ResourceImagePtr & _resourceImageMask )
@@ -192,7 +196,9 @@ namespace Mengine
             return false;
         }
 
-        Node::setRenderTarget( renderTarget );
+        RenderInterfacePtr render = this->getRender();
+
+        render->setRenderTarget( renderTarget );
 
         RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM()
             ->createRenderTargetImage( renderTarget );
@@ -257,13 +263,20 @@ namespace Mengine
         this->setRenderTarget( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layer2D::_renderTarget( const RenderContext * _state )
+    void Layer2D::_render( const RenderContext * _context )
+    {
+        (void)_context;
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Layer2D::_renderTarget( const RenderContext * _context )
     {
         const RenderVertex2D * verticesImageMask = this->getVerticesImageMaskWM();
 
         const mt::box2f & bb = this->getBoundingBox();
 
-        this->addRenderQuad( _state, m_materialImageMask, verticesImageMask, 4, &bb, false );
+        this->addRenderQuad( _context, m_materialImageMask, verticesImageMask, 4, &bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::updateVerticesImageMaskWM() const

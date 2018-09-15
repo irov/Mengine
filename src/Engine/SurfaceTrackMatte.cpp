@@ -22,7 +22,7 @@ namespace Mengine
     bool SurfaceTrackMatte::_initialize()
     {
         m_programVariable = RENDER_SYSTEM()
-            ->createProgramVariable();
+            ->createProgramVariable( 0, 1 );
     
         return true;
     }

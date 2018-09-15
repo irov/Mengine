@@ -83,7 +83,9 @@ namespace Mengine
         m_camera->setCameraRightSign( cameraRightSign );
 
         this->addChild( m_camera );
-        this->setRenderCamera( m_camera );
+
+        RenderInterfacePtr render = this->getRender();
+        render->setRenderCamera( m_camera );
 
         m_vertexCount = model->getVertexCount();
         m_indicesCount = model->getIndicesCount();

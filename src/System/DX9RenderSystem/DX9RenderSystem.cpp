@@ -1795,7 +1795,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariable()
+    RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount )
     {
         DX9RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject();
 
@@ -1807,7 +1807,7 @@ namespace Mengine
             return nullptr;
         }
 
-        if( variable->initialize() == false )
+        if( variable->initialize( _vertexCount, _pixelCount ) == false )
         {
             LOGGER_ERROR( "DX9RenderSystem::createProgramVariable invalid initialize program variable"
             );

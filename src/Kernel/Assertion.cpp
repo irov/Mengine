@@ -21,6 +21,7 @@ namespace Mengine
 
         LOGGER_ERROR( assert_message );
 
+
 #ifdef _WIN32
         DebugBreak();
 #endif

@@ -42,6 +42,8 @@ namespace Mengine
 
         typedef ValueFollowerLinear<float> ValueFollowerLinearFloat;
         ValueFollowerLinearFloat m_valueFollower;
+
+        float m_cacheValue;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PythonValueFollower> PythonValueFollowerPtr;

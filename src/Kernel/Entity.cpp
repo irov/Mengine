@@ -1,7 +1,5 @@
 #include "Entity.h"
 
-#include "Interface/UpdateInterface.h"
-
 #include "Kernel/Logger.h"
 #include "Kernel/BaseEventation.h"
 

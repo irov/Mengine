@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/FixedVertices.h"
 
 #include "Kernel/ResourceHolder.h"
@@ -14,8 +15,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Window
         : public Node
+        , public BaseRender
         , public FixedVertices<ResourceWindow_Count * 4>
     {
+        DECLARE_VISITABLE( Node );
+        DECLARE_RENDERABLE();
+
     public:
         Window();
         ~Window() override;

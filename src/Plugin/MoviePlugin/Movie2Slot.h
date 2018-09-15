@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 
 namespace Mengine
 {
@@ -9,7 +10,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Movie2Slot
         : public Node
+        , public BaseRender
     {
+        DECLARE_VISITABLE( Node );
+        DECLARE_RENDERABLE();
+
     public:
         Movie2Slot();
         ~Movie2Slot() override;
@@ -21,8 +26,8 @@ namespace Mengine
     protected:
         void _destroy() override;
 
-    protected:
-        void _setLocalHide( bool _value ) override;
+    //protected:
+    //    void _setLocalHide( bool _value ) override;
 
     protected:
         void _setPersonalColor( const ColourValue& _color ) override;
@@ -32,7 +37,10 @@ namespace Mengine
         void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
     protected:
-        void _debugRender( const RenderContext * _state ) override;
+        void _render( const RenderContext * _state ) override;
+
+    //protected:
+    //    void _debugRender( const RenderContext * _state ) override;
 
     protected:
         Movie2Ptr m_movie;

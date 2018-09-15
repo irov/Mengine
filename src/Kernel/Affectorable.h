@@ -42,7 +42,7 @@ namespace Mengine
 
     public:
         virtual uint32_t getAffectorableUpdatableMode() const = 0;
-        virtual uint32_t getAffectorableUpdatableLeaf() const = 0;
+        virtual uint32_t getAffectorableUpdatableLeafDeep() const = 0;
 
     protected:
         typedef stdex::intrusive_slug_list_ptr<Affector> IntrusiveSlugListAffector;

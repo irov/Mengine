@@ -12,6 +12,8 @@ src
 	DecoderRenderImageProvider.cpp
 	DecoderRenderImageLoader.h
 	DecoderRenderImageLoader.cpp
+    RenderNodeService.h
+    RenderNodeService.cpp
     RenderMaterial.h
     RenderMaterial.cpp
     RenderMaterialManager.h

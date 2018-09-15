@@ -12,6 +12,8 @@ namespace Mengine
     class SoundEmitter
         : public Node
     {
+        DECLARE_VISITABLE( Node );
+
     public:
         SoundEmitter();
         ~SoundEmitter() override;

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Layer.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/ResourceHolder.h"
 
@@ -15,8 +16,10 @@ namespace Mengine
 
     class Layer2D
         : public Layer
+        , public BaseRender
     {
-        DECLARE_VISITABLE( Layer )
+        DECLARE_RENDERABLE();
+        DECLARE_VISITABLE( Layer );
 
     public:
         Layer2D();
@@ -46,7 +49,10 @@ namespace Mengine
         void _deactivate() override;
 
     protected:
-        void _renderTarget( const RenderContext * _state ) override;
+        void _render( const RenderContext * _context ) override;
+
+    protected:
+        void _renderTarget( const RenderContext * _context ) override;
 
     protected:
         inline const RenderVertex2D * getVerticesImageMaskWM() const;

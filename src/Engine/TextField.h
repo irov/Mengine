@@ -5,6 +5,7 @@
 #include "TextChar.h"
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/Observable.h"
 #include "Kernel/Materialable.h"
 
@@ -24,9 +25,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class TextField
         : public Node
+        , public BaseRender
         , public Materialable
         , public Observable
     {
+        DECLARE_VISITABLE( Node );
+        DECLARE_RENDERABLE();
+
     public:
         TextField();
         ~TextField() override;

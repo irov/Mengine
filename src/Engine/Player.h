@@ -140,7 +140,6 @@ namespace Mengine
         RenderViewportInterfacePtr m_renderViewport;
         RenderCameraInterfacePtr m_renderCamera;
         RenderScissorInterfacePtr m_renderScissor;
-
         RenderTargetInterfacePtr m_renderTarget;
 
         MousePickerSystemInterfacePtr m_mousePickerSystem;

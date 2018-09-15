@@ -28,6 +28,7 @@ namespace Mengine
         : public Node
         , public BaseEventation
     {
+        DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE( ScriptHolderEventReceiver );
 
     public:

@@ -11,6 +11,7 @@ namespace Mengine
         : public Node
         , public BaseUpdation
     {
+        DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
 
     public:

@@ -196,6 +196,11 @@ namespace Mengine
         return m_position.z;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Transformation::isIdentityPosition() const
+    {
+        return (m_transformationFlag & TRANSFORMATION_INVALIDATE_POSITION) == TRANSFORMATION_INVALIDATE_POSITION;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Transformation::setOrientationX( float _angle )
     {
         if( mt::equal_f_f( m_orientation.x, _angle ) == true )
@@ -298,6 +303,11 @@ namespace Mengine
         this->invalidateLocalMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Transformation::isIdentityOrientation() const
+    {
+        return (m_transformationFlag & TRANSFORMATION_INVALIDATE_ORIENTATION) == TRANSFORMATION_INVALIDATE_ORIENTATION;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Transformation::setTransformation( uint8_t _transformationFlag, const mt::vec3f & _position, const mt::vec3f& _origin, const mt::vec3f& _scale, const mt::vec2f & _skew, const mt::vec3f& _orientation )
     {
         m_position = _position;
@@ -308,24 +318,24 @@ namespace Mengine
 
         if( _transformationFlag == TRANSFORMATION_INVALIDATE_UNKNOWN )
         {
-            m_transformationFlag = 0;
+            m_transformationFlag = TRANSFORMATION_INVALIDATE_IDENTITY;
 
-            if( is_ident_v3( m_position ) == false )
+            if( mt::is_ident_v3( m_position ) == false )
             {
                 m_transformationFlag |= TRANSFORMATION_INVALIDATE_POSITION;
             }
 
-            if( is_ident_v3( m_origin ) == false )
+            if( mt::is_ident_v3( m_origin ) == false )
             {
                 m_transformationFlag |= TRANSFORMATION_INVALIDATE_ORIGIN;
             }
 
-            if( is_one_v3( m_scale ) == false )
+            if( mt::is_one_v3( m_scale ) == false )
             {
                 m_transformationFlag |= TRANSFORMATION_INVALIDATE_SCALE;
             }
 
-            if( is_ident_v2( m_skew ) == false )
+            if( mt::is_ident_v2( m_skew ) == false )
             {
                 m_transformationFlag |= TRANSFORMATION_INVALIDATE_SKEW;
             }

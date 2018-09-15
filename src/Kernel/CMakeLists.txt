@@ -42,7 +42,6 @@ Mixin\\\\Updatable
 
 ADD_FILTER(
 Mixin\\\\Renderable
-	Renderable.cpp
 	Renderable.h
 )
 
@@ -76,6 +75,12 @@ BaseUpdation
 )
 
 ADD_FILTER(
+BaseRender
+	BaseRender.cpp
+	BaseRender.h
+)
+
+ADD_FILTER(
 Affector
 	Affector.h
 	Affector.cpp
@@ -94,7 +99,9 @@ Shape
 ADD_FILTER(
 Node
 	Node.cpp
-	Node.h    
+	Node.h  
+    NodeRenderHelper.cpp
+    NodeRenderHelper.h
 )
 
 ADD_FILTER(

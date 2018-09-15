@@ -15,6 +15,8 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseAnimation.h"
+#include "Kernel/BaseUpdation.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/ResourceImage.h"
 
@@ -27,11 +29,13 @@ namespace Mengine
     class NodeOzzAnimation
         : public Node
         , public BaseUpdation
+        , public BaseRender
         , public RenderTransformationInterface        
         , public UnknownNodeOzzAnimationInterface
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
+        DECLARE_RENDERABLE();
         DECLARE_UNKNOWABLE();
 
     public:

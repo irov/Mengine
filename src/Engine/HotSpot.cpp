@@ -239,26 +239,26 @@ namespace Mengine
 
         return handle;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void HotSpot::_setLocalHide( bool _value )
-    {
-        Node::_setLocalHide( _value );
+    ////////////////////////////////////////////////////////////////////////////
+    //void HotSpot::_setLocalHide( bool _value )
+    //{
+    //    Node::_setLocalHide( _value );
 
-        if( _value == true )
-        {
-            if( this->isAfterActive() == true && this->isFreeze() == false )
-            {
-                this->deactivatePicker_();
-            }
-        }
-        else
-        {
-            if( this->isAfterActive() == true && this->isFreeze() == false )
-            {
-                this->activatePicker_();
-            }
-        }
-    }
+    //    if( _value == true )
+    //    {
+    //        if( this->isAfterActive() == true && this->isFreeze() == false )
+    //        {
+    //            this->deactivatePicker_();
+    //        }
+    //    }
+    //    else
+    //    {
+    //        if( this->isAfterActive() == true && this->isFreeze() == false )
+    //        {
+    //            this->activatePicker_();
+    //        }
+    //    }
+    //}
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_freeze( bool _value )
     {
@@ -266,14 +266,14 @@ namespace Mengine
 
         if( _value == true )
         {
-            if( this->isAfterActive() == true && this->getLocalHide() == false )
+            if( this->isAfterActive() == true && this->isLocalHide() == false )
             {
                 this->deactivatePicker_();
             }
         }
         else
         {
-            if( this->isAfterActive() == true && this->getLocalHide() == false )
+            if( this->isAfterActive() == true && this->isLocalHide() == false )
             {
                 this->activatePicker_();
             }
@@ -318,7 +318,7 @@ namespace Mengine
     {
         Node::_afterActivate();
 
-        if( this->getLocalHide() == false && this->isFreeze() == false )
+        if( this->isLocalHide() == false && this->isFreeze() == false )
         {
             this->activatePicker_();
         }
@@ -326,7 +326,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_deactivate()
     {
-        if( this->getLocalHide() == false && this->isFreeze() == false )
+        if( this->isLocalHide() == false && this->isFreeze() == false )
         {
             this->deactivatePicker_();
         }

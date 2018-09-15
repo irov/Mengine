@@ -26,6 +26,8 @@ namespace Mengine
         uint32_t debugMask;
     };
     //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class RenderInterface> RenderInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
     class RenderInterface
         : public Mixin
     {
@@ -51,6 +53,9 @@ namespace Mengine
 
     public:
         virtual void render( const RenderContext * _state ) = 0;
+
+    public:
+        virtual const RenderInterfacePtr & renderTarget( const RenderContext * _state ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderInterface> RenderInterfacePtr;

@@ -15,7 +15,7 @@ namespace Mengine
 
     public:
         virtual void invalidateNodeCache() = 0;
-        virtual void renderNode( const RenderContext * _state, const NodePtr & _node ) = 0;
+        virtual void renderNode( const RenderContext * _context, const NodePtr & _node ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERNODE_SERVICE()\

@@ -181,6 +181,31 @@ namespace Mengine
         this->clearRenderTarget_();
     }
     //////////////////////////////////////////////////////////////////////////
+    class RenderLayer2DTarget
+        : public Factorable
+        , public BaseRender
+    {
+    public:
+        RenderLayer2DTarget( const Layer2DPtr & _layer )
+            : m_layer( _layer )
+        {
+        }
+
+    protected:
+        void _render( const RenderContext * _context )
+        {
+            const RenderVertex2D * verticesImageMask = m_layer->getVerticesImageMaskWM();
+            const RenderMaterialInterfacePtr & materialImageMask = m_layer->getMaterialImageMask();
+
+            const mt::box2f & bb = m_layer->getBoundingBox();
+
+            this->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, &bb, false );
+        }
+
+    protected:
+        Layer2DPtr m_layer;
+    };
+    //////////////////////////////////////////////////////////////////////////
     bool Layer2D::createRenderTarget_()
     {
         if( m_resourceImageMask == nullptr )
@@ -197,7 +222,6 @@ namespace Mengine
         }
 
         RenderInterfacePtr render = this->getRender();
-
         render->setRenderTarget( renderTarget );
 
         RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM()
@@ -250,6 +274,8 @@ namespace Mengine
         m_verticesImageMaskWM[2].uv[1] = uv_mask.p2;
         m_verticesImageMaskWM[3].uv[1] = uv_mask.p3;
 
+        m_renderTarget = new FactorableUnique<RenderLayer2DTarget>( this );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -259,6 +285,8 @@ namespace Mengine
 
         m_resourceImageMask.release();
         m_resourceImageMask = nullptr;
+
+        m_renderTarget = nullptr;
 
         this->setRenderTarget( nullptr );
     }
@@ -270,13 +298,11 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layer2D::_renderTarget( const RenderContext * _context )
+    const RenderInterfacePtr & Layer2D::_renderTarget( const RenderContext * _context )
     {
-        const RenderVertex2D * verticesImageMask = this->getVerticesImageMaskWM();
+        (void)_context;
 
-        const mt::box2f & bb = this->getBoundingBox();
-
-        this->addRenderQuad( _context, m_materialImageMask, verticesImageMask, 4, &bb, false );
+        return m_renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
     void Layer2D::updateVerticesImageMaskWM() const

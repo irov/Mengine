@@ -34,8 +34,8 @@ namespace Mengine
     protected:
         void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
 
-    protected:
-        void _debugRender( const RenderContext * _state ) override;
+    //protected:
+    //    void _debugRender( const RenderContext * _state ) override;
 
     protected:
         bool _compile() override;

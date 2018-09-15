@@ -7,7 +7,7 @@ namespace Mengine
     class MatrixProxy
         : public Node
     {
-        DECLARE_VISITABLE( Node )
+        DECLARE_VISITABLE( Node );
 
     public:
         MatrixProxy();

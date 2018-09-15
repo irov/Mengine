@@ -62,6 +62,7 @@ namespace Mengine
         , public BaseAnimation
         , public BaseUpdation
     {
+        DECLARE_VISITABLE( Node );
         DECLARE_ANIMATABLE();
         DECLARE_UPDATABLE();
         DECLARE_EVENTABLE( MovieEventReceiver );

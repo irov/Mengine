@@ -349,6 +349,10 @@ namespace Mengine
 		String utf8_path;
 		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
 		{
+            pybind::error_message( "invalid get utf8 path from '%ls'"
+                , _path
+            );
+
 			return NULL;
 		}
 
@@ -362,6 +366,10 @@ namespace Mengine
 		
 		if( stream == nullptr )
 		{
+            pybind::error_message( "invalid open file '%s'"
+                , c_path.c_str()
+            );
+
 			return NULL;
 		}
 
@@ -373,11 +381,20 @@ namespace Mengine
 
 		if( imageDecoder == nullptr )
 		{
+            pybind::error_message( "file '%s' invalid create decoder '%s'"
+                , c_path.c_str()
+                , codecType.c_str()
+            );
+
 			return NULL;
 		}
 
 		if( imageDecoder->prepareData( stream ) == false )
 		{
+            pybind::error_message( "file '%s' invalid prepare data"
+                , c_path.c_str()
+            );
+
 			return NULL;
 		}
 

@@ -89,7 +89,7 @@ namespace Mengine
         void _deactivate() override;
 
     protected:
-        void _setLocalHide( bool _value ) override;
+        //void _setLocalHide( bool _value ) override;
         void _freeze( bool _value ) override;
 
     protected:

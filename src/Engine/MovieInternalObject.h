@@ -14,6 +14,8 @@ namespace Mengine
     class MovieInternalObject
         : public Node
     {
+        DECLARE_VISITABLE( Node );
+
     public:
         MovieInternalObject();
         ~MovieInternalObject() override;

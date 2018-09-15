@@ -27,9 +27,9 @@ namespace Mengine
         _affector->setId( id );
 
         uint32_t updatableMode = this->getAffectorableUpdatableMode();
-        uint32_t updatableLeaf = this->getAffectorableUpdatableLeaf();
+        uint32_t updatableDeep = this->getAffectorableUpdatableLeafDeep();
 
-        if( _affector->prepare( updatableMode, updatableLeaf ) == false )
+        if( _affector->prepare( updatableMode, updatableDeep ) == false )
         {
             return INVALID_AFFECTOR_ID;
         }

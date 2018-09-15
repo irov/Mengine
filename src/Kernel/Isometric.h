@@ -1,19 +1,22 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseUpdation.h"
 
 namespace Mengine
 {
     class Isometric
         : public Node
+        , public BaseUpdation
     {
-        DECLARE_VISITABLE( Node )
+        DECLARE_VISITABLE( Node );
+        DECLARE_UPDATABLE();
 
     public:
         Isometric();
         ~Isometric() override;
 
     protected:
-        void render( const RenderContext * _state ) override;
+        void _update( const UpdateContext * _context ) override;
     };
 }

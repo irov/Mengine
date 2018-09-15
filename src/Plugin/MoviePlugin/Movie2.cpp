@@ -176,7 +176,9 @@ namespace Mengine
                 }
 
                 node->setName( layer.name );
-                node->setExternalRender( true );
+
+                RenderInterfacePtr render = node->getRender();
+                render->setExternalRender( true );
 
                 node->setMovie( this );
 
@@ -212,7 +214,6 @@ namespace Mengine
                 }
 
                 node->setName( layer.name );
-                node->setExternalRender( true );
 
                 this->addSocket_( layer.index, node );
 
@@ -246,7 +247,9 @@ namespace Mengine
                 }
 
                 node->setName( layer.name );
-                node->setExternalRender( true );
+
+                RenderInterfacePtr render = node->getRender();
+                render->setExternalRender( true );
 
                 UnknownParticleEmitter2InterfacePtr unknownParticleEmitter2 = node->getUnknown();
 
@@ -1736,6 +1739,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_render( const RenderContext * _state )
     {
+        if( this->getName() == "Movie2_Door_Fail" )
+        {
+            _state = _state;
+        }
+
         uint32_t vertex_iterator = 0;
         uint32_t index_iterator = 0;
 
@@ -1807,9 +1815,11 @@ namespace Mengine
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
-                        HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(mesh.element_data);
+                        //HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(mesh.element_data);
 
-                        node->render( &state );
+                        //RenderInterfacePtr render = node->getRender();
+
+                        //render->render( &state );
                     }break;
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
@@ -1824,13 +1834,17 @@ namespace Mengine
                     {
                         TextField * node = reinterpret_node_cast<TextField *>(mesh.element_data);
 
-                        node->render( &state );
+                        RenderInterfacePtr render = node->getRender();
+
+                        render->render( &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        Node * particleEmitter2 = reinterpret_node_cast<Node *>(mesh.element_data);
+                        Node * node = reinterpret_node_cast<Node *>(mesh.element_data);
 
-                        particleEmitter2->render( &state );
+                        RenderInterfacePtr render = node->getRender();
+
+                        render->render( &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {
@@ -2071,9 +2085,44 @@ namespace Mengine
 
                         stdex::memorycopy_pod( indices, 0, mesh.indices, mesh.indexCount );
 
-                        //EMaterialBlendMode blend_mode = getMovieBlendMode( mesh.blend_mode );
-
                         const RenderProgramVariableInterfacePtr & programVariable = surfaceTrackMatte->getProgramVariable();
+
+                        float bb[4];
+                        bb[0] = std::numeric_limits<float>::max();
+                        bb[1] = std::numeric_limits<float>::max();
+                        bb[2] = std::numeric_limits<float>::lowest();
+                        bb[3] = std::numeric_limits<float>::lowest();
+
+                        for( uint32_t index = 0; index != track_matte_mesh->vertexCount; ++index )
+                        {
+                            mt::vec2f uv;
+                            uv.from_f2( &track_matte_mesh->uv[index][0] );
+
+                            mt::vec2f uv_correct;
+                            resourceTrackMatteImage->correctUVImage( uv_correct, uv );
+
+                            if( bb[0] > uv_correct.x )
+                            {
+                                bb[0] = uv_correct.x;
+                            }
+
+                            if( bb[2] < uv_correct.x )
+                            {
+                                bb[2] = uv_correct.x;
+                            }
+
+                            if( bb[1] > uv_correct.y )
+                            {
+                                bb[1] = uv_correct.y;
+                            }
+
+                            if( bb[3] < uv_correct.y )
+                            {
+                                bb[3] = uv_correct.y;
+                            }
+                        }
+
+                        programVariable->setPixelVariableFloats( 0, bb, 4 );
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 

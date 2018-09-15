@@ -34,8 +34,10 @@ namespace Mengine
                 return;
             }
 
-            const RenderCameraInterfacePtr & renderCamera = m_arrow->getRenderCamera();
-            const RenderViewportInterfacePtr & renderViewport = m_arrow->getRenderViewport();
+            RenderInterfacePtr render = m_arrow->getRender();
+
+            const RenderCameraInterfacePtr & renderCamera = render->getRenderCamera();
+            const RenderViewportInterfacePtr & renderViewport = render->getRenderViewport();
 
             mt::vec2f wp;
             m_arrow->calcMouseWorldPosition( renderCamera, renderViewport, _position, wp );
@@ -55,6 +57,10 @@ namespace Mengine
         , m_pointClick( 0.f, 0.f )
         , m_radius( 0.f )
         , m_hided( false )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Arrow::~Arrow()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -124,6 +130,13 @@ namespace Mengine
         Entity::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Arrow::_render( const RenderContext * _state )
+    {
+        (void)_state;
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Arrow::setPolygon( const Polygon & _polygon )
     {
         m_arrowType = EAT_POLYGON;
@@ -160,12 +173,12 @@ namespace Mengine
             Node::setHide( false );
         }
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::setHide( bool _value )
-    {
-        Node::setHide( _value );
-        m_hided = _value;
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    //void Arrow::setHide( bool _value )
+    //{
+    //    Node::setHide( _value );
+    //    m_hided = _value;
+    //}
     //////////////////////////////////////////////////////////////////////////
     void Arrow::calcMouseWorldPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const
     {
@@ -347,158 +360,158 @@ namespace Mengine
 
         _adaptScreenPoint = _screenPoint * windowScale + windowOffset;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Arrow::_debugRender( const RenderContext * _state )
-    {
-        if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
-        {
-            return;
-        }
+    ////////////////////////////////////////////////////////////////////////////
+    //void Arrow::_debugRender( const RenderContext * _state )
+    //{
+    //    if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
+    //    {
+    //        return;
+    //    }
 
-        EArrowType arrowType = this->getArrowType();
+    //    EArrowType arrowType = this->getArrowType();
 
-        switch( arrowType )
-        {
-        case EAT_POINT:
-            {
-                return;
-            }break;
-        case EAT_RADIUS:
-            {
-                const uint32_t numpoints = 32;
-                uint32_t vertexCount = numpoints * 2;
+    //    switch( arrowType )
+    //    {
+    //    case EAT_POINT:
+    //        {
+    //            return;
+    //        }break;
+    //    case EAT_RADIUS:
+    //        {
+    //            const uint32_t numpoints = 32;
+    //            uint32_t vertexCount = numpoints * 2;
 
-                RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
+    //            RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
 
-                if( vertices == nullptr )
-                {
-                    return;
-                }
+    //            if( vertices == nullptr )
+    //            {
+    //                return;
+    //            }
 
-                const mt::mat4f & worldMat = this->getWorldMatrix();
+    //            const mt::mat4f & worldMat = this->getWorldMatrix();
 
-                mt::vec2f ring[numpoints];
+    //            mt::vec2f ring[numpoints];
 
-                float radius = this->getRadius();
+    //            float radius = this->getRadius();
 
-                for( uint32_t i = 0; i != numpoints; ++i )
-                {
-                    float x = radius * MT_cosf( mt::constant::two_pi / float( numpoints ) * float( i ) );
-                    float y = radius * MT_sinf( mt::constant::two_pi / float( numpoints ) * float( i ) );
+    //            for( uint32_t i = 0; i != numpoints; ++i )
+    //            {
+    //                float x = radius * MT_cosf( mt::constant::two_pi / float( numpoints ) * float( i ) );
+    //                float y = radius * MT_sinf( mt::constant::two_pi / float( numpoints ) * float( i ) );
 
-                    ring[i] = mt::vec2f( x, y );
-                }
+    //                ring[i] = mt::vec2f( x, y );
+    //            }
 
-                for( uint32_t i = 0; i != numpoints; ++i )
-                {
-                    uint32_t j = (i + 1) % numpoints;
+    //            for( uint32_t i = 0; i != numpoints; ++i )
+    //            {
+    //                uint32_t j = (i + 1) % numpoints;
 
-                    mt::vec3f trP0;
-                    mt::mul_v3_v2_m4( trP0, ring[i], worldMat );
+    //                mt::vec3f trP0;
+    //                mt::mul_v3_v2_m4( trP0, ring[i], worldMat );
 
-                    RenderVertex2D & v0 = vertices[i * 2 + 0];
+    //                RenderVertex2D & v0 = vertices[i * 2 + 0];
 
-                    v0.position = trP0;
+    //                v0.position = trP0;
 
-                    v0.color = 0x8080FFFF;
+    //                v0.color = 0x8080FFFF;
 
-                    for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
-                    {
-                        v0.uv[uv_index].x = 0.f;
-                        v0.uv[uv_index].y = 0.f;
-                    }
+    //                for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+    //                {
+    //                    v0.uv[uv_index].x = 0.f;
+    //                    v0.uv[uv_index].y = 0.f;
+    //                }
 
-                    mt::vec3f trP1;
-                    mt::mul_v3_v2_m4( trP1, ring[j], worldMat );
+    //                mt::vec3f trP1;
+    //                mt::mul_v3_v2_m4( trP1, ring[j], worldMat );
 
-                    RenderVertex2D & v1 = vertices[i * 2 + 1];
+    //                RenderVertex2D & v1 = vertices[i * 2 + 1];
 
-                    v1.position = trP1;
+    //                v1.position = trP1;
 
-                    v1.color = 0x8080FFFF;
+    //                v1.color = 0x8080FFFF;
 
-                    for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
-                    {
-                        v1.uv[uv_index].x = 0.f;
-                        v1.uv[uv_index].y = 0.f;
-                    }
-                }
+    //                for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+    //                {
+    //                    v1.uv[uv_index].x = 0.f;
+    //                    v1.uv[uv_index].y = 0.f;
+    //                }
+    //            }
 
-                const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
+    //            const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
-                this->addRenderLine( _state, debugMaterial
-                    , vertices
-                    , vertexCount
-                    , nullptr
-                    , true
-                );
-            }break;
-        case EAT_POLYGON:
-            {
-                uint32_t numpoints = m_polygon.size();
+    //            this->addRenderLine( _state, debugMaterial
+    //                , vertices
+    //                , vertexCount
+    //                , nullptr
+    //                , true
+    //            );
+    //        }break;
+    //    case EAT_POLYGON:
+    //        {
+    //            uint32_t numpoints = m_polygon.size();
 
-                if( numpoints == 0 )
-                {
-                    return;
-                }
+    //            if( numpoints == 0 )
+    //            {
+    //                return;
+    //            }
 
-                uint32_t vertexCount = numpoints * 2;
+    //            uint32_t vertexCount = numpoints * 2;
 
-                RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
+    //            RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
 
-                if( vertices == nullptr )
-                {
-                    return;
-                }
+    //            if( vertices == nullptr )
+    //            {
+    //                return;
+    //            }
 
-                const mt::mat4f & worldMat = this->getWorldMatrix();
+    //            const mt::mat4f & worldMat = this->getWorldMatrix();
 
-                const VectorPoints & points = m_polygon.getPoints();
+    //            const VectorPoints & points = m_polygon.getPoints();
 
-                for( uint32_t i = 0; i != numpoints; ++i )
-                {
-                    uint32_t j = (i + 1) % numpoints;
+    //            for( uint32_t i = 0; i != numpoints; ++i )
+    //            {
+    //                uint32_t j = (i + 1) % numpoints;
 
-                    mt::vec3f trP0;
-                    mt::mul_v3_v2_m4( trP0, points[i], worldMat );
+    //                mt::vec3f trP0;
+    //                mt::mul_v3_v2_m4( trP0, points[i], worldMat );
 
-                    RenderVertex2D & v0 = vertices[i * 2 + 0];
+    //                RenderVertex2D & v0 = vertices[i * 2 + 0];
 
-                    v0.position = trP0;
+    //                v0.position = trP0;
 
-                    v0.color = 0x8080FFFF;
+    //                v0.color = 0x8080FFFF;
 
-                    for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
-                    {
-                        v0.uv[uv_index].x = 0.f;
-                        v0.uv[uv_index].y = 0.f;
-                    }
+    //                for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+    //                {
+    //                    v0.uv[uv_index].x = 0.f;
+    //                    v0.uv[uv_index].y = 0.f;
+    //                }
 
-                    mt::vec3f trP1;
-                    mt::mul_v3_v2_m4( trP1, points[j], worldMat );
+    //                mt::vec3f trP1;
+    //                mt::mul_v3_v2_m4( trP1, points[j], worldMat );
 
-                    RenderVertex2D & v1 = vertices[i * 2 + 1];
+    //                RenderVertex2D & v1 = vertices[i * 2 + 1];
 
-                    v1.position = trP1;
+    //                v1.position = trP1;
 
-                    v1.color = 0x8080FFFF;
+    //                v1.color = 0x8080FFFF;
 
-                    for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
-                    {
-                        v1.uv[uv_index].x = 0.f;
-                        v1.uv[uv_index].y = 0.f;
-                    }
-                }
+    //                for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+    //                {
+    //                    v1.uv[uv_index].x = 0.f;
+    //                    v1.uv[uv_index].y = 0.f;
+    //                }
+    //            }
 
-                const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
+    //            const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
-                this->addRenderLine( _state, debugMaterial
-                    , vertices
-                    , (uint32_t)vertexCount
-                    , nullptr
-                    , true
-                );
-            }break;
-        }
-    }
+    //            this->addRenderLine( _state, debugMaterial
+    //                , vertices
+    //                , (uint32_t)vertexCount
+    //                , nullptr
+    //                , true
+    //            );
+    //        }break;
+    //    }
+    //}
 }

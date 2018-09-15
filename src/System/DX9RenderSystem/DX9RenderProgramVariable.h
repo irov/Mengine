@@ -18,7 +18,7 @@ namespace Mengine
         ~DX9RenderProgramVariable() override;
 
     public:
-        bool initialize();
+        bool initialize( uint32_t _vertexCount, uint32_t _pixelCount );
         void finalize();
 
     public:
@@ -49,7 +49,6 @@ namespace Mengine
 
         struct Variable
         {
-            uint32_t index;
             uint32_t type;
             uint32_t offset;
             uint32_t count;

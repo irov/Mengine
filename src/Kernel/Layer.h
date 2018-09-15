@@ -7,7 +7,7 @@ namespace Mengine
     class Layer
         : public Node
     {
-        DECLARE_VISITABLE( Node )
+        DECLARE_VISITABLE( Node );
 
     public:
         Layer();

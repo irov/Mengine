@@ -1,6 +1,7 @@
 #include "Kernel/Affector.h"
 
-#include "Interface/UpdateInterface.h"
+#include "Interface/UpdationInterface.h"
+#include "Interface/UpdateServiceInterface.h"
 #include "Interface/TimelineInterface.h"
 
 namespace Mengine

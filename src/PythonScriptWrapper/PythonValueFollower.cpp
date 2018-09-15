@@ -4,6 +4,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PythonValueFollower::PythonValueFollower()
+        : m_cacheValue( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -15,6 +16,8 @@ namespace Mengine
     {
         this->resetValue( _value );
         this->setSpeed( _speed );
+
+        m_cacheValue = _value;
 
         m_cb = _cb;
         m_args = _args;
@@ -69,7 +72,12 @@ namespace Mengine
 
         float value = m_valueFollower.getValue();
 
-        m_cb.call_args( value, m_args );
+        if( m_cacheValue != value )
+        {
+            m_cacheValue = value;
+
+            m_cb.call_args( value, m_args );
+        }
 
         return false;
     }

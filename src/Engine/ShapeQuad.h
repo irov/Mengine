@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Shape.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/RenderVertex2D.h"
 
 namespace Mengine
@@ -8,7 +9,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ShapeQuad
         : public Shape
+        , public BaseRender
     {
+        DECLARE_RENDERABLE();
+
     public:
         ShapeQuad();
         ~ShapeQuad() override;

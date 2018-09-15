@@ -9,6 +9,8 @@ namespace Mengine
     class MovieNodeExtra
         : public Node
     {
+        DECLARE_VISITABLE( Node );
+
     public:
         void movieForwardUpdate( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer );
 

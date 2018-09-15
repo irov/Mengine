@@ -1,25 +1,19 @@
 #include "ParticleEmitter2.h" 
 
-#include "Kernel/Logger.h"
-
 #include "Interface/ApplicationInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
-
-//#include "Kernel/Scene.h"
-//#include "Kernel/Layer.h"
-#include "Kernel/UnknownResourceImageDataInterface.h"
-
-#include "Kernel/PolygonHelper.h"
-
 #include "Interface/ParticleSystemInterface.h"
-
 #include "Interface/ResourceInterface.h"
+
+#include "Kernel/Logger.h"
+#include "Kernel/NodeRenderHelper.h"
+#include "Kernel/UnknownResourceImageDataInterface.h"
+#include "Kernel/PolygonHelper.h"
+#include "Kernel/RenderUtils.h"
 
 #include "math/box2.h"
 #include "math/angle.h"
-
-#include "Kernel/RenderUtils.h"
 
 namespace Mengine
 {
@@ -790,7 +784,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ParticleEmitter2::onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction )
     {
-        RenderCameraInterfacePtr camera = this->getRenderCameraInheritance();
+        RenderCameraInterfacePtr camera = Helper::getRenderCameraInheritance( this );
 
         if( camera == nullptr )
         {

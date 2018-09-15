@@ -140,7 +140,7 @@ namespace Mengine
             total_memory += textureSize;
         }
 
-        uint32_t animationMemoryLimit = CONFIG_VALUE( "Limit", "AnimationMemoryLimit", 4194304U ); //4kb
+        uint32_t animationMemoryLimit = CONFIG_VALUE( "Limit", "AnimationMemoryLimit", 4194304U ); //4mb
 
         if( total_memory > animationMemoryLimit && animationMemoryLimit != 0U )
         {

@@ -18,6 +18,7 @@
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
 #include "Kernel/Arrow.h"
+#include "Kernel/NodeRenderHelper.h"
 
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ScheduleManagerInterface.h"
@@ -1238,8 +1239,8 @@ namespace Mengine
             const Resolution & contentResolution = APPLICATION_SERVICE()
                 ->getContentResolution();
 
-            const RenderCameraInterfacePtr & camera = _hs->getRenderCameraInheritance();
-            const RenderViewportInterfacePtr & viewport = _hs->getRenderViewportInheritance();
+            const RenderCameraInterfacePtr & camera = Helper::getRenderCameraInheritance( _hs );
+            const RenderViewportInterfacePtr & viewport = Helper::getRenderViewportInheritance( _hs );
 
             mt::box2f b1;
             _hs->getScreenPolygon( camera, viewport, contentResolution, &b1, nullptr );
@@ -3507,7 +3508,7 @@ namespace Mengine
         //SCRIPT_CLASS_WRAPPING( RenderMesh );
         SCRIPT_CLASS_WRAPPING( Window );
 
-        SCRIPT_CLASS_WRAPPING( Parallax );
+        //SCRIPT_CLASS_WRAPPING( Parallax );
         SCRIPT_CLASS_WRAPPING( RenderViewport );
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonal );
         SCRIPT_CLASS_WRAPPING( RenderCameraProjection );
@@ -3737,11 +3738,21 @@ namespace Mengine
             .def( "getUpdation", &Updatable::getUpdation )
             ;
 
+        pybind::interface_<RenderInterface, pybind::bases<Mixin> >( kernel, "RenderInterface" )
+            .def( "setRenderViewport", &RenderInterface::setRenderViewport )
+            .def( "getRenderViewport", &RenderInterface::getRenderViewport )
+            .def( "setRenderCamera", &RenderInterface::setRenderCamera )
+            .def( "getRenderCamera", &RenderInterface::getRenderCamera )
+            .def( "setRenderScissor", &RenderInterface::setRenderScissor )
+            .def( "getRenderScissor", &RenderInterface::getRenderScissor )
+            .def( "setRenderTarget", &RenderInterface::setRenderTarget )
+            .def( "getRenderTarget", &RenderInterface::getRenderTarget )
+            .def( "setExternalRender", &RenderInterface::setExternalRender )
+            .def( "isExternalRender", &RenderInterface::isExternalRender )
+            ;
+
         pybind::interface_<Renderable, pybind::bases<Mixin> >( kernel, "Renderable" )
-            .def( "hide", &Renderable::setHide )
-            .def( "isHide", &Renderable::getHide )
-            .def( "localHide", &Renderable::setLocalHide )
-            .def( "isLocalHide", &Renderable::getLocalHide )
+            .def( "getRender", &Renderable::getRender )
             ;
 
         pybind::interface_<Colorable, pybind::bases<Mixin> >( kernel, "Colorable" )
@@ -3850,13 +3861,15 @@ namespace Mengine
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )
-            .def( "render", &Node::render )
             .def( "isActivate", &Node::isActivate )
+            .def( "hide", &Node::setHide )
+            .def( "isHide", &Node::isHide )
+            .def( "localHide", &Node::setLocalHide )
+            .def( "isLocalHide", &Node::isLocalHide )
             .def( "freeze", &Node::freeze )
             .def( "isFreeze", &Node::isFreeze )
             .def_deprecated( "setSpeedFactor", &Node::setSpeedFactor, "don't work, use getAnimation" )
             .def_deprecated( "getSpeedFactor", &Node::getSpeedFactor, "don't work, use getAnimation" )
-            .def( "isRenderable", &Node::isRenderable )
             .def( "addChildren", &Node::addChild )
             .def( "addChildrenFront", &Node::addChildFront )
             .def( "addChildrenAfter", &Node::addChildAfter )
@@ -3882,22 +3895,6 @@ namespace Mengine
             .def_proxy_static( "getLengthTo", nodeScriptMethod, &NodeScriptMethod::s_Node_getLengthTo )
 
             .def( "getWorldColor", &Node::getWorldColor )
-
-            .def( "setRenderViewport", &Node::setRenderViewport )
-            .def( "getRenderViewport", &Node::getRenderViewport )
-            .def( "getRenderViewportInheritance", &Node::getRenderViewportInheritance )
-
-            .def( "setRenderCamera", &Node::setRenderCamera )
-            .def( "getRenderCamera", &Node::getRenderCamera )
-            .def( "getRenderCameraInheritance", &Node::getRenderCameraInheritance )
-
-            .def( "setRenderScissor", &Node::setRenderScissor )
-            .def( "getRenderScissor", &Node::getRenderScissor )
-            .def( "getRenderScissorInheritance", &Node::getRenderScissorInheritance )
-
-            .def( "setRenderTarget", &Node::setRenderTarget )
-            .def( "getRenderTarget", &Node::getRenderTarget )
-            .def( "getRenderTargetInheritance", &Node::getRenderTargetInheritance )
 
             .def_proxy_static( "getDebugId", nodeScriptMethod, &NodeScriptMethod::s_Node_getDebugId )
 
@@ -4154,10 +4151,10 @@ namespace Mengine
                 .def( "removeImageMask", &Layer2D::removeImageMask )
                 ;
 
-            pybind::interface_<Parallax, pybind::bases<Node> >( kernel, "Parallax", false )
-                .def( "setParallaxFactor", &Parallax::setParallaxFactor )
-                .def( "getParallaxFactor", &Parallax::getParallaxFactor )
-                ;
+            //pybind::interface_<Parallax, pybind::bases<Node> >( kernel, "Parallax", false )
+            //    .def( "setParallaxFactor", &Parallax::setParallaxFactor )
+            //    .def( "getParallaxFactor", &Parallax::getParallaxFactor )
+            //    ;
 
             pybind::interface_<MousePickerTrapInterface, pybind::bases<Mixin> >( kernel, "MousePickerTrap", false )
                 .def( "pick", &MousePickerTrapInterface::pick )

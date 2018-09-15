@@ -18,7 +18,7 @@ namespace Mengine
 
     protected:
         uint32_t getAffectorableUpdatableMode() const override;
-        uint32_t getAffectorableUpdatableLeaf() const override;
+        uint32_t getAffectorableUpdatableLeafDeep() const override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<GlobalAffectorable, Affectorable> GlobalAffectorablePtr;

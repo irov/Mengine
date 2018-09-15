@@ -7,6 +7,8 @@ namespace Mengine
     class MovieSceneEffect
         : public Node
     {
+        DECLARE_VISITABLE( Node );
+
     public:
         MovieSceneEffect();
         ~MovieSceneEffect() override;

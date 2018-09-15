@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/TimelineInterface.h"
-#include "Interface/UpdateInterface.h"
+#include "Interface/UpdateServiceInterface.h"
 
 #include "Kernel/Logger.h"
 

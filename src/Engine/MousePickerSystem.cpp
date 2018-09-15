@@ -39,22 +39,35 @@ namespace Mengine
         public:
             void visit( const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const NodePtr & _node )
             {
-                RenderViewportInterfacePtr nodeViewport = _node->getRenderViewport();
+                RenderInterfacePtr render = _node->getRender();
 
-                if( nodeViewport == nullptr )
+                if( render != nullptr )
                 {
-                    nodeViewport = _viewport;
+                    RenderViewportInterfacePtr nodeViewport = render->getRenderViewport();
+
+                    if( nodeViewport == nullptr )
+                    {
+                        nodeViewport = _viewport;
+                    }
+
+                    RenderCameraInterfacePtr nodeCamera = render->getRenderCamera();
+
+                    if( nodeCamera == nullptr )
+                    {
+                        nodeCamera = _camera;
+                    }
+
+                    m_currentViewport = nodeViewport;
+                    m_currentCamera = nodeCamera;
+                }
+                else
+                {
+                    m_currentViewport = _viewport;
+                    m_currentCamera = _camera;
                 }
 
-                RenderCameraInterfacePtr nodeCamera = _node->getRenderCamera();
-
-                if( nodeCamera == nullptr )
-                {
-                    nodeCamera = _camera;
-                }
-
-                m_currentViewport = nodeViewport;
-                m_currentCamera = nodeCamera;
+                RenderViewportInterfacePtr visitViewport = m_currentViewport;
+                RenderCameraInterfacePtr visitCamera = m_currentCamera;
 
                 this->accept( _node );
 
@@ -64,7 +77,7 @@ namespace Mengine
 
                 if( single_child != nullptr )
                 {
-                    this->visit( nodeViewport, nodeCamera, single_child );
+                    this->visit( visitViewport, visitCamera, single_child );
                 }
                 else if( child.countSlugs() == 0 )
                 {
@@ -76,7 +89,7 @@ namespace Mengine
                     {
                         NodePtr children = (*it);
 
-                        this->visit( nodeViewport, nodeCamera, children );
+                        this->visit( visitViewport, visitCamera, children );
                     }
                 }
                 else
@@ -87,7 +100,7 @@ namespace Mengine
 
                         it.next_shuffle();
 
-                        this->visit( nodeViewport, nodeCamera, children );
+                        this->visit( visitViewport, visitCamera, children );
                     }
                 }
             }

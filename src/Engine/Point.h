@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/Materialable.h"
 
 #include "Kernel/RenderVertex2D.h"
@@ -9,10 +10,15 @@ namespace Mengine
 {
     class Point
         : public Node
+        , public BaseRender
         , public Materialable
     {
+        DECLARE_VISITABLE( Node );
+        DECLARE_RENDERABLE();
+
     public:
         Point();
+        ~Point() override;
 
     public:
         void setLinkedPoint( Point * _linked );
@@ -32,8 +38,8 @@ namespace Mengine
     protected:
         void _render( const RenderContext * _state ) override;
 
-    protected:
-        void _debugRender( const RenderContext * _state ) override;
+    //protected:
+    //    void _debugRender( const RenderContext * _state ) override;
 
     protected:
         Point * m_linked;

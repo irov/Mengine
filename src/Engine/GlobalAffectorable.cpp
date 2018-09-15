@@ -16,7 +16,7 @@ namespace Mengine
         return 3U;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t GlobalAffectorable::getAffectorableUpdatableLeaf() const
+    uint32_t GlobalAffectorable::getAffectorableUpdatableLeafDeep() const
     {
         return 0U;
     }

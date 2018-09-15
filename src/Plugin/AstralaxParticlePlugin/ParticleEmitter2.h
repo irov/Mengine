@@ -4,6 +4,7 @@
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/BaseUpdation.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/ResourceHolder.h"
 
@@ -37,6 +38,7 @@ namespace Mengine
         : public Node
         , public BaseEventation
         , public BaseUpdation
+        , public BaseRender
         , public BaseAnimation
         , public ParticlePositionProviderInterface
         , public ParticleCameraProviderInterface
@@ -45,6 +47,7 @@ namespace Mengine
         DECLARE_UNKNOWABLE();
         DECLARE_ANIMATABLE();
         DECLARE_UPDATABLE();
+        DECLARE_RENDERABLE();
         DECLARE_EVENTABLE( ParticleEmitter2EventReceiver );
 
     public:

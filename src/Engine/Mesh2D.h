@@ -3,6 +3,7 @@
 #include "Interface/MovieKeyFrameInterface.h"
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/Materialable.h"
 
 #include "Kernel/ResourceImage.h"
@@ -20,8 +21,12 @@ namespace Mengine
 {
     class Mesh2D
         : public Node
+        , public BaseRender
         , public Materialable
     {
+        DECLARE_VISITABLE( Node );
+        DECLARE_RENDERABLE();
+
     public:
         Mesh2D();
         ~Mesh2D() override;

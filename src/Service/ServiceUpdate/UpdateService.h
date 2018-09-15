@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/UpdateInterface.h"
+#include "Interface/UpdateServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
@@ -22,7 +22,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        uint32_t createUpdatater( uint32_t _mode, uint32_t _leaf, const UpdationInterfacePtr & _updation ) override;
+        uint32_t createUpdatater( uint32_t _mode, uint32_t _deep, const UpdationInterfacePtr & _updation ) override;
+        void replaceUpdatater( uint32_t _id, uint32_t _deep ) override;
         void removeUpdatater( uint32_t _id ) override;
 
     public:
@@ -32,6 +33,8 @@ namespace Mengine
         struct UpdatableProxy
         {
             UpdationInterfacePtr updation;
+            uint32_t mode;
+            uint32_t deep;
             uint32_t state;
         };
 
@@ -54,7 +57,8 @@ namespace Mengine
         LeafUpdatables m_afterLeaf;
 
     protected:
-        uint32_t placeProxy_( const UpdationInterfacePtr & _updatable );
-        void updateLeaf_( LeafUpdatable & _leaf, const UpdateContext * _context );
+        uint32_t placeProxy_( uint32_t _mode, uint32_t _deep, const UpdationInterfacePtr & _updatable );
+        void updateLeaf_( uint32_t _deep, LeafUpdatable & _leaf, const UpdateContext * _context );
+        LeafUpdatable * getLeafUpdatable( uint32_t _mode, uint32_t _deep );
     };
 }

@@ -58,58 +58,8 @@ namespace Mengine
         Node();
         ~Node() override;
 
-    public:
-        void render( const RenderContext * _state ) override;
-        inline bool isRenderable() const;
-
-    public:
-        virtual void _renderTarget( const RenderContext * _state );
-
-    public:
-        void setRenderViewport( const RenderViewportInterfacePtr & _viewport );
-        const RenderViewportInterfacePtr & getRenderViewport() const;
-
-    public:
-        const RenderViewportInterfacePtr & getRenderViewportInheritance() const;
-
-    public:
-        void setRenderCamera( const RenderCameraInterfacePtr & _camera );
-        const RenderCameraInterfacePtr & getRenderCamera() const;
-
-    public:
-        const RenderCameraInterfacePtr & getRenderCameraInheritance() const;
-
-    public:
-        void setRenderScissor( const RenderScissorInterfacePtr & _scissor );
-        const RenderScissorInterfacePtr & getRenderScissor() const;
-
-    public:
-        const RenderScissorInterfacePtr & getRenderScissorInheritance() const;
-
-    public:
-        void setRenderTarget( const RenderTargetInterfacePtr & _target );
-        const RenderTargetInterfacePtr & getRenderTarget() const;
-
-    public:
-        const RenderTargetInterfacePtr & getRenderTargetInheritance() const;
-
-    protected:
-        void _setHide( bool _hide ) override;
-        void _setExternalRender( bool _externalRender ) override;
-
-    protected:
-        void _debugRender( const RenderContext * _state ) override;
-
-    protected:
-        RenderViewportInterfacePtr m_renderViewport;
-        RenderCameraInterfacePtr m_renderCamera;
-        RenderScissorInterfacePtr m_renderScissor;
-
-    protected:
-        RenderTargetInterfacePtr m_renderTarget;
-
-    protected:
-        void renderChild_( const RenderContext * _state );
+    //public:
+    //    inline bool isRenderable() const;
 
     public:
         void calcScreenPosition( const RenderCameraInterfacePtr & _camera, mt::vec2f & _screen );
@@ -138,6 +88,7 @@ namespace Mengine
 
         inline IntrusiveSlugListNodeChild & getChildren();
         inline const IntrusiveSlugListNodeChild & getChildren() const;
+        uint32_t getChildrenRecursiveCount() const;
 
         NodePtr findChild( const ConstString & _name, bool _recursion ) const;
         NodePtr getSiblingPrev();
@@ -146,7 +97,7 @@ namespace Mengine
         bool emptyChildren() const;
 
     protected:
-        uint32_t getLeaf() const;
+        uint32_t getLeafDeep() const;
 
     protected:
         void removeChild_( const NodePtr & _node );
@@ -171,6 +122,10 @@ namespace Mengine
 
         void insertChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node );
         void eraseChild_( const NodePtr & _node );
+
+    public:
+        typedef Lambda<void( const NodePtr & )> LambdaNode;
+        void foreachChildren( const LambdaNode & _lambda ) const;
 
     public:
         void visitChildren( Visitor * _visitor );
@@ -214,6 +169,22 @@ namespace Mengine
         inline bool isEnable() const;
 
     public:
+        void setHide( bool _hide );
+        inline bool isHide() const;
+
+    public:
+        void setLocalHide( bool _localHide );
+        inline bool isLocalHide() const;
+
+    protected:
+        virtual void _setHide( bool _hide );
+        virtual void _setLocalHide( bool _localHide );
+
+    protected:
+        bool m_hide;
+        bool m_localHide;
+
+    public:
         void freeze( bool _value );
         inline bool isFreeze() const;
 
@@ -224,21 +195,12 @@ namespace Mengine
         void setSpeedFactor( float _speedFactor );
         float getSpeedFactor() const;
 
-    //public:
-    //    void update( const UpdateContext * _context ) override;
-
-    //protected:
-    //    void _update( const UpdateContext * _context ) override;
-
     protected:
         uint32_t getAffectorableUpdatableMode() const override;
-        uint32_t getAffectorableUpdatableLeaf() const override;
+        uint32_t getAffectorableUpdatableLeafDeep() const override;
 
     protected:
         uint32_t m_updatableProxyId;
-
-    //protected:
-    //    void updateChildren_( const UpdateContext * _context );
 
     public:
         virtual MousePickerTrapInterfacePtr getPickerTrap();
@@ -251,12 +213,12 @@ namespace Mengine
 
         bool m_freeze;
 
-    protected:
-        mutable bool m_invalidateRendering;
-        mutable bool m_rendering;
+    //protected:
+    //    mutable bool m_invalidateRendering;
+    //    mutable bool m_rendering;
 
-    protected:
-        void updateRendering_() const;
+    //protected:
+    //    void updateRendering_() const;
 
     protected:
         void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
@@ -279,6 +241,16 @@ namespace Mengine
         return m_deactivating;
     }
     //////////////////////////////////////////////////////////////////////////
+    inline bool Node::isHide() const
+    {
+        return m_hide;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline bool Node::isLocalHide() const
+    {
+        return m_localHide;
+    }
+    //////////////////////////////////////////////////////////////////////////
     inline bool Node::isFreeze() const
     {
         return m_freeze;
@@ -298,16 +270,16 @@ namespace Mengine
     {
         return m_parent != nullptr;
     }
-    //////////////////////////////////////////////////////////////////////////
-    inline bool Node::isRenderable() const
-    {
-        if( m_invalidateRendering == true )
-        {
-            this->updateRendering_();
-        }
+    ////////////////////////////////////////////////////////////////////////////
+    //inline bool Node::isRenderable() const
+    //{
+    //    if( m_invalidateRendering == true )
+    //    {
+    //        this->updateRendering_();
+    //    }
 
-        return m_rendering;
-    }
+    //    return m_rendering;
+    //}
     //////////////////////////////////////////////////////////////////////////
     inline IntrusiveSlugListNodeChild & Node::getChildren()
     {

@@ -282,66 +282,66 @@ namespace Mengine
 
         mt::set_box_from_two_point( _boundingBox, minimal_wm, maximal_wm );
     }
-    //////////////////////////////////////////////////////////////////////////
-    void HotSpotImage::_debugRender( const RenderContext * _state )
-    {
-        if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
-        {
-            return;
-        }
+    ////////////////////////////////////////////////////////////////////////////
+    //void HotSpotImage::_debugRender( const RenderContext * _state )
+    //{
+    //    if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
+    //    {
+    //        return;
+    //    }
 
-        if( m_debugColor == 0x00000000 )
-        {
-            return;
-        }
+    //    if( m_debugColor == 0x00000000 )
+    //    {
+    //        return;
+    //    }
 
-        const mt::box2f & box = this->getBoundingBox();
+    //    const mt::box2f & box = this->getBoundingBox();
 
-        RenderVertex2D * vertices = this->getDebugRenderVertex2D( 4 * 2 );
+    //    RenderVertex2D * vertices = this->getDebugRenderVertex2D( 4 * 2 );
 
-        if( vertices == nullptr )
-        {
-            return;
-        }
+    //    if( vertices == nullptr )
+    //    {
+    //        return;
+    //    }
 
-        vertices[0].position.x = box.minimum.x;
-        vertices[0].position.y = box.minimum.y;
+    //    vertices[0].position.x = box.minimum.x;
+    //    vertices[0].position.y = box.minimum.y;
 
-        vertices[1].position.x = box.maximum.x;
-        vertices[1].position.y = box.minimum.y;
+    //    vertices[1].position.x = box.maximum.x;
+    //    vertices[1].position.y = box.minimum.y;
 
-        vertices[2].position.x = box.maximum.x;
-        vertices[2].position.y = box.minimum.y;
+    //    vertices[2].position.x = box.maximum.x;
+    //    vertices[2].position.y = box.minimum.y;
 
-        vertices[3].position.x = box.maximum.x;
-        vertices[3].position.y = box.maximum.y;
+    //    vertices[3].position.x = box.maximum.x;
+    //    vertices[3].position.y = box.maximum.y;
 
-        vertices[4].position.x = box.maximum.x;
-        vertices[4].position.y = box.maximum.y;
+    //    vertices[4].position.x = box.maximum.x;
+    //    vertices[4].position.y = box.maximum.y;
 
-        vertices[5].position.x = box.minimum.x;
-        vertices[5].position.y = box.maximum.y;
+    //    vertices[5].position.x = box.minimum.x;
+    //    vertices[5].position.y = box.maximum.y;
 
-        vertices[6].position.x = box.minimum.x;
-        vertices[6].position.y = box.maximum.y;
+    //    vertices[6].position.x = box.minimum.x;
+    //    vertices[6].position.y = box.maximum.y;
 
-        vertices[7].position.x = box.minimum.x;
-        vertices[7].position.y = box.minimum.y;
+    //    vertices[7].position.x = box.minimum.x;
+    //    vertices[7].position.y = box.minimum.y;
 
 
-        for( uint32_t i = 0; i != 8; ++i )
-        {
-            vertices[i].position.z = 0.f;
+    //    for( uint32_t i = 0; i != 8; ++i )
+    //    {
+    //        vertices[i].position.z = 0.f;
 
-            vertices[i].color = m_debugColor;
-            vertices[i].uv[0].x = 0.f;
-            vertices[i].uv[0].y = 0.f;
-            vertices[i].uv[1].x = 0.f;
-            vertices[i].uv[1].y = 0.f;
-        }
+    //        vertices[i].color = m_debugColor;
+    //        vertices[i].uv[0].x = 0.f;
+    //        vertices[i].uv[0].y = 0.f;
+    //        vertices[i].uv[1].x = 0.f;
+    //        vertices[i].uv[1].y = 0.f;
+    //    }
 
-        const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
+    //    const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
-        this->addRenderLine( _state, debugMaterial, vertices, 8, nullptr, true );
-    }
+    //    this->addRenderLine( _state, debugMaterial, vertices, 8, nullptr, true );
+    //}
 }

@@ -7,7 +7,7 @@ namespace Mengine
     class Gyroscope
         : public Node
     {
-        DECLARE_VISITABLE( Node )
+        DECLARE_VISITABLE( Node );
 
     public:
         Gyroscope();

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/Materialable.h"
 
 #include "Kernel/ResourceImage.h"
@@ -19,8 +20,12 @@ namespace Mengine
 {
     class Grid2D
         : public Node
+        , public BaseRender
         , public Materialable
     {
+        DECLARE_VISITABLE( Node );
+        DECLARE_RENDERABLE();
+
     public:
         Grid2D();
         ~Grid2D() override;

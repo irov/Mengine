@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/Entity.h"
-
+#include "Kernel/BaseRender.h"
 #include "Kernel/Resolution.h"
 
 #include "math/vec4.h"
@@ -19,12 +19,16 @@ namespace Mengine
 
     class Arrow
         : public Entity
+        , public BaseRender
     {
-    public:
-        Arrow();
+        DECLARE_RENDERABLE();
 
     public:
-        void setHide( bool _value ) override;
+        Arrow();
+        ~Arrow() override;
+
+    //public:
+    //    void setHide( bool _value ) override;
 
     public:
         EArrowType getArrowType() const;
@@ -61,7 +65,10 @@ namespace Mengine
         void _deactivate() override;
 
     protected:
-        void _debugRender( const RenderContext * _state ) override;
+        void _render( const RenderContext * _state ) override;
+
+    //protected:
+    //    void _debugRender( const RenderContext * _state ) override;
 
     protected:
         EArrowType m_arrowType;

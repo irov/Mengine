@@ -5,7 +5,8 @@
 
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
-#include "Interface/UpdateInterface.h"
+#include "Interface/UpdateServiceInterface.h"
+#include "Interface/UpdationInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -19,9 +20,11 @@ namespace Mengine
         , m_deactivating( false )
         , m_afterActive( false )
         , m_enable( true )
+        , m_hide( false )
+        , m_localHide( false )
         , m_freeze( false )
-        , m_rendering( false )
-        , m_invalidateRendering( true )
+        //, m_rendering( false )
+        //, m_invalidateRendering( true )
         , m_parent( nullptr )
         , m_updatableProxyId( INVALID_UPDATABLE_ID )
     {
@@ -67,7 +70,7 @@ namespace Mengine
 
         m_active = true;
 
-        m_invalidateRendering = true;
+        //m_invalidateRendering = true;
 
         if( m_children.empty() == false )
         {
@@ -159,7 +162,7 @@ namespace Mengine
 
         this->_afterDeactivate();
 
-        m_invalidateRendering = true;
+        //m_invalidateRendering = true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::enable()
@@ -200,19 +203,19 @@ namespace Mengine
         stdex::intrusive_this_release( this );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Node::getLeaf() const
+    uint32_t Node::getLeafDeep() const
     {
-        uint32_t leaf = 0;
+        uint32_t deep = 0;
 
         Node * parent = m_parent;
         while( parent )
         {
-            ++leaf;
+            ++deep;
 
             parent = parent->getParent();
         }
 
-        return leaf;
+        return deep;
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::setParent_( Node * _parent )
@@ -221,6 +224,14 @@ namespace Mengine
         m_parent = _parent;
 
         this->setRelationTransformation( _parent );
+
+        if( _parent != nullptr && m_updatableProxyId != INVALID_UPDATABLE_ID )
+        {
+            uint32_t deep = this->getLeafDeep();
+
+            UPDATE_SERVICE()
+                ->replaceUpdatater( m_updatableProxyId, deep );
+        }
 
         this->_changeParent( oldparent, _parent );
     }
@@ -423,6 +434,20 @@ namespace Mengine
         m_children.erase( it_node );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::foreachChildren( const LambdaNode & _lambda ) const
+    {
+        for( IntrusiveSlugListNodeChild::unslug_const_iterator
+            it = m_children.ubegin(),
+            it_end = m_children.uend();
+            it != it_end;
+            ++it )
+        {
+            NodePtr node = (*it);
+
+            _lambda( node );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Node::visitChildren( Visitor * _visitor )
     {
         this->visit( _visitor );
@@ -491,6 +516,18 @@ namespace Mengine
         _node->setParent_( nullptr );
 
         this->eraseChild_( _node );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Node::getChildrenRecursiveCount() const
+    {
+        uint32_t size = m_children.size();
+
+        this->foreachChildren( [&size]( const NodePtr & _child )
+        {
+            size += _child->getChildrenRecursiveCount();
+        } );
+
+        return size;
     }
     //////////////////////////////////////////////////////////////////////////
     namespace
@@ -705,6 +742,42 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::setHide( bool _hide )
+    {
+        if( m_hide == _hide )
+        {
+            return;
+        }
+
+        m_hide = _hide;
+
+        this->_setHide( _hide );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::_setHide( bool _hide )
+    {
+        (void)_hide;
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::setLocalHide( bool _localHide )
+    {
+        if( m_localHide == _localHide )
+        {
+            return;
+        }
+
+        m_localHide = _localHide;
+
+        this->_setLocalHide( _localHide );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::_setLocalHide( bool _localHide )
+    {
+        (void)_localHide;
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Node::freeze( bool _value )
     {
         if( this->isFreeze() == _value )
@@ -738,6 +811,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::setSpeedFactor( float _speedFactor )
     {        
+        (void)_speedFactor;
         //TODO: REMOVE
     }
     //////////////////////////////////////////////////////////////////////////
@@ -811,18 +885,16 @@ namespace Mengine
 
         if( updation != nullptr )
         {
-            uint32_t leaf = this->getLeaf();
+            uint32_t deep = this->getLeafDeep();
 
             m_updatableProxyId = UPDATE_SERVICE()
-                ->createUpdatater( 0U, leaf, updation );
+                ->createUpdatater( 0U, deep, updation );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_deactivate()
     {
-        UpdationInterfacePtr updation = this->getUpdation();
-        
-        if( updation != nullptr )
+        if( m_updatableProxyId != INVALID_UPDATABLE_ID )
         {
             UPDATE_SERVICE()
                 ->removeUpdatater( m_updatableProxyId );
@@ -852,7 +924,7 @@ namespace Mengine
     {
         bool result = Compilable::compile();
 
-        m_invalidateRendering = true;
+        //m_invalidateRendering = true;
 
         return result;
     }
@@ -887,12 +959,12 @@ namespace Mengine
 
         Compilable::release();
 
-        this->updateRendering_();
+        //this->updateRendering_();
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_recompile()
     {
-        m_invalidateRendering = true;
+        //m_invalidateRendering = true;
 
         if( m_enable == false )
         {
@@ -909,7 +981,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_uncompile()
     {
-        m_invalidateRendering = true;
+        //m_invalidateRendering = true;
 
         if( m_enable == false )
         {
@@ -923,257 +995,95 @@ namespace Mengine
 
         this->deactivate();
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::render( const RenderContext * _state )
-    {
-        if( this->isRenderable() == false )
-        {
-            return;
-        }
+    ////////////////////////////////////////////////////////////////////////////
+    //void Node::render( const RenderContext * _state )
+    //{
+    //    if( this->isRenderable() == false )
+    //    {
+    //        return;
+    //    }
 
-        RenderViewportInterfacePtr renderViewport = _state->viewport;
+    //    RenderViewportInterfacePtr renderViewport = _state->viewport;
 
-        if( m_renderViewport != nullptr )
-        {
-            renderViewport = m_renderViewport;
-        }
+    //    if( m_renderViewport != nullptr )
+    //    {
+    //        renderViewport = m_renderViewport;
+    //    }
 
-        RenderCameraInterfacePtr renderCamera = _state->camera;
+    //    RenderCameraInterfacePtr renderCamera = _state->camera;
 
-        if( m_renderCamera != nullptr )
-        {
-            renderCamera = m_renderCamera;
-        }
+    //    if( m_renderCamera != nullptr )
+    //    {
+    //        renderCamera = m_renderCamera;
+    //    }
 
-        RenderScissorInterfacePtr renderScissor = _state->scissor;
+    //    RenderScissorInterfacePtr renderScissor = _state->scissor;
 
-        if( m_renderScissor != nullptr )
-        {
-            renderScissor = m_renderScissor;
-        }
+    //    if( m_renderScissor != nullptr )
+    //    {
+    //        renderScissor = m_renderScissor;
+    //    }
 
-        RenderTargetInterfacePtr renderTarget = _state->target;
+    //    RenderTargetInterfacePtr renderTarget = _state->target;
 
-        if( m_renderTarget != nullptr )
-        {
-            renderTarget = m_renderTarget;
-        }
+    //    if( m_renderTarget != nullptr )
+    //    {
+    //        renderTarget = m_renderTarget;
+    //    }
 
-        //const Viewport& viewPort = _camera->getViewport();
+    //    //const Viewport& viewPort = _camera->getViewport();
 
-        //size_t cameraRevision = _camera->getCameraRevision();
+    //    //size_t cameraRevision = _camera->getCameraRevision();
 
-        //if( m_cameraRevision == cameraRevision && this->isInvalidateVisibility() == false )
-        //{
-        //	if( getVisibility() == false )
-        //	{
-        //		return;
-        //	}
-        //}
-        //else
-        //{
-        //	m_cameraRevision = cameraRevision;
+    //    //if( m_cameraRevision == cameraRevision && this->isInvalidateVisibility() == false )
+    //    //{
+    //    //	if( getVisibility() == false )
+    //    //	{
+    //    //		return;
+    //    //	}
+    //    //}
+    //    //else
+    //    //{
+    //    //	m_cameraRevision = cameraRevision;
 
-        RenderContext state;
-        state.viewport = renderViewport;
-        state.camera = renderCamera;
-        state.scissor = renderScissor;
-        state.target = renderTarget;
-        state.debugMask = _state->debugMask;
+    //    RenderContext state;
+    //    state.viewport = renderViewport;
+    //    state.camera = renderCamera;
+    //    state.scissor = renderScissor;
+    //    state.target = renderTarget;
+    //    state.debugMask = _state->debugMask;
 
-        //if( this->checkVisibility( viewPort ) == true )
-        {
-            if( this->getLocalHide() == false && this->isPersonalTransparent() == false )
-            {
-                this->_render( &state );
-            }
+    //    //if( this->checkVisibility( viewPort ) == true )
+    //    {
+    //        if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
+    //        {
+    //            this->_render( &state );
+    //        }
 
-            this->renderChild_( &state );
-        }
-        //}
+    //        this->renderChild_( &state );
+    //    }
+    //    //}
 
-        if( m_renderTarget != nullptr )
-        {
-            this->_renderTarget( _state );
-        }
+    //    if( m_renderTarget != nullptr )
+    //    {
+    //        this->_renderTarget( _state );
+    //    }
 
-        if( _state->debugMask != 0 )
-        {
-            if( this->getLocalHide() == false && this->isPersonalTransparent() == false )
-            {
-                this->_debugRender( &state );
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_renderTarget( const RenderContext * _state )
-    {
-        (void)_state;
+    //    if( _state->debugMask != 0 )
+    //    {
+    //        if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
+    //        {
+    //            this->_debugRender( &state );
+    //        }
+    //    }
+    //}
+    ////////////////////////////////////////////////////////////////////////////
+    //void Node::_setHide( bool _value )
+    //{
+    //    (void)_value;
 
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setRenderViewport( const RenderViewportInterfacePtr & _viewport )
-    {
-        m_renderViewport = _viewport;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderViewportInterfacePtr & Node::getRenderViewport() const
-    {
-        return m_renderViewport;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderViewportInterfacePtr & Node::getRenderViewportInheritance() const
-    {
-        const RenderViewportInterfacePtr & rv = this->getRenderViewport();
-
-        if( rv != nullptr )
-        {
-            return rv;
-        }
-
-        Node * parent = this->getParent();
-
-        if( parent == nullptr )
-        {
-            return RenderViewportInterfacePtr::none();
-        }
-
-        const RenderViewportInterfacePtr & rv_parent = parent->getRenderViewportInheritance();
-
-        return rv_parent;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setRenderCamera( const RenderCameraInterfacePtr & _camera )
-    {
-        m_renderCamera = _camera;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderCameraInterfacePtr & Node::getRenderCamera() const
-    {
-        return m_renderCamera;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderCameraInterfacePtr & Node::getRenderCameraInheritance() const
-    {
-        const RenderCameraInterfacePtr & rc = this->getRenderCamera();
-
-        if( rc != nullptr )
-        {
-            return rc;
-        }
-
-        Node * parent = this->getParent();
-
-        if( parent == nullptr )
-        {
-            return RenderCameraInterfacePtr::none();
-        }
-
-        const RenderCameraInterfacePtr & rc_parent = parent->getRenderCameraInheritance();
-
-        return rc_parent;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setRenderScissor( const RenderScissorInterfacePtr & _scissor )
-    {
-        m_renderScissor = _scissor;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderScissorInterfacePtr & Node::getRenderScissor() const
-    {
-        return m_renderScissor;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderScissorInterfacePtr & Node::getRenderScissorInheritance() const
-    {
-        const RenderScissorInterfacePtr & rc = this->getRenderScissor();
-
-        if( rc != nullptr )
-        {
-            return rc;
-        }
-
-        Node * parent = this->getParent();
-
-        if( parent == nullptr )
-        {
-            return RenderScissorInterfacePtr::none();
-        }
-
-        const RenderScissorInterfacePtr & rs_parent = parent->getRenderScissorInheritance();
-
-        return rs_parent;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setRenderTarget( const RenderTargetInterfacePtr & _target )
-    {
-        m_renderTarget = _target;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderTargetInterfacePtr & Node::getRenderTarget() const
-    {
-        return m_renderTarget;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderTargetInterfacePtr & Node::getRenderTargetInheritance() const
-    {
-        const RenderTargetInterfacePtr & rt = this->getRenderTarget();
-
-        if( rt != nullptr )
-        {
-            return rt;
-        }
-
-        Node * parent = this->getParent();
-
-        if( parent == nullptr )
-        {
-            return RenderTargetInterfacePtr::none();
-        }
-
-        const RenderTargetInterfacePtr & rt_parent = parent->getRenderTargetInheritance();
-
-        return rt_parent;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_setHide( bool _value )
-    {
-        (void)_value;
-
-        m_invalidateRendering = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_setExternalRender( bool _value )
-    {
-        (void)_value;
-
-        m_invalidateRendering = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::renderChild_( const RenderContext * _state )
-    {
-        if( m_children.empty() == true )
-        {
-            return;
-        }
-
-        for( IntrusiveSlugListNodeChild::unslug_iterator
-            it = m_children.ubegin(),
-            it_end = m_children.uend();
-            it != it_end;
-            ++it )
-        {
-            NodePtr node = (*it);
-
-            if( node->getExternalRender() == true )
-            {
-                continue;
-            }
-
-            node->render( _state );
-        }
-    }
+    //    m_invalidateRendering = true;
+    //}    
     //////////////////////////////////////////////////////////////////////////
     void Node::_invalidateWorldMatrix()
     {
@@ -1225,7 +1135,7 @@ namespace Mengine
             }
         }
 
-        m_invalidateRendering = true;
+        //m_invalidateRendering = true;
     }
     //////////////////////////////////////////////////////////////////////////
     const ColourValue & Node::getWorldColor() const
@@ -1277,107 +1187,107 @@ namespace Mengine
         return 1U;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t Node::getAffectorableUpdatableLeaf() const
+    uint32_t Node::getAffectorableUpdatableLeafDeep() const
     {
-        uint32_t leaf = this->getLeaf();
+        uint32_t deep = this->getLeafDeep();
 
-        return leaf;
+        return deep;
     }
     //////////////////////////////////////////////////////////////////////////
     MousePickerTrapInterfacePtr Node::getPickerTrap()
     {
         return nullptr;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::updateRendering_() const
-    {
-        m_invalidateRendering = false;
+    ////////////////////////////////////////////////////////////////////////////
+    //void Node::updateRendering_() const
+    //{
+    //    m_invalidateRendering = false;
 
-        if( this->isCompile() == false )
-        {
-            m_rendering = false;
-        }
-        else if( this->isActivate() == false )
-        {
-            m_rendering = false;
-        }
-        else if( this->getHide() == true )
-        {
-            m_rendering = false;
-        }
-        else if( this->isLocalTransparent() == true )
-        {
-            m_rendering = false;
-        }
-        else
-        {
-            m_rendering = true;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_debugRender( const RenderContext * _state )
-    {
-        if( (_state->debugMask & MENGINE_DEBUG_NODES) == 0 )
-        {
-            return;
-        }
+    //    if( this->isCompile() == false )
+    //    {
+    //        m_rendering = false;
+    //    }
+    //    else if( this->isActivate() == false )
+    //    {
+    //        m_rendering = false;
+    //    }
+    //    else if( this->isHide() == true )
+    //    {
+    //        m_rendering = false;
+    //    }
+    //    else if( this->isLocalTransparent() == true )
+    //    {
+    //        m_rendering = false;
+    //    }
+    //    else
+    //    {
+    //        m_rendering = true;
+    //    }
+    //}
+    ////////////////////////////////////////////////////////////////////////////
+    //void Node::_debugRender( const RenderContext * _state )
+    //{
+    //    if( (_state->debugMask & MENGINE_DEBUG_NODES) == 0 )
+    //    {
+    //        return;
+    //    }
 
-        RenderVertex2D * vertices = this->getDebugRenderVertex2D( 4 * 2 );
+    //    RenderVertex2D * vertices = this->getDebugRenderVertex2D( 4 * 2 );
 
-        if( vertices == nullptr )
-        {
-            LOGGER_ERROR( "Node::_debugRender %s debug vertex overflow"
-                , this->getName().c_str()
-            );
+    //    if( vertices == nullptr )
+    //    {
+    //        LOGGER_ERROR( "Node::_debugRender %s debug vertex overflow"
+    //            , this->getName().c_str()
+    //        );
 
-            return;
-        }
+    //        return;
+    //    }
 
-        const mt::box2f & bbox = this->getBoundingBox();
+    //    const mt::box2f & bbox = this->getBoundingBox();
 
-        vertices[0].position.x = bbox.minimum.x;
-        vertices[0].position.y = bbox.minimum.y;
+    //    vertices[0].position.x = bbox.minimum.x;
+    //    vertices[0].position.y = bbox.minimum.y;
 
-        vertices[1].position.x = bbox.maximum.x;
-        vertices[1].position.y = bbox.minimum.y;
+    //    vertices[1].position.x = bbox.maximum.x;
+    //    vertices[1].position.y = bbox.minimum.y;
 
-        vertices[2].position.x = bbox.maximum.x;
-        vertices[2].position.y = bbox.minimum.y;
+    //    vertices[2].position.x = bbox.maximum.x;
+    //    vertices[2].position.y = bbox.minimum.y;
 
-        vertices[3].position.x = bbox.maximum.x;
-        vertices[3].position.y = bbox.maximum.y;
+    //    vertices[3].position.x = bbox.maximum.x;
+    //    vertices[3].position.y = bbox.maximum.y;
 
-        vertices[4].position.x = bbox.maximum.x;
-        vertices[4].position.y = bbox.maximum.y;
+    //    vertices[4].position.x = bbox.maximum.x;
+    //    vertices[4].position.y = bbox.maximum.y;
 
-        vertices[5].position.x = bbox.minimum.x;
-        vertices[5].position.y = bbox.maximum.y;
+    //    vertices[5].position.x = bbox.minimum.x;
+    //    vertices[5].position.y = bbox.maximum.y;
 
-        vertices[6].position.x = bbox.minimum.x;
-        vertices[6].position.y = bbox.maximum.y;
+    //    vertices[6].position.x = bbox.minimum.x;
+    //    vertices[6].position.y = bbox.maximum.y;
 
-        vertices[7].position.x = bbox.minimum.x;
-        vertices[7].position.y = bbox.minimum.y;
+    //    vertices[7].position.x = bbox.minimum.x;
+    //    vertices[7].position.y = bbox.minimum.y;
 
 
-        for( uint32_t i = 0; i != 8; ++i )
-        {
-            vertices[i].position.z = 0.f;
+    //    for( uint32_t i = 0; i != 8; ++i )
+    //    {
+    //        vertices[i].position.z = 0.f;
 
-            vertices[i].color = 0xFF00FF00;
-            vertices[i].uv[0].x = 0.f;
-            vertices[i].uv[0].y = 0.f;
-            vertices[i].uv[1].x = 0.f;
-            vertices[i].uv[1].y = 0.f;
-        }
+    //        vertices[i].color = 0xFF00FF00;
+    //        vertices[i].uv[0].x = 0.f;
+    //        vertices[i].uv[0].y = 0.f;
+    //        vertices[i].uv[1].x = 0.f;
+    //        vertices[i].uv[1].y = 0.f;
+    //    }
 
-        const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
+    //    const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
-        this->addRenderLine( _state, debugMaterial
-            , vertices
-            , 8
-            , nullptr
-            , true
-        );
-    }
+    //    this->addRenderLine( _state, debugMaterial
+    //        , vertices
+    //        , 8
+    //        , nullptr
+    //        , true
+    //    );
+    //}
 }

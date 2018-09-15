@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/Materialable.h"
 
 #include "Kernel/RenderVertex2D.h"
@@ -9,10 +10,15 @@ namespace Mengine
 {
     class Line
         : public Node
+        , public BaseRender
         , public Materialable
     {
+        DECLARE_VISITABLE( Node );
+        DECLARE_RENDERABLE();
+
     public:
         Line();
+        ~Line() override;
 
     public:
         void setFrom( const mt::vec3f & _value );

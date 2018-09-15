@@ -6,6 +6,7 @@
 #include "Kernel/Materialable.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/BaseUpdation.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/ResourceHolder.h"
 
@@ -28,10 +29,13 @@ namespace Mengine
         : public Node
         , public Materialable
         , public BaseUpdation
+        , public BaseRender
         , public BaseAnimation
     {
     public:
+        DECLARE_VISITABLE( Node );
         DECLARE_ANIMATABLE();
+        DECLARE_RENDERABLE();
 
     public:
         Model3D();

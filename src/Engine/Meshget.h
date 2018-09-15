@@ -3,6 +3,7 @@
 #include "Interface/MovieKeyFrameInterface.h"
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 #include "Kernel/Materialable.h"
 #include "Kernel/Surface.h"
 #include "Kernel/ColourValue.h"
@@ -39,9 +40,12 @@ namespace Mengine
     class Meshget
         : public Node
         , public BaseUpdation
+        , public BaseRender
         , public BaseEventation
     {
+        DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
+        DECLARE_RENDERABLE();
         DECLARE_EVENTABLE( MeshgetEventReceiver );
 
     public:

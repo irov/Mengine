@@ -87,77 +87,77 @@ namespace Mengine
             , m_movieName.c_str()
         );
     }
-    //////////////////////////////////////////////////////////////////////////
-    void MovieSlot::_debugRender( const RenderContext * _state )
-    {
-        if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
-        {
-            return;
-        }
+    ////////////////////////////////////////////////////////////////////////////
+    //void MovieSlot::_debugRender( const RenderContext * _state )
+    //{
+    //    if( (_state->debugMask & MENGINE_DEBUG_HOTSPOTS) == 0 )
+    //    {
+    //        return;
+    //    }
 
-        uint32_t numpoints = 4;
-        uint32_t vertexCount = numpoints * 2;
+    //    uint32_t numpoints = 4;
+    //    uint32_t vertexCount = numpoints * 2;
 
-        RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
+    //    RenderVertex2D * vertices = this->getDebugRenderVertex2D( vertexCount );
 
-        if( vertices == nullptr )
-        {
-            return;
-        }
+    //    if( vertices == nullptr )
+    //    {
+    //        return;
+    //    }
 
-        const mt::mat4f & worldMat = this->getWorldMatrix();
+    //    const mt::mat4f & worldMat = this->getWorldMatrix();
 
-        mt::vec2f ring[4];
+    //    mt::vec2f ring[4];
 
-        float radius = 10.f;
-        float half_radius = radius * 0.5f;
-        ring[0] = mt::vec2f( 0, -half_radius );
-        ring[1] = mt::vec2f( half_radius, 0 );
-        ring[2] = mt::vec2f( 0, half_radius );
-        ring[3] = mt::vec2f( -half_radius, 0 );
+    //    float radius = 10.f;
+    //    float half_radius = radius * 0.5f;
+    //    ring[0] = mt::vec2f( 0, -half_radius );
+    //    ring[1] = mt::vec2f( half_radius, 0 );
+    //    ring[2] = mt::vec2f( 0, half_radius );
+    //    ring[3] = mt::vec2f( -half_radius, 0 );
 
-        for( uint32_t i = 0; i != numpoints; ++i )
-        {
-            uint32_t j = (i + 1) % numpoints;
+    //    for( uint32_t i = 0; i != numpoints; ++i )
+    //    {
+    //        uint32_t j = (i + 1) % numpoints;
 
-            mt::vec3f trP0;
-            mt::mul_v3_v2_m4( trP0, ring[i], worldMat );
+    //        mt::vec3f trP0;
+    //        mt::mul_v3_v2_m4( trP0, ring[i], worldMat );
 
-            RenderVertex2D & v0 = vertices[i * 2 + 0];
+    //        RenderVertex2D & v0 = vertices[i * 2 + 0];
 
-            v0.position = trP0;
+    //        v0.position = trP0;
 
-            v0.color = 0x000000FF;
+    //        v0.color = 0x000000FF;
 
-            for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
-            {
-                v0.uv[uv_index].x = 0.f;
-                v0.uv[uv_index].y = 0.f;
-            }
+    //        for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+    //        {
+    //            v0.uv[uv_index].x = 0.f;
+    //            v0.uv[uv_index].y = 0.f;
+    //        }
 
-            mt::vec3f trP1;
-            mt::mul_v3_v2_m4( trP1, ring[j], worldMat );
+    //        mt::vec3f trP1;
+    //        mt::mul_v3_v2_m4( trP1, ring[j], worldMat );
 
-            RenderVertex2D & v1 = vertices[i * 2 + 1];
+    //        RenderVertex2D & v1 = vertices[i * 2 + 1];
 
-            v1.position = trP1;
+    //        v1.position = trP1;
 
-            v1.color = 0x000000FF;
+    //        v1.color = 0x000000FF;
 
-            for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
-            {
-                v1.uv[uv_index].x = 0.f;
-                v1.uv[uv_index].y = 0.f;
-            }
-        }
+    //        for( uint32_t uv_index = 0; uv_index != MENGINE_RENDER_VERTEX_UV_COUNT; ++uv_index )
+    //        {
+    //            v1.uv[uv_index].x = 0.f;
+    //            v1.uv[uv_index].y = 0.f;
+    //        }
+    //    }
 
-        const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
+    //    const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
 
-        this->addRenderLine( _state, debugMaterial
-            , vertices
-            , vertexCount
-            , nullptr
-            , true
-        );
-    }
+    //    this->addRenderLine( _state, debugMaterial
+    //        , vertices
+    //        , vertexCount
+    //        , nullptr
+    //        , true
+    //    );
+    //}
 }

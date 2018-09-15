@@ -32,7 +32,7 @@ namespace Mengine
         m_invalidate = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderNodeService::renderNode( const RenderContext * _state, const NodePtr & _node )
+    void RenderNodeService::renderNode( const RenderContext * _context, const NodePtr & _node )
     {
         uint32_t size = _node->getChildrenRecursiveCount();
 
@@ -42,14 +42,14 @@ namespace Mengine
 
             m_nodies.clear();
 
-            this->cacheNode_( _state, _node );
+            this->cacheNode_( _context, _node );
         }
 
         for( const RenderNodeDesc & desc : m_nodies )
         {
             const RenderInterfacePtr & render = desc.render;
 
-            render->render( _state );
+            render->render( &desc.context );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -134,6 +134,20 @@ namespace Mengine
             {
                 this->cacheNode_( childrenContext, _child );
             } );
+
+            if( desc.context.target != nullptr )
+            {
+                const RenderInterfacePtr & targetRender = selfRender->renderTarget( &desc.context );
+
+                if( targetRender != nullptr )
+                {
+                    RenderNodeDesc targetDesc;
+                    targetDesc.render = targetRender;
+                    targetDesc.context = *_context;
+
+                    m_nodies.emplace_back( targetDesc );
+                }
+            }
         }
         else
         {

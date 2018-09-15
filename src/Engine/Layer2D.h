@@ -52,10 +52,11 @@ namespace Mengine
         void _render( const RenderContext * _context ) override;
 
     protected:
-        void _renderTarget( const RenderContext * _context ) override;
+        const RenderInterfacePtr & _renderTarget( const RenderContext * _context ) override;
 
-    protected:
+    public:
         inline const RenderVertex2D * getVerticesImageMaskWM() const;
+        inline const RenderMaterialInterfacePtr & getMaterialImageMask() const;
 
     protected:
         void updateVerticesImageMaskWM() const;
@@ -73,6 +74,8 @@ namespace Mengine
         RenderCameraOrthogonalPtr m_renderCamera;
         RenderViewportPtr m_renderViewport;
 
+        RenderInterfacePtr m_renderTarget;
+
         ResourceHolder<ResourceImage> m_resourceImageMask;
 
         RenderMaterialInterfacePtr m_materialImageMask;
@@ -84,6 +87,8 @@ namespace Mengine
         bool m_hasViewport;
         bool m_hasImageMask;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Layer2D> Layer2DPtr;
     //////////////////////////////////////////////////////////////////////////
     inline const RenderVertex2D * Layer2D::getVerticesImageMaskWM() const
     {
@@ -102,5 +107,10 @@ namespace Mengine
         }
 
         return m_verticesImageMaskWM;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline const RenderMaterialInterfacePtr & Layer2D::getMaterialImageMask() const
+    {
+        return m_materialImageMask;
     }
 }

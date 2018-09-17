@@ -30,7 +30,7 @@ namespace Mengine
         , m_lineOffset( 0.f )
         , m_charOffset( 0.f )
         , m_fontParams( EFP_NONE )
-        , m_maxCharCount( 0xFFFFFFFF )
+        , m_maxCharCount( ~0U )
         , m_charCount( 0 )
         , m_layoutCount( 0 )
         , m_textSize( 0.f, 0.f )
@@ -570,6 +570,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLinesMaxCount_( VectorTextLines & _textLines ) const
     {
+        if( m_maxCharCount == ~0U )
+        {
+            return;
+        }
+
         uint32_t charIterator = 0;
         for( VectorTextLines::iterator
             it_lines = _textLines.begin(),
@@ -768,6 +773,11 @@ namespace Mengine
             }
         }
 
+        if( m_key == "$Spells_InfoPlate_Text" )
+        {
+            printf( "fs" );
+        }
+
         VectorU32String line_delims;
         line_delims.emplace_back( U"\n" );
         line_delims.emplace_back( U"\r\n" );
@@ -809,6 +819,8 @@ namespace Mengine
                     Helper::u32split2( words, text, false, space_delims );
 
                     TextChunk new_textChunk;
+                    new_textChunk.fontId = textChunk.fontId;
+
                     for( const U32String & word : words )
                     {
                         float word_length = 0.f;
@@ -840,7 +852,7 @@ namespace Mengine
 
                         if( length + word_length > maxLength )
                         {
-                            length = word_length;
+                            length = word_length;                            
 
                             new_textChunks.emplace_back( new_textChunk );
                             new_textChunk.value.clear();
@@ -868,9 +880,7 @@ namespace Mengine
                         {
                             new_textChunk.value.insert( new_textChunk.value.end(), space_delim.begin(), space_delim.end() );
                             new_textChunk.value.insert( new_textChunk.value.end(), word.begin(), word.end() );
-                        }
-
-                        new_textChunk.fontId = textChunk.fontId;
+                        }                        
                     }
 
                     new_textChunks.emplace_back( new_textChunk );

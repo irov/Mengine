@@ -135,6 +135,12 @@ Layer
 )
 
 ADD_FILTER(
+Interender
+    Interender.cpp
+    Interender.h
+)
+
+ADD_FILTER(
 PrototypeGenerator
     BasePrototypeGenerator.cpp
     BasePrototypeGenerator.h    

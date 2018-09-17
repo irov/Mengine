@@ -103,9 +103,6 @@
 #include "Kernel/ResourceImage.h"
 #include "Kernel/PolygonHelper.h"
 
-#include "Engine/Layer2D.h"
-
-
 #include "Engine/Movie.h"
 #include "Engine/Meshget.h"
 

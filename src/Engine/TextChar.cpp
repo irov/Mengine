@@ -11,27 +11,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const VectorTextChunks::size_type TextChunkNPos = (VectorTextChunks::size_type)(-1);
         //////////////////////////////////////////////////////////////////////////
-        static VectorCacheFonts::iterator find_font( VectorCacheFonts & _cacheFonts, const TextFontInterfacePtr & _font )
-        {
-            for( VectorCacheFonts::iterator
-                it = _cacheFonts.begin(),
-                it_end = _cacheFonts.end();
-                it != it_end;
-                ++it )
-            {
-                const CacheFont & cache = *it;
-
-                if( cache.font != _font )
-                {
-                    continue;
-                }
-
-                return it;
-            }
-
-            return _cacheFonts.end();
-        }
-        //////////////////////////////////////////////////////////////////////////
         static bool test2( VectorTextChunks & _out, const U32String & _in, VectorCacheFonts & _cacheFonts, uint32_t _font, const U32String & _pre, const U32String & _post, const U32String & _end, U32String::size_type _offset, U32String::size_type _size )
         {
             if( _offset == _size )
@@ -93,11 +72,16 @@ namespace Mengine
                 TextFontInterfacePtr font = TEXT_SERVICE()
                     ->getFont( c_FontName );
 
-                VectorCacheFonts::iterator it_found = find_font( _cacheFonts, font );
+                VectorCacheFonts::iterator it_found = std::find_if( _cacheFonts.begin(), _cacheFonts.end(), [&font]( const CacheFont & cache ) { return cache.font == font; } );
 
                 if( it_found != _cacheFonts.end() )
                 {
                     ptrdiff_t d = std::distance( _cacheFonts.begin(), it_found );
+
+                    if( d < 0 )
+                    {
+                        c.fontId = 0;
+                    }
 
                     c.fontId = (uint32_t)d;
                 }

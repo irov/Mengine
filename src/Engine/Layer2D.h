@@ -18,11 +18,12 @@ namespace Mengine
         : public Layer
         , public BaseRender
     {
-        DECLARE_RENDERABLE();
         DECLARE_VISITABLE( Layer );
+        DECLARE_RENDERABLE();        
 
     public:
         Layer2D();
+        ~Layer2D() override;
 
     public:
         void setSize( const mt::vec2f & _size );

@@ -10,6 +10,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct TextChunk
     {
+        TextChunk()
+            :fontId( 555 ) {};
+
         U32String value;
         uint32_t fontId;
     };

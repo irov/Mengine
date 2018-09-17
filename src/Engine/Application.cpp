@@ -67,7 +67,8 @@
 #include "MovieEvent.h"
 #include "Model3D.h"
 #include "Layer2D.h"
-#include "Kernel/Isometric.h"
+
+#include "Kernel/Interender.h"
 #include "Kernel/Isometric.h"
 #include "Kernel/Parallax.h"
 #include "Kernel/MatrixProxy.h"
@@ -327,6 +328,7 @@ namespace Mengine
 
         NODE_FACTORY( Model3D );
         //NODE_FACTORY( Model );
+        NODE_FACTORY( Interender );
         NODE_FACTORY( Layer2D );
         NODE_FACTORY( Landscape2D );
         //NODE_FACTORY( Layer2DParallax );

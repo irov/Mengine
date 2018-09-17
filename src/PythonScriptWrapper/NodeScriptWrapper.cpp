@@ -90,6 +90,7 @@
 #include "Engine/SurfaceSolidColor.h"
 
 
+#include "Kernel/Interender.h"
 #include "Kernel/Isometric.h"
 #include "Kernel/Parallax.h"
 #include "Kernel/RenderViewport.h"
@@ -101,7 +102,6 @@
 #include "Kernel/ResourceImage.h"
 
 #include "Engine/Layer2D.h"
-
 
 #include "Engine/Movie.h"
 #include "Engine/Meshget.h"
@@ -3488,6 +3488,7 @@ namespace Mengine
         //SCRIPT_CLASS_WRAPPING( Light2D );
         //SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
         SCRIPT_CLASS_WRAPPING( Gyroscope );
+        SCRIPT_CLASS_WRAPPING( Interender );
         SCRIPT_CLASS_WRAPPING( Isometric );
         SCRIPT_CLASS_WRAPPING( Arrow );
         SCRIPT_CLASS_WRAPPING( TextField );
@@ -4265,6 +4266,9 @@ namespace Mengine
                 ;
 
             pybind::interface_<Gyroscope, pybind::bases<Node> >( kernel, "Gyroscope", false )
+                ;
+
+            pybind::interface_<Interender, pybind::bases<Node> >( kernel, "Interender", false )
                 ;
 
             pybind::interface_<Isometric, pybind::bases<Node> >( kernel, "Isometric", false )

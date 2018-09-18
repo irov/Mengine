@@ -39,9 +39,6 @@ namespace Mengine
     protected:
         void _render( const RenderContext * _state ) override;
 
-    //protected:
-    //    void _debugRender( const RenderContext * _state ) override;
-
     protected:
         Movie2Ptr m_movie;
     };

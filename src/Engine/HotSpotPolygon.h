@@ -4,8 +4,9 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class Arrow;
-
+    //////////////////////////////////////////////////////////////////////////
     class HotSpotPolygon
         : public HotSpot
     {
@@ -32,9 +33,6 @@ namespace Mengine
 
     protected:
         void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
-
-    //protected:
-    //    void _debugRender( const RenderContext * _state ) override;
 
     protected:
         Polygon m_polygon;

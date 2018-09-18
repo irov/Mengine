@@ -96,14 +96,8 @@ namespace Mengine
         , const RenderIndexBufferInterfacePtr & _indexBuffer
         , uint32_t _indexCount ) const
     {
-        const RenderViewportInterfacePtr & viewport = _context->viewport;
-        const RenderCameraInterfacePtr & camera = _context->camera;
-        const RenderTransformationInterfacePtr & transformation = _context->transformation;
-        const RenderScissorInterfacePtr & scissor = _context->scissor;
-        const RenderTargetInterfacePtr & target = _context->target;
-
         RENDER_SERVICE()
-            ->addRenderMesh( viewport, camera, transformation, scissor, target, _material, _vertexBuffer, _indexBuffer, _indexCount );
+            ->addRenderMesh( _context, _material, _vertexBuffer, _indexBuffer, _indexCount );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::addRenderObject( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
@@ -112,42 +106,24 @@ namespace Mengine
         , const RenderIndex * _indices, uint32_t _indexCount
         , const mt::box2f * _bb, bool _debug ) const
     {
-        const RenderViewportInterfacePtr & viewport = _context->viewport;
-        const RenderCameraInterfacePtr & camera = _context->camera;
-        const RenderTransformationInterfacePtr & transformation = _context->transformation;
-        const RenderScissorInterfacePtr & scissor = _context->scissor;
-        const RenderTargetInterfacePtr & target = _context->target;
-
         RENDER_SERVICE()
-            ->addRenderObject( viewport, camera, transformation, scissor, target, _material, _variable, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug );
+            ->addRenderObject( _context, _material, _variable, _vertices, _vertexCount, _indices, _indexCount, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::addRenderQuad( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const mt::box2f * _bb, bool _debug ) const
     {
-        const RenderViewportInterfacePtr & viewport = _context->viewport;
-        const RenderCameraInterfacePtr & camera = _context->camera;
-        const RenderTransformationInterfacePtr & transformation = _context->transformation;
-        const RenderScissorInterfacePtr & scissor = _context->scissor;
-        const RenderTargetInterfacePtr & target = _context->target;
-
         RENDER_SERVICE()
-            ->addRenderQuad( viewport, camera, transformation, scissor, target, _material, _vertices, _vertexCount, _bb, _debug );
+            ->addRenderQuad( _context, _material, _vertices, _vertexCount, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::addRenderLine( const RenderContext * _state, const RenderMaterialInterfacePtr & _material
+    void BaseRender::addRenderLine( const RenderContext * _context, const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const mt::box2f * _bb, bool _debug ) const
     {
-        const RenderViewportInterfacePtr & viewport = _state->viewport;
-        const RenderCameraInterfacePtr & camera = _state->camera;
-        const RenderTransformationInterfacePtr & transformation = _state->transformation;
-        const RenderScissorInterfacePtr & scissor = _state->scissor;
-        const RenderTargetInterfacePtr & target = _state->target;
-
         RENDER_SERVICE()
-            ->addRenderLine( viewport, camera, transformation, scissor, target, _material, _vertices, _vertexCount, _bb, _debug );
+            ->addRenderLine( _context, _material, _vertices, _vertexCount, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertex2D * BaseRender::getDebugRenderVertex2D( uint32_t _count ) const

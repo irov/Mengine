@@ -31,7 +31,6 @@ namespace Mengine
             if( render != nullptr )
             {
                 RenderContext self_context;
-                self_context.debugMask = _context->debugMask;
 
                 const RenderViewportInterfacePtr & renderViewport = render->getRenderViewport();
 
@@ -103,6 +102,104 @@ namespace Mengine
                 _node->foreachChildren( [_context]( const NodePtr & _child )
                 {
                     Helper::nodeRenderChildren( _child, _context );
+                } );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void nodeRenderChildrenVisitor( const NodePtr & _node, const RenderVisitorPtr & _visitor, const RenderContext * _context )
+        {
+            if( _node->isCompile() == false )
+            {
+                return;
+            }
+            else if( _node->isActivate() == false )
+            {
+                return;
+            }
+            else if( _node->isHide() == true )
+            {
+                return;
+            }
+            else if( _node->isLocalTransparent() == true )
+            {
+                return;
+            }
+
+            RenderInterfacePtr render = _node->getRender();
+
+            if( render != nullptr )
+            {
+                RenderContext self_context;
+
+                const RenderViewportInterfacePtr & renderViewport = render->getRenderViewport();
+
+                if( renderViewport != nullptr )
+                {
+                    self_context.viewport = renderViewport;
+                }
+                else
+                {
+                    self_context.viewport = _context->viewport;
+                }
+
+                const RenderCameraInterfacePtr & renderCamera = render->getRenderCamera();
+
+                if( renderCamera != nullptr )
+                {
+                    self_context.camera = renderCamera;
+                }
+                else
+                {
+                    self_context.camera = _context->camera;
+                }
+
+                const RenderScissorInterfacePtr & renderScissor = render->getRenderScissor();
+
+                if( renderScissor != nullptr )
+                {
+                    self_context.scissor = renderScissor;
+                }
+                else
+                {
+                    self_context.scissor = _context->scissor;
+                }
+
+                const RenderTargetInterfacePtr & renderTarget = render->getRenderTarget();
+
+                if( renderTarget != nullptr )
+                {
+                    self_context.target = renderTarget;
+                }
+                else
+                {
+                    self_context.target = _context->target;
+                }
+
+                if( _node->isLocalHide() == false && _node->isPersonalTransparent() == false )
+                {
+                    _visitor->setRenderContext( &self_context );
+
+                    _node->visit( _visitor );
+                }
+
+                const RenderContext * children_context = &self_context;
+                _node->foreachChildren( [children_context, _visitor]( const NodePtr & _child )
+                {
+                    Helper::nodeRenderChildrenVisitor( _child, _visitor, children_context );
+                } );
+            }
+            else
+            {
+                if( _node->isLocalHide() == false && _node->isPersonalTransparent() == false )
+                {
+                    _visitor->setRenderContext( _context );
+
+                    _node->visit( _visitor );
+                }
+
+                _node->foreachChildren( [_context, _visitor]( const NodePtr & _child )
+                {
+                    Helper::nodeRenderChildrenVisitor( _child, _visitor, _context );
                 } );
             }
         }

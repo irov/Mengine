@@ -123,8 +123,6 @@ namespace Mengine
         bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
     protected:
-        uint32_t m_debugColor;
-
         bool m_outward;
         bool m_global;
 

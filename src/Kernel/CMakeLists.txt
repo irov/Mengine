@@ -312,6 +312,9 @@ Core
     Exception.h
     Visitor.h
     
+    RenderVisitor.h
+    RenderVisitor.cpp
+    
     Polygon.h
     Polygon.cpp
     PolygonHelper.h

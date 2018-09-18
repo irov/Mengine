@@ -128,7 +128,7 @@ namespace Mengine
         void foreachChildren( const LambdaNode & _lambda ) const;
 
     public:
-        void visitChildren( Visitor * _visitor );
+        void visitChildren( const VisitorPtr & _visitor );
 
     protected:
         void _destroy() override;

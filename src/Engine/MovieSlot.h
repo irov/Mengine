@@ -29,9 +29,6 @@ namespace Mengine
     protected:
         void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
-    //protected:
-    //    void _debugRender( const RenderContext * _state ) override;
-
     protected:
         ConstString m_movieName;
     };

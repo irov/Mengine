@@ -448,7 +448,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::visitChildren( Visitor * _visitor )
+    void Node::visitChildren( const VisitorPtr & _visitor )
     {
         this->visit( _visitor );
 
@@ -1223,71 +1223,5 @@ namespace Mengine
     //    {
     //        m_rendering = true;
     //    }
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //void Node::_debugRender( const RenderContext * _state )
-    //{
-    //    if( (_state->debugMask & MENGINE_DEBUG_NODES) == 0 )
-    //    {
-    //        return;
-    //    }
-
-    //    RenderVertex2D * vertices = this->getDebugRenderVertex2D( 4 * 2 );
-
-    //    if( vertices == nullptr )
-    //    {
-    //        LOGGER_ERROR( "Node::_debugRender %s debug vertex overflow"
-    //            , this->getName().c_str()
-    //        );
-
-    //        return;
-    //    }
-
-    //    const mt::box2f & bbox = this->getBoundingBox();
-
-    //    vertices[0].position.x = bbox.minimum.x;
-    //    vertices[0].position.y = bbox.minimum.y;
-
-    //    vertices[1].position.x = bbox.maximum.x;
-    //    vertices[1].position.y = bbox.minimum.y;
-
-    //    vertices[2].position.x = bbox.maximum.x;
-    //    vertices[2].position.y = bbox.minimum.y;
-
-    //    vertices[3].position.x = bbox.maximum.x;
-    //    vertices[3].position.y = bbox.maximum.y;
-
-    //    vertices[4].position.x = bbox.maximum.x;
-    //    vertices[4].position.y = bbox.maximum.y;
-
-    //    vertices[5].position.x = bbox.minimum.x;
-    //    vertices[5].position.y = bbox.maximum.y;
-
-    //    vertices[6].position.x = bbox.minimum.x;
-    //    vertices[6].position.y = bbox.maximum.y;
-
-    //    vertices[7].position.x = bbox.minimum.x;
-    //    vertices[7].position.y = bbox.minimum.y;
-
-
-    //    for( uint32_t i = 0; i != 8; ++i )
-    //    {
-    //        vertices[i].position.z = 0.f;
-
-    //        vertices[i].color = 0xFF00FF00;
-    //        vertices[i].uv[0].x = 0.f;
-    //        vertices[i].uv[0].y = 0.f;
-    //        vertices[i].uv[1].x = 0.f;
-    //        vertices[i].uv[1].y = 0.f;
-    //    }
-
-    //    const RenderMaterialInterfacePtr & debugMaterial = this->getDebugMaterial();
-
-    //    this->addRenderLine( _state, debugMaterial
-    //        , vertices
-    //        , 8
-    //        , nullptr
-    //        , true
-    //    );
     //}
 }

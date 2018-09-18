@@ -56,7 +56,7 @@ namespace Mengine
         void unfetch( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName ) override;
 
     public:
-        void visitPrefetches( Visitor * _visitor ) const override;
+        void visitPrefetches( const VisitorPtr & _visitor ) const override;
 
     protected:
         bool hasPrefetch( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, PrefetchReceiver ** _receiver ) const;

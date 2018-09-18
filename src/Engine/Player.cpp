@@ -510,6 +510,8 @@ namespace Mengine
         m_affectorable = new GlobalAffectorable;
         m_affectorableGlobal = new GlobalAffectorable;
 
+        m_debugRenderVisitor = new FactorableUnique<NodeDebugRenderVisitor>();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -876,11 +878,6 @@ namespace Mengine
         return m_renderScissor;
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Player::render()
     {
         //if( this->isChangedScene() == true )
@@ -896,15 +893,12 @@ namespace Mengine
         context.camera = m_renderCamera;
         context.scissor = m_renderScissor;
         context.target = m_renderTarget;
-        context.debugMask = debugMask;
 
-        //if( m_scene != nullptr )
-        //{
-        //    m_scene->render( &state );
-        //}
-
-        RENDERNODE_SERVICE()
-            ->renderNode( &context, m_scene );
+        if( m_scene != nullptr )
+        {
+            RENDERNODE_SERVICE()
+                ->renderNode( &context, m_scene );
+        }
 
         MODULE_SERVICE()
             ->render( &context );
@@ -915,6 +909,16 @@ namespace Mengine
         if( m_arrow != nullptr )
         {
             Helper::nodeRenderChildren( m_arrow, &context );
+        }
+
+        if( m_scene != nullptr )
+        {
+            Helper::nodeRenderChildrenVisitor( m_scene, m_debugRenderVisitor, &context );
+        }
+
+        if( m_arrow != nullptr )
+        {
+            Helper::nodeRenderChildrenVisitor( m_arrow, m_debugRenderVisitor, &context );
         }
 
         //if( m_arrow != nullptr )
@@ -978,6 +982,7 @@ namespace Mengine
             {
                 class CompileResourceVisitor
                     : public Visitor
+                    , public Factorable
                     , public ConcreteVisitor<Resource>
                 {
                 public:
@@ -1007,15 +1012,18 @@ namespace Mengine
                     uint32_t m_count;
                 };
 
-                CompileResourceVisitor crv;
+                typedef IntrusivePtr<CompileResourceVisitor> CompileResourceVisitorPtr;
+
+                CompileResourceVisitorPtr crv = new FactorableUnique<CompileResourceVisitor>();
 
                 RESOURCE_SERVICE()
-                    ->visitResources( &crv );
+                    ->visitResources( crv );
 
-                ss << "Resources: " << crv.getCount() << std::endl;
+                ss << "Resources: " << crv->getCount() << std::endl;
 
                 class CompleteThreadTaskVisitor
                     : public Visitor
+                    , public Factorable
                     , public ConcreteVisitor<ThreadTask>
                 {
                 public:
@@ -1045,12 +1053,14 @@ namespace Mengine
                     uint32_t m_count;
                 };
 
-                CompleteThreadTaskVisitor cttv;
+                typedef IntrusivePtr<CompleteThreadTaskVisitor> CompleteThreadTaskVisitorPtr;
+
+                CompleteThreadTaskVisitorPtr cttv = new FactorableUnique<CompleteThreadTaskVisitor>();
 
                 PREFETCHER_SERVICE()
-                    ->visitPrefetches( &cttv );
+                    ->visitPrefetches( cttv );
 
-                ss << "Prefetcher " << cttv.getCount() << std::endl;
+                ss << "Prefetcher " << cttv->getCount() << std::endl;
 
                 const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
                     ->getMousePickerSystem();

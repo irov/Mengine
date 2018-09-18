@@ -51,7 +51,7 @@ namespace Mengine
         virtual void unfetch( const FileGroupInterfacePtr& _pakName, const FilePath& _fileName ) = 0;
 
     public:
-        virtual void visitPrefetches( Visitor * _visitor ) const = 0;
+        virtual void visitPrefetches( const VisitorPtr & _visitor ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #   define PREFETCHER_SERVICE()\

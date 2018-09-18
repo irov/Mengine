@@ -1772,7 +1772,6 @@ namespace Mengine
             Resource * resource_reference = reinterpret_node_cast<Resource *>(mesh.resource_data);
 
             RenderContext state;
-            state.debugMask = _state->debugMask;
 
             if( mesh.camera_data != nullptr )
             {

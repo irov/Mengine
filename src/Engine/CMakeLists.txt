@@ -307,6 +307,12 @@ Manager\\\\Account
 )
 
 ADD_FILTER(
+Visitors
+    NodeDebugRenderVisitor.cpp
+    NodeDebugRenderVisitor.h
+)
+
+ADD_FILTER(
 Utils
 	VersionInfo.h
 )

@@ -358,7 +358,7 @@ namespace Mengine
         m_prefetchReceiver.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PrefetcherManager::visitPrefetches( Visitor * _visitor ) const
+    void PrefetcherManager::visitPrefetches( const VisitorPtr & _visitor ) const
     {
         for( MapPrefetchReceiver::const_iterator
             it = m_prefetchReceiver.begin(),

@@ -132,41 +132,25 @@ namespace Mengine
         void changeWindowMode( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, bool _fullscreen ) override;
 
     public:
-        void addRenderMesh( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
+        void addRenderMesh( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _indexCount ) override;
 
-        void addRenderObject( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
+        void addRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _variable
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indexCount
             , const mt::box2f * _bb, bool _debug ) override;
 
-        void addRenderQuad( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
+        void addRenderQuad( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const mt::box2f * _bb, bool _debug ) override;
 
-        void addRenderLine( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
+        void addRenderLine( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const mt::box2f * _bb, bool _debug ) override;
@@ -174,19 +158,11 @@ namespace Mengine
     protected:
         const RenderBatchPtr & requestRenderBatch_( const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _vertexCount );
 
-        bool testRenderPass_( const RenderBatchPtr & _batch
-            , const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
+        bool testRenderPass_( const RenderContext * _context
+            , const RenderBatchPtr & _batch
             , const RenderProgramVariableInterfacePtr & _variable ) const;
 
-        const RenderPassPtr & requestRenderPass_( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
+        const RenderPassPtr & requestRenderPass_( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _variable
             , uint32_t _vertexCount, uint32_t _indexCount );

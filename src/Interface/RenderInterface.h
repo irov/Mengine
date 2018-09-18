@@ -13,17 +13,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct RenderContext
     {
-        RenderContext()
-            :debugMask( 0 )
-        {}
-
         RenderViewportInterfacePtr viewport;
         RenderCameraInterfacePtr camera;
         RenderTransformationInterfacePtr transformation;
         RenderScissorInterfacePtr scissor;
         RenderTargetInterfacePtr target;
-
-        uint32_t debugMask;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class RenderInterface> RenderInterfacePtr;

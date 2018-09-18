@@ -9,8 +9,9 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Resolution.h"
-
 #include "Kernel/Factory.h"
+
+#include "NodeDebugRenderVisitor.h"
 
 #include "math/vec3.h"
 
@@ -156,7 +157,7 @@ namespace Mengine
         GlobalAffectorablePtr m_affectorable;
         GlobalAffectorablePtr m_affectorableGlobal;
 
-
+        NodeDebugRenderVisitorPtr m_debugRenderVisitor;
 
         bool m_arrowHided;
         bool m_focus;

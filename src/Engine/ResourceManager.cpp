@@ -775,7 +775,7 @@ namespace Mengine
         return type;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceManager::visitResources( Visitor * _visitor ) const
+    void ResourceManager::visitResources( const VisitorPtr & _visitor ) const
     {
         for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
         {
@@ -796,7 +796,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceManager::visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, Visitor * _visitor ) const
+    void ResourceManager::visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, const VisitorPtr & _visitor ) const
     {
         ResourceCacheKey cache_key = std::make_pair( _category->getName(), _group );
 

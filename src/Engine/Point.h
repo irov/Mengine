@@ -38,9 +38,6 @@ namespace Mengine
     protected:
         void _render( const RenderContext * _state ) override;
 
-    //protected:
-    //    void _debugRender( const RenderContext * _state ) override;
-
     protected:
         Point * m_linked;
         bool m_owner;

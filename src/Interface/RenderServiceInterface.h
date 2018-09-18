@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServantInterface.h"
 
+#include "Interface/RenderInterface.h"
 #include "Interface/RenderEnumInterface.h"
 #include "Interface/RenderImageInterface.h"
 #include "Interface/RenderTextureInterface.h"
@@ -58,41 +59,25 @@ namespace Mengine
         SERVICE_DECLARE( "RenderService" )
 
     public:
-        virtual void addRenderMesh( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
+        virtual void addRenderMesh( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertexBufferInterfacePtr & _vertexBuffer
             , const RenderIndexBufferInterfacePtr & _indexBuffer
             , uint32_t _indexCount ) = 0;
 
-        virtual void addRenderObject( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
+        virtual void addRenderObject( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _variable
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const RenderIndex * _indices, uint32_t _indicesNum
             , const mt::box2f * _bb, bool _debug ) = 0;
 
-        virtual void addRenderQuad( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
+        virtual void addRenderQuad( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const mt::box2f * _bb, bool _debug ) = 0;
 
-        virtual void addRenderLine( const RenderViewportInterfacePtr & _viewport
-            , const RenderCameraInterfacePtr & _camera
-            , const RenderTransformationInterfacePtr & _transformation
-            , const RenderScissorInterfacePtr & _scissor
-            , const RenderTargetInterfacePtr & _target
+        virtual void addRenderLine( const RenderContext * _context
             , const RenderMaterialInterfacePtr & _material
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
             , const mt::box2f * _bb, bool _debug ) = 0;

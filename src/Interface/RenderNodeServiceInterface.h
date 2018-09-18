@@ -3,6 +3,8 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/RenderInterface.h"
 
+#include "Kernel/RenderVisitor.h"
+
 namespace Mengine
 {    
     //////////////////////////////////////////////////////////////////////////

@@ -1715,6 +1715,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class PrefetchResourceVisitor
             : public Visitor
+            , public Factorable
             , public ConcreteVisitor<ResourceImageDefault>
             , public ConcreteVisitor<ResourceHIT>
             , public ConcreteVisitor<ResourceSound>
@@ -1786,6 +1787,8 @@ namespace Mengine
             bool m_process;
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<PrefetchResourceVisitor> PrefetchResourceVisitorPtr;
+        //////////////////////////////////////////////////////////////////////////
         bool s_prefetchResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb, const pybind::args & _args )
         {
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
@@ -1796,18 +1799,19 @@ namespace Mengine
                 return false;
             }
 
-            PrefetchResourceVisitor rv_gac( fileGroup, new PyPrefetcherObserver( _cb, _args ) );
+            PrefetchResourceVisitorPtr rv_gac = new FactorableUnique<PrefetchResourceVisitor>( fileGroup, new PyPrefetcherObserver( _cb, _args ) );
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, rv_gac );
 
-            bool process = rv_gac.isProcess();
+            bool process = rv_gac->isProcess();
 
             return process;
         }
         //////////////////////////////////////////////////////////////////////////
         class UnfetchResourceVisitor
             : public Visitor
+            , public Factorable
             , public ConcreteVisitor<ResourceImageDefault>
             , public ConcreteVisitor<ResourceHIT>
             , public ConcreteVisitor<ResourceSound>
@@ -1856,6 +1860,8 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<UnfetchResourceVisitor> UnfetchResourceVisitorPtr;
+        //////////////////////////////////////////////////////////////////////////
         void s_unfetchResources( const ConstString & _category, const ConstString & _groupName )
         {
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
@@ -1866,14 +1872,15 @@ namespace Mengine
                 return;
             }
 
-            UnfetchResourceVisitor rv_gac;
+            UnfetchResourceVisitorPtr rv_gac = new FactorableUnique<UnfetchResourceVisitor>();
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class CacheResourceVisitor
             : public Visitor
+            , public Factorable
             , public ConcreteVisitor<Resource>
         {
         public:
@@ -1908,6 +1915,8 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<CacheResourceVisitor> CacheResourceVisitorPtr;
+        //////////////////////////////////////////////////////////////////////////
         void s_cacheResources( const ConstString & _category, const ConstString & _groupName )
         {
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
@@ -1918,14 +1927,15 @@ namespace Mengine
                 return;
             }
 
-            CacheResourceVisitor rv_gac;
+            CacheResourceVisitorPtr rv_gac = new FactorableUnique<CacheResourceVisitor>();
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class UncacheResourceVisitor
             : public Visitor
+            , public Factorable
             , public ConcreteVisitor<Resource>
         {
         public:
@@ -1965,6 +1975,8 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<UncacheResourceVisitor> UncacheResourceVisitorPtr;
+        //////////////////////////////////////////////////////////////////////////
         void s_uncacheResources( const ConstString & _category, const ConstString & _groupName )
         {
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
@@ -1975,10 +1987,10 @@ namespace Mengine
                 return;
             }
 
-            UncacheResourceVisitor rv_gac;
+            UncacheResourceVisitorPtr rv_gac = new FactorableUnique<UncacheResourceVisitor>();
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_rotateToTrimetric( const mt::vec2f & _dir, const mt::vec2f & _vx, const mt::vec2f & _vy )
@@ -3740,6 +3752,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class ResourceVisitorGetAlreadyCompiled
             : public Visitor
+            , public Factorable
             , public ConcreteVisitor<Resource>
         {
         public:
@@ -3767,6 +3780,8 @@ namespace Mengine
             pybind::object m_cb;
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<ResourceVisitorGetAlreadyCompiled> ResourceVisitorGetAlreadyCompiledPtr;
+        //////////////////////////////////////////////////////////////////////////
         void s_visitCompiledResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb )
         {
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
@@ -3777,14 +3792,15 @@ namespace Mengine
                 return;
             }
 
-            ResourceVisitorGetAlreadyCompiled rv_gac( _cb );
+            ResourceVisitorGetAlreadyCompiledPtr rv_gac = new FactorableUnique<ResourceVisitorGetAlreadyCompiled>( _cb );
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class MyResourceVisitor
             : public Visitor
+            , public Factorable
             , public ConcreteVisitor<Resource>
         {
         public:
@@ -3807,6 +3823,8 @@ namespace Mengine
             pybind::object m_cb;
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<MyResourceVisitor> MyResourceVisitorPtr;
+        //////////////////////////////////////////////////////////////////////////
         void s_visitResources( const ConstString & _category, const ConstString & _groupName, const pybind::object & _cb )
         {
             const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
@@ -3817,14 +3835,15 @@ namespace Mengine
                 return;
             }
 
-            MyResourceVisitor rv_gac( _cb );
+            MyResourceVisitorPtr rv_gac = new FactorableUnique<MyResourceVisitor>( _cb );
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class IncrefResourceVisitor
             : public Visitor
+            , public Factorable
             , public ConcreteVisitor<Resource>
         {
         protected:
@@ -3833,6 +3852,8 @@ namespace Mengine
                 _resource->incrementReference();
             }
         };
+        //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<IncrefResourceVisitor> IncrefResourceVisitorPtr;
         //////////////////////////////////////////////////////////////////////////		
         void s_incrementResources( const ConstString & _category, const ConstString & _groupName )
         {
@@ -3844,14 +3865,15 @@ namespace Mengine
                 return;
             }
 
-            IncrefResourceVisitor rv_gac;
+            IncrefResourceVisitorPtr rv_gac = new FactorableUnique<IncrefResourceVisitor>();
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class DecrementResourceVisitor
             : public Visitor
+            , public Factorable
             , public ConcreteVisitor<Resource>
         {
         protected:
@@ -3860,6 +3882,8 @@ namespace Mengine
                 _resource->decrementReference();
             }
         };
+        //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<DecrementResourceVisitor> DecrementResourceVisitorPtr;
         //////////////////////////////////////////////////////////////////////////		
         void s_decrementResources( const ConstString & _category, const ConstString & _groupName )
         {
@@ -3871,15 +3895,16 @@ namespace Mengine
                 return;
             }
 
-            DecrementResourceVisitor rv_gac;
+            DecrementResourceVisitorPtr rv_gac = new FactorableUnique<DecrementResourceVisitor>();
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, rv_gac );
         }
         //////////////////////////////////////////////////////////////////////////
         class GetResourceVisitor
             : public Visitor
-            , public ConcreteVisitor<Resource>
+            , public Factorable
+            , public ConcreteVisitor<Resource>            
         {
         public:
             GetResourceVisitor( pybind::kernel_interface * _kernel )
@@ -3889,6 +3914,11 @@ namespace Mengine
                 m_scope = m_kernel->class_scope<Resource>();
             }
 
+            ~GetResourceVisitor() override
+            {
+            }
+
+        public:
             const pybind::list & getResult() const
             {
                 return m_l;
@@ -3907,6 +3937,8 @@ namespace Mengine
             pybind::class_type_scope_interface_ptr m_scope;
             pybind::list m_l;
         };
+        //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<GetResourceVisitor> GetResourceVisitorPtr;
         //////////////////////////////////////////////////////////////////////////		
         pybind::list s_getResources( pybind::kernel_interface * _kernel, const ConstString & _category, const ConstString & _groupName )
         {
@@ -3918,12 +3950,12 @@ namespace Mengine
                 return pybind::list( _kernel );
             }
 
-            GetResourceVisitor rv_gac( _kernel );
+            GetResourceVisitorPtr rv_gac = new FactorableUnique<GetResourceVisitor>( _kernel );
 
             RESOURCE_SERVICE()
-                ->visitGroupResources( fileGroup, _groupName, &rv_gac );
+                ->visitGroupResources( fileGroup, _groupName, rv_gac );
 
-            const pybind::list & l = rv_gac.getResult();
+            const pybind::list & l = rv_gac->getResult();
 
             return l;
         }

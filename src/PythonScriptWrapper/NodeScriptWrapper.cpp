@@ -3983,8 +3983,10 @@ namespace Mengine
             .def( "getSolidSize", &SurfaceSolidColor::getSolidSize )
             ;
 
+        pybind::interface_<Visitable, pybind::bases<Mixin> >( kernel, "Visitable" )
+            ;
 
-        pybind::interface_<ThreadTask, pybind::bases<Mixin> >( kernel, "Task" )
+        pybind::interface_<ThreadTask, pybind::bases<Visitable> >( kernel, "Task" )
             ;
 
         pybind::interface_<RenderViewportInterface, pybind::bases<Mixin> >( kernel, "RenderViewportInterface" )

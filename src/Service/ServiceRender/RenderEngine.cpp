@@ -1140,12 +1140,8 @@ namespace Mengine
         return batch;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool RenderEngine::testRenderPass_( const RenderBatchPtr & _batch
-        , const RenderViewportInterfacePtr & _viewport
-        , const RenderCameraInterfacePtr & _camera
-        , const RenderTransformationInterfacePtr & _transformation
-        , const RenderScissorInterfacePtr & _scissor
-        , const RenderTargetInterfacePtr & _target
+    bool RenderEngine::testRenderPass_( const RenderContext * _context
+        , const RenderBatchPtr & _batch
         , const RenderProgramVariableInterfacePtr & _variable ) const
     {
         if( m_renderPasses.empty() == true )
@@ -1155,12 +1151,12 @@ namespace Mengine
 
         const RenderPassPtr & pass = m_renderPasses.back();
 
-        if( pass->batch != _batch ||
-            pass->viewport != _viewport ||
-            pass->camera != _camera ||
-            pass->transformation != _transformation ||
-            pass->scissor != _scissor ||
-            pass->target != _target ||
+        if( pass->viewport != _context->viewport ||
+            pass->camera != _context->camera ||
+            pass->transformation != _context->transformation ||
+            pass->scissor != _context->scissor ||
+            pass->target != _context->target ||
+            pass->batch != _batch ||
             pass->variable != _variable )
         {
             return true;
@@ -1169,11 +1165,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderPassPtr & RenderEngine::requestRenderPass_( const RenderViewportInterfacePtr & _viewport
-        , const RenderCameraInterfacePtr & _camera
-        , const RenderTransformationInterfacePtr & _transformation
-        , const RenderScissorInterfacePtr & _scissor
-        , const RenderTargetInterfacePtr & _target
+    const RenderPassPtr & RenderEngine::requestRenderPass_( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderProgramVariableInterfacePtr & _variable
         , uint32_t _vertexCount, uint32_t _indexCount )
@@ -1189,17 +1181,18 @@ namespace Mengine
         batch->vertexCount += _vertexCount;
         batch->indexCount += _indexCount;
 
-        if( this->testRenderPass_( batch, _viewport, _camera, _transformation, _scissor, _target, _variable ) == true )
+        if( this->testRenderPass_( _context, batch, _variable ) == true )
         {
             RenderPassPtr pass = m_factoryRenderPass->createObject();
 
             pass->beginRenderObject = (uint32_t)m_renderObjects.size();
             pass->countRenderObject = 0U;
             pass->batch = batch;
-            pass->viewport = _viewport;
-            pass->camera = _camera;
-            pass->scissor = _scissor;
-            pass->target = _target;
+            pass->viewport = _context->viewport;
+            pass->camera = _context->camera;
+            pass->transformation = _context->transformation;
+            pass->scissor = _context->scissor;
+            pass->target = _context->target;
             pass->variable = _variable;
 
             for( uint32_t i = 0U; i != MENGINE_RENDER_PATH_BATCH_MATERIAL_MAX; ++i )
@@ -1215,32 +1208,20 @@ namespace Mengine
         return rp;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderMesh( const RenderViewportInterfacePtr & _viewport
-        , const RenderCameraInterfacePtr & _camera
-        , const RenderTransformationInterfacePtr & _transformation
-        , const RenderScissorInterfacePtr & _scissor
-        , const RenderTargetInterfacePtr & _target
+    void RenderEngine::addRenderMesh( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertexBufferInterfacePtr & _vertexBuffer
         , const RenderIndexBufferInterfacePtr & _indexBuffer
         , uint32_t _indexCount )
     {
-        (void)_viewport;
-        (void)_camera;
-        (void)_transformation;
-        (void)_scissor;
-        (void)_target;
+        (void)_context;
         (void)_material;
         (void)_vertexBuffer;
         (void)_indexBuffer;
         (void)_indexCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderObject( const RenderViewportInterfacePtr & _viewport
-        , const RenderCameraInterfacePtr & _camera
-        , const RenderTransformationInterfacePtr & _transformation
-        , const RenderScissorInterfacePtr & _scissor
-        , const RenderTargetInterfacePtr & _target
+    void RenderEngine::addRenderObject( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderProgramVariableInterfacePtr & _variable
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
@@ -1248,7 +1229,15 @@ namespace Mengine
         , const mt::box2f * _bb, bool _debug )
     {
 #ifndef NDEBUG
-        if( _viewport == nullptr )
+        if( _context == nullptr )
+        {
+            LOGGER_ERROR( "RenderEngine::renderObject2D context == NULL"
+            );
+
+            return;
+        }
+
+        if( _context->viewport == nullptr )
         {
             LOGGER_ERROR( "RenderEngine::renderObject2D viewport == NULL"
             );
@@ -1256,7 +1245,7 @@ namespace Mengine
             return;
         }
 
-        if( _camera == nullptr )
+        if( _context->camera == nullptr )
         {
             LOGGER_ERROR( "RenderEngine::renderObject2D camera == NULL"
             );
@@ -1316,7 +1305,7 @@ namespace Mengine
             }
         }
 
-        const RenderPassPtr & rp = this->requestRenderPass_( _viewport, _camera, _transformation, _scissor, _target, _material, _variable, _vertexCount, _indexCount );
+        const RenderPassPtr & rp = this->requestRenderPass_( _context, _material, _variable, _vertexCount, _indexCount );
 
         mt::box2f bb;
 
@@ -1428,11 +1417,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderQuad( const RenderViewportInterfacePtr & _viewport
-        , const RenderCameraInterfacePtr & _camera
-        , const RenderTransformationInterfacePtr & _transformation
-        , const RenderScissorInterfacePtr & _scissor
-        , const RenderTargetInterfacePtr & _target
+    void RenderEngine::addRenderQuad( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const mt::box2f * _bb, bool _debug )
@@ -1451,14 +1436,10 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesQuad.buff();
 
-        this->addRenderObject( _viewport, _camera, _transformation, _scissor, _target, _material, nullptr, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
+        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderEngine::addRenderLine( const RenderViewportInterfacePtr & _viewport
-        , const RenderCameraInterfacePtr & _camera
-        , const RenderTransformationInterfacePtr & _transformation
-        , const RenderScissorInterfacePtr & _scissor
-        , const RenderTargetInterfacePtr & _target
+    void RenderEngine::addRenderLine( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderVertex2D * _vertices, uint32_t _vertexCount
         , const mt::box2f * _bb, bool _debug )
@@ -1477,7 +1458,7 @@ namespace Mengine
 
         RenderIndex * indices = m_indicesLine.buff();
 
-        this->addRenderObject( _viewport, _camera, _transformation, _scissor, _target, _material, nullptr, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
+        this->addRenderObject( _context, _material, nullptr, _vertices, _vertexCount, indices, indicesNum, _bb, _debug );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertex2D * RenderEngine::getDebugRenderVertex2D( uint32_t _count )

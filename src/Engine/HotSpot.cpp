@@ -15,8 +15,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     HotSpot::HotSpot()
-        : m_debugColor( 0x00000000 )
-        , m_outward( false )
+        : m_outward( false )
         , m_global( false )
         , m_picker( nullptr )
         , m_defaultHandle( true )
@@ -106,8 +105,6 @@ namespace Mengine
             return;
         }
 
-        m_debugColor = 0xFFFFFFFF;
-
         m_picker = mousePickerSystem->regTrap( this );
 
         mousePickerSystem->updateTraps();
@@ -146,32 +143,24 @@ namespace Mengine
 
         mousePickerSystem->updateTraps();
 
-        m_debugColor = 0x00000000;
-
         EVENTABLE_METHOD( this, EVENT_DEACTIVATE )
             ->onHotSpotDeactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::onHandleMouseLeave()
     {
-        m_debugColor = 0xFFFFFFFF;
-
         EVENTABLE_METHOD( this, EVENT_MOUSE_LEAVE )
             ->onHotSpotMouseLeave();
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::onHandleMouseOverDestroy()
     {
-        m_debugColor = 0xFFFFFFFF;
-
         EVENTABLE_METHOD( this, EVENT_MOUSE_OVER_DESTROY )
             ->onHotSpotMouseOverDestroy();
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::onHandleMouseEnter( float _x, float _y )
     {
-        m_debugColor = 0xFFFF0000;
-
         bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_ENTER, m_defaultHandle )
             ->onHotSpotMouseEnter( _x, _y );
 

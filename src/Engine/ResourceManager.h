@@ -62,8 +62,8 @@ namespace Mengine
         bool validateResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) const override;
 
     public:
-        void visitResources( Visitor * _visitor ) const override;
-        void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, Visitor * _visitor ) const override;
+        void visitResources( const VisitorPtr & _visitor ) const override;
+        void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, const VisitorPtr & _visitor ) const override;
 
     public:
         void dumpResources( const String & _tag ) override;

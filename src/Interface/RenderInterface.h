@@ -49,7 +49,7 @@ namespace Mengine
         virtual void render( const RenderContext * _state ) = 0;
 
     public:
-        virtual const RenderInterfacePtr & renderTarget( const RenderContext * _state ) = 0;
+        virtual const RenderInterfacePtr & makeTargetRender( const RenderContext * _state ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderInterface> RenderInterfacePtr;

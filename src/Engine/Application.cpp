@@ -60,11 +60,6 @@
 #include "Grid2D.h"
 #include "TextField.h"
 #include "Meshget.h"
-#include "Movie.h"
-#include "MovieSlot.h"
-#include "MovieSceneEffect.h"
-#include "MovieInternalObject.h"
-#include "MovieEvent.h"
 #include "Model3D.h"
 #include "Layer2D.h"
 
@@ -105,7 +100,6 @@
 #include "ResourceImageSubstractRGBAndAlpha.h"
 
 #include "ResourceFile.h"
-#include "ResourceMovie.h"
 #include "ResourceVideo.h"
 #include "ResourceSound.h"
 #include "ResourceModel3D.h"
@@ -114,7 +108,6 @@
 #include "ResourceShape.h"
 #include "ResourceCursorICO.h"
 #include "ResourceCursorSystem.h"
-#include "ResourceInternalObject.h"
 
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
@@ -318,11 +311,6 @@ namespace Mengine
         NODE_FACTORY( TextField );
         //NODE_FACTORY( TileMap );
         //NODE_FACTORY( Track );
-        NODE_FACTORY( Movie );
-        NODE_FACTORY( MovieSlot );
-        NODE_FACTORY( MovieSceneEffect );
-        NODE_FACTORY( MovieInternalObject );
-        NODE_FACTORY( MovieEvent );
 
         NODE_FACTORY( Meshget );
 
@@ -464,7 +452,6 @@ namespace Mengine
         RESOURCE_FACTORY( ResourceImageSubstract );
         RESOURCE_FACTORY( ResourceImageSubstractRGBAndAlpha );
         RESOURCE_FACTORY( ResourceImageSolid );
-        RESOURCE_FACTORY( ResourceMovie );
         RESOURCE_FACTORY( ResourceModel3D );
         RESOURCE_FACTORY( ResourceVideo );
         RESOURCE_FACTORY( ResourceSound );
@@ -475,8 +462,6 @@ namespace Mengine
         RESOURCE_FACTORY( ResourceShape );
         RESOURCE_FACTORY( ResourceCursorICO );
         RESOURCE_FACTORY( ResourceCursorSystem );
-
-        RESOURCE_FACTORY( ResourceInternalObject );
 
 #	undef RESOURCE_FACTORY
 

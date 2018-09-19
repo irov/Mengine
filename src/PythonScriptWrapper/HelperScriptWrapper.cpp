@@ -30,7 +30,6 @@
 
 #include "Engine/Account.h"
 
-#include "Engine/Movie.h"
 #include "Engine/HotSpotShape.h"
 
 #include "Kernel/Logger.h"
@@ -924,175 +923,7 @@ namespace Mengine
 
             return intersect;
         }
-
-        bool s_intersectsMoviesHotspot( Movie * _movie1, const ConstString & _socket1, Movie * _movie2, const ConstString & _socket2 )
-        {
-            if( _movie1 == nullptr )
-            {
-                LOGGER_ERROR( "s_intersectsMoviesHotspot movie1 is NULL"
-                );
-
-                return false;
-            }
-
-            if( _movie2 == nullptr )
-            {
-                LOGGER_ERROR( "s_intersectsMoviesHotspot movie2 is NULL"
-                );
-
-                return false;
-            }
-
-            if( _movie1->compile() == false )
-            {
-                LOGGER_ERROR( "s_intersectsMoviesHotspot movie1 invalid compile"
-                );
-
-                return false;
-            }
-
-            if( _movie2->compile() == false )
-            {
-                LOGGER_ERROR( "s_intersectsMoviesHotspot movie2 invalid compile"
-                );
-
-                return false;
-            }
-
-            NodePtr node1;
-            MoviePtr submovie1;
-
-            if( _movie1->hasMovieNode( _socket1, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &node1, &submovie1 ) == false )
-            {
-                LOGGER_ERROR( "s_intersectsMoviesHotspot movie1 %s not found socket shape %s"
-                    , _movie1->getName().c_str()
-                    , _socket1.c_str()
-                );
-
-                return false;
-            }
-
-            NodePtr node2;
-            MoviePtr submovie2;
-
-            if( _movie2->hasMovieNode( _socket2, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &node2, &submovie2 ) == false )
-            {
-                LOGGER_ERROR( "s_intersectsMoviesHotspot movie2 %s not found socket shape %s"
-                    , _movie2->getName().c_str()
-                    , _socket2.c_str()
-                );
-
-                return false;
-            }
-
-            HotSpotShapePtr shape1 = stdex::intrusive_static_cast<HotSpotShapePtr>(node1);
-
-            if( shape1->compile() == false )
-            {
-                LOGGER_ERROR( "s_intersectsMoviesHotspot movie1 %s socket shape %s invalid compile"
-                    , _movie1->getName().c_str()
-                    , _socket1.c_str()
-                );
-
-                return false;
-            }
-
-            HotSpotShapePtr shape2 = stdex::intrusive_static_cast<HotSpotShapePtr>(node2);
-
-            if( shape2->compile() == false )
-            {
-                LOGGER_ERROR( "s_intersectsMoviesHotspot movie2 %s socket shape %s invalid compile"
-                    , _movie2->getName().c_str()
-                    , _socket2.c_str()
-                );
-
-                return false;
-            }
-
-            const Resolution & contentResolution = APPLICATION_SERVICE()
-                ->getContentResolution();
-
-            const RenderCameraInterfacePtr & shape1_camera = Helper::getRenderCameraInheritance( shape1.get() );
-            const RenderViewportInterfacePtr & shape1_viewport = Helper::getRenderViewportInheritance( shape1.get() );
-
-            mt::box2f b1;
-            Polygon p1;
-            shape1->getScreenPolygon( shape1_camera, shape1_viewport, contentResolution, &b1, &p1 );
-
-            const RenderCameraInterfacePtr & shape2_camera = Helper::getRenderCameraInheritance( shape2.get() );
-            const RenderViewportInterfacePtr & shape2_viewport = Helper::getRenderViewportInheritance( shape2.get() );
-
-            mt::box2f b2;
-            Polygon p2;
-            shape2->getScreenPolygon( shape2_camera, shape2_viewport, contentResolution, &b2, &p2 );
-
-            if( mt::is_intersect( b1, b2 ) == false )
-            {
-                return false;
-            }
-
-            bool result = s_intersectsPolygons( p1, p2 );
-
-            return result;
-        }
-
-        bool s_intersectMoviesHotspotVsPolygon( const MoviePtr & _movie, const ConstString & _socket, Polygon _polygon )
-        {
-            if( _movie == nullptr )
-            {
-                LOGGER_ERROR( "s_intersectMoviesHotspotVsPolygon movie is NULL"
-                );
-
-                return false;
-            }
-
-            if( _movie->compile() == false )
-            {
-                LOGGER_ERROR( "s_intersectMoviesHotspotVsPolygon movie invalid compile"
-                );
-
-                return false;
-            }
-
-            NodePtr node;
-            MoviePtr submovie;
-
-            if( _movie->hasMovieNode( _socket, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &node, &submovie ) == false )
-            {
-                LOGGER_ERROR( "s_intersectMoviesHotspotVsPolygon movie %s not found socket shape %s"
-                    , _movie->getName().c_str()
-                    , _socket.c_str()
-                );
-
-                return false;
-            }
-
-            HotSpotShapePtr shape = stdex::intrusive_static_cast<HotSpotShapePtr>(node);
-
-            if( shape->compile() == false )
-            {
-                LOGGER_ERROR( "s_intersectMoviesHotspotVsPolygon movie %s socket shape %s invalid compile"
-                    , _movie->getName().c_str()
-                    , _socket.c_str()
-                );
-
-                return false;
-            }
-
-            const Resolution & contentResolution = APPLICATION_SERVICE()
-                ->getContentResolution();
-
-            const RenderCameraInterfacePtr & shape_camera = Helper::getRenderCameraInheritance( shape.get() );
-            const RenderViewportInterfacePtr & shape_viewport = Helper::getRenderViewportInheritance( shape.get() );
-
-            Polygon p1;
-            shape->getScreenPolygon( shape_camera, shape_viewport, contentResolution, nullptr, &p1 );
-
-            bool result = s_intersectsPolygons( p1, _polygon );
-
-            return result;
-        }
-
+        
 #ifdef PYBIND_VISIT_OBJECTS
         class MyObjectVisits
             : public pybind::pybind_visit_objects
@@ -3240,8 +3071,6 @@ namespace Mengine
         pybind::def_functor( kernel, "intersectsPolygons", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygons );
         pybind::def_functor( kernel, "intersectsPolygonsWM", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWM );
         pybind::def_functor( kernel, "intersectsPolygonsWMP", helperScriptMethod, &HelperScriptMethod::s_intersectsPolygonsWMP );
-        pybind::def_functor( kernel, "intersectsMoviesHotspot", helperScriptMethod, &HelperScriptMethod::s_intersectsMoviesHotspot );
-        pybind::def_functor( kernel, "intersectMoviesHotspotVsPolygon", helperScriptMethod, &HelperScriptMethod::s_intersectMoviesHotspotVsPolygon );
 
 
         pybind::def_functor_kernel( kernel, "objects", helperScriptMethod, &HelperScriptMethod::s_objects );

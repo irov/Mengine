@@ -59,14 +59,14 @@ namespace Mengine
         this->_render( _context );
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderInterfacePtr & BaseRender::renderTarget( const RenderContext * _context )
+    const RenderInterfacePtr & BaseRender::makeTargetRender( const RenderContext * _context )
     {
-        const RenderInterfacePtr & render = this->_renderTarget( _context );
+        const RenderInterfacePtr & render = this->_makeTargetRender( _context );
 
         return render;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderInterfacePtr & BaseRender::_renderTarget( const RenderContext * _context )
+    const RenderInterfacePtr & BaseRender::_makeTargetRender( const RenderContext * _context )
     {
         (void)_context;
 

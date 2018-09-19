@@ -53,7 +53,7 @@ namespace Mengine
         void _render( const RenderContext * _context ) override;
 
     protected:
-        const RenderInterfacePtr & _renderTarget( const RenderContext * _context ) override;
+        const RenderInterfacePtr & _makeTargetRender( const RenderContext * _context ) override;
 
     public:
         inline const RenderVertex2D * getVerticesImageMaskWM() const;

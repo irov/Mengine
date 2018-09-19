@@ -4,12 +4,6 @@
 
 #include "movie/movie.hpp"
 
-#include "Movie2.h"
-#include "ResourceMovie2.h"
-#include "Movie2Slot.h"
-
-#include "pybind/pybind.hpp"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

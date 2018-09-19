@@ -137,7 +137,7 @@ namespace Mengine
 
             if( desc.context.target != nullptr )
             {
-                const RenderInterfacePtr & targetRender = selfRender->renderTarget( &desc.context );
+                const RenderInterfacePtr & targetRender = selfRender->makeTargetRender( &desc.context );
 
                 if( targetRender != nullptr )
                 {

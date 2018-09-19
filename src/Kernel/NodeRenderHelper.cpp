@@ -89,7 +89,7 @@ namespace Mengine
 
                 if( self_context.target != nullptr )
                 {
-                    const RenderInterfacePtr & targetRender = render->renderTarget( &self_context );
+                    const RenderInterfacePtr & targetRender = render->makeTargetRender( &self_context );
 
                     if( targetRender != nullptr )
                     {
@@ -177,6 +177,8 @@ namespace Mengine
 
                 if( _node->isLocalHide() == false && _node->isPersonalTransparent() == false )
                 {
+                    render->render( &self_context );
+
                     _visitor->setRenderContext( &self_context );
 
                     _node->visit( _visitor );
@@ -187,6 +189,16 @@ namespace Mengine
                 {
                     Helper::nodeRenderChildrenVisitor( _child, _visitor, children_context );
                 } );
+
+                if( self_context.target != nullptr )
+                {
+                    const RenderInterfacePtr & targetRender = render->makeTargetRender( &self_context );
+
+                    if( targetRender != nullptr )
+                    {
+                        targetRender->render( _context );
+                    }
+                }
             }
             else
             {

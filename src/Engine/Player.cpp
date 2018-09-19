@@ -896,8 +896,15 @@ namespace Mengine
 
         if( m_scene != nullptr )
         {
-            RENDERNODE_SERVICE()
-                ->renderNode( &context, m_scene );
+            if( debugMask == false )
+            {
+                RENDERNODE_SERVICE()
+                    ->renderNode( &context, m_scene );
+            }
+            else
+            {
+                Helper::nodeRenderChildrenVisitor( m_scene, m_debugRenderVisitor, &context );
+            }
         }
 
         MODULE_SERVICE()
@@ -908,17 +915,14 @@ namespace Mengine
 
         if( m_arrow != nullptr )
         {
-            Helper::nodeRenderChildren( m_arrow, &context );
-        }
-
-        if( m_scene != nullptr )
-        {
-            Helper::nodeRenderChildrenVisitor( m_scene, m_debugRenderVisitor, &context );
-        }
-
-        if( m_arrow != nullptr )
-        {
-            Helper::nodeRenderChildrenVisitor( m_arrow, m_debugRenderVisitor, &context );
+            if( debugMask == false )
+            {
+                Helper::nodeRenderChildren( m_arrow, &context );
+            }
+            else
+            {
+                Helper::nodeRenderChildrenVisitor( m_arrow, m_debugRenderVisitor, &context );
+            }
         }
 
         //if( m_arrow != nullptr )

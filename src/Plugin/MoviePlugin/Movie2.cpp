@@ -917,9 +917,9 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_void_t __movie_composition_node_deleter( const aeMovieNodeDeleterCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        Movie2 * movie2 = (Movie2 *)_data;
+        Movie2 * movie2 = (Movie2 *)_ud;
         (void)movie2;
 
         ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( _callbackData->layer );
@@ -974,9 +974,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_void_t __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_data;
+        (void)_ud;
 
         aeMovieLayerTypeEnum layer_type = ae_get_movie_layer_data_type( _callbackData->layer );
 
@@ -1213,9 +1213,9 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_void_t __movie_composition_track_matte_update( const aeMovieTrackMatteUpdateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_data;
+        (void)_ud;
 
         switch( _callbackData->state )
         {
@@ -1238,9 +1238,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_track_matte_deleter( const aeMovieTrackMatteDeleterCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_void_t __movie_composition_track_matte_deleter( const aeMovieTrackMatteDeleterCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_data;
+        (void)_ud;
 
         TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->element);
 
@@ -1256,31 +1256,33 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_shader_property_update( const aeMovieShaderPropertyUpdateCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_void_t __movie_composition_shader_property_update( const aeMovieShaderPropertyUpdateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
         (void)_callbackData;
-        (void)_data;
+        (void)_ud;
 
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_event( const aeMovieCompositionEventCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_void_t __movie_composition_event( const aeMovieCompositionEventCallbackData * _callbackData, ae_voidptr_t _ud )
     {
         (void)_callbackData;
-        (void)_data;
+        (void)_ud;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_composition_state( const aeMovieCompositionStateCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_void_t __movie_composition_state( const aeMovieCompositionStateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        if( _callbackData->subcomposition != AE_NULL )
-        {
-            return;
-        }
+        Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_ud);
 
-        Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_data);
+        //if( _callbackData->subcomposition != AE_NULL )
+        //{
+        //    
+
+        //    return;
+        //}        
 
         if( _callbackData->state == AE_MOVIE_COMPOSITION_END )
         {
-            m2->stop();
+            m2->end();
         }
     }
 #if AE_MOVIE_SDK_MAJOR_VERSION >= 17
@@ -1319,9 +1321,9 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_scene_effect_update( const aeMovieCompositionSceneEffectUpdateCallbackData * _callbackData, ae_voidptr_t _data )
+    static ae_void_t __movie_scene_effect_update( const aeMovieCompositionSceneEffectUpdateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
-        (void)_data;
+        (void)_ud;
 
         Layer * parent_layer = reinterpret_node_cast<Layer *>(_callbackData->scene_effect_data);
 
@@ -1347,6 +1349,48 @@ namespace Mengine
         parent_layer->setOrientationX( angle );
     }
 #endif
+    //////////////////////////////////////////////////////////////////////////
+    static ae_bool_t __movie_subcomposition_provider( const aeMovieSubCompositionProviderCallbackData * _callbackData, ae_voidptrptr_t _scd, ae_voidptr_t _ud )
+    {
+        Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_ud);
+
+        const aeMovieLayerData * layer = _callbackData->layer;
+        
+        const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer );
+
+        ConstString c_name = Helper::stringizeString( layer_name );
+
+        const Movie2SubCompositionPtr & subcomposition = m2->getSubComposition( c_name );
+    
+        if( subcomposition == nullptr )
+        {
+            return AE_FALSE;
+        }
+
+        *_scd = subcomposition.get();
+
+        return AE_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ae_void_t __movie_subcomposition_deleter( const aeMovieSubCompositionDeleterCallbackData * _callbackData, ae_voidptr_t _ud )
+    {
+        (void)_callbackData;
+        (void)_ud;
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ae_void_t __movie_subcomposition_state( const aeMovieSubCompositionStateCallbackData * _callbackData, ae_voidptr_t _ud )
+    {
+        (void)_ud;
+
+        Movie2SubComposition * m2sc = reinterpret_node_cast<Movie2SubComposition *>(_callbackData->subcomposition_data);
+
+        if( _callbackData->state == AE_MOVIE_COMPOSITION_END )
+        {
+            m2sc->end();
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     Movie2::Camera * Movie2::addCamera( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport )
     {
@@ -1472,6 +1516,10 @@ namespace Mengine
         providers.scene_effect_provider = &__movie_scene_effect_provider;
         providers.scene_effect_update = &__movie_scene_effect_update;
 #endif
+
+        providers.subcomposition_provider = &__movie_subcomposition_provider;
+        providers.subcomposition_deleter = &__movie_subcomposition_deleter;
+        providers.subcomposition_state = &__movie_subcomposition_state;
 
         const aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
 
@@ -1718,10 +1766,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_update( const UpdateContext * _context )
     {
-        if( this->isPlay() == false )
-        {
-            return;
-        }
+        //if( this->isPlay() == false )
+        //{
+        //    return;
+        //}
 
         if( m_composition == nullptr )
         {
@@ -1740,11 +1788,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_render( const RenderContext * _state )
     {
-        if( this->getName() == "Movie2_Door_Fail" )
-        {
-            _state = _state;
-        }
-
         uint32_t vertex_iterator = 0;
         uint32_t index_iterator = 0;
 

@@ -287,6 +287,12 @@ namespace Mengine
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
+        class PythonMovie2SubCompositionEventReceiver
+            : public PythonAnimatableEventReceiver<Movie2SubCompositionEventReceiver>
+        {
+        public:
+        };
+        //////////////////////////////////////////////////////////////////////////
         static PyObject * s_Movie2SubComposition_setEventListener( pybind::kernel_interface * _kernel, Movie2SubComposition * _node, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
@@ -297,7 +303,7 @@ namespace Mengine
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<PythonMovie2EventReceiver>( py_kwds, _node );
+            Helper::registerAnimatableEventReceiver<PythonMovie2SubCompositionEventReceiver>( py_kwds, _node );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )

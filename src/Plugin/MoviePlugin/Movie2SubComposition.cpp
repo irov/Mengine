@@ -71,18 +71,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_pause( uint32_t _enumerator )
     {
+        ae_pause_movie_sub_composition( m_composition, m_subcomposition );
+
         EVENTABLE_METHOD( this, EVENT_ANIMATION_PAUSE )
             ->onAnimationPause( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_resume( uint32_t _enumerator, float _time )
     {
+        ae_resume_movie_sub_composition( m_composition, m_subcomposition );
+
         EVENTABLE_METHOD( this, EVENT_ANIMATION_RESUME )
             ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_stop( uint32_t _enumerator )
     {
+        ae_stop_movie_sub_composition( m_composition, m_subcomposition );
+
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
     }
@@ -105,7 +111,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_setLoop( bool _value )
     {
-        ae_set_movie_sub_composition_loop( m_subcomposition, _value );
+        ae_set_movie_sub_composition_loop( m_subcomposition, _value == true ? AE_TRUE : AE_FALSE );
     }
     //////////////////////////////////////////////////////////////////////////
 }

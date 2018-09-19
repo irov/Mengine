@@ -773,11 +773,6 @@ namespace Mengine
             }
         }
 
-        if( m_key == "$Spells_InfoPlate_Text" )
-        {
-            printf( "fs" );
-        }
-
         VectorU32String line_delims;
         line_delims.emplace_back( U"\n" );
         line_delims.emplace_back( U"\r\n" );

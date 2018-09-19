@@ -71,7 +71,7 @@ namespace Mengine
     protected:
         float calcTotalTime( const UpdateContext * _context ) const;
 
-    protected:
+    public:
         void end();
 
     protected:

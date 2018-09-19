@@ -5,7 +5,7 @@ src
     Movie2Interface.h
     
 	MoviePlugin.h
-	MoviePlugin.cpp   
+	MoviePlugin.cpp
     
     Movie2.cpp
     Movie2.h
@@ -18,8 +18,6 @@ src
     ResourceMovie2.cpp
     ResourceMovie2.h
 )
-
-add_definitions(-DAE_MOVIE_STREAM_NO_CACHE)
 
 INCLUDE_DIRECTORIES( 
         ${Mengine_SOURCE_DIR}/Utils

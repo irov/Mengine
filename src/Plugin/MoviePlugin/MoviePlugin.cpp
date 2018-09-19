@@ -17,9 +17,13 @@
 
 #include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
 
-#include "Kernel/ModuleFactory.h"
-
 #include "Kernel/Logger.h"
+
+#include "Movie2.h"
+#include "ResourceMovie2.h"
+#include "Movie2Slot.h"
+
+#include "pybind/pybind.hpp"
 
 #include <stdlib.h>
 

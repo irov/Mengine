@@ -42,10 +42,10 @@ namespace Mengine
         virtual void _render( const RenderContext * _context ) = 0;
 
     public:
-        const RenderInterfacePtr & renderTarget( const RenderContext * _context ) override;
+        const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) override;
 
     protected:
-        virtual const RenderInterfacePtr & _renderTarget( const RenderContext * _context );
+        virtual const RenderInterfacePtr & _makeTargetRender( const RenderContext * _context );
 
     public:
         void setExternalRender( bool _externalRender ) override;

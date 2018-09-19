@@ -158,22 +158,6 @@ Object\\\\Gyroscope
 )
 
 ADD_FILTER(
-Object\\\\Movie
-	Movie.cpp
-	Movie.h	
-    MovieSlot.cpp
-    MovieSlot.h
-    MovieSceneEffect.cpp
-    MovieSceneEffect.h
-	MovieInternalObject.cpp
-	MovieInternalObject.h
-    MovieNodeExtra.cpp
-    MovieNodeExtra.h
-    MovieEvent.cpp
-    MovieEvent.h
-)
-
-ADD_FILTER(
 Object\\\\TextField
 	TextField.cpp
 	TextField.h
@@ -206,21 +190,9 @@ Resource\\\\File
 )
 
 ADD_FILTER(
-Resource\\\\Movie
-	ResourceMovie.cpp
-	ResourceMovie.h
-)
-
-ADD_FILTER(
 Resource\\\\Model3D
 	ResourceModel3D.cpp
 	ResourceModel3D.h
-)
-
-ADD_FILTER(
-Resource\\\\InternalObject
-	ResourceInternalObject.cpp
-	ResourceInternalObject.h
 )
 
 ADD_FILTER(

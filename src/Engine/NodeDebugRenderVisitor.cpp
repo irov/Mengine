@@ -160,14 +160,14 @@ namespace Mengine
 
         this->renderLine_( vertices, 8 );
     }
-    //////////////////////////////////////////////////////////////////////////
-    void NodeDebugRenderVisitor::accept( MovieSlot * _node )
-    {
-        const mt::mat4f & wm = _node->getWorldMatrix();
+    ////////////////////////////////////////////////////////////////////////////
+    //void NodeDebugRenderVisitor::accept( MovieSlot * _node )
+    //{
+    //    const mt::mat4f & wm = _node->getWorldMatrix();
 
-        float radius = 10.f;
-        this->renderCircle_( wm, radius, 16, 0x000000FF );
-    }
+    //    float radius = 10.f;
+    //    this->renderCircle_( wm, radius, 16, 0x000000FF );
+    //}
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderVisitor::accept( Point * _node )
     {

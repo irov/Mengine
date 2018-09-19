@@ -302,7 +302,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderInterfacePtr & Layer2D::_renderTarget( const RenderContext * _context )
+    const RenderInterfacePtr & Layer2D::_makeTargetRender( const RenderContext * _context )
     {
         (void)_context;
 

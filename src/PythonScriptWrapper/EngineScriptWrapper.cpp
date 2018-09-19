@@ -35,7 +35,6 @@
 #include "Kernel/ResourceImageData.h"
 
 #include "Engine/ResourceFile.h"
-#include "Engine/ResourceMovie.h"
 #include "Engine/ResourceAnimation.h"
 #include "Engine/ResourceModel3D.h"
 #include "Engine/ResourceVideo.h"
@@ -46,7 +45,6 @@
 #include "Engine/ResourceTestPick.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
-#include "Engine/ResourceInternalObject.h"
 
 #include "Engine/ResourceImageSubstractRGBAndAlpha.h"
 #include "Engine/ResourceImageSubstract.h"
@@ -56,9 +54,6 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/MousePickerSystemInterface.h"
 
-#include "Engine/MovieSlot.h"
-#include "Engine/MovieInternalObject.h"
-#include "Engine/MovieEvent.h"
 #include "Engine/Model3D.h"
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
@@ -103,7 +98,6 @@
 #include "Kernel/ResourceImage.h"
 #include "Kernel/PolygonHelper.h"
 
-#include "Engine/Movie.h"
 #include "Engine/Meshget.h"
 
 #include "Engine/Window.h"
@@ -1719,7 +1713,7 @@ namespace Mengine
             , public ConcreteVisitor<ResourceImageDefault>
             , public ConcreteVisitor<ResourceHIT>
             , public ConcreteVisitor<ResourceSound>
-            , public ConcreteVisitor<ResourceMovie>
+            //, public ConcreteVisitor<ResourceMovie>
         {
         public:
             PrefetchResourceVisitor( const FileGroupInterfacePtr & _category, const PrefetcherObserverInterfacePtr & _observer )
@@ -1769,17 +1763,17 @@ namespace Mengine
                 }
             }
 
-            void accept( ResourceMovie * _resource ) override
-            {
-                const FilePath & filePath = _resource->getFilePath();
-                const ConstString & dataflowType = _resource->getDataflowType();
+            //void accept( ResourceMovie * _resource ) override
+            //{
+            //    const FilePath & filePath = _resource->getFilePath();
+            //    const ConstString & dataflowType = _resource->getDataflowType();
 
-                if( PREFETCHER_SERVICE()
-                    ->prefetchData( m_category, filePath, dataflowType, m_observer ) == true )
-                {
-                    m_process = true;
-                }
-            }
+            //    if( PREFETCHER_SERVICE()
+            //        ->prefetchData( m_category, filePath, dataflowType, m_observer ) == true )
+            //    {
+            //        m_process = true;
+            //    }
+            //}
 
         protected:
             FileGroupInterfacePtr m_category;
@@ -1815,7 +1809,7 @@ namespace Mengine
             , public ConcreteVisitor<ResourceImageDefault>
             , public ConcreteVisitor<ResourceHIT>
             , public ConcreteVisitor<ResourceSound>
-            , public ConcreteVisitor<ResourceMovie>
+            //, public ConcreteVisitor<ResourceMovie>
         {
         public:
             UnfetchResourceVisitor()
@@ -1850,14 +1844,14 @@ namespace Mengine
                     ->unfetch( category, filePath );
             }
 
-            void accept( ResourceMovie * _resource ) override
-            {
-                const FileGroupInterfacePtr & category = _resource->getCategory();
-                const FilePath & filePath = _resource->getFilePath();
+            //void accept( ResourceMovie * _resource ) override
+            //{
+            //    const FileGroupInterfacePtr & category = _resource->getCategory();
+            //    const FilePath & filePath = _resource->getFilePath();
 
-                PREFETCHER_SERVICE()
-                    ->unfetch( category, filePath );
-            }
+            //    PREFETCHER_SERVICE()
+            //        ->unfetch( category, filePath );
+            //}
         };
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<UnfetchResourceVisitor> UnfetchResourceVisitorPtr;
@@ -2311,84 +2305,7 @@ namespace Mengine
             arrow->calcPointClick( camera, viewport, _screenPoint, wp );
 
             return wp;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        pybind::object s_getMovieSlotsPosition( pybind::kernel_interface * _kernel, const ConstString & _groupName, const ConstString & _movieName )
-        {
-            stdex::array_string<128> buffer;
-            buffer.append( "Movie" );
-            buffer.append( _groupName );
-            buffer.append( "_" );
-            buffer.append( _movieName );
-
-            ConstString resourceMovieName = Helper::stringizeStringSize( buffer.c_str(), buffer.size() );
-
-            ResourceMoviePtr resourceMovie;
-
-            if( RESOURCE_SERVICE()
-                ->hasResourceT<ResourceMoviePtr>( resourceMovieName, &resourceMovie ) == false )
-            {
-                LOGGER_ERROR( "s_getMovieSlotsPosition: not found resource movie %s"
-                    , resourceMovieName.c_str()
-                );
-
-                return pybind::make_none_t( _kernel );
-            }
-
-            pybind::list py_list( _kernel );
-
-            const VectorMovieLayers & layers = resourceMovie->getLayers();
-
-            for( const MovieLayer & layer : layers )
-            {
-                if( layer.type != STRINGIZE_STRING_LOCAL( "MovieSlot" ) )
-                {
-                    continue;
-                }
-
-                py_list.append( pybind::make_tuple_t( _kernel, layer.name, layer.position ) );
-            }
-
-            return py_list;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getMovieSlotPosition( pybind::kernel_interface * _kernel, const ConstString & _groupName, const ConstString & _movieName, const ConstString & _slotName )
-        {
-            stdex::array_string<128> buffer;
-            buffer.append( "Movie" );
-            buffer.append( _groupName );
-            buffer.append( "_" );
-            buffer.append( _movieName );
-
-            ConstString resourceMovieName = Helper::stringizeStringSize( buffer.c_str(), buffer.size() );
-
-            ResourceMoviePtr resourceMovie;
-
-            if( RESOURCE_SERVICE()
-                ->hasResourceT<ResourceMoviePtr>( resourceMovieName, &resourceMovie ) == false )
-            {
-                LOGGER_ERROR( "getMovieSlotPosition: not found resource movie %s"
-                    , resourceMovieName.c_str()
-                );
-
-                return pybind::ret_none();
-            }
-
-            const MovieLayer * layer;
-            if( resourceMovie->hasMovieLayer( _slotName, &layer ) == false )
-            {
-                LOGGER_ERROR( "getMovieSlotPosition: movie %s not found slot %s"
-                    , resourceMovieName.c_str()
-                    , _slotName.c_str()
-                );
-
-                return pybind::ret_none();
-            }
-
-            PyObject * py_position = pybind::ptr( _kernel, layer->position );
-
-            return py_position;
-        }
+        }        
         //////////////////////////////////////////////////////////////////////////
         class AffectorGridBurnTransparency
             : public Affector
@@ -3451,27 +3368,6 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        float s_getMovieDuration( const ConstString & _resourceName )
-        {
-            ResourceMoviePtr resourceMovie = RESOURCE_SERVICE()
-                ->getResource( _resourceName );
-
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "getMovieDuration invalid movie resource '%s'"
-                    , _resourceName.c_str()
-                );
-
-                return 0.f;
-            }
-
-            float duration = resourceMovie->getDuration();
-
-            resourceMovie->decrementReference();
-
-            return duration;
-        }
-        //////////////////////////////////////////////////////////////////////////
         float s_getGameAspect()
         {
             float aspect;
@@ -3588,159 +3484,6 @@ namespace Mengine
                 ->getDefaultFontName();
 
             return defaultResourceFontName;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class ResourceMovieVisitorNullLayers
-            : public VisitorResourceMovie
-        {
-        public:
-            ResourceMovieVisitorNullLayers( pybind::kernel_interface * _kernel, const pybind::dict & _dictResult, float _frameDuration )
-                : m_kernel( _kernel )
-                , m_dictResult( _dictResult )
-                , m_frameDuration( _frameDuration )
-            {
-            }
-
-        protected:
-            void visitLayer( const MovieFramePackInterfacePtr & _framePack, const MovieLayer & _layer ) override
-            {
-                if( _layer.source != "MovieSlot" )
-                {
-                    return;
-                }
-
-                if( _framePack->hasLayer( _layer.index ) == false )
-                {
-                    return;
-                }
-
-                pybind::list py_list_frames( m_kernel );
-
-                const MovieLayerFrame & frames = _framePack->getLayer( _layer.index );
-
-                for( uint32_t i = 0; i != frames.count; ++i )
-                {
-                    MovieFrameSource frame_source;
-                    _framePack->getLayerFrame( _layer.index, i, frame_source );
-
-                    pybind::dict py_dict_frame( m_kernel );
-
-                    py_dict_frame["position"] = frame_source.position;
-
-                    float frameTime = _layer.in + i * m_frameDuration;
-
-                    py_dict_frame["time"] = frameTime;
-
-                    py_list_frames.append( py_dict_frame );
-                }
-
-                m_dictResult[_layer.name] = py_list_frames;
-            }
-
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::dict m_dictResult;
-            float m_frameDuration;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getNullObjectsFromResourceVideo( pybind::kernel_interface * _kernel, ResourceMovie * _resource )
-        {
-            if( _resource == nullptr )
-            {
-                return pybind::ret_none();
-            }
-
-            pybind::dict py_dict_result( _kernel );
-
-            float frameTime = _resource->getFrameDuration();
-            ResourceMovieVisitorNullLayers visitor( _kernel, py_dict_result, frameTime );
-
-            _resource->visitResourceMovie( &visitor );
-
-            return py_dict_result.ret();
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieElement2( const ResourceMoviePtr & _resource, const ConstString & _slotName, const ConstString & _typeName )
-        {
-            const VectorMovieLayers & layers = _resource->getLayers();
-
-            for( const MovieLayer & layer : layers )
-            {
-                if( layer.type == "Movie" )
-                {
-                    if( s_hasMovieElement( layer.source, _slotName, _typeName ) == true )
-                    {
-                        return true;
-                    }
-                }
-
-                if( layer.type != _typeName )
-                {
-                    continue;
-                }
-
-                if( layer.name != _slotName )
-                {
-                    continue;
-                }
-
-                return true;
-            }
-
-            return false;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieElement( const ConstString & _resourceName, const ConstString & _slotName, const ConstString & _typeName )
-        {
-            ResourceMoviePtr resource = RESOURCE_SERVICE()
-                ->getResource( _resourceName );
-
-            if( resource == nullptr )
-            {
-                return false;
-            }
-
-            bool result = s_hasMovieElement2( resource, _slotName, _typeName );
-
-            resource->decrementReference();
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieSlot( const ConstString & _resourceName, const ConstString & _slotName )
-        {
-            bool result = s_hasMovieElement( _resourceName, _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieSubMovie( const ConstString & _resourceName, const ConstString & _subMovieName )
-        {
-            bool result = s_hasMovieElement( _resourceName, _subMovieName, STRINGIZE_STRING_LOCAL( "SubMovie" ) );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieSocket( const ConstString & _resourceName, const ConstString & _socketName )
-        {
-            if( s_hasMovieElement( _resourceName, _socketName, STRINGIZE_STRING_LOCAL( "MovieSocketImage" ) ) == true )
-            {
-                return true;
-            }
-
-            if( s_hasMovieElement( _resourceName, _socketName, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ) ) == true )
-            {
-                return true;
-            }
-
-            return false;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieEvent( const ConstString & _resourceName, const ConstString & _eventName )
-        {
-            bool result = s_hasMovieElement( _resourceName, _eventName, STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
-
-            return result;
         }
         //////////////////////////////////////////////////////////////////////////
         void s_visitChild( Node * _node, const pybind::object & _cb )
@@ -4126,15 +3869,6 @@ namespace Mengine
         pybind::def_functor( kernel, "cancelTask", nodeScriptMethod, &EngineScriptMethod::s_cancelTask );
         pybind::def_functor( kernel, "joinTask", nodeScriptMethod, &EngineScriptMethod::s_joinTask );
 
-        pybind::def_functor_kernel( kernel, "getNullObjectsFromResourceVideo", nodeScriptMethod, &EngineScriptMethod::s_getNullObjectsFromResourceVideo );
-
-        pybind::def_functor( kernel, "hasMovieSlot", nodeScriptMethod, &EngineScriptMethod::s_hasMovieSlot );
-        pybind::def_functor( kernel, "hasMovieSubMovie", nodeScriptMethod, &EngineScriptMethod::s_hasMovieSubMovie );
-        pybind::def_functor( kernel, "hasMovieSocket", nodeScriptMethod, &EngineScriptMethod::s_hasMovieSocket );
-        pybind::def_functor( kernel, "hasMovieEvent", nodeScriptMethod, &EngineScriptMethod::s_hasMovieEvent );
-
-        pybind::def_functor( kernel, "getMovieDuration", nodeScriptMethod, &EngineScriptMethod::s_getMovieDuration );
-
         pybind::def_functor( kernel, "getGameAspect", nodeScriptMethod, &EngineScriptMethod::s_getGameAspect );
         pybind::def_functor( kernel, "getGameViewport", nodeScriptMethod, &EngineScriptMethod::s_getGameViewport );
 
@@ -4196,9 +3930,6 @@ namespace Mengine
 
         pybind::def_functor_args( kernel, "addMousePositionProvider", nodeScriptMethod, &EngineScriptMethod::s_addMousePositionProvider );
         pybind::def_functor( kernel, "removeMousePositionProvider", nodeScriptMethod, &EngineScriptMethod::s_removeMousePositionProvider );
-
-        pybind::def_functor_kernel( kernel, "getMovieSlotsPosition", nodeScriptMethod, &EngineScriptMethod::s_getMovieSlotsPosition );
-        pybind::def_functor_kernel( kernel, "getMovieSlotPosition", nodeScriptMethod, &EngineScriptMethod::s_getMovieSlotPosition );
 
         pybind::def_functor( kernel, "gridBurnTransparency", nodeScriptMethod, &EngineScriptMethod::s_gridBurnTransparency );
 

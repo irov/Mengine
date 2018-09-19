@@ -33,7 +33,6 @@
 #include "Kernel/ResourceImageData.h"
 
 #include "Engine/ResourceFile.h"
-#include "Engine/ResourceMovie.h"
 #include "Engine/ResourceAnimation.h"
 #include "Engine/ResourceModel3D.h"
 #include "Engine/ResourceVideo.h"
@@ -44,7 +43,6 @@
 #include "Engine/ResourceTestPick.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
-#include "Engine/ResourceInternalObject.h"
 
 #include "Engine/ResourceImageSubstractRGBAndAlpha.h"
 #include "Engine/ResourceImageSubstract.h"
@@ -54,9 +52,6 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/MousePickerSystemInterface.h"
 
-#include "Engine/MovieSlot.h"
-#include "Engine/MovieInternalObject.h"
-#include "Engine/MovieEvent.h"
 #include "Engine/Model3D.h"
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
@@ -103,7 +98,6 @@
 
 #include "Engine/Layer2D.h"
 
-#include "Engine/Movie.h"
 #include "Engine/Meshget.h"
 
 #include "Engine/Window.h"
@@ -287,837 +281,6 @@ namespace Mengine
         //	return unicode;
         //}
         //////////////////////////////////////////////////////////////////////////
-        NodePtr movie_getMovieNode( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-            if( _movie->getMovieNode( _name, ConstString::none(), &node, &submovie ) == false )
-            {
-                return nullptr;
-            }
-
-            return node;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool movie_hasMovieNode( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-            bool successful = _movie->hasMovieNode( _name, ConstString::none(), &node, &submovie );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec3f movie_getWorldAnchorPoint( Movie * _movie )
-        {
-            const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
-
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "Movie::getWorldAnchorPoint %s invalid setup resource"
-                    , _movie->getName().c_str()
-                );
-
-                return mt::vec3f( 0.f, 0.f, 0.f );
-            }
-
-            const mt::vec3f & ap = resourceMovie->getAnchorPoint();
-
-            const mt::mat4f & wm = _movie->getWorldMatrix();
-
-            mt::vec3f wap;
-            mt::mul_v3_v3_m4( wap, ap, wm );
-
-            return wap;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * movie_getEnableMovieLayer( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
-        {
-            bool enable;
-            if( _movie->getEnableMovieLayer( _name, enable ) == false )
-            {
-                return pybind::ret_none();
-            }
-
-            return pybind::ptr( _kernel, enable );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        NodePtr movie_getMovieSlot( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-            if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
-            {
-                return nullptr;
-            }
-
-            return node;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        RenderScissorPtr movie_getMovieScissor( Movie * _movie, const ConstString & _name )
-        {
-            RenderScissorPtr scissor;
-            if( _movie->getMovieScissor( _name, &scissor ) == false )
-            {
-                return nullptr;
-            }
-
-            return scissor;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool movie_hasMovieScissor( Movie * _movie, const ConstString & _name )
-        {
-            bool result = _movie->hasMovieScissor( _name );
-
-            return result;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool movie_hasMovieSlot( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-            bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        NodePtr movie_getMovieText( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-
-            if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieText" ), &node, &submovie ) == false )
-            {
-                return nullptr;
-            }
-
-            return node;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool movie_hasMovieText( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-
-            bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieText" ), &node, &submovie );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        NodePtr movie_getSubMovie( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-            if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "SubMovie" ), &node, &submovie ) == false )
-            {
-                return nullptr;
-            }
-
-            return node;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool movie_hasSubMovie( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-            bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "SubMovie" ), &node, &submovie );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        NodePtr movie_getSocket( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-
-            if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), &node, &submovie ) == true )
-            {
-                return node;
-            }
-
-            if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &node, &submovie ) == true )
-            {
-                return node;
-            }
-
-            LOGGER_ERROR( "Movie::getSocket: movie %s resource %s not found %s"
-                , _movie->getName().c_str()
-                , _movie->getResourceMovieName().c_str()
-                , _name.c_str()
-            );
-
-            return nullptr;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool movie_hasSocket( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-
-            if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), &node, &submovie ) == true )
-            {
-                return true;
-            }
-
-            if( _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &node, &submovie ) == true )
-            {
-                return true;
-            }
-
-            return false;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool movie_setMovieEvent( Movie * _movie, const ConstString & _name, const pybind::object & _cb, const pybind::args & _args )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-
-            if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieEvent" ), &node, &submovie ) == false )
-            {
-                return false;
-            }
-
-            MovieEventPtr ev = stdex::intrusive_static_cast<MovieEventPtr>(node);
-
-            ev->setEvent( _cb, _args );
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool movie_removeMovieEvent( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-
-            if( _movie->getMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieEvent" ), &node, &submovie ) == false )
-            {
-                return false;
-            }
-
-            MovieEventPtr ev = stdex::intrusive_static_cast<MovieEventPtr>(node);
-
-            ev->removeEvent();
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool movie_hasMovieEvent( Movie * _movie, const ConstString & _name )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-            bool successful = _movie->hasMovieNode( _name, STRINGIZE_STRING_LOCAL( "MovieEvent" ), &node, &submovie );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonVisitorMovieSlot
-            : public VisitorMovieNode
-        {
-        public:
-            PythonVisitorMovieSlot( pybind::kernel_interface * _kernel, pybind::list & _list )
-                : m_kernel( _kernel )
-                , m_list( _list )
-            {
-            }
-
-        protected:
-            void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
-            {
-                MovieSlotPtr slot = stdex::intrusive_static_cast<MovieSlotPtr>(_node);
-
-                if( slot == nullptr )
-                {
-                    return;
-                }
-
-                const ConstString & name = slot->getName();
-
-                pybind::tuple py_value = pybind::make_tuple_t( m_kernel, _movie, name, slot );
-                m_list.append( py_value );
-            }
-
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::list & m_list;
-
-        private:
-            void operator = ( const PythonVisitorMovieSlot & );
-        };
-        //////////////////////////////////////////////////////////////////////////
-        pybind::list movie_getSlots( pybind::kernel_interface * _kernel, Movie * _movie )
-        {
-            pybind::list py_list( _kernel );
-
-            PythonVisitorMovieSlot visitor( _kernel, py_list );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSlot" ), &visitor );
-
-            return py_list;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonVisitorMovieSocket
-            : public VisitorMovieNode
-        {
-        public:
-            PythonVisitorMovieSocket( pybind::kernel_interface * _kernel, const pybind::list & _list )
-                : m_kernel( _kernel )
-                , m_list( _list )
-            {
-            }
-
-        protected:
-            void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
-            {
-                HotSpotPtr hotspot = stdex::intrusive_static_cast<HotSpotPtr>(_node);
-
-                if( hotspot == nullptr )
-                {
-                    return;
-                }
-
-                const ConstString & name = hotspot->getName();
-
-                m_list.append( pybind::make_tuple_t( m_kernel, _movie, name, hotspot ) );
-            }
-
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::list m_list;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        pybind::list movie_getSockets( pybind::kernel_interface * _kernel, Movie * _movie )
-        {
-            pybind::list py_list( _kernel );
-
-            PythonVisitorMovieSocket visitor( _kernel, py_list );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), &visitor );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &visitor );
-
-            return py_list;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonVisitorMovieSubMovie
-            : public VisitorMovieNode
-        {
-        public:
-            PythonVisitorMovieSubMovie( pybind::kernel_interface * _kernel, const pybind::list & _list )
-                : m_kernel( _kernel )
-                , m_list( _list )
-            {
-            }
-
-        protected:
-            void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
-            {
-                MoviePtr subMovie = stdex::intrusive_static_cast<MoviePtr>(_node);
-
-                if( subMovie == nullptr )
-                {
-                    return;
-                }
-
-                const ConstString & name = subMovie->getName();
-
-                m_list.append( pybind::make_tuple_t( m_kernel, _movie, name, subMovie ) );
-            }
-
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::list m_list;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        pybind::list movie_getSubMovies( pybind::kernel_interface * _kernel, Movie * _movie )
-        {
-            pybind::list py_list( _kernel );
-
-            PythonVisitorMovieSubMovie visitor( _kernel, py_list );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "SubMovie" ), &visitor );
-
-            return py_list;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonVisitorMovieLayer
-            : public VisitorMovieNode
-        {
-        public:
-            PythonVisitorMovieLayer( pybind::kernel_interface * _kernel, const pybind::list & _list )
-                : m_kernel( _kernel )
-                , m_list( _list )
-            {
-            }
-
-        protected:
-            void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
-            {
-                m_list.append( pybind::make_tuple_t( m_kernel, _movie, _node ) );
-            }
-
-        protected:
-            pybind::kernel_interface * m_kernel;
-            pybind::list m_list;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        pybind::list movie_filterLayers( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _type )
-        {
-            pybind::list py_list( _kernel );
-
-            PythonVisitorMovieLayer visitor( _kernel, py_list );
-            _movie->visitMovieLayer( _type, &visitor );
-
-            return py_list;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float movie_getFrameDuration( Movie * _movie )
-        {
-            const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
-
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "Movie.getFrameDuration: '%s' not activate"
-                    , _movie->getName().c_str()
-                );
-
-                return 0.f;
-            }
-
-            float frameDuration = resourceMovie->getFrameDuration();
-
-            return frameDuration;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float movie_getDuration( Movie * _movie )
-        {
-            const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
-
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "Movie.getDuration: '%s' not activate"
-                    , _movie->getName().c_str()
-                );
-
-                return 0.f;
-            }
-
-            float duration = resourceMovie->getDuration();
-
-            return duration;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        uint32_t movie_getFrameCount( Movie * _movie )
-        {
-            const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
-
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "Movie.getFrameCount: '%s' not activate"
-                    , _movie->getName().c_str()
-                );
-
-                return 0;
-            }
-
-            uint32_t count = resourceMovie->getFrameCount();
-
-            return count;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        const mt::vec2f & movie_getSize( Movie * _movie )
-        {
-            const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
-
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "Movie.getSize: '%s' not activate"
-                    , _movie->getName().c_str()
-                );
-
-                static mt::vec2f zero( 0.f, 0.f );
-
-                return zero;
-            }
-
-            const mt::vec2f & size = resourceMovie->getSize();
-
-            return size;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float movie_getLayerPathLength( Movie * _movie, const ConstString & _name )
-        {
-            const MovieLayer * layer;
-            MoviePtr sub_movie;
-            if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
-            {
-                LOGGER_ERROR( "Movie::getLayerPathLength: '%s' not found layer '%s'"
-                    , _movie->getName().c_str()
-                    , _name.c_str()
-                );
-
-                return 0.f;
-            }
-
-            const ResourceMoviePtr & resourceMovie = sub_movie->getResourceMovie();
-
-            float frameDuration = resourceMovie->getFrameDuration();
-            uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
-            uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
-            uint32_t indexCount = indexOut - indexIn;
-
-            const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
-
-            MovieFrameSource start_frame;
-            if( framePack->getLayerFrame( layer->index, 0, start_frame ) == false )
-            {
-                LOGGER_ERROR( "Movie::getLayerPathLength: '%s' invalid get layer '%s' frame %d"
-                    , _movie->getName().c_str()
-                    , _name.c_str()
-                    , layer->index
-                );
-
-                return 0.f;
-            }
-
-            mt::vec3f pos = start_frame.position;
-            float len = 0.f;
-
-            for( uint32_t i = 1; i != indexCount; ++i )
-            {
-                MovieFrameSource frame;
-                framePack->getLayerFrame( layer->index, i, frame );
-
-                len += mt::length_v3_v3( pos, frame.position );
-                pos = frame.position;
-            }
-
-            return len;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        pybind::list movie_getLayerPath( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
-        {
-            const MovieLayer * layer;
-            MoviePtr sub_movie;
-            if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
-            {
-                LOGGER_ERROR( "Movie::getLayerPathLength: '%s' not found layer '%s'"
-                    , _movie->getName().c_str()
-                    , _name.c_str()
-                );
-
-                return pybind::make_invalid_list_t();
-            }
-
-            const ResourceMoviePtr & resourceMovie = sub_movie->getResourceMovie();
-
-            float frameDuration = resourceMovie->getFrameDuration();
-            uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
-            uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
-            uint32_t indexCount = indexOut - indexIn;
-
-            bool isCompile = resourceMovie->isCompile();
-
-            if( isCompile == false )
-            {
-                resourceMovie->compile();
-            }
-
-            const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
-
-            if( framePack == nullptr )
-            {
-                LOGGER_ERROR( "Movie::getLayerPathLength: sub_movie '%s' not found layer '%s' frame pack is null"
-                    , sub_movie->getName().c_str()
-                    , _name.c_str()
-                );
-
-                return pybind::make_invalid_list_t();
-            }
-
-            pybind::list py_path( _kernel, indexCount );
-
-            for( uint32_t i = 0; i != indexCount; ++i )
-            {
-                MovieFrameSource frame;
-                framePack->getLayerFrame( layer->index, i, frame );
-
-                py_path[i] = frame.position;
-            }
-
-            if( isCompile == false )
-            {
-                resourceMovie->release();
-            }
-
-            return py_path;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        pybind::list movie_getLayerPath2( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
-        {
-            const MovieLayer * layer;
-            MoviePtr sub_movie;
-            if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
-            {
-                LOGGER_ERROR( "Movie::getLayerPathLength: '%s' not found layer '%s'"
-                    , _movie->getName().c_str()
-                    , _name.c_str()
-                );
-
-                return pybind::make_invalid_list_t();
-            }
-
-            const ResourceMoviePtr & resourceMovie = sub_movie->getResourceMovie();
-
-            float frameDuration = resourceMovie->getFrameDuration();
-            uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
-            uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
-            uint32_t indexCount = indexOut - indexIn;
-
-            bool isCompile = resourceMovie->isCompile();
-
-            if( isCompile == false )
-            {
-                resourceMovie->compile();
-            }
-
-            const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
-
-            pybind::list py_path( _kernel, indexCount );
-
-            for( uint32_t i = 0; i != indexCount; ++i )
-            {
-                MovieFrameSource frame;
-                framePack->getLayerFrame( layer->index, i, frame );
-
-                mt::vec2f pos;
-                pos.x = frame.position.x;
-                pos.y = frame.position.y;
-
-                py_path[i] = pos;
-            }
-
-            if( isCompile == false )
-            {
-                resourceMovie->release();
-            }
-
-            return py_path;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        pybind::list movie_getLayerPath3( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
-        {
-            const MovieLayer * layer;
-            MoviePtr sub_movie;
-            if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
-            {
-                LOGGER_ERROR( "Movie::getLayerPathLength: '%s' not found layer '%s'"
-                    , _movie->getName().c_str()
-                    , _name.c_str()
-                );
-
-                return pybind::make_invalid_list_t();
-            }
-
-            const ResourceMoviePtr & resourceMovie = sub_movie->getResourceMovie();
-
-            float frameDuration = resourceMovie->getFrameDuration();
-            uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
-            uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
-            uint32_t indexCount = indexOut - indexIn;
-
-            bool isCompile = resourceMovie->isCompile();
-
-            if( isCompile == false )
-            {
-                if( resourceMovie->compile() == false )
-                {
-                    LOGGER_ERROR( "Movie::getLayerPathLength: '%s' invalid compile"
-                        , _movie->getName().c_str()
-                    );
-
-                    return pybind::make_invalid_list_t();
-                }
-            }
-
-            const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
-
-            const mt::mat4f & wm = _movie->getWorldMatrix();
-
-            pybind::list py_path( _kernel, indexCount );
-
-            for( uint32_t i = 0; i != indexCount; ++i )
-            {
-                MovieFrameSource frame;
-                framePack->getLayerFrame( layer->index, i, frame );
-
-                mt::vec3f pos;
-                mt::mul_v3_v3_m4( pos, frame.position, wm );
-
-                pos.y *= mt::constant::sqrt2;
-
-                py_path[i] = pos;
-            }
-
-            if( isCompile == false )
-            {
-                resourceMovie->release();
-            }
-
-            return py_path;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        pybind::list movie_getLayerPath4( pybind::kernel_interface * _kernel, Movie * _movie, const ConstString & _name )
-        {
-            const MovieLayer * layer;
-            MoviePtr sub_movie;
-            if( _movie->getMovieLayer( _name, &layer, &sub_movie ) == false )
-            {
-                LOGGER_ERROR( "Movie::getLayerPathLength: '%s' not found layer '%s'"
-                    , _movie->getName().c_str()
-                    , _name.c_str()
-                );
-
-                return pybind::make_invalid_list_t();
-            }
-
-            const ResourceMoviePtr & resourceMovie = sub_movie->getResourceMovie();
-
-            float frameDuration = resourceMovie->getFrameDuration();
-            uint32_t indexIn = (uint32_t)((layer->in / frameDuration) + 0.5f);
-            uint32_t indexOut = (uint32_t)((layer->out / frameDuration) + 0.5f);
-            uint32_t indexCount = indexOut - indexIn;
-
-            bool isCompile = resourceMovie->isCompile();
-
-            if( isCompile == false )
-            {
-                if( resourceMovie->compile() == false )
-                {
-                    LOGGER_ERROR( "Movie::getLayerPathLength: '%s' invalid compile"
-                        , _movie->getName().c_str()
-                    );
-
-                    return pybind::make_invalid_list_t();
-                }
-            }
-
-            const MovieFramePackInterfacePtr & framePack = resourceMovie->getFramePack();
-
-            const mt::mat4f & wm = _movie->getWorldMatrix();
-
-            pybind::list py_path( _kernel, indexCount );
-
-            for( uint32_t i = 0; i != indexCount; ++i )
-            {
-                MovieFrameSource frame;
-                framePack->getLayerFrame( layer->index, i, frame );
-
-                mt::vec3f pos;
-                mt::mul_v3_v3_m4( pos, frame.position, wm );
-
-                py_path[i] = pos;
-            }
-
-            if( isCompile == false )
-            {
-                resourceMovie->release();
-            }
-
-            return py_path;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec3f movie_getMovieSlotWorldPosition( Movie * _movie, const ConstString & _slotName )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-            if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
-            {
-                LOGGER_ERROR( "Movie::getMovieSlotWorldPosition %s not found slot '%s"
-                    , _movie->getName().c_str()
-                    , _slotName.c_str()
-                );
-
-                return mt::vec3f( 0.f, 0.f, 0.f );
-            }
-
-            const mt::vec3f & wp = node->getWorldPosition();
-
-            return wp;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec3f movie_getMovieSlotOffsetPosition( Movie * _movie, const ConstString & _slotName )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-            if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
-            {
-                LOGGER_ERROR( "Movie::getMovieSlotOffsetPosition %s not found slot '%s"
-                    , _movie->getName().c_str()
-                    , _slotName.c_str()
-                );
-
-                return mt::vec3f( 0.f, 0.f, 0.f );
-            }
-
-            const ResourceMoviePtr & resourceMovie = _movie->getResourceMovie();
-
-            if( resourceMovie == nullptr )
-            {
-                LOGGER_ERROR( "Movie::getMovieSlotOffsetPosition %s invalid setup resource"
-                    , _movie->getName().c_str()
-                );
-
-                return mt::vec3f( 0.f, 0.f, 0.f );
-            }
-
-            const mt::vec3f & ap = resourceMovie->getAnchorPoint();
-
-            const mt::mat4f & wm = _movie->getWorldMatrix();
-
-            mt::vec3f wap;
-            mt::mul_v3_v3_m4( wap, ap, wm );
-
-            const mt::vec3f & wp = node->getWorldPosition();
-
-            mt::vec3f sop = wp - wap;
-
-            return sop;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool movie_attachMovieSlotNode( Movie * _movie, const ConstString & _slotName, Node * _node )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-            if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
-            {
-                LOGGER_ERROR( "Movie::attachMovieSlotNode %s not found slot '%s"
-                    , _movie->getName().c_str()
-                    , _slotName.c_str()
-                );
-
-                return false;
-            }
-
-            node->addChild( _node );
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool movie_removeAllMovieSlotNode( Movie * _movie, const ConstString & _slotName )
-        {
-            NodePtr node;
-            MoviePtr submovie;
-            if( _movie->getMovieNode( _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ), &node, &submovie ) == false )
-            {
-                LOGGER_ERROR( "Movie::removeAllMovieSlotNode %s not found slot '%s"
-                    , _movie->getName().c_str()
-                    , _slotName.c_str()
-                );
-
-                return false;
-            }
-
-            node->removeChildren();
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
         void s_Transformation_setAngleDeg( Transformation * _transformation, float _angle )
         {
             float rad = _angle * mt::constant::deg2rad;
@@ -1144,58 +307,6 @@ namespace Mengine
             const mt::vec3f & origin = _transformation->getOrigin();
             _transformation->setOrigin( origin + _coordinate );
             _transformation->translate( _coordinate );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        mt::vec3f s_ResourceMovie_getLayerPosition( ResourceMovie * _movie, const ConstString & _name )
-        {
-            const MovieLayer * layer;
-            bool successful = _movie->hasMovieLayer( _name, &layer );
-
-            if( successful == false )
-            {
-                LOGGER_ERROR( "ResourceMovie::getLayerPosition %s not found layer '%s'"
-                    , _movie->getName().c_str()
-                    , _name.c_str()
-                );
-
-                return mt::vec3f( 0.f, 0.f, 0.f );
-            }
-
-            return layer->position;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        float s_ResourceMovie_getLayerIn( ResourceMovie * _movie, const ConstString & _name )
-        {
-            const MovieLayer * layer;
-            bool successful = _movie->hasMovieLayer( _name, &layer );
-
-            if( successful == false )
-            {
-                LOGGER_ERROR( "ResourceMovie::getLayerIn %s not found layer '%s'"
-                    , _movie->getName().c_str()
-                    , _name.c_str()
-                );
-
-                return 0.f;
-            }
-
-            return layer->in;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_ResourceMovie_hasLayer( ResourceMovie * _movie, const ConstString & _name )
-        {
-            const MovieLayer * layer;
-            bool successful = _movie->hasMovieLayer( _name, &layer );
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool s_ResourceMovie_hasLayerType( ResourceMovie * _movie, const ConstString & _name, const ConstString & _type )
-        {
-            const MovieLayer * layer;
-            bool successful = _movie->hasMovieLayerType( _name, _type, &layer );
-
-            return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_HotSpotPolygon_getLocalPolygonCenter( HotSpotPolygon * _hs )
@@ -2031,66 +1142,8 @@ namespace Mengine
 
             return pybind::ret_none();
         }
-        //////////////////////////////////////////////////////////////////////////
-        class PythonMovieEventReceiver
-            : public PythonAnimatableEventReceiver<MovieEventReceiver>
-        {
-        public:
-            pybind::object onMovieGetInternal( const ConstString & _group, const ConstString & _name ) override
-            {
-                return m_cb.call( _group, _name );
-            }
 
-            NodePtr onMovieActivateInternal( const pybind::object & _internal ) override
-            {
-                return m_cb.call( _internal );
-            }
-
-            void onMovieDeactivateInternal( const pybind::object & _internal ) override
-            {
-                m_cb.call( _internal );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_Movie_setEventListener( pybind::kernel_interface * _kernel, Movie * _node, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
-
-            if( _kwds == nullptr )
-            {
-                return pybind::ret_none();
-            }
-
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( py_kwds, _node );
-
-            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
-            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
-            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
-
-#ifndef NDEBUG
-            if( py_kwds.empty() == false )
-            {
-                for( pybind::dict::iterator
-                    it = py_kwds.begin(),
-                    it_end = py_kwds.end();
-                    it != it_end;
-                    ++it )
-                {
-                    String k = it.key();
-
-                    LOGGER_ERROR( "Movie::setEventListener '%s' invalid kwds '%s'\n"
-                        , _node->getName().c_str()
-                        , k.c_str()
-                    );
-                }
-
-                throw;
-            }
-#endif
-
-            return pybind::ret_none();
-        }
+        
         //////////////////////////////////////////////////////////////////////////
         bool s_Node_isHomeless( Node * _node )
         {
@@ -3493,9 +2546,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Arrow );
         SCRIPT_CLASS_WRAPPING( TextField );
         SCRIPT_CLASS_WRAPPING( SoundEmitter );
-        SCRIPT_CLASS_WRAPPING( Movie );
-        SCRIPT_CLASS_WRAPPING( MovieSlot );
-        SCRIPT_CLASS_WRAPPING( MovieInternalObject );
         SCRIPT_CLASS_WRAPPING( Meshget );
         SCRIPT_CLASS_WRAPPING( Model3D );
         SCRIPT_CLASS_WRAPPING( Point );
@@ -3521,7 +2571,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceImageData );
         SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
         SCRIPT_CLASS_WRAPPING( ResourceAnimation );
-        SCRIPT_CLASS_WRAPPING( ResourceMovie );
         SCRIPT_CLASS_WRAPPING( ResourceModel3D );
         SCRIPT_CLASS_WRAPPING( ResourceVideo );
         SCRIPT_CLASS_WRAPPING( ResourceSound );
@@ -3531,7 +2580,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceWindow );
         SCRIPT_CLASS_WRAPPING( ResourceImageSubstractRGBAndAlpha );
         SCRIPT_CLASS_WRAPPING( ResourceImageSubstract );
-        SCRIPT_CLASS_WRAPPING( ResourceInternalObject );
+        
         SCRIPT_CLASS_WRAPPING( ResourceTestPick );
         SCRIPT_CLASS_WRAPPING( ResourceHIT );
 
@@ -3679,23 +2728,6 @@ namespace Mengine
         pybind::interface_<ResourceImageSolid, pybind::bases<ResourceImage> >( kernel, "ResourceImageSolid", false )
             ;
 
-        pybind::interface_<ResourceMovie, pybind::bases<Resource> >( kernel, "ResourceMovie", false )
-            .def( "getSize", &ResourceMovie::getSize )
-            .def( "getLoopSegment", &ResourceMovie::getLoopSegment )
-            .def( "getFrameCount", &ResourceMovie::getFrameCount )
-            .def( "getFrameDuration", &ResourceMovie::getFrameDuration )
-            .def( "getDuration", &ResourceMovie::getDuration )
-            .def( "getSocketResourceShape", &ResourceMovie::getSocketResourceShape )
-            .def( "hasAnchorPoint", &ResourceMovie::hasAnchorPoint )
-            .def( "getAnchorPoint", &ResourceMovie::getAnchorPoint )
-            .def( "hasBoundBox", &ResourceMovie::hasBoundBox )
-            .def( "getBoundBox", &ResourceMovie::getBoundBox )
-            .def_proxy_static( "hasLayer", nodeScriptMethod, &NodeScriptMethod::s_ResourceMovie_hasLayer )
-            .def_proxy_static( "hasLayerType", nodeScriptMethod, &NodeScriptMethod::s_ResourceMovie_hasLayerType )
-            .def_proxy_static( "getLayerPosition", nodeScriptMethod, &NodeScriptMethod::s_ResourceMovie_getLayerPosition )
-            .def_proxy_static( "getLayerIn", nodeScriptMethod, &NodeScriptMethod::s_ResourceMovie_getLayerIn )
-            ;
-
         pybind::interface_<ResourceAnimation, pybind::bases<Resource> >( kernel, "ResourceAnimation", false )
             ;
 
@@ -3706,9 +2738,6 @@ namespace Mengine
             ;
 
         pybind::interface_<ResourceSound, pybind::bases<Resource> >( kernel, "ResourceSound", false )
-            ;
-
-        pybind::interface_<ResourceInternalObject, pybind::bases<Resource> >( kernel, "ResourceInternalObject", false )
             ;
 
         pybind::interface_<ResourceShape, pybind::bases<Resource> >( kernel, "ResourceShape", false )
@@ -3902,29 +2931,29 @@ namespace Mengine
             .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_createChildren )
             .def_proxy_static_kernel( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_getAllChildren )
 
-            .def_proxy_args_static( "colorTo", nodeScriptMethod, &NodeScriptMethod::s_Node_colorTo )
-            .def_proxy_args_static( "alphaTo", nodeScriptMethod, &NodeScriptMethod::s_Node_alphaTo )
+            .def_proxy_static_args( "colorTo", nodeScriptMethod, &NodeScriptMethod::s_Node_colorTo )
+            .def_proxy_static_args( "alphaTo", nodeScriptMethod, &NodeScriptMethod::s_Node_alphaTo )
             .def_proxy_static( "colorStop", nodeScriptMethod, &NodeScriptMethod::s_Node_colorStop )
 
-            .def_proxy_args_static( "velocityTo", nodeScriptMethod, &NodeScriptMethod::s_Node_velocityTo )
-            .def_proxy_args_static( "velocityTo2", nodeScriptMethod, &NodeScriptMethod::s_Node_velocityTo2 )
+            .def_proxy_static_args( "velocityTo", nodeScriptMethod, &NodeScriptMethod::s_Node_velocityTo )
+            .def_proxy_static_args( "velocityTo2", nodeScriptMethod, &NodeScriptMethod::s_Node_velocityTo2 )
 
-            .def_proxy_args_static( "moveTo", nodeScriptMethod, &NodeScriptMethod::s_Node_moveTo )
-            .def_proxy_args_static( "bezier2To", nodeScriptMethod, &NodeScriptMethod::s_Node_bezier2To )
-            .def_proxy_args_static( "bezier3To", nodeScriptMethod, &NodeScriptMethod::s_Node_bezier3To )
-            .def_proxy_args_static( "bezier4To", nodeScriptMethod, &NodeScriptMethod::s_Node_bezier4To )
-            .def_proxy_args_static( "parabolaTo", nodeScriptMethod, &NodeScriptMethod::s_Node_parabolaTo )
-            .def_proxy_args_static( "followTo", nodeScriptMethod, &NodeScriptMethod::s_Node_followTo )
-            .def_proxy_args_static( "followToW", nodeScriptMethod, &NodeScriptMethod::s_Node_followToW )
+            .def_proxy_static_args( "moveTo", nodeScriptMethod, &NodeScriptMethod::s_Node_moveTo )
+            .def_proxy_static_args( "bezier2To", nodeScriptMethod, &NodeScriptMethod::s_Node_bezier2To )
+            .def_proxy_static_args( "bezier3To", nodeScriptMethod, &NodeScriptMethod::s_Node_bezier3To )
+            .def_proxy_static_args( "bezier4To", nodeScriptMethod, &NodeScriptMethod::s_Node_bezier4To )
+            .def_proxy_static_args( "parabolaTo", nodeScriptMethod, &NodeScriptMethod::s_Node_parabolaTo )
+            .def_proxy_static_args( "followTo", nodeScriptMethod, &NodeScriptMethod::s_Node_followTo )
+            .def_proxy_static_args( "followToW", nodeScriptMethod, &NodeScriptMethod::s_Node_followToW )
             .def_proxy_static( "moveStop", nodeScriptMethod, &NodeScriptMethod::s_Node_moveStop )
 
-            .def_proxy_args_static( "angleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_angleTo )
+            .def_proxy_static_args( "angleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_angleTo )
             .def_proxy_static( "angleStop", nodeScriptMethod, &NodeScriptMethod::s_Node_angleStop )
-            .def_proxy_args_static( "scaleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_scaleTo )
+            .def_proxy_static_args( "scaleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_scaleTo )
             .def_proxy_static( "scaleStop", nodeScriptMethod, &NodeScriptMethod::s_Node_scaleStop )
 
-            .def_proxy_args_static( "accMoveTo", nodeScriptMethod, &NodeScriptMethod::s_Node_accMoveTo )
-            .def_proxy_args_static( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_accAngleTo )
+            .def_proxy_static_args( "accMoveTo", nodeScriptMethod, &NodeScriptMethod::s_Node_accMoveTo )
+            .def_proxy_static_args( "accAngleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_accAngleTo )
             ;
 
         pybind::interface_<Affector, pybind::bases<Updatable> >( kernel, "Affector", true )
@@ -4284,60 +3313,13 @@ namespace Mengine
                     ;
             }
 
-            pybind::interface_<Movie, pybind::bases<Node, Eventable, Animatable> >( kernel, "Movie", false )
-                .def( "setResourceMovie", &Movie::setResourceMovie )
-                .def( "getResourceMovie", &Movie::getResourceMovie )
-                .def( "hasMovieLayer", &Movie::hasMovieLayer )
-                .def( "setEnableMovieLayer", &Movie::setEnableMovieLayer )
-                .def( "setEnableMovieLayers", &Movie::setEnableMovieLayers )
-                .def_proxy_static( "getWorldAnchorPoint", nodeScriptMethod, &NodeScriptMethod::movie_getWorldAnchorPoint )
-                .def_proxy_static_kernel( "getEnableMovieLayer", nodeScriptMethod, &NodeScriptMethod::movie_getEnableMovieLayer )
-                .def_proxy_static( "getMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlot )
-                .def_proxy_static( "hasMovieSlot", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieSlot )
-                .def_proxy_static( "getMovieText", nodeScriptMethod, &NodeScriptMethod::movie_getMovieText )
-                .def_proxy_static( "hasMovieText", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieText )
-                .def_proxy_static( "getMovieScissor", nodeScriptMethod, &NodeScriptMethod::movie_getMovieScissor )
-                .def_proxy_static( "hasMovieScissor", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieScissor )
-                .def_proxy_static( "getSubMovie", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovie )
-                .def_proxy_static( "hasSubMovie", nodeScriptMethod, &NodeScriptMethod::movie_hasSubMovie )
-                .def_proxy_static( "getSocket", nodeScriptMethod, &NodeScriptMethod::movie_getSocket )
-                .def_proxy_static( "hasSocket", nodeScriptMethod, &NodeScriptMethod::movie_hasSocket )
-                .def_proxy_args_static( "setMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_setMovieEvent )
-                .def_proxy_static( "removeMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_removeMovieEvent )
-                .def_proxy_static( "hasMovieEvent", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieEvent )
-                .def_proxy_static_kernel( "getSockets", nodeScriptMethod, &NodeScriptMethod::movie_getSockets )
-                .def_proxy_static_kernel( "getSlots", nodeScriptMethod, &NodeScriptMethod::movie_getSlots )
-                .def_proxy_static_kernel( "getSubMovies", nodeScriptMethod, &NodeScriptMethod::movie_getSubMovies )
-                .def_proxy_static( "getMovieNode", nodeScriptMethod, &NodeScriptMethod::movie_getMovieNode )
-                .def_proxy_static( "hasMovieNode", nodeScriptMethod, &NodeScriptMethod::movie_hasMovieNode )
-                .def_proxy_static_kernel( "filterLayers", nodeScriptMethod, &NodeScriptMethod::movie_filterLayers )
-                .def_proxy_static( "getFrameDuration", nodeScriptMethod, &NodeScriptMethod::movie_getFrameDuration )
-                .def_proxy_static( "getDuration", nodeScriptMethod, &NodeScriptMethod::movie_getDuration )
-                .def_proxy_static( "getFrameCount", nodeScriptMethod, &NodeScriptMethod::movie_getFrameCount )
-                .def_proxy_static( "getSize", nodeScriptMethod, &NodeScriptMethod::movie_getSize )
-                .def_proxy_static( "getLayerPathLength", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPathLength )
-                .def_proxy_static_kernel( "getLayerPath", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath )
-                .def_proxy_static_kernel( "getLayerPath2", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath2 )
-                .def_proxy_static_kernel( "getLayerPath3", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath3 )
-                .def_proxy_static_kernel( "getLayerPath4", nodeScriptMethod, &NodeScriptMethod::movie_getLayerPath4 )
-                .def_proxy_static( "getMovieSlotWorldPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotWorldPosition )
-                .def_proxy_static( "getMovieSlotOffsetPosition", nodeScriptMethod, &NodeScriptMethod::movie_getMovieSlotOffsetPosition )
-                .def_proxy_static( "attachMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_attachMovieSlotNode )
-                .def_proxy_static( "removeAllMovieSlotNode", nodeScriptMethod, &NodeScriptMethod::movie_removeAllMovieSlotNode )
-                .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Movie_setEventListener )
-                ;
+
 
             pybind::interface_<Meshget, pybind::bases<Node, Eventable> >( kernel, "Meshget", false )
                 .def( "setSurface", &Meshget::setSurface )
                 .def( "getSurface", &Meshget::getSurface )
                 .def( "setVertices", &Meshget::setVertices )
                 .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_Meshget_setEventListener )
-                ;
-
-            pybind::interface_<MovieSlot, pybind::bases<Node> >( kernel, "MovieSlot", false )
-                ;
-
-            pybind::interface_<MovieInternalObject, pybind::bases<Node> >( kernel, "MovieInternalObject", false )
                 ;
 
             pybind::interface_<Window, pybind::bases<Node> >( kernel, "Window", false )
@@ -4353,9 +3335,9 @@ namespace Mengine
         }
 
         pybind::interface_<ScheduleManagerInterface, pybind::bases<Mixin> >( kernel, "ScheduleManagerInterface", true )
-            .def_proxy_args_static( "timing", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_timing )
-            .def_proxy_args_static( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
-            .def_proxy_args_static( "pipe", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_pipe )
+            .def_proxy_static_args( "timing", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_timing )
+            .def_proxy_static_args( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
+            .def_proxy_static_args( "pipe", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_pipe )
             .def( "refresh", &ScheduleManagerInterface::refresh )
             .def( "exist", &ScheduleManagerInterface::exist )
             .def( "remove", &ScheduleManagerInterface::remove )

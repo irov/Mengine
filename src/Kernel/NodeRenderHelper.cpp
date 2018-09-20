@@ -9,11 +9,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void nodeRenderChildren( const NodePtr & _node, const RenderContext * _context )
         {
-            if( _node->isCompile() == false )
-            {
-                return;
-            }
-            else if( _node->isActivate() == false )
+            if( _node->isActivate() == false )
             {
                 return;
             }
@@ -26,13 +22,18 @@ namespace Mengine
                 return;
             }
 
-            RenderInterfacePtr render = _node->getRender();
+            RenderInterfacePtr selfRender = _node->getRender();
             
-            if( render != nullptr )
+            if( selfRender != nullptr )
             {
+                if( selfRender->isExternalRender() == true )
+                {
+                    return;
+                }
+
                 RenderContext self_context;
 
-                const RenderViewportInterfacePtr & renderViewport = render->getRenderViewport();
+                const RenderViewportInterfacePtr & renderViewport = selfRender->getRenderViewport();
 
                 if( renderViewport != nullptr )
                 {
@@ -43,7 +44,7 @@ namespace Mengine
                     self_context.viewport = _context->viewport;
                 }
 
-                const RenderCameraInterfacePtr & renderCamera = render->getRenderCamera();
+                const RenderCameraInterfacePtr & renderCamera = selfRender->getRenderCamera();
 
                 if( renderCamera != nullptr )
                 {
@@ -54,7 +55,7 @@ namespace Mengine
                     self_context.camera = _context->camera;
                 }
 
-                const RenderScissorInterfacePtr & renderScissor = render->getRenderScissor();
+                const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
 
                 if( renderScissor != nullptr )
                 {
@@ -65,7 +66,7 @@ namespace Mengine
                     self_context.scissor = _context->scissor;
                 }
 
-                const RenderTargetInterfacePtr & renderTarget = render->getRenderTarget();
+                const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
 
                 if( renderTarget != nullptr )
                 {
@@ -78,7 +79,7 @@ namespace Mengine
 
                 if( _node->isLocalHide() == false && _node->isPersonalTransparent() == false )
                 {
-                    render->render( _context );
+                    selfRender->render( _context );
                 }
 
                 const RenderContext * children_context = &self_context;
@@ -89,7 +90,102 @@ namespace Mengine
 
                 if( self_context.target != nullptr )
                 {
-                    const RenderInterfacePtr & targetRender = render->makeTargetRender( &self_context );
+                    const RenderInterfacePtr & targetRender = selfRender->makeTargetRender( &self_context );
+
+                    if( targetRender != nullptr )
+                    {
+                        targetRender->render( _context );
+                    }
+                }
+            }
+            else
+            {
+                _node->foreachChildren( [_context]( const NodePtr & _child )
+                {
+                    Helper::nodeRenderChildren( _child, _context );
+                } );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void nodeRenderChildrenExternal( const NodePtr & _node, const RenderContext * _context )
+        {
+            if( _node->isActivate() == false )
+            {
+                return;
+            }
+            else if( _node->isHide() == true )
+            {
+                return;
+            }
+            else if( _node->isLocalTransparent() == true )
+            {
+                return;
+            }
+
+            RenderInterfacePtr selfRender = _node->getRender();
+
+            if( selfRender != nullptr )
+            {
+                RenderContext self_context;
+
+                const RenderViewportInterfacePtr & renderViewport = selfRender->getRenderViewport();
+
+                if( renderViewport != nullptr )
+                {
+                    self_context.viewport = renderViewport;
+                }
+                else
+                {
+                    self_context.viewport = _context->viewport;
+                }
+
+                const RenderCameraInterfacePtr & renderCamera = selfRender->getRenderCamera();
+
+                if( renderCamera != nullptr )
+                {
+                    self_context.camera = renderCamera;
+                }
+                else
+                {
+                    self_context.camera = _context->camera;
+                }
+
+                const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
+
+                if( renderScissor != nullptr )
+                {
+                    self_context.scissor = renderScissor;
+                }
+                else
+                {
+                    self_context.scissor = _context->scissor;
+                }
+
+                const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
+
+                if( renderTarget != nullptr )
+                {
+                    self_context.target = renderTarget;
+                }
+                else
+                {
+                    self_context.target = _context->target;
+                }
+
+                if( _node->isLocalHide() == false && _node->isPersonalTransparent() == false )
+                {
+                    selfRender->render( _context );
+                }
+
+                const RenderContext * children_context = &self_context;
+                _node->foreachChildren( [children_context]( const NodePtr & _child )
+                {
+                    Helper::nodeRenderChildren( _child, children_context );
+                } );
+
+                if( self_context.target != nullptr )
+                {
+                    const RenderInterfacePtr & targetRender = selfRender->makeTargetRender( &self_context );
 
                     if( targetRender != nullptr )
                     {
@@ -108,11 +204,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void nodeRenderChildrenVisitor( const NodePtr & _node, const RenderVisitorPtr & _visitor, const RenderContext * _context )
         {
-            if( _node->isCompile() == false )
-            {
-                return;
-            }
-            else if( _node->isActivate() == false )
+            if( _node->isActivate() == false )
             {
                 return;
             }
@@ -129,6 +221,11 @@ namespace Mengine
 
             if( render != nullptr )
             {
+                if( render->isExternalRender() == true )
+                {
+                    return;
+                }
+
                 RenderContext self_context;
 
                 const RenderViewportInterfacePtr & renderViewport = render->getRenderViewport();

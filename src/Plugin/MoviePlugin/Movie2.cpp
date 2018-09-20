@@ -1855,7 +1855,7 @@ namespace Mengine
                         Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_data);
 
                         //node->render( &state );
-                        Helper::nodeRenderChildren( node, &state );                        
+                        Helper::nodeRenderChildrenExternal( node, &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
@@ -1871,7 +1871,7 @@ namespace Mengine
                         ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_data);
 
                         //node->render( &state );
-                        Helper::nodeRenderChildren( node, &state );
+                        Helper::nodeRenderChildrenExternal( node, &state );
                     }break;
 #endif
                 case AE_MOVIE_LAYER_TYPE_TEXT:
@@ -1881,7 +1881,7 @@ namespace Mengine
                         RenderInterfacePtr render = node->getRender();
 
                         //render->render( &state );
-                        Helper::nodeRenderChildren( node, &state );
+                        Helper::nodeRenderChildrenExternal( node, &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
@@ -1890,7 +1890,7 @@ namespace Mengine
                         RenderInterfacePtr render = node->getRender();
 
                         //render->render( &state );
-                        Helper::nodeRenderChildren( node, &state );
+                        Helper::nodeRenderChildrenExternal( node, &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {

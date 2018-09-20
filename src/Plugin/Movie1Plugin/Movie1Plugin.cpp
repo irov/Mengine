@@ -1525,6 +1525,15 @@ namespace Mengine
             ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ), new ScriptWrapper<MovieSlot>() );
 
         SCRIPT_SERVICE()
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ), new ScriptWrapper<MovieSceneEffect>() );        
+
+        SCRIPT_SERVICE()
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ), new ScriptWrapper<MovieInternalObject>() );
+
+        SCRIPT_SERVICE()
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ), new ScriptWrapper<MovieEvent>() );
+
+        SCRIPT_SERVICE()
             ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new ScriptWrapper<ResourceMovie>() );
 
         SCRIPT_SERVICE()

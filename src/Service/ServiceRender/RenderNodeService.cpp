@@ -55,11 +55,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderNodeService::cacheNode_( const RenderContext * _context, const NodePtr & _node )
     {
-        if( _node->isCompile() == false )
-        {
-            return;
-        }
-        else if( _node->isActivate() == false )
+        if( _node->isActivate() == false )
         {
             return;
         }
@@ -76,6 +72,11 @@ namespace Mengine
 
         if( selfRender != nullptr )
         {
+            if( selfRender->isExternalRender() == true )
+            {
+                return;
+            }
+
             RenderNodeDesc desc;
             desc.render = selfRender;
 

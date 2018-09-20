@@ -27,7 +27,6 @@ call:getdepend https://github.com/leenjewel/openssl_for_ios_and_android/releases
 call:gitdepend https://github.com/madler/zlib.git zlib
 call:gitdepend https://github.com/xiph/ogg.git libogg
 call:gitdepend https://github.com/xiph/vorbis.git libvorbis
-call:gitdepend https://github.com/aseprite/freetype2.git freetype
 call:gitdepend https://github.com/webmproject/libwebp.git libwebp
 call:gitdepend https://github.com/zeux/pugixml.git pugixml
 call:gitdepend https://github.com/irov/pybind.git pybind
@@ -47,6 +46,7 @@ call:gitdepend https://github.com/frankinshtein/font-effects-lib.git libfe
 call:gitdepend https://github.com/irov/math.git libmath
 call:gitdepend https://github.com/akheron/jansson.git jansson
 
+call:gitdependr http://git.sv.nongnu.org/r/freetype/freetype2.git freetype VER-2-9-1
 call:gitdependr https://github.com/glennrp/libpng.git libpng v1.6.35
 call:gitdependr https://github.com/xiph/theora.git libtheora theora-1.1
 call:gitdependr https://github.com/kcat/openal-soft.git openal-soft v1.18

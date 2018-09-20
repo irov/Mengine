@@ -118,6 +118,8 @@ endif ()
 
 project(freetype)
 
+set(BUILD_SHARED_LIBS OFF)
+
 
 if (WIN32 AND NOT MINGW AND BUILD_SHARED_LIBS)
   message(FATAL_ERROR "Building shared libraries on Windows needs MinGW")

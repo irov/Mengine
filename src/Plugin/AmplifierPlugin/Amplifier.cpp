@@ -129,7 +129,8 @@ namespace Mengine
             return false;
         }
 
-        if( SOUND_SERVICE()->playEmitter( m_soundEmitter ) == false )
+        if( SOUND_SERVICE()
+            ->playEmitter( m_soundEmitter ) == false )
         {
             LOGGER_ERROR( "Amplifier::playMusic '%s' invalid play %d"
                 , path.c_str()

@@ -32,9 +32,42 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Amplifier::_finalizeService()
     {
+        m_soundEmitter = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Amplifier::playMusic( const ConstString& _resourceMusic, float _pos, bool _looped )
+    class Amplifier::MyMusicSoundListener
+        : public FactorableUnique<SoundListenerInterface>
+    {
+    public:
+        MyMusicSoundListener( const AmplifierMusicCallbackInterfacePtr & _callback )
+            : m_callback( _callback )
+        {
+        }
+
+        ~MyMusicSoundListener() override
+        {
+        }
+
+    protected:
+        void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override
+        {
+            (void)_emitter;
+
+            m_callback->onMusicPause();
+        }
+
+        void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
+        {
+            (void)_emitter;
+
+            m_callback->onMusicStop();
+        }
+
+    protected:
+        AmplifierMusicCallbackInterfacePtr m_callback;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    bool Amplifier::playMusic( const ConstString& _resourceMusic, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
     {
         if( m_play == true )
         {
@@ -84,10 +117,10 @@ namespace Mengine
             return false;
         }
 
-        m_soundEmitter = SOUND_SERVICE()
+        SoundIdentityInterfacePtr soundEmitter = SOUND_SERVICE()
             ->createSoundIdentity( false, buffer, ESST_MUSIC, true );
 
-        if( m_soundEmitter == nullptr )
+        if( soundEmitter == nullptr )
         {
             LOGGER_ERROR( "Amplifier::playMusic can't create sound source '%s'"
                 , path.c_str()
@@ -96,8 +129,14 @@ namespace Mengine
             return false;
         }
 
+        if( _callback != nullptr )
+        {
+            SOUND_SERVICE()
+                ->setSourceListener( soundEmitter, new Amplifier::MyMusicSoundListener( _callback ) );
+        }
+
         if( SOUND_SERVICE()
-            ->setSourceVolume( m_soundEmitter, volume, 0.f, false ) == false )
+            ->setSourceVolume( soundEmitter, volume, 0.f, false ) == false )
         {
             LOGGER_ERROR( "Amplifier::playMusic can't set sound '%s' volume '%f'"
                 , path.c_str()
@@ -108,7 +147,7 @@ namespace Mengine
         }
 
         if( SOUND_SERVICE()
-            ->setPosMs( m_soundEmitter, _pos ) == false )
+            ->setPosMs( soundEmitter, _pos ) == false )
         {
             LOGGER_ERROR( "Amplifier::playMusic can't set sound '%s' pos '%f'"
                 , path.c_str()
@@ -119,7 +158,7 @@ namespace Mengine
         }
 
         if( SOUND_SERVICE()
-            ->setLoop( m_soundEmitter, _looped ) == false )
+            ->setLoop( soundEmitter, _looped ) == false )
         {
             LOGGER_ERROR( "Amplifier::playMusic can't set sound '%s' lood '%d'"
                 , path.c_str()
@@ -130,15 +169,17 @@ namespace Mengine
         }
 
         if( SOUND_SERVICE()
-            ->playEmitter( m_soundEmitter ) == false )
+            ->playEmitter( soundEmitter ) == false )
         {
             LOGGER_ERROR( "Amplifier::playMusic '%s' invalid play %d"
                 , path.c_str()
-                , m_soundEmitter->getId()
+                , soundEmitter->getId()
             );
 
             return false;
         }
+
+        m_soundEmitter = soundEmitter;
 
         m_play = true;
 

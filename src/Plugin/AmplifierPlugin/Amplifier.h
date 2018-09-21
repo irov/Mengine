@@ -28,7 +28,7 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        bool playMusic( const ConstString & _resourceMusic, float _pos, bool _looped ) override;
+        bool playMusic( const ConstString & _resourceMusic, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback ) override;
 
         void stopMusic() override;
         bool pauseMusic() override;
@@ -44,5 +44,7 @@ namespace Mengine
         SoundIdentityInterfacePtr m_soundEmitter;
 
         bool m_play;
+
+        class MyMusicSoundListener;
     };
 }

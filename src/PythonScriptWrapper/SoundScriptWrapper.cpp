@@ -475,15 +475,48 @@ namespace Mengine
                 ->getCommonVolume( STRINGIZE_STRING_LOCAL( "Generic" ) );
         }
         //////////////////////////////////////////////////////////////////////////
-        void musicPlay( const ConstString & _resourceMusic, float _pos, bool _isLooped )
+        class PythonAmplifierMusicCallback
+            : public FactorableUnique<AmplifierMusicCallbackInterface>
+        {
+        public:
+            PythonAmplifierMusicCallback( const pybind::object & _cb, const pybind::args & _args )
+                : m_cb( _cb )
+                , m_args( _args )
+            {
+            }
+
+        protected:
+            void onMusicPause() override
+            {
+                m_cb.call_args( 0, m_args );
+            }
+            
+            void onMusicStop()
+            {
+                m_cb.call_args( 0, m_args );
+            }
+
+        protected:
+            pybind::object m_cb;
+            pybind::args m_args;
+        };
+        //////////////////////////////////////////////////////////////////////////
+        void musicPlay( const ConstString & _resourceMusic, float _pos, bool _isLooped, const pybind::object & _cb, const pybind::args & _args )
         {
             if( SERVICE_EXIST( AmplifierInterface ) == false )
             {
                 return;
             }
 
+            AmplifierMusicCallbackInterfacePtr cb = nullptr;
+
+            if( _cb.is_callable() == true )
+            {
+                cb = new PythonAmplifierMusicCallback( _cb, _args );
+            }
+
             AMPLIFIER_SERVICE()
-                ->playMusic( _resourceMusic, _pos, _isLooped );
+                ->playMusic( _resourceMusic, _pos, _isLooped, cb );
         }
         //////////////////////////////////////////////////////////////////////////
         void musicSetVolume( float _volume )
@@ -654,15 +687,22 @@ namespace Mengine
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time )
+        uint32_t musicFadeOut( const ConstString & _resourceMusic, float _pos, bool _isLooped, float _time, const pybind::object & _cb, const pybind::args & _args )
         {
             if( SERVICE_EXIST( AmplifierInterface ) == false )
             {
                 return 0;
             }
 
+            AmplifierMusicCallbackInterfacePtr cb = nullptr;
+
+            if( _cb.is_callable() == true )
+            {
+                cb = new PythonAmplifierMusicCallback( _cb, _args );
+            }
+
             AMPLIFIER_SERVICE()
-                ->playMusic( _resourceMusic, _pos, _isLooped );
+                ->playMusic( _resourceMusic, _pos, _isLooped, cb );
 
             AffectorPtr affector =
                 m_affectorCreatorMusic.create( ETA_POSITION
@@ -737,7 +777,7 @@ namespace Mengine
         pybind::def_functor_args( kernel, "soundFadeIn", soundScriptMethod, &SoundScriptMethod::soundFadeIn );
         pybind::def_functor_args( kernel, "soundFadeOut", soundScriptMethod, &SoundScriptMethod::soundFadeOut );
 
-        pybind::def_functor( kernel, "musicPlay", soundScriptMethod, &SoundScriptMethod::musicPlay );
+        pybind::def_functor_args( kernel, "musicPlay", soundScriptMethod, &SoundScriptMethod::musicPlay );
         pybind::def_functor( kernel, "musicSetVolume", soundScriptMethod, &SoundScriptMethod::musicSetVolume );
         pybind::def_functor( kernel, "musicGetVolume", soundScriptMethod, &SoundScriptMethod::musicGetVolume );
         pybind::def_functor( kernel, "musicSetVolumeTag", soundScriptMethod, &SoundScriptMethod::musicSetVolumeTag );
@@ -750,7 +790,7 @@ namespace Mengine
         pybind::def_functor( kernel, "musicGetPosMs", soundScriptMethod, &SoundScriptMethod::musicGetPosMs );
         pybind::def_functor( kernel, "musicSetPosMs", soundScriptMethod, &SoundScriptMethod::musicSetPosMs );
         pybind::def_functor_args( kernel, "musicFadeIn", soundScriptMethod, &SoundScriptMethod::musicFadeIn );
-        pybind::def_functor( kernel, "musicFadeOut", soundScriptMethod, &SoundScriptMethod::musicFadeOut );
+        pybind::def_functor_args( kernel, "musicFadeOut", soundScriptMethod, &SoundScriptMethod::musicFadeOut );
 
 
         pybind::def_functor_args( kernel, "voicePlay", soundScriptMethod, &SoundScriptMethod::voicePlay );

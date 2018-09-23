@@ -20,6 +20,9 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
+        void _stopService() override;
+
+    public:
         void invalidateNodeCache() override;
         void renderNode( const RenderContext * _context, const NodePtr & _node ) override;
 

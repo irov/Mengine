@@ -36,7 +36,9 @@ namespace Mengine
     {
     public:
         virtual void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) = 0;
+        virtual void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) = 0;
         virtual void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) = 0;
+        virtual void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SoundListenerInterface> SoundListenerInterfacePtr;

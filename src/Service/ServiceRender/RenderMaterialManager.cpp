@@ -158,6 +158,8 @@ namespace Mengine
 
         m_factoryMaterial = Helper::makeFactoryPoolWithListener<RenderMaterial, 256>( this, &RenderMaterialManager::onRenderMaterialDestroy_ );
 
+        m_materialEnumerators.reserve( 1024 );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -165,7 +167,7 @@ namespace Mengine
     {
         for( uint32_t i = 0; i != MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE; ++i )
         {
-            VectorRenderMaterial & material = m_materials[i];
+            IntrusiveListRenderMaterial & material = m_materials[i];
 
             material.clear();
         }
@@ -793,7 +795,7 @@ namespace Mengine
         return &cache_other;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialInterfacePtr & RenderMaterialManager::getMaterial( const ConstString & _materialName
+    RenderMaterialInterfacePtr RenderMaterialManager::getMaterial( const ConstString & _materialName
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
         , const RenderTextureInterfacePtr * _textures )
@@ -806,7 +808,7 @@ namespace Mengine
                 , _materialName.c_str()
             );
 
-            return RenderMaterialInterfacePtr::none();
+            return nullptr;
         }
 
         const RenderMaterialStage * stage = it_found->second;
@@ -820,16 +822,16 @@ namespace Mengine
                     , i
                 );
 
-                return RenderMaterialInterfacePtr::none();
+                return nullptr;
             }
         }
 
-        const RenderMaterialInterfacePtr & material = this->getMaterial2( _materialName, stage, _primitiveType, _textureCount, _textures );
+        RenderMaterialInterfacePtr material = this->getMaterial2( _materialName, stage, _primitiveType, _textureCount, _textures );
 
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialInterfacePtr & RenderMaterialManager::getMaterial2( const ConstString & _materialName
+    RenderMaterialInterfacePtr RenderMaterialManager::getMaterial2( const ConstString & _materialName
         , const RenderMaterialStage * _stage
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
@@ -839,9 +841,10 @@ namespace Mengine
 
         uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
-        VectorRenderMaterial & materials = m_materials[material_table_index];
-
-        for( const RenderMaterialPtr & material : materials )
+        IntrusiveListRenderMaterial & materials = m_materials[material_table_index];
+        
+        //for( const RenderMaterialPtr & material : materials )
+        for( const RenderMaterial * material : materials )
         {
             uint32_t test_material_hash = material->getHash();
 
@@ -863,14 +866,12 @@ namespace Mengine
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( _materialName, id, material_hash, _primitiveType, _textureCount, _textures, _stage );
 
-        materials.emplace_back( material.get() );
+        materials.push_back( material.get() );
 
-        const RenderMaterialInterfacePtr & new_material = materials.back();
-
-        return new_material;
+        return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialInterfacePtr & RenderMaterialManager::getMaterial3( EMaterial _materialId
+    RenderMaterialInterfacePtr RenderMaterialManager::getMaterial3( EMaterial _materialId
         , EPrimitiveType _primitiveType
         , uint32_t _textureCount
         , const RenderTextureInterfacePtr * _textures )
@@ -882,9 +883,9 @@ namespace Mengine
 
         uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
-        VectorRenderMaterial & materials = m_materials[material_table_index];
+        IntrusiveListRenderMaterial & materials = m_materials[material_table_index];
 
-        for( const RenderMaterialPtr & material : materials )
+        for( const RenderMaterial * material : materials )
         {
             uint32_t test_material_hash = material->getHash();
 
@@ -906,11 +907,9 @@ namespace Mengine
         uint32_t id = this->makeMaterialIndex_();
         material->initialize( materialName, id, material_hash, _primitiveType, _textureCount, _textures, stage );
 
-        materials.emplace_back( material.get() );
-
-        const RenderMaterialPtr & new_material = materials.back();
-
-        return new_material;
+        materials.push_back( material.get() );
+        
+        return material;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialManager::setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial )
@@ -940,39 +939,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderMaterialManager::onRenderMaterialDestroy_( RenderMaterial * _material )
     {
-        if( _material == nullptr )
-        {
-            LOGGER_ERROR( "RenderMaterialManager::releaseMaterial material is nullptr"
-            );
-
-            return;
-        }
-
-        uint32_t material_hash = _material->getHash();
-
-        uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
-
-        VectorRenderMaterial & materials = m_materials[material_table_index];
-
-        for( VectorRenderMaterial::iterator
-            it = materials.begin(),
-            it_end = materials.end();
-            it != it_end;
-            ++it )
-        {
-            const RenderMaterialPtr & material = *it;
-
-            if( material != _material )
-            {
-                continue;
-            }
-
-            *it = materials.back();
-            materials.pop_back();
-
-            break;
-        }
-
         uint32_t materialId = _material->getId();
         m_materialEnumerators.emplace_back( materialId );
     }

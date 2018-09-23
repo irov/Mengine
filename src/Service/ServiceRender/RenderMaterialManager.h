@@ -10,12 +10,14 @@
 
 #include "Config/Map.h"
 
+#include "stdex/intrusive_list.h"
+
 #ifndef MENGINE_MATERIAL_RENDER_STAGE_MAX
 #	define MENGINE_MATERIAL_RENDER_STAGE_MAX 256
 #endif
 
 #ifndef MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE
-#	define MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE 127
+#	define MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE 1021
 #endif
 
 namespace Mengine
@@ -50,18 +52,18 @@ namespace Mengine
         const RenderMaterialStage * cacheStage( const RenderMaterialStage & _other ) override;
 
     public:
-        const RenderMaterialInterfacePtr & getMaterial( const ConstString & _materialName
+        RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
             , const RenderTextureInterfacePtr * _textures ) override;
 
-        const RenderMaterialInterfacePtr & getMaterial2( const ConstString & _materialName
+        RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
             , const RenderMaterialStage * _stage
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
             , const RenderTextureInterfacePtr * _textures ) override;
 
-        const RenderMaterialInterfacePtr & getMaterial3( EMaterial _materialId
+        RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
             , const RenderTextureInterfacePtr * _textures ) override;
@@ -103,8 +105,8 @@ namespace Mengine
         RenderMaterialStage m_stages[MENGINE_MATERIAL_RENDER_STAGE_MAX];
         uint32_t m_stageCount;
 
-        typedef Vector<RenderMaterialPtr> VectorRenderMaterial;
-        VectorRenderMaterial m_materials[MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE];
+        typedef stdex::intrusive_list<RenderMaterial> IntrusiveListRenderMaterial;
+        IntrusiveListRenderMaterial m_materials[MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE];
 
         FactoryPtr m_factoryMaterial;
 

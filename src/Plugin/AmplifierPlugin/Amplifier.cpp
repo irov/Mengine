@@ -56,11 +56,25 @@ namespace Mengine
             m_callback->onMusicPause();
         }
 
+        void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
+        {
+            (void)_emitter;
+
+            m_callback->onMusicResume();
+        }
+
         void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
         {
             (void)_emitter;
 
             m_callback->onMusicStop();
+        }
+
+        void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
+        {
+            (void)_emitter;
+
+            m_callback->onMusicEnd();
         }
 
     protected:

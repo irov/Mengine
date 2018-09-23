@@ -35,7 +35,22 @@ namespace Mengine
                 ->onAnimationPause( m_id );
         }
 
+        void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
+        {
+            (void)_emitter;
+
+            EVENTABLE_METHOD( m_sound, EVENT_ANIMATION_RESUME )
+                ->onAnimationResume( m_id, 0.f );
+        }
+
         void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
+        {
+            (void)_emitter;
+
+            m_sound->stop();
+        }
+
+        void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
         {
             (void)_emitter;
 

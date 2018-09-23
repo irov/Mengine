@@ -61,13 +61,43 @@ namespace Mengine
                 //Empty
             }
 
+            void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
+            {
+                (void)_emitter;
+                //Empty
+            }
+
             void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
             {
                 uint32_t id = _emitter->getId();
 
                 if( m_cb.is_callable() == true )
                 {
-                    m_cb.call_args( _emitter, m_args );
+                    m_cb.call_args( _emitter, 0, m_args );
+                }
+
+                if( SOUND_SERVICE()
+                    ->releaseSoundSource( _emitter ) == false )
+                {
+                    LOGGER_ERROR( "MySoundNodeListenerInterface '%s' emitter invalid release sound '%d'"
+                        , m_resource->getName().c_str()
+                        , id
+                    );
+                }
+
+                m_resource->decrementReference();
+                m_resource = nullptr;
+
+                m_soundBuffer = nullptr;
+            }
+
+            void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
+            {
+                uint32_t id = _emitter->getId();
+
+                if( m_cb.is_callable() == true )
+                {
+                    m_cb.call_args( _emitter, 1, m_args );
                 }
 
                 if( SOUND_SERVICE()
@@ -490,10 +520,20 @@ namespace Mengine
             {
                 m_cb.call_args( 0, m_args );
             }
+
+            void onMusicResume()
+            {
+                m_cb.call_args( 1, m_args );
+            }
             
             void onMusicStop()
             {
-                m_cb.call_args( 0, m_args );
+                m_cb.call_args( 2, m_args );
+            }
+
+            void onMusicEnd()
+            {
+                m_cb.call_args( 3, m_args );
             }
 
         protected:

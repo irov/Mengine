@@ -11,7 +11,7 @@ namespace Mengine
     {
     public:
         Colorable();
-        ~Colorable();
+        ~Colorable() override;
 
     public:
         void setPersonalColor( const ColourValue& _color );
@@ -59,28 +59,39 @@ namespace Mengine
         virtual void _invalidateColor();
 
     protected:
-        ColourValue m_colorPersonal;
-        ColourValue m_colorLocal;
+        virtual void _setLocalTransparent( bool _transparent );
+        virtual void _setPersonalTransparent( bool _transparent );
 
-        mutable ColourValue m_colorRelation;
+    protected:
+        void updateLocalTransparent_();
+        void updatePersonalTransparent_();
+
+    protected:
+        ColourValue m_personalColor;
+        ColourValue m_localColor;
+                
+        mutable ColourValue m_relationColor;
         mutable bool m_invalidateColor;
+
+        bool m_personalTransparent;
+        bool m_localTransparent;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Colorable> ColorablePtr;
     //////////////////////////////////////////////////////////////////////////
     inline bool Colorable::isLocalTransparent() const
     {
-        return m_colorLocal.getA() < 0.0001f;
+        return m_localTransparent;
     }
     //////////////////////////////////////////////////////////////////////////
     inline bool Colorable::isPersonalTransparent() const
     {
-        return m_colorPersonal.getA() < 0.0001f;
+        return m_personalTransparent;
     }
     //////////////////////////////////////////////////////////////////////////
     const ColourValue & Colorable::getRelationColor() const
     {
-        return m_colorRelation;
+        return m_relationColor;
     }
     //////////////////////////////////////////////////////////////////////////
     inline bool Colorable::isInvalidateColor() const
@@ -90,38 +101,38 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     inline const ColourValue & Colorable::getPersonalColor() const
     {
-        return m_colorPersonal;
+        return m_personalColor;
     }
     //////////////////////////////////////////////////////////////////////////
     inline float Colorable::getPersonalAlpha() const
     {
-        float alpha = m_colorPersonal.getA();
+        float alpha = m_personalColor.getA();
 
         return alpha;
     }
     //////////////////////////////////////////////////////////////////////////
     inline const ColourValue& Colorable::getLocalColor() const
     {
-        return m_colorLocal;
+        return m_localColor;
     }
     //////////////////////////////////////////////////////////////////////////
     inline float Colorable::getLocalColorR() const
     {
-        return m_colorLocal.getR();
+        return m_localColor.getR();
     }
     //////////////////////////////////////////////////////////////////////////
     inline float Colorable::getLocalColorG() const
     {
-        return m_colorLocal.getG();
+        return m_localColor.getG();
     }
     //////////////////////////////////////////////////////////////////////////
     inline float Colorable::getLocalColorB() const
     {
-        return m_colorLocal.getB();
+        return m_localColor.getB();
     }
     //////////////////////////////////////////////////////////////////////////
     inline float Colorable::getLocalAlpha() const
     {
-        return m_colorLocal.getA();
+        return m_localColor.getA();
     }
 }

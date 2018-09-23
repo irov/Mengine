@@ -12,7 +12,9 @@ namespace Mengine
     {
     public:
         virtual void onMusicPause() = 0;
+        virtual void onMusicResume() = 0;
         virtual void onMusicStop() = 0;
+        virtual void onMusicEnd() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AmplifierMusicCallbackInterface> AmplifierMusicCallbackInterfacePtr;

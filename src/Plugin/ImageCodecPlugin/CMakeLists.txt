@@ -98,21 +98,17 @@ if(MENGINE_SUPPORT_DECODER_WEBP)
     )
     
     add_definitions(-DMENGINE_SUPPORT_DECODER_WEBP)
-    INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libwebp/src )
+    INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libwebp/include )
 endif()
 
 INCLUDE_DIRECTORIES( 
         ${Mengine_SOURCE_DIR}/Utils 
         ${THIRDPARTY_DIR}
-        #${THIRDPARTY_DIR}/theora/include
         ${THIRDPARTY_DIR}/zlib
         ${THIRDPARTY_DIR}/libpng
         ${THIRDPARTY_DIR}/libjpeg
         ${THIRDPARTY_DIR}/libmath/include
-        ${THIRDPARTY_DIR}/metabuf
-					
-        #${THIRDPARTY_DIR}/libWEBP/Include
-        #${THIRDPARTY_DIR}/libWEBPLL
+        ${THIRDPARTY_DIR}/metabuf					
 )
 
 ADD_MENGINE_LIBRARY()

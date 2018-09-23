@@ -36,18 +36,18 @@ namespace Mengine
         virtual const RenderMaterialStage * cacheStage( const RenderMaterialStage & _other ) = 0;
 
     public:
-        virtual const RenderMaterialInterfacePtr & getMaterial( const ConstString & _materialName
+        virtual RenderMaterialInterfacePtr getMaterial( const ConstString & _materialName
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
             , const RenderTextureInterfacePtr * _textures ) = 0;
 
-        virtual const RenderMaterialInterfacePtr & getMaterial2( const ConstString & _materialName
+        virtual RenderMaterialInterfacePtr getMaterial2( const ConstString & _materialName
             , const RenderMaterialStage * _stage
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
             , const RenderTextureInterfacePtr * _textures ) = 0;
 
-        virtual const RenderMaterialInterfacePtr & getMaterial3( EMaterial _materialId
+        virtual RenderMaterialInterfacePtr getMaterial3( EMaterial _materialId
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
             , const RenderTextureInterfacePtr * _textures ) = 0;

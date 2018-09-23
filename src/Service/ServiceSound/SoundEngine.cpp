@@ -82,10 +82,13 @@ namespace Mengine
 
             this->stopSoundBufferUpdate_( identity );
 
-            if( identity->source != nullptr )
+            const SoundSourceInterfacePtr & source = identity->getSoundSource();
+
+            if( source != nullptr )
             {
-                identity->source->stop();
-                identity->source = nullptr;
+                source->stop();
+
+                identity->setSoundSource( nullptr );
             }
         }
 
@@ -634,7 +637,7 @@ namespace Mengine
             process = true;
         }
 
-        VectorSoundListeners m_listeners;
+        VectorSoundListeners stopSoundListeners;
 
         for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
@@ -689,7 +692,7 @@ namespace Mengine
 
                 if( identity->listener != nullptr )
                 {
-                    m_listeners.emplace_back( identity );
+                    stopSoundListeners.emplace_back( identity );
                 }
             }
             else
@@ -703,10 +706,10 @@ namespace Mengine
             this->updateVolume();
         }
 
-        for( const SoundIdentityPtr & identity : m_listeners )
+        for( const SoundIdentityPtr & identity : stopSoundListeners )
         {
             SoundListenerInterfacePtr keep_listener = identity->getSoundListener();
-            keep_listener->onSoundStop( identity );
+            keep_listener->onSoundEnd( identity );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -841,6 +844,14 @@ namespace Mengine
                     }
 
                     this->playSoundBufferUpdate_( identity );
+                }
+
+                const SoundListenerInterfacePtr & listener = identity->getSoundListener();
+
+                if( listener != nullptr )
+                {
+                    SoundListenerInterfacePtr keep_listener = listener;
+                    keep_listener->onSoundResume( identity );
                 }
             }
         default:

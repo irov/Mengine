@@ -374,7 +374,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, m_filePath, false );
@@ -513,7 +513,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, m_filePath, false );
@@ -603,9 +603,9 @@ namespace Mengine
         ResourceImageDefaultPtr image = RESOURCE_SERVICE()
             ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
 
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
-        image->setCategory( category );
+        image->setFileGroup( category );
 
         PathString full_path;
 
@@ -639,9 +639,9 @@ namespace Mengine
         ResourceVideoPtr video = RESOURCE_SERVICE()
             ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
 
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
-        video->setCategory( category );
+        video->setFileGroup( category );
 
         PathString full_path;
 
@@ -681,9 +681,9 @@ namespace Mengine
         ResourceSoundPtr sound = RESOURCE_SERVICE()
             ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
 
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
-        sound->setCategory( category );
+        sound->setFileGroup( category );
 
         PathString full_path;
 
@@ -711,9 +711,9 @@ namespace Mengine
         ResourcePtr particle = RESOURCE_SERVICE()
             ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
-        particle->setCategory( category );
+        particle->setFileGroup( category );
 
         PathString full_path;
 

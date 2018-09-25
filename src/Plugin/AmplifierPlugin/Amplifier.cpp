@@ -100,7 +100,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & category = resourceMusic->getCategory();
+        const FileGroupInterfacePtr & category = resourceMusic->getFileGroup();
         const FilePath & path = resourceMusic->getPath();
         const ConstString & codec = resourceMusic->getCodec();
         bool external = resourceMusic->isExternal();

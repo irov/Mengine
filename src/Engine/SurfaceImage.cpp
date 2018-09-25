@@ -228,7 +228,7 @@ namespace Mengine
 
         if( material == nullptr )
         {
-            LOGGER_ERROR( "SurfaceImage::updateMaterial_ %s resource %s m_material is NULL"
+            LOGGER_ERROR( "SurfaceImage::updateMaterial_ '%s' resource '%s' m_material is NULL"
                 , this->getName().c_str()
                 , m_resourceImage->getName().c_str()
             );

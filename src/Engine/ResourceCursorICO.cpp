@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceCursorICO::_compile()
     {
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
         m_buffer = Helper::createMemoryFile( category, m_path, false, "ResourceCursorICO", __FILE__, __LINE__ );
 

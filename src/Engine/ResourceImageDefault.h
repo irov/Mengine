@@ -18,7 +18,10 @@ namespace Mengine
         bool setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize );
 
     public:
+        void setFilePath( const FilePath & _filePath );
         const FilePath & getFilePath() const;
+
+        void setCodecType( const ConstString & _codecType );
         const ConstString & getCodecType() const;
 
     protected:

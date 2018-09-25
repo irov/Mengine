@@ -23,6 +23,8 @@ namespace Mengine
 
     public:
         const FilePath & getFileName() const;
+
+        void setCodecType( const ConstString & _codecType );
         const ConstString & getCodecType() const;
 
     public:
@@ -30,6 +32,7 @@ namespace Mengine
         const FilePath & getImagePath() const;
 
     public:
+        void setImageMaxSize( const mt::vec2f & _maxSize );
         const mt::vec2f & getImageMaxSize() const;
 
     protected:

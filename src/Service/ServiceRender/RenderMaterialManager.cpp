@@ -877,6 +877,18 @@ namespace Mengine
         , const RenderTextureInterfacePtr * _textures )
     {
         const RenderMaterialStage * stage = m_defaultStages[_materialId];
+
+#ifndef NDEBUG
+        if( stage == nullptr )
+        {
+            LOGGER_ERROR( "RenderMaterialManager::getMaterial3 invalid get stage for material '%s'"
+                , m_defaultStageNames[_materialId].c_str()
+            );
+
+            return nullptr;
+        }
+#endif
+
         const ConstString & materialName = m_defaultStageNames[_materialId];
 
         uint32_t material_hash = this->makeMaterialHash( materialName, _textureCount, _textures );

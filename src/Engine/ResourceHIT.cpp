@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_compile()
     {
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, m_filePath, false );
@@ -168,7 +168,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_isValid() const
     {
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
         if( category->existFile( m_filePath ) == false )
         {
@@ -182,7 +182,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceHIT::_isValid %s invalid open file %s:%s"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
             );
 
@@ -196,7 +196,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceHIT::_isValid %s file %s:%s invalid decoder %s"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
                 , this->getCodecType().c_str()
             );
@@ -208,7 +208,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceHIT::_isValid %s file %s:%s decoder initialize failed %s"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
                 , this->getCodecType().c_str()
             );

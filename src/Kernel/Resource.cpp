@@ -26,7 +26,7 @@ namespace Mengine
         m_locale = _locale;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resource::setCategory( const FileGroupInterfacePtr & _category )
+    void Resource::setFileGroup( const FileGroupInterfacePtr & _category )
     {
         m_category = _category;
     }

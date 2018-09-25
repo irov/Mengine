@@ -65,7 +65,7 @@ namespace Mengine
             return true;
         }
 
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
         if( category->existFile( m_path ) == false )
         {

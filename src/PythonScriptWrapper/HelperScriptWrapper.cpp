@@ -10,6 +10,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UserdataInterface.h"
 #include "Interface/ConfigInterface.h"
+#include "Interface/FileSystemInterface.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
@@ -2573,6 +2574,30 @@ namespace Mengine
             return py_data;
         }
 
+        const FileGroupInterfacePtr & s_getDefaultFileGroup()
+        {
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getDefaultFileGroup();
+
+            return fileGroup;
+        }
+
+        bool s_hasFileGroup( const ConstString & _fileGroup )
+        {
+            bool exist = FILE_SERVICE()
+                ->hasFileGroup( _fileGroup, nullptr );
+
+            return exist;
+        }
+
+        const FileGroupInterfacePtr & s_getFileGroup( const ConstString & _fileGroup )
+        {
+            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
+                ->getFileGroup( _fileGroup );
+
+            return fileGroup;
+        }
+
         bool s_hasAccountPickleFile( const ConstString & _accountID, const WString & _fileName )
         {
             AccountInterfacePtr account = ACCOUNT_SERVICE()
@@ -2609,6 +2634,25 @@ namespace Mengine
         {
             APPLICATION_SERVICE()
                 ->setParticleEnable( _enable );
+        }
+
+        //////////////////////////////////////////////////////////////////////////
+        mt::vec2f s_getNodeScreenPosition( const NodePtr & _node )
+        {
+            const RenderCameraInterfacePtr & camera = Helper::getRenderCameraInheritance( _node.get() );
+
+            const mt::vec3f & wp = _node->getWorldPosition();
+
+            const mt::mat4f & vm = camera->getCameraViewMatrix();
+
+            mt::vec3f sc;
+            mt::mul_m4_v3( sc, vm, wp );
+
+            mt::vec2f screen;
+            screen.x = sc.x;
+            screen.y = sc.y;
+
+            return screen;
         }
 
         bool s_hasTextByKey( const ConstString& _key )
@@ -2945,8 +2989,7 @@ namespace Mengine
         pybind::def_functor( kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
 
         pybind::def_functor( kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getDate );
-
-
+        
         pybind::def_functor( kernel, "getTimeString", helperScriptMethod, &HelperScriptMethod::s_getTimeString );
 
         pybind::def_functor( kernel, "getConfigBool", helperScriptMethod, &HelperScriptMethod::s_getConfigBool );
@@ -3046,11 +3089,13 @@ namespace Mengine
         pybind::def_functor_kernel( kernel, "loadAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_loadAccountPickleFile );
         pybind::def_functor( kernel, "hasAccountPickleFile", helperScriptMethod, &HelperScriptMethod::s_hasAccountPickleFile );
 
+        pybind::def_functor( kernel, "getDefaultFileGroup", helperScriptMethod, &HelperScriptMethod::s_getDefaultFileGroup );
+        pybind::def_functor( kernel, "hasFileGroup", helperScriptMethod, &HelperScriptMethod::s_hasFileGroup );
+        pybind::def_functor( kernel, "getFileGroup", helperScriptMethod, &HelperScriptMethod::s_getFileGroup );        
+
         pybind::def_functor( kernel, "setParticlesEnabled", helperScriptMethod, &HelperScriptMethod::s_setParticlesEnabled );
 
-        //pybind::def_function( "unicode", &ScriptHelper::s_unicode );
-        //pybind::def_function( "ansi", &ScriptHelper::s_ansi );
-
+        pybind::def_functor( kernel, "getNodeScreenPosition", helperScriptMethod, &HelperScriptMethod::s_getNodeScreenPosition );
 
         pybind::def_functor( kernel, "hasTextByKey", helperScriptMethod, &HelperScriptMethod::s_hasTextByKey );
         pybind::def_functor( kernel, "getTextByKey", helperScriptMethod, &HelperScriptMethod::s_getTextByKey );

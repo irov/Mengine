@@ -179,12 +179,7 @@ namespace Mengine
         float getTimeFactor() const override;
         void setTimeFactor( float _timingFactor ) override;
 
-    public:
-        void destroyArrow();
-
     protected:
-        ArrowPtr m_defaultArrow;
-
         ConstString m_currentPackName;
         String m_currentResourcePath;
 

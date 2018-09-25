@@ -34,6 +34,11 @@ namespace Mengine
         return m_fileName;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ResourceImageData::setCodecType( const ConstString & _codecType )
+    {
+        m_codecType = _codecType;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceImageData::getCodecType() const
     {
         return m_codecType;
@@ -41,7 +46,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageData::_isValid() const
     {
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
         bool exist = category->existFile( m_fileName );
 
@@ -54,7 +59,7 @@ namespace Mengine
 
             LOGGER_ERROR( "ResourceImageDefault::_isValid %s not exist file %s:%s"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFileName().c_str()
             );
 
@@ -68,7 +73,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageDefault::_isValid %s invalid open file %s:%s"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFileName().c_str()
             );
 
@@ -82,7 +87,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s invalid decoder %s"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFileName().c_str()
                 , this->getCodecType().c_str()
             );
@@ -94,7 +99,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFileName().c_str()
                 , this->getCodecType().c_str()
             );
@@ -131,7 +136,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageData::_compile()
     {
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( category, m_fileName, false );
@@ -139,7 +144,7 @@ namespace Mengine
         if( stream == nullptr )
         {
             LOGGER_ERROR( "ResourceImageData::_compile: Image file '%s:%s' was not found"
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFileName().c_str()
             );
 
@@ -153,7 +158,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' was not found"
                 , this->getCodecType().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFileName().c_str()
             );
 
@@ -164,7 +169,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' was not found"
                 , this->getCodecType().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFileName().c_str()
             );
 
@@ -190,7 +195,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' invalid optionize"
                 , this->getCodecType().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFileName().c_str()
             );
 
@@ -201,7 +206,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageData::_compile: Image decoder '%s' for file '%s:%s' invalid decode"
                 , this->getCodecType().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFileName().c_str()
             );
 
@@ -230,6 +235,11 @@ namespace Mengine
     const FilePath & ResourceImageData::getImagePath() const
     {
         return m_fileName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImageData::setImageMaxSize( const mt::vec2f & _maxSize )
+    {
+        m_maxSize = _maxSize;
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & ResourceImageData::getImageMaxSize() const

@@ -80,7 +80,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get rgb resource '%s'"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getGroupName().c_str()
                 , m_resourceImageRGBName.c_str()
             );
@@ -95,7 +95,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get alpha resource '%s'"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getGroupName().c_str()
                 , m_resourceImageRGBName.c_str()
             );

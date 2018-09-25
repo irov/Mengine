@@ -22,9 +22,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void ResourceImageDefault::setFilePath( const FilePath & _filePath )
+    {
+        m_filePath = _filePath;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const FilePath & ResourceImageDefault::getFilePath() const
     {
         return m_filePath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImageDefault::setCodecType( const ConstString & _codecType )
+    {
+        m_codecType = _codecType;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceImageDefault::getCodecType() const
@@ -102,7 +112,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_isValid() const
     {
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
         if( category->existFile( m_filePath ) == false )
         {
@@ -113,7 +123,7 @@ namespace Mengine
 
             LOGGER_ERROR( "ResourceImageDefault::_isValid %s not exist file %s:%s"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
             );
 
@@ -127,7 +137,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageDefault::_isValid %s invalid open file %s:%s"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
             );
 
@@ -141,7 +151,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s invalid decoder %s"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
                 , this->getCodecType().c_str()
             );
@@ -153,7 +163,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
                 , this->getCodecType().c_str()
             );
@@ -173,7 +183,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s invalid limit %d:%d texture size %d:%d "
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
                 , limitTextureWidth
                 , limitTextureHeight
@@ -200,7 +210,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "ResourceImage::_isValid: '%s' file '%s:%s' incorrect size %f:%f texture %f:%f"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
                 , test_size.x
                 , test_size.y
@@ -234,7 +244,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s invalid optionizing"
                     , this->getName().c_str()
-                    , this->getCategory()->getName().c_str()
+                    , this->getFileGroup()->getName().c_str()
                     , this->getFilePath().c_str()
                     , this->getCodecType().c_str()
                 );
@@ -246,7 +256,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s invalid decode %s"
                     , this->getName().c_str()
-                    , this->getCategory()->getName().c_str()
+                    , this->getFileGroup()->getName().c_str()
                     , this->getFilePath().c_str()
                     , this->getCodecType().c_str()
                 );
@@ -258,7 +268,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s codec %s all pixels transparency!"
                     , this->getName().c_str()
-                    , this->getCategory()->getName().c_str()
+                    , this->getFileGroup()->getName().c_str()
                     , this->getFilePath().c_str()
                     , this->getCodecType().c_str()
                 );
@@ -274,7 +284,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s codec %s row or column pixels transparency!"
                         , this->getName().c_str()
-                        , this->getCategory()->getName().c_str()
+                        , this->getFileGroup()->getName().c_str()
                         , this->getFilePath().c_str()
                         , this->getCodecType().c_str()
                     );
@@ -334,16 +344,27 @@ namespace Mengine
             , this->getFilePath().c_str()
         );
 
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
+
+        if( category == nullptr )
+        {
+            LOGGER_ERROR( "ResourceImageDefault::_compile: '%s' group '%s' file path '%s' invalid setup category"
+                , this->getName().c_str()
+                , this->getGroupName().c_str()
+                , this->getFilePath().c_str()
+            );
+
+            return false;
+        }
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
             ->loadTexture( category, m_filePath, m_codecType );
 
         if( texture == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageDefault::loadImageFrame_: '%s' category '%s' group '%s' can't load image file '%s'"
+            LOGGER_ERROR( "ResourceImageDefault::_compile: '%s' category '%s' group '%s' can't load image file '%s'"
                 , this->getName().c_str()
-                , this->getCategory()->getName().c_str()
+                , this->getFileGroup()->getName().c_str()
                 , this->getGroupName().c_str()
                 , this->getFilePath().c_str()
             );
@@ -382,7 +403,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize )
     {
-        m_codecType = _codecType;
+        this->setCodecType( _codecType );
 
         if( m_codecType.empty() == true )
         {
@@ -395,17 +416,17 @@ namespace Mengine
             }
         }
 
-        m_uvImage = _uv_image;
-        m_uvAlpha = _uv_alpha;
+        this->setUVImage( _uv_image );
+        this->setUVAlpha( _uv_alpha );
 
-        m_maxSize = _maxSize;
-        m_size = m_maxSize;
-        m_offset = mt::vec2f( 0.f, 0.f );
+        this->setMaxSize( _maxSize );
+        this->setSize( m_size );
+        this->setOffset( mt::vec2f( 0.f, 0.f ) );
 
-        m_texture = nullptr;
-        m_textureAlpha = nullptr;
+        this->setTexture( nullptr );
+        this->setTextureAlpha( nullptr );
 
-        m_hasAlpha = true;
+        this->setAlpha( true );
 
         if( this->recompile( [this, _imagePath]() { m_filePath = _imagePath; } ) == false )
         {

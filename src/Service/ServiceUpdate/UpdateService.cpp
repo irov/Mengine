@@ -179,6 +179,7 @@ namespace Mengine
     {
         UpdatableProxy & proxy = m_proxies[_id];
 
+        proxy.updation = nullptr;
         proxy.state = 2;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -221,8 +222,6 @@ namespace Mengine
             }
             else if( proxy.state == 2 )
             {
-                proxy.updation = nullptr;
-
                 m_proxyFrees.push_back( id );
 
                 if( it + 1 == it_end )

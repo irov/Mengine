@@ -565,8 +565,17 @@ namespace Mengine
         SERVICE_FINALIZE( MousePickerSystemInterface );
         SERVICE_FINALIZE( GlobalHandleSystemInterface );
 
-        m_scheduleManager = nullptr;
-        m_scheduleManagerGlobal = nullptr;
+        if( m_scheduleManager != nullptr )
+        {
+            m_scheduleManager->finalize();
+            m_scheduleManager = nullptr;
+        }
+
+        if( m_scheduleManagerGlobal != nullptr )
+        {
+            m_scheduleManagerGlobal->finalize();
+            m_scheduleManagerGlobal = nullptr;
+        }
 
         m_schedulers.clear();
 

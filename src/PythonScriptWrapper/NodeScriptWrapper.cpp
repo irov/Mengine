@@ -106,9 +106,6 @@
 #include "Kernel/Shape.h"
 #include "Kernel/Entity.h"
 
-//#include "DiscreteEntity.h"
-
-//#include "SoundEngine.h"
 #include "Kernel/Logger.h"
 
 #include "Interface/RenderSystemInterface.h"
@@ -295,7 +292,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const ConstString & s_Resource_getCategory( Resource * _resource )
         {
-            const FileGroupInterfacePtr & category = _resource->getCategory();
+            const FileGroupInterfacePtr & category = _resource->getFileGroup();
 
             const ConstString & categoryName = category->getName();
 
@@ -2680,9 +2677,22 @@ namespace Mengine
             .def( "countReference", &Reference::countReference )
             ;
 
+        pybind::interface_<FileGroupInterface, pybind::bases<Mixin> >( kernel, "FileGroupInterface" )
+            .def( "getName", &FileGroupInterface::getName )
+            .def( "getCategory", &FileGroupInterface::getCategory )
+            .def( "isPacked", &FileGroupInterface::isPacked )
+            .def( "getRelationPath", &FileGroupInterface::getRelationPath )
+            .def( "existFile", &FileGroupInterface::existFile )
+            .def( "existDirectory", &FileGroupInterface::existDirectory )
+            ;
+
         pybind::interface_<Resource, pybind::bases<Scriptable, Compilable, Identity, Reference> >( kernel, "ResourceReference", false )
-            .def_proxy_static( "getCategory", nodeScriptMethod, &NodeScriptMethod::s_Resource_getCategory )
-            .def( "getGroup", &Resource::getGroupName )
+            .def( "setLocale", &Resource::setLocale )
+            .def( "getLocale", &Resource::getLocale )
+            .def( "setFileGroup", &Resource::setFileGroup )
+            .def( "getFileGroup", &Resource::getFileGroup )            
+            .def( "setGroupName", &Resource::setGroupName )
+            .def( "getGroupName", &Resource::getGroupName )
             .def( "cache", &Resource::cache )
             .def( "uncache", &Resource::uncache )
             ;
@@ -2709,13 +2719,18 @@ namespace Mengine
             ;
 
         pybind::interface_<ResourceImageData, pybind::bases<Resource> >( kernel, "ResourceImageData", false )
+            .def( "setImagePath", &ResourceImageData::setImagePath )
             .def( "getImagePath", &ResourceImageData::getImagePath )
+            .def( "setCodecType", &ResourceImageData::setCodecType )
             .def( "getCodecType", &ResourceImageData::getCodecType )
+            .def( "setImageMaxSize", &ResourceImageData::setImageMaxSize )
             .def( "getImageMaxSize", &ResourceImageData::getImageMaxSize )
             ;
 
         pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage> >( kernel, "ResourceImageDefault", false )
+            .def( "setFilePath", &ResourceImageDefault::setFilePath )
             .def( "getFilePath", &ResourceImageDefault::getFilePath )
+            .def( "setCodecType", &ResourceImageDefault::setCodecType )
             .def( "getCodecType", &ResourceImageDefault::getCodecType )
             ;
 

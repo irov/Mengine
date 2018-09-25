@@ -148,7 +148,7 @@ namespace Mengine
                     continue;
                 }
 
-                const FileGroupInterfacePtr & resource_category = has_resource->getCategory();
+                const FileGroupInterfacePtr & resource_category = has_resource->getFileGroup();
 
                 LOGGER_ERROR( "ResourceManager::loadResource: path %s already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
                     , _path.c_str()
@@ -156,7 +156,7 @@ namespace Mengine
                     , groupName.c_str()
                     , _pak->getName().c_str()
                     , resource_category->getName().c_str()
-                    , has_resource->getCategory()->getName().c_str()
+                    , has_resource->getFileGroup()->getName().c_str()
                     , has_resource->getGroupName().c_str()
                     , has_resource->getName().c_str()
                 );
@@ -285,7 +285,7 @@ namespace Mengine
             ResourcePtr has_resource = nullptr;
             if( this->hasResource( name, &has_resource ) == false )
             {
-                const FileGroupInterfacePtr & resource_category = has_resource->getCategory();
+                const FileGroupInterfacePtr & resource_category = has_resource->getFileGroup();
 
                 LOGGER_ERROR( "ResourceManager::unloadResource: path %s not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
                     , _path.c_str()
@@ -293,7 +293,7 @@ namespace Mengine
                     , groupName.c_str()
                     , _pak->getName().c_str()
                     , resource_category->getName().c_str()
-                    , has_resource->getCategory()->getName().c_str()
+                    , has_resource->getFileGroup()->getName().c_str()
                     , has_resource->getGroupName().c_str()
                     , has_resource->getName().c_str()
                 );
@@ -409,7 +409,7 @@ namespace Mengine
             }
 
             resource->setLocale( _locale );
-            resource->setCategory( _pak );
+            resource->setFileGroup( _pak );
             resource->setGroupName( groupName );
             resource->setName( name );
 
@@ -502,7 +502,7 @@ namespace Mengine
         }
 
         resource->setLocale( _locale );
-        resource->setCategory( _category );
+        resource->setFileGroup( _category );
         resource->setGroupName( _groupName );
         resource->setName( _name );
 
@@ -534,7 +534,7 @@ namespace Mengine
         {
             ResourceEntry & insert_entry = insert_result.first->second;
 
-            const FileGroupInterfacePtr & insert_category = insert_entry.resource->getCategory();
+            const FileGroupInterfacePtr & insert_category = insert_entry.resource->getFileGroup();
             const ConstString & insert_group = insert_entry.resource->getGroupName();
 
             ResourceCacheKey remove_cache_key = std::make_pair( insert_category->getName(), insert_group );
@@ -571,7 +571,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & category = _resource->getCategory();
+        const FileGroupInterfacePtr & category = _resource->getFileGroup();
         const ConstString & group = _resource->getGroupName();
 
         ResourceCacheKey remove_cache_key = std::make_pair( category->getName(), group );

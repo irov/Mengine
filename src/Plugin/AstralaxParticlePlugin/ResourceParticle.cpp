@@ -118,7 +118,7 @@ namespace Mengine
         }
 
         const ConstString & name = this->getName();
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
         ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2()
             ->createEmitterContainerFromFile( category, m_filePath, name );
@@ -149,7 +149,7 @@ namespace Mengine
     bool ResourceParticle::_compile()
     {
         const ConstString & name = this->getName();
-        const FileGroupInterfacePtr & category = this->getCategory();
+        const FileGroupInterfacePtr & category = this->getFileGroup();
 
         ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2()
             ->createEmitterContainerFromFile( category, m_filePath, name );

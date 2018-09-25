@@ -1823,7 +1823,7 @@ namespace Mengine
         protected:
             void accept( ResourceImageDefault * _resource ) override
             {
-                const FileGroupInterfacePtr & category = _resource->getCategory();
+                const FileGroupInterfacePtr & category = _resource->getFileGroup();
                 const FilePath & filePath = _resource->getFilePath();
 
                 PREFETCHER_SERVICE()
@@ -1837,7 +1837,7 @@ namespace Mengine
 
             void accept( ResourceSound * _resource ) override
             {
-                const FileGroupInterfacePtr & category = _resource->getCategory();
+                const FileGroupInterfacePtr & category = _resource->getFileGroup();
                 const FilePath & filePath = _resource->getFilePath();
 
                 PREFETCHER_SERVICE()
@@ -2065,7 +2065,7 @@ namespace Mengine
                 return false;
             }
 
-            const FileGroupInterfacePtr & category = resourceFile->getCategory();
+            const FileGroupInterfacePtr & category = resourceFile->getFileGroup();
 
             const FilePath & filePath = resourceFile->getFilePath();
 

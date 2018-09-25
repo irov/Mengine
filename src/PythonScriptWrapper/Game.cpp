@@ -37,8 +37,7 @@ namespace Mengine
 
     //////////////////////////////////////////////////////////////////////////
     Game::Game()
-        : m_defaultArrow( nullptr )
-        , m_timingFactor( 1.f )
+        : m_timingFactor( 1.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -628,20 +627,27 @@ namespace Mengine
             return false;
         }
 
-        m_defaultArrow = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), STRINGIZE_STRING_LOCAL( "Default" ) );
+        ConstString defaultArrowPrototype = CONFIG_VALUE( "DefaultArrow", "Prototype", ConstString::none() );
 
-        if( m_defaultArrow == nullptr )
+        if( defaultArrowPrototype.empty() == false )
         {
-            LOGGER_WARNING( "Game::initialize failed create defaultArrow 'Default'"
-            );
-        }
-        else
-        {
-            m_defaultArrow->setName( STRINGIZE_STRING_LOCAL( "Default" ) );
+            ArrowPtr defaultArrow = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Arrow" ), defaultArrowPrototype );
 
-            PLAYER_SERVICE()
-                ->setArrow( m_defaultArrow );
+            if( defaultArrow == nullptr )
+            {
+                LOGGER_WARNING( "Game::initialize failed create defaultArrow 'Default'"
+                );
+            }
+            else
+            {
+                ConstString defaultArrowName = CONFIG_VALUE( "DefaultArrow", "Name", STRINGIZE_STRING_LOCAL( "Default" ) );
+
+                defaultArrow->setName( defaultArrowName );
+
+                PLAYER_SERVICE()
+                    ->setArrow( defaultArrow );
+            }
         }
 
         bool EVENT_INITIALIZE_result = EVENTABLE_METHODR( this, EVENT_GAME_INITIALIZE, true )
@@ -717,8 +723,6 @@ namespace Mengine
         EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE )
             ->onGameFinalize();
 
-        this->destroyArrow();
-
         EVENTABLE_METHOD( this, EVENT_GAME_DESTROY )
             ->onGameDestroy();
 
@@ -740,11 +744,6 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_GAME_RUN )
             ->onGameRun();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Game::destroyArrow()
-    {
-        m_defaultArrow = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void Game::initializeRenderResources()

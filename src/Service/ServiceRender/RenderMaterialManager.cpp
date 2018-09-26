@@ -837,6 +837,17 @@ namespace Mengine
         , uint32_t _textureCount
         , const RenderTextureInterfacePtr * _textures )
     {
+#ifndef NDEBUG
+        if( _stage == nullptr )
+        {
+            LOGGER_ERROR( "RenderMaterialManager::getMaterial2 invalid get stage for material '%s'"
+                , _materialName.c_str()
+            );
+
+            return nullptr;
+        }
+#endif
+
         uint32_t material_hash = this->makeMaterialHash( _materialName, _textureCount, _textures );
 
         uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;

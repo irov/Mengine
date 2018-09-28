@@ -61,6 +61,8 @@ namespace Mengine
     void SurfaceImage::_release()
     {
         m_resourceImage.release();
+
+        this->releaseMaterial();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImage::_update( const UpdateContext * _context )
@@ -224,7 +226,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceImage::_updateMaterial() const
     {
-        const RenderMaterialInterfacePtr & material = this->makeImageMaterial( m_resourceImage, false );
+        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false );
 
         if( material == nullptr )
         {

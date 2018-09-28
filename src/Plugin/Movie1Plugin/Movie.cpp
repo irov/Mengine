@@ -1194,7 +1194,7 @@ namespace Mengine
     bool Movie::createMovieNullObject_( const MovieLayer & _layer )
     {
         NodePtr layer_slot = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "Node" ) );
+            ->createNode( STRINGIZE_STRING_LOCAL( "Interender" ) );
 
         if( layer_slot == nullptr )
         {

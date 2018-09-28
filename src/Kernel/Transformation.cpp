@@ -2,7 +2,7 @@
 
 #include "math/angle.h"
 
-#include "Kernel/Exception.h"
+#include "Kernel/Assertion.h"
 
 namespace Mengine
 {
@@ -67,7 +67,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Transformation::removeRelationChildren_( Transformation * _child )
     {
-        m_relationChild.remove( _child );
+        VectorTransformation::iterator it_erase = std::find( m_relationChild.begin(), m_relationChild.end(), _child );
+
+        MENGINE_ASSERTION( it_erase != m_relationChild.end() );
+        
+        *it_erase = m_relationChild.back();
+        m_relationChild.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::invalidateWorldMatrix()

@@ -2639,18 +2639,28 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getNodeScreenPosition( const NodePtr & _node )
         {
+            const RenderViewportInterfacePtr & viewport = Helper::getRenderViewportInheritance( _node.get() );
+
+            const Viewport & vp = viewport->getViewport();
+
             const RenderCameraInterfacePtr & camera = Helper::getRenderCameraInheritance( _node.get() );
 
-            const mt::vec3f & wp = _node->getWorldPosition();
+            const mt::mat4f & wm = _node->getWorldMatrix();
 
-            const mt::mat4f & vm = camera->getCameraViewMatrix();
+            const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
 
-            mt::vec3f sc;
-            mt::mul_m4_v3( sc, vm, wp );
+            mt::mat4f wvpm;
+            mt::mul_m4_m4( wvpm, wm, vpm );
+
+            mt::vec2f v_wvp;
+            mt::mul_v2_v2z_m4_homogenize( v_wvp, wvpm );
+
+            mt::vec2f v_wvpn;
+            v_wvpn.x = (1.f + v_wvp.x) * 0.5f;
+            v_wvpn.y = (1.f - v_wvp.y) * 0.5f;
 
             mt::vec2f screen;
-            screen.x = sc.x;
-            screen.y = sc.y;
+            screen = vp.begin + (vp.end - vp.begin) * v_wvpn;
 
             return screen;
         }

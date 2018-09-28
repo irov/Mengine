@@ -406,9 +406,59 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::removeWorkArea()
+    bool Movie2::removeWorkArea()
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "Movie2::removeWorkArea '%s' not compile"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         ae_remove_movie_composition_work_area( m_composition );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::hasCompositionBounds() const
+    {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "Movie2::hasCompositionBounds '%s' not compile"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
+        if( ae_has_movie_composition_bounds( m_composition ) == AE_FALSE )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    Viewport Movie2::getCompositionBounds() const
+    {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "Movie2::getCompositionBounds '%s' not compile"
+                , this->getName().c_str()
+            );
+
+            return Viewport();
+        }
+
+        ae_viewport_t bounds;        
+        if( ae_get_movie_composition_bounds( m_composition, &bounds ) == AE_FALSE )
+        {
+            return Viewport();
+        }
+
+        return Viewport( bounds.begin_x, bounds.begin_y, bounds.end_x, bounds.end_y );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSubComposition( const ConstString & _name ) const

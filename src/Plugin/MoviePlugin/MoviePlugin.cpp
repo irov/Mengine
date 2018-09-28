@@ -370,6 +370,8 @@ namespace Mengine
             .def( "removeWorkArea", &Movie2::removeWorkArea )
             .def( "hasSubComposition", &Movie2::hasSubComposition )
             .def( "getSubComposition", &Movie2::getSubComposition )
+            .def( "hasCompositionBounds", &Movie2::hasCompositionBounds )
+            .def( "getCompositionBounds", &Movie2::getCompositionBounds )
             .def_static_native_kernel( "setEventListener", &External::s_Movie2_setEventListener )
             .def_static_kernel( "getSockets", &External::s_Movie2_getSockets )
             .def_static_kernel( "getSlots", &External::s_Movie2_getSlots )

@@ -75,7 +75,11 @@ namespace Mengine
     public:
         float getDuration() const;
         bool setWorkAreaFromEvent( const ConstString & _eventName );
-        void removeWorkArea();
+        bool removeWorkArea();
+
+    public:
+        bool hasCompositionBounds() const;
+        Viewport getCompositionBounds() const;
 
     public:
         bool hasSubComposition( const ConstString & _name ) const;

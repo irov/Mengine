@@ -60,7 +60,7 @@ namespace Mengine
         mt::mul_m4_m4( wvpm, wm, vpm );
 
         mt::vec2f v_wvp;
-        mt::mul_v2_v2_m4_homogenize( v_wvp, mt::vec2f( 0.f, 0.f ), wvpm );
+        mt::mul_v2_v2z_m4_homogenize( v_wvp, wvpm );
 
         mt::vec2f v_wvpn;
         v_wvpn.x = (1.f + v_wvp.x) * 0.5f;

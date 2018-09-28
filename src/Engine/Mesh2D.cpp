@@ -89,7 +89,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Mesh2D::_updateMaterial() const
     {
-        const RenderMaterialInterfacePtr & material = this->makeImageMaterial( m_resourceImage, m_solid );
+        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, m_solid );
 
         if( material == nullptr )
         {

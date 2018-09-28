@@ -3,10 +3,9 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
 
-#include "math/mat4.h"
+#include "Config/Vector.h"
 
-#include "stdex/intrusive_list.h"
-#include "stdex/intrusive_linked.h"
+#include "math/mat4.h"
 
 namespace Mengine
 {
@@ -42,8 +41,7 @@ namespace Mengine
     typedef IntrusivePtr<class Transformation> TransformationPtr;
     //////////////////////////////////////////////////////////////////////////
     class Transformation
-        : public stdex::intrusive_linked<Transformation>
-        , public Mixin
+        : public Mixin
     {
     public:
         Transformation();
@@ -155,8 +153,8 @@ namespace Mengine
     protected:
         Transformation * m_relationTransformation;
 
-        typedef stdex::intrusive_list<Transformation> IntrusiveListTransformation;
-        IntrusiveListTransformation m_relationChild;
+        typedef Vector<Transformation *> VectorTransformation;
+        VectorTransformation m_relationChild;
 
         mt::vec3f m_position;
         mt::vec3f m_origin;

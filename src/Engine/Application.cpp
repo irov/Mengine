@@ -617,6 +617,8 @@ namespace Mengine
         }
 #endif
 
+        m_cursorMode = CONFIG_VALUE( "Platform", "Cursor", false );
+
         if( GAME_SERVICE()
             ->loadPersonality() == false )
         {

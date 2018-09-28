@@ -19,6 +19,7 @@
 #include "Kernel/Scene.h"
 #include "Kernel/Arrow.h"
 #include "Kernel/NodeRenderHelper.h"
+#include "Kernel/MatrixProxy.h"
 
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ScheduleManagerInterface.h"
@@ -33,6 +34,7 @@
 #include "Kernel/ResourceImageData.h"
 
 #include "Engine/ResourceFile.h"
+#include "Kernel/ResourceMusic.h"
 #include "Engine/ResourceAnimation.h"
 #include "Engine/ResourceModel3D.h"
 #include "Engine/ResourceVideo.h"
@@ -43,6 +45,8 @@
 #include "Engine/ResourceTestPick.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
+#include "Engine/ResourceCursorICO.h"
+#include "Engine/ResourceCursorSystem.h"
 
 #include "Engine/ResourceImageSubstractRGBAndAlpha.h"
 #include "Engine/ResourceImageSubstract.h"
@@ -61,6 +65,7 @@
 #include "Engine/HotSpotShape.h"
 #include "Engine/Landscape2D.h"
 #include "Engine/Grid2D.h"
+#include "Engine/Mesh2D.h"
 
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/ShapeQuadFlex.h"
@@ -82,6 +87,7 @@
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceImageSequence.h"
+#include "Engine/SurfaceTrackMatte.h"
 #include "Engine/SurfaceSolidColor.h"
 
 
@@ -2540,6 +2546,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Gyroscope );
         SCRIPT_CLASS_WRAPPING( Interender );
         SCRIPT_CLASS_WRAPPING( Isometric );
+        SCRIPT_CLASS_WRAPPING( MatrixProxy );
         SCRIPT_CLASS_WRAPPING( Arrow );
         SCRIPT_CLASS_WRAPPING( TextField );
         SCRIPT_CLASS_WRAPPING( SoundEmitter );
@@ -2549,6 +2556,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Line );
         SCRIPT_CLASS_WRAPPING( Landscape2D );
         SCRIPT_CLASS_WRAPPING( Grid2D );
+        SCRIPT_CLASS_WRAPPING( Mesh2D );
 
         SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
@@ -2558,6 +2566,7 @@ namespace Mengine
 
         //SCRIPT_CLASS_WRAPPING( Parallax );
         SCRIPT_CLASS_WRAPPING( RenderViewport );
+        SCRIPT_CLASS_WRAPPING( RenderScissor );
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonal );
         SCRIPT_CLASS_WRAPPING( RenderCameraProjection );
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
@@ -2567,13 +2576,17 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceImage );
         SCRIPT_CLASS_WRAPPING( ResourceImageData );
         SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
+        SCRIPT_CLASS_WRAPPING( ResourceMusic );
         SCRIPT_CLASS_WRAPPING( ResourceAnimation );
         SCRIPT_CLASS_WRAPPING( ResourceModel3D );
         SCRIPT_CLASS_WRAPPING( ResourceVideo );
         SCRIPT_CLASS_WRAPPING( ResourceSound );
+        SCRIPT_CLASS_WRAPPING( ResourceFile );
 
         SCRIPT_CLASS_WRAPPING( ResourceImageSolid );
         SCRIPT_CLASS_WRAPPING( ResourceShape );
+        SCRIPT_CLASS_WRAPPING( ResourceCursorICO );
+        SCRIPT_CLASS_WRAPPING( ResourceCursorSystem );
         SCRIPT_CLASS_WRAPPING( ResourceWindow );
         SCRIPT_CLASS_WRAPPING( ResourceImageSubstractRGBAndAlpha );
         SCRIPT_CLASS_WRAPPING( ResourceImageSubstract );
@@ -2586,6 +2599,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( SurfaceSound );
         SCRIPT_CLASS_WRAPPING( SurfaceImage );
         SCRIPT_CLASS_WRAPPING( SurfaceImageSequence );
+        SCRIPT_CLASS_WRAPPING( SurfaceTrackMatte );
         SCRIPT_CLASS_WRAPPING( SurfaceSolidColor );
 
 # undef SCRIPT_CLASS_WRAPPING
@@ -2743,6 +2757,9 @@ namespace Mengine
         pybind::interface_<ResourceImageSolid, pybind::bases<ResourceImage> >( kernel, "ResourceImageSolid", false )
             ;
 
+        pybind::interface_<ResourceMusic, pybind::bases<Resource> >( kernel, "ResourceMusic", false )
+            ;
+
         pybind::interface_<ResourceAnimation, pybind::bases<Resource> >( kernel, "ResourceAnimation", false )
             ;
 
@@ -2755,8 +2772,20 @@ namespace Mengine
         pybind::interface_<ResourceSound, pybind::bases<Resource> >( kernel, "ResourceSound", false )
             ;
 
+        pybind::interface_<ResourceFile, pybind::bases<Resource> >( kernel, "ResourceFile", false )
+            ;        
+
         pybind::interface_<ResourceShape, pybind::bases<Resource> >( kernel, "ResourceShape", false )
             .def( "getPolygon", &ResourceShape::getPolygon )
+            ;
+
+        pybind::interface_<ResourceCursor, pybind::bases<Resource> >( kernel, "ResourceCursor", false )
+            ;
+        
+        pybind::interface_<ResourceCursorICO, pybind::bases<ResourceCursor> >( kernel, "ResourceCursorICO", false )
+            ;
+
+        pybind::interface_<ResourceCursorSystem, pybind::bases<ResourceCursor> >( kernel, "ResourceCursorSystem", false )
             ;
 
         pybind::interface_<ResourceWindow, pybind::bases<Resource> >( kernel, "ResourceWindow", false )
@@ -3020,6 +3049,15 @@ namespace Mengine
             .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceImageSequence_setEventListener )
             ;
 
+        pybind::interface_<SurfaceTrackMatte, pybind::bases<Surface> >( kernel, "SurfaceTrackMatte", false )
+            .def( "setResourceImage", &SurfaceTrackMatte::setResourceImage )
+            .def( "getResourceImage", &SurfaceTrackMatte::getResourceImage )
+            .def( "setResourceTrackMatteImage", &SurfaceTrackMatte::setResourceTrackMatteImage )
+            .def( "getResourceTrackMatteImage", &SurfaceTrackMatte::getResourceTrackMatteImage )
+            .def( "setTrackMatteMode", &SurfaceTrackMatte::setTrackMatteMode )
+            .def( "getTrackMatteMode", &SurfaceTrackMatte::getTrackMatteMode )
+            ;        
+
         pybind::interface_<SurfaceSolidColor, pybind::bases<Surface> >( kernel, "SurfaceSolidColor", false )
             .def( "setSolidColor", &SurfaceSolidColor::setSolidColor )
             .def( "getSolidColor", &SurfaceSolidColor::getSolidColor )
@@ -3042,6 +3080,15 @@ namespace Mengine
             .def( "getFixedViewport", &RenderViewport::getFixedViewport )
             .def( "setViewport", &RenderViewport::setViewport )
             ;
+
+        pybind::interface_<RenderScissorInterface, pybind::bases<Mixin> >( kernel, "RenderScissorInterface" )
+            .def( "getScissorViewport", &RenderScissorInterface::getScissorViewport )
+            ;
+
+        pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface> >( kernel, "RenderScissor", false )
+            .def( "setViewport", &RenderScissor::setViewport )
+            .def( "getViewport", &RenderScissor::getViewport )
+            ;        
 
         pybind::interface_<RenderCameraInterface, pybind::bases<Mixin> >( kernel, "RenderCameraInterface" )
             ;
@@ -3297,6 +3344,11 @@ namespace Mengine
                 .def( "setBackParts", &Landscape2D::setBackParts )
                 ;
 
+            pybind::interface_<Mesh2D, pybind::bases<Node, Materialable> >( kernel, "Mesh2D", false )
+                .def( "setResourceImage", &Mesh2D::setResourceImage )
+                .def( "getResourceImage", &Mesh2D::getResourceImage )
+                ;
+
             pybind::interface_<Grid2D, pybind::bases<Node, Materialable> >( kernel, "Grid2D", false )
                 .def( "setResourceImage", &Grid2D::setResourceImage )
                 .def( "getResourceImage", &Grid2D::getResourceImage )
@@ -3320,6 +3372,8 @@ namespace Mengine
             pybind::interface_<Isometric, pybind::bases<Node> >( kernel, "Isometric", false )
                 ;
 
+            pybind::interface_<MatrixProxy, pybind::bases<Node> >( kernel, "MatrixProxy", false )
+                ;
 
             {
                 pybind::interface_<Model3D, pybind::bases<Node, Animatable, Materialable> >( kernel, "Model3D", false )

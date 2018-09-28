@@ -174,7 +174,7 @@ namespace Mengine
         {
             if( oldScene != nullptr )
             {
-                oldScene->disable();
+                oldScene->release();
                 oldScene = nullptr;
             }
 
@@ -339,7 +339,7 @@ namespace Mengine
 
         if( m_scene != nullptr )
         {
-            m_scene->disable();
+            m_scene->release();
             m_scene = nullptr;
         }
 
@@ -519,37 +519,37 @@ namespace Mengine
     {
         if( m_scene != nullptr )
         {
-            m_scene->disable();
+            m_scene->release();
             m_scene = nullptr;
         }
 
         if( m_arrow != nullptr )
         {
-            m_arrow->disable();
+            m_arrow->release();
             m_arrow = nullptr;
         }
 
         if( m_globalScene != nullptr )
         {
-            m_globalScene->disable();
+            m_globalScene->release();
             m_globalScene = nullptr;
         }
 
         if( m_camera2D != nullptr )
         {
-            m_camera2D->disable();
+            m_camera2D->release();
             m_camera2D = nullptr;
         }
 
         if( m_viewport2D != nullptr )
         {
-            m_viewport2D->disable();
+            m_viewport2D->release();
             m_viewport2D = nullptr;
         }
 
         if( m_arrowCamera2D != nullptr )
         {
-            m_arrowCamera2D->disable();
+            m_arrowCamera2D->release();
             m_arrowCamera2D = nullptr;
         }
 

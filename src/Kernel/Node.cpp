@@ -5,7 +5,6 @@
 
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
-#include "Interface/UpdateServiceInterface.h"
 #include "Interface/UpdationInterface.h"
 
 #include "Kernel/Logger.h"
@@ -26,7 +25,6 @@ namespace Mengine
         //, m_rendering( false )
         //, m_invalidateRendering( true )
         , m_parent( nullptr )
-        , m_updatableProxyId( INVALID_UPDATABLE_ID )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -208,7 +206,8 @@ namespace Mengine
         uint32_t deep = 0;
 
         Node * parent = m_parent;
-        while( parent )
+
+        while( parent != nullptr )
         {
             ++deep;
 
@@ -225,12 +224,13 @@ namespace Mengine
 
         this->setRelationTransformation( _parent );
 
-        if( _parent != nullptr && m_updatableProxyId != INVALID_UPDATABLE_ID )
+        UpdationInterfacePtr updation = this->getUpdation();
+
+        if( _parent != nullptr && updation != nullptr )
         {
             uint32_t deep = this->getLeafDeep();
 
-            UPDATE_SERVICE()
-                ->replaceUpdatater( m_updatableProxyId, deep );
+            updation->replace( deep );
         }
 
         this->_changeParent( oldparent, _parent );
@@ -880,26 +880,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_afterActivate()
     {
-        //Empty
         UpdationInterfacePtr updation = this->getUpdation();
 
         if( updation != nullptr )
         {
             uint32_t deep = this->getLeafDeep();
 
-            m_updatableProxyId = UPDATE_SERVICE()
-                ->createUpdatater( 0U, deep, updation );
+            updation->activate( 0U, deep );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_deactivate()
     {
-        if( m_updatableProxyId != INVALID_UPDATABLE_ID )
-        {
-            UPDATE_SERVICE()
-                ->removeUpdatater( m_updatableProxyId );
+        UpdationInterfacePtr updation = this->getUpdation();
 
-            m_updatableProxyId = INVALID_UPDATABLE_ID;
+        if( updation != nullptr )
+        {
+            updation->deactivate();
         }
 
         Affectorable::stopAllAffectors();

@@ -199,9 +199,6 @@ namespace Mengine
         uint32_t getAffectorableUpdatableMode() const override;
         uint32_t getAffectorableUpdatableLeafDeep() const override;
 
-    protected:
-        uint32_t m_updatableProxyId;
-
     public:
         virtual MousePickerTrapInterfacePtr getPickerTrap();
 

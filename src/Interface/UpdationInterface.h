@@ -17,6 +17,11 @@ namespace Mengine
         : public Mixin
     {
     public:
+        virtual void activate( uint32_t _mode, uint32_t _deep ) = 0;
+        virtual void deactivate() = 0;
+        virtual void replace( uint32_t _deep ) = 0;
+
+    public:
         virtual void update( const UpdateContext * _context ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

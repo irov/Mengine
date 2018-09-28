@@ -221,7 +221,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr Grid2D::_updateMaterial() const
     {
-        const RenderMaterialInterfacePtr & material = this->makeImageMaterial( m_resourceImage, false );
+        RenderMaterialInterfacePtr material = this->makeImageMaterial( m_resourceImage, false );
 
         if( material == nullptr )
         {

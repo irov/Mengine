@@ -581,7 +581,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptWrapper::mathWrap()
+    bool PythonScriptWrapper::mathWrap()
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
@@ -741,6 +741,8 @@ namespace Mengine
             .def( "getHeight", &Resolution::getHeight )
             .def( "getAspectRatio", &Resolution::getAspectRatio )
             ;
+
+        return true;
     }
 }
 

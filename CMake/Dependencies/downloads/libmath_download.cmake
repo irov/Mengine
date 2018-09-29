@@ -1,9 +1,11 @@
-set(EXTERNAL_PROJECT_NAME libfe)
+set(EXTERNAL_PROJECT_NAME libmath)
 
-set(EXTERNAL_LIBRARY_FILE_NAME fe)
+set(EXTERNAL_LIBRARY_FILE_NAME math)
 
 ExternalProject_Add(${EXTERNAL_PROJECT_NAME}_download PREFIX ${EXTERNAL_PROJECT_NAME}
-        GIT_REPOSITORY https://github.com/irov/font-effects-lib.git
+        SOURCE_DIR ${DOWNLOADS_DIR}/${EXTERNAL_PROJECT_NAME}
+        
+        GIT_REPOSITORY https://github.com/irov/libmath.git
         GIT_PROGRESS TRUE
 
         UPDATE_COMMAND ""
@@ -12,9 +14,9 @@ ExternalProject_Add(${EXTERNAL_PROJECT_NAME}_download PREFIX ${EXTERNAL_PROJECT_
             -DCMAKE_INSTALL_PREFIX=${THIRDPARTY_DIR}/${EXTERNAL_PROJECT_NAME}
             -DBUILD_SHARED_LIBS=OFF
             -DLIBTYPE=STATIC
-            -DFE_EXTERNAL_BUILD=ON
-            -DFE_TEST_BUILD=OFF
-            -DFE_INSTALL=ON
+            -DLIBMATH_EXTERNAL_BUILD=ON
+            -DLIBMATH_EXAMPLES_BUILD=OFF
+            -DLIBMATH_INSTALL=ON
 )
 
 ExternalProject_Get_Property(${EXTERNAL_PROJECT_NAME}_download INSTALL_DIR)

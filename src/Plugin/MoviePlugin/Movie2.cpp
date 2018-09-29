@@ -433,7 +433,9 @@ namespace Mengine
             return false;
         }
 
-        if( ae_has_movie_composition_bounds( m_composition ) == AE_FALSE )
+        const aeMovieCompositionData * compositionData = ae_get_movie_composition_composition_data( m_composition );
+
+        if( ae_has_movie_composition_data_bounds( compositionData ) == AE_FALSE )
         {
             return false;
         }
@@ -452,8 +454,10 @@ namespace Mengine
             return Viewport();
         }
 
+        const aeMovieCompositionData * compositionData = ae_get_movie_composition_composition_data( m_composition );
+
         ae_viewport_t bounds;        
-        if( ae_get_movie_composition_bounds( m_composition, &bounds ) == AE_FALSE )
+        if( ae_get_movie_composition_data_bounds( compositionData, &bounds ) == AE_FALSE )
         {
             return Viewport();
         }

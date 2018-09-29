@@ -35,7 +35,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "Engine/ResourceAnimation.h"
+#include "Engine/ResourceImageSequence.h"
 
 #include "Engine/Watchdog.h"
 
@@ -2930,7 +2930,7 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptWrapper::helperWrap()
+    bool PythonScriptWrapper::helperWrap()
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
@@ -3211,5 +3211,7 @@ namespace Mengine
         pybind::def_functor( kernel, "removeTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_removeTextAliasArguments );
 
         pybind::def_functor( kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );
+
+        return true;
     }
 }

@@ -1,9 +1,12 @@
-set(EXTERNAL_PROJECT_NAME stdex)
+set(EXTERNAL_PROJECT_NAME libwebp)
 
-set(EXTERNAL_LIBRARY_FILE_NAME stdex)
+set(EXTERNAL_LIBRARY_FILE_NAME webp)
 
 ExternalProject_Add(${EXTERNAL_PROJECT_NAME}_download PREFIX ${EXTERNAL_PROJECT_NAME}
-        GIT_REPOSITORY https://github.com/irov/stdex.git
+        SOURCE_DIR ${DOWNLOADS_DIR}/${EXTERNAL_PROJECT_NAME}
+        
+        GIT_REPOSITORY https://github.com/webmproject/libwebp.git
+        GIT_TAG "v1.0.0"
         GIT_PROGRESS TRUE
 
         UPDATE_COMMAND ""
@@ -12,7 +15,17 @@ ExternalProject_Add(${EXTERNAL_PROJECT_NAME}_download PREFIX ${EXTERNAL_PROJECT_
             -DCMAKE_INSTALL_PREFIX=${THIRDPARTY_DIR}/${EXTERNAL_PROJECT_NAME}
             -DBUILD_SHARED_LIBS=OFF
             -DLIBTYPE=STATIC
-            -DSTDEX_EXTERNAL_BUILD=ON
+            -DWEBP_ENABLE_SIMD=ON
+            -DWEBP_BUILD_ANIM_UTILS=OFF
+            -DWEBP_BUILD_CWEBP=OFF
+            -DWEBP_BUILD_DWEBP=OFF
+            -DWEBP_BUILD_GIF2WEBP=OFF
+            -DWEBP_BUILD_IMG2WEBP=OFF
+            -DWEBP_BUILD_VWEBP=OFF
+            -DWEBP_BUILD_WEBPINFO=OFF
+            -DWEBP_BUILD_WEBPMUX=OFF
+            -DWEBP_BUILD_WEBP_JS=OFF
+            -DWEBP_ENABLE_SWAP_16BIT_CSP=OFF
 )
 
 ExternalProject_Get_Property(${EXTERNAL_PROJECT_NAME}_download INSTALL_DIR)

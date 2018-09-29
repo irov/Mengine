@@ -9,7 +9,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveResourcePtr<class ResourceAnimation> ResourceAnimationPtr;
+    typedef IntrusiveResourcePtr<class ResourceImageSequence> ResourceImageSequencePtr;
     //////////////////////////////////////////////////////////////////////////
     enum SurfaceImageSequenceEventFlag
     {
@@ -38,8 +38,8 @@ namespace Mengine
         ~SurfaceImageSequence() override;
 
     public:
-        void setResourceAnimation( const ResourceAnimationPtr & _resourceAnimation );
-        const ResourceAnimationPtr & getResourceAnimation() const;
+        void setResourceImageSequence( const ResourceImageSequencePtr & _resourceImageSequence );
+        const ResourceImageSequencePtr & getResourceImageSequence() const;
 
     public:
         uint32_t getFrameCount() const;
@@ -93,7 +93,7 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        ResourceHolder<ResourceAnimation> m_resourceAnimation;
+        ResourceHolder<ResourceImageSequence> m_resourceImageSequence;
 
         float m_frameTime;
 

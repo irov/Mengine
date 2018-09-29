@@ -10,7 +10,7 @@
 #include "ResourceMovie.h"
 
 #include "Engine/ResourceImageDefault.h"
-#include "Engine/ResourceAnimation.h"
+#include "Engine/ResourceImageSequence.h"
 #include "Engine/ResourceImageSolid.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceVideo.h"
@@ -1425,10 +1425,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieAnimation_( const MovieLayer & _layer )
     {
-        ResourceAnimationPtr resourceAnimation = RESOURCE_SERVICE()
+        ResourceImageSequencePtr resourceImageSequence = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
-        if( resourceAnimation == nullptr )
+        if( resourceImageSequence == nullptr )
         {
             return false;
         }
@@ -1442,7 +1442,7 @@ namespace Mengine
         }
 
         surface->setName( _layer.name );
-        surface->setResourceAnimation( resourceAnimation );
+        surface->setResourceImageSequence( resourceImageSequence );
 
         surface->setIntervalStart( _layer.startInterval );
         surface->setPlayCount( _layer.playCount );

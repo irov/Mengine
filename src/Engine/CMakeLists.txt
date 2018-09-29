@@ -197,8 +197,8 @@ Resource\\\\Model3D
 
 ADD_FILTER(
 Resource\\\\Animation
-	ResourceAnimation.cpp
-	ResourceAnimation.h
+	ResourceImageSequence.cpp
+	ResourceImageSequence.h
 )
 
 ADD_FILTER(

@@ -5,12 +5,12 @@ namespace Mengine
     class PythonScriptWrapper
     {
     public:
-        static void constsWrap();
-        static void helperWrap();
-        static void mathWrap();
-        static void nodeWrap();
-        static void entityWrap();
-        static void engineWrap();
-        static void soundWrap();
+        static bool constsWrap();
+        static bool helperWrap();
+        static bool mathWrap();
+        static bool nodeWrap();
+        static bool entityWrap();
+        static bool engineWrap();
+        static bool soundWrap();
     };
 }

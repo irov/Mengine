@@ -641,13 +641,40 @@ namespace Mengine
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
 
-        PythonScriptWrapper::constsWrap();
-        PythonScriptWrapper::helperWrap();
-        PythonScriptWrapper::nodeWrap();
-        PythonScriptWrapper::mathWrap();
-        PythonScriptWrapper::entityWrap();
-        PythonScriptWrapper::engineWrap();
-        PythonScriptWrapper::soundWrap();
+        if( PythonScriptWrapper::constsWrap() == false )
+        {
+            return false;
+        }
+
+        if( PythonScriptWrapper::helperWrap() == false )
+        {
+            return false;
+        }
+        
+        if( PythonScriptWrapper::nodeWrap() == false )
+        {
+            return false;
+        }
+
+        if( PythonScriptWrapper::mathWrap() == false )
+        {
+            return false;
+        }
+
+        if( PythonScriptWrapper::entityWrap() == false )
+        {
+            return false;
+        }
+        
+        if( PythonScriptWrapper::engineWrap() == false )
+        {
+            return false;
+        }
+        
+        if( PythonScriptWrapper::soundWrap() == false )
+        {
+            return false;
+        }
 
         SERVICE_CREATE( RenderService );
         SERVICE_CREATE( RenderNodeService );

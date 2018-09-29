@@ -35,7 +35,7 @@
 
 #include "Engine/ResourceFile.h"
 #include "Kernel/ResourceMusic.h"
-#include "Engine/ResourceAnimation.h"
+#include "Engine/ResourceImageSequence.h"
 #include "Engine/ResourceModel3D.h"
 #include "Engine/ResourceVideo.h"
 #include "Engine/ResourceSound.h"
@@ -2524,10 +2524,13 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    static void classWrapping()
+    static bool classWrapping()
     {
 # define SCRIPT_CLASS_WRAPPING( Class )\
-    SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new ScriptWrapper<Class>() )
+    if( SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new ScriptWrapper<Class>() ) == false )\
+    {\
+        return false;\
+    }
 
         SCRIPT_CLASS_WRAPPING( Node );
         SCRIPT_CLASS_WRAPPING( Layer );
@@ -2576,8 +2579,8 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceImage );
         SCRIPT_CLASS_WRAPPING( ResourceImageData );
         SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
-        SCRIPT_CLASS_WRAPPING( ResourceMusic );
-        SCRIPT_CLASS_WRAPPING( ResourceAnimation );
+        SCRIPT_CLASS_WRAPPING( ResourceMusic );        
+        SCRIPT_CLASS_WRAPPING( ResourceImageSequence );
         SCRIPT_CLASS_WRAPPING( ResourceModel3D );
         SCRIPT_CLASS_WRAPPING( ResourceVideo );
         SCRIPT_CLASS_WRAPPING( ResourceSound );
@@ -2603,15 +2606,20 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( SurfaceSolidColor );
 
 # undef SCRIPT_CLASS_WRAPPING
+
+        return true;
     }
 
-    void PythonScriptWrapper::nodeWrap()
+    bool PythonScriptWrapper::nodeWrap()
     {
         NodeScriptMethod * nodeScriptMethod = new NodeScriptMethod();
 
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        classWrapping();
+        if( classWrapping() == false )
+        {
+            return false;
+        }
 
         pybind::interface_<Mixin>( kernel, "Mixin", true )
             .def_smart_pointer()
@@ -2760,7 +2768,7 @@ namespace Mengine
         pybind::interface_<ResourceMusic, pybind::bases<Resource> >( kernel, "ResourceMusic", false )
             ;
 
-        pybind::interface_<ResourceAnimation, pybind::bases<Resource> >( kernel, "ResourceAnimation", false )
+        pybind::interface_<ResourceImageSequence, pybind::bases<Resource> >( kernel, "ResourceImageSequence", false )
             ;
 
         pybind::interface_<ResourceModel3D, pybind::bases<Resource> >( kernel, "ResourceModel3D", false )
@@ -3040,8 +3048,8 @@ namespace Mengine
             ;
 
         pybind::interface_<SurfaceImageSequence, pybind::bases<Surface, Eventable, Animatable> >( kernel, "SurfaceImageSequence", false )
-            .def( "setResourceAnimation", &SurfaceImageSequence::setResourceAnimation )
-            .def( "getResourceAnimation", &SurfaceImageSequence::getResourceAnimation )
+            .def( "setResourceImageSequence", &SurfaceImageSequence::setResourceImageSequence )
+            .def( "getResourceImageSequence", &SurfaceImageSequence::getResourceImageSequence )
             .def( "getFrameCount", &SurfaceImageSequence::getFrameCount )
             .def( "getFrameDelay", &SurfaceImageSequence::getFrameDelay )
             .def( "setCurrentFrame", &SurfaceImageSequence::setCurrentFrame )
@@ -3422,5 +3430,7 @@ namespace Mengine
             .def( "getSpeedFactor", &ScheduleManagerInterface::getSpeedFactor )
             .def( "getTiming", &ScheduleManagerInterface::getTime )
             ;
+
+        return true;
     }
 }

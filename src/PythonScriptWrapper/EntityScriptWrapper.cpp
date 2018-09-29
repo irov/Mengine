@@ -121,15 +121,20 @@ namespace Mengine
         FactoryPtr m_factoryEntityPrototypeGenerator;
     };
     //////////////////////////////////////////////////////////////////////////
-    static void classWrapping()
+    static bool classWrapping()
     {
 # define SCRIPT_CLASS_WRAPPING( Class )\
-    SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new ScriptWrapper<Class>() )
+    if( SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new ScriptWrapper<Class>() ) == false )\
+    {\
+        return false;\
+    }
 
         SCRIPT_CLASS_WRAPPING( Entity );
         SCRIPT_CLASS_WRAPPING( Scene );
 
 #	undef SCRIPT_CLASS_WRAPPING
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     class superclass_new_Entity
@@ -258,9 +263,12 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptWrapper::entityWrap()
+    bool PythonScriptWrapper::entityWrap()
     {
-        classWrapping();
+        if( classWrapping() == false )
+        {
+            return false;
+        }
 
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
@@ -299,5 +307,7 @@ namespace Mengine
         pybind::def_functor( kernel, "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
         pybind::def_functor_kernel( kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
         //pybind::def_function( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );
+
+        return true;
     }
 }

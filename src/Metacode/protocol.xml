@@ -1,4 +1,4 @@
-<Protocol Version = "125">
+<Protocol Version = "126">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -379,7 +379,7 @@
           <Member Node="File" Name="Duration" Type="float"/>
         </Node>
 
-        <Node Name="ResourceAnimation" Inheritance = "Resource">
+        <Node Name="ResourceImageSequence" Inheritance = "Resource">
           <Node Name="Sequence">
             <Attribute Name="ResourceImageName" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Delay" Type="float" Required="1"/>

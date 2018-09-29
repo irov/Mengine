@@ -21,22 +21,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SamplerOzzAnimation::setResourceOzzAnimation( const ResourcePtr & _resource )
     {
-        m_resourceAnimation = _resource;
+        m_resourceOzzAnimation = _resource;
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & SamplerOzzAnimation::getResourceOzzAnimation() const
     {
-        return m_resourceAnimation;
+        return m_resourceOzzAnimation;
     }
     //////////////////////////////////////////////////////////////////////////
     void SamplerOzzAnimation::setResourceOzzSkeleton( const ResourcePtr & _resource )
     {
-        m_resourceSkeleton = _resource;
+        m_resourceOzzSkeleton = _resource;
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & SamplerOzzAnimation::getResourceOzzSkeleton() const
     {
-        return m_resourceSkeleton;
+        return m_resourceOzzSkeleton;
     }
     //////////////////////////////////////////////////////////////////////////
     void SamplerOzzAnimation::setWeight( float _weight )
@@ -74,27 +74,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SamplerOzzAnimation::_compile()
     {
-        if( m_resourceAnimation == nullptr )
+        if( m_resourceOzzAnimation == nullptr )
         {
             return false;
         }
 
-        if( m_resourceSkeleton == nullptr )
+        if( m_resourceOzzSkeleton == nullptr )
         {
             return false;
         }
 
-        if( m_resourceAnimation->compile() == false )
+        if( m_resourceOzzAnimation->compile() == false )
         {
             return false;
         }
 
-        if( m_resourceSkeleton->compile() == false )
+        if( m_resourceOzzSkeleton->compile() == false )
         {
             return false;
         }
 
-        const ozz::animation::Skeleton & skeleton = m_resourceSkeleton->getOzzSkeleton();
+        const ozz::animation::Skeleton & skeleton = m_resourceOzzSkeleton->getOzzSkeleton();
 
         int num_soa_joints = skeleton.num_soa_joints();
         int num_joints = skeleton.num_joints();
@@ -116,15 +116,15 @@ namespace Mengine
         allocator->Deallocate( m_locals );
         allocator->Delete( m_cache );
 
-        m_resourceAnimation->release();
-        m_resourceSkeleton->release();
+        m_resourceOzzAnimation->release();
+        m_resourceOzzSkeleton->release();
     }
     //////////////////////////////////////////////////////////////////////////
     void SamplerOzzAnimation::updateTiming_( float _timing )
     {
         m_time += _timing;
 
-        const ozz::animation::Animation & ozz_animation = m_resourceAnimation->getOzzAnimation();
+        const ozz::animation::Animation & ozz_animation = m_resourceOzzAnimation->getOzzAnimation();
 
         float duration = ozz_animation.duration();
 
@@ -158,7 +158,7 @@ namespace Mengine
             return;
         }
 
-        const ozz::animation::Animation & ozz_animation = m_resourceAnimation->getOzzAnimation();
+        const ozz::animation::Animation & ozz_animation = m_resourceOzzAnimation->getOzzAnimation();
 
         // Setup sampling job.
         ozz::animation::SamplingJob sampling_job;

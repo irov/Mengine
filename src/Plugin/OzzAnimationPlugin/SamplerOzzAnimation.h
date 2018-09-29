@@ -60,8 +60,8 @@ namespace Mengine
         bool _interrupt( uint32_t _enumerator ) override;
 
     public:
-        ResourceOzzAnimationPtr m_resourceAnimation;
-        ResourceOzzSkeletonPtr m_resourceSkeleton;
+        ResourceOzzAnimationPtr m_resourceOzzAnimation;
+        ResourceOzzSkeletonPtr m_resourceOzzSkeleton;
 
         ozz::animation::SamplingCache* m_cache;
         ozz::Range<ozz::math::SoaTransform> m_locals;

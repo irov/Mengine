@@ -3,6 +3,8 @@ set(EXTERNAL_PROJECT_NAME jansson)
 set(EXTERNAL_LIBRARY_FILE_NAME jansson)
 
 ExternalProject_Add(${EXTERNAL_PROJECT_NAME}_download PREFIX ${EXTERNAL_PROJECT_NAME}
+        SOURCE_DIR ${DOWNLOADS_DIR}/${EXTERNAL_PROJECT_NAME}
+
         GIT_REPOSITORY https://github.com/akheron/jansson.git
         GIT_TAG "v2.11"
         GIT_PROGRESS TRUE

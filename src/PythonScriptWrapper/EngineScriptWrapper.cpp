@@ -35,7 +35,7 @@
 #include "Kernel/ResourceImageData.h"
 
 #include "Engine/ResourceFile.h"
-#include "Engine/ResourceAnimation.h"
+#include "Engine/ResourceImageSequence.h"
 #include "Engine/ResourceModel3D.h"
 #include "Engine/ResourceVideo.h"
 #include "Engine/ResourceSound.h"
@@ -3712,7 +3712,7 @@ namespace Mengine
         }
     };
 
-    void PythonScriptWrapper::engineWrap()
+    bool PythonScriptWrapper::engineWrap()
     {
         EngineScriptMethod * nodeScriptMethod = new EngineScriptMethod();
 
@@ -3967,11 +3967,17 @@ namespace Mengine
         pybind::def_functor_args( kernel, "createValueFollower", nodeScriptMethod, &EngineScriptMethod::s_createValueFollower );
         pybind::def_functor( kernel, "destroyValueFollower", nodeScriptMethod, &EngineScriptMethod::s_destroyValueFollower );
 
-        SCRIPT_SERVICE()
-            ->setWrapper( Helper::stringizeString( "PythonValueFollower" ), new ScriptWrapper<PythonValueFollower>() );
+        if( SCRIPT_SERVICE()
+            ->setWrapper( Helper::stringizeString( "PythonValueFollower" ), new ScriptWrapper<PythonValueFollower>() ) == false )
+        {
+            return false;
+        }
 
-        PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollower" ), new ScriptablePrototypeGenerator<PythonValueFollower, 32>() );
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollower" ), new ScriptablePrototypeGenerator<PythonValueFollower, 32>() ) == false )
+        {
+            return false;
+        }            
 
         pybind::interface_<RandomizerInterface, pybind::bases<Mixin> >( kernel, "Randomizer" )
             .def( "setSeed", &RandomizerInterface::setSeed )
@@ -3981,7 +3987,13 @@ namespace Mengine
             .def( "getRandomRangef", &RandomizerInterface::getRandomRangef )
             ;
 
-        PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), new DefaultPrototypeGenerator<MT19937Randomizer, 8>() );
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), new DefaultPrototypeGenerator<MT19937Randomizer, 8>() ) == false )
+        {
+            return false;
+        }
+
+
+        return true;
     }
 }

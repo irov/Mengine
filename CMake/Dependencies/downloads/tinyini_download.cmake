@@ -1,10 +1,11 @@
-set(EXTERNAL_PROJECT_NAME libwebp)
+set(EXTERNAL_PROJECT_NAME tinyini)
 
-set(EXTERNAL_LIBRARY_FILE_NAME webp)
+set(EXTERNAL_LIBRARY_FILE_NAME tinyini)
 
 ExternalProject_Add(${EXTERNAL_PROJECT_NAME}_download PREFIX ${EXTERNAL_PROJECT_NAME}
-        GIT_REPOSITORY https://github.com/webmproject/libwebp.git
-        GIT_TAG "v1.0.0"
+        SOURCE_DIR ${DOWNLOADS_DIR}/${EXTERNAL_PROJECT_NAME}
+        
+        GIT_REPOSITORY https://github.com/irov/tinyini.git
         GIT_PROGRESS TRUE
 
         UPDATE_COMMAND ""
@@ -13,17 +14,8 @@ ExternalProject_Add(${EXTERNAL_PROJECT_NAME}_download PREFIX ${EXTERNAL_PROJECT_
             -DCMAKE_INSTALL_PREFIX=${THIRDPARTY_DIR}/${EXTERNAL_PROJECT_NAME}
             -DBUILD_SHARED_LIBS=OFF
             -DLIBTYPE=STATIC
-            -DWEBP_ENABLE_SIMD=ON
-            -DWEBP_BUILD_ANIM_UTILS=OFF
-            -DWEBP_BUILD_CWEBP=OFF
-            -DWEBP_BUILD_DWEBP=OFF
-            -DWEBP_BUILD_GIF2WEBP=OFF
-            -DWEBP_BUILD_IMG2WEBP=OFF
-            -DWEBP_BUILD_VWEBP=OFF
-            -DWEBP_BUILD_WEBPINFO=OFF
-            -DWEBP_BUILD_WEBPMUX=OFF
-            -DWEBP_BUILD_WEBP_JS=OFF
-            -DWEBP_ENABLE_SWAP_16BIT_CSP=OFF
+            -DTINYINI_EXTERNAL_BUILD=ON
+            -DTINYINI_INSTALL=ON
 )
 
 ExternalProject_Get_Property(${EXTERNAL_PROJECT_NAME}_download INSTALL_DIR)

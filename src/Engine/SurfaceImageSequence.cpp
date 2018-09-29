@@ -5,7 +5,7 @@
 
 #include "Kernel/ResourceImage.h"
 
-#include "ResourceAnimation.h"
+#include "ResourceImageSequence.h"
 
 #include "Kernel/Logger.h"
 
@@ -24,19 +24,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceImageSequence::setResourceAnimation( const ResourceAnimationPtr & _resourceAnimation )
+    void SurfaceImageSequence::setResourceImageSequence( const ResourceImageSequencePtr & _resourceImageSequence )
     {
-        if( m_resourceAnimation == _resourceAnimation )
+        if( m_resourceImageSequence == _resourceImageSequence )
         {
             return;
         }
 
-        this->recompile( [this, _resourceAnimation]() {m_resourceAnimation = _resourceAnimation; } );
+        this->recompile( [this, _resourceImageSequence]() {m_resourceImageSequence = _resourceImageSequence; } );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceAnimationPtr & SurfaceImageSequence::getResourceAnimation() const
+    const ResourceImageSequencePtr & SurfaceImageSequence::getResourceImageSequence() const
     {
-        return m_resourceAnimation;
+        return m_resourceImageSequence;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImageSequence::_update( const UpdateContext * _context )
@@ -52,9 +52,9 @@ namespace Mengine
 
         m_frameTime += totalTiming;
 
-        uint32_t frameCount = m_resourceAnimation->getSequenceCount();
+        uint32_t frameCount = m_resourceImageSequence->getSequenceCount();
 
-        float frameDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
+        float frameDelay = m_resourceImageSequence->getSequenceDelay( m_currentFrame );
 
         uint32_t lastFrame = m_currentFrame;
 
@@ -100,7 +100,7 @@ namespace Mengine
                     //lastFrame = m_currentFrame;
                 }
 
-                frameDelay = m_resourceAnimation->getSequenceDelay( m_currentFrame );
+                frameDelay = m_resourceImageSequence->getSequenceDelay( m_currentFrame );
             }
         }
 
@@ -116,7 +116,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceImageSequence::_compile()
     {
-        if( m_resourceAnimation == nullptr )
+        if( m_resourceImageSequence == nullptr )
         {
             LOGGER_ERROR( "SurfaceImageSequence::_compile: '%s' resource is null"
                 , m_name.c_str()
@@ -125,17 +125,17 @@ namespace Mengine
             return false;
         }
 
-        if( m_resourceAnimation.compile() == false )
+        if( m_resourceImageSequence.compile() == false )
         {
             LOGGER_ERROR( "Animation::_compile: '%s' resource '%s' is not compile"
                 , m_name.c_str()
-                , m_resourceAnimation->getName().c_str()
+                , m_resourceImageSequence->getName().c_str()
             );
 
             return false;
         }
 
-        uint32_t sequenceCount = m_resourceAnimation->getSequenceCount();
+        uint32_t sequenceCount = m_resourceImageSequence->getSequenceCount();
 
         if( m_currentFrame >= sequenceCount )
         {
@@ -152,7 +152,7 @@ namespace Mengine
 
         for( uint32_t frameId = 0; frameId != sequenceCount; ++frameId )
         {
-            const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( frameId );
+            const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( frameId );
 
             if( resourceImage->compile() == false )
             {
@@ -188,7 +188,7 @@ namespace Mengine
     {
         m_materials.clear();
 
-        m_resourceAnimation.release();
+        m_resourceImageSequence.release();
 
         m_play = false;
     }
@@ -259,7 +259,7 @@ namespace Mengine
             return 0;
         }
 
-        float duration = m_resourceAnimation->getSequenceDuration();
+        float duration = m_resourceImageSequence->getSequenceDuration();
 
         if( _time >= duration )
         {
@@ -273,11 +273,11 @@ namespace Mengine
             }
         }
 
-        uint32_t count = m_resourceAnimation->getSequenceCount();
+        uint32_t count = m_resourceImageSequence->getSequenceCount();
 
         for( uint32_t frame = 0; frame != count; ++frame )
         {
-            float delay = m_resourceAnimation->getSequenceDelay( frame );
+            float delay = m_resourceImageSequence->getSequenceDelay( frame );
 
             _time -= delay;
 
@@ -299,14 +299,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SurfaceImageSequence::getFrameCount() const
     {
-        uint32_t count = m_resourceAnimation->getSequenceCount();
+        uint32_t count = m_resourceImageSequence->getSequenceCount();
 
         return count;
     }
     //////////////////////////////////////////////////////////////////////////
     float SurfaceImageSequence::getFrameDelay( uint32_t _frame ) const
     {
-        float delay = m_resourceAnimation->getSequenceDelay( _frame );
+        float delay = m_resourceImageSequence->getSequenceDelay( _frame );
 
         return delay;
     }
@@ -319,7 +319,7 @@ namespace Mengine
 #ifndef NDEBUG
         if( this->isCompile() == true )
         {
-            uint32_t sequenceCount = m_resourceAnimation->getSequenceCount();
+            uint32_t sequenceCount = m_resourceImageSequence->getSequenceCount();
 
             if( _frame >= sequenceCount )
             {
@@ -348,7 +348,7 @@ namespace Mengine
             return mt::vec2f::identity();
         }
 
-        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+        const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
         const mt::vec2f & maxSize = resourceImage->getMaxSize();
 
@@ -366,7 +366,7 @@ namespace Mengine
             return mt::vec2f::identity();
         }
 
-        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+        const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
         const mt::vec2f & size = resourceImage->getSize();
 
@@ -384,7 +384,7 @@ namespace Mengine
             return mt::vec2f::identity();
         }
 
-        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+        const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
         const mt::vec2f & offset = resourceImage->getOffset();
 
@@ -402,7 +402,7 @@ namespace Mengine
             return 0;
         }
 
-        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+        const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
         const RenderTextureInterfacePtr & texture = resourceImage->getTexture();
 
@@ -432,7 +432,7 @@ namespace Mengine
             return mt::uv4f::identity();
         }
 
-        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+        const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
         switch( _index )
         {
@@ -467,7 +467,7 @@ namespace Mengine
             return;
         }
 
-        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+        const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
         switch( _index )
         {
@@ -496,7 +496,7 @@ namespace Mengine
             return ColourValue::identity();
         }
 
-        const ResourceImagePtr & resourceImage = m_resourceAnimation->getSequenceResource( m_currentFrame );
+        const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
         const ColourValue & color = resourceImage->getColor();
 
@@ -512,7 +512,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceImageSequence::_setLastFrame()
     {
-        uint32_t sequenceCount = m_resourceAnimation->getSequenceCount();
+        uint32_t sequenceCount = m_resourceImageSequence->getSequenceCount();
 
         uint32_t lastFrame = sequenceCount - 1;
 
@@ -530,7 +530,7 @@ namespace Mengine
             return;
         }
 
-        float duration = m_resourceAnimation->getSequenceDuration();
+        float duration = m_resourceImageSequence->getSequenceDuration();
 
         m_playIterator = this->getPlayCount();
 
@@ -561,7 +561,7 @@ namespace Mengine
 
         for( uint32_t frame = 0; frame != m_currentFrame; ++frame )
         {
-            float delay = m_resourceAnimation->getSequenceDelay( frame );
+            float delay = m_resourceImageSequence->getSequenceDelay( frame );
 
             timing += delay;
         }

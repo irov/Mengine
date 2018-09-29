@@ -89,7 +89,7 @@
 
 
 // All Resource type
-#include "ResourceAnimation.h"
+#include "ResourceImageSequence.h"
 
 #include "Kernel/ResourceImageData.h"
 #include "Kernel/ResourceMusic.h"
@@ -441,7 +441,7 @@ namespace Mengine
 
         RESOURCE_FACTORY( ResourceMusic );
 
-        RESOURCE_FACTORY( ResourceAnimation );
+        RESOURCE_FACTORY( ResourceImageSequence );
 
         //RESOURCE_FACTORY( ResourceFont );
         //RESOURCE_FACTORY( ResourceGlyph );

@@ -1,9 +1,12 @@
-set(EXTERNAL_PROJECT_NAME libmovie)
+set(EXTERNAL_PROJECT_NAME freetype)
 
-set(EXTERNAL_LIBRARY_FILE_NAME libmovie)
+set(EXTERNAL_LIBRARY_FILE_NAME freetype)
 
 ExternalProject_Add(${EXTERNAL_PROJECT_NAME}_download PREFIX ${EXTERNAL_PROJECT_NAME}
-        GIT_REPOSITORY https://github.com/irov/libmovie.git
+        SOURCE_DIR ${DOWNLOADS_DIR}/${EXTERNAL_PROJECT_NAME}
+        
+        GIT_REPOSITORY http://git.sv.nongnu.org/r/freetype/freetype2.git
+        GIT_TAG "VER-2-9-1"
         GIT_PROGRESS TRUE
 
         UPDATE_COMMAND ""
@@ -12,9 +15,7 @@ ExternalProject_Add(${EXTERNAL_PROJECT_NAME}_download PREFIX ${EXTERNAL_PROJECT_
             -DCMAKE_INSTALL_PREFIX=${THIRDPARTY_DIR}/${EXTERNAL_PROJECT_NAME}
             -DBUILD_SHARED_LIBS=OFF
             -DLIBTYPE=STATIC
-            -DLIBMOVIE_EXTERNAL_BUILD=ON
-            -DLIBMOVIE_EXAMPLES_BUILD=OFF
-            -DLIBMOVIE_INSTALL=ON
+            -DWITH_BZip2=OFF
 )
 
 ExternalProject_Get_Property(${EXTERNAL_PROJECT_NAME}_download INSTALL_DIR)

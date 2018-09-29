@@ -173,7 +173,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptWrapper::constsWrap()
+    bool PythonScriptWrapper::constsWrap()
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
@@ -192,6 +192,8 @@ namespace Mengine
             .def_repr( &s_FilePath_repr )
             .def_hash( &s_FilePath_hash )
             ;
+
+        return true;
     }
 }
 

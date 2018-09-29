@@ -783,7 +783,7 @@ namespace Mengine
     };
 
     //////////////////////////////////////////////////////////////////////////
-    void PythonScriptWrapper::soundWrap()
+    bool PythonScriptWrapper::soundWrap()
     {
         SoundScriptMethod * soundScriptMethod = new SoundScriptMethod();
 
@@ -839,5 +839,7 @@ namespace Mengine
         pybind::def_functor( kernel, "voiceResume", soundScriptMethod, &SoundScriptMethod::voiceResume );
         pybind::def_functor( kernel, "voiceSetVolume", soundScriptMethod, &SoundScriptMethod::voiceSetVolume );
         pybind::def_functor( kernel, "voiceGetVolume", soundScriptMethod, &SoundScriptMethod::voiceGetVolume );
+
+        return true;
     }
 }

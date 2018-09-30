@@ -264,13 +264,13 @@ namespace Mengine
                 ->isMouseButtonDown( _button );
         }
 
-        void s_printChildren2( Node * _node, uint32_t _tab )
+        void s_printChildren2( const NodePtr & _node, uint32_t _tab )
         {
             IntrusiveSlugListNodeChild & children = _node->getChildren();
 
             for( IntrusiveSlugChild it( children ); it.eof() == false; )
             {
-                Node * child = *it;
+                const NodePtr & child = *it;
 
                 it.next_shuffle();
 
@@ -292,7 +292,7 @@ namespace Mengine
             }
         }
 
-        void s_printChildren( Node * _node )
+        void s_printChildren( const NodePtr & _node )
         {
             s_printChildren2( _node, 0 );
         }
@@ -2639,11 +2639,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getNodeScreenPosition( const NodePtr & _node )
         {
-            const RenderViewportInterfacePtr & viewport = Helper::getRenderViewportInheritance( _node.get() );
+            const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _node.get() );
 
             const Viewport & vp = viewport->getViewport();
 
-            const RenderCameraInterfacePtr & camera = Helper::getRenderCameraInheritance( _node.get() );
+            const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _node.get() );
 
             const mt::mat4f & wm = _node->getWorldMatrix();
 

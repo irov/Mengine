@@ -12,7 +12,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual UpdationInterfacePtr getUpdation()
+        virtual UpdationInterface * getUpdation()
         {
             return nullptr;
         }
@@ -24,5 +24,5 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define DECLARE_UPDATABLE()\
 public:\
-    Mengine::UpdationInterfacePtr getUpdation() override{ return this; }\
+    Mengine::UpdationInterface * getUpdation() override{ return this; }\
 protected:

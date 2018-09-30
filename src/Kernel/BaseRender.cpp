@@ -2,16 +2,49 @@
 
 #include "Interface/RenderServiceInterface.h"
 
+#include "Kernel/Assertion.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     BaseRender::BaseRender()
-        : m_externalRender( false )
+        : m_relationRender( nullptr )
+        , m_externalRender( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     BaseRender::~BaseRender()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::setRelationRender( const RenderInterfacePtr & _relationRender )
+    {
+        if( m_relationRender != nullptr )
+        {
+            m_relationRender->removeRelationRenderChildren_( this );
+        }
+
+        m_relationRender = _relationRender.getT<BaseRender *>();
+
+        if( m_relationRender != nullptr )
+        {
+            m_relationRender->addRelationRenderChildren_( this );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::addRelationRenderChildren_( BaseRender * _child )
+    {
+        m_relationRenderChildren.push_back( _child );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::removeRelationRenderChildren_( BaseRender * _child )
+    {
+        VectorBaseRender::iterator it_erase = std::find( m_relationRenderChildren.begin(), m_relationRenderChildren.end(), _child );
+
+        MENGINE_ASSERTION( it_erase != m_relationRenderChildren.end() );
+
+        *it_erase = m_relationRenderChildren.back();
+        m_relationRenderChildren.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRenderViewport( const RenderViewportInterfacePtr & _viewport )

@@ -15,7 +15,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual EventationInterfacePtr getEventation()
+        virtual EventationInterface * getEventation()
         {
             return nullptr;
         };
@@ -28,5 +28,5 @@ namespace Mengine
 #   define DECLARE_EVENTABLE( Type )\
 public:\
     typedef Type EventReceiverType;\
-    Mengine::EventationInterfacePtr getEventation() override{ return this; }\
+    Mengine::EventationInterface * getEventation() override{ return this; }\
 protected:

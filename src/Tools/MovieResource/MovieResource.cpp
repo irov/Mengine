@@ -765,7 +765,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         , viewport.end_y
     );
 
-    xmlDataResourceBounds.append_attribute( "Value" ).set_value( xmlMovieBounds )
+    xmlDataResourceBounds.append_attribute( "Value" ).set_value( xmlMovieBounds );
 
     ae_uint32_t movieDataCount = ae_get_movie_composition_data_count( movieData );
 

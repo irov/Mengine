@@ -130,7 +130,7 @@ namespace Mengine
         m_renderCamera->setOrthogonalViewport( m_viewport );
         m_renderViewport->setViewport( m_viewport );
         
-        RenderInterfacePtr render = this->getRender();
+        RenderInterface * render = this->getRender();
 
         render->setRenderCamera( m_renderCamera );
         render->setRenderViewport( m_renderViewport );
@@ -153,7 +153,7 @@ namespace Mengine
         m_renderViewport = nullptr;
         m_renderCamera = nullptr;
 
-        RenderInterfacePtr render = this->getRender();
+        RenderInterface * render = this->getRender();
 
         render->setRenderCamera( nullptr );
         render->setRenderViewport( nullptr );
@@ -225,7 +225,7 @@ namespace Mengine
             return false;
         }
 
-        RenderInterfacePtr render = this->getRender();
+        RenderInterface * render = this->getRender();
         render->setRenderTarget( renderTarget );
 
         RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM()

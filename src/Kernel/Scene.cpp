@@ -81,11 +81,11 @@ namespace Mengine
             {
                 for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
                 {
-                    Node * children = *it;
+                    const NodePtr & children = *it;
 
                     it.next_shuffle();
 
-                    Scene * subScene = dynamic_cast<Scene *>(children);
+                    Scene * subScene = dynamic_cast<Scene *>(children.get());
 
                     if( subScene != nullptr )
                     {

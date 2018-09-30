@@ -72,7 +72,7 @@ namespace Mengine
             return;
         }
 
-        RenderInterfacePtr selfRender = _node->getRender();
+        RenderInterface * selfRender = _node->getRender();
 
         if( selfRender != nullptr )
         {

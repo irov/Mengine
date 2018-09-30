@@ -7,6 +7,7 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/UpdationInterface.h"
 
+#include "Kernel/NodeRenderHelper.h"
 #include "Kernel/Logger.h"
 
 #include "Config/Config.h"
@@ -82,7 +83,7 @@ namespace Mengine
             {
                 for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
                 {
-                    NodePtr children = (*it);
+                    const NodePtr & children = (*it);
 
                     it.next_shuffle();
 
@@ -146,7 +147,7 @@ namespace Mengine
             {
                 for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
                 {
-                    NodePtr children = *it;
+                    const NodePtr & children = *it;
 
                     it.next_shuffle();
 
@@ -224,6 +225,17 @@ namespace Mengine
 
         this->setRelationTransformation( _parent );
 
+        RenderInterface * oldRenderParent = Helper::getNodeRenderInheritance( oldparent );
+        RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
+
+        if( oldRenderParent != newRenderParent )
+        {
+            Helper::visitNodeRenderCloseChildren( this, [newRenderParent]( const RenderInterfacePtr & _render )
+            {
+                _render->setRelationRender( newRenderParent );
+            } );
+        }
+
         UpdationInterfacePtr updation = this->getUpdation();
 
         if( _parent != nullptr && updation != nullptr )
@@ -245,14 +257,14 @@ namespace Mengine
 
         for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
         {
-            NodePtr node = (*it);
+            const NodePtr & node = (*it);
+
+            it.next_shuffle();
 
             node->setParent_( nullptr );
 
             IntrusiveSlugListNodeChild::iterator it_node( node );
-
-            it.next_shuffle();
-
+            
             m_children.erase( it_node );
         }
     }
@@ -266,7 +278,7 @@ namespace Mengine
 
         for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
         {
-            NodePtr node = (*it);
+            const NodePtr & node = (*it);
 
             IntrusiveSlugListNodeChild::iterator it_node( node );
 
@@ -436,15 +448,31 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::foreachChildren( const LambdaNode & _lambda ) const
     {
-        for( IntrusiveSlugListNodeChild::unslug_const_iterator
-            it = m_children.ubegin(),
-            it_end = m_children.uend();
-            it != it_end;
-            ++it )
+        if( m_children.countSlugs() == 0 )
         {
-            NodePtr node = (*it);
+            for( IntrusiveSlugListNodeChild::unslug_const_iterator
+                it = m_children.ubegin(),
+                it_end = m_children.uend();
+                it != it_end;
+                ++it )
+            {
+                const NodePtr & node = (*it);
 
-            _lambda( node );
+                _lambda( node );
+            }
+        }
+        else
+        {
+            for( IntrusiveSlugListNodeChild::const_iterator
+                it = m_children.begin(),
+                it_end = m_children.end();
+                it != it_end;
+                ++it )
+            {
+                const NodePtr & node = (*it);
+
+                _lambda( node );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -469,7 +497,7 @@ namespace Mengine
         {
             for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
-                NodePtr children = (*it);
+                const NodePtr & children = (*it);
 
                 it.next_shuffle();
 
@@ -615,7 +643,7 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    Node * Node::_findChild( const ConstString & _name, bool _recursion ) const
+    NodePtr Node::_findChild( const ConstString & _name, bool _recursion ) const
     {
         (void)_name;
         (void)_recursion;
@@ -798,7 +826,7 @@ namespace Mengine
 
             for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
-                NodePtr node = *it;
+                const NodePtr & node = *it;
 
                 it.next_shuffle();
 
@@ -945,7 +973,7 @@ namespace Mengine
             {
                 for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
                 {
-                    NodePtr node = (*it);
+                    const NodePtr & node = (*it);
 
                     it.next_shuffle();
 
@@ -1123,7 +1151,7 @@ namespace Mengine
             {
                 for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
                 {
-                    NodePtr node = (*it);
+                    const NodePtr & node = (*it);
 
                     it.next_shuffle();
 

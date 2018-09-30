@@ -34,7 +34,7 @@ namespace Mengine
                 return;
             }
 
-            RenderInterfacePtr render = m_arrow->getRender();
+            RenderInterface * render = m_arrow->getRender();
 
             const RenderCameraInterfacePtr & renderCamera = render->getRenderCamera();
             const RenderViewportInterfacePtr & renderViewport = render->getRenderViewport();

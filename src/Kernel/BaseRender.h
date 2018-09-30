@@ -20,6 +20,14 @@ namespace Mengine
         ~BaseRender() override;
 
     public:
+        void setRelationRender( const RenderInterfacePtr & _relationRender ) override;
+        inline BaseRender * getRelationRender() const;
+
+    protected:
+        void addRelationRenderChildren_( BaseRender * _child );
+        void removeRelationRenderChildren_( BaseRender * _child );
+
+    public:
         void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;
         const RenderViewportInterfacePtr & getRenderViewport() const override;
 
@@ -79,6 +87,11 @@ namespace Mengine
         const RenderMaterialInterfacePtr & getDebugMaterial() const;
 
     protected:
+        BaseRender * m_relationRender;
+
+        typedef Vector<BaseRender *> VectorBaseRender;
+        VectorBaseRender m_relationRenderChildren;
+
         RenderViewportInterfacePtr m_renderViewport;
         RenderCameraInterfacePtr m_renderCamera;
         RenderScissorInterfacePtr m_renderScissor;
@@ -86,6 +99,11 @@ namespace Mengine
 
         bool m_externalRender;
     };
+    //////////////////////////////////////////////////////////////////////////
+    BaseRender * BaseRender::getRelationRender() const
+    {
+        return m_relationRender;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool BaseRender::isExternalRender() const
     {

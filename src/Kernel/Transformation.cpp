@@ -35,14 +35,14 @@ namespace Mengine
         {
             identityPrevTransformation = m_relationTransformation->isIdentityWorldMatrix();
 
-            m_relationTransformation->removeRelationChildren_( this );
+            m_relationTransformation->removeRelationTransformationChild_( this );
         }
 
         m_relationTransformation = _relation.get();
 
         if( m_relationTransformation != nullptr )
         {
-            m_relationTransformation->addRelationChildren_( this );
+            m_relationTransformation->addRelationTransformationChild_( this );
 
             if( m_relationTransformation->isIdentityWorldMatrix() == true && m_identityWorldMatrix == true )
             {
@@ -60,19 +60,19 @@ namespace Mengine
         this->invalidateWorldMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::addRelationChildren_( Transformation * _child )
+    void Transformation::addRelationTransformationChild_( Transformation * _child )
     {
-        m_relationChild.push_back( _child );
+        m_relationChildren.push_back( _child );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::removeRelationChildren_( Transformation * _child )
+    void Transformation::removeRelationTransformationChild_( Transformation * _child )
     {
-        VectorTransformation::iterator it_erase = std::find( m_relationChild.begin(), m_relationChild.end(), _child );
+        VectorTransformation::iterator it_erase = std::find( m_relationChildren.begin(), m_relationChildren.end(), _child );
 
-        MENGINE_ASSERTION( it_erase != m_relationChild.end() );
+        MENGINE_ASSERTION( it_erase != m_relationChildren.end() );
         
-        *it_erase = m_relationChild.back();
-        m_relationChild.pop_back();
+        *it_erase = m_relationChildren.back();
+        m_relationChildren.pop_back();
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::invalidateWorldMatrix()
@@ -81,7 +81,7 @@ namespace Mengine
         {
             m_invalidateWorldMatrix = true;
 
-            for( Transformation * child : m_relationChild )
+            for( Transformation * child : m_relationChildren )
             {
                 child->invalidateWorldMatrix();
             }        

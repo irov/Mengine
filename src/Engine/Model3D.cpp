@@ -84,7 +84,7 @@ namespace Mengine
 
         this->addChild( m_camera );
 
-        RenderInterfacePtr render = this->getRender();
+        RenderInterface * render = this->getRender();
         render->setRenderCamera( m_camera );
 
         m_vertexCount = model->getVertexCount();

@@ -11,7 +11,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual RenderInterfacePtr getRender() const
+        virtual RenderInterface * getRender()
         {
             return nullptr;
         }
@@ -23,5 +23,5 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define DECLARE_RENDERABLE()\
 public:\
-    Mengine::RenderInterfacePtr getRender() const override{ return this; }\
+    Mengine::RenderInterface * getRender() override{ return this; }\
 protected:

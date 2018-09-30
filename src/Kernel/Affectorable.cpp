@@ -43,7 +43,7 @@ namespace Mengine
     {
         for( TSlugAffector it( m_affectors ); it.eof() == false; )
         {
-            AffectorPtr affector = *it;
+            const AffectorPtr & affector = *it;
 
             it.next_shuffle();
 
@@ -62,7 +62,7 @@ namespace Mengine
     {
         for( TSlugAffector it( m_affectors ); it.eof() == false; )
         {
-            AffectorPtr affector = *it;
+            const AffectorPtr & affector = *it;
 
             it.next_shuffle();
 
@@ -77,7 +77,7 @@ namespace Mengine
     {
         for( TSlugAffector it( m_affectors ); it.eof() == false; )
         {
-            AffectorPtr affector = *it;
+            const AffectorPtr & affector = *it;
 
             it.next_shuffle();
 

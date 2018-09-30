@@ -14,6 +14,7 @@ namespace Mengine
     {
     public:
         ThreadTaskCurl();
+        ~ThreadTaskCurl() override;
 
     public:
         void setRequestId( HttpRequestID _id );

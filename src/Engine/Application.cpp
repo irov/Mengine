@@ -637,7 +637,7 @@ namespace Mengine
 
         for( IntrusiveSlugChild it( children ); it.eof() == false; )
         {
-            NodePtr child = *it;
+            const NodePtr & child = *it;
 
             it.next_shuffle();
 

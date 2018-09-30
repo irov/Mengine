@@ -4,6 +4,11 @@ project(python3)
 
 SET( SOURCE_DIR ${THIRDPARTY_DIR}/Python3 )
 
+configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
+configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
+configure_file(Modified/_iomodule.c ${SOURCE_DIR}/Modules/_io/_iomodule.c COPYONLY)
+configure_file(Modified/mpdecimal.c ${SOURCE_DIR}/Modules/_decimal/libmpdec/mpdecimal.c COPYONLY)
+
 REMOVE_DEFINITIONS(-Doverride)
 
 #option(WITH_THREAD "compile in rudimentary thread support" OFF)
@@ -81,10 +86,6 @@ file(MAKE_DIRECTORY ${python32_BINARY_DIR}/Modules)
 
 #configure_file(Modules/config.c.cmake ${CMAKE_CURRENT_BINARY_DIR}/Modules/modules-config.c @ONLY)
 file(WRITE ${python32_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
-
-configure_file(Modified/config.c ${SOURCE_DIR}/PC/config.c COPYONLY)
-configure_file(Modified/pyconfig.h ${SOURCE_DIR}/PC/pyconfig.h COPYONLY)
-#configure_file(Modified/pylifecycle.c ${SOURCE_DIR}/Python/pylifecycle.c COPYONLY)
 
 ############################## 
 

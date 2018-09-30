@@ -353,8 +353,8 @@ namespace Mengine
             const Resolution & contentResolution = APPLICATION_SERVICE()
                 ->getContentResolution();
 
-            const RenderCameraInterfacePtr & camera = Helper::getRenderCameraInheritance( _hs );
-            const RenderViewportInterfacePtr & viewport = Helper::getRenderViewportInheritance( _hs );
+            const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _hs );
+            const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _hs );
 
             mt::box2f b1;
             _hs->getScreenPolygon( camera, viewport, contentResolution, &b1, nullptr );
@@ -1209,7 +1209,7 @@ namespace Mengine
 
             for( IntrusiveSlugChild it( children ); it.eof() == false; )
             {
-                Node * child = *it;
+                const NodePtr & child = *it;
 
                 it.next_shuffle();
 

@@ -14,7 +14,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual AnimationInterfacePtr getAnimation()
+        virtual AnimationInterface * getAnimation()
         {
             return nullptr;
         };
@@ -26,5 +26,5 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define DECLARE_ANIMATABLE()\
 public:\
-    Mengine::AnimationInterfacePtr getAnimation() override{ return this; }\
+    Mengine::AnimationInterface * getAnimation() override{ return this; }\
 protected:

@@ -52,8 +52,8 @@ namespace Mengine
         inline Transformation * getRelationTransformation() const;
 
     protected:
-        void addRelationChildren_( Transformation * _child );
-        void removeRelationChildren_( Transformation * _child );
+        void addRelationTransformationChild_( Transformation * _child );
+        void removeRelationTransformationChild_( Transformation * _child );
 
     public:
         inline const mt::mat4f & getWorldMatrix() const;
@@ -154,7 +154,7 @@ namespace Mengine
         Transformation * m_relationTransformation;
 
         typedef Vector<Transformation *> VectorTransformation;
-        VectorTransformation m_relationChild;
+        VectorTransformation m_relationChildren;
 
         mt::vec3f m_position;
         mt::vec3f m_origin;

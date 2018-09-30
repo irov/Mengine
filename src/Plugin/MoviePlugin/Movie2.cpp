@@ -178,7 +178,7 @@ namespace Mengine
 
                 node->setName( layer.name );
 
-                RenderInterfacePtr render = node->getRender();
+                RenderInterface * render = node->getRender();
                 render->setExternalRender( true );
 
                 node->setMovie( this );
@@ -249,7 +249,7 @@ namespace Mengine
 
                 node->setName( layer.name );
 
-                RenderInterfacePtr render = node->getRender();
+                RenderInterface * render = node->getRender();
                 render->setExternalRender( true );
 
                 UnknownParticleEmitter2InterfacePtr unknownParticleEmitter2 = node->getUnknown();
@@ -1932,7 +1932,7 @@ namespace Mengine
                     {
                         TextField * node = reinterpret_node_cast<TextField *>(mesh.element_data);
 
-                        RenderInterfacePtr render = node->getRender();
+                        RenderInterface * render = node->getRender();
 
                         //render->render( &state );
                         Helper::nodeRenderChildrenExternal( node, &state );
@@ -1941,7 +1941,7 @@ namespace Mengine
                     {
                         Node * node = reinterpret_node_cast<Node *>(mesh.element_data);
 
-                        RenderInterfacePtr render = node->getRender();
+                        RenderInterface * render = node->getRender();
 
                         //render->render( &state );
                         Helper::nodeRenderChildrenExternal( node, &state );

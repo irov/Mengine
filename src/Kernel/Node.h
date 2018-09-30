@@ -105,7 +105,7 @@ namespace Mengine
 
     protected:
         virtual bool _hasChild( const ConstString & _name, bool _recursive ) const;
-        virtual Node * _findChild( const ConstString & _name, bool _recursion ) const;
+        virtual NodePtr _findChild( const ConstString & _name, bool _recursion ) const;
 
     protected:
         virtual void _changeParent( Node * _oldParent, Node * _newParent );

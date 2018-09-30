@@ -421,7 +421,7 @@ namespace Mengine
             scissor->setName( _layer.name );
             scissor->setViewport( _layer.viewport );
 
-            RenderInterfacePtr render = _node->getRender();
+            RenderInterface * render = _node->getRender();
             render->setRenderScissor( scissor );
 
             m_scissors.emplace_back( scissor );
@@ -2031,7 +2031,7 @@ namespace Mengine
 
             if( layer.isThreeD() == true )
             {
-                RenderInterfacePtr render = node->getRender();
+                RenderInterface * render = node->getRender();
                 render->setRenderCamera( m_renderCameraProjection );
                 render->setRenderViewport( m_renderViewport );
             }

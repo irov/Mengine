@@ -25,7 +25,7 @@ INCLUDE_DIRECTORIES(
 
 IF(WIN32)
     INCLUDE_DIRECTORIES( 
-        ${THIRDPARTY_DIR}/libcurl/include 
+        ${THIRDPARTY_DIR}/curl/include 
         )
 ENDIF()
 

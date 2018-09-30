@@ -39,7 +39,7 @@ namespace Mengine
         public:
             void visit( const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const NodePtr & _node )
             {
-                RenderInterfacePtr render = _node->getRender();
+                RenderInterface * render = _node->getRender();
 
                 if( render != nullptr )
                 {
@@ -96,7 +96,7 @@ namespace Mengine
                 {
                     for( IntrusiveSlugChild it( child ); it.eof() == false; )
                     {
-                        NodePtr children = (*it);
+                        const NodePtr & children = (*it);
 
                         it.next_shuffle();
 

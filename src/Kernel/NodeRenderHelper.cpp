@@ -22,7 +22,7 @@ namespace Mengine
                 return;
             }
 
-            RenderInterfacePtr selfRender = _node->getRender();
+            RenderInterface * selfRender = _node->getRender();
             
             if( selfRender != nullptr )
             {
@@ -122,7 +122,7 @@ namespace Mengine
                 return;
             }
 
-            RenderInterfacePtr selfRender = _node->getRender();
+            RenderInterface * selfRender = _node->getRender();
 
             if( selfRender != nullptr )
             {
@@ -217,7 +217,7 @@ namespace Mengine
                 return;
             }
 
-            RenderInterfacePtr render = _node->getRender();
+            RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
@@ -313,9 +313,14 @@ namespace Mengine
             }
         }
         //////////////////////////////////////////////////////////////////////////
-        RenderInterfacePtr getRenderInheritance( const Node * _node )
+        RenderInterface * getNodeRenderInheritance( Node * _node )
         {
-            RenderInterfacePtr render = _node->getRender();
+            if( _node == nullptr )
+            {
+                return nullptr;
+            }
+
+            RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
@@ -324,19 +329,31 @@ namespace Mengine
 
             Node * parent = _node->getParent();
 
-            if( parent == nullptr )
-            {
-                return nullptr;
-            }
-
-            RenderInterfacePtr render_parent = Helper::getRenderInheritance( parent );
+            RenderInterface * render_parent = Helper::getNodeRenderInheritance( parent );
 
             return render_parent;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderViewportInterfacePtr & getRenderViewportInheritance( const Node * _node )
+        void visitNodeRenderCloseChildren( const Node * _node, const LambdaNodeRenderCloseChildren & _lambda )
         {
-            RenderInterfacePtr render = _node->getRender();
+            _node->foreachChildren( [&_lambda]( const NodePtr & _child )
+            {
+                RenderInterface * render = _child->getRender();
+
+                if( render != nullptr )
+                {
+                    _lambda( render );
+                }
+                else
+                {
+                    Helper::visitNodeRenderCloseChildren( _child.get(), _lambda );
+                }
+            } );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( Node * _node )
+        {
+            RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
@@ -355,14 +372,14 @@ namespace Mengine
                 return RenderViewportInterfacePtr::none();
             }
 
-            const RenderViewportInterfacePtr & viewport_parent = Helper::getRenderViewportInheritance( parent );
+            const RenderViewportInterfacePtr & viewport_parent = Helper::getNodeRenderViewportInheritance( parent );
 
             return viewport_parent;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderCameraInterfacePtr & getRenderCameraInheritance( const Node * _node )
+        const RenderCameraInterfacePtr & getNodeRenderCameraInheritance( Node * _node )
         {
-            RenderInterfacePtr render = _node->getRender();
+            RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
@@ -381,14 +398,14 @@ namespace Mengine
                 return RenderCameraInterfacePtr::none();
             }
 
-            const RenderCameraInterfacePtr & camera_parent = Helper::getRenderCameraInheritance( parent );
+            const RenderCameraInterfacePtr & camera_parent = Helper::getNodeRenderCameraInheritance( parent );
 
             return camera_parent;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderScissorInterfacePtr & getRenderScissorInheritance( const Node * _node )
+        const RenderScissorInterfacePtr & getNodeRenderScissorInheritance( Node * _node )
         {
-            RenderInterfacePtr render = _node->getRender();
+            RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
@@ -407,14 +424,14 @@ namespace Mengine
                 return RenderScissorInterfacePtr::none();
             }
 
-            const RenderScissorInterfacePtr & scissor_parent = Helper::getRenderScissorInheritance( parent );
+            const RenderScissorInterfacePtr & scissor_parent = Helper::getNodeRenderScissorInheritance( parent );
 
             return scissor_parent;
         }
         //////////////////////////////////////////////////////////////////////////
-        const RenderTargetInterfacePtr & getRenderTargetInheritance( const Node * _node )
+        const RenderTargetInterfacePtr & getNodeRenderTargetInheritance( Node * _node )
         {
-            RenderInterfacePtr render = _node->getRender();
+            RenderInterface * render = _node->getRender();
 
             if( render != nullptr )
             {
@@ -433,7 +450,7 @@ namespace Mengine
                 return RenderTargetInterfacePtr::none();
             }
 
-            const RenderTargetInterfacePtr & target_parent = Helper::getRenderTargetInheritance( parent );
+            const RenderTargetInterfacePtr & target_parent = Helper::getNodeRenderTargetInheritance( parent );
 
             return target_parent;
         }

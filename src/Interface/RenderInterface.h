@@ -26,6 +26,9 @@ namespace Mengine
         : public Mixin
     {
     public:
+        virtual void setRelationRender( const RenderInterfacePtr & _relationRender ) = 0;
+
+    public:
         virtual void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) = 0;
         virtual const RenderViewportInterfacePtr & getRenderViewport() const = 0;
 

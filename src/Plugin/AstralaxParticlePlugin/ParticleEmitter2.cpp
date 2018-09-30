@@ -784,7 +784,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ParticleEmitter2::onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction )
     {
-        RenderCameraInterfacePtr camera = Helper::getRenderCameraInheritance( this );
+        RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( this );
 
         if( camera == nullptr )
         {

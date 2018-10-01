@@ -2,6 +2,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/ResourceHolder.h"
+#include "Kernel/BaseRender.h"
 
 #include "ResourceInternalObject.h"
 
@@ -13,8 +14,10 @@ namespace Mengine
 
     class MovieInternalObject
         : public Node
+        , public BaseRender
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_RENDERABLE();
 
     public:
         MovieInternalObject();
@@ -43,6 +46,9 @@ namespace Mengine
 
     protected:
         void _setLocalHide( bool _hide ) override;
+
+    protected:
+        void _render( const RenderContext * _context ) override;
 
     protected:
         ResourceHolder<ResourceInternalObject> m_resourceInternalObject;

@@ -356,13 +356,15 @@ namespace Mengine
 
         if( soundable == nullptr )
         {
+            RenderInterface * render = _node->getRender();
+
             if( _layer.isMovie() == false )
             {
-                _node->setPersonalAlpha( frame.opacity );
+                render->setPersonalAlpha( frame.opacity );
             }
             else
             {
-                _node->setLocalAlpha( frame.opacity );
+                render->setLocalAlpha( frame.opacity );
             }
         }
         else
@@ -2408,6 +2410,13 @@ namespace Mengine
         this->updateForward_( _context->current );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie::_render( const RenderContext * _context )
+    {
+        (void)_context;
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Movie::updateForward_( float _time )
     {
         if( m_interruptEnd == true )
@@ -2700,15 +2709,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::_setPersonalColor( const ColourValue& _color )
     {
-        Node::_setPersonalColor( _color );
-
         this->setLocalColor( _color );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie::_setPersonalAlpha( float _alpha )
     {
-        Node::_setPersonalAlpha( _alpha );
-
         this->setLocalAlpha( _alpha );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -62,15 +62,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2Slot::_setPersonalColor( const ColourValue& _color )
     {
-        Node::_setPersonalColor( _color );
-
         this->setLocalColor( _color );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2Slot::_setPersonalAlpha( float _alpha )
     {
-        Node::_setPersonalAlpha( _alpha );
-
         this->setLocalAlpha( _alpha );
     }
     //////////////////////////////////////////////////////////////////////////

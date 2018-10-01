@@ -230,9 +230,10 @@ namespace Mengine
 
         if( oldRenderParent != newRenderParent )
         {
-            Helper::visitNodeRenderCloseChildren( this, [newRenderParent]( const RenderInterfacePtr & _render )
+            this->foreachRenderCloseChildren( [newRenderParent]( const RenderInterfacePtr & _render )
             {
                 _render->setRelationRender( newRenderParent );
+                _render->invalidateColor();
             } );
         }
 
@@ -429,8 +430,7 @@ namespace Mengine
             _node->activate();
         }
 
-        _node->invalidateWorldMatrix();
-        _node->invalidateColor();
+        _node->invalidateWorldMatrix();        
 
         stdex::intrusive_this_release( this );
     }
@@ -474,6 +474,23 @@ namespace Mengine
                 _lambda( node );
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda )
+    {
+        this->foreachChildren( [&_lambda]( const NodePtr & _child )
+        {
+            RenderInterface * render = _child->getRender();
+
+            if( render != nullptr )
+            {
+                _lambda( render );
+            }
+            else
+            {
+                _child->foreachRenderCloseChildren( _lambda );
+            }
+        } );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::visitChildren( const VisitorPtr & _visitor )
@@ -1116,95 +1133,12 @@ namespace Mengine
         //invalidateBoundingBox();add
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::calcScreenPosition( const RenderCameraInterfacePtr & _camera, mt::vec2f & _screen )
-    {
-        const mt::vec3f & wp = this->getWorldPosition();
-
-        const mt::mat4f & vm = _camera->getCameraViewMatrix();
-
-        mt::vec3f sc;
-        mt::mul_m4_v3( sc, vm, wp );
-
-        _screen.x = sc.x;
-        _screen.y = sc.y;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Node::_updateBoundingBox( mt::box2f& _boundingBox ) const
     {
         _boundingBox.minimum.x = -(std::numeric_limits<float>::max)();
         _boundingBox.minimum.y = -(std::numeric_limits<float>::max)();
         _boundingBox.maximum.x = (std::numeric_limits<float>::max)();
         _boundingBox.maximum.y = (std::numeric_limits<float>::max)();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_invalidateColor()
-    {
-        if( m_children.empty() == false )
-        {
-            NodePtr single = m_children.single();
-
-            if( single != nullptr )
-            {
-                single->invalidateColor();
-            }
-            else
-            {
-                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
-                {
-                    const NodePtr & node = (*it);
-
-                    it.next_shuffle();
-
-                    node->invalidateColor();
-                }
-            }
-        }
-
-        //m_invalidateRendering = true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ColourValue & Node::getWorldColor() const
-    {
-        if( m_parent == nullptr )
-        {
-            const ColourValue & localColor = Colorable::getLocalColor();
-
-            return localColor;
-        }
-
-        if( Colorable::isInvalidateColor() == false )
-        {
-            const ColourValue & relationColor = Colorable::getRelationColor();
-
-            return relationColor;
-        }
-
-        const ColourValue & parentColor = m_parent->getWorldColor();
-
-        const ColourValue & relationColor = Colorable::updateRelationColor( parentColor );
-
-        return relationColor;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::calcTotalColor( ColourValue & _color ) const
-    {
-        const ColourValue & worldColour = this->getWorldColor();
-        _color = worldColour;
-
-        const ColourValue & personalColour = this->getPersonalColor();
-        _color *= personalColour;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Node::isSolidColor() const
-    {
-        const ColourValue & worldColour = this->getWorldColor();
-
-        float worldAlpha = worldColour.getA();
-        float personalAlpha = this->getPersonalAlpha();
-
-        bool solid = mt::equal_f_f( worldAlpha * personalAlpha, 1.f );
-
-        return solid;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Node::getAffectorableUpdatableMode() const

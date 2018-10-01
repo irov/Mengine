@@ -7,6 +7,7 @@
 #include "Interface/RenderTargetInterface.h"
 
 #include "Kernel/Mixin.h"
+#include "Kernel/Colorable.h"
 
 namespace Mengine
 {
@@ -23,7 +24,7 @@ namespace Mengine
     typedef IntrusivePtr<class RenderInterface> RenderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderInterface
-        : public Mixin
+        : public Colorable
     {
     public:
         virtual void setRelationRender( const RenderInterfacePtr & _relationRender ) = 0;

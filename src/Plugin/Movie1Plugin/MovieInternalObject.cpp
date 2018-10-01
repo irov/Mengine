@@ -159,17 +159,20 @@ namespace Mengine
         this->setHide( _hide );
     }
     //////////////////////////////////////////////////////////////////////////
+    void MovieInternalObject::_render( const RenderContext * _context )
+    {
+        (void)_context;
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void MovieInternalObject::_setPersonalColor( const ColourValue& _color )
     {
-        Node::_setPersonalColor( _color );
-
         this->setLocalColor( _color );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieInternalObject::_setPersonalAlpha( float _alpha )
     {
-        Node::_setPersonalAlpha( _alpha );
-
         this->setLocalAlpha( _alpha );
     }
 }

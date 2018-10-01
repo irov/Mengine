@@ -62,6 +62,11 @@ namespace Mengine
         virtual void _setLocalTransparent( bool _transparent );
         virtual void _setPersonalTransparent( bool _transparent );
 
+    public:
+        virtual const ColourValue & getWorldColor() const = 0;
+        virtual void calcTotalColor( ColourValue & _color ) const = 0;
+        virtual bool isSolidColor() const = 0;
+
     protected:
         void updateLocalTransparent_();
         void updatePersonalTransparent_();

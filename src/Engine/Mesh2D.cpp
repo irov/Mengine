@@ -173,8 +173,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Mesh2D::_invalidateColor()
     {
-        Node::_invalidateColor();
-
         this->invalidateVerticesColor();
 
         bool solid = this->isSolidColor();

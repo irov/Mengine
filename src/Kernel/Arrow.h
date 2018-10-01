@@ -19,10 +19,7 @@ namespace Mengine
 
     class Arrow
         : public Entity
-        , public BaseRender
     {
-        DECLARE_RENDERABLE();
-
     public:
         Arrow();
         ~Arrow() override;

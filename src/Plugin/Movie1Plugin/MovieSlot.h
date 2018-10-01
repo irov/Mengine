@@ -1,13 +1,16 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 
 namespace Mengine
 {
     class MovieSlot
         : public Node
+        , public BaseRender
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_RENDERABLE();
 
     public:
         MovieSlot();
@@ -28,6 +31,9 @@ namespace Mengine
 
     protected:
         void _changeParent( Node * _oldParent, Node * _newParent ) override;
+
+    protected:
+        void _render( const RenderContext * _context ) override;
 
     protected:
         ConstString m_movieName;

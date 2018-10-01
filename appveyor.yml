@@ -24,7 +24,7 @@ init:
 
 build_script:
 - pushd .\CMake\Downloads
-- cmake .\CMake\Downloads -G %generator% -DCMAKE_BUILD_TYPE=%configuration%
+- cmake . -G %generator% -DCMAKE_BUILD_TYPE=%configuration%
 - cmake --build .
 - ctest --output-on-failure
 - popd

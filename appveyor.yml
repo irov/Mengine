@@ -1,0 +1,42 @@
+version: '{build}'
+
+branches:
+  only:
+  - master
+
+image:
+- Visual Studio 2017
+
+platform:
+- x32
+- x64
+
+configuration: 
+- Debug
+- Release
+  
+init:
+- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017 %arch%" )
+- if "%PLATFORM%"=="x32" ( set project=Win32 )
+- if "%PLATFORM%"=="x64" ( set project=Win64 )
+
+build_script:
+- pushd CMake/Downloads
+- cmake .. -G %generator% -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+- cmake --build .
+- popd
+
+- pushd CMake/Dependencies
+- cmake .. -G %generator% -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+- cmake --build .
+- popd
+
+- pushd CMake/%project%
+- cmake .. -G %generator% -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+- cmake --build .
+- popd
+
+- ctest --output-on-failure
+
+test_script:
+- ctest --build-config %configuration%

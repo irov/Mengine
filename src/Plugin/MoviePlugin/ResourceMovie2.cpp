@@ -237,7 +237,7 @@ namespace Mengine
 
         const ResourceMovie2Composition & composition = it_found->second;
 
-        return composition.duration;
+        return composition.duration * 1000.f;
     }
     //////////////////////////////////////////////////////////////////////////
     float ResourceMovie2::getCompositionFrameDuration( const ConstString & _name ) const

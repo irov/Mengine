@@ -28,17 +28,15 @@ init:
 
 build_script:
 - pushd .\CMake\Downloads
-- cmake . -G %generator% -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+- cmake . -G %generator% -DCMAKE_BUILD_TYPE=%configuration%
 - cmake --build .
 - popd
-
 - pushd .\CMake\Dependencies
-- cmake . -G %generator% -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+- cmake . -G %generator% -DCMAKE_BUILD_TYPE=%configuration%
 - cmake --build .
 - popd
-
 - pushd .\CMake\%project%
-- cmake . -G %generator% -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+- cmake . -G %generator% -DCMAKE_BUILD_TYPE=%configuration%
 - cmake --build .
 - popd
 

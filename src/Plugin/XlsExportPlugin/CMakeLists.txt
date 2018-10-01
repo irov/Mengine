@@ -48,8 +48,15 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     )
     
 if(MSVC)
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}    
-        ${THIRDPARTY_DIR}/openssl/libcrypto.lib
-        ${THIRDPARTY_DIR}/openssl/libssl.lib
-    )
+    if(CMAKE_BUILD_TYPE MATCHES RELEASE)
+        TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
+            ${THIRDPARTY_DIR}/openssl/lib/libcryptoMT.lib
+            ${THIRDPARTY_DIR}/openssl/lib/libsslMT.lib
+        )
+    else()
+        TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
+                ${THIRDPARTY_DIR}/openssl/lib/libcryptoMTd.lib
+                ${THIRDPARTY_DIR}/openssl/lib/libsslMTd.lib
+            )
+    endif()
 endif()

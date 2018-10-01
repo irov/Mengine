@@ -13,9 +13,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Node> NodePtr;
-    //////////////////////////////////////////////////////////////////////////
-    typedef const Lambda<void(const RenderInterfacePtr &)> LambdaNodeRenderCloseChildren;
+    typedef IntrusivePtr<class Node> NodePtr;    
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
@@ -23,7 +21,6 @@ namespace Mengine
         void nodeRenderChildrenExternal( const NodePtr & _node, const RenderContext * _context );
         void nodeRenderChildrenVisitor( const NodePtr & _node, const RenderVisitorPtr & _visitor, const RenderContext * _context );        
         RenderInterface * getNodeRenderInheritance( Node * _node );
-        void visitNodeRenderCloseChildren( const Node * _node, const LambdaNodeRenderCloseChildren & _lambda );
         const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( Node * _node );
         const RenderCameraInterfacePtr & getNodeRenderCameraInheritance( Node * _node );
         const RenderScissorInterfacePtr & getNodeRenderScissorInheritance( Node * _node );

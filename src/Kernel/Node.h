@@ -8,7 +8,6 @@
 #include "Kernel/Renderable.h"
 #include "Kernel/BoundingBox.h"
 #include "Kernel/Transformation.h"
-#include "Kernel/Colorable.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Servant.h"
@@ -25,10 +24,6 @@
 namespace Mengine
 {
     typedef IntrusivePtr<class MousePickerTrapInterface> MousePickerTrapInterfacePtr;
-    typedef IntrusivePtr<class RenderCameraInterface> RenderCameraInterfacePtr;
-    typedef IntrusivePtr<class RenderScissorInterface> RenderScissorInterfacePtr;
-    typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
-    typedef IntrusivePtr<class RenderTargetInterface> RenderTargetInterfacePtr;
         
     typedef IntrusivePtr<class Node> NodePtr;
 
@@ -44,7 +39,6 @@ namespace Mengine
         , public Renderable
         , public BoundingBox
         , public Transformation
-        , public Colorable
         , public Affectorable
         , public Visitable
         , public Scriptable
@@ -60,17 +54,6 @@ namespace Mengine
 
     //public:
     //    inline bool isRenderable() const;
-
-    public:
-        void calcScreenPosition( const RenderCameraInterfacePtr & _camera, mt::vec2f & _screen );
-
-    public:
-        const ColourValue & getWorldColor() const;
-        void calcTotalColor( ColourValue & _color ) const;
-        bool isSolidColor() const;
-
-    protected:
-        void _invalidateColor() override;
 
     public:
         inline Node * getParent() const;
@@ -126,6 +109,9 @@ namespace Mengine
     public:
         typedef Lambda<void( const NodePtr & )> LambdaNode;
         void foreachChildren( const LambdaNode & _lambda ) const;
+
+        typedef const Lambda<void( const RenderInterfacePtr & )> LambdaNodeRenderCloseChildren;
+        void foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );
 
     public:
         void visitChildren( const VisitorPtr & _visitor );

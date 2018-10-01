@@ -7,6 +7,8 @@
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/BaseUpdation.h"
+#include "Kernel/BaseRender.h"
+
 #include "Kernel/ResourceHolder.h"
 
 #include "ResourceMovie.h"
@@ -61,11 +63,13 @@ namespace Mengine
         , public BaseEventation
         , public BaseAnimation
         , public BaseUpdation
+        , public BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_ANIMATABLE();
         DECLARE_UPDATABLE();
         DECLARE_EVENTABLE( MovieEventReceiver );
+        DECLARE_RENDERABLE();
 
     public:
         Movie();
@@ -142,6 +146,7 @@ namespace Mengine
 
     protected:
         void _update( const UpdateContext * _context ) override;
+        void _render( const RenderContext * _context ) override;
 
     protected:
         void _setLocalHide( bool _value ) override;

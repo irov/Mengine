@@ -55,16 +55,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_setPersonalColor( const ColourValue& _color )
     {
-        Node::_setPersonalColor( _color );
-
-        this->setLocalColor( _color );
+        this->setLocalColor( _color );        
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_setPersonalAlpha( float _alpha )
     {
-        Node::_setPersonalAlpha( _alpha );
-
-        this->setLocalAlpha( _alpha );
+        this->setLocalAlpha( _alpha );        
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_changeParent( Node * _oldParent, Node * _newParent )
@@ -86,5 +82,12 @@ namespace Mengine
             , this->getType().c_str()
             , m_movieName.c_str()
         );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MovieSlot::_render( const RenderContext * _context )
+    {
+        (void)_context;
+
+        //Empty
     }
 }

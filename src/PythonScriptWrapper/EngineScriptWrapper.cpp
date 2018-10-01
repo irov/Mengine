@@ -2530,13 +2530,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         typedef IntrusivePtr<AffectorFollower> AffectorFollowerPtr;
         //////////////////////////////////////////////////////////////////////////
-        template<class T_Node>
         class AffectorNodeFollower
             : public AffectorFollower
         {
-        protected:
-            typedef IntrusivePtr<T_Node> T_NodePtr;
-
         public:
             AffectorNodeFollower()
             {
@@ -2547,14 +2543,14 @@ namespace Mengine
             }
 
         public:
-            void setNode( const T_NodePtr & _node )
+            void setAffectorable( const AffectorablePtr & _affectorable )
             {
-                m_node = _node;
+                m_affectorable = _affectorable;
             }
 
-            const T_NodePtr & getNode() const
+            const AffectorablePtr & getAffectorable() const
             {
-                return m_node;
+                return m_affectorable;
             }
 
         protected:
@@ -2562,19 +2558,17 @@ namespace Mengine
             {
                 AFFECTOR_ID id = this->getId();
 
-                m_node->stopAffector( id );
+                m_affectorable->stopAffector( id );
             }
 
         protected:
-            T_NodePtr m_node;
+            AffectorablePtr m_affectorable;
         };
         //////////////////////////////////////////////////////////////////////////
-        template<class T_Node, class T_Value, class T_Setter, class T_Getter>
+        template<class T_Value, class T_Setter, class T_Getter>
         class AffectorNodeFollowerMethod
-            : public AffectorNodeFollower<T_Node>
+            : public AffectorNodeFollower
         {
-            typedef IntrusivePtr<T_Node> T_NodePtr;
-
         public:
             AffectorNodeFollowerMethod()
             {
@@ -2585,15 +2579,8 @@ namespace Mengine
             }
 
         public:
-            bool initialize( const T_NodePtr & _node, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed )
+            bool initialize( const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed )
             {
-                if( _node == nullptr )
-                {
-                    return false;
-                }
-
-                this->setNode( _node );
-
                 m_setter = _setter;
                 m_getter = _getter;
 
@@ -2602,7 +2589,7 @@ namespace Mengine
 
                 m_follower.setFollow( _target );
 
-                m_setter( _node, _value );
+                m_setter( _value );
 
                 return true;
             }
@@ -2618,9 +2605,7 @@ namespace Mengine
         protected:
             bool _affect( const UpdateContext * _context, float * _used ) override
             {
-                const T_NodePtr & node = this->getNode();
-
-                T_Value current_value = m_getter( node );
+                T_Value current_value = m_getter();
 
                 m_follower.setValue( current_value );
 
@@ -2628,7 +2613,7 @@ namespace Mengine
 
                 T_Value value = m_follower.getValue();
 
-                m_setter( node, value );
+                m_setter( value );
 
                 return false;
             }
@@ -2643,12 +2628,10 @@ namespace Mengine
         template<class T_Node, class T_Value>
         class AffectorNodeFollowerCreator
         {
-            typedef IntrusivePtr<T_Node> T_NodePtr;
+            typedef Lambda<void( const T_Value & )> T_Setter;
+            typedef Lambda<T_Value()> T_Getter;
 
-            typedef Lambda<void( const T_NodePtr &, const T_Value & )> T_Setter;
-            typedef Lambda<T_Value( const T_NodePtr & )> T_Getter;
-
-            typedef AffectorNodeFollowerMethod<T_Node, T_Value, T_Setter, T_Getter> TAffectorNodeFollowerMethod;
+            typedef AffectorNodeFollowerMethod<T_Value, T_Setter, T_Getter> TAffectorNodeFollowerMethod;
             typedef IntrusivePtr<TAffectorNodeFollowerMethod> TAffectorNodeFollowerMethodPtr;
 
         public:
@@ -2658,16 +2641,18 @@ namespace Mengine
             }
 
         public:
-            AffectorFollowerPtr create( const T_NodePtr & _node, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed )
+            AffectorFollowerPtr create( const AffectorablePtr & _affectorable, const T_Setter & _setter, const T_Getter & _getter, const T_Value & _value, const T_Value & _target, float _speed )
             {
                 TAffectorNodeFollowerMethodPtr affector = m_factory->createObject();
 
-                if( affector->initialize( _node, _setter, _getter, _value, _target, _speed ) == false )
+                affector->setAffectorable( _affectorable );
+
+                if( affector->initialize( _setter, _getter, _value, _target, _speed ) == false )
                 {
                     return nullptr;
                 }
 
-                if( _node->addAffector( affector ) == INVALID_AFFECTOR_ID )
+                if( _affectorable->addAffector( affector ) == INVALID_AFFECTOR_ID )
                 {
                     return nullptr;
                 }
@@ -2683,9 +2668,20 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         AffectorFollowerPtr s_addNodeFollowerLocalAlpha( const NodePtr & _node, float _value, float _target, float _speed )
         {
+            RenderInterface * render = _node->getRender();
+
+            if( render == nullptr )
+            {
+                LOGGER_ERROR( "Node.addNodeFollowerLocalAlpha node '%s' is not renderable"
+                    , _node->getName().c_str()
+                );
+
+                return nullptr;
+            }
+
             AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerLocalAlpha.create( _node
-                , []( const NodePtr & _node, float _alpha ) { _node->setLocalAlpha( _alpha ); }
-            , []( const NodePtr & _node ) { return _node->getLocalAlpha(); }
+                , [render]( float _alpha ) { render->setLocalAlpha( _alpha ); }
+            , [render]() { return render->getLocalAlpha(); }
             , _value, _target, _speed );
 
             return affector;
@@ -2696,8 +2692,8 @@ namespace Mengine
         AffectorFollowerPtr s_addShapeFollowerCustomSize( const ShapeQuadFlexPtr & _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
         {
             AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerCustomSize.create( _node
-                , []( const ShapeQuadFlexPtr & _node, const mt::vec2f & _value ) { _node->setCustomSize( _value ); }
-            , []( const ShapeQuadFlexPtr & _node ) { return _node->getCustomSize(); }
+                , [_node]( const mt::vec2f & _value ) { _node->setCustomSize( _value ); }
+            , [_node]() { return _node->getCustomSize(); }
             , _value, _target, _speed );
 
             return affector;
@@ -2708,8 +2704,8 @@ namespace Mengine
         AffectorFollowerPtr s_addShapeFollowerTextureUVScale( const ShapeQuadFlexPtr & _node, const mt::vec2f & _value, const mt::vec2f & _target, float _speed )
         {
             AffectorFollowerPtr affector = m_creatorAffectorNodeFollowerTextureUVScale.create( _node
-                , []( const ShapeQuadFlexPtr & _node, const mt::vec2f & _value ) { _node->setTextureUVScale( _value ); }
-            , []( const ShapeQuadFlexPtr & _node ) { return _node->getTextureUVScale(); }
+                , [_node]( const mt::vec2f & _value ) { _node->setTextureUVScale( _value ); }
+            , [_node]() { return _node->getTextureUVScale(); }
             , _value, _target, _speed );
 
             return affector;

@@ -87,6 +87,14 @@ namespace Mengine
         const RenderMaterialInterfacePtr & getDebugMaterial() const;
 
     protected:
+        const ColourValue & getWorldColor() const override;
+        void calcTotalColor( ColourValue & _color ) const override;
+        bool isSolidColor() const override;
+
+    protected:
+        void _invalidateColor() override;
+
+    protected:
         BaseRender * m_relationRender;
 
         typedef Vector<BaseRender *> VectorBaseRender;

@@ -54,7 +54,19 @@ namespace Mengine
 
         const ColourValue & personal_colour = this->getPersonalColor();
 
-        m_propagate->setLocalColor( personal_colour );
+        RenderInterfacePtr render = m_propagate->getRender();
+
+        if( render != nullptr )
+        {
+            render->setLocalColor( personal_colour );
+        }
+        else
+        {
+            m_propagate->foreachRenderCloseChildren( [personal_colour]( const RenderInterfacePtr & _render )
+            {
+                _render->setLocalColor( personal_colour );
+            } );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSceneEffect::_invalidateWorldMatrix()
@@ -80,5 +92,12 @@ namespace Mengine
         this->getTransformation( transformationFlag, position, origin, scale, skew, rotation );
 
         m_propagate->setTransformation( transformationFlag, position, origin, scale, skew, rotation );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MovieSceneEffect::_render( const RenderContext * _context )
+    {
+        (void)_context;
+
+        //Empty
     }
 }

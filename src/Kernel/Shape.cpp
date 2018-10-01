@@ -106,8 +106,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Shape::_invalidateColor()
     {
-        Node::_invalidateColor();
-
         this->invalidateVerticesColor();
     }
 }

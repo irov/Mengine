@@ -1,13 +1,16 @@
 #pragma once
 
 #include "Kernel/Node.h"
+#include "Kernel/BaseRender.h"
 
 namespace Mengine
 {
     class MovieSceneEffect
         : public Node
+        , public BaseRender
     {
         DECLARE_VISITABLE( Node );
+        DECLARE_RENDERABLE();
 
     public:
         MovieSceneEffect();
@@ -24,6 +27,9 @@ namespace Mengine
 
     protected:
         void _invalidateWorldMatrix() override;
+
+    protected:
+        void _render( const RenderContext * _context ) override;
 
     protected:
         Node * m_propagate;

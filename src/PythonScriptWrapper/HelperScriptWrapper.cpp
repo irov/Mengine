@@ -275,7 +275,10 @@ namespace Mengine
                 it.next_shuffle();
 
                 ColourValue color;
-                child->calcTotalColor( color );
+                if( RenderInterface * render = Helper::getNodeRenderInheritance( child.get() ) )
+                {
+                    render->calcTotalColor( color );
+                }
 
                 printf( "%.*s%s%s [%s] (%.0f, %.0f) %.2f\n"
                     , _tab

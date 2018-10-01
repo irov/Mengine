@@ -53,4 +53,11 @@ namespace Mengine
             }
         }
     }
+    //////////////////////////////////////////////////////////////////////////
+    void MatrixProxy::_render( const RenderContext * _context )
+    {
+        (void)_context;
+
+        //Empty
+    }
 }

@@ -233,8 +233,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Model3D::_invalidateColor()
     {
-        Node::_invalidateColor();
-
         this->invalidateVerticesColor();
 
         bool solid = this->isSolidColor();

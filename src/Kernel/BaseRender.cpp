@@ -174,4 +174,56 @@ namespace Mengine
 
         return debugMaterial;
     }
+    //////////////////////////////////////////////////////////////////////////
+    const ColourValue & BaseRender::getWorldColor() const
+    {
+        if( m_relationRender == nullptr )
+        {
+            const ColourValue & localColor = Colorable::getLocalColor();
+
+            return localColor;
+        }
+
+        if( Colorable::isInvalidateColor() == false )
+        {
+            const ColourValue & relationColor = Colorable::getRelationColor();
+
+            return relationColor;
+        }
+
+        const ColourValue & parentColor = m_relationRender->getWorldColor();
+
+        const ColourValue & relationColor = Colorable::updateRelationColor( parentColor );
+
+        return relationColor;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::calcTotalColor( ColourValue & _color ) const
+    {
+        const ColourValue & worldColour = this->getWorldColor();
+        _color = worldColour;
+
+        const ColourValue & personalColour = this->getPersonalColor();
+        _color *= personalColour;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool BaseRender::isSolidColor() const
+    {
+        const ColourValue & worldColour = this->getWorldColor();
+
+        float worldAlpha = worldColour.getA();
+        float personalAlpha = this->getPersonalAlpha();
+
+        bool solid = mt::equal_f_f( worldAlpha * personalAlpha, 1.f );
+
+        return solid;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::_invalidateColor()
+    {
+        for( BaseRender * child : m_relationRenderChildren )
+        {
+            child->invalidateColor();
+        }
+    }
 }

@@ -2407,13 +2407,24 @@ namespace Mengine
                 return 0;
             }
 
+            RenderInterface * render = _node->getRender();
+
+            if( render == nullptr )
+            {
+                LOGGER_ERROR( "Node.colorTo node '%s' is not renderable"
+                    , _node->getName().c_str()
+                );
+
+                return 0;
+            }
+
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateLinearColour.create( ETA_COLOR
                     , callback
-                    , [_node]( const ColourValue & _v ) { _node->setLocalColor( _v ); }
-                    , _node->getLocalColor(), _color, _time
+                    , [render]( const ColourValue & _v ) { render->setLocalColor( _v ); }
+                    , render->getLocalColor(), _color, _time
                 );
 
             if( affector == nullptr )
@@ -2477,16 +2488,25 @@ namespace Mengine
                 return 0;
             }
 
-            ColourValue color = _node->getLocalColor();
-            color.setA( _alpha );
+            RenderInterface * render = _node->getRender();
+
+            if( render == nullptr )
+            {
+                LOGGER_ERROR( "Node.alphaTo node '%s' type '%s' is not renderable"
+                    , _node->getName().c_str()
+                    , _node->getType().c_str()
+                );
+
+                return 0;
+            }
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateLinearColour.create( ETA_COLOR
+                m_nodeAffectorCreatorInterpolateLinearFloat.create( ETA_COLOR
                     , callback
-                    , [_node]( const ColourValue & _v ) { _node->setLocalColor( _v ); }
-                    , _node->getLocalColor(), color, _time
+                    , [render]( float _v ) { render->setLocalAlpha( _v ); }
+                    , render->getLocalAlpha(), _alpha, _time
                 );
 
             if( affector == nullptr )
@@ -2820,19 +2840,6 @@ namespace Mengine
             .def( "getUpdation", &Updatable::getUpdation )
             ;
 
-        pybind::interface_<RenderInterface, pybind::bases<Mixin> >( kernel, "RenderInterface" )
-            .def( "setRenderViewport", &RenderInterface::setRenderViewport )
-            .def( "getRenderViewport", &RenderInterface::getRenderViewport )
-            .def( "setRenderCamera", &RenderInterface::setRenderCamera )
-            .def( "getRenderCamera", &RenderInterface::getRenderCamera )
-            .def( "setRenderScissor", &RenderInterface::setRenderScissor )
-            .def( "getRenderScissor", &RenderInterface::getRenderScissor )
-            .def( "setRenderTarget", &RenderInterface::setRenderTarget )
-            .def( "getRenderTarget", &RenderInterface::getRenderTarget )
-            .def( "setExternalRender", &RenderInterface::setExternalRender )
-            .def( "isExternalRender", &RenderInterface::isExternalRender )
-            ;
-
         pybind::interface_<Renderable, pybind::bases<Mixin> >( kernel, "Renderable" )
             .def( "getRender", &Renderable::getRender )
             ;
@@ -2853,6 +2860,21 @@ namespace Mengine
             .def( "getPersonalColor", &Colorable::getPersonalColor )
             .def( "setPersonalAlpha", &Colorable::setPersonalAlpha )
             .def( "getPersonalAlpha", &Colorable::getPersonalAlpha )
+            .def( "getWorldColor", &Colorable::getWorldColor )
+            .def( "isSolidColor", &Colorable::isSolidColor )
+            ;
+
+        pybind::interface_<RenderInterface, pybind::bases<Colorable> >( kernel, "RenderInterface" )
+            .def( "setRenderViewport", &RenderInterface::setRenderViewport )
+            .def( "getRenderViewport", &RenderInterface::getRenderViewport )
+            .def( "setRenderCamera", &RenderInterface::setRenderCamera )
+            .def( "getRenderCamera", &RenderInterface::getRenderCamera )
+            .def( "setRenderScissor", &RenderInterface::setRenderScissor )
+            .def( "getRenderScissor", &RenderInterface::getRenderScissor )
+            .def( "setRenderTarget", &RenderInterface::setRenderTarget )
+            .def( "getRenderTarget", &RenderInterface::getRenderTarget )
+            .def( "setExternalRender", &RenderInterface::setExternalRender )
+            .def( "isExternalRender", &RenderInterface::isExternalRender )
             ;
 
         pybind::interface_<AnimationInterface, pybind::bases<Mixin> >( kernel, "Animation" )
@@ -2939,7 +2961,7 @@ namespace Mengine
             .def( "getBlendMode", &Materialable::getBlendMode )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation, BoundingBox, Colorable, Compilable, Renderable, Affectorable> >( kernel, "Node", false )
+        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation, BoundingBox, Compilable, Renderable, Affectorable> >( kernel, "Node", false )
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )
@@ -2975,8 +2997,6 @@ namespace Mengine
             //.def( "getWorldDirection", &Node::getWorldDirection )
             .def_proxy_static( "getWorldOffsetPosition", nodeScriptMethod, &NodeScriptMethod::s_Node_getWorldOffsetPosition )
             .def_proxy_static( "getLengthTo", nodeScriptMethod, &NodeScriptMethod::s_Node_getLengthTo )
-
-            .def( "getWorldColor", &Node::getWorldColor )
 
             .def_proxy_static( "getDebugId", nodeScriptMethod, &NodeScriptMethod::s_Node_getDebugId )
 

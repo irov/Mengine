@@ -2,6 +2,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseUpdation.h"
+#include "Kernel/BaseRender.h"
 
 namespace Mengine
 {
@@ -11,9 +12,11 @@ namespace Mengine
     class Shape
         : public Node
         , public BaseUpdation
+        , public BaseRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_UPDATABLE();
+        DECLARE_RENDERABLE();
 
     public:
         Shape();

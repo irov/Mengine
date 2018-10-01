@@ -16,7 +16,7 @@ configuration:
 - Release
   
 init:
-- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017 %arch%" )
+- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017" ( set generator="Visual Studio 15 2017%arch%" )
 - if "%PLATFORM%"=="x32" ( set project=Win32 )
 - if "%PLATFORM%"=="x64" ( set project=Win64 )
 

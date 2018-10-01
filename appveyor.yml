@@ -21,17 +21,17 @@ init:
 - if "%PLATFORM%"=="x64" ( set project=Win64 )
 
 build_script:
-- cmd: pushd CMake/Downloads
+- cmd: pushd ./CMake/Downloads
 - cmd: cmake .. -G %generator% -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
 - cmd: cmake --build .
 - cmd: popd
 
-- cmd: pushd CMake/Dependencies
+- cmd: pushd ./CMake/Dependencies
 - cmd: cmake .. -G %generator% -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
 - cmd: cmake --build .
 - cmd: popd
 
-- cmd: pushd CMake/%project%
+- cmd: pushd ./CMake/%project%
 - cmd: cmake .. -G %generator% -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
 - cmd: cmake --build .
 - cmd: popd

@@ -18,26 +18,25 @@ configuration:
 init:
 - if %platform%=="x32" ( set cmake_generator_arch= )
 - if %platform%=="x64" ( set cmake_generator_arch= Win64 )
-- echo %cmake_generator_arch%
 - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017"  ( set generator="Visual Studio 15 2017%cmake_generator_arch%" )
 - if "%platform%"=="x32" ( set project=Win32 )
 - if "%platform%"=="x64" ( set project=Win64 )
-- echo %APPVEYOR_BUILD_WORKER_IMAGE%
-- echo %platform%
-- echo %generator%
 
 build_script:
 - pushd .\CMake\Downloads
-- cmake . -G %generator% -DCMAKE_BUILD_TYPE=%configuration%
+- cmake .\CMake\Downloads -G %generator% -DCMAKE_BUILD_TYPE=%configuration%
 - cmake --build .
+- ctest --output-on-failure
 - popd
 - pushd .\CMake\Dependencies
 - cmake . -G %generator% -DCMAKE_BUILD_TYPE=%configuration%
 - cmake --build .
+- ctest --output-on-failure
 - popd
 - pushd .\CMake\%project%
 - cmake . -G %generator% -DCMAKE_BUILD_TYPE=%configuration%
 - cmake --build .
+- ctest --output-on-failure
 - popd
 
 test_script:

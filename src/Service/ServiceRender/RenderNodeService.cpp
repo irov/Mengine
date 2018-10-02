@@ -59,15 +59,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderNodeService::cacheNode_( const RenderContext * _context, const NodePtr & _node )
     {
-        if( _node->isActivate() == false )
-        {
-            return;
-        }
-
         RenderInterface * selfRender = _node->getRender();
 
         if( selfRender != nullptr )
         {
+            if( selfRender->isRenderEnable() == false )
+            {
+                return;
+            }
+
             if( selfRender->isExternalRender() == true )
             {
                 return;

@@ -9,15 +9,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void nodeRenderChildren( const NodePtr & _node, const RenderContext * _context )
         {
-            if( _node->isActivate() == false )
-            {
-                return;
-            }
-
             RenderInterface * selfRender = _node->getRender();
             
             if( selfRender != nullptr )
             {
+                if( selfRender->isRenderEnable() == false )
+                {
+                    return;
+                }
+
                 if( selfRender->isExternalRender() == true )
                 {
                     return;
@@ -208,15 +208,15 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void nodeRenderChildrenVisitor( const NodePtr & _node, const RenderVisitorPtr & _visitor, const RenderContext * _context )
         {
-            if( _node->isActivate() == false )
-            {
-                return;
-            }
-
             RenderInterface * selfRender = _node->getRender();
 
             if( selfRender != nullptr )
             {
+                if( selfRender->isRenderEnable() == false )
+                {
+                    return;
+                }
+
                 if( selfRender->isExternalRender() == true )
                 {
                     return;

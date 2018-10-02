@@ -10,6 +10,7 @@ namespace Mengine
     BaseRender::BaseRender()
         : m_relationRender( nullptr )
         , m_externalRender( false )
+        , m_renderEnable( false )
         , m_hide( false )
         , m_localHide( false )
     {
@@ -32,6 +33,11 @@ namespace Mengine
         {
             m_relationRender->addRelationRenderChildren_( this );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::setRenderEnable( bool _renderEnable )
+    {
+        m_renderEnable = _renderEnable;
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setHide( bool _hide )

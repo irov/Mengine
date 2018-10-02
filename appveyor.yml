@@ -17,14 +17,18 @@ configuration:
   
 init:
 - if %platform%=="x32" ( set cmake_generator_arch= )
-- if %platform%=="x64" ( set cmake_generator_arch= Win64 )
-- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017"  ( set generator="Visual Studio 15 2017%cmake_generator_arch%" )
-- if "%platform%"=="x32" ( set project=Win32 )
-- if "%platform%"=="x64" ( set project=Win64 )
-- if "%platform%"=="x32" ( set dependencies=Depends_WIN32 )
-- if "%platform%"=="x64" ( set dependencies=Depends_WIN64 )
+- if %platform%=="x64" ( set cmake_generator_arch= Win64)
+- if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017"  ( set generator="Visual Studio 15 2017%cmake_generator_arch%")
+- if "%platform%"=="x32" ( set dependencies=Depends_WIN32)
+- if "%platform%"=="x64" ( set dependencies=Depends_WIN64)
+- if "%platform%"=="x32" ( set solution=Win32)
+- if "%platform%"=="x64" ( set solution=Win64)
 
 build_script:
+- cmd: echo "Platform '%platform%'"
+- cmd: echo "Generator '%generator%'"
+- cmd: echo "Dependencies '%dependencies%'"
+- cmd: echo "Solution '%solution%'"
 - cmd: echo "Configured Downloads"
 - pushd .\CMake\Downloads && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
 - cmd: echo "Downloads Dependencies"
@@ -33,7 +37,8 @@ build_script:
 - pushd .\CMake\%dependencies% && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
 - cmd: echo "Build %dependencies%"
 - pushd .\CMake\%dependencies% && cmake --build . & popd
-- cmd: echo "Configured Solution %project%"
-- pushd .\CMake\%project% && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='.\CMake\%dependencies%' & popd
-- cmd: echo "Build Solution %project%"
-- pushd .\CMake\%project% && cmake --build . & popd
+- cmd: echo "Configured Solution %solution%"
+- pushd .\CMake\%solution% && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='.\CMake\%dependencies%' & popd
+- cmd: echo "Build Solution %solution%"
+- pushd .\CMake\%solution% && cmake --build . & popd
+- cmd: echo "Complete!"

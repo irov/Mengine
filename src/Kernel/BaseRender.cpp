@@ -20,14 +20,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::setRelationRender( const RenderInterfacePtr & _relationRender )
+    void BaseRender::setRelationRender( RenderInterface * _relationRender )
     {
         if( m_relationRender != nullptr )
         {
             m_relationRender->removeRelationRenderChildren_( this );
         }
 
-        m_relationRender = _relationRender.getT<BaseRender *>();
+        m_relationRender = static_cast<BaseRender *>(_relationRender);
 
         if( m_relationRender != nullptr )
         {
@@ -142,6 +142,97 @@ namespace Mengine
     void BaseRender::render( const RenderContext * _context )
     {
         this->_render( _context );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::renderWithChildren( const RenderContext * _context, bool _external )
+    {
+        if( this->isRenderEnable() == false )
+        {
+            return;
+        }
+
+        if( this->isHide() == true )
+        {
+            return;
+        }
+
+        if( this->isLocalTransparent() == true )
+        {
+            return;
+        }
+
+        if( this->isExternalRender() == true && _external == false )
+        {
+            return;
+        }
+
+        RenderContext context;
+
+        const RenderViewportInterfacePtr & renderViewport = this->getRenderViewport();
+
+        if( renderViewport != nullptr )
+        {
+            context.viewport = renderViewport;
+        }
+        else
+        {
+            context.viewport = _context->viewport;
+        }
+
+        const RenderCameraInterfacePtr & renderCamera = this->getRenderCamera();
+
+        if( renderCamera != nullptr )
+        {
+            context.camera = renderCamera;
+        }
+        else
+        {
+            context.camera = _context->camera;
+        }
+
+        const RenderScissorInterfacePtr & renderScissor = this->getRenderScissor();
+
+        if( renderScissor != nullptr )
+        {
+            context.scissor = renderScissor;
+        }
+        else
+        {
+            context.scissor = _context->scissor;
+        }
+
+        const RenderTargetInterfacePtr & renderTarget = this->getRenderTarget();
+
+        if( renderTarget != nullptr )
+        {
+            context.target = renderTarget;
+        }
+        else
+        {
+            context.target = _context->target;
+        }
+
+        const RenderContext * context_ptr = &context;
+
+        if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
+        {
+            this->render( context_ptr );
+        }
+
+        for( BaseRender * child : m_relationRenderChildren )
+        {
+            child->renderWithChildren( context_ptr, false );
+        }
+
+        if( context.target != nullptr )
+        {
+            const RenderInterfacePtr & targetRender = this->makeTargetRender( context_ptr );
+
+            if( targetRender != nullptr )
+            {
+                targetRender->render( _context );
+            }
+        }        
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderInterfacePtr & BaseRender::makeTargetRender( const RenderContext * _context )

@@ -29,7 +29,8 @@ namespace Mengine
         : public Colorable
     {
     public:
-        virtual void setRelationRender( const RenderInterfacePtr & _relationRender ) = 0;
+        virtual void setRelationRender( RenderInterface * _relationRender ) = 0;
+        virtual RenderInterface * getRelationRender() const = 0;
 
     public:
         typedef Lambda<void( RenderInterface * )> LambdaRender;
@@ -69,6 +70,7 @@ namespace Mengine
 
     public:
         virtual void render( const RenderContext * _state ) = 0;
+        virtual void renderWithChildren( const RenderContext * _context, bool _external ) = 0;
 
     public:
         virtual const RenderInterfacePtr & makeTargetRender( const RenderContext * _state ) = 0;

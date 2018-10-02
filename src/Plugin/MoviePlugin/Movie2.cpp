@@ -1868,21 +1868,21 @@ namespace Mengine
         {
             Resource * resource_reference = reinterpret_node_cast<Resource *>(mesh.resource_data);
 
-            RenderContext state;
+            RenderContext context;
 
             if( mesh.camera_data != nullptr )
             {
                 Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_data);
 
-                state.camera = camera->projection;
-                state.viewport = camera->viewport;
-                state.transformation = _state->transformation;
-                state.scissor = _state->scissor;
-                state.target = _state->target;
+                context.camera = camera->projection;
+                context.viewport = camera->viewport;
+                context.transformation = _state->transformation;
+                context.scissor = _state->scissor;
+                context.target = _state->target;
             }
             else
             {
-                state = *_state;
+                context = *_state;
             }
 
             if( mesh.viewport != nullptr )
@@ -1891,11 +1891,11 @@ namespace Mengine
 
                 scissor->setViewport( wm, mesh.viewport );
 
-                state.scissor = scissor;
+                context.scissor = scissor;
             }
             else
             {
-                state.scissor = _state->scissor;
+                context.scissor = _state->scissor;
             }
 
             ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
@@ -1908,8 +1908,8 @@ namespace Mengine
                     {
                         Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_data);
 
-                        //node->render( &state );
-                        Helper::nodeRenderChildrenExternal( node, &state );
+                        RenderInterface * render = node->getRender();
+                        render->renderWithChildren( &context, true );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
@@ -1924,21 +1924,23 @@ namespace Mengine
                     {
                         ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_data);
 
-                        //node->render( &state );
-                        Helper::nodeRenderChildrenExternal( node, &state );
+                        RenderInterface * render = node->getRender();
+                        render->renderWithChildren( &context, true );
                     }break;
 #endif
                 case AE_MOVIE_LAYER_TYPE_TEXT:
                     {
                         TextField * node = reinterpret_node_cast<TextField *>(mesh.element_data);
 
-                        Helper::nodeRenderChildrenExternal( node, &state );
+                        RenderInterface * render = node->getRender();
+                        render->renderWithChildren( &context, true );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
                         Node * node = reinterpret_node_cast<Node *>(mesh.element_data);
 
-                        Helper::nodeRenderChildrenExternal( node, &state );
+                        RenderInterface * render = node->getRender();
+                        render->renderWithChildren( &context, true );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {
@@ -1976,7 +1978,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-                        this->addRenderObject( &state, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOLID:
                     {
@@ -2014,7 +2016,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = Helper::makeTextureMaterial( nullptr, 0, ConstString::none(), blend_mode, false, false, false );
 
-                        this->addRenderObject( &state, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SEQUENCE:
                 case AE_MOVIE_LAYER_TYPE_IMAGE:
@@ -2080,7 +2082,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
 
-                        this->addRenderObject( &state, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {
@@ -2119,7 +2121,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceVideo->getMaterial();
 
-                        this->addRenderObject( &state, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 default:
                     break;
@@ -2220,7 +2222,7 @@ namespace Mengine
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 
-                        this->addRenderObject( &state, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;
                 default:
                     break;

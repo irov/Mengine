@@ -255,14 +255,14 @@ namespace Mengine
 
         if( _value == true )
         {
-            if( this->isAfterActive() == true && this->isLocalHide() == false )
+            if( this->isAfterActive() == true )
             {
                 this->deactivatePicker_();
             }
         }
         else
         {
-            if( this->isAfterActive() == true && this->isLocalHide() == false )
+            if( this->isAfterActive() == true )
             {
                 this->activatePicker_();
             }
@@ -307,7 +307,7 @@ namespace Mengine
     {
         Node::_afterActivate();
 
-        if( this->isLocalHide() == false && this->isFreeze() == false )
+        if( this->isFreeze() == false )
         {
             this->activatePicker_();
         }
@@ -315,7 +315,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_deactivate()
     {
-        if( this->isLocalHide() == false && this->isFreeze() == false )
+        if( this->isFreeze() == false )
         {
             this->deactivatePicker_();
         }

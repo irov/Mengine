@@ -30,6 +30,14 @@ namespace Mengine
         virtual void setRelationRender( const RenderInterfacePtr & _relationRender ) = 0;
 
     public:
+        virtual void setHide( bool _hide ) = 0;
+        virtual bool isHide() const = 0;
+
+    public:
+        virtual void setLocalHide( bool _localHide ) = 0;
+        virtual bool isLocalHide() const = 0;
+
+    public:
         virtual void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) = 0;
         virtual const RenderViewportInterfacePtr & getRenderViewport() const = 0;
 

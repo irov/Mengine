@@ -155,22 +155,6 @@ namespace Mengine
         inline bool isEnable() const;
 
     public:
-        void setHide( bool _hide );
-        inline bool isHide() const;
-
-    public:
-        void setLocalHide( bool _localHide );
-        inline bool isLocalHide() const;
-
-    protected:
-        virtual void _setHide( bool _hide );
-        virtual void _setLocalHide( bool _localHide );
-
-    protected:
-        bool m_hide;
-        bool m_localHide;
-
-    public:
         void freeze( bool _value );
         inline bool isFreeze() const;
 
@@ -222,16 +206,6 @@ namespace Mengine
     inline bool Node::isDeactivating() const
     {
         return m_deactivating;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    inline bool Node::isHide() const
-    {
-        return m_hide;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    inline bool Node::isLocalHide() const
-    {
-        return m_localHide;
     }
     //////////////////////////////////////////////////////////////////////////
     inline bool Node::isFreeze() const

@@ -163,14 +163,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Arrow::onAppMouseLeave()
     {
-        Node::setHide( true );
+        BaseRender::setHide( true );
     }
     //////////////////////////////////////////////////////////////////////////
     void Arrow::onAppMouseEnter()
     {
         if( m_hided == false )
         {
-            Node::setHide( false );
+            BaseRender::setHide( false );
         }
     }
     ////////////////////////////////////////////////////////////////////////////

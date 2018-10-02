@@ -13,16 +13,17 @@ namespace Mengine
             {
                 return;
             }
-            else if( _node->isHide() == true )
-            {
-                return;
-            }
 
             RenderInterface * selfRender = _node->getRender();
             
             if( selfRender != nullptr )
             {
                 if( selfRender->isExternalRender() == true )
+                {
+                    return;
+                }
+
+                if( selfRender->isHide() == true )
                 {
                     return;
                 }
@@ -78,7 +79,7 @@ namespace Mengine
                     self_context.target = _context->target;
                 }
 
-                if( _node->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
+                if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
                 {
                     selfRender->render( _context );
                 }
@@ -114,15 +115,16 @@ namespace Mengine
             {
                 return;
             }
-            else if( _node->isHide() == true )
-            {
-                return;
-            }
 
             RenderInterface * selfRender = _node->getRender();
 
             if( selfRender != nullptr )
             {
+                if( selfRender->isHide() == true )
+                {
+                    return;
+                }
+
                 if( selfRender->isLocalTransparent() == true )
                 {
                     return;
@@ -174,7 +176,7 @@ namespace Mengine
                     self_context.target = _context->target;
                 }
 
-                if( _node->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
+                if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
                 {
                     selfRender->render( _context );
                 }
@@ -210,21 +212,22 @@ namespace Mengine
             {
                 return;
             }
-            else if( _node->isHide() == true )
-            {
-                return;
-            }
 
             RenderInterface * selfRender = _node->getRender();
 
             if( selfRender != nullptr )
             {
-                if( selfRender->isLocalTransparent() == true )
+                if( selfRender->isExternalRender() == true )
                 {
                     return;
                 }
 
-                if( selfRender->isExternalRender() == true )
+                if( selfRender->isHide() == true )
+                {
+                    return;
+                }
+
+                if( selfRender->isLocalTransparent() == true )
                 {
                     return;
                 }
@@ -275,7 +278,7 @@ namespace Mengine
                     self_context.target = _context->target;
                 }
 
-                if( _node->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
+                if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
                 {
                     selfRender->render( &self_context );
 
@@ -302,12 +305,9 @@ namespace Mengine
             }
             else
             {
-                if( _node->isLocalHide() == false )
-                {
-                    _visitor->setRenderContext( _context );
+                _visitor->setRenderContext( _context );
 
-                    _node->visit( _visitor );
-                }
+                _node->visit( _visitor );
 
                 _node->foreachChildren( [_context, _visitor]( const NodePtr & _child )
                 {

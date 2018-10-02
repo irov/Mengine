@@ -20,8 +20,6 @@ namespace Mengine
         , m_deactivating( false )
         , m_afterActive( false )
         , m_enable( true )
-        , m_hide( false )
-        , m_localHide( false )
         , m_freeze( false )
         //, m_rendering( false )
         //, m_invalidateRendering( true )
@@ -785,43 +783,7 @@ namespace Mengine
     {
         (void)_node;
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setHide( bool _hide )
-    {
-        if( m_hide == _hide )
-        {
-            return;
-        }
-
-        m_hide = _hide;
-
-        this->_setHide( _hide );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_setHide( bool _hide )
-    {
-        (void)_hide;
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::setLocalHide( bool _localHide )
-    {
-        if( m_localHide == _localHide )
-        {
-            return;
-        }
-
-        m_localHide = _localHide;
-
-        this->_setLocalHide( _localHide );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_setLocalHide( bool _localHide )
-    {
-        (void)_localHide;
-        //Empty
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     void Node::freeze( bool _value )
     {

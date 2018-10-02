@@ -25,19 +25,19 @@ init:
 build_script:
 - pushd .\CMake\Downloads
 - cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration%
+- popd
+- pushd .\CMake\Downloads
 - cmake --build .
-- ctest --output-on-failure
 - popd
 - pushd .\CMake\Dependencies
 - cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration%
+- popd
+- pushd .\CMake\Dependencies
 - cmake --build .
-- ctest --output-on-failure
 - popd
 - pushd .\CMake\%project%
 - cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='.\CMake\Dependencies'
-- cmake --build .
-- ctest --output-on-failure
 - popd
-
-test_script:
-- ctest --build-config %configuration%
+- pushd .\CMake\%project%
+- cmake --build .
+- popd

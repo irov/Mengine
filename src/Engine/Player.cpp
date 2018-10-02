@@ -602,8 +602,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Player::initializeRenderResources()
     {
-        m_debugText = NODE_SERVICE()->
-            createNode( STRINGIZE_STRING_LOCAL( "TextField" ) );
+        m_debugText = NODE_SERVICE()
+            ->createNode( STRINGIZE_STRING_LOCAL( "TextField" ) );
 
         m_debugText->setFontName( STRINGIZE_STRING_LOCAL( "__CONSOLE_FONT__" ) );
         m_debugText->setTextID( STRINGIZE_STRING_LOCAL( "__ID_TEXT_CONSOLE" ) );

@@ -257,6 +257,7 @@ namespace Mengine
             {}
 
             NodePtr node;
+            RenderInterfacePtr render;
             AnimationInterfacePtr animation;
             SoundablePtr soundable;
             MoviePtr movie;

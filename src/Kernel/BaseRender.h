@@ -23,6 +23,18 @@ namespace Mengine
         void setRelationRender( const RenderInterfacePtr & _relationRender ) override;
         inline BaseRender * getRelationRender() const;
 
+    public:
+        void setHide( bool _hide ) override;
+        inline bool isHide() const override;
+
+    public:
+        void setLocalHide( bool _localHide ) override;
+        inline bool isLocalHide() const override;
+
+    protected:
+        virtual void _setHide( bool _hide );
+        virtual void _setLocalHide( bool _localHide );
+
     protected:
         void addRelationRenderChildren_( BaseRender * _child );
         void removeRelationRenderChildren_( BaseRender * _child );
@@ -106,11 +118,23 @@ namespace Mengine
         RenderTargetInterfacePtr m_renderTarget;
 
         bool m_externalRender;
+        bool m_hide;
+        bool m_localHide;
     };
     //////////////////////////////////////////////////////////////////////////
     BaseRender * BaseRender::getRelationRender() const
     {
         return m_relationRender;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline bool BaseRender::isHide() const
+    {
+        return m_hide;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline bool BaseRender::isLocalHide() const
+    {
+        return m_localHide;
     }
     //////////////////////////////////////////////////////////////////////////
     bool BaseRender::isExternalRender() const

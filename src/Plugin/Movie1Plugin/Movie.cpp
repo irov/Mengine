@@ -433,16 +433,25 @@ namespace Mengine
 
         Nodies nd;
         nd.node = _node;
+        nd.render = _node->getRender();
 
         if( _layer.in <= 0.0001f )
         {
             nd.visible = true;
-            nd.node->setLocalHide( false );
+
+            if( nd.render != nullptr )
+            {
+                nd.render->setLocalHide( false );
+            }
         }
         else
         {
             nd.visible = false;
-            nd.node->setLocalHide( true );
+
+            if( nd.render != nullptr )
+            {
+                nd.render->setLocalHide( true );
+            }
         }
 
         nd.animation = _animatable != nullptr ? _animatable->getAnimation() : nullptr;
@@ -2702,8 +2711,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::_setLocalHide( bool _value )
     {
-        Node::_setLocalHide( _value );
-
         this->setHide( _value );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2996,13 +3003,16 @@ namespace Mengine
 
         nd.enable = _enable;
 
-        if( nd.visible == true && nd.enable == true )
+        if( nd.render != nullptr )
         {
-            nd.node->setLocalHide( false );
-        }
-        else
-        {
-            nd.node->setLocalHide( true );
+            if( nd.visible == true && nd.enable == true )
+            {
+                nd.render->setLocalHide( false );
+            }
+            else
+            {
+                nd.render->setLocalHide( true );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -3017,13 +3027,16 @@ namespace Mengine
 
         nd.visible = _visible;
 
-        if( nd.visible == true && nd.enable == true )
+        if( nd.render != nullptr )
         {
-            nd.node->setLocalHide( false );
-        }
-        else
-        {
-            nd.node->setLocalHide( true );
+            if( nd.visible == true && nd.enable == true )
+            {
+                nd.render->setLocalHide( false );
+            }
+            else
+            {
+                nd.render->setLocalHide( true );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

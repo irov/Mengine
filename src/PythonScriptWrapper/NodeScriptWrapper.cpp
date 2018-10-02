@@ -2865,6 +2865,10 @@ namespace Mengine
             ;
 
         pybind::interface_<RenderInterface, pybind::bases<Colorable> >( kernel, "RenderInterface" )
+            .def( "hide", &RenderInterface::setHide )
+            .def( "isHide", &RenderInterface::isHide )
+            .def( "localHide", &RenderInterface::setLocalHide )
+            .def( "isLocalHide", &RenderInterface::isLocalHide )
             .def( "setRenderViewport", &RenderInterface::setRenderViewport )
             .def( "getRenderViewport", &RenderInterface::getRenderViewport )
             .def( "setRenderCamera", &RenderInterface::setRenderCamera )
@@ -2966,10 +2970,6 @@ namespace Mengine
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )
             .def( "isActivate", &Node::isActivate )
-            .def( "hide", &Node::setHide )
-            .def( "isHide", &Node::isHide )
-            .def( "localHide", &Node::setLocalHide )
-            .def( "isLocalHide", &Node::isLocalHide )
             .def( "freeze", &Node::freeze )
             .def( "isFreeze", &Node::isFreeze )
             .def_deprecated( "setSpeedFactor", &Node::setSpeedFactor, "don't work, use getAnimation" )

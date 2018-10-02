@@ -63,16 +63,17 @@ namespace Mengine
         {
             return;
         }
-        else if( _node->isHide() == true )
-        {
-            return;
-        }
 
         RenderInterface * selfRender = _node->getRender();
 
         if( selfRender != nullptr )
         {
             if( selfRender->isExternalRender() == true )
+            {
+                return;
+            }
+
+            if( selfRender->isHide() == true )
             {
                 return;
             }
@@ -129,7 +130,7 @@ namespace Mengine
                 desc.context.target = _context->target;
             }
 
-            if( _node->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
+            if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
             {
                 m_nodies.emplace_back( desc );
             }

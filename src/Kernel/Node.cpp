@@ -887,13 +887,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_afterActivate()
     {
-        UpdationInterfacePtr updation = this->getUpdation();
+        UpdationInterface * updation = this->getUpdation();
 
         if( updation != nullptr )
         {
             uint32_t deep = this->getLeafDeep();
 
             updation->activate( 0U, deep );
+        }
+
+        RenderInterface * render = this->getRender();
+
+        if( render != nullptr )
+        {
+            render->setRenderEnable( true );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -904,6 +911,13 @@ namespace Mengine
         if( updation != nullptr )
         {
             updation->deactivate();
+        }
+
+        RenderInterface * render = this->getRender();
+
+        if( render != nullptr )
+        {
+            render->setRenderEnable( false );
         }
 
         Affectorable::stopAllAffectors();

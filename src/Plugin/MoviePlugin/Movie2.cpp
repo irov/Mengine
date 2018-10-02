@@ -1932,18 +1932,12 @@ namespace Mengine
                     {
                         TextField * node = reinterpret_node_cast<TextField *>(mesh.element_data);
 
-                        RenderInterface * render = node->getRender();
-
-                        //render->render( &state );
                         Helper::nodeRenderChildrenExternal( node, &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
                         Node * node = reinterpret_node_cast<Node *>(mesh.element_data);
 
-                        RenderInterface * render = node->getRender();
-
-                        //render->render( &state );
                         Helper::nodeRenderChildrenExternal( node, &state );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:

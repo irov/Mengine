@@ -9,6 +9,8 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/Colorable.h"
 
+#include "Config/Lambda.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -28,6 +30,10 @@ namespace Mengine
     {
     public:
         virtual void setRelationRender( const RenderInterfacePtr & _relationRender ) = 0;
+
+    public:
+        typedef Lambda<void( RenderInterface * )> LambdaRender;
+        virtual void foreachChildren( const LambdaRender & _lambda ) = 0;
 
     public:
         virtual void setRenderEnable( bool _enable ) = 0;

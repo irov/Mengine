@@ -35,6 +35,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseRender::foreachChildren( const LambdaRender & _lambda )
+    {
+        for( RenderInterface * child : m_relationRenderChildren )
+        {
+            _lambda( child );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRenderEnable( bool _renderEnable )
     {
         m_renderEnable = _renderEnable;

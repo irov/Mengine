@@ -24,6 +24,9 @@ namespace Mengine
         inline BaseRender * getRelationRender() const;
 
     public:
+        void foreachChildren( const LambdaRender & _lambda ) override;
+
+    public:
         void setRenderEnable( bool _enable ) override;
         inline bool isRenderEnable() const override;
 

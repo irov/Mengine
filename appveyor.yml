@@ -29,10 +29,10 @@ build_script:
 - pushd .\CMake\Downloads && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
 - cmd: echo "Downloads Dependencies"
 - pushd .\CMake\Downloads && cmake --build . & popd
-- cmd: echo "Configured Dependencies"
+- cmd: echo "Configured %dependencies%"
 - pushd .\CMake\%dependencies% && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
-- cmd: echo "Build Dependencies"
-- pushd .\CMake\Dependencies && cmake --build . & popd
+- cmd: echo "Build %dependencies%"
+- pushd .\CMake\%dependencies% && cmake --build . & popd
 - cmd: echo "Configured Solution %project%"
 - pushd .\CMake\%project% && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='.\CMake\%dependencies%' & popd
 - cmd: echo "Build Solution %project%"

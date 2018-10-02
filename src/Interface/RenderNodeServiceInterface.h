@@ -3,12 +3,8 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/RenderInterface.h"
 
-#include "Kernel/RenderVisitor.h"
-
 namespace Mengine
 {    
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Node> NodePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderNodeServiceInterface
         : public ServiceInterface
@@ -17,7 +13,7 @@ namespace Mengine
 
     public:
         virtual void invalidateNodeCache() = 0;
-        virtual void renderNode( const RenderContext * _context, const NodePtr & _node ) = 0;
+        virtual void renderNode( const RenderContext * _context, const RenderInterfacePtr & _render ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #   define RENDERNODE_SERVICE()\

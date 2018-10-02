@@ -833,7 +833,7 @@ namespace Mengine
 
                 //EMaterialBlendMode blend_mode = getMovieBlendMode( layer );
 
-                AnimationInterfacePtr animation = node->getAnimation();
+                AnimationInterface * animation = node->getAnimation();
 
                 ae_float_t layer_stretch = ae_get_movie_layer_data_stretch( _callbackData->layer );
                 animation->setStretch( layer_stretch );
@@ -1042,7 +1042,7 @@ namespace Mengine
 
                 __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
 
-                AnimationInterfacePtr animation = node->getAnimation();
+                AnimationInterface * animation = node->getAnimation();
 
                 switch( _callbackData->state )
                 {
@@ -1807,7 +1807,7 @@ namespace Mengine
     {
         for( const SurfacePtr & surface : m_surfaces )
         {
-            AnimationInterfacePtr animation = surface->getAnimation();
+            AnimationInterface * animation = surface->getAnimation();
 
             if( animation == nullptr )
             {

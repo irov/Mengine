@@ -53,20 +53,8 @@ namespace Mengine
         }
 
         const ColourValue & personal_colour = this->getPersonalColor();
-
-        RenderInterfacePtr render = m_propagate->getRender();
-
-        if( render != nullptr )
-        {
-            render->setLocalColor( personal_colour );
-        }
-        else
-        {
-            m_propagate->foreachRenderCloseChildren( [personal_colour]( const RenderInterfacePtr & _render )
-            {
-                _render->setLocalColor( personal_colour );
-            } );
-        }
+                
+        this->setLocalColor( personal_colour );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSceneEffect::_invalidateWorldMatrix()

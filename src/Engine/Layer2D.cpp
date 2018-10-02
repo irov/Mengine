@@ -185,30 +185,33 @@ namespace Mengine
         this->clearRenderTarget_();
     }
     //////////////////////////////////////////////////////////////////////////
-    class RenderLayer2DTarget
-        : public Factorable
-        , public BaseRender
+    namespace
     {
-    public:
-        RenderLayer2DTarget( const Layer2DPtr & _layer )
-            : m_layer( _layer )
+        class RenderLayer2DTarget
+            : public Factorable
+            , public BaseRender
         {
-        }
+        public:
+            RenderLayer2DTarget( const Layer2DPtr & _layer )
+                : m_layer( _layer )
+            {
+            }
 
-    protected:
-        void _render( const RenderContext * _context )
-        {
-            const RenderVertex2D * verticesImageMask = m_layer->getVerticesImageMaskWM();
-            const RenderMaterialInterfacePtr & materialImageMask = m_layer->getMaterialImageMask();
+        protected:
+            void _render( const RenderContext * _context )
+            {
+                const RenderVertex2D * verticesImageMask = m_layer->getVerticesImageMaskWM();
+                const RenderMaterialInterfacePtr & materialImageMask = m_layer->getMaterialImageMask();
 
-            const mt::box2f & bb = m_layer->getBoundingBox();
+                const mt::box2f & bb = m_layer->getBoundingBox();
 
-            this->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, &bb, false );
-        }
+                this->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, &bb, false );
+            }
 
-    protected:
-        Layer2DPtr m_layer;
-    };
+        protected:
+            Layer2DPtr m_layer;
+        };
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Layer2D::createRenderTarget_()
     {

@@ -65,7 +65,7 @@ namespace Mengine
         const pybind::object & getScriptObject() const;
 
     public:
-        EventationInterfacePtr getScriptEventation() const;
+        EventationInterface * getScriptEventation() const;
 
     public:
         void onCreate();

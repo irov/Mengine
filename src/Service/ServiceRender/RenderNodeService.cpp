@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderNodeService::_initializeService()
     {
-        m_nodies.reserve( 2048 );
+        m_renders.reserve( 2048 );
 
         return true;
     }
@@ -28,7 +28,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderNodeService::_stopService()
     {
-        m_nodies.clear();
+        m_renders.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderNodeService::invalidateNodeCache()
@@ -36,20 +36,20 @@ namespace Mengine
         m_invalidate = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderNodeService::renderNode( const RenderContext * _context, const NodePtr & _node )
+    void RenderNodeService::renderNode( const RenderContext * _context, const RenderInterfacePtr & _render )
     {
-        uint32_t size = _node->getChildrenRecursiveCount();
+        //uint32_t size = _node->getChildrenRecursiveCount();
 
         //if( m_invalidate == true )
         {
             m_invalidate = false;
 
-            m_nodies.clear();
+            m_renders.clear();
 
-            this->cacheNode_( _context, _node );
+            this->cacheNode_( _context, _render );
         }
 
-        for( const RenderNodeDesc & desc : m_nodies )
+        for( const RenderNodeDesc & desc : m_renders )
         {
             const RenderInterfacePtr & render = desc.render;
 
@@ -57,111 +57,100 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderNodeService::cacheNode_( const RenderContext * _context, const NodePtr & _node )
+    void RenderNodeService::cacheNode_( const RenderContext * _context, const RenderInterfacePtr & _render )
     {
-        RenderInterface * selfRender = _node->getRender();
-
-        if( selfRender != nullptr )
+        if( _render->isRenderEnable() == false )
         {
-            if( selfRender->isRenderEnable() == false )
-            {
-                return;
-            }
+            return;
+        }
 
-            if( selfRender->isExternalRender() == true )
-            {
-                return;
-            }
+        if( _render->isExternalRender() == true )
+        {
+            return;
+        }
 
-            if( selfRender->isHide() == true )
-            {
-                return;
-            }
+        if( _render->isHide() == true )
+        {
+            return;
+        }
 
-            if( selfRender->isLocalTransparent() == true )
-            {
-                return;
-            }
+        if( _render->isLocalTransparent() == true )
+        {
+            return;
+        }
 
-            RenderNodeDesc desc;
-            desc.render = selfRender;
+        RenderNodeDesc desc;
+        desc.render = _render;
 
-            const RenderViewportInterfacePtr & renderViewport = selfRender->getRenderViewport();
+        const RenderViewportInterfacePtr & renderViewport = _render->getRenderViewport();
 
-            if( renderViewport != nullptr )
-            {
-                desc.context.viewport = renderViewport;
-            }
-            else
-            {
-                desc.context.viewport = _context->viewport;
-            }
-
-            const RenderCameraInterfacePtr & renderCamera = selfRender->getRenderCamera();
-
-            if( renderCamera != nullptr )
-            {
-                desc.context.camera = renderCamera;
-            }
-            else
-            {
-                desc.context.camera = _context->camera;
-            }
-
-            const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
-
-            if( renderScissor != nullptr )
-            {
-                desc.context.scissor = renderScissor;
-            }
-            else
-            {
-                desc.context.scissor = _context->scissor;
-            }
-
-            const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
-
-            if( renderTarget != nullptr )
-            {
-                desc.context.target = renderTarget;
-            }
-            else
-            {
-                desc.context.target = _context->target;
-            }
-
-            if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
-            {
-                m_nodies.emplace_back( desc );
-            }
-
-            const RenderContext * childrenContext = &desc.context;
-
-            _node->foreachChildren( [this, childrenContext]( const NodePtr & _child )
-            {
-                this->cacheNode_( childrenContext, _child );
-            } );
-
-            if( desc.context.target != nullptr )
-            {
-                const RenderInterfacePtr & targetRender = selfRender->makeTargetRender( &desc.context );
-
-                if( targetRender != nullptr )
-                {
-                    RenderNodeDesc targetDesc;
-                    targetDesc.render = targetRender;
-                    targetDesc.context = *_context;
-
-                    m_nodies.emplace_back( targetDesc );
-                }
-            }
+        if( renderViewport != nullptr )
+        {
+            desc.context.viewport = renderViewport;
         }
         else
         {
-            _node->foreachChildren( [this, _context]( const NodePtr & _child )
-            {
-                this->cacheNode_( _context, _child );
-            } );
+            desc.context.viewport = _context->viewport;
         }
+
+        const RenderCameraInterfacePtr & renderCamera = _render->getRenderCamera();
+
+        if( renderCamera != nullptr )
+        {
+            desc.context.camera = renderCamera;
+        }
+        else
+        {
+            desc.context.camera = _context->camera;
+        }
+
+        const RenderScissorInterfacePtr & renderScissor = _render->getRenderScissor();
+
+        if( renderScissor != nullptr )
+        {
+            desc.context.scissor = renderScissor;
+        }
+        else
+        {
+            desc.context.scissor = _context->scissor;
+        }
+
+        const RenderTargetInterfacePtr & renderTarget = _render->getRenderTarget();
+
+        if( renderTarget != nullptr )
+        {
+            desc.context.target = renderTarget;
+        }
+        else
+        {
+            desc.context.target = _context->target;
+        }
+
+        if( _render->isLocalHide() == false && _render->isPersonalTransparent() == false )
+        {
+            m_renders.emplace_back( desc );
+        }
+
+        const RenderContext * childrenContext = &desc.context;
+
+        _render->foreachChildren( [this, childrenContext]( RenderInterface * _child )
+        {
+            this->cacheNode_( childrenContext, _child );
+        } );
+
+        if( desc.context.target != nullptr )
+        {
+            const RenderInterfacePtr & targetRender = _render->makeTargetRender( &desc.context );
+
+            if( targetRender != nullptr )
+            {
+                RenderNodeDesc targetDesc;
+                targetDesc.render = targetRender;
+                targetDesc.context = *_context;
+
+                m_renders.emplace_back( targetDesc );
+            }
+        }
+        
     }
 }

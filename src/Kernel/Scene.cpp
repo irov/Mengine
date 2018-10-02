@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onAppMouseLeave()
     {
-        EventationInterfacePtr event = this->getScriptEventation();
+        EventationInterface * event = this->getScriptEventation();
 
         if( event != nullptr )
         {
@@ -44,7 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onAppMouseEnter()
     {
-        EventationInterfacePtr event = this->getScriptEventation();
+        EventationInterface * event = this->getScriptEventation();
 
         if( event != nullptr )
         {
@@ -70,7 +70,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onFocus( bool _focus )
     {
-        EventationInterfacePtr event = this->getScriptEventation();
+        EventationInterface * event = this->getScriptEventation();
 
         if( event != nullptr )
         {

@@ -28,7 +28,7 @@ namespace Mengine
         template<class T_Receiver>
         void registerScriptEventReceiver( const pybind::dict & _kwds, Eventable * _eventable, const char * _method, uint32_t _event )
         {
-            EventationInterfacePtr event = _eventable->getEventation();
+            EventationInterface * event = _eventable->getEventation();
 
             if( event == nullptr )
             {
@@ -63,7 +63,7 @@ namespace Mengine
         template<class T_Receiver>
         void registerScriptEventReceiverModule( const pybind::module & _module, Eventable * _eventable, const char * _method, uint32_t _event )
         {
-            EventationInterfacePtr event = _eventable->getEventation();
+            EventationInterface * event = _eventable->getEventation();
 
             if( event == nullptr )
             {
@@ -94,7 +94,7 @@ namespace Mengine
         template<class T_Receiver>
         void registerScriptEventReceiverMethod( const pybind::object & _obj, Eventable * _eventable, const char * _method, uint32_t _event )
         {
-            EventationInterfacePtr event = _eventable->getEventation();
+            EventationInterface * event = _eventable->getEventation();
 
             if( event == nullptr )
             {

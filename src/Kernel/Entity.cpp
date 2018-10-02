@@ -34,14 +34,14 @@ namespace Mengine
         return m_scriptEventable;
     }
     //////////////////////////////////////////////////////////////////////////
-    EventationInterfacePtr Entity::getScriptEventation() const
+    EventationInterface * Entity::getScriptEventation() const
     {
         if( m_scriptEventable == nullptr )
         {
             return nullptr;
         }
 
-        EventationInterfacePtr event = m_scriptEventable->getEventation();
+        EventationInterface * event = m_scriptEventable->getEventation();
 
         return event;
     }
@@ -58,7 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Entity::_activate()
     {
-        EventationInterfacePtr event = this->getScriptEventation();
+        EventationInterface * event = this->getScriptEventation();
 
         if( event != nullptr )
         {
@@ -75,7 +75,7 @@ namespace Mengine
     {
         Node::_afterActivate();
 
-        EventationInterfacePtr event = this->getScriptEventation();
+        EventationInterface * event = this->getScriptEventation();
 
         if( event != nullptr )
         {
@@ -86,7 +86,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
-        EventationInterfacePtr event = this->getScriptEventation();
+        EventationInterface * event = this->getScriptEventation();
 
         if( event != nullptr )
         {
@@ -101,7 +101,7 @@ namespace Mengine
     {
         Node::_afterDeactivate();
 
-        EventationInterfacePtr event = this->getScriptEventation();
+        EventationInterface * event = this->getScriptEventation();
 
         if( event != nullptr )
         {
@@ -112,7 +112,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Entity::_compile()
     {
-        EventationInterfacePtr event = this->getScriptEventation();
+        EventationInterface * event = this->getScriptEventation();
 
         if( event != nullptr )
         {
@@ -125,7 +125,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Entity::_release()
     {
-        EventationInterfacePtr event = this->getScriptEventation();
+        EventationInterface * event = this->getScriptEventation();
 
         if( event != nullptr )
         {
@@ -136,7 +136,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Entity::onCreate()
     {
-        EventationInterfacePtr event = this->getScriptEventation();
+        EventationInterface * event = this->getScriptEventation();
 
         if( event != nullptr )
         {
@@ -151,7 +151,7 @@ namespace Mengine
 
         Node * old_parent = this->getParent();
 
-        EventationInterfacePtr event = this->getScriptEventation();
+        EventationInterface * event = this->getScriptEventation();
 
         if( event != nullptr )
         {

@@ -24,10 +24,10 @@ namespace Mengine
 
     public:
         void invalidateNodeCache() override;
-        void renderNode( const RenderContext * _context, const NodePtr & _node ) override;
+        void renderNode( const RenderContext * _context, const RenderInterfacePtr & _render ) override;
 
     protected:
-        void cacheNode_( const RenderContext * _context, const NodePtr & _node );
+        void cacheNode_( const RenderContext * _context, const RenderInterfacePtr & _render );
 
     protected:
         struct RenderNodeDesc
@@ -38,7 +38,7 @@ namespace Mengine
         };
 
         typedef Vector<RenderNodeDesc> VectorRenderNodies;
-        VectorRenderNodies m_nodies;
+        VectorRenderNodies m_renders;
 
         bool m_invalidate;
     };

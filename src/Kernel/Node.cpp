@@ -228,7 +228,7 @@ namespace Mengine
 
         if( oldRenderParent != newRenderParent )
         {
-            this->foreachRenderCloseChildren( [newRenderParent]( const RenderInterfacePtr & _render )
+            this->foreachRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
             {
                 _render->setRelationRender( newRenderParent );
                 _render->invalidateColor();

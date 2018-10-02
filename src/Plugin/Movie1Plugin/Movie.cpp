@@ -1920,7 +1920,7 @@ namespace Mengine
 
         UnknownParticleEmitter2InterfacePtr unknownParticleEmitter2 = layer_particles->getUnknown();
 
-        AnimationInterfacePtr animationParticleEmitter2 = layer_particles->getAnimation();
+        AnimationInterface * animationParticleEmitter2 = layer_particles->getAnimation();
 
         ResourcePtr resourceParticle = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );

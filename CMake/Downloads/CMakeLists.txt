@@ -1,12 +1,12 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 3.0 )
 
-PROJECT(Downloads)
-
 SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../..)
 SET(CMAKE_DEPENDENCIES_DIR ${MENGINE_REPOSITORY}/CMake/Dependencies)
 SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
 
 include(download_template.cmake)
+
+set(DOWNLOAD_PROJECTS)
 
 DOWNLOAD_URL(boost https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1_68_0.7z)
 DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
@@ -39,3 +39,9 @@ GIT_CLONE(openal-soft https://github.com/kcat/openal-soft.git "openal-soft-1.19.
 GIT_CLONE(python https://github.com/python/cpython.git "v2.7.15")
 GIT_CLONE(python3 https://github.com/python/cpython.git "v3.6.6")
 GIT_CLONE(ozz https://github.com/guillaumeblanc/ozz-animation.git "0.10.0")
+
+PROJECT(Downloads)
+
+add_library(${PROJECT_NAME} STATIC dummy.cpp)
+
+add_dependencies(${PROJECT_NAME} ${DOWNLOAD_PROJECTS})

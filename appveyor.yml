@@ -21,6 +21,8 @@ init:
 - if "%APPVEYOR_BUILD_WORKER_IMAGE%"=="Visual Studio 2017"  ( set generator="Visual Studio 15 2017%cmake_generator_arch%" )
 - if "%platform%"=="x32" ( set project=Win32 )
 - if "%platform%"=="x64" ( set project=Win64 )
+- if "%platform%"=="x32" ( set dependencies=Depends_WIN32 )
+- if "%platform%"=="x64" ( set dependencies=Depends_WIN64 )
 
 build_script:
 - cmd: echo "Configured Downloads"
@@ -28,10 +30,10 @@ build_script:
 - cmd: echo "Downloads Dependencies"
 - pushd .\CMake\Downloads && cmake --build . & popd
 - cmd: echo "Configured Dependencies"
-- pushd .\CMake\Dependencies && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
+- pushd .\CMake\%dependencies% && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
 - cmd: echo "Build Dependencies"
 - pushd .\CMake\Dependencies && cmake --build . & popd
 - cmd: echo "Configured Solution %project%"
-- pushd .\CMake\%project% && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='.\CMake\Dependencies' & popd
+- pushd .\CMake\%project% && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='.\CMake\%dependencies%' & popd
 - cmd: echo "Build Solution %project%"
 - pushd .\CMake\%project% && cmake --build . & popd

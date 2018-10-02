@@ -52,7 +52,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie1Plugin::_avaliable()
     {
-        return true;
+        bool avaliable = CONFIG_VALUE( "Engine", "Movie1PluginAvaliable", true );
+
+        return avaliable;
     }    
     //////////////////////////////////////////////////////////////////////////
     namespace Detail

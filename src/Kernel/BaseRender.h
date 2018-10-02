@@ -20,8 +20,8 @@ namespace Mengine
         ~BaseRender() override;
 
     public:
-        void setRelationRender( const RenderInterfacePtr & _relationRender ) override;
-        inline BaseRender * getRelationRender() const;
+        void setRelationRender( RenderInterface * _relationRender ) override;
+        inline BaseRender * getRelationRender() const override;
 
     public:
         void foreachChildren( const LambdaRender & _lambda ) override;
@@ -64,6 +64,7 @@ namespace Mengine
 
     public:
         void render( const RenderContext * _context ) override;
+        void renderWithChildren( const RenderContext * _context, bool _external ) override;
 
     protected:
         virtual void _render( const RenderContext * _context ) = 0;

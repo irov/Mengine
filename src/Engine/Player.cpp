@@ -2,7 +2,6 @@
 
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/RenderNodeServiceInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ParticleSystemInterface.h"
 #include "Interface/ResourceInterface.h"
@@ -907,8 +906,8 @@ namespace Mengine
         {
             if( debugMask == false )
             {
-                RENDERNODE_SERVICE()
-                    ->renderNode( &context, m_scene );
+                RenderInterface * render = m_scene->getRender();
+                render->renderWithChildren( &context, false );
             }
             else
             {
@@ -926,7 +925,8 @@ namespace Mengine
         {
             if( debugMask == false )
             {
-                Helper::nodeRenderChildren( m_arrow, &context );
+                RenderInterface * render = m_arrow->getRender();
+                render->renderWithChildren( &context, false );
             }
             else
             {

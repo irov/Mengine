@@ -223,19 +223,34 @@ namespace Mengine
 
         this->setRelationTransformation( _parent );
 
-        RenderInterface * oldRenderParent = Helper::getNodeRenderInheritance( oldparent );
-        RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
+        RenderInterface * render = this->getRender();
 
-        if( oldRenderParent != newRenderParent )
+        if( render != nullptr )
         {
-            this->foreachRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
+            RenderInterface * oldRenderParent = render->getRelationRender();
+            RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
+            
+            if( oldRenderParent != newRenderParent )
             {
-                _render->setRelationRender( newRenderParent );
-                _render->invalidateColor();
-            } );
+                render->setRelationRender( newRenderParent );
+            }
+        }
+        else
+        {
+            RenderInterface * oldRenderParent = Helper::getNodeRenderInheritance( oldparent );
+            RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
+
+            if( oldRenderParent != newRenderParent )
+            {
+                this->foreachRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
+                {
+                    _render->setRelationRender( newRenderParent );
+                    _render->invalidateColor();
+                } );
+            }
         }
 
-        UpdationInterfacePtr updation = this->getUpdation();
+        UpdationInterface * updation = this->getUpdation();
 
         if( _parent != nullptr && updation != nullptr )
         {
@@ -906,7 +921,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_deactivate()
     {
-        UpdationInterfacePtr updation = this->getUpdation();
+        UpdationInterface * updation = this->getUpdation();
 
         if( updation != nullptr )
         {

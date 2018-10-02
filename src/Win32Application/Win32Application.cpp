@@ -88,7 +88,6 @@ SERVICE_EXTERN( NodeService );
 SERVICE_EXTERN( UpdateService );
 SERVICE_EXTERN( LoaderService );
 SERVICE_EXTERN( RenderService );
-SERVICE_EXTERN( RenderNodeService );
 SERVICE_EXTERN( RenderMaterialService );
 SERVICE_EXTERN( RenderTextureService );
 SERVICE_EXTERN( ResourceService );
@@ -677,7 +676,6 @@ namespace Mengine
         }
 
         SERVICE_CREATE( RenderService );
-        SERVICE_CREATE( RenderNodeService );
         SERVICE_CREATE( RenderMaterialService );
         SERVICE_CREATE( RenderTextureService );
 
@@ -981,7 +979,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::ScriptServiceInterface );
         SERVICE_FINALIZE( Mengine::ConverterServiceInterface );
 
-        SERVICE_FINALIZE( Mengine::RenderNodeServiceInterface );
         SERVICE_FINALIZE( Mengine::RenderServiceInterface );
         SERVICE_FINALIZE( Mengine::RenderMaterialServiceInterface );
         SERVICE_FINALIZE( Mengine::RenderTextureServiceInterface );

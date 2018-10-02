@@ -28,7 +28,7 @@ build_script:
 - cmd: echo "Downloads Dependencies"
 - pushd .\CMake\Downloads && cmake --build . & popd
 - cmd: echo "Configured Dependencies"
-- pushd .\CMake\Dependencies && - cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
+- pushd .\CMake\Dependencies && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
 - cmd: echo "Build Dependencies"
 - pushd .\CMake\Dependencies && cmake --build . & popd
 - cmd: echo "Configured Solution %project%"

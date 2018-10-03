@@ -3,6 +3,7 @@
 #include "Interface/PrototypeManagerInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ScriptSystemInterface.h"
+#include "Interface/PlayerInterface.h"
 #include "Interface/ConfigInterface.h"
 
 #include "Kernel/ScriptWrapper.h"

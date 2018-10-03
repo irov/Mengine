@@ -81,11 +81,11 @@ namespace Mengine
 
                 if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
                 {
-                    selfRender->render( &self_context );
-
                     _visitor->setRenderContext( &self_context );
 
                     _node->visit( _visitor );
+
+                    selfRender->render( &self_context );
                 }
 
                 const RenderContext * children_context = &self_context;

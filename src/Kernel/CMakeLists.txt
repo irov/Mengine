@@ -492,6 +492,12 @@ Logger
 	Logger.cpp
 )
 
+ADD_FILTER(
+Visitors
+    DebugRenderVisitor.h
+    DebugRenderVisitor.cpp
+)
+
 INCLUDE_DIRECTORIES(
     ${SOURCE_DIR}
     ${SOURCE_DIR}/Utils

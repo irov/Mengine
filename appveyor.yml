@@ -38,7 +38,7 @@ build_script:
 - cmd: echo "Build %dependencies%"
 - pushd .\CMake\%dependencies% && cmake --build . & popd
 - cmd: echo "Configured Solution %solution%"
-- pushd .\CMake\%solution% && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='.\CMake\%dependencies%' & popd
+- pushd .\CMake\%solution% && cmake . -G %generator% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='..\CMake\%dependencies%' & popd
 - cmd: echo "Build Solution %solution%"
 - pushd .\CMake\%solution% && cmake --build . & popd
 - cmd: echo "Complete!"

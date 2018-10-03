@@ -1463,8 +1463,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertex2D * RenderEngine::getDebugRenderVertex2D( uint32_t _count )
     {
-        m_debugVertices.emplace_back( TArrayRenderVertex2D() );
-        TArrayRenderVertex2D & vertices_array = m_debugVertices.back();
+        m_debugVertices.emplace_back( ArrayRenderVertex2D() );
+        ArrayRenderVertex2D & vertices_array = m_debugVertices.back();
         vertices_array.resize( _count );
 
         RenderVertex2D * vertices = &vertices_array.front();

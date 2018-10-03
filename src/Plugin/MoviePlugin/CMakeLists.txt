@@ -15,6 +15,8 @@ src
     Movie2Scissor.h
     Movie2SubComposition.cpp
     Movie2SubComposition.h
+    Movie2DebugRenderVisitor.cpp
+    Movie2DebugRenderVisitor.h
     ResourceMovie2.cpp
     ResourceMovie2.h
 )

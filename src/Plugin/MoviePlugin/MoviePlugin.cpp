@@ -5,6 +5,9 @@
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/ConfigInterface.h"
+#include "../Plugin/DebugRenderPlugin/DebugRenderInterface.h"
+
+#include "Movie2DebugRenderVisitor.h"
 
 #include "Kernel/ScriptWrapper.h"
 
@@ -440,6 +443,11 @@ namespace Mengine
         {
             return false;
         }
+
+        RenderVisitorPtr movie2RenderVisitor = new FactorableUnique<Movie2DebugRenderVisitor>();
+
+        DEBUGRENDER_SERVICE()
+            ->addRenderVisitor( movie2RenderVisitor );        
 
         return true;
     }

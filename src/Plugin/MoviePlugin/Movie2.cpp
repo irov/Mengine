@@ -506,6 +506,89 @@ namespace Mengine
         ae_set_movie_composition_nodes_enable_any( m_composition, _name.c_str(), _enable ? AE_TRUE : AE_FALSE );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2::foreachRenderSlots( const RenderContext * _context, const LambdaMovieRenderSlot & _lambda )
+    {
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        ae_voidptr_t composition_camera_data = ae_get_movie_composition_camera_data( m_composition );
+        (void)composition_camera_data;
+
+        ae_uint32_t compute_movie_mesh_iterator = 0;
+
+        aeMovieRenderMesh mesh;
+        while( ae_compute_movie_mesh( m_composition, &compute_movie_mesh_iterator, &mesh ) == AE_TRUE )
+        {
+            RenderContext context;
+
+            if( mesh.camera_data != nullptr )
+            {
+                Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_data);
+
+                context.camera = camera->projection;
+                context.viewport = camera->viewport;
+                context.transformation = _context->transformation;
+                context.scissor = _context->scissor;
+                context.target = _context->target;
+            }
+            else
+            {
+                context = *_context;
+            }
+
+            if( mesh.viewport != nullptr )
+            {
+                Movie2ScissorPtr scissor = new FactorableUnique<Movie2Scissor>();
+
+                scissor->setViewport( wm, mesh.viewport );
+
+                context.scissor = scissor;
+            }
+            else
+            {
+                context.scissor = _context->scissor;
+            }
+
+            if( mesh.track_matte_data == nullptr )
+            {
+                switch( mesh.layer_type )
+                {
+                case AE_MOVIE_LAYER_TYPE_SLOT:
+                    {
+                        Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_data);
+
+                        _lambda( &context, node );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SOCKET:
+                    {
+                        HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(mesh.element_data);
+
+                        _lambda( &context, node );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SPRITE:
+                    {
+                        ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_data);
+
+                        _lambda( &context, node );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_TEXT:
+                    {
+                        TextField * node = reinterpret_node_cast<TextField *>(mesh.element_data);
+
+                        _lambda( &context, node );
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                    {
+                        Node * node = reinterpret_node_cast<Node *>(mesh.element_data);
+
+                        _lambda( &context, node );
+                    }break;
+                default:
+                    break;
+                }
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Movie2::_play( uint32_t _enumerator, float _time )
     {
         if( this->isCompile() == false )
@@ -718,7 +801,6 @@ namespace Mengine
 
         switch( type )
         {
-#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
         case AE_MOVIE_LAYER_TYPE_SPRITE:
             {
                 const ShapeQuadFixedPtr & node = movie2->getSprite_( node_index );
@@ -745,7 +827,6 @@ namespace Mengine
 
                 return AE_TRUE;
             }break;
-#endif
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
                 const TextFieldPtr & node = movie2->getText_( node_index );
@@ -1219,14 +1300,12 @@ namespace Mengine
 
                 __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
             }break;
-#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
         case AE_MOVIE_LAYER_TYPE_SPRITE:
             {
                 ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(_callbackData->element);
 
                 __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
             }break;
-#endif
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
                 TextField * node = reinterpret_node_cast<TextField *>(_callbackData->element);
@@ -1339,7 +1418,6 @@ namespace Mengine
             m2->end();
         }
     }
-#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_scene_effect_provider( const aeMovieCompositionSceneEffectProviderCallbackData * _callbackData, ae_voidptrptr_t _sed, ae_voidptr_t _ud )
     {
@@ -1402,7 +1480,6 @@ namespace Mengine
 
         parent_layer->setOrientationX( angle );
     }
-#endif
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_subcomposition_provider( const aeMovieSubCompositionProviderCallbackData * _callbackData, ae_voidptrptr_t _scd, ae_voidptr_t _ud )
     {
@@ -1566,10 +1643,8 @@ namespace Mengine
         providers.composition_event = &__movie_composition_event;
         providers.composition_state = &__movie_composition_state;
 
-#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
         providers.scene_effect_provider = &__movie_scene_effect_provider;
         providers.scene_effect_update = &__movie_scene_effect_update;
-#endif
 
         providers.subcomposition_provider = &__movie_subcomposition_provider;
         providers.subcomposition_deleter = &__movie_subcomposition_deleter;
@@ -1840,7 +1915,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_render( const RenderContext * _state )
+    void Movie2::_render( const RenderContext * _context )
     {
         uint32_t vertex_iterator = 0;
         uint32_t index_iterator = 0;
@@ -1876,13 +1951,13 @@ namespace Mengine
 
                 context.camera = camera->projection;
                 context.viewport = camera->viewport;
-                context.transformation = _state->transformation;
-                context.scissor = _state->scissor;
-                context.target = _state->target;
+                context.transformation = _context->transformation;
+                context.scissor = _context->scissor;
+                context.target = _context->target;
             }
             else
             {
-                context = *_state;
+                context = *_context;
             }
 
             if( mesh.viewport != nullptr )
@@ -1895,7 +1970,7 @@ namespace Mengine
             }
             else
             {
-                context.scissor = _state->scissor;
+                context.scissor = _context->scissor;
             }
 
             ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
@@ -1919,7 +1994,6 @@ namespace Mengine
 
                         //render->render( &state );
                     }break;
-#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
                         ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_data);
@@ -1927,7 +2001,6 @@ namespace Mengine
                         RenderInterface * render = node->getRender();
                         render->renderWithChildren( &context, true );
                     }break;
-#endif
                 case AE_MOVIE_LAYER_TYPE_TEXT:
                     {
                         TextField * node = reinterpret_node_cast<TextField *>(mesh.element_data);

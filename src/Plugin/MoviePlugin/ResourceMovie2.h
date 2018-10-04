@@ -82,14 +82,6 @@ namespace Mengine
         bool storeResource_( const ResourcePtr & _resource );
         Resource * getResource_( const ae_string_t _name );
 
-#if AE_MOVIE_SDK_MAJOR_VERSION < 17
-    public:
-        Resource * createResourceImage_( const aeMovieResourceImage * _resource );
-        Resource * createResourceVideo_( const aeMovieResourceVideo * _resource );
-        Resource * createResourceSound_( const aeMovieResourceSound * _resource );
-        Resource * createResourceParticle_( const aeMovieResourceParticle * _resource );
-#endif
-
     protected:
         const aeMovieInstance * m_movieInstance;
 

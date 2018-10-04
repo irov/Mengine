@@ -15,8 +15,6 @@ macro(DOWNLOAD_URL NAME URL)
     )
     
     add_library(${NAME} STATIC IMPORTED)
-    
-    set(DOWNLOAD_PROJECTS ${DOWNLOAD_PROJECTS} ${NAME})
 endmacro()
 
 macro(GIT_CLONE NAME REPOSITORY)
@@ -52,6 +50,4 @@ macro(GIT_CLONE NAME REPOSITORY)
     endif()
     
     add_library(${NAME} STATIC IMPORTED)
-    
-    set(DOWNLOAD_PROJECTS ${DOWNLOAD_PROJECTS} ${NAME})    
 endmacro()

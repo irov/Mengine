@@ -58,7 +58,7 @@ SET( APPLICATION_LIBS
 IF(WIN32)
     SET( APPLICATION_LIBS
      ${APPLICATION_LIBS}
-     ${THIRDPARTY_LIB_DIR}/libcurl${MENGINE_LIB_SUFFIX}
+     ${THIRDPARTY_LIB_DIR}/libcurl_imp${MENGINE_LIB_SUFFIX}
         ws2_32.lib
         Crypt32.lib
     )

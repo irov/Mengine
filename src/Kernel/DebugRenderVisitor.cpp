@@ -2,8 +2,6 @@
 
 #include "Interface/RenderServiceInterface.h"
 
-#include "Engine/HotSpotPolygon.h"
-
 #include "Kernel/RenderVertex2D.h"
 
 namespace Mengine
@@ -15,17 +13,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DebugRenderVisitor::~DebugRenderVisitor()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void DebugRenderVisitor::accept( Node * _node )
-    {
-        const RenderContext * context = this->getRenderContext();
-
-        for( const DebugRenderVisitorPtr & visitor : m_debugRenderVisitors )
-        {
-            visitor->setRenderContext( context );
-            _node->visit( visitor );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void DebugRenderVisitor::renderLine_( RenderVertex2D * _vertices, uint32_t _count )

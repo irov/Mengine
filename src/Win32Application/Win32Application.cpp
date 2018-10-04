@@ -111,6 +111,7 @@ PLUGIN_EXPORT( LZ4 );
 PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( Win32FileGroup );
 PLUGIN_EXPORT( BitmapFont );
+PLUGIN_EXPORT( DebugRender );
 
 #ifdef MENGINE_PLUGIN_SPINE
 PLUGIN_EXPORT( Spine );
@@ -720,6 +721,10 @@ namespace Mengine
 		if(	PLUGIN_CREATE(Name) == false ){\
 		LOGGER_ERROR( "Invalid %s", Info );}else{\
 		LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
+
+#ifdef MENGINE_PLUGIN_DEBUGRENDER
+        MENGINE_ADD_PLUGIN( DebugRender, "initialize Plugin Debug Render..." );
+#endif
 
         MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec..." );
         MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );

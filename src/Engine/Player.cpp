@@ -16,6 +16,8 @@
 #include "Interface/ModuleInterface.h"
 #include "Interface/ApplicationInterface.h"
 
+#include "../Plugin/DebugRenderPlugin/DebugRenderInterface.h"
+
 #include "Config/Stringstream.h"
 
 #include "Kernel/Scene.h"
@@ -509,8 +511,6 @@ namespace Mengine
         m_affectorable = new GlobalAffectorable;
         m_affectorableGlobal = new GlobalAffectorable;
 
-        m_debugRenderVisitor = new FactorableUnique<NodeDebugRenderVisitor>();
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -911,7 +911,8 @@ namespace Mengine
             }
             else
             {
-                Helper::nodeRenderChildrenVisitor( m_scene, m_debugRenderVisitor, &context );
+                DEBUGRENDER_SERVICE()
+                    ->render( m_scene, &context );
             }
         }
 
@@ -930,7 +931,8 @@ namespace Mengine
             }
             else
             {
-                Helper::nodeRenderChildrenVisitor( m_arrow, m_debugRenderVisitor, &context );
+                DEBUGRENDER_SERVICE()
+                    ->render( m_arrow, &context );
             }
         }
 

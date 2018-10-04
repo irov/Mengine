@@ -88,6 +88,10 @@ namespace Mengine
     public:
         void setEnableMovieLayers( const ConstString & _name, bool _enable );
 
+    public:
+        typedef Lambda<void( const RenderContext * _context, Node * _node )> LambdaMovieRenderSlot;
+        void foreachRenderSlots( const RenderContext * _context, const LambdaMovieRenderSlot & _lambda );
+
     protected:
         bool _play( uint32_t _enumerator, float _time ) override;
         bool _restart( uint32_t _enumerator, float _time ) override;

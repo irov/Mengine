@@ -43,6 +43,10 @@ if( MENGINE_PLUGIN_STEAM )
     ADD_SUBDIRECTORY( SteamPlugin )
 endif()
 
+if( MENGINE_PLUGIN_DEBUGRENDER )
+    ADD_SUBDIRECTORY( DebugRenderPlugin )
+endif()
+
 if( MENGINE_TARGET_MSVC )
     ADD_SUBDIRECTORY( Win32SocketPlugin )    
     ADD_SUBDIRECTORY( VideoCodecPlugin )

@@ -48,11 +48,7 @@ namespace Mengine
             {
                 const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
 
-#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 Resource * data_resource = resourceMovie2->getResource_( resource_image->name );
-#else
-                Resource * data_resource = resourceMovie2->createResourceImage_( resource_image );
-#endif
 
                 if( data_resource == AE_NULL )
                 {
@@ -67,12 +63,8 @@ namespace Mengine
             {
                 const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
 
-#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 Resource * data_resource = resourceMovie2->getResource_( resource_video->name );
-#else
-                Resource * data_resource = resourceMovie2->createResourceVideo_( resource_video );
-#endif
-
+                
                 if( data_resource == AE_NULL )
                 {
                     return AE_FALSE;
@@ -86,11 +78,7 @@ namespace Mengine
             {
                 const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
 
-#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 Resource * data_resource = resourceMovie2->getResource_( resource_sound->name );
-#else
-                Resource * data_resource = resourceMovie2->createResourceSound_( resource_sound );
-#endif
 
                 if( data_resource == AE_NULL )
                 {
@@ -105,11 +93,7 @@ namespace Mengine
             {
                 const aeMovieResourceParticle * resource_particle = (const aeMovieResourceParticle *)_resource;
 
-#if AE_MOVIE_SDK_MAJOR_VERSION >= 17
                 Resource * data_resource = resourceMovie2->getResource_( resource_particle->name );
-#else
-                Resource * data_resource = resourceMovie2->createResourceParticle_( resource_particle );
-#endif
 
                 if( data_resource == AE_NULL )
                 {
@@ -596,151 +580,4 @@ namespace Mengine
 
         return resource.get();
     }
-#if AE_MOVIE_SDK_MAJOR_VERSION < 17
-    //////////////////////////////////////////////////////////////////////////
-    Resource * ResourceMovie2::createResourceImage_( const aeMovieResourceImage * _resource )
-    {
-        ResourceImageDefaultPtr image = RESOURCE_SERVICE()
-            ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
-
-        const FileGroupInterfacePtr & category = this->getFileGroup();
-
-        image->setFileGroup( category );
-
-        PathString full_path;
-
-        ConstString folder = Helper::getPathFolder( m_filePath );
-
-        full_path += folder.c_str();
-        full_path += _resource->path;
-
-        FilePath c_path = Helper::stringizeFilePath( full_path );
-
-        mt::uv4f uv_image;
-        mt::uv4f uv_alpha;
-
-        mt::vec2f size( _resource->trim_width, _resource->trim_height );
-
-        if( image->setup( c_path, ConstString::none(), uv_image, uv_alpha, size ) == false )
-        {
-            return nullptr;
-        }
-
-        if( this->storeResource_( image ) == false )
-        {
-            return nullptr;
-        }
-
-        return image.get();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Resource * ResourceMovie2::createResourceVideo_( const aeMovieResourceVideo * _resource )
-    {
-        ResourceVideoPtr video = RESOURCE_SERVICE()
-            ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
-
-        const FileGroupInterfacePtr & category = this->getFileGroup();
-
-        video->setFileGroup( category );
-
-        PathString full_path;
-
-        ConstString folder = Helper::getPathFolder( m_filePath );
-
-        full_path += folder.c_str();
-        full_path += _resource->path;
-
-        FilePath fullPath = Helper::stringizeFilePath( full_path );
-
-        video->setFilePath( fullPath );
-
-        video->setFrameRate( _resource->frameRate );
-        video->setDuration( _resource->duration );
-
-        if( _resource->has_alpha_channel == AE_TRUE )
-        {
-            video->setAlpha( true );
-            video->setCodecType( STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
-        }
-        else
-        {
-            video->setAlpha( false );
-            video->setCodecType( STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
-        }
-
-        if( this->storeResource_( video ) == false )
-        {
-            return nullptr;
-        }
-
-        return video.get();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Resource * ResourceMovie2::createResourceSound_( const aeMovieResourceSound * _resource )
-    {
-        ResourceSoundPtr sound = RESOURCE_SERVICE()
-            ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
-
-        const FileGroupInterfacePtr & category = this->getFileGroup();
-
-        sound->setFileGroup( category );
-
-        PathString full_path;
-
-        ConstString folder = Helper::getPathFolder( m_filePath );
-
-        full_path += folder.c_str();
-        full_path += _resource->path;
-
-        FilePath c_path = Helper::stringizeFilePath( full_path );
-
-        sound->setFilePath( c_path );
-
-        sound->setCodecType( STRINGIZE_STRING_LOCAL( "oggSound" ) );
-
-        if( this->storeResource_( sound ) == false )
-        {
-            return nullptr;
-        }
-
-        return sound.get();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Resource * ResourceMovie2::createResourceParticle_( const aeMovieResourceParticle * _resource )
-    {
-        ResourcePtr particle = RESOURCE_SERVICE()
-            ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
-
-        const FileGroupInterfacePtr & category = this->getFileGroup();
-
-        particle->setFileGroup( category );
-
-        PathString full_path;
-
-        ConstString folder = Helper::getPathFolder( m_filePath );
-
-        full_path += folder.c_str();
-        full_path += _resource->path;
-
-        FilePath c_path = Helper::stringizeFilePath( full_path );
-
-        particle->setFilePath( c_path );
-
-        for( ae_uint32_t index = 0; index != _resource->image_count; ++index )
-        {
-            const aeMovieResourceImage * movieResourceImage = _resource->images[index];
-
-            ResourceImage * resourceImage = static_cast<ResourceImage *>(movieResourceImage->data);
-
-            particle->addResourceImage( resourceImage );
-        }
-
-        if( this->storeResource_( particle ) == false )
-        {
-            return nullptr;
-        }
-
-        return particle.get();
-    }
-#endif
 }

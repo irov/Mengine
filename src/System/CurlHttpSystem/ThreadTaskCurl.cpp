@@ -54,12 +54,13 @@ namespace Mengine
 
         curl_easy_setopt( curl, CURLOPT_SSL_VERIFYPEER, false );
 
-        char errorbuf[CURL_ERROR_SIZE];
+        char errorbuf[CURL_ERROR_SIZE] = { '\0' };
         curl_easy_setopt( curl, CURLOPT_ERRORBUFFER, errorbuf );
 
         CURLcode status = curl_easy_perform( curl );
 
         m_status = status;
+        m_error = errorbuf;
 
         long http_code = 0;
         curl_easy_getinfo( curl, CURLINFO_RESPONSE_CODE, &http_code );
@@ -96,6 +97,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadTaskCurl::_onComplete( bool _successful )
     {
-        m_receiver->onHttpRequestComplete( m_id, (uint32_t)m_status, m_response, m_code, _successful );
+        m_receiver->onHttpRequestComplete( m_id, (uint32_t)m_status, m_error, m_response, m_code, _successful );
     }
 }

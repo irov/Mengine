@@ -45,6 +45,7 @@ namespace Mengine
 
         uint32_t m_code;
         CURLcode m_status;
+        String m_error;
         String m_response;
     };
     //////////////////////////////////////////////////////////////////////////

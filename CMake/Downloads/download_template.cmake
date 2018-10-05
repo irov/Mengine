@@ -28,7 +28,7 @@ macro(GIT_CLONE NAME REPOSITORY)
             
             GIT_REPOSITORY ${REPOSITORY}
             GIT_TAG ${TAG}
-            GIT_SHALLOW TRUE
+            GIT_SHALLOW 1
             GIT_PROGRESS TRUE
 
             CONFIGURE_COMMAND ""
@@ -41,7 +41,7 @@ macro(GIT_CLONE NAME REPOSITORY)
             SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}
             
             GIT_REPOSITORY ${REPOSITORY}
-            GIT_SHALLOW TRUE
+            GIT_SHALLOW 1
             GIT_PROGRESS TRUE
 
             CONFIGURE_COMMAND ""

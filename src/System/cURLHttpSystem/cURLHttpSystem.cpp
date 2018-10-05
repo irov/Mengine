@@ -227,7 +227,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLHttpSystem::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _response, uint32_t _code, bool _successful )
+    void cURLHttpSystem::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful )
     {
         for( VectorHttpReceiverDesc::iterator
             it = m_receiverDescs.begin(),
@@ -248,7 +248,7 @@ namespace Mengine
 
             if( receiver != nullptr )
             {
-                receiver->onHttpRequestComplete( _id, _status, _response, _code, _successful );
+                receiver->onHttpRequestComplete( _id, _status, _error, _response, _code, _successful );
             }
 
             break;

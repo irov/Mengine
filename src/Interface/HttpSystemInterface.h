@@ -19,7 +19,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _response, uint32_t _code, bool _successful ) = 0;
+        virtual void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<HttpReceiverInterface> HttpReceiverInterfacePtr;

@@ -20,7 +20,7 @@ namespace Mengine
         const SoundDecoderInterfacePtr & getDecoder() const override;
 
     public:
-        bool load( const SoundDecoderInterfacePtr & _soundDecoder );
+        bool load( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable );
 
         void play( uint32_t _id, bool _looped, float _pos );
         bool resume( uint32_t _id );
@@ -34,13 +34,15 @@ namespace Mengine
     public:
         SoundDecoderInterfacePtr m_soundDecoder;
 
-        float m_playTime;
-        float m_pauseTime;
+        uint64_t m_playTime;
+        uint64_t m_pauseTime;
 
         int m_frequency;
         int m_channels;
         float m_length;
         bool m_isStereo;
+
+        bool m_streamable;
     };
 
     typedef IntrusivePtr<SilentSoundBuffer> SilentSoundBufferPtr;

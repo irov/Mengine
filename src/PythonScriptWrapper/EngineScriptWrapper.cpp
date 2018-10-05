@@ -1823,11 +1823,11 @@ namespace Mengine
         protected:
             void accept( ResourceImageDefault * _resource ) override
             {
-                const FileGroupInterfacePtr & category = _resource->getFileGroup();
+                const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
                 const FilePath & filePath = _resource->getFilePath();
 
                 PREFETCHER_SERVICE()
-                    ->unfetch( category, filePath );
+                    ->unfetch( fileGroup, filePath );
             }
 
             void accept( ResourceHIT * _resource ) override
@@ -1837,20 +1837,20 @@ namespace Mengine
 
             void accept( ResourceSound * _resource ) override
             {
-                const FileGroupInterfacePtr & category = _resource->getFileGroup();
+                const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
                 const FilePath & filePath = _resource->getFilePath();
 
                 PREFETCHER_SERVICE()
-                    ->unfetch( category, filePath );
+                    ->unfetch( fileGroup, filePath );
             }
 
             //void accept( ResourceMovie * _resource ) override
             //{
-            //    const FileGroupInterfacePtr & category = _resource->getCategory();
+            //    const FileGroupInterfacePtr & fileGroup = _resource->getCategory();
             //    const FilePath & filePath = _resource->getFilePath();
 
             //    PREFETCHER_SERVICE()
-            //        ->unfetch( category, filePath );
+            //        ->unfetch( fileGroup, filePath );
             //}
         };
         //////////////////////////////////////////////////////////////////////////
@@ -2065,12 +2065,12 @@ namespace Mengine
                 return false;
             }
 
-            const FileGroupInterfacePtr & category = resourceFile->getFileGroup();
+            const FileGroupInterfacePtr & fileGroup = resourceFile->getFileGroup();
 
             const FilePath & filePath = resourceFile->getFilePath();
 
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( category, filePath, false );
+                ->openInputFile( fileGroup, filePath, false );
 
             if( stream == nullptr )
             {

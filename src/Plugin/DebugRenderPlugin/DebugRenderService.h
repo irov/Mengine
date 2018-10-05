@@ -15,7 +15,7 @@ namespace Mengine
         ~DebugRenderService() override;
 
     public:
-        void render( const NodePtr & _node, const RenderContext * _context ) override;
+        void render( const NodePtr & _node, const RenderContext * _context, bool _external ) override;
 
     public:
         void addRenderVisitor( const RenderVisitorPtr & _renderVisitor ) override;

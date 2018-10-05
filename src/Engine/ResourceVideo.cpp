@@ -182,10 +182,10 @@ namespace Mengine
             return cacheVideoDecoder;
         }
 
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         InputStreamInterfacePtr videoStream = FILE_SERVICE()
-            ->openInputFile( category, m_filePath, true );
+            ->openInputFile( fileGroup, m_filePath, true );
 
         if( videoStream == nullptr )
         {

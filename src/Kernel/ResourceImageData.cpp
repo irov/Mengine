@@ -46,9 +46,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageData::_isValid() const
     {
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        bool exist = category->existFile( m_fileName );
+        bool exist = fileGroup->existFile( m_fileName );
 
         if( exist == false )
         {
@@ -67,7 +67,7 @@ namespace Mengine
         }
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( category, m_fileName, false );
+            ->openInputFile( fileGroup, m_fileName, false );
 
         if( stream == nullptr )
         {
@@ -136,10 +136,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageData::_compile()
     {
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( category, m_fileName, false );
+            ->openInputFile( fileGroup, m_fileName, false );
 
         if( stream == nullptr )
         {

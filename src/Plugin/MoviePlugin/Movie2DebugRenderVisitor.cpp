@@ -4,6 +4,8 @@
 
 #include "Kernel/RenderVertex2D.h"
 
+#include "../Plugin/DebugRenderPlugin/DebugRenderInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -17,6 +19,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2DebugRenderVisitor::accept( Movie2 * _node )
     {
-        
+        _node->foreachRenderSlots( m_context, []( Node * _node, const RenderContext * _context )
+        {
+            DEBUGRENDER_SERVICE()
+                ->render( _node, _context, true );
+        } );
     }
 }

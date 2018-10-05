@@ -17,9 +17,6 @@ namespace Mengine
         void resetDeltaTime() override;
         float getDeltaTime() override;
 
-    public:
-        uint64_t getMilliseconds() override;
-
     protected:
         uint64_t m_prevTime;
     };

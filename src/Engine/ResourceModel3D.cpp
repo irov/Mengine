@@ -90,10 +90,10 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( category, m_path, false );
+            ->openInputFile( fileGroup, m_path, false );
 
         if( stream == nullptr )
         {
@@ -147,10 +147,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceModel3D::_isValid() const
     {
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( category, m_path, false );
+            ->openInputFile( fileGroup, m_path, false );
 
         if( stream == nullptr )
         {

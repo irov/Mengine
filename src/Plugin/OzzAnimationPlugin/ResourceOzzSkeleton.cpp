@@ -35,10 +35,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceOzzSkeleton::_compile()
     {
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( category, m_filePath, false );
+            ->openInputFile( fileGroup, m_filePath, false );
 
         if( stream == nullptr )
         {

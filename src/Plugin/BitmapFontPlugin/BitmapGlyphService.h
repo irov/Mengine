@@ -2,8 +2,7 @@
 
 #include "BitmapFontInterface.h"
 
-#include "Kernel/Servant.h"
-
+#include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
 
 #include "Config/Map.h"
@@ -11,7 +10,7 @@
 namespace Mengine
 {
     class BitmapGlyphService
-        : public ServantBase<BitmapGlyphServiceInterface>
+        : public ServiceBase<BitmapGlyphServiceInterface>
     {
     public:
         BitmapGlyphService();

@@ -1,6 +1,6 @@
 #include "ResourceSound.h"
 
-#include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/ConverterInterface.h"
@@ -99,10 +99,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_isValid() const
     {
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( category, m_filePath, m_isStreamable );
+            ->openInputFile( fileGroup, m_filePath, m_isStreamable );
 
         if( stream == nullptr )
         {
@@ -217,10 +217,10 @@ namespace Mengine
             return m_soundBufferNoStreamableCache;
         }
 
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE()
-            ->createSoundBufferFromFile( category, m_filePath, m_codecType, m_isStreamable );
+            ->createSoundBufferFromFile( fileGroup, m_filePath, m_codecType, m_isStreamable );
 
         if( soundBuffer == nullptr )
         {

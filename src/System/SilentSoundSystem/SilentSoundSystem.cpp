@@ -74,11 +74,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundBufferInterfacePtr SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable )
     {
-        (void)_streamable;
-
         SilentSoundBufferPtr buffer = m_factorySilentSoundBuffer->createObject();
 
-        if( buffer->load( _soundDecoder ) == false )
+        if( buffer->load( _soundDecoder, _streamable ) == false )
         {
             LOGGER_ERROR( "SilentSoundSystem::createSoundBuffer: failed to load sound buffer from decoder"
             );

@@ -4,6 +4,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class TimerServiceInterface
         : public ServiceInterface
     {
@@ -12,14 +13,11 @@ namespace Mengine
     public:
         virtual void resetDeltaTime() = 0;
         virtual float getDeltaTime() = 0;
-
-    public:
-        virtual uint64_t getMilliseconds() = 0;
     };
-
+    //////////////////////////////////////////////////////////////////////////
 #   define TIMER_SERVICE()\
     ((Mengine::TimerServiceInterface*)SERVICE_GET(Mengine::TimerServiceInterface))
-
+    //////////////////////////////////////////////////////////////////////////
     class TimerSystemInterface
         : public ServiceInterface
     {
@@ -28,7 +26,8 @@ namespace Mengine
     public:
         virtual uint64_t getMilliseconds() = 0;
     };
-
+    //////////////////////////////////////////////////////////////////////////
 #   define TIMER_SYSTEM()\
     ((Mengine::TimerSystemInterface*)SERVICE_GET(Mengine::TimerSystemInterface))
+    //////////////////////////////////////////////////////////////////////////
 }

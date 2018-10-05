@@ -674,9 +674,13 @@ namespace Mengine
             }
 
             //float length_ms = source->source->getLengthMs();
-            //float pos_ms = source->source->getPosMs();		
+            //float pos_ms = source->source->getPosMs();
 
-            if( (identity->worker != nullptr && identity->worker->isDone() == true) || (identity->worker == nullptr && identity->timing <= 0.f) )
+            const ThreadWorkerSoundBufferUpdatePtr & worker = identity->worker;
+
+            float identity_timing = identity->timing;
+
+            if( (worker != nullptr && worker->isDone() == true) || (worker == nullptr && identity_timing <= 0.f) )
             {
                 identity->state = ESS_STOP;
                 this->stopSoundBufferUpdate_( identity );
@@ -919,11 +923,6 @@ namespace Mengine
         bool looped = identity->getLoop();
 
         return looped;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void SoundEngine::setSourceListener( const SoundIdentityInterfacePtr & _identity, const SoundListenerInterfacePtr & _listener )
-    {
-        _identity->setSoundListener( _listener );
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundEngine::updateSoundVolumeProvider_( const SoundVolumeProviderInterfacePtr & _provider )

@@ -34,12 +34,4 @@ namespace Mengine
 
         return (float)deltaTime;
     }
-    //////////////////////////////////////////////////////////////////////////
-    uint64_t TimerService::getMilliseconds()
-    {
-        uint64_t milliseconds = TIMER_SYSTEM()
-            ->getMilliseconds();
-
-        return milliseconds;
-    }
 }

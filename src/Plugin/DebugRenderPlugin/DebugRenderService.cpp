@@ -16,8 +16,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugRenderService::render( const NodePtr & _node, const RenderContext * _context )
+    void DebugRenderService::render( const NodePtr & _node, const RenderContext * _context, bool _external )
     {
+        if( _node->isActivate() == false )
+        {
+            return;
+        }
+
         RenderInterface * selfRender = _node->getRender();
 
         if( selfRender != nullptr )
@@ -27,7 +32,7 @@ namespace Mengine
                 return;
             }
 
-            if( selfRender->isExternalRender() == true )
+            if( selfRender->isExternalRender() == true && _external == false )
             {
                 return;
             }
@@ -103,7 +108,7 @@ namespace Mengine
             const RenderContext * children_context = &self_context;
             _node->foreachChildren( [this, children_context]( const NodePtr & _child )
             {
-                this->render( _child, children_context );
+                this->render( _child, children_context, false );
             } );
 
             if( self_context.target != nullptr )
@@ -127,7 +132,7 @@ namespace Mengine
 
             _node->foreachChildren( [this, _context]( const NodePtr & _child )
             {
-                this->render( _child, _context );
+                this->render( _child, _context, false );
             } );
         }
     }

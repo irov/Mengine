@@ -1,9 +1,5 @@
 #pragma once
 
-#include "Kernel/Scriptable.h"
-#include "Kernel/Eventable.h"
-#include "Kernel/BaseEventation.h"
-
 #include "Interface/GameInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/InputSystemInterface.h"
@@ -12,7 +8,9 @@
 #include "Interface/ScriptSystemInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
+#include "Kernel/Scriptable.h"
+#include "Kernel/Eventable.h"
+#include "Kernel/BaseEventation.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/String.h"
 

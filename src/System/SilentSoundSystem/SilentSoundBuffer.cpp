@@ -1,27 +1,19 @@
 #include "SilentSoundBuffer.h"
 
 #include "Interface/SoundCodecInterface.h"
-
-#include <time.h>
+#include "Interface/TimerInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static float s_getTimeMs()
-    {
-        clock_t cl = clock();
-        float sec = (float)(cl) / float( CLOCKS_PER_SEC );
-
-        return sec;
-    }
-    //////////////////////////////////////////////////////////////////////////
     SilentSoundBuffer::SilentSoundBuffer()
-        : m_playTime( 0.f )
-        , m_pauseTime( 0.f )
+        : m_playTime( 0UL )
+        , m_pauseTime( 0UL )
         , m_frequency( 0 )
         , m_channels( 0 )
         , m_length( 0.f )
         , m_isStereo( false )
+        , m_streamable( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -31,7 +23,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SilentSoundBuffer::update()
     {
-        return false;
+        float timePos = this->getTimePos( 0U );
+
+        if( timePos >= m_length )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const SoundDecoderInterfacePtr & SilentSoundBuffer::getDecoder() const
@@ -39,7 +38,7 @@ namespace Mengine
         return m_soundDecoder;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SilentSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder )
+    bool SilentSoundBuffer::load( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable )
     {
         m_soundDecoder = _soundDecoder;
 
@@ -59,6 +58,8 @@ namespace Mengine
             m_isStereo = true;
         }
 
+        m_streamable = _streamable;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -68,21 +69,24 @@ namespace Mengine
         (void)_looped;
         (void)_pos;
 
-        float sec = s_getTimeMs();
+        uint64_t time = TIMER_SYSTEM()
+            ->getMilliseconds();
 
-        m_playTime = sec;
-        m_pauseTime = 0.f;
+        m_playTime = time;
+        m_pauseTime = 0UL;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SilentSoundBuffer::resume( uint32_t _id )
     {
         (void)_id;
 
-        float sec = s_getTimeMs();
-        float deltha = m_pauseTime - m_playTime;
+        uint64_t time = TIMER_SYSTEM()
+            ->getMilliseconds();
 
-        m_playTime = sec - deltha;
-        m_pauseTime = 0.f;
+        uint64_t deltha = m_pauseTime - m_playTime;
+
+        m_playTime = time - deltha;
+        m_pauseTime = 0UL;
 
         return true;
     }
@@ -91,17 +95,18 @@ namespace Mengine
     {
         (void)_id;
 
-        float sec = s_getTimeMs();
-
-        m_pauseTime = sec;
+        uint64_t time = TIMER_SYSTEM()
+            ->getMilliseconds();
+        
+        m_pauseTime = time;
     }
     //////////////////////////////////////////////////////////////////////////
     void SilentSoundBuffer::stop( uint32_t _id )
     {
         (void)_id;
 
-        m_playTime = 0.f;
-        m_pauseTime = 0.f;
+        m_playTime = 0UL;
+        m_pauseTime = 0UL;
     }
     //////////////////////////////////////////////////////////////////////////
     float SilentSoundBuffer::getTimePos( uint32_t _id ) const
@@ -110,12 +115,17 @@ namespace Mengine
 
         if( m_pauseTime > m_playTime )
         {
-            return m_pauseTime;
+            uint64_t timePos = m_pauseTime - m_playTime;
+
+            return (float)timePos;
         }
 
-        float sec = s_getTimeMs();
+        uint64_t time = TIMER_SYSTEM()
+            ->getMilliseconds();
 
-        return sec - m_playTime;
+        uint64_t timePos = time - m_playTime;
+
+        return float( timePos );
     }
     //////////////////////////////////////////////////////////////////////////
     float SilentSoundBuffer::getTimeTotal() const

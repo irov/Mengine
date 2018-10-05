@@ -1,13 +1,11 @@
 #pragma once
 
-#include "Kernel/ServantBase.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     template<class T>
     class ServiceBase
-        : public ServantBase<T>
+        : public T
     {
     public:
         ServiceBase() noexcept
@@ -16,7 +14,7 @@ namespace Mengine
         {
         }
 
-        virtual ~ServiceBase()
+        ~ServiceBase() override
         {
         }
 

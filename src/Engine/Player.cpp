@@ -912,7 +912,7 @@ namespace Mengine
             else
             {
                 DEBUGRENDER_SERVICE()
-                    ->render( m_scene, &context );
+                    ->render( m_scene, &context, false );
             }
         }
 
@@ -932,7 +932,7 @@ namespace Mengine
             else
             {
                 DEBUGRENDER_SERVICE()
-                    ->render( m_arrow, &context );
+                    ->render( m_arrow, &context, false );
             }
         }
 

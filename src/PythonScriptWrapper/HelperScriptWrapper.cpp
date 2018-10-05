@@ -1011,7 +1011,7 @@ namespace Mengine
 
         uint64_t s_getTimeMs()
         {
-            uint64_t ms = TIMER_SERVICE()
+            uint64_t ms = TIMER_SYSTEM()
                 ->getMilliseconds();
 
             return ms;

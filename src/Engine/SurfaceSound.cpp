@@ -1,6 +1,7 @@
 #include "SurfaceSound.h"
 
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/SoundServiceInterface.h"
 #include "Interface/ResourceInterface.h"
 
 #include "ResourceSound.h"
@@ -119,8 +120,7 @@ namespace Mengine
             return false;
         }
 
-        SOUND_SERVICE()
-            ->setSourceListener( m_soundEmitter, new MySoundListener( m_enumerator, this ) );
+        m_soundEmitter->setSoundListener( new MySoundListener( m_enumerator, this ) );
 
         SOUND_SERVICE()
             ->setLoop( m_soundEmitter, m_loop );

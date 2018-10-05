@@ -1,6 +1,7 @@
 #include "Game.h"
 
 #include "Interface/AmplifierInterface.h"
+#include "Interface/SoundServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/ArchiveInterface.h"

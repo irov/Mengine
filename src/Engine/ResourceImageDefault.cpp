@@ -112,9 +112,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_isValid() const
     {
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        if( category->existFile( m_filePath ) == false )
+        if( fileGroup->existFile( m_filePath ) == false )
         {
             if( m_validNoExist == true )
             {
@@ -131,7 +131,7 @@ namespace Mengine
         }
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( category, m_filePath, false );
+            ->openInputFile( fileGroup, m_filePath, false );
 
         if( stream == nullptr )
         {
@@ -344,9 +344,9 @@ namespace Mengine
             , this->getFilePath().c_str()
         );
 
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        if( category == nullptr )
+        if( fileGroup == nullptr )
         {
             LOGGER_ERROR( "ResourceImageDefault::_compile: '%s' group '%s' file path '%s' invalid setup category"
                 , this->getName().c_str()
@@ -358,7 +358,7 @@ namespace Mengine
         }
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->loadTexture( category, m_filePath, m_codecType );
+            ->loadTexture( fileGroup, m_filePath, m_codecType );
 
         if( texture == nullptr )
         {

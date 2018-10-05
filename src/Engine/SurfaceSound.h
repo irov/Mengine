@@ -11,7 +11,8 @@
 
 #include "Engine/ResourceSound.h"
 
-#include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundBufferInterface.h"
+#include "Interface/SoundIdentityInterface.h"
 
 namespace Mengine
 {

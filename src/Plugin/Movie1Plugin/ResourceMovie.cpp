@@ -246,10 +246,10 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( category, m_filePath, false );
+            ->openInputFile( fileGroup, m_filePath, false );
 
         if( stream == nullptr )
         {
@@ -859,9 +859,9 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        DataInterfacePtr data = this->compileData_( category, m_filePath );
+        DataInterfacePtr data = this->compileData_( fileGroup, m_filePath );
 
         if( data == nullptr )
         {
@@ -888,10 +888,10 @@ namespace Mengine
             return prefetch_data;
         }
 
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( category, _path, false );
+            ->openInputFile( fileGroup, _path, false );
 
         if( stream == nullptr )
         {

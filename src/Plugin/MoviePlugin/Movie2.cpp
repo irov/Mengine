@@ -556,31 +556,31 @@ namespace Mengine
                     {
                         Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_data);
 
-                        _lambda( &context, node );
+                        _lambda( node, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
                         HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(mesh.element_data);
 
-                        _lambda( &context, node );
+                        _lambda( node, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
                         ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_data);
 
-                        _lambda( &context, node );
+                        _lambda( node, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_TEXT:
                     {
                         TextField * node = reinterpret_node_cast<TextField *>(mesh.element_data);
 
-                        _lambda( &context, node );
+                        _lambda( node, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
                         Node * node = reinterpret_node_cast<Node *>(mesh.element_data);
 
-                        _lambda( &context, node );
+                        _lambda( node, &context );
                     }break;
                 default:
                     break;

@@ -103,7 +103,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & category = _texture->getCategory();
+        const FileGroupInterfacePtr & fileGroup = _texture->getCategory();
         const FilePath & filePath = _texture->getFileName();
 
         if( filePath.empty() == true )
@@ -120,7 +120,7 @@ namespace Mengine
 
         RenderTextureGraveEntry entry;
 
-        entry.category = category;
+        entry.category = fileGroup;
         entry.filePath = filePath;
 
         entry.image = _texture->getImage();

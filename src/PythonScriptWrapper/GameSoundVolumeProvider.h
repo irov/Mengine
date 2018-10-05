@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundVolumeProviderInterface.h"
 
 #include "Kernel/ServantBase.h"
 

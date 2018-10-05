@@ -6,6 +6,7 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundServiceInterface.h"
 #include "Interface/ParticleSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ConfigInterface.h"

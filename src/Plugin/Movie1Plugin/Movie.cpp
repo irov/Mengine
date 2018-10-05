@@ -358,13 +358,16 @@ namespace Mengine
         {
             RenderInterface * render = _node->getRender();
 
-            if( _layer.isMovie() == false )
+            if( render != nullptr )
             {
-                render->setPersonalAlpha( frame.opacity );
-            }
-            else
-            {
-                render->setLocalAlpha( frame.opacity );
+                if( _layer.isMovie() == false )
+                {
+                    render->setPersonalAlpha( frame.opacity );
+                }
+                else
+                {
+                    render->setLocalAlpha( frame.opacity );
+                }
             }
         }
         else

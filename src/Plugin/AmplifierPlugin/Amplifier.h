@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/AmplifierInterface.h"
-#include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundIdentityInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

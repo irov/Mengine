@@ -38,11 +38,13 @@ Mixin\\\\Soundable
 ADD_FILTER(
 Mixin\\\\Updatable
 	Updatable.h
+    UpdateContext.h
 )
 
 ADD_FILTER(
 Mixin\\\\Renderable
 	Renderable.h
+    RenderContext.h
 )
 
 ADD_FILTER(

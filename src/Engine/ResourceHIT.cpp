@@ -68,10 +68,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_compile()
     {
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( category, m_filePath, false );
+            ->openInputFile( fileGroup, m_filePath, false );
 
         if( stream == nullptr )
         {
@@ -168,15 +168,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_isValid() const
     {
-        const FileGroupInterfacePtr & category = this->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        if( category->existFile( m_filePath ) == false )
+        if( fileGroup->existFile( m_filePath ) == false )
         {
             return false;
         }
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( category, m_filePath, false );
+            ->openInputFile( fileGroup, m_filePath, false );
 
         if( stream == nullptr )
         {

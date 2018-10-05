@@ -3,15 +3,10 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/IntrusivePtr.h"
 
+#include "Kernel/UpdateContext.h"
+
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct UpdateContext
-    {
-        uint32_t revision;
-        float current;
-        float time;
-    };
     //////////////////////////////////////////////////////////////////////////
     class UpdationInterface
         : public Mixin

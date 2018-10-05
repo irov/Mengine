@@ -538,14 +538,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool RenderTextureManager::onRenderTextureDestroy_( RenderTextureInterface * _texture )
     {
-        const FileGroupInterfacePtr & category = _texture->getCategory();
+        const FileGroupInterfacePtr & fileGroup = _texture->getCategory();
         const FilePath & fileName = _texture->getFileName();
 
         if( fileName.empty() == false )
         {
             MapRenderTextureEntry & textures = this->getHashEntry_( fileName );
 
-            textures.erase( std::make_pair( category->getName(), fileName ) );
+            textures.erase( std::make_pair( fileGroup->getName(), fileName ) );
 
             if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
             {

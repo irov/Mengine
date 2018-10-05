@@ -1,6 +1,7 @@
 #include "PythonScriptWrapper.h"
 
 #include "Interface/AmplifierInterface.h"
+#include "Interface/SoundServiceInterface.h"
 #include "Interface/ResourceInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/StringizeInterface.h"
@@ -188,8 +189,7 @@ namespace Mengine
 
             MySoundNodeListenerPtr snlistener = new MySoundNodeListener( resource, soundBuffer, _cb, _args );
 
-            SOUND_SERVICE()
-                ->setSourceListener( sourceEmitter, snlistener );
+            sourceEmitter->setSoundListener( snlistener );
 
             return sourceEmitter;
         }
@@ -741,8 +741,15 @@ namespace Mengine
                 cb = new PythonAmplifierMusicCallback( _cb, _args );
             }
 
-            AMPLIFIER_SERVICE()
-                ->playMusic( _resourceMusic, _pos, _isLooped, cb );
+            if( AMPLIFIER_SERVICE()
+                ->playMusic( _resourceMusic, _pos, _isLooped, cb ) == false )
+            {
+                LOGGER_ERROR( "AMPLIFIER_SERVICE: playMusic '%s' invalid"
+                    , _resourceMusic.c_str()
+                );
+
+                return 0;
+            }
 
             AffectorPtr affector =
                 m_affectorCreatorMusic.create( ETA_POSITION

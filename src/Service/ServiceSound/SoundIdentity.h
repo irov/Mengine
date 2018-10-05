@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundIdentityInterface.h"
 
 #include "ThreadWorkerSoundBufferUpdate.h"
 

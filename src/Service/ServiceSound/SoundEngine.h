@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/StreamInterface.h"
-#include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -95,9 +95,6 @@ namespace Mengine
     public:
         bool setLoop( const SoundIdentityInterfacePtr & _identity, bool _looped ) override;
         bool getLoop( const SoundIdentityInterfacePtr & _identity ) const override;
-
-    public:
-        void setSourceListener( const SoundIdentityInterfacePtr & _identity, const SoundListenerInterfacePtr & _listener ) override;
 
     public:
         float getDuration( const SoundIdentityInterfacePtr & _identity ) const override;

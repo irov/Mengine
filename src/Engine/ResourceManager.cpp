@@ -571,10 +571,10 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & category = _resource->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
         const ConstString & group = _resource->getGroupName();
 
-        ResourceCacheKey remove_cache_key = std::make_pair( category->getName(), group );
+        ResourceCacheKey remove_cache_key = std::make_pair( fileGroup->getName(), group );
 
         MapResourceCache::iterator it_remove_cache_found = m_resourcesCache.find( remove_cache_key );
 

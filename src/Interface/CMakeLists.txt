@@ -23,8 +23,7 @@ src
 	StreamInterface.h
 	LoggerInterface.h
 	ApplicationInterface.h
-	InputSystemInterface.h
-	SoundSystemInterface.h
+	InputSystemInterface.h	
 	ThreadInterface.h
 	ThreadSystemInterface.h
 	HttpSystemInterface.h
@@ -73,6 +72,16 @@ src
     UpdationInterface.h
     
 	dummy.cpp
+)
+
+ADD_FILTER(
+Sound
+    SoundSystemInterface.h
+    SoundSourceInterface.h
+    SoundServiceInterface.h
+    SoundIdentityInterface.h
+    SoundBufferInterface.h
+    SoundVolumeProviderInterface.h
 )
 
 ADD_FILTER(

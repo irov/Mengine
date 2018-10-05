@@ -11,7 +11,7 @@
 namespace Mengine
 {
     class BitmapGlyphServiceInterface
-        : public ServiceBase<ServiceInterface>
+        : public ServiceInterface
     {
         SERVICE_DECLARE( "BitmapGlyphService" )
 

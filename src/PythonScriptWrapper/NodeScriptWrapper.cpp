@@ -298,9 +298,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const ConstString & s_Resource_getCategory( Resource * _resource )
         {
-            const FileGroupInterfacePtr & category = _resource->getFileGroup();
+            const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
-            const ConstString & categoryName = category->getName();
+            const ConstString & categoryName = fileGroup->getName();
 
             return categoryName;
         }

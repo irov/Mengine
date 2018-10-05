@@ -1,27 +1,13 @@
 #pragma once
 
-#include "Interface/RenderViewportInterface.h"
-#include "Interface/RenderCameraInterface.h"
-#include "Interface/RenderTransformationInterface.h"
-#include "Interface/RenderScissorInterface.h"
-#include "Interface/RenderTargetInterface.h"
-
 #include "Kernel/Mixin.h"
 #include "Kernel/Colorable.h"
+#include "Kernel/RenderContext.h"
 
 #include "Config/Lambda.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct RenderContext
-    {
-        RenderViewportInterfacePtr viewport;
-        RenderCameraInterfacePtr camera;
-        RenderTransformationInterfacePtr transformation;
-        RenderScissorInterfacePtr scissor;
-        RenderTargetInterfacePtr target;
-    };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class RenderInterface> RenderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////

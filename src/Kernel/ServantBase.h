@@ -8,11 +8,11 @@ namespace Mengine
         : public T
     {
     public:
-        ServantBase()
+        ServantBase() noexcept
         {
         }
 
-        virtual ~ServantBase()
+        ~ServantBase() override
         {
         }
     };

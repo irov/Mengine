@@ -3,6 +3,7 @@
 #include "Interface/ResourceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/FileSystemInterface.h"
+#include "Interface/SoundServiceInterface.h"
 
 #include "Kernel/ResourceMusic.h"
 
@@ -100,7 +101,7 @@ namespace Mengine
             return false;
         }
 
-        const FileGroupInterfacePtr & category = resourceMusic->getFileGroup();
+        const FileGroupInterfacePtr & fileGroup = resourceMusic->getFileGroup();
         const FilePath & path = resourceMusic->getPath();
         const ConstString & codec = resourceMusic->getCodec();
         bool external = resourceMusic->isExternal();
@@ -108,10 +109,10 @@ namespace Mengine
 
         SoundBufferInterfacePtr buffer;
 
-        if( category->isPacked() == false || external == false )
+        if( fileGroup->isPacked() == false || external == false )
         {
             buffer = SOUND_SERVICE()
-                ->createSoundBufferFromFile( category, path, codec, true );
+                ->createSoundBufferFromFile( fileGroup, path, codec, true );
         }
         else
         {
@@ -145,8 +146,7 @@ namespace Mengine
 
         if( _callback != nullptr )
         {
-            SOUND_SERVICE()
-                ->setSourceListener( soundEmitter, new Amplifier::MyMusicSoundListener( _callback ) );
+            soundEmitter->setSoundListener( new Amplifier::MyMusicSoundListener( _callback ) );
         }
 
         if( SOUND_SERVICE()

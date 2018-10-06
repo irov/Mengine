@@ -838,12 +838,12 @@ namespace Mengine
 
                 __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
 
-                if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_HORIZONTAL_CENTER ) == AE_TRUE )
+                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'h', 'c' ) ) == AE_TRUE )
                 {
                     node->setHorizontalCenterAlign();
                 }
 
-                if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_VERTICAL_CENTER ) == AE_TRUE )
+                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'v', 'c' ) ) == AE_TRUE )
                 {
                     node->setVerticalCenterAlign();
                 }

@@ -461,31 +461,29 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::foreachChildren( const LambdaNode & _lambda ) const
     {
-        if( m_children.countSlugs() == 0 )
+        for( IntrusiveSlugListNodeChild::const_iterator
+            it = m_children.begin(),
+            it_end = m_children.end();
+            it != it_end;
+            ++it )
         {
-            for( IntrusiveSlugListNodeChild::unslug_const_iterator
-                it = m_children.ubegin(),
-                it_end = m_children.uend();
-                it != it_end;
-                ++it )
-            {
-                const NodePtr & node = (*it);
+            const NodePtr & node = (*it);
 
-                _lambda( node );
-            }
+            _lambda( node );
         }
-        else
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::foreachChildrenUnslug( const LambdaNode & _lambda ) const
+    {
+        for( IntrusiveSlugListNodeChild::unslug_const_iterator
+            it = m_children.ubegin(),
+            it_end = m_children.uend();
+            it != it_end;
+            ++it )
         {
-            for( IntrusiveSlugListNodeChild::const_iterator
-                it = m_children.begin(),
-                it_end = m_children.end();
-                it != it_end;
-                ++it )
-            {
-                const NodePtr & node = (*it);
+            const NodePtr & node = (*it);
 
-                _lambda( node );
-            }
+            _lambda( node );
         }
     }
     //////////////////////////////////////////////////////////////////////////

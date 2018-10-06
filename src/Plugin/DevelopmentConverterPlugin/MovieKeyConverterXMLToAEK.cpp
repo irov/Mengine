@@ -1,7 +1,7 @@
 #include "MovieKeyConverterXMLToAEK.h"
 
 #include "Interface/LoaderInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/MovieKeyFrameInterface.h"
 #include "Interface/FileSystemInterface.h"

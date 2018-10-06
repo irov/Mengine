@@ -109,6 +109,7 @@ namespace Mengine
     public:
         typedef Lambda<void( const NodePtr & )> LambdaNode;
         void foreachChildren( const LambdaNode & _lambda ) const;
+        void foreachChildrenUnslug( const LambdaNode & _lambda ) const;
 
         typedef const Lambda<void( RenderInterface * )> LambdaNodeRenderCloseChildren;
         void foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );

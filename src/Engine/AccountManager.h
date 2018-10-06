@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/AccountInterface.h"
+#include "Interface/ArchiveInterface.h"
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/ServiceBase.h"
@@ -81,6 +82,7 @@ namespace Mengine
         AccountProviderInterfacePtr m_accountProvider;
 
         FileGroupInterfacePtr m_fileGroup;
+        ArchivatorInterfacePtr m_archivator;
 
         typedef Map<ConstString, AccountInterfacePtr> MapAccounts;
         MapAccounts m_accounts;

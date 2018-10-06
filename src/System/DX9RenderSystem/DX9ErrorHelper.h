@@ -4,6 +4,12 @@
 
 #include "Interface/ServiceInterface.h"
 
+#ifndef MENGINE_RENDER_CHECK_ERROR
+#ifndef NDEBUG
+#   define MENGINE_RENDER_CHECK_ERROR 1
+#endif
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -21,15 +27,24 @@ namespace Mengine
         const Char * m_method;
     };
     //////////////////////////////////////////////////////////////////////////
-#	define DXERRORCHECK( Method, HRES )\
+#define DXERRORCHECK( Method, HRES )\
 	(DX9ErrorHelper(__FILE__, __LINE__, Method ) == HRES)
     //////////////////////////////////////////////////////////////////////////
-#	define IF_DXERRORCHECK( Method, HRES )\
+#define IF_DXERRORCHECK( Method, HRES )\
 	if( DXERRORCHECK(#Method, HRES) )
     //////////////////////////////////////////////////////////////////////////
-#	define DXCALL( Device, Method, Args )\
+#if MENGINE_RENDER_CHECK_ERROR == 1
+#define DXCALL( Device, Method, Args )\
 	(DXERRORCHECK(#Method, Device -> Method Args))
     //////////////////////////////////////////////////////////////////////////
-#	define IF_DXCALL( Device, Method, Args )\
+#else
+#define DXCALL( Device, Method, Args )\
+	(Device -> Method Args)
+    //////////////////////////////////////////////////////////////////////////
+#endif
+    //////////////////////////////////////////////////////////////////////////
+#define IF_DXCALL( Device, Method, Args )\
 	if( DXCALL(Device, Method, Args) )
+    //////////////////////////////////////////////////////////////////////////
+
 }

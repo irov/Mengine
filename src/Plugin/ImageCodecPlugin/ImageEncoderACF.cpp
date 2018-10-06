@@ -1,8 +1,8 @@
 #include "ImageEncoderACF.h"
 #include "ImageVerifyACF.h"
 
-#include "Interface/ArchiveInterface.h"
 #include "Interface/StringizeInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "Kernel/Stream.h"
 

@@ -2,6 +2,7 @@
 #include "ImageVerifyACF.h"
 
 #include "Interface/StringizeInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"

@@ -41,6 +41,7 @@ src
     WatchdogInterface.h
     WindowsLayerInterface.h
     ArchiveInterface.h
+    ArchiveServiceInterface.h
     ProfilerInterface.h
     Model3DInterface.h
     PrefetcherInterface.h

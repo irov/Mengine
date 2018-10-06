@@ -5,6 +5,8 @@
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/ConfigInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
+
 #include "../Plugin/DebugRenderPlugin/DebugRenderInterface.h"
 
 #include "Movie2DebugRenderVisitor.h"
@@ -118,8 +120,9 @@ namespace Mengine
             : public ResourcePrototypeGenerator<ResourceMovie2, 128>
         {
         public:
-            ResourceMovie2PrototypeGenerator( const aeMovieInstance * _instance )
+            ResourceMovie2PrototypeGenerator( const aeMovieInstance * _instance, const ArchivatorInterfacePtr & _archivator )
                 : m_instance( _instance )
+                , m_archivator( _archivator )
             {
             }
 
@@ -149,12 +152,15 @@ namespace Mengine
                 this->setupScriptable( resource );
 
                 resource->setMovieInstance( m_instance );
+                resource->setMovieArchivator( m_archivator );
 
                 return resource;
             }
 
         protected:
             const aeMovieInstance * m_instance;
+
+            ArchivatorInterfacePtr m_archivator;
         };
     }
     //////////////////////////////////////////////////////////////////////////
@@ -438,8 +444,16 @@ namespace Mengine
             return false;
         }
 
+        ArchivatorInterfacePtr archivator = ARCHIVE_SERVICE()
+            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+        if( archivator == nullptr )
+        {
+            return false;
+        }
+
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new ResourceMovie2PrototypeGenerator( m_instance ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new ResourceMovie2PrototypeGenerator( m_instance, archivator ) ) == false )
         {
             return false;
         }

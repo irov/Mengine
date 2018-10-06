@@ -331,6 +331,7 @@ set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libpng)
     set(ZLIB_LIBRARY ${THIRDPARTY_DIR}/zlib)
     set(ZLIB_INCLUDE_DIR ${THIRDPARTY_DIR}/zlib)
 
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/libpng/CMakeLists.txt ${THIRDPARTY_DIR}/libpng/CMakeLists.txt COPYONLY)
     configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/libpng/pnglibconf.h ${THIRDPARTY_DIR}/libpng/pnglibconf.h COPYONLY)
 
 ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libpng )

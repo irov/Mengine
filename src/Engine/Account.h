@@ -24,7 +24,7 @@ namespace Mengine
         ~Account() override;
 
     public:
-        bool initialize( const ConstString & _id, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folder, uint32_t _projectVersion );
+        bool initialize( const ConstString & _id, const ArchivatorInterfacePtr & _archivator, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folder, uint32_t _projectVersion );
 
     public:
         const ConstString & getID() const override;

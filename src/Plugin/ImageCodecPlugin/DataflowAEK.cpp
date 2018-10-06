@@ -1,6 +1,6 @@
 #include "DataflowAEK.h"
 
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/StringizeInterface.h"
 
@@ -60,8 +60,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
     {
-        MemoryInterfacePtr binaryBuffer;
-        if( Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), binaryBuffer, "DataflowAEK", __FILE__, __LINE__ ) == false )
+        MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), "DataflowAEK", __FILE__, __LINE__ );
+        
+        if( binaryBuffer == nullptr )
         {
             LOGGER_ERROR( "DataflowAEK::load: invalid get data"
             );

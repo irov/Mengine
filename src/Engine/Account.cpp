@@ -4,7 +4,6 @@
 #include "Interface/UnicodeInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/ArchiveInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -24,7 +23,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::initialize( const ConstString & _id, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folder, uint32_t _projectVersion )
+    bool Account::initialize( const ConstString & _id, const ArchivatorInterfacePtr & _archivator, const FileGroupInterfacePtr & _fileGroup, const FilePath & _folder, uint32_t _projectVersion )
     {
         m_id = _id;
         m_projectVersion = _projectVersion;
@@ -37,15 +36,7 @@ namespace Mengine
 
         m_settingsPath = Helper::stringizeFilePath( settingsPath );
 
-        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
-            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
-
-        if( archivator == nullptr )
-        {
-            return false;
-        }
-
-        m_archivator = archivator;
+        m_archivator = _archivator;
 
         m_fileGroup = _fileGroup;
 
@@ -369,8 +360,9 @@ namespace Mengine
             return nullptr;
         }
 
-        MemoryInterfacePtr binaryBuffer;
-        if( Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), binaryBuffer, "Account::loadBinaryFile", __FILE__, __LINE__ ) == false )
+        MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), "Account::loadBinaryFile", __FILE__, __LINE__ );
+        
+        if( binaryBuffer == nullptr )
         {
             LOGGER_ERROR( "Account::loadBinaryFile: account %s invalid load stream archive %s"
                 , m_id.c_str()

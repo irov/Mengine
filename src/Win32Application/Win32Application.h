@@ -6,7 +6,7 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/UnicodeInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/PhysicSystemInterface.h"

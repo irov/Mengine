@@ -89,7 +89,7 @@ namespace Mengine
                 }
 
                 const RenderContext * children_context = &self_context;
-                _node->foreachChildren( [children_context, _visitor]( const NodePtr & _child )
+                _node->foreachChildrenUnslug( [children_context, _visitor]( const NodePtr & _child )
                 {
                     Helper::nodeRenderChildrenVisitor( _child, _visitor, children_context );
                 } );
@@ -110,7 +110,7 @@ namespace Mengine
 
                 _node->visit( _visitor );
 
-                _node->foreachChildren( [_context, _visitor]( const NodePtr & _child )
+                _node->foreachChildrenUnslug( [_context, _visitor]( const NodePtr & _child )
                 {
                     Helper::nodeRenderChildrenVisitor( _child, _visitor, _context );
                 } );

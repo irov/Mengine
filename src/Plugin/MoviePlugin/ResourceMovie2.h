@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/ArchiveInterface.h"
+
 #include "Kernel/Resource.h"
 #include "Kernel/ColourValue.h"
 
@@ -50,7 +52,12 @@ namespace Mengine
         ~ResourceMovie2() override;
 
     public:
-        void setMovieInstance( const aeMovieInstance * _instance );
+        void setMovieInstance( const aeMovieInstance * _movieInstance );
+        const aeMovieInstance * getMovieInstance() const;
+
+    public:
+        void setMovieArchivator( const ArchivatorInterfacePtr & _movieArchivator );
+        const ArchivatorInterfacePtr & ResourceMovie2::getMovieArchivator() const;
 
     public:
         void setFilePath( const FilePath & _filePath );
@@ -84,6 +91,8 @@ namespace Mengine
 
     protected:
         const aeMovieInstance * m_movieInstance;
+
+        ArchivatorInterfacePtr m_movieArchivator;
 
         aeMovieData * m_movieData;
 

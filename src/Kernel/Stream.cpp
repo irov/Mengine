@@ -1,5 +1,7 @@
 #include "Stream.h"
 
+#include "Interface/ArchiveServiceInterface.h"
+
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/CRC32.h"
 
@@ -17,7 +19,7 @@ namespace Mengine
 
             if( magic_number != _magic )
             {
-                LOGGER_ERROR( "loadStreamMagicHeader: invalid magic number %u need %u"
+                LOGGER_ERROR( "loadStreamMagicHeader: invalid magic number '%u' need '%u'"
                     , magic_number
                     , _magic
                 );
@@ -30,7 +32,7 @@ namespace Mengine
 
             if( magic_version != _version )
             {
-                LOGGER_ERROR( "loadStreamMagicHeader: invalid magic version %u need %u"
+                LOGGER_ERROR( "loadStreamMagicHeader: invalid magic version '%u' need '%u'"
                     , magic_version
                     , _version
                 );
@@ -62,7 +64,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamArchiveBuffer( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, MemoryInterfacePtr & _binaryBuffer, const Char * _doc, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr loadStreamArchiveBuffer( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const Char * _doc, const Char * _file, uint32_t _line )
         {
             uint32_t crc32;
             _stream->read( &crc32, sizeof( crc32 ) );
@@ -80,11 +82,11 @@ namespace Mengine
 
             if( compress_buffer == nullptr )
             {
-                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory %d (compress)"
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory '%d' (compress)"
                     , compress_size
                 );
 
-                return false;
+                return nullptr;
             }
 
             void * compress_memory = compress_buffer->getBuffer();
@@ -93,12 +95,12 @@ namespace Mengine
 
             if( read_data != (size_t)compress_size )
             {
-                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid read data %d need %d"
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid read data '%d' need '%d'"
                     , read_data
                     , compress_size
                 );
 
-                return false;
+                return nullptr;
             }
 
             if( crc32 != 0 )
@@ -107,12 +109,12 @@ namespace Mengine
 
                 if( check_crc32 != crc32 )
                 {
-                    LOGGER_ERROR( "loadStreamArchiveBuffer: invalid crc32 %d need %d"
+                    LOGGER_ERROR( "loadStreamArchiveBuffer: invalid crc32 '%d' need '%d'"
                         , check_crc32
                         , crc32
                     );
 
-                    return false;
+                    return nullptr;
                 }
             }
 
@@ -125,18 +127,18 @@ namespace Mengine
                     , binary_size
                 );
 
-                return false;
+                return nullptr;
             }
 
             void * binaryMemory = binaryBuffer->newBuffer( binary_size, _doc, __FILE__, __LINE__ );
 
             if( binaryMemory == nullptr )
             {
-                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory %d (binary)"
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory '%d' (binary)"
                     , binary_size
                 );
 
-                return false;
+                return nullptr;
             }
 
             size_t uncompressSize = 0;
@@ -145,22 +147,20 @@ namespace Mengine
                 LOGGER_ERROR( "loadStreamArchiveBuffer: invalid decompress"
                 );
 
-                return false;
+                return nullptr;
             }
 
             if( uncompressSize != binary_size )
             {
-                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid decompress size %d need %d"
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid decompress size '%d' need '%d'"
                     , uncompressSize
                     , binary_size
                 );
 
-                return false;
+                return nullptr;
             }
 
-            _binaryBuffer = binaryBuffer;
-
-            return true;
+            return binaryBuffer;
         }
         //////////////////////////////////////////////////////////////////////////
         bool loadStreamArchiveInplace( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, void * _data, size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
@@ -179,7 +179,7 @@ namespace Mengine
 
             if( binary_size != _size )
             {
-                LOGGER_ERROR( "loadStreamArchiveInplace: invalid buffer size %u need %u"
+                LOGGER_ERROR( "loadStreamArchiveInplace: invalid buffer size '%u' need '%u'"
                     , _size
                     , binary_size
                 );
@@ -191,7 +191,7 @@ namespace Mengine
 
             if( compress_buffer == nullptr )
             {
-                LOGGER_ERROR( "loadStreamArchiveInplace: invalid get memory %u (compress)"
+                LOGGER_ERROR( "loadStreamArchiveInplace: invalid get memory '%u' (compress)"
                     , compress_size
                 );
 
@@ -206,7 +206,7 @@ namespace Mengine
 
                 if( check_crc32 != crc32 )
                 {
-                    LOGGER_ERROR( "loadStreamArchiveInplace: invalid crc32 %u need %u"
+                    LOGGER_ERROR( "loadStreamArchiveInplace: invalid crc32 '%u' need '%u'"
                         , check_crc32
                         , crc32
                     );
@@ -226,7 +226,7 @@ namespace Mengine
 
             if( uncompressSize != _size )
             {
-                LOGGER_ERROR( "loadStreamArchiveInplace: invalid decompress size %u need %u"
+                LOGGER_ERROR( "loadStreamArchiveInplace: invalid decompress size '%u' need '%u'"
                     , uncompressSize
                     , _size
                 );
@@ -328,7 +328,7 @@ namespace Mengine
 
             if( _stream->write( compressBuffer, compressSize ) == false )
             {
-                LOGGER_ERROR( "writeStreamArchiveBuffer: invalid write 'buffer %d'"
+                LOGGER_ERROR( "writeStreamArchiveBuffer: invalid write buffer '%d'"
                     , compressSize
                 );
 
@@ -338,19 +338,16 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadStreamArchiveData( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, MemoryInterfacePtr & _binaryBuffer, const Char * _doc, const Char * _file, uint32_t _line )
+        MemoryInterfacePtr loadStreamArchiveData( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const Char * _doc, const Char * _file, uint32_t _line )
         {
             if( Helper::loadStreamMagicHeader( _stream, _magic, _version ) == false )
             {
-                return false;
+                return nullptr;
             }
 
-            if( Helper::loadStreamArchiveBuffer( _stream, _archivator, _binaryBuffer, _doc, _file, _line ) == false )
-            {
-                return false;
-            }
-
-            return true;
+            MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveBuffer( _stream, _archivator, _doc, _file, _line );
+            
+            return binaryBuffer;
         }
         //////////////////////////////////////////////////////////////////////////
         bool writeStreamArchiveData( const OutputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, bool _crc32, const void * _data, size_t _size, EArchivatorCompress _compress )
@@ -386,7 +383,7 @@ namespace Mengine
 
             if( compress_buffer == nullptr )
             {
-                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory %d (compress)"
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory '%d' (compress)"
                     , compress_size
                 );
 
@@ -399,7 +396,7 @@ namespace Mengine
 
             if( read_data != (size_t)compress_size )
             {
-                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid read data %d need %d"
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid read data '%d' need '%d'"
                     , read_data
                     , compress_size
                 );
@@ -413,7 +410,7 @@ namespace Mengine
 
                 if( check_crc32 != crc32 )
                 {
-                    LOGGER_ERROR( "loadStreamArchiveBuffer: invalid crc32 %d need %d"
+                    LOGGER_ERROR( "loadStreamArchiveBuffer: invalid crc32 '%d' need '%d'"
                         , check_crc32
                         , crc32
                     );
@@ -427,7 +424,7 @@ namespace Mengine
 
             if( binary_buffer == nullptr )
             {
-                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory %d (binary)"
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory '%d' (binary)"
                     , binary_size
                 );
 
@@ -447,7 +444,7 @@ namespace Mengine
 
             if( uncompressSize != binary_size )
             {
-                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid decompress size %d need %d"
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid decompress size '%d' need '%d'"
                     , uncompressSize
                     , binary_size
                 );

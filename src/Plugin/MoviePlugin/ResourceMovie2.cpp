@@ -5,12 +5,15 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/FileSystemInterface.h"
 
+#include "Movie2Interface.h"
+
 #include "Engine/ResourceImageDefault.h"
 #include "Engine/ResourceVideo.h"
 #include "Engine/ResourceSound.h"
 
 #include "Metacode/Metacode.h"
 
+#include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
 
 #include "stdex/memorycopy.h"
@@ -20,13 +23,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static ae_size_t __movie_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size )
     {
-        (void)_carriage;
+        stdex::memorycopy( _buff, 0U, (ae_uint8_t *)_data + _carriage, _size );
 
-        InputStreamInterface * stream = (InputStreamInterface *)_data;
-
-        size_t bytes = stream->read( _buff, _size );
-
-        return bytes;
+        return _size;
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_copy_stream( ae_voidptr_t _data, ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size )
@@ -175,7 +174,7 @@ namespace Mengine
             return;
         }
 
-        Helper::freeMemoryT( reinterpret_cast<mt::vec2f *>(const_cast<void *>(_callbackData->uv_cache_data)) );
+        Helper::freeMemoryT( reinterpret_cast<mt::vec2f *>(_callbackData->uv_cache_data) );
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie2::ResourceMovie2()
@@ -280,9 +279,24 @@ namespace Mengine
         return &composition;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::setMovieInstance( const aeMovieInstance * _instance )
+    void ResourceMovie2::setMovieInstance( const aeMovieInstance * _movieInstance )
     {
-        m_movieInstance = _instance;
+        m_movieInstance = _movieInstance;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const aeMovieInstance * ResourceMovie2::getMovieInstance() const
+    {
+        return m_movieInstance;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceMovie2::setMovieArchivator( const ArchivatorInterfacePtr & _movieArchivator )
+    {
+        m_movieArchivator = _movieArchivator;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ArchivatorInterfacePtr & ResourceMovie2::getMovieArchivator() const
+    {
+        return m_movieArchivator;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::_loader( const Metabuf::Metadata * _meta )
@@ -362,7 +376,7 @@ namespace Mengine
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( fileGroup, m_filePath, false );
-
+        
         if( stream == nullptr )
         {
             LOGGER_ERROR( "ResourceMovie2::_compile: '%s' group '%s' can`t open file '%s'"
@@ -374,6 +388,15 @@ namespace Mengine
             return false;
         }
 
+        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, m_movieArchivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), "ResourceMovie2::_compile", __FILE__, __LINE__ );
+
+        if( memory == nullptr )
+        {
+            return false;
+        }
+
+        void * memory_buffer = memory->getBuffer();
+
         aeMovieDataProviders data_providers;
         ae_clear_movie_data_providers( &data_providers );
 
@@ -384,7 +407,7 @@ namespace Mengine
 
         aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, this );
 
-        aeMovieStream * movie_stream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, stream.get() );
+        aeMovieStream * movie_stream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, memory_buffer );
 
         ae_uint32_t major_version;
         ae_uint32_t minor_version;
@@ -513,12 +536,21 @@ namespace Mengine
             return false;
         }
 
+        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, m_movieArchivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), "ResourceMovie2::_compile", __FILE__, __LINE__ );
+
+        if( memory == nullptr )
+        {
+            return false;
+        }
+
+        void * memory_buffer = memory->getBuffer();
+
         aeMovieDataProviders data_providers;
         ae_clear_movie_data_providers( &data_providers );
 
         aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, AE_NULL );
 
-        aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, stream.get() );
+        aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, memory_buffer );
 
         ae_uint32_t major_version;
         ae_uint32_t minor_version;

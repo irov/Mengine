@@ -32,17 +32,17 @@ namespace Mengine
                 return;
             }
 
-            if( selfRender->isExternalRender() == true && _external == false )
-            {
-                return;
-            }
-
             if( selfRender->isHide() == true )
             {
                 return;
             }
 
             if( selfRender->isLocalTransparent() == true )
+            {
+                return;
+            }
+
+            if( selfRender->isExternalRender() == true && _external == false )
             {
                 return;
             }
@@ -95,18 +95,18 @@ namespace Mengine
 
             if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
             {
+                selfRender->render( &self_context );
+
                 for( const RenderVisitorPtr & visitor : m_renderVisitors )
                 {
                     visitor->setRenderContext( &self_context );
-                    
+
                     _node->visit( visitor );
                 }
-                
-                selfRender->render( &self_context );
             }
 
             const RenderContext * children_context = &self_context;
-            _node->foreachChildren( [this, children_context]( const NodePtr & _child )
+            _node->foreachChildrenUnslug( [this, children_context]( const NodePtr & _child )
             {
                 this->render( _child, children_context, false );
             } );
@@ -123,17 +123,17 @@ namespace Mengine
         }
         else
         {
+            _node->foreachChildrenUnslug( [this, _context]( const NodePtr & _child )
+            {
+                this->render( _child, _context, false );
+            } );
+
             for( const RenderVisitorPtr & visitor : m_renderVisitors )
             {
                 visitor->setRenderContext( _context );
 
                 _node->visit( visitor );
             }
-
-            _node->foreachChildren( [this, _context]( const NodePtr & _child )
-            {
-                this->render( _child, _context, false );
-            } );
         }
     }
     //////////////////////////////////////////////////////////////////////////

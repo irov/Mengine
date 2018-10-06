@@ -2,7 +2,7 @@
 
 #include "Interface/FileSystemInterface.h"
 #include "Interface/CodecInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 #include "Interface/XmlCodecInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ConfigInterface.h"

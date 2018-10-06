@@ -1,6 +1,7 @@
 #include "LZ4Plugin.h"
 
 #include "Interface/StringizeInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "ArchivatorLZ4.h"
 

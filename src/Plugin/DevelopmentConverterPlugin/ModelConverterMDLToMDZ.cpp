@@ -3,7 +3,7 @@
 #include "Interface/Model3DInterface.h"
 
 #include "Interface/StringizeInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileSystemInterface.h"
 

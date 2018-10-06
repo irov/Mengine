@@ -7,6 +7,7 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ConfigInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"
@@ -52,6 +53,16 @@ namespace Mengine
         }
 
         m_fileGroup = fileGroup;
+
+        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
+            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+        if( archivator == nullptr )
+        {
+            return false;
+        }
+
+        m_archivator = archivator;
 
         return true;
     }
@@ -250,7 +261,7 @@ namespace Mengine
         uint32_t projectVersion = APPLICATION_SERVICE()
             ->getProjectVersion();
 
-        if( newAccount->initialize( _accountID, m_fileGroup, accountPath, projectVersion ) == false )
+        if( newAccount->initialize( _accountID, m_archivator, m_fileGroup, accountPath, projectVersion ) == false )
         {
             return nullptr;
         }

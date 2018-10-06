@@ -3342,6 +3342,36 @@ namespace Metacode
                     uint32_t getId() const override;
                 
                 public:
+                    bool has_Bounds() const
+                    {
+                        return m_Bounds_successful;
+                    }
+                    
+                    bool get_Bounds( Mengine::Viewport * _value ) const
+                    {
+                        if( m_Bounds_successful == false )
+                        {
+                            return false;
+                        }
+                    
+                        *_value = this->m_Bounds;
+                    
+                        return true;
+                    }
+                    
+                    bool get_Bounds( Mengine::Viewport * _value, const Mengine::Viewport & _default ) const
+                    {
+                        if( m_Bounds_successful == false )
+                        {
+                            *_value = _default;
+                    
+                            return false;
+                        }
+                    
+                        *_value = this->m_Bounds;
+                    
+                        return true;
+                    }
                     float get_Duration() const
                     {
                         return this->m_Duration;
@@ -3359,6 +3389,7 @@ namespace Metacode
                     
                 protected:
                     void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
+                    void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
                     void _preparationIncludes( uint32_t _id, uint32_t _count ) override;
                     void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
                 public:
@@ -3442,6 +3473,8 @@ namespace Metacode
                     
                 protected:
                 protected:
+                    bool m_Bounds_successful;
+                    Mengine::Viewport m_Bounds;
                     float m_Duration;
                     float m_FrameDuration;
                     Mengine::ConstString m_Name;

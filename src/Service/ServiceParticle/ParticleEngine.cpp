@@ -3,6 +3,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ConfigInterface.h"
 #include "Interface/FileSystemInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "Kernel/Logger.h"
 

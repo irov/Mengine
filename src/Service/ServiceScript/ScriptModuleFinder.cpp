@@ -4,6 +4,7 @@
 #include "Interface/ArchiveInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileSystemInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"

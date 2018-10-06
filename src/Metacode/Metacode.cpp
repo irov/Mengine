@@ -5,7 +5,7 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     static const uint32_t metacode_magic = 3133062829u;
     static const uint32_t metacode_version = 5;
-    static const uint32_t metacode_protocol = 126;
+    static const uint32_t metacode_protocol = 127;
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
@@ -2033,6 +2033,7 @@ namespace Metacode
         //cppcheck-suppress uninitMemberVar
         Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Composition()
             : Metabuf::Metadata()
+            , m_Bounds_successful(false)
         {
         }
         //////////////////////////////////////////////////////////////////////////
@@ -2053,15 +2054,29 @@ namespace Metacode
             this->read( _buff, _size, _read, this->m_Name );
         }
         //////////////////////////////////////////////////////////////////////////
-        void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::_preparationIncludes( uint32_t _id, uint32_t _count )
+        void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::_parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id )
         {
             switch( _id )
             {
             case 4:
                 {
+                    this->read( _buff, _size, _read, this->m_Bounds );
+        
+                    this->m_Bounds_successful = true;
+        
+                }break;
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::_preparationIncludes( uint32_t _id, uint32_t _count )
+        {
+            switch( _id )
+            {
+            case 5:
+                {
                     includes_Meta_Layer.reserve( _count );
                 }break;
-            case 5:
+            case 6:
                 {
                     includes_Meta_SubComposition.reserve( _count );
                 }break;
@@ -2072,14 +2087,14 @@ namespace Metacode
         {
             switch( _id )
             {
-            case 4:
+            case 5:
                 {
                     includes_Meta_Layer.emplace_back( Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer() );
                     Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer & metadata = includes_Meta_Layer.back();
         
                     metadata.parse( _buff, _size, _read, m_userData );
                 }break;
-            case 5:
+            case 6:
                 {
                     includes_Meta_SubComposition.emplace_back( Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition() );
                     Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition & metadata = includes_Meta_SubComposition.back();
@@ -2102,7 +2117,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         uint32_t Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::getId() const
         {
-            return 4;
+            return 5;
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer::_parseData( const uint8_t * _buff, size_t _size, size_t & _read )
@@ -2127,7 +2142,7 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         uint32_t Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition::getId() const
         {
-            return 5;
+            return 6;
         }
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition::_parseData( const uint8_t * _buff, size_t _size, size_t & _read )

@@ -90,6 +90,72 @@ struct resource_provider_t
     CHAR movie_name[128];
 };
 //////////////////////////////////////////////////////////////////////////
+static std::string sf( float _f )
+{
+    char data[256];
+    sprintf( data, "%.127f", _f );
+
+    size_t len = strlen( data );
+
+    for( size_t index = len; index != 0; --index )
+    {
+        if( data[index - 1] == '.' )
+        {
+            data[index] = '0';
+            data[index + 1] = '\0';
+
+            break;
+        }
+
+        if( data[index - 1] != '0' )
+        {
+            break;
+        }
+
+        data[index - 1] = '\0';
+    }
+
+    return data;
+}
+//////////////////////////////////////////////////////////////////////////
+static std::string sm( ae_matrix34_ptr_t m )
+{
+    char xmlMatrix[4096];
+    sprintf( xmlMatrix, "%s;%s;%s;%s"";""%s;%s;%s;%s"";""%s;%s;%s;%s"";""%s;%s;%s;%s"
+        , sf( m[3 * 0 + 0] ).c_str()
+        , sf( m[3 * 0 + 1] ).c_str()
+        , sf( m[3 * 0 + 2] ).c_str()
+        , "0.0"
+        , sf( m[3 * 1 + 0] ).c_str()
+        , sf( m[3 * 1 + 1] ).c_str()
+        , sf( m[3 * 1 + 2] ).c_str()
+        , "0.0"
+        , sf( m[3 * 2 + 0] ).c_str()
+        , sf( m[3 * 2 + 1] ).c_str()
+        , sf( m[3 * 2 + 2] ).c_str()
+        , "0.0"
+        , sf( m[3 * 3 + 0] ).c_str()
+        , sf( m[3 * 3 + 1] ).c_str()
+        , sf( m[3 * 3 + 2] ).c_str()
+        , "1.0"
+    );
+
+    return xmlMatrix;
+}
+//////////////////////////////////////////////////////////////////////////
+static std::string sc( const ae_color_t & c, float o )
+{
+    char xmlColor[4096];
+    sprintf( xmlColor, "%s;%s;%s;%s"
+        , sf( c.r ).c_str()
+        , sf( c.g ).c_str()
+        , sf( c.b ).c_str()
+        , sf( o ).c_str()
+    );
+
+    return xmlColor;
+}
+//////////////////////////////////////////////////////////////////////////
 static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _data )
 {
     resource_provider_t * provider = (resource_provider_t *)_data;
@@ -173,15 +239,15 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                 xmlResourceImage.append_attribute( "Name" ).set_value( resource_image->atlas_image->name );
 
                 char xmlUV[256];
-                sprintf( xmlUV, "%.127f;%.127f;%.127f;%.127f;%.127f;%.127f;%.127f;%.127f"
-                    , 0.f
-                    , 0.f
-                    , 1.f
-                    , 0.f
-                    , 1.f
-                    , 1.f
-                    , 0.f
-                    , 1.f
+                sprintf( xmlUV, "%s;%s;%s;%s;%s;%s;%s;%s"
+                    , sf( 0.f ).c_str()
+                    , sf( 0.f ).c_str()
+                    , sf( 1.f ).c_str()
+                    , sf( 0.f ).c_str()
+                    , sf( 1.f ).c_str()
+                    , sf( 1.f ).c_str()
+                    , sf( 0.f ).c_str()
+                    , sf( 1.f ).c_str()
                 );
 
                 xmlResourceImage.append_attribute( "UV" ).set_value( xmlUV );
@@ -207,7 +273,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
                 pugi::xml_node xmlSequence = xmlResource.append_child( "Sequence" );
 
                 xmlSequence.append_attribute( "ResourceImageName" ).set_value( resource_image->name );
-                xmlSequence.append_attribute( "Delay" ).set_value( frameDuration );
+                xmlSequence.append_attribute( "Delay" ).set_value( sf( frameDuration ).c_str() );
             }
         }break;
     case AE_MOVIE_RESOURCE_VIDEO:
@@ -238,8 +304,8 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
             xmlResourceFile.append_attribute( "Alpha" ).set_value( resource_video->has_alpha_channel == AE_TRUE ? 1U : 0U );
             xmlResourceFile.append_attribute( "Codec" ).set_value( resource_video->has_alpha_channel == AE_TRUE ? "ogvaVideo" : "ogvVideo" );
-            xmlResourceFile.append_attribute( "FrameRate" ).set_value( resource_video->frameRate );
-            xmlResourceFile.append_attribute( "Duration" ).set_value( resource_video->duration * 1000.0 );
+            xmlResourceFile.append_attribute( "FrameRate" ).set_value( sf( resource_video->frameRate ).c_str() );
+            xmlResourceFile.append_attribute( "Duration" ).set_value( sf( resource_video->duration * 1000.f ).c_str() );
 
         }break;
     case AE_MOVIE_RESOURCE_SOUND:
@@ -341,37 +407,9 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Name" ).set_value( layer_name );
             xmlLayer.append_attribute( "Type" ).set_value( "TextField" );
 
-            char xmlMatrix[256];
-            sprintf( xmlMatrix, "%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"
-                , _callbackData->matrix[4 * 0 + 0]
-                , _callbackData->matrix[4 * 0 + 1]
-                , _callbackData->matrix[4 * 0 + 2]
-                , _callbackData->matrix[4 * 0 + 3]
-                , _callbackData->matrix[4 * 1 + 0]
-                , _callbackData->matrix[4 * 1 + 1]
-                , _callbackData->matrix[4 * 1 + 2]
-                , _callbackData->matrix[4 * 1 + 3]
-                , _callbackData->matrix[4 * 2 + 0]
-                , _callbackData->matrix[4 * 2 + 1]
-                , _callbackData->matrix[4 * 2 + 2]
-                , _callbackData->matrix[4 * 2 + 3] 
-                , _callbackData->matrix[4 * 3 + 0]
-                , _callbackData->matrix[4 * 3 + 1]
-                , _callbackData->matrix[4 * 3 + 2]
-                , _callbackData->matrix[4 * 3 + 3] 
-            );
+            xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
 
-            xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
-
-            char xmlColor[256];
-            sprintf( xmlColor, "%.127f;%.127f;%.127f;%.127f"
-                , _callbackData->color.r
-                , _callbackData->color.g
-                , _callbackData->color.b
-                , _callbackData->opacity
-            );
-            
-            xmlLayer.append_attribute( "Color" ).set_value( xmlColor );
+            xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
 
             //if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_HORIZONTAL_CENTER ) == AE_TRUE )
             //{
@@ -395,37 +433,9 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Name" ).set_value( layer_name );
             xmlLayer.append_attribute( "Type" ).set_value( "Movie2Slot" );
 
-            char xmlMatrix[256];
-            sprintf( xmlMatrix, "%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"
-                , _callbackData->matrix[4 * 0 + 0]
-                , _callbackData->matrix[4 * 0 + 1]
-                , _callbackData->matrix[4 * 0 + 2]
-                , _callbackData->matrix[4 * 0 + 3]
-                , _callbackData->matrix[4 * 1 + 0]
-                , _callbackData->matrix[4 * 1 + 1]
-                , _callbackData->matrix[4 * 1 + 2]
-                , _callbackData->matrix[4 * 1 + 3]
-                , _callbackData->matrix[4 * 2 + 0]
-                , _callbackData->matrix[4 * 2 + 1]
-                , _callbackData->matrix[4 * 2 + 2]
-                , _callbackData->matrix[4 * 2 + 3]
-                , _callbackData->matrix[4 * 3 + 0]
-                , _callbackData->matrix[4 * 3 + 1]
-                , _callbackData->matrix[4 * 3 + 2]
-                , _callbackData->matrix[4 * 3 + 3]
-            );
+            xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
 
-            xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
-
-            char xmlColor[256];
-            sprintf( xmlColor, "%.127f;%.127f;%.127f;%.127f"
-                , _callbackData->color.r
-                , _callbackData->color.g
-                , _callbackData->color.b
-                , _callbackData->opacity
-            );
-
-            xmlLayer.append_attribute( "Color" ).set_value( xmlColor );
+            xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
             
             *_nd = AE_NULL;
 
@@ -439,37 +449,9 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Name" ).set_value( layer_name );
             xmlLayer.append_attribute( "Type" ).set_value( "HotSpotPolygon" );
 
-            char xmlMatrix[256];
-            sprintf( xmlMatrix, "%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"
-                , _callbackData->matrix[4 * 0 + 0]
-                , _callbackData->matrix[4 * 0 + 1]
-                , _callbackData->matrix[4 * 0 + 2]
-                , _callbackData->matrix[4 * 0 + 3]
-                , _callbackData->matrix[4 * 1 + 0]
-                , _callbackData->matrix[4 * 1 + 1]
-                , _callbackData->matrix[4 * 1 + 2]
-                , _callbackData->matrix[4 * 1 + 3]
-                , _callbackData->matrix[4 * 2 + 0]
-                , _callbackData->matrix[4 * 2 + 1]
-                , _callbackData->matrix[4 * 2 + 2]
-                , _callbackData->matrix[4 * 2 + 3]
-                , _callbackData->matrix[4 * 3 + 0]
-                , _callbackData->matrix[4 * 3 + 1]
-                , _callbackData->matrix[4 * 3 + 2]
-                , _callbackData->matrix[4 * 3 + 3]
-            );
+            xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
 
-            xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
-
-            char xmlColor[256];
-            sprintf( xmlColor, "%.127f;%.127f;%.127f;%.127f"
-                , _callbackData->color.r
-                , _callbackData->color.g
-                , _callbackData->color.b
-                , _callbackData->opacity
-            );
-
-            xmlLayer.append_attribute( "Color" ).set_value( xmlColor );
+            xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
           
             *_nd = AE_NULL;
 
@@ -483,37 +465,9 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Name" ).set_value( layer_name );
             xmlLayer.append_attribute( "Type" ).set_value( "ParticleEmitter2" );
 
-            char xmlMatrix[256];
-            sprintf( xmlMatrix, "%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"
-                , _callbackData->matrix[4 * 0 + 0]
-                , _callbackData->matrix[4 * 0 + 1]
-                , _callbackData->matrix[4 * 0 + 2]
-                , _callbackData->matrix[4 * 0 + 3]
-                , _callbackData->matrix[4 * 1 + 0]
-                , _callbackData->matrix[4 * 1 + 1]
-                , _callbackData->matrix[4 * 1 + 2]
-                , _callbackData->matrix[4 * 1 + 3]
-                , _callbackData->matrix[4 * 2 + 0]
-                , _callbackData->matrix[4 * 2 + 1]
-                , _callbackData->matrix[4 * 2 + 2]
-                , _callbackData->matrix[4 * 2 + 3]
-                , _callbackData->matrix[4 * 3 + 0]
-                , _callbackData->matrix[4 * 3 + 1]
-                , _callbackData->matrix[4 * 3 + 2]
-                , _callbackData->matrix[4 * 3 + 3]
-            );
+            xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
 
-            xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
-
-            char xmlColor[256];
-            sprintf( xmlColor, "%.127f;%.127f;%.127f;%.127f"
-                , _callbackData->color.r
-                , _callbackData->color.g
-                , _callbackData->color.b
-                , _callbackData->opacity
-            );
-
-            xmlLayer.append_attribute( "Color" ).set_value( xmlColor );
+            xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
 
             *_nd = AE_NULL;
 
@@ -527,37 +481,9 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Name" ).set_value( layer_name );
             xmlLayer.append_attribute( "Type" ).set_value( "ShapeQuadFixed" );
 
-            char xmlMatrix[256];
-            sprintf( xmlMatrix, "%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"";""%.127f;%.127f;%.127f;%.127f"
-                , _callbackData->matrix[4 * 0 + 0]
-                , _callbackData->matrix[4 * 0 + 1]
-                , _callbackData->matrix[4 * 0 + 2]
-                , _callbackData->matrix[4 * 0 + 3]
-                , _callbackData->matrix[4 * 1 + 0]
-                , _callbackData->matrix[4 * 1 + 1]
-                , _callbackData->matrix[4 * 1 + 2]
-                , _callbackData->matrix[4 * 1 + 3]
-                , _callbackData->matrix[4 * 2 + 0]
-                , _callbackData->matrix[4 * 2 + 1]
-                , _callbackData->matrix[4 * 2 + 2]
-                , _callbackData->matrix[4 * 2 + 3]
-                , _callbackData->matrix[4 * 3 + 0]
-                , _callbackData->matrix[4 * 3 + 1]
-                , _callbackData->matrix[4 * 3 + 2]
-                , _callbackData->matrix[4 * 3 + 3]
-            );
+            xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
 
-            xmlLayer.append_attribute( "Matrix" ).set_value( xmlMatrix );
-
-            char xmlColor[256];
-            sprintf( xmlColor, "%.127f;%.127f;%.127f;%.127f"
-                , _callbackData->color.r
-                , _callbackData->color.g
-                , _callbackData->color.b
-                , _callbackData->opacity
-            );
-
-            xmlLayer.append_attribute( "Color" ).set_value( xmlColor );
+            xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
 
             *_nd = AE_NULL;
 
@@ -645,7 +571,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
 	std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
     std::wstring movie_name = parse_kwds( lpCmdLine, L"--movie_name", std::wstring() );
-    std::wstring hash_crc = parse_kwds( lpCmdLine, L"--hash_crc", std::wstring() );
     
 	if( in_path.empty() == true )
 	{
@@ -662,9 +587,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
         return EXIT_FAILURE;
     }
-
-    CHAR utf8_hash_crc[64];
-    unicode_to_utf8( utf8_hash_crc, 64, hash_crc.c_str(), hash_crc.size() );
 
     CHAR utf8_movie_name[128];
     unicode_to_utf8( utf8_movie_name, 128, movie_name.c_str(), movie_name.size() );
@@ -745,27 +667,12 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     pugi::xml_node xmlDataResourceFile = xmlDataResource.append_child( "File" );
 
     char xmlMoviePath[MAX_PATH];
-    sprintf( xmlMoviePath, "Movies2/%s/%s.aem"
+    sprintf( xmlMoviePath, "Movies2/%s/%s.aez"
         , utf8_movie_name
         , utf8_movie_name
     );
 
     xmlDataResourceFile.append_attribute( "Path" ).set_value( xmlMoviePath );
-
-    pugi::xml_node xmlDataResourceBounds = xmlDataResource.append_child( "Bounds" );
-
-    ae_viewport_t viewport;
-    ae_get_movie_composition_data_bounds( movieData, &viewport );
-
-    char xmlMovieBounds[MAX_PATH];
-    sprintf( xmlMovieBounds, "%.f %f %f %f"
-        , viewport.begin_x
-        , viewport.begin_y
-        , viewport.end_x
-        , viewport.end_y
-    );
-
-    xmlDataResourceBounds.append_attribute( "Value" ).set_value( xmlMovieBounds );
 
     ae_uint32_t movieDataCount = ae_get_movie_composition_data_count( movieData );
 
@@ -785,9 +692,22 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         pugi::xml_node xmlDataResourceComposition = xmlDataResource.append_child( "Composition" );
 
         xmlDataResourceComposition.append_attribute( "Name" ).set_value( compositionDataName );
-        xmlDataResourceComposition.append_attribute( "Duration" ).set_value( duration );
-        xmlDataResourceComposition.append_attribute( "FrameDuration" ).set_value( frame_duration );       
-        
+        xmlDataResourceComposition.append_attribute( "Duration" ).set_value( sf( duration ).c_str() );
+        xmlDataResourceComposition.append_attribute( "FrameDuration" ).set_value( sf( frame_duration ).c_str() );
+
+        ae_viewport_t viewport;
+        if( ae_get_movie_composition_data_bounds( compositionData, &viewport ) == AE_TRUE )
+        {
+            char xmlCompositionBounds[MAX_PATH];
+            sprintf( xmlCompositionBounds, "%s;%s;%s;%s"
+                , sf( viewport.begin_x ).c_str()
+                , sf( viewport.begin_x ).c_str()
+                , sf( viewport.begin_x ).c_str()
+                , sf( viewport.begin_x ).c_str()
+            );
+
+            xmlDataResourceComposition.append_attribute( "Bounds" ).set_value( xmlCompositionBounds );
+        }
 
         aeMovieCompositionProviders composition_providers;
         ae_clear_movie_composition_providers( &composition_providers );

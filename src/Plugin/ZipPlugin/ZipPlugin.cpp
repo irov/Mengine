@@ -1,8 +1,8 @@
 #include "ZipPlugin.h"
 
 #include "Interface/StringizeInterface.h"
-
 #include "Interface/FileSystemInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "FileGroupZip.h"
 #include "ArchivatorZip.h"

@@ -36,7 +36,6 @@ namespace Mengine
         Helper::registerConverter<VideoConverterFFMPEGToOGV>( "ffmpegToOGV" );
         Helper::registerConverter<VideoConverterFFMPEGToOGVA>( "ffmpegToOGVA" );
         Helper::registerConverter<MovieKeyConverterXMLToAEK>( "xmlToAekMovie" );
-        Helper::registerConverter<ModelConverterMDLToMDZ>( "mdlToMdzModel" );
         Helper::registerConverter<ParticleConverterPTCToPTZ>( "ptc2ptz" );
         Helper::registerConverter<ImageConverterPVRToHTF>( "pvr2htf" );
         Helper::registerConverter<ImageConverterDDSToHTF>( "dds2htf" );

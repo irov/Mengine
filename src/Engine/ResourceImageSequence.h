@@ -48,9 +48,6 @@ namespace Mengine
         void _release() override;
 
     protected:
-        bool _isValid() const override;
-
-    protected:
         VectorAnimationSequence m_sequence;
 
         float m_duration;

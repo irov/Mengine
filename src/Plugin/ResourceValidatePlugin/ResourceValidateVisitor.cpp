@@ -285,6 +285,77 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ResourceValidateVisitor::accept( ResourceImageData * _resource )
+    {
+        const FilePath & fileName = _resource->getFileName();
+        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+
+        bool exist = fileGroup->existFile( fileName );
+
+        if( exist == false )
+        {
+            bool validNoExist = _resource->isValidNoExist();
+
+            if( validNoExist == true )
+            {
+                return true;
+            }
+
+            LOGGER_ERROR( "ResourceImageDefault::_isValid %s not exist file %s:%s"
+                , _resource->getName().c_str()
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFileName().c_str()
+            );
+
+            return false;
+        }
+
+        InputStreamInterfacePtr stream = FILE_SERVICE()
+            ->openInputFile( fileGroup, fileName, false );
+
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "ResourceImageDefault::_isValid %s invalid open file %s:%s"
+                , _resource->getName().c_str()
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFileName().c_str()
+            );
+
+            return false;
+        }
+
+        const ConstString & codecType = _resource->getCodecType();
+
+        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
+            ->createDecoderT<ImageDecoderInterfacePtr>( codecType );
+
+        if( imageDecoder == nullptr )
+        {
+            LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s invalid decoder %s"
+                , _resource->getName().c_str()
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFileName().c_str()
+                , _resource->getCodecType().c_str()
+            );
+
+            return false;
+        }
+
+        if( imageDecoder->prepareData( stream ) == false )
+        {
+            LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
+                , _resource->getName().c_str()
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFileName().c_str()
+                , _resource->getCodecType().c_str()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateVisitor::accept( ResourceImageSequence * _resource )
     {
         size_t total_memory = 0;
@@ -351,5 +422,227 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceValidateVisitor::accept( ResourceMusic * _resource )
+    {
+        bool external = _resource->isExternal();
+
+        if( external == true )
+        {
+            return true;
+        }
+
+        const FilePath & filePath = _resource->getPath();
+
+        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+
+        if( fileGroup->existFile( filePath ) == false )
+        {
+            LOGGER_ERROR( "ResourceMusic::_loader: '%s' music '%s' not exist"
+                , _resource->getName().c_str()
+                , _resource->getPath().c_str()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceValidateVisitor::accept( ResourceSound * _resource )
+    {
+        const FilePath & filePath = _resource->getFilePath();
+        bool streamable = _resource->isStreamable();
+
+        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+
+        InputStreamInterfacePtr stream = FILE_SERVICE()
+            ->openInputFile( fileGroup, filePath, streamable );
+
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "ResourceSound::_isValid: '%s' group %s can't open sound file '%s:%s'"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        const ConstString & codecType = _resource->getCodecType();
+
+        SoundDecoderInterfacePtr decoder = CODEC_SERVICE()
+            ->createDecoderT<SoundDecoderInterfacePtr>( codecType );
+
+        if( decoder == nullptr )
+        {
+            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' can't create sound decoder for file '%s:%s'"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        if( decoder->prepareData( stream ) == false )
+        {
+            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' can't initialize sound decoder for file '%s:%s'"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
+
+        float limitMinimalStreamSoundDuration = CONFIG_VALUE( "Limit", "MinimalStreamSoundDuration", 500.f ); //4kb
+
+        if( (dataInfo->length <= limitMinimalStreamSoundDuration && limitMinimalStreamSoundDuration != 0.f) && streamable == true )
+        {
+            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"0\"/>"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , dataInfo->length
+                , limitMinimalStreamSoundDuration
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        float limitNoStreamSoundDurationWarning = CONFIG_VALUE( "Limit", "NoStreamSoundDurationWarning", 2000.f ); //4kb
+
+        if( (dataInfo->length > limitNoStreamSoundDurationWarning && limitNoStreamSoundDurationWarning != 0.f) && streamable == false )
+        {
+            LOGGER_WARNING( "SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , dataInfo->length
+                , limitNoStreamSoundDurationWarning
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFilePath().c_str()
+            );
+        }
+
+        float limitNoStreamSoundDurationError = CONFIG_VALUE( "Limit", "NoStreamSoundDurationError", 10000.f ); //4kb
+
+        if( (dataInfo->length > limitNoStreamSoundDurationError && limitNoStreamSoundDurationError != 0.f) && streamable == false )
+        {
+            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , dataInfo->length
+                , limitNoStreamSoundDurationError
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        decoder = nullptr;
+        stream = nullptr;
+
+        SoundBufferInterfacePtr buffer = _resource->createSoundBuffer();
+
+        if( buffer == nullptr )
+        {
+            LOGGER_ERROR( "SoundEngine::isValid '%s' group '%s' can't create buffer '%s'"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , _resource->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static bool s_checkValidVideoDecoder( ResourceVideo * _resource, const VideoDecoderInterfacePtr & _decoder )
+    {
+        const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
+
+        const uint32_t MENGINE_VIDEO_SIZE_DIV = 8;
+
+        if( dataInfo->frameWidth % MENGINE_VIDEO_SIZE_DIV != 0 ||
+            dataInfo->frameHeight % MENGINE_VIDEO_SIZE_DIV != 0 )
+        {
+            LOGGER_ERROR( "ResourceVideo::checkValidVideoDecoder_ invalid width or heigth '%d:%d' need '%d:%d' maybe div %d"
+                , dataInfo->frameWidth
+                , dataInfo->frameHeight
+                , (dataInfo->frameWidth / MENGINE_VIDEO_SIZE_DIV + 1) * MENGINE_VIDEO_SIZE_DIV
+                , (dataInfo->frameHeight / MENGINE_VIDEO_SIZE_DIV + 1) * MENGINE_VIDEO_SIZE_DIV
+                , MENGINE_VIDEO_SIZE_DIV
+            );
+
+            return false;
+        }
+
+        uint32_t limitVideoWidth = CONFIG_VALUE( "Limit", "VideoWidth", 2048U );
+        uint32_t limitVideoHeight = CONFIG_VALUE( "Limit", "VideoHeight", 2048U );
+
+        if( dataInfo->width > limitVideoWidth || dataInfo->height > limitVideoHeight )
+        {
+            LOGGER_ERROR( "ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid size %d:%d limit %d:%d"
+                , _resource->getGroupName().c_str()
+                , _resource->getName().c_str()
+                , _resource->getFilePath().c_str()
+                , dataInfo->width
+                , dataInfo->height
+                , limitVideoWidth
+                , limitVideoHeight
+            );
+
+            return false;
+        }
+
+        float Limit_VideoFrameRate = CONFIG_VALUE( "Limit", "VideoFrameRate", 30.f );
+
+        if( dataInfo->fps > Limit_VideoFrameRate && Limit_VideoFrameRate != 0.0 )
+        {
+            LOGGER_ERROR( "ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid Frame rate %f more that %f"
+                , _resource->getGroupName().c_str()
+                , _resource->getName().c_str()
+                , _resource->getFilePath().c_str()
+                , dataInfo->fps
+                , Limit_VideoFrameRate
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceValidateVisitor::accept( ResourceVideo * _resource )
+    {
+        VideoDecoderInterfacePtr decoder = _resource->createVideoDecoder();
+
+        if( decoder == nullptr )
+        {
+            LOGGER_ERROR( "ResourceVideo::isValid: group '%s' name '%s' can't create decoder '%s'"
+                , _resource->getGroupName().c_str()
+                , _resource->getName().c_str()
+                , _resource->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        bool valid = s_checkValidVideoDecoder( _resource, decoder );
+
+        _resource->destroyVideoDecoder( decoder );
+
+        return valid;
     }
 }

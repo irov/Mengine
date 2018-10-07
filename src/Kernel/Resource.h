@@ -19,8 +19,6 @@
 
 namespace Mengine
 {
-    class ResourceVisitor;
-
     typedef IntrusivePtr<class FileGroupInterface> FileGroupInterfacePtr;
 
     class Resource

@@ -9,6 +9,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ResourceShape::~ResourceShape()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     const Polygon & ResourceShape::getPolygon() const
     {
         return m_polygon;
@@ -32,10 +36,5 @@ namespace Mengine
     void ResourceShape::_release()
     {
         //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceShape::_isValid() const
-    {
-        return true;
     }
 }

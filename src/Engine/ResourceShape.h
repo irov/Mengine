@@ -13,6 +13,7 @@ namespace Mengine
 
     public:
         ResourceShape();
+        ~ResourceShape() override;
 
     public:
         const Polygon & getPolygon() const;
@@ -23,9 +24,6 @@ namespace Mengine
     protected:
         bool _compile() override;
         void _release() override;
-
-    protected:
-        bool _isValid() const override;
 
     protected:
         Polygon m_polygon;

@@ -2354,7 +2354,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( TextField );
         SCRIPT_CLASS_WRAPPING( SoundEmitter );
         SCRIPT_CLASS_WRAPPING( Meshget );
-        SCRIPT_CLASS_WRAPPING( Model3D );
         SCRIPT_CLASS_WRAPPING( Point );
         SCRIPT_CLASS_WRAPPING( Line );
         SCRIPT_CLASS_WRAPPING( Landscape2D );
@@ -2381,7 +2380,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
         SCRIPT_CLASS_WRAPPING( ResourceMusic );        
         SCRIPT_CLASS_WRAPPING( ResourceImageSequence );
-        SCRIPT_CLASS_WRAPPING( ResourceModel3D );
         SCRIPT_CLASS_WRAPPING( ResourceVideo );
         SCRIPT_CLASS_WRAPPING( ResourceSound );
         SCRIPT_CLASS_WRAPPING( ResourceFile );
@@ -2569,9 +2567,6 @@ namespace Mengine
             ;
 
         pybind::interface_<ResourceImageSequence, pybind::bases<Resource> >( kernel, "ResourceImageSequence", false )
-            ;
-
-        pybind::interface_<ResourceModel3D, pybind::bases<Resource> >( kernel, "ResourceModel3D", false )
             ;
 
         pybind::interface_<ResourceVideo, pybind::bases<Resource> >( kernel, "ResourceVideo", false )
@@ -3156,14 +3151,6 @@ namespace Mengine
 
             pybind::interface_<MatrixProxy, pybind::bases<Node> >( kernel, "MatrixProxy", false )
                 ;
-
-            {
-                pybind::interface_<Model3D, pybind::bases<Node, Animatable, Materialable> >( kernel, "Model3D", false )
-                    .def( "setResourceModel3D", &Model3D::setResourceModel3D )
-                    .def( "getResourceModel3D", &Model3D::getResourceModel3D )
-                    ;
-            }
-
 
 
             pybind::interface_<Meshget, pybind::bases<Node, Eventable> >( kernel, "Meshget", false )

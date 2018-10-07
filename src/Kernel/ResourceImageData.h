@@ -41,8 +41,8 @@ namespace Mengine
 
         Pointer getImageBuffer() const override;
 
-    protected:
-        bool _isValid() const override;
+    public:
+        bool isValidNoExist() const;
 
     protected:
         bool _loader( const Metabuf::Metadata * _parser ) override;

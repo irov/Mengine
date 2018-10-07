@@ -18,6 +18,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ResourceMusic::~ResourceMusic()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     const FilePath & ResourceMusic::getPath() const
     {
         return m_path;
@@ -54,28 +58,6 @@ namespace Mengine
         metadata->get_File_Converter( &m_converter );
         metadata->get_File_External( &m_external );
         metadata->get_DefaultVolume_Value( &m_volume );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceMusic::_isValid() const
-    {
-        if( m_external == true )
-        {
-            return true;
-        }
-
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-
-        if( fileGroup->existFile( m_path ) == false )
-        {
-            LOGGER_ERROR( "ResourceMusic::_loader: '%s' music '%s' not exist"
-                , this->getName().c_str()
-                , m_path.c_str()
-            );
-
-            return false;
-        }
 
         return true;
     }

@@ -19,9 +19,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ResourceSound::~ResourceSound()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ResourceSound::setFilePath( const FilePath& _path )
     {
         m_filePath = _path;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & ResourceSound::getFilePath() const
+    {
+        return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceSound::setCodecType( const ConstString& _codec )
@@ -53,11 +62,6 @@ namespace Mengine
     bool ResourceSound::isStreamable() const
     {
         return m_isStreamable;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceSound::getFilePath() const
-    {
-        return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_convert()
@@ -95,120 +99,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceSound::_debugDecrementReference()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceSound::_isValid() const
-    {
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, m_filePath, m_isStreamable );
-
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "ResourceSound::_isValid: '%s' group %s can't open sound file '%s:%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
-
-        SoundDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<SoundDecoderInterfacePtr>( m_codecType );
-
-        if( decoder == nullptr )
-        {
-            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' can't create sound decoder for file '%s:%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
-
-        if( decoder->prepareData( stream ) == false )
-        {
-            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' can't initialize sound decoder for file '%s:%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
-
-        const SoundCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
-
-        float limitMinimalStreamSoundDuration = CONFIG_VALUE( "Limit", "MinimalStreamSoundDuration", 500.f ); //4kb
-
-        if( (dataInfo->length <= limitMinimalStreamSoundDuration && limitMinimalStreamSoundDuration != 0.f) && m_isStreamable == true )
-        {
-            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"0\"/>"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , dataInfo->length
-                , limitMinimalStreamSoundDuration
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
-
-        float limitNoStreamSoundDurationWarning = CONFIG_VALUE( "Limit", "NoStreamSoundDurationWarning", 2000.f ); //4kb
-
-        if( (dataInfo->length > limitNoStreamSoundDurationWarning && limitNoStreamSoundDurationWarning != 0.f) && m_isStreamable == false )
-        {
-            LOGGER_WARNING( "SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , dataInfo->length
-                , limitNoStreamSoundDurationWarning
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-        }
-
-        float limitNoStreamSoundDurationError = CONFIG_VALUE( "Limit", "NoStreamSoundDurationError", 10000.f ); //4kb
-
-        if( (dataInfo->length > limitNoStreamSoundDurationError && limitNoStreamSoundDurationError != 0.f) && m_isStreamable == false )
-        {
-            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , dataInfo->length
-                , limitNoStreamSoundDurationError
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
-
-        decoder = nullptr;
-        stream = nullptr;
-
-        SoundBufferInterfacePtr buffer = this->createSoundBuffer();
-
-        if( buffer == nullptr )
-        {
-            LOGGER_ERROR( "SoundEngine::isValid '%s' group '%s' can't create buffer '%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
-
-        return true;
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     SoundBufferInterfacePtr ResourceSound::createSoundBuffer() const
     {

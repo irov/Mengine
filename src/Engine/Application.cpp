@@ -315,7 +315,6 @@ namespace Mengine
 
         NODE_FACTORY( Meshget );
 
-        NODE_FACTORY( Model3D );
         //NODE_FACTORY( Model );
         NODE_FACTORY( Interender );
         NODE_FACTORY( Layer2D );
@@ -453,7 +452,6 @@ namespace Mengine
         RESOURCE_FACTORY( ResourceImageSubstract );
         RESOURCE_FACTORY( ResourceImageSubstractRGBAndAlpha );
         RESOURCE_FACTORY( ResourceImageSolid );
-        RESOURCE_FACTORY( ResourceModel3D );
         RESOURCE_FACTORY( ResourceVideo );
         RESOURCE_FACTORY( ResourceSound );
         RESOURCE_FACTORY( ResourceFile );

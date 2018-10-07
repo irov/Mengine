@@ -44,72 +44,6 @@ namespace Mengine
         return m_codecType;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageData::_isValid() const
-    {
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-
-        bool exist = fileGroup->existFile( m_fileName );
-
-        if( exist == false )
-        {
-            if( m_validNoExist == true )
-            {
-                return true;
-            }
-
-            LOGGER_ERROR( "ResourceImageDefault::_isValid %s not exist file %s:%s"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getFileName().c_str()
-            );
-
-            return false;
-        }
-
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, m_fileName, false );
-
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid %s invalid open file %s:%s"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getFileName().c_str()
-            );
-
-            return false;
-        }
-
-        ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( m_codecType );
-
-        if( imageDecoder == nullptr )
-        {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s invalid decoder %s"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getFileName().c_str()
-                , this->getCodecType().c_str()
-            );
-
-            return false;
-        }
-
-        if( imageDecoder->prepareData( stream ) == false )
-        {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getFileName().c_str()
-                , this->getCodecType().c_str()
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceImageData::_loader( const Metabuf::Metadata * _meta )
     {
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageData * metadata
@@ -260,5 +194,10 @@ namespace Mengine
     Pointer ResourceImageData::getImageBuffer() const
     {
         return m_buffer;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceImageData::isValidNoExist() const
+    {
+        return m_validNoExist;
     }
 }

@@ -14,6 +14,7 @@ namespace Mengine
 
     public:
         ResourceMusic();
+        ~ResourceMusic() override;
 
     public:
         const FilePath & getPath() const;
@@ -25,9 +26,6 @@ namespace Mengine
     protected:
         bool _loader( const Metabuf::Metadata * _parser ) override;
         bool _convert() override;
-
-    protected:
-        bool _isValid() const override;
 
     private:
         FilePath m_path;

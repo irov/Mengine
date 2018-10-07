@@ -1,6 +1,6 @@
 #include "ResourceMovie2.h"
 
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/FileSystemInterface.h"

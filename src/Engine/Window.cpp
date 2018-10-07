@@ -1,6 +1,5 @@
 #include "Window.h"
 
-#include "Interface/ResourceInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 
 #include "Kernel/Materialable.h"

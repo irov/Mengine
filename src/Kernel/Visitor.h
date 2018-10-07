@@ -21,4 +21,11 @@ namespace Mengine
     public:
         virtual void accept( T * _visited ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    template<class T, class R>
+    class ConcreteVisitorR
+    {
+    public:
+        virtual R accept( T * _visited ) = 0;
+    };
 }

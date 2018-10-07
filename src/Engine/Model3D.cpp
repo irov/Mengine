@@ -1,6 +1,5 @@
 #include "Model3D.h" 
 
-#include "Interface/ResourceInterface.h"
 #include "Interface/NodeInterface.h"
 
 #include "Kernel/RenderCameraProjection.h"

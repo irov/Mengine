@@ -29,7 +29,7 @@
 
 #include "Interface/UnicodeInterface.h"
 
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/ResourceImageData.h"
 

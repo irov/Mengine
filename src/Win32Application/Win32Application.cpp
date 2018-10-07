@@ -12,7 +12,7 @@
 #include "Interface/PackageInterface.h"
 #include "Interface/UserdataInterface.h"
 #include "Interface/GraveyardInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/TextInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 
@@ -112,6 +112,7 @@ PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( Win32FileGroup );
 PLUGIN_EXPORT( BitmapFont );
 PLUGIN_EXPORT( DebugRender );
+PLUGIN_EXPORT( ResourceValidate );
 
 #ifdef MENGINE_PLUGIN_SPINE
 PLUGIN_EXPORT( Spine );
@@ -725,6 +726,11 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_DEBUGRENDER
         MENGINE_ADD_PLUGIN( DebugRender, "initialize Plugin Debug Render..." );
 #endif
+
+#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
+        MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
+#endif
+        
 
         MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec..." );
         MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );

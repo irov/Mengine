@@ -57,7 +57,7 @@ src
     TimelineInterface.h
     SocketInterface.h
 	FactoryInterface.h
-    ResourceInterface.h
+    ResourceServiceInterface.h
     UnicodeInterface.h
     NotificatorInterface.h
     LoaderInterface.h

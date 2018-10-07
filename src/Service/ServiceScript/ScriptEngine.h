@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ScriptSystemInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/PrototypeManagerInterface.h"
 
 #include "ConstStringHolderPythonString.h"

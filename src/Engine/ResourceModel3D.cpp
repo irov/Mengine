@@ -2,7 +2,7 @@
 
 #include "Interface/ConverterInterface.h"
 #include "Interface/CodecInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
 
 #include "Metacode/Metacode.h"

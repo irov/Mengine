@@ -55,7 +55,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ScriptLogger::write( const char * _msg, uint32_t _size )
     {
-        LOGGER_VERBOSE_LEVEL( LOGGER_SERVICE(), m_level ).logMessage( _msg, _size );
+        LOGGER_VERBOSE_LEVEL( m_level ).logMessage( _msg, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptLogger::setMessageLevel( EMessageLevel _level )

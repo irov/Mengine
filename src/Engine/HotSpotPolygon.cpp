@@ -2,7 +2,7 @@
 
 #include "Interface/MousePickerSystemInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderViewportInterface.h"

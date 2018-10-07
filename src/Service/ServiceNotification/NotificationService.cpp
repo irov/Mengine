@@ -90,24 +90,33 @@ namespace Mengine
         this->removeObserver_( _id, _observer );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NotificationService::visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor )
+    bool NotificationService::visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor )
     {
         MapObservers::iterator it_find = m_mapObserves.find( _id );
 
         if( it_find == m_mapObserves.end() )
         {
-            return;
+            return true;
         }
 
         const VectorObservers & observers = it_find->second;
 
         m_mutex->lock();
 
+        bool successful = true;
+
         ++m_visiting;
 
         for( const ObserverDesc & desc : observers )
         {
-            _visitor->visit( desc.callable );
+            try
+            {
+                _visitor->visit( desc.callable );
+            } 
+            catch( const ExceptionNotificationFailed & )
+            {
+                successful = false;
+            }
         }
 
         --m_visiting;
@@ -130,6 +139,8 @@ namespace Mengine
         }
 
         m_mutex->unlock();
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::addObserver_( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable )
@@ -172,6 +183,7 @@ namespace Mengine
 
             desc = observers.back();
             observers.pop_back();
+            break;
         }
     }
 }

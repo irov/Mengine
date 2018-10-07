@@ -24,6 +24,9 @@ namespace Mengine
         void setCodecType( const ConstString & _codecType );
         const ConstString & getCodecType() const;
 
+    public:
+        bool isValidNoExist() const;
+
     protected:
         bool _isValid() const override;
 

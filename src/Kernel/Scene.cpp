@@ -1,6 +1,5 @@
 #include "Scene.h"
 
-#include "Interface/ResourceInterface.h"
 #include "Interface/NodeInterface.h"
 
 #include "Kernel/Logger.h"

@@ -1,7 +1,5 @@
 #include "Mesh2D.h" 
 
-#include "Interface/ResourceInterface.h"
-
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/Logger.h"

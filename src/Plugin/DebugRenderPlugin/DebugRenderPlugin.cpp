@@ -7,7 +7,7 @@
 #include "Kernel/FactorableUnique.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( DebugRender );
+SERVICE_EXTERN( DebugRenderService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( DebugRender, Mengine::DebugRenderPlugin )
 //////////////////////////////////////////////////////////////////////////
@@ -29,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DebugRenderPlugin::_initialize()
     {
-        SERVICE_CREATE( DebugRender );
+        SERVICE_CREATE( DebugRenderService );
 
         RenderVisitorPtr nodeRenderVisitor = new FactorableUnique<NodeDebugRenderVisitor>();
 

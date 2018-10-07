@@ -1,6 +1,6 @@
 #include "HotSpotShape.h"
 
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "ResourceShape.h"

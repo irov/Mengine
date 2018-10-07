@@ -9,9 +9,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #   define MENGINE_LOGGER_MAX_MESSAGE 8192
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( LoggerServiceInterface * _log, EMessageLevel _level, uint32_t _flag )
-        : m_log( _log )
-        , m_level( _level )
+    LoggerOperator::LoggerOperator( EMessageLevel _level, uint32_t _flag )
+        : m_level( _level )
         , m_flag( _flag )
     {
     }
@@ -62,6 +61,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void LoggerOperator::logMessage( const Char * _format, uint32_t _size )
     {
-        m_log->logMessage( m_level, m_flag, _format, _size );
+        LOGGER_SERVICE()
+            ->logMessage( m_level, m_flag, _format, _size );
     }
 }

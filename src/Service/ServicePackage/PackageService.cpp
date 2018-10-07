@@ -392,27 +392,13 @@ namespace Mengine
             }
         }
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PackageService::validatePackages() const
-    {
-        LOGGER_WARNING( "Validate Packages..."
-        );
-
-        bool successful = true;
-
-        for( const PackagePtr & package : m_packages )
+        if( NOTIFICATION_SERVICE()
+            ->notify( NOTIFICATOR_ENGINE_ENABLE_PACKAGES ) == false )
         {
-            if( package->validate() == false )
-            {
-                successful = false;
-
-                continue;
-            }
+            return false;
         }
 
-        return successful;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PackageService::enableLocalePackage( const ConstString & _locale, const Tags & _platformTag )

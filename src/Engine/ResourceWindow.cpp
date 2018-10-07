@@ -1,6 +1,6 @@
 #include "ResourceWindow.h"
 
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 

@@ -2,7 +2,7 @@
 
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/UnicodeInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/TextInterface.h"

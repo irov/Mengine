@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Resource.h"
 
@@ -48,9 +48,7 @@ namespace Mengine
         bool hasResource( const ConstString& _name, ResourcePtr * _resource ) const override;
         bool lockResource( const ConstString& _name );
         bool unlockResource( const ConstString& _name );
-        bool validResourceType( const ConstString& _name, const ConstString& _type ) const override;
-
-        bool validResource( const ConstString& _name ) const override;
+        bool hasResourceWithType( const ConstString& _name, const ConstString& _type ) const override;
 
         PointerResourceReference getResource( const ConstString& _name ) const override;
 
@@ -59,9 +57,9 @@ namespace Mengine
         const ConstString & getResourceType( const ConstString & _name ) const;
 
     public:
-        bool validateResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) const override;
+        void foreachResources( const LambdaResource & _lambda ) const override;
 
-    public:
+    public:        
         void visitResources( const VisitorPtr & _visitor ) const override;
         void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, const VisitorPtr & _visitor ) const override;
 

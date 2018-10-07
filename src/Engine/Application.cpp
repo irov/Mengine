@@ -20,7 +20,7 @@
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/ConverterInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/ProfilerInterface.h"
 #include "Interface/GameInterface.h"
@@ -599,22 +599,22 @@ namespace Mengine
                 );
             }
 
-            if( PACKAGE_SERVICE()
-                ->validatePackages() == false )
-            {
-                LOGGER_ERROR( "Resources validation is invalid!!!!!!!!!!!!!"
-                );
+            //if( PACKAGE_SERVICE()
+            //    ->validatePackages() == false )
+            //{
+            //    LOGGER_ERROR( "Resources validation is invalid!!!!!!!!!!!!!"
+            //    );
 
-                bool resourceCheckCritical = HAS_OPTION( "noresourcecheckcritical" );
+            //    bool resourceCheckCritical = HAS_OPTION( "noresourcecheckcritical" );
 
-                if( resourceCheckCritical == false )
-                {
-                    LOGGER_CRITICAL( "Fix Resources"
-                    );
+            //    if( resourceCheckCritical == false )
+            //    {
+            //        LOGGER_CRITICAL( "Fix Resources"
+            //        );
 
-                    return false;
-                }
-            }
+            //        return false;
+            //    }
+            //}
         }
 #endif
 

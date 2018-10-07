@@ -35,7 +35,6 @@ namespace Mengine
 
     public:
         bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) override;
-        bool validatePackages() const override;
 
     public:
         bool enableLocalePackage( const ConstString & _locale, const Tags & _platformTag );

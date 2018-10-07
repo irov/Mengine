@@ -8,15 +8,18 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Factorable.h"
-
 #include "Kernel/Observable.h"
-
+#include "Kernel/Exception.h"
 #include "Kernel/IntrusivePtr.h"
 
 #include <type_traits>
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    class ExceptionNotificationFailed
+    {
+    };
     //////////////////////////////////////////////////////////////////////////
     class ObserverCallableInterface
         : public FactorableUnique<Factorable>
@@ -71,6 +74,17 @@ namespace Mengine
     public:
         GeneratorMethodObserverCallable( C * _self, void (C::*_method)() )
             : MethodObserverCallable<C, void (C::*)()>( _self, _method )
+        {
+        }
+    };
+    //////////////////////////////////////////////////////////////////////////
+    template<class C>
+    class GeneratorMethodObserverCallable<void (C::*)() const>
+        : public MethodObserverCallable< C, void (C::*)() const>
+    {
+    public:
+        GeneratorMethodObserverCallable( C * _self, void (C::*_method)() const )
+            : MethodObserverCallable<C, void (C::*)() const>( _self, _method )
         {
         }
     };
@@ -155,15 +169,17 @@ namespace Mengine
         }
 
     public:
-        virtual void visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor ) = 0;
+        virtual bool visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor ) = 0;
 
     public:
         template<class ... Args>
-        inline void notify( uint32_t _id, const Args & ... _args )
+        inline bool notify( uint32_t _id, const Args & ... _args )
         {
             ArgsObserverVisitorCallable<Args...> visitor{ _args... };
 
-            this->visitObservers( _id, &visitor );
+            bool successful = this->visitObservers( _id, &visitor );
+
+            return successful;
         }
     };
     //////////////////////////////////////////////////////////////////////////

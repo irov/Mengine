@@ -4,7 +4,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ParticleSystemInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/TimelineInterface.h"
 #include "Interface/FactoryInterface.h"

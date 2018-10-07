@@ -470,4 +470,9 @@ namespace Mengine
 
         this->setPow2( pow2 );
     }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceImageDefault::isValidNoExist() const
+    {
+        return m_validNoExist;
+    }
 }

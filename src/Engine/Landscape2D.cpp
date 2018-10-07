@@ -1,6 +1,5 @@
 #include "Landscape2D.h" 
 
-#include "Interface/ResourceInterface.h"
 #include "Interface/RenderCameraInterface.h"
 
 #include "Kernel/ResourceImage.h"

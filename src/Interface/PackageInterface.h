@@ -53,9 +53,6 @@ namespace Mengine
         virtual bool disable() = 0;
 
     public:
-        virtual bool validate() = 0;
-
-    public:
         virtual bool isLoad() const = 0;
         virtual bool isEnable() const = 0;
     };
@@ -78,9 +75,6 @@ namespace Mengine
 
     public:
         virtual bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) = 0;
-
-    public:
-        virtual bool validatePackages() const = 0;
     };
 
 #   define PACKAGE_SERVICE()\

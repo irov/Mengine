@@ -2,7 +2,7 @@
 
 #include "Interface/AmplifierInterface.h"
 #include "Interface/SoundServiceInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/StringizeInterface.h"
 
@@ -128,7 +128,7 @@ namespace Mengine
         bool hasSound( const ConstString & _resourceName )
         {
             if( RESOURCE_SERVICE()
-                ->validResourceType( _resourceName, STRINGIZE_STRING_LOCAL( "ResourceSound" ) ) == false )
+                ->hasResourceWithType( _resourceName, STRINGIZE_STRING_LOCAL( "ResourceSound" ) ) == false )
             {
                 return false;
             }

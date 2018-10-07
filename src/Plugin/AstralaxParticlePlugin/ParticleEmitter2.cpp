@@ -4,7 +4,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/ParticleSystemInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/NodeRenderHelper.h"

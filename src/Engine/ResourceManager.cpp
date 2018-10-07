@@ -318,146 +318,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceManager::validateResources( const ConstString & _locale, const FileGroupInterfacePtr & _pak, const FilePath & _path ) const
-    {
-        Metacode::Meta_Data::Meta_DataBlock datablock;
-
-        bool exist = false;
-        if( LOADER_SERVICE()
-            ->load( _pak, _path, &datablock, exist ) == false )
-        {
-            if( exist == false )
-            {
-                LOGGER_ERROR( "ResourceManager::validateResources resource '%s:%s' not found"
-                    , _pak->getName().c_str()
-                    , _path.c_str()
-                );
-            }
-            else
-            {
-                LOGGER_ERROR( "ResourceManager::validateResources Invalid parse resource '%s:%s'"
-                    , _pak->getName().c_str()
-                    , _path.c_str()
-                );
-            }
-
-            return false;
-        }
-
-        bool successful = true;
-
-        const ConstString & groupName = datablock.get_Name();
-
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include & includes_include = datablock.get_Includes_Include();
-
-        for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Include::const_iterator
-            it = includes_include.begin(),
-            it_end = includes_include.end();
-            it != it_end;
-            ++it )
-        {
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_Include & meta_include = *it;
-
-            const FilePath & path = meta_include.get_Path();
-
-            if( this->validateResources( _locale, _pak, path ) == false )
-            {
-                LOGGER_ERROR( "ResourceManager::validateResources load %s:%s resource invalid load include %s"
-                    , _pak->getName().c_str()
-                    , _path.c_str()
-                    , path.c_str()
-                );
-
-                successful = false;
-
-                continue;
-            }
-        }
-
-        const Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource & includes_resource = datablock.get_Includes_Resource();
-
-        for( Metacode::Meta_Data::Meta_DataBlock::VectorMeta_Resource::const_iterator
-            it = includes_resource.begin(),
-            it_end = includes_resource.end();
-            it != it_end;
-            ++it )
-        {
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_Resource * meta_resource = *it;
-
-            const ConstString & name = meta_resource->get_Name();
-            const ConstString & type = meta_resource->get_Type();
-
-            bool unique = true;
-            meta_resource->get_Unique( &unique );
-
-            ResourcePtr resource =
-                this->generateResource( type );
-
-            if( resource == nullptr )
-            {
-                LOGGER_ERROR( "ResourceManager::validateResources '%s' invalid create resource '%s:%s' name %s type %s"
-                    , _path.c_str()
-                    , _pak->getName().c_str()
-                    , groupName.c_str()
-                    , name.c_str()
-                    , type.c_str()
-                );
-
-                successful = false;
-
-                continue;
-            }
-
-            resource->setLocale( _locale );
-            resource->setFileGroup( _pak );
-            resource->setGroupName( groupName );
-            resource->setName( name );
-
-            if( resource->loader( meta_resource ) == false )
-            {
-                LOGGER_ERROR( "ResourceManager::validateResources '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
-                    , _path.c_str()
-                    , _pak->getName().c_str()
-                    , groupName.c_str()
-                    , name.c_str()
-                    , type.c_str()
-                );
-
-                successful = false;
-
-                continue;
-            }
-
-#ifndef MENGINE_MASTER_RELEASE
-            if( resource->convert() == false )
-            {
-                LOGGER_ERROR( "ResourceManager::validateResources %s type [%s] invalid convert"
-                    , name.c_str()
-                    , type.c_str()
-                );
-
-                successful = false;
-
-                continue;
-            }
-#endif
-
-            if( resource->isValid() == false )
-            {
-                LOGGER_ERROR( "ResourceManager::validateResources %s type [%s] invalidate"
-                    , name.c_str()
-                    , type.c_str()
-                );
-
-                successful = false;
-
-                continue;
-            }
-        }
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
     PointerResourceReference ResourceManager::generateResource( const ConstString& _type ) const
     {
         ResourcePtr resource = PROTOTYPE_SERVICE()
@@ -472,7 +332,7 @@ namespace Mengine
             return nullptr;
         }
 
-        LOGGER_INFO( "ResourceManager::generateResource type %s"
+        LOGGER_INFO( "ResourceManager::generateResource type '%s'"
             , _type.c_str()
         );
 
@@ -610,7 +470,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceManager::validResourceType( const ConstString& _name, const ConstString& _type ) const
+    bool ResourceManager::hasResourceWithType( const ConstString& _name, const ConstString& _type ) const
     {
         const ResourceEntry * entry = this->findResource_( _name );
 
@@ -627,23 +487,7 @@ namespace Mengine
         }
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceManager::validResource( const ConstString & _name ) const
-    {
-        const ResourceEntry * entry = this->findResource_( _name );
-
-        if( entry == nullptr )
-        {
-            return false;
-        }
-
-        const ResourcePtr & resource = entry->resource;
-
-        bool valid = resource->isValid();
-
-        return valid;
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool ResourceManager::lockResource( const ConstString& _name )
     {
@@ -773,6 +617,27 @@ namespace Mengine
         const ConstString & type = resource->getType();
 
         return type;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceManager::foreachResources( const LambdaResource & _lambda ) const
+    {
+        for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
+        {
+            const MapResources & resources = m_resources[i];
+
+            for( MapResources::const_iterator
+                it = resources.begin(),
+                it_end = resources.end();
+                it != it_end;
+                ++it )
+            {
+                const ResourceEntry & entry = it->second;
+
+                const ResourcePtr & resource = entry.resource;
+
+                _lambda( resource );
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceManager::visitResources( const VisitorPtr & _visitor ) const

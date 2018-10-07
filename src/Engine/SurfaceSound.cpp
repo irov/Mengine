@@ -2,7 +2,7 @@
 
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundServiceInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
 #include "ResourceSound.h"
 

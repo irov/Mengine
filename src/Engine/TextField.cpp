@@ -1,6 +1,5 @@
 #include "TextField.h" 
 
-#include "Interface/ResourceInterface.h"
 #include "Interface/TextInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/NotificationServiceInterface.h"

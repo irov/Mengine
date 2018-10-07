@@ -48,9 +48,6 @@ namespace Mengine
         bool disable() override;
 
     public:
-        bool validate() override;
-
-    public:
         bool isLoad() const override;
         bool isEnable() const override;
 

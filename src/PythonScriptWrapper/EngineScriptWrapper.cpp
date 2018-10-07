@@ -17,6 +17,8 @@
 #include "Interface/PackageInterface.h"
 #include "Interface/RandomizerInterface.h"
 
+#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
 #include "Kernel/Arrow.h"
@@ -30,7 +32,7 @@
 
 #include "Interface/UnicodeInterface.h"
 
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/ResourceImageData.h"
 
@@ -3701,7 +3703,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_validResource( const ConstString & _resourceName )
         {
-            bool valid = RESOURCE_SERVICE()
+            bool valid = RESOURCEVALIDATE_SERVICE()
                 ->validResource( _resourceName );
 
             return valid;

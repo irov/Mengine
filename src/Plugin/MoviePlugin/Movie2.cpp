@@ -4,7 +4,7 @@
 #include "Interface/NodeInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/PrototypeManagerInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
 #include "Plugin/AstralaxParticlePlugin/UnknownParticleEmitter2Interface.h"
 

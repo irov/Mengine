@@ -4,7 +4,7 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/TextInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 #include "Interface/UnicodeInterface.h"
 #include "Interface/ProfilerInterface.h"
 #include "Interface/UserdataInterface.h"
@@ -449,27 +449,6 @@ namespace Mengine
         m_enable = true;
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Package::validate()
-    {
-        bool successful = true;
-
-        for( const PakResourceDesc & desc : m_resourcesDesc )
-        {
-            if( desc.ignored == true )
-            {
-                continue;
-            }
-
-            if( RESOURCE_SERVICE()
-                ->validateResources( m_locale, m_fileGroup, desc.path ) == false )
-            {
-                successful = false;
-            }
-        }
-
-        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Package::disable()

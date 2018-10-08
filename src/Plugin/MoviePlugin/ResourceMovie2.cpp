@@ -5,6 +5,8 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/FileSystemInterface.h"
 
+#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+
 #include "Movie2Interface.h"
 
 #include "Engine/ResourceImageDefault.h"
@@ -436,30 +438,6 @@ namespace Mengine
         m_movieData = movieData;
         stream = nullptr;
 
-#ifndef MENGINE_MASTER_RELEASE
-        bool developmentMode = HAS_OPTION( "dev" );
-        bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
-
-        if( developmentMode == true && noresourceCheck == false )
-        {
-            for( const ResourcePtr & resource : m_resources )
-            {
-                if( resource->isValid() == false )
-                {
-                    LOGGER_ERROR( "ResourceMovie2::_compile resource name '%s' group '%s' path '%s' invalid store resource '%s' type '%s'"
-                        , this->getName().c_str()
-                        , this->getGroupName().c_str()
-                        , this->getFilePath().c_str()
-                        , resource->getName().c_str()
-                        , resource->getType().c_str()
-                    );
-
-                    return false;
-                }
-            }
-        }
-#endif
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -476,111 +454,7 @@ namespace Mengine
         m_movieData = nullptr;
 
         Resource::_release();
-    }
-    //////////////////////////////////////////////////////////////////////////    
-    static ae_bool_t Mengine_movie_layer_data_visitor( const aeMovieCompositionData * _compositionData, const aeMovieLayerData * _layerData, ae_voidptr_t _ud )
-    {
-        ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
-
-        const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( _compositionData );
-        const ae_char_t * layerDataName = ae_get_movie_layer_data_name( _layerData );
-
-        aeMovieLayerTypeEnum layerType = ae_get_movie_layer_data_type( _layerData );
-
-        switch( layerType )
-        {
-        case AE_MOVIE_LAYER_TYPE_TEXT:
-            {
-                if( ae_test_movie_layer_data_opacity_transparent( _layerData ) == AE_TRUE )
-                {
-                    LOGGER_ERROR( "Mengine_movie_layer_data_visitor '%s' composition '%s' text layer '%s' opacity transparent"
-                        , resourceMovie2->getName().c_str()
-                        , compositionDataName
-                        , layerDataName
-                    );
-                }
-            }break;
-        default:
-            {
-            }break;
-        }
-
-        return AE_TRUE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceMovie2::_isValid() const
-    {
-        if( m_filePath.empty() == true )
-        {
-            LOGGER_ERROR( "ResourceMovie::_isValid: '%s' group '%s' don`t have Key Frames Pack Path"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-            );
-
-            return false;
-        }
-
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, m_filePath, false );
-
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "ResourceMovie2::_isValid: '%s' group '%s' can`t open file '%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
-
-        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, m_movieArchivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), "ResourceMovie2::_compile", __FILE__, __LINE__ );
-
-        if( memory == nullptr )
-        {
-            return false;
-        }
-
-        void * memory_buffer = memory->getBuffer();
-
-        aeMovieDataProviders data_providers;
-        ae_clear_movie_data_providers( &data_providers );
-
-        aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, AE_NULL );
-
-        aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, memory_buffer );
-
-        ae_uint32_t major_version;
-        ae_uint32_t minor_version;
-        ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movieStream, &major_version, &minor_version );
-
-        if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
-        {
-            const ae_char_t * result_string_info = ae_get_result_string_info( result_load_movie_data );
-
-            LOGGER_ERROR( "ResourceMovie2::_isValid: '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , this->getFilePath().c_str()
-                , result_string_info
-                , AE_MOVIE_SDK_MAJOR_VERSION
-                , AE_MOVIE_SDK_MINOR_VERSION
-                , major_version
-                , minor_version
-            );
-
-            return false;
-        }
-
-        ae_visit_movie_layer_data( movieData, &Mengine_movie_layer_data_visitor, (ae_voidptr_t)this );
-
-        ae_delete_movie_data( movieData );
-        ae_delete_movie_stream( movieStream );
-
-        return true;
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::storeResource_( const ResourcePtr & _resource )
     {

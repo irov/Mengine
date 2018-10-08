@@ -22,8 +22,6 @@ src
 	ParticleConverterPTCToPTZ.h    
     MovieKeyConverterXMLToAEK.cpp
     MovieKeyConverterXMLToAEK.h
-    ModelConverterMDLToMDZ.cpp
-    ModelConverterMDLToMDZ.h
     ImageConverterPVRToHTF.cpp
     ImageConverterPVRToHTF.h
     ImageConverterDDSToHTF.cpp

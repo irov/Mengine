@@ -393,8 +393,6 @@ Core
     
     OutputStreamWriter.h   
     
-    IntrusiveTree.h
-    
     PluginBase.h
     PluginBase.cpp
     
@@ -485,7 +483,6 @@ ADD_FILTER(
 Archive
 	Archive.h
 	ArchiveWrite.h
-	ArchiveWrite.cpp
 )
 
 ADD_FILTER(

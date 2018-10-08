@@ -21,8 +21,6 @@ namespace Mengine
         bool isLocked;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<ResourcePtr> VectorResources;
-    //////////////////////////////////////////////////////////////////////////
     class ResourceManager
         : public ServiceBase<ResourceServiceInterface>
     {
@@ -50,9 +48,8 @@ namespace Mengine
         bool unlockResource( const ConstString& _name );
         bool hasResourceWithType( const ConstString& _name, const ConstString& _type ) const override;
 
-        PointerResourceReference getResource( const ConstString& _name ) const override;
-
-        PointerResourceReference getResourceReference( const ConstString& _name ) const override; //not compile resource
+        const ResourcePtr & getResource( const ConstString& _name ) const override;
+        const ResourcePtr & getResourceReference( const ConstString& _name ) const override; //not compile resource
 
         const ConstString & getResourceType( const ConstString & _name ) const;
 
@@ -75,6 +72,7 @@ namespace Mengine
         MapResources m_resources[MENGINE_RESOURCE_MANAGER_HASH_SIZE];
 
         typedef std::pair<ConstString, ConstString> ResourceCacheKey;
+        typedef Vector<ResourcePtr> VectorResources;
         typedef Map<ResourceCacheKey, VectorResources> MapResourceCache;
         MapResourceCache m_resourcesCache;
     };

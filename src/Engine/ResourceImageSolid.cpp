@@ -13,6 +13,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ResourceImageSolid::~ResourceImageSolid()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSolid::_loader( const Metabuf::Metadata * _meta )
     {
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSolid * metadata
@@ -38,11 +42,6 @@ namespace Mengine
     {
         this->setPow2( true );
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageSolid::_isValid() const
-    {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

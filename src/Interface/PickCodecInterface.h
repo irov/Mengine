@@ -1,10 +1,10 @@
-
 #pragma once
 
 #include "Interface/CodecInterface.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     struct PickCodecDataInfo
         : public CodecDataInfo
     {
@@ -22,26 +22,26 @@ namespace Mengine
         uint32_t mipmaplevel;
         uint32_t mipmapsize;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     struct PickCodecOptions
         : public CodecOptions
     {
         size_t pitch;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     class PickDecoderInterface
         : public DecoderInterface
     {
     public:
         virtual const PickCodecDataInfo * getCodecDataInfo() const override = 0;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PickDecoderInterface> PickDecoderInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     class PickEncoderInterface
         : public EncoderInterface
     {
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PickEncoderInterface> PickEncoderInterfacePtr;
 }

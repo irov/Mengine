@@ -535,7 +535,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerResourceReference ResourceManager::getResource( const ConstString& _name ) const
+    const ResourcePtr & ResourceManager::getResource( const ConstString& _name ) const
     {
         const ResourceEntry * entry = this->findResource_( _name );
 
@@ -545,7 +545,7 @@ namespace Mengine
                 , _name.c_str()
             );
 
-            return nullptr;
+            return ResourcePtr::none();
         }
 
         if( entry->isLocked == true )
@@ -554,7 +554,7 @@ namespace Mengine
                 , _name.c_str()
             );
 
-            return nullptr;
+            return ResourcePtr::none();
         }
 
         const ResourcePtr & resource = entry->resource;
@@ -566,13 +566,13 @@ namespace Mengine
                 , resource->getType().c_str()
             );
 
-            return nullptr;
+            return ResourcePtr::none();
         }
 
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerResourceReference ResourceManager::getResourceReference( const ConstString & _name ) const
+    const ResourcePtr & ResourceManager::getResourceReference( const ConstString & _name ) const
     {
         const ResourceEntry * entry = this->findResource_( _name );
 
@@ -582,7 +582,7 @@ namespace Mengine
                 , _name.c_str()
             );
 
-            return nullptr;
+            return ResourcePtr::none();
         }
 
         if( entry->isLocked == true )
@@ -591,7 +591,7 @@ namespace Mengine
                 , _name.c_str()
             );
 
-            return nullptr;
+            return ResourcePtr::none();
         }
 
         const ResourcePtr & resource = entry->resource;

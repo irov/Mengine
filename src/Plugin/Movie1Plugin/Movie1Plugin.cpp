@@ -7,6 +7,8 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ConfigInterface.h"
 
+#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotShape.h"
 #include "Engine/ResourceShape.h"
@@ -33,6 +35,8 @@
 
 #include "ResourceMovie.h"
 #include "ResourceInternalObject.h"
+
+#include "Movie1ResourceValidateVisitor.h"
 
 #include "pybind/pybind.hpp"
 
@@ -1003,7 +1007,7 @@ namespace Mengine
             return layer->in;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_intersectsMoviesHotspot( Movie * _movie1, const ConstString & _socket1, Movie * _movie2, const ConstString & _socket2 )
+        static bool s_intersectsMoviesHotspot( Movie * _movie1, const ConstString & _socket1, Movie * _movie2, const ConstString & _socket2 )
         {
             if( _movie1 == nullptr )
             {
@@ -1114,7 +1118,7 @@ namespace Mengine
             return intersect;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_intersectMoviesHotspotVsPolygon( const MoviePtr & _movie, const ConstString & _socket, Polygon _polygon )
+        static bool s_intersectMoviesHotspotVsPolygon( const MoviePtr & _movie, const ConstString & _socket, Polygon _polygon )
         {
             if( _movie == nullptr )
             {
@@ -1171,7 +1175,7 @@ namespace Mengine
             return intersect;
         }
         //////////////////////////////////////////////////////////////////////////
-        pybind::object s_getMovieSlotsPosition( pybind::kernel_interface * _kernel, const ConstString & _groupName, const ConstString & _movieName )
+        static pybind::object s_getMovieSlotsPosition( pybind::kernel_interface * _kernel, const ConstString & _groupName, const ConstString & _movieName )
         {
             stdex::array_string<128> buffer;
             buffer.append( "Movie" );
@@ -1210,7 +1214,7 @@ namespace Mengine
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getMovieSlotPosition( pybind::kernel_interface * _kernel, const ConstString & _groupName, const ConstString & _movieName, const ConstString & _slotName )
+        static PyObject * s_getMovieSlotPosition( pybind::kernel_interface * _kernel, const ConstString & _groupName, const ConstString & _movieName, const ConstString & _slotName )
         {
             stdex::array_string<128> buffer;
             buffer.append( "Movie" );
@@ -1248,7 +1252,7 @@ namespace Mengine
             return py_position;
         }
         //////////////////////////////////////////////////////////////////////////
-        float s_getMovieDuration( const ConstString & _resourceName )
+        static float s_getMovieDuration( const ConstString & _resourceName )
         {
             ResourceMoviePtr resourceMovie = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
@@ -1322,7 +1326,7 @@ namespace Mengine
             float m_frameDuration;
         };
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_getNullObjectsFromResourceMovie( pybind::kernel_interface * _kernel, ResourceMovie * _resource )
+        static PyObject * s_getNullObjectsFromResourceMovie( pybind::kernel_interface * _kernel, ResourceMovie * _resource )
         {
             if( _resource == nullptr )
             {
@@ -1339,9 +1343,9 @@ namespace Mengine
             return py_dict_result.ret();
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieElement2( const ResourceMoviePtr & _resource, const ConstString & _slotName, const ConstString & _typeName );
+        static bool s_hasMovieElement2( const ResourceMoviePtr & _resource, const ConstString & _slotName, const ConstString & _typeName );
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieElement( const ConstString & _resourceName, const ConstString & _slotName, const ConstString & _typeName )
+        static bool s_hasMovieElement( const ConstString & _resourceName, const ConstString & _slotName, const ConstString & _typeName )
         {
             ResourceMoviePtr resource = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
@@ -1358,7 +1362,7 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieElement2( const ResourceMoviePtr & _resource, const ConstString & _slotName, const ConstString & _typeName )
+        static bool s_hasMovieElement2( const ResourceMoviePtr & _resource, const ConstString & _slotName, const ConstString & _typeName )
         {
             const VectorMovieLayers & layers = _resource->getLayers();
 
@@ -1388,21 +1392,21 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieSlot( const ConstString & _resourceName, const ConstString & _slotName )
+        static bool s_hasMovieSlot( const ConstString & _resourceName, const ConstString & _slotName )
         {
             bool result = s_hasMovieElement( _resourceName, _slotName, STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieSubMovie( const ConstString & _resourceName, const ConstString & _subMovieName )
+        static bool s_hasMovieSubMovie( const ConstString & _resourceName, const ConstString & _subMovieName )
         {
             bool result = s_hasMovieElement( _resourceName, _subMovieName, STRINGIZE_STRING_LOCAL( "SubMovie" ) );
 
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieSocket( const ConstString & _resourceName, const ConstString & _socketName )
+        static bool s_hasMovieSocket( const ConstString & _resourceName, const ConstString & _socketName )
         {
             if( s_hasMovieElement( _resourceName, _socketName, STRINGIZE_STRING_LOCAL( "MovieSocketImage" ) ) == true )
             {
@@ -1417,7 +1421,7 @@ namespace Mengine
             return false;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_hasMovieEvent( const ConstString & _resourceName, const ConstString & _eventName )
+        static bool s_hasMovieEvent( const ConstString & _resourceName, const ConstString & _eventName )
         {
             bool result = s_hasMovieElement( _resourceName, _eventName, STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
 
@@ -1583,6 +1587,13 @@ namespace Mengine
             return false;
         }
 
+        VisitorPtr resourceValidateVisitor = new FactorableUnique<Movie1ResourceValidateVisitor>();
+
+        RESOURCEVALIDATE_SERVICE()
+            ->addResourceValidateVisitor( resourceValidateVisitor );
+
+        m_resourceValidateVisitor = resourceValidateVisitor;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1613,6 +1624,9 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
 
         PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );        
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );
+
+        RESOURCEVALIDATE_SERVICE()
+            ->removeResourceValidateVisitor( m_resourceValidateVisitor );
     }
 }

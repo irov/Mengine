@@ -45,9 +45,6 @@ namespace Mengine
         void _release() override;
 
     protected:
-        bool _isValid() const override;
-
-    protected:
         FilePath m_filePath;
 
         ConstString m_converterType;

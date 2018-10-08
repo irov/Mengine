@@ -82,9 +82,6 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
-    protected:
-        bool _isValid() const override;
-
     public:
         bool storeResource_( const ResourcePtr & _resource );
         Resource * getResource_( const ae_string_t _name );
@@ -94,7 +91,7 @@ namespace Mengine
 
         ArchivatorInterfacePtr m_movieArchivator;
 
-        aeMovieData * m_movieData;
+        const aeMovieData * m_movieData;
 
         FilePath m_filePath;
 

@@ -22,23 +22,19 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceFile * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceFile *>(_meta);
 
-        m_path = metadata->get_File_Path();
+        m_filePath = metadata->get_File_Path();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceFile::_isValid() const
+    void ResourceFile::setFilePath( const FilePath & _filePath )
     {
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-
-        bool valid = fileGroup->existFile( m_path );
-
-        return valid;
+        m_filePath = _filePath;
     }
     //////////////////////////////////////////////////////////////////////////
     const FilePath & ResourceFile::getFilePath() const
     {
-        return m_path;
+        return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
 }

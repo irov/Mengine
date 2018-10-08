@@ -49,17 +49,9 @@ namespace Mengine
         m_visitors.erase( it_erase );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceValidateService::validResource( const ConstString & _name ) const
+    bool ResourceValidateService::validResource( const ResourcePtr & _resource ) const
     {
-        const ResourcePtr & resource = RESOURCE_SERVICE()
-            ->getResourceReference( _name );
-
-        if( resource == nullptr )
-        {
-            return false;
-        }
-
-        bool valid = this->visitableResource_( resource );
+        bool valid = this->visitableResource_( _resource );
 
         return valid;
     }

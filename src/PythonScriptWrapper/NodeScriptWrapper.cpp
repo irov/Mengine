@@ -36,7 +36,6 @@
 #include "Engine/ResourceFile.h"
 #include "Kernel/ResourceMusic.h"
 #include "Engine/ResourceImageSequence.h"
-#include "Engine/ResourceModel3D.h"
 #include "Engine/ResourceVideo.h"
 #include "Engine/ResourceSound.h"
 #include "Engine/ResourceImageSolid.h"
@@ -56,7 +55,6 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/MousePickerSystemInterface.h"
 
-#include "Engine/Model3D.h"
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/HotSpotCircle.h"

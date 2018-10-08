@@ -146,12 +146,6 @@ Object\\\\Mesh2D
 )
 
 ADD_FILTER(
-Object\\\\Model3D
-	Model3D.cpp
-	Model3D.h
-)
-
-ADD_FILTER(
 Object\\\\Gyroscope
 	Gyroscope.cpp
 	Gyroscope.h
@@ -187,12 +181,6 @@ ADD_FILTER(
 Resource\\\\File
 	ResourceFile.cpp
 	ResourceFile.h
-)
-
-ADD_FILTER(
-Resource\\\\Model3D
-	ResourceModel3D.cpp
-	ResourceModel3D.h
 )
 
 ADD_FILTER(

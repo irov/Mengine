@@ -1,8 +1,10 @@
 #include "AstralaxParticlePlugin2.h"
 
 #include "Interface/ParticleSystemInterface.h"
+#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 
 #include "AstralaxParticleModule2.h"
+#include "ParticleResourceValidateVisitor.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/ModuleFactory.h"
@@ -32,12 +34,23 @@ namespace Mengine
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAstralaxParticle" )
             , new ModuleFactory<AstralaxParticleModule2>() );
 
+        VisitorPtr particleValidateVisitor = new FactorableUnique<ParticleResourceValidateVisitor>();
+
+        RESOURCEVALIDATE_SERVICE()
+            ->addResourceValidateVisitor( particleValidateVisitor );
+
+        m_particleValidateVisitor = particleValidateVisitor;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticlePlugin2::_finalize()
     {
         SERVICE_FINALIZE( Mengine::ParticleSystemInterface2 );
+
+        RESOURCEVALIDATE_SERVICE()
+            ->addResourceValidateVisitor( m_particleValidateVisitor );
+        m_particleValidateVisitor = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticlePlugin2::_destroy()

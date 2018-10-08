@@ -15,11 +15,14 @@ src
 	ResourceParticle.cpp
 	ResourceParticle.h
     
+    ParticleResourceValidateVisitor.cpp
+    ParticleResourceValidateVisitor.h
+    
     UnknownParticleEmitter2Interface.h
 
     AstralaxParticlePlugin2.cpp
     AstralaxParticlePlugin2.h
-    AstralaxParticlePlugin2.def
+    AstralaxParticlePlugin2.def    
 )
 
 if(MENGINE_PLUGIN_ASTRALAX_DLL)

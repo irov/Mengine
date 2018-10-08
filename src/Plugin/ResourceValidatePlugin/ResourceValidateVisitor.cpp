@@ -5,6 +5,9 @@
 #include "Interface/RenderImageInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ConfigInterface.h"
+#include "Interface/PickCodecInterface.h"
+
+#include "ResourceValidateInterface.h"
 
 #include "Kernel/ResourceImage.h"
 #include "Kernel/MemoryHelper.h"
@@ -376,7 +379,8 @@ namespace Mengine
                 return false;
             }
 
-            if( resourceImage->isValid() == false )
+            if( RESOURCEVALIDATE_SERVICE()
+                ->validResource( resourceImage ) == false )
             {
                 LOGGER_ERROR( "ResourceValidateVisitor::ResourceImageSequence: %s invalid validate sequence resource '%s'"
                     , _resource->getName().c_str()
@@ -644,5 +648,80 @@ namespace Mengine
         _resource->destroyVideoDecoder( decoder );
 
         return valid;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceValidateVisitor::accept( ResourceHIT * _resource )
+    {
+        const FilePath & filePath = _resource->getFilePath();
+        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+
+        if( fileGroup->existFile( filePath ) == false )
+        {
+            return false;
+        }
+
+        InputStreamInterfacePtr stream = FILE_SERVICE()
+            ->openInputFile( fileGroup, filePath, false );
+
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "ResourceHIT::_isValid %s invalid open file %s:%s"
+                , _resource->getName().c_str()
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        const ConstString & codecType = _resource->getCodecType();
+
+        PickDecoderInterfacePtr decoder = CODEC_SERVICE()
+            ->createDecoderT<PickDecoderInterfacePtr>( codecType );
+
+        if( decoder == nullptr )
+        {
+            LOGGER_ERROR( "ResourceHIT::_isValid %s file %s:%s invalid decoder %s"
+                , _resource->getName().c_str()
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFilePath().c_str()
+                , _resource->getCodecType().c_str()
+            );
+
+            return false;
+        }
+
+        if( decoder->prepareData( stream ) == false )
+        {
+            LOGGER_ERROR( "ResourceHIT::_isValid %s file %s:%s decoder initialize failed %s"
+                , _resource->getName().c_str()
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFilePath().c_str()
+                , _resource->getCodecType().c_str()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceValidateVisitor::accept( ResourceFile * _resource )
+    {
+        const FilePath & filePath = _resource->getFilePath();
+        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+
+        if( fileGroup->existFile( filePath ) == false )
+        {
+            LOGGER_ERROR( "ResourceValidateVisitor::ResourceFile '%s' file group '%s' not found file '%s'"
+                , _resource->getName().c_str()
+                , _resource->getFileGroup()->getName().c_str()
+                , _resource->getFilePath().c_str()
+            );
+
+            return false;
+        }
+
+        return true;
     }
 }

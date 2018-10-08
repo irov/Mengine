@@ -48,18 +48,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Resource::isValid() const
-    {
-        bool result = this->_isValid();
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Resource::_isValid() const
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Resource::_loader( const Metabuf::Metadata * _parser )
     {
         (void)_parser;

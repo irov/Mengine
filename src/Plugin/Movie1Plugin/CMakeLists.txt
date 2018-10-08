@@ -23,6 +23,9 @@ src
     ResourceMovie.h
     ResourceInternalObject.cpp
     ResourceInternalObject.h
+    
+    Movie1ResourceValidateVisitor.cpp
+    Movie1ResourceValidateVisitor.h
 )
 
 INCLUDE_DIRECTORIES( 

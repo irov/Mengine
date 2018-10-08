@@ -9,7 +9,6 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/ThreadSystemInterface.h"
-#include "Interface/PhysicSystemInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/SoundSystemInterface.h"

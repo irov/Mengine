@@ -247,9 +247,6 @@ namespace Mengine
         void visitResourceMovie( VisitorResourceMovie * _visitor );
 
     protected:
-        bool _isValid() const override;
-
-    protected:
         bool _loader( const Metabuf::Metadata * _parser ) override;
         bool _convert() override;
 

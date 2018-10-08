@@ -12,7 +12,6 @@
 #include "VideoConverterFFMPEGToOGV.h"
 #include "VideoConverterFFMPEGToOGVA.h"
 #include "MovieKeyConverterXMLToAEK.h"
-#include "ModelConverterMDLToMDZ.h"
 
 #include "Kernel/Logger.h"
 

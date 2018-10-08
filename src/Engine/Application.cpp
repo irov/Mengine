@@ -61,7 +61,6 @@
 #include "Grid2D.h"
 #include "TextField.h"
 #include "Meshget.h"
-#include "Model3D.h"
 #include "Layer2D.h"
 
 #include "Kernel/Interender.h"
@@ -103,7 +102,6 @@
 #include "ResourceFile.h"
 #include "ResourceVideo.h"
 #include "ResourceSound.h"
-#include "ResourceModel3D.h"
 #include "ResourceWindow.h"
 #include "ResourceHIT.h"
 #include "ResourceShape.h"
@@ -2083,10 +2081,10 @@ namespace Mengine
             m_cursorResource->decrementReference();
         }
 
-        m_cursorResource = RESOURCE_SERVICE()
+        ResourceCursorPtr cursorResource = RESOURCE_SERVICE()
             ->getResource( _resourceName );
 
-        if( m_cursorResource == nullptr )
+        if( cursorResource == nullptr )
         {
             LOGGER_ERROR( "Application::setCursorIcon: can't find resource cursor %s"
                 , _resourceName.c_str()
@@ -2094,6 +2092,8 @@ namespace Mengine
 
             return;
         }
+
+        m_cursorResource = cursorResource;
 
         if( m_cursorMode == false )
         {

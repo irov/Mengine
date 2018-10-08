@@ -166,59 +166,6 @@ namespace Mengine
         m_mipmap = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceHIT::_isValid() const
-    {
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-
-        if( fileGroup->existFile( m_filePath ) == false )
-        {
-            return false;
-        }
-
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, m_filePath, false );
-
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "ResourceHIT::_isValid %s invalid open file %s:%s"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
-
-        PickDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<PickDecoderInterfacePtr>( m_codecType );
-
-        if( decoder == nullptr )
-        {
-            LOGGER_ERROR( "ResourceHIT::_isValid %s file %s:%s invalid decoder %s"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-                , this->getCodecType().c_str()
-            );
-
-            return false;
-        }
-
-        if( decoder->prepareData( stream ) == false )
-        {
-            LOGGER_ERROR( "ResourceHIT::_isValid %s file %s:%s decoder initialize failed %s"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getFilePath().c_str()
-                , this->getCodecType().c_str()
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void ResourceHIT::setPath( const FilePath & _filePath )
     {
         if( m_filePath == _filePath )

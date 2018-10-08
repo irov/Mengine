@@ -838,9 +838,24 @@ namespace Mengine
 
                 __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
 
+                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'h', 'r' ) ) == AE_TRUE )
+                {
+                    node->setHorizontalRightAlign();
+                }
+
                 if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'h', 'c' ) ) == AE_TRUE )
                 {
                     node->setHorizontalCenterAlign();
+                }
+
+                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'h', 'l' ) ) == AE_TRUE )
+                {
+                    node->setHorizontalLeftAlign();
+                }
+
+                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'v', 't' ) ) == AE_TRUE )
+                {
+                    node->setVerticalTopAlign();
                 }
 
                 if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'v', 'c' ) ) == AE_TRUE )
@@ -848,6 +863,10 @@ namespace Mengine
                     node->setVerticalCenterAlign();
                 }
 
+                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'v', 'b' ) ) == AE_TRUE )
+                {
+                    node->setVerticalBottomAlign();
+                }
 
                 *_nd = node.get();
 
@@ -1031,6 +1050,16 @@ namespace Mengine
 
                     surfaceSound->setLoop( _callbackData->incessantly );
                     surfaceSound->setInterpolateVolume( false );
+
+                    if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'v', 'o' ) ) == AE_TRUE )
+                    {
+                        surfaceSound->setSoundCategory( ES_SOURCE_CATEGORY_VOICE );
+                    }
+
+                    if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'm', 'u' ) ) == AE_TRUE )
+                    {
+                        surfaceSound->setSoundCategory( ES_SOURCE_CATEGORY_MUSIC );
+                    }
 
                     ResourceSound * resourceSound = reinterpret_node_cast<ResourceSound *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
 

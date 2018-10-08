@@ -83,6 +83,11 @@ namespace Mengine
 
         IniUtil::getIniValue( _ini, m_name.c_str(), "FESample", m_ttfFESample );
 
+        for( uint32_t index = 0; index != FE_MAX_PINS; ++index )
+        {
+            m_ttfEffectNodes[index] = nullptr;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -140,6 +145,8 @@ namespace Mengine
             }
             else
             {
+                m_ttfEffectNodes[0] = effect_node_out;
+
                 m_ttfLayoutCount = 1;
             }
         }

@@ -37,7 +37,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     class Amplifier::MyMusicSoundListener
-        : public FactorableUnique<SoundListenerInterface>
+        : public FactorableUnique<Factorable>
+        , public SoundListenerInterface
     {
     public:
         MyMusicSoundListener( const AmplifierMusicCallbackInterfacePtr & _callback )
@@ -133,7 +134,7 @@ namespace Mengine
         }
 
         SoundIdentityInterfacePtr soundEmitter = SOUND_SERVICE()
-            ->createSoundIdentity( false, buffer, ESST_MUSIC, true );
+            ->createSoundIdentity( false, buffer, ES_SOURCE_CATEGORY_MUSIC, true );
 
         if( soundEmitter == nullptr )
         {

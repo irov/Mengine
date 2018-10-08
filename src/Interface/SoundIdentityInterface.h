@@ -9,11 +9,11 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    enum ESoundSourceType
+    enum ESoundSourceCategory
     {
-        ESST_SOUND,
-        ESST_MUSIC,
-        ESST_VOICE
+        ES_SOURCE_CATEGORY_SOUND,
+        ES_SOURCE_CATEGORY_MUSIC,
+        ES_SOURCE_CATEGORY_VOICE,
     };
     //////////////////////////////////////////////////////////////////////////
     enum ESoundSourceState
@@ -26,7 +26,7 @@ namespace Mengine
     typedef IntrusivePtr<class SoundIdentityInterface> SoundIdentityInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SoundListenerInterface
-        : public Factorable
+        : public Mixin
     {
     public:
         virtual void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) = 0;
@@ -55,7 +55,7 @@ namespace Mengine
         virtual bool getLoop() const = 0;
 
     public:
-        virtual ESoundSourceType getType() const = 0;
+        virtual ESoundSourceCategory getCategory() const = 0;
         virtual ESoundSourceState getState() const = 0;
 
         virtual const MixerValue & getVolume() const = 0;

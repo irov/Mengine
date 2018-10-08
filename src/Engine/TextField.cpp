@@ -1490,18 +1490,18 @@ namespace Mengine
         return m_pixelsnap;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::setVerticalBottomAlign()
+    void TextField::setVerticalTopAlign()
     {
-        m_verticalAlign = ETFVA_BOTTOM;
+        m_verticalAlign = ETFVA_TOP;
 
         m_fontParams |= EFP_VERTICAL_ALIGN;
 
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TextField::isVerticalBottomAlign() const
+    bool TextField::isVerticalTopAlign() const
     {
-        return m_verticalAlign == ETFVA_BOTTOM;
+        return m_verticalAlign == ETFVA_TOP;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setVerticalCenterAlign()
@@ -1516,6 +1516,20 @@ namespace Mengine
     bool TextField::isVerticalCenterAlign() const
     {
         return m_verticalAlign == ETFVA_CENTER;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setVerticalBottomAlign()
+    {
+        m_verticalAlign = ETFVA_BOTTOM;
+
+        m_fontParams |= EFP_VERTICAL_ALIGN;
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TextField::isVerticalBottomAlign() const
+    {
+        return m_verticalAlign == ETFVA_BOTTOM;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setHorizontalCenterAlign()

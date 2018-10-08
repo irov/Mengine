@@ -46,9 +46,9 @@ namespace Mengine
         return looped;
     }
     //////////////////////////////////////////////////////////////////////////
-    ESoundSourceType SoundIdentity::getType() const
+    ESoundSourceCategory SoundIdentity::getCategory() const
     {
-        return type;
+        return category;
     }
     //////////////////////////////////////////////////////////////////////////
     ESoundSourceState SoundIdentity::getState() const

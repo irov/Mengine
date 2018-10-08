@@ -93,11 +93,14 @@ namespace Mengine
         void setHorizontalLeftAlign();
         bool isHorizontalLeftAlign() const;
 
-        void setVerticalBottomAlign();
-        bool isVerticalBottomAlign() const;
+        void setVerticalTopAlign();
+        bool isVerticalTopAlign() const;
 
         void setVerticalCenterAlign();
         bool isVerticalCenterAlign() const;
+
+        void setVerticalBottomAlign();
+        bool isVerticalBottomAlign() const;
 
     public:
         void setMaxCharCount( uint32_t _maxCharCount );

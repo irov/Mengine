@@ -35,7 +35,8 @@ namespace Mengine
     public:
         //////////////////////////////////////////////////////////////////////////
         class MySoundNodeListener
-            : public FactorableUnique<SoundListenerInterface>
+            : public FactorableUnique<Factorable>
+            , public SoundListenerInterface
         {
         public:
             MySoundNodeListener( const ResourceSoundPtr & _resource, const SoundBufferInterfacePtr & _soundBuffer, const pybind::object & _cb, const pybind::args & _args )
@@ -138,7 +139,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factorySoundNodeListener;
         //////////////////////////////////////////////////////////////////////////
-        SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceType _type, const pybind::object & _cb, const pybind::args & _args )
+        SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args )
         {
             ResourceSoundPtr resource = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
@@ -160,7 +161,7 @@ namespace Mengine
             bool streamable = resource->isStreamable();
 
             SoundIdentityInterfacePtr sourceEmitter = SOUND_SERVICE()
-                ->createSoundIdentity( true, soundBuffer, _type, streamable );
+                ->createSoundIdentity( true, soundBuffer, _category, streamable );
 
             if( sourceEmitter == nullptr )
             {
@@ -196,7 +197,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr soundPlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ESST_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
             if( sourceEmitter == nullptr )
             {
@@ -222,7 +223,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr voicePlay( const ConstString & _resourceName, bool _loop, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ESST_VOICE, _cb, _args );
+            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_VOICE, _cb, _args );
 
             if( sourceEmitter == nullptr )
             {
@@ -264,7 +265,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr soundPlayFromPosition( const ConstString & _resourceName, float _position, bool _loop, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ESST_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
             if( sourceEmitter == nullptr )
             {
@@ -401,7 +402,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr soundFadeOut( const ConstString & _resourceName, bool _loop, float _time, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ESST_SOUND, _cb, _args );
+            SoundIdentityInterfacePtr sourceEmitter = s_createSoundSource( _resourceName, _loop, ES_SOURCE_CATEGORY_SOUND, _cb, _args );
 
             if( sourceEmitter == nullptr )
             {

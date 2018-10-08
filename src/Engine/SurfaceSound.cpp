@@ -13,58 +13,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class SurfaceSound::MySoundListener
-        : public FactorableUnique<SoundListenerInterface>
-    {
-    public:
-        MySoundListener( uint32_t _id, SurfaceSound * _sound )
-            : m_id( _id )
-            , m_sound( _sound )
-        {
-        }
-
-        ~MySoundListener() override
-        {
-        }
-
-    protected:
-        void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override
-        {
-            (void)_emitter;
-
-            EVENTABLE_METHOD( m_sound, EVENT_ANIMATION_PAUSE )
-                ->onAnimationPause( m_id );
-        }
-
-        void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override
-        {
-            (void)_emitter;
-
-            EVENTABLE_METHOD( m_sound, EVENT_ANIMATION_RESUME )
-                ->onAnimationResume( m_id, 0.f );
-        }
-
-        void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
-        {
-            (void)_emitter;
-
-            m_sound->stop();
-        }
-
-        void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
-        {
-            (void)_emitter;
-
-            m_sound->end();
-        }
-
-    protected:
-        uint32_t m_id;
-        SurfaceSound * m_sound;
-    };
-    //////////////////////////////////////////////////////////////////////////
     SurfaceSound::SurfaceSound()
-        : m_interpolateVolume( true )
+        : m_sourceCategory( ES_SOURCE_CATEGORY_SOUND )
+        , m_interpolateVolume( true )
         , m_isHeadMode( false )
         , m_volume( 1.f )
     {
@@ -109,7 +60,7 @@ namespace Mengine
         bool streamable = m_resourceSound->isStreamable();
 
         m_soundEmitter = SOUND_SERVICE()
-            ->createSoundIdentity( m_isHeadMode, m_soundBuffer, ESST_SOUND, streamable );
+            ->createSoundIdentity( m_isHeadMode, m_soundBuffer, m_sourceCategory, streamable );
 
         if( m_soundEmitter == nullptr )
         {
@@ -120,7 +71,7 @@ namespace Mengine
             return false;
         }
 
-        m_soundEmitter->setSoundListener( new MySoundListener( m_enumerator, this ) );
+        m_soundEmitter->setSoundListener( this );
 
         SOUND_SERVICE()
             ->setLoop( m_soundEmitter, m_loop );
@@ -168,6 +119,16 @@ namespace Mengine
     const ResourceSoundPtr & SurfaceSound::getResourceSound() const
     {
         return m_resourceSound;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::setSoundCategory( ESoundSourceCategory _sourceCategory )
+    {
+        m_sourceCategory = _sourceCategory;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ESoundSourceCategory SurfaceSound::getSoundCategory() const
+    {
+        return m_sourceCategory;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::setInterpolateVolume( bool _interpolateVolume )
@@ -430,5 +391,39 @@ namespace Mengine
     RenderMaterialInterfacePtr SurfaceSound::_updateMaterial() const
     {
         return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SurfaceSound::onSoundPause( const SoundIdentityInterfacePtr & _emitter )
+    {
+        (void)_emitter;
+
+        uint32_t id = this->getPlayId();
+
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_PAUSE )
+            ->onAnimationPause( id );
+    }
+
+    void SurfaceSound::onSoundResume( const SoundIdentityInterfacePtr & _emitter )
+    {
+        (void)_emitter;
+
+        uint32_t id = this->getPlayId();
+
+        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESUME )
+            ->onAnimationResume( id, 0.f );
+    }
+
+    void SurfaceSound::onSoundStop( const SoundIdentityInterfacePtr & _emitter )
+    {
+        (void)_emitter;
+
+        this->stop();
+    }
+
+    void SurfaceSound::onSoundEnd( const SoundIdentityInterfacePtr & _emitter )
+    {
+        (void)_emitter;
+
+        this->end();
     }
 }

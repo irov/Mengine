@@ -32,6 +32,7 @@ namespace Mengine
         , public Soundable
         , public BaseEventation
         , public BaseAnimation
+        , public SoundListenerInterface
     {
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE( SurfaceSoundEventReceiver );
@@ -43,6 +44,10 @@ namespace Mengine
     public:
         void setResourceSound( const ResourceSoundPtr & _resourceSound );
         const ResourceSoundPtr & getResourceSound() const;
+
+    public:
+        void setSoundCategory( ESoundSourceCategory _sourceCategory );
+        ESoundSourceCategory getSoundCategory() const;
 
     public:
         void setInterpolateVolume( bool _interpolateVolume );
@@ -76,8 +81,6 @@ namespace Mengine
         float _getVolume() const override;
 
     public:
-        void updateVolume();
-
         float getDuration() const;
 
     protected:
@@ -91,6 +94,12 @@ namespace Mengine
         void _setLoop( bool _value ) override;
 
     protected:
+        void onSoundPause( const SoundIdentityInterfacePtr & _emitter ) override;
+        void onSoundResume( const SoundIdentityInterfacePtr & _emitter ) override;
+        void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override;
+        void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override;
+
+    protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     private:
@@ -99,12 +108,12 @@ namespace Mengine
         SoundBufferInterfacePtr m_soundBuffer;
         SoundIdentityInterfacePtr m_soundEmitter;
 
+        ESoundSourceCategory m_sourceCategory;
+
         bool m_interpolateVolume;
         bool m_isHeadMode;
 
         float m_volume;
-
-        class MySoundListener;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SurfaceSound> SurfaceSoundPtr;

@@ -29,7 +29,7 @@ namespace Mengine
         bool getLoop() const override;
 
     public:
-        ESoundSourceType getType() const override;
+        ESoundSourceCategory getCategory() const override;
         ESoundSourceState getState() const override;
         const MixerValue & getVolume() const override;
 
@@ -46,7 +46,7 @@ namespace Mengine
         MixerValue volume;
 
         ESoundSourceState state;
-        ESoundSourceType type;
+        ESoundSourceCategory category;
 
         bool streamable;
         bool looped;

@@ -699,7 +699,21 @@ namespace Mengine
         ::QueryPerformanceCounter( &randomSeed );
         srand( randomSeed.LowPart );
 
-        LOGGER_WARNING( "initialize Application..." );
+        LOGGER_WARNING( "initialize Plugins..." );
+
+#	define MENGINE_ADD_PLUGIN( Name, Info )\
+		do{LOGGER_INFO( Info );\
+		if(	PLUGIN_CREATE(Name) == false ){\
+		LOGGER_ERROR( "Invalid %s", Info );}else{\
+		LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
+
+#ifdef MENGINE_PLUGIN_DEBUGRENDER
+        MENGINE_ADD_PLUGIN( DebugRender, "initialize Plugin Debug Render..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
+        MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
+#endif
 
         VectorWString plugins;
         CONFIG_VALUES( "Plugins", "Name", plugins );
@@ -716,21 +730,6 @@ namespace Mengine
                 return false;
             }
         }
-
-#	define MENGINE_ADD_PLUGIN( Name, Info )\
-		do{LOGGER_INFO( Info );\
-		if(	PLUGIN_CREATE(Name) == false ){\
-		LOGGER_ERROR( "Invalid %s", Info );}else{\
-		LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
-
-#ifdef MENGINE_PLUGIN_DEBUGRENDER
-        MENGINE_ADD_PLUGIN( DebugRender, "initialize Plugin Debug Render..." );
-#endif
-
-#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
-        MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
-#endif
-        
 
         MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec..." );
         MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );
@@ -787,8 +786,7 @@ namespace Mengine
 
         SERVICE_CREATE( ParticleService );
 
-        LOGGER_WARNING( "Modules Run..."
-        );
+        LOGGER_WARNING( "Modules Run..." );
 
         VectorString modules;
         CONFIG_VALUES( "Modules", "Name", modules );

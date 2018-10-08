@@ -246,7 +246,7 @@ namespace Mengine
             ->onTurnSound( m_turnSound );
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundIdentityInterfacePtr SoundEngine::createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceType _type, bool _streamable )
+    SoundIdentityInterfacePtr SoundEngine::createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceCategory _category, bool _streamable )
     {
         if( m_supportStream == false && _streamable == true )
         {
@@ -290,7 +290,7 @@ namespace Mengine
         //emitter->volume.setValue( STRINGIZE_STRING_LOCAL( "Generic" ), 1.f, 1.f );
 
         emitter->state = ESS_STOP;
-        emitter->type = _type;
+        emitter->category = _category;
 
         emitter->streamable = _streamable;
         emitter->looped = false;
@@ -322,13 +322,13 @@ namespace Mengine
         }
         else
         {
-            ESoundSourceType type = _emitter->getType();
-
             const MixerValue & emitterVolume = _emitter->getVolume();
+
+            ESoundSourceCategory type = _emitter->getCategory();
 
             switch( type )
             {
-            case ESST_SOUND:
+            case ES_SOURCE_CATEGORY_SOUND:
                 {
                     float commonMixVolume = m_commonVolume.mixValue();
                     float soundMixVolume = m_soundVolume.mixValue();
@@ -341,7 +341,7 @@ namespace Mengine
 
                     source->setVolume( mixVolume );
                 }break;
-            case ESST_MUSIC:
+            case ES_SOURCE_CATEGORY_MUSIC:
                 {
                     float commonMixVolume = m_commonVolume.mixValue();
                     float musicMixVolume = m_musicVolume.mixValue();
@@ -354,7 +354,7 @@ namespace Mengine
 
                     source->setVolume( mixVolume );
                 }break;
-            case ESST_VOICE:
+            case ES_SOURCE_CATEGORY_VOICE:
                 {
                     float commonMixVolume = m_commonVolume.mixValue();
                     float voiceMixVolume = m_voiceVolume.mixValue();

@@ -2,6 +2,8 @@
 
 #include "Kernel/PluginBase.h"
 
+#include "Kernel/RenderVisitor.h"
+
 #include "movie/movie.hpp"
 
 namespace Mengine
@@ -27,5 +29,8 @@ namespace Mengine
         const aeMovieInstance * m_instance;
 
         String m_hashkey;
+
+        RenderVisitorPtr m_movie2RenderVisitor;
+        VisitorPtr m_movie2ValidateVisitor;
     };
 }

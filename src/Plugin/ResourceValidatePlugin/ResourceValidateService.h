@@ -24,7 +24,7 @@ namespace Mengine
     public:
         void addResourceValidateVisitor( const VisitorPtr & _visitor ) override;
         void removeResourceValidateVisitor( const VisitorPtr & _visitor ) override;
-        bool validResource( const ConstString& _name ) const override;
+        bool validResource( const ResourcePtr & _resource ) const override;
         
     protected:
         bool visitableResource_( const ResourcePtr & _resource ) const;

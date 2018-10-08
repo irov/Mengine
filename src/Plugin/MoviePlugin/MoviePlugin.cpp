@@ -8,6 +8,7 @@
 #include "Interface/ArchiveServiceInterface.h"
 
 #include "../Plugin/DebugRenderPlugin/DebugRenderInterface.h"
+#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 
 #include "Movie2DebugRenderVisitor.h"
 
@@ -28,6 +29,8 @@
 #include "Movie2.h"
 #include "ResourceMovie2.h"
 #include "Movie2Slot.h"
+
+#include "Movie2ResourceValidateVisitor.h"
 
 #include "pybind/pybind.hpp"
 
@@ -398,7 +401,6 @@ namespace Mengine
             .def( "setEnableMovieLayers", &Movie2::setEnableMovieLayers )
             ;
 
-
         pybind::interface_<Movie2Slot, pybind::bases<Node> >( kernel, "Movie2Slot", false )
             ;
 
@@ -461,7 +463,16 @@ namespace Mengine
         RenderVisitorPtr movie2RenderVisitor = new FactorableUnique<Movie2DebugRenderVisitor>();
 
         DEBUGRENDER_SERVICE()
-            ->addRenderVisitor( movie2RenderVisitor );        
+            ->addRenderVisitor( movie2RenderVisitor );
+
+        m_movie2RenderVisitor = movie2RenderVisitor;
+
+        VisitorPtr movie2ValidateVisitor = new FactorableUnique<Movie2ResourceValidateVisitor>();
+
+        RESOURCEVALIDATE_SERVICE()
+            ->addResourceValidateVisitor( movie2ValidateVisitor );
+
+        m_movie2ValidateVisitor = movie2ValidateVisitor;
 
         return true;
     }
@@ -488,5 +499,13 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+
+        DEBUGRENDER_SERVICE()
+            ->removeRenderVisitor( m_movie2RenderVisitor );
+        m_movie2RenderVisitor = nullptr;
+
+        RESOURCEVALIDATE_SERVICE()
+            ->removeResourceValidateVisitor( m_movie2ValidateVisitor );
+        m_movie2ValidateVisitor = nullptr;
     }
 }

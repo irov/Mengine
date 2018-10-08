@@ -110,42 +110,6 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceParticle::_isValid() const
-    {
-        if( PARTICLE_SERVICE2()->isAvailable() == false )
-        {
-            return true;
-        }
-
-        const ConstString & name = this->getName();
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-
-        ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2()
-            ->createEmitterContainerFromFile( fileGroup, m_filePath, name );
-
-        if( container == nullptr )
-        {
-            LOGGER_ERROR( "ResourceParticle::_isValid %s can't create container file '%s'"
-                , this->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
-
-        if( container->isValid() == false )
-        {
-            LOGGER_ERROR( "ResourceParticle::_isValid %s can't valid container '%s'"
-                , this->getName().c_str()
-                , this->getFilePath().c_str()
-            );
-
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceParticle::_compile()
     {
         const ConstString & name = this->getName();

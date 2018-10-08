@@ -54,12 +54,6 @@ namespace Mengine
         virtual bool _initialize();
 
     public:
-        bool isValid() const;
-
-    protected:
-        virtual bool _isValid() const;
-
-    public:
         bool _loader( const Metabuf::Metadata * _parser ) override;
 
     public:

@@ -31,9 +31,6 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
-    protected:
-        bool _isValid() const override;
-
     public:
         void setPath( const FilePath & _filePath );
 

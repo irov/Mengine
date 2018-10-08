@@ -19,13 +19,11 @@ namespace Mengine
         bool _loader( const Metabuf::Metadata * _parser ) override;
 
     public:
-        bool _isValid() const override;
-
-    public:
+        void setFilePath( const FilePath & _filePath );
         const FilePath & getFilePath() const;
 
     protected:
-        FilePath m_path;
+        FilePath m_filePath;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceFile> ResourceFilePtr;

@@ -38,7 +38,6 @@
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceImageSequence.h"
-#include "Engine/ResourceModel3D.h"
 #include "Engine/ResourceVideo.h"
 #include "Engine/ResourceSound.h"
 #include "Engine/ResourceImageSolid.h"
@@ -56,7 +55,6 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/MousePickerSystemInterface.h"
 
-#include "Engine/Model3D.h"
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/HotSpotCircle.h"
@@ -3703,13 +3701,25 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_validResource( const ConstString & _resourceName )
         {
+            const ResourcePtr & resource = RESOURCE_SERVICE()
+                ->getResourceReference( _resourceName );
+
+            if( resource == nullptr )
+            {
+                LOGGER_ERROR( "s_validResource resource '%s' not found"
+                    , _resourceName.c_str()
+                );
+
+                return false;
+            }
+
             bool valid = RESOURCEVALIDATE_SERVICE()
-                ->validResource( _resourceName );
+                ->validResource( resource );
 
             return valid;
         }
     };
-
+    //////////////////////////////////////////////////////////////////////////
     bool PythonScriptWrapper::engineWrap()
     {
         EngineScriptMethod * nodeScriptMethod = new EngineScriptMethod();

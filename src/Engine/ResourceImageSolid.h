@@ -14,9 +14,7 @@ namespace Mengine
 
     public:
         ResourceImageSolid();
-
-    protected:
-        bool _isValid() const override;
+        ~ResourceImageSolid() override;
 
     protected:
         bool _loader( const Metabuf::Metadata * _parser ) override;

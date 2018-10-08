@@ -40,9 +40,9 @@ namespace Mengine
         virtual bool removeResource( const ResourcePtr & _resource ) = 0;
 
     public:
-        virtual PointerResourceReference getResource( const ConstString& _name ) const = 0;
+        virtual const ResourcePtr & getResource( const ConstString& _name ) const = 0;
 
-        virtual PointerResourceReference getResourceReference( const ConstString& _name ) const = 0;
+        virtual const ResourcePtr & getResourceReference( const ConstString& _name ) const = 0;
 
         virtual bool hasResource( const ConstString& _name, ResourcePtr * _resource ) const = 0;
 

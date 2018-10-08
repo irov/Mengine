@@ -4,6 +4,7 @@
 #include "Interface/RenderInterface.h"
 
 #include "Kernel/Node.h"
+#include "Kernel/Resource.h"
 #include "Kernel/RenderVisitor.h"
 
 namespace Mengine
@@ -19,7 +20,7 @@ namespace Mengine
         virtual void removeResourceValidateVisitor( const VisitorPtr & _visitor ) = 0;
 
     public:
-        virtual bool validResource( const ConstString& _name ) const = 0;
+        virtual bool validResource( const ResourcePtr & _name ) const = 0;
         //virtual bool validateResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////

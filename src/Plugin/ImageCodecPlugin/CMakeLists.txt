@@ -80,14 +80,6 @@ aek
     MovieFramePack.cpp
 )
 
-ADD_FILTER(
-mdl
-    DataflowMDL.h
-    DataflowMDL.cpp
-    Model3DPack.h
-    Model3DPack.cpp
-)
-
 SET(MENGINE_SUPPORT_DECODER_WEBP ON)
 
 if(MENGINE_SUPPORT_DECODER_WEBP)

@@ -4,6 +4,7 @@
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
+#include "Kernel/Hashtable.h"
 
 #include "Config/Vector.h"
 
@@ -27,8 +28,8 @@ namespace Mengine
     public:
         bool addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator ) override;
         bool removePrototype( const ConstString & _category, const ConstString & _prototype ) override;
-        bool hasPrototype( const ConstString & _category, const ConstString & _prototype, PrototypeGeneratorInterfacePtr & _generator ) const override;
-
+        const PrototypeGeneratorInterfacePtr & getGenerator( const ConstString & _category, const ConstString & _prototype ) const override;
+        
     public:
         PointerFactorable generatePrototype( const ConstString & _category, const ConstString & _prototype ) override;
 
@@ -36,14 +37,36 @@ namespace Mengine
         void visitGenerators( VisitorPrototypeGenerator * _visitor ) const override;
 
     protected:
+        //struct CategoryKey
+        //{
+        //    ConstString category;
+        //    ConstString prototype;
+        //    PrototypeGeneratorInterfacePtr generator;
+        //};
+
+        //typedef Vector<CategoryKey> VectorPrototypes;
+        //VectorPrototypes m_prototypes[MENGINE_PROTOTYPE_HASH_SIZE];
+
         struct CategoryKey
         {
             ConstString category;
             ConstString prototype;
-            PrototypeGeneratorInterfacePtr generator;
+
+            bool operator == ( const CategoryKey & _key ) const
+            {
+                return category == _key.category && prototype == _key.prototype;
+            }
         };
 
-        typedef Vector<CategoryKey> VectorPrototypes;
-        VectorPrototypes m_prototypes[MENGINE_PROTOTYPE_HASH_SIZE];
+        struct CategoryKeyHashgen
+        {
+            HashType operator() (const CategoryKey & _key ) const
+            {
+                return _key.category.hash() + _key.prototype.hash();
+            }
+        };
+
+        typedef Hashtable<CategoryKey, PrototypeGeneratorInterfacePtr, CategoryKeyHashgen> HashtablePrototypes;
+        HashtablePrototypes m_prototypes;
     };
 }

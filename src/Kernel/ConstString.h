@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/ConstStringHolder.h"
+#include "Kernel/Hashgen.h"
 
 namespace Mengine
 {
@@ -147,4 +148,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool operator != ( const ConstString::value_type * _left, const ConstString & _right );
     //////////////////////////////////////////////////////////////////////////
+    template<>
+    struct Hashgen<ConstString>
+    {
+        HashType operator()( const ConstString & _value ) const
+        {
+            return _value.hash();
+        }
+    };
 }

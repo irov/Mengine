@@ -78,7 +78,7 @@ namespace Mengine
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new NodePrototypeGenerator<ParticleEmitter2, 128> ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new FactorableUnique<NodePrototypeGenerator<ParticleEmitter2, 128> > ) == false )
         {
             return false;
         }
@@ -90,7 +90,7 @@ namespace Mengine
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new ResourcePrototypeGenerator<ResourceParticle, 128> ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceParticle, 128> > ) == false )
         {
             return false;
         }

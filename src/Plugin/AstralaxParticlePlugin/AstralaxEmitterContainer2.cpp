@@ -17,8 +17,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitterContainer2::AstralaxEmitterContainer2()
-        : m_particleSystem( nullptr )
-        , m_mf( 0 )
+        : m_mf( 0 )
         , m_dublicateCount( 0 )
         , m_ptcId( 0 )
     {
@@ -29,10 +28,8 @@ namespace Mengine
         MENGINE_ASSERTION( m_mf == 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitterContainer2::initialize( AstralaxParticleSystem2 * _particleSystem, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
+    bool AstralaxEmitterContainer2::initialize( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator )
     {
-        m_particleSystem = _particleSystem;
-
         MemoryInterfacePtr memory = Helper::loadStreamArchiveMagicMemory( _stream, _archivator, GET_MAGIC_NUMBER( MAGIC_PTZ ), GET_MAGIC_VERSION( MAGIC_PTZ ), "AstralaxEmitterContainer2", __FILE__, __LINE__ );
 
         if( memory == nullptr )

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "BasePrototypeGenerator.h"
+#include "FactoryPrototypeGenerator.h"
 
 #include "Kernel/ConstString.h"
 
@@ -12,7 +12,7 @@ namespace Mengine
 {
     template<class Type, uint32_t Count>
     class DefaultPrototypeGenerator
-        : public BasePrototypeGenerator
+        : public FactoryPrototypeGenerator
     {
     protected:
         typedef IntrusivePtr<Type> TypePtr;

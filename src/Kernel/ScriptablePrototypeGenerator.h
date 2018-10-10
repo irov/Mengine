@@ -1,11 +1,11 @@
 #pragma once
 
-#include "BasePrototypeGenerator.h"
+#include "Interface/ScriptSystemInterface.h"
 
-#include "Kernel/ConstString.h"
-#include "Kernel/Scriptable.h"
+#include "FactoryPrototypeGenerator.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/Scriptable.h"
 
 #include "Kernel/Logger.h"
 
@@ -13,7 +13,7 @@ namespace Mengine
 {
     template<class Type, uint32_t Count>
     class ScriptablePrototypeGenerator
-        : public BasePrototypeGenerator
+        : public FactoryPrototypeGenerator
     {
     protected:
         typedef IntrusivePtr<Type> TypePtr;

@@ -33,7 +33,7 @@ namespace Mengine
         ~AstralaxEmitterContainer2() override;
 
     public:
-        bool initialize( AstralaxParticleSystem2 * _particleSystem, const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator );
+        bool initialize( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator );
         void finalize();
 
     public:
@@ -57,8 +57,6 @@ namespace Mengine
         bool loadContainer_( const void * _buffer, size_t _size, HM_FILE & _mf ) const;
 
     protected:
-        AstralaxParticleSystem2 * m_particleSystem;
-
         HM_FILE m_mf;
 
         uint32_t m_dublicateCount;

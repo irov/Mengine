@@ -74,11 +74,8 @@ namespace Mengine
         m_generator = _generator;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool EntityPrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype )
+    bool EntityPrototypeGenerator::initialize()
     {
-        m_category = _category;
-        m_prototype = _prototype;
-
         if( m_generator.is_callable() == false )
         {
             return false;

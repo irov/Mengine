@@ -146,6 +146,8 @@ ADD_FILTER(
 PrototypeGenerator
     BasePrototypeGenerator.cpp
     BasePrototypeGenerator.h    
+	FactoryPrototypeGenerator.cpp
+	FactoryPrototypeGenerator.h
     DefaultPrototypeGenerator.h
     NodePrototypeGenerator.h
     ScriptablePrototypeGenerator.h
@@ -426,6 +428,10 @@ Core
     AspectRatioViewports.h
     
     Range.h
+    
+    Hashgen.h
+    Hashtable.h
+    HashHelper.h
 )
 
 ADD_FILTER(

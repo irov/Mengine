@@ -1546,43 +1546,43 @@ namespace Mengine
             ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new ScriptWrapper<ResourceInternalObject>() );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), new NodePrototypeGenerator<Movie, 128> ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<NodePrototypeGenerator<Movie, 128> > ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ), new NodePrototypeGenerator<MovieSlot, 128> ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ), new FactorableUnique<NodePrototypeGenerator<MovieSlot, 128> > ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new NodePrototypeGenerator<MovieSceneEffect, 128> ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new FactorableUnique<NodePrototypeGenerator<MovieSceneEffect, 128> > ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new NodePrototypeGenerator<MovieInternalObject, 128> ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new FactorableUnique<NodePrototypeGenerator<MovieInternalObject, 128> > ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), new NodePrototypeGenerator<MovieEvent, 128> ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), new FactorableUnique<NodePrototypeGenerator<MovieEvent, 128> > ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new ResourcePrototypeGenerator<ResourceMovie, 64>() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceMovie, 64> >() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new ResourcePrototypeGenerator<ResourceInternalObject, 64>() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceInternalObject, 64> >() ) == false )
         {
             return false;
         }

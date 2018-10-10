@@ -72,12 +72,12 @@ namespace Mengine
         char * dst_buffer = (char *)_distance;
         const char * src_buffer = (const char *)_source;
 
-        int decompressSize = ::LZ4_decompress_fast( src_buffer, dst_buffer, (int)_bufferSize );
+        int readBytes = ::LZ4_decompress_fast( src_buffer, dst_buffer, (int)_bufferSize );
 
-        if( decompressSize < 0 )
+        if( readBytes < 0 )
         {
             LOGGER_ERROR( "ArchivatorLZ4::decompress invalid uncompress code [%d]"
-                , decompressSize
+                , readBytes
             );
 
             return false;

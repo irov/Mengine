@@ -106,7 +106,7 @@ namespace Mengine
             return nullptr;
         }
 
-        if( container->initialize( this, _stream, _archivator ) == false )
+        if( container->initialize( _stream, _archivator ) == false )
         {
             LOGGER_ERROR( "AstralaxParticleSystem::createEmitterContainerFromMemory '%s' invalid initialize container"
                 , _whoName.c_str()
@@ -981,7 +981,14 @@ namespace Mengine
     {
         uint32_t id = _container->getPtcId();
 
+        if( id == 0 )
+        {
+            return;
+        }
+
         MapHashEmitterContainers::iterator it_found = m_containers.find( id );
+
+        MENGINE_ASSERTION( it_found != m_containers.end() );
 
         AstralaxEmitterContainerDesc & desc = it_found->second;
         --desc.reference;

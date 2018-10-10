@@ -7,27 +7,27 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFontPrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype )
+    BitmapFontPrototypeGenerator::BitmapFontPrototypeGenerator()
     {
-        (void)_category;
-        (void)_prototype;
+    }
+    //////////////////////////////////////////////////////////////////////////    
+    BitmapFontPrototypeGenerator::~BitmapFontPrototypeGenerator()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    FactoryPtr BitmapFontPrototypeGenerator::_initializeFactory()
+    {
+        FactoryPtr factory = new FactoryPool<BitmapFont, 8>();
 
-        m_factoryFont = new FactoryPool<BitmapFont, 8>();
-
-        return true;
+        return factory;
     }
     //////////////////////////////////////////////////////////////////////////
     PointerFactorable BitmapFontPrototypeGenerator::generate()
     {
-        BitmapFontPtr font = m_factoryFont->createObject();
+        const FactoryPtr & factory = this->getFactory();
+
+        BitmapFontPtr font = factory->createObject();
 
         return font;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t BitmapFontPrototypeGenerator::count() const
-    {
-        uint32_t count = m_factoryFont->getCountObject();
-
-        return count;
     }
 }

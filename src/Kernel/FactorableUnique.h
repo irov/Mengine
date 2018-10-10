@@ -27,5 +27,11 @@ namespace Mengine
 
             delete this;
         }
+
+    protected:
+        void _destroy() override
+        {
+            //Empty
+        }
     };
 }

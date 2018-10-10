@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Interface/PrototypeManagerInterface.h"
-
-#include "Kernel/ServantBase.h"
+#include "Kernel/BasePrototypeGenerator.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/Entity.h"
@@ -11,7 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class EntityPrototypeGenerator
-        : public ServantBase<PrototypeGeneratorInterface>
+        : public BasePrototypeGenerator
         , public Eventable
         , public BaseEventation
     {
@@ -25,7 +23,7 @@ namespace Mengine
         void setScriptGenerator( const pybind::object & _generator );
 
     public:
-        bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
+        bool initialize() override;
 
     public:
         pybind::object preparePythonType();
@@ -40,8 +38,6 @@ namespace Mengine
         uint32_t count() const override;
 
     protected:
-        ConstString m_category;
-        ConstString m_prototype;
         pybind::object m_generator;
         pybind::object m_type;
 

@@ -1,0 +1,347 @@
+#pragma once
+
+#include "Kernel/Hashgen.h"
+#include "Kernel/IntrusivePtr.h"
+#include "Kernel/MemoryAllocator.h"
+
+namespace Mengine
+{
+    template<class K, class T, class H = Hashgen<K> >
+    class Hashtable
+    {
+    public:
+        typedef uint32_t size_type;
+        typedef HashType hash_type;
+        typedef K key_type;
+        typedef T element_type_ptr;
+        typedef H hashgen_type;
+
+    public:
+        Hashtable()
+            : m_size( 0 )
+            , m_capacity( 0 )
+            , m_buffer( nullptr )
+        {
+        }
+
+        ~Hashtable()
+        {
+            this->clear();
+
+            Helper::freeArrayT( m_buffer );
+        }
+
+    public:
+        void insert( const key_type & _key, const element_type_ptr & _element )
+        {
+            uint32_t test_size = m_size * 3 + 1;
+            uint32_t test_capacity = m_capacity * 2;
+            if( test_size > test_capacity )
+            {
+                this->increase_();
+            }
+
+            hash_type hash = hashgen_type()(_key);
+
+            Hashtable::push_( m_buffer, m_capacity, hash, _key, _element );
+
+            ++m_size;
+        }
+
+        void remove( const key_type & _key )
+        {
+            hash_type hash = hashgen_type()(_key);
+
+            Hashtable::pop_( m_buffer, m_capacity, hash, _key );
+
+            --m_size;
+        }
+
+        const element_type_ptr & find( const key_type & _key ) const
+        {
+            hash_type hash = hashgen_type()(_key);
+
+            const element_type_ptr & element = Hashtable::find_( m_buffer, m_capacity, hash, _key );
+
+            return element;
+        }        
+
+    public:
+        void reserve( uint32_t _capacity )
+        {
+            if( m_capacity > _capacity )
+            {
+                return;
+            }
+
+            --_capacity;
+            _capacity |= _capacity >> 16;
+            _capacity |= _capacity >> 8;
+            _capacity |= _capacity >> 4;
+            _capacity |= _capacity >> 2;
+            _capacity |= _capacity >> 1;
+            ++_capacity;
+
+            this->rebalance_( _capacity );
+        }
+
+        void clear()
+        {
+            for( size_type index = 0; index != m_capacity; ++index )
+            {
+                Record * record = m_buffer + index;
+
+                if( record->element == nullptr || record->element.get() == reinterpret_cast<const element_type_ptr::value_type *>(~0UL) )
+                {
+                    continue;
+                }
+
+                record->key = key_type();
+                record->element = nullptr;
+            }
+
+            m_size = 0;
+        }
+
+    protected:
+        struct Record
+        {
+            hash_type hash;
+            key_type key;
+            element_type_ptr element;
+        };
+
+    protected:
+        class const_iterator
+        {
+        public:
+            inline explicit const_iterator( Record * _carriage, Record * _end )
+                : m_carriage( _carriage )
+                , m_end( _end )
+            {
+                this->adapt_();
+            }
+
+            inline const_iterator( const const_iterator & _it )
+                : m_carriage( _it.m_carriage )
+                , m_end( _it.m_end )
+            {
+            }
+
+        public:
+            inline const element_type_ptr & operator -> () const
+            {
+                return m_carriage->element;
+            }
+
+            inline const element_type_ptr & operator * () const
+            {
+                return m_carriage->element;
+            }
+
+        public:
+            inline bool operator == ( const const_iterator & _it ) const
+            {
+                return m_carriage == _it.m_carriage;
+            }
+
+            inline bool operator != ( const const_iterator & _it ) const
+            {
+                return !this->operator == ( _it );
+            }
+
+            inline const_iterator & operator ++ ()
+            {
+                ++m_carriage;
+
+                this->adapt_();
+
+                return *this;
+            }
+
+            inline const_iterator operator ++ ( int )
+            {
+                const_iterator tmp = *this;
+                ++*this;
+
+                return tmp;
+            }
+
+        protected:
+            inline void adapt_()
+            {
+                for( ; m_carriage != m_end; ++m_carriage )
+                {
+                    if( m_carriage->element == nullptr )
+                    {
+                        continue;
+                    }
+
+                    if( m_carriage->element.get() == reinterpret_cast<const element_type_ptr::value_type *>(~0UL) )
+                    {
+                        continue;
+                    }
+
+                    break;
+                }
+            }
+
+        protected:
+            Record * m_carriage;
+            Record * m_end;
+        };
+
+    public:
+        inline const_iterator begin() const
+        {
+            return const_iterator( m_buffer, m_buffer + m_capacity );
+        }
+
+        inline const_iterator end() const
+        {
+            return const_iterator( m_buffer + m_capacity, m_buffer + m_capacity );
+        }
+
+    protected:
+        void increase_()
+        {
+            if( m_buffer == nullptr )
+            {
+                m_capacity = 8;
+                m_buffer = this->newbuffer_( m_capacity );
+
+                return;
+            }
+
+            size_type new_capacity = (m_capacity << 1);
+
+            this->rebalance_( new_capacity );
+        }
+
+    protected:
+        Record * newbuffer_( size_type _capacity )
+        {
+            Record * new_buffer = Helper::allocateArrayT<Record>( _capacity );
+
+            for( size_type index = 0; index != _capacity; ++index )
+            {
+                Record * record = new_buffer + index;
+
+                record->hash = 0L;
+                new(&record->key) key_type;
+                new(&record->element) element_type_ptr;
+            }
+
+            return new_buffer;
+        }
+
+        void rebalance_( size_type _capacity )
+        {
+            size_type old_capacity = m_capacity;
+            Record * old_buffer = m_buffer;
+
+            Record * new_buffer = this->newbuffer_( _capacity );
+
+            for( size_type index = 0; index != old_capacity; ++index )
+            {
+                Record * record = old_buffer + index;
+
+                if( record->element == nullptr || record->element.get() == reinterpret_cast<const element_type_ptr::value_type *>(~0UL) )
+                {
+                    continue;
+                }
+
+                Hashtable::push_( new_buffer, _capacity, record->hash, record->key, record->element );
+
+                record->key = key_type();
+                record->element = nullptr;
+            }
+
+            Helper::freeArrayT( old_buffer );
+
+            m_capacity = _capacity;
+            m_buffer = new_buffer;
+        }
+
+        static void push_( Record * _buffer, size_type _capacity, hash_type _hash, const key_type & _key, const element_type_ptr & _element )
+        {
+            size_type hash_mask = _capacity - 1;
+            size_type mask = (size_type)_hash;
+
+            for( hash_type probe = _hash; ; probe >>= 5 )
+            {
+                Record * record = _buffer + (mask & hash_mask);
+
+                if( record->element == nullptr || record->element.get() == reinterpret_cast<const element_type_ptr::value_type *>(~0U) )
+                {
+                    record->hash = _hash;
+                    record->key = _key;
+                    record->element = _element;
+
+                    break;
+                }
+
+                mask = (mask << 2) + mask + (size_type)probe + 1;
+            }
+        }
+
+        static void pop_( Record * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
+        {
+            size_type hash_mask = _capacity - 1;
+            size_type mask = (size_type)_hash;
+
+            for( hash_type probe = _hash; ; probe >>= 5 )
+            {
+                Record * record = _buffer + (mask & hash_mask);
+
+                if( record->element == nullptr )
+                {
+                    break;
+                }
+
+                if( record->hash == _hash && record->key == _key )
+                {
+                    record->element.set( reinterpret_cast<element_type_ptr::value_type *>(~0UL) );
+
+                    break;
+                }
+
+                mask = (mask << 2) + mask + (size_type)probe + 1;
+            }
+        }
+
+        static const element_type_ptr & find_( Record * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
+        {
+            size_type hash_mask = _capacity - 1;
+            size_type mask = (size_type)_hash;
+
+            for( hash_type probe = _hash; ; probe >>= 5 )
+            {
+                Record * record = _buffer + (mask & hash_mask);
+
+                if( record->element == nullptr )
+                {
+                    return element_type_ptr::none();
+                }
+
+                if( record->hash == _hash && record->key == _key )
+                {
+                    if( record->element.get() == reinterpret_cast<const element_type_ptr::value_type *>(~0UL) )
+                    {
+                        return element_type_ptr::none();
+                    }
+
+                    return record->element;
+                }
+
+                mask = (mask << 2) + mask + (size_type)probe + 1;
+            }
+        }
+
+    protected:
+        size_type m_size;
+        size_type m_capacity;
+        
+        Record * m_buffer;
+    };
+}

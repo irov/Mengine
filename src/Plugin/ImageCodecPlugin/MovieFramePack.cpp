@@ -66,10 +66,10 @@ namespace Mengine
             Helper::freeMemory( polygon.polygon, "MovieFramePack" );
         }
 
-        Helper::freeMemoryT( m_layers );
-        Helper::freeMemoryT( m_timeremap );
-        Helper::freeMemoryT( m_shapes );
-        Helper::freeMemoryT( m_polygons );
+        Helper::freeArrayT( m_layers );
+        Helper::freeArrayT( m_timeremap );
+        Helper::freeArrayT( m_shapes );
+        Helper::freeArrayT( m_polygons );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieFramePack::initialize( uint32_t _size )

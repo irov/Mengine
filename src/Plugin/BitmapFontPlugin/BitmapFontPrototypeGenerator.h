@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Interface/PrototypeManagerInterface.h"
-
-#include "Kernel/ServantBase.h"
+#include "Kernel/FactoryPrototypeGenerator.h"
 
 #include "Kernel/Factory.h"
 
@@ -10,16 +8,17 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class BitmapFontPrototypeGenerator
-        : public ServantBase<PrototypeGeneratorInterface>
+        : public FactoryPrototypeGenerator
     {
     public:
-        bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
+        BitmapFontPrototypeGenerator();
+        ~BitmapFontPrototypeGenerator() override;
+
+    public:
+        FactoryPtr _initializeFactory() override;
 
     public:
         PointerFactorable generate() override;
-
-    public:
-        uint32_t count() const override;
 
     protected:
         FactoryPtr m_factoryFont;

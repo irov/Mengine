@@ -5,7 +5,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringHolder.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/Hash.h"
+#include "Kernel/HashHelper.h"
 
 #include "Config/Typedef.h"
 #include "Config/String.h"

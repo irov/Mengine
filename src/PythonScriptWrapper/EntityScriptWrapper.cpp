@@ -98,9 +98,10 @@ namespace Mengine
         {
             (void)_kernel;
 
-            PrototypeGeneratorInterfacePtr generator;
-            if( PROTOTYPE_SERVICE()
-                ->hasPrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, generator ) == false )
+            const PrototypeGeneratorInterfacePtr & generator = PROTOTYPE_SERVICE()
+                ->getGenerator( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+            
+            if( generator == nullptr )
             {
                 LOGGER_ERROR( "importEntity: can't import 'Entity' '%s'"
                     , _prototype.c_str()

@@ -4,11 +4,6 @@
 
 #include "Kernel/Surface.h"
 
-#include "Kernel/ConstString.h"
-#include "Kernel/MemoryAllocator.h"
-
-#include "Kernel/FactoryPool.h"
-
 #include "Kernel/Logger.h"
 
 namespace Mengine

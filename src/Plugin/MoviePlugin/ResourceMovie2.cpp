@@ -176,7 +176,7 @@ namespace Mengine
             return;
         }
 
-        Helper::freeMemoryT( reinterpret_cast<mt::vec2f *>(_callbackData->uv_cache_data) );
+        Helper::freeArrayT( reinterpret_cast<mt::vec2f *>(_callbackData->uv_cache_data) );
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie2::ResourceMovie2()

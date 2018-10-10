@@ -3982,7 +3982,7 @@ namespace Mengine
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollower" ), new ScriptablePrototypeGenerator<PythonValueFollower, 32>() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollower" ), new FactorableUnique<ScriptablePrototypeGenerator<PythonValueFollower, 32> >() ) == false )
         {
             return false;
         }            
@@ -3996,7 +3996,7 @@ namespace Mengine
             ;
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), new DefaultPrototypeGenerator<MT19937Randomizer, 8>() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ), new FactorableUnique<DefaultPrototypeGenerator<MT19937Randomizer, 8> >() ) == false )
         {
             return false;
         }

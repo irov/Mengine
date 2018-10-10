@@ -429,19 +429,19 @@ namespace Mengine
             ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new ScriptWrapper<ResourceMovie2>() );
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new NodePrototypeGenerator<Movie2, 128> ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<NodePrototypeGenerator<Movie2, 128> > ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new NodePrototypeGenerator<Movie2Slot, 128> ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new FactorableUnique<NodePrototypeGenerator<Movie2Slot, 128> > ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new ScriptablePrototypeGenerator<Movie2SubComposition, 128> ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new FactorableUnique<ScriptablePrototypeGenerator<Movie2SubComposition, 128> > ) == false )
         {
             return false;
         }
@@ -455,7 +455,7 @@ namespace Mengine
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new ResourceMovie2PrototypeGenerator( m_instance, archivator ) ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<ResourceMovie2PrototypeGenerator>( m_instance, archivator ) ) == false )
         {
             return false;
         }

@@ -77,7 +77,7 @@ namespace Mengine
         }
 
         template<class T>
-        inline void freeMemoryT( T * _memory )
+        inline void freeArrayT( T * _memory )
         {
             stdex_free( _memory, Typename<T>::value );
         }

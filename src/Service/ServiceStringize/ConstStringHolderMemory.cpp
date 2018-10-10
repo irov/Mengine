@@ -16,7 +16,7 @@ namespace Mengine
     {
         if( m_buff != nullptr )
         {
-            Helper::freeMemoryT( m_buff );
+            Helper::freeArrayT( m_buff );
             m_buff = nullptr;
         }
     }

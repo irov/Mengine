@@ -1,8 +1,6 @@
 #pragma once
 
-#include "Interface/PrototypeManagerInterface.h"
-
-#include "Kernel/ServantBase.h"
+#include "Kernel/FactoryPrototypeGenerator.h"
 
 #include "Kernel/Factory.h"
 
@@ -14,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class TTFPrototypeGenerator
-        : public ServantBase<PrototypeGeneratorInterface>
+        : public FactoryPrototypeGenerator
     {
     public:
         TTFPrototypeGenerator();
@@ -24,13 +22,10 @@ namespace Mengine
         void setFTLibrary( FT_Library _ftlibrary );
 
     public:
-        bool initialize( const ConstString & _category, const ConstString & _prototype ) override;
+        FactoryPtr _initializeFactory() override;
 
     public:
         PointerFactorable generate() override;
-
-    public:
-        uint32_t count() const override;
 
     protected:
         FT_Library m_ftlibrary;

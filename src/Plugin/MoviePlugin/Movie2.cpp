@@ -252,12 +252,6 @@ namespace Mengine
                 RenderInterface * render = node->getRender();
                 render->setExternalRender( true );
 
-                UnknownParticleEmitter2InterfacePtr unknownParticleEmitter2 = node->getUnknown();
-
-                unknownParticleEmitter2->setEmitterPositionRelative( false );
-                unknownParticleEmitter2->setEmitterCameraRelative( false );
-                unknownParticleEmitter2->setEmitterTranslateWithParticle( false );
-
                 this->addParticle_( layer.index, node );
 
                 MatrixProxyPtr matrixProxy = PROTOTYPE_SERVICE()
@@ -925,11 +919,24 @@ namespace Mengine
                     return AE_FALSE;
                 }
 
+                UnknownParticleEmitter2InterfacePtr unknownParticleEmitter2 = node->getUnknown();
+
+                if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', '\0', 't' ) ) == AE_TRUE )
+                {
+                    unknownParticleEmitter2->setEmitterPositionRelative( true );
+                    unknownParticleEmitter2->setEmitterCameraRelative( false );
+                    unknownParticleEmitter2->setEmitterTranslateWithParticle( false );
+                }
+                else
+                {
+                    unknownParticleEmitter2->setEmitterPositionRelative( false );
+                    unknownParticleEmitter2->setEmitterCameraRelative( false );
+                    unknownParticleEmitter2->setEmitterTranslateWithParticle( true );
+                }
+
                 Resource * resourceParticle = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
 
-                UnknownParticleEmitter2InterfacePtr unknownParticleEmitter = node->getUnknown();
-
-                unknownParticleEmitter->setResourceParticle( resourceParticle );
+                unknownParticleEmitter2->setResourceParticle( resourceParticle );
 
                 //EMaterialBlendMode blend_mode = getMovieBlendMode( layer );
 

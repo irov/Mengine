@@ -4,9 +4,6 @@
 
 #include "Kernel/Resource.h"
 
-#include "Kernel/ConstString.h"
-#include "Kernel/FactoryPool.h"
-
 #include "Kernel/Logger.h"
 
 namespace Mengine

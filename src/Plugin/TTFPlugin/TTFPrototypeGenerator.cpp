@@ -21,29 +21,21 @@ namespace Mengine
         m_ftlibrary = _ftlibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFPrototypeGenerator::initialize( const ConstString & _category, const ConstString & _prototype )
+    FactoryPtr TTFPrototypeGenerator::_initializeFactory()
     {
-        (void)_category;
-        (void)_prototype;
+        FactoryPtr factory = new FactoryPool<TTFFont, 8>();
 
-        m_factoryFont = new FactoryPool<TTFFont, 8>();
-
-        return true;
+        return factory;
     }
     //////////////////////////////////////////////////////////////////////////
     PointerFactorable TTFPrototypeGenerator::generate()
     {
-        TTFFontPtr font = m_factoryFont->createObject();
+        const FactoryPtr & factory = this->getFactory();
+
+        TTFFontPtr font = factory->createObject();
 
         font->setFTLibrary( m_ftlibrary );
 
         return font;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t TTFPrototypeGenerator::count() const
-    {
-        uint32_t count = m_factoryFont->getCountObject();
-
-        return count;
     }
 }

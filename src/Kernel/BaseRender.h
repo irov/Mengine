@@ -114,6 +114,12 @@ namespace Mengine
     protected:
         void _invalidateColor() override;
 
+    public:
+        inline bool isRendering() const;
+
+    protected:
+        void updateRendering_();
+
     protected:
         BaseRender * m_relationRender;
 
@@ -129,7 +135,13 @@ namespace Mengine
         bool m_renderEnable;
         bool m_hide;
         bool m_localHide;
+        bool m_rendering;
     };
+    //////////////////////////////////////////////////////////////////////////
+    inline bool BaseRender::isRendering() const
+    {
+        return m_rendering;
+    }
     //////////////////////////////////////////////////////////////////////////
     inline BaseRender * BaseRender::getRelationRender() const
     {

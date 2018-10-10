@@ -13,6 +13,7 @@ namespace Mengine
         , m_renderEnable( false )
         , m_hide( false )
         , m_localHide( false )
+        , m_rendering( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -46,6 +47,8 @@ namespace Mengine
     void BaseRender::setRenderEnable( bool _renderEnable )
     {
         m_renderEnable = _renderEnable;
+
+        this->updateRendering_();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setHide( bool _hide )
@@ -58,6 +61,8 @@ namespace Mengine
         m_hide = _hide;
 
         this->_setHide( _hide );
+
+        this->updateRendering_();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::_setHide( bool _hide )
@@ -76,6 +81,8 @@ namespace Mengine
         m_localHide = _localHide;
 
         this->_setLocalHide( _localHide );
+
+        this->updateRendering_();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::_setLocalHide( bool _localHide )
@@ -146,17 +153,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::renderWithChildren( const RenderContext * _context, bool _external )
     {
-        if( this->isRenderEnable() == false )
-        {
-            return;
-        }
-
-        if( this->isHide() == true )
-        {
-            return;
-        }
-
-        if( this->isLocalTransparent() == true )
+        if( this->isRendering() == false )
         {
             return;
         }
@@ -368,5 +365,31 @@ namespace Mengine
         {
             child->invalidateColor();
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::updateRendering_()
+    {
+        if( this->isRenderEnable() == false )
+        {
+            m_rendering = false;
+
+            return;
+        }
+
+        if( this->isHide() == true )
+        {
+            m_rendering = false;
+
+            return;
+        }
+
+        if( this->isLocalTransparent() == true )
+        {
+            m_rendering = false;
+
+            return;
+        }
+
+        m_rendering = true;
     }
 }

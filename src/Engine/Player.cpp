@@ -1103,9 +1103,12 @@ namespace Mengine
                     }
 
                 protected:
-                    void visit( const ConstString & _category, const ConstString & _type, const PrototypeGeneratorInterfacePtr & _generator ) override
+                    void visit( const PrototypeGeneratorInterfacePtr & _generator ) override
                     {
-                        if( m_category != _category )
+                        const ConstString & category = _generator->getCategory();
+                        const ConstString & prototype = _generator->getPrototype();
+                        
+                        if( m_category != category )
                         {
                             return;
                         }
@@ -1117,7 +1120,7 @@ namespace Mengine
                             return;
                         }
 
-                        m_scopes[count].emplace_back( _type );
+                        m_scopes[count].emplace_back( prototype );
                     }
 
                 public:

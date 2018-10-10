@@ -73,6 +73,8 @@
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderCameraOrthogonalTarget.h"
 
+#include "Kernel/BasePrototypeGenerator.h"
+
 #include "Window.h"
 #include "Landscape2D.h"
 
@@ -272,7 +274,7 @@ namespace Mengine
     {
 #	define NODE_FACTORY( Type )\
         if( PROTOTYPE_SERVICE()\
-            ->addPrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), new NodePrototypeGenerator<Type, 128> ) == false )\
+            ->addPrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), new FactorableUnique<NodePrototypeGenerator<Type, 128> > ) == false )\
 		{\
 			return false;\
 		}
@@ -340,7 +342,7 @@ namespace Mengine
 
 #	define SURFACE_FACTORY(Type)\
         if( PROTOTYPE_SERVICE()\
-            ->addPrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), new SurfacePrototypeGenerator<Type, 128> ) == false )\
+            ->addPrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), new FactorableUnique<SurfacePrototypeGenerator<Type, 128> > ) == false )\
 						{\
 			return false;\
 						}
@@ -360,20 +362,15 @@ namespace Mengine
     namespace
     {
         class SceneCategoryGenerator
-            : public ServantBase<PrototypeGeneratorInterface>
+            : public BasePrototypeGenerator
         {
         public:
             SceneCategoryGenerator()
             {
             }
 
-        protected:
-            bool initialize( const ConstString & _category, const ConstString & _prototype ) override
+            ~SceneCategoryGenerator() override
             {
-                m_category = _category;
-                m_prototype = _prototype;
-
-                return true;
             }
 
         protected:
@@ -394,20 +391,6 @@ namespace Mengine
 
                 return scene;
             }
-
-            uint32_t count() const override
-            {
-                return 0;
-            }
-
-            void destroy() override
-            {
-                delete this;
-            }
-
-        protected:
-            ConstString m_category;
-            ConstString m_prototype;
         };
     }
     //////////////////////////////////////////////////////////////////////////
@@ -415,7 +398,7 @@ namespace Mengine
     {
         LOGGER_INFO( "initialize Scene Manager..." );
 
-        PrototypeGeneratorInterface * generator = new SceneCategoryGenerator;
+        PrototypeGeneratorInterfacePtr generator = new FactorableUnique<SceneCategoryGenerator>;
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none(), generator ) == false )
@@ -432,7 +415,7 @@ namespace Mengine
 
 #	define RESOURCE_FACTORY( Type ) \
 		if( PROTOTYPE_SERVICE()\
-			->addPrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), new ResourcePrototypeGenerator<Type, 128> ) == false )\
+			->addPrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), new FactorableUnique<ResourcePrototypeGenerator<Type, 128> > ) == false )\
 		{\
 			return false;\
 		}
@@ -474,8 +457,10 @@ namespace Mengine
 
         bool fullscreen = this->getFullscreenMode();
 
+        bool vsync = this->getVSync();
+
         RENDER_SERVICE()
-            ->setVSync( m_vsync );
+            ->setVSync( vsync );
 
         LOGGER_WARNING( "Application::createRenderWindow current resolution %d %d %s"
             , m_currentResolution.getWidth()
@@ -764,9 +749,12 @@ namespace Mengine
                     }
 
                 protected:
-                    void visit( const ConstString & _category, const ConstString & _type, const PrototypeGeneratorInterfacePtr & _generator ) override
+                    void visit( const PrototypeGeneratorInterfacePtr & _generator ) override
                     {
-                        if( m_category != _category )
+                        const ConstString & category = _generator->getCategory();
+                        const ConstString & prototype = _generator->getPrototype();
+
+                        if( m_category != category )
                         {
                             return;
                         }
@@ -778,7 +766,7 @@ namespace Mengine
                             return;
                         }
 
-                        m_ss << "" << _type.c_str() << ": " << count << "\n";
+                        m_ss << "" << prototype.c_str() << ": " << count << "\n";
                     }
 
                 protected:
@@ -1738,8 +1726,10 @@ namespace Mengine
             , m_currentResolution.getHeight()
         );
 
+        bool vsync = this->getVSync();
+
         RENDER_SERVICE()
-            ->setVSync( m_vsync );
+            ->setVSync( vsync );
 
         PLATFORM_SERVICE()
             ->notifyWindowModeChanged( m_currentResolution, fullscreen );
@@ -2004,6 +1994,7 @@ namespace Mengine
         }
 
         m_vsync = _vsync;
+
         m_invalidateVsync = true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2023,14 +2014,16 @@ namespace Mengine
     {
         if( m_invalidateVsync == true )
         {
+            bool vsync = this->getVSync();
+
             if( RENDER_SERVICE() != nullptr )
             {
                 RENDER_SERVICE()
-                    ->setVSync( m_vsync );
+                    ->setVSync( vsync );
             }
 
             PLATFORM_SERVICE()
-                ->notifyVsyncChanged( m_vsync );
+                ->notifyVsyncChanged( vsync );
 
             m_invalidateVsync = false;
         }

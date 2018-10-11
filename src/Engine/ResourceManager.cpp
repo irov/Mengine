@@ -3,6 +3,7 @@
 #include "Interface/UnicodeInterface.h"
 #include "Interface/LoaderInterface.h"
 #include "Interface/PrototypeManagerInterface.h"
+#include "Interface/ConfigInterface.h"
 
 #include "Metacode/Metacode.h"
 
@@ -27,6 +28,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceManager::_initializeService()
     {
+        uint32_t ResourceHashTableSize = CONFIG_VALUE( "Engine", "ResourceHashTableSize", 1024 * 32 );
+
+        m_resources.reserve( ResourceHashTableSize );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -35,41 +40,23 @@ namespace Mengine
         m_resourcesCache.clear();
 
 #   ifndef MENGINE_MASTER_RELEASE
-        for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
+        for( const ResourcePtr & resource : m_resources )
         {
-            const MapResources & resources = m_resources[i];
+            uint32_t refcount = resource->countReference();
 
-            for( MapResources::const_iterator
-                it = resources.begin(),
-                it_end = resources.end();
-                it != it_end;
-                ++it )
+            if( refcount != 0 )
             {
-                const ResourceEntry & entry = it->second;
-
-                const ResourcePtr & resource = entry.resource;
-
-                uint32_t refcount = resource->countReference();
-
-                if( refcount != 0 )
-                {
-                    LOGGER_WARNING( "ResourceManager::~ResourceManager resource '%s' type '%s' group '%s' refcount %d"
-                        , resource->getName().c_str()
-                        , resource->getType().c_str()
-                        , resource->getGroupName().c_str()
-                        , refcount
-                    );
-                }
+                LOGGER_WARNING( "ResourceManager::~ResourceManager resource '%s' type '%s' group '%s' refcount %d"
+                    , resource->getName().c_str()
+                    , resource->getType().c_str()
+                    , resource->getGroupName().c_str()
+                    , refcount
+                );
             }
         }
 #   endif
 
-        for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
-        {
-            MapResources & resources = m_resources[i];
-
-            resources.clear();
-        }
+        m_resources.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceManager::loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pak, const FilePath & _path, bool _ignored )
@@ -282,6 +269,7 @@ namespace Mengine
             const ConstString & name = meta_resource->get_Name();
             const ConstString & type = meta_resource->get_Type();
 
+#ifndef MENGINE_MASTER_RELEASE
             ResourcePtr has_resource = nullptr;
             if( this->hasResource( name, &has_resource ) == false )
             {
@@ -300,6 +288,7 @@ namespace Mengine
 
                 return false;
             }
+#endif
 
             if( this->removeResource( has_resource ) == false )
             {
@@ -369,13 +358,8 @@ namespace Mengine
         ResourceEntry entry;
 
         entry.resource = resource;
-        entry.isLocked = false;
 
-        ConstString::hash_type hash = _name.hash();
-        uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
-        MapResources & resources = m_resources[table];
-
-        std::pair<MapResources::iterator, bool> insert_result = resources.emplace( _name, entry );
+        const ResourcePtr & prev_resource = m_resources.change( _name, resource );
 
         ResourceCacheKey cache_key = std::make_pair( _category->getName(), _groupName );
 
@@ -390,12 +374,10 @@ namespace Mengine
 
         cahce_resources.emplace_back( resource );
 
-        if( insert_result.second == false )
+        if( prev_resource != nullptr )
         {
-            ResourceEntry & insert_entry = insert_result.first->second;
-
-            const FileGroupInterfacePtr & insert_category = insert_entry.resource->getFileGroup();
-            const ConstString & insert_group = insert_entry.resource->getGroupName();
+            const FileGroupInterfacePtr & insert_category = prev_resource->getFileGroup();
+            const ConstString & insert_group = prev_resource->getGroupName();
 
             ResourceCacheKey remove_cache_key = std::make_pair( insert_category->getName(), insert_group );
 
@@ -404,11 +386,9 @@ namespace Mengine
             VectorResources::iterator it_remove_found = std::remove(
                 it_remove_cache_found->second.begin(),
                 it_remove_cache_found->second.end(),
-                insert_entry.resource );
+                prev_resource );
 
             it_remove_cache_found->second.erase( it_remove_found );
-
-            resources[_name] = entry;
         }
 
         return resource;
@@ -423,10 +403,7 @@ namespace Mengine
 
         const ConstString & name = _resource->getName();
 
-        ConstString::hash_type hash = name.hash();
-        uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
-        MapResources & resources = m_resources[table];
-        if( resources.erase( name ) == false )
+        if( m_resources.remove( name ) == false )
         {
             return false;
         }
@@ -455,16 +432,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceManager::hasResource( const ConstString& _name, ResourcePtr * _resource ) const
     {
-        const ResourceEntry * entry = this->findResource_( _name );
+        const ResourcePtr & resource = m_resources.find( _name );
 
-        if( entry == nullptr )
+        if( resource == nullptr )
         {
             return false;
         }
 
         if( _resource != nullptr )
         {
-            *_resource = entry->resource;
+            *_resource = resource;
         }
 
         return true;
@@ -472,14 +449,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceManager::hasResourceWithType( const ConstString& _name, const ConstString& _type ) const
     {
-        const ResourceEntry * entry = this->findResource_( _name );
+        const ResourcePtr & resource = m_resources.find( _name );
 
-        if( entry == nullptr )
+        if( resource == nullptr )
         {
             return false;
         }
 
-        const ConstString & resourceType = entry->resource->getType();
+        const ConstString & resourceType = resource->getType();
 
         if( resourceType != _type )
         {
@@ -489,57 +466,11 @@ namespace Mengine
         return true;
     }    
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceManager::lockResource( const ConstString& _name )
-    {
-        ResourceEntry * entry = this->findResource_( _name );
-
-        if( entry == nullptr )
-        {
-            return false;
-        }
-
-        if( entry->isLocked == true )
-        {
-            LOGGER_ERROR( "ResourceManager getResource: resource '%s' is alredy LOCK!"
-                , _name.c_str()
-            );
-
-            return false;
-        }
-
-        entry->isLocked = true;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceManager::unlockResource( const ConstString& _name )
-    {
-        ResourceEntry * entry = this->findResource_( _name );
-
-        if( entry == nullptr )
-        {
-            return false;
-        }
-
-        if( entry->isLocked == false )
-        {
-            LOGGER_ERROR( "ResourceManager getResource: resource '%s' is alredy UNLOCK!"
-                , _name.c_str()
-            );
-
-            return false;
-        }
-
-        entry->isLocked = false;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & ResourceManager::getResource( const ConstString& _name ) const
     {
-        const ResourceEntry * entry = this->findResource_( _name );
+        const ResourcePtr & resource = m_resources.find( _name );
 
-        if( entry == nullptr )
+        if( resource == nullptr )
         {
             LOGGER_ERROR( "ResourceManager::getResource: resource '%s' does not exist"
                 , _name.c_str()
@@ -547,17 +478,6 @@ namespace Mengine
 
             return ResourcePtr::none();
         }
-
-        if( entry->isLocked == true )
-        {
-            LOGGER_ERROR( "ResourceManager::getResource: resource '%s' is LOCK!"
-                , _name.c_str()
-            );
-
-            return ResourcePtr::none();
-        }
-
-        const ResourcePtr & resource = entry->resource;
 
         if( resource->incrementReference() == false )
         {
@@ -574,9 +494,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & ResourceManager::getResourceReference( const ConstString & _name ) const
     {
-        const ResourceEntry * entry = this->findResource_( _name );
+        const ResourcePtr & resource = m_resources.find( _name );
 
-        if( entry == nullptr )
+        if( resource == nullptr )
         {
             LOGGER_WARNING( "ResourceManager::getResourceReference: resource '%s' does not exist"
                 , _name.c_str()
@@ -585,25 +505,14 @@ namespace Mengine
             return ResourcePtr::none();
         }
 
-        if( entry->isLocked == true )
-        {
-            LOGGER_ERROR( "ResourceManager::getResourceReference: resource '%s' is LOCK!"
-                , _name.c_str()
-            );
-
-            return ResourcePtr::none();
-        }
-
-        const ResourcePtr & resource = entry->resource;
-
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceManager::getResourceType( const ConstString & _name ) const
     {
-        const ResourceEntry * entry = this->findResource_( _name );
+        const ResourcePtr & resource = m_resources.find( _name );
 
-        if( entry == nullptr )
+        if( resource == nullptr )
         {
             LOGGER_WARNING( "ResourceManager::getResourceType: resource '%s' does not exist"
                 , _name.c_str()
@@ -612,8 +521,6 @@ namespace Mengine
             return ConstString::none();
         }
 
-        const ResourcePtr & resource = entry->resource;
-
         const ConstString & type = resource->getType();
 
         return type;
@@ -621,43 +528,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceManager::foreachResources( const LambdaResource & _lambda ) const
     {
-        for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
+        for( const ResourcePtr & resource : m_resources )
         {
-            const MapResources & resources = m_resources[i];
-
-            for( MapResources::const_iterator
-                it = resources.begin(),
-                it_end = resources.end();
-                it != it_end;
-                ++it )
-            {
-                const ResourceEntry & entry = it->second;
-
-                const ResourcePtr & resource = entry.resource;
-
-                _lambda( resource );
-            }
+            _lambda( resource );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceManager::visitResources( const VisitorPtr & _visitor ) const
     {
-        for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
+        for( const ResourcePtr & resource : m_resources )
         {
-            const MapResources & resources = m_resources[i];
-
-            for( MapResources::const_iterator
-                it = resources.begin(),
-                it_end = resources.end();
-                it != it_end;
-                ++it )
-            {
-                const ResourceEntry & entry = it->second;
-
-                const ResourcePtr & resource = entry.resource;
-
-                resource->visit( _visitor );
-            }
+            resource->visit( _visitor );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -719,87 +600,5 @@ namespace Mengine
                 );
             }
         };
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceManager::dumpResources( const String & _tag )
-    {
-        (void)_tag;
-
-#ifndef NDEBUG
-        LOGGER_ERROR( "Dumping resources... %s"
-            , _tag.c_str()
-        );
-
-        for( uint32_t i = 0; i != MENGINE_RESOURCE_MANAGER_HASH_SIZE; ++i )
-        {
-            const MapResources & resources = m_resources[i];
-
-            for( MapResources::const_iterator
-                it = resources.begin(),
-                it_end = resources.end();
-                it != it_end;
-                ++it )
-            {
-                const ResourceEntry & entry = it->second;
-
-                const ResourcePtr & resource = entry.resource;
-
-                uint32_t count = resource->countReference();
-
-                if( count == 0 )
-                {
-                    return;
-                }
-
-                if( resource->isCompile() == false )
-                {
-                    return;
-                }
-
-                const ConstString & name = entry.resource->getName();
-
-                LOGGER_ERROR( "Resource %s\n: count - %u"
-                    , name.c_str()
-                    , count
-                );
-            }
-        }
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ResourceEntry * ResourceManager::findResource_( const ConstString & _name )
-    {
-        ConstString::hash_type hash = _name.hash();
-        uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
-        MapResources & resources = m_resources[table];
-
-        MapResources::iterator it_found = resources.find( _name );
-
-        if( it_found == resources.end() )
-        {
-            return nullptr;
-        }
-
-        ResourceEntry & entry = it_found->second;
-
-        return &entry;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ResourceEntry * ResourceManager::findResource_( const ConstString & _name ) const
-    {
-        ConstString::hash_type hash = _name.hash();
-        uint32_t table = (uint32_t)hash % MENGINE_RESOURCE_MANAGER_HASH_SIZE;
-        const MapResources & resources = m_resources[table];
-
-        MapResources::const_iterator it_found = resources.find( _name );
-
-        if( it_found == resources.end() )
-        {
-            return nullptr;
-        }
-
-        const ResourceEntry & entry = it_found->second;
-
-        return &entry;
     }
 }

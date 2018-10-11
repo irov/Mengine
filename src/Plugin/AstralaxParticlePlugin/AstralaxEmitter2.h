@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ParticleSystemInterface.h"
+#include "AstralaxInterface.h"
 
 #include "Kernel/ServantBase.h"
 

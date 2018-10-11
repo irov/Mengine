@@ -1,6 +1,7 @@
 #include "ParticleConverterPTCToPTZ.h"
 
-#include "Interface/ParticleSystemInterface.h"
+#include "../Plugin/AstralaxParticlePlugin/AstralaxInterface.h"
+
 #include "Interface/StringizeInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryInterface.h"

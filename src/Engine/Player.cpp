@@ -3,7 +3,6 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
-#include "Interface/ParticleSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/TimelineInterface.h"
@@ -16,6 +15,7 @@
 #include "Interface/ModuleInterface.h"
 #include "Interface/ApplicationInterface.h"
 
+#include "../Plugin/AstralaxParticlePlugin/AstralaxInterface.h"
 #include "../Plugin/DebugRenderPlugin/DebugRenderInterface.h"
 
 #include "Config/Stringstream.h"

@@ -1,5 +1,10 @@
 #pragma once
 
+#include "AstralaxInterface.h"
+#include "UnknownParticleEmitter2Interface.h"
+
+#include "ResourceParticle.h"
+
 #include "Kernel/Node.h"
 #include "Kernel/BaseEventation.h"
 #include "Kernel/BaseAnimation.h"
@@ -7,19 +12,13 @@
 #include "Kernel/BaseRender.h"
 #include "Kernel/AnimationEventReceiver.h"
 #include "Kernel/ResourceHolder.h"
-
-#include "ResourceParticle.h"
-#include "UnknownParticleEmitter2Interface.h"
-
-#include "Interface/ParticleSystemInterface.h"
-
-#include "math/mat3.h"
-
 #include "Kernel/Polygon.h"
 
 #include "Config/Vector.h"
 
-#	define MENGINE_PARTICLE_MAX_ATLAS_TEXTURE 8
+#include "math/mat3.h"
+
+#define MENGINE_PARTICLE_MAX_ATLAS_TEXTURE 8
 
 namespace Mengine
 {

@@ -1,9 +1,10 @@
 #include "ParticleEmitter2.h" 
 
+#include "AstralaxInterface.h"
+
 #include "Interface/ApplicationInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
-#include "Interface/ParticleSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/Logger.h"

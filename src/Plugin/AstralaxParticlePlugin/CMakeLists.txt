@@ -14,6 +14,8 @@ src
 	ParticleEmitter2.h
 	ResourceParticle.cpp
 	ResourceParticle.h
+    ParticleEngine.h
+	ParticleEngine.cpp
     
     ParticleResourceValidateVisitor.cpp
     ParticleResourceValidateVisitor.h

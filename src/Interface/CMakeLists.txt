@@ -18,7 +18,6 @@ src
     PickCodecInterface.h
 	SoundCodecInterface.h
 	VideoCodecInterface.h
-	ParticleSystemInterface.h	
     TextInterface.h
 	StreamInterface.h
 	LoggerInterface.h

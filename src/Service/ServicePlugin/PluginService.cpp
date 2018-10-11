@@ -6,6 +6,8 @@
 
 #include <string.h>
 
+#include <algorithm>
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PluginService, Mengine::PluginService );
 //////////////////////////////////////////////////////////////////////////
@@ -35,12 +37,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PluginService::_finalizeService()
     {
-        for( PluginDesc & desc : m_plugins )
-        {
-            desc.plugin->finalize();
-        }
+        VectorPlugins reverse_plugins = m_plugins;
+        std::reverse( reverse_plugins.begin(), reverse_plugins.end() );
 
         m_plugins.clear();
+        
+        for( PluginDesc & desc : reverse_plugins )
+        {
+            desc.plugin->finalize();
+            desc.plugin = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::loadPlugin( const WString & _dllName )

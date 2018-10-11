@@ -1,6 +1,5 @@
 #include "ImageConverterPVRToHTF.h"
 
-#include "Interface/ParticleSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ArchiveInterface.h"

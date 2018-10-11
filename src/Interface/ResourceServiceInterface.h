@@ -80,10 +80,7 @@ namespace Mengine
 
     public:
         virtual void visitResources( const VisitorPtr & _visitor ) const = 0;
-        virtual void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, const VisitorPtr & _visitor ) const = 0;        
-
-    public:
-        virtual void dumpResources( const String & _tag ) = 0;
+        virtual void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, const VisitorPtr & _visitor ) const = 0;
     };
 
 #   define RESOURCE_SERVICE()\

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Interface/ParticleSystemInterface.h"
+#include "AstralaxInterface.h"
+
 #include "Interface/MemoryInterface.h"
 
 #include "AstralaxEmitter2.h"

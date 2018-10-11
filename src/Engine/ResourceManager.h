@@ -5,6 +5,7 @@
 #include "Kernel/Resource.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/Hashtable.h"
 
 #include "Config/Typedef.h"
 #include "Config/Vector.h"
@@ -18,7 +19,6 @@ namespace Mengine
     struct ResourceEntry
     {
         ResourcePtr resource;
-        bool isLocked;
     };
     //////////////////////////////////////////////////////////////////////////
     class ResourceManager
@@ -44,8 +44,6 @@ namespace Mengine
 
     public:
         bool hasResource( const ConstString& _name, ResourcePtr * _resource ) const override;
-        bool lockResource( const ConstString& _name );
-        bool unlockResource( const ConstString& _name );
         bool hasResourceWithType( const ConstString& _name, const ConstString& _type ) const override;
 
         const ResourcePtr & getResource( const ConstString& _name ) const override;
@@ -60,16 +58,12 @@ namespace Mengine
         void visitResources( const VisitorPtr & _visitor ) const override;
         void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, const VisitorPtr & _visitor ) const override;
 
-    public:
-        void dumpResources( const String & _tag ) override;
-
     protected:
-        ResourceEntry * findResource_( const ConstString & _name );
-        const ResourceEntry * findResource_( const ConstString & _name ) const;
-
-    protected:
-        typedef Map<ConstString, ResourceEntry> MapResources;
-        MapResources m_resources[MENGINE_RESOURCE_MANAGER_HASH_SIZE];
+        //typedef Map<ConstString, ResourceEntry> MapResources;
+        //MapResources m_resources[MENGINE_RESOURCE_MANAGER_HASH_SIZE];
+        
+        typedef Hashtable<ConstString, ResourcePtr> HashtableResources;
+        HashtableResources m_resources;
 
         typedef std::pair<ConstString, ConstString> ResourceCacheKey;
         typedef Vector<ResourcePtr> VectorResources;

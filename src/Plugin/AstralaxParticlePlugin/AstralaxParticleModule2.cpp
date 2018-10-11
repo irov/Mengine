@@ -1,6 +1,7 @@
 #include "AstralaxParticleModule2.h"
 
-#include "Interface/ParticleSystemInterface.h"
+#include "AstralaxInterface.h"
+
 #include "Interface/PrototypeManagerInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 

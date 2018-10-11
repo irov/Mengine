@@ -2,6 +2,7 @@
 
 #include "Interface/UnknownInterface.h"
 
+#include "Kernel/Resource.h"
 #include "Kernel/IntrusivePtr.h"
 
 namespace Mengine

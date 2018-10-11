@@ -65,7 +65,6 @@ SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( ArchiveService );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( ThreadSystem );
-SERVICE_EXTERN( ParticleService );
 SERVICE_EXTERN( RenderSystem );
 SERVICE_EXTERN( SoundService );
 SERVICE_EXTERN( SoundSystem );
@@ -784,8 +783,6 @@ namespace Mengine
             }
         }
 
-        SERVICE_CREATE( ParticleService );
-
         LOGGER_WARNING( "Modules Run..." );
 
         VectorString modules;
@@ -978,8 +975,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::UnicodeSystemInterface );
 
         SERVICE_FINALIZE( Mengine::CodecServiceInterface );
-        SERVICE_FINALIZE( Mengine::ParticleSystemInterface2 );
-        SERVICE_FINALIZE( Mengine::ParticleServiceInterface2 );
 
         SERVICE_FINALIZE( Mengine::SoundServiceInterface );
         SERVICE_FINALIZE( Mengine::SoundSystemInterface );

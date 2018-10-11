@@ -7,7 +7,6 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/SoundServiceInterface.h"
-#include "Interface/ParticleSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ConfigInterface.h"
 #include "Interface/PlayerInterface.h"
@@ -728,8 +727,6 @@ namespace Mengine
 
             if( _event.code == KC_F5 && _event.isDown == true )
             {
-                //RESOURCE_SERVICE()
-                    //->dumpResources("Application");
                 class VisitorPlayerFactoryManager
                     : public VisitorPrototypeGenerator
                 {

@@ -3,6 +3,7 @@
 #include "Kernel/Hashgen.h"
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/MemoryAllocator.h"
+#include "Kernel/Assertion.h"
 
 namespace Mengine
 {
@@ -48,17 +49,53 @@ namespace Mengine
             ++m_size;
         }
 
-        void remove( const key_type & _key )
+        const element_type_ptr & change( const key_type & _key, const element_type_ptr & _element )
         {
+            uint32_t test_size = m_size * 3 + 1;
+            uint32_t test_capacity = m_capacity * 2;
+            if( test_size > test_capacity )
+            {
+                this->increase_();
+            }
+
             hash_type hash = hashgen_type()(_key);
 
-            Hashtable::pop_( m_buffer, m_capacity, hash, _key );
+            const element_type_ptr & prev = Hashtable::change_( m_buffer, m_capacity, hash, _key, _element );
+
+            if( prev == nullptr )
+            {
+                ++m_size;
+            }
+
+            return prev;
+        }
+
+        bool remove( const key_type & _key )
+        {
+            if( m_size == 0 )
+            {
+                return false;
+            }
+
+            hash_type hash = hashgen_type()(_key);
+
+            if( Hashtable::pop_( m_buffer, m_capacity, hash, _key ) == false )
+            {
+                return false;
+            }
 
             --m_size;
+
+            return true;
         }
 
         const element_type_ptr & find( const key_type & _key ) const
         {
+            if( m_size == 0 )
+            {
+                return element_type_ptr::none();
+            }
+
             hash_type hash = hashgen_type()(_key);
 
             const element_type_ptr & element = Hashtable::find_( m_buffer, m_capacity, hash, _key );
@@ -272,6 +309,8 @@ namespace Mengine
             {
                 Record * record = _buffer + (mask & hash_mask);
 
+                MENGINE_ASSERTION( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element.get() == reinterpret_cast<const element_type_ptr::value_type *>(~0U)) );
+
                 if( record->element == nullptr || record->element.get() == reinterpret_cast<const element_type_ptr::value_type *>(~0U) )
                 {
                     record->hash = _hash;
@@ -285,7 +324,37 @@ namespace Mengine
             }
         }
 
-        static void pop_( Record * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
+        static const element_type_ptr & change_( Record * _buffer, size_type _capacity, hash_type _hash, const key_type & _key, const element_type_ptr & _element )
+        {
+            size_type hash_mask = _capacity - 1;
+            size_type mask = (size_type)_hash;
+
+            for( hash_type probe = _hash; ; probe >>= 5 )
+            {
+                Record * record = _buffer + (mask & hash_mask);
+
+                if( record->hash == _hash && record->key == _key && record->element != nullptr && record->element.get() == reinterpret_cast<const element_type_ptr::value_type *>(~0U) )
+                {
+                    const element_type_ptr & prev = record->element;
+                    record->element = _element;
+
+                    return prev;
+                }
+                
+                if( record->element == nullptr || record->element.get() == reinterpret_cast<const element_type_ptr::value_type *>(~0U) )
+                {
+                    record->hash = _hash;
+                    record->key = _key;
+                    record->element = _element;
+
+                    return element_type_ptr::none();
+                }
+
+                mask = (mask << 2) + mask + (size_type)probe + 1;
+            }
+        }
+
+        static bool pop_( Record * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
         {
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
@@ -296,14 +365,14 @@ namespace Mengine
 
                 if( record->element == nullptr )
                 {
-                    break;
+                    return false;
                 }
 
                 if( record->hash == _hash && record->key == _key )
                 {
                     record->element.set( reinterpret_cast<element_type_ptr::value_type *>(~0UL) );
 
-                    break;
+                    return true;
                 }
 
                 mask = (mask << 2) + mask + (size_type)probe + 1;

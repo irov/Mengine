@@ -1,8 +1,6 @@
 #include "ResourceValidateVisitor.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/RenderTextureInterface.h"
-#include "Interface/RenderImageInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ConfigInterface.h"
 #include "Interface/PickCodecInterface.h"
@@ -314,8 +312,9 @@ namespace Mengine
                 return true;
             }
 
-            LOGGER_ERROR( "ResourceImageDefault::_isValid %s not exist file %s:%s"
+            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' not exist file '%s:%s'"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
                 , _resource->getFileName().c_str()
             );
@@ -328,8 +327,9 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid %s invalid open file %s:%s"
+            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' invalid open file '%s:%s'"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
                 , _resource->getFileName().c_str()
             );
@@ -344,8 +344,9 @@ namespace Mengine
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s invalid decoder %s"
+            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' file '%s:%s' invalid decoder '%s'"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
                 , _resource->getFileName().c_str()
                 , _resource->getCodecType().c_str()
@@ -356,8 +357,9 @@ namespace Mengine
 
         if( imageDecoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid %s file %s:%s decoder initialize failed %s"
+            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
                 , _resource->getFileName().c_str()
                 , _resource->getCodecType().c_str()
@@ -381,8 +383,9 @@ namespace Mengine
             if( RESOURCE_SERVICE()
                 ->hasResourceT<ResourceImagePtr>( sequence.resourceName, &resourceImage ) == false )
             {
-                LOGGER_ERROR( "ResourceValidateVisitor::ResourceImageSequence: '%s' not found image resource '%s'"
+                LOGGER_ERROR( "ResourceValidateVisitor::ResourceImageSequence: '%s' group '%s' not found image resource '%s'"
                     , _resource->getName().c_str()
+                    , _resource->getGroupName().c_str()
                     , sequence.resourceName.c_str()
                 );
 
@@ -392,31 +395,28 @@ namespace Mengine
             if( RESOURCEVALIDATE_SERVICE()
                 ->validResource( resourceImage ) == false )
             {
-                LOGGER_ERROR( "ResourceValidateVisitor::ResourceImageSequence: %s invalid validate sequence resource '%s'"
+                LOGGER_ERROR( "ResourceValidateVisitor::ResourceImageSequence: '%s' group '%s' invalid validate sequence resource '%s'"
                     , _resource->getName().c_str()
+                    , _resource->getGroupName().c_str()
                     , resourceImage->getName().c_str()
                 );
 
                 return false;
             }
 
-            const RenderTextureInterfacePtr & texture = resourceImage->getTexture();
+            const mt::vec2f & size = resourceImage->getSize();
 
-            if( texture == nullptr )
-            {
-                continue;
+            uint32_t width = Helper::getTexturePOW2( (uint32_t)size.x );
+            uint32_t height = Helper::getTexturePOW2( (uint32_t)size.y );
+
+            uint32_t channels = 3;
+
+            if( resourceImage->hasAlpha() == true )
+            { 
+                channels = 4;
             }
 
-            const RenderImageInterfacePtr & image = texture->getImage();
-
-            uint32_t width = texture->getWidth();
-            uint32_t height = texture->getHeight();
-
-            uint32_t HWChannels = image->getHWChannels();
-            uint32_t HWDepth = image->getHWDepth();
-            PixelFormat HWPixelFormat = image->getHWPixelFormat();
-
-            size_t textureSize = Helper::getTextureMemorySize( width, height, HWChannels, HWDepth, HWPixelFormat );
+            size_t textureSize = Helper::getTextureMemorySize( width, height, channels, 1, PF_UNKNOWN );
 
             total_memory += textureSize;
         }
@@ -425,8 +425,9 @@ namespace Mengine
 
         if( total_memory > animationMemoryLimit && animationMemoryLimit != 0U )
         {
-            LOGGER_ERROR( "ResourceValidateVisitor::ResourceImageSequence: '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
+            LOGGER_ERROR( "ResourceValidateVisitor::ResourceImageSequence: '%s' group '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , float( total_memory ) / (1024.f * 1024.f)
                 , float( animationMemoryLimit ) / (1024.f * 1024.f)
                 , float( total_memory ) / float( animationMemoryLimit )
@@ -453,8 +454,9 @@ namespace Mengine
 
         if( fileGroup->existFile( filePath ) == false )
         {
-            LOGGER_ERROR( "ResourceMusic::_loader: '%s' music '%s' not exist"
+            LOGGER_ERROR( "ResourceMusic::_loader: '%s' group '%s' music '%s' not exist"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getPath().c_str()
             );
 
@@ -607,9 +609,9 @@ namespace Mengine
 
         if( dataInfo->width > limitVideoWidth || dataInfo->height > limitVideoHeight )
         {
-            LOGGER_ERROR( "ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid size %d:%d limit %d:%d"
-                , _resource->getGroupName().c_str()
+            LOGGER_ERROR( "ResourceVideo.isValid: '%s' group '%s' path '%s' invalid size %d:%d limit %d:%d"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getFilePath().c_str()
                 , dataInfo->width
                 , dataInfo->height
@@ -624,9 +626,9 @@ namespace Mengine
 
         if( dataInfo->fps > Limit_VideoFrameRate && Limit_VideoFrameRate != 0.0 )
         {
-            LOGGER_ERROR( "ResourceVideo.isValid: group '%s' name '%s' path '%s' invalid Frame rate %f more that %f"
-                , _resource->getGroupName().c_str()
+            LOGGER_ERROR( "ResourceVideo.isValid: '%s' group '%s' path '%s' invalid Frame rate %f more that %f"                
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getFilePath().c_str()
                 , dataInfo->fps
                 , Limit_VideoFrameRate
@@ -644,9 +646,9 @@ namespace Mengine
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( "ResourceVideo::isValid: group '%s' name '%s' can't create decoder '%s'"
-                , _resource->getGroupName().c_str()
+            LOGGER_ERROR( "ResourceVideo::isValid: name '%s' group '%s' can't create decoder '%s'"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getFilePath().c_str()
             );
 
@@ -675,8 +677,9 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ResourceHIT::_isValid %s invalid open file %s:%s"
+            LOGGER_ERROR( "ResourceHIT::_isValid '%s' group '%s' invalid open file '%s:%s'"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
                 , _resource->getFilePath().c_str()
             );
@@ -691,8 +694,9 @@ namespace Mengine
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( "ResourceHIT::_isValid %s file %s:%s invalid decoder %s"
+            LOGGER_ERROR( "ResourceHIT::_isValid '%s' group '%s' file '%s:%s' invalid decoder '%s'"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
                 , _resource->getFilePath().c_str()
                 , _resource->getCodecType().c_str()
@@ -703,8 +707,9 @@ namespace Mengine
 
         if( decoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "ResourceHIT::_isValid %s file %s:%s decoder initialize failed %s"
+            LOGGER_ERROR( "ResourceHIT::_isValid '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
                 , _resource->getFilePath().c_str()
                 , _resource->getCodecType().c_str()
@@ -723,8 +728,9 @@ namespace Mengine
 
         if( fileGroup->existFile( filePath ) == false )
         {
-            LOGGER_ERROR( "ResourceValidateVisitor::ResourceFile '%s' file group '%s' not found file '%s'"
+            LOGGER_ERROR( "ResourceValidateVisitor::ResourceFile '%s' group '%s' file group '%s' not found file '%s'"
                 , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
                 , _resource->getFilePath().c_str()
             );

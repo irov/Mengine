@@ -1,5 +1,7 @@
 #include "PrototypeManager.h"
 
+#include "Interface/ConfigInterface.h"
+
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -18,7 +20,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrototypeManager::_initializeService()
     {
-        m_prototypes.reserve( 1024 );
+        uint32_t PrototypeHashTableSize = CONFIG_VALUE( "Engine", "PrototypeHashTableSize", 1024 );
+
+        m_prototypes.reserve( PrototypeHashTableSize );
 
         return true;
     }

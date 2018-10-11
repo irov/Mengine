@@ -14,7 +14,6 @@
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/ScriptSystemInterface.h"
-#include "Interface/ParticleSystemInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/ConverterInterface.h"

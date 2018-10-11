@@ -71,8 +71,6 @@ namespace Mengine
 
             void onSoundStop( const SoundIdentityInterfacePtr & _emitter ) override
             {
-                uint32_t id = _emitter->getId();
-
                 if( m_cb.is_callable() == true )
                 {
                     m_cb.call_args( _emitter, 0, m_args );
@@ -81,6 +79,8 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->releaseSoundSource( _emitter ) == false )
                 {
+                    uint32_t id = _emitter->getId();
+
                     LOGGER_ERROR( "MySoundNodeListenerInterface '%s' emitter invalid release sound '%d'"
                         , m_resource->getName().c_str()
                         , id
@@ -95,8 +95,6 @@ namespace Mengine
 
             void onSoundEnd( const SoundIdentityInterfacePtr & _emitter ) override
             {
-                uint32_t id = _emitter->getId();
-
                 if( m_cb.is_callable() == true )
                 {
                     m_cb.call_args( _emitter, 1, m_args );
@@ -105,6 +103,8 @@ namespace Mengine
                 if( SOUND_SERVICE()
                     ->releaseSoundSource( _emitter ) == false )
                 {
+                    uint32_t id = _emitter->getId();
+
                     LOGGER_ERROR( "MySoundNodeListenerInterface '%s' emitter invalid release sound '%d'"
                         , m_resource->getName().c_str()
                         , id

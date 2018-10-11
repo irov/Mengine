@@ -317,7 +317,8 @@ namespace Mengine
             ResourceMovie2Composition & composition = m_compositions[compositionName];
 
             composition.duration = meta_composition.get_Duration();
-            composition.frameDuration = meta_composition.get_FrameDuration();
+            composition.frameDuration = meta_composition.get_FrameDuration();            
+            composition.has_bounds = meta_composition.get_Bounds( &composition.bounds );
 
             const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::VectorMeta_Layer & includes_layer = meta_composition.get_Includes_Layer();
 

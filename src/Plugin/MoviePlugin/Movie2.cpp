@@ -35,6 +35,7 @@ namespace Mengine
         : m_composition( nullptr )
         , m_duration( 0.f )
         , m_frameDuration( 0.f )
+        , m_hasBounds( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -124,6 +125,8 @@ namespace Mengine
 
         m_duration = composition->duration * 1000.f;
         m_frameDuration = composition->frameDuration * 1000.f;
+        m_hasBounds = composition->has_bounds;
+        m_bounds = composition->bounds;
 
         for( const ResourceMovie2CompositionLayer & layer : composition->layers )
         {
@@ -418,45 +421,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasCompositionBounds() const
     {
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "Movie2::hasCompositionBounds '%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
-
-        const aeMovieCompositionData * compositionData = ae_get_movie_composition_composition_data( m_composition );
-
-        if( ae_has_movie_composition_data_bounds( compositionData ) == AE_FALSE )
-        {
-            return false;
-        }
-
-        return true;
+        return m_hasBounds;
     }
     //////////////////////////////////////////////////////////////////////////
-    Viewport Movie2::getCompositionBounds() const
+    const Viewport & Movie2::getCompositionBounds() const
     {
-        if( m_composition == nullptr )
-        {
-            LOGGER_ERROR( "Movie2::getCompositionBounds '%s' not compile"
-                , this->getName().c_str()
-            );
-
-            return Viewport();
-        }
-
-        const aeMovieCompositionData * compositionData = ae_get_movie_composition_composition_data( m_composition );
-
-        ae_viewport_t bounds;        
-        if( ae_get_movie_composition_data_bounds( compositionData, &bounds ) == AE_FALSE )
-        {
-            return Viewport();
-        }
-
-        return Viewport( bounds.begin_x, bounds.begin_y, bounds.end_x, bounds.end_y );
+        return m_bounds;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::hasSubComposition( const ConstString & _name ) const

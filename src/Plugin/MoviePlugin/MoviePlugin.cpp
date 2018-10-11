@@ -247,6 +247,19 @@ namespace Mengine
             pybind::kernel_interface * m_kernel;
             pybind::list m_list;
         };
+        //////////////////////////////////////////////////////////////////////////
+        static Viewport s_Movie2_getCompositionBoundsWM( Movie2 * _movie )
+        {
+            const Viewport & bounds = _movie->getCompositionBounds();
+
+            const mt::mat4f & wm = _movie->getWorldMatrix();
+
+            Viewport boundsWM;
+            mt::mul_v2_v2_m4( boundsWM.begin, bounds.begin, wm );
+            mt::mul_v2_v2_m4( boundsWM.end, bounds.end, wm );
+
+            return boundsWM;
+        }
         //////////////////////////////////////////////////////////////////////////    
         static pybind::list s_Movie2_getSockets( pybind::kernel_interface * _kernel, Movie2 * _movie )
         {
@@ -385,6 +398,7 @@ namespace Mengine
             .def( "getSubComposition", &Movie2::getSubComposition )
             .def( "hasCompositionBounds", &Movie2::hasCompositionBounds )
             .def( "getCompositionBounds", &Movie2::getCompositionBounds )
+            .def_static( "getCompositionBoundsWM", &External::s_Movie2_getCompositionBoundsWM )
             .def_static_native_kernel( "setEventListener", &External::s_Movie2_setEventListener )
             .def_static_kernel( "getSockets", &External::s_Movie2_getSockets )
             .def_static_kernel( "getSlots", &External::s_Movie2_getSlots )

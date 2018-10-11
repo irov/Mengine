@@ -30,13 +30,6 @@ namespace Mengine
     {
         m_available = CONFIG_VALUE( "Engine", "ParticleService2Avaliable", true );
 
-        //m_available = false;
-
-        if( SERVICE_EXIST( Mengine::ParticleSystemInterface2 ) == false )
-        {
-            m_available = false;
-        }
-
         if( m_available == false )
         {
             return true;

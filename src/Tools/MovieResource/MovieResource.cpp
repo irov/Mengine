@@ -411,16 +411,6 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
             xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
 
-            //if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_HORIZONTAL_CENTER ) == AE_TRUE )
-            //{
-            //    xmlNodeText.append_attribute( "AlignHorizontalCenter" ).set_value( 1U );
-            //}
-
-            //if( ae_has_movie_layer_data_param( layer, AE_MOVIE_LAYER_PARAM_VERTICAL_CENTER ) == AE_TRUE )
-            //{
-            //    xmlNodeText.append_attribute( "AlignVerticalCenter" ).set_value( 1U );
-            //}
-
             *_nd = AE_NULL;
 
             return AE_TRUE;
@@ -701,9 +691,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             char xmlCompositionBounds[MAX_PATH];
             sprintf( xmlCompositionBounds, "%s;%s;%s;%s"
                 , sf( viewport.begin_x ).c_str()
-                , sf( viewport.begin_x ).c_str()
-                , sf( viewport.begin_x ).c_str()
-                , sf( viewport.begin_x ).c_str()
+                , sf( viewport.begin_y ).c_str()
+                , sf( viewport.end_x ).c_str()
+                , sf( viewport.end_y ).c_str()
             );
 
             xmlDataResourceComposition.append_attribute( "Bounds" ).set_value( xmlCompositionBounds );

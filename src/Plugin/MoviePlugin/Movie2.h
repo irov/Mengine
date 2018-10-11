@@ -79,7 +79,7 @@ namespace Mengine
 
     public:
         bool hasCompositionBounds() const;
-        Viewport getCompositionBounds() const;
+        const Viewport & getCompositionBounds() const;
 
     public:
         bool hasSubComposition( const ConstString & _name ) const;
@@ -215,6 +215,9 @@ namespace Mengine
 
         float m_duration;
         float m_frameDuration;
+
+        bool m_hasBounds;
+        Viewport m_bounds;
 
         VectorRenderVertex2D m_vertices;
         VectorRenderIndices m_indices;

@@ -3,6 +3,7 @@
 #include "Interface/ArchiveInterface.h"
 
 #include "Kernel/Resource.h"
+#include "Kernel/Viewport.h"
 #include "Kernel/ColourValue.h"
 
 #include "math/mat4.h"
@@ -37,6 +38,9 @@ namespace Mengine
     {
         float duration;
         float frameDuration;
+
+        bool has_bounds;
+        Viewport bounds;
 
         ResourceMovie2CompositionLayers layers;
         ResourceMovie2CompositionSubCompositions subcompositions;

@@ -24,7 +24,7 @@ namespace Mengine
         SERVICE_DECLARE( "TTFAtlasService" )
 
     public:
-        virtual RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv ) = 0;
+        virtual RenderTextureInterfacePtr makeTextureGlyph( uint32_t _glyphWidth, uint32_t _glyphOffset, uint32_t _glyphHeight, uint32_t _altasWidth, uint32_t _altasHeight, uint32_t _atlasChannel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv ) = 0;
     };
 }
 

@@ -174,30 +174,13 @@ namespace Mengine
             return;
         }
 
-        float fontAscent = _font->getFontAscent();
         float fontHeight = _font->getFontHeight();
-
         float lineOffset = this->calcLineOffset();
-
-        ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
+        
+        float linesOffset = this->calcLinesOffset( lineOffset, _font );
 
         mt::vec2f base_offset( 0.f, 0.f );
-
-        switch( verticalAlign )
-        {
-        case ETFVA_BOTTOM:
-            {
-                base_offset.y = (fontAscent + lineOffset) * (float( m_layoutCount ) - 1.f) * 0.5f;
-            }break;
-        case ETFVA_CENTER:
-            {
-                base_offset.y = -(fontAscent + lineOffset) * (float( m_layoutCount ) - 2.f) * 0.5f;
-            }break;
-        case ETFVA_TOP:
-            {
-                base_offset.y = (fontAscent + lineOffset);
-            }break;
-        }
+        base_offset.y = linesOffset;
 
         float charScale = this->calcCharScale();
 
@@ -567,6 +550,19 @@ namespace Mengine
         return m_textSize;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TextField::calcTextViewport( Viewport & _viewport ) const
+    {
+        const TextFontInterfacePtr & font = this->getFont();
+        float lineOffset = this->calcLineOffset();
+
+        float linesOffset = this->calcLinesOffset( lineOffset, font );
+
+        const mt::vec2f & size = this->getTextSize();
+
+        _viewport.begin = mt::vec2f( 0.f, linesOffset ) - size;
+        _viewport.end = mt::vec2f( 0.f, linesOffset );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLinesMaxCount_( VectorTextLines & _textLines ) const
     {
         if( m_maxCharCount == ~0U )
@@ -617,7 +613,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f & _size, uint32_t & _charCount, uint32_t & _layoutCount ) const
+    void TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const
     {
         float fontHeight = _font->getFontAscent();
 
@@ -659,7 +655,7 @@ namespace Mengine
             layouts.emplace_back( textLine2 );
         }
 
-        _charCount = 0;
+        uint32_t charCount = 0;
 
         m_textLineAlignOffsets.clear();
 
@@ -678,27 +674,32 @@ namespace Mengine
             }
 
             maxlen = (std::max)(maxlen, line_length);
-            _charCount += line_chars;
+            charCount += line_chars;
 
             float alignOffsetX = this->getHorizontAlignOffset_( lines2 );
 
             m_textLineAlignOffsets.push_back( alignOffsetX );
         }
 
-        _layoutCount = (uint32_t)layouts.size();
+        *_charCount = charCount;
 
-        _size.x = maxlen;
+        *_layoutCount = (uint32_t)layouts.size();
+
+        mt::vec2f size;
+        size.x = maxlen;
 
         VectorTextLineLayout::size_type lineCount = layouts.size();
 
         if( lineCount > 0 )
         {
-            _size.y = (lineOffset + fontHeight) * (lineCount - 1) + fontHeight;
+            size.y = (lineOffset + fontHeight) * (lineCount - 1) + fontHeight;
         }
         else
         {
-            _size.y = fontHeight;
+            size.y = fontHeight;
         }
+
+        *_size = size;
     }
     ////////////////////////////////////////////////////////////////////////
     void TextField::updateTextLines_() const
@@ -886,7 +887,7 @@ namespace Mengine
             textLines.swap( new_textLines );
         }
 
-        this->updateTextLinesDimension_( baseFont, textLines, m_textSize, m_charCount, m_layoutCount );
+        this->updateTextLinesDimension_( baseFont, textLines, &m_textSize, &m_charCount, &m_layoutCount );
 
         this->updateTextLinesMaxCount_( textLines );
 
@@ -1075,10 +1076,9 @@ namespace Mengine
         {
             uint32_t params = font->getFontParams();
 
-            float fontHeight = font->getFontHeight();
-
             if( params & EFP_LINE_OFFSET )
             {
+                float fontHeight = font->getFontHeight();
                 float value = font->getLineOffset();
 
                 return fontHeight + value;
@@ -1253,6 +1253,57 @@ namespace Mengine
         }
 
         return 1.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float TextField::calcLinesOffset( float _lineOffset, const TextFontInterfacePtr & _font ) const
+    {
+        float fontAscent = _font->getFontAscent();
+        float fontDescent = _font->getFontDescent();
+        float fontHeight = _font->getFontHeight();
+
+        ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
+
+        float offset = 0.f;
+
+        if( m_layoutCount == 1 )
+        {
+            switch( verticalAlign )
+            {
+            case ETFVA_BOTTOM:
+                {
+                    offset = 0.f;
+                }break;
+            case ETFVA_CENTER:
+                {
+                    //float h = fontHeight - fontDescent;
+                    offset = fontAscent * 0.5f;
+                }break;
+            case ETFVA_TOP:
+                {
+                    offset = fontAscent;
+                }break;
+            }
+        }
+        else
+        {
+            switch( verticalAlign )
+            {
+            case ETFVA_BOTTOM:
+                {
+                    offset = (fontAscent - fontDescent + _lineOffset) * (float( m_layoutCount ) - 1.f) * 0.5f;
+                }break;
+            case ETFVA_CENTER:
+                {
+                    offset = -(fontAscent - fontDescent + _lineOffset) * (float( m_layoutCount ) - 2.f) * 0.5f;
+                }break;
+            case ETFVA_TOP:
+                {
+                    offset = (fontAscent - fontDescent + _lineOffset);
+                }break;
+            }
+        }
+
+        return offset;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::_updateBoundingBox( mt::box2f & _boundingBox ) const
@@ -1622,38 +1673,35 @@ namespace Mengine
         VectorRenderVertex2D::const_iterator it = _fromVertex.begin();
         VectorRenderVertex2D::const_iterator it_end = _fromVertex.end();
 
-        VectorRenderVertex2D::iterator it_w = _outVertex.begin();
-
-        mt::mat4f wm = this->getWorldMatrix();
+        VectorRenderVertex2D::iterator it_w = _outVertex.begin();        
 
         if( m_pixelsnap == true )
         {
+            mt::mat4f wm = this->getWorldMatrix();
             wm.v3.x = ::floorf( wm.v3.x + 0.5f );
             wm.v3.y = ::floorf( wm.v3.y + 0.5f );
+
+            for( ; it != it_end; ++it, ++it_w )
+            {
+                const RenderVertex2D & vertex = *it;
+
+                RenderVertex2D & vertex_w = *it_w;
+
+                mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
+            }
         }
-
-        //float charScale = this->getCharScale();
-
-        //if( mt::equal_f_1( charScale ) == false )
-        //{
-        //	mt::vec3f position;
-        //	mt::vec3f origin;
-        //	mt::vec3f scale;
-        //	mt::vec2f skew;
-        //	mt::vec3f orientation;
-        //	this->getTransformation( position, origin, scale, skew, orientation );
-
-        //	mt::mat4f wm;
-        //	this->calcWorldMatrix( wm, position, origin, scale + charScale, skew, orientation );
-        //}
-
-        for( ; it != it_end; ++it, ++it_w )
+        else
         {
-            const RenderVertex2D & vertex = *it;
+            const mt::mat4f & wm = this->getWorldMatrix();
 
-            RenderVertex2D & vertex_w = *it_w;
+            for( ; it != it_end; ++it, ++it_w )
+            {
+                const RenderVertex2D & vertex = *it;
 
-            mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
+                RenderVertex2D & vertex_w = *it_w;
+
+                mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

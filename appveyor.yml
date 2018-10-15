@@ -44,7 +44,7 @@ build_script:
 - echo "Configured %CMAKE_DEPENDENCIES_DIR%"
 - pushd .\CMake\%CMAKE_DEPENDENCIES_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
 - echo "Build %CMAKE_DEPENDENCIES_DIR%"
-- pushd .\CMake\%CMAKE_DEPENDENCIES_DIR% && cmake --build . & popd
+- pushd .\CMake\%CMAKE_DEPENDENCIES_DIR% && cmake --build . --config %configuration% & popd
 - echo "Configured Solution %CMAKE_SOLUTION_DIR%"
 - pushd .\CMake\%CMAKE_SOLUTION_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='..\CMake\%CMAKE_DEPENDENCIES_DIR%' & popd
 - echo "Build Solution %CMAKE_SOLUTION_DIR%"

@@ -160,21 +160,37 @@ namespace Mengine
 
         this->renderLine_( vertices, 8 );
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //void NodeDebugRenderVisitor::accept( MovieSlot * _node )
-    //{
-    //    const mt::mat4f & wm = _node->getWorldMatrix();
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebugRenderVisitor::accept( TextField * _node )
+    {
+        Viewport viewport;
+        _node->calcTextViewport( viewport );
 
-    //    float radius = 10.f;
-    //    this->renderCircle_( wm, radius, 16, 0x000000FF );
-    //}
+        mt::vec2f b = viewport.begin;
+        mt::vec2f e = viewport.end;
+
+        mt::vec2f v0( b.x, b.y );
+        mt::vec2f v1( e.x, b.y );
+        mt::vec2f v2( e.x, e.y );
+        mt::vec2f v3( b.x, e.y );
+
+        Polygon polygon;
+        polygon.append( v0 );
+        polygon.append( v1 );
+        polygon.append( v2 );
+        polygon.append( v3 );
+
+        const mt::mat4f & wm = _node->getWorldMatrix();
+
+        this->renderPolygon_( wm, polygon, 0xFF0000FF );
+    }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderVisitor::accept( Point * _node )
     {
         const mt::mat4f & wm = _node->getWorldMatrix();
 
         float radius = 2.5f;
-        this->renderCircle_( wm, radius, 4, 0x000000FF );
+        this->renderCircle_( wm, radius, 4, 0xFF0000FF );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderVisitor::accept( Arrow * _node )

@@ -74,9 +74,12 @@ namespace Mengine
         FileGroupInterfacePtr m_category;
         FilePath m_ttfPath;
 
+        uint32_t m_height;
+        uint32_t m_FESample;
+
         float m_ttfAscender;
         float m_ttfDescender;
-        uint32_t m_ttfHeight;
+        float m_ttfHeight;
         float m_ttfSpacing;
 
         uint32_t m_ttfLayoutCount;
@@ -107,10 +110,6 @@ namespace Mengine
 
         typedef Vector<TTFGlyph> VectorTTFGlyphs;
         VectorTTFGlyphs m_glyphsHash[MENGINE_TTF_FONT_GLYPH_HASH_SIZE];
-
-        uint32_t m_ttfFESample;
-
-        class PFindGlyph;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TTFFont> TTFFontPtr;

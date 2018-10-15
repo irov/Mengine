@@ -152,9 +152,9 @@ namespace Mengine
         void invalidateTextEntry() const;
         inline bool isInvalidateTextLines() const;
 
-        void updateTextLines_() const;
+        bool updateTextLines_() const;
         void updateTextLinesMaxCount_( VectorTextLines & _textLines ) const;
-        void updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const;
+        bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const;
 
     protected:
         inline const TextEntryInterfacePtr & getTextEntry() const;

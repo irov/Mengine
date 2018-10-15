@@ -730,17 +730,23 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    static void __updateMatrixProxy( const NodePtr & _node, const float * _matrix, const ae_color_t & _color, ae_color_channel_t _opacity )
+    static void __updateMatrixProxy( const NodePtr & _node, ae_bool_t _immutable_matrix, const float * _matrix, ae_bool_t _immutable_color, const ae_color_t & _color, ae_color_channel_t _opacity )
     {
         Node * nodeParent = _node->getParent();
 
         MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
 
-        mt::mat4f mp;
-        mp.from_f12( _matrix );
-        matrixProxy->setProxyMatrix( mp );
+        if( _immutable_matrix == AE_FALSE )
+        {
+            mt::mat4f mp;
+            mp.from_f12( _matrix );
+            matrixProxy->setProxyMatrix( mp );
+        }
 
-        matrixProxy->setLocalColorRGBA( _color.r, _color.g, _color.b, _opacity );
+        if( _immutable_color == AE_FALSE )
+        {
+            matrixProxy->setLocalColorRGBA( _color.r, _color.g, _color.b, _opacity );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     ae_bool_t Movie2::__movie_composition_node_provider( const aeMovieNodeProviderCallbackData * _callbackData, ae_voidptrptr_t _nd, ae_voidptr_t _ud )
@@ -800,7 +806,7 @@ namespace Mengine
                     return AE_FALSE;
                 }
 
-                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
+                __updateMatrixProxy( node, AE_FALSE, _callbackData->matrix, AE_FALSE, _callbackData->color, _callbackData->opacity );
 
                 if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', 'h', 'r' ) ) == AE_TRUE )
                 {
@@ -1127,7 +1133,7 @@ namespace Mengine
             {
                 Node * node = reinterpret_node_cast<Node *>(_callbackData->element);
 
-                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
+                __updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
 
                 AnimationInterface * animation = node->getAnimation();
 
@@ -1304,25 +1310,25 @@ namespace Mengine
             {
                 Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(_callbackData->element);
 
-                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
+                __updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
         case AE_MOVIE_LAYER_TYPE_SPRITE:
             {
                 ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(_callbackData->element);
 
-                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
+                __updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
                 TextField * node = reinterpret_node_cast<TextField *>(_callbackData->element);
 
-                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
+                __updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
         case AE_MOVIE_LAYER_TYPE_SOCKET:
             {
                 HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(_callbackData->element);
 
-                __updateMatrixProxy( node, _callbackData->matrix, _callbackData->color, _callbackData->opacity );
+                __updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
         default:
             {

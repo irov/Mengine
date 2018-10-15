@@ -42,14 +42,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr TTFAtlasService::makeTextureGlyph( uint32_t _glyphWidth, uint32_t _glyphOffset, uint32_t _glyphHeight, uint32_t _altasWidth, uint32_t _altasHeight, uint32_t _atlasChannel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv )
+    RenderTextureInterfacePtr TTFAtlasService::makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv )
     {
-        if( _altasWidth == 0 || _altasHeight == 0 )
+        if( _width == 0 || _height == 0 )
         {
             return nullptr;
         }
 
-        TTFAtlas * atlas = this->getAtlas_( _altasWidth, _altasHeight, _atlasChannel );
+        TTFAtlas * atlas = this->getAtlas_( _width, _height, _channel );
 
         if( atlas == nullptr )
         {
@@ -63,9 +63,9 @@ namespace Mengine
 
         Rect rect;
         rect.left = index * atlas->width;
-        rect.top = _glyphOffset;
-        rect.right = rect.left + _glyphWidth;
-        rect.bottom = rect.top + _glyphHeight;
+        rect.top = 0;
+        rect.right = rect.left + _width;
+        rect.bottom = rect.top + _height;
 
         const RenderImageInterfacePtr & texture_image = texture->getImage();
 
@@ -91,10 +91,10 @@ namespace Mengine
         float atlas_width_inv = texture->getWidthInv();
         float atlas_height_inv = texture->getHeightInv();
 
-        _uv.p0 = mt::vec2f( float( rect.left + 1 ) * atlas_width_inv, float( rect.top + 1 ) * atlas_height_inv );
-        _uv.p1 = mt::vec2f( float( rect.right - 1 ) * atlas_width_inv, float( rect.top + 1 ) * atlas_height_inv );
-        _uv.p2 = mt::vec2f( float( rect.right - 1 ) * atlas_width_inv, float( rect.bottom - 1 ) * atlas_height_inv );
-        _uv.p3 = mt::vec2f( float( rect.left + 1 ) * atlas_width_inv, float( rect.bottom - 1 ) * atlas_height_inv );
+        _uv.p0 = mt::vec2f( float( rect.left + _border ) * atlas_width_inv, float( rect.top + _border ) * atlas_height_inv );
+        _uv.p1 = mt::vec2f( float( rect.right - _border ) * atlas_width_inv, float( rect.top + _border ) * atlas_height_inv );
+        _uv.p2 = mt::vec2f( float( rect.right - _border ) * atlas_width_inv, float( rect.bottom - _border ) * atlas_height_inv );
+        _uv.p3 = mt::vec2f( float( rect.left + _border ) * atlas_width_inv, float( rect.bottom - _border ) * atlas_height_inv );
 
         return texture;
     }
@@ -152,7 +152,7 @@ namespace Mengine
         PixelFormat format = PF_A8R8G8B8;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createDynamicTexture( m_maxAtlasWidth, hw_height, 4, 1, format );
+            ->createDynamicTexture( m_maxAtlasWidth, newAtlas.height, 4, 1, format );
 
         if( texture == nullptr )
         {

@@ -111,6 +111,7 @@ namespace Mengine
 
     public:
         const mt::vec2f & getTextSize() const;
+        void calcTextViewport( Viewport & _viewport ) const;
 
     public:
         uint32_t getCharCount() const;
@@ -153,7 +154,7 @@ namespace Mengine
 
         void updateTextLines_() const;
         void updateTextLinesMaxCount_( VectorTextLines & _textLines ) const;
-        void updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f & _size, uint32_t & _charCount, uint32_t & _layoutCount ) const;
+        void updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const;
 
     protected:
         inline const TextEntryInterfacePtr & getTextEntry() const;
@@ -174,6 +175,7 @@ namespace Mengine
         ETextVerticalAlign calcVerticalAlign() const;
 
         float calcCharScale() const;
+        float calcLinesOffset( float _lineOffset, const TextFontInterfacePtr & _font ) const;
 
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;

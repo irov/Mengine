@@ -24,12 +24,13 @@ namespace Mengine
         , m_face( nullptr )
         , m_ttfAscender( 0.f )
         , m_ttfDescender( 0.f )
-        , m_ttfHeight( 0 )
+        , m_ttfHeight( 0.f )
         , m_ttfSpacing( 0.f )
         , m_ttfLayoutCount( 1 )
         , m_ttfFEBundle( nullptr )
         , m_ttfFEEffect( nullptr )
-        , m_ttfFESample( 1 )
+        , m_height( 0 )
+        , m_FESample( 1 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -60,7 +61,7 @@ namespace Mengine
             return false;
         }
 
-        if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_ttfHeight ) == false )
+        if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_height ) == false )
         {
             LOGGER_ERROR( "TextManager::loadFonts invalid font '%s' don't setup Height"
                 , m_name.c_str()
@@ -81,7 +82,7 @@ namespace Mengine
             }
         }
 
-        IniUtil::getIniValue( _ini, m_name.c_str(), "FESample", m_ttfFESample );
+        IniUtil::getIniValue( _ini, m_name.c_str(), "FESample", m_FESample );
 
         for( uint32_t index = 0; index != FE_MAX_PINS; ++index )
         {
@@ -153,6 +154,11 @@ namespace Mengine
 
         MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, "TTFFont", __FILE__, __LINE__ );
 
+        if( memory == nullptr )
+        {
+            return false;
+        }
+
         FT_Byte * memory_byte = memory->getBuffer();
         size_t memory_size = memory->getSize();
 
@@ -178,11 +184,11 @@ namespace Mengine
             return false;
         }
 
-        if( FT_Set_Pixel_Sizes( m_face, 0, m_ttfHeight * m_ttfFESample ) != FT_Err_Ok )
+        if( FT_Set_Pixel_Sizes( m_face, 0, m_height * m_FESample ) != FT_Err_Ok )
         {
             LOGGER_ERROR( "TTFFont::_compile font '%s' invalid set pixel height '%u'"
                 , m_name.c_str()
-                , m_ttfHeight
+                , m_height
             );
 
             return false;
@@ -190,22 +196,25 @@ namespace Mengine
 
         m_memory = memory;
 
-        FT_Pos ascender = m_face->size->metrics.ascender >> 6;
-        FT_Pos descender = m_face->size->metrics.descender >> 6;
-        FT_Pos height = m_face->size->metrics.height >> 6;
+        FT_Size face_size = m_face->size;
+        const FT_Size_Metrics & face_size_metrics = face_size->metrics;
 
-        if( m_ttfFESample == 2 )
-        {
-            ascender >>= 1;
-            descender >>= 1;
-            height >>= 1;
-        }
+        FT_Pos ascender = face_size_metrics.ascender >> 6;
+        FT_Pos descender = face_size_metrics.descender >> 6;
+        FT_Pos height = face_size_metrics.height >> 6;
 
         m_ttfAscender = static_cast<float>(ascender);
         m_ttfDescender = -static_cast<float>(descender);
+        m_ttfHeight = static_cast<float>(height);
 
-        float fHeight = static_cast<float>(height);
-        m_ttfSpacing = fHeight - (m_ttfAscender + m_ttfDescender);
+        if( m_FESample == 2 )
+        {
+            m_ttfAscender *= 0.5f;
+            m_ttfDescender *= 0.5f;
+            m_ttfHeight *= 0.5f;
+        }
+
+        m_ttfSpacing = m_ttfHeight - (m_ttfAscender + m_ttfDescender);
 
         return true;
     }
@@ -222,24 +231,6 @@ namespace Mengine
             m_ttfFEBundle = nullptr;
         }
     }
-    //////////////////////////////////////////////////////////////////////////
-    class TTFFont::PFindGlyph
-    {
-    public:
-        PFindGlyph( GlyphCode _ch )
-            : m_ch( _ch )
-        {
-        }
-
-    public:
-        bool operator () ( const TTFGlyph & _glyph ) const
-        {
-            return m_ch == _glyph.ch;
-        }
-
-    protected:
-        GlyphCode m_ch;
-    };
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
@@ -376,7 +367,7 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
+        VectorTTFGlyphs::iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph ) { return _glyph.ch == _code; } );
 
         if( it_found != glyphs.end() )
         {
@@ -388,7 +379,7 @@ namespace Mengine
 
         FT_UInt glyph_index = FT_Get_Char_Index( m_face, _code );
 
-        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_NO_SCALE | FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
         {
             return false;
         }
@@ -440,7 +431,7 @@ namespace Mengine
 
         TTFGlyph ttf_glyph;
         ttf_glyph.ch = _code;
-        ttf_glyph.advance = glyph_advance / m_ttfFESample;
+        ttf_glyph.advance = glyph_advance / m_FESample;
 
         if( glyph_bitmap.width == 0 || glyph_bitmap.rows == 0 )
         {
@@ -495,7 +486,7 @@ namespace Mengine
                 fe_im & res = bgra_res[layoutIndex];
                 fe_image & bgra_image = bgra_images[layoutIndex];
 
-                fe_node_apply( m_ttfHeight * m_ttfFESample
+                fe_node_apply( m_height * m_FESample
                     , im_x
                     , im_y
                     , im_image_w
@@ -529,7 +520,7 @@ namespace Mengine
                 const fe_im & res = bgra_res[layoutIndex];
                 fe_image & bgra_image = bgra_images[layoutIndex];
 
-                switch( m_ttfFESample )
+                switch( m_FESample )
                 {
                 case 1:
                     {
@@ -537,7 +528,7 @@ namespace Mengine
 
                         mt::uv4f uv;
                         RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image_offset, bgra_image.h + 2, max_bgra_width, total_bgra_height, bgra_image.bytespp, &provider, uv );
+                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image.h + 2, 1, bgra_image.bytespp, &provider, uv );
 
                         fe_image_free( &bgra_image );
 
@@ -561,7 +552,7 @@ namespace Mengine
 
                         mt::uv4f uv;
                         RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image_offset, bgra_image.h + 2, max_bgra_width, total_bgra_height, bgra_image.bytespp, &provider, uv );
+                            ->makeTextureGlyph( bgra_image.w + 2, bgra_image.h + 2, 1, bgra_image.bytespp, &provider, uv );
 
                         fe_image_free( &bgra_image );
 
@@ -592,7 +583,7 @@ namespace Mengine
 
             mt::uv4f uv;
             RenderTextureInterfacePtr texture = TTFATLAS_SERVICE()
-                ->makeTextureGlyph( glyph_bitmap.width + 2, 0, glyph_bitmap.rows + 2, glyph_bitmap.width + 2, glyph_bitmap.rows + 2, bitmap_channel, &provider, uv );
+                ->makeTextureGlyph( glyph_bitmap.width + 2, glyph_bitmap.rows + 2, 1, bitmap_channel, &provider, uv );
 
             if( texture == nullptr )
             {
@@ -639,7 +630,7 @@ namespace Mengine
             return false;
         }
 
-        if( FT_Set_Pixel_Sizes( face, 0, m_ttfHeight * m_ttfFESample ) != FT_Err_Ok )
+        if( FT_Set_Pixel_Sizes( face, 0, m_height * m_FESample ) != FT_Err_Ok )
         {
             return false;
         }
@@ -701,7 +692,7 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
+        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph ) { return _glyph.ch == _code; } );
 
         if( it_found == glyphs.end() )
         {
@@ -716,7 +707,7 @@ namespace Mengine
         uint32_t code_hash = _code % MENGINE_TTF_FONT_GLYPH_HASH_SIZE;
         const VectorTTFGlyphs & glyphs = m_glyphsHash[code_hash];
 
-        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), PFindGlyph( _code ) );
+        VectorTTFGlyphs::const_iterator it_found = std::find_if( glyphs.begin(), glyphs.end(), [_code]( const TTFGlyph & _glyph ) { return _glyph.ch == _code; } );
 
         if( it_found == glyphs.end() )
         {
@@ -778,7 +769,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float TTFFont::getFontHeight() const
     {
-        return m_ttfAscender + m_ttfDescender;
+        return m_ttfHeight;
     }
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::getFontPremultiply() const

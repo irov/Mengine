@@ -34,7 +34,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        RenderTextureInterfacePtr makeTextureGlyph( uint32_t _glyphWidth, uint32_t _glyphOffset, uint32_t _glyphHeight, uint32_t _altasWidth, uint32_t _altasHeight, uint32_t _atlasChannel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv ) override;
+        RenderTextureInterfacePtr makeTextureGlyph( uint32_t _width, uint32_t _height, uint32_t _border, uint32_t _channel, TextureGlyphProviderInterface * _provider, mt::uv4f & _uv ) override;
 
     protected:
         TTFAtlas * getAtlas_( uint32_t _width, uint32_t _height, uint32_t _channel );

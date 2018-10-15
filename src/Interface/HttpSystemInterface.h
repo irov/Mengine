@@ -41,6 +41,6 @@ namespace Mengine
         virtual bool cancelRequest( HttpRequestID _id ) = 0;
     };
 
-#   define HTTP_SYSTEM()\
+#define HTTP_SYSTEM()\
 	SERVICE_GET(Mengine::HttpSystemInterface)
 }

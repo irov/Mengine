@@ -75,6 +75,6 @@ namespace Mengine
         virtual void messageAll( const ConstString & _messageName, const MapWParams & _params ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define MODULE_SERVICE()\
+#define MODULE_SERVICE()\
 	((Mengine::ModuleServiceInterface *)SERVICE_GET(Mengine::ModuleServiceInterface))
 }

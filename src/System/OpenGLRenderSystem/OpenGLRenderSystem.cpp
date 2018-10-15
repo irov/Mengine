@@ -10,6 +10,7 @@
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
+#include "Kernel/FactoryAssertion.h"
 
 #include "Kernel/Logger.h"
 
@@ -547,6 +548,16 @@ namespace Mengine
     void OpenGLRenderSystem::updateProgram( const RenderProgramInterfacePtr & _program )
     {
         GLUNUSED( _program );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount )
+    {
+        return nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool OpenGLRenderSystem::applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program )
+    {
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::drawIndexedPrimitive( EPrimitiveType _type,
@@ -1105,12 +1116,11 @@ namespace Mengine
         //m_windowContext->setVSync( _vSync );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force )
+    void OpenGLRenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b )
     {
         GLUNUSED( _r );
         GLUNUSED( _g );
         GLUNUSED( _b );
-        GLUNUSED( _force );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr OpenGLRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )

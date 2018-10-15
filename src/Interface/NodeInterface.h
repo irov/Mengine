@@ -27,7 +27,7 @@ namespace Mengine
         virtual void clearHomeless() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define NODE_SERVICE()\
+#define NODE_SERVICE()\
     ((Mengine::NodeServiceInterface *)SERVICE_GET(Mengine::NodeServiceInterface))
     //////////////////////////////////////////////////////////////////////////
 }

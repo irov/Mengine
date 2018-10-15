@@ -29,7 +29,7 @@ namespace Mengine
         virtual RenderTextureInterfacePtr resurrectTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _path ) = 0;
     };
 
-#   define GRAVEYARD_SERVICE()\
+#define GRAVEYARD_SERVICE()\
     ((Mengine::GraveyardInterface*)SERVICE_GET(Mengine::GraveyardInterface))
 }
 

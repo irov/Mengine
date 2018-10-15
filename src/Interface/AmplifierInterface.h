@@ -38,6 +38,6 @@ namespace Mengine
         virtual float getPosMs() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define AMPLIFIER_SERVICE()\
+#define AMPLIFIER_SERVICE()\
     ((Mengine::AmplifierInterface *)SERVICE_GET(Mengine::AmplifierInterface))
 }

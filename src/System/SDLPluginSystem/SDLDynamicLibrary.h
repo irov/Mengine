@@ -1,8 +1,8 @@
-#   pragma once
+#pragma once
 
-#   include "Interface/PluginInterface.h"
+#include "Interface/PluginInterface.h"
 
-#	include "Kernel/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
 namespace Mengine
 {

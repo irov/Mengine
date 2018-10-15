@@ -10,7 +10,11 @@
 #include "Interface/PackageInterface.h"
 #include "Interface/UserdataInterface.h"
 #include "Interface/GraveyardInterface.h"
-#include "Interface/ResourceInterface.h"
+#include "Interface/ResourceServiceInterface.h"
+#include "Interface/SoundServiceInterface.h"
+#include "Interface/RenderServiceInterface.h"
+#include "Interface/UpdateServiceInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 #include "Interface/TextInterface.h"
 #include "Interface/InputSystemInterface.h"
 #include "Interface/TimerInterface.h"
@@ -62,13 +66,13 @@
 #	define NOMINMAX
 #	endif
 
-#pragma warning(push, 0) 
+#   pragma warning(push, 0) 
 #	include <Windows.h>
 #   include <WinUser.h>
 
 #   include <shellapi.h>
 #   include <shlobj.h>
-#pragma warning(pop) 
+#   pragma warning(pop)
 #endif
 
 #ifdef _MSC_VER
@@ -89,8 +93,6 @@ SERVICE_EXTERN( ArchiveService );
 
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ThreadService );
-
-SERVICE_EXTERN( ParticleService );
 
 SERVICE_EXTERN( RenderSystem );
 SERVICE_EXTERN( RenderService );
@@ -125,6 +127,7 @@ SERVICE_EXTERN( TimerSystem );
 SERVICE_EXTERN( TimerService );
 SERVICE_EXTERN( HttpSystem );
 SERVICE_EXTERN( PrototypeService );
+SERVICE_EXTERN( UpdateService );
 SERVICE_EXTERN( NodeService );
 SERVICE_EXTERN( LoaderService );
 SERVICE_EXTERN( RenderService );
@@ -148,6 +151,8 @@ PLUGIN_EXPORT( Amplifier );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
 PLUGIN_EXPORT( BitmapFont );
+PLUGIN_EXPORT( DebugRender );
+PLUGIN_EXPORT( ResourceValidate );
 
 #ifdef MENGINE_PLUGIN_TTF
 #ifndef MENGINE_PLUGIN_TTF_DLL
@@ -230,7 +235,7 @@ namespace Mengine
             return false;
         }
 
-#	ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
 
@@ -244,7 +249,7 @@ namespace Mengine
 
             return false;
         }
-#   endif
+#endif
 
         return true;
     }
@@ -609,6 +614,7 @@ namespace Mengine
 
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( NodeService );
+        SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
 
         PythonScriptWrapper::constsWrap();
@@ -636,11 +642,19 @@ namespace Mengine
 
         SERVICE_CREATE( Application );
 
-#   define MENGINE_ADD_PLUGIN( Name, Info )\
+#define MENGINE_ADD_PLUGIN( Name, Info )\
         do{LOGGER_INFO( Info );\
         if(	PLUGIN_CREATE(Name) == false ){\
         LOGGER_ERROR( "Invalid %s", Info );}else{\
         LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
+
+#ifdef MENGINE_PLUGIN_DEBUGRENDER
+        MENGINE_ADD_PLUGIN( DebugRender, "initialize Plugin Debug Render..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
+        MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
+#endif
 
         MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec..." );
         MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );
@@ -696,7 +710,7 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native..." );
 #endif
 
-#   undef MENGINE_ADD_PLUGIN
+#undef MENGINE_ADD_PLUGIN
 
         VectorWString plugins;
         CONFIG_VALUES( "Plugins", "Name", plugins );
@@ -751,8 +765,6 @@ namespace Mengine
                 }
             }
         }
-
-        SERVICE_CREATE( ParticleService );
 
         VectorString modules;
         CONFIG_VALUES( "Modules", "Name", modules );
@@ -897,6 +909,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::PackageServiceInterface );
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
         SERVICE_FINALIZE( Mengine::GraveyardInterface );
+        SERVICE_FINALIZE( Mengine::UpdateServiceInterface );
         SERVICE_FINALIZE( Mengine::NodeServiceInterface );
         SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
         SERVICE_FINALIZE( Mengine::TextServiceInterface );
@@ -910,8 +923,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::UnicodeSystemInterface );
 
         SERVICE_FINALIZE( Mengine::CodecServiceInterface );
-        SERVICE_FINALIZE( Mengine::ParticleSystemInterface2 );
-        SERVICE_FINALIZE( Mengine::ParticleServiceInterface2 );
 
         SERVICE_FINALIZE( Mengine::SoundServiceInterface );
         SERVICE_FINALIZE( Mengine::SoundSystemInterface );

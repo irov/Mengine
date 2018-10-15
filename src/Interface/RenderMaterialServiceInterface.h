@@ -62,6 +62,6 @@ namespace Mengine
         virtual ETextureFilter getDefaultTextureFilterMinification() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define RENDERMATERIAL_SERVICE()\
+#define RENDERMATERIAL_SERVICE()\
     ((Mengine::RenderMaterialServiceInterface*)SERVICE_GET(Mengine::RenderMaterialServiceInterface))
 }

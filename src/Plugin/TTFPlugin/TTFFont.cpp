@@ -25,6 +25,7 @@ namespace Mengine
         , m_ttfAscender( 0.f )
         , m_ttfDescender( 0.f )
         , m_ttfHeight( 0.f )
+        , m_ttfBearingYA( 0.f )
         , m_ttfSpacing( 0.f )
         , m_ttfLayoutCount( 1 )
         , m_ttfFEBundle( nullptr )
@@ -215,6 +216,26 @@ namespace Mengine
         }
 
         m_ttfSpacing = m_ttfHeight - (m_ttfAscender + m_ttfDescender);
+
+        FT_UInt glyph_index = FT_Get_Char_Index( m_face, 'A' );
+
+        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT ) )
+        {
+            return false;
+        }
+
+        FT_GlyphSlot face_glyphA = m_face->glyph;
+
+        const FT_Glyph_Metrics & face_glyphA_metrics = face_glyphA->metrics;
+
+        int32_t glyphA_bearingY = (face_glyphA_metrics.horiBearingY >> 6);
+
+        m_ttfBearingYA = static_cast<float>(glyphA_bearingY);
+
+        if( m_FESample == 2 )
+        {
+            m_ttfBearingYA *= 0.5f;
+        }
 
         return true;
     }
@@ -771,6 +792,11 @@ namespace Mengine
     {
         return m_ttfHeight;
     }
+    //////////////////////////////////////////////////////////////////////////
+    float TTFFont::getFontBearingYA() const
+    {
+        return m_ttfBearingYA;
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::getFontPremultiply() const
     {

@@ -13,11 +13,11 @@
 
 namespace Mengine
 {
-#   ifndef MENGINE_MAX_PATH
+#ifndef MENGINE_MAX_PATH
 #   define MENGINE_MAX_PATH 260
-#   endif
+#endif
 
-#	define MENGINE_FILE_PATH_INVALID_ID	((uint32_t)-1)
+#define MENGINE_FILE_PATH_INVALID_ID	((uint32_t)-1)
 
     class FilePath
         : public ConstString

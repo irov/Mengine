@@ -8,17 +8,7 @@ src
     
     VideoDecoderTheora.cpp
     VideoDecoderTheora.h
-    
-#    VideoDecoderGVF.cpp
-#    VideoDecoderGVF.h
-    
-#    VideoDecoderVPX.cpp
-#    VideoDecoderVPX.h
-#    VideoI420ToRGB24.h
-#    VideoI420ToRGB24.cpp
-#    VideoMkvReader.h
-#    VideoMkvReader.cpp    
-)
+	)
 
 INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
 

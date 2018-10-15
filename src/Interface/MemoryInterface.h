@@ -94,6 +94,6 @@ namespace Mengine
         virtual void clearCacheBuffers() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define MEMORY_SERVICE()\
+#define MEMORY_SERVICE()\
 	((Mengine::MemoryServiceInterface *)SERVICE_GET(Mengine::MemoryServiceInterface))
 }

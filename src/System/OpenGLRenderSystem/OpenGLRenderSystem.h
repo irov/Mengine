@@ -100,6 +100,8 @@ namespace Mengine
         RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount ) override;
         void setProgram( const RenderProgramInterfacePtr & _program ) override;
         void updateProgram( const RenderProgramInterfacePtr & _program ) override;
+        RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount ) override;
+        bool applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) override;
 
     public:
         RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
@@ -135,7 +137,7 @@ namespace Mengine
 
         void setVSync( bool _vSync ) override;
 
-        void clear( uint8_t _r, uint8_t _g, uint8_t _b, bool _force ) override;
+        void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
         
         uint32_t getTextureMemoryUse() const override;
         uint32_t getTextureCount() const override;

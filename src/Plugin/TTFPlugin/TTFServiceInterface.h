@@ -28,8 +28,8 @@ namespace Mengine
     };
 }
 
-#   define TTFATLAS_SERVICE()\
+#define TTFATLAS_SERVICE()\
     ((Mengine::TTFAtlasServiceInterface *)SERVICE_GET(Mengine::TTFAtlasServiceInterface))
 
-#   define TTFFONT_SERVICE()\
+#define TTFFONT_SERVICE()\
     ((Mengine::TTFFontManagerInterface *)SERVICE_GET(Mengine::TTFFontManagerInterface))

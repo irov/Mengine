@@ -169,7 +169,7 @@ namespace Mengine
         virtual const ConstString & findCodecType( const FilePath & _path ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define CODEC_SERVICE()\
+#define CODEC_SERVICE()\
     ((Mengine::CodecServiceInterface *)SERVICE_GET(Mengine::CodecServiceInterface))
 }
 

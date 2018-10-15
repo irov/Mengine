@@ -72,6 +72,6 @@ namespace Mengine
         virtual bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out ) = 0;
     };
 
-#   define CONVERTER_SERVICE()\
+#define CONVERTER_SERVICE()\
     SERVICE_GET(Mengine::ConverterServiceInterface)
 }

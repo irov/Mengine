@@ -97,7 +97,7 @@ namespace Mengine
         }
     };
 
-#   define DATA_SERVICE()\
+#define DATA_SERVICE()\
     ((Mengine::DataServiceInterface*)SERVICE_GET(Mengine::DataServiceInterface))
 }
 

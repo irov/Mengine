@@ -83,10 +83,8 @@ namespace Mengine
         virtual RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount ) = 0;
         virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
         virtual void updateProgram( const RenderProgramInterfacePtr & _program ) = 0;
-        virtual bool applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) = 0;
-        
-    public:
         virtual RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount ) = 0;
+        virtual bool applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) = 0;
 
     public:
         virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,
@@ -150,6 +148,6 @@ namespace Mengine
         virtual uint32_t getTextureCount() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define RENDER_SYSTEM()\
+#define RENDER_SYSTEM()\
     ((Mengine::RenderSystemInterface*)SERVICE_GET(Mengine::RenderSystemInterface))    
 }

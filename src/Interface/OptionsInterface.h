@@ -23,16 +23,16 @@ namespace Mengine
         virtual bool testOptionValue( const Char * _key, const Char * _value ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define OPTIONS_SERVICE()\
+#define OPTIONS_SERVICE()\
     ((Mengine::OptionsServiceInterface *)SERVICE_GET(Mengine::OptionsServiceInterface))
     //////////////////////////////////////////////////////////////////////////
-#	define HAS_OPTION( key )\
+#define HAS_OPTION( key )\
 	OPTIONS_SERVICE()->hasOption( key )
     //////////////////////////////////////////////////////////////////////////
-#	define GET_OPTION_VALUE( key )\
+#define GET_OPTION_VALUE( key )\
 	OPTIONS_SERVICE()->getOptionValue( key )
     //////////////////////////////////////////////////////////////////////////
-#	define TEST_OPTION_VALUE( key, value )\
+#define TEST_OPTION_VALUE( key, value )\
 	OPTIONS_SERVICE()->testOptionValue( key, value )
 }
 

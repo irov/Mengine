@@ -38,7 +38,7 @@ namespace Mengine
         virtual OutputStreamInterfacePtr openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define FILE_SERVICE()\
+#define FILE_SERVICE()\
     ((Mengine::FileServiceInterface *)SERVICE_GET(Mengine::FileServiceInterface))
 }
 

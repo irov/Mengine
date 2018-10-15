@@ -56,6 +56,7 @@ namespace Mengine
         float getFontAscent() const override;
         float getFontDescent() const override;
         float getFontHeight() const override;
+        float getFontBearingYA() const override;
         float getFontSpacing() const override;
 
     protected:
@@ -80,6 +81,7 @@ namespace Mengine
         float m_ttfAscender;
         float m_ttfDescender;
         float m_ttfHeight;
+        float m_ttfBearingYA;
         float m_ttfSpacing;
 
         uint32_t m_ttfLayoutCount;

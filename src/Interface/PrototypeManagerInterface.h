@@ -56,7 +56,7 @@ namespace Mengine
     };
 }
 
-#   define PROTOTYPE_SERVICE()\
+#define PROTOTYPE_SERVICE()\
 	((PrototypeServiceInterface *)SERVICE_GET(Mengine::PrototypeServiceInterface))
 
 

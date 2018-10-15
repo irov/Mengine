@@ -55,11 +55,11 @@ namespace Mengine
 
         m_factoryScriptModuleLoaderCode = nullptr;
 
-#   ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModuleLoaderSource );
 
         m_factoryScriptModuleLoaderSource = nullptr;
-#   endif
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptModuleFinder::setEmbed( PyObject * _embed )
@@ -122,7 +122,7 @@ namespace Mengine
         (void)_module;
         (void)_path;
 
-#   ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
         {
             ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoaderSource->createObject();
 
@@ -137,7 +137,7 @@ namespace Mengine
                 return m_embed;
             }
         }
-#   endif
+#endif
 
         {
             ScriptModuleLoaderPtr loaderCode = m_factoryScriptModuleLoaderCode->createObject();

@@ -9,7 +9,6 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
-#include "Interface/ParticleSystemInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/ConverterInterface.h"
 #include "Interface/InputSystemInterface.h"

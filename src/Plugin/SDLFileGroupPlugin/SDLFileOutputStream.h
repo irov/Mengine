@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/FileOutputStreamInterface.h"
+#include "Interface/FileOutputStreamInterface.h"
 
-#   include "Kernel/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
-#   include "SDL_rwops.h"
+#include "SDL_rwops.h"
 
 namespace Mengine
 {

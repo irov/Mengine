@@ -89,7 +89,7 @@ namespace Mengine
         virtual bool isMute() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define SOUND_SERVICE()\
+#define SOUND_SERVICE()\
     ((Mengine::SoundServiceInterface *)SERVICE_GET(Mengine::SoundServiceInterface))
     //////////////////////////////////////////////////////////////////////////
 }

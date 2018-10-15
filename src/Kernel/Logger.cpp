@@ -7,7 +7,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-#   define MENGINE_LOGGER_MAX_MESSAGE 8192
+#define MENGINE_LOGGER_MAX_MESSAGE 8192
     //////////////////////////////////////////////////////////////////////////
     LoggerOperator::LoggerOperator( EMessageLevel _level, uint32_t _flag )
         : m_level( _level )

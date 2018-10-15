@@ -45,6 +45,6 @@ namespace Mengine
         virtual void visitTexture( VisitorRenderTextureInterface * _visitor ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define RENDERTEXTURE_SERVICE()\
+#define RENDERTEXTURE_SERVICE()\
     ((Mengine::RenderTextureServiceInterface*)SERVICE_GET(Mengine::RenderTextureServiceInterface))
 }

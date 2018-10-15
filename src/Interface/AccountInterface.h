@@ -116,6 +116,6 @@ namespace Mengine
         virtual void visitAccounts( AccountVisitorInterface * _visitor ) const = 0;
     };
 
-#   define ACCOUNT_SERVICE()\
+#define ACCOUNT_SERVICE()\
     ((AccountServiceInterface*)SERVICE_GET(Mengine::AccountServiceInterface))
 }

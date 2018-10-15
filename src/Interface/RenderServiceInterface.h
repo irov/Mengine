@@ -131,6 +131,6 @@ namespace Mengine
         virtual void resetFrameCount() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define RENDER_SERVICE()\
+#define RENDER_SERVICE()\
     ((Mengine::RenderServiceInterface*)SERVICE_GET(Mengine::RenderServiceInterface))
 }

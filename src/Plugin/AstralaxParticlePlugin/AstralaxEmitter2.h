@@ -4,7 +4,7 @@
 
 #include "Kernel/ServantBase.h"
 
-#  ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
+#ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
 #endif 
 

@@ -1,11 +1,11 @@
-#	include "SDLFileOutputStream.h"
+#include "SDLFileOutputStream.h"
 
-#	include "Interface/UnicodeInterface.h"
-#   include "Interface/SDLLayerInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/SDLLayerInterface.h"
 
-#   include "Kernel/Logger.h"
+#include "Kernel/Logger.h"
 
-#   include "SDL_rwops.h"
+#include "SDL_rwops.h"
 
 namespace Mengine
 {

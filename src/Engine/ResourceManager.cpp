@@ -39,7 +39,7 @@ namespace Mengine
     {
         m_resourcesCache.clear();
 
-#   ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
         for( const ResourcePtr & resource : m_resources )
         {
             uint32_t refcount = resource->countReference();
@@ -54,7 +54,7 @@ namespace Mengine
                 );
             }
         }
-#   endif
+#endif
 
         m_resources.clear();
     }

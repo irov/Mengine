@@ -379,7 +379,7 @@ namespace Mengine
 
         FT_UInt glyph_index = FT_Get_Char_Index( m_face, _code );
 
-        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_NO_SCALE | FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
         {
             return false;
         }

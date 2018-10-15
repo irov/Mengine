@@ -613,7 +613,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const
+    bool TextField::updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const
     {
         float fontHeight = _font->getFontAscent();
 
@@ -643,7 +643,7 @@ namespace Mengine
                             , m_key.c_str()
                         );
 
-                        continue;
+                        return false;
                     }
 
                     textLine.emplace_back( tl );
@@ -700,9 +700,11 @@ namespace Mengine
         }
 
         *_size = size;
+
+        return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    void TextField::updateTextLines_() const
+    bool TextField::updateTextLines_() const
     {
         m_invalidateTextLines = false;
 
@@ -713,14 +715,14 @@ namespace Mengine
 
         if( m_key.empty() == true )
         {
-            return;
+            return true;
         }
 
         const TextFontInterfacePtr & baseFont = this->getFont();
 
         if( baseFont == nullptr )
         {
-            return;
+            return false;
         }
 
         U32String cacheText;
@@ -731,7 +733,7 @@ namespace Mengine
                 , m_key.c_str()
             );
 
-            return;
+            return false;
         }
 
         for( const CacheFont & cache : m_cacheFonts )
@@ -757,7 +759,7 @@ namespace Mengine
 
             if( font->compileFont() == false )
             {
-                return;
+                return false;
             }
         }
 
@@ -769,7 +771,7 @@ namespace Mengine
 
             if( font->prepareGlyph( tc.value ) == false )
             {
-                return;
+                return false;
             }
         }
 
@@ -887,7 +889,10 @@ namespace Mengine
             textLines.swap( new_textLines );
         }
 
-        this->updateTextLinesDimension_( baseFont, textLines, &m_textSize, &m_charCount, &m_layoutCount );
+        if( this->updateTextLinesDimension_( baseFont, textLines, &m_textSize, &m_charCount, &m_layoutCount ) == false )
+        {
+            return false;
+        }
 
         this->updateTextLinesMaxCount_( textLines );
 
@@ -928,7 +933,7 @@ namespace Mengine
                             , m_key.c_str()
                         );
 
-                        continue;
+                        return false;
                     }
 
                     textLine.emplace_back( tl );
@@ -941,6 +946,8 @@ namespace Mengine
         }
 
         this->invalidateVertices_();
+
+        return true;
     }
     ////////////////////////////////////////////////////////////////////////
     void TextField::updateFont_() const
@@ -1258,7 +1265,7 @@ namespace Mengine
     float TextField::calcLinesOffset( float _lineOffset, const TextFontInterfacePtr & _font ) const
     {
         float fontAscent = _font->getFontAscent();
-        float fontDescent = _font->getFontDescent();
+        //float fontDescent = _font->getFontDescent();
         float fontHeight = _font->getFontHeight();
 
         ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
@@ -1271,7 +1278,7 @@ namespace Mengine
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = 0.f;
+                    offset = fontAscent;
                 }break;
             case ETFVA_CENTER:
                 {
@@ -1280,25 +1287,28 @@ namespace Mengine
                 }break;
             case ETFVA_TOP:
                 {
-                    offset = fontAscent;
+                    offset = 0.f;
                 }break;
             }
         }
         else
         {
+            float layoutCountf = float( m_layoutCount );
+            float layoutCount1f = float( m_layoutCount - 1 );
+
             switch( verticalAlign )
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = (fontAscent - fontDescent + _lineOffset) * (float( m_layoutCount ) - 1.f) * 0.5f;
+                    offset = fontHeight * layoutCountf + layoutCount1f * _lineOffset;
                 }break;
             case ETFVA_CENTER:
                 {
-                    offset = -(fontAscent - fontDescent + _lineOffset) * (float( m_layoutCount ) - 2.f) * 0.5f;
+                    offset = fontHeight * layoutCountf * 0.5f + layoutCount1f * _lineOffset * 0.5f;
                 }break;
             case ETFVA_TOP:
                 {
-                    offset = (fontAscent - fontDescent + _lineOffset);
+                    offset = 0.f;
                 }break;
             }
         }

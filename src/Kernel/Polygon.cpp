@@ -151,14 +151,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    mt::vec2f & Polygon::operator [] ( int _index )
+    mt::vec2f & Polygon::operator [] ( size_type _index )
     {
         mt::vec2f & v = m_points[_index];
 
         return v;
     }
     //////////////////////////////////////////////////////////////////////////
-    const mt::vec2f & Polygon::operator [] ( int _index ) const
+    const mt::vec2f & Polygon::operator [] ( size_type _index ) const
     {
         const mt::vec2f & v = m_points[_index];
 

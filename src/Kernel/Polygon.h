@@ -23,7 +23,7 @@ namespace Mengine
         Polygon( Polygon && _polygon );
 
     public:
-        typedef VectorPoints::size_type size_type;
+        typedef uint32_t size_type;
         typedef VectorPoints::iterator iterator;
         typedef VectorPoints::const_iterator const_iterator;
 
@@ -32,8 +32,8 @@ namespace Mengine
         void operator = ( Polygon && _polygon );
 
     public:
-        mt::vec2f & operator [] ( int _index );
-        const mt::vec2f & operator [] ( int _index ) const;
+        mt::vec2f & operator [] ( size_type _index );
+        const mt::vec2f & operator [] ( size_type _index ) const;
 
     public:
         const VectorPoints & getPoints() const;

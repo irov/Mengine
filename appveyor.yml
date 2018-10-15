@@ -12,21 +12,21 @@ configuration:
 - Release
 
 environment:
+  TOOLSET: v141
+  ToolsVersion: 15.0
+  VCVARSALL: '%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
+  
   matrix:
     - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2017'
-      PLATFORM: x86
-      VCVARSALL: '%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
+      PLATFORM: x86      
       ARCHITECTURE: x86
       GENERATOR: Visual Studio 15 2017
-      TOOLSET: v141
       CMAKE_DEPENDENCIES_DIR: Depends_WIN32
       CMAKE_SOLUTION_DIR: Win32
     - APPVEYOR_BUILD_WORKER_IMAGE: 'Visual Studio 2017'
       PLATFORM: x64
-      VCVARSALL: '%ProgramFiles(x86)%\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvarsall.bat'
       ARCHITECTURE: x86_amd64
       GENERATOR: "Visual Studio 15 2017 Win64"
-      TOOLSET: v141
       CMAKE_DEPENDENCIES_DIR: Depends_WIN64
       CMAKE_SOLUTION_DIR: Win64
 

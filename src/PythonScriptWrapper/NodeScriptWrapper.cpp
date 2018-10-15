@@ -2324,7 +2324,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool classWrapping()
     {
-# define SCRIPT_CLASS_WRAPPING( Class )\
+#define SCRIPT_CLASS_WRAPPING( Class )\
     if( SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new ScriptWrapper<Class>() ) == false )\
     {\
         return false;\
@@ -2401,7 +2401,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( SurfaceTrackMatte );
         SCRIPT_CLASS_WRAPPING( SurfaceSolidColor );
 
-# undef SCRIPT_CLASS_WRAPPING
+#undef SCRIPT_CLASS_WRAPPING
 
         return true;
     }

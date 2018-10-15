@@ -1,8 +1,8 @@
-#   include "SDLDynamicLibrary.h"
+#include "SDLDynamicLibrary.h"
 
-#   include "Kernel/Logger.h"
+#include "Kernel/Logger.h"
 
-#   include "SDL_loadso.h"
+#include "SDL_loadso.h"
 
 namespace Mengine
 {

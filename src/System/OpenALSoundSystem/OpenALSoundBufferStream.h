@@ -4,8 +4,8 @@
 
 namespace Mengine
 {
-#   define OPENAL_STREAM_BUFFER_COUNT 2
-#   define OPENAL_STREAM_BUFFER_SIZE (44100)
+#define OPENAL_STREAM_BUFFER_COUNT 2
+#define OPENAL_STREAM_BUFFER_SIZE (44100)
 
     class OALSoundBufferStream
         : public OALSoundBufferBase

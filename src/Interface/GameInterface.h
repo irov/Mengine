@@ -64,6 +64,6 @@ namespace Mengine
         virtual void turnSound( bool _turn ) = 0;
     };
 
-#   define GAME_SERVICE()\
+#define GAME_SERVICE()\
     SERVICE_GET(Mengine::GameServiceInterface)
 }

@@ -145,6 +145,6 @@ namespace Mengine
         virtual void quit() = 0;
     };
 
-#   define APPLICATION_SERVICE()\
+#define APPLICATION_SERVICE()\
     ((Mengine::ApplicationInterface*)SERVICE_GET(Mengine::ApplicationInterface))
 }

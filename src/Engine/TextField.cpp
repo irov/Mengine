@@ -1265,8 +1265,9 @@ namespace Mengine
     float TextField::calcLinesOffset( float _lineOffset, const TextFontInterfacePtr & _font ) const
     {
         float fontAscent = _font->getFontAscent();
-        //float fontDescent = _font->getFontDescent();
+        float fontDescent = _font->getFontDescent();
         float fontHeight = _font->getFontHeight();
+        float fontBearingYA = _font->getFontBearingYA();
 
         ETextVerticalAlign verticalAlign = this->calcVerticalAlign();
 
@@ -1278,12 +1279,12 @@ namespace Mengine
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = fontAscent;
+                    offset = fontBearingYA;
                 }break;
             case ETFVA_CENTER:
                 {
                     //float h = fontHeight - fontDescent;
-                    offset = fontAscent * 0.5f;
+                    offset = fontBearingYA * 0.5f;
                 }break;
             case ETFVA_TOP:
                 {

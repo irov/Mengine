@@ -64,7 +64,7 @@ namespace Mengine
         virtual bool unregisterLogger( const LoggerInterfacePtr & _logger ) = 0;
     };
 
-#   define LOGGER_SERVICE()\
+#define LOGGER_SERVICE()\
     ((Mengine::LoggerServiceInterface*)SERVICE_GET(Mengine::LoggerServiceInterface))
 }
 

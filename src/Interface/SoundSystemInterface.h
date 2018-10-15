@@ -38,7 +38,7 @@ namespace Mengine
         virtual SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define SOUND_SYSTEM()\
+#define SOUND_SYSTEM()\
     ((Mengine::SoundSystemInterface *)SERVICE_GET(Mengine::SoundSystemInterface))
     //////////////////////////////////////////////////////////////////////////
 }

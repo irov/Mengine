@@ -548,6 +548,6 @@ namespace Mengine
         }
     };
 
-#   define INPUT_SERVICE()\
+#define INPUT_SERVICE()\
     ((Mengine::InputServiceInterface*)SERVICE_GET(Mengine::InputServiceInterface))
 }

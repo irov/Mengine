@@ -23,7 +23,7 @@ namespace Mengine
         virtual void update( const UpdateContext * _context ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define UPDATE_SERVICE()\
+#define UPDATE_SERVICE()\
     ((Mengine::UpdateServiceInterface *)SERVICE_GET(Mengine::UpdateServiceInterface))
     //////////////////////////////////////////////////////////////////////////
 }

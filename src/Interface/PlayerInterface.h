@@ -108,6 +108,6 @@ namespace Mengine
         virtual void toggleDebugText() = 0;
     };
 
-#   define PLAYER_SERVICE()\
+#define PLAYER_SERVICE()\
     ((Mengine::PlayerServiceInterface*)SERVICE_GET(Mengine::PlayerServiceInterface))
 }

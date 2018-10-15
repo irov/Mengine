@@ -1,4 +1,4 @@
-# pragma once
+#pragma once
 
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileGroupInterface.h"

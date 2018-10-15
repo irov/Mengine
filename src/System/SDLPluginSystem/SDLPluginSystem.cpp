@@ -1,12 +1,12 @@
-#   include "SDLPluginSystem.h"
+#include "SDLPluginSystem.h"
 
-#   include "SDLDynamicLibrary.h"
+#include "SDLDynamicLibrary.h"
 
-#   include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryAssertion.h"
+#include "Kernel/Logger.h"
 
-#   include "Kernel/Logger.h"
-
-#   include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PluginSystem, Mengine::SDLPluginSystem);

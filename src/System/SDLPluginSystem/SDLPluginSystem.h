@@ -1,9 +1,9 @@
-#   pragma once
+#pragma once
 
-#   include "Interface/PluginInterface.h"
+#include "Interface/PluginInterface.h"
 
-#   include "Kernel/ServiceBase.h"
-#   include "Kernel/Factory.h"
+#include "Kernel/ServiceBase.h"
+#include "Kernel/Factory.h"
 
 namespace Mengine
 {

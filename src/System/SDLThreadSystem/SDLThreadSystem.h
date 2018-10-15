@@ -1,11 +1,11 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
-#   include "Kernel/ServiceBase.h"
-#   include "Kernel/Factory.h"
+#include "Kernel/ServiceBase.h"
+#include "Kernel/Factory.h"
 
-#   include "stdex/pool.h"
+#include "stdex/pool.h"
 
 namespace Mengine
 {

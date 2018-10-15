@@ -20,5 +20,5 @@ namespace Mengine
     };
 }
 
-#   define BITMAPGLYPH_SERVICE()\
+#define BITMAPGLYPH_SERVICE()\
     ((Mengine::BitmapGlyphServiceInterface *)SERVICE_GET(Mengine::BitmapGlyphServiceInterface))

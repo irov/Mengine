@@ -26,6 +26,6 @@ namespace Mengine
         virtual bool validation( const FileGroupInterfacePtr & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const = 0;
     };
 
-#   define LOADER_SERVICE()\
+#define LOADER_SERVICE()\
     ((LoaderServiceInterface *)SERVICE_GET(Mengine::LoaderServiceInterface))
 }

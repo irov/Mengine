@@ -83,6 +83,6 @@ namespace Mengine
         virtual void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, const VisitorPtr & _visitor ) const = 0;
     };
 
-#   define RESOURCE_SERVICE()\
+#define RESOURCE_SERVICE()\
     ((Mengine::ResourceServiceInterface *)SERVICE_GET(Mengine::ResourceServiceInterface))
 }

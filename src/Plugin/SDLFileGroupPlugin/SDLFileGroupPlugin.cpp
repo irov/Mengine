@@ -1,13 +1,13 @@
-#	include "SDLFileGroupPlugin.h"
+#include "SDLFileGroupPlugin.h"
 
-#   include "Interface/StringizeInterface.h"
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/PlatformInterface.h"
-#	include "Interface/UnicodeInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/PlatformInterface.h"
+#include "Interface/UnicodeInterface.h"
 
-#	include "SDLFileGroupDirectory.h"
+#include "SDLFileGroupDirectory.h"
 
-#   include "Kernel/FactoryDefault.h"
+#include "Kernel/FactoryDefault.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( SDLFileGroup, Mengine::SDLFileGroupPlugin)

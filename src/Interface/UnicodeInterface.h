@@ -22,7 +22,7 @@ namespace Mengine
         virtual bool utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize ) = 0;
     };
 
-#   define UNICODE_SYSTEM()\
+#define UNICODE_SYSTEM()\
     SERVICE_GET(Mengine::UnicodeSystemInterface)
 
     namespace Helper

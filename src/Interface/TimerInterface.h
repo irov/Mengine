@@ -15,7 +15,7 @@ namespace Mengine
         virtual float getDeltaTime() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define TIMER_SERVICE()\
+#define TIMER_SERVICE()\
     ((Mengine::TimerServiceInterface*)SERVICE_GET(Mengine::TimerServiceInterface))
     //////////////////////////////////////////////////////////////////////////
     class TimerSystemInterface
@@ -27,7 +27,7 @@ namespace Mengine
         virtual uint64_t getMilliseconds() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define TIMER_SYSTEM()\
+#define TIMER_SYSTEM()\
     ((Mengine::TimerSystemInterface*)SERVICE_GET(Mengine::TimerSystemInterface))
     //////////////////////////////////////////////////////////////////////////
 }

@@ -93,6 +93,6 @@ namespace Mengine
         virtual bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
     };
 
-#   define PLATFORM_SERVICE()\
+#define PLATFORM_SERVICE()\
     ((Mengine::PlatformInterface*)SERVICE_GET(Mengine::PlatformInterface))
 }

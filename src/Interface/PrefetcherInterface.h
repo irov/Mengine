@@ -54,7 +54,7 @@ namespace Mengine
         virtual void visitPrefetches( const VisitorPtr & _visitor ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define PREFETCHER_SERVICE()\
+#define PREFETCHER_SERVICE()\
 	((Mengine::PrefetcherServiceInterface*)SERVICE_GET(Mengine::PrefetcherServiceInterface))
     //////////////////////////////////////////////////////////////////////////
 }

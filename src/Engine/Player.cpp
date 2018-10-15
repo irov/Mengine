@@ -206,10 +206,10 @@ namespace Mengine
             _cb->onSceneChange( m_scene, false, false );
         }
 
-#   ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
         PlayerResourceUselessCompilePtr unlessCompile = new PlayerResourceUselessCompile;
         unlessCompile->begin();
-#   endif
+#endif
 
         m_scene->enable();
 
@@ -218,9 +218,9 @@ namespace Mengine
             m_arrow->enable();
         }
 
-#   ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
         unlessCompile->end();
-#   endif
+#endif
 
         MEMORY_SERVICE()
             ->clearCacheBuffers();
@@ -268,16 +268,16 @@ namespace Mengine
             _cb->onSceneChange( m_scene, false, false );
         }
 
-#   ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
         PlayerResourceUselessCompilePtr unlessCompile = new PlayerResourceUselessCompile;
         unlessCompile->begin();
-#   endif
+#endif
 
         m_scene->enable();
 
-#   ifndef MENGINE_MASTER_RELEASE
+#ifndef MENGINE_MASTER_RELEASE
         unlessCompile->end();
-#   endif
+#endif
 
         if( m_arrow != nullptr )
         {

@@ -2,9 +2,9 @@
 
 #include "Config/Typedef.h"
 
-#   ifndef MENGINE_MAX_TEXTURE_STAGES
+#ifndef MENGINE_MAX_TEXTURE_STAGES
 #	define MENGINE_MAX_TEXTURE_STAGES 2
-#   endif
+#endif
 
 namespace Mengine
 {

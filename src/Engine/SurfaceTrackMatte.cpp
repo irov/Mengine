@@ -23,6 +23,11 @@ namespace Mengine
     {
         m_programVariable = RENDER_SYSTEM()
             ->createProgramVariable( 0, 1 );
+
+        if( m_programVariable == nullptr )
+        {
+            return false;
+        }
     
         return true;
     }

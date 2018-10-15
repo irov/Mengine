@@ -1,10 +1,10 @@
-#	pragma once
+#pragma once
 
-#   include "Interface/FileSystemInterface.h"
+#include "Interface/FileSystemInterface.h"
 
-#   include "Kernel/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
-#   include "Kernel/Factory.h"
+#include "Kernel/Factory.h"
 
 namespace Mengine
 {

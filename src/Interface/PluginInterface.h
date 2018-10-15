@@ -60,7 +60,7 @@ namespace Mengine
         virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const WString & _dllName ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define PLUGIN_SYSTEM()\
+#define PLUGIN_SYSTEM()\
     ((Mengine::PluginSystemInterface*)SERVICE_GET(Mengine::PluginSystemInterface))
     //////////////////////////////////////////////////////////////////////////
     class PluginServiceInterface
@@ -79,10 +79,10 @@ namespace Mengine
         virtual const PluginInterfacePtr & getPlugin( const Char * _name ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define PLUGIN_SERVICE()\
+#define PLUGIN_SERVICE()\
     ((Mengine::PluginServiceInterface*)SERVICE_GET(Mengine::PluginServiceInterface))
     //////////////////////////////////////////////////////////////////////////
-#   define PLUGIN_DECLARE( Name )\
+#define PLUGIN_DECLARE( Name )\
     public:\
 		inline const Char * getPluginName() const override { return Name; };\
     protected:

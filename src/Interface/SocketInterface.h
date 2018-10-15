@@ -32,6 +32,6 @@ namespace Mengine
         virtual SocketInterfacePtr createSocket() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define TIMELINE_SERVICE( serviceProvider )\
+#define TIMELINE_SERVICE( serviceProvider )\
     ((Mengine::TimelineServiceInterface*)SERVICE_GET(serviceProvider, Mengine::TimelineServiceInterface))
 }

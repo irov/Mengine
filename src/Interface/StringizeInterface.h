@@ -28,7 +28,7 @@ namespace Mengine
         virtual bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define STRINGIZE_SERVICE()\
+#define STRINGIZE_SERVICE()\
     ((Mengine::StringizeServiceInterface*)SERVICE_GET(Mengine::StringizeServiceInterface))
     //////////////////////////////////////////////////////////////////////////
     namespace Helper

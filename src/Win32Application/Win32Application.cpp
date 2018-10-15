@@ -714,22 +714,6 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
 #endif
 
-        VectorWString plugins;
-        CONFIG_VALUES( "Plugins", "Name", plugins );
-
-        for( const WString & pluginName : plugins )
-        {
-            if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName ) == false )
-            {
-                LOGGER_CRITICAL( "Application Failed to load plugin %ls"
-                    , pluginName.c_str()
-                );
-
-                return false;
-            }
-        }
-
         MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec..." );
         MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );
         MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
@@ -750,8 +734,23 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
 #endif
 
-
 #	undef MENGINE_ADD_PLUGIN
+
+        VectorWString plugins;
+        CONFIG_VALUES( "Plugins", "Name", plugins );
+
+        for( const WString & pluginName : plugins )
+        {
+            if( PLUGIN_SERVICE()
+                ->loadPlugin( pluginName ) == false )
+            {
+                LOGGER_CRITICAL( "Application Failed to load plugin %ls"
+                    , pluginName.c_str()
+                );
+
+                return false;
+            }
+        }
 
 #ifdef MENGINE_MASTER_RELEASE
         bool devplugins = false;

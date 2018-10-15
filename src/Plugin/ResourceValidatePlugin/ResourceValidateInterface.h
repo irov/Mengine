@@ -24,6 +24,6 @@ namespace Mengine
         //virtual bool validateResources( const ConstString & _locale, const FileGroupInterfacePtr & _pakName, const FilePath & _path ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define RESOURCEVALIDATE_SERVICE()\
+#define RESOURCEVALIDATE_SERVICE()\
     ((Mengine::ResourceValidateServiceInterface *)SERVICE_GET(Mengine::ResourceValidateServiceInterface))
 }

@@ -16,6 +16,6 @@ namespace Mengine
         virtual size_t getMemoryUsage() const = 0;
     };
 
-#   define PROFILER_SERVICE()\
+#define PROFILER_SERVICE()\
     SERVICE_GET(Mengine::ProfilerServiceInterface)
 }

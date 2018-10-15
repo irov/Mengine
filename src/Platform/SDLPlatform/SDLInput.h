@@ -1,15 +1,14 @@
-#   pragma once
+#pragma once
 
-#   include "Interface/ServiceInterface.h"
-#   include "Interface/InputSystemInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/InputSystemInterface.h"
 
-#   include "math/vec2.h"
+#include "Kernel/Servant.h"
 
-#   include "Kernel/Servant.h"
+#include "math/vec2.h"
+#include "stdex/stl_map.h"
 
-#   include "stdex/stl_map.h"
-
-#   include "SDL.h"
+#include "SDL.h"
 
 namespace Mengine
 {

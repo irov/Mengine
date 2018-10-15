@@ -29,6 +29,6 @@ namespace Mengine
         virtual bool writeUserdata( const ConstString & _name, const void * _data, size_t _size ) const = 0;
     };
 
-#   define USERDATA_SERVICE()\
+#define USERDATA_SERVICE()\
     ((Mengine::UserdataServiceInterface*)SERVICE_GET(Mengine::UserdataServiceInterface))
 }

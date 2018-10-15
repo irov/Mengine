@@ -6,6 +6,7 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/UnicodeInterface.h"
 #include "Interface/InputSystemInterface.h"
+#include "Interface/RenderServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/TimerInterface.h"
 

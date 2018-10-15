@@ -96,7 +96,7 @@ namespace Mengine
         virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define SCRIPT_SERVICE()\
+#define SCRIPT_SERVICE()\
     ((Mengine::ScriptServiceInterface*)SERVICE_GET(Mengine::ScriptServiceInterface))
     //////////////////////////////////////////////////////////////////////////
     namespace Helper

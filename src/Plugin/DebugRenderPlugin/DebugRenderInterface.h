@@ -22,6 +22,6 @@ namespace Mengine
         virtual void removeRenderVisitor( const RenderVisitorPtr & _renderVisitor ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define DEBUGRENDER_SERVICE()\
+#define DEBUGRENDER_SERVICE()\
     ((Mengine::DebugRenderServiceInterface *)SERVICE_GET(Mengine::DebugRenderServiceInterface))
 }

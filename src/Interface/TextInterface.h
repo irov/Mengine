@@ -100,6 +100,7 @@ namespace Mengine
         virtual float getFontAscent() const = 0;
         virtual float getFontDescent() const = 0;
         virtual float getFontHeight() const = 0;
+        virtual float getFontBearingYA() const = 0;
         virtual float getFontSpacing() const = 0;
 
     public:
@@ -207,6 +208,6 @@ namespace Mengine
         virtual bool validate() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define TEXT_SERVICE()\
+#define TEXT_SERVICE()\
 	((Mengine::TextServiceInterface*)SERVICE_GET(Mengine::TextServiceInterface))
 }

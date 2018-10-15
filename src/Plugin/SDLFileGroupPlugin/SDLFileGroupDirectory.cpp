@@ -1,20 +1,21 @@
-#	include "SDLFileGroupDirectory.h"
+#include "SDLFileGroupDirectory.h"
 
-#   include "Interface/SDLLayerInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/PlatformInterface.h"
+#include "Interface/SDLLayerInterface.h"
+#include "Interface/UnicodeInterface.h"
+#include "Interface/PlatformInterface.h"
 
-#	include "SDLFileInputStream.h"
-#	include "SDLFileOutputStream.h"
-#	include "SDLFileMappedStream.h"
+#include "SDLFileInputStream.h"
+#include "SDLFileOutputStream.h"
+#include "SDLFileMappedStream.h"
 
-#   include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryAssertion.h"
 
-#	include "Kernel/Logger.h"
+#include "Kernel/Logger.h"
 
-#	include "Kernel/String.h"
+#include "Kernel/String.h"
 
-#   include "SDL_rwops.h"
+#include "SDL_rwops.h"
 
 namespace Mengine
 {

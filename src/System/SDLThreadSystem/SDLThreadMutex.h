@@ -1,10 +1,10 @@
-#   pragma once
+#pragma once
 
-#   include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
-#   include "Kernel/ServantBase.h"
+#include "Kernel/ServantBase.h"
 
-#	include "SDL_thread.h"
+#include "SDL_thread.h"
 
 namespace Mengine
 {

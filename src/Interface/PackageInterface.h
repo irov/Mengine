@@ -77,6 +77,6 @@ namespace Mengine
         virtual bool enablePackages( const ConstString & _locale, const Tags & _platformTags ) = 0;
     };
 
-#   define PACKAGE_SERVICE()\
+#define PACKAGE_SERVICE()\
     ((Mengine::PackageServiceInterface*)SERVICE_GET(Mengine::PackageServiceInterface))
 }

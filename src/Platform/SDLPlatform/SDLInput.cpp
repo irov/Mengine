@@ -1,10 +1,10 @@
-#   include "SDLInput.h"
+#include "SDLInput.h"
 
-#	include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeInterface.h"
 
-#	include "Kernel/Logger.h"
+#include "Kernel/Logger.h"
 
-#	include "Config/String.h"
+#include "Config/String.h"
 
 namespace Mengine
 {

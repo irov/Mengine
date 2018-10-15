@@ -39,6 +39,7 @@ namespace Mengine
         float getFontAscent() const override;
         float getFontDescent() const override;
         float getFontHeight() const override;
+        float getFontBearingYA() const override;
         float getFontSpacing() const override;
 
     protected:

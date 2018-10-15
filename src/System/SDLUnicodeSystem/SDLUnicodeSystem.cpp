@@ -1,12 +1,8 @@
-// Sergii Kudlai - well, this intended to be using SDL_iconv
-//                 but then I realized that we can use C++11
-//                 Should I rename this system now?
+#include "SDLUnicodeSystem.h"
 
-#   include "SDLUnicodeSystem.h"
+#include "SDL_stdinc.h"
 
-#	include "SDL_stdinc.h"
-
-#   include "Kernel/Logger.h"
+#include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UnicodeSystem, Mengine::SDLUnicodeSystem );

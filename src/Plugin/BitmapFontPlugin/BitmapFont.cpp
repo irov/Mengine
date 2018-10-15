@@ -163,6 +163,11 @@ namespace Mengine
         return m_height;
     }
     //////////////////////////////////////////////////////////////////////////
+    float BitmapFont::getFontBearingYA() const
+    {
+        return m_height;
+    }
+    //////////////////////////////////////////////////////////////////////////
     float BitmapFont::getFontSpacing() const
     {
         return 0.f;

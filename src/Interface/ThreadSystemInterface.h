@@ -37,7 +37,7 @@ namespace Mengine
         virtual ptrdiff_t getCurrentThreadId() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define THREAD_SYSTEM()\
+#define THREAD_SYSTEM()\
     ((Mengine::ThreadSystemInterface*)SERVICE_GET(Mengine::ThreadSystemInterface))
     //////////////////////////////////////////////////////////////////////////
     class ThreadServiceInterface
@@ -82,7 +82,7 @@ namespace Mengine
         virtual ptrdiff_t getCurrentThreadId() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define THREAD_SERVICE()\
+#define THREAD_SERVICE()\
     ((Mengine::ThreadServiceInterface*)SERVICE_GET(Mengine::ThreadServiceInterface))
     //////////////////////////////////////////////////////////////////////////
 }

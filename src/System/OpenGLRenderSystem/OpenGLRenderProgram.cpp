@@ -194,7 +194,7 @@ namespace Mengine
         GLCALL( glUseProgram, (0) );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenGLRenderProgram::bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix ) const
+    void OpenGLRenderProgram::bindMatrix( const mt::mat4f & _worldMatrix, const mt::mat4f & _viewMatrix, const mt::mat4f & _projectionMatrix, const mt::mat4f & _totalWVPMatrix ) const
     {
         if( m_matrixLocation[EPML_VIEW] != -1 )
         {
@@ -232,7 +232,7 @@ namespace Mengine
 
             GLint location = m_matrixLocation[EPML_WORLD_VIEW_PROJECTION];
 
-            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, wvpMat.buff()) );
+            GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _totalWVPMatrix.buff()) );
         }
     }
     //////////////////////////////////////////////////////////////////////////

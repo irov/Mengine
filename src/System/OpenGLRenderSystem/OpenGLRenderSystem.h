@@ -150,6 +150,10 @@ namespace Mengine
         void onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader );
         void onRenderFragmentShaderDestroy_( OpenGLRenderFragmentShader * _fragmentShader );
         void onRenderProgramDestroy_( OpenGLRenderProgram * _program );
+        void onRenderProgramVariableDestroy_( OpenGLRenderProgramVariable * _variable );
+
+    protected:
+        void updatePMWMatrix_();
 
     private:
         ConstString m_renderPlatform;
@@ -159,6 +163,7 @@ namespace Mengine
         mt::mat4f m_worldMatrix;
         mt::mat4f m_viewMatrix;
         mt::mat4f m_projectionMatrix;
+        mt::mat4f m_totalWVPMatrix;
 
         Resolution m_resolution;
 
@@ -193,15 +198,19 @@ namespace Mengine
         typedef Vector<OpenGLRenderProgram *> TVectorCacheRenderPrograms;
         TVectorCacheRenderPrograms m_cacheRenderPrograms;
 
+        typedef Vector<OpenGLRenderProgramVariable *> TVectorCacheRenderProgramVariables;
+        TVectorCacheRenderProgramVariables m_cacheRenderProgramVariables;
+
         bool m_renderWindowCreate;
         bool m_depthMask;
 
-        FactoryPtr m_factoryVertexBuffer;
-        FactoryPtr m_factoryIndexBuffer;
+        FactoryPtr m_factoryRenderVertexBuffer;
+        FactoryPtr m_factoryRenderIndexBuffer;
         FactoryPtr m_factoryRenderImage;
         FactoryPtr m_factoryRenderVertexAttribute;
         FactoryPtr m_factoryRenderFragmentShader;
         FactoryPtr m_factoryRenderVertexShader;
-        FactoryPtr m_factoryProgram;
+        FactoryPtr m_factoryRenderProgram;
+        FactoryPtr m_factoryRenderProgramVariable;
     };
 }

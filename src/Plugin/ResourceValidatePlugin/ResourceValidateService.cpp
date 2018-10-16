@@ -58,6 +58,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::visitableResource_( const ResourcePtr & _resource ) const
     {
+        LOGGER_INFO( "ResourceValidateService::visitableResource_: '%s' group '%s' file group '%s' locale '%s'"
+            , _resource->getName().c_str()
+            , _resource->getGroupName().c_str()
+            , _resource->getFileGroup()->getName().c_str()
+            , _resource->getLocale().c_str()
+        );
+
         for( const VisitorPtr & visitor : m_visitors )
         {
             if( _resource->visitIf( visitor ) == false )

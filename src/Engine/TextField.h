@@ -292,5 +292,7 @@ namespace Mengine
     inline void TextField::invalidateFont() const
     {
         m_invalidateFont = true;
+
+        this->invalidateTextLines();
     }
 }

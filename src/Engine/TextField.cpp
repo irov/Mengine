@@ -175,12 +175,7 @@ namespace Mengine
         }
 
         float fontHeight = _font->getFontHeight();
-        float lineOffset = this->calcLineOffset();
-        
-        float linesOffset = this->calcLinesOffset( lineOffset, _font );
-
-        mt::vec2f base_offset( 0.f, 0.f );
-        base_offset.y = linesOffset;
+        //float fontAscent = _font->getFontAscent();
 
         float charScale = this->calcCharScale();
 
@@ -265,6 +260,13 @@ namespace Mengine
 
             cacheFontARGB[index] = totalFontColor.getAsARGB();
         }
+
+        float lineOffset = this->calcLineOffset();
+
+        float linesOffset = this->calcLinesOffset( lineOffset, _font );
+
+        mt::vec2f base_offset( 0.f, 0.f );
+        base_offset.y = linesOffset;
 
         Chunk chunk;
         chunk.vertex_begin = 0;
@@ -945,8 +947,6 @@ namespace Mengine
             m_layouts.emplace_back( textLine2 );
         }
 
-        this->invalidateVertices_();
-
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
@@ -1004,8 +1004,6 @@ namespace Mengine
 
             return;
         }
-
-        this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::updateTextEntry_() const
@@ -1301,15 +1299,16 @@ namespace Mengine
             {
             case ETFVA_BOTTOM:
                 {
-                    offset = fontHeight * layoutCountf + layoutCount1f * _lineOffset;
+                    offset = fontHeight - fontHeight * layoutCountf + layoutCount1f * _lineOffset;
                 }break;
             case ETFVA_CENTER:
                 {
-                    offset = fontHeight * layoutCountf * 0.5f + layoutCount1f * _lineOffset * 0.5f;
+                    offset = fontHeight - (fontHeight - fontAscent) - fontHeight * layoutCountf * 0.5f - layoutCount1f * _lineOffset * 0.5f;
+                    //offset = 0.f;
                 }break;
             case ETFVA_TOP:
                 {
-                    offset = 0.f;
+                    offset = fontHeight - (fontHeight - fontAscent);
                 }break;
             }
         }

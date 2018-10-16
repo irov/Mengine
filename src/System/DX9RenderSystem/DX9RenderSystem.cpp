@@ -63,7 +63,7 @@ namespace Mengine
         mt::ident_m4( m_projectionMatrix );
         mt::ident_m4( m_modelViewMatrix );
         mt::ident_m4( m_worldMatrix );
-        mt::ident_m4( m_totalPMWInvMatrix );
+        mt::ident_m4( m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     DX9RenderSystem::~DX9RenderSystem()
@@ -554,7 +554,7 @@ namespace Mengine
 
         mt::mul_m4_m4( m_projectionMatrix, _projectionMatrix, vmperfect );
 
-        this->updatePMWInvMatrix_();
+        this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setViewMatrix( const mt::mat4f & _modelViewMatrix )
@@ -569,7 +569,7 @@ namespace Mengine
 
         m_modelViewMatrix = _modelViewMatrix;
 
-        this->updatePMWInvMatrix_();
+        this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
@@ -584,7 +584,7 @@ namespace Mengine
 
         m_worldMatrix = _worldMatrix;
 
-        this->updatePMWInvMatrix_();
+        this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
@@ -1783,16 +1783,7 @@ namespace Mengine
     {
         DX9RenderProgramPtr dx9_program = stdex::intrusive_static_cast<DX9RenderProgramPtr>(_program);
 
-        dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalPMWInvMatrix );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program )
-    {
-        DX9RenderProgramVariablePtr dx9_variable = stdex::intrusive_static_cast<DX9RenderProgramVariablePtr>(_variable);
-
-        bool successful = dx9_variable->apply( m_pD3DDevice, _program );
-
-        return successful;
+        dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount )
@@ -1816,7 +1807,16 @@ namespace Mengine
         }
 
         return variable;
-    }   
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool DX9RenderSystem::applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program )
+    {
+        DX9RenderProgramVariablePtr dx9_variable = stdex::intrusive_static_cast<DX9RenderProgramVariablePtr>(_variable);
+
+        bool successful = dx9_variable->apply( m_pD3DDevice, _program );
+
+        return successful;
+    }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderSystem::setVSync( bool _vSync )
     {
@@ -1914,11 +1914,11 @@ namespace Mengine
         _targetOffscreen->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderSystem::updatePMWInvMatrix_()
+    void DX9RenderSystem::updateWVPInvMatrix_()
     {
-        mt::mat4f totalPMWMatrix = m_worldMatrix * m_modelViewMatrix * m_projectionMatrix;
+        mt::mat4f totalWVPMatrix = m_worldMatrix * m_modelViewMatrix * m_projectionMatrix;
 
-        mt::transpose_m4( m_totalPMWInvMatrix, totalPMWMatrix );
+        mt::transpose_m4( m_totalWVPInvMatrix, totalWVPMatrix );
     }
 }
 

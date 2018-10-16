@@ -69,10 +69,8 @@ namespace Mengine
         RenderProgramInterfacePtr createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount ) override;
         void setProgram( const RenderProgramInterfacePtr & _program ) override;
         void updateProgram( const RenderProgramInterfacePtr & _program ) override;
-        bool applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) override;
-
-    public:
         RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount ) override;
+        bool applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) override;
 
     public:
         void drawIndexedPrimitive( EPrimitiveType _type
@@ -193,7 +191,7 @@ namespace Mengine
         void onDestroyDX9RenderTargetOffscreen_( DX9RenderTargetOffscreen * _targetOffscreen );
 
     protected:
-        void updatePMWInvMatrix_();
+        void updateWVPInvMatrix_();
 
     protected:
         UINT m_adapterToUse;
@@ -231,7 +229,7 @@ namespace Mengine
         mt::mat4f m_projectionMatrix;
         mt::mat4f m_modelViewMatrix;
         mt::mat4f m_worldMatrix;
-        mt::mat4f m_totalPMWInvMatrix;
+        mt::mat4f m_totalWVPInvMatrix;
 
         uint32_t m_dxMaxCombinedTextureImageUnits;
 

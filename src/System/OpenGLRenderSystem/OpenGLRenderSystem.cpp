@@ -62,6 +62,7 @@ namespace Mengine
         mt::ident_m4( m_worldMatrix );
         mt::ident_m4( m_viewMatrix );
         mt::ident_m4( m_projectionMatrix );
+        mt::ident_m4( m_totalWVPMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderSystem::~OpenGLRenderSystem()
@@ -78,13 +79,14 @@ namespace Mengine
         m_renderPlatform = STRINGIZE_STRING_LOCAL( "OpenGLES" );
 #endif
 
-        m_factoryVertexBuffer = new FactoryDefault<OpenGLRenderVertexBuffer>();
-        m_factoryIndexBuffer = new FactoryDefault<OpenGLRenderIndexBuffer>();
+        m_factoryRenderVertexBuffer = new FactoryDefault<OpenGLRenderVertexBuffer>();
+        m_factoryRenderIndexBuffer = new FactoryDefault<OpenGLRenderIndexBuffer>();
         m_factoryRenderImage = Helper::makeFactoryPoolWithListener<OpenGLRenderImage, 128>( this, &OpenGLRenderSystem::onRenderImageDestroy_ );
         m_factoryRenderVertexAttribute = new FactoryPool<OpenGLRenderVertexAttribute, 16>();
         m_factoryRenderFragmentShader = Helper::makeFactoryPoolWithListener<OpenGLRenderFragmentShader, 16>( this, &OpenGLRenderSystem::onRenderFragmentShaderDestroy_ );
         m_factoryRenderVertexShader = Helper::makeFactoryPoolWithListener<OpenGLRenderVertexShader, 16>( this, &OpenGLRenderSystem::onRenderVertexShaderDestroy_ );
-        m_factoryProgram = Helper::makeFactoryPoolWithListener<OpenGLRenderProgram, 16>( this, &OpenGLRenderSystem::onRenderProgramDestroy_ );
+        m_factoryRenderProgram = Helper::makeFactoryPoolWithListener<OpenGLRenderProgram, 16>( this, &OpenGLRenderSystem::onRenderProgramDestroy_ );
+        m_factoryRenderProgramVariable = Helper::makeFactoryPoolWithListener<OpenGLRenderProgramVariable, 16>( this, &OpenGLRenderSystem::onRenderProgramVariableDestroy_ );
 
         return true;
     }
@@ -111,20 +113,20 @@ namespace Mengine
         m_deferredCompileFragmentShaders.clear();
         m_deferredCompilePrograms.clear();
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryVertexBuffer );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryIndexBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexBuffer );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderIndexBuffer );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderImage );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexAttribute );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderFragmentShader );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderVertexShader );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryProgram );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderProgram );
 
-        m_factoryVertexBuffer = nullptr;
-        m_factoryIndexBuffer = nullptr;
+        m_factoryRenderVertexBuffer = nullptr;
+        m_factoryRenderIndexBuffer = nullptr;
         m_factoryRenderImage = nullptr;
         m_factoryRenderFragmentShader = nullptr;
         m_factoryRenderVertexShader = nullptr;
-        m_factoryProgram = nullptr;
+        m_factoryRenderProgram = nullptr;
 
         m_cacheRenderImages.clear();
         m_cacheRenderVertexShaders.clear();
@@ -322,11 +324,15 @@ namespace Mengine
     void OpenGLRenderSystem::setViewMatrix( const mt::mat4f & _viewMatrix )
     {
         m_viewMatrix = _viewMatrix;
+
+        this->updatePMWMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setProjectionMatrix( const mt::mat4f & _projectionMatrix )
     {
         m_projectionMatrix = _projectionMatrix;
+
+        this->updatePMWMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )
@@ -339,11 +345,13 @@ namespace Mengine
     void OpenGLRenderSystem::setWorldMatrix( const mt::mat4f & _worldMatrix )
     {
         m_worldMatrix = _worldMatrix;
+
+        this->updatePMWMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
     RenderVertexBufferInterfacePtr OpenGLRenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType )
     {
-        OpenGLRenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject();
+        OpenGLRenderVertexBufferPtr buffer = m_factoryRenderVertexBuffer->createObject();
 
         if( buffer->initialize( _vertexSize, _bufferType ) == false )
         {
@@ -362,7 +370,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderIndexBufferInterfacePtr OpenGLRenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType )
     {
-        OpenGLRenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject();
+        OpenGLRenderIndexBufferPtr buffer = m_factoryRenderIndexBuffer->createObject();
 
         if( buffer->initialize( _indexSize, _bufferType ) == false )
         {
@@ -498,7 +506,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderProgramInterfacePtr OpenGLRenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount )
     {
-        OpenGLRenderProgramPtr program = m_factoryProgram->createObject();
+        OpenGLRenderProgramPtr program = m_factoryRenderProgram->createObject();
 
         if( program == nullptr )
         {
@@ -552,12 +560,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount )
     {
-        return nullptr;
+        OpenGLRenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject();
+
+        if( variable == nullptr )
+        {
+            LOGGER_ERROR( "OpenGLRenderSystem::createProgramVariable invalid create program variable"
+            );
+
+            return nullptr;
+        }
+
+        if( variable->initialize( _vertexCount, _pixelCount ) == false )
+        {
+            LOGGER_ERROR( "OpenGLRenderSystem::createProgramVariable invalid initialize program variable"
+            );
+
+            return nullptr;
+        }
+
+        return variable;
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program )
     {
-        return true;
+        OpenGLRenderProgramVariablePtr gl_variable = stdex::intrusive_static_cast<OpenGLRenderProgramVariablePtr>(_variable);
+
+        bool successful = gl_variable->apply( _program );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::drawIndexedPrimitive( EPrimitiveType _type,
@@ -578,7 +608,7 @@ namespace Mengine
             return;
         }
 
-        m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix );
+        m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_totalWVPMatrix );
 
         for( uint32_t stageId = 0; stageId != MENGINE_MAX_TEXTURE_STAGES; ++stageId )
         {
@@ -1331,5 +1361,23 @@ namespace Mengine
 
         *it_found = m_cacheRenderPrograms.back();
         m_cacheRenderPrograms.pop_back();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::onRenderProgramVariableDestroy_( OpenGLRenderProgramVariable * _variable )
+    {
+        TVectorCacheRenderPrograms::iterator it_found = std::find( m_cacheRenderProgramVariables.begin(), m_cacheRenderProgramVariables.end(), _variable );
+
+        if( it_found == m_cacheRenderProgramVariables.end() )
+        {
+            return;
+        }
+
+        *it_found = m_cacheRenderProgramVariables.back();
+        m_cacheRenderProgramVariables.pop_back();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenGLRenderSystem::updatePMWMatrix_()
+    {
+        m_totalWVPMatrix = m_worldMatrix * m_modelViewMatrix * m_projectionMatrix;
     }
 }

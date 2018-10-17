@@ -38,15 +38,15 @@ build_script:
 - echo "Solution '%CMAKE_SOLUTION_DIR%'"
 - call "%VCVARSALL%" %ARCHITECTURE%
 - echo "Configured Downloads"
-- pushd .\CMake\Downloads && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
+- pushd .\CMake\Downloads\%configuration%%PLATFORM% && cmake .. -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
 - echo "Downloads Dependencies"
-- pushd .\CMake\Downloads && cmake --build . & popd
+- pushd .\CMake\Downloads\%configuration%%PLATFORM% && cmake --build . & popd
 - echo "Configured %CMAKE_DEPENDENCIES_DIR%"
-- pushd .\CMake\%CMAKE_DEPENDENCIES_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
+- pushd .\CMake\%CMAKE_DEPENDENCIES_DIR%\%configuration%%PLATFORM% && cmake .. -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
 - echo "Build %CMAKE_DEPENDENCIES_DIR%"
-- pushd .\CMake\%CMAKE_DEPENDENCIES_DIR% && cmake --build . --config %configuration% & popd
+- pushd .\CMake\%CMAKE_DEPENDENCIES_DIR%\%configuration%%PLATFORM% && cmake --build . --config %configuration% & popd
 - echo "Configured Solution %CMAKE_SOLUTION_DIR%"
-- pushd .\CMake\%CMAKE_SOLUTION_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='..\CMake\%CMAKE_DEPENDENCIES_DIR%' & popd
+- pushd .\CMake\%CMAKE_SOLUTION_DIR%\%configuration%%PLATFORM% && cmake .. -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='..\CMake\%CMAKE_DEPENDENCIES_DIR%' & popd
 - echo "Build Solution %CMAKE_SOLUTION_DIR%"
-- pushd .\CMake\%CMAKE_SOLUTION_DIR% && cmake --build . & popd
+- pushd .\CMake\%CMAKE_SOLUTION_DIR%\%configuration%%PLATFORM% && cmake --build . & popd
 - echo "Complete!"

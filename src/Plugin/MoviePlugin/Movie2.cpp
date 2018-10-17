@@ -7,13 +7,13 @@
 #include "Interface/ResourceServiceInterface.h"
 
 #include "Plugin/AstralaxParticlePlugin/UnknownParticleEmitter2Interface.h"
+#include "Plugin/VideoPlugin/VideoUnknownInterface.h"
 
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/TextField.h"
 
 #include "Engine/SurfaceImage.h"
-#include "Engine/SurfaceVideo.h"
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceTrackMatte.h"
 
@@ -990,31 +990,35 @@ namespace Mengine
             {
             case AE_MOVIE_LAYER_TYPE_VIDEO:
                 {
-                    SurfaceVideoPtr surfaceVideo = PROTOTYPE_SERVICE()
+                    SurfacePtr surface = PROTOTYPE_SERVICE()
                         ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
 
-                    if( surfaceVideo == nullptr )
+                    if( surface == nullptr )
                     {
                         return AE_FALSE;
                     }
 
                     ConstString c_name = Helper::stringizeString( layer_name );
-                    surfaceVideo->setName( c_name );
+					surface->setName( c_name );
 
-                    ResourceVideo * resourceVideo = reinterpret_node_cast<ResourceVideo *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
+                    Resource * resourceVideo = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
 
-                    surfaceVideo->setResourceVideo( resourceVideo );
+					UnknownVideoSurfaceInterfacePtr unknownVideoSurface = surface->getUnknown();
+
+					unknownVideoSurface->setResourceVideo( resourceVideo );
 
                     EMaterialBlendMode blend_mode = Helper::getMovieLayerBlendMode( layer );
 
-                    surfaceVideo->setLoop( _callbackData->incessantly );
+					AnimationInterface * surface_animation = surface->getAnimation();
 
-                    surfaceVideo->setBlendMode( blend_mode );
-                    surfaceVideo->setPremultiplyAlpha( true );
+					surface_animation->setLoop( _callbackData->incessantly );
 
-                    movie2->addSurface( surfaceVideo );
+					surface->setBlendMode( blend_mode );
+					surface->setPremultiplyAlpha( true );
 
-                    *_nd = surfaceVideo.get();
+                    movie2->addSurface(surface);
+
+                    *_nd = surface.get();
 
                     return AE_TRUE;
                 }break;
@@ -1192,20 +1196,22 @@ namespace Mengine
             }break;
         case AE_MOVIE_LAYER_TYPE_VIDEO:
             {
-                SurfaceVideo * surface = reinterpret_node_cast<SurfaceVideo *>(_callbackData->element);
+                Surface * surface = reinterpret_node_cast<Surface *>(_callbackData->element);
 
                 switch( _callbackData->state )
                 {
                 case AE_MOVIE_STATE_UPDATE_BEGIN:
                     {
+						AnimationInterface * surface_animation = surface->getAnimation();
+
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
                         if( _callbackData->loop == AE_TRUE )
                         {
-                            if( surface->isPlay() == false )
+                            if( surface_animation->isPlay() == false )
                             {
-                                if( surface->play( time ) == 0 )
+                                if( surface_animation->play( time ) == 0 )
                                 {
                                     return;
                                 }
@@ -1213,34 +1219,40 @@ namespace Mengine
                         }
                         else
                         {
-                            if( surface->play( time ) == 0 )
+                            if( surface_animation->play( time ) == 0 )
                             {
                                 return;
                             }
                         }
 
-                        surface->setTime( _callbackData->offset * 1000.f );
+						surface_animation->setTime( _callbackData->offset * 1000.f );
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
                 case AE_MOVIE_STATE_UPDATE_END:
                     {
+						AnimationInterface * surface_animation = surface->getAnimation();
+
                         if( _callbackData->loop == AE_FALSE )
                         {
-                            surface->stop();
+							surface_animation->stop();
                         }
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PAUSE:
                     {
-                        surface->pause();
+						AnimationInterface * surface_animation = surface->getAnimation();
+
+						surface_animation->pause();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_RESUME:
                     {
+					AnimationInterface * surface_animation = surface->getAnimation();
+
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        surface->resume( time );
+						surface_animation->resume( time );
                     }break;
                 default:
                     {
@@ -2176,7 +2188,7 @@ namespace Mengine
                             continue;
                         }
 
-                        SurfaceVideo * surfaceVideo = reinterpret_node_cast<SurfaceVideo *>(mesh.element_data);
+                        Surface * surface = reinterpret_node_cast<Surface *>(mesh.element_data);
                         
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
@@ -2193,8 +2205,8 @@ namespace Mengine
                             mt::vec2f uv;
                             uv.from_f2( &mesh.uv[index][0] );
 
-                            surfaceVideo->correctUV( 0, v.uv[0], uv );
-                            surfaceVideo->correctUV( 1, v.uv[1], uv );
+							surface->correctUV( 0, v.uv[0], uv );
+							surface->correctUV( 1, v.uv[1], uv );
 
                             v.color = total_mesh_color;
                         }
@@ -2204,7 +2216,7 @@ namespace Mengine
 
                         stdex::memorycopy_pod( indices, 0, mesh.indices, mesh.indexCount );
 
-                        const RenderMaterialInterfacePtr & material = surfaceVideo->getMaterial();
+                        const RenderMaterialInterfacePtr & material = surface->getMaterial();
 
                         this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                     }break;

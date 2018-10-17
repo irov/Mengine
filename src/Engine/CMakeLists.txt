@@ -35,12 +35,6 @@ MousePickerTrap
 SOURCE_GROUP( Surface )
 
 ADD_FILTER(
-Surface\\\\SurfaceVideo
-	SurfaceVideo.cpp
-	SurfaceVideo.h
-)
-
-ADD_FILTER(
 Surface\\\\SurfaceSound
 	SurfaceSound.cpp
 	SurfaceSound.h
@@ -220,12 +214,6 @@ ADD_FILTER(
 Resource\\\\Shape
 	ResourceShape.cpp
 	ResourceShape.h
-)
-
-ADD_FILTER(
-Resource\\\\Video
-	ResourceVideo.cpp
-	ResourceVideo.h
 )
 
 ADD_FILTER(

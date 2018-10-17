@@ -6,6 +6,7 @@
 #include "Interface/NodeInterface.h"
 
 #include "Plugin/AstralaxParticlePlugin/UnknownParticleEmitter2Interface.h"
+#include "Plugin/VideoPlugin/VideoUnknownInterface.h"
 
 #include "ResourceMovie.h"
 
@@ -13,7 +14,6 @@
 #include "Engine/ResourceImageSequence.h"
 #include "Engine/ResourceImageSolid.h"
 #include "Engine/ResourceHIT.h"
-#include "Engine/ResourceVideo.h"
 #include "Engine/ResourceSound.h"
 #include "Engine/ResourceShape.h"
 
@@ -40,7 +40,6 @@
 
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceImageSequence.h"
-#include "Engine/SurfaceVideo.h"
 #include "Engine/SurfaceSound.h"
 
 #include "Kernel/NodeHelper.h"
@@ -1590,7 +1589,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieVideo_( const MovieLayer & _layer )
     {
-        ResourceVideoPtr resourceVideo = RESOURCE_SERVICE()
+        ResourcePtr resourceVideo = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
         if( resourceVideo == nullptr )
@@ -1598,7 +1597,7 @@ namespace Mengine
             return false;
         }
 
-        SurfaceVideoPtr surface = PROTOTYPE_SERVICE()
+        SurfacePtr surface = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
 
         if( surface == nullptr )
@@ -1606,12 +1605,17 @@ namespace Mengine
             return false;
         }
 
-        surface->setResourceVideo( resourceVideo );
+		UnknownVideoSurfaceInterfacePtr unknownVideoSurface = surface->getUnknown();
 
-        surface->setIntervalStart( _layer.startInterval );
-        surface->setPlayCount( _layer.playCount );
-        surface->setStretch( _layer.stretch );
-        surface->setLoop( _layer.loop );
+		unknownVideoSurface->setResourceVideo( resourceVideo );
+
+		AnimationInterface * surface_animation = surface->getAnimation();
+
+        surface_animation->setIntervalStart( _layer.startInterval );
+        surface_animation->setPlayCount( _layer.playCount );
+        surface_animation->setStretch( _layer.stretch );
+        surface_animation->setLoop( _layer.loop );
+
         surface->setPremultiplyAlpha( true );
 
         if( this->setupBlendingMode_( _layer, surface.get() ) == false )

@@ -10,6 +10,7 @@
 #include "Kernel/Compilable.h"
 #include "Kernel/Animatable.h"
 #include "Kernel/Eventable.h"
+#include "Kernel/Unknowable.h"
 
 #include "math/vec2.h"
 #include "math/uv4.h"
@@ -29,6 +30,7 @@ namespace Mengine
         , public Compilable
         , public Animatable
         , public Eventable
+		, public Unknowable
     {
         DECLARE_VISITABLE_BASE();
 

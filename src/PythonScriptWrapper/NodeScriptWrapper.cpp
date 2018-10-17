@@ -36,7 +36,6 @@
 #include "Engine/ResourceFile.h"
 #include "Kernel/ResourceMusic.h"
 #include "Engine/ResourceImageSequence.h"
-#include "Engine/ResourceVideo.h"
 #include "Engine/ResourceSound.h"
 #include "Engine/ResourceImageSolid.h"
 
@@ -81,7 +80,6 @@
 
 #include "ScriptHolder.h"
 
-#include "Engine/SurfaceVideo.h"
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceImageSequence.h"
@@ -583,41 +581,6 @@ namespace Mengine
 
             _animation->resume( time );
         }        
-        //////////////////////////////////////////////////////////////////////////
-        PyObject * s_SurfaceVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
-        {
-            (void)_args;
-
-            if( _kwds == nullptr )
-            {
-                return pybind::ret_none();
-            }
-
-            pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerAnimatableEventReceiver<>( py_kwds, _surface );
-
-#ifndef NDEBUG
-            if( py_kwds.empty() == false )
-            {
-                for( pybind::dict::iterator
-                    it = py_kwds.begin(),
-                    it_end = py_kwds.end();
-                    it != it_end;
-                    ++it )
-                {
-                    String k = it.key();
-
-                    LOGGER_ERROR( "SurfaceVideo::setEventListener invalid kwds '%s'\n"
-                        , k.c_str()
-                    );
-                }
-
-                throw;
-            }
-#endif
-
-            return pybind::ret_none();
-        }
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_SurfaceImageSequence_setEventListener( pybind::kernel_interface * _kernel, SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
         {
@@ -2325,7 +2288,7 @@ namespace Mengine
     static bool classWrapping()
     {
 #define SCRIPT_CLASS_WRAPPING( Class )\
-    if( SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new ScriptWrapper<Class>() ) == false )\
+    if( SCRIPT_SERVICE()->setWrapper( STRINGIZE_STRING_LOCAL(#Class), new ScriptWrapper<Class>() ) == false )\
     {\
         return false;\
     }
@@ -2378,7 +2341,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
         SCRIPT_CLASS_WRAPPING( ResourceMusic );        
         SCRIPT_CLASS_WRAPPING( ResourceImageSequence );
-        SCRIPT_CLASS_WRAPPING( ResourceVideo );
         SCRIPT_CLASS_WRAPPING( ResourceSound );
         SCRIPT_CLASS_WRAPPING( ResourceFile );
 
@@ -2394,7 +2356,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceHIT );
 
         SCRIPT_CLASS_WRAPPING( Surface );
-        SCRIPT_CLASS_WRAPPING( SurfaceVideo );
         SCRIPT_CLASS_WRAPPING( SurfaceSound );
         SCRIPT_CLASS_WRAPPING( SurfaceImage );
         SCRIPT_CLASS_WRAPPING( SurfaceImageSequence );
@@ -2565,9 +2526,6 @@ namespace Mengine
             ;
 
         pybind::interface_<ResourceImageSequence, pybind::bases<Resource> >( kernel, "ResourceImageSequence", false )
-            ;
-
-        pybind::interface_<ResourceVideo, pybind::bases<Resource> >( kernel, "ResourceVideo", false )
             ;
 
         pybind::interface_<ResourceSound, pybind::bases<Resource> >( kernel, "ResourceSound", false )
@@ -2791,15 +2749,6 @@ namespace Mengine
             .def( "getUVCount", &Surface::getUVCount )
             .def( "getUV", &Surface::getUV )
             .def( "getColour", &Surface::getColor )
-            ;
-
-        pybind::interface_<SurfaceVideo, pybind::bases<Surface, Eventable, Animatable> >( kernel, "SurfaceVideo", false )
-            .def( "setResourceVideo", &SurfaceVideo::setResourceVideo )
-            .def( "getResourceVideo", &SurfaceVideo::getResourceVideo )
-            .def( "getWidth", &SurfaceVideo::getWidth )
-            .def( "getHeight", &SurfaceVideo::getHeight )
-            .def( "getDuration", &SurfaceVideo::getDuration )
-            .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceVideo_setEventListener )
             ;
 
         pybind::interface_<SurfaceSound, pybind::bases<Surface, Eventable, Animatable, Soundable> >( kernel, "SurfaceSound", false )

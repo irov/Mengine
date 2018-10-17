@@ -11,6 +11,14 @@ ADD_SUBDIRECTORY(OggVorbisPlugin)
 ADD_SUBDIRECTORY(Movie1Plugin)
 ADD_SUBDIRECTORY(MoviePlugin)
 
+if(MENGINE_PLUGIN_VIDEO)
+	ADD_SUBDIRECTORY(VideoPlugin)
+endif()
+
+if(MENGINE_PLUGIN_THEORA)
+	ADD_SUBDIRECTORY(TheoraPlugin)
+endif()
+
 if(MENGINE_PLUGIN_OZZ_ANIMATION)
     ADD_SUBDIRECTORY(OzzAnimationPlugin)
 endif()
@@ -53,27 +61,12 @@ endif()
 
 if( MENGINE_TARGET_MSVC )
     ADD_SUBDIRECTORY( Win32SocketPlugin )    
-    ADD_SUBDIRECTORY( VideoCodecPlugin )
     ADD_SUBDIRECTORY( Win32FileGroupPlugin )
 	ADD_SUBDIRECTORY( Win32ConsoleLogger )
-    
-    #ADD_SUBDIRECTORY( GOAPPlugin )
-    
-    
-    #ADD_SUBDIRECTORY( FFMPEGVideoCodecPlugin )
-    
-    #ADD_SUBDIRECTORY( VideoConverterPlugin )
-    #ADD_SUBDIRECTORY( SoundConverterPlugin )
-    #ADD_SUBDIRECTORY( HotspotImageConverterPlugin )
-    #ADD_SUBDIRECTORY( ParticleConverterPlugin )
-    #ADD_SUBDIRECTORY( VideoCodecPlugin )
-
-    #ADD_SUBDIRECTORY( HTTPLoggerPlugin )
 endif()
 
 if( MENGINE_TARGET_MINGW )
     ADD_SUBDIRECTORY( Win32SocketPlugin )
-    ADD_SUBDIRECTORY( VideoCodecPlugin )
     ADD_SUBDIRECTORY( Win32FileGroupPlugin )
 	ADD_SUBDIRECTORY( Win32ConsoleLogger )
 	
@@ -96,7 +89,6 @@ if( MENGINE_TARGET_SDL AND MENGINE_PLATFORM_WIN32 )
 endif()
 
 if( MENGINE_TARGET_SDL )
-    ADD_SUBDIRECTORY( VideoCodecPlugin )
     ADD_SUBDIRECTORY( SDLFileGroupPlugin )
 endif()
 

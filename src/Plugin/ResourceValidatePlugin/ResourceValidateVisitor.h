@@ -5,7 +5,6 @@
 #include "Engine/ResourceImageSequence.h"
 #include "Kernel/ResourceMusic.h"
 #include "Engine/ResourceSound.h"
-#include "Engine/ResourceVideo.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceFile.h"
 
@@ -23,9 +22,8 @@ namespace Mengine
         , public ConcreteVisitorR<ResourceImageSequence, bool>
         , public ConcreteVisitorR<ResourceMusic, bool>
         , public ConcreteVisitorR<ResourceSound, bool>
-        , public ConcreteVisitorR<ResourceVideo, bool>
         , public ConcreteVisitorR<ResourceHIT, bool>
-        , public ConcreteVisitorR<ResourceFile, bool>        
+        , public ConcreteVisitorR<ResourceFile, bool>
     {
     public:
         ResourceValidateVisitor();
@@ -37,7 +35,6 @@ namespace Mengine
         bool accept( ResourceImageSequence * _resource ) override;
         bool accept( ResourceMusic * _resource ) override;
         bool accept( ResourceSound * _resource ) override;
-        bool accept( ResourceVideo * _resource ) override;
         bool accept( ResourceHIT * _resource ) override;
         bool accept( ResourceFile * _resource ) override;
     };

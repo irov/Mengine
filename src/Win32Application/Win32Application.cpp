@@ -103,7 +103,6 @@ SERVICE_EXTERN( Application );
 
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
-PLUGIN_EXPORT( VideoCodec );
 PLUGIN_EXPORT( Amplifier );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
@@ -112,6 +111,15 @@ PLUGIN_EXPORT( Win32FileGroup );
 PLUGIN_EXPORT( BitmapFont );
 PLUGIN_EXPORT( DebugRender );
 PLUGIN_EXPORT( ResourceValidate );
+
+#ifdef MENGINE_PLUGIN_VIDEO
+PLUGIN_EXPORT(Video);
+#endif
+
+#ifdef MENGINE_PLUGIN_THEORA
+PLUGIN_EXPORT(Theora);
+#endif
+
 
 #ifdef MENGINE_PLUGIN_SPINE
 PLUGIN_EXPORT( Spine );
@@ -718,7 +726,15 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );
         MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
         MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier..." );
-        MENGINE_ADD_PLUGIN( VideoCodec, "initialize Plugin Video Codec..." );
+
+#ifdef MENGINE_PLUGIN_VIDEO
+		MENGINE_ADD_PLUGIN(Video, "initialize Plugin Video...");
+#endif
+
+#ifdef MENGINE_PLUGIN_THEORA
+		MENGINE_ADD_PLUGIN(Theora, "initialize Plugin Theora...");
+#endif
+
 #ifdef MENGINE_PLUGIN_SPINE
         MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
 #endif

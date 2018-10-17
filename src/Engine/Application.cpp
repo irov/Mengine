@@ -80,8 +80,6 @@
 #include "ShapeQuadFixed.h"
 #include "ShapeQuadFlex.h"
 
-
-#include "SurfaceVideo.h"
 #include "SurfaceSound.h"
 #include "SurfaceImage.h"
 #include "SurfaceImageSequence.h"
@@ -101,7 +99,6 @@
 #include "ResourceImageSubstractRGBAndAlpha.h"
 
 #include "ResourceFile.h"
-#include "ResourceVideo.h"
 #include "ResourceSound.h"
 #include "ResourceWindow.h"
 #include "ResourceHIT.h"
@@ -346,7 +343,6 @@ namespace Mengine
 			return false;\
 						}
 
-        SURFACE_FACTORY( SurfaceVideo );
         SURFACE_FACTORY( SurfaceSound );
         SURFACE_FACTORY( SurfaceImage );
         SURFACE_FACTORY( SurfaceImageSequence );
@@ -432,7 +428,6 @@ namespace Mengine
         RESOURCE_FACTORY( ResourceImageSubstract );
         RESOURCE_FACTORY( ResourceImageSubstractRGBAndAlpha );
         RESOURCE_FACTORY( ResourceImageSolid );
-        RESOURCE_FACTORY( ResourceVideo );
         RESOURCE_FACTORY( ResourceSound );
         RESOURCE_FACTORY( ResourceFile );
 

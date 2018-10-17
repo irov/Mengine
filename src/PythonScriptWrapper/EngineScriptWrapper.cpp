@@ -38,7 +38,6 @@
 
 #include "Engine/ResourceFile.h"
 #include "Engine/ResourceImageSequence.h"
-#include "Engine/ResourceVideo.h"
 #include "Engine/ResourceSound.h"
 #include "Engine/ResourceImageSolid.h"
 
@@ -80,7 +79,6 @@
 
 #include "ScriptHolder.h"
 
-#include "Engine/SurfaceVideo.h"
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceImageSequence.h"

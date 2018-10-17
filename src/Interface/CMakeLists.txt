@@ -17,7 +17,6 @@ src
 	ImageCodecInterface.h
     PickCodecInterface.h
 	SoundCodecInterface.h
-	VideoCodecInterface.h
     TextInterface.h
 	StreamInterface.h
 	LoggerInterface.h

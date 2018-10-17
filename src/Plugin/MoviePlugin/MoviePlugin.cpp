@@ -172,7 +172,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace External
+    namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
         class PythonMovie2EventReceiver
@@ -398,10 +398,10 @@ namespace Mengine
             .def( "getSubComposition", &Movie2::getSubComposition )
             .def( "hasCompositionBounds", &Movie2::hasCompositionBounds )
             .def( "getCompositionBounds", &Movie2::getCompositionBounds )
-            .def_static( "getCompositionBoundsWM", &External::s_Movie2_getCompositionBoundsWM )
-            .def_static_native_kernel( "setEventListener", &External::s_Movie2_setEventListener )
-            .def_static_kernel( "getSockets", &External::s_Movie2_getSockets )
-            .def_static_kernel( "getSlots", &External::s_Movie2_getSlots )
+            .def_static( "getCompositionBoundsWM", &Detail::s_Movie2_getCompositionBoundsWM )
+            .def_static_native_kernel( "setEventListener", &Detail::s_Movie2_setEventListener )
+            .def_static_kernel( "getSockets", &Detail::s_Movie2_getSockets )
+            .def_static_kernel( "getSlots", &Detail::s_Movie2_getSlots )
             .def( "findSprite", &Movie2::findSprite )
             .def( "hasSprite", &Movie2::hasSprite )
             .def( "findParticle", &Movie2::findParticle )
@@ -421,7 +421,7 @@ namespace Mengine
         pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable> >( kernel, "Movie2SubComposition", false )
             .def( "setSubMovieCompositionName", &Movie2SubComposition::setSubMovieCompositionName )
             .def( "getSubMovieCompositionName", &Movie2SubComposition::getSubMovieCompositionName )
-            .def_static_native_kernel( "setEventListener", &External::s_Movie2SubComposition_setEventListener )
+            .def_static_native_kernel( "setEventListener", &Detail::s_Movie2SubComposition_setEventListener )
             ;
 
         pybind::interface_<ResourceMovie2, pybind::bases<Resource> >( kernel, "ResourceMovie2", false )

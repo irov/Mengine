@@ -357,7 +357,7 @@ set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/pybind)
     set(PYBIND_PYTHON_VERSION 278 CACHE INTEGER "PYBIND_PYTHON_VERSION" FORCE)
 
 ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/pybind )
-add_dependencies(pybind Python)
+add_dependencies(pybind python)
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})  
 
 if( MENGINE_TARGET_MSVC )
@@ -377,6 +377,6 @@ if( MENGINE_TARGET_MSVC )
 		configure_file(${CMAKE_CURRENT_SOURCE_DIR}/openssl/opensslconf.h ${THIRDPARTY_DIR}/openssl/include/openssl/opensslconf.h COPYONLY)
 
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/pybind3 )
-	add_dependencies(pybind3 Python3 Python3_decimal)
+	add_dependencies(pybind3 python3 python3_decimal)
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 endif()

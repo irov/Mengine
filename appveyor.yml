@@ -33,20 +33,22 @@ environment:
 build_script:
 - echo "Platform '%PLATFORM%'"
 - echo "Generator '%GENERATOR%'"
+- echo "Toolset '%TOOLSET%'"
+- echo "ToolsetVersion '%ToolsVersion%'"
 - echo "Configuration '%configuration%'"
 - echo "Dependencies '%CMAKE_DEPENDENCIES_DIR%'"
 - echo "Solution '%CMAKE_SOLUTION_DIR%'"
 - call "%VCVARSALL%" %ARCHITECTURE%
 - echo "Configured Downloads"
-- pushd .\CMake\Downloads && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
+- pushd .\CMake\Downloads && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING="%configuration%" -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_GENERATOR_PLATFORM=%PLATFORM% & popd
 - echo "Downloads Dependencies"
 - pushd .\CMake\Downloads && cmake --build . --clean-first -j 4 --config %configuration% & popd
 - echo "Configured %CMAKE_DEPENDENCIES_DIR%"
-- pushd .\CMake\%CMAKE_DEPENDENCIES_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
+- pushd .\CMake\%CMAKE_DEPENDENCIES_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING="%configuration%" -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_GENERATOR_PLATFORM=%PLATFORM% & popd
 - echo "Build %CMAKE_DEPENDENCIES_DIR%"
-- pushd .\CMake\%CMAKE_DEPENDENCIES_DIR% && cmake --build . --clean-first --config %configuration% & popd
+- pushd .\CMake\%CMAKE_DEPENDENCIES_DIR% && cmake --build . --clean-first -j 4 --config %configuration% & popd
 - echo "Configured Solution %CMAKE_SOLUTION_DIR%"
-- pushd .\CMake\%CMAKE_SOLUTION_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% -DMENGINE_LIB_DIR:STRING='..\CMake\%CMAKE_DEPENDENCIES_DIR%' & popd
+- pushd .\CMake\%CMAKE_SOLUTION_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING="%configuration%" -DCMAKE_BUILD_TYPE=%configuration% -DCMAKE_GENERATOR_PLATFORM=%PLATFORM% -DMENGINE_LIB_DIR:STRING='..\CMake\%CMAKE_DEPENDENCIES_DIR%' & popd
 - echo "Build Solution %CMAKE_SOLUTION_DIR%"
-- pushd .\CMake\%CMAKE_SOLUTION_DIR% && cmake --build . --clean-first --config %configuration% & popd
+- pushd .\CMake\%CMAKE_SOLUTION_DIR% && cmake --build . --clean-first -j 4 --config %configuration% & popd
 - echo "Complete!"

@@ -40,7 +40,7 @@ build_script:
 - echo "Configured Downloads"
 - pushd .\CMake\Downloads && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
 - echo "Downloads Dependencies"
-- pushd .\CMake\Downloads && cmake --build . --clean-first -j4 --config %configuration% & popd
+- pushd .\CMake\Downloads && cmake --build . --clean-first -j 4 --config %configuration% & popd
 - echo "Configured %CMAKE_DEPENDENCIES_DIR%"
 - pushd .\CMake\%CMAKE_DEPENDENCIES_DIR% && cmake . -G "%GENERATOR%" -T %TOOLSET% -DCMAKE_CONFIGURATION_TYPES:STRING='%configuration%' -DCMAKE_BUILD_TYPE:STRING=%configuration% & popd
 - echo "Build %CMAKE_DEPENDENCIES_DIR%"

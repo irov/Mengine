@@ -1,0 +1,85 @@
+set( MY_LIB_NAME cURLPlugin )
+
+ADD_FILTER(
+src
+	cURLPlugin.h
+	cURLPlugin.cpp
+    cURLPlugin.def
+    
+    cURLInterface.h
+    
+    cURLService.cpp
+    cURLService.h
+    
+    cURLThreadTask.cpp
+    cURLThreadTask.h
+    cURLGetAssetThreadTask.cpp
+    cURLGetAssetThreadTask.h
+    cURLGetMessageThreadTask.cpp
+    cURLGetMessageThreadTask.h
+    cURLHeaderDataThreadTask.cpp
+    cURLHeaderDataThreadTask.h
+    cURLPostMessageThreadTask.cpp
+    cURLPostMessageThreadTask.h
+	)
+
+IF(WIN32)
+    INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/curl/include )
+ENDIF()
+
+IF(MENGINE_PLATFORM_ANDROID)
+    INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/curl-android/armeabi-v7a/include )
+ENDIF()
+
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
+
+ADD_MENGINE_LIBRARY()
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Plugins
+)
+
+IF(WIN32)
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/libcurl${MENGINE_LIB_SUFFIX} )
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ws2_32.lib )
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} Crypt32.lib )
+ENDIF()
+
+IF(MENGINE_PLATFORM_ANDROID)
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${THIRDPARTY_DIR}/curl-android/armeabi-v7a/lib/libcurl.a )
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${THIRDPARTY_DIR}/curl-android/armeabi-v7a/lib/libcrypto.a )    
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${THIRDPARTY_DIR}/curl-android/armeabi-v7a/lib/libssl.a )
+ENDIF()
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
+
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}stdex${MENGINE_LIB_SUFFIX} )
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX} )
+
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ ${MY_LIB_NAME}
+)
+
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ PARENT_SCOPE
+)
+
+SET( APPLICATION_LIB_PATHS
+ ${APPLICATION_LIB_PATHS}
+)
+
+SET( APPLICATION_LIB_PATHS
+ ${APPLICATION_LIB_PATHS}
+ PARENT_SCOPE
+)
+
+SET( APPLICATION_LIBS
+ ${APPLICATION_LIBS}
+ ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}libcurl${MENGINE_LIB_SUFFIX}
+ ws2_32.lib
+ Crypt32.lib 
+ PARENT_SCOPE
+)

@@ -81,7 +81,6 @@ SERVICE_EXTERN( TimerService );
 SERVICE_EXTERN( TimerSystem );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
-SERVICE_EXTERN( HttpSystem );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( NodeService );
 SERVICE_EXTERN( UpdateService );
@@ -120,6 +119,9 @@ PLUGIN_EXPORT(Video);
 PLUGIN_EXPORT(Theora);
 #endif
 
+#ifdef MENGINE_PLUGIN_CURL
+PLUGIN_EXPORT( cURL );
+#endif
 
 #ifdef MENGINE_PLUGIN_SPINE
 PLUGIN_EXPORT( Spine );
@@ -623,8 +625,6 @@ namespace Mengine
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
 
-        SERVICE_CREATE( HttpSystem );
-
         SERVICE_CREATE( TimerSystem );
         SERVICE_CREATE( TimerService );
 
@@ -733,6 +733,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_THEORA
 		MENGINE_ADD_PLUGIN(Theora, "initialize Plugin Theora...");
+#endif
+
+#ifdef MENGINE_PLUGIN_CURL
+        MENGINE_ADD_PLUGIN( cURL, "initialize Plugin cURL..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_SPINE
@@ -982,7 +986,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::TextServiceInterface );
         SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
         SERVICE_FINALIZE( Mengine::ApplicationInterface );
-        SERVICE_FINALIZE( Mengine::HttpSystemInterface );
         SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
         SERVICE_FINALIZE( Mengine::DataServiceInterface );
         SERVICE_FINALIZE( Mengine::PluginServiceInterface );

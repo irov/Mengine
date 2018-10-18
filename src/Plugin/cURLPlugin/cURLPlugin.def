@@ -1,0 +1,3 @@
+LIBRARY		"cURLPlugin"
+EXPORTS 	
+	dllCreatePlugin 	@1

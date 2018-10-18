@@ -1,4 +1,4 @@
-#include "ThreadTaskGetAsset.h"
+#include "cURLGetAssetThreadTask.h"
 
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ConfigInterface.h"
@@ -8,15 +8,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ThreadTaskGetAsset::ThreadTaskGetAsset()
+    cURLGetAssetThreadTask::cURLGetAssetThreadTask()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadTaskGetAsset::~ThreadTaskGetAsset()
+    cURLGetAssetThreadTask::~cURLGetAssetThreadTask()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskGetAsset::initialize( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath )
+    bool cURLGetAssetThreadTask::initialize( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath )
     {
         m_url = _url;
         m_login = _login;
@@ -27,7 +27,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskGetAsset::_onRun()
+    bool cURLGetAssetThreadTask::_onRun()
     {
         if( m_fileGroup->createDirectory( m_filePath ) == false )
         {
@@ -66,7 +66,7 @@ namespace Mengine
         (void)_ultotal;
         (void)_ulnow;
 
-        ThreadTaskGetAsset * task = (ThreadTaskGetAsset *)_userp;
+        cURLGetAssetThreadTask * task = (cURLGetAssetThreadTask *)_userp;
 
         if( task->isCancel() == true )
         {
@@ -76,7 +76,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskGetAsset::_onCURL( CURL * _curl )
+    void cURLGetAssetThreadTask::_onCURL( CURL * _curl )
     {
         curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
 
@@ -111,11 +111,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskGetAsset::_onComplete( bool _successful )
+    void cURLGetAssetThreadTask::_onComplete( bool _successful )
     {
         m_stream->flush();
         m_stream = nullptr;
 
-        ThreadTaskCurl::_onComplete( _successful );
+        cURLThreadTask::_onComplete( _successful );
     }
 }

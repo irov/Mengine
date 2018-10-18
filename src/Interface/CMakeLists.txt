@@ -24,7 +24,6 @@ src
 	InputSystemInterface.h	
 	ThreadInterface.h
 	ThreadSystemInterface.h
-	HttpSystemInterface.h
 	ConverterInterface.h
 	StringizeInterface.h
     GameInterface.h

@@ -1,4 +1,4 @@
-#include "ThreadTaskGetMessage.h"
+#include "cURLGetMessageThreadTask.h"
 
 #include "Interface/ConfigInterface.h"
 
@@ -7,22 +7,22 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ThreadTaskGetMessage::ThreadTaskGetMessage()
+    cURLGetMessageThreadTask::cURLGetMessageThreadTask()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadTaskGetMessage::~ThreadTaskGetMessage()
+    cURLGetMessageThreadTask::~cURLGetMessageThreadTask()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskGetMessage::initialize( const String & _url )
+    bool cURLGetMessageThreadTask::initialize( const String & _url )
     {
         m_url = _url;
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskGetMessage::_onCURL( CURL * _curl )
+    void cURLGetMessageThreadTask::_onCURL( CURL * _curl )
     {
         curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );
 

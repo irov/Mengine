@@ -20,7 +20,6 @@
 #include "Interface/InputSystemInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/WindowsLayerInterface.h"
-#include "Interface/HttpSystemInterface.h"
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/ConfigInterface.h"
 #include "Interface/TimerInterface.h"

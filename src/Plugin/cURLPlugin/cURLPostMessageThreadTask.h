@@ -1,15 +1,16 @@
 #pragma once
 
-#include "ThreadTaskCurl.h"
+#include "cURLThreadTask.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ThreadTaskPostMessage
-        : public ThreadTaskCurl
+    class cURLPostMessageThreadTask
+        : public cURLThreadTask
     {
     public:
-        ThreadTaskPostMessage();
+        cURLPostMessageThreadTask();
+        ~cURLPostMessageThreadTask() override;
 
     public:
         bool initialize( const String & _url, const MapParams & _params );
@@ -22,6 +23,6 @@ namespace Mengine
         MapParams m_params;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadTaskPostMessage> ThreadTaskPostMessagePtr;
+    typedef IntrusivePtr<cURLPostMessageThreadTask> cURLPostMessageThreadTaskPtr;
     //////////////////////////////////////////////////////////////////////////
 }

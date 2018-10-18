@@ -1,15 +1,16 @@
 #pragma once
 
-#include "ThreadTaskCurl.h"
+#include "cURLThreadTask.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ThreadTaskHeaderData
-        : public ThreadTaskCurl
+    class cURLHeaderDataThreadTask
+        : public cURLThreadTask
     {
     public:
-        ThreadTaskHeaderData();
+        cURLHeaderDataThreadTask();
+        ~cURLHeaderDataThreadTask() override;
 
     public:
         bool initialize( const String & _url, const VectorString & _headers, const String & _data );
@@ -23,6 +24,6 @@ namespace Mengine
         String m_data;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadTaskHeaderData> ThreadTaskHeaderDataPtr;
+    typedef IntrusivePtr<cURLHeaderDataThreadTask> cURLHeaderDataThreadTaskPtr;
     //////////////////////////////////////////////////////////////////////////
 }

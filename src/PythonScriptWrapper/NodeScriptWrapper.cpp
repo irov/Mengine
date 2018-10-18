@@ -10,7 +10,6 @@
 #include "Interface/InputSystemInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/HttpSystemInterface.h"
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PackageInterface.h"

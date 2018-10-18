@@ -11,7 +11,6 @@
 #include "Interface/InputSystemInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/HttpSystemInterface.h"
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PackageInterface.h"
@@ -177,8 +176,7 @@ namespace Mengine
             m_factoryPyGlobalMouseHandlerButtonBegins = new FactoryPool<PyGlobalMouseHandlerButtonBegin, 32>();
             m_factoryPyGlobalKeyHandler = new FactoryPool<PyGlobalKeyHandler, 32>();
             m_factoryPyGlobalTextHandler = new FactoryPool<PyGlobalTextHandler, 32>();
-            m_factoryPyInputMousePositionProvider = new FactoryPool<PyInputMousePositionProvider, 8>();
-            m_factoryPyHttpReceiver = new FactoryPool<PyHttpReceiver, 32>();
+            m_factoryPyInputMousePositionProvider = new FactoryPool<PyInputMousePositionProvider, 8>();            
         }
 
         ~EngineScriptMethod()
@@ -1305,98 +1303,6 @@ namespace Mengine
         {
             THREAD_SYSTEM()
                 ->sleep( _time );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class PyHttpReceiver
-            : public Factorable
-            , public HttpReceiverInterface
-        {
-        public:
-            PyHttpReceiver()
-            {
-            }
-
-            ~PyHttpReceiver() override
-            {
-            }
-
-        public:
-            void initialize( const pybind::object & _cb, const pybind::args & _args )
-            {
-                m_cb = _cb;
-                m_args = _args;
-            }
-
-        protected:
-            void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override
-            {
-                m_cb.call_args( _id, _status, _error, _response, _code, _successful, m_args );
-            }
-
-        protected:
-            pybind::object m_cb;
-            pybind::args m_args;
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<PyHttpReceiver> PyHttpReceiverPtr;
-        //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPyHttpReceiver;
-        //////////////////////////////////////////////////////////////////////////
-        HttpRequestID s_downloadAsset( const String & _url, const String & _login, const String & _password, const ConstString & _category, const FilePath & _filepath, const pybind::object & _cb, const pybind::args & _args )
-        {
-            const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
-                ->getFileGroup( _category );
-
-            PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject();
-
-            receiver->initialize( _cb, _args );
-
-            uint32_t id = HTTP_SYSTEM()
-                ->downloadAsset( _url, _login, _password, fileGroup, _filepath, receiver );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        HttpRequestID s_postMessage( const String & _url, const MapParams & _params, const pybind::object & _cb, const pybind::args & _args )
-        {
-            PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject();
-
-            receiver->initialize( _cb, _args );
-
-            HttpRequestID id = HTTP_SYSTEM()
-                ->postMessage( _url, _params, receiver );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        HttpRequestID s_headerData( const String & _url, const VectorString & _headers, const String & _data, const pybind::object & _cb, const pybind::args & _args )
-        {
-            PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject();
-
-            receiver->initialize( _cb, _args );
-
-            HttpRequestID id = HTTP_SYSTEM()
-                ->headerData( _url, _headers, _data, receiver );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        HttpRequestID s_getMessage( const String & _url, const pybind::object & _cb, const pybind::args & _args )
-        {
-            PyHttpReceiverPtr receiver = m_factoryPyHttpReceiver->createObject();
-
-            receiver->initialize( _cb, _args );
-
-            HttpRequestID id = HTTP_SYSTEM()
-                ->getMessage( _url, receiver );
-
-            return id;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void s_cancelRequest( HttpRequestID _id )
-        {
-            HTTP_SYSTEM()
-                ->cancelRequest( _id );
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_mountResourcePak( const ConstString & _fileGroup
@@ -3899,11 +3805,7 @@ namespace Mengine
         pybind::def_functor( kernel, "sleep", nodeScriptMethod, &EngineScriptMethod::s_sleep );
 
 
-        pybind::def_functor_args( kernel, "getMessage", nodeScriptMethod, &EngineScriptMethod::s_getMessage );
-        pybind::def_functor_args( kernel, "postMessage", nodeScriptMethod, &EngineScriptMethod::s_postMessage );
-        pybind::def_functor_args( kernel, "headerData", nodeScriptMethod, &EngineScriptMethod::s_headerData );
-        pybind::def_functor_args( kernel, "downloadAsset", nodeScriptMethod, &EngineScriptMethod::s_downloadAsset );
-        pybind::def_functor( kernel, "cancelRequest", nodeScriptMethod, &EngineScriptMethod::s_cancelRequest );
+
 
         pybind::def_functor( kernel, "mountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_mountResourcePak );
         pybind::def_functor( kernel, "unmountResourcePak", nodeScriptMethod, &EngineScriptMethod::s_unmountResourcePak );

@@ -1,4 +1,4 @@
-#include "ThreadTaskPostMessage.h"
+#include "cURLPostMessageThreadTask.h"
 
 #include "Interface/ConfigInterface.h"
 
@@ -9,11 +9,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ThreadTaskPostMessage::ThreadTaskPostMessage()
+    cURLPostMessageThreadTask::cURLPostMessageThreadTask()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskPostMessage::initialize( const String & _url, const MapParams & _params )
+    cURLPostMessageThreadTask::~cURLPostMessageThreadTask()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool cURLPostMessageThreadTask::initialize( const String & _url, const MapParams & _params )
     {
         m_url = _url;
         m_params = _params;
@@ -21,7 +25,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPostMessage::_onCURL( CURL * _curl )
+    void cURLPostMessageThreadTask::_onCURL( CURL * _curl )
     {
         /* specify URL to get */
         curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );

@@ -1,4 +1,4 @@
-#include "ThreadTaskHeaderData.h"
+#include "cURLHeaderDataThreadTask.h"
 
 #include "Interface/ConfigInterface.h"
 
@@ -9,11 +9,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ThreadTaskHeaderData::ThreadTaskHeaderData()
+    cURLHeaderDataThreadTask::cURLHeaderDataThreadTask()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskHeaderData::initialize( const String & _url, const VectorString & _headers, const String & _data )
+    cURLHeaderDataThreadTask::~cURLHeaderDataThreadTask()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool cURLHeaderDataThreadTask::initialize( const String & _url, const VectorString & _headers, const String & _data )
     {
         m_url = _url;
         m_headers = _headers;
@@ -22,7 +26,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskHeaderData::_onCURL( CURL * _curl )
+    void cURLHeaderDataThreadTask::_onCURL( CURL * _curl )
     {
         /* specify URL to get */
         curl_easy_setopt( _curl, CURLOPT_URL, m_url.c_str() );

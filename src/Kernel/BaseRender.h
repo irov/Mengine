@@ -112,7 +112,7 @@ namespace Mengine
         bool isSolidColor() const override;
 
     protected:
-        void _invalidateColor() override;
+        void invalidateColor() override;
 
     public:
         inline bool isRendering() const;

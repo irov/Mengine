@@ -359,8 +359,10 @@ namespace Mengine
         return solid;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::_invalidateColor()
+    void BaseRender::invalidateColor()
     {
+        Colorable::invalidateColor();
+
         for( BaseRender * child : m_relationRenderChildren )
         {
             child->invalidateColor();

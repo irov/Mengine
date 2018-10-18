@@ -1472,6 +1472,11 @@ namespace Mengine
 
         parent_layer->setOrientationX( angle );
 
+        ColourValue color( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+
+        RenderInterface * parent_layer_render = parent_layer->getRender();
+        parent_layer_render->setLocalColor( color );
+
         *_sed = parent_layer;
 
         return AE_TRUE;
@@ -1503,6 +1508,11 @@ namespace Mengine
         float angle = quatzw_to_angle( q );
 
         parent_layer->setOrientationX( angle );
+
+        ColourValue color( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+
+        RenderInterface * parent_layer_render = parent_layer->getRender();
+        parent_layer_render->setLocalColor( color );
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_subcomposition_provider( const aeMovieSubCompositionProviderCallbackData * _callbackData, ae_voidptrptr_t _scd, ae_voidptr_t _ud )

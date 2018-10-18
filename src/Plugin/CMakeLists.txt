@@ -77,13 +77,6 @@ if( MENGINE_TARGET_MINGW )
 	ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
 endif()
 
-if( MENGINE_TARGET_MSVC )
-    ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
-    
-    ADD_SUBDIRECTORY( XlsExportPlugin )
-    ADD_SUBDIRECTORY( XmlCodecPlugin )    
-endif()
-
 if( MENGINE_TARGET_SDL AND MENGINE_PLATFORM_WIN32 )
     ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
     

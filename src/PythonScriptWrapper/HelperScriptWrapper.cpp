@@ -11,6 +11,7 @@
 #include "Interface/UserdataInterface.h"
 #include "Interface/ConfigInterface.h"
 #include "Interface/FileSystemInterface.h"
+#include "Interface/AccountInterface.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
@@ -29,8 +30,6 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/UID.h"
 
-#include "Engine/Account.h"
-
 #include "Engine/HotSpotShape.h"
 
 #include "Kernel/Logger.h"
@@ -44,7 +43,6 @@
 
 #include "Kernel/ResourceImage.h"
 #include "Engine/ResourceCursorICO.h"
-#include "Engine/AccountManager.h"
 
 #include "Kernel/Affector.h"
 
@@ -1087,7 +1085,7 @@ namespace Mengine
             return v_accounts;
         }
 
-        bool s_addSetting( const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
+        bool s_addSetting( const ConstString & _setting, const WString & _defaultValue, const pybind::object & _cb, const pybind::args & _args )
         {
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
@@ -1102,7 +1100,7 @@ namespace Mengine
             const ConstString & accountID = ACCOUNT_SERVICE()
                 ->getCurrentAccountID();
 
-            return s_addAccountSetting( accountID, _setting, _defaultValue, _applyFunc );
+            return s_addAccountSetting( accountID, _setting, _defaultValue, _cb, _args );
         }
 
         bool s_changeSetting( const ConstString & _setting, const WString & _value )
@@ -1231,7 +1229,31 @@ namespace Mengine
             return s_changeAccountSettingStrings( accountID, _setting, _values );
         }
 
-        bool s_addAccountSetting( const ConstString & _accountID, const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
+		class PyAccountSettingProvider
+			: public Factorable
+			, public AccountSettingProviderInterface
+		{
+		public:
+			PyAccountSettingProvider(const pybind::object & _cb, const pybind::args & _args)
+				: m_cb(_cb)
+				, m_args(_args)
+			{
+			}
+
+		protected:
+			void onChangeSetting( const WString& _value ) override
+			{
+				m_cb.call_args( _value, m_args );
+			}
+
+		protected:
+			pybind::object m_cb;
+			pybind::args m_args;
+		};
+
+		typedef IntrusivePtr<PyAccountSettingProvider> PyAccountSettingProviderPtr;
+		
+        bool s_addAccountSetting( const ConstString & _accountID, const ConstString & _setting, const WString & _defaultValue, const pybind::object & _cb, const pybind::args & _args)
         {
             AccountInterfacePtr account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -1245,7 +1267,14 @@ namespace Mengine
                 return false;
             }
 
-            bool result = account->addSetting( _setting, _defaultValue, _applyFunc );
+			PyAccountSettingProviderPtr provider = nullptr;
+
+			if (_cb.is_none() == false)
+			{
+				provider = new FactorableUnique<PyAccountSettingProvider>(_cb, _args);
+			}
+
+            bool result = account->addSetting( _setting, _defaultValue, provider);
 
             return result;
         }
@@ -1506,7 +1535,7 @@ namespace Mengine
             return result;
         }
 
-        bool s_addGlobalSetting( const ConstString & _setting, const WString & _defaultValue, const pybind::object & _applyFunc )
+        bool s_addGlobalSetting( const ConstString & _setting, const WString & _defaultValue, const pybind::object & _cb, const pybind::args & _args )
         {
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
@@ -1520,7 +1549,7 @@ namespace Mengine
             const ConstString & accountID = ACCOUNT_SERVICE()
                 ->getGlobalAccountID();
 
-            return s_addAccountSetting( accountID, _setting, _defaultValue, _applyFunc );
+            return s_addAccountSetting( accountID, _setting, _defaultValue, _cb, _args );
         }
 
         bool s_hasGlobalSetting( const ConstString & _setting )
@@ -3025,7 +3054,7 @@ namespace Mengine
         pybind::def_functor_kernel( kernel, "getSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getSettingStrings );
         pybind::def_functor( kernel, "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );
 
-        pybind::def_functor( kernel, "addSetting", helperScriptMethod, &HelperScriptMethod::s_addSetting );
+        pybind::def_functor_args( kernel, "addSetting", helperScriptMethod, &HelperScriptMethod::s_addSetting );
         pybind::def_functor( kernel, "hasSetting", helperScriptMethod, &HelperScriptMethod::s_hasSetting );
         pybind::def_functor( kernel, "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );
         pybind::def_functor( kernel, "changeSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeSettingBool );
@@ -3046,7 +3075,7 @@ namespace Mengine
         pybind::def_functor_kernel( kernel, "getAccountSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingStrings );
         pybind::def_functor( kernel, "getAccountSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingFloatDefault );
 
-        pybind::def_functor( kernel, "addAccountSetting", helperScriptMethod, &HelperScriptMethod::s_addAccountSetting );
+        pybind::def_functor_args( kernel, "addAccountSetting", helperScriptMethod, &HelperScriptMethod::s_addAccountSetting );
         pybind::def_functor( kernel, "hasAccountSetting", helperScriptMethod, &HelperScriptMethod::s_hasAccountSetting );
         pybind::def_functor( kernel, "changeAccountSetting", helperScriptMethod, &HelperScriptMethod::s_changeAccountSetting );
         pybind::def_functor( kernel, "changeAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingBool );
@@ -3066,7 +3095,7 @@ namespace Mengine
         pybind::def_functor_kernel( kernel, "getGlobalSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingFloat );
         pybind::def_functor_kernel( kernel, "getGlobalSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingStrings );
 
-        pybind::def_functor( kernel, "addGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_addGlobalSetting );
+        pybind::def_functor_args( kernel, "addGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_addGlobalSetting );
         pybind::def_functor( kernel, "hasGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_hasGlobalSetting );
         pybind::def_functor( kernel, "changeGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSetting );
         pybind::def_functor( kernel, "changeGlobalSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingBool );

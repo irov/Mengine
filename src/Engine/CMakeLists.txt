@@ -234,14 +234,6 @@ Resource\\\\HIT
 )
 
 ADD_FILTER(
-Manager\\\\Account
-	AccountManager.cpp	
-	AccountManager.h
-  	Account.cpp
-	Account.h
-)
-
-ADD_FILTER(
 Utils
 	VersionInfo.h
 )

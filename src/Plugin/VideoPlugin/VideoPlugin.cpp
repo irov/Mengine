@@ -1,6 +1,6 @@
 #include "VideoPlugin.h"
 
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"

@@ -1,7 +1,7 @@
 #include "TTFPlugin.h"
 
 #include "Interface/StringizeInterface.h"
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "Kernel/PixelFormat.h"

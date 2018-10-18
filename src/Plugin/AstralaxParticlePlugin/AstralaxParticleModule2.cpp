@@ -2,7 +2,7 @@
 
 #include "AstralaxInterface.h"
 
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 
 #include "ResourceParticle.h"

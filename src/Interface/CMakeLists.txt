@@ -34,7 +34,7 @@ src
     MovieKeyFrameInterface.h
     PlayerInterface.h
     GameInterface.h    
-    PrototypeManagerInterface.h
+    PrototypeServiceInterface.h
     WatchdogInterface.h
     WindowsLayerInterface.h
     ArchiveInterface.h
@@ -116,8 +116,6 @@ ADD_FILTER(
 dummy     
 	dummy.cpp
 )
-
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
 
 ADD_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 

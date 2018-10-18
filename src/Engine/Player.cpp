@@ -1,5 +1,6 @@
 #include "Player.h"
 
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
@@ -1086,7 +1087,6 @@ namespace Mengine
             {
                 //////////////////////////////////////////////////////////////////////////
                 class VisitorPlayerFactoryManager
-                    : public VisitorPrototypeGenerator
                 {
                 public:
                     VisitorPlayerFactoryManager( const ConstString & _category )
@@ -1094,16 +1094,9 @@ namespace Mengine
                     {
                     }
 
-                private:
-                    VisitorPlayerFactoryManager & operator = ( const VisitorPlayerFactoryManager & _vpfm )
-                    {
-                        (void)_vpfm;
 
-                        return *this;
-                    }
-
-                protected:
-                    void visit( const PrototypeGeneratorInterfacePtr & _generator ) override
+				public:
+                    void visit( const PrototypeGeneratorInterfacePtr & _generator )
                     {
                         const ConstString & category = _generator->getCategory();
                         const ConstString & prototype = _generator->getPrototype();
@@ -1165,18 +1158,17 @@ namespace Mengine
                     MapPybindScope m_scopes;
                 };
 
-
                 VisitorPlayerFactoryManager pfmv_node( STRINGIZE_STRING_LOCAL( "Node" ) );
 
                 PROTOTYPE_SERVICE()
-                    ->visitGenerators( &pfmv_node );
+					->foreachGenerators([&pfmv_node](const PrototypeGeneratorInterfacePtr & _generator) { pfmv_node.visit(_generator); });
 
                 ss << pfmv_node.getMsg() << std::endl;
 
                 VisitorPlayerFactoryManager pfmv_surface( STRINGIZE_STRING_LOCAL( "Surface" ) );
 
                 PROTOTYPE_SERVICE()
-                    ->visitGenerators( &pfmv_surface );
+                    ->foreachGenerators([&pfmv_surface](const PrototypeGeneratorInterfacePtr & _generator) { pfmv_surface.visit(_generator); });
 
                 ss << pfmv_surface.getMsg() << std::endl;
             }

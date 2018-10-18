@@ -18,7 +18,7 @@ namespace Mengine
     class ConfigServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "ConfigService" )
+        SERVICE_DECLARE( "ConfigService" );
 
     public:
         virtual bool loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _applicationPath ) = 0;

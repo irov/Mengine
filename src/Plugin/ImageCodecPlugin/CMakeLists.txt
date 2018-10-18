@@ -94,7 +94,6 @@ if(MENGINE_SUPPORT_DECODER_WEBP)
 endif()
 
 INCLUDE_DIRECTORIES( 
-        ${Mengine_SOURCE_DIR}/Utils 
         ${THIRDPARTY_DIR}
         ${THIRDPARTY_DIR}/zlib
         ${THIRDPARTY_DIR}/libpng

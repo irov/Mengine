@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/ServantBase.h"
 

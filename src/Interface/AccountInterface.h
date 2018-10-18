@@ -11,12 +11,19 @@
 
 #include "Config/String.h"
 
-#include "pybind/object.hpp"
-
 namespace Mengine
 {
     DECLARE_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA, 'A', 'C', 'D', '1', 1 );
-
+	//////////////////////////////////////////////////////////////////////////
+	class AccountSettingProviderInterface
+		: public Mixin
+	{
+	public:
+		virtual void onChangeSetting( const WString& _value ) = 0;
+	};
+	//////////////////////////////////////////////////////////////////////////
+	typedef IntrusivePtr<AccountSettingProviderInterface> AccountSettingProviderInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
     class AccountInterface
         : public ServantInterface
     {
@@ -29,7 +36,7 @@ namespace Mengine
         virtual const String & getUID() const = 0;
 
     public:
-        virtual bool addSetting( const ConstString & _setting, const WString& _defaultValue, const pybind::object & _applyFunc ) = 0;
+        virtual bool addSetting( const ConstString & _setting, const WString& _defaultValue, const AccountSettingProviderInterfacePtr & _provider ) = 0;
         virtual bool changeSetting( const ConstString & _setting, const WString& _value ) = 0;
         virtual WString getSetting( const ConstString & _setting ) const = 0;
         virtual bool hasSetting( const ConstString & _setting ) const = 0;
@@ -49,9 +56,9 @@ namespace Mengine
         virtual bool writeBinaryFile( const FilePath & _filename, const void * _data, size_t _size ) = 0;
         virtual bool hasBinaryFile( const FilePath & _filename ) const = 0;
     };
-
+	//////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AccountInterface> AccountInterfacePtr;
-
+	//////////////////////////////////////////////////////////////////////////
     class AccountProviderInterface
         : public ServantInterface
     {
@@ -61,15 +68,15 @@ namespace Mengine
         virtual void onSelectAccount( const ConstString & _accountID ) = 0;
         virtual void onUnselectAccount( const ConstString & _accountID ) = 0;
     };
-
+	//////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AccountProviderInterface> AccountProviderInterfacePtr;
-
+	//////////////////////////////////////////////////////////////////////////
     class AccountVisitorInterface
     {
     public:
         virtual void onAccount( const AccountInterfacePtr & _account ) = 0;
     };
-
+	//////////////////////////////////////////////////////////////////////////
     class AccountServiceInterface
         : public ServiceInterface
     {

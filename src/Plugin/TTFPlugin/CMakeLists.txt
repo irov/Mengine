@@ -16,7 +16,6 @@ src
 #add_definitions(-DMENGINE_PLUGIN_DLL)
 
 INCLUDE_DIRECTORIES( 
-        ${Mengine_SOURCE_DIR}/Utils
         ${THIRDPARTY_DIR}/freetype/include
         ${THIRDPARTY_DIR}/pybind/include
         ${THIRDPARTY_DIR}/utf8/source

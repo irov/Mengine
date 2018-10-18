@@ -4,6 +4,7 @@
 #include "Interface/StringizeInterface.h"
 
 #include "Kernel/ServantBase.h"
+#include "Kernel/Scriptable.h"
 
 #include "Kernel/Logger.h"
 
@@ -11,6 +12,19 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    class ScriptWrapperInterface
+        : public ServantInterface
+    {
+    public:
+        virtual bool initialize() = 0;
+        virtual void finalize() = 0;
+
+    public:
+        virtual PyObject * wrap( Scriptable * _node ) = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ScriptWrapperInterface> ScriptWrapperInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {

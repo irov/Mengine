@@ -3,17 +3,17 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "ThreadTaskCurl.h"
+#include "cURLThreadTask.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ThreadTaskGetAsset
-        : public ThreadTaskCurl
+    class cURLGetAssetThreadTask
+        : public cURLThreadTask
     {
     public:
-        ThreadTaskGetAsset();
-        ~ThreadTaskGetAsset() override;
+        cURLGetAssetThreadTask();
+        ~cURLGetAssetThreadTask() override;
 
     public:
         bool initialize( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filepath );
@@ -37,6 +37,6 @@ namespace Mengine
         OutputStreamInterfacePtr m_stream;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadTaskGetAsset> ThreadTaskGetAssetPtr;
+    typedef IntrusivePtr<cURLGetAssetThreadTask> cURLGetAssetThreadTaskPtr;
     //////////////////////////////////////////////////////////////////////////
 }

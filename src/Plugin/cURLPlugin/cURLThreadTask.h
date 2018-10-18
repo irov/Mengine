@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/HttpSystemInterface.h"
+#include "cURLInterface.h"
 
 #include "Kernel/ThreadTask.h"
 
@@ -9,19 +9,19 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ThreadTaskCurl
+    class cURLThreadTask
         : public ThreadTask
     {
     public:
-        ThreadTaskCurl();
-        ~ThreadTaskCurl() override;
+        cURLThreadTask();
+        ~cURLThreadTask() override;
 
     public:
         void setRequestId( HttpRequestID _id );
         HttpRequestID getRequestId() const;
 
-        void setReceiver( const HttpReceiverInterfacePtr & _receiver );
-        const HttpReceiverInterfacePtr & getReceiver() const;
+        void setReceiver( const cURLReceiverInterfacePtr & _receiver );
+        const cURLReceiverInterfacePtr & getReceiver() const;
 
     protected:
         bool _onRun() override;
@@ -41,7 +41,7 @@ namespace Mengine
 
     protected:
         HttpRequestID m_id;
-        HttpReceiverInterfacePtr m_receiver;
+        cURLReceiverInterfacePtr m_receiver;
 
         uint32_t m_code;
         CURLcode m_status;
@@ -49,6 +49,6 @@ namespace Mengine
         String m_response;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadTaskCurl> ThreadTaskCurlPtr;
+    typedef IntrusivePtr<cURLThreadTask> cURLThreadTaskPtr;
     //////////////////////////////////////////////////////////////////////////
 }

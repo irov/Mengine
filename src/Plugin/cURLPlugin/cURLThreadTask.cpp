@@ -1,4 +1,4 @@
-#include "ThreadTaskCurl.h"
+#include "cURLThreadTask.h"
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ConfigInterface.h"
@@ -7,45 +7,44 @@
 
 namespace Mengine
 {
-
     //////////////////////////////////////////////////////////////////////////
-    ThreadTaskCurl::ThreadTaskCurl()
+    cURLThreadTask::cURLThreadTask()
         : m_id( 0 )
         , m_code( 0 )
         , m_status( CURLE_OK )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadTaskCurl::~ThreadTaskCurl()
+    cURLThreadTask::~cURLThreadTask()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskCurl::setRequestId( HttpRequestID _id )
+    void cURLThreadTask::setRequestId( HttpRequestID _id )
     {
         m_id = _id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID ThreadTaskCurl::getRequestId() const
+    HttpRequestID cURLThreadTask::getRequestId() const
     {
         return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskCurl::setReceiver( const HttpReceiverInterfacePtr & _receiver )
+    void cURLThreadTask::setReceiver( const cURLReceiverInterfacePtr & _receiver )
     {
         m_receiver = _receiver;
     }
     //////////////////////////////////////////////////////////////////////////
-    const HttpReceiverInterfacePtr & ThreadTaskCurl::getReceiver() const
+    const cURLReceiverInterfacePtr & cURLThreadTask::getReceiver() const
     {
         return m_receiver;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskCurl::_onRun()
+    bool cURLThreadTask::_onRun()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadTaskCurl::_onMain()
+    bool cURLThreadTask::_onMain()
     {
         /* init the curl session */
         CURL * curl = curl_easy_init();
@@ -74,7 +73,7 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////////
     static size_t s_writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata )
     {
-        ThreadTaskCurl * perfomer = static_cast<ThreadTaskCurl *>(userdata);
+        cURLThreadTask * perfomer = static_cast<cURLThreadTask *>(userdata);
 
         size_t total = size * nmemb;
 
@@ -83,19 +82,19 @@ namespace Mengine
         return total;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskCurl::setupWriteResponse( CURL * _curl )
+    void cURLThreadTask::setupWriteResponse( CURL * _curl )
     {
         /* send all data to this function  */
         curl_easy_setopt( _curl, CURLOPT_WRITEDATA, (void *)this );
         curl_easy_setopt( _curl, CURLOPT_WRITEFUNCTION, &s_writeRequestPerformerResponse );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskCurl::writeResponse( char * _ptr, size_t _size )
+    void cURLThreadTask::writeResponse( char * _ptr, size_t _size )
     {
         m_response.append( _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskCurl::_onComplete( bool _successful )
+    void cURLThreadTask::_onComplete( bool _successful )
     {
         m_receiver->onHttpRequestComplete( m_id, (uint32_t)m_status, m_error, m_response, m_code, _successful );
     }

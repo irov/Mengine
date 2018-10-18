@@ -1,13 +1,13 @@
-#include "cURLHttpSystem.h"
+#include "cURLService.h"
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "ThreadTaskGetMessage.h"
-#include "ThreadTaskPostMessage.h"
-#include "ThreadTaskHeaderData.h"
-#include "ThreadTaskGetAsset.h"
+#include "cURLGetMessageThreadTask.h"
+#include "cURLPostMessageThreadTask.h"
+#include "cURLHeaderDataThreadTask.h"
+#include "cURLGetAssetThreadTask.h"
 
 #include "Kernel/FactoryPool.h"
 
@@ -16,21 +16,21 @@
 #include "curl/curl.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( HttpSystem, Mengine::cURLHttpSystem );
+SERVICE_FACTORY( cURLService, Mengine::cURLService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    cURLHttpSystem::cURLHttpSystem()
+    cURLService::cURLService()
         : m_enumeratorReceivers( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    cURLHttpSystem::~cURLHttpSystem()
+    cURLService::~cURLService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLHttpSystem::_initializeService()
+    bool cURLService::_initializeService()
     {
         CURLcode code = curl_global_init( CURL_GLOBAL_ALL );
 
@@ -50,15 +50,15 @@ namespace Mengine
             return false;
         }
 
-        m_factoryTaskGetMessage = new FactoryPool<ThreadTaskGetMessage, 8>();
-        m_factoryTaskPostMessage = new FactoryPool<ThreadTaskPostMessage, 8>();
-        m_factoryTaskHeaderData = new FactoryPool<ThreadTaskHeaderData, 8>();
-        m_factoryTaskDownloadAsset = new FactoryPool<ThreadTaskGetAsset, 8>();
+        m_factoryTaskGetMessage = new FactoryPool<cURLGetMessageThreadTask, 8>();
+        m_factoryTaskPostMessage = new FactoryPool<cURLPostMessageThreadTask, 8>();
+        m_factoryTaskHeaderData = new FactoryPool<cURLHeaderDataThreadTask, 8>();
+        m_factoryTaskDownloadAsset = new FactoryPool<cURLGetAssetThreadTask, 8>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLHttpSystem::_finalizeService()
+    void cURLService::_finalizeService()
     {
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ) );
@@ -71,11 +71,11 @@ namespace Mengine
         curl_global_cleanup();
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLHttpSystem::getMessage( const String & _url, const HttpReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::getMessage( const String & _url, const cURLReceiverInterfacePtr & _receiver )
     {
         uint32_t task_id = ++m_enumeratorReceivers;
 
-        ThreadTaskGetMessagePtr task = m_factoryTaskGetMessage->createObject();
+        cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject();
 
         task->setRequestId( task_id );
         task->setReceiver( this );
@@ -91,7 +91,7 @@ namespace Mengine
             return 0;
         }
 
-        HttpReceiverDesc desc;
+        ReceiverDesc desc;
         desc.id = task_id;
         desc.task = task;
         desc.receiver = _receiver;
@@ -101,11 +101,11 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLHttpSystem::postMessage( const String & _url, const MapParams & _params, const HttpReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::postMessage( const String & _url, const MapParams & _params, const cURLReceiverInterfacePtr & _receiver )
     {
         uint32_t task_id = ++m_enumeratorReceivers;
 
-        ThreadTaskPostMessagePtr task = m_factoryTaskPostMessage->createObject();
+        cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject();
 
         task->setRequestId( task_id );
         task->setReceiver( this );
@@ -121,7 +121,7 @@ namespace Mengine
             return 0;
         }
 
-        HttpReceiverDesc desc;
+        ReceiverDesc desc;
         desc.id = task_id;
         desc.task = task;
         desc.receiver = _receiver;
@@ -131,11 +131,11 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLHttpSystem::headerData( const String & _url, const VectorString & _headers, const String & _data, const HttpReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::headerData( const String & _url, const VectorString & _headers, const String & _data, const cURLReceiverInterfacePtr & _receiver )
     {
         uint32_t task_id = ++m_enumeratorReceivers;
 
-        ThreadTaskHeaderDataPtr task = m_factoryTaskHeaderData->createObject();
+        cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject();
 
         task->setRequestId( task_id );
         task->setReceiver( this );
@@ -151,7 +151,7 @@ namespace Mengine
             return 0;
         }
 
-        HttpReceiverDesc desc;
+        ReceiverDesc desc;
         desc.id = task_id;
         desc.task = task;
         desc.receiver = _receiver;
@@ -161,7 +161,7 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    HttpRequestID cURLHttpSystem::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const HttpReceiverInterfacePtr & _receiver )
+    HttpRequestID cURLService::downloadAsset( const String & _url, const String & _login, const String & _password, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path, const cURLReceiverInterfacePtr & _receiver )
     {
         if( _fileGroup->existFile( _path ) == true )
         {
@@ -176,7 +176,7 @@ namespace Mengine
 
         uint32_t task_id = ++m_enumeratorReceivers;
 
-        ThreadTaskGetAssetPtr task = m_factoryTaskDownloadAsset->createObject();
+        cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject();
 
         task->setRequestId( task_id );
         task->setReceiver( this );
@@ -194,7 +194,7 @@ namespace Mengine
             return 0;
         }
 
-        HttpReceiverDesc desc;
+        ReceiverDesc desc;
         desc.id = task_id;
         desc.task = task;
         desc.receiver = _receiver;
@@ -204,15 +204,15 @@ namespace Mengine
         return task_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLHttpSystem::cancelRequest( HttpRequestID _id )
+    bool cURLService::cancelRequest( HttpRequestID _id )
     {
-        for( VectorHttpReceiverDesc::iterator
+        for( VectorReceiverDesc::iterator
             it = m_receiverDescs.begin(),
             it_end = m_receiverDescs.end();
             it != it_end;
             ++it )
         {
-            HttpReceiverDesc & desc = *it;
+            ReceiverDesc & desc = *it;
 
             if( desc.id != _id )
             {
@@ -227,22 +227,22 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLHttpSystem::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful )
+    void cURLService::onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful )
     {
-        for( VectorHttpReceiverDesc::iterator
+        for( VectorReceiverDesc::iterator
             it = m_receiverDescs.begin(),
             it_end = m_receiverDescs.end();
             it != it_end;
             ++it )
         {
-            HttpReceiverDesc & desc = *it;
+            ReceiverDesc & desc = *it;
 
             if( desc.id != _id )
             {
                 continue;
             }
 
-            HttpReceiverInterfacePtr receiver = desc.receiver;
+            cURLReceiverInterfacePtr receiver = desc.receiver;
 
             m_receiverDescs.erase( it );
 

@@ -46,7 +46,7 @@ namespace Mengine
         inline const ColourValue & getRelationColor() const;
 
     public:
-        void invalidateColor();
+        virtual void invalidateColor();
         inline bool isInvalidateColor() const;
 
     protected:

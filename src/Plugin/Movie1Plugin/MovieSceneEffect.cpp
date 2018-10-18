@@ -1,5 +1,7 @@
 #include "MovieSceneEffect.h"
 
+#include "Kernel/Logger.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -40,12 +42,34 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieSceneEffect::setPropagateNode( Node * _propagate )
+    bool MovieSceneEffect::setPropagateNode( Node * _propagate )
     {
+        if( _propagate == nullptr )
+        {
+            LOGGER_ERROR( "MovieSceneEffect::setPropagateNode '%s' invalid set propagate node 'nullptr'"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         m_propagate = _propagate;
+
+        if( m_propagate->getRender() == nullptr )
+        {
+            LOGGER_ERROR( "MovieSceneEffect::setPropagateNode '%s' propagate node '%s' type '%s' is not Renderable!"
+                , this->getName().c_str()
+                , m_propagate->getName().c_str()
+                , m_propagate->getType().c_str()
+            );
+
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieSceneEffect::_invalidateColor()
+    void MovieSceneEffect::invalidateColor()
     {
         if( m_propagate == nullptr )
         {
@@ -53,8 +77,10 @@ namespace Mengine
         }
 
         const ColourValue & personal_colour = this->getPersonalColor();
-                
-        this->setLocalColor( personal_colour );
+
+        RenderInterface * render = m_propagate->getRender();
+        
+        render->setLocalColor( personal_colour );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSceneEffect::_invalidateWorldMatrix()

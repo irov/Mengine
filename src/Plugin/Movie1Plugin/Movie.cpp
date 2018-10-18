@@ -2074,7 +2074,7 @@ namespace Mengine
 #ifndef NDEBUG
             if( stdex::intrusive_dynamic_cast<MovieSceneEffectPtr>(node) == nullptr )
             {
-                LOGGER_ERROR( "Movie::compileMovieText_ %s resource %s layer %s must be 'MovieSceneEffect' but node is %s type %s"
+                LOGGER_ERROR( "Movie::compileMovieText_ '%s' resource '%s' layer '%s' must be 'MovieSceneEffect' but node is %s type %s"
                     , this->getName().c_str()
                     , this->getResourceMovieName().c_str()
                     , l.name.c_str()
@@ -2088,7 +2088,18 @@ namespace Mengine
 
             MovieSceneEffectPtr sceneEffect = stdex::intrusive_static_cast<MovieSceneEffectPtr>(node);
 
-            sceneEffect->setPropagateNode( parent );
+            if( sceneEffect->setPropagateNode( parent ) == false )
+            {
+                LOGGER_ERROR( "Movie::setupSceneEffect_: '%s' resource '%s' layer '%s' invalid set propagate node '%s' type '%s'!"
+                    , this->getName().c_str()
+                    , this->getResourceMovieName().c_str()
+                    , l.name.c_str()
+                    , node->getName().c_str()
+                    , node->getType().c_str()
+                );
+
+                return false;
+            }
         }
 
         return true;

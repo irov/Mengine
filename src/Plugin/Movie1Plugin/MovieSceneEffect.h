@@ -17,13 +17,13 @@ namespace Mengine
         ~MovieSceneEffect() override;
 
     public:
-        void setPropagateNode( Node * _propagate );
+        bool setPropagateNode( Node * _propagate );
 
     public:
         void enablePropagate( bool _value );
 
     protected:
-        void _invalidateColor() override;
+        void invalidateColor() override;
 
     protected:
         void _invalidateWorldMatrix() override;

@@ -14,7 +14,6 @@ if( MENGINE_PLUGIN_STEAM_DLL )
 endif()
 
 INCLUDE_DIRECTORIES( 
-        ${Mengine_SOURCE_DIR}/Utils 
         ${THIRDPARTY_DIR}/steam/public
         ${THIRDPARTY_DIR}/libmath/include
 )

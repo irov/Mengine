@@ -233,34 +233,12 @@ Resource\\\\HIT
 	ResourceHIT.h
 )
 
-
-ADD_FILTER(
-Manager\\\\Resource
-	ResourceManager.cpp
-	ResourceManager.h
-)
-
-ADD_FILTER(
-Manager\\\\Prototype
-	PrototypeManager.cpp
-	PrototypeManager.h
-)
-
-ADD_FILTER(
-Manager\\\\Account
-	AccountManager.cpp	
-	AccountManager.h
-  	Account.cpp
-	Account.h
-)
-
 ADD_FILTER(
 Utils
 	VersionInfo.h
 )
 
-INCLUDE_DIRECTORIES( 
-    ${SOURCE_DIR}/Utils 
+INCLUDE_DIRECTORIES(
     ${THIRDPARTY_DIR}
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/metabuf

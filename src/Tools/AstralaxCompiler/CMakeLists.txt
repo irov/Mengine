@@ -10,7 +10,7 @@ add_definitions(-D_UNICODE)
 
 add_definitions(-DMAGIC_3D)
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
+INCLUDE_DIRECTORIES( 
 			         ${THIRDPARTY_DIR}/astralax
                      ${THIRDPARTY_DIR}/lz4/lib
                      ${THIRDPARTY_DIR}/libmath/include

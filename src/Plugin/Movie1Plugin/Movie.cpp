@@ -1,7 +1,7 @@
 #include "Movie.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/TimelineInterface.h"
 #include "Interface/NodeInterface.h"
 

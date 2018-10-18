@@ -1,7 +1,5 @@
 set( MY_LIB_NAME OpenGLRenderSystemES )
 
-include_directories( ${Mengine_SOURCE_DIR}/Utils)
-
 ADD_FILTER(
 OpenGLRender
     OpenGLRenderEnumES.h

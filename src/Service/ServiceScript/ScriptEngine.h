@@ -2,7 +2,7 @@
 
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "ConstStringHolderPythonString.h"
 

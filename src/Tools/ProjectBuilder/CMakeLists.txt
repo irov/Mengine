@@ -21,7 +21,6 @@ add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPYBIND_PYTHON_VERSION=342)
 
 INCLUDE_DIRECTORIES( 
-    ${Mengine_SOURCE_DIR}/Utils
     ${THIRDPARTY_DIR}/pugixml/src
     ${THIRDPARTY_DIR}/metabuf                     
     ${THIRDPARTY_DIR}/pybind/include

@@ -1,7 +1,7 @@
 #include "Application.h"
 
 #include "Interface/OptionsInterface.h"
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/InputSystemInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
@@ -723,7 +723,6 @@ namespace Mengine
             if( _event.code == KC_F5 && _event.isDown == true )
             {
                 class VisitorPlayerFactoryManager
-                    : public VisitorPrototypeGenerator
                 {
                 public:
                     VisitorPlayerFactoryManager( const ConstString & _category, Stringstream & _ss )
@@ -732,16 +731,8 @@ namespace Mengine
                     {
                     }
 
-                private:
-                    VisitorPlayerFactoryManager & operator = ( const VisitorPlayerFactoryManager & _vpfm )
-                    {
-                        (void)_vpfm;
-
-                        return *this;
-                    }
-
-                protected:
-                    void visit( const PrototypeGeneratorInterfacePtr & _generator ) override
+				public:
+                    void visit( const PrototypeGeneratorInterfacePtr & _generator )
                     {
                         const ConstString & category = _generator->getCategory();
                         const ConstString & prototype = _generator->getPrototype();
@@ -770,7 +761,7 @@ namespace Mengine
                 VisitorPlayerFactoryManager pfmv( STRINGIZE_STRING_LOCAL( "Node" ), ss );
 
                 PROTOTYPE_SERVICE()
-                    ->visitGenerators( &pfmv );
+					->foreachGenerators([&pfmv](const PrototypeGeneratorInterfacePtr & _generator) {pfmv.visit(_generator); });
 
                 const String & str = ss.str();
 

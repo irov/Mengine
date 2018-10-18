@@ -1,7 +1,7 @@
 #include "NodeService.h"
 
 #include "Interface/StringizeInterface.h"
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 

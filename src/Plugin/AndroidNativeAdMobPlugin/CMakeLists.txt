@@ -14,7 +14,6 @@ if( MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_DLL )
 endif()
 
 INCLUDE_DIRECTORIES( 
-        ${Mengine_SOURCE_DIR}/Utils
 		${THIRDPARTY_DIR}/pybind/include
 )
 

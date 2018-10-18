@@ -11,7 +11,7 @@ src
 
 add_definitions(-DMENGINE_PLUGIN_DLL)
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
+INCLUDE_DIRECTORIES( 
 			         ${THIRDPARTY_DIR}/pugixml/src
                      ${THIRDPARTY_DIR}/metabuf
                      ${THIRDPARTY_DIR}/utf8/source

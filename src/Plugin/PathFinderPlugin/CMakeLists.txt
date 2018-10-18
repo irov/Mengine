@@ -100,7 +100,6 @@ ModuleInvader
 )
 
 INCLUDE_DIRECTORIES(    
-    ${Mengine_SOURCE_DIR}/Utils     
     ${THIRDPARTY_DIR}/Box2D
     ${THIRDPARTY_DIR}/metabuf
     ${THIRDPARTY_DIR}/pybind/include

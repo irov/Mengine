@@ -23,7 +23,6 @@ add_definitions(-DUNICODE)
 add_definitions(-D_UNICODE)
 
 INCLUDE_DIRECTORIES( 
-    ${Mengine_SOURCE_DIR}/Utils
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/SDL2/include
     ${THIRDPARTY_DIR}/tinyini/include

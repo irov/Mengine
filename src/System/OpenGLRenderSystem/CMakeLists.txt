@@ -30,7 +30,6 @@ src
 )
 
 include_directories( 
-    ${MENGINE_SOURCE_DIR}/Kernel
     ${THIRDPARTY_DIR}/SDL2/include
     ${THIRDPARTY_DIR}/libmath/include
     )

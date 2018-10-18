@@ -18,7 +18,6 @@ src
 #add_definitions(-DMENGINE_PLUGIN_DLL)
 
 INCLUDE_DIRECTORIES( 
-        ${Mengine_SOURCE_DIR}/Utils 
 		${THIRDPARTY_DIR}/utf8/source
         ${THIRDPARTY_DIR}/libmath/include
         ${THIRDPARTY_DIR}/tinyini/include

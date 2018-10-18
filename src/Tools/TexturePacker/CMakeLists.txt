@@ -8,8 +8,7 @@ src
 add_definitions(-DUNICODE)
 add_definitions(-D_UNICODE)
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils
-                    ${Mengine_SOURCE_DIR}/Tools
+INCLUDE_DIRECTORIES( 
 					${THIRDPARTY_DIR}/pugixml/src
                     ${THIRDPARTY_DIR}/jansson/include                    
                     )

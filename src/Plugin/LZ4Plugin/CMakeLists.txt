@@ -12,7 +12,6 @@ src
     ADD_DEFINITIONS(-DLZ4_FORCE_MEMORY_ACCESS=2)
 
 INCLUDE_DIRECTORIES( 
-        ${Mengine_SOURCE_DIR}/Utils 
         ${THIRDPARTY_DIR}/lz4/lib
 )
 

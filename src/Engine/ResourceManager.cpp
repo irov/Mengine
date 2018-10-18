@@ -2,7 +2,7 @@
 
 #include "Interface/UnicodeInterface.h"
 #include "Interface/LoaderInterface.h"
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ConfigInterface.h"
 
 #include "Metacode/Metacode.h"

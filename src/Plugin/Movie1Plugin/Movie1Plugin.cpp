@@ -1,6 +1,6 @@
 #include "Movie1Plugin.h"
 
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ScriptSystemInterface.h"

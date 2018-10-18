@@ -5,7 +5,7 @@
 #include "Interface/UnicodeInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"

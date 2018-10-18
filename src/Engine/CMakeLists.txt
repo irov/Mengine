@@ -233,13 +233,6 @@ Resource\\\\HIT
 	ResourceHIT.h
 )
 
-
-ADD_FILTER(
-Manager\\\\Resource
-	ResourceManager.cpp
-	ResourceManager.h
-)
-
 ADD_FILTER(
 Manager\\\\Account
 	AccountManager.cpp	

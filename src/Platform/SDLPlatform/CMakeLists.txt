@@ -15,8 +15,6 @@ add_definitions(-DUNICODE)
 ADD_MENGINE_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 INCLUDE_DIRECTORIES( 
-    ${Mengine_SOURCE_DIR} 
-    ${Mengine_SOURCE_DIR}/Utils
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/SDL2/include
     ${THIRDPARTY_DIR}/tinyini/include

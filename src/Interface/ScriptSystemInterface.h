@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/PrototypeManagerInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Config/Typedef.h"

@@ -17,8 +17,6 @@ add_definitions(-DUNICODE)
 ADD_MENGINE_LIBRARY()
 
 INCLUDE_DIRECTORIES( 
-    ${Mengine_SOURCE_DIR} 
-    ${Mengine_SOURCE_DIR}/Utils
     ${THIRDPARTY_DIR}/libmath/include
     ) 
 

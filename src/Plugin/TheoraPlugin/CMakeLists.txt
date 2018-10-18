@@ -10,8 +10,6 @@ src
     TheoraVideoDecoder.h
 	)
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
-
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libtheora/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libogg/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )

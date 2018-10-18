@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/PrototypeManagerInterface.h"
 #include "Interface/EventationInterface.h"
 
 #include "Kernel/Node.h"

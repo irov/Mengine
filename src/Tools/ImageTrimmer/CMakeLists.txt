@@ -8,7 +8,6 @@ src
 add_definitions(-DUNICODE)
 
 INCLUDE_DIRECTORIES( 
-    ${Mengine_SOURCE_DIR}/Utils
     ${THIRDPARTY_DIR}/tinyini/include
     ${THIRDPARTY_DIR}/libmath/include
     )

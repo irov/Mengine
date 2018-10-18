@@ -7,7 +7,6 @@ src
 )
 
 INCLUDE_DIRECTORIES(
-    ${Mengine_SOURCE_DIR} 
     ${THIRDPARTY_DIR}/libmath/include
     ) 
 

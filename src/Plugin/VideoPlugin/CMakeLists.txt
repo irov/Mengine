@@ -19,8 +19,6 @@ src
 	VideoResourceValidateVisitor.h
 	)
 
-INCLUDE_DIRECTORIES( ${Mengine_SOURCE_DIR}/Utils )
-
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/metabuf )

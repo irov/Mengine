@@ -1,16 +1,17 @@
-SET( MY_LIB_NAME MockupPluginSystem )
+SET( MY_LIB_NAME ServicePrototype )
 
 ADD_FILTER(
 src
-	MockupPluginSystem.h
-	MockupPluginSystem.cpp
+	PrototypeService.h
+	PrototypeService.cpp
 )
 
 ADD_MENGINE_LIBRARY()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER System
+    FOLDER Service
 )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include ) 
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

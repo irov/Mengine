@@ -3,6 +3,7 @@
 
 #include "Win32Application.h"
 
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileSystemInterface.h"

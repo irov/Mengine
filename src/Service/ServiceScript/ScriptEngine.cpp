@@ -6,7 +6,7 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/UnicodeInterface.h"
-#include "Interface/PrototypeManagerInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "Kernel/FactoryPool.h"

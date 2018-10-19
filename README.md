@@ -8,18 +8,21 @@ Mengine is an multiple platforms engine for creating and running graphical games
 
 ## Windows
 Для начала работы нужно скачать исходники библиотек зависимостей
-    `Mengine\build\downloads\downloads.bat`
+
+`Mengine\build\downloads\downloads.bat`
     
 Дальше мы можем собираем например дебаг для Visual Studio 15 2017
-    `Mengine\build\msvc15\build_depends_msvc15_debug.bat`
+
+`Mengine\build\msvc15\build_depends_msvc15_debug.bat`
 
 и сформировать солюшен
-    `Mengine\build\msvc15\make_solution_tools_msvc15_debug.bat`
+
+`Mengine\build\msvc15\make_solution_tools_msvc15_debug.bat`
     
 который мы сможем найти в папке
-    `Mengine\solutions\solution_msvc15_debug\`
+
+`Mengine\solutions\solution_msvc15_debug\`
     
 Где мы найдем основной проект `Win32Application`
+
 Удачи в сборке, и использованию!
-
-

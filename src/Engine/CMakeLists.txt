@@ -9,12 +9,6 @@ Application
 SOURCE_GROUP( Engine )
 
 ADD_FILTER(
-Service\\\\Watchdog
-	Watchdog.cpp
-	Watchdog.h
-)
-
-ADD_FILTER(
 Layer2D
 	Layer2D.cpp
 	Layer2D.h

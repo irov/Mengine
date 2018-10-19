@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServiceGraveyard )
 
 ADD_FILTER(
 src
-	Graveyard.cpp
-	Graveyard.h
+	GraveyardService.cpp
+	GraveyardService.h
 )
 
 ADD_MENGINE_LIBRARY()

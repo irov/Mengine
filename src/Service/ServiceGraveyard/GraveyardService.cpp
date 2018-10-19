@@ -1,0 +1,165 @@
+#include "GraveyardService.h"
+
+#include "Interface/RenderImageInterface.h"
+#include "Interface/RenderTextureInterface.h"
+#include "Interface/RenderTextureServiceInterface.h"
+
+#include "Interface/ConfigInterface.h"
+
+#include <algorithm>
+
+//////////////////////////////////////////////////////////////////////////
+SERVICE_FACTORY( GraveyardService, Mengine::GraveyardService );
+//////////////////////////////////////////////////////////////////////////
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+	GraveyardService::GraveyardService()
+        : m_count( 0 )
+        , m_graveyardTime( 1000.f )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////		
+	GraveyardService::~GraveyardService()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GraveyardService::_initializeService()
+    {
+        m_graveyardTime = CONFIG_VALUE( "Engine", "GraveyardTime", 1000.f );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GraveyardService::_finalizeService()
+    {
+        this->clearTextures();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GraveyardService::clearTextures()
+    {
+        for( RenderTextureGraveEntry & entry : m_textures )
+        {
+            m_count--;
+
+            entry.image = nullptr;
+        }
+
+        m_textures.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void GraveyardService::tick( const UpdateContext * _context )
+    {
+		VectorTextureGrave::iterator it_erase = std::remove_if(m_textures.begin(), m_textures.end(), [_context](RenderTextureGraveEntry & _entry)
+		{
+			_entry.timing -= _context->time;
+
+			if (_entry.timing > 0.f)
+			{
+				return false;
+			}
+
+			return true; 
+		} );
+
+        for( VectorTextureGrave::iterator
+            it = it_erase,
+            it_end = m_textures.end();
+            it != it_end;
+            ++it )
+        {
+            RenderTextureGraveEntry & entry = *it;
+
+            entry.image = nullptr;
+
+            m_count--;
+        }
+
+        m_textures.erase( it_erase, m_textures.end() );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool GraveyardService::buryTexture( RenderTextureInterface * _texture )
+    {
+        if( this->isInitializeService() == false )
+        {
+            return false;
+        }
+
+        const FileGroupInterfacePtr & fileGroup = _texture->getCategory();
+        const FilePath & filePath = _texture->getFileName();
+
+        if( filePath.empty() == true )
+        {
+            return false;
+        }
+
+        if( mt::equal_f_z( m_graveyardTime ) == true )
+        {
+            return false;
+        }
+
+        m_count++;
+
+        RenderTextureGraveEntry entry;
+
+        entry.category = fileGroup;
+        entry.filePath = filePath;
+
+        entry.image = _texture->getImage();
+        entry.width = _texture->getWidth();
+        entry.height = _texture->getHeight();
+
+        entry.timing = m_graveyardTime;
+
+        m_textures.emplace_back( entry );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderTextureInterfacePtr GraveyardService::resurrectTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath )
+    {
+        if( _filePath.empty() == true )
+        {
+            return nullptr;
+        }
+
+        if( mt::equal_f_z( m_graveyardTime ) == true )
+        {
+            return nullptr;
+        }
+
+		VectorTextureGrave::iterator it_found = std::find_if(m_textures.begin(), m_textures.end(), [&_fileGroup, &_filePath](const RenderTextureGraveEntry & _entry)
+		{
+			if( _entry.category != _fileGroup )
+			{
+				return false;
+			}
+
+			if( _entry.filePath != _filePath )
+			{
+				return false;
+			}
+
+			return true;
+		});
+
+        if( it_found == m_textures.end() )
+        {
+            return nullptr;
+        }
+
+        --m_count;
+
+        RenderTextureGraveEntry & entry = *it_found;
+
+        RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
+            ->createRenderTexture( entry.image, entry.width, entry.height );
+
+        entry.image = nullptr;
+
+        *it_found = m_textures.back();
+        m_textures.pop_back();
+
+        return texture;
+    }
+}

@@ -30,10 +30,6 @@
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
-
-#include "Watchdog.h"
-
-
 #include "Kernel/Scene.h"
 
 #include "Kernel/FactoryDefault.h"

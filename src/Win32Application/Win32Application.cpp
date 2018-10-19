@@ -91,9 +91,9 @@ SERVICE_EXTERN( RenderMaterialService );
 SERVICE_EXTERN( RenderTextureService );
 SERVICE_EXTERN( ResourceService );
 SERVICE_EXTERN( TextService );
-SERVICE_EXTERN( Watchdog );
+SERVICE_EXTERN( WatchdogService );
 SERVICE_EXTERN( ProfilerService );
-SERVICE_EXTERN( Graveyard );
+SERVICE_EXTERN( GraveyardService );
 SERVICE_EXTERN( PackageService );
 SERVICE_EXTERN( UserdataService );
 SERVICE_EXTERN( PlayerService );
@@ -691,9 +691,9 @@ namespace Mengine
 
         SERVICE_CREATE( ResourceService );
         SERVICE_CREATE( TextService );
-        SERVICE_CREATE( Watchdog );
+        SERVICE_CREATE( WatchdogService );
         SERVICE_CREATE( ProfilerService );
-        SERVICE_CREATE( Graveyard );
+        SERVICE_CREATE( GraveyardService );
         SERVICE_CREATE( PackageService );
         SERVICE_CREATE( UserdataService );
         SERVICE_CREATE( PlayerService );

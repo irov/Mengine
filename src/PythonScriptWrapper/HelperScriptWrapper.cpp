@@ -12,6 +12,7 @@
 #include "Interface/ConfigInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/AccountInterface.h"
+#include "Interface/WatchdogInterface.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
@@ -35,8 +36,6 @@
 #include "Kernel/Logger.h"
 
 #include "Engine/ResourceImageSequence.h"
-
-#include "Engine/Watchdog.h"
 
 #include <ctime>
 #include <iomanip>

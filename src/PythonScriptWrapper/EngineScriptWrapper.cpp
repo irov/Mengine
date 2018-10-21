@@ -625,7 +625,7 @@ namespace Mengine
                 {
                     if( _scene == nullptr )
                     {
-                        m_cb.call_args( pybind::ret_none(), _enable, m_args );
+                        m_cb.call_args( nullptr, _enable, m_args );
                     }
                     else
                     {
@@ -1380,7 +1380,7 @@ namespace Mengine
             Helper::utf8ToUnicode( _path, unicode_path );
 
             bool result = PLATFORM_SERVICE()
-                ->removeFile( unicode_path );
+                ->removeFile( unicode_path.c_str() );
 
             return result;
         }
@@ -3306,7 +3306,7 @@ namespace Mengine
             if( GAME_SERVICE()
                 ->hasParam( _paramName ) == false )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const WString & val = GAME_SERVICE()
@@ -3320,7 +3320,7 @@ namespace Mengine
             if( GAME_SERVICE()
                 ->hasParam( _paramName ) == false )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const WString & val = GAME_SERVICE()
@@ -3337,7 +3337,7 @@ namespace Mengine
             if( GAME_SERVICE()
                 ->hasParam( _paramName ) == false )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const WString & val = GAME_SERVICE()
@@ -3356,7 +3356,7 @@ namespace Mengine
             if( GAME_SERVICE()
                 ->hasParam( _paramName ) == false )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const WString & val = GAME_SERVICE()
@@ -3367,7 +3367,7 @@ namespace Mengine
 
             bool b_value = value != 0;
 
-            return pybind::ret_bool( b_value );
+            return _kernel->ret_bool( b_value );
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_openUrlInDefaultBrowser( const WString & _url )

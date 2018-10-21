@@ -38,7 +38,7 @@ namespace Mengine
 
                 if( _self == nullptr )
                 {
-                    return pybind::ret_none();
+                    return _kernel->ret_none();
                 }
 
                 pybind::bindable * bindable = static_cast<pybind::bindable *>(_self);

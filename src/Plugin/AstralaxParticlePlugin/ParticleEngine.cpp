@@ -63,8 +63,7 @@ namespace Mengine
     {
         if( m_available == false )
         {
-            LOGGER_ERROR( "ParticleEngine2::createEmitterContainerFromFile Particle Engine not available"
-            );
+            LOGGER_ERROR( "Particle Engine not available" );
 
             return nullptr;
         }
@@ -74,7 +73,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ParticleEngine2::createEmitterContainerFromFile can't open file %s:%s"
+            LOGGER_ERROR( "can't open file %s:%s"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
             );
@@ -87,7 +86,7 @@ namespace Mengine
 
         if( container == nullptr )
         {
-            LOGGER_ERROR( "ParticleEngine2::createEmitterContainerFromFile can't create emitter container '%s:%s'"
+            LOGGER_ERROR( "can't create emitter container '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
             );

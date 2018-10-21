@@ -34,7 +34,7 @@ namespace Mengine
 
         if( memory == nullptr )
         {
-            LOGGER_ERROR( "AstralaxEmitterContainer2::initialize: invalid get data"
+            LOGGER_ERROR( "invalid get data"
             );
 
             return false;
@@ -84,7 +84,7 @@ namespace Mengine
     {
         if( Magic_HasTextures( m_mf ) == true )
         {
-            LOGGER_ERROR( "AstralaxEmitterContainer2::isValid: particle textures are stored within the file"
+            LOGGER_ERROR( "particle textures are stored within the file"
             );
 
             return false;
@@ -122,7 +122,7 @@ namespace Mengine
             return image;
         }
 
-        LOGGER_ERROR( "AstralaxEmitterContainer2::getAtlasResourceImage: not found atlas %s"
+        LOGGER_ERROR( "not found atlas %s"
             , _file
         );
 
@@ -137,7 +137,7 @@ namespace Mengine
 
         if( mf == MAGIC_ERROR )
         {
-            LOGGER_ERROR( "AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory (alredy open)"
+            LOGGER_ERROR( "invalid open file in memory (alredy open)"
             );
 
             return false;
@@ -145,7 +145,7 @@ namespace Mengine
 
         if( mf == MAGIC_UNKNOWN )
         {
-            LOGGER_ERROR( "AstralaxParticleSystem::createEmitterContainerFromMemory invalid open file in memory (invalid format or version)"
+            LOGGER_ERROR( "invalid open file in memory (invalid format or version)"
             );
 
             return false;
@@ -173,7 +173,7 @@ namespace Mengine
                 } 
                 catch( const std::exception & _ex )
                 {
-                    LOGGER_ERROR( "AstralaxEmitterContainer2::initialEmitterId invalid load emitter %s (catch exception '%s')"
+                    LOGGER_ERROR( "invalid load emitter %s (catch exception '%s')"
                         , magicName
                         , _ex.what()
                     );
@@ -183,7 +183,7 @@ namespace Mengine
 
                 if( id == 0 )
                 {
-                    LOGGER_ERROR( "AstralaxEmitterContainer2::initialEmitterId invalid load emitter %s"
+                    LOGGER_ERROR( "invalid load emitter %s"
                         , magicName
                     );
 
@@ -210,7 +210,7 @@ namespace Mengine
             magicName = Magic_FindNext( m_mf, &find );
         }
 
-        LOGGER_ERROR( "AstralaxEmitterContainer2::initialEmitterId not found emitter"
+        LOGGER_ERROR( "not found emitter"
         );
 
         return 0;

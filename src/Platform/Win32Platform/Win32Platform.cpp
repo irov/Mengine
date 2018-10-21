@@ -1,6 +1,5 @@
 #include "Win32Platform.h"
 
-#include "Interface/WindowsLayerInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/InputSystemInterface.h"
@@ -10,9 +9,10 @@
 #include "Interface/TimerInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "Utils/WIN32/WindowsIncluder.h"
-
+#include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
+
+#include "Utils/WIN32/WindowsIncluder.h"
 
 #include <cstdio>
 #include <clocale>
@@ -88,7 +88,7 @@ namespace Mengine
             , (uint32_t)(mem_st.ullAvailPageFile / 1024UL)
         );
 
-        if( WINDOWSLAYER_SERVICE()->setProcessDPIAware() == false )
+        if( this->setProcessDPIAware() == false )
         {
             LOGGER_ERROR( "Application not setup Process DPI Aware"
             );
@@ -193,16 +193,19 @@ namespace Mengine
 
         if( m_hWnd != NULL )
         {
-            WINDOWSLAYER_SERVICE()
-                ->destroyWindow( m_hWnd );
+            ::CloseWindow( m_hWnd );
+            ::DestroyWindow( m_hWnd );
 
             m_hWnd = NULL;
         }
 
         if( m_hInstance != NULL )
         {
-            WINDOWSLAYER_SERVICE()
-                ->unregisterClass( MENGINE_WINDOW_CLASSNAME, m_hInstance );
+            if( ::UnregisterClass( MENGINE_WINDOW_CLASSNAME, m_hInstance ) == FALSE )
+            {
+                LOGGER_ERROR( "Win32Platform::_finalizeService invalid UnregisterClass '%s'"
+                    , MENGINE_WINDOW_CLASSNAME );
+            }
 
             m_hInstance = NULL;
         }
@@ -214,6 +217,39 @@ namespace Mengine
             delete m_fpsMonitor;
             m_fpsMonitor = nullptr;
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::setProcessDPIAware()
+    {
+        HMODULE hUser32 = ::LoadLibrary( L"user32.dll" );
+
+        if( hUser32 == NULL )
+        {
+            return false;
+        }
+
+        typedef BOOL( WINAPI *PSETPROCESSDPIAWARE )(VOID);
+
+        FARPROC pSetProcessDPIAware =
+            ::GetProcAddress( hUser32, "SetProcessDPIAware" );
+
+        if( pSetProcessDPIAware == NULL )
+        {
+            ::FreeLibrary( hUser32 );
+
+            return false;
+        }
+
+        if( pSetProcessDPIAware() == FALSE )
+        {
+            ::FreeLibrary( hUser32 );
+
+            return false;
+        }
+
+        ::FreeLibrary( hUser32 );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::update()
@@ -234,8 +270,12 @@ namespace Mengine
                 float frameTime = TIMER_SERVICE()
                     ->getDeltaTime();
 
-                WINDOWSLAYER_SERVICE()
-                    ->updateMessage( NULL );
+                MSG  msg;
+                while( ::PeekMessage( &msg, NULL, 0U, 0U, PM_REMOVE ) == TRUE )
+                {
+                    ::TranslateMessage( &msg );
+                    ::DispatchMessage( &msg );
+                }
 
                 m_update = true;
 
@@ -308,8 +348,8 @@ namespace Mengine
 
         if( m_hWnd != NULL )
         {
-            WINDOWSLAYER_SERVICE()
-                ->destroyWindow( m_hWnd );
+            ::CloseWindow( m_hWnd );
+            ::DestroyWindow( m_hWnd );
 
             m_hWnd = NULL;
         }
@@ -594,8 +634,7 @@ namespace Mengine
             return input_result;
         }
 
-        LRESULT result = WINDOWSLAYER_SERVICE()
-            ->defWindowProc( hWnd, uMsg, wParam, lParam );
+        LRESULT result = ::DefWindowProc( hWnd, uMsg, wParam, lParam );
 
         return result;
     }
@@ -924,6 +963,29 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
+    ATOM Win32Platform::registerClass_( WNDPROC _wndProc, int _clsExtra, int _wndExtra
+        , HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
+        , const WChar * _className )
+    {
+        WNDCLASS wc;
+        ::ZeroMemory( &wc, sizeof( WNDCLASS ) );
+        wc.cbClsExtra = _clsExtra;
+        wc.cbWndExtra = _wndExtra;
+        wc.style = /*CS_DBLCLKS |*/ CS_OWNDC | CS_HREDRAW | CS_VREDRAW;
+        wc.lpfnWndProc = _wndProc;
+        wc.hInstance = _hInstance;
+
+        wc.hIcon = LoadIcon( _hInstance, MAKEINTRESOURCEW( _hIcon ) );
+        wc.hCursor = LoadCursor( NULL, MAKEINTRESOURCEW( 32512 ) );
+
+        wc.lpszClassName = _className;
+        wc.hbrBackground = _hbrBackground;
+
+        ATOM atom = ::RegisterClass( &wc );
+
+        return atom;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createWindow( const Resolution & _resolution, bool _fullscreen )
     {
         bool alreadyRunning = CONFIG_VALUE( "Game", "AlreadyRunning", true );
@@ -946,7 +1008,7 @@ namespace Mengine
         HBRUSH black_brush = (HBRUSH)GetStockObject( BLACK_BRUSH );
 
         // Register the window class		
-        ATOM result = WINDOWSLAYER_SERVICE()->registerClass(
+        ATOM result = this->registerClass_(
             s_wndProc,
             0,
             0,
@@ -971,10 +1033,10 @@ namespace Mengine
         DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
         //DWORD exStyle = 0;
 
-        m_hWnd = WINDOWSLAYER_SERVICE()
-            ->createWindowEx( exStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle.c_str(), dwStyle
-                , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
-                , NULL, NULL, m_hInstance, (LPVOID)this );
+        m_hWnd = ::CreateWindowEx( exStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle.c_str()
+            , dwStyle
+            , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
+            , NULL, NULL, m_hInstance, (LPVOID)this );
 
         if( m_hWnd == NULL )
         {
@@ -1050,19 +1112,15 @@ namespace Mengine
 
         RECT rc = this->getWindowsRect_( m_windowResolution, _fullscreen );
 
-        DWORD dwExStyle = WINDOWSLAYER_SERVICE()
-            ->getWindowLong( m_hWnd, GWL_EXSTYLE );
+        LONG dwExStyle = ::GetWindowLong( m_hWnd, GWL_EXSTYLE );
 
         if( _fullscreen == false )
         {
             // When switching back to windowed mode, need to reset window size 
             // after device has been restored
 
-            WINDOWSLAYER_SERVICE()
-                ->setWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle & (~WS_EX_TOPMOST) );
-
-            WINDOWSLAYER_SERVICE()
-                ->setWindowLong( m_hWnd, GWL_STYLE, dwStyle );
+            ::SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle & (~WS_EX_TOPMOST) );
+            ::SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
 
             ::SetWindowPos(
                 m_hWnd
@@ -1076,11 +1134,8 @@ namespace Mengine
         }
         else
         {
-            WINDOWSLAYER_SERVICE()
-                ->setWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle | WS_EX_TOPMOST );
-
-            WINDOWSLAYER_SERVICE()
-                ->setWindowLong( m_hWnd, GWL_STYLE, dwStyle );
+            ::SetWindowLong( m_hWnd, GWL_EXSTYLE, dwExStyle | WS_EX_TOPMOST );
+            ::SetWindowLong( m_hWnd, GWL_STYLE, dwStyle );
 
             ::SetWindowPos(
                 m_hWnd
@@ -1453,13 +1508,39 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::removeFile( const WString & _path )
+    bool Win32Platform::existFile( const WChar * _path )
+    {
+        WChar pathCorrect[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslash( pathCorrect, _path );
+
+        size_t len = wcslen( pathCorrect );
+        if( len == 0 )	// current dir
+        {
+            return true;
+        }
+
+        if( pathCorrect[len - 1] == L':' )	// root dir
+        {
+            return true;	// let it be
+        }
+
+        DWORD attributes = GetFileAttributes( pathCorrect );
+
+        if( attributes == INVALID_FILE_ATTRIBUTES )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::removeFile( const WChar * _path )
     {
         WChar userPath[MENGINE_MAX_PATH];
         this->getUserPath( userPath, MENGINE_MAX_PATH );
 
         WChar pathCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
+        Helper::pathCorrectBackslash( pathCorrect, _path );
 
         WChar fullPath[MENGINE_MAX_PATH];
         wcscpy( fullPath, userPath );
@@ -1487,20 +1568,163 @@ namespace Mengine
         return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WString & _path, const WString & _file, const void * _data, size_t _size )
+    {
+        WChar szPath[MENGINE_MAX_PATH] = { 0 };
+
+        PathAppend( szPath, _userPath );
+
+        WChar pathCorrect[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
+
+        WChar fileCorrect[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslash( fileCorrect, _file.c_str() );
+
+        PathAppend( szPath, pathCorrect );
+
+        if( this->existFile( szPath ) == false )
+        {
+            if( this->createDirectory( szPath ) == false )
+            {
+                LOGGER_ERROR( "Win32Platform::createDirectoryUser_: %ls:%ls invalid createDirectory %s"
+                    , pathCorrect
+                    , fileCorrect
+                    , szPath
+                );
+
+                return false;
+            }
+        }
+
+        PathAppend( szPath, fileCorrect );
+
+        HANDLE hFile = ::CreateFile( szPath, GENERIC_WRITE, FILE_SHARE_READ | FILE_SHARE_WRITE, NULL,
+            CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, NULL );
+
+        if( hFile == INVALID_HANDLE_VALUE )
+        {
+            LOGGER_ERROR( "Win32Platform::createDirectoryUser_: %ls:%ls invalid createFile %s"
+                , pathCorrect
+                , fileCorrect
+                , szPath
+            );
+
+            return false;
+        }
+
+        DWORD bytesWritten = 0;
+        BOOL result = ::WriteFile( hFile, _data, (DWORD)_size, &bytesWritten, NULL );
+
+        ::CloseHandle( hFile );
+
+        if( result == FALSE )
+        {
+            LOGGER_ERROR( "Win32Platform::createDirectoryUser_: %ls:%ls invalid writeFile %s"
+                , pathCorrect
+                , fileCorrect
+                , szPath
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
     {
-        bool successful = WINDOWSLAYER_SERVICE()
-            ->createDirectoryUserPicture( _path, _file, _data, _size );
+        WCHAR szPath[MENGINE_MAX_PATH];
 
-        return successful;
+        if( FAILED( SHGetFolderPath( NULL
+            , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
+            , NULL
+            , 0
+            , szPath ) ) )
+        {
+            LOGGER_ERROR( "Win32Platform::createDirectoryUserPicture: '%ls:%ls' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+                , _path.c_str()
+                , _file.c_str()
+            );
+
+            return false;
+        }
+
+        if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
+        {
+            LOGGER_ERROR( "Win32Platform::createDirectoryUserPicture: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
+                , _path.c_str()
+                , _file.c_str()
+                , szPath
+            );
+
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
     {
-        bool successful = WINDOWSLAYER_SERVICE()
-            ->createDirectoryUserMusic( _path, _file, _data, _size );
+        WCHAR szPath[MENGINE_MAX_PATH];
 
-        return successful;
+        if( FAILED( SHGetFolderPath( NULL
+            , CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE
+            , NULL
+            , 0
+            , szPath ) ) )
+        {
+            LOGGER_ERROR( "Win32Platform::createDirectoryUserMusic: %ls:%ls invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
+                , _path.c_str()
+                , _file.c_str()
+            );
+
+            return false;
+        }
+
+        if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
+        {
+            LOGGER_ERROR( "Win32Platform::createDirectoryUserMusic: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
+                , _path.c_str()
+                , _file.c_str()
+                , szPath
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::getErrorMessage( uint32_t _messageId, WString & _out ) const
+    {
+        LPTSTR errorText = NULL;
+        if( FormatMessage(
+            // use system message tables to retrieve error text
+            FORMAT_MESSAGE_FROM_SYSTEM
+            // allocate buffer on local heap for error text
+            | FORMAT_MESSAGE_ALLOCATE_BUFFER
+            // Important! will fail otherwise, since we're not 
+            // (and CANNOT) pass insertion parameters
+            | FORMAT_MESSAGE_IGNORE_INSERTS,
+            NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
+            _messageId,
+            MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
+            (LPTSTR)&errorText,  // output 
+            0, // minimum size for output buffer
+            NULL ) == 0 )
+        {
+            _out.clear();
+
+            return false;
+        }
+        else
+        {
+            _out = errorText;
+
+            LocalFree( errorText );
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::getDesktopResolution( Resolution & _resolution ) const
@@ -1582,20 +1806,34 @@ namespace Mengine
 
             if( hr != S_OK )
             {
-                WString msg;
-
-                if( WINDOWSLAYER_SERVICE()->makeFormatMessage( hr, msg ) == false )
+                LPTSTR errorText = NULL;
+                if( FormatMessage(
+                    // use system message tables to retrieve error text
+                    FORMAT_MESSAGE_FROM_SYSTEM
+                    // allocate buffer on local heap for error text
+                    | FORMAT_MESSAGE_ALLOCATE_BUFFER
+                    // Important! will fail otherwise, since we're not 
+                    // (and CANNOT) pass insertion parameters
+                    | FORMAT_MESSAGE_IGNORE_INSERTS,
+                    NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
+                    hr,
+                    MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
+                    (LPTSTR)&errorText,  // output 
+                    0, // minimum size for output buffer
+                    NULL ) == 0 )
                 {
-                    LOGGER_ERROR( "SHGetSpecialFolderLocation invalid %d"
+                    LOGGER_ERROR( "SHGetSpecialFolderLocation invalid '%d'"
                         , hr
                     );
                 }
                 else
                 {
-                    LOGGER_ERROR( "SHGetSpecialFolderLocation invalid %ls '%d'"
-                        , msg.c_str()
+                    LOGGER_ERROR( "SHGetSpecialFolderLocation invalid '%ls' '%d'"
+                        , errorText
                         , hr
                     );
+
+                    LocalFree( errorText );
                 }
 
                 return false;

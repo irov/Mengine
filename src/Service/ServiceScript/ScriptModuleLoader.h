@@ -20,7 +20,7 @@ namespace Mengine
         ~ScriptModuleLoader() override;
 
     public:
-        void setModule( PyObject * _module );
+        void setModule( pybind::kernel_interface * _kernel, PyObject * _module );
         PyObject * getModule() const;
 
     public:
@@ -30,9 +30,10 @@ namespace Mengine
         void setPackagePath( bool _packagePath );
 
     public:
-        virtual PyObject * load_module( PyObject * _module ) = 0;
+        virtual PyObject * load_module( pybind::kernel_interface * _kernel, PyObject * _module ) = 0;
 
     protected:
+        pybind::kernel_interface * m_kernel;
         PyObject * m_module;
 
         FileGroupInterfacePtr m_group;

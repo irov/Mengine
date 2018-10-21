@@ -113,7 +113,7 @@ namespace Mengine
             bool enable;
             if( _movie->getEnableMovieLayer( _name, enable ) == false )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             return pybind::ptr( _kernel, enable );
@@ -921,7 +921,7 @@ namespace Mengine
 
             if( _kwds == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
@@ -952,7 +952,7 @@ namespace Mengine
             }
 #endif
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
         static bool ResourceMovie_hasLayer( ResourceMovie * _movie, const ConstString & _name )
@@ -1233,7 +1233,7 @@ namespace Mengine
                     , resourceMovieName.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const MovieLayer * layer;
@@ -1244,7 +1244,7 @@ namespace Mengine
                     , _slotName.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             PyObject * py_position = pybind::ptr( _kernel, layer->position );
@@ -1330,7 +1330,7 @@ namespace Mengine
         {
             if( _resource == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             pybind::dict py_dict_result( _kernel );

@@ -13,8 +13,6 @@
 
 #include "math/box2.h"
 
-#include "pybind/system.hpp"
-
 #include <algorithm>
 
 namespace Mengine
@@ -1263,7 +1261,7 @@ namespace Mengine
     float TextField::calcLinesOffset( float _lineOffset, const TextFontInterfacePtr & _font ) const
     {
         float fontAscent = _font->getFontAscent();
-        float fontDescent = _font->getFontDescent();
+        //float fontDescent = _font->getFontDescent();
         float fontHeight = _font->getFontHeight();
         float fontBearingYA = _font->getFontBearingYA();
 

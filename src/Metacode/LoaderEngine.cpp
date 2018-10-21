@@ -9,6 +9,7 @@
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "metabuf/Metadata.hpp"
 #include "Metacode.h"

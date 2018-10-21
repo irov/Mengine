@@ -76,6 +76,16 @@ namespace Mengine
         virtual void removeGlobalModule( const Char * _name ) = 0;
 
     public:
+        template<class T>
+        void addGlobalModuleT( const Char * _name, const T & _value )
+        {
+            pybind::kernel_interface * kernel = this->getKernel();
+
+            PyObject * py_value = pybind::ptr( kernel, _value );
+            this->addGlobalModule( _name, py_value );
+        }
+
+    public:
         virtual PyObject * loadModuleSource( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) = 0;
         virtual PyObject * loadModuleBinary( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) = 0;
 

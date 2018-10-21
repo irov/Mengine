@@ -74,7 +74,7 @@ namespace Mengine
         PyObject * loadModuleBinary( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) override;
 
     public:
-        static void handleException();
+        void handleException();
 
     private:
         pybind::kernel_interface * m_kernel;

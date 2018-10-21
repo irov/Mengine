@@ -546,38 +546,38 @@ namespace Mengine
         bool developmentMode = HAS_OPTION( "dev" );
 
         SCRIPT_SERVICE()
-            ->addGlobalModule( "_DEVELOPMENT", pybind::get_bool( developmentMode ) );
+            ->addGlobalModuleT( "_DEVELOPMENT", developmentMode );
 
 #ifndef NDEBUG
         SCRIPT_SERVICE()
-            ->addGlobalModule( "_DEBUG", pybind::get_bool( true ) );
+            ->addGlobalModuleT( "_DEBUG", true );
 #else
         SCRIPT_SERVICE()
-            ->addGlobalModule( "_DEBUG", pybind::get_bool( false ) );
+            ->addGlobalModuleT( "_DEBUG", false );
 #endif
 
 #ifdef WIN32
         SCRIPT_SERVICE()
-            ->addGlobalModule( "_WIN32", pybind::get_bool( true ) );
+            ->addGlobalModuleT( "_WIN32", true );
 #else
         SCRIPT_SERVICE()
-            ->addGlobalModule( "_WIN32", pybind::get_bool( false ) );
+            ->addGlobalModuleT( "_WIN32", false );
 #endif
 
 #ifdef __ANDROID__
         SCRIPT_SERVICE()
-            ->addGlobalModule( "_ANDROID", pybind::get_bool( true ) );
+            ->addGlobalModuleT( "_ANDROID", true );
 #else
         SCRIPT_SERVICE()
-            ->addGlobalModule( "_ANDROID", pybind::get_bool( false ) );
+            ->addGlobalModuleT( "_ANDROID", false );
 #endif
 
 #ifdef MENGINE_MASTER_RELEASE
         SCRIPT_SERVICE()
-            ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool( true ) );
+            ->addGlobalModuleT( "_MASTER_RELEASE", true );
 #else
         SCRIPT_SERVICE()
-            ->addGlobalModule( "_MASTER_RELEASE", pybind::get_bool( false ) );
+            ->addGlobalModuleT( "_MASTER_RELEASE", false );
 #endif
 
         if( SCRIPT_SERVICE()

@@ -30,7 +30,7 @@ namespace Mengine
 
             if( _kwds == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
@@ -47,7 +47,7 @@ namespace Mengine
                 {
                     String k = it.key();
 
-                    LOGGER_ERROR( "ParticleEmitter2::setEventListener invalid kwds '%s'\n"
+                    LOGGER_ERROR( "invalid kwds '%s'\n"
                         , k.c_str()
                     );
                 }
@@ -56,7 +56,7 @@ namespace Mengine
             }
 #endif
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
     }
     //////////////////////////////////////////////////////////////////////////

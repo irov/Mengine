@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/WindowsLayerInterface.h"
+#include "Interface/PluginInterface.h"
 
 #include "Kernel/ServantBase.h"
 

@@ -16,9 +16,10 @@ namespace Mengine
         ~ConstStringHolderPythonString();
 
     public:
-        void setPythonObject( PyObject * _value );
+        void setPythonObject( pybind::kernel_interface * _kernel, PyObject * _value );
 
     protected:
+        pybind::kernel_interface * m_kernel;
         PyObject * m_value;
     };
 }

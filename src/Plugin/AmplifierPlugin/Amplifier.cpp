@@ -95,7 +95,7 @@ namespace Mengine
 
         if( resourceMusic == nullptr )
         {
-            LOGGER_ERROR( "Amplifier::playMusic can't found resource '%s'"
+            LOGGER_ERROR( "can't found resource '%s'"
                 , _resourceMusic.c_str()
             );
 
@@ -126,7 +126,7 @@ namespace Mengine
 
         if( buffer == nullptr )
         {
-            LOGGER_ERROR( "Amplifier::playMusic can't load sample '%s'"
+            LOGGER_ERROR( "can't load sample '%s'"
                 , path.c_str()
             );
 
@@ -138,7 +138,7 @@ namespace Mengine
 
         if( soundEmitter == nullptr )
         {
-            LOGGER_ERROR( "Amplifier::playMusic can't create sound source '%s'"
+            LOGGER_ERROR( "can't create sound source '%s'"
                 , path.c_str()
             );
 
@@ -153,7 +153,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->setSourceVolume( soundEmitter, volume, 0.f, false ) == false )
         {
-            LOGGER_ERROR( "Amplifier::playMusic can't set sound '%s' volume '%f'"
+            LOGGER_ERROR( "can't set sound '%s' volume '%f'"
                 , path.c_str()
                 , volume
             );
@@ -164,7 +164,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->setPosMs( soundEmitter, _pos ) == false )
         {
-            LOGGER_ERROR( "Amplifier::playMusic can't set sound '%s' pos '%f'"
+            LOGGER_ERROR( "can't set sound '%s' pos '%f'"
                 , path.c_str()
                 , _pos
             );
@@ -175,7 +175,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->setLoop( soundEmitter, _looped ) == false )
         {
-            LOGGER_ERROR( "Amplifier::playMusic can't set sound '%s' lood '%d'"
+            LOGGER_ERROR( "can't set sound '%s' lood '%d'"
                 , path.c_str()
                 , _looped
             );
@@ -186,7 +186,7 @@ namespace Mengine
         if( SOUND_SERVICE()
             ->playEmitter( soundEmitter ) == false )
         {
-            LOGGER_ERROR( "Amplifier::playMusic '%s' invalid play %d"
+            LOGGER_ERROR( "sound emitter '%s' invalid play %d"
                 , path.c_str()
                 , soundEmitter->getId()
             );

@@ -71,7 +71,7 @@ namespace Mengine
 
         ConstString & cstr = *(ConstString*)_place;
 
-        if( pybind::string_check( _obj ) == true )
+        if( _kernel->string_check( _obj ) == true )
         {
             if( SCRIPT_SERVICE()
                 ->stringize( _obj, cstr ) == false )
@@ -81,7 +81,7 @@ namespace Mengine
 
             return true;
         }
-        else if( pybind::is_none( _obj ) == true )
+        else if( _kernel->is_none( _obj ) == true )
         {
             cstr = ConstString::none();
 
@@ -153,7 +153,7 @@ namespace Mengine
 
         FilePath & cstr = *(FilePath*)_place;
 
-        if( pybind::string_check( _obj ) == true )
+        if( _kernel->string_check( _obj ) == true )
         {
             if( SCRIPT_SERVICE()
                 ->stringize( _obj, cstr ) == false )
@@ -163,7 +163,7 @@ namespace Mengine
 
             return true;
         }
-        else if( pybind::is_none( _obj ) == true )
+        else if( _kernel->is_none( _obj ) == true )
         {
             cstr = FilePath(ConstString::none());
 

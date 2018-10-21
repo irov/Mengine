@@ -10,7 +10,6 @@
 #include "Interface/InputSystemInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/PrefetcherInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PackageInterface.h"
 
@@ -187,39 +186,39 @@ namespace Mengine
         {
             (void)_kwds;
 
-            size_t args_count = pybind::tuple_size( _args );
+            size_t args_count = _kernel->tuple_size( _args );
 
             VectorString cs_args;
             cs_args.reserve( args_count );
 
             for( uint32_t it = 0; it != args_count; ++it )
             {
-                PyObject * py_string = pybind::tuple_getitem( _args, it );
+                PyObject * py_string = _kernel->tuple_getitem( _args, it );
 
-                if( pybind::string_check( py_string ) == true )
+                if( _kernel->string_check( py_string ) == true )
                 {
                     String key;
                     if( pybind::extract_value( _kernel, py_string, key, false ) == false )
                     {
                         LOGGER_ERROR( "textfield_setTextFormatArgs %s invalid get str %s"
-                            , pybind::object_repr( py_string )
+                            , _kernel->object_repr( py_string )
                         );
 
-                        return pybind::ret_false();
+                        return _kernel->ret_false();
                     }
 
                     cs_args.emplace_back( key );
                 }
-                else if( pybind::unicode_check( py_string ) == true )
+                else if( _kernel->unicode_check( py_string ) == true )
                 {
                     WString key;
                     if( pybind::extract_value( _kernel, py_string, key, false ) == false )
                     {
                         LOGGER_ERROR( "textfield_setTextFormatArgs %s invalid get unicode %s"
-                            , pybind::object_repr( py_string )
+                            , _kernel->object_repr( py_string )
                         );
 
-                        return pybind::ret_false();
+                        return _kernel->ret_false();
                     }
 
                     String utf8_arg;
@@ -229,15 +228,15 @@ namespace Mengine
                 }
                 else
                 {
-                    const char * value = pybind::object_str( py_string );
+                    const char * value = _kernel->object_str( py_string );
 
                     if( value == nullptr )
                     {
                         LOGGER_ERROR( "textfield_setTextFormatArgs %s not suport arg %s"
-                            , pybind::object_repr( py_string )
+                            , _kernel->object_repr( py_string )
                         );
 
-                        return pybind::ret_false();
+                        return _kernel->ret_false();
                     }
 
                     cs_args.emplace_back( String( value ) );
@@ -246,7 +245,7 @@ namespace Mengine
 
             _textField->setTextFormatArgs( cs_args );
 
-            return pybind::ret_true();
+            return _kernel->ret_true();
         }
         //////////////////////////////////////////////////////////////////////////
         VectorWString s_TextField_getTextFormatArgs( TextField * _textField )
@@ -539,7 +538,7 @@ namespace Mengine
                 {
                     if( _scene == nullptr )
                     {
-                        m_cb.call_args( pybind::ret_none(), _enable, m_args );
+                        m_cb.call_args( nullptr, _enable, m_args );
                     }
                     else
                     {
@@ -587,7 +586,7 @@ namespace Mengine
 
             if( _kwds == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
@@ -614,7 +613,7 @@ namespace Mengine
             }
 #endif
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_SurfaceSound_setEventListener( pybind::kernel_interface * _kernel, SurfaceSound * _surface, PyObject * _args, PyObject * _kwds )
@@ -623,7 +622,7 @@ namespace Mengine
 
             if( _kwds == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
@@ -650,7 +649,7 @@ namespace Mengine
             }
 #endif
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonMeshEventReceiver
@@ -670,7 +669,7 @@ namespace Mengine
 
             if( _kwds == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
@@ -697,7 +696,7 @@ namespace Mengine
             }
 #endif
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonScriptHolderEventReceiver
@@ -722,7 +721,7 @@ namespace Mengine
 
             if( _kwds == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
@@ -750,7 +749,7 @@ namespace Mengine
             }
 #endif
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonHotSpotEventReceiver
@@ -835,7 +834,7 @@ namespace Mengine
 
             if( _kwds == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
@@ -873,20 +872,18 @@ namespace Mengine
             }
 #endif
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_HotSpot_removeEventListener( HotSpot * _node, PyObject * _args, PyObject * _kwds )
+        PyObject * s_HotSpot_removeEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
             (void)_kwds;
 
             _node->removeEvents();
 
-            return pybind::ret_none();
-        }
-
-        
+            return _kernel->ret_none();
+        }        
         //////////////////////////////////////////////////////////////////////////
         bool s_Node_isHomeless( Node * _node )
         {
@@ -2987,7 +2984,7 @@ namespace Mengine
                 .def( "getDefaultHandle", &HotSpot::getDefaultHandle )
                 .def( "isMousePickerOver", &HotSpot::isMousePickerOver )
                 .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_setEventListener )
-                .def_proxy_native( "removeEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_removeEventListener )
+                .def_proxy_native_kernel( "removeEventListener", nodeScriptMethod, &NodeScriptMethod::s_HotSpot_removeEventListener )
                 ;
 
             pybind::interface_<HotSpotPolygon, pybind::bases<HotSpot> >( kernel, "HotSpotPolygon", false )

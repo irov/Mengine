@@ -106,8 +106,9 @@ namespace Mengine
         if( py_type.is_type_class() == true )
         {
             PyObject * py_type_ptr = py_type.ptr();
+            pybind::kernel_interface * py_kernel = py_type.kernel();
 
-            if( pybind::type_initialize( py_type_ptr ) == false )
+            if( py_kernel->type_initialize( py_type_ptr ) == false )
             {
                 LOGGER_ERROR( "PythonPrototypeGenerator prototype %s invalid type initialize"
                     , m_category.c_str()

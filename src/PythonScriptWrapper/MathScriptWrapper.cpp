@@ -85,9 +85,9 @@ namespace Mengine
         {
             (void)_user;
 
-            if( pybind::tuple_check( _obj ) == true )
+            if( _kernel->tuple_check( _obj ) == true )
             {
-                size_t size = pybind::tuple_size( _obj );
+                size_t size = _kernel->tuple_size( _obj );
 
                 switch( size )
                 {
@@ -109,9 +109,9 @@ namespace Mengine
 
                 return true;
             }
-            else if( pybind::list_check( _obj ) == true )
+            else if( _kernel->list_check( _obj ) == true )
             {
-                size_t size = pybind::list_size( _obj );
+                size_t size = _kernel->list_size( _obj );
 
                 switch( size )
                 {
@@ -150,9 +150,9 @@ namespace Mengine
         {
             (void)_user;
 
-            if( pybind::tuple_check( _obj ) == true )
+            if( _kernel->tuple_check( _obj ) == true )
             {
-                size_t size = pybind::tuple_size( _obj );
+                size_t size = _kernel->tuple_size( _obj );
 
                 switch( size )
                 {
@@ -176,9 +176,9 @@ namespace Mengine
 
                 return true;
             }
-            else if( pybind::list_check( _obj ) == true )
+            else if( _kernel->list_check( _obj ) == true )
             {
-                size_t size = pybind::list_size( _obj );
+                size_t size = _kernel->list_size( _obj );
 
                 switch( size )
                 {
@@ -221,9 +221,9 @@ namespace Mengine
             (void)_kernel;
             (void)_user;
 
-            if( pybind::tuple_check( _obj ) == true )
+            if( _kernel->tuple_check( _obj ) == true )
             {
-                if( pybind::tuple_size( _obj ) != 4 )
+                if( _kernel->tuple_size( _obj ) != 4 )
                 {
                     return false;
                 }
@@ -235,9 +235,9 @@ namespace Mengine
 
                 return true;
             }
-            else if( pybind::list_check( _obj ) == true )
+            else if( _kernel->list_check( _obj ) == true )
             {
-                if( pybind::list_size( _obj ) != 4 )
+                if( _kernel->list_size( _obj ) != 4 )
                 {
                     return false;
                 }
@@ -258,9 +258,9 @@ namespace Mengine
             (void)_kernel;
             (void)_user;
 
-            if( pybind::tuple_check( _obj ) == true )
+            if( _kernel->tuple_check( _obj ) == true )
             {
-                if( pybind::tuple_size( _obj ) != 4 )
+                if( _kernel->tuple_size( _obj ) != 4 )
                 {
                     return false;
                 }
@@ -272,9 +272,9 @@ namespace Mengine
 
                 return true;
             }
-            else if( pybind::list_check( _obj ) == true )
+            else if( _kernel->list_check( _obj ) == true )
             {
-                if( pybind::list_size( _obj ) != 4 )
+                if( _kernel->list_size( _obj ) != 4 )
                 {
                     return false;
                 }
@@ -305,9 +305,9 @@ namespace Mengine
             (void)_kernel;
             (void)_user;
 
-            if( pybind::tuple_check( _obj ) == true )
+            if( _kernel->tuple_check( _obj ) == true )
             {
-                if( pybind::tuple_size( _obj ) != 4 )
+                if( _kernel->tuple_size( _obj ) != 4 )
                 {
                     return false;
                 }
@@ -319,9 +319,9 @@ namespace Mengine
 
                 return true;
             }
-            else if( pybind::list_check( _obj ) == true )
+            else if( _kernel->list_check( _obj ) == true )
             {
-                if( pybind::list_size( _obj ) != 4 )
+                if( _kernel->list_size( _obj ) != 4 )
                 {
                     return false;
                 }
@@ -342,7 +342,7 @@ namespace Mengine
             (void)_kernel;
             (void)_user;
 
-            if( pybind::list_check( _obj ) == false )
+            if( _kernel->list_check( _obj ) == false )
             {
                 return false;
             }
@@ -374,9 +374,9 @@ namespace Mengine
             (void)_kernel;
             (void)_user;
 
-            if( pybind::tuple_check( _obj ) == true )
+            if( _kernel->tuple_check( _obj ) == true )
             {
-                if( pybind::tuple_size( _obj ) == 4 )
+                if( _kernel->tuple_size( _obj ) == 4 )
                 {
                     float r = pybind::tuple_getitem_t( _kernel, _obj, 0 );
                     float g = pybind::tuple_getitem_t( _kernel, _obj, 1 );
@@ -385,7 +385,7 @@ namespace Mengine
 
                     _place->setRGBA( r, g, b, a );
                 }
-                else if( pybind::tuple_size( _obj ) == 3 )
+                else if( _kernel->tuple_size( _obj ) == 3 )
                 {
                     float r = pybind::tuple_getitem_t( _kernel, _obj, 0 );
                     float g = pybind::tuple_getitem_t( _kernel, _obj, 1 );
@@ -401,9 +401,9 @@ namespace Mengine
 
                 return true;
             }
-            else if( pybind::list_check( _obj ) == true )
+            else if( _kernel->list_check( _obj ) == true )
             {
-                if( pybind::list_size( _obj ) == 4 )
+                if( _kernel->list_size( _obj ) == 4 )
                 {
                     float r = pybind::list_getitem_t( _kernel, _obj, 0 );
                     float g = pybind::list_getitem_t( _kernel, _obj, 1 );
@@ -412,7 +412,7 @@ namespace Mengine
 
                     _place->setRGBA( r, g, b, a );
                 }
-                else if( pybind::list_size( _obj ) == 3 )
+                else if( _kernel->list_size( _obj ) == 3 )
                 {
                     float r = pybind::list_getitem_t( _kernel, _obj, 0 );
                     float g = pybind::list_getitem_t( _kernel, _obj, 1 );
@@ -437,9 +437,9 @@ namespace Mengine
             (void)_kernel;
             (void)_user;
 
-            if( pybind::tuple_check( _obj ) == true )
+            if( _kernel->tuple_check( _obj ) == true )
             {
-                if( pybind::tuple_size( _obj ) != 2 )
+                if( _kernel->tuple_size( _obj ) != 2 )
                 {
                     return false;
                 }
@@ -452,9 +452,9 @@ namespace Mengine
 
                 return true;
             }
-            else if( pybind::list_check( _obj ) == true )
+            else if( _kernel->list_check( _obj ) == true )
             {
-                if( pybind::list_size( _obj ) != 2 )
+                if( _kernel->list_size( _obj ) != 2 )
                 {
                     return false;
                 }
@@ -486,9 +486,9 @@ namespace Mengine
             (void)_kernel;
             (void)_user;
 
-            if( pybind::tuple_check( _obj ) == true )
+            if( _kernel->tuple_check( _obj ) == true )
             {
-                if( pybind::tuple_size( _obj ) != 2 )
+                if( _kernel->tuple_size( _obj ) != 2 )
                 {
                     return false;
                 }
@@ -496,13 +496,13 @@ namespace Mengine
                 mt::vec2f begin = pybind::tuple_getitem_t( _kernel, _obj, 0 );
                 mt::vec2f end = pybind::tuple_getitem_t( _kernel, _obj, 1 );
 
-                _place->initialize( begin, end );
+                _place->setRectangle( begin, end );
 
                 return true;
             }
-            else if( pybind::list_check( _obj ) == true )
+            else if( _kernel->list_check( _obj ) == true )
             {
-                if( pybind::list_size( _obj ) != 2 )
+                if( _kernel->list_size( _obj ) != 2 )
                 {
                     return false;
                 }
@@ -510,7 +510,7 @@ namespace Mengine
                 mt::vec2f begin = pybind::list_getitem_t( _kernel, _obj, 0 );
                 mt::vec2f end = pybind::list_getitem_t( _kernel, _obj, 1 );
 
-                _place->initialize( begin, end );
+                _place->setRectangle( begin, end );
 
                 return true;
             }
@@ -525,7 +525,7 @@ namespace Mengine
                 mt::vec2f end;
                 r.calcSize( end );
 
-                _place->initialize( begin, end );
+                _place->setRectangle( begin, end );
 
                 return true;
             }
@@ -548,9 +548,9 @@ namespace Mengine
             (void)_kernel;
             (void)_user;
 
-            if( pybind::tuple_check( _obj ) == true )
+            if( _kernel->tuple_check( _obj ) == true )
             {
-                if( pybind::tuple_size( _obj ) != 4 )
+                if( _kernel->tuple_size( _obj ) != 4 )
                 {
                     return false;
                 }
@@ -562,9 +562,9 @@ namespace Mengine
 
                 return true;
             }
-            else if( pybind::list_check( _obj ) == true )
+            else if( _kernel->list_check( _obj ) == true )
             {
-                if( pybind::list_size( _obj ) != 4 )
+                if( _kernel->list_size( _obj ) != 4 )
                 {
                     return false;
                 }

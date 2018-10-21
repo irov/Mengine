@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Interface/FileMappedStreamInterface.h"
-#include "Interface/WindowsLayerInterface.h"
 
 #include "Kernel/ServantBase.h"
+
+#include "Utils/WIN32/WindowsIncluder.h"
 
 namespace Mengine
 {

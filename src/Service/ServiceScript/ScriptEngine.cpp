@@ -43,8 +43,9 @@ namespace Mengine
             }
 
         public:
-            void begin_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
+            void begin_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
             {
+                (void)_kernel;
                 (void)_kwds;
                 (void)_args;
                 (void)_functionName;
@@ -61,7 +62,7 @@ namespace Mengine
                 m_counts.emplace_back( count );
             }
 
-            void end_bind_call( const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
+            void end_bind_call( pybind::kernel_interface * _kernel, const char * _className, const char * _functionName, PyObject * _args, PyObject * _kwds )
             {
                 (void)_kwds;
                 (void)_args;
@@ -98,14 +99,14 @@ namespace Mengine
                 );
 
                 bool exist;
-                PyObject * module_traceback = pybind::module_import( "traceback", exist );
+                PyObject * module_traceback = _kernel->module_import( "traceback", exist );
 
                 if( module_traceback == nullptr )
                 {
                     return;
                 }
 
-                pybind::call_method( module_traceback, "print_stack", "()" );
+                _kernel->call_method( module_traceback, "print_stack", "()" );
             }
 
         protected:
@@ -175,16 +176,16 @@ namespace Mengine
             , m_moduleMenge
         );
 
-        uint32_t python_version = pybind::get_python_version();
+        uint32_t python_version = kernel->get_python_version();
 
         this->addGlobalModule( "_PYTHON_VERSION"
             , pybind::ptr( m_kernel, python_version )
         );
 
-        pybind::set_currentmodule( m_moduleMenge );
+        kernel->set_currentmodule( m_moduleMenge );
 
         pybind::interface_<ScriptLogger>( m_kernel, "ScriptLogger", true )
-            .def_native( "write", &ScriptLogger::py_write )
+            .def_native_kernel( "write", &ScriptLogger::py_write )
             .def_property( "softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
             ;
 
@@ -192,23 +193,21 @@ namespace Mengine
 
         m_loggerWarning->setMessageLevel( LM_WARNING );
 
-        PyObject * py_logger = pybind::ptr( m_kernel, m_loggerWarning );
-        pybind::setStdOutHandle( py_logger );
-        pybind::decref( py_logger );
+        pybind::object py_logger = pybind::ptr_obj( m_kernel, m_loggerWarning );
+        kernel->setStdOutHandle( py_logger.ptr() );
 
         m_loggerError = new ScriptLogger();
 
         m_loggerError->setMessageLevel( LM_ERROR );
 
-        PyObject * py_loggerError = pybind::ptr( m_kernel, m_loggerError );
-        pybind::setStdErrorHandle( py_loggerError );
-        pybind::decref( py_loggerError );
+        pybind::object py_loggerError = pybind::ptr_obj( m_kernel, m_loggerError );
+        kernel->setStdErrorHandle( py_loggerError.ptr() );
 
         pybind::set_observer_bind_call( new My_observer_bind_call() );
 
         pybind::interface_<ScriptModuleFinder>( m_kernel, "ScriptModuleFinder", true )
-            .def( "find_module", &ScriptModuleFinder::find_module )
-            .def( "load_module", &ScriptModuleFinder::load_module )
+            .def_kernel( "find_module", &ScriptModuleFinder::find_module )
+            .def_kernel( "load_module", &ScriptModuleFinder::load_module )
             ;
 
         m_moduleFinder = new FactorableUnique<ScriptModuleFinder>();
@@ -221,13 +220,13 @@ namespace Mengine
             return false;
         }
 
-        PyObject * py_moduleFinder = pybind::ptr( m_kernel, m_moduleFinder );
+        pybind::object py_moduleFinder = pybind::ptr_obj( m_kernel, m_moduleFinder );
 
         m_moduleFinder->setEmbed( py_moduleFinder );
 
         //pybind::decref( m_moduleMenge );
 
-        pybind::_set_module_finder( py_moduleFinder );
+        kernel->set_module_finder( py_moduleFinder.ptr() );
 
         //bool gc_exist;
         //PyObject * gc = pybind::module_import( "gc", gc_exist );
@@ -241,7 +240,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::_finalizeService()
     {
-        pybind::_remove_module_finder();
+        m_kernel->remove_module_finder();
 
         this->removeGlobalModule( "Menge" );
         this->removeGlobalModule( "_PYTHON_VERSION" );
@@ -268,14 +267,14 @@ namespace Mengine
         delete m_loggerWarning;
         m_loggerWarning = nullptr;
 
-        pybind::setStdOutHandle( nullptr );
+        m_kernel->setStdOutHandle( nullptr );
 
         delete m_loggerError;
         m_loggerError = nullptr;
 
-        pybind::setStdErrorHandle( nullptr );
+        m_kernel->setStdErrorHandle( nullptr );
 
-        pybind::finalize();
+        m_kernel->finalize();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
 
@@ -496,13 +495,13 @@ namespace Mengine
 
         try
         {
-            PyObject * module = pybind::module_init( _name );
+            PyObject * module = m_kernel->module_init( _name );
 
             return module;
         }
         catch( ... )
         {
-            ScriptEngine::handleException();
+            this->handleException();
         }
 
         return nullptr;
@@ -515,11 +514,11 @@ namespace Mengine
 
         try
         {
-            py_module = pybind::module_import( _name.c_str(), exist );
+            py_module = m_kernel->module_import( _name.c_str(), exist );
         }
         catch( ... )
         {
-            ScriptEngine::handleException();
+            this->handleException();
 
             LOGGER_ERROR( "ScriptEngine: invalid import module '%s'(c-exception)"
                 , _name.c_str()
@@ -562,39 +561,39 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::setCurrentModule( PyObject * _module )
     {
-        pybind::set_currentmodule( _module );
+        m_kernel->set_currentmodule( _module );
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::addGlobalModule( const Char * _name, PyObject * _module )
     {
-        PyObject * builtins = pybind::get_builtins();
+        PyObject * builtins = m_kernel->get_builtins();
 
-        PyObject * dir_bltin = pybind::module_dict( builtins );
+        PyObject * dir_bltin = m_kernel->module_dict( builtins );
 
         pybind::dict_set_t( m_kernel, dir_bltin, _name, _module );
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::removeGlobalModule( const Char * _name )
     {
-        PyObject * builtins = pybind::get_builtins();
+        PyObject * builtins = m_kernel->get_builtins();
 
-        PyObject * dir_bltin = pybind::module_dict( builtins );
+        PyObject * dir_bltin = m_kernel->module_dict( builtins );
 
         pybind::dict_remove_t( m_kernel, dir_bltin, _name );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScriptEngine::stringize( PyObject * _object, ConstString & _cstr )
     {
-        if( pybind::string_check( _object ) == false )
+        if( m_kernel->string_check( _object ) == false )
         {
             LOGGER_ERROR( "ScriptEngine::stringize invalid stringize object %s"
-                , pybind::object_repr( _object )
+                , m_kernel->object_repr( _object )
             );
 
             return false;
         }
 
-        if( pybind::string_size( _object ) == 0 )
+        if( m_kernel->string_size( _object ) == 0 )
         {
             _cstr = ConstString::none();
 
@@ -603,7 +602,7 @@ namespace Mengine
 
         ConstStringHolderPythonString * holder = m_poolPythonString.createT();
 
-        holder->setPythonObject( (PyObject*)_object );
+        holder->setPythonObject( m_kernel, (PyObject*)_object );
 
         STRINGIZE_SERVICE()
             ->stringizeExternal( holder, _cstr );
@@ -662,7 +661,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptEngine::loadModuleSource( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _buffer )
     {
-        const char * str_moduleName = pybind::string_to_char( _moduleName );
+        const char * str_moduleName = m_kernel->string_to_char( _moduleName );
 
         if( _buffer == nullptr )
         {
@@ -671,20 +670,18 @@ namespace Mengine
 
         char * source_memory = _buffer->getBuffer();
 
-        PyObject * code = pybind::code_compile_file( source_memory, str_moduleName );
+        PyObject * code = m_kernel->code_compile_file( source_memory, str_moduleName );
 
         if( code == nullptr )
         {
-            pybind::check_error();
-
-            LOGGER_ERROR( "ScriptEngine::loadModuleSource %s invalid marshal get object"
-                , str_moduleName
+            m_kernel->error_message( "ScriptEngine::loadModuleSource %s invalid marshal get object"
+                , str_moduleName 
             );
 
             return nullptr;
         }
 
-        if( pybind::code_check( code ) == false )
+        if( m_kernel->code_check( code ) == false )
         {
             LOGGER_ERROR( "ScriptEngine::loadModuleSource %s marshal get object not code"
                 , str_moduleName
@@ -693,19 +690,19 @@ namespace Mengine
             return nullptr;
         }
 
-        PyObject * py_module = pybind::module_init( str_moduleName );
+        PyObject * py_module = m_kernel->module_init( str_moduleName );
 
-        PyObject * dict = pybind::module_dict( py_module );
+        PyObject * dict = m_kernel->module_dict( py_module );
 
         if( _packagePath == true )
         {
-            PyObject * py_packagePath = pybind::build_value( "[O]", _moduleName );
+            PyObject * py_packagePath = m_kernel->build_value( "[O]", _moduleName );
             pybind::dict_setstring_t( m_kernel, dict, "__path__", py_packagePath );
         }
 
-        PyObject * py_module_exec = pybind::module_execcode( str_moduleName, code );
+        PyObject * py_module_exec = m_kernel->module_execcode( str_moduleName, code );
 
-        pybind::decref( code );
+        m_kernel->decref( code );
 
         return py_module_exec;
     }
@@ -723,7 +720,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptEngine::loadModuleBinary( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _buffer )
     {
-        const char * str_moduleName = pybind::string_to_char( _moduleName );
+        const char * str_moduleName = m_kernel->string_to_char( _moduleName );
 
         if( _buffer == nullptr )
         {
@@ -734,7 +731,7 @@ namespace Mengine
         size_t code_size = _buffer->getSize();
 
         long file_magic = s_get_int( code_memory );
-        long py_magic = pybind::marshal_magic_number();
+        long py_magic = m_kernel->marshal_magic_number();
 
         if( file_magic != py_magic )
         {
@@ -747,20 +744,18 @@ namespace Mengine
             return nullptr;
         }
 
-        PyObject * code = pybind::marshal_get_object( (char *)code_memory + 8, code_size - 8 );
+        PyObject * code = m_kernel->marshal_get_object( (char *)code_memory + 8, code_size - 8 );
 
         if( code == nullptr )
         {
-            pybind::check_error();
-
-            LOGGER_ERROR( "ScriptEngine::loadModuleBinary %s invalid marshal get object"
+            m_kernel->error_message( "ScriptEngine::loadModuleBinary %s invalid marshal get object"
                 , str_moduleName
             );
 
             return nullptr;
         }
 
-        if( pybind::code_check( code ) == false )
+        if( m_kernel->code_check( code ) == false )
         {
             LOGGER_ERROR( "ScriptEngine::loadModuleBinary %s marshal get object not code"
                 , str_moduleName
@@ -769,7 +764,7 @@ namespace Mengine
             return nullptr;
         }
 
-        PyObject * py_module = pybind::module_init( str_moduleName );
+        PyObject * py_module = m_kernel->module_init( str_moduleName );
 
         if( py_module == nullptr )
         {
@@ -780,24 +775,24 @@ namespace Mengine
             return nullptr;
         }
 
-        PyObject * dict = pybind::module_dict( py_module );
+        PyObject * dict = m_kernel->module_dict( py_module );
 
         if( _packagePath == true )
         {
-            PyObject * py_packagePath = pybind::build_value( "[O]", _moduleName );
+            PyObject * py_packagePath = m_kernel->build_value( "[O]", _moduleName );
             pybind::dict_setstring_t( m_kernel, dict, "__path__", py_packagePath );
         }
 
-        PyObject * py_module_exec = pybind::module_execcode( str_moduleName, code );
+        PyObject * py_module_exec = m_kernel->module_execcode( str_moduleName, code );
 
-        pybind::decref( code );
+        m_kernel->decref( code );
 
         return py_module_exec;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptEngine::handleException()
     {
-        pybind::exception_filter();
+        m_kernel->exception_filter();
     }
     //////////////////////////////////////////////////////////////////////////
 }

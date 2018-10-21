@@ -15,6 +15,16 @@ namespace Mengine
     class ScriptablePrototypeGenerator
         : public FactoryPrototypeGenerator
     {
+    public:
+        ScriptablePrototypeGenerator()
+            : m_kernel( nullptr )
+        {
+        }
+
+        ~ScriptablePrototypeGenerator() override
+        {
+        }
+
     protected:
         typedef IntrusivePtr<Type> TypePtr;
 
@@ -27,6 +37,9 @@ namespace Mengine
     protected:
         FactoryPtr _initializeFactory() override
         {
+            m_kernel = SCRIPT_SERVICE()
+                ->getKernel();
+
             const ConstString & prototype = this->getPrototype();
 
             m_scriptWrapper = SCRIPT_SERVICE()
@@ -62,10 +75,13 @@ namespace Mengine
     protected:
         void setupScriptable( const ScriptablePtr & _scriptable )
         {
+            _scriptable->setKernel( m_kernel );
             _scriptable->setScriptWrapper( m_scriptWrapper );
         }
 
     protected:
+        pybind::kernel_interface * m_kernel;
+
         ScriptWrapperInterfacePtr m_scriptWrapper;
     };
 }

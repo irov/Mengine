@@ -17,7 +17,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ScriptModuleFinder::ScriptModuleFinder()
-        : m_embed( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -48,7 +47,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ScriptModuleFinder::finalize()
     {
-        pybind::decref( m_embed );
         m_embed = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModuleLoaderCode );
@@ -62,11 +60,9 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptModuleFinder::setEmbed( PyObject * _embed )
+    void ScriptModuleFinder::setEmbed( const pybind::object & _embed )
     {
-        pybind::decref( m_embed );
         m_embed = _embed;
-        pybind::incref( m_embed );
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptModuleFinder::addModulePath( const ConstString & _pack, const VectorConstString & _pathes )
@@ -117,7 +113,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleFinder::find_module( PyObject * _module, PyObject * _path )
+    PyObject * ScriptModuleFinder::find_module( pybind::kernel_interface * _kernel, PyObject * _module, PyObject * _path )
     {
         (void)_module;
         (void)_path;
@@ -126,15 +122,13 @@ namespace Mengine
         {
             ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoaderSource->createObject();
 
-            loaderSource->setModule( _module );
+            loaderSource->setModule( _kernel, _module );
 
-            if( this->find_module_source_( _module, loaderSource ) == true )
+            if( this->find_module_source_( _kernel, _module, loaderSource ) == true )
             {
                 m_loaders.emplace_back( loaderSource );
 
-                pybind::incref( m_embed );
-
-                return m_embed;
+                return m_embed.ret();
             }
         }
 #endif
@@ -142,42 +136,40 @@ namespace Mengine
         {
             ScriptModuleLoaderPtr loaderCode = m_factoryScriptModuleLoaderCode->createObject();
 
-            loaderCode->setModule( _module );
+            loaderCode->setModule( _kernel, _module );
 
-            if( this->find_module_code_( _module, loaderCode ) == true )
+            if( this->find_module_code_( _kernel, _module, loaderCode ) == true )
             {
                 m_loaders.emplace_back( loaderCode );
 
-                pybind::incref( m_embed );
-
-                return m_embed;
+                return m_embed.ret();
             }
         }
 
-        return pybind::ret_none();
+        return _kernel->ret_none();
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleFinder::load_module( PyObject * _module )
+    PyObject * ScriptModuleFinder::load_module( pybind::kernel_interface * _kernel, PyObject * _module )
     {
         ScriptModuleLoaderPtr loader = m_loaders.back();
         m_loaders.pop_back();
 
         PyObject * loader_module = loader->getModule();
 
-        if( loader_module != _module && pybind::test_equal( loader_module, _module ) == false )
+        if( loader_module != _module && _kernel->test_equal( loader_module, _module ) == false )
         {
             return nullptr;
         }
 
-        PyObject * py_code = loader->load_module( _module );
+        PyObject * py_code = loader->load_module( _kernel, _module );
 
         return py_code;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptModuleFinder::convertDotToSlash_( Char * _cache, uint32_t _cacheSize, PyObject * _module, uint32_t & _modulePathCacheLen )
+    bool ScriptModuleFinder::convertDotToSlash_( pybind::kernel_interface * _kernel, Char * _cache, uint32_t _cacheSize, PyObject * _module, uint32_t & _modulePathCacheLen )
     {
         uint32_t module_size;
-        const char * module_str = pybind::string_to_char_and_size( _module, module_size );
+        const char * module_str = _kernel->string_to_char_and_size( _module, module_size );
 
         if( stdex::memorycopy_safe( _cache, 0, _cacheSize, module_str, module_size ) == false )
         {
@@ -203,26 +195,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptModuleFinder::find_module_source_( PyObject * _module, const ScriptModuleLoaderPtr & _loader )
+    bool ScriptModuleFinder::find_module_source_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader )
     {
-        bool successful = this->find_module_( _module, _loader, ".py", sizeof( ".py" ) - 1, "__init__.py", sizeof( "__init__.py" ) - 1 );
+        bool successful = this->find_module_( _kernel, _module, _loader, ".py", sizeof( ".py" ) - 1, "__init__.py", sizeof( "__init__.py" ) - 1 );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptModuleFinder::find_module_code_( PyObject * _module, const ScriptModuleLoaderPtr &  _loader )
+    bool ScriptModuleFinder::find_module_code_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr &  _loader )
     {
-        bool successful = this->find_module_( _module, _loader, ".pyz", sizeof( ".pyz" ) - 1, "__init__.pyz", sizeof( "__init__.pyz" ) - 1 );
+        bool successful = this->find_module_( _kernel, _module, _loader, ".pyz", sizeof( ".pyz" ) - 1, "__init__.pyz", sizeof( "__init__.pyz" ) - 1 );
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptModuleFinder::find_module_( PyObject * _module, const ScriptModuleLoaderPtr & _loader, const Char * _ext, uint32_t _extN, const char * _init, uint32_t _extI )
+    bool ScriptModuleFinder::find_module_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader, const Char * _ext, uint32_t _extN, const char * _init, uint32_t _extI )
     {
         Char modulePathCache[MENGINE_MAX_PATH];
 
         uint32_t modulePathCacheLen;
-        if( this->convertDotToSlash_( modulePathCache, MENGINE_MAX_PATH, _module, modulePathCacheLen ) == false )
+        if( this->convertDotToSlash_( _kernel, modulePathCache, MENGINE_MAX_PATH, _module, modulePathCacheLen ) == false )
         {
             return false;
         }

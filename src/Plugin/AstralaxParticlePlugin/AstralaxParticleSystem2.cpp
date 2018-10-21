@@ -99,7 +99,7 @@ namespace Mengine
 
         if( container == nullptr )
         {
-            LOGGER_ERROR( "AstralaxParticleSystem::createEmitterContainerFromMemory '%s' invalid create container"
+            LOGGER_ERROR( "'%s' invalid create container"
                 , _whoName.c_str()
             );
 
@@ -108,7 +108,7 @@ namespace Mengine
 
         if( container->initialize( _stream, _archivator ) == false )
         {
-            LOGGER_ERROR( "AstralaxParticleSystem::createEmitterContainerFromMemory '%s' invalid initialize container"
+            LOGGER_ERROR( "'%s' invalid initialize container"
                 , _whoName.c_str()
             );
 
@@ -217,7 +217,7 @@ namespace Mengine
             MAGIC_MATERIAL m;
             if( Magic_GetMaterial( i, &m ) != MAGIC_SUCCESS )
             {
-                LOGGER_ERROR( "AstralaxParticleSystem2::updateMaterial invalid get material %d"
+                LOGGER_ERROR( "invalid get material %d"
                     , i
                 );
 
@@ -360,7 +360,7 @@ namespace Mengine
 
         if( atlases_size <= (VectorAtlasDesc::size_type)_index )
         {
-            LOGGER_ERROR( "AstralaxParticleSystem2::getResourceImage index %d but size is %d"
+            LOGGER_ERROR( "index %d but size is %d"
                 , _index
                 , atlases_size
             );
@@ -954,7 +954,7 @@ namespace Mengine
 
         if( fragmentShader == nullptr )
         {
-            LOGGER_ERROR( "AstralaxParticleSystem2 not support this particle shader" );
+            LOGGER_ERROR( "not support this particle shader" );
 
             return nullptr;
         }

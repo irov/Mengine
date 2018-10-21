@@ -36,7 +36,6 @@ src
     GameInterface.h    
     PrototypeServiceInterface.h
     WatchdogInterface.h
-    WindowsLayerInterface.h
     ArchiveInterface.h
     ArchiveServiceInterface.h
     ProfilerInterface.h

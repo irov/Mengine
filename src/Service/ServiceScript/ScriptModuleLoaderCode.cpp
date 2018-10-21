@@ -15,7 +15,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleLoaderCode::load_module( PyObject * _module )
+    PyObject * ScriptModuleLoaderCode::load_module( pybind::kernel_interface * _kernel, PyObject * _module )
     {
         InputStreamInterfacePtr stream = m_group->createInputFile( m_path, false );
 
@@ -29,19 +29,19 @@ namespace Mengine
             return nullptr;
         }
 
-        PyObject * module = this->load_module_code_( _module, stream );
+        PyObject * module = this->load_module_code_( _kernel, _module, stream );
 
         return module;
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleLoaderCode::load_module_code_( PyObject * _module, const InputStreamInterfacePtr & _stream )
+    PyObject * ScriptModuleLoaderCode::load_module_code_( pybind::kernel_interface * _kernel, PyObject * _module, const InputStreamInterfacePtr & _stream )
     {
         size_t file_size = _stream->size();
 
         if( file_size == 0 )
         {
             LOGGER_ERROR( "ScriptModuleLoaderCode::unmarshal_code_ %s zero size"
-                , pybind::string_to_char( _module )
+                , _kernel->string_to_char( _module )
             );
 
             return nullptr;
@@ -67,7 +67,7 @@ namespace Mengine
             ->decompressStream( m_archivator, _stream, compress_size, code_memory, code_size, uncompress_size ) == false )
         {
             LOGGER_ERROR( "ScriptModuleLoaderCode::unmarshal_code_ %s uncompress failed"
-                , pybind::string_to_char( _module )
+                , _kernel->string_to_char( _module )
             );
 
             return nullptr;

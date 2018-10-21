@@ -17,7 +17,6 @@
 #include "Interface/TextInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 
-#include "WindowsLayer/VistaWindowsLayer.h"
 #include "PythonScriptWrapper/PythonScriptWrapper.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -46,10 +45,7 @@
 #include <algorithm>
 #include <functional>
 
-#include <WinBase.h>
-#include <Psapi.h>
-#include <tlhelp32.h>
-
+#include "Utils/WIN32/WindowsIncluder.h"
 
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 
@@ -57,7 +53,6 @@ SERVICE_EXTERN( FactoryService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( StringizeService );
 SERVICE_EXTERN( LoggerService );
-SERVICE_EXTERN( WindowsLayer );
 SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( NotificationService );
 SERVICE_EXTERN( UnicodeSystem );
@@ -120,7 +115,7 @@ PLUGIN_EXPORT(Video);
 PLUGIN_EXPORT(Theora);
 #endif
 
-#ifdef MENGINE_PLUGIN_CURL
+#ifdef MENGINE_PLUGIN_CURL_NO_DLL
 PLUGIN_EXPORT( cURL );
 #endif
 
@@ -559,7 +554,6 @@ namespace Mengine
             return false;
         }
 
-        SERVICE_CREATE( WindowsLayer );
         SERVICE_CREATE( Platform );
 
         SERVICE_CREATE( UnicodeSystem );
@@ -736,7 +730,7 @@ namespace Mengine
 		MENGINE_ADD_PLUGIN(Theora, "initialize Plugin Theora...");
 #endif
 
-#ifdef MENGINE_PLUGIN_CURL
+#ifdef MENGINE_PLUGIN_CURL_NO_DLL
         MENGINE_ADD_PLUGIN( cURL, "initialize Plugin cURL..." );
 #endif
 
@@ -864,17 +858,6 @@ namespace Mengine
 
         bool fullscreen = APPLICATION_SERVICE()
             ->getFullscreenMode();
-
-        //if( m_application->isValidWindowMode() == false )
-        //{
-        //    fullscreen = true;
-        //}
-
-        if( WINDOWSLAYER_SERVICE()->setProcessDPIAware() == false )
-        {
-            LOGGER_ERROR( "Application not setup Process DPI Aware"
-            );
-        }
 
         String projectTitle;
 
@@ -1020,7 +1003,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::TimerSystemInterface );
 
         SERVICE_FINALIZE( Mengine::PlatformInterface );
-        SERVICE_FINALIZE( Mengine::WindowsLayerInterface );
 
         if( m_fileLog != nullptr )
         {

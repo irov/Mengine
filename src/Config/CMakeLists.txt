@@ -5,6 +5,7 @@ src
     Blobject.h
     Char.h
     String.h
+    StringRegex.h
     VectorString.h
     Stringstream.h
     Typedef.h
@@ -14,6 +15,7 @@ src
     Map.h
     List.h
     Tuple.h
+    Regex.h
     Atomic.h
 	Config.h
 	cmake_dummy.cpp

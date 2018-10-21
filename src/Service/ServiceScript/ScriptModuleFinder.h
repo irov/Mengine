@@ -38,29 +38,29 @@ namespace Mengine
         void finalize();
 
     public:
-        void setEmbed( PyObject * _embed );
+        void setEmbed( const pybind::object & _embed );
 
     public:
         void addModulePath( const ConstString & _pack, const VectorConstString & _pathes );
         void removeModulePath( const ConstString & _pack );
 
     public:
-        PyObject * find_module( PyObject * _module, PyObject * _path );
-        PyObject * load_module( PyObject * _module );
+        PyObject * find_module( pybind::kernel_interface * _kernel, PyObject * _module, PyObject * _path );
+        PyObject * load_module( pybind::kernel_interface * _kernel, PyObject * _module );
 
     protected:
-        bool find_module_source_( PyObject * _module, const ScriptModuleLoaderPtr & _loader );
-        bool find_module_code_( PyObject * _module, const ScriptModuleLoaderPtr & _loader );
-        bool find_module_( PyObject * _module, const ScriptModuleLoaderPtr & _loader, const char * _ext, uint32_t _extN, const Char * _init, uint32_t _extI );
+        bool find_module_source_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader );
+        bool find_module_code_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader );
+        bool find_module_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader, const char * _ext, uint32_t _extN, const Char * _init, uint32_t _extI );
 
     protected:
-        bool convertDotToSlash_( Char * _cache, uint32_t _cacheSize, PyObject * _module, uint32_t & _modulePathCacheLen );
+        bool convertDotToSlash_( pybind::kernel_interface * _kernel, Char * _cache, uint32_t _cacheSize, PyObject * _module, uint32_t & _modulePathCacheLen );
 
     protected:
         bool findModule_( const Char * _modulePath, uint32_t _modulePathLen, const ScriptModuleLoaderPtr & _loader ) const;
 
     protected:
-        PyObject * m_embed;
+        pybind::object m_embed;
 
         ArchivatorInterfacePtr m_archivator;
 

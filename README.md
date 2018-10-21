@@ -6,6 +6,8 @@ Mengine is an multiple platforms engine for creating and running graphical games
 | ------- | ------ | ------ | ------- |
 | master  | | | [![AppVeyor](https://ci.appveyor.com/api/projects/status/w9l085j2o2qn3ua5?svg=true)](https://ci.appveyor.com/project/irov/mengine) |
 
+Проект использует [CMake](https://cmake.org/) в качестве cистемы сборки проекта
+
 ## Windows
 Для начала работы нужно скачать исходники библиотек зависимостей
 

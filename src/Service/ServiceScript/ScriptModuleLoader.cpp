@@ -3,20 +3,22 @@
 namespace Mengine
 {
     ScriptModuleLoader::ScriptModuleLoader()
-        : m_module( nullptr )
+        : m_kernel(nullptr)
+        , m_module( nullptr )
         , m_packagePath( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     ScriptModuleLoader::~ScriptModuleLoader()
     {
-        pybind::decref( m_module );
+        m_kernel->decref( m_module );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptModuleLoader::setModule( PyObject * _module )
+    void ScriptModuleLoader::setModule( pybind::kernel_interface * _kernel, PyObject * _module )
     {
+        m_kernel = _kernel;
         m_module = _module;
-        pybind::incref( m_module );
+        m_kernel->incref( m_module );
     }
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleLoader::getModule() const

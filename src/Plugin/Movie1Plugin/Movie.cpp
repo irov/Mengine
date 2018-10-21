@@ -2,6 +2,7 @@
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/StringizeInterface.h"
 #include "Interface/TimelineInterface.h"
 #include "Interface/NodeInterface.h"
 
@@ -48,7 +49,6 @@
 
 #include "math/angle.h"
 
-#include "pybind/system.hpp"
 #include "pybind/extract.hpp"
 
 namespace Mengine

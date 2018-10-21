@@ -1,17 +1,30 @@
 #include "Logger.h"
 
+#include "Config/String.h"
+#include "Config/StringRegex.h"
+
 #include <ctime>
 #include <cstdio>
 #include <stdarg.h>
 
+//////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_LOGGER_MAX_MESSAGE
+#define MENGINE_LOGGER_MAX_MESSAGE 8192
+#endif
+//////////////////////////////////////////////////////////////////////////
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-#define MENGINE_LOGGER_MAX_MESSAGE 8192
-    //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( EMessageLevel _level, uint32_t _flag )
+    LoggerOperator::LoggerOperator( EMessageLevel _level, uint32_t _flag, const Char * _function, uint32_t _line )
         : m_level( _level )
         , m_flag( _flag )
+        , m_function( _function )
+        , m_line( _line )
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    LoggerOperator::~LoggerOperator()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -54,7 +67,53 @@ namespace Mengine
         str[size + 0] = '\n';
         str[size + 1] = 0;
 
-        this->logMessage( str, size + 1 );
+        if( m_function != nullptr )
+        {
+            Char str2[MENGINE_LOGGER_MAX_MESSAGE + 256] = { 0 };
+
+            //const Char * correct_function = m_function;
+            //if( strstr( correct_function, "Mengine::" ) != nullptr )
+            //{
+            //    correct_function += sizeof( "Mengine::" ) - 1;
+            //}
+
+            String str_function = m_function;
+
+            StringRegex regex_lambda_remove( "::<lambda_.*>::operator \\(\\)" );
+
+            StringMatchResults match_lambda_remove;
+            while( std::regex_search( str_function, match_lambda_remove, regex_lambda_remove ) == true )
+            {
+                const std::sub_match<String::const_iterator> & lambda_remove_prefix = match_lambda_remove.prefix();
+                const std::sub_match<String::const_iterator> & lambda_remove_suffix = match_lambda_remove.suffix();
+                
+                str_function = String( lambda_remove_prefix.first, lambda_remove_prefix.second ) + String( lambda_remove_suffix.first, lambda_remove_suffix.second );
+            }
+
+            StringRegex regex_engine_remove( "Mengine::" );
+
+            StringMatchResults match_engine_remove;
+            if( std::regex_search( str_function, match_engine_remove, regex_engine_remove ) == true )
+            {
+                const std::sub_match<String::const_iterator> & engine_remove_prefix = match_engine_remove.prefix();
+                const std::sub_match<String::const_iterator> & engine_remove_suffix = match_engine_remove.suffix();
+
+                str_function = String( engine_remove_prefix.first, engine_remove_prefix.second ) + String( engine_remove_suffix.first, engine_remove_suffix.second );
+            }
+
+            int size2 = snprintf( str2, MENGINE_LOGGER_MAX_MESSAGE + 256, "%s[%u]: %.*s\n"
+                , str_function.c_str()
+                , m_line
+                , size
+                , str
+            );
+
+            this->logMessage( str2, size2 + 1 );
+        }
+        else
+        {
+            this->logMessage( str, size + 1 );
+        }
 
         return *this;
     }

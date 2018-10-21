@@ -14,7 +14,6 @@
 
 #include "Config/Config.h"
 
-#include "pybind/system.hpp"
 #include "pybind/extract.hpp"
 
 #include "stdex/span.h"

@@ -13,7 +13,7 @@ namespace Mengine
         Viewport( float _beginX, float _beginY, float _endX, float _endY );
 
     public:
-        void initialize( const mt::vec2f & _begin, const mt::vec2f & _end );
+        void setRectangle( const mt::vec2f & _begin, const mt::vec2f & _end );
 
     public:
         bool equalViewport( const Viewport & _vp ) const;

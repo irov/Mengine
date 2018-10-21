@@ -2,6 +2,8 @@
 
 #include "AstralaxInterface.h"
 
+#include "Interface/StringizeInterface.h"
+
 #include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 
 #include "AstralaxParticleModule2.h"

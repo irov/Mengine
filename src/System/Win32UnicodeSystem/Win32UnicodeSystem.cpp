@@ -1,6 +1,6 @@
 #include "Win32UnicodeSystem.h"
 
-#include "Interface/WindowsLayerInterface.h"
+#include "Interface/PlatformInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -90,8 +90,8 @@ namespace Mengine
             DWORD err = GetLastError();
 
             WString wstr_err;
-            WINDOWSLAYER_SERVICE()
-                ->makeFormatMessage( err, wstr_err );
+            PLATFORM_SERVICE()
+                ->getErrorMessage( err, wstr_err );
 
             LOGGER_ERROR( "Win32UnicodeSystem::utf8ToUnicode %s MultiByteToWideChar %ls"
                 , _utf8

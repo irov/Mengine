@@ -1,11 +1,12 @@
 #pragma once
 
 #include "Interface/FileInputStreamInterface.h"
-#include "Interface/WindowsLayerInterface.h"
 
 #include "Kernel/ServantBase.h"
 
 #include "stdex/thread_guard.h"
+
+#include "Utils/WIN32/WindowsIncluder.h"
 
 namespace Mengine
 {

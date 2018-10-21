@@ -36,6 +36,11 @@ namespace Mengine
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
         Pointer getWindowHandle() const override;
 
+    protected:
+        ATOM registerClass_( WNDPROC _wndProc, int _clsExtra, int _wndExtra
+            , HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
+            , const WChar * _className );
+
     public:
         const Tags & getPlatformTags() const override;
         bool hasPlatformTag( const ConstString & _tag ) const override;
@@ -82,7 +87,8 @@ namespace Mengine
         bool createDirectory( const WString & _path ) override;
 
     public:
-        bool removeFile( const WString & _path ) override;
+        bool existFile( const WChar * _path ) override;
+        bool removeFile( const WChar * _path ) override;
 
     public:
         uint64_t getFileTime( const WString & _path ) const override;
@@ -92,7 +98,13 @@ namespace Mengine
         bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
 
     protected:
-        bool setProcessDPIAware();
+        bool createDirectoryUser_( const WChar * _userPath, const WString & _path, const WString & _file, const void * _data, size_t _size );
+
+    protected:
+        bool getErrorMessage( uint32_t _messageId, WString & _out ) const override;
+
+    protected:
+        bool setProcessDPIAware() override;
 
     public:
         LRESULT wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );

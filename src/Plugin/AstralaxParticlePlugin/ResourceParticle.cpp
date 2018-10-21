@@ -88,7 +88,7 @@ namespace Mengine
 
             if( resourceImage == nullptr )
             {
-                LOGGER_ERROR( "ResourceParticle::_loader %s container %s can't get atlas image %s"
+                LOGGER_ERROR( "resource %s container %s can't get atlas image %s"
                     , this->getName().c_str()
                     , this->getFilePath().c_str()
                     , resourceName.c_str()
@@ -120,7 +120,7 @@ namespace Mengine
 
         if( container == nullptr )
         {
-            LOGGER_ERROR( "ResourceParticle::_compile %s can't create container file '%s'"
+            LOGGER_ERROR( "resource %s can't create container file '%s'"
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
             );
@@ -133,7 +133,7 @@ namespace Mengine
         {
             if( resourceImage->incrementReference() == false )
             {
-                LOGGER_ERROR( "ResourceParticle::_compile '%s' file '%s' can't invalid compile resource image '%s'"
+                LOGGER_ERROR( "resource '%s' file '%s' can't invalid compile resource image '%s'"
                     , this->getName().c_str()
                     , this->getFilePath().c_str()
                     , resourceImage->getName().c_str()
@@ -158,7 +158,7 @@ namespace Mengine
         {
             if( resourceImage->decrementReference() == false )
             {
-                LOGGER_ERROR( "ResourceParticle::_release '%s' file '%s' can't invalid compile resource image '%s'"
+                LOGGER_ERROR( "resource '%s' file '%s' can't invalid compile resource image '%s'"
                     , this->getName().c_str()
                     , this->getFilePath().c_str()
                     , resourceImage->getName().c_str()
@@ -173,7 +173,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "ResourceParticle::createEmitter %s not compile"
+            LOGGER_ERROR( "resource %s not compile"
                 , this->getName().c_str()
             );
 

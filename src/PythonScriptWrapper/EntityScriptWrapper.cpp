@@ -155,7 +155,7 @@ namespace Mengine
 
             entity->setEmbed( _obj );
 
-            pybind::decref( _obj );
+            _kernel->decref( _obj );
 
             Entity * entity_ptr = entity.get();
 
@@ -197,7 +197,7 @@ namespace Mengine
 
             arrow->setEmbed( _obj );
 
-            pybind::decref( _obj );
+            _kernel->decref( _obj );
 
             Arrow * arrow_ptr = arrow.get();
 
@@ -239,7 +239,7 @@ namespace Mengine
 
             scene->setEmbed( _obj );
 
-            pybind::decref( _obj );
+            _kernel->decref( _obj );
 
             Scene * scene_ptr = scene.get();
 

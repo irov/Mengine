@@ -65,7 +65,7 @@ namespace Mengine
     {
         if( m_resourceParticle == nullptr )
         {
-            LOGGER_ERROR( "ParticleEmitter2::_compile '%s' resource is null"
+            LOGGER_ERROR( "emitter '%s' resource is null"
                 , m_name.c_str()
             );
 
@@ -74,7 +74,7 @@ namespace Mengine
 
         if( m_resourceParticle.compile() == false )
         {
-            LOGGER_ERROR( "ParticleEmitter2::_compile '%s' resource '%s' not compile"
+            LOGGER_ERROR( "emitter '%s' resource '%s' not compile"
                 , m_name.c_str()
                 , m_resourceParticle->getName().c_str()
             );
@@ -86,7 +86,7 @@ namespace Mengine
 
         if( emitter == nullptr )
         {
-            LOGGER_ERROR( "ParticleEmitter2::_compile '%s' can't create emitter source '%s'"
+            LOGGER_ERROR( "emitter '%s' can't create emitter source '%s'"
                 , m_name.c_str()
                 , m_resourceParticle->getName().c_str()
             );
@@ -123,7 +123,7 @@ namespace Mengine
         {
             if( emitter->setPositionProvider( this ) == false )
             {
-                LOGGER_ERROR( "ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceParticle->getGroupName().c_str()
                     , m_resourceParticle->getName().c_str()
@@ -136,7 +136,7 @@ namespace Mengine
         {
             if( emitter->setPositionProvider( nullptr ) == false )
             {
-                LOGGER_ERROR( "ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceParticle->getGroupName().c_str()
                     , m_resourceParticle->getName().c_str()
@@ -150,7 +150,7 @@ namespace Mengine
         {
             if( emitter->setCameraProvider( this ) == false )
             {
-                LOGGER_ERROR( "ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceParticle->getGroupName().c_str()
                     , m_resourceParticle->getName().c_str()
@@ -163,7 +163,7 @@ namespace Mengine
         {
             if( emitter->setCameraProvider( nullptr ) == false )
             {
-                LOGGER_ERROR( "ParticleEmitter2::_compile '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceParticle->getGroupName().c_str()
                     , m_resourceParticle->getName().c_str()
@@ -286,7 +286,7 @@ namespace Mengine
 
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "ParticleEmitter::_interrupt '%s' can't compile"
+            LOGGER_ERROR( "emitter '%s' can't compile"
                 , m_name.c_str()
             );
 
@@ -514,7 +514,7 @@ namespace Mengine
         {
             if( m_emitter->setPositionProvider( this ) == false )
             {
-                LOGGER_ERROR( "ParticleEmitter2::setEmitterPositionRelative '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceParticle->getGroupName().c_str()
                     , m_resourceParticle->getName().c_str()
@@ -527,7 +527,7 @@ namespace Mengine
         {
             if( m_emitter->setPositionProvider( nullptr ) == false )
             {
-                LOGGER_ERROR( "ParticleEmitter2::setEmitterPositionRelative '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceParticle->getGroupName().c_str()
                     , m_resourceParticle->getName().c_str()
@@ -551,7 +551,7 @@ namespace Mengine
         {
             if( m_emitter->setCameraProvider( this ) == false )
             {
-                LOGGER_ERROR( "ParticleEmitter2::setEmitterCameraRelative '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceParticle->getGroupName().c_str()
                     , m_resourceParticle->getName().c_str()
@@ -564,7 +564,7 @@ namespace Mengine
         {
             if( m_emitter->setCameraProvider( nullptr ) == false )
             {
-                LOGGER_ERROR( "ParticleEmitter2::setEmitterCameraRelative '%s' group '%s' resource '%s' invalid setup position provider"
+                LOGGER_ERROR( "emitter '%s' group '%s' resource '%s' invalid setup position provider"
                     , this->getName().c_str()
                     , m_resourceParticle->getGroupName().c_str()
                     , m_resourceParticle->getName().c_str()
@@ -613,7 +613,7 @@ namespace Mengine
 
         if( resourceHIT == nullptr )
         {
-            LOGGER_ERROR( "ParticleEmitter '%s' can't compile emitter hit %s"
+            LOGGER_ERROR( "emitter '%s' can't compile emitter hit %s"
                 , this->getName().c_str()
                 , m_emitterImageName.c_str()
             );
@@ -625,7 +625,7 @@ namespace Mengine
 
         if( unknownImageData == nullptr )
         {
-            LOGGER_ERROR( "ParticleEmitter '%s' resource '%s' for emitter image don't base 'UnknownResourceImageDataInterface'"
+            LOGGER_ERROR( "emitter '%s' resource '%s' for emitter image don't base 'UnknownResourceImageDataInterface'"
                 , this->getName().c_str()
                 , m_emitterImageName.c_str()
             );
@@ -640,7 +640,7 @@ namespace Mengine
 
         if( _emitter->changeEmitterImage( alphaWidth, alphaHeight, alphaBuffer, 1 ) == false )
         {
-            LOGGER_ERROR( "ParticleEmitter::setEmitterImage %s changeEmitterImage Error image %s"
+            LOGGER_ERROR( "emitter %s changeEmitterImage Error image %s"
                 , this->getName().c_str()
                 , m_emitterImageName.c_str()
             );
@@ -684,7 +684,7 @@ namespace Mengine
         VectorPoints points;
         if( Helper::triangulate( m_polygon, points ) == false )
         {
-            LOGGER_ERROR( "ParticleEmitter::changeEmitterPolygon '%s' wrong polygon"
+            LOGGER_ERROR( "emitter '%s' wrong polygon"
                 , m_name.c_str()
             );
 
@@ -693,7 +693,7 @@ namespace Mengine
 
         if( points.empty() == true )
         {
-            LOGGER_ERROR( "ParticleEmitter::changeEmitterPolygon '%s' empty points"
+            LOGGER_ERROR( "emitter '%s' empty points"
                 , m_name.c_str()
             );
 
@@ -705,7 +705,7 @@ namespace Mengine
 
         if( _emitter->changeEmitterModel( triangles_ptr, (uint32_t)triangles_size ) == false )
         {
-            LOGGER_ERROR( "ParticleEmitter::changeEmitterPolygon '%s' changeEmitterModel Error polygon"
+            LOGGER_ERROR( "emitter '%s' changeEmitterModel Error polygon"
                 , m_name.c_str()
             );
 
@@ -738,7 +738,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "ParticleEmitter::getDuration '%s' can't compile"
+            LOGGER_ERROR( "emitter '%s' can't compile"
                 , m_name.c_str()
             );
 

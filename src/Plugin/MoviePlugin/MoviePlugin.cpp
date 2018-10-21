@@ -35,6 +35,7 @@
 #include "pybind/pybind.hpp"
 
 #include <stdlib.h>
+#include <stdarg.h>
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Movie, Mengine::MoviePlugin )
@@ -187,7 +188,7 @@ namespace Mengine
 
             if( _kwds == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
@@ -213,7 +214,7 @@ namespace Mengine
             }
 #endif
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovie2Socket
@@ -325,7 +326,7 @@ namespace Mengine
 
             if( _kwds == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
@@ -351,7 +352,7 @@ namespace Mengine
             }
 #endif
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
     }
     //////////////////////////////////////////////////////////////////////////

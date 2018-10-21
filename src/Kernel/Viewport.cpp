@@ -32,7 +32,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Viewport::initialize( const mt::vec2f & _begin, const mt::vec2f & _end )
+    void Viewport::setRectangle( const mt::vec2f & _begin, const mt::vec2f & _end )
     {
         begin = _begin;
         end = _end;

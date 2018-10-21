@@ -2,6 +2,8 @@
 
 #include "Interface/UnicodeInterface.h"
 
+#include "Win32FileHelper.h"
+
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -31,8 +33,7 @@ namespace Mengine
 #endif
 
         WChar fullPath[MENGINE_MAX_PATH];
-        if( WINDOWSLAYER_SERVICE()
-            ->concatenateFilePath( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH ) == false )
+        if( Helper::Win32ConcatenateFilePath( _relationPath, _folderPath, _filePath, fullPath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "Win32OutputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
@@ -42,7 +43,7 @@ namespace Mengine
             return false;
         }
 
-        m_hFile = WINDOWSLAYER_SERVICE()->createFile(
+        m_hFile = Helper::Win32CreateFile(
             fullPath
             , GENERIC_WRITE
             , FILE_SHARE_READ | FILE_SHARE_WRITE

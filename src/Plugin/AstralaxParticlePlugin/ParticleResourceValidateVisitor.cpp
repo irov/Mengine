@@ -31,7 +31,7 @@ namespace Mengine
 
         if( container == nullptr )
         {
-            LOGGER_ERROR( "ResourceParticle::_isValid '%s' group '%s' can't create container file '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' can't create container file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFilePath().c_str()
@@ -42,7 +42,7 @@ namespace Mengine
 
         if( container->isValid() == false )
         {
-            LOGGER_ERROR( "ResourceParticle::_isValid %s can't valid container '%s'"
+            LOGGER_ERROR( "resource %s can't valid container '%s'"
                 , _resource->getName().c_str()
                 , _resource->getFilePath().c_str()
             );

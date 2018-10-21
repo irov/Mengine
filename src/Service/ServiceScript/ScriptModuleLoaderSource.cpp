@@ -15,7 +15,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleLoaderSource::load_module( PyObject * _module )
+    PyObject * ScriptModuleLoaderSource::load_module( pybind::kernel_interface * _kernel, PyObject * _module )
     {
         InputStreamInterfacePtr stream = m_group->createInputFile( m_path, false );
 
@@ -29,13 +29,15 @@ namespace Mengine
             return nullptr;
         }
 
-        PyObject * module = this->load_module_source_( _module, stream );
+        PyObject * module = this->load_module_source_( _kernel, _module, stream );
 
         return module;
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptModuleLoaderSource::load_module_source_( PyObject * _module, const InputStreamInterfacePtr & _stream )
+    PyObject * ScriptModuleLoaderSource::load_module_source_( pybind::kernel_interface * _kernel, PyObject * _module, const InputStreamInterfacePtr & _stream )
     {
+        (void)_kernel;
+
         size_t file_size = _stream->size();
 
         MemoryInterfacePtr source_buffer = Helper::createMemoryCacheBuffer( file_size + 2, "ScriptModuleLoaderSource", __FILE__, __LINE__ );

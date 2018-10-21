@@ -343,8 +343,12 @@ Core
     
     Hash.h
    
+    PathString.h
+   
     FilePath.h
     FilePath.cpp
+    FilePathHelper.h
+    FilePathHelper.cpp
     
     FileLogger.cpp
     FileLogger.h

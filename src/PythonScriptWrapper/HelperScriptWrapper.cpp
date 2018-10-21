@@ -72,11 +72,24 @@ namespace Mengine
         }
 
     public:
-        bool s_is_class( PyObject * _obj )
+        uint32_t s_refcount( pybind::kernel_interface * _kernel, PyObject * _obj )
         {
-            pybind::kernel_interface * kernel = pybind::get_kernel();
+            return _kernel->refcount( _obj );
+        }
+        
+        bool s_is_class( pybind::kernel_interface * _kernel, PyObject * _obj )
+        {
+            return _kernel->is_class( _obj );
+        }
 
-            return kernel->is_class( _obj );
+        bool s_is_type_class( pybind::kernel_interface * _kernel, PyTypeObject * _type )
+        {
+            return _kernel->is_type_class( _type );
+        }
+
+        bool s_is_wrap( pybind::kernel_interface * _kernel, PyObject * _obj )
+        {
+            return _kernel->is_wrap( _obj );
         }
 
         const ConstString & s_getLanguagePack()
@@ -193,7 +206,7 @@ namespace Mengine
                     , _name.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             void * binaryBuffer_memory = binaryBuffer->getBuffer();
@@ -207,7 +220,7 @@ namespace Mengine
                     , _name.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             return py_data;
@@ -384,9 +397,9 @@ namespace Mengine
             return pybind::make_object_t( _kernel, vr );
         }
 
-        PyObject * s_reloadModule( PyObject * _module )
+        PyObject * s_reloadModule( pybind::kernel_interface * _kernel, PyObject * _module )
         {
-            return pybind::module_reload( _module );
+            return _kernel->module_reload( _module );
         }
 
         String s_makeUID( uint32_t _length )
@@ -924,7 +937,7 @@ namespace Mengine
 
             return intersect;
         }
-        
+
 #ifdef PYBIND_VISIT_OBJECTS
         class MyObjectVisits
             : public pybind::pybind_visit_objects
@@ -1228,31 +1241,31 @@ namespace Mengine
             return s_changeAccountSettingStrings( accountID, _setting, _values );
         }
 
-		class PyAccountSettingProvider
-			: public Factorable
-			, public AccountSettingProviderInterface
-		{
-		public:
-			PyAccountSettingProvider(const pybind::object & _cb, const pybind::args & _args)
-				: m_cb(_cb)
-				, m_args(_args)
-			{
-			}
+        class PyAccountSettingProvider
+            : public Factorable
+            , public AccountSettingProviderInterface
+        {
+        public:
+            PyAccountSettingProvider( const pybind::object & _cb, const pybind::args & _args )
+                : m_cb( _cb )
+                , m_args( _args )
+            {
+            }
 
-		protected:
-			void onChangeSetting( const WString& _value ) override
-			{
-				m_cb.call_args( _value, m_args );
-			}
+        protected:
+            void onChangeSetting( const WString& _value ) override
+            {
+                m_cb.call_args( _value, m_args );
+            }
 
-		protected:
-			pybind::object m_cb;
-			pybind::args m_args;
-		};
+        protected:
+            pybind::object m_cb;
+            pybind::args m_args;
+        };
 
-		typedef IntrusivePtr<PyAccountSettingProvider> PyAccountSettingProviderPtr;
-		
-        bool s_addAccountSetting( const ConstString & _accountID, const ConstString & _setting, const WString & _defaultValue, const pybind::object & _cb, const pybind::args & _args)
+        typedef IntrusivePtr<PyAccountSettingProvider> PyAccountSettingProviderPtr;
+
+        bool s_addAccountSetting( const ConstString & _accountID, const ConstString & _setting, const WString & _defaultValue, const pybind::object & _cb, const pybind::args & _args )
         {
             AccountInterfacePtr account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -1266,14 +1279,14 @@ namespace Mengine
                 return false;
             }
 
-			PyAccountSettingProviderPtr provider = nullptr;
+            PyAccountSettingProviderPtr provider = nullptr;
 
-			if (_cb.is_none() == false)
-			{
-				provider = new FactorableUnique<PyAccountSettingProvider>(_cb, _args);
-			}
+            if( _cb.is_none() == false )
+            {
+                provider = new FactorableUnique<PyAccountSettingProvider>( _cb, _args );
+            }
 
-            bool result = account->addSetting( _setting, _defaultValue, provider);
+            bool result = account->addSetting( _setting, _defaultValue, provider );
 
             return result;
         }
@@ -1713,7 +1726,7 @@ namespace Mengine
                 LOGGER_ERROR( "getCurrentAccountUID: currentAccount is none [%s]"
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -1731,7 +1744,7 @@ namespace Mengine
                     , _setting.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -1749,7 +1762,7 @@ namespace Mengine
                     , _setting.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -1767,7 +1780,7 @@ namespace Mengine
                     , _setting.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -1785,7 +1798,7 @@ namespace Mengine
                     , _setting.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -1803,7 +1816,7 @@ namespace Mengine
                     , _setting.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -1821,7 +1834,7 @@ namespace Mengine
                     , _setting.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -1839,7 +1852,7 @@ namespace Mengine
                     , _setting.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -1926,7 +1939,7 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const String & value = account->getUID();
@@ -1947,7 +1960,7 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const WString & value = account->getSetting( _setting );
@@ -1970,7 +1983,7 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const WString & value = account->getSetting( _setting );
@@ -1978,13 +1991,13 @@ namespace Mengine
             if( value == L"True" ||
                 value == L"true" )
             {
-                return pybind::ret_true();
+                return _kernel->ret_true();
             }
 
             if( value == L"False" ||
                 value == L"false" )
             {
-                return pybind::ret_false();
+                return _kernel->ret_false();
             }
 
             LOGGER_ERROR( "getAccountSettingBool account '%s' setting '%s' value '%ls' is not bool [True|False]"
@@ -1993,7 +2006,7 @@ namespace Mengine
                 , value.c_str()
             );
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
 
         PyObject * s_getAccountSettingInt( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
@@ -2007,7 +2020,7 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const WString & setting = account->getSetting( _setting );
@@ -2020,7 +2033,7 @@ namespace Mengine
                     , _setting.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             PyObject * py_value = pybind::ptr( _kernel, value );
@@ -2039,7 +2052,7 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const WString & setting = account->getSetting( _setting );
@@ -2052,7 +2065,7 @@ namespace Mengine
                     , _setting.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             PyObject * py_value = pybind::ptr( _kernel, value );
@@ -2071,7 +2084,7 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const WString & setting = account->getSetting( _setting );
@@ -2084,7 +2097,7 @@ namespace Mengine
                     , _setting.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             PyObject * py_value = pybind::ptr( _kernel, value );
@@ -2103,7 +2116,7 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const WString & setting = account->getSetting( _setting );
@@ -2134,7 +2147,7 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const WString & setting = account->getSetting( _setting );
@@ -2147,7 +2160,7 @@ namespace Mengine
                     , _setting.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             PyObject * py_value = pybind::ptr( _kernel, value );
@@ -2198,7 +2211,7 @@ namespace Mengine
                 LOGGER_ERROR( "getGlobalSetting account is none"
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -2215,7 +2228,7 @@ namespace Mengine
                 LOGGER_ERROR( "getGlobalSetting account is none"
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -2234,7 +2247,7 @@ namespace Mengine
                 LOGGER_ERROR( "getGlobalSetting account is none"
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -2251,7 +2264,7 @@ namespace Mengine
                 LOGGER_ERROR( "getGlobalSetting account is none"
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -2268,7 +2281,7 @@ namespace Mengine
                 LOGGER_ERROR( "getGlobalSetting account is none"
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -2285,7 +2298,7 @@ namespace Mengine
                 LOGGER_ERROR( "getGlobalSetting account is none"
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -2302,7 +2315,7 @@ namespace Mengine
                 LOGGER_ERROR( "getGlobalSetting account is none"
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -2319,7 +2332,7 @@ namespace Mengine
                 LOGGER_ERROR( "getGlobalSetting account is none"
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountID = ACCOUNT_SERVICE()
@@ -2338,7 +2351,7 @@ namespace Mengine
 
             if( account == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountId = account->getID();
@@ -2355,7 +2368,7 @@ namespace Mengine
 
             if( account == nullptr )
             {
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             const ConstString & accountId = account->getID();
@@ -2558,7 +2571,7 @@ namespace Mengine
                     , _fileName.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             AccountInterfacePtr account = ACCOUNT_SERVICE()
@@ -2570,7 +2583,7 @@ namespace Mengine
                     , _accountID.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             FilePath filename = Helper::stringizeFilePath( utf8_fileName.c_str(), utf8_fileName.size() );
@@ -2584,7 +2597,7 @@ namespace Mengine
                     , _fileName.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             void * binaryBuffer_memory = binaryBuffer->getBuffer();
@@ -2599,7 +2612,7 @@ namespace Mengine
                     , _fileName.c_str()
                 );
 
-                return pybind::ret_none();
+                return _kernel->ret_none();
             }
 
             return py_data;
@@ -2792,10 +2805,10 @@ namespace Mengine
             (void)_kernel;
             (void)_nothrow;
 
-            if( pybind::string_check( _obj ) == true )
+            if( _kernel->string_check( _obj ) == true )
             {
                 uint32_t size;
-                const Char * value_char = pybind::string_to_char_and_size( _obj, size );
+                const Char * value_char = _kernel->string_to_char_and_size( _obj, size );
 
                 if( value_char == 0 )
                 {
@@ -2819,7 +2832,7 @@ namespace Mengine
             const char * value_str = reinterpret_cast<const char *>(&_value[0]);
             Blobject::size_type value_size = _value.size();
 
-            PyObject * py_value = pybind::string_from_char_size( value_str, (uint32_t)value_size );
+            PyObject * py_value = _kernel->string_from_char_size( value_str, (uint32_t)value_size );
 
             return py_value;
         }
@@ -2833,7 +2846,7 @@ namespace Mengine
             (void)_kernel;
             (void)_nothrow;
 
-            if( pybind::list_check( _obj ) == true )
+            if( _kernel->list_check( _obj ) == true )
             {
                 pybind::list l( _kernel, _obj, pybind::borrowed() );
 
@@ -2860,15 +2873,15 @@ namespace Mengine
 
             const VectorConstString & tags = _value.getTags();
 
-            PyObject * py_tags = pybind::list_new( 0 );
+            PyObject * py_tags = _kernel->list_new( 0 );
 
             for( const ConstString & tag : tags )
             {
                 PyObject * py_tag = pybind::ptr( _kernel, tag );
 
-                pybind::list_appenditem( py_tags, py_tag );
+                _kernel->list_appenditem( py_tags, py_tag );
 
-                pybind::decref( py_tag );
+                _kernel->decref( py_tag );
             }
 
             return py_tags;
@@ -2884,10 +2897,10 @@ namespace Mengine
             (void)_kernel;
             (void)_nothrow;
 
-            if( pybind::string_check( _obj ) == true )
+            if( _kernel->string_check( _obj ) == true )
             {
                 uint32_t size;
-                const String::value_type * string_char = pybind::string_to_char_and_size( _obj, size );
+                const String::value_type * string_char = _kernel->string_to_char_and_size( _obj, size );
 
                 if( string_char == 0 )
                 {
@@ -2912,7 +2925,7 @@ namespace Mengine
             const String::value_type * value_str = _value.c_str();
             String::size_type value_size = _value.size();
 
-            PyObject * py_value = pybind::string_from_char_size( value_str, (uint32_t)value_size );
+            PyObject * py_value = _kernel->string_from_char_size( value_str, (uint32_t)value_size );
 
             return py_value;
         }
@@ -2927,10 +2940,10 @@ namespace Mengine
             (void)_kernel;
             (void)_nothrow;
 
-            if( pybind::unicode_check( _obj ) == true )
+            if( _kernel->unicode_check( _obj ) == true )
             {
                 uint32_t size = 0;
-                const WString::value_type * value_char = pybind::unicode_to_wchar_and_size( _obj, size );
+                const WString::value_type * value_char = _kernel->unicode_to_wchar_and_size( _obj, size );
 
                 if( value_char == nullptr )
                 {
@@ -2955,7 +2968,7 @@ namespace Mengine
             const WString::value_type * value_str = _value.c_str();
             WString::size_type value_size = _value.size();
 
-            PyObject * py_value = pybind::unicode_from_wchar_size( value_str, (uint32_t)value_size );
+            PyObject * py_value = _kernel->unicode_from_wchar_size( value_str, (uint32_t)value_size );
 
             return py_value;
         }
@@ -3030,7 +3043,7 @@ namespace Mengine
         pybind::def_functor( kernel, "getTimeMs", helperScriptMethod, &HelperScriptMethod::s_getTimeMs );
 
         pybind::def_functor( kernel, "getDate", helperScriptMethod, &HelperScriptMethod::s_getDate );
-        
+
         pybind::def_functor( kernel, "getTimeString", helperScriptMethod, &HelperScriptMethod::s_getTimeString );
 
         pybind::def_functor( kernel, "getConfigBool", helperScriptMethod, &HelperScriptMethod::s_getConfigBool );
@@ -3132,7 +3145,7 @@ namespace Mengine
 
         pybind::def_functor( kernel, "getDefaultFileGroup", helperScriptMethod, &HelperScriptMethod::s_getDefaultFileGroup );
         pybind::def_functor( kernel, "hasFileGroup", helperScriptMethod, &HelperScriptMethod::s_hasFileGroup );
-        pybind::def_functor( kernel, "getFileGroup", helperScriptMethod, &HelperScriptMethod::s_getFileGroup );        
+        pybind::def_functor( kernel, "getFileGroup", helperScriptMethod, &HelperScriptMethod::s_getFileGroup );
 
         pybind::def_functor( kernel, "setParticlesEnabled", helperScriptMethod, &HelperScriptMethod::s_setParticlesEnabled );
 
@@ -3186,10 +3199,10 @@ namespace Mengine
         pybind::def_function_deprecate( kernel, "perp", &mt::perp, "use perp_v2" );
         pybind::def_function( kernel, "perp_left", &mt::perp_left );
 
-        pybind::def_function( kernel, "getrefcount", &pybind::refcount );
-        pybind::def_function( kernel, "is_class", &pybind::is_class );
-        pybind::def_function( kernel, "is_type_class", &pybind::is_type_class );
-        pybind::def_function( kernel, "is_wrap", &pybind::is_wrap );
+        pybind::def_functor_kernel( kernel, "getrefcount", helperScriptMethod, &HelperScriptMethod::s_refcount );
+        pybind::def_functor_kernel( kernel, "is_class", helperScriptMethod, &HelperScriptMethod::s_is_class );
+        pybind::def_functor_kernel( kernel, "is_type_class", helperScriptMethod, &HelperScriptMethod::s_is_type_class );
+        pybind::def_functor_kernel( kernel, "is_wrap", helperScriptMethod, &HelperScriptMethod::s_is_wrap );
 
         pybind::def_functor( kernel, "getLanguagePack", helperScriptMethod, &HelperScriptMethod::s_getLanguagePack );
 
@@ -3227,7 +3240,7 @@ namespace Mengine
         pybind::def_functor( kernel, "intersectPathVsCircle", helperScriptMethod, &HelperScriptMethod::s_intersectPathVsCircle );
         pybind::def_functor_kernel( kernel, "selectRandomPointFromPathRadius", helperScriptMethod, &HelperScriptMethod::s_selectRandomPointFromPathRadius );
 
-        pybind::def_functor( kernel, "reloadModule", helperScriptMethod, &HelperScriptMethod::s_reloadModule );
+        pybind::def_functor_kernel( kernel, "reloadModule", helperScriptMethod, &HelperScriptMethod::s_reloadModule );
 
         pybind::def_functor( kernel, "makeUID", helperScriptMethod, &HelperScriptMethod::s_makeUID );
 

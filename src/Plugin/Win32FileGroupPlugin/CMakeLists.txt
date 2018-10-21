@@ -12,6 +12,8 @@ src
 	Win32FileOutputStream.h
     Win32FileMappedStream.h
     Win32FileMappedStream.cpp
+    Win32FileHelper.h
+    Win32FileHelper.cpp
 )
 
 INCLUDE_DIRECTORIES( 

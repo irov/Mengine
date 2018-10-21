@@ -4,14 +4,15 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/UnicodeInterface.h"
 
+#include "Win32FileHelper.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"
-
+#include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
-
 #include "Kernel/String.h"
 
-#include "WIN32/WindowsIncluder.h"
+#include "Utils/WIN32/WindowsIncluder.h"
 
 namespace Mengine
 {
@@ -82,8 +83,7 @@ namespace Mengine
     bool Win32FileGroupDirectory::existFile( const FilePath & _fileName ) const
     {
         WChar filePath[MENGINE_MAX_PATH];
-        if( WINDOWSLAYER_SERVICE()
-            ->concatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
+        if( Helper::Win32ConcatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "Win32FileSystem::existFile invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
@@ -93,10 +93,13 @@ namespace Mengine
             return false;
         }
 
-        bool result = WINDOWSLAYER_SERVICE()
-            ->fileExists( filePath );
+        if( PLATFORM_SERVICE()
+            ->existFile( filePath ) == false )
+        {
+            return false;
+        }
 
-        return result;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::existDirectory( const FilePath & _folderName ) const

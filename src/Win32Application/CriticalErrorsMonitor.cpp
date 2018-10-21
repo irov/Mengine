@@ -11,8 +11,6 @@
 
 #include <cstdio>
 
-#include "Interface/WindowsLayerInterface.h"
-
 #ifdef _MSC_VER
 #	define snprintf _snprintf
 #endif

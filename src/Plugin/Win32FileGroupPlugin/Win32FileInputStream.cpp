@@ -3,6 +3,8 @@
 #include "Interface/UnicodeInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
+#include "Win32FileHelper.h"
+
 #include "Kernel/Logger.h"
 
 #include "stdex/memorycopy.h"
@@ -107,8 +109,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath )
     {
-        if( WINDOWSLAYER_SERVICE()
-            ->concatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
+        if( Helper::Win32ConcatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "Win32InputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
@@ -118,7 +119,7 @@ namespace Mengine
             return false;
         }
 
-        m_hFile = WINDOWSLAYER_SERVICE()->createFile(
+        m_hFile = Helper::Win32CreateFile(
             _fullPath, // file to open
             GENERIC_READ, // open for reading
             FILE_SHARE_READ, // share for reading, exclusive for mapping

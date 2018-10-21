@@ -6,7 +6,6 @@
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/Arrow.h"
 
-#include "pybind/system.hpp"
 #include "pybind/extract.hpp"
 
 #include "Kernel/Logger.h"

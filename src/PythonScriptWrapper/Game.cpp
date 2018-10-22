@@ -491,7 +491,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Game::registerEventMethods_( const ScriptModuleInterfacePtr & _module )
     {
-        const pybind::base & base_module = _module->getModule();
+        const pybind::module & base_module = _module->getModule();
 
         pybind::module py_module( base_module );
 

@@ -75,7 +75,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const pybind::base & ScriptModule::getModule() const
+    const pybind::module & ScriptModule::getModule() const
     {
         return m_module;
     }

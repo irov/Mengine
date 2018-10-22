@@ -493,18 +493,9 @@ namespace Mengine
             , _name
         );
 
-        try
-        {
-            PyObject * module = m_kernel->module_init( _name );
+        PyObject * module = m_kernel->module_init( _name );
 
-            return module;
-        }
-        catch( ... )
-        {
-            this->handleException();
-        }
-
-        return nullptr;
+        return module;
     }
     //////////////////////////////////////////////////////////////////////////
     ScriptModuleInterfacePtr ScriptEngine::importModule( const ConstString & _name )
@@ -518,8 +509,6 @@ namespace Mengine
         }
         catch( ... )
         {
-            this->handleException();
-
             LOGGER_ERROR( "ScriptEngine: invalid import module '%s'(c-exception)"
                 , _name.c_str()
             );
@@ -788,11 +777,6 @@ namespace Mengine
         m_kernel->decref( code );
 
         return py_module_exec;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ScriptEngine::handleException()
-    {
-        m_kernel->exception_filter();
     }
     //////////////////////////////////////////////////////////////////////////
 }

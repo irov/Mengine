@@ -24,7 +24,7 @@ namespace Mengine
         bool onFinalize( const ConstString & _method ) override;
 
     protected:
-        const pybind::base & getModule() const override;
+        const pybind::module & getModule() const override;
 
     protected:
         pybind::module m_module;

@@ -42,7 +42,7 @@ namespace Mengine
         virtual bool onFinalize( const ConstString & _method ) = 0;
 
     public:
-        virtual const pybind::base & getModule() const = 0;
+        virtual const pybind::module & getModule() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ScriptModuleInterface> ScriptModuleInterfacePtr;

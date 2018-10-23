@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ScheduleManagerInterface.h"
-#include "Interface/MousePickerSystemInterface.h"
+#include "Interface/PickerServiceInterface.h"
 #include "Interface/GlobalHandleSystemInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/UpdationInterface.h"
@@ -93,7 +93,6 @@ namespace Mengine
         virtual const RenderScissorInterfacePtr & getRenderScissor() const = 0;
 
     public:
-        virtual const MousePickerSystemInterfacePtr & getMousePickerSystem() const = 0;
         virtual const GlobalHandleSystemInterfacePtr & getGlobalHandleSystem() const = 0;
 
     public:

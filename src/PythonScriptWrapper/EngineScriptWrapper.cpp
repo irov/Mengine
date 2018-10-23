@@ -51,7 +51,7 @@
 #include "Plugin/MoviePlugin/ResourceMovie2.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/MousePickerSystemInterface.h"
+#include "Interface/PickerServiceInterface.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
@@ -263,18 +263,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_setMousePickerBlockInput( bool _value )
         {
-            const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
-                ->getMousePickerSystem();
-
-            mousePickerSystem->setBlock( _value );
+			PICKER_SERVICE()
+				->setBlock( _value );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_setMousePickerHandleValue( bool _value )
         {
-            const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
-                ->getMousePickerSystem();
-
-            mousePickerSystem->setHandleValue( _value );
+			PICKER_SERVICE()
+				->setHandleValue( _value );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_setInputMouseButtonEventBlock( bool _value )
@@ -2754,11 +2750,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         pybind::list s_pickHotspot( pybind::kernel_interface * _kernel, const mt::vec2f & _point )
         {
-            const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
-                ->getMousePickerSystem();
-
             VectorPickerTraps traps;
-            mousePickerSystem->pickTrap( _point, traps );
+			PICKER_SERVICE()
+				->pickTrap( _point, traps );
 
             pybind::list pyret( _kernel );
 
@@ -2770,9 +2764,9 @@ namespace Mengine
                 return pyret;
             }
 
-            for( const MousePickerTrapInterfacePtr & mousePickerTrap : traps )
+            for( const PickerTrapInterfacePtr & trap : traps )
             {
-                ScriptablePtr scriptable = mousePickerTrap->propagatePickerScriptable();
+                ScriptablePtr scriptable = trap->propagatePickerScriptable();
 
                 pyret.append( scriptable );
             }

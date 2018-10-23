@@ -2,7 +2,7 @@
 
 #include "Kernel/Node.h"
 
-#include "Interface/MousePickerSystemInterface.h"
+#include "Interface/PickerServiceInterface.h"
 
 #include "Kernel/Polygon.h"
 #include "Kernel/BaseEventation.h"
@@ -51,7 +51,7 @@ namespace Mengine
     class HotSpot
         : public Node
         , public BaseEventation
-        , public MousePickerTrapInterface
+        , public PickerTrapInterface
     {
         DECLARE_VISITABLE( Node );
         DECLARE_EVENTABLE( HotSpotEventReceiver );
@@ -72,7 +72,7 @@ namespace Mengine
         bool isMousePickerOver() const;
 
     public:
-        MousePickerTrapInterfacePtr getPickerTrap() override;
+        PickerTrapInterfacePtr getPickerTrap() override;
 
     public:
         void setDefaultHandle( bool _handle );

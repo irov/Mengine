@@ -1,7 +1,6 @@
 #include "HotSpot.h"
 
-#include "Interface/MousePickerSystemInterface.h"
-#include "Interface/PlayerInterface.h"
+#include "Interface/PickerServiceInterface.h"
 
 #include "Kernel/RenderCameraHelper.h"
 #include "Kernel/Arrow.h"
@@ -51,7 +50,7 @@ namespace Mengine
         return picked;
     }
     //////////////////////////////////////////////////////////////////////////
-    MousePickerTrapInterfacePtr HotSpot::getPickerTrap()
+    PickerTrapInterfacePtr HotSpot::getPickerTrap()
     {
         return this;
     }
@@ -92,21 +91,11 @@ namespace Mengine
             return;
         }
 
-        const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
-            ->getMousePickerSystem();
+        m_picker = PICKER_SERVICE()
+			->regTrap( this );
 
-        if( mousePickerSystem == nullptr )
-        {
-            LOGGER_ERROR( "HotSpot::activatePicker_ '%s' invalid get mouse picker system"
-                , this->getName().c_str()
-            );
-
-            return;
-        }
-
-        m_picker = mousePickerSystem->regTrap( this );
-
-        mousePickerSystem->updateTraps();
+		PICKER_SERVICE()
+			->updateTraps();
 
         EVENTABLE_METHOD( this, EVENT_ACTIVATE )
             ->onHotSpotActivate();
@@ -123,24 +112,14 @@ namespace Mengine
             return;
         }
 
-        const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
-            ->getMousePickerSystem();
-
-        if( mousePickerSystem == nullptr )
-        {
-            LOGGER_ERROR( "HotSpot::activatePicker_ '%s' invalid get mouse picker system"
-                , this->getName().c_str()
-            );
-
-            return;
-        }
-
         PickerTrapState * picker = m_picker;
         m_picker = nullptr;
 
-        mousePickerSystem->unregTrap( picker );
+		PICKER_SERVICE()
+			->unregTrap( picker );
 
-        mousePickerSystem->updateTraps();
+		PICKER_SERVICE()
+			->updateTraps();
 
         EVENTABLE_METHOD( this, EVENT_DEACTIVATE )
             ->onHotSpotDeactivate();
@@ -277,19 +256,8 @@ namespace Mengine
             return;
         }
 
-        const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
-            ->getMousePickerSystem();
-
-        if( mousePickerSystem == nullptr )
-        {
-            LOGGER_ERROR( "HotSpot::activatePicker_ '%s' invalid get mouse picker system"
-                , this->getName().c_str()
-            );
-
-            return;
-        }
-
-        mousePickerSystem->invalidateTraps();
+		PICKER_SERVICE()
+			->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::_activate()

@@ -1,6 +1,6 @@
 #include "MemoryCacheInput.h"
 
-#include "MemoryManager.h"
+#include "MemoryService.h"
 
 #include "Interface/MemoryInterface.h"
 
@@ -34,7 +34,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryCacheInput::setMemoryManager( MemoryManager * _memoryManager )
+    void MemoryCacheInput::setMemoryManager( MemoryService * _memoryManager )
     {
         m_memoryManager = _memoryManager;
     }

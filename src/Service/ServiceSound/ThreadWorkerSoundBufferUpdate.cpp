@@ -2,7 +2,7 @@
 
 #include "Interface/ThreadSystemInterface.h"
 
-#include "SoundEngine.h"
+#include "SoundService.h"
 
 #include "Kernel/Logger.h"
 

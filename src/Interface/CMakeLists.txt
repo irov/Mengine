@@ -30,7 +30,7 @@ src
     NodeInterface.h
     PlayerInterface.h
     ScheduleManagerInterface.h
-    MousePickerSystemInterface.h
+    PickerServiceInterface.h
     MovieKeyFrameInterface.h
     PlayerInterface.h
     GameInterface.h    

@@ -4,8 +4,8 @@ ADD_FILTER(
 src
     SoundIdentity.h
     SoundIdentity.cpp
-	SoundEngine.h
-	SoundEngine.cpp
+	SoundService.h
+	SoundService.cpp
     ThreadWorkerSoundBufferUpdate.h
     ThreadWorkerSoundBufferUpdate.cpp
 )

@@ -1,7 +1,7 @@
 #include "Kernel/Node.h"
 
 #include "Interface/TimelineInterface.h"
-#include "Interface/MousePickerSystemInterface.h"
+#include "Interface/PickerServiceInterface.h"
 
 #include "Interface/RenderCameraInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
@@ -1142,7 +1142,7 @@ namespace Mengine
         return deep;
     }
     //////////////////////////////////////////////////////////////////////////
-    MousePickerTrapInterfacePtr Node::getPickerTrap()
+    PickerTrapInterfacePtr Node::getPickerTrap()
     {
         return nullptr;
     }

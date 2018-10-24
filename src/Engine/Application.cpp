@@ -13,7 +13,7 @@
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/MousePickerSystemInterface.h"
+#include "Interface/PickerServiceInterface.h"
 #include "Interface/LoaderInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/ThreadSystemInterface.h"

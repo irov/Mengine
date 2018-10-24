@@ -2,20 +2,20 @@ SET( MY_LIB_NAME ServiceRender )
 
 ADD_FILTER(
 src
-    RenderEngine.h
-	RenderEngine.cpp	
+    RenderService.h
+	RenderService.cpp	
 	RenderTexture.h
 	RenderTexture.cpp
-    RenderTextureManager.h
-    RenderTextureManager.cpp
+    RenderTextureService.h
+    RenderTextureService.cpp
 	DecoderRenderImageProvider.h
 	DecoderRenderImageProvider.cpp
 	DecoderRenderImageLoader.h
 	DecoderRenderImageLoader.cpp
     RenderMaterial.h
     RenderMaterial.cpp
-    RenderMaterialManager.h
-    RenderMaterialManager.cpp
+    RenderMaterialService.h
+    RenderMaterialService.cpp
 )
 
 ADD_MENGINE_LIBRARY()

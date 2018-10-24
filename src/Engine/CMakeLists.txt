@@ -20,12 +20,6 @@ Motor\\\\Motor
 	Motor.h
 )
 
-ADD_FILTER(
-MousePickerTrap
-	MousePickerSystem.cpp
-	MousePickerSystem.h
-)
-
 SOURCE_GROUP( Surface )
 
 ADD_FILTER(
@@ -225,11 +219,6 @@ ADD_FILTER(
 Resource\\\\HIT
 	ResourceHIT.cpp
 	ResourceHIT.h
-)
-
-ADD_FILTER(
-Utils
-	VersionInfo.h
 )
 
 INCLUDE_DIRECTORIES(

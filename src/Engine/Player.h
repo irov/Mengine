@@ -2,7 +2,7 @@
 
 #include "Interface/PlayerInterface.h"
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/MousePickerSystemInterface.h"
+#include "Interface/PickerServiceInterface.h"
 #include "Interface/GlobalHandleSystemInterface.h"
 #include "Interface/ScheduleManagerInterface.h"
 
@@ -25,7 +25,6 @@ namespace Mengine
     typedef IntrusivePtr<class RenderViewport> RenderViewportPtr;
     typedef IntrusivePtr<class RenderCameraOrthogonal> RenderCameraOrthogonalPtr;
     typedef IntrusivePtr<class RenderTargetInterface> RenderTargetInterfacePtr;
-    typedef IntrusivePtr<class MousePickerSystemInterface> MousePickerSystemInterfacePtr;
     typedef IntrusivePtr<class GlobalHandleSystem> GlobalHandleSystemPtr;
     typedef IntrusivePtr<class GlobalAffectorable, class Affectorable> GlobalAffectorablePtr;
 
@@ -66,7 +65,6 @@ namespace Mengine
         bool destroySchedulerManager( const ScheduleManagerInterfacePtr & _scheduler ) override;
 
     public:
-        const MousePickerSystemInterfacePtr & getMousePickerSystem() const override;
         const GlobalHandleSystemInterfacePtr & getGlobalHandleSystem() const override;
 
     public:
@@ -141,7 +139,7 @@ namespace Mengine
         RenderScissorInterfacePtr m_renderScissor;
         RenderTargetInterfacePtr m_renderTarget;
 
-        MousePickerSystemInterfacePtr m_mousePickerSystem;
+        PickerServiceInterfacePtr m_pickerService;
         GlobalHandleSystemInterfacePtr m_globalHandleSystem;
 
         ScheduleManagerInterfacePtr m_scheduleManager;

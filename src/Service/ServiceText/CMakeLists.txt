@@ -2,10 +2,10 @@ SET( MY_LIB_NAME ServiceText )
 
 ADD_FILTER(
 src
+    TextService.cpp
+    TextService.h
 	TextEntry.cpp
     TextEntry.h
-    TextManager.cpp
-    TextManager.h
     TextLocalePak.cpp
     TextLocalePak.h
 )

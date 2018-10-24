@@ -17,7 +17,7 @@ namespace Mengine
     class RenderTextureServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "RenderTextureManager" )
+        SERVICE_DECLARE( "RenderTextureService" )
 
     public:
         virtual RenderTextureInterfacePtr loadTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath& _fileName, const ConstString& _codec ) = 0;

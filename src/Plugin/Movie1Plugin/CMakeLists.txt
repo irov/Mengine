@@ -26,6 +26,11 @@ src
     
     Movie1ResourceValidateVisitor.cpp
     Movie1ResourceValidateVisitor.h
+    
+    DataflowAEK.h
+    DataflowAEK.cpp
+    MovieFramePack.h
+    MovieFramePack.cpp
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )

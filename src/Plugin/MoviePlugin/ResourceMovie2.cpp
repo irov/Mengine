@@ -5,7 +5,7 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 
 #include "Movie2Interface.h"
 

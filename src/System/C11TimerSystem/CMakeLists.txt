@@ -8,8 +8,6 @@ src
 
 ADD_MENGINE_LIBRARY()
 
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
-
 set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER System
 )

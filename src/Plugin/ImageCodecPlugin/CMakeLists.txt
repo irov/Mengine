@@ -72,14 +72,6 @@ dds
     ImageEncoderDDS.h
 )
 
-ADD_FILTER(
-aek    
-    DataflowAEK.h
-    DataflowAEK.cpp
-    MovieFramePack.h
-    MovieFramePack.cpp
-)
-
 SET(MENGINE_SUPPORT_DECODER_WEBP ON)
 
 if(MENGINE_SUPPORT_DECODER_WEBP)
@@ -90,17 +82,16 @@ if(MENGINE_SUPPORT_DECODER_WEBP)
     )
     
     add_definitions(-DMENGINE_SUPPORT_DECODER_WEBP)
+
     INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libwebp/src )
 endif()
 
-INCLUDE_DIRECTORIES( 
-        ${THIRDPARTY_DIR}
-        ${THIRDPARTY_DIR}/zlib
-        ${THIRDPARTY_DIR}/libpng
-        ${THIRDPARTY_DIR}/libjpeg
-        ${THIRDPARTY_DIR}/libmath/include
-        ${THIRDPARTY_DIR}/metabuf					
-)
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/zlib )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libpng )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libjpeg )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/metabuf/include )
 
 ADD_MENGINE_LIBRARY()
 

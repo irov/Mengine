@@ -1,10 +1,10 @@
 #pragma once
 
-#include "WIN32/WindowsIncluder.h"
+#include "Environment/WIN32/WindowsIncluder.h"
 
-#	define UWM_MOUSE_LEAVE (WM_USER+1)
+#define UWM_MOUSE_LEAVE (WM_USER+1)
 
-#	define UTIMER_MOUSE_EVENT 1
+#define UTIMER_MOUSE_EVENT 1
 
 namespace Mengine
 {

@@ -6,8 +6,12 @@
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ConfigInterface.h"
+#include "Interface/DataInterface.h"
+#include "Interface/CodecInterface.h"
 
-#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Environment/Python/PythonScriptWrapper.h"
+#include "Environment/Python/PythonAnimatableEventReceiver.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotShape.h"
@@ -22,8 +26,6 @@
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/PolygonHelper.h"
 
-#include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
-
 #include "Kernel/Logger.h"
 
 #include "Movie.h"
@@ -34,6 +36,8 @@
 
 #include "ResourceMovie.h"
 #include "ResourceInternalObject.h"
+
+#include "DataflowAEK.h"
 
 #include "Movie1ResourceValidateVisitor.h"
 
@@ -1586,6 +1590,19 @@ namespace Mengine
             return false;
         }
 
+        DataflowInterfacePtr aek = new FactorableUnique<DataflowAEK>();
+
+        if( aek->initialize() == false )
+        {
+            return false;
+        }
+
+        DATA_SERVICE()
+            ->registerDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ), aek );
+
+        CODEC_SERVICE()
+            ->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+
         VisitorPtr resourceValidateVisitor = new FactorableUnique<Movie1ResourceValidateVisitor>();
 
         RESOURCEVALIDATE_SERVICE()
@@ -1627,5 +1644,8 @@ namespace Mengine
 
         RESOURCEVALIDATE_SERVICE()
             ->removeResourceValidateVisitor( m_resourceValidateVisitor );
+
+        DATA_SERVICE()
+            ->unregisterDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
     }
 }

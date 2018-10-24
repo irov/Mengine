@@ -1,4 +1,4 @@
-#include "PythonScriptWrapper.h"
+#include "PythonWrapper.h"
 
 #include "Config/Lambda.h"
 #include "Config/Blobject.h"
@@ -16,7 +16,7 @@
 #include "Interface/PackageInterface.h"
 #include "Interface/RandomizerInterface.h"
 
-#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
@@ -116,10 +116,11 @@
 #include "Kernel/ThreadTask.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/ScriptablePrototypeGenerator.h"
-#include "Kernel/ScriptEventReceiver.h"
-#include "Kernel/ScriptWrapper.h"
 
-#include "PythonAnimatableEventReceiver.h"
+#include "Environment/Python/PythonAnimatableEventReceiver.h"
+#include "Environment/Python/PythonEventReceiver.h"
+#include "Environment/Python/PythonScriptWrapper.h"
+
 #include "PythonValueFollower.h"
 
 #include "PythonEntityBehavior.h"

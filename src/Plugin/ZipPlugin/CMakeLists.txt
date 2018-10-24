@@ -10,9 +10,8 @@ src
     ArchivatorZip.cpp    
 )
 
-INCLUDE_DIRECTORIES( 
-        ${THIRDPARTY_DIR}/zlib
-)
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/zlib )
 
 ADD_MENGINE_LIBRARY()
 

@@ -28,8 +28,6 @@
 #include "PickDecoderHIT.h"
 #include "PickEncoderHIT.h"
 
-#include "DataflowAEK.h"
-
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/EncoderFactory.h"
 #include "Kernel/DataflowFactory.h"
@@ -41,6 +39,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ImageCodecPlugin::ImageCodecPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ImageCodecPlugin::~ImageCodecPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -106,18 +108,7 @@ namespace Mengine
         Helper::registerEncoder<PickEncoderHIT>( "hitPick" );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "hit", STRINGIZE_STRING_LOCAL( "hitPick" ) );
-
-        m_factoryAEK = new DataflowFactory<DataflowAEK>();
-        m_factoryAEK->initialize();
-
-        DataflowInterfacePtr aek = m_factoryAEK->createDataflow();
-
-        DATA_SERVICE()
-            ->registerDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ), aek );
-
-        CODEC_SERVICE()
-            ->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+            ->registerCodecExt( "hit", STRINGIZE_STRING_LOCAL( "hitPick" ) );        
 
         return true;
     }
@@ -146,8 +137,5 @@ namespace Mengine
 
         Helper::unregisterDecoder( "hitPick" );
         Helper::unregisterEncoder( "hitPick" );
-
-        DATA_SERVICE()
-            ->unregisterDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
     }
 }

@@ -10,10 +10,6 @@
 
 namespace Mengine
 {
-    class ConverterFactoryInterface;
-    class ConverterInterface;
-
-
     class ConverterService
         : public ServiceBase<ConverterServiceInterface>
     {

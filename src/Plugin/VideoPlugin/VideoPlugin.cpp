@@ -3,12 +3,13 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 
 #include "SurfaceVideo.h"
 #include "VideoResourceValidateVisitor.h"
 
-#include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
+#include "Environment/Python/PythonAnimatableEventReceiver.h"
+#include "Environment/Python/PythonScriptWrapper.h"
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/SurfacePrototypeGenerator.h"

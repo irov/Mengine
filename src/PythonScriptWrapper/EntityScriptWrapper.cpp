@@ -1,9 +1,11 @@
-#include "PythonScriptWrapper.h"
+#include "PythonWrapper.h"
 
 #include "Interface/StringizeInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/NodeInterface.h"
+
+#include "Environment/Python/PythonScriptWrapper.h"
 
 #include "PythonEntityBehavior.h"
 #include "EntityPrototypeGenerator.h"
@@ -120,7 +122,7 @@ namespace Mengine
     static bool classWrapping()
     {
 # define SCRIPT_CLASS_WRAPPING( Class )\
-    if( SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new ScriptWrapper<Class>() ) == false )\
+    if( SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new PythonScriptWrapper<Class>() ) == false )\
     {\
         return false;\
     }

@@ -10,8 +10,6 @@
 #include "Kernel/ConstStringTypes.h"
 #include "Kernel/String.h"
 
-#include "Kernel/Archive.h"
-
 #include "Config/Typedef.h"
 
 #include "metabuf/Metadata.hpp"

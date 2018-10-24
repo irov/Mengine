@@ -4,17 +4,16 @@
 
 #include "Kernel/ServantBase.h"
 
+#include "Environment/WIN32/WindowsIncluder.h"
+
 #include "stdex/thread_guard.h"
-
-#include "Utils/WIN32/WindowsIncluder.h"
-
-namespace Mengine
-{
 
 #ifndef MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE
 #	define MENGINE_WIN32_FILE_STREAM_BUFFER_SIZE 4096
 #endif
 
+namespace Mengine
+{
     class Win32FileInputStream
         : public ServantBase<FileInputStreamInterface>
     {

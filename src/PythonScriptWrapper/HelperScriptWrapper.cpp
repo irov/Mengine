@@ -1,4 +1,4 @@
-#include "PythonScriptWrapper.h"
+#include "PythonWrapper.h"
 
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/UnicodeInterface.h"

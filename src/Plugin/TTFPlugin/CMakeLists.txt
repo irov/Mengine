@@ -15,14 +15,13 @@ src
 
 #add_definitions(-DMENGINE_PLUGIN_DLL)
 
-INCLUDE_DIRECTORIES( 
-        ${THIRDPARTY_DIR}/freetype/include
-        ${THIRDPARTY_DIR}/pybind/include
-        ${THIRDPARTY_DIR}/utf8/source
-        ${THIRDPARTY_DIR}/libfe/include
-        ${THIRDPARTY_DIR}/tinyini/include
-        ${THIRDPARTY_DIR}/libmath/include
-)
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/freetype/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/utf8/source )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libfe/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/tinyini/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
 
 ADD_MENGINE_LIBRARY()
 

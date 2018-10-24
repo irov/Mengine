@@ -9,10 +9,9 @@ src
     SoundDecoderOGGVorbis.h
 )
 
-INCLUDE_DIRECTORIES(
-    ${THIRDPARTY_DIR}/libvorbis/include
-    ${THIRDPARTY_DIR}/libogg/include          
-	)
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libvorbis/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libogg/include )
     
 add_definitions(-DOV_EXCLUDE_STATIC_CALLBACKS)
 

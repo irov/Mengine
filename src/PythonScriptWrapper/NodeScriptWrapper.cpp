@@ -1,4 +1,4 @@
-#include "PythonScriptWrapper.h"
+#include "PythonWrapper.h"
 
 #include "Config/Blobject.h"
 
@@ -77,7 +77,8 @@
 //#include "Skeleton.h"
 
 #include "ScriptHolder.h"
-#include "PythonEventReceiver.h"
+
+#include "Environment/Python/PythonEventReceiver.h"
 
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceImage.h"
@@ -116,9 +117,10 @@
 #include "Kernel/Affector.h"
 #include "Kernel/AffectorHelper.h"
 #include "Kernel/ThreadTask.h"
-#include "Kernel/ScriptWrapper.h"
 
-#include "PythonAnimatableEventReceiver.h"
+#include "Environment/Python/PythonAnimatableEventReceiver.h"
+#include "Environment/Python/PythonScriptWrapper.h"
+
 #include "ScriptableAffectorCallback.h"
 #include "PythonEntityBehavior.h"
 #include "PythonScheduleTimer.h"
@@ -2285,7 +2287,7 @@ namespace Mengine
     static bool classWrapping()
     {
 #define SCRIPT_CLASS_WRAPPING( Class )\
-    if( SCRIPT_SERVICE()->setWrapper( STRINGIZE_STRING_LOCAL(#Class), new ScriptWrapper<Class>() ) == false )\
+    if( SCRIPT_SERVICE()->setWrapper( STRINGIZE_STRING_LOCAL(#Class), new PythonScriptWrapper<Class>() ) == false )\
     {\
         return false;\
     }

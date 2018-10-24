@@ -9,7 +9,8 @@
 #include "ResourceParticle.h"
 #include "ParticleEmitter2.h"
 
-#include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
+#include "Environment/Python/PythonAnimatableEventReceiver.h"
+#include "Environment/Python/PythonScriptWrapper.h"
 
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"

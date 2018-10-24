@@ -53,9 +53,7 @@ Wrapper
 )
 
 ADD_FILTER(
-Generator
-    PythonEventReceiver.h
-    PythonAnimatableEventReceiver.h		
+Generator    
     PythonEntityBehavior.h
     PythonEntityBehavior.cpp    
 	EntityPrototypeGenerator.h

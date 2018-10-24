@@ -485,12 +485,6 @@ Factory
 )
 
 ADD_FILTER(
-Archive
-	Archive.h
-	ArchiveWrite.h
-)
-
-ADD_FILTER(
 Logger
 	Logger.h
 	Logger.cpp
@@ -502,54 +496,12 @@ Visitors
     DebugRenderVisitor.cpp
 )
 
-INCLUDE_DIRECTORIES(
-    ${SOURCE_DIR}
-    ${SOURCE_DIR}/Utils
-    ${THIRDPARTY_DIR}/boost/libs/config/include
-    ${THIRDPARTY_DIR}/boost/libs/assert/include
-    ${THIRDPARTY_DIR}/boost/libs/preprocessor/include
-    ${THIRDPARTY_DIR}/boost/libs/predef/include
-    ${THIRDPARTY_DIR}/boost/libs/numeric/conversion/include
-    ${THIRDPARTY_DIR}/boost/libs/type_traits/include
-    ${THIRDPARTY_DIR}/boost/libs/mpl/include
-    ${THIRDPARTY_DIR}/boost/libs/math/include
-    ${THIRDPARTY_DIR}/boost/libs/iterator/include
-    ${THIRDPARTY_DIR}/boost/libs/range/include
-    ${THIRDPARTY_DIR}/boost/libs/static_assert/include
-    ${THIRDPARTY_DIR}/boost/libs/throw_exception/include
-    ${THIRDPARTY_DIR}/boost/libs/throw_detail/include
-    ${THIRDPARTY_DIR}/boost/libs/core/include
-    ${THIRDPARTY_DIR}/boost/libs/detail/include
-    ${THIRDPARTY_DIR}/boost/libs/utility/include
-    ${THIRDPARTY_DIR}/boost/libs/integer/include
-    ${THIRDPARTY_DIR}/boost/libs/array/include
-    ${THIRDPARTY_DIR}/boost/libs/smart_ptr/include
-    ${THIRDPARTY_DIR}/boost/libs/concept_check/include
-    ${THIRDPARTY_DIR}/boost/libs/move/include
-    ${THIRDPARTY_DIR}/boost/libs/format/include
-    ${THIRDPARTY_DIR}/boost/libs/optional/include
-    ${THIRDPARTY_DIR}/boost/libs/container/include
-    ${THIRDPARTY_DIR}/boost/libs/variant/include
-    ${THIRDPARTY_DIR}/boost/libs/tuple/include
-    ${THIRDPARTY_DIR}/boost/libs/rational/include
-    ${THIRDPARTY_DIR}/boost/libs/algorithm/include
-    ${THIRDPARTY_DIR}/boost/libs/function/include
-    ${THIRDPARTY_DIR}/boost/libs/type_index/include
-    ${THIRDPARTY_DIR}/boost/libs/container_hash/include
-    ${THIRDPARTY_DIR}/boost/libs/bind/include
-    ${THIRDPARTY_DIR}/boost/libs/function_types/include
-    ${THIRDPARTY_DIR}/boost/libs/intrusive/include
-    ${THIRDPARTY_DIR}/boost/libs/tokenizer/include
-    ${THIRDPARTY_DIR}/boost/libs/geometry/include
-    ${THIRDPARTY_DIR}/boost/libs/lexical_cast/include
-    ${THIRDPARTY_DIR}/boost/libs/qvm/include
-    ${THIRDPARTY_DIR}/boost/libs/exception/include
-    ${THIRDPARTY_DIR}/utf8/source
-    ${THIRDPARTY_DIR}/tinyini/include
-    ${THIRDPARTY_DIR}/metabuf
-    ${THIRDPARTY_DIR}/libmath/include
-    ${THIRDPARTY_DIR}/pybind/include
-    )     
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/boost )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/utf8/source )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/tinyini/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/metabuf )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
 
 ADD_MENGINE_LIBRARY()
 

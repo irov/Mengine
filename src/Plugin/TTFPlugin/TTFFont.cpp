@@ -55,7 +55,7 @@ namespace Mengine
 
         if( IniUtil::getIniValue( _ini, m_name.c_str(), "Path", m_ttfPath ) == false )
         {
-            LOGGER_ERROR( "TextManager::loadFonts invalid font '%s' don't setup Glyph"
+            LOGGER_ERROR( "invalid font '%s' don't setup Glyph"
                 , m_name.c_str()
             );
 
@@ -64,7 +64,7 @@ namespace Mengine
 
         if( IniUtil::getIniValue( _ini, m_name.c_str(), "Height", m_height ) == false )
         {
-            LOGGER_ERROR( "TextManager::loadFonts invalid font '%s' don't setup Height"
+            LOGGER_ERROR( "invalid font '%s' don't setup Height"
                 , m_name.c_str()
             );
 
@@ -75,7 +75,7 @@ namespace Mengine
         {
             if( IniUtil::getIniValue( _ini, m_name.c_str(), "FEName", m_ttfFEName ) == false )
             {
-                LOGGER_ERROR( "TextManager::loadFonts invalid font '%s' don't setup FEName"
+                LOGGER_ERROR( "invalid font '%s' don't setup FEName"
                     , m_name.c_str()
                 );
 
@@ -101,7 +101,7 @@ namespace Mengine
 
             if( ttfEffectMemory == nullptr )
             {
-                LOGGER_ERROR( "TTFFont::_compile font '%s' invalid get FE '%s'"
+                LOGGER_ERROR( "font '%s' invalid get FE '%s'"
                     , m_name.c_str()
                     , m_ttfFEPath.c_str()
                 );

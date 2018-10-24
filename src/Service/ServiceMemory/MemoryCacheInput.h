@@ -9,7 +9,7 @@
 
 namespace Mengine
 {
-    class MemoryManager;
+    class MemoryService;
 
     class MemoryCacheInput
         : public ServantBase<MemoryCacheInputInterface>
@@ -19,7 +19,7 @@ namespace Mengine
         ~MemoryCacheInput() override;
 
     public:
-        void setMemoryManager( MemoryManager * _memoryManager );
+        void setMemoryManager( MemoryService * _memoryManager );
 
     public:
         Pointer cacheBuffer( size_t _size, const char * _doc, const char * _file, uint32_t _line ) override;
@@ -46,7 +46,7 @@ namespace Mengine
         void uncache_();
 
     protected:
-        MemoryManager * m_memoryManager;
+        MemoryService * m_memoryManager;
 
         uint32_t m_bufferId;
 

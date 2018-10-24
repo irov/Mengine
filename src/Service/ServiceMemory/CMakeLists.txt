@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServiceMemory )
 
 ADD_FILTER(
 src
-	MemoryManager.cpp
-	MemoryManager.h
+	MemoryService.cpp
+	MemoryService.h
     
     MemoryBuffer.h
     MemoryBuffer.cpp

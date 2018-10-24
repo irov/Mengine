@@ -28,7 +28,7 @@ namespace Mengine
 
         if( xml_text == nullptr )
         {
-            LOGGER_ERROR( "TextManager::loadResource invalid open file %s:%s"
+            LOGGER_ERROR( "invalid open file %s:%s"
                 , _fileGroup->getName().c_str()
                 , _path.c_str()
             );

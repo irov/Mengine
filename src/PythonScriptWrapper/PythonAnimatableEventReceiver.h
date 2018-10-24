@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Kernel/ScriptEventReceiver.h"
+#include "PythonEventReceiver.h"
+
 #include "Kernel/Animatable.h"
 
 namespace Mengine
@@ -8,7 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<class T_AnimatableEventReceiver = AnimationEventReceiver>
     class PythonAnimatableEventReceiver
-        : public ScriptEventReceiver
+        : public PythonEventReceiver
         , public T_AnimatableEventReceiver
     {
     public:

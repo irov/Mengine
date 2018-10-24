@@ -26,34 +26,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Entity::setScriptEventable( const EventablePtr & _eventable )
     {
-        m_scriptEventable = _eventable;
+        m_behaviorEventable = _eventable;
     }
     //////////////////////////////////////////////////////////////////////////
     const EventablePtr & Entity::getScriptEventable() const
     {
-        return m_scriptEventable;
+        return m_behaviorEventable;
     }
     //////////////////////////////////////////////////////////////////////////
     EventationInterface * Entity::getScriptEventation() const
     {
-        if( m_scriptEventable == nullptr )
+        if( m_behaviorEventable == nullptr )
         {
             return nullptr;
         }
 
-        EventationInterface * event = m_scriptEventable->getEventation();
+        EventationInterface * event = m_behaviorEventable->getEventation();
 
         return event;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Entity::setScriptObject( const pybind::object & _object )
+    void Entity::setBehavior( const EntityBehaviorInterfacePtr & _behavior )
     {
-        m_object = _object;
+        m_behavior = _behavior;
     }
     //////////////////////////////////////////////////////////////////////////
-    const pybind::object & Entity::getScriptObject() const
+    const EntityBehaviorInterfacePtr & Entity::getBehavior() const
     {
-        return m_object;
+        return m_behavior;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Entity::_activate()
@@ -63,7 +63,7 @@ namespace Mengine
         if( event != nullptr )
         {
             EVENTABLE_METHODT( event, EVENT_ENTITY_PREPARATION, EntityEventReceiver )
-                ->onEntityPreparation( m_object );
+                ->onEntityPreparation( m_behavior );
         }
 
         bool successful = Node::_activate();
@@ -80,7 +80,7 @@ namespace Mengine
         if( event != nullptr )
         {
             EVENTABLE_METHODT( event, EVENT_ENTITY_ACTIVATE, EntityEventReceiver )
-                ->onEntityActivate( m_object );
+                ->onEntityActivate( m_behavior );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -91,7 +91,7 @@ namespace Mengine
         if( event != nullptr )
         {
             EVENTABLE_METHODT( event, EVENT_ENTITY_PREPARATION_DEACTIVATE, EntityEventReceiver )
-                ->onEntityPreparationDeactivate( m_object );
+                ->onEntityPreparationDeactivate( m_behavior );
         }
 
         Node::_deactivate();
@@ -106,7 +106,7 @@ namespace Mengine
         if( event != nullptr )
         {
             EVENTABLE_METHODT( event, EVENT_ENTITY_DEACTIVATE, EntityEventReceiver )
-                ->onEntityDeactivate( m_object );
+                ->onEntityDeactivate( m_behavior );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -117,7 +117,7 @@ namespace Mengine
         if( event != nullptr )
         {
             EVENTABLE_METHODT( event, EVENT_ENTITY_COMPILE, EntityEventReceiver )
-                ->onEntityCompile( m_object );
+                ->onEntityCompile( m_behavior );
         }
 
         return true;
@@ -130,7 +130,7 @@ namespace Mengine
         if( event != nullptr )
         {
             EVENTABLE_METHODT( event, EVENT_ENTITY_RELEASE, EntityEventReceiver )
-                ->onEntityRelease( m_object );
+                ->onEntityRelease( m_behavior );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -141,7 +141,7 @@ namespace Mengine
         if( event != nullptr )
         {
             EVENTABLE_METHODT( event, EVENT_ENTITY_CREATE, EntityEventReceiver )
-                ->onEntityCreate( m_object, this );
+                ->onEntityCreate( m_behavior, this );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -156,10 +156,10 @@ namespace Mengine
         if( event != nullptr )
         {
             EVENTABLE_METHODT( event, EVENT_ENTITY_DESTROY, EntityEventReceiver )
-                ->onEntityDestroy( m_object );
+                ->onEntityDestroy( m_behavior );
         }
 
-        m_object.reset();
+        m_behavior.reset();
 
         Node * new_parent = this->getParent();
 

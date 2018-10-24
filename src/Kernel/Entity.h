@@ -5,10 +5,15 @@
 #include "Kernel/Node.h"
 #include "Kernel/BaseRender.h"
 
-#include "pybind/object.hpp"
-
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    class EntityBehaviorInterface
+        : public Mixin
+    {
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<EntityBehaviorInterface> EntityBehaviorInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     enum EntityEventFlag
     {
@@ -27,14 +32,14 @@ namespace Mengine
         : public EventReceiver
     {
     public:
-        virtual void onEntityCreate( const pybind::object & _self, Node * _node ) = 0;
-        virtual void onEntityDestroy( const pybind::object & _self ) = 0;
-        virtual void onEntityPreparation( const pybind::object & _self ) = 0;
-        virtual void onEntityActivate( const pybind::object & _self ) = 0;
-        virtual void onEntityPreparationDeactivate( const pybind::object & _self ) = 0;
-        virtual void onEntityDeactivate( const pybind::object & _self ) = 0;
-        virtual void onEntityCompile( const pybind::object & _self ) = 0;
-        virtual void onEntityRelease( const pybind::object & _self ) = 0;
+        virtual void onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Node * _node ) = 0;
+        virtual void onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior ) = 0;
+        virtual void onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) = 0;
+        virtual void onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) = 0;
+        virtual void onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior ) = 0;
+        virtual void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) = 0;
+        virtual void onEntityCompile( const EntityBehaviorInterfacePtr & _behavior ) = 0;
+        virtual void onEntityRelease( const EntityBehaviorInterfacePtr & _behavior ) = 0;
 
     };
     //////////////////////////////////////////////////////////////////////////
@@ -60,8 +65,8 @@ namespace Mengine
         const EventablePtr & getScriptEventable() const;
 
     public:
-        void setScriptObject( const pybind::object & _object );
-        const pybind::object & getScriptObject() const;
+        void setBehavior( const EntityBehaviorInterfacePtr & _behavior );
+        const EntityBehaviorInterfacePtr & getBehavior() const;
 
     public:
         EventationInterface * getScriptEventation() const;
@@ -88,8 +93,8 @@ namespace Mengine
     protected:
         ConstString m_prototype;
 
-        EventablePtr m_scriptEventable;
-        pybind::object m_object;
+        EventablePtr m_behaviorEventable;
+        EntityBehaviorInterfacePtr m_behavior;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Entity> EntityPtr;

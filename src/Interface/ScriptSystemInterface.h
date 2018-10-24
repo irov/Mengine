@@ -6,17 +6,18 @@
 #include "Config/Typedef.h"
 #include "Config/String.h"
 
+#include "Kernel/ScriptWrapperInterface.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/ScriptWrapper.h"
 #include "Kernel/Tags.h"
 
 #include "Kernel/Servant.h"
 
+#include "Config/Vector.h"
+
 #include "pybind/kernel.hpp"
 #include "pybind/base.hpp"
-
-#include "Config/Vector.h"
+#include "pybind/module.hpp"
 
 namespace Mengine
 {

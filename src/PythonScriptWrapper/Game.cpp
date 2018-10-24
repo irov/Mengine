@@ -20,8 +20,6 @@
 #include "GameAccountProvider.h"
 #include "GameSoundVolumeProvider.h"
 
-#include "Kernel/ScriptEventReceiver.h"
-
 #include "Kernel/Arrow.h"
 
 #include "Kernel/Logger.h"
@@ -299,7 +297,7 @@ namespace Mengine
     {
         class PythonGameEventReceiver
             : public GameEventReceiver
-            , public ScriptEventReceiver
+            , public PythonEventReceiver
         {
         protected:
             void onGameFullscreen( bool _fullscreen ) override

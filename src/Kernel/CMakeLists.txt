@@ -20,6 +20,7 @@ Mixin\\\\Eventable
 
 ADD_FILTER(
 Mixin\\\\Scriptable
+    ScriptWrapperInterface.h
 	Scriptable.cpp
 	Scriptable.h
 )
@@ -175,6 +176,7 @@ Transformation
 
 ADD_FILTER(
 Animation
+    AnimationEventReceiver.h
 	BaseAnimation.h
     BaseAnimation.cpp
 )
@@ -281,13 +283,6 @@ ADD_FILTER(
 ScheduleManager
 	ScheduleManager.cpp
 	ScheduleManager.h
-)
-
-ADD_FILTER(
-ScriptWrapper
-	ScriptWrapper.h
-	ScriptEventReceiver.h	
-    AnimationEventReceiver.h
 )
 
 ADD_FILTER(

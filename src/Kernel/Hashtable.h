@@ -70,23 +70,20 @@ namespace Mengine
             return prev;
         }
 
-        bool remove( const key_type & _key )
+        element_type_ptr remove( const key_type & _key )
         {
             if( m_size == 0 )
             {
-                return false;
+                return nullptr;
             }
 
             hash_type hash = hashgen_type()(_key);
 
-            if( Hashtable::pop_( m_buffer, m_capacity, hash, _key ) == false )
-            {
-                return false;
-            }
+            element_type_ptr element = Hashtable::pop_( m_buffer, m_capacity, hash, _key );
 
             --m_size;
 
-            return true;
+            return element;
         }
 
         const element_type_ptr & find( const key_type & _key ) const
@@ -354,7 +351,7 @@ namespace Mengine
             }
         }
 
-        static bool pop_( Record * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
+        static element_type_ptr pop_( Record * _buffer, size_type _capacity, hash_type _hash, const key_type & _key )
         {
             size_type hash_mask = _capacity - 1;
             size_type mask = (size_type)_hash;
@@ -365,14 +362,16 @@ namespace Mengine
 
                 if( record->element == nullptr )
                 {
-                    return false;
+                    return nullptr;
                 }
 
                 if( record->hash == _hash && record->key == _key )
                 {
+                    element_type_ptr pop_element = record->element;
+
                     record->element.set( reinterpret_cast<element_type_ptr::value_type *>(~0UL) );
 
-                    return true;
+                    return pop_element;
                 }
 
                 mask = (mask << 2) + mask + (size_type)probe + 1;

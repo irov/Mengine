@@ -53,6 +53,6 @@ namespace Mengine
         };
 
         typedef Hashtable<CategoryKey, PrototypeGeneratorInterfacePtr, CategoryKeyHashgen> HashtablePrototypes;
-        HashtablePrototypes m_prototypes;
+        HashtablePrototypes m_generators;
     };
 }

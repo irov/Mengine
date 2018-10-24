@@ -2974,7 +2974,7 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptWrapper::helperWrap()
+    bool PythonWrapper::helperWrap()
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 

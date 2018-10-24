@@ -42,9 +42,7 @@ Game
 
 ADD_FILTER(
 Wrapper
-	PythonAnimatableEventReceiver.h
-	PythonScriptWrapper.cpp
-	PythonScriptWrapper.h
+    PythonWrapper.h	
     HelperScriptWrapper.cpp
 	SoundScriptWrapper.cpp
 	NodeScriptWrapper.cpp
@@ -56,6 +54,10 @@ Wrapper
 
 ADD_FILTER(
 Generator
+    PythonEventReceiver.h
+    PythonAnimatableEventReceiver.h		
+    PythonEntityBehavior.h
+    PythonEntityBehavior.cpp    
 	EntityPrototypeGenerator.h
 	EntityPrototypeGenerator.cpp
 )

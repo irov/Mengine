@@ -18,6 +18,7 @@ namespace Mengine
 
     protected:
         bool initialize() override;
+        void finalize() override;
 
     protected:
         virtual FactoryPtr _initializeFactory() = 0;

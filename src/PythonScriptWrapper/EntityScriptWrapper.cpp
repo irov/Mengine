@@ -1,23 +1,17 @@
 #include "PythonScriptWrapper.h"
 
-#include "Kernel/ScriptEventReceiver.h"
-
 #include "Interface/StringizeInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/NodeInterface.h"
 
-#include "Kernel/ScriptWrapper.h"
+#include "PythonEntityBehavior.h"
+#include "EntityPrototypeGenerator.h"
 
 #include "Kernel/Entity.h"
 #include "Kernel/Scene.h"
-
 #include "Kernel/Arrow.h"
-
 #include "Kernel/FactoryPool.h"
-
-#include "EntityPrototypeGenerator.h"
-
 #include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"
@@ -89,7 +83,8 @@ namespace Mengine
             NODE_SERVICE()
                 ->addHomeless( entity );
 
-            const pybind::object & py_entity = entity->getScriptObject();
+            const PythonEntityBehaviorPtr & behavior = entity->getBehavior();
+            const pybind::object & py_entity = behavior->getScriptObject();
 
             return py_entity;
         }
@@ -264,7 +259,7 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptWrapper::entityWrap()
+    bool PythonWrapper::entityWrap()
     {
         if( classWrapping() == false )
         {

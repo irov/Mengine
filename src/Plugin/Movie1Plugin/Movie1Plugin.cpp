@@ -13,7 +13,6 @@
 #include "Engine/HotSpotShape.h"
 #include "Engine/ResourceShape.h"
 
-#include "Kernel/ScriptWrapper.h"
 #include "Kernel/RenderScissor.h"
 
 #include "Kernel/DefaultPrototypeGenerator.h"
@@ -1525,25 +1524,25 @@ namespace Mengine
 
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie" ), new ScriptWrapper<Movie>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie" ), new PythonScriptWrapper<Movie>() );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ), new ScriptWrapper<MovieSlot>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ), new PythonScriptWrapper<MovieSlot>() );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new ScriptWrapper<MovieSceneEffect>() );        
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new PythonScriptWrapper<MovieSceneEffect>() );        
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new ScriptWrapper<MovieInternalObject>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new PythonScriptWrapper<MovieInternalObject>() );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ), new ScriptWrapper<MovieEvent>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ), new PythonScriptWrapper<MovieEvent>() );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new ScriptWrapper<ResourceMovie>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new PythonScriptWrapper<ResourceMovie>() );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new ScriptWrapper<ResourceInternalObject>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new PythonScriptWrapper<ResourceInternalObject>() );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<NodePrototypeGenerator<Movie, 128> > ) == false )

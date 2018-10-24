@@ -10,7 +10,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ScriptEventReceiver
+    class PythonEventReceiver
     {
     public:
         void initialize( const pybind::object & _cb )

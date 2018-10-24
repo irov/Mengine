@@ -122,6 +122,7 @@
 #include "PythonAnimatableEventReceiver.h"
 #include "PythonValueFollower.h"
 
+#include "PythonEntityBehavior.h"
 #include "PythonScheduleTimer.h"
 #include "PythonSchedulePipe.h"
 #include "PythonScheduleEvent.h"
@@ -629,7 +630,8 @@ namespace Mengine
                     }
                     else
                     {
-                        const pybind::object & py_scene = _scene->getScriptObject();
+                        const PythonEntityBehaviorPtr & behavior = _scene->getBehavior();
+                        const pybind::object & py_scene = behavior->getScriptObject();
 
                         m_cb.call_args( py_scene, _enable, m_args );
                     }
@@ -779,7 +781,9 @@ namespace Mengine
                 return pybind::object::get_invalid();
             }
 
-            const pybind::object & py_arrow = arrow->getScriptObject();
+            const PythonEntityBehaviorPtr & behavior = arrow->getBehavior();
+            const pybind::object & py_arrow = behavior->getScriptObject();
+
 
             return py_arrow;
         }
@@ -3624,7 +3628,7 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptWrapper::engineWrap()
+    bool PythonWrapper::engineWrap()
     {
         EngineScriptMethod * nodeScriptMethod = new EngineScriptMethod();
 
@@ -3876,7 +3880,7 @@ namespace Mengine
         pybind::def_functor( kernel, "destroyValueFollower", nodeScriptMethod, &EngineScriptMethod::s_destroyValueFollower );
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( Helper::stringizeString( "PythonValueFollower" ), new ScriptWrapper<PythonValueFollower>() ) == false )
+            ->setWrapper( Helper::stringizeString( "PythonValueFollower" ), new PythonScriptWrapper<PythonValueFollower>() ) == false )
         {
             return false;
         }

@@ -23,6 +23,7 @@ namespace Mengine
 
     public:
         virtual bool initialize() = 0;
+        virtual void finalize() = 0;
 
     public:
         virtual PointerFactorable generate() = 0;

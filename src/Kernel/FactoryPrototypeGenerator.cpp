@@ -1,4 +1,5 @@
 #include "FactoryPrototypeGenerator.h"
+#include "FactoryAssertion.h"
 
 namespace Mengine
 {
@@ -23,6 +24,12 @@ namespace Mengine
         m_factory = factory;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void FactoryPrototypeGenerator::finalize()
+    {
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+        m_factory = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t FactoryPrototypeGenerator::count() const

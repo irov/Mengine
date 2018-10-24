@@ -12,7 +12,6 @@
 
 #include "Kernel/ResourcePrototypeGenerator.h"
 #include "Kernel/SurfacePrototypeGenerator.h"
-#include "Kernel/ScriptWrapper.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Video, Mengine::VideoPlugin );
@@ -78,13 +77,13 @@ namespace Mengine
 
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new ScriptWrapper<ResourceVideo>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new PythonScriptWrapper<ResourceVideo>() ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), new ScriptWrapper<SurfaceVideo>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), new PythonScriptWrapper<SurfaceVideo>() ) == false )
         {
             return false;
         }

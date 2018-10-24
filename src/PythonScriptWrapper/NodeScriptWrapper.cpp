@@ -77,6 +77,7 @@
 //#include "Skeleton.h"
 
 #include "ScriptHolder.h"
+#include "PythonEventReceiver.h"
 
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceImage.h"
@@ -115,12 +116,11 @@
 #include "Kernel/Affector.h"
 #include "Kernel/AffectorHelper.h"
 #include "Kernel/ThreadTask.h"
-#include "Kernel/ScriptEventReceiver.h"
 #include "Kernel/ScriptWrapper.h"
 
 #include "PythonAnimatableEventReceiver.h"
 #include "ScriptableAffectorCallback.h"
-
+#include "PythonEntityBehavior.h"
 #include "PythonScheduleTimer.h"
 #include "PythonSchedulePipe.h"
 #include "PythonScheduleEvent.h"
@@ -542,7 +542,8 @@ namespace Mengine
                     }
                     else
                     {
-                        const pybind::object & py_scene = _scene->getScriptObject();
+                        const PythonEntityBehaviorPtr & behavior = _scene->getBehavior();
+                        const pybind::object & py_scene = behavior->getScriptObject();
 
                         m_cb.call_args( py_scene, _enable, m_args );
                     }
@@ -653,7 +654,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonMeshEventReceiver
-            : public ScriptEventReceiver
+            : public PythonEventReceiver
             , public MeshgetEventReceiver
         {
         public:
@@ -700,7 +701,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonScriptHolderEventReceiver
-            : public ScriptEventReceiver
+            : public PythonEventReceiver
             , public ScriptHolderEventReceiver
         {
         public:
@@ -753,7 +754,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonHotSpotEventReceiver
-            : public ScriptEventReceiver
+            : public PythonEventReceiver
             , public HotSpotEventReceiver
         {
         public:
@@ -2363,7 +2364,7 @@ namespace Mengine
         return true;
     }
 
-    bool PythonScriptWrapper::nodeWrap()
+    bool PythonWrapper::nodeWrap()
     {
         NodeScriptMethod * nodeScriptMethod = new NodeScriptMethod();
 

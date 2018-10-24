@@ -22,14 +22,19 @@ namespace Mengine
     {
         uint32_t PrototypeHashTableSize = CONFIG_VALUE( "Engine", "PrototypeHashTableSize", 1024 );
 
-        m_prototypes.reserve( PrototypeHashTableSize );
+        m_generators.reserve( PrototypeHashTableSize );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PrototypeService::_finalizeService()
     {
-        m_prototypes.clear();
+        for( const PrototypeGeneratorInterfacePtr & generator : m_generators )
+        {
+            generator->finalize();
+        }
+
+        m_generators.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PrototypeService::addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator )
@@ -51,7 +56,7 @@ namespace Mengine
         key.category = _category;
         key.prototype = _prototype;
 
-        m_prototypes.insert( key, _generator );
+        m_generators.insert( key, _generator );
 
         LOGGER_INFO( "PrototypeManager::addPrototype add '%s:%s'"
             , _category.c_str()
@@ -67,9 +72,16 @@ namespace Mengine
         key.category = _category;
         key.prototype = _prototype;
 
-        m_prototypes.remove( key );
+        PrototypeGeneratorInterfacePtr generator = m_generators.remove( key );
 
-        return false;
+        if( generator == nullptr )
+        {
+            return false;
+        }
+
+        generator->finalize();
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const PrototypeGeneratorInterfacePtr & PrototypeService::getGenerator( const ConstString & _category, const ConstString & _prototype ) const
@@ -78,7 +90,7 @@ namespace Mengine
         key.category = _category;
         key.prototype = _prototype;
 
-        const PrototypeGeneratorInterfacePtr & generator = m_prototypes.find( key );
+        const PrototypeGeneratorInterfacePtr & generator = m_generators.find( key );
 
         return generator;
     }
@@ -89,7 +101,7 @@ namespace Mengine
         key.category = _category;
         key.prototype = _prototype;
 
-        const PrototypeGeneratorInterfacePtr & generator = m_prototypes.find( key );
+        const PrototypeGeneratorInterfacePtr & generator = m_generators.find( key );
 
         if( generator == nullptr )
         {
@@ -108,7 +120,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PrototypeService::foreachGenerators( const LambdaPrototypeGenerator & _lambda ) const
     {
-        for( const PrototypeGeneratorInterfacePtr & generator : m_prototypes )
+        for( const PrototypeGeneratorInterfacePtr & generator : m_generators )
         {
 			_lambda( generator );
         }

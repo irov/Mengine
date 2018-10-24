@@ -22,7 +22,7 @@ namespace Mengine
         if( event != nullptr )
         {
             bool handle = EVENTABLE_METHODRT( event, EVENT_APP_MOUSE_LEAVE, false, SceneEventReceiver )
-                ->onSceneAppMouseLeave( m_object );
+                ->onSceneAppMouseLeave( m_behavior );
 
             if( handle == false )
             {
@@ -48,7 +48,7 @@ namespace Mengine
         if( event != nullptr )
         {
             bool handle = EVENTABLE_METHODRT( event, EVENT_APP_MOUSE_ENTER, false, SceneEventReceiver )
-                ->onSceneAppMouseEnter( m_object );
+                ->onSceneAppMouseEnter( m_behavior );
 
             if( handle == false )
             {
@@ -74,7 +74,7 @@ namespace Mengine
         if( event != nullptr )
         {
             bool handle = EVENTABLE_METHODRT( event, EVENT_FOCUS, false, SceneEventReceiver )
-                ->onSceneAppFocus( m_object, _focus );
+                ->onSceneAppFocus( m_behavior, _focus );
 
             if( handle == false )
             {

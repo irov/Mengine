@@ -31,11 +31,9 @@ src
     DX9RenderProgramVariable.cpp
 )
 
-add_definitions(-DUNICODE)
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
 
-INCLUDE_DIRECTORIES( 
-    ${THIRDPARTY_DIR}/libmath/include
-    )
+add_definitions(-DUNICODE)
 
 ADD_MENGINE_LIBRARY()
 

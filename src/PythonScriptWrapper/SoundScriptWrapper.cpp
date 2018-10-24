@@ -1,4 +1,4 @@
-#include "PythonScriptWrapper.h"
+#include "PythonWrapper.h"
 
 #include "Interface/AmplifierInterface.h"
 #include "Interface/SoundServiceInterface.h"

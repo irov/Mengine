@@ -12,6 +12,7 @@ namespace Mengine
 
     public:
         BitmapFontPlugin();
+        ~BitmapFontPlugin() override;
 
     protected:
         bool _initialize() override;

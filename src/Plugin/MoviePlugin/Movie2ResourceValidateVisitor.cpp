@@ -7,7 +7,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ConfigInterface.h"
 
-#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 
 #include "Movie2Interface.h"
 

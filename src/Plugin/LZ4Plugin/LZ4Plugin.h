@@ -11,6 +11,7 @@ namespace Mengine
 
     public:
         LZ4Plugin();
+        ~LZ4Plugin() override;
 
     protected:
         bool _initialize() override;

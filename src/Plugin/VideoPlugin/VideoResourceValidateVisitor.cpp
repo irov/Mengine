@@ -4,7 +4,7 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ConfigInterface.h"
 
-#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 
 #include "Kernel/Logger.h"
 

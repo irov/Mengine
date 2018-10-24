@@ -10,12 +10,6 @@
 
 namespace Mengine
 {
-    class CodecFactoryInterface;
-    class RenderServiceInterface;
-
-    class DecoderInterface;
-    class EncoderInterface;
-
     class CodecService
         : public ServiceBase<CodecServiceInterface>
     {

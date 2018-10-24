@@ -7,8 +7,10 @@
 #include "Interface/ConfigInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 
-#include "../Plugin/DebugRenderPlugin/DebugRenderInterface.h"
-#include "../Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugin/DebugRenderPlugin/DebugRenderInterface.h"
+#include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+
+#include "Environment/Python/PythonScriptWrapper.h"
 
 #include "Movie2DebugRenderVisitor.h"
 
@@ -20,7 +22,7 @@
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
 
-#include "PythonScriptWrapper/PythonAnimatableEventReceiver.h"
+#include "Environment/Python/PythonAnimatableEventReceiver.h"
 
 #include "Kernel/Logger.h"
 

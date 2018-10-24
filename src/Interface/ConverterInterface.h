@@ -12,6 +12,7 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     struct ConverterOptions
     {
         FileGroupInterfacePtr fileGroup;
@@ -21,7 +22,7 @@ namespace Mengine
 
         String params;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     class ConverterInterface
         : public ServantInterface
     {
@@ -40,9 +41,9 @@ namespace Mengine
     public:
         virtual bool convert() = 0;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ConverterInterface> ConverterInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     class ConverterFactoryInterface
         : public ServantInterface
     {
@@ -52,9 +53,9 @@ namespace Mengine
     public:
         virtual ConverterInterfacePtr createConverter() = 0;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ConverterFactoryInterface> ConverterFactoryInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     class ConverterServiceInterface
         : public ServiceInterface
     {
@@ -70,8 +71,8 @@ namespace Mengine
 
     public:
         virtual bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out ) = 0;
-    };
-
+    };    
+}
+//////////////////////////////////////////////////////////////////////////
 #define CONVERTER_SERVICE()\
     SERVICE_GET(Mengine::ConverterServiceInterface)
-}

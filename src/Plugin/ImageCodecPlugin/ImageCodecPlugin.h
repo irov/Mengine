@@ -16,12 +16,10 @@ namespace Mengine
 
     public:
         ImageCodecPlugin();
+        ~ImageCodecPlugin() override;
 
     protected:
         bool _initialize() override;
         void _finalize() override;
-
-    protected:
-        DataflowFactoryInterfacePtr m_factoryAEK;
     };
 }

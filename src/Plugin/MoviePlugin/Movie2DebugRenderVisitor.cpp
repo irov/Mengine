@@ -4,7 +4,7 @@
 
 #include "Kernel/RenderVertex2D.h"
 
-#include "../Plugin/DebugRenderPlugin/DebugRenderInterface.h"
+#include "Plugin/DebugRenderPlugin/DebugRenderInterface.h"
 
 namespace Mengine
 {

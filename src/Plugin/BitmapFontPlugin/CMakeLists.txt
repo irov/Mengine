@@ -17,11 +17,10 @@ src
 
 #add_definitions(-DMENGINE_PLUGIN_DLL)
 
-INCLUDE_DIRECTORIES( 
-		${THIRDPARTY_DIR}/utf8/source
-        ${THIRDPARTY_DIR}/libmath/include
-        ${THIRDPARTY_DIR}/tinyini/include
-)
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/utf8/source )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/tinyini/include )
 
 ADD_MENGINE_LIBRARY()
 

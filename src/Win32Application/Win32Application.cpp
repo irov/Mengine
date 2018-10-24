@@ -45,7 +45,7 @@
 #include <algorithm>
 #include <functional>
 
-#include "Utils/WIN32/WindowsIncluder.h"
+#include "Environment/WIN32/WindowsIncluder.h"
 
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 

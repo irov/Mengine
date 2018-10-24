@@ -1,6 +1,8 @@
 #include "EntityPrototypeGenerator.h"
 #include "PythonEntityBehavior.h"
 
+#include "Environment/Python/PythonEventReceiver.h"
+
 #include "Interface/StringizeInterface.h"
 
 #include "Kernel/FactoryPool.h"

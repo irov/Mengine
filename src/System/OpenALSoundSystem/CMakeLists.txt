@@ -16,10 +16,10 @@ src
 	OpenALSoundError.h	
 )
 
-add_definitions(-DAL_LIBTYPE_STATIC)
-
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/openal-soft/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
+
+add_definitions(-DAL_LIBTYPE_STATIC)
 
 ADD_MENGINE_LIBRARY()
 

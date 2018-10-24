@@ -1,6 +1,6 @@
 #include "MemoryCacheBuffer.h"
 
-#include "MemoryManager.h"
+#include "MemoryService.h"
 
 #include "Interface/MemoryInterface.h"
 
@@ -20,7 +20,7 @@ namespace Mengine
         this->uncache_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void MemoryCacheBuffer::setMemoryManager( MemoryManager * _memoryManager )
+    void MemoryCacheBuffer::setMemoryManager( MemoryService * _memoryManager )
     {
         m_memoryManager = _memoryManager;
     }

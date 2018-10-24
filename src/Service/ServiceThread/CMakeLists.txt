@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServiceThread )
 
 ADD_FILTER(
 src
-	ThreadEngine.h
-	ThreadEngine.cpp
+	ThreadService.h
+	ThreadService.cpp
     ThreadQueue.h
     ThreadQueue.cpp    
     ThreadMutexDummy.h

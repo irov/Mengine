@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServiceLogger )
 
 ADD_FILTER(
 src
-	LoggerEngine.h
-	LoggerEngine.cpp
+	LoggerService.h
+	LoggerService.cpp
 )
 
 ADD_MENGINE_LIBRARY()

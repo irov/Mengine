@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServiceFile )
 
 ADD_FILTER(
 src
-	FileEngine.cpp
-	FileEngine.h
+	FileService.cpp
+	FileService.h
 )
 
 ADD_MENGINE_LIBRARY()

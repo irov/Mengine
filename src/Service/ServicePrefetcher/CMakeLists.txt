@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServicePrefetcher )
 
 ADD_FILTER(
 src
-    PrefetcherManager.h
-	PrefetcherManager.cpp    
+    PrefetcherService.h
+	PrefetcherService.cpp    
     ThreadTaskPrefetch.h
     ThreadTaskPrefetch.cpp
     ThreadTaskPrefetchDataflow.h

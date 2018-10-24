@@ -16,7 +16,7 @@ namespace Mengine
     class RenderMaterialServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "RenderMaterialManager" )
+        SERVICE_DECLARE( "RenderMaterialService" )
 
     public:
         virtual bool loadMaterials( const FileGroupInterfacePtr& _pakName, const FilePath& _fileName ) = 0;

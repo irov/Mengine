@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServiceScript )
 
 ADD_FILTER(
 src
-	ScriptEngine.cpp
-	ScriptEngine.h
+	ScriptService.cpp
+	ScriptService.h
 	ScriptLogger.h
 	ScriptLogger.cpp
     ScriptModule.h

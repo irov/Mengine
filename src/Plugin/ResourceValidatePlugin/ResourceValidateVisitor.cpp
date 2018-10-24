@@ -105,7 +105,7 @@ namespace Mengine
                 return true;
             }
 
-            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' not exist file '%s:%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' not exist file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -120,7 +120,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' invalid open file '%s:%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' invalid open file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -137,7 +137,7 @@ namespace Mengine
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' file '%s:%s' invalid decoder '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decoder '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -150,7 +150,7 @@ namespace Mengine
 
         if( imageDecoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -171,7 +171,7 @@ namespace Mengine
 
         if( (width > limitTextureWidth && limitTextureWidth != 0U) || (height > limitTextureHeight && limitTextureHeight != 0U) )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' file '%s:%s' invalid limit '%d:%d' texture size '%d:%d'"
+            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid limit '%d:%d' texture size '%d:%d'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -202,7 +202,7 @@ namespace Mengine
 
         if( (test_size.x != width || test_size.y != height) && (test_size.x > 4.f && test_size.y > 4.f) )
         {
-            LOGGER_ERROR( "ResourceImage::_isValid: '%s' group '%s' file '%s:%s' incorrect size %f:%f texture %f:%f"
+            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' incorrect size %f:%f texture %f:%f"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -237,7 +237,7 @@ namespace Mengine
 
             if( imageDecoder->setOptions( &options ) == false )
             {
-                LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' file '%s:%s' invalid optionizing"
+                LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid optionizing"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , _resource->getFileGroup()->getName().c_str()
@@ -250,7 +250,7 @@ namespace Mengine
 
             if( imageDecoder->decode( buffer_memory, texture_size ) == 0 )
             {
-                LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' file '%s:%s' invalid decode '%s'"
+                LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decode '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , _resource->getFileGroup()->getName().c_str()
@@ -263,7 +263,7 @@ namespace Mengine
 
             if( s_allPixelsTransparency( buffer_memory, texture_size ) == true )
             {
-                LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' file '%s:%s' codec '%s' all pixels transparency!"
+                LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' all pixels transparency!"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , _resource->getFileGroup()->getName().c_str()
@@ -280,7 +280,7 @@ namespace Mengine
             {
                 if( s_checkRowColumnTransparency( buffer_memory, dataInfo->width, dataInfo->height ) == true )
                 {
-                    LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' file '%s:%s' codec '%s' row or column pixels transparency!"
+                    LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' codec '%s' row or column pixels transparency!"
                         , _resource->getName().c_str()
                         , _resource->getGroupName().c_str()
                         , _resource->getFileGroup()->getName().c_str()
@@ -312,7 +312,7 @@ namespace Mengine
                 return true;
             }
 
-            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' not exist file '%s:%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' not exist file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -327,7 +327,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' invalid open file '%s:%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' invalid open file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -344,7 +344,7 @@ namespace Mengine
 
         if( imageDecoder == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' file '%s:%s' invalid decoder '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decoder '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -357,7 +357,7 @@ namespace Mengine
 
         if( imageDecoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_isValid '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -383,7 +383,7 @@ namespace Mengine
             if( RESOURCE_SERVICE()
                 ->hasResourceT<ResourceImagePtr>( sequence.resourceName, &resourceImage ) == false )
             {
-                LOGGER_ERROR( "ResourceValidateVisitor::ResourceImageSequence: '%s' group '%s' not found image resource '%s'"
+                LOGGER_ERROR( "resource '%s' group '%s' not found image resource '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , sequence.resourceName.c_str()
@@ -395,7 +395,7 @@ namespace Mengine
             if( RESOURCEVALIDATE_SERVICE()
                 ->validResource( resourceImage ) == false )
             {
-                LOGGER_ERROR( "ResourceValidateVisitor::ResourceImageSequence: '%s' group '%s' invalid validate sequence resource '%s'"
+                LOGGER_ERROR( "resource '%s' group '%s' invalid validate sequence resource '%s'"
                     , _resource->getName().c_str()
                     , _resource->getGroupName().c_str()
                     , resourceImage->getName().c_str()
@@ -425,7 +425,7 @@ namespace Mengine
 
         if( total_memory > animationMemoryLimit && animationMemoryLimit != 0U )
         {
-            LOGGER_ERROR( "ResourceValidateVisitor::ResourceImageSequence: '%s' group '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
+            LOGGER_ERROR( "resource '%s' group '%s' overflow %.2fmb max video memory %.2fmb (coeff %f)"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , float( total_memory ) / (1024.f * 1024.f)
@@ -454,7 +454,7 @@ namespace Mengine
 
         if( fileGroup->existFile( filePath ) == false )
         {
-            LOGGER_ERROR( "ResourceMusic::_loader: '%s' group '%s' music '%s' not exist"
+            LOGGER_ERROR( "resource '%s' group '%s' music '%s' not exist"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getPath().c_str()
@@ -478,7 +478,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ResourceSound::_isValid: '%s' group %s can't open sound file '%s:%s'"
+            LOGGER_ERROR( "resource '%s' group %s can't open sound file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -495,7 +495,7 @@ namespace Mengine
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' can't create sound decoder for file '%s:%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' can't create sound decoder for file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -507,7 +507,7 @@ namespace Mengine
 
         if( decoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' can't initialize sound decoder for file '%s:%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' can't initialize sound decoder for file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -523,7 +523,7 @@ namespace Mengine
 
         if( (dataInfo->length <= limitMinimalStreamSoundDuration && limitMinimalStreamSoundDuration != 0.f) && streamable == true )
         {
-            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"0\"/>"
+            LOGGER_ERROR( "resource '%s' group '%s' remove stream (time %.4f <= %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"0\"/>"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
@@ -539,7 +539,7 @@ namespace Mengine
 
         if( (dataInfo->length > limitNoStreamSoundDurationWarning && limitNoStreamSoundDurationWarning != 0.f) && streamable == false )
         {
-            LOGGER_WARNING( "SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
+            LOGGER_WARNING( "resource '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
@@ -553,7 +553,7 @@ namespace Mengine
 
         if( (dataInfo->length > limitNoStreamSoundDurationError && limitNoStreamSoundDurationError != 0.f) && streamable == false )
         {
-            LOGGER_ERROR( "SoundEngine::_isValid: '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
+            LOGGER_ERROR( "resource '%s' group '%s' setup to stream (time %.4f > %.4f ms)\nfile - '%s:%s'\nAdd <IsStreamable Value=\"1\"/>"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , dataInfo->length
@@ -572,7 +572,7 @@ namespace Mengine
 
         if( buffer == nullptr )
         {
-            LOGGER_ERROR( "SoundEngine::isValid '%s' group '%s' can't create buffer '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' can't create buffer '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFilePath().c_str()
@@ -599,7 +599,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ResourceHIT::_isValid '%s' group '%s' invalid open file '%s:%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' invalid open file '%s:%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -616,7 +616,7 @@ namespace Mengine
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( "ResourceHIT::_isValid '%s' group '%s' file '%s:%s' invalid decoder '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' invalid decoder '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -629,7 +629,7 @@ namespace Mengine
 
         if( decoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "ResourceHIT::_isValid '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' decoder initialize failed '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
@@ -650,7 +650,7 @@ namespace Mengine
 
         if( fileGroup->existFile( filePath ) == false )
         {
-            LOGGER_ERROR( "ResourceValidateVisitor::ResourceFile '%s' group '%s' file group '%s' not found file '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' file group '%s' not found file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()

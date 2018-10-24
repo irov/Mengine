@@ -50,7 +50,7 @@
 #include "Plugin/MoviePlugin/ResourceMovie2.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/MousePickerSystemInterface.h"
+#include "Interface/PickerServiceInterface.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"
@@ -2971,8 +2971,8 @@ namespace Mengine
             //    .def( "getParallaxFactor", &Parallax::getParallaxFactor )
             //    ;
 
-            pybind::interface_<MousePickerTrapInterface, pybind::bases<Mixin> >( kernel, "MousePickerTrap", false )
-                .def( "pick", &MousePickerTrapInterface::pick )
+            pybind::interface_<PickerTrapInterface, pybind::bases<Mixin> >( kernel, "PickerTrap", false )
+                .def( "pick", &PickerTrapInterface::pick )
                 ;
 
             pybind::interface_<HotSpot, pybind::bases<Node, Eventable> >( kernel, "HotSpot", false )

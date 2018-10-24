@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServiceData )
 
 ADD_FILTER(
 src
-	DataManager.cpp
-	DataManager.h
+	DataService.cpp
+	DataService.h
 )
 
 ADD_MENGINE_LIBRARY()

@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServiceConverter )
 
 ADD_FILTER(
 src
-	ConverterEngine.h
-	ConverterEngine.cpp
+	ConverterService.h
+	ConverterService.cpp
 )
 
 ADD_MENGINE_LIBRARY()

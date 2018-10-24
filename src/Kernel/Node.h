@@ -23,7 +23,7 @@
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class MousePickerTrapInterface> MousePickerTrapInterfacePtr;
+    typedef IntrusivePtr<class PickerTrapInterface> PickerTrapInterfacePtr;
         
     typedef IntrusivePtr<class Node> NodePtr;
 
@@ -171,7 +171,7 @@ namespace Mengine
         uint32_t getAffectorableUpdatableLeafDeep() const override;
 
     public:
-        virtual MousePickerTrapInterfacePtr getPickerTrap();
+        virtual PickerTrapInterfacePtr getPickerTrap();
 
     protected:
         bool m_active;

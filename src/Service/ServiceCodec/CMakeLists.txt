@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServiceCodec )
 
 ADD_FILTER(
 src
-	CodecEngine.h
-	CodecEngine.cpp
+	CodecService.h
+	CodecService.cpp
 )
 
 ADD_MENGINE_LIBRARY()

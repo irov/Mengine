@@ -54,7 +54,7 @@
 #include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( MousePickerSystem );
+SERVICE_EXTERN( PickerService );
 SERVICE_EXTERN( GlobalHandleSystem );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlayerService, Mengine::Player );
@@ -197,11 +197,9 @@ namespace Mengine
 
         m_scene = _scene;
 
-        if( m_mousePickerSystem != nullptr )
-        {
-            m_mousePickerSystem->setScene( m_scene );
-        }
-
+		PICKER_SERVICE()
+			->setScene( m_scene );
+        
         if( _cb != nullptr )
         {
             _cb->onSceneChange( m_scene, false, false );
@@ -322,10 +320,8 @@ namespace Mengine
             m_scene = nullptr;
         }
 
-        if( m_mousePickerSystem != nullptr )
-        {
-            m_mousePickerSystem->setScene( nullptr );
-        }
+		PICKER_SERVICE()
+			->setScene( nullptr );
 
         if( _cb != nullptr )
         {
@@ -399,10 +395,8 @@ namespace Mengine
             }
         }
 
-        if( m_mousePickerSystem != nullptr )
-        {
-            m_mousePickerSystem->setArrow( m_arrow );
-        }
+		PICKER_SERVICE()
+			->setArrow( m_arrow );
     }
     //////////////////////////////////////////////////////////////////////////
     const ArrowPtr & Player::getArrow() const
@@ -451,11 +445,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const MousePickerSystemInterfacePtr & Player::getMousePickerSystem() const
-    {
-        return m_mousePickerSystem;
-    }
-    //////////////////////////////////////////////////////////////////////////
     const GlobalHandleSystemInterfacePtr & Player::getGlobalHandleSystem() const
     {
         return m_globalHandleSystem;
@@ -483,10 +472,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Player::_initializeService()
     {
-        SERVICE_CREATE( MousePickerSystem );
+        SERVICE_CREATE( PickerService );
         SERVICE_CREATE( GlobalHandleSystem );
 
-        m_mousePickerSystem = SERVICE_GET( MousePickerSystemInterface );
         m_globalHandleSystem = SERVICE_GET( GlobalHandleSystemInterface );
 
         m_factoryScheduleManager = new FactoryPool<ScheduleManager, 16>();
@@ -559,10 +547,9 @@ namespace Mengine
 
         m_renderTarget = nullptr;
 
-        m_mousePickerSystem = nullptr;
         m_globalHandleSystem = nullptr;
 
-        SERVICE_FINALIZE( MousePickerSystemInterface );
+        SERVICE_FINALIZE( PickerServiceInterface );
         SERVICE_FINALIZE( GlobalHandleSystemInterface );
 
         if( m_scheduleManager != nullptr )
@@ -669,12 +656,10 @@ namespace Mengine
             m_globalHandleSystem->handleKeyEvent( _event );
         }
 
-        if( m_mousePickerSystem != nullptr )
+        if( handler == false )
         {
-            if( handler == false )
-            {
-                handler = m_mousePickerSystem->handleKeyEvent( _event );
-            }
+            handler = PICKER_SERVICE()
+				->handleKeyEvent( _event );
         }
 
         return handler;
@@ -689,14 +674,12 @@ namespace Mengine
             m_globalHandleSystem->handleTextEvent( _event );
         }
 
-        if( m_mousePickerSystem != nullptr )
+		if( handler == false )
         {
-            if( handler == false )
-            {
-                handler = m_mousePickerSystem->handleTextEvent( _event );
-            }
+            handler = PICKER_SERVICE()
+				->handleTextEvent( _event );
         }
-
+    
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -709,12 +692,10 @@ namespace Mengine
 
         bool handler = false;
 
-        if( m_mousePickerSystem != nullptr )
+        if( handler == false )
         {
-            if( handler == false )
-            {
-                handler = m_mousePickerSystem->handleMouseButtonEvent( _event );
-            }
+            handler = PICKER_SERVICE()
+				->handleMouseButtonEvent( _event );
         }
 
         return handler;
@@ -729,14 +710,13 @@ namespace Mengine
 
         bool handler = false;
 
-        if( m_mousePickerSystem != nullptr )
+        
+        if( handler == false )
         {
-            if( handler == false )
-            {
-                handler = m_mousePickerSystem->handleMouseButtonEventBegin( _event );
-            }
+            handler = PICKER_SERVICE()
+				->handleMouseButtonEventBegin( _event );
         }
-
+    
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -749,14 +729,13 @@ namespace Mengine
 
         bool handler = false;
 
-        if( m_mousePickerSystem != nullptr )
-        {
-            if( handler == false )
-            {
-                handler = m_mousePickerSystem->handleMouseButtonEventEnd( _event );
-            }
-        }
 
+        if( handler == false )
+        {
+            handler = PICKER_SERVICE()
+				->handleMouseButtonEventEnd( _event );
+        }
+    
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -769,12 +748,10 @@ namespace Mengine
 
         bool handler = false;
 
-        if( m_mousePickerSystem != nullptr )
+        if( handler == false )
         {
-            if( handler == false )
-            {
-                handler = m_mousePickerSystem->handleMouseMove( _event );
-            }
+            handler = PICKER_SERVICE()
+				->handleMouseMove( _event );
         }
 
         return handler;
@@ -789,14 +766,12 @@ namespace Mengine
 
         bool handler = false;
 
-        if( m_mousePickerSystem != nullptr )
+        if( handler == false )
         {
-            if( handler == false )
-            {
-                handler = m_mousePickerSystem->handleMouseWheel( _event );
-            }
+            handler = PICKER_SERVICE()
+				->handleMouseWheel( _event );
         }
-
+    
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -826,11 +801,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Player::update()
     {
-        if( m_mousePickerSystem != nullptr )
-        {
-            m_mousePickerSystem->update();
-        }
-
+		PICKER_SERVICE()
+			->update();
+    
         if( m_globalHandleSystem != nullptr )
         {
             m_globalHandleSystem->update();
@@ -846,10 +819,8 @@ namespace Mengine
     {
         m_renderCamera = _camera;
 
-        if( m_mousePickerSystem != nullptr )
-        {
-            m_mousePickerSystem->setRenderCamera( m_renderCamera );
-        }
+		PICKER_SERVICE()
+			->setRenderCamera( m_renderCamera );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderCameraInterfacePtr & Player::getRenderCamera() const
@@ -861,10 +832,8 @@ namespace Mengine
     {
         m_renderViewport = _viewport;
 
-        if( m_mousePickerSystem != nullptr )
-        {
-            m_mousePickerSystem->setRenderViewport( m_renderViewport );
-        }
+		PICKER_SERVICE()
+			->setRenderViewport( m_renderViewport );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderViewportInterfacePtr & Player::getRenderViewport() const
@@ -876,10 +845,9 @@ namespace Mengine
     {
         m_renderScissor = _scissor;
 
-        if( m_mousePickerSystem != nullptr )
-        {
-            m_mousePickerSystem->setRenderScissor( _scissor );
-        }
+        
+		PICKER_SERVICE()
+			->setRenderScissor( _scissor );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderScissorInterfacePtr & Player::getRenderScissor() const
@@ -1078,10 +1046,7 @@ namespace Mengine
 
                 ss << "Prefetcher " << cttv->getCount() << std::endl;
 
-                const MousePickerSystemInterfacePtr & mousePickerSystem = PLAYER_SERVICE()
-                    ->getMousePickerSystem();
-
-                ss << "PickerTrapCount:" << mousePickerSystem->getPickerTrapCount() << std::endl;
+                ss << "PickerTrapCount:" << PICKER_SERVICE()->getPickerTrapCount() << std::endl;
             }
             else if( m_showDebugText == 3 )
             {
@@ -1415,10 +1380,8 @@ namespace Mengine
             m_scene->onAppMouseLeave();
         }
 
-        if( m_mousePickerSystem != nullptr )
-        {
-            m_mousePickerSystem->handleMouseLeave( _event );
-        }
+		PICKER_SERVICE()
+			->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void Player::onAppMouseEnter( const InputMousePositionEvent & _event )
@@ -1433,19 +1396,13 @@ namespace Mengine
             m_scene->onAppMouseEnter();
         }
 
-        if( m_mousePickerSystem != nullptr )
-        {
-            m_mousePickerSystem->handleMouseEnter( _event );
-        }
+		PICKER_SERVICE()
+			->handleMouseEnter( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void Player::onAppMousePosition( const InputMousePositionEvent & _event )
     {
         (void)_event;
-        //if( m_mousePickerSystem != nullptr )
-        //{
-        //	m_mousePickerSystem->handleMousePosition( _event );
-        //}
     }
     //////////////////////////////////////////////////////////////////////////
     void Player::onFullscreen( const Resolution & _resolution, bool _fullscreen )

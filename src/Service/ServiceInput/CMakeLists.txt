@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServiceInput )
 
 ADD_FILTER(
 src
-	InputEngine.cpp
-	InputEngine.h
+	InputService.cpp
+	InputService.h
 )
 
 ADD_MENGINE_LIBRARY()

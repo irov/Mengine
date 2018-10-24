@@ -2,8 +2,8 @@ SET( MY_LIB_NAME ServiceConfig )
 
 ADD_FILTER(
 src
-	ConfigManager.h
-	ConfigManager.cpp
+	ConfigService.h
+	ConfigService.cpp
 )
 
 ADD_MENGINE_LIBRARY()

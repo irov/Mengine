@@ -1,4 +1,4 @@
-#include "PythonScriptWrapper.h"
+#include "PythonWrapper.h"
 
 #include "Interface/StringizeInterface.h"
 #include "Interface/ScriptSystemInterface.h"
@@ -173,7 +173,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptWrapper::constsWrap()
+    bool PythonWrapper::constsWrap()
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 

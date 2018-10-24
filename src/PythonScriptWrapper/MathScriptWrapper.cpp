@@ -1,4 +1,4 @@
-#include "PythonScriptWrapper.h"
+#include "PythonWrapper.h"
 
 #include "Config/String.h"
 #include "Config/Stringstream.h"
@@ -581,7 +581,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptWrapper::mathWrap()
+    bool PythonWrapper::mathWrap()
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 

@@ -22,6 +22,7 @@ namespace Mengine
 
     protected:
         bool initialize() override;
+        void finalize() override;
 
     protected:
         uint32_t count() const override;

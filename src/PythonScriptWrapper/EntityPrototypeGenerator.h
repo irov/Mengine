@@ -1,15 +1,18 @@
 #pragma once
 
-#include "Kernel/BasePrototypeGenerator.h"
+#include "Kernel/FactoryPrototypeGenerator.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/BaseEventation.h"
+#include "Kernel/Factory.h"
 #include "Kernel/Entity.h"
+
+#include "pybind/object.hpp"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class EntityPrototypeGenerator
-        : public BasePrototypeGenerator
+        : public FactoryPrototypeGenerator
         , public Eventable
         , public BaseEventation
     {
@@ -24,6 +27,10 @@ namespace Mengine
 
     public:
         bool initialize() override;
+        void finalize() override;
+
+    protected:
+        FactoryPtr _initializeFactory() override;
 
     public:
         pybind::object preparePythonType();
@@ -35,13 +42,8 @@ namespace Mengine
         PyObject * getGenerator() const;
 
     protected:
-        uint32_t count() const override;
-
-    protected:
         pybind::object m_generator;
         pybind::object m_type;
-
-        uint32_t m_count;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;

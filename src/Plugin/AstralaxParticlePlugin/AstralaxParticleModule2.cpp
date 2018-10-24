@@ -3,6 +3,7 @@
 #include "AstralaxInterface.h"
 
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/StringizeInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 
 #include "ResourceParticle.h"
@@ -12,7 +13,6 @@
 
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
-#include "Kernel/ScriptWrapper.h"
 #include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"
@@ -73,7 +73,7 @@ namespace Mengine
         LOGGER_INFO( "Initializing Particle System ..." );
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new ScriptWrapper<ParticleEmitter2>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new PythonScriptWrapper<ParticleEmitter2>() ) == false )
         {
             return false;
         }
@@ -85,7 +85,7 @@ namespace Mengine
         }
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new ScriptWrapper<ResourceParticle>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new PythonScriptWrapper<ResourceParticle>() ) == false )
         {
             return false;
         }

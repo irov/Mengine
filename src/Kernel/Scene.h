@@ -20,12 +20,12 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class SceneEventReceiver
-        : public EventReceiver
+        : public EntityEventReceiver
     {
     public:
-        virtual bool onSceneAppMouseLeave( const pybind::object & _object ) = 0;
-        virtual bool onSceneAppMouseEnter( const pybind::object & _object ) = 0;
-        virtual bool onSceneAppFocus( const pybind::object & _object, bool _focus ) = 0;
+        virtual bool onSceneAppMouseLeave( const EntityBehaviorInterfacePtr & _behavior ) = 0;
+        virtual bool onSceneAppMouseEnter( const EntityBehaviorInterfacePtr & _behavior ) = 0;
+        virtual bool onSceneAppFocus( const EntityBehaviorInterfacePtr & _behavior, bool _focus ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SceneEventReceiver> SceneEventReceiverPtr;

@@ -791,7 +791,7 @@ namespace Mengine
     };
 
     //////////////////////////////////////////////////////////////////////////
-    bool PythonScriptWrapper::soundWrap()
+    bool PythonWrapper::soundWrap()
     {
         SoundScriptMethod * soundScriptMethod = new SoundScriptMethod();
 

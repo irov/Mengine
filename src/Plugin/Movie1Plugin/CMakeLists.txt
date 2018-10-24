@@ -28,11 +28,10 @@ src
     Movie1ResourceValidateVisitor.h
 )
 
-INCLUDE_DIRECTORIES( 
-        ${THIRDPARTY_DIR}/pybind/include
-        ${THIRDPARTY_DIR}/libmath/include
-        ${THIRDPARTY_DIR}/metabuf
-)
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/metabuf )
 
 ADD_MENGINE_LIBRARY()
 

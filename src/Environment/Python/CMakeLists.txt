@@ -1,23 +1,26 @@
-set( MY_LIB_NAME AndroidUtils )
+set( MY_LIB_NAME Python )
 
 ADD_FILTER(
-src
-    AndroidEventation.h
-    AndroidUtils.h
-    AndroidUtils.cpp
+src     
+    PythonScriptWrapper.h    
+    
+)
+
+ADD_FILTER(
+dummy
+	dummy.cpp
 )
 
 ADD_MENGINE_LIBRARY()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Utils
+    FOLDER Environment
 )
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
  ${MY_LIB_NAME}
 )
-
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

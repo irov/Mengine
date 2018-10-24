@@ -1,67 +1,79 @@
 #include "EntityPrototypeGenerator.h"
+#include "PythonEntityBehavior.h"
 
 #include "Interface/StringizeInterface.h"
 
-#include "Kernel/ScriptEventReceiver.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/FactoryAssertion.h"
+#include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"
-
-#include "Kernel/Logger.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     namespace
     {
+        //////////////////////////////////////////////////////////////////////////
+        namespace Detail
+        {
+            template<class ... Args>
+            void callBehavior( const pybind::object & _cb, const EntityBehaviorInterfacePtr & _behavior, Args ... _args )
+            {
+                PythonEntityBehavior * py_behavior = _behavior.getT<PythonEntityBehavior *>();
+
+                py_behavior->call( _cb, _args ... );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
         class PythonEntityEventReceiver
-            : public ScriptEventReceiver
+            : public PythonEventReceiver
             , public EntityEventReceiver
         {
         public:
-            void onEntityPreparation( const pybind::object & _self ) override
+            void onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) override
             {
-                m_cb.call( _self );
+                Detail::callBehavior( m_cb, _behavior );
             }
 
-            void onEntityActivate( const pybind::object & _self ) override
+            void onEntityActivate( const EntityBehaviorInterfacePtr & _behavior ) override
             {
-                m_cb.call( _self );
+                Detail::callBehavior( m_cb, _behavior );
             }
 
-            void onEntityPreparationDeactivate( const pybind::object & _self ) override
+            void onEntityPreparationDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override
             {
-                m_cb.call( _self );
+                Detail::callBehavior( m_cb, _behavior );
             }
 
-            void onEntityDeactivate( const pybind::object & _self ) override
+            void onEntityDeactivate( const EntityBehaviorInterfacePtr & _behavior ) override
             {
-                m_cb.call( _self );
+                Detail::callBehavior( m_cb, _behavior );
             }
 
-            void onEntityCompile( const pybind::object & _self ) override
+            void onEntityCompile( const EntityBehaviorInterfacePtr & _behavior ) override
             {
-                m_cb.call( _self );
+                Detail::callBehavior( m_cb, _behavior );
             }
 
-            void onEntityRelease( const pybind::object & _self ) override
+            void onEntityRelease( const EntityBehaviorInterfacePtr & _behavior ) override
             {
-                m_cb.call( _self );
+                Detail::callBehavior( m_cb, _behavior );
             }
 
-            void onEntityCreate( const pybind::object & _self, Node * _node ) override
+            void onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Node * _node ) override
             {
-                m_cb.call( _self, _node );
+                Detail::callBehavior( m_cb, _behavior, _node );
             }
 
-            void onEntityDestroy( const pybind::object & _self ) override
+            void onEntityDestroy( const EntityBehaviorInterfacePtr & _behavior ) override
             {
-                m_cb.call( _self );
+                Detail::callBehavior( m_cb, _behavior );
             }
         };
     }
     //////////////////////////////////////////////////////////////////////////
     EntityPrototypeGenerator::EntityPrototypeGenerator()
-        : m_count( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -76,12 +88,31 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool EntityPrototypeGenerator::initialize()
     {
+        if( FactoryPrototypeGenerator::initialize() == false )
+        {
+            return false;
+        }
+
         if( m_generator.is_callable() == false )
         {
             return false;
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void EntityPrototypeGenerator::finalize()
+    {
+        FactoryPrototypeGenerator::finalize();
+
+        m_generator = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    FactoryPtr EntityPrototypeGenerator::_initializeFactory()
+    {
+        FactoryPtr factory = new FactoryPool<PythonEntityBehavior, 128>();
+
+        return factory;
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::object EntityPrototypeGenerator::preparePythonType()
@@ -179,17 +210,16 @@ namespace Mengine
         entity->setPrototype( m_prototype );
 
         entity->setScriptEventable( this );
-        entity->setScriptObject( py_entity );
+
+        const FactoryPtr & factory = this->getFactory();
+
+        PythonEntityBehaviorPtr behavior = factory->createObject();
+        behavior->setScriptObject( py_entity );
+
+        entity->setBehavior( behavior );
 
         entity->onCreate();
 
-        ++m_count;
-
         return entity;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t EntityPrototypeGenerator::count() const
-    {
-        return m_count;
     }
 }

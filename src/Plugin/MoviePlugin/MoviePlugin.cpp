@@ -12,8 +12,6 @@
 
 #include "Movie2DebugRenderVisitor.h"
 
-#include "Kernel/ScriptWrapper.h"
-
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
 #include "Engine/TextField.h"
@@ -432,16 +430,16 @@ namespace Mengine
             ;
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ), new ScriptWrapper<Movie2>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ), new PythonScriptWrapper<Movie2>() );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new ScriptWrapper<Movie2Slot>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new PythonScriptWrapper<Movie2Slot>() );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new ScriptWrapper<Movie2SubComposition>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new PythonScriptWrapper<Movie2SubComposition>() );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new ScriptWrapper<ResourceMovie2>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new PythonScriptWrapper<ResourceMovie2>() );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<NodePrototypeGenerator<Movie2, 128> > ) == false )

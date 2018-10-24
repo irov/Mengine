@@ -1,0 +1,23 @@
+#include "PythonEntityBehavior.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    PythonEntityBehavior::PythonEntityBehavior()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    PythonEntityBehavior::~PythonEntityBehavior()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PythonEntityBehavior::setScriptObject( const pybind::object & _obj )
+    {
+        m_obj = _obj;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const pybind::object & PythonEntityBehavior::getScriptObject() const
+    {
+        return m_obj;
+    }
+}

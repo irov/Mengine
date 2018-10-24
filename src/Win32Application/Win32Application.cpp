@@ -17,7 +17,7 @@
 #include "Interface/TextInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 
-#include "PythonScriptWrapper/PythonScriptWrapper.h"
+#include "PythonScriptWrapper/PythonWrapper.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
@@ -644,37 +644,37 @@ namespace Mengine
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
 
-        if( PythonScriptWrapper::constsWrap() == false )
+        if( PythonWrapper::constsWrap() == false )
         {
             return false;
         }
 
-        if( PythonScriptWrapper::helperWrap() == false )
+        if( PythonWrapper::helperWrap() == false )
         {
             return false;
         }
         
-        if( PythonScriptWrapper::nodeWrap() == false )
+        if( PythonWrapper::nodeWrap() == false )
         {
             return false;
         }
 
-        if( PythonScriptWrapper::mathWrap() == false )
+        if( PythonWrapper::mathWrap() == false )
         {
             return false;
         }
 
-        if( PythonScriptWrapper::entityWrap() == false )
+        if( PythonWrapper::entityWrap() == false )
         {
             return false;
         }
         
-        if( PythonScriptWrapper::engineWrap() == false )
+        if( PythonWrapper::engineWrap() == false )
         {
             return false;
         }
         
-        if( PythonScriptWrapper::soundWrap() == false )
+        if( PythonWrapper::soundWrap() == false )
         {
             return false;
         }

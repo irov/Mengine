@@ -24,9 +24,6 @@ namespace Mengine
         Arrow();
         ~Arrow() override;
 
-    //public:
-    //    void setHide( bool _value ) override;
-
     public:
         EArrowType getArrowType() const;
 

@@ -51,6 +51,7 @@ namespace Mengine
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
+        DECLARE_EVENTABLE_TYPE( EntityEventReceiver );
 
     public:
         Entity();
@@ -61,15 +62,15 @@ namespace Mengine
         const ConstString & getPrototype() const;
 
     public:
-        void setScriptEventable( const EventablePtr & _eventable );
-        const EventablePtr & getScriptEventable() const;
+        void setBehaviorEventable( const EventablePtr & _behaviorEventable );
+        const EventablePtr & getBehaviorEventable() const;
 
     public:
         void setBehavior( const EntityBehaviorInterfacePtr & _behavior );
         const EntityBehaviorInterfacePtr & getBehavior() const;
 
     public:
-        EventationInterface * getScriptEventation() const;
+        EventationInterface * getEventation() override;
 
     public:
         void onCreate();

@@ -25,8 +25,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 }
 //////////////////////////////////////////////////////////////////////////
+#define DECLARE_EVENTABLE_TYPE( Type )\
+public:\
+    typedef Type EventReceiverType;
+//////////////////////////////////////////////////////////////////////////
 #define DECLARE_EVENTABLE( Type )\
 public:\
-    typedef Type EventReceiverType;\
+    DECLARE_EVENTABLE_TYPE( Type );\
     Mengine::EventationInterface * getEventation() override{ return this; }\
 protected:

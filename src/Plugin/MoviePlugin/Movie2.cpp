@@ -590,6 +590,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_stop( uint32_t _enumerator )
     {
+        ae_stop_movie_composition( m_composition );
+
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
     }
@@ -1135,11 +1137,11 @@ namespace Mengine
         {
         case AE_MOVIE_LAYER_TYPE_PARTICLE:
             {
-                Node * node = reinterpret_node_cast<Node *>(_callbackData->element);
+                Node * particle = reinterpret_node_cast<Node *>(_callbackData->element);
 
-                __updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
+                __updateMatrixProxy( particle, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
 
-                AnimationInterface * animation = node->getAnimation();
+                AnimationInterface * particle_animation = particle->getAnimation();
 
                 switch( _callbackData->state )
                 {
@@ -1148,13 +1150,13 @@ namespace Mengine
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        animation->setTime( _callbackData->offset * 1000.f );
+                        particle_animation->setTime( _callbackData->offset * 1000.f );
 
                         if( _callbackData->loop == AE_TRUE )
                         {
-                            if( animation->isPlay() == false )
+                            if( particle_animation->isPlay() == false )
                             {
-                                if( animation->play( time ) == 0 )
+                                if( particle_animation->play( time ) == 0 )
                                 {
                                     return;
                                 }
@@ -1162,7 +1164,7 @@ namespace Mengine
                         }
                         else
                         {
-                            if( animation->play( time ) == 0 )
+                            if( particle_animation->play( time ) == 0 )
                             {
                                 return;
                             }
@@ -1171,23 +1173,27 @@ namespace Mengine
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
+                case AE_MOVIE_STATE_UPDATE_STOP:
+                    {
+                        particle_animation->stop();
+                    }break;
                 case AE_MOVIE_STATE_UPDATE_END:
                     {
                         if( _callbackData->loop == AE_FALSE )
                         {
-                            animation->stop();
+                            particle_animation->stop();
                         }
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PAUSE:
                     {
-                        animation->pause();
+                        particle_animation->pause();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_RESUME:
                     {
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        animation->resume( time );
+                        particle_animation->resume( time );
                     }break;
                 default:
                     {
@@ -1198,12 +1204,12 @@ namespace Mengine
             {
                 Surface * surface = reinterpret_node_cast<Surface *>(_callbackData->element);
 
+                AnimationInterface * surface_animation = surface->getAnimation();
+
                 switch( _callbackData->state )
                 {
                 case AE_MOVIE_STATE_UPDATE_BEGIN:
                     {
-						AnimationInterface * surface_animation = surface->getAnimation();
-
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
@@ -1230,10 +1236,12 @@ namespace Mengine
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
+                case AE_MOVIE_STATE_UPDATE_STOP:
+                    {
+                        surface_animation->stop();
+                    }break;
                 case AE_MOVIE_STATE_UPDATE_END:
                     {
-						AnimationInterface * surface_animation = surface->getAnimation();
-
                         if( _callbackData->loop == AE_FALSE )
                         {
 							surface_animation->stop();
@@ -1241,14 +1249,10 @@ namespace Mengine
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PAUSE:
                     {
-						AnimationInterface * surface_animation = surface->getAnimation();
-
 						surface_animation->pause();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_RESUME:
                     {
-					AnimationInterface * surface_animation = surface->getAnimation();
-
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
@@ -1263,6 +1267,8 @@ namespace Mengine
             {
                 SurfaceSound * surface = reinterpret_node_cast<SurfaceSound *>(_callbackData->element);
 
+                AnimationInterface * surface_animation = surface->getAnimation();
+
                 surface->setVolume( _callbackData->volume );
 
                 switch( _callbackData->state )
@@ -1272,13 +1278,13 @@ namespace Mengine
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        surface->setTime( _callbackData->offset * 1000.f );
+                        surface_animation->setTime( _callbackData->offset * 1000.f );
 
                         if( _callbackData->loop == AE_TRUE )
                         {
-                            if( surface->isPlay() == false )
+                            if( surface_animation->isPlay() == false )
                             {
-                                if( surface->play( time ) == 0 )
+                                if( surface_animation->play( time ) == 0 )
                                 {
                                     return;
                                 }
@@ -1286,7 +1292,7 @@ namespace Mengine
                         }
                         else
                         {
-                            if( surface->play( time ) == 0 )
+                            if( surface_animation->play( time ) == 0 )
                             {
                                 return;
                             }
@@ -1295,23 +1301,27 @@ namespace Mengine
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
+                case AE_MOVIE_STATE_UPDATE_STOP:
+                    {
+                        surface_animation->stop();
+                    }break;
                 case AE_MOVIE_STATE_UPDATE_END:
                     {
                         if( _callbackData->loop == AE_FALSE )
                         {
-                            surface->stop();
+                            surface_animation->stop();
                         }
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PAUSE:
                     {
-                        surface->pause();
+                        surface_animation->pause();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_RESUME:
                     {
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        surface->resume( time );
+                        surface_animation->resume( time );
                     }break;
                 default:
                     {
@@ -1429,13 +1439,6 @@ namespace Mengine
     static ae_void_t __movie_composition_state( const aeMovieCompositionStateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
         Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_ud);
-
-        //if( _callbackData->subcomposition != AE_NULL )
-        //{
-        //    
-
-        //    return;
-        //}        
 
         if( _callbackData->state == AE_MOVIE_COMPOSITION_END )
         {

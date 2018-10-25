@@ -2,6 +2,7 @@
 
 #include "Interface/NodeInterface.h"
 
+#include "Kernel/BaseEventation.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -17,25 +18,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onAppMouseLeave()
     {
-        EventationInterface * event = this->getScriptEventation();
+        bool handle = EVENTABLE_METHODR( this, EVENT_APP_MOUSE_LEAVE, false )
+            ->onSceneAppMouseLeave( m_behavior );
 
-        if( event != nullptr )
+        if( handle == false )
         {
-            bool handle = EVENTABLE_METHODRT( event, EVENT_APP_MOUSE_LEAVE, false, SceneEventReceiver )
-                ->onSceneAppMouseLeave( m_behavior );
-
-            if( handle == false )
+            for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
-                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+                Scene * subScene = dynamic_cast<Scene *>(*it);
+
+                it.next_shuffle();
+
+                if( subScene != nullptr )
                 {
-                    Scene * subScene = dynamic_cast<Scene *>(*it);
-
-                    it.next_shuffle();
-
-                    if( subScene != nullptr )
-                    {
-                        subScene->onAppMouseLeave();
-                    }
+                    subScene->onAppMouseLeave();
                 }
             }
         }
@@ -43,25 +39,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onAppMouseEnter()
     {
-        EventationInterface * event = this->getScriptEventation();
+        bool handle = EVENTABLE_METHODR( this, EVENT_APP_MOUSE_ENTER, false )
+            ->onSceneAppMouseEnter( m_behavior );
 
-        if( event != nullptr )
+        if( handle == false )
         {
-            bool handle = EVENTABLE_METHODRT( event, EVENT_APP_MOUSE_ENTER, false, SceneEventReceiver )
-                ->onSceneAppMouseEnter( m_behavior );
-
-            if( handle == false )
+            for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
-                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+                Scene * subScene = dynamic_cast<Scene *>(*it);
+
+                it.next_shuffle();
+
+                if( subScene != nullptr )
                 {
-                    Scene * subScene = dynamic_cast<Scene *>(*it);
-
-                    it.next_shuffle();
-
-                    if( subScene != nullptr )
-                    {
-                        subScene->onAppMouseEnter();
-                    }
+                    subScene->onAppMouseEnter();
                 }
             }
         }
@@ -69,27 +60,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onFocus( bool _focus )
     {
-        EventationInterface * event = this->getScriptEventation();
+        bool handle = EVENTABLE_METHODR( this, EVENT_FOCUS, false )
+            ->onSceneAppFocus( m_behavior, _focus );
 
-        if( event != nullptr )
+        if( handle == false )
         {
-            bool handle = EVENTABLE_METHODRT( event, EVENT_FOCUS, false, SceneEventReceiver )
-                ->onSceneAppFocus( m_behavior, _focus );
-
-            if( handle == false )
+            for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
-                for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
+                const NodePtr & children = *it;
+
+                it.next_shuffle();
+
+                Scene * subScene = dynamic_cast<Scene *>(children.get());
+
+                if( subScene != nullptr )
                 {
-                    const NodePtr & children = *it;
-
-                    it.next_shuffle();
-
-                    Scene * subScene = dynamic_cast<Scene *>(children.get());
-
-                    if( subScene != nullptr )
-                    {
-                        subScene->onFocus( _focus );
-                    }
+                    subScene->onFocus( _focus );
                 }
             }
         }

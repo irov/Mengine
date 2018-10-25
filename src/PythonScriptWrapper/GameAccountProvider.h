@@ -14,6 +14,7 @@ namespace Mengine
     {
     public:
         GameAccountProvider();
+		~GameAccountProvider() override;
 
     public:
         void setGame( Game * _game );

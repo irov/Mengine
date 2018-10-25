@@ -13,7 +13,8 @@ namespace Mengine
         : public ServantBase<SoundVolumeProviderInterface>
     {
     public:
-        GameSoundVolumeProvider();
+		GameSoundVolumeProvider();
+		~GameSoundVolumeProvider() override;
 
     public:
         void setGame( Game * _game );
@@ -27,4 +28,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<GameSoundVolumeProvider> GameSoundVolumeProviderPtr;
+	//////////////////////////////////////////////////////////////////////////
 }

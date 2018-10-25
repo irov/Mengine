@@ -83,10 +83,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void EntityPrototypeGenerator::setScriptGenerator( const pybind::object & _generator )
+    void EntityPrototypeGenerator::setGenerator( const pybind::object & _generator )
     {
         m_generator = _generator;
     }
+	//////////////////////////////////////////////////////////////////////////
+	const pybind::object & EntityPrototypeGenerator::getGenerator() const
+	{
+		return m_generator;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool EntityPrototypeGenerator::initialize()
     {

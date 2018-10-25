@@ -23,7 +23,8 @@ namespace Mengine
         ~EntityPrototypeGenerator() override;
 
     public:
-        void setScriptGenerator( const pybind::object & _generator );
+        void setGenerator( const pybind::object & _generator );
+		const pybind::object & getGenerator() const;
 
     public:
         bool initialize() override;
@@ -38,14 +39,12 @@ namespace Mengine
     protected:
         PointerFactorable generate() override;
 
-    public:
-        PyObject * getGenerator() const;
-
     protected:
         pybind::object m_generator;
         pybind::object m_type;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;
+	//////////////////////////////////////////////////////////////////////////
 
 }

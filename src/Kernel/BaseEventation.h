@@ -29,31 +29,6 @@ namespace Mengine
     public:
         void removeEvents() noexcept override;
 
-    public:
-        template<class T>
-        T getEventRecieverT( uint32_t _event ) const
-        {
-            const EventReceiverPtr & reciever = this->getEventReciever( _event );
-
-            if( reciever == nullptr )
-            {
-                return nullptr;
-            }
-
-            EventReceiver * r = reciever.get();
-
-#ifndef NDEBUG
-            if( dynamic_cast<T>(r) == nullptr )
-            {
-                throw;
-            }
-#endif
-
-            T t = static_cast<T>(r);
-
-            return t;
-        }
-
     protected:
         struct EventReceiverDesc
         {
@@ -73,43 +48,62 @@ namespace Mengine
     typedef IntrusivePtr<BaseEventation> BaseEventPtr;
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
-    {
+    {        
+        //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool hasEventableReceiver( T * _self, uint32_t _event )
+        inline static bool hasEventableReceiver( T * _self, uint32_t _event )
         {
-            bool exist = _self->hasEventReceiver( _event );
+            EventationInterface * eventation = _self->getEventation();
+
+            if( eventation == nullptr )
+            {
+                return false;
+            }
+
+            bool exist = eventation->hasEventReceiver( _event );
 
             return exist;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         template<class T>
-        static bool hasEventableReceiver( const IntrusivePtr<T> & _self, uint32_t _event )
+        inline static bool hasEventableReceiver( const IntrusivePtr<T> & _self, uint32_t _event )
         {
-            bool exist = _self->hasEventReceiver( _event );
+            EventationInterface * eventation = _self->getEventation();
+
+            if( eventation == nullptr )
+            {
+                return false;
+            }
+
+            bool exist = eventation->hasEventReceiver( _event );
 
             return exist;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         template<class T>
         static typename T::EventReceiverType * getThisEventRecieverT( T * _self, uint32_t _event )
         {
-            typedef typename T::EventReceiverType * T_EventReceiverType;
+            typedef typename T::EventReceiverType * T_EventReceiverTypePtr;
 
-            T_EventReceiverType reciever = _self->template getEventRecieverT<T_EventReceiverType>( _event );
+            EventationInterface * eventation = _self->getEventation();
+
+            T_EventReceiverTypePtr reciever = eventation->getEventRecieverT<T_EventReceiverTypePtr>( _event );
 
             return reciever;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         template<class T>
         static typename T::EventReceiverType * getThisEventRecieverT( const IntrusivePtr<T> & _self, uint32_t _event )
         {
-            typedef typename T::EventReceiverType * T_EventReceiverType;
+            typedef typename T::EventReceiverType * T_EventReceiverTypePtr;
 
-            T_EventReceiverType reciever = _self->template getEventRecieverT<T_EventReceiverType>( _event );
+            EventationInterface * eventation = _self->getEventation();
+
+            T_EventReceiverTypePtr reciever = eventation->getEventRecieverT<T_EventReceiverTypePtr>( _event );
 
             return reciever;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         template<class T>
         static T * getThisEventReciever( EventationInterface * _self, uint32_t _event )
         {
@@ -117,7 +111,7 @@ namespace Mengine
 
             return reciever;
         }
-
+        //////////////////////////////////////////////////////////////////////////
         template<class T>
         static T * getThisEventReciever( const EventationInterfacePtr & _self, uint32_t _event )
         {

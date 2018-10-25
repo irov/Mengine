@@ -102,8 +102,7 @@ namespace Mengine
 
         MENGINE_ASSERTION( it_erase != m_relationRenderChildren.end() );
 
-        *it_erase = m_relationRenderChildren.back();
-        m_relationRenderChildren.pop_back();
+        m_relationRenderChildren.erase( it_erase );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRenderViewport( const RenderViewportInterfacePtr & _viewport )
@@ -209,21 +208,19 @@ namespace Mengine
             context.target = _context->target;
         }
 
-        const RenderContext * context_ptr = &context;
-
         if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
         {
-            this->render( context_ptr );
+            this->render( &context );
         }
 
         for( BaseRender * child : m_relationRenderChildren )
         {
-            child->renderWithChildren( context_ptr, false );
+            child->renderWithChildren( &context, false );
         }
 
         if( context.target != nullptr )
         {
-            const RenderInterfacePtr & targetRender = this->makeTargetRender( context_ptr );
+            const RenderInterfacePtr & targetRender = this->makeTargetRender( &context );
 
             if( targetRender != nullptr )
             {

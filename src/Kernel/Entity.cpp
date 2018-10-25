@@ -24,26 +24,14 @@ namespace Mengine
         return m_prototype;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Entity::setScriptEventable( const EventablePtr & _eventable )
+    void Entity::setBehaviorEventable( const EventablePtr & _behaviorEventable )
     {
-        m_behaviorEventable = _eventable;
+        m_behaviorEventable = _behaviorEventable;
     }
     //////////////////////////////////////////////////////////////////////////
-    const EventablePtr & Entity::getScriptEventable() const
+    const EventablePtr & Entity::getBehaviorEventable() const
     {
         return m_behaviorEventable;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    EventationInterface * Entity::getScriptEventation() const
-    {
-        if( m_behaviorEventable == nullptr )
-        {
-            return nullptr;
-        }
-
-        EventationInterface * event = m_behaviorEventable->getEventation();
-
-        return event;
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::setBehavior( const EntityBehaviorInterfacePtr & _behavior )
@@ -56,15 +44,22 @@ namespace Mengine
         return m_behavior;
     }
     //////////////////////////////////////////////////////////////////////////
+    EventationInterface * Entity::getEventation()
+    {
+        if( m_behaviorEventable == nullptr )
+        {
+            return nullptr;
+        }
+
+        EventationInterface * event = m_behaviorEventable->getEventation();
+
+        return event;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Entity::_activate()
     {
-        EventationInterface * event = this->getScriptEventation();
-
-        if( event != nullptr )
-        {
-            EVENTABLE_METHODT( event, EVENT_ENTITY_PREPARATION, EntityEventReceiver )
-                ->onEntityPreparation( m_behavior );
-        }
+        EVENTABLE_METHOD( this, EVENT_ENTITY_PREPARATION )
+            ->onEntityPreparation( m_behavior );
 
         bool successful = Node::_activate();
 
@@ -75,24 +70,14 @@ namespace Mengine
     {
         Node::_afterActivate();
 
-        EventationInterface * event = this->getScriptEventation();
-
-        if( event != nullptr )
-        {
-            EVENTABLE_METHODT( event, EVENT_ENTITY_ACTIVATE, EntityEventReceiver )
-                ->onEntityActivate( m_behavior );
-        }
+        EVENTABLE_METHOD( this, EVENT_ENTITY_ACTIVATE )
+            ->onEntityActivate( m_behavior );
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
-        EventationInterface * event = this->getScriptEventation();
-
-        if( event != nullptr )
-        {
-            EVENTABLE_METHODT( event, EVENT_ENTITY_PREPARATION_DEACTIVATE, EntityEventReceiver )
-                ->onEntityPreparationDeactivate( m_behavior );
-        }
+        EVENTABLE_METHOD( this, EVENT_ENTITY_PREPARATION_DEACTIVATE )
+            ->onEntityPreparationDeactivate( m_behavior );
 
         Node::_deactivate();
     }
@@ -101,48 +86,28 @@ namespace Mengine
     {
         Node::_afterDeactivate();
 
-        EventationInterface * event = this->getScriptEventation();
-
-        if( event != nullptr )
-        {
-            EVENTABLE_METHODT( event, EVENT_ENTITY_DEACTIVATE, EntityEventReceiver )
-                ->onEntityDeactivate( m_behavior );
-        }
+        EVENTABLE_METHOD( this, EVENT_ENTITY_DEACTIVATE )
+            ->onEntityDeactivate( m_behavior );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Entity::_compile()
     {
-        EventationInterface * event = this->getScriptEventation();
-
-        if( event != nullptr )
-        {
-            EVENTABLE_METHODT( event, EVENT_ENTITY_COMPILE, EntityEventReceiver )
-                ->onEntityCompile( m_behavior );
-        }
+        EVENTABLE_METHOD( this, EVENT_ENTITY_COMPILE )
+            ->onEntityCompile( m_behavior );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::_release()
     {
-        EventationInterface * event = this->getScriptEventation();
-
-        if( event != nullptr )
-        {
-            EVENTABLE_METHODT( event, EVENT_ENTITY_RELEASE, EntityEventReceiver )
-                ->onEntityRelease( m_behavior );
-        }
+        EVENTABLE_METHOD( this, EVENT_ENTITY_RELEASE )
+            ->onEntityRelease( m_behavior );
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::onCreate()
     {
-        EventationInterface * event = this->getScriptEventation();
-
-        if( event != nullptr )
-        {
-            EVENTABLE_METHODT( event, EVENT_ENTITY_CREATE, EntityEventReceiver )
-                ->onEntityCreate( m_behavior, this );
-        }
+        EVENTABLE_METHOD( this, EVENT_ENTITY_CREATE )
+            ->onEntityCreate( m_behavior, this );
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::_destroy()
@@ -151,21 +116,16 @@ namespace Mengine
 
         Node * old_parent = this->getParent();
 
-        EventationInterface * event = this->getScriptEventation();
+        EVENTABLE_METHOD( this, EVENT_ENTITY_DESTROY )
+            ->onEntityDestroy( m_behavior );
 
-        if( event != nullptr )
-        {
-            EVENTABLE_METHODT( event, EVENT_ENTITY_DESTROY, EntityEventReceiver )
-                ->onEntityDestroy( m_behavior );
-        }
-
-        m_behavior.reset();
+        m_behavior = nullptr;
 
         Node * new_parent = this->getParent();
 
         if( old_parent != new_parent )
         {
-            LOGGER_ERROR( "Entity::destroy %s:%s script event EVENT_DESTROY replace node to other hierarchy"
+            LOGGER_ERROR( "entity %s:%s script event EVENT_DESTROY replace node to other hierarchy"
                 , this->getType().c_str()
                 , this->getName().c_str()
             );

@@ -216,7 +216,7 @@ namespace Mengine
 
         entity->setPrototype( m_prototype );
 
-        entity->setScriptEventable( this );
+        entity->setBehaviorEventable( this );
 
         const FactoryPtr & factory = this->getFactory();
 

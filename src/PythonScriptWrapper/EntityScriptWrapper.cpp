@@ -39,7 +39,7 @@ namespace Mengine
         {
             EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject();
 
-            generator->setScriptGenerator( _generator );
+            generator->setGenerator( _generator );
 
             bool successful = PROTOTYPE_SERVICE()
                 ->addPrototype( _category, _prototype, generator );

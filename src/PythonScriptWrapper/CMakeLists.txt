@@ -31,16 +31,6 @@ PythonSchedule
 )   
 
 ADD_FILTER(
-Game
-	Game.cpp
-	Game.h
-	GameAccountProvider.cpp
-	GameAccountProvider.h
-	GameSoundVolumeProvider.cpp
-	GameSoundVolumeProvider.h	
-)
-
-ADD_FILTER(
 Wrapper
     PythonWrapper.h	
     HelperScriptWrapper.cpp
@@ -50,6 +40,7 @@ Wrapper
 	MathScriptWrapper.cpp
 	EntityScriptWrapper.cpp
 	ConstsScriptWrapper.cpp
+	GameScriptWrapper.cpp
 )
 
 ADD_FILTER(

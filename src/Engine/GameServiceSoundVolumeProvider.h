@@ -2,31 +2,30 @@
 
 #include "Interface/SoundVolumeProviderInterface.h"
 
+#include "Kernel/Eventable.h"
 #include "Kernel/ServantBase.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class Game;
-    //////////////////////////////////////////////////////////////////////////
-    class GameSoundVolumeProvider
+    class GameServiceSoundVolumeProvider
         : public ServantBase<SoundVolumeProviderInterface>
     {
     public:
-		GameSoundVolumeProvider();
-		~GameSoundVolumeProvider() override;
+		GameServiceSoundVolumeProvider();
+		~GameServiceSoundVolumeProvider() override;
 
-    public:
-        void setGame( Game * _game );
-        Game * getGame() const;
+	public:
+		void setEventable(const EventablePtr & _eventable);
+		const EventablePtr & getEventable() const;
 
     protected:
         void onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute ) override;
 
     protected:
-        Game * m_game;
+		EventablePtr m_eventable;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<GameSoundVolumeProvider> GameSoundVolumeProviderPtr;
+    typedef IntrusivePtr<GameServiceSoundVolumeProvider> GameSoundVolumeProviderPtr;
 	//////////////////////////////////////////////////////////////////////////
 }

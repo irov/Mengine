@@ -12,5 +12,6 @@ namespace Mengine
         static bool entityWrap();
         static bool engineWrap();
         static bool soundWrap();
+		static bool gameWrap();
     };
 }

@@ -1,4 +1,4 @@
-#include "Game.h"
+#include "GameService.h"
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/AmplifierInterface.h"
@@ -19,8 +19,8 @@
 
 #include "Environment/Python/PythonEventReceiver.h"
 
-#include "GameAccountProvider.h"
-#include "GameSoundVolumeProvider.h"
+#include "GameServiceAccountProvider.h"
+#include "GameServiceSoundVolumeProvider.h"
 
 #include "Kernel/Arrow.h"
 
@@ -32,22 +32,22 @@
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( AccountService );
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( GameService, Mengine::Game );
+SERVICE_FACTORY( GameService, Mengine::GameService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
 
     //////////////////////////////////////////////////////////////////////////
-    Game::Game()
+    GameService::GameService()
         : m_timingFactor( 1.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Game::~Game()
+    GameService::~GameService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Game::handleKeyEvent( const InputKeyEvent & _event )
+    bool GameService::handleKeyEvent( const InputKeyEvent & _event )
     {
         bool handle = false;
 
@@ -72,7 +72,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Game::handleTextEvent( const InputTextEvent & _event )
+    bool GameService::handleTextEvent( const InputTextEvent & _event )
     {
         bool handle = false;
 
@@ -97,7 +97,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Game::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
+    bool GameService::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
         bool handle = false;
 
@@ -122,7 +122,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Game::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
+    bool GameService::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
     {
         bool handle = false;
 
@@ -147,7 +147,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Game::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
+    bool GameService::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
     {
         bool handle = false;
 
@@ -172,7 +172,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Game::handleMouseMove( const InputMouseMoveEvent & _event )
+    bool GameService::handleMouseMove( const InputMouseMoveEvent & _event )
     {
         bool handle = false;
 
@@ -202,7 +202,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Game::handleMouseWheel( const InputMouseWheelEvent & _event )
+    bool GameService::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         bool handle = false;
 
@@ -221,7 +221,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::mouseLeave( const InputMousePositionEvent & _event )
+    void GameService::mouseLeave( const InputMousePositionEvent & _event )
     {
         EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_LEAVE )
             ->onGameAppMouseLeave();
@@ -230,7 +230,7 @@ namespace Mengine
             ->onAppMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::mouseEnter( const InputMousePositionEvent & _event )
+    void GameService::mouseEnter( const InputMousePositionEvent & _event )
     {
         EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_ENTER )
             ->onGameAppMouseEnter( _event.x, _event.y );
@@ -239,13 +239,13 @@ namespace Mengine
             ->onAppMouseEnter( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::mousePosition( const InputMousePositionEvent & _event )
+    void GameService::mousePosition( const InputMousePositionEvent & _event )
     {
         PLAYER_SERVICE()
             ->onAppMousePosition( _event );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::update()
+    void GameService::update()
     {
 #ifndef NDEBUG
         const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
@@ -277,7 +277,7 @@ namespace Mengine
         m_userEvents.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::tick( const UpdateContext * _context )
+    void GameService::tick( const UpdateContext * _context )
     {
         UpdateContext gameContext = *_context;
         gameContext.time *= m_timingFactor;
@@ -286,262 +286,16 @@ namespace Mengine
             ->tick( &gameContext );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::render()
+    void GameService::render()
     {
         PLAYER_SERVICE()
             ->render();
 
         EVENTABLE_METHOD( this, EVENT_GAME_FRAME_END )
             ->onGameFrameEnd();
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-        class PythonGameEventReceiver
-            : public GameEventReceiver
-            , public PythonEventReceiver
-        {
-        protected:
-            void onGameFullscreen( bool _fullscreen ) override
-            {
-                m_cb.call( _fullscreen );
-            }
-
-            void onGameFixedContentResolution( bool _fixed ) override
-            {
-                m_cb.call( _fixed );
-            }
-
-            void onGameFixedDisplayResolution( bool _fixed ) override
-            {
-                m_cb.call( _fixed );
-            }
-
-            void onGameRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution ) override
-            {
-                m_cb.call( _viewport, _contentResolution );
-            }
-
-            void onGameViewport( const Viewport & _viewport, float _aspect ) override
-            {
-                m_cb.call( _viewport, _aspect );
-            }
-
-            bool onGameKey( KeyCode _code, float _x, float _y, bool _isDown, bool _isRepeat ) override
-            {
-                return m_cb.call( (uint32_t)_code, _x, _y, _isDown, _isRepeat );
-            }
-
-            bool onGameText( WChar _key, float _x, float _y ) override
-            {
-                return m_cb.call( _key, _x, _y );
-            }
-
-            bool onGameMouseButton( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override
-            {
-                return m_cb.call( _touchId, _x, _y, _button, _isDown );
-            }
-
-            bool onGameMouseButtonBegin( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override
-            {
-                return m_cb.call( _touchId, _x, _y, _button, _isDown );
-            }
-
-            bool onGameMouseButtonEnd( uint32_t _touchId, float _x, float _y, uint32_t _button, bool _isDown ) override
-            {
-                return m_cb.call( _touchId, _x, _y, _button, _isDown );
-            }
-
-            bool onGameMouseMove( uint32_t _touchId, float _x, float _y, float _dx, float _dy ) override
-            {
-                return m_cb.call( _touchId, _x, _y, _dx, _dy );
-            }
-
-            bool onGameMouseWheel( uint32_t _button, float _x, float _y, int32_t _wheel ) override
-            {
-                return m_cb.call( _button, _x, _y, _wheel );
-            }
-
-            void onGameAppMouseEnter( float _x, float _y ) override
-            {
-                m_cb.call( _x, _y );
-            }
-
-            void onGameAppMouseLeave() override
-            {
-                m_cb.call();
-            }
-
-            void onGameTimingFactor( float _timingFactor ) override
-            {
-                m_cb.call( _timingFactor );
-            }
-
-            bool onGamePreparation( bool _debug ) override
-            {
-                return m_cb.call( _debug );
-            }
-
-            void onGameRun() override
-            {
-                m_cb.call();
-            }
-
-            bool onGameInitialize() override
-            {
-                return m_cb.call();
-            }
-
-            void onGameInitializeRenderResources() override
-            {
-                m_cb.call();
-            }
-
-            void onGameFinalizeRenderResources() override
-            {
-                m_cb.call();
-            }
-
-            void onGameAccountFinalize() override
-            {
-                m_cb.call();
-            }
-
-            void onGameFinalize() override
-            {
-                m_cb.call();
-            }
-
-            void onGameDestroy() override
-            {
-                m_cb.call();
-            }
-
-            void onGameFocus( bool _focus ) override
-            {
-                m_cb.call( _focus );
-            }
-
-            void onGameCreateDefaultAccount() override
-            {
-                m_cb.call();
-            }
-
-            void onGameCreateGlobalAccount() override
-            {
-                m_cb.call();
-            }
-
-            void onGameLoadAccounts() override
-            {
-                m_cb.call();
-            }
-
-            void onGameCreateAccount( const ConstString & _accountID, bool _global ) override
-            {
-                m_cb.call( _accountID, _global );
-            }
-
-            void onGameDeleteAccount( const ConstString & _accountID ) override
-            {
-                m_cb.call( _accountID );
-            }
-
-            void onGameSelectAccount( const ConstString & _accountID ) override
-            {
-                m_cb.call( _accountID );
-            }
-
-            void onGameUselectAccount( const ConstString & _accountID ) override
-            {
-                m_cb.call( _accountID );
-            }
-
-            void onGameChangeSoundVolume( float _sound, float _music, float _voice ) override
-            {
-                m_cb.call( _sound, _music, _voice );
-            }
-
-            void onGameCursorMode( bool _mode ) override
-            {
-                m_cb.call( _mode );
-            }
-
-            void onGameUser( const ConstString & _event, const MapWParams & _params ) override
-            {
-                m_cb.call( _event, _params );
-            }
-
-            bool onGameClose() override
-            {
-                return m_cb.call();
-            }
-
-            void onGameOverFillrate( double _fillrate ) override
-            {
-                m_cb.call( _fillrate );
-            }
-
-            void onGameFrameEnd() override
-            {
-                m_cb.call();
-            }
-        };
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Game::registerEventMethods_( const ScriptModuleInterfacePtr & _module )
-    {
-        const pybind::module & base_module = _module->getModule();
-
-        pybind::module py_module( base_module );
-
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFullscreen", EVENT_GAME_FULLSCREEN );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFixedContentResolution", EVENT_GAME_FIXED_CONTENT_RESOLUTION );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFixedDisplayResolution", EVENT_GAME_FIXED_DISPLAY_RESOLUTION );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onRenderViewport", EVENT_GAME_RENDER_VIEWPORT );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onGameViewport", EVENT_GAME_VIEWPORT );
-
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleKeyEvent", EVENT_GAME_KEY );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleTextEvent", EVENT_GAME_TEXT );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseButtonEvent", EVENT_GAME_MOUSE_BUTTON );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseButtonEventBegin", EVENT_GAME_MOUSE_BUTTON_BEGIN );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseButtonEventEnd", EVENT_GAME_MOUSE_BUTTON_END );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseMove", EVENT_GAME_MOUSE_MOVE );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onHandleMouseWheel", EVENT_GAME_MOUSE_WHEEL );
-
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onAppMouseEnter", EVENT_GAME_APP_MOUSE_ENTER );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onAppMouseLeave", EVENT_GAME_APP_MOUSE_LEAVE );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onTimingFactor", EVENT_GAME_ON_TIMING_FACTOR );
-
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onPreparation", EVENT_GAME_PREPARATION );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onRun", EVENT_GAME_RUN );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onInitialize", EVENT_GAME_INITIALIZE );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onInitializeRenderResources", EVENT_GAME_INITIALIZE_RENDER_RESOURCES );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onAccountFinalize", EVENT_GAME_ACCOUNT_FINALIZE );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFinalize", EVENT_GAME_FINALIZE );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onDestroy", EVENT_GAME_DESTROY );
-
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFocus", EVENT_GAME_FOCUS );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateDefaultAccount", EVENT_GAME_CREATE_DEFAULT_ACCOUNT );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateGlobalAccount", EVENT_GAME_CREATE_GLOBAL_ACCOUNT );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onLoadAccounts", EVENT_GAME_LOAD_ACCOUNTS );
-
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCreateAccount", EVENT_GAME_CREATE_ACCOUNT );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onDeleteAccount", EVENT_GAME_DELETE_ACCOUNT );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onSelectAccount", EVENT_GAME_SELECT_ACCOUNT );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onUnselectAccount", EVENT_GAME_UNSELECT_ACCOUNT );
-
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onChangeSoundVolume", EVENT_GAME_CHANGE_SOUND_VOLUME );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCursorMode", EVENT_GAME_CURSOR_MODE );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onUserEvent", EVENT_GAME_USER );
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onCloseWindow", EVENT_GAME_CLOSE );
-
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onOverFillrate", EVENT_GAME_OVER_FILLRATE );
-
-        Helper::registerScriptEventReceiverModule<PythonGameEventReceiver>( py_module, this, "onFrameEnd", EVENT_GAME_FRAME_END );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Game::loadPersonality()
+    bool GameService::loadPersonality()
     {
         bool developmentMode = HAS_OPTION( "dev" );
 
@@ -588,22 +342,6 @@ namespace Mengine
 
             return false;
         }
-
-        ConstString personality = CONFIG_VALUE( "Game", "PersonalityModule", STRINGIZE_FILEPATH_LOCAL( "Personality" ) );
-
-        ScriptModuleInterfacePtr module = SCRIPT_SERVICE()
-            ->importModule( personality );
-
-        if( module == nullptr )
-        {
-            LOGGER_ERROR( "Game::loadPersonality invalid import module '%s'"
-                , personality.c_str()
-            );
-
-            return false;
-        }
-
-        this->registerEventMethods_( module );
 
 #ifndef NDEBUG
         bool is_debug = true;
@@ -691,20 +429,20 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Game::_initializeService()
+    bool GameService::_initializeService()
     {
         CONFIG_SECTION( "Params", m_params );
 
         SERVICE_CREATE( AccountService );
 
-        GameAccountProviderPtr accountProvider = new FactorableUnique<GameAccountProvider>();
-        accountProvider->setGame( this );
+        GameAccountProviderPtr accountProvider = new FactorableUnique<GameServiceAccountProvider>();
+        accountProvider->setEventable( this );
 
         ACCOUNT_SERVICE()
             ->setAccountProviderInterface( accountProvider );
 
-        GameSoundVolumeProviderPtr soundVolumeProvider = new FactorableUnique<GameSoundVolumeProvider>();
-        soundVolumeProvider->setGame( this );
+        GameSoundVolumeProviderPtr soundVolumeProvider = new FactorableUnique<GameServiceSoundVolumeProvider>();
+        soundVolumeProvider->setEventable( this );
 
         SOUND_SERVICE()
             ->addSoundVolumeProvider( soundVolumeProvider );
@@ -712,7 +450,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::_finalizeService()
+    void GameService::_finalizeService()
     {
         EVENTABLE_METHOD( this, EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();
@@ -739,7 +477,7 @@ namespace Mengine
         m_currentPackName.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::run()
+    void GameService::run()
     {
         LOGGER_WARNING( "Run game"
         );
@@ -748,19 +486,19 @@ namespace Mengine
             ->onGameRun();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::initializeRenderResources()
+    void GameService::initializeRenderResources()
     {
         EVENTABLE_METHOD( this, EVENT_GAME_INITIALIZE_RENDER_RESOURCES )
             ->onGameInitializeRenderResources();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::finalizeRenderResources()
+    void GameService::finalizeRenderResources()
     {
         EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE_RENDER_RESOURCES )
             ->onGameFinalizeRenderResources();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::turnSound( bool _turn )
+    void GameService::turnSound( bool _turn )
     {
         (void)_turn;
 
@@ -780,7 +518,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setFocus( bool _focus )
+    void GameService::setFocus( bool _focus )
     {
         if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
         {
@@ -792,7 +530,7 @@ namespace Mengine
             ->onGameFocus( _focus );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setFullscreen( const Resolution & _resolution, bool _fullscreen )
+    void GameService::setFullscreen( const Resolution & _resolution, bool _fullscreen )
     {
         if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
         {
@@ -804,7 +542,7 @@ namespace Mengine
             ->onGameFullscreen( _fullscreen );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
+    void GameService::setFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
         if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
         {
@@ -816,7 +554,7 @@ namespace Mengine
             ->onGameFixedContentResolution( _fixed );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
+    void GameService::setFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
     {
         if( SERVICE_EXIST( Mengine::PlayerServiceInterface ) == true )
         {
@@ -828,19 +566,19 @@ namespace Mengine
             ->onGameFixedDisplayResolution( _fixed );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
+    void GameService::setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {
         EVENTABLE_METHOD( this, EVENT_GAME_RENDER_VIEWPORT )
             ->onGameRenderViewport( _viewport, _contentResolution );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setGameViewport( const Viewport & _viewport, float _aspect )
+    void GameService::setGameViewport( const Viewport & _viewport, float _aspect )
     {
         EVENTABLE_METHOD( this, EVENT_GAME_VIEWPORT )
             ->onGameViewport( _viewport, _aspect );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Game::close()
+    bool GameService::close()
     {
         bool needQuit = EVENTABLE_METHODR( this, EVENT_GAME_CLOSE, true )
             ->onGameClose();
@@ -848,7 +586,7 @@ namespace Mengine
         return needQuit;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::userEvent( const ConstString & _id, const MapWParams & _params )
+    void GameService::userEvent( const ConstString & _id, const MapWParams & _params )
     {
         UserEvent ev;
         ev.id = _id;
@@ -857,18 +595,18 @@ namespace Mengine
         m_userEvents.emplace_back( ev );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setCursorMode( bool _mode )
+    void GameService::setCursorMode( bool _mode )
     {
         EVENTABLE_METHOD( this, EVENT_GAME_CURSOR_MODE )
             ->onGameCursorMode( _mode );
     }
     //////////////////////////////////////////////////////////////////////////
-    float Game::getTimeFactor() const
+    float GameService::getTimeFactor() const
     {
         return m_timingFactor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Game::setTimeFactor( float _timingFactor )
+    void GameService::setTimeFactor( float _timingFactor )
     {
         m_timingFactor = _timingFactor;
 
@@ -876,7 +614,7 @@ namespace Mengine
             ->onGameTimingFactor( _timingFactor );
     }
     //////////////////////////////////////////////////////////////////////////
-    WString Game::getParam( const ConstString & _paramName ) const
+    WString GameService::getParam( const ConstString & _paramName ) const
     {
         MapWParams::const_iterator it_find = m_params.find( _paramName );
 
@@ -894,7 +632,7 @@ namespace Mengine
         return param;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Game::hasParam( const ConstString & _paramName ) const
+    bool GameService::hasParam( const ConstString & _paramName ) const
     {
         MapWParams::const_iterator it_find = m_params.find( _paramName );
 

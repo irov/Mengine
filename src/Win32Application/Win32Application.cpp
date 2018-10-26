@@ -696,6 +696,11 @@ namespace Mengine
 
         SERVICE_CREATE( Application );
 
+		if (PythonWrapper::gameWrap() == false)
+		{
+			return false;
+		}
+
         // seed randomizer
         LARGE_INTEGER randomSeed;
         ::QueryPerformanceCounter( &randomSeed );

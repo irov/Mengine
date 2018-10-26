@@ -2,23 +2,22 @@
 
 #include "Interface/AccountInterface.h"
 
+#include "Kernel/Eventable.h"
 #include "Kernel/ServantBase.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class Game;
-    //////////////////////////////////////////////////////////////////////////
-    class GameAccountProvider
+    class GameServiceAccountProvider
         : public ServantBase<AccountProviderInterface>
     {
     public:
-        GameAccountProvider();
-		~GameAccountProvider() override;
+        GameServiceAccountProvider();
+		~GameServiceAccountProvider() override;
 
     public:
-        void setGame( Game * _game );
-        Game * getGame() const;
+        void setEventable( const EventablePtr & _eventable );
+		const EventablePtr & getEventable() const;
 
     protected:
         void onCreateAccount( const ConstString & _accountID, bool _global ) override;
@@ -27,9 +26,9 @@ namespace Mengine
         void onUnselectAccount( const ConstString & _accountID ) override;
 
     protected:
-        Game * m_game;
+		EventablePtr m_eventable;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<GameAccountProvider> GameAccountProviderPtr;
+    typedef IntrusivePtr<GameServiceAccountProvider> GameAccountProviderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

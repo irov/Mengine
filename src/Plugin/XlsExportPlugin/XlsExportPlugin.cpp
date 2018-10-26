@@ -6,7 +6,7 @@
 #include "Interface/UnicodeInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
-#include "WIN32/WindowsIncluder.h"
+#include "Environment/WIN32/WindowsIncluder.h"
 
 #include "pybind\pybind.hpp"
 
@@ -41,46 +41,42 @@ namespace Mengine
         currentPath[len] = L'/';
         currentPath[len + 1] = L'\0';
 
-        {
-            WChar exportPath[MENGINE_MAX_PATH];
-            wcscpy( exportPath, currentPath );
-            wcscat( exportPath, L"Python3Lib/" );
+        WChar exportPath[MENGINE_MAX_PATH];
+        wcscpy( exportPath, currentPath );
+        wcscat( exportPath, L"Python3Lib/" );
 
-            WChar shortpath[MENGINE_MAX_PATH];
-            GetShortPathName( exportPath, shortpath, MENGINE_MAX_PATH );
+        WChar shortpath_exportPath[MENGINE_MAX_PATH];
+        GetShortPathName( exportPath, shortpath_exportPath, MENGINE_MAX_PATH );
 
-            pybind::set_path( shortpath );
-        }
-
-        pybind::kernel_interface * kernel = pybind::initialize( false, false, true );
+        pybind::kernel_interface * kernel = pybind::initialize( shortpath_exportPath, false, false, true );
 
         //PyObject * xls_module = pybind::module_init( "Xls" );
 
         //pybind::set_currentmodule( xls_module );
 
-        PyObject * module_builtins = pybind::get_builtins();
+        PyObject * module_builtins = kernel->get_builtins();
 
         m_warninglogger = new XlsScriptLogger( LM_WARNING );
 
         PyObject * pyWarningLogger = m_warninglogger->embedding( kernel, module_builtins );
-        pybind::setStdOutHandle( pyWarningLogger );
+        kernel->setStdOutHandle( pyWarningLogger );
 
         m_errorLogger = new XlsScriptLogger( LM_ERROR );
 
         PyObject * pyErrorLogger = m_errorLogger->embedding( kernel, module_builtins );
-        pybind::setStdErrorHandle( pyErrorLogger );
+        kernel->setStdErrorHandle( pyErrorLogger );
 
-        PyObject * py_syspath = pybind::list_new( 0 );
+        pybind::list py_syspath( kernel );
 
         {
             WChar stdPath[MENGINE_MAX_PATH];
             wcscpy( stdPath, currentPath );
             wcscat( stdPath, L"Python3Lib/" );
 
-            WChar shortpath[MENGINE_MAX_PATH];
-            GetShortPathName( stdPath, shortpath, MENGINE_MAX_PATH );
+            WChar shortpath_stdPath[MENGINE_MAX_PATH];
+            GetShortPathName( stdPath, shortpath_stdPath, MENGINE_MAX_PATH );
 
-            pybind::list_appenditem_t( kernel, py_syspath, shortpath );
+            py_syspath.append( shortpath_stdPath );
         }
 
         {
@@ -88,15 +84,13 @@ namespace Mengine
             wcscpy( xlsxPath, currentPath );
             wcscat( xlsxPath, L"XlsxExport/" );
 
-            WChar shortpath[MENGINE_MAX_PATH];
-            GetShortPathName( xlsxPath, shortpath, MENGINE_MAX_PATH );
+            WChar shortpath_xlsxPath[MENGINE_MAX_PATH];
+            GetShortPathName( xlsxPath, shortpath_xlsxPath, MENGINE_MAX_PATH );
 
-            pybind::list_appenditem_t( kernel, py_syspath, shortpath );
+            py_syspath.append( shortpath_xlsxPath );
         }
 
-        pybind::set_syspath( py_syspath );
-
-        pybind::decref( py_syspath );
+        kernel->set_syspath( py_syspath.ptr() );
 
         pybind::def_functor( kernel, "Warning", this, &XlsExportPlugin::warning_, module_builtins );
         pybind::def_functor( kernel, "Error", this, &XlsExportPlugin::error_, module_builtins );
@@ -111,7 +105,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void XlsExportPlugin::_finalize()
     {
-        pybind::finalize();
+        pybind::kernel_interface * kernel = pybind::get_kernel();
+
+        kernel->finalize();
 
         delete m_warninglogger;
         delete m_errorLogger;
@@ -130,6 +126,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool XlsExportPlugin::proccess_()
     {
+        pybind::kernel_interface * kernel = pybind::get_kernel();
+
         const ConstString & projectCodename = APPLICATION_SERVICE()
             ->getProjectCodename();
 
@@ -139,18 +137,18 @@ namespace Mengine
         }
 
         bool exist = false;
-        PyObject * py_xlsxExporter = pybind::module_import( "xlsxExporter", exist );
+        PyObject * py_xlsxExporter = kernel->module_import( "xlsxExporter", exist );
 
         if( py_xlsxExporter == 0 )
         {
             return false;
         }
 
-        pybind::call_method( py_xlsxExporter, "export", "(s)"
+        kernel->call_method( py_xlsxExporter, "export", "(s)"
             , projectCodename.c_str()
         );
 
-        pybind::decref( py_xlsxExporter );
+        kernel->decref( py_xlsxExporter );
 
         return true;
     }

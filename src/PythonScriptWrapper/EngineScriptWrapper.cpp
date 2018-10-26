@@ -1,7 +1,6 @@
 #include "PythonWrapper.h"
 
 #include "Config/Lambda.h"
-#include "Config/Blobject.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileSystemInterface.h"

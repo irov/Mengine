@@ -10,9 +10,8 @@
 
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/FilePathHelper.h"
 #include "Kernel/MemoryHelper.h"
-
-#include "Config/Blobject.h"
 
 namespace Mengine
 {

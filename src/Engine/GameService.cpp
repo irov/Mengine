@@ -297,52 +297,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool GameService::loadPersonality()
     {
-        bool developmentMode = HAS_OPTION( "dev" );
-
-        SCRIPT_SERVICE()
-            ->addGlobalModuleT( "_DEVELOPMENT", developmentMode );
-
-#ifndef NDEBUG
-        SCRIPT_SERVICE()
-            ->addGlobalModuleT( "_DEBUG", true );
-#else
-        SCRIPT_SERVICE()
-            ->addGlobalModuleT( "_DEBUG", false );
-#endif
-
-#ifdef WIN32
-        SCRIPT_SERVICE()
-            ->addGlobalModuleT( "_WIN32", true );
-#else
-        SCRIPT_SERVICE()
-            ->addGlobalModuleT( "_WIN32", false );
-#endif
-
-#ifdef __ANDROID__
-        SCRIPT_SERVICE()
-            ->addGlobalModuleT( "_ANDROID", true );
-#else
-        SCRIPT_SERVICE()
-            ->addGlobalModuleT( "_ANDROID", false );
-#endif
-
-#ifdef MENGINE_MASTER_RELEASE
-        SCRIPT_SERVICE()
-            ->addGlobalModuleT( "_MASTER_RELEASE", true );
-#else
-        SCRIPT_SERVICE()
-            ->addGlobalModuleT( "_MASTER_RELEASE", false );
-#endif
-
-        if( SCRIPT_SERVICE()
-            ->bootstrapModules() == false )
-        {
-            LOGGER_ERROR( "Game::loadPersonality invalid bootstrap modules"
-            );
-
-            return false;
-        }
-
 #ifndef NDEBUG
         bool is_debug = true;
 #else

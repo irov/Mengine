@@ -591,14 +591,16 @@ namespace Mengine
 
         m_cursorMode = CONFIG_VALUE( "Platform", "Cursor", false );
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Application::loadPersonality()
+    {
         if( GAME_SERVICE()
             ->loadPersonality() == false )
         {
             return false;
         }
-
-        GAME_SERVICE()
-            ->setCursorMode( m_cursorMode );
 
         return true;
     }

@@ -16,7 +16,6 @@
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
-#include "Config/Blobject.h"
 
 #include "Kernel/Node.h"
 #include "Kernel/NodeRenderHelper.h"
@@ -51,6 +50,8 @@
 #include "math/angle.h"
 
 #include "Interface/ScriptSystemInterface.h"
+
+#include "Config/Blobject.h"
 
 #include "pybind/pybind.hpp"
 #include "pybind/pickle.hpp"
@@ -2797,10 +2798,10 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    struct extract_TBlobject_type
+    struct extract_Blobject_type
         : public pybind::type_cast_result<Blobject>
     {
-        bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, Blobject & _value, bool _nothrow ) override
+        bool apply( pybind::kernel_interface * _kernel, PyObject * _obj, value_type & _value, bool _nothrow ) override
         {
             (void)_kernel;
             (void)_nothrow;
@@ -2825,12 +2826,12 @@ namespace Mengine
             return true;
         }
 
-        PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<Blobject>::TCastRef _value ) override
+        PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<value_type>::TCastRef _value ) override
         {
             (void)_kernel;
 
             const char * value_str = reinterpret_cast<const char *>(&_value[0]);
-            Blobject::size_type value_size = _value.size();
+            value_type::size_type value_size = _value.size();
 
             PyObject * py_value = _kernel->string_from_char_size( value_str, (uint32_t)value_size );
 
@@ -2980,7 +2981,7 @@ namespace Mengine
 
         HelperScriptMethod * helperScriptMethod = new HelperScriptMethod();
 
-        pybind::registration_type_cast<Blobject>(kernel, new extract_TBlobject_type);
+        pybind::registration_type_cast<Blobject>(kernel, new extract_Blobject_type);
         pybind::registration_type_cast<Tags>(kernel, new extract_Tags_type);
 
         pybind::registration_stl_vector_type_cast<ResourceImage *, VectorResourceImage>(kernel);

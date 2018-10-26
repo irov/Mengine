@@ -73,6 +73,32 @@ namespace Mengine
     {
         LOGGER_INFO( "Initializing Particle System ..." );
 
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
+
+        pybind::set_kernel( kernel );
+
+        pybind::interface_<ParticleEmitter2, pybind::bases<Node, Eventable, Animatable> >( kernel, "ParticleEmitter2", false )
+            .def( "setResourceParticle", &ParticleEmitter2::setResourceParticle )
+            .def( "getResourceParticle", &ParticleEmitter2::getResourceParticle )
+
+            .def( "setEmitterTranslateWithParticle", &ParticleEmitter2::setEmitterTranslateWithParticle )
+            .def( "setEmitterPositionRelative", &ParticleEmitter2::setEmitterPositionRelative )
+            .def( "setEmitterCameraRelative", &ParticleEmitter2::setEmitterCameraRelative )
+            .def( "setEmitterPositionProviderOriginOffset", &ParticleEmitter2::setEmitterPositionProviderOriginOffset )
+
+            .def( "changeEmitterImage", &ParticleEmitter2::changeEmitterImage )
+            .def( "removeEmitterImage", &ParticleEmitter2::removeEmitterImage )
+            .def( "changeEmitterPolygon", &ParticleEmitter2::changeEmitterPolygon )
+            .def( "removeEmitterPolygon", &ParticleEmitter2::removeEmitterPolygon )
+
+            .def( "getDuration", &ParticleEmitter2::getDuration )
+
+            .def( "setEmitterRandomMode", &ParticleEmitter2::setEmitterRandomMode )
+            .def( "getEmitterRandomMode", &ParticleEmitter2::getEmitterRandomMode )
+            .def_static_native_kernel( "setEventListener", &Detail::s_ParticleEmitter2_setEventListener )
+            ;
+
         if( SCRIPT_SERVICE()
             ->setWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new PythonScriptWrapper<ParticleEmitter2>() ) == false )
         {
@@ -96,29 +122,6 @@ namespace Mengine
         {
             return false;
         }
-
-        pybind::kernel_interface * kernel = pybind::get_kernel();
-
-        pybind::interface_<ParticleEmitter2, pybind::bases<Node, Eventable, Animatable> >( kernel, "ParticleEmitter2", false )
-            .def( "setResourceParticle", &ParticleEmitter2::setResourceParticle )
-            .def( "getResourceParticle", &ParticleEmitter2::getResourceParticle )
-
-            .def( "setEmitterTranslateWithParticle", &ParticleEmitter2::setEmitterTranslateWithParticle )
-            .def( "setEmitterPositionRelative", &ParticleEmitter2::setEmitterPositionRelative )
-            .def( "setEmitterCameraRelative", &ParticleEmitter2::setEmitterCameraRelative )
-            .def( "setEmitterPositionProviderOriginOffset", &ParticleEmitter2::setEmitterPositionProviderOriginOffset )
-
-            .def( "changeEmitterImage", &ParticleEmitter2::changeEmitterImage )
-            .def( "removeEmitterImage", &ParticleEmitter2::removeEmitterImage )
-            .def( "changeEmitterPolygon", &ParticleEmitter2::changeEmitterPolygon )
-            .def( "removeEmitterPolygon", &ParticleEmitter2::removeEmitterPolygon )
-
-            .def( "getDuration", &ParticleEmitter2::getDuration )
-
-            .def( "setEmitterRandomMode", &ParticleEmitter2::setEmitterRandomMode )
-            .def( "getEmitterRandomMode", &ParticleEmitter2::getEmitterRandomMode )
-            .def_static_native_kernel( "setEventListener", &Detail::s_ParticleEmitter2_setEventListener )
-            ;
 
         return true;
     }

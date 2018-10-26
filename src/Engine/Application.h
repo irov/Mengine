@@ -39,6 +39,7 @@ namespace Mengine
 
     public:
         bool initializeGame( const FileGroupInterfacePtr & _category, const FilePath & _resourceIniPath ) override;
+        bool loadPersonality() override;
 
     public:
         void changeWindowResolution( const Resolution & _resolution ) override;

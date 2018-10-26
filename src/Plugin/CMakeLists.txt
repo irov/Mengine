@@ -67,6 +67,8 @@ if( MENGINE_TARGET_MSVC )
     ADD_SUBDIRECTORY( Win32SocketPlugin )    
     ADD_SUBDIRECTORY( Win32FileGroupPlugin )
 	ADD_SUBDIRECTORY( Win32ConsoleLogger )
+    
+    ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
 endif()
 
 if( MENGINE_TARGET_MINGW )
@@ -77,16 +79,16 @@ if( MENGINE_TARGET_MINGW )
 	ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
 endif()
 
-if( MENGINE_TARGET_SDL AND MENGINE_PLATFORM_WIN32 )
-    ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
-    
-    ADD_SUBDIRECTORY( XlsExportPlugin )
-    ADD_SUBDIRECTORY( XmlCodecPlugin )
-    ADD_SUBDIRECTORY( Win32ConsoleLogger )
-endif()
-
 if( MENGINE_TARGET_SDL )
     ADD_SUBDIRECTORY( SDLFileGroupPlugin )
+    ADD_SUBDIRECTORY( Win32ConsoleLogger )
+    
+    ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
+endif()
+
+if( MENGINE_PLATFORM_WIN32 AND NOT MENGINE_TARGET_MINGW)
+    ADD_SUBDIRECTORY( XlsExportPlugin )
+    ADD_SUBDIRECTORY( XmlCodecPlugin )
 endif()
 
 ADD_SUBDIRECTORY( BitmapFontPlugin )

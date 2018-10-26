@@ -1,8 +1,6 @@
 #include "PluginBase.h"
 
 #include "Interface/ModuleInterface.h"
-#include "Interface/ScriptSystemInterface.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -43,14 +41,6 @@ namespace Mengine
         if( m_initialize == true )
         {
             return true;
-        }
-
-        if( SERVICE_EXIST( Mengine::ScriptServiceInterface ) == true )
-        {
-            pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-                ->getKernel();
-
-            pybind::set_kernel( kernel );
         }
 
         bool successful = this->_initialize();

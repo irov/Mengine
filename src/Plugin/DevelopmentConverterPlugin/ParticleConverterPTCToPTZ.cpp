@@ -1,6 +1,6 @@
 #include "ParticleConverterPTCToPTZ.h"
 
-#include "../Plugin/AstralaxParticlePlugin/AstralaxInterface.h"
+#include "Plugin/AstralaxParticlePlugin/AstralaxInterface.h"
 
 #include "Interface/StringizeInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
@@ -11,12 +11,11 @@
 
 #include "Kernel/Magic.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/FilePathHelper.h"
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
 
 #include "Kernel/ResourceImage.h"
-
-#include "Config/Blobject.h"
 
 namespace Mengine
 {
@@ -60,7 +59,7 @@ namespace Mengine
             return false;
         }
 
-        const Blobject::value_type * data_memory = data_cache->getBuffer();
+        const void * data_memory = data_cache->getBuffer();
         size_t data_size = data_cache->getSize();
 
         if( data_memory == nullptr )

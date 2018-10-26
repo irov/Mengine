@@ -6,14 +6,14 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileSystemInterface.h"
 
-#include "Config/Blobject.h"
-
 #include "Kernel/Logger.h"
 
 #include "metabuf/Metadata.hpp"
 
 #include "xml2metabuf/Xml2Metabuf.hpp"
 #include "xml2metabuf/Xml2Metacode.hpp"
+
+#include "Config/Blobject.h"
 
 #include <stdio.h>
 #include "utf8.h"

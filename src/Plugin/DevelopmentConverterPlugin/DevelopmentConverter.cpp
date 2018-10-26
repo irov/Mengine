@@ -1,6 +1,7 @@
 #include "DevelopmentConverter.h"
 
 #include "Interface/FileSystemInterface.h"
+#include "Interface/StringizeInterface.h"
 
 namespace Mengine
 {

@@ -1,9 +1,11 @@
 #include "Win32Socket.h"
 
+#include "Kernel/FactorableUnique.h"
+
 namespace Mengine
 {
     Win32Socket::Win32Socket()
-        :m_socket( INVALID_SOCKET )
+        : m_socket( INVALID_SOCKET )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -11,7 +13,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::initialize( const Char * _ip, const Char * _port )
+    bool Win32Socket::connect( const Char * _ip, const Char * _port )
     {
         addrinfo hints;
         ZeroMemory( &hints, sizeof( hints ) );
@@ -30,6 +32,11 @@ namespace Mengine
 
         SOCKET socket = ::socket( addrinfo->ai_family, addrinfo->ai_socktype, addrinfo->ai_protocol );
 
+		if (socket == 0)
+		{
+			return false;
+		}
+
         int connect_result = ::connect( socket, addrinfo->ai_addr, (int)addrinfo->ai_addrlen );
 
         freeaddrinfo( addrinfo );
@@ -41,42 +48,25 @@ namespace Mengine
 
         m_socket = socket;
 
+		m_receiveStream = new FactorableUnique<Win32SocketInputStream>(socket);
+		m_sendStream = new FactorableUnique<Win32SocketOutputStream>(socket);
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Socket::finalize()
+    void Win32Socket::disconnect()
     {
         closesocket( m_socket );
         m_socket = INVALID_SOCKET;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::send( const void * _buffer, size_t _len )
-    {
-        const char * send_buffer = (const char *)_buffer;
-
-        int send_result = ::send( m_socket, send_buffer, (int)_len, 0 );
-
-        if( send_result != 0 )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::receive( void * _buffer, size_t _capacity, size_t & _receiv )
-    {
-        char * receiv_buffer = (char *)_buffer;
-
-        int result = ::recv( m_socket, receiv_buffer, (int)_capacity, 0 );
-
-        if( result < 0 )
-        {
-            return false;
-        }
-
-        _receiv = (size_t)result;
-
-        return true;
-    }
+	const OutputStreamInterfacePtr & Win32Socket::getSendStream() const
+	{
+		return m_sendStream;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const InputStreamInterfacePtr & Win32Socket::getReceiveStream() const
+	{
+		return m_receiveStream;
+	}
 }

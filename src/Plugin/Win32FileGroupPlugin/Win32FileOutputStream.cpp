@@ -62,7 +62,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileOutputStream::write( const void * _data, size_t _size )
+	size_t Win32FileOutputStream::write( const void * _data, size_t _size )
     {
         DWORD bytesWritten = 0;
         BOOL result = ::WriteFile( m_hFile, _data, (DWORD)_size, &bytesWritten, NULL );
@@ -73,12 +73,12 @@ namespace Mengine
                 , _size
             );
 
-            return false;
+            return 0;
         }
 
-        m_size += _size;
+        m_size += bytesWritten;
 
-        return true;
+        return (size_t)bytesWritten;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32FileOutputStream::size() const

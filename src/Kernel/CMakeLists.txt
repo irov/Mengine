@@ -295,6 +295,8 @@ ADD_FILTER(
 Core
     Assertion.h
     Assertion.cpp
+	
+	NotImplementedAssertion.h
 
     CRC32.h
     CRC32.cpp

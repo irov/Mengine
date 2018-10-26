@@ -4,27 +4,28 @@ ADD_FILTER(
 src
 	Win32Socket.cpp
 	Win32Socket.h
+	Win32SocketInputStream.cpp
+	Win32SocketInputStream.h
+	Win32SocketOutputStream.cpp
+	Win32SocketOutputStream.h
 	Win32SocketSystem.cpp
 	Win32SocketSystem.h
     
     Win32SocketPlugin.cpp
-    Win32SocketPlugin.h    
+    Win32SocketPlugin.h
+	Win32SocketPlugin.def
 )
 
-if( MENGINE_WIN32_SOCKET_DLL )
-    ADD_FILTER(src Win32SocketPlugin.def)
-    
-    add_definitions(-DMENGINE_PLUGIN_DLL)    
+if( MENGINE_PLUGIN_WIN32_SOCKET_DLL )
+    add_definitions(-DMENGINE_PLUGIN_DLL)
 endif()
 
-INCLUDE_DIRECTORIES( 
-    ${THIRDPARTY_DIR}/stdex/include
-    )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
 
-if( MENGINE_ASTRALAX_PARTICLE2_DLL )
-    ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES} )
+if( MENGINE_PLUGIN_WIN32_SOCKET_DLL )
+    ADD_MENGINE_SHARED()
 else()
-    ADD_LIBRARY( ${MY_LIB_NAME} STATIC ${SRC_FILES} )
+    ADD_MENGINE_LIBRARY()
 endif()    
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
@@ -37,27 +38,17 @@ if( MINGW )
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Ws2_32.lib)
 elseif( WIN32 )
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Ws2_32.lib)
-endif( MINGW )
-
-if( MENGINE_ASTRALAX_PARTICLE2_DLL )    
-    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
-
-    foreach(dependency ${APPLICATION_DEPENDENCIES})
-        #MESSAGE( ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
-        TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} debug ${dependency} )
-        TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} optimized ${dependency} )
-    endforeach(dependency ${APPLICATION_DEPENDENCIES})
-
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${APPLICATION_LIBS} )     
-else()   
-    SET( APPLICATION_DEPENDENCIES
-     ${APPLICATION_DEPENDENCIES}
-     ${MY_LIB_NAME}
-    )
-
-    SET( APPLICATION_DEPENDENCIES
-     ${APPLICATION_DEPENDENCIES}
-     PARENT_SCOPE
-    )    
 endif()
 
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
+
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ ${MY_LIB_NAME}
+ Kernel
+)
+
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ PARENT_SCOPE
+)

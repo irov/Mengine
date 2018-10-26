@@ -8,7 +8,6 @@
 
 #include "Metacode/Metacode.h"
 
-#include "Kernel/ArchiveWrite.h"
 #include "Kernel/PolygonHelper.h"
 
 #include "Kernel/Stream.h"
@@ -23,6 +22,8 @@
 #include "math/quat.h"
 
 #include "poly2tri/poly2tri.h"
+
+#include "stdex/container_writer.h"
 
 namespace Mengine
 {
@@ -134,9 +135,7 @@ namespace Mengine
             return false;
         }
 
-
-
-        ArchiveWrite aw( _buffer );
+        stdex::container_writer<Blobject> aw( _buffer );
 
         uint32_t true_metacode_version = Metacode::get_metacode_version();
 

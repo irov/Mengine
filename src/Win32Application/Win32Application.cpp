@@ -108,11 +108,11 @@ PLUGIN_EXPORT( DebugRender );
 PLUGIN_EXPORT( ResourceValidate );
 
 #ifdef MENGINE_PLUGIN_VIDEO
-PLUGIN_EXPORT(Video);
+PLUGIN_EXPORT( Video );
 #endif
 
 #ifdef MENGINE_PLUGIN_THEORA
-PLUGIN_EXPORT(Theora);
+PLUGIN_EXPORT( Theora );
 #endif
 
 #ifdef MENGINE_PLUGIN_CURL_NO_DLL
@@ -653,7 +653,7 @@ namespace Mengine
         {
             return false;
         }
-        
+
         if( PythonWrapper::nodeWrap() == false )
         {
             return false;
@@ -668,12 +668,12 @@ namespace Mengine
         {
             return false;
         }
-        
+
         if( PythonWrapper::engineWrap() == false )
         {
             return false;
         }
-        
+
         if( PythonWrapper::soundWrap() == false )
         {
             return false;
@@ -695,11 +695,6 @@ namespace Mengine
         SERVICE_CREATE( TimelineService );
 
         SERVICE_CREATE( Application );
-
-		if (PythonWrapper::gameWrap() == false)
-		{
-			return false;
-		}
 
         // seed randomizer
         LARGE_INTEGER randomSeed;
@@ -728,11 +723,11 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier..." );
 
 #ifdef MENGINE_PLUGIN_VIDEO
-		MENGINE_ADD_PLUGIN(Video, "initialize Plugin Video...");
+        MENGINE_ADD_PLUGIN( Video, "initialize Plugin Video..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_THEORA
-		MENGINE_ADD_PLUGIN(Theora, "initialize Plugin Theora...");
+        MENGINE_ADD_PLUGIN( Theora, "initialize Plugin Theora..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_CURL_NO_DLL
@@ -852,6 +847,20 @@ namespace Mengine
 
         if( APPLICATION_SERVICE()
             ->initializeGame( fileGroup, resourceIniPath ) == false )
+        {
+            LOGGER_CRITICAL( "Application invalid initialize game"
+            );
+
+            return false;
+        }
+
+        if( PythonWrapper::gameWrap() == false )
+        {
+            return false;
+        }
+
+        if( APPLICATION_SERVICE()
+            ->loadPersonality() == false )
         {
             LOGGER_CRITICAL( "Application invalid initialize game"
             );

@@ -1727,6 +1727,25 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::cmd( const WString & _command )
+    {
+        const wchar_t * wc = _command.c_str();
+
+        int err = _wsystem( wc );
+
+        if( err != 0 )
+        {
+            LOGGER_ERROR( "command:\n%ls\nerror: %d"
+                , _command.c_str()
+                , errno
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::getDesktopResolution( Resolution & _resolution ) const
     {
         int cxscreen = ::GetSystemMetrics( SM_CXSCREEN );

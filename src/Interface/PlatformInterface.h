@@ -97,6 +97,9 @@ namespace Mengine
 
     public:
         virtual bool getErrorMessage( uint32_t _messageId, WString & _out ) const = 0;
+
+    public:
+        virtual bool cmd( const WString & _command ) = 0;
     };
 
 #define PLATFORM_SERVICE()\

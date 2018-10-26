@@ -2,7 +2,7 @@
 
 #include "Interface/UnicodeInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/WindowsLayerInterface.h"
+#include "Interface/PlatformInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -62,7 +62,7 @@ namespace Mengine
             , buffer.c_str()
         );
 
-        if( WINDOWSLAYER_SERVICE()
+        if( PLATFORM_SERVICE()
             ->cmd( buffer ) == false )
         {
             LOGGER_ERROR( "VideoConverterFFMPEGToWEBM::convert_: invalid convert:\n%ls"

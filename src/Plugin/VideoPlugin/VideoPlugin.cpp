@@ -64,6 +64,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool VideoPlugin::_initialize()
     {
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
+
+        pybind::set_kernel( kernel );
+
+        pybind::interface_<ResourceVideo, pybind::bases<Resource> >( kernel, "ResourceVideo", false )
+            ;
+
+        pybind::interface_<SurfaceVideo, pybind::bases<Surface, Eventable, Animatable> >( kernel, "SurfaceVideo", false )
+            .def( "setResourceVideo", &SurfaceVideo::setResourceVideo )
+            .def( "getResourceVideo", &SurfaceVideo::getResourceVideo )
+            .def( "getWidth", &SurfaceVideo::getWidth )
+            .def( "getHeight", &SurfaceVideo::getHeight )
+            .def( "getDuration", &SurfaceVideo::getDuration )
+            .def_static_native_kernel( "setEventListener", &Detail::s_SurfaceVideo_setEventListener )
+            ;
+
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceVideo, 128> > ) == false )
         {
@@ -88,24 +105,6 @@ namespace Mengine
         {
             return false;
         }
-
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
-
-        pybind::set_kernel( kernel );
-
-        pybind::interface_<ResourceVideo, pybind::bases<Resource> >( kernel, "ResourceVideo", false )
-            ;
-
-        pybind::interface_<SurfaceVideo, pybind::bases<Surface, Eventable, Animatable> >( kernel, "SurfaceVideo", false )
-            .def( "setResourceVideo", &SurfaceVideo::setResourceVideo )
-            .def( "getResourceVideo", &SurfaceVideo::getResourceVideo )
-            .def( "getWidth", &SurfaceVideo::getWidth )
-            .def( "getHeight", &SurfaceVideo::getHeight )
-            .def( "getDuration", &SurfaceVideo::getDuration )
-            .def_static_native_kernel( "setEventListener", &Detail::s_SurfaceVideo_setEventListener )
-            ;
-
 
         VisitorPtr videoValidateVisitor = new FactorableUnique<VideoResourceValidateVisitor>();
 

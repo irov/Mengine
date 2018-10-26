@@ -104,6 +104,9 @@ namespace Mengine
         bool getErrorMessage( uint32_t _messageId, WString & _out ) const override;
 
     protected:
+        bool cmd( const WString & _command ) override;
+
+    protected:
         bool setProcessDPIAware() override;
 
     public:

@@ -17,53 +17,53 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * XlsScriptLogger::py_write( PyObject * _args, PyObject * _kwds )
+    PyObject * XlsScriptLogger::py_write( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds )
     {
         (void)_kwds;
 
-        if( pybind::tuple_check( _args ) == false )
+        if( _kernel->tuple_check( _args ) == false )
         {
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
 
-        uint32_t tuple_size = pybind::tuple_size( _args );
+        uint32_t tuple_size = _kernel->tuple_size( _args );
 
         if( tuple_size == 0 )
         {
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
 
-        PyObject * arg = pybind::tuple_getitem( _args, 0 );
+        PyObject * arg = _kernel->tuple_getitem( _args, 0 );
 
-        if( pybind::string_check( arg ) == true )
+        if( _kernel->string_check( arg ) == true )
         {
             uint32_t size;
-            const Char * str = pybind::string_to_char_and_size( arg, size );
+            const Char * str = _kernel->string_to_char_and_size( arg, size );
 
             this->write( str, size );
         }
-        else if( pybind::unicode_check( arg ) == true )
+        else if( _kernel->unicode_check( arg ) == true )
         {
             uint32_t size;
-            const Char * utf8 = pybind::unicode_to_utf8_and_size( arg, size );
+            const Char * utf8 = _kernel->unicode_to_utf8_and_size( arg, size );
 
             this->write( utf8, size );
         }
 
-        return pybind::ret_none();
+        return _kernel->ret_none();
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * XlsScriptLogger::py_flush( PyObject * _args, PyObject * _kwds )
+    PyObject * XlsScriptLogger::py_flush( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds )
     {
         (void)_args;
         (void)_kwds;
 
-        return pybind::ret_none();
+        return _kernel->ret_none();
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsScriptLogger::write( const char * _msg, uint32_t _size )
     {
-        LOGGER_VERBOSE_LEVEL( m_level ).logMessage( _msg, _size );
+        LOGGER_VERBOSE_LEVEL( m_level, __FUNCTION__, __LINE__ ).logMessage( _msg, _size );
     }
     //////////////////////////////////////////////////////////////////////////
     void XlsScriptLogger::setSoftspace( int _softspace )
@@ -79,8 +79,8 @@ namespace Mengine
     PyObject * XlsScriptLogger::embedding( pybind::kernel_interface * _kernel, PyObject * _module )
     {
         pybind::interface_<XlsScriptLogger>( _kernel, "XlsScriptLogger", true, _module )
-            .def_native( "write", &XlsScriptLogger::py_write )
-            .def_native( "flush", &XlsScriptLogger::py_flush )
+            .def_native_kernel( "write", &XlsScriptLogger::py_write )
+            .def_native_kernel( "flush", &XlsScriptLogger::py_flush )
             .def_property( "softspace", &XlsScriptLogger::getSoftspace, &XlsScriptLogger::setSoftspace )
             ;
 

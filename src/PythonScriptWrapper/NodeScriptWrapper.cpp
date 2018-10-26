@@ -1,7 +1,5 @@
 #include "PythonWrapper.h"
 
-#include "Config/Blobject.h"
-
 #include "Interface/ApplicationInterface.h"
 #include "Interface/TimelineInterface.h"
 #include "Interface/StringizeInterface.h"

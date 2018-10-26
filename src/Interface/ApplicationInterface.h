@@ -53,6 +53,7 @@ namespace Mengine
 
     public:
         virtual bool initializeGame( const FileGroupInterfacePtr & _category, const FilePath & _resourceIniPath ) = 0;
+        virtual bool loadPersonality() = 0;
 
     public:
         virtual const WString & getCompanyName() const = 0;

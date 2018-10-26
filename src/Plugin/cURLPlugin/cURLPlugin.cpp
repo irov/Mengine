@@ -126,8 +126,6 @@ namespace Mengine
     {
         SERVICE_CREATE( cURLService );
 
-        m_factoryPyHttpReceiver = new FactoryPool<Detail::PyCURLReceiver, 32>();
-
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()
             ->getKernel();
 
@@ -138,6 +136,8 @@ namespace Mengine
         pybind::def_functor_args( kernel, "headerData", this, &cURLPlugin::headerData );
         pybind::def_functor_args( kernel, "downloadAsset", this, &cURLPlugin::downloadAsset );
         pybind::def_functor( kernel, "cancelRequest", this, &cURLPlugin::cancelRequest );
+
+        m_factoryPyHttpReceiver = new FactoryPool<Detail::PyCURLReceiver, 32>();
 
         return true;
     }

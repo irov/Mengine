@@ -27,18 +27,15 @@ src
     ImageConverterDDSToHTF.cpp
     ImageConverterDDSToHTF.h
     ImageConverterPNGToACF.cpp
-    ImageConverterPNGToACF.h
+    ImageConverterPNGToACF.h    
 )
 
 add_definitions(-DMENGINE_PLUGIN_DLL)
 
-INCLUDE_DIRECTORIES(
-            ${THIRDPARTY_DIR}/pybind/include
-            ${THIRDPARTY_DIR}/libmath/include
-            ${THIRDPARTY_DIR}/metabuf 
-            ${THIRDPARTY_DIR}/poly2tri
-	)
-    
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/metabuf )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/poly2tri )
 
 ADD_MENGINE_SHARED()
 

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
+#include "Interface/StreamInterface.h"
 
 #include "Kernel/Factorable.h"
 
@@ -13,12 +14,12 @@ namespace Mengine
         : public Factorable
     {
     public:
-        virtual bool initialize( const Char * _ip, const Char * _port ) = 0;
-        virtual void finalize() = 0;
+        virtual bool connect( const Char * _ip, const Char * _port ) = 0;
+        virtual void disconnect() = 0;
 
-    public:
-        virtual bool send( const void * _buffer, size_t _len ) = 0;
-        virtual bool receive( void * _buffer, size_t _capacity, size_t & _receiv ) = 0;
+    public:		
+		virtual const OutputStreamInterfacePtr & getSendStream() const = 0;
+		virtual const InputStreamInterfacePtr & getReceiveStream() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SocketInterface> SocketInterfacePtr;
@@ -32,6 +33,6 @@ namespace Mengine
         virtual SocketInterfacePtr createSocket() = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#define TIMELINE_SERVICE( serviceProvider )\
-    ((Mengine::TimelineServiceInterface*)SERVICE_GET(serviceProvider, Mengine::TimelineServiceInterface))
+#define SOCKET_SYSTEM( serviceProvider )\
+    ((Mengine::SocketSystemInterface*)SERVICE_GET(serviceProvider, Mengine::SocketSystemInterface))
 }

@@ -2,7 +2,7 @@
 
 #include "Interface/OptionsInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/InputSystemInterface.h"
+#include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundSystemInterface.h"
@@ -698,12 +698,6 @@ namespace Mengine
                 {
                     m_debugMask |= MENGINE_DEBUG_NODES;
                 }
-            }
-
-            if( _event.code == KC_F9 && _event.isDown )
-            {
-                PLAYER_SERVICE()
-                    ->toggleDebugText();
             }
 
             if( _event.code == KC_F8 && _event.isDown )

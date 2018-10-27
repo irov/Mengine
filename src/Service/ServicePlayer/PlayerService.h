@@ -67,11 +67,11 @@ namespace Mengine
 
     public:
         const ScheduleManagerInterfacePtr & getScheduleManager() const override;
-        const ScheduleManagerInterfacePtr & getScheduleManagerGlobal() const override;
+        const ScheduleManagerInterfacePtr & getGlobalScheduleManager() const override;
 
     public:
         const AffectorablePtr & getAffectorable() const override;
-        const AffectorablePtr & getAffectorableGlobal() const override;
+        const AffectorablePtr & getGlobalAffectorable() const override;
 
     public:
         void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
@@ -158,12 +158,7 @@ namespace Mengine
 
         uint32_t m_fps;
 
-    public:
-        void toggleDebugText() override;
-
-    protected:
-        uint32_t m_showDebugText;
-        TextFieldPtr m_debugText;
+    protected:        
         RenderCameraOrthogonalPtr m_debugCamera2D;
     };
 }

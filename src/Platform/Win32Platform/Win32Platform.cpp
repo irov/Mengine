@@ -2,7 +2,6 @@
 
 #include "Interface/OptionsInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/InputSystemInterface.h"
 #include "Interface/ConfigInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/UnicodeInterface.h"

@@ -478,7 +478,7 @@ namespace Mengine
         RenderVisitorPtr movie2RenderVisitor = new FactorableUnique<Movie2DebugRenderVisitor>();
 
         DEBUGRENDER_SERVICE()
-            ->addRenderVisitor( movie2RenderVisitor );
+            ->addDebugNodeRenderVisitor( movie2RenderVisitor );
 
         m_movie2RenderVisitor = movie2RenderVisitor;
 
@@ -516,7 +516,7 @@ namespace Mengine
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
 
         DEBUGRENDER_SERVICE()
-            ->removeRenderVisitor( m_movie2RenderVisitor );
+            ->removeDebugNodeRenderVisitor( m_movie2RenderVisitor );
         m_movie2RenderVisitor = nullptr;
 
         RESOURCEVALIDATE_SERVICE()

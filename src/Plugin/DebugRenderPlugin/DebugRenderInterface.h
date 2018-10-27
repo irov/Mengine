@@ -15,11 +15,14 @@ namespace Mengine
         SERVICE_DECLARE( "DebugRenderService" );
 
     public:
-        virtual void render( const NodePtr & _node, const RenderContext * _context, bool _external ) = 0;
+        virtual void renderDebugNode( const NodePtr & _node, const RenderContext * _context, bool _external ) = 0;
+        
+    public:
+        virtual void addDebugNodeRenderVisitor( const RenderVisitorPtr & _renderVisitor ) = 0;
+        virtual void removeDebugNodeRenderVisitor( const RenderVisitorPtr & _renderVisitor ) = 0;
 
     public:
-        virtual void addRenderVisitor( const RenderVisitorPtr & _renderVisitor ) = 0;
-        virtual void removeRenderVisitor( const RenderVisitorPtr & _renderVisitor ) = 0;
+        virtual void renderDebugInfo( const RenderContext * _context ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #define DEBUGRENDER_SERVICE()\

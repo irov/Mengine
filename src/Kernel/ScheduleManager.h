@@ -23,7 +23,7 @@ namespace Mengine
 
         ScheduleEventInterfacePtr event;
         ScheduleTimerInterfacePtr timer;
-        SchedulePipeInterfacePtr pipe;
+        LambdaPipe pipe;
 
         float delay;
         float time_delay;
@@ -56,10 +56,10 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        uint32_t event( float _delay, const ScheduleEventInterfacePtr & _listener ) override;
+        uint32_t event( float _delay, const ScheduleEventInterfacePtr & _event ) override;
 
     public:
-        uint32_t timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimerInterfacePtr & _listener ) override;
+        uint32_t timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimerInterfacePtr & _timer ) override;
 
     public:
         bool refresh( uint32_t _id ) override;

@@ -84,7 +84,7 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ScheduleManager::event( float _delay, const ScheduleEventInterfacePtr & _listener )
+    uint32_t ScheduleManager::event( float _delay, const ScheduleEventInterfacePtr & _event )
     {
         uint32_t new_id = ++m_enumerator;
 
@@ -92,7 +92,7 @@ namespace Mengine
 
         desc.id = new_id;
 
-        desc.event = _listener;
+        desc.event = _event;
         desc.timer = nullptr;
         desc.pipe = nullptr;
 
@@ -112,7 +112,7 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ScheduleManager::timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimerInterfacePtr & _listener )
+    uint32_t ScheduleManager::timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimerInterfacePtr & _timer )
     {
         uint32_t new_id = ++m_enumerator;
 
@@ -121,7 +121,7 @@ namespace Mengine
         desc.id = new_id;
 
         desc.event = nullptr;
-        desc.timer = _listener;
+        desc.timer = _timer;
         desc.pipe = _pipe;
 
         desc.delay = 0.f;

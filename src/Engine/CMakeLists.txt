@@ -150,26 +150,6 @@ Object\\\\Window
 )
 
 ADD_FILTER(
-PlayerService
-	PlayerService.cpp
-	PlayerService.h
-    GlobalAffectorable.cpp
-    GlobalAffectorable.h    
-	GlobalHandleSystem.cpp
-	GlobalHandleSystem.h
-)
-
-ADD_FILTER(
-GameService
-	GameService.cpp
-	GameService.h
-	GameServiceAccountProvider.cpp
-	GameServiceAccountProvider.h
-	GameServiceSoundVolumeProvider.cpp
-	GameServiceSoundVolumeProvider.h	
-)
-
-ADD_FILTER(
 Resource\\\\File
 	ResourceFile.cpp
 	ResourceFile.h

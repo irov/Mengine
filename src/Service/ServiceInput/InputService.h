@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/InputSystemInterface.h"
+#include "Interface/InputServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

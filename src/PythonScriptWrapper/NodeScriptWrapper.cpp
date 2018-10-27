@@ -5,7 +5,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
-#include "Interface/InputSystemInterface.h"
+#include "Interface/InputServiceInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/PlatformInterface.h"
@@ -121,7 +121,7 @@
 
 #include "ScriptableAffectorCallback.h"
 #include "PythonEntityBehavior.h"
-#include "PythonScheduleTimer.h"
+#include "PythonScheduleTiming.h"
 #include "PythonSchedulePipe.h"
 #include "PythonScheduleEvent.h"
 #include "DelaySchedulePipe.h"
@@ -160,7 +160,7 @@ namespace Mengine
         {
             m_factoryPythonScheduleEvent = new FactoryPool<PythonScheduleEvent, 16>();
             m_factoryDelaySchedulePipe = new FactoryPool<DelaySchedulePipe, 16>();
-            m_factoryPythonScheduleTimer = new FactoryPool<PythonScheduleTimer, 16>();
+            m_factoryPythonScheduleTimer = new FactoryPool<PythonScheduleTiming, 16>();
             m_factoryPythonSchedulePipe = new FactoryPool<PythonSchedulePipe, 16>();
             m_factoryNodeAffectorCallback = new FactoryPool<ScriptableAffectorCallback, 4>();
         }

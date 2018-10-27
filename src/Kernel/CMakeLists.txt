@@ -281,6 +281,8 @@ Visitable
 
 ADD_FILTER(
 ScheduleManager
+    ScheduleHelper.cpp
+    ScheduleHelper.h
 	ScheduleManager.cpp
 	ScheduleManager.h
 )

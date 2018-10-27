@@ -21,7 +21,8 @@ src
 	StreamInterface.h
 	LoggerInterface.h
 	ApplicationInterface.h
-	InputSystemInterface.h	
+	InputServiceInterface.h
+    InputHandlerInterface.h
 	ThreadInterface.h
 	ThreadSystemInterface.h
 	ConverterInterface.h

@@ -34,7 +34,7 @@ namespace Mengine
         RenderVisitorPtr nodeRenderVisitor = new FactorableUnique<NodeDebugRenderVisitor>();
 
         DEBUGRENDER_SERVICE()
-            ->addRenderVisitor( nodeRenderVisitor );
+            ->addDebugNodeRenderVisitor( nodeRenderVisitor );
 
         return true;
     }

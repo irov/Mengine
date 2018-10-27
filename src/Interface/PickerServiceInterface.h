@@ -1,8 +1,10 @@
 #pragma once
 
-#include "Interface/InputSystemInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/InputHandlerInterface.h"
 
 #include "Kernel/IntrusivePtr.h"
+#include "Kernel/Resolution.h"
 
 #include "Config/Vector.h"
 
@@ -36,7 +38,7 @@ namespace Mengine
         : public InputHandlerInterface
     {
     public:
-        virtual bool pick( const mt::vec2f& _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) = 0;
+        virtual bool pick( const mt::vec2f & _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) = 0;
 
     public:
         virtual bool onHandleMouseEnter( float _x, float _y ) = 0;

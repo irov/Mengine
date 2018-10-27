@@ -20,7 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ScheduleEventInterface> ScheduleEventInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class ScheduleTimerInterface
+    class ScheduleTimingInterface
         : public Factorable
     {
     public:
@@ -29,7 +29,7 @@ namespace Mengine
         virtual void onScheduleStop( uint32_t _id ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ScheduleTimerInterface> ScheduleTimerInterfacePtr;
+    typedef IntrusivePtr<ScheduleTimingInterface> ScheduleTimerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SchedulePipeInterface
         : public Factorable

@@ -97,14 +97,11 @@ namespace Mengine
 
     public:
         virtual const ScheduleManagerInterfacePtr & getScheduleManager() const = 0;
-        virtual const ScheduleManagerInterfacePtr & getScheduleManagerGlobal() const = 0;
+        virtual const ScheduleManagerInterfacePtr & getGlobalScheduleManager() const = 0;
 
     public:
         virtual const AffectorablePtr & getAffectorable() const = 0;
-        virtual const AffectorablePtr & getAffectorableGlobal() const = 0;
-
-    public:
-        virtual void toggleDebugText() = 0;
+        virtual const AffectorablePtr & getGlobalAffectorable() const = 0;
     };
 
 #define PLAYER_SERVICE()\

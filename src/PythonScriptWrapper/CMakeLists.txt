@@ -20,8 +20,8 @@ PythonValueFollower
 
 ADD_FILTER(
 PythonSchedule
-    PythonScheduleTimer.cpp
-    PythonScheduleTimer.h
+    PythonScheduleTiming.cpp
+    PythonScheduleTiming.h
     PythonSchedulePipe.cpp
     PythonSchedulePipe.h
     PythonScheduleEvent.cpp

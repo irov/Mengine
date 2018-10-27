@@ -123,7 +123,7 @@
 #include "PythonValueFollower.h"
 
 #include "PythonEntityBehavior.h"
-#include "PythonScheduleTimer.h"
+#include "PythonScheduleTiming.h"
 #include "PythonSchedulePipe.h"
 #include "PythonScheduleEvent.h"
 #include "DelaySchedulePipe.h"
@@ -163,7 +163,7 @@ namespace Mengine
     public:
         EngineScriptMethod()
         {
-            m_factoryPythonScheduleTimer = new FactoryPool<PythonScheduleTimer, 8>();
+            m_factoryPythonScheduleTimer = new FactoryPool<PythonScheduleTiming, 8>();
             m_factoryPythonSchedulePipe = new FactoryPool<PythonSchedulePipe, 8>();
             m_factoryDelaySchedulePipe = new FactoryPool<DelaySchedulePipe, 8>();
             m_factoryPythonScheduleEvent = new FactoryPool<PythonScheduleEvent, 8>();
@@ -460,7 +460,7 @@ namespace Mengine
         uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::args & _args )
         {
             const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
+                ->getGlobalScheduleManager();
 
             if( sm == nullptr )
             {
@@ -479,7 +479,7 @@ namespace Mengine
         bool s_scheduleGlobalRemove( uint32_t _id )
         {
             const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
+                ->getGlobalScheduleManager();
 
             if( sm == nullptr )
             {
@@ -494,7 +494,7 @@ namespace Mengine
         void s_scheduleGlobalRemoveAll()
         {
             const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
+                ->getGlobalScheduleManager();
 
             if( sm == nullptr )
             {
@@ -507,7 +507,7 @@ namespace Mengine
         bool s_scheduleGlobalFreeze( uint32_t _id, bool _freeze )
         {
             const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
+                ->getGlobalScheduleManager();
 
             if( sm == nullptr )
             {
@@ -522,7 +522,7 @@ namespace Mengine
         void s_scheduleGlobalFreezeAll()
         {
             const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
+                ->getGlobalScheduleManager();
 
             if( sm == nullptr )
             {
@@ -535,7 +535,7 @@ namespace Mengine
         void s_scheduleGlobalResumeAll()
         {
             const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
+                ->getGlobalScheduleManager();
 
             if( sm == nullptr )
             {
@@ -548,7 +548,7 @@ namespace Mengine
         bool s_scheduleGlobalIsFreeze( uint32_t _id )
         {
             const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
+                ->getGlobalScheduleManager();
 
             if( sm == nullptr )
             {
@@ -563,7 +563,7 @@ namespace Mengine
         float s_scheduleGlobalTime( uint32_t _id )
         {
             const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManagerGlobal();
+                ->getGlobalScheduleManager();
 
             if( sm == nullptr )
             {
@@ -2397,7 +2397,7 @@ namespace Mengine
             }
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getAffectorableGlobal();
+                ->getGlobalAffectorable();
 
             AFFECTOR_ID id = affectorable->addAffector( affector );
 
@@ -2407,7 +2407,7 @@ namespace Mengine
         bool s_removeAffector( AFFECTOR_ID _id )
         {
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getAffectorableGlobal();
+                ->getGlobalAffectorable();
 
             bool successful = affectorable->stopAffector( _id );
 
@@ -2654,7 +2654,7 @@ namespace Mengine
             follower->initialize( _value, _speed, _cb, _args );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getAffectorableGlobal();
+                ->getGlobalAffectorable();
 
             affectorable->addAffector( follower );
 
@@ -2666,7 +2666,7 @@ namespace Mengine
             AFFECTOR_ID id = _follower->getId();
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getAffectorableGlobal();
+                ->getGlobalAffectorable();
 
             affectorable->stopAffector( id );
         }

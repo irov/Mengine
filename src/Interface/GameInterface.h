@@ -8,6 +8,8 @@
 
 #include "Kernel/Params.h"
 #include "Kernel/Eventable.h"
+#include "Kernel/Viewport.h"
+#include "Kernel/Resolution.h"
 
 namespace Mengine
 {

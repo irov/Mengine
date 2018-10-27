@@ -395,7 +395,7 @@ namespace Mengine
                 );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getAffectorableGlobal();
+                ->getGlobalAffectorable();
 
             affectorable->addAffector( affector );
         }
@@ -430,7 +430,7 @@ namespace Mengine
                 );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getAffectorableGlobal();
+                ->getGlobalAffectorable();
 
             affectorable->addAffector( affector );
 
@@ -721,7 +721,7 @@ namespace Mengine
                 );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getAffectorableGlobal();
+                ->getGlobalAffectorable();
 
             AFFECTOR_ID id = affectorable->addAffector( affector );
 
@@ -760,7 +760,7 @@ namespace Mengine
                 );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
-                ->getAffectorableGlobal();
+                ->getGlobalAffectorable();
 
             AFFECTOR_ID id = affectorable->addAffector( affector );
 

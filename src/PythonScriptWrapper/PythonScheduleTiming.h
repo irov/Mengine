@@ -7,12 +7,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class PythonScheduleTimer
-        : public ScheduleTimerInterface
+    class PythonScheduleTiming
+        : public ScheduleTimingInterface
     {
     public:
-        PythonScheduleTimer();
-        ~PythonScheduleTimer() override;
+        PythonScheduleTiming();
+        ~PythonScheduleTiming() override;
 
     public:
         void initialize( const pybind::object & _cb, const pybind::args & _args );
@@ -27,5 +27,5 @@ namespace Mengine
         pybind::args m_args;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PythonScheduleTimer> PythonScheduleTimerPtr;
+    typedef IntrusivePtr<PythonScheduleTiming> PythonScheduleTimerPtr;
 }

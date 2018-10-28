@@ -132,6 +132,10 @@ namespace Mengine
         m_dataInfo.frequency = (uint32_t)vorbisInfo->rate;
         m_dataInfo.bits = 2;
 
+
+        //The Buffer Size must be an exact multiple of the BlockAlignment
+        m_dataInfo.size -= (m_dataInfo.size % 4);
+
         double al_total = ov_time_total( &m_oggVorbisFile, -1 );
         float total = (float)(al_total * 1000.0);
 

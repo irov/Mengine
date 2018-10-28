@@ -1,7 +1,7 @@
 #include "AstralaxEmitter2.h"
 
-#include "AstralaxParticleSystem2.h"
-#include "AstralaxEmitterContainer2.h"
+#include "AstralaxParticleSystem.h"
+#include "AstralaxEmitterContainer.h"
 
 #include "Kernel/Logger.h"
 
@@ -29,7 +29,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::initialize( AstralaxParticleSystem2 * _particleSystem, const AstralaxEmitterContainerInterfacePtr & _container )
+    bool AstralaxEmitter2::initialize( AstralaxParticleSystem * _particleSystem, const AstralaxEmitterContainerInterfacePtr & _container )
     {
         m_particleSystem = _particleSystem;
         m_container = _container;

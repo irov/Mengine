@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/Factorable.h"
 

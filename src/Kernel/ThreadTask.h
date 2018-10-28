@@ -2,7 +2,7 @@
 
 #include "Config/Atomic.h"
 
-#include "Interface/ThreadInterface.h"
+#include "Interface/ThreadTaskInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Visitable.h"

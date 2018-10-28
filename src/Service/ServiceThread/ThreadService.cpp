@@ -1,6 +1,7 @@
 #include "ThreadService.h"
 
 #include "Interface/ConfigInterface.h"
+#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/ThreadTaskPacket.h"

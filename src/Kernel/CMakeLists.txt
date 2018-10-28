@@ -429,6 +429,9 @@ Core
     Hashgen.h
     Hashtable.h
     HashHelper.h
+    
+    ThreadMutexScope.h
+    ThreadMutexScope.cpp
 )
 
 ADD_FILTER(

@@ -8,18 +8,22 @@
 
 namespace Mengine
 {
-    class OALSoundSystem;
-
-    class OALSoundBufferBase
+    //////////////////////////////////////////////////////////////////////////
+    class OpenALSoundSystem;
+    //////////////////////////////////////////////////////////////////////////
+    class OpenALSoundBufferBase
         : public SoundBufferInterface
         , public Factorable
     {
     public:
-        OALSoundBufferBase();
-        ~OALSoundBufferBase() override;
+        OpenALSoundBufferBase();
+        ~OpenALSoundBufferBase() override;
 
     public:
-        void initialize( OALSoundSystem * _soundSystem );
+        bool initialize( OpenALSoundSystem * _soundSystem );
+
+    protected:
+        virtual bool _initialize();
 
     public:
         const SoundDecoderInterfacePtr & getDecoder() const override;
@@ -41,7 +45,7 @@ namespace Mengine
         float getTimeTotal() const;
 
     protected:
-        OALSoundSystem * m_soundSystem;
+        OpenALSoundSystem * m_soundSystem;
 
         SoundDecoderInterfacePtr m_soundDecoder;
 
@@ -52,6 +56,7 @@ namespace Mengine
         float m_length;
         bool m_isStereo;
     };
-
-    typedef IntrusivePtr<OALSoundBufferBase> OALSoundBufferBasePtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<OpenALSoundBufferBase> OpenALSoundBufferBasePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

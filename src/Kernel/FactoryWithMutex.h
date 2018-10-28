@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Factory.h"
+#include "Kernel/Factory.h"
 
-#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 namespace Mengine
 {

@@ -1,5 +1,7 @@
 #include "ThreadQueue.h"
 
+#include "Interface/ThreadServiceInterface.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"
 

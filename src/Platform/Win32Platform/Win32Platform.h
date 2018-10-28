@@ -104,6 +104,7 @@ namespace Mengine
         bool getErrorMessage( uint32_t _messageId, WString & _out ) const override;
 
     protected:
+        void sleep( uint32_t _ms ) override;
         bool cmd( const WString & _command ) override;
 
     protected:

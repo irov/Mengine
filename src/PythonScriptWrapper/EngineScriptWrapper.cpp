@@ -6,7 +6,7 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/TimelineInterface.h"
 #include "Interface/StringizeInterface.h"
-
+#include "Interface/ThreadServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/MemoryInterface.h"
@@ -108,7 +108,6 @@
 #include "Kernel/Logger.h"
 
 #include "Interface/RenderServiceInterface.h"
-#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"
@@ -1304,7 +1303,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_sleep( uint32_t _time )
         {
-            THREAD_SYSTEM()
+            PLATFORM_SERVICE()
                 ->sleep( _time );
         }
         //////////////////////////////////////////////////////////////////////////

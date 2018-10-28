@@ -99,6 +99,9 @@ namespace Mengine
         virtual bool getErrorMessage( uint32_t _messageId, WString & _out ) const = 0;
 
     public:
+        virtual void sleep( uint32_t _ms ) = 0;
+
+    public:
         virtual bool cmd( const WString & _command ) = 0;
     };
 

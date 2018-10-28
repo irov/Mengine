@@ -2,6 +2,7 @@
 
 #include "Interface/OptionsInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
@@ -16,7 +17,6 @@
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/LoaderInterface.h"
 #include "Interface/NodeInterface.h"
-#include "Interface/ThreadSystemInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/ConverterInterface.h"
 #include "Interface/ResourceServiceInterface.h"

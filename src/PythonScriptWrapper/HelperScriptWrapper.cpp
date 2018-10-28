@@ -1,6 +1,5 @@
 #include "PythonWrapper.h"
 
-#include "Interface/ThreadSystemInterface.h"
 #include "Interface/UnicodeInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"

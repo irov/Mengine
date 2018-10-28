@@ -11,7 +11,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    OALSoundSource::OALSoundSource()
+    OpenALSoundSource::OpenALSoundSource()
         : m_soundSystem( nullptr )
         , m_volume( 1.f )
         , m_sourceId( 0 )
@@ -24,17 +24,17 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    OALSoundSource::~OALSoundSource()
+    OpenALSoundSource::~OpenALSoundSource()
     {
         this->releaseSourceId_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::initialize( OALSoundSystem * _soundSystem )
+    void OpenALSoundSource::initialize( OpenALSoundSystem * _soundSystem )
     {
         m_soundSystem = _soundSystem;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundSource::play()
+    bool OpenALSoundSource::play()
     {
         if( m_playing == true )
         {
@@ -59,7 +59,7 @@ namespace Mengine
 
             if( m_soundBuffer->play( m_sourceId, m_loop, m_timing ) == false )
             {
-                LOGGER_ERROR( "OALSoundSource::play invalid buffer play %d loop %d timing %f"
+                LOGGER_ERROR( "invalid buffer play %d loop %d timing %f"
                     , m_sourceId
                     , m_loop
                     , m_timing
@@ -81,7 +81,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::pause()
+    void OpenALSoundSource::pause()
     {
         if( m_playing == false )
         {
@@ -109,7 +109,7 @@ namespace Mengine
         float timing = 0.f;
         if( m_soundBuffer->getTimePos( m_sourceId, timing ) == false )
         {
-            LOGGER_ERROR( "OALSoundSource::pause invalid get time pos %d (play %d)"
+            LOGGER_ERROR( "invalid get time pos %d (play %d)"
                 , m_sourceId
                 , m_playing
             );
@@ -120,7 +120,7 @@ namespace Mengine
         m_soundBuffer->pause( m_sourceId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::stop()
+    void OpenALSoundSource::stop()
     {
         if( m_playing == false && m_pausing == false )
         {
@@ -135,17 +135,17 @@ namespace Mengine
         m_timing = 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundSource::isPlay() const
+    bool OpenALSoundSource::isPlay() const
     {
         return m_playing;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundSource::isPause() const
+    bool OpenALSoundSource::isPause() const
     {
         return m_pausing;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::setVolume( float _volume )
+    void OpenALSoundSource::setVolume( float _volume )
     {
         m_volume = _volume;
 
@@ -153,30 +153,30 @@ namespace Mengine
         {
             float gain = ::powf( m_volume, 2.f );
             alSourcef( m_sourceId, AL_GAIN, gain );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    float OALSoundSource::getVolume() const
+    float OpenALSoundSource::getVolume() const
     {
         return m_volume;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::setLoop( bool _loop )
+    void OpenALSoundSource::setLoop( bool _loop )
     {
         m_loop = _loop;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundSource::getLoop() const
+    bool OpenALSoundSource::getLoop() const
     {
         return m_loop;
     }
     //////////////////////////////////////////////////////////////////////////
-    float OALSoundSource::getDuration() const
+    float OpenALSoundSource::getDuration() const
     {
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "OALSoundSource::getLengthMs invalid sound buffer"
+            LOGGER_ERROR( "invalid sound buffer"
             );
 
             return 0.f;
@@ -187,7 +187,7 @@ namespace Mengine
         return time_sound;
     }
     //////////////////////////////////////////////////////////////////////////
-    float OALSoundSource::getPosition() const
+    float OpenALSoundSource::getPosition() const
     {
         if( m_soundBuffer == nullptr )
         {
@@ -207,7 +207,7 @@ namespace Mengine
         float posms = 0.f;
         if( m_soundBuffer->getTimePos( m_sourceId, posms ) == false )
         {
-            LOGGER_ERROR( "OALSoundSource::getPosMs invalid get time pos %d (play %d)"
+            LOGGER_ERROR( "invalid get time pos %d (play %d)"
                 , m_sourceId
                 , m_playing
             );
@@ -224,7 +224,7 @@ namespace Mengine
         return posms;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundSource::setPosition( float _posMs )
+    bool OpenALSoundSource::setPosition( float _posMs )
     {
         if( m_playing == true )
         {
@@ -237,7 +237,7 @@ namespace Mengine
 
         if( posmc > total )
         {
-            LOGGER_ERROR( "OALSoundSource::setPosMs pos %f total %f"
+            LOGGER_ERROR( "pos %f total %f"
                 , posmc
                 , total
             );
@@ -247,7 +247,7 @@ namespace Mengine
 
         if( posmc < 0.f )
         {
-            LOGGER_ERROR( "OALSoundSource::setPosMs pos %f less zero"
+            LOGGER_ERROR( "pos %f less zero"
                 , posmc
             );
 
@@ -260,7 +260,7 @@ namespace Mengine
         //{
         //	if( m_soundBuffer->setTimePos( m_sourceId, posmc ) == false )
         //	{
-        //		LOGGER_ERROR("OALSoundSource::setPosMs invalid set time pos %d time %f (play %d)"
+        //		LOGGER_ERROR("invalid set time pos %d time %f (play %d)"
         //			, m_sourceId
         //			, posmc
         //			, m_playing
@@ -273,14 +273,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer )
+    void OpenALSoundSource::setSoundBuffer( const SoundBufferInterfacePtr & _soundBuffer )
     {
         this->unloadBuffer_();
 
-        m_soundBuffer = stdex::intrusive_static_cast<OALSoundBufferBasePtr>(_soundBuffer);
+        m_soundBuffer = stdex::intrusive_static_cast<OpenALSoundBufferBasePtr>(_soundBuffer);
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::unloadBuffer_()
+    void OpenALSoundSource::unloadBuffer_()
     {
         if( m_soundBuffer != nullptr && m_playing == true )
         {
@@ -290,7 +290,7 @@ namespace Mengine
         m_soundBuffer = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::releaseSourceId_()
+    void OpenALSoundSource::releaseSourceId_()
     {
         if( m_sourceId != 0 )
         {
@@ -302,65 +302,65 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::setHeadMode( bool _headMode )
+    void OpenALSoundSource::setHeadMode( bool _headMode )
     {
         m_headMode = _headMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundSource::getHeadMode() const
+    bool OpenALSoundSource::getHeadMode() const
     {
         return m_headMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundSource::apply_( ALuint _source )
+    void OpenALSoundSource::apply_( ALuint _source )
     {
         if( m_headMode == true )
         {
             alSourcei( _source, AL_SOURCE_RELATIVE, AL_TRUE );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
 
             alSourcef( _source, AL_ROLLOFF_FACTOR, 0.f );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
 
             alSource3f( _source, AL_DIRECTION, 0.f, 0.f, 0.f );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
         }
         else
         {
             alSourcei( _source, AL_SOURCE_RELATIVE, AL_FALSE );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
 
             alSourcef( _source, AL_ROLLOFF_FACTOR, 1.f );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
 
             alSource3f( _source, AL_DIRECTION, 0.f, 0.f, 0.f );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
         }
 
         alSourcei( _source, AL_LOOPING, AL_FALSE );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         alSource3f( _source, AL_POSITION, 0.f, 0.f, 0.f );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         alSource3f( _source, AL_VELOCITY, 0.f, 0.f, 0.f );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         alSourcef( _source, AL_MIN_GAIN, 0.f );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         alSourcef( _source, AL_MAX_GAIN, 1.f );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         alSourcef( _source, AL_PITCH, 1.f );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         float gain = ::powf( m_volume, 2.f );
         alSourcef( _source, AL_GAIN, gain );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundBufferInterfacePtr OALSoundSource::getSoundBuffer() const
+    SoundBufferInterfacePtr OpenALSoundSource::getSoundBuffer() const
     {
         return m_soundBuffer;
     }

@@ -1,6 +1,6 @@
 #include "PrefetcherService.h"
 
-#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ConfigInterface.h"
 

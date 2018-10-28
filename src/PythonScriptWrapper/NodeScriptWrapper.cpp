@@ -110,7 +110,6 @@
 #include "Kernel/Logger.h"
 
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Identity.h"
 #include "Kernel/Affector.h"

@@ -6,7 +6,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 
-#include "Plugin/AstralaxParticlePlugin/UnknownParticleEmitter2Interface.h"
+#include "Plugin/AstralaxParticlePlugin/UnknownParticleEmitterInterface.h"
 #include "Plugin/VideoPlugin/VideoUnknownInterface.h"
 
 #include "Engine/ShapeQuadFixed.h"
@@ -107,6 +107,39 @@ namespace Mengine
     const ConstString & Movie2::getTextAliasEnvironment() const
     {
         return m_aliasEnvironment;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::checkInterruptElement() const
+    {
+        for( const SurfacePtr & surface : m_surfaces )
+        {
+            AnimationInterface * animation = surface->getAnimation();
+
+            if( animation != nullptr )
+            {
+                if( animation->isInterrupt() == true )
+                {
+                    return false;
+                }
+            }
+        }
+
+        for( const MapParticleEmitter2s::value_type & value : m_particleEmitters )
+        {
+            const NodePtr & particle = value.second;
+
+            AnimationInterface * animation = particle->getAnimation();
+
+            if( animation != nullptr )
+            {
+                if( animation->isInterrupt() == true )
+                {
+                    return false;
+                }
+            }
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::createCompositionLayers_()
@@ -897,7 +930,7 @@ namespace Mengine
                     return AE_FALSE;
                 }
 
-                UnknownParticleEmitter2InterfacePtr unknownParticleEmitter2 = node->getUnknown();
+                UnknownParticleEmitterInterfacePtr unknownParticleEmitter2 = node->getUnknown();
 
                 if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', '\0', 't' ) ) == AE_TRUE )
                 {
@@ -915,6 +948,8 @@ namespace Mengine
                 Resource * resourceParticle = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
 
                 unknownParticleEmitter2->setResourceParticle( resourceParticle );
+
+                unknownParticleEmitter2->setEmitterPositionProviderOriginOffset( -mt::vec3f( 1024.f, 1024.f, 0.f ) );
 
                 //EMaterialBlendMode blend_mode = getMovieBlendMode( layer );
 
@@ -1173,6 +1208,10 @@ namespace Mengine
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
+                case AE_MOVIE_STATE_UPDATE_INTERRUPT:
+                    {
+                        particle_animation->interrupt();
+                    }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
                         particle_animation->stop();
@@ -1235,6 +1274,10 @@ namespace Mengine
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
+                    }break;
+                case AE_MOVIE_STATE_UPDATE_INTERRUPT:
+                    {
+                        surface_animation->interrupt();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
@@ -1300,6 +1343,10 @@ namespace Mengine
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
+                    }break;
+                case AE_MOVIE_STATE_UPDATE_INTERRUPT:
+                    {
+                        surface_animation->interrupt();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
@@ -1444,6 +1491,20 @@ namespace Mengine
         {
             m2->end();
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ae_bool_t __movie_composition_extra_interrupt( const aeMovieCompositionExtraInterruptCallbackData * _callbackData, ae_voidptr_t _ud )
+    {
+        (void)_callbackData;
+
+        Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_ud);
+
+        if( m2->checkInterruptElement() == false )
+        {
+            return AE_FALSE;
+        }
+
+        return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_scene_effect_provider( const aeMovieCompositionSceneEffectProviderCallbackData * _callbackData, ae_voidptrptr_t _sed, ae_voidptr_t _ud )
@@ -1679,6 +1740,7 @@ namespace Mengine
 
         providers.composition_event = &__movie_composition_event;
         providers.composition_state = &__movie_composition_state;
+        providers.composition_extra_interrupt = &__movie_composition_extra_interrupt;
 
         providers.scene_effect_provider = &__movie_scene_effect_provider;
         providers.scene_effect_update = &__movie_scene_effect_update;

@@ -8,7 +8,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class UnknownParticleEmitter2Interface
+    class UnknownParticleEmitterInterface
         : public UnknownInterface
     {
     public:
@@ -22,6 +22,6 @@ namespace Mengine
         virtual void setEmitterCameraRelative( bool _cameraRelative ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<UnknownParticleEmitter2Interface> UnknownParticleEmitter2InterfacePtr;
+    typedef IntrusivePtr<UnknownParticleEmitterInterface> UnknownParticleEmitterInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

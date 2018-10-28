@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

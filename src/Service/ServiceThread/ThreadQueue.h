@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadInterface.h"
 
 #include "Kernel/ThreadTaskPacket.h"
+#include "Kernel/ConstString.h"
 #include "Kernel/Factory.h"
 
 #include "Config/List.h"

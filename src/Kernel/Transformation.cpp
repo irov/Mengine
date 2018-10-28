@@ -395,7 +395,7 @@ namespace Mengine
             {
                 const mt::mat4f & relationMatrix = m_relationTransformation->getWorldMatrix();
 
-                if( m_transformationFlag != 0 )
+                if( _transformationFlag != 0 )
                 {
                     mt::mul_m4_m4_r( _wm, localMatrix, relationMatrix );
                 }
@@ -406,7 +406,7 @@ namespace Mengine
             }
             else
             {
-                if( m_transformationFlag != 0 )
+                if( _transformationFlag != 0 )
                 {
                     _wm = localMatrix;
                 }

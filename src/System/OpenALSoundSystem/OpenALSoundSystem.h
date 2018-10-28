@@ -15,14 +15,13 @@
 
 namespace Mengine
 {
-    class OALSoundSource;
-
-    class OALSoundSystem
+    //////////////////////////////////////////////////////////////////////////
+    class OpenALSoundSystem
         : public ServiceBase<SoundSystemInterface>
     {
     public:
-        OALSoundSystem();
-        ~OALSoundSystem() override;
+        OpenALSoundSystem();
+        ~OpenALSoundSystem() override;
 
     public:
         bool _initializeService() override;
@@ -39,9 +38,7 @@ namespace Mengine
 
     public:
         SoundSourceInterfacePtr createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _sample ) override;
-
         SoundBufferInterfacePtr createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _isStream ) override;
-        //SoundBufferInterface* createSoundBufferFromMemory( void * _buffer, int _size, bool _newmem ) override;
 
     public:
         ALuint genSourceId();
@@ -54,9 +51,9 @@ namespace Mengine
         ALCcontext * m_context;
         ALCdevice * m_device;
 
-        FactoryPtr m_factoryOALSoundBuffer;
-        FactoryPtr m_factoryOALSoundBufferStream;
-        FactoryPtr m_factoryOALSoundSource;
+        FactoryPtr m_factoryOpenALSoundBuffer;
+        FactoryPtr m_factoryOpenALSoundBufferStream;
+        FactoryPtr m_factoryOpenALSoundSource;
 
         bool m_threadAvaliable;
     };

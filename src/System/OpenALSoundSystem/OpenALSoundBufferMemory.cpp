@@ -11,13 +11,13 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    OALSoundBufferMemory::OALSoundBufferMemory()
+    OpenALSoundBufferMemory::OpenALSoundBufferMemory()
         : m_alBufferId( 0 )
     {
 
     }
     //////////////////////////////////////////////////////////////////////////
-    OALSoundBufferMemory::~OALSoundBufferMemory()
+    OpenALSoundBufferMemory::~OpenALSoundBufferMemory()
     {
         if( m_alBufferId != 0 )
         {
@@ -26,18 +26,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferMemory::update()
+    bool OpenALSoundBufferMemory::update()
     {
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferMemory::load( const SoundDecoderInterfacePtr & _soundDecoder )
+    bool OpenALSoundBufferMemory::load( const SoundDecoderInterfacePtr & _soundDecoder )
     {
         m_alBufferId = m_soundSystem->genBufferId();
 
         if( m_alBufferId == 0 )
         {
-            LOGGER_ERROR( "OALSoundBuffer::load invalid gen buffer"
+            LOGGER_ERROR( "invalid gen buffer"
             );
 
             return false;
@@ -52,11 +52,11 @@ namespace Mengine
         m_length = dataInfo->length;
         size_t size = dataInfo->size;
 
-        MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( size, "OALSoundBufferMemory", __FILE__, __LINE__ );
+        MemoryInterfacePtr binary_buffer = Helper::createMemoryCacheBuffer( size, "OpenALSoundBufferMemory", __FILE__, __LINE__ );
 
         if( binary_buffer == nullptr )
         {
-            LOGGER_ERROR( "OALSoundBuffer::load invalid sound %d memory %d"
+            LOGGER_ERROR( "invalid sound %d memory %d"
                 , size
             );
 
@@ -69,7 +69,7 @@ namespace Mengine
 
         if( decode_size == 0 )
         {
-            LOGGER_ERROR( "OALSoundBuffer::load invalid sound %d decode %d"
+            LOGGER_ERROR( "invalid sound %d decode %d"
                 , size
             );
 
@@ -92,7 +92,7 @@ namespace Mengine
         ALsizei al_decode_size = (ALsizei)decode_size;
         alBufferData( m_alBufferId, m_format, binary_memory, al_decode_size, m_frequency );
 
-        if( OAL_CHECK_ERROR() == false )
+        if( OPENAL_CHECK_ERROR() == false )
         {
             return false;
         }
@@ -100,59 +100,59 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferMemory::play( ALuint _source, bool _looped, float _pos )
+    bool OpenALSoundBufferMemory::play( ALuint _source, bool _looped, float _pos )
     {
         ALint state = 0;
         alGetSourcei( _source, AL_SOURCE_STATE, &state );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         if( state == AL_PLAYING )
         {
             //alSourceStop( _source );
             alSourceRewind( _source );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
         }
 
         alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         alSourcei( _source, AL_LOOPING, _looped ? AL_TRUE : AL_FALSE );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         alSourcei( _source, AL_BUFFER, m_alBufferId );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         float al_pos = _pos * 0.001f;
         alSourcef( _source, AL_SEC_OFFSET, al_pos );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         alSourcePlay( _source );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferMemory::resume( ALuint _source )
+    bool OpenALSoundBufferMemory::resume( ALuint _source )
     {
         alSourcePlay( _source );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundBufferMemory::pause( ALuint _source )
+    void OpenALSoundBufferMemory::pause( ALuint _source )
     {
         alSourcePause( _source );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         //alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
         //OAL_CHECK_ERROR();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundBufferMemory::stop( ALuint _source )
+    void OpenALSoundBufferMemory::stop( ALuint _source )
     {
         alSourceStop( _source );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         {
             ALint val;
@@ -164,18 +164,18 @@ namespace Mengine
         }
 
         alSourcei( _source, AL_BUFFER, 0 ); // clear source buffering
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         alSourceRewind( _source );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferMemory::setTimePos( ALuint _source, float _pos ) const
+    bool OpenALSoundBufferMemory::setTimePos( ALuint _source, float _pos ) const
     {
         float al_pos = _pos * 0.001f;
         alSourcef( _source, AL_SEC_OFFSET, al_pos );
 
-        if( OAL_CHECK_ERROR() == false )
+        if( OPENAL_CHECK_ERROR() == false )
         {
             return false;
         }
@@ -183,13 +183,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferMemory::getTimePos( ALuint _source, float & _pos ) const
+    bool OpenALSoundBufferMemory::getTimePos( ALuint _source, float & _pos ) const
     {
         float al_pos = 0.f;
 
         alGetSourcef( _source, AL_SEC_OFFSET, &al_pos );
 
-        if( OAL_CHECK_ERROR() == false )
+        if( OPENAL_CHECK_ERROR() == false )
         {
             return false;
         }

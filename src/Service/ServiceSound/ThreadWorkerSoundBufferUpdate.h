@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Interface/SoundSystemInterface.h"
-#include "Interface/ThreadSystemInterface.h"
+
+#include "Kernel/ThreadJob.h"
 
 #include "Config/Atomic.h"
 
@@ -30,6 +31,7 @@ namespace Mengine
 
         AtomicBool m_done;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadWorkerSoundBufferUpdate> ThreadWorkerSoundBufferUpdatePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

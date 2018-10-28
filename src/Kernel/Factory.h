@@ -4,7 +4,6 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Kernel/Factorable.h"
 #include "Kernel/FactorablePointer.h"
 #include "Kernel/FactorableUnique.h"
 
@@ -27,7 +26,7 @@ namespace Mengine
         const Char * getName() const;
 
     public:
-        virtual PointerFactorable createObject();
+        virtual FactorablePointer createObject();
         virtual void destroyObject( Factorable * _object );
 
     public:

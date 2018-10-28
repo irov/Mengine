@@ -11,8 +11,6 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Tags.h"
 
-#include "Kernel/Servant.h"
-
 #include "Config/Vector.h"
 
 #include "pybind/kernel.hpp"
@@ -36,7 +34,7 @@ namespace Mengine
     typedef Vector<ScriptModulePack> VectorScriptModulePack;
     //////////////////////////////////////////////////////////////////////////
     class ScriptModuleInterface
-        : public Servant
+        : public Mixin
     {
     public:
         virtual bool onInitialize( const ConstString & _method ) = 0;

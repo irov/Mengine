@@ -10,7 +10,6 @@
 #include "Kernel/Transformation.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/Visitable.h"
-#include "Kernel/Servant.h"
 #include "Kernel/Animatable.h"
 #include "Kernel/Unknowable.h"
 
@@ -23,13 +22,14 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class PickerTrapInterface> PickerTrapInterfacePtr;
         
     typedef IntrusivePtr<class Node> NodePtr;
 
-    typedef stdex::intrusive_slug_list_size_ptr<Node> IntrusiveSlugListNodeChild;
+    typedef stdex::intrusive_slug_list_size_ptr<Node> IntrusiveSlugListNodeChild;    
     typedef stdex::intrusive_slug_ptr<IntrusiveSlugListNodeChild> IntrusiveSlugChild;
-
+    //////////////////////////////////////////////////////////////////////////
     class Node
         : public stdex::intrusive_slug_linked_ptr<Node>
         , public Factorable
@@ -51,9 +51,6 @@ namespace Mengine
     public:
         Node();
         ~Node() override;
-
-    //public:
-    //    inline bool isRenderable() const;
 
     public:
         inline Node * getParent() const;
@@ -181,13 +178,6 @@ namespace Mengine
 
         bool m_freeze;
 
-    //protected:
-    //    mutable bool m_invalidateRendering;
-    //    mutable bool m_rendering;
-
-    //protected:
-    //    void updateRendering_() const;
-
     protected:
         void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
     };
@@ -228,16 +218,6 @@ namespace Mengine
     {
         return m_parent != nullptr;
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //inline bool Node::isRenderable() const
-    //{
-    //    if( m_invalidateRendering == true )
-    //    {
-    //        this->updateRendering_();
-    //    }
-
-    //    return m_rendering;
-    //}
     //////////////////////////////////////////////////////////////////////////
     inline IntrusiveSlugListNodeChild & Node::getChildren()
     {

@@ -2,12 +2,13 @@
 
 #include "Interface/ArchiveInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class ArchivatorLZ4
-        : public ServantBase<ArchivatorInterface>
+        : public ArchivatorInterface
+        , public Factorable
     {
     public:
         ArchivatorLZ4();

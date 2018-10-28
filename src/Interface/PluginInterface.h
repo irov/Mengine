@@ -2,18 +2,17 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ServiceProviderInterface.h"
-#include "Interface/ServantInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/FactorableUnique.h"
 
 #include "Config/String.h"
-
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PluginInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual const Char * getPluginName() const = 0;
@@ -40,7 +39,7 @@ namespace Mengine
     typedef void * (*TDynamicLibraryFunction)(void *);
     //////////////////////////////////////////////////////////////////////////
     class DynamicLibraryInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool load() = 0;

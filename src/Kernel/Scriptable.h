@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
-
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/Mixin.h"
 

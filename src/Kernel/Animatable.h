@@ -4,7 +4,6 @@
 
 #include "Interface/AnimationInterface.h"
 
-#include "Kernel/IntrusivePtr.h"
 #include "Kernel/Mixin.h"
 
 namespace Mengine

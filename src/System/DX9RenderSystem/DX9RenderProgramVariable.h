@@ -2,7 +2,7 @@
 
 #include "Interface/RenderProgramVariableInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "Config/Vector.h"
 
@@ -11,7 +11,8 @@
 namespace Mengine
 {
     class DX9RenderProgramVariable
-        : public ServantBase<RenderProgramVariableInterface>
+        : public RenderProgramVariableInterface
+        , public Factorable
     {
     public:
         DX9RenderProgramVariable();

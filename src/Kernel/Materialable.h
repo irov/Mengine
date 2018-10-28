@@ -3,7 +3,6 @@
 #include "Interface/RenderEnumInterface.h"
 
 #include "Kernel/ConstString.h"
-#include "Kernel/IntrusivePtr.h"
 #include "Kernel/Mixin.h"
 
 namespace Mengine

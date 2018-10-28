@@ -9,8 +9,6 @@
 
 #include "Kernel/Factorable.h"
 
-#include "Kernel/Servant.h"
-
 #include "Kernel/FontBase.h"
 
 #include "ft2build.h"

@@ -24,7 +24,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class ConverterInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool initialize() = 0;
@@ -45,7 +45,7 @@ namespace Mengine
     typedef IntrusivePtr<ConverterInterface> ConverterInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class ConverterFactoryInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool initialize() = 0;

@@ -1,14 +1,13 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
-
+#include "Kernel/Mixin.h"
 #include "Kernel/PixelFormat.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class RenderTargetInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual uint32_t getWidth() const = 0;

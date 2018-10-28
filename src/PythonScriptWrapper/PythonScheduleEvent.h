@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Interface/ScheduleManagerInterface.h"
+#include "Interface/SchedulerInterface.h"
+
+#include "Kernel/Factorable.h"
 
 #include "pybind/pybind.hpp"
 
@@ -9,6 +11,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class PythonScheduleEvent
         : public ScheduleEventInterface
+        , public Factorable
     {
     public:
         PythonScheduleEvent();

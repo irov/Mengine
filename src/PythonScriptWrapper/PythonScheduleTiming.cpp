@@ -17,18 +17,18 @@ namespace Mengine
         m_args = _args;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonScheduleTiming::onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _delay )
+    void PythonScheduleTiming::onScheduleTiming( uint32_t _id, uint32_t _iterate, float _delay )
     {
-        m_cb.call_args( _id, _iterate, _delay, false, false, m_args );
+        m_cb.call_args( _id, _iterate, _delay, m_args );
     }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonScheduleTiming::onScheduleComplete( uint32_t _id )
-    {
-        m_cb.call_args( _id, 0, 0.f, true, false, m_args );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PythonScheduleTiming::onScheduleStop( uint32_t _id )
-    {
-        m_cb.call_args( _id, 0, 0.f, false, true, m_args );
-    }
+    ////////////////////////////////////////////////////////////////////////////
+    //void PythonScheduleTiming::onScheduleComplete( uint32_t _id )
+    //{
+    //    m_cb.call_args( _id, 0, 0.f, true, false, m_args );
+    //}
+    ////////////////////////////////////////////////////////////////////////////
+    //void PythonScheduleTiming::onScheduleStop( uint32_t _id )
+    //{
+    //    m_cb.call_args( _id, 0, 0.f, false, true, m_args );
+    //}
 }

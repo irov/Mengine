@@ -4,7 +4,6 @@ ADD_FILTER(
 src     
     ServiceInterface.h
     ServiceProviderInterface.h
-	ServantInterface.h
 	PluginInterface.h
     ModuleInterface.h
 	ScriptSystemInterface.h
@@ -18,6 +17,7 @@ src
     PickCodecInterface.h
 	SoundCodecInterface.h
     TextInterface.h
+    TextServiceInterface.h
 	StreamInterface.h
 	LoggerInterface.h
 	ApplicationInterface.h
@@ -30,7 +30,7 @@ src
     GameInterface.h
     NodeInterface.h
     PlayerInterface.h
-    ScheduleManagerInterface.h
+    SchedulerInterface.h
     PickerServiceInterface.h
     MovieKeyFrameInterface.h
     PlayerInterface.h
@@ -67,6 +67,7 @@ src
     RenderInterface.h
     UpdateServiceInterface.h
     UpdationInterface.h
+    ServantInterface.h
     
 	dummy.cpp
 )

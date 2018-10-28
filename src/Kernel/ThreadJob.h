@@ -12,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ThreadWorkerInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool onWork( uint32_t _id ) = 0;

@@ -843,7 +843,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::visitFonts( VisitorTextFontInterface * _vistitor )
+    void TextService::visitFonts( const VisitorTextFontInterfacePtr & _vistitor )
     {
         for( const MapTextFont::value_type & value : m_fonts )
         {

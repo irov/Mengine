@@ -2,28 +2,29 @@
 
 #include "Interface/ModuleInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class ModuleBase
-        : public ServantBase<ModuleInterface>
+        : public ModuleInterface
+        , public Factorable
     {
     public:
         ModuleBase();
         ~ModuleBase() override;
 
-    protected:
+    public:
         void setName( const ConstString & _name ) override;
         const ConstString & getName() const override;
 
-    protected:
+    public:
         bool avaliable() override;
 
     protected:
         virtual bool _avaliable();
 
-    protected:
+    public:
         bool initialize() override;
         void finalize() override;
 
@@ -31,13 +32,13 @@ namespace Mengine
         virtual bool _initialize();
         virtual void _finalize();
 
-    protected:
+    public:
         void update( bool _focus ) override;
 
     protected:
         virtual void _update( bool _focus );
 
-    protected:
+    public:
         void tick( const UpdateContext * _context ) override;
         void render( const RenderContext * _state ) override;
 
@@ -45,7 +46,7 @@ namespace Mengine
         virtual void _tick( const UpdateContext * _context );
         virtual void _render( const RenderContext * _state );
 
-    protected:
+    public:
         void message( const ConstString & _messageName, const MapWParams & _params ) override;
         void messageAll( const ConstString & _messageName, const MapWParams & _params ) override;
 

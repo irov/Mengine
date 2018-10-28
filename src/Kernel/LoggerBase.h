@@ -2,14 +2,14 @@
 
 #include "Interface/LoggerInterface.h"
 
-#include "Kernel/ServantBase.h"
-
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class LoggerBase
-        : public ServantBase<LoggerInterface>
+        : public LoggerInterface
+        , public Factorable
     {
     public:
         LoggerBase();

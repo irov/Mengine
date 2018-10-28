@@ -22,6 +22,7 @@ namespace Mengine
         virtual void removeDebugNodeRenderVisitor( const RenderVisitorPtr & _renderVisitor ) = 0;
 
     public:
+        virtual void updateDebugInfo( const UpdateContext * _context ) = 0;
         virtual void renderDebugInfo( const RenderContext * _context ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

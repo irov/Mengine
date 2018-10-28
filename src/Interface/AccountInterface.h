@@ -25,7 +25,7 @@ namespace Mengine
 	typedef IntrusivePtr<AccountSettingProviderInterface> AccountSettingProviderInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
     class AccountInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual const ConstString & getID() const = 0;
@@ -60,7 +60,7 @@ namespace Mengine
     typedef IntrusivePtr<AccountInterface> AccountInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
     class AccountProviderInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual void onCreateAccount( const ConstString & _accountID, bool _global ) = 0;

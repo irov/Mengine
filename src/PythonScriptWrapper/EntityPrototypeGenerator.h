@@ -37,7 +37,7 @@ namespace Mengine
         pybind::object preparePythonType();
 
     protected:
-        PointerFactorable generate() override;
+        FactorablePointer generate() override;
 
     protected:
         pybind::object m_generator;

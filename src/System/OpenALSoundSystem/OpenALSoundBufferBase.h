@@ -2,7 +2,7 @@
 
 #include "Interface/SoundSystemInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "AL/al.h"
 
@@ -11,7 +11,8 @@ namespace Mengine
     class OALSoundSystem;
 
     class OALSoundBufferBase
-        : public ServantBase<SoundBufferInterface>
+        : public SoundBufferInterface
+        , public Factorable
     {
     public:
         OALSoundBufferBase();

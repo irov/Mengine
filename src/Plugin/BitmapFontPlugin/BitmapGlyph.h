@@ -2,10 +2,11 @@
 
 #include "Interface/TextInterface.h"
 
-#include "Kernel/Servant.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     struct BitmapGlyphChar
     {
         GlyphCode code;
@@ -15,9 +16,9 @@ namespace Mengine
         float advance;
         mt::vec2f size;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     class BitmapGlyph
-        : public Servant
+        : public Factorable
     {
     public:
         BitmapGlyph();
@@ -77,4 +78,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<BitmapGlyph> BitmapGlyphPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

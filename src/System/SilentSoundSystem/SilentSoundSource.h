@@ -4,14 +4,15 @@
 
 #include "SilentSoundBuffer.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class SilentSoundSystem;
 
     class SilentSoundSource
-        : public ServantBase<SoundSourceInterface>
+        : public SoundSourceInterface
+        , public Factorable
     {
     public:
         SilentSoundSource();

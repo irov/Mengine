@@ -8,7 +8,7 @@
 
 #include "Kernel/Factory.h"
 
-#include "Kernel/Servant.h"
+#include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/ConstStringTypes.h"
 #include "Kernel/FilePath.h"
@@ -27,7 +27,7 @@ namespace Mengine
     typedef Vector<ModulePathes> VectorModulePathes;
     //////////////////////////////////////////////////////////////////////////
     class ScriptModuleFinder
-        : public Servant
+        : public Factorable
     {
     public:
         ScriptModuleFinder();

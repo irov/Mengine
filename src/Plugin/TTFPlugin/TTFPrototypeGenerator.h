@@ -25,7 +25,7 @@ namespace Mengine
         FactoryPtr _initializeFactory() override;
 
     public:
-        PointerFactorable generate() override;
+        FactorablePointer generate() override;
 
     protected:
         FT_Library m_ftlibrary;

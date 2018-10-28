@@ -1,6 +1,8 @@
 #pragma once
 
-#include "Interface/ScheduleManagerInterface.h"
+#include "Interface/SchedulerInterface.h"
+
+#include "Kernel/Factorable.h"
 
 #include "pybind/pybind.hpp"
 
@@ -9,6 +11,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class PythonScheduleTiming
         : public ScheduleTimingInterface
+        , public Factorable
     {
     public:
         PythonScheduleTiming();
@@ -18,14 +21,13 @@ namespace Mengine
         void initialize( const pybind::object & _cb, const pybind::args & _args );
 
     protected:
-        void onScheduleUpdate( uint32_t _id, uint32_t _iterate, float _delay ) override;
-        void onScheduleComplete( uint32_t _id ) override;
-        void onScheduleStop( uint32_t _id ) override;
+        void onScheduleTiming( uint32_t _id, uint32_t _iterate, float _delay ) override;
 
     protected:
         pybind::object m_cb;
         pybind::args m_args;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PythonScheduleTiming> PythonScheduleTimerPtr;
+    typedef IntrusivePtr<PythonScheduleTiming> PythonScheduleTimingPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

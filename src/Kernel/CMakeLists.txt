@@ -1,12 +1,6 @@
 set( MY_LIB_NAME Kernel )
 
 ADD_FILTER(
-Servant
-    Servant.h
-    Servant.cpp
-)
-
-ADD_FILTER(
 Mixin\\\\Unknowable
 	Unknowable.h
 )
@@ -280,11 +274,11 @@ Visitable
 )
 
 ADD_FILTER(
-ScheduleManager
-    ScheduleHelper.cpp
-    ScheduleHelper.h
-	ScheduleManager.cpp
-	ScheduleManager.h
+Scheduler
+    SchedulerHelper.cpp
+    SchedulerHelper.h
+	Scheduler.cpp
+	Scheduler.h
 )
 
 ADD_FILTER(
@@ -303,8 +297,8 @@ Core
     CRC32.h
     CRC32.cpp
 	
-	ServantBase.h
-	ServiceBase.h
+    ServantBase.h
+	ServiceBase.h    
 	
 	FontBase.h
 	FontBase.cpp
@@ -472,8 +466,8 @@ Codec
 ADD_FILTER(
 Factory
     Factorable.h
-    Factorable.cpp  
-	FactorablePointer.h
+    Factorable.cpp
+    FactorablePointer.h
     FactorableUnique.h
 	Factory.h
 	Factory.cpp

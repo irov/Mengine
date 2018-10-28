@@ -1,12 +1,15 @@
 #pragma once
 
-#include "Interface/ScheduleManagerInterface.h"
+#include "Interface/SchedulerInterface.h"
+
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class DelaySchedulePipe
         : public SchedulePipeInterface
+        , public Factorable
     {
     public:
         DelaySchedulePipe();

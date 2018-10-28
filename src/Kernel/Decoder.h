@@ -3,8 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/StreamInterface.h"
 
-#include "Kernel/ServantBase.h"
-
+#include "Kernel/Factorable.h"
 #include "Kernel/Logger.h"
 
 #include "stdex/thread_guard.h"
@@ -13,7 +12,8 @@ namespace Mengine
 {
     template<class TDecoderInterface>
     class Decoder
-        : public ServantBase<TDecoderInterface>
+        : public TDecoderInterface
+        , public Factorable
     {
     public:
         Decoder()

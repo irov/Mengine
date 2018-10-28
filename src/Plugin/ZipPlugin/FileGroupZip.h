@@ -3,14 +3,14 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "Config/Map.h"
 
 namespace Mengine
 {
     class FileGroupZip
-        : public ServantBase<FileGroupInterface>
+        : public FileGroupInterface
     {
     public:
         FileGroupZip();

@@ -2,7 +2,6 @@
 
 #include "Kernel/AffectorType.h"
 #include "Kernel/Mixin.h"
-#include "Kernel/IntrusivePtr.h"
 
 #include "math/vec3.h"
 

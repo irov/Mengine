@@ -18,7 +18,7 @@
 #include "Kernel/MatrixProxy.h"
 
 #include "Interface/ScriptSystemInterface.h"
-#include "Interface/ScheduleManagerInterface.h"
+#include "Interface/SchedulerInterface.h"
 
 #include "Interface/TextInterface.h"
 #include "Interface/AccountInterface.h"
@@ -76,6 +76,7 @@
 
 #include "ScriptHolder.h"
 
+#include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
 
 #include "Engine/SurfaceSound.h"
@@ -116,7 +117,6 @@
 #include "Kernel/AffectorHelper.h"
 #include "Kernel/ThreadTask.h"
 
-#include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
 #include "ScriptableAffectorCallback.h"
@@ -160,7 +160,7 @@ namespace Mengine
         {
             m_factoryPythonScheduleEvent = new FactoryPool<PythonScheduleEvent, 16>();
             m_factoryDelaySchedulePipe = new FactoryPool<DelaySchedulePipe, 16>();
-            m_factoryPythonScheduleTimer = new FactoryPool<PythonScheduleTiming, 16>();
+            m_factoryPythonScheduleTiming = new FactoryPool<PythonScheduleTiming, 16>();
             m_factoryPythonSchedulePipe = new FactoryPool<PythonSchedulePipe, 16>();
             m_factoryNodeAffectorCallback = new FactoryPool<ScriptableAffectorCallback, 4>();
         }
@@ -169,13 +169,13 @@ namespace Mengine
         {
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipe );
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTimer );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTiming );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSchedulePipe );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryNodeAffectorCallback );
 
             m_factoryPythonScheduleEvent = nullptr;
             m_factoryDelaySchedulePipe = nullptr;
-            m_factoryPythonScheduleTimer = nullptr;
+            m_factoryPythonScheduleTiming = nullptr;
             m_factoryPythonSchedulePipe = nullptr;
             m_factoryNodeAffectorCallback = nullptr;
         }
@@ -475,7 +475,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPythonScheduleEvent;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t ScheduleManagerInterface_schedule( ScheduleManagerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
+        uint32_t ScheduleInterface_schedule( SchedulerInterface * _scheduleManager, float _timing, const pybind::object & _script, const pybind::args & _args )
         {
             PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject();
 
@@ -487,36 +487,44 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryDelaySchedulePipe;
-        FactoryPtr m_factoryPythonScheduleTimer;
+        FactoryPtr m_factoryPythonScheduleTiming;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t ScheduleManagerInterface_timing( ScheduleManagerInterface * _scheduleManager, float _delay, const pybind::object & _listener, const pybind::args & _args )
+        uint32_t ScheduleInterface_timing( SchedulerInterface * _scheduleManager, float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
         {
             DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject();
 
             pipe->initialize( _delay );
 
-            PythonScheduleTimerPtr tl = m_factoryPythonScheduleTimer->createObject();
+            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject();
 
-            tl->initialize( _listener, _args );
+            py_timing->initialize( _timing, _args );
 
-            uint32_t id = _scheduleManager->timing( pipe, tl );
+            PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject();
+
+            py_event->initialize( _event, _args );
+
+            uint32_t id = _scheduleManager->timing( pipe, py_timing, py_event );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPythonSchedulePipe;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t ScheduleManagerInterface_pipe( ScheduleManagerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _listener, const pybind::args & _args )
+        uint32_t ScheduleInterface_pipe( SchedulerInterface * _scheduleManager, const pybind::object & _pipe, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
         {
-            PythonSchedulePipePtr pipe = m_factoryPythonSchedulePipe->createObject();
+            PythonSchedulePipePtr py_pipe = m_factoryPythonSchedulePipe->createObject();
 
-            pipe->initialize( _pipe, _args );
+            py_pipe->initialize( _pipe, _args );
 
-            PythonScheduleTimerPtr tl = m_factoryPythonScheduleTimer->createObject();
+            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject();
 
-            tl->initialize( _listener, _args );
+            py_timing->initialize( _timing, _args );
 
-            uint32_t id = _scheduleManager->timing( pipe, tl );
+            PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject();
+
+            py_event->initialize( _event, _args );
+
+            uint32_t id = _scheduleManager->timing( py_pipe, py_timing, py_event );
 
             return id;
         }
@@ -656,6 +664,7 @@ namespace Mengine
         class PythonMeshEventReceiver
             : public PythonEventReceiver
             , public MeshgetEventReceiver
+            , public Factorable
         {
         public:
             void onMeshgetUpdate( const UpdateContext * _context ) override
@@ -703,6 +712,7 @@ namespace Mengine
         class PythonScriptHolderEventReceiver
             : public PythonEventReceiver
             , public ScriptHolderEventReceiver
+            , public Factorable
         {
         public:
             pybind::object onScriptHolderKeepScript() override
@@ -756,6 +766,7 @@ namespace Mengine
         class PythonHotSpotEventReceiver
             : public PythonEventReceiver
             , public HotSpotEventReceiver
+            , public Factorable
         {
         public:
             void onHotSpotActivate() override
@@ -3116,24 +3127,24 @@ namespace Mengine
                 ;
         }
 
-        pybind::interface_<ScheduleManagerInterface, pybind::bases<Mixin> >( kernel, "ScheduleManagerInterface", true )
-            .def_proxy_static_args( "timing", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_timing )
-            .def_proxy_static_args( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_schedule )
-            .def_proxy_static_args( "pipe", nodeScriptMethod, &NodeScriptMethod::ScheduleManagerInterface_pipe )
-            .def( "refresh", &ScheduleManagerInterface::refresh )
-            .def( "exist", &ScheduleManagerInterface::exist )
-            .def( "remove", &ScheduleManagerInterface::remove )
-            .def( "removeAll", &ScheduleManagerInterface::removeAll )
-            .def( "freeze", &ScheduleManagerInterface::freeze )
-            .def( "freezeAll", &ScheduleManagerInterface::freezeAll )
-            .def( "isFreeze", &ScheduleManagerInterface::isFreeze )
-            .def_deprecated( "time", &ScheduleManagerInterface::getTimePassed, "use getTimePassed" )
-            .def_deprecated( "left", &ScheduleManagerInterface::getTimeLeft, "use getTimeLeft" )
-            .def( "getTimePassed", &ScheduleManagerInterface::getTimePassed )
-            .def( "getTimeLeft", &ScheduleManagerInterface::getTimeLeft )
-            .def( "setSpeedFactor", &ScheduleManagerInterface::setSpeedFactor )
-            .def( "getSpeedFactor", &ScheduleManagerInterface::getSpeedFactor )
-            .def( "getTiming", &ScheduleManagerInterface::getTime )
+        pybind::interface_<SchedulerInterface, pybind::bases<Mixin> >( kernel, "SchedulerInterface", true )
+            .def_proxy_static_args( "timing", nodeScriptMethod, &NodeScriptMethod::ScheduleInterface_timing )
+            .def_proxy_static_args( "schedule", nodeScriptMethod, &NodeScriptMethod::ScheduleInterface_schedule )
+            .def_proxy_static_args( "pipe", nodeScriptMethod, &NodeScriptMethod::ScheduleInterface_pipe )
+            .def( "refresh", &SchedulerInterface::refresh )
+            .def( "exist", &SchedulerInterface::exist )
+            .def( "remove", &SchedulerInterface::remove )
+            .def( "removeAll", &SchedulerInterface::removeAll )
+            .def( "freeze", &SchedulerInterface::freeze )
+            .def( "freezeAll", &SchedulerInterface::freezeAll )
+            .def( "isFreeze", &SchedulerInterface::isFreeze )
+            .def_deprecated( "time", &SchedulerInterface::getTimePassed, "use getTimePassed" )
+            .def_deprecated( "left", &SchedulerInterface::getTimeLeft, "use getTimeLeft" )
+            .def( "getTimePassed", &SchedulerInterface::getTimePassed )
+            .def( "getTimeLeft", &SchedulerInterface::getTimeLeft )
+            .def( "setSpeedFactor", &SchedulerInterface::setSpeedFactor )
+            .def( "getSpeedFactor", &SchedulerInterface::getSpeedFactor )
+            .def( "getTiming", &SchedulerInterface::getTime )
             ;
 
         return true;

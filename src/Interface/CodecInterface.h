@@ -21,7 +21,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class CodecFactoryInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool initialize() = 0;
@@ -30,7 +30,7 @@ namespace Mengine
     typedef IntrusivePtr<CodecFactoryInterface> CodecFactoryInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class DecoderInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool initialize() = 0;
@@ -70,7 +70,7 @@ namespace Mengine
     typedef IntrusivePtr<DecoderFactoryInterface> DecoderFactoryInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class EncoderInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool initialize( const OutputStreamInterfacePtr & _stream ) = 0;

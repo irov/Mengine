@@ -1,16 +1,16 @@
 #pragma once
 
 #include "Interface/XmlCodecInterface.h"
-#include "Interface/InputSystemInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class XmlToBinDecoder
-        : public ServantBase<XmlDecoderInterface>
+        : public XmlDecoderInterface
+        , public Factorable
     {
     public:
         XmlToBinDecoder();

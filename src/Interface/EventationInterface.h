@@ -1,14 +1,12 @@
 #pragma once
 
-#include "Kernel/Factorable.h"
-#include "Kernel/IntrusivePtr.h"
 #include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class EventReceiver
-        : public Factorable
+        : public Mixin
     {
     };
     //////////////////////////////////////////////////////////////////////////

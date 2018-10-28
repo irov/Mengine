@@ -23,6 +23,7 @@
 #include "Interface/AccountInterface.h"
 #include "Interface/ProfilerInterface.h"
 #include "Interface/GameInterface.h"
+#include "Interface/TextServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/PackageInterface.h"
@@ -365,7 +366,7 @@ namespace Mengine
             }
 
         protected:
-            PointerFactorable generate() override
+            FactorablePointer generate() override
             {
                 ScenePtr scene = NODE_SERVICE()
                     ->createNode( STRINGIZE_STRING_LOCAL( "Scene" ) );

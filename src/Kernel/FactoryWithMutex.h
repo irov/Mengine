@@ -18,7 +18,7 @@ namespace Mengine
         void setMutex( const ThreadMutexInterfacePtr & _mutex );
 
     public:
-        PointerFactorable createObject() override;
+        FactorablePointer createObject() override;
         void destroyObject( Factorable * _object ) override;
 
     protected:

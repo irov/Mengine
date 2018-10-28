@@ -1,6 +1,6 @@
 #include "Arrow.h"
 
-#include "Interface/InputSystemInterface.h"
+#include "Interface/InputServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 
 #include "Kernel/RenderCameraHelper.h"

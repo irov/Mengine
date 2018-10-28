@@ -11,6 +11,7 @@ namespace Mengine
     class PythonAnimatableEventReceiver
         : public PythonEventReceiver
         , public T_AnimatableEventReceiver
+        , public Factorable
     {
     public:
         void onAnimationPlay( uint32_t _enumerator, float _time ) override

@@ -3,13 +3,14 @@
 #include "Interface/SoundVolumeProviderInterface.h"
 
 #include "Kernel/Eventable.h"
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class GameServiceSoundVolumeProvider
-        : public ServantBase<SoundVolumeProviderInterface>
+        : public SoundVolumeProviderInterface
+        , public Factorable
     {
     public:
 		GameServiceSoundVolumeProvider();

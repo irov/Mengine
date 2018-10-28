@@ -1,9 +1,8 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ServantInterface.h"
 
-#include "Kernel/Factorable.h"
+#include "Kernel/Mixin.h"
 #include "Kernel/FactorablePointer.h"
 #include "Kernel/ConstString.h"
 
@@ -13,7 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PrototypeGeneratorInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual void setCategory( const ConstString & _category ) = 0;
@@ -26,7 +25,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual PointerFactorable generate() = 0;
+        virtual FactorablePointer generate() = 0;
 
     public:
         virtual uint32_t count() const = 0;
@@ -45,7 +44,7 @@ namespace Mengine
         virtual const PrototypeGeneratorInterfacePtr & getGenerator( const ConstString & _category, const ConstString & _prototype ) const = 0;
 
     public:
-        virtual PointerFactorable generatePrototype( const ConstString & _category, const ConstString & _prototype ) = 0;
+        virtual FactorablePointer generatePrototype( const ConstString & _category, const ConstString & _prototype ) = 0;
 
     public:
 		typedef Lambda<void(const PrototypeGeneratorInterfacePtr & _factory)> LambdaPrototypeGenerator;

@@ -442,7 +442,7 @@ namespace Mengine
     {
         if( m_avaliable == false )
         {
-            ThreadMutexInterfacePtr mutex_dummy =
+            ThreadMutexDummyPtr mutex_dummy =
                 m_factoryThreadMutexDummy->createObject();
 
             return mutex_dummy;

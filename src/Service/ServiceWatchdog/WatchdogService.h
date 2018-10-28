@@ -17,10 +17,10 @@ namespace Mengine
 		~WatchdogService() override;
 
     public:
-        float watch( const String & _tag ) override;
+        double watch( const String & _tag ) override;
 
     protected:
-        typedef Map<String, float> MapWatchers;
+        typedef Map<String, uint64_t> MapWatchers;
         MapWatchers m_watchers;
     };
 }

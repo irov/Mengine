@@ -10,7 +10,8 @@
 namespace Mengine
 {
     class ThreadQueue
-        : public ServantBase<ThreadQueueInterface>
+        : public ThreadQueueInterface
+        , public Factorable
     {
     public:
         ThreadQueue();

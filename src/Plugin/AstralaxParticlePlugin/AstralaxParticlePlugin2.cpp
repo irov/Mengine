@@ -13,7 +13,7 @@
 #include "Kernel/ModuleFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( ParticleService );
+SERVICE_EXTERN( AstralaxService );
 SERVICE_EXTERN( ParticleSystem );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( AstralaxParticlePlugin2, Mengine::AstralaxParticlePlugin2 );
@@ -31,9 +31,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxParticlePlugin2::_initialize()
     {
-        LOGGER_INFO( "Initializing Particle System 3D..." );
+        LOGGER_INFO( "Initializing Astralax Particle System..." );
         
-        SERVICE_CREATE( ParticleService );
+        SERVICE_CREATE( AstralaxService );
         SERVICE_CREATE( ParticleSystem );
 
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAstralaxParticle" )
@@ -51,8 +51,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticlePlugin2::_finalize()
     {
-        SERVICE_FINALIZE( Mengine::ParticleSystemInterface2 );
-        SERVICE_FINALIZE( Mengine::ParticleServiceInterface2 );
+        SERVICE_FINALIZE( Mengine::AstralaxSystemInterface );
+        SERVICE_FINALIZE( Mengine::AstralaxServiceInterface );
 
         RESOURCEVALIDATE_SERVICE()
             ->removeResourceValidateVisitor( m_particleValidateVisitor );
@@ -61,7 +61,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticlePlugin2::_destroy()
     {
-        SERVICE_DESTROY( Mengine::ParticleSystemInterface2 );
-        SERVICE_DESTROY( Mengine::ParticleServiceInterface2 );
+        SERVICE_DESTROY( Mengine::AstralaxSystemInterface );
+        SERVICE_DESTROY( Mengine::AstralaxServiceInterface );
     }
 }

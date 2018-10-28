@@ -3,7 +3,7 @@
 #include "Interface/ConverterInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 
 #include "Kernel/FactoryPool.h"
@@ -13,7 +13,8 @@ namespace Mengine
 {
     template<class T>
     class ConverterFactory
-        : public ServantBase<ConverterFactoryInterface>
+        : public ConverterFactoryInterface
+        , public Factorable
     {
     protected:
         bool initialize() override
@@ -26,7 +27,7 @@ namespace Mengine
     protected:
         ConverterInterfacePtr createConverter() override
         {
-            ConverterInterfacePtr converter = m_factory->createObject();
+            IntrusivePtr<T> converter = m_factory->createObject();
 
             return converter;
         }

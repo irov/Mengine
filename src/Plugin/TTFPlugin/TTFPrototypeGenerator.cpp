@@ -28,7 +28,7 @@ namespace Mengine
         return factory;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerFactorable TTFPrototypeGenerator::generate()
+    FactorablePointer TTFPrototypeGenerator::generate()
     {
         const FactoryPtr & factory = this->getFactory();
 

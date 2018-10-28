@@ -2,12 +2,13 @@
 
 #include "Interface/ConverterInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class DevelopmentConverter
-        : public ServantBase<ConverterInterface>
+        : public ConverterInterface
+        , public Factorable
     {
     public:
         DevelopmentConverter();

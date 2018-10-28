@@ -3,7 +3,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "Config/Vector.h"
 
@@ -12,7 +12,8 @@
 namespace Mengine
 {
     class DX9RenderVertexAttribute
-        : public ServantBase<RenderVertexAttributeInterface>
+        : public RenderVertexAttributeInterface
+        , public Factorable
     {
     public:
         DX9RenderVertexAttribute();

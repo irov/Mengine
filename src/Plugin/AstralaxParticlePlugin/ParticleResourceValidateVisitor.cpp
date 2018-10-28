@@ -19,14 +19,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleResourceValidateVisitor::accept( ResourceParticle * _resource )
+    bool ParticleResourceValidateVisitor::accept( ResourceAstralax * _resource )
     {
         const FilePath & filePath = _resource->getFilePath();
         const ConstString & name = _resource->getName();
         
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
-        ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2()
+        AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
             ->createEmitterContainerFromFile( fileGroup, filePath, name );
 
         if( container == nullptr )

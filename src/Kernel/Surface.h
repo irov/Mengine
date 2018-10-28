@@ -3,7 +3,6 @@
 #include "Kernel/Factorable.h"
 
 #include "Kernel/Identity.h"
-#include "Kernel/Servant.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Materialable.h"
@@ -22,7 +21,7 @@ namespace Mengine
     struct UpdateContext;
     //////////////////////////////////////////////////////////////////////////
     class Surface
-        : public Servant
+        : public Factorable
         , public Identity
         , public Visitable
         , public Scriptable

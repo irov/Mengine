@@ -17,7 +17,7 @@ namespace Mengine
         m_mutex = _mutex;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerFactorable FactoryWithMutex::createObject()
+    FactorablePointer FactoryWithMutex::createObject()
     {
         m_mutex->lock();
 

@@ -51,7 +51,7 @@ namespace Mengine
         }
 
     protected:
-        PointerFactorable generate() override
+        FactorablePointer generate() override
         {
             const FactoryPtr & factory = this->getFactory();
 

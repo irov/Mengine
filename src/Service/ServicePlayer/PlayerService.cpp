@@ -31,7 +31,7 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/ThreadTask.h"
 
-#include "Kernel/ScheduleManager.h"
+#include "Kernel/Scheduler.h"
 
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
@@ -407,9 +407,9 @@ namespace Mengine
         Helper::screenToWorldDelta( m_renderCamera, _screenDeltha, _worldDeltha );
     }
     //////////////////////////////////////////////////////////////////////////
-    ScheduleManagerInterfacePtr PlayerService::createSchedulerManager( const ConstString & _name )
+    SchedulerInterfacePtr PlayerService::createSchedulerManager( const ConstString & _name )
     {
-        ScheduleManagerInterfacePtr sm = m_factoryScheduleManager->createObject();
+        SchedulerPtr sm = m_factoryScheduleManager->createObject();
 
         if( sm->initialize( _name ) == false )
         {
@@ -421,7 +421,7 @@ namespace Mengine
         return sm;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::destroySchedulerManager( const ScheduleManagerInterfacePtr & _scheduler )
+    bool PlayerService::destroySchedulerManager( const SchedulerInterfacePtr & _scheduler )
     {
         VectorUserScheduler::iterator it_found = std::find( m_schedulers.begin(), m_schedulers.end(), _scheduler );
 
@@ -443,12 +443,12 @@ namespace Mengine
         return m_globalHandleSystem;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ScheduleManagerInterfacePtr & PlayerService::getScheduleManager() const
+    const SchedulerInterfacePtr & PlayerService::getScheduleManager() const
     {
         return m_scheduleManager;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ScheduleManagerInterfacePtr & PlayerService::getGlobalScheduleManager() const
+    const SchedulerInterfacePtr & PlayerService::getGlobalScheduleManager() const
     {
         return m_scheduleManagerGlobal;
     }
@@ -470,9 +470,9 @@ namespace Mengine
 
         m_globalHandleSystem = SERVICE_GET( GlobalHandleSystemInterface );
 
-        m_factoryScheduleManager = new FactoryPool<ScheduleManager, 16>();
+        m_factoryScheduleManager = new FactoryPool<Scheduler, 16>();
 
-        ScheduleManagerInterfacePtr scheduleManager = m_factoryScheduleManager->createObject();
+        SchedulerPtr scheduleManager = m_factoryScheduleManager->createObject();
 
         if( scheduleManager->initialize( "LocalScheduleManager"_c ) == false )
         {
@@ -481,7 +481,7 @@ namespace Mengine
 
         m_scheduleManager = scheduleManager;
 
-        ScheduleManagerInterfacePtr scheduleManagerGlobal = m_factoryScheduleManager->createObject();
+        SchedulerPtr scheduleManagerGlobal = m_factoryScheduleManager->createObject();
 
         if( scheduleManagerGlobal->initialize( "GlobalScheduleManager"_c ) == false )
         {

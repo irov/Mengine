@@ -31,7 +31,7 @@
 namespace Mengine
 {
     class AstralaxParticleSystem2
-        : public ServiceBase<ParticleSystemInterface2>
+        : public ServiceBase<AstralaxSystemInterface>
     {
     public:
         AstralaxParticleSystem2();
@@ -42,8 +42,8 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName ) override;
-        ParticleEmitterInterfacePtr createEmitter( const ParticleEmitterContainerInterface2Ptr & _container ) override;
+        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName ) override;
+        AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container ) override;
 
     public:
         const RenderMaterialStage * getMaterialStage( int _index ) const override;

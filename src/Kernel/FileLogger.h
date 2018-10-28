@@ -3,12 +3,13 @@
 #include "Interface/LoggerInterface.h"
 #include "Interface/StreamInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class FileLogger
-        : public ServantBase<LoggerInterface>
+        : public LoggerInterface
+        , public Factorable
     {
     public:
         FileLogger();

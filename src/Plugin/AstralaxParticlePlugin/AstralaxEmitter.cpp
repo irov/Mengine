@@ -1,4 +1,4 @@
-#include "ParticleEmitter2.h" 
+#include "AstralaxEmitter.h" 
 
 #include "AstralaxInterface.h"
 
@@ -19,7 +19,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ParticleEmitter2::ParticleEmitter2()
+    AstralaxEmitter::AstralaxEmitter()
         : m_emitter( nullptr )
         , m_randomMode( false )
         , m_vertices( nullptr )
@@ -33,11 +33,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ParticleEmitter2::~ParticleEmitter2()
+    AstralaxEmitter::~AstralaxEmitter()
     {
     }
     ///////////////////////////////////////////////////////////////////////////
-    bool ParticleEmitter2::_activate()
+    bool AstralaxEmitter::_activate()
     {
         if( Node::_activate() == false )
         {
@@ -54,14 +54,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::_deactivate()
+    void AstralaxEmitter::_deactivate()
     {
         this->stop();
 
         Node::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEmitter2::_compile()
+    bool AstralaxEmitter::_compile()
     {
         if( m_resourceParticle == nullptr )
         {
@@ -82,7 +82,7 @@ namespace Mengine
             return false;
         }
 
-        ParticleEmitterInterfacePtr emitter = m_resourceParticle->createEmitter();
+        AstralaxEmitterInterfacePtr emitter = m_resourceParticle->createEmitter();
 
         if( emitter == nullptr )
         {
@@ -178,7 +178,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::_release()
+    void AstralaxEmitter::_release()
     {
         m_emitter = nullptr;
 
@@ -193,7 +193,7 @@ namespace Mengine
         m_indexCount = 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEmitter2::_play( uint32_t _enumerator, float _time )
+    bool AstralaxEmitter::_play( uint32_t _enumerator, float _time )
     {
         (void)_enumerator;
         (void)_time;
@@ -208,7 +208,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEmitter2::_restart( uint32_t _enumerator, float _time )
+    bool AstralaxEmitter::_restart( uint32_t _enumerator, float _time )
     {
         (void)_time;
         (void)_enumerator;
@@ -226,7 +226,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::_pause( uint32_t _enumerator )
+    void AstralaxEmitter::_pause( uint32_t _enumerator )
     {
         (void)_enumerator;
 
@@ -238,7 +238,7 @@ namespace Mengine
         m_emitter->pause();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::_resume( uint32_t _enumerator, float _time )
+    void AstralaxEmitter::_resume( uint32_t _enumerator, float _time )
     {
         (void)_time;
         (void)_enumerator;
@@ -251,7 +251,7 @@ namespace Mengine
         m_emitter->resume();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::_stop( uint32_t _enumerator )
+    void AstralaxEmitter::_stop( uint32_t _enumerator )
     {
         if( this->isActivate() == false )
         {
@@ -264,13 +264,13 @@ namespace Mengine
             ->onAnimationStop( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::_end( uint32_t _enumerator )
+    void AstralaxEmitter::_end( uint32_t _enumerator )
     {
         EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
             ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::_setLoop( bool _value )
+    void AstralaxEmitter::_setLoop( bool _value )
     {
         if( this->isCompile() == false )
         {
@@ -280,7 +280,7 @@ namespace Mengine
         m_emitter->setLoop( _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEmitter2::_interrupt( uint32_t _enumerator )
+    bool AstralaxEmitter::_interrupt( uint32_t _enumerator )
     {
         (void)_enumerator;
 
@@ -298,7 +298,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::_update( const UpdateContext * _context )
+    void AstralaxEmitter::_update( const UpdateContext * _context )
     {
         if( this->isPlay() == false )
         {
@@ -324,7 +324,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::_render( const RenderContext * _state )
+    void AstralaxEmitter::_render( const RenderContext * _state )
     {
         if( this->isPlay() == false )
         {
@@ -339,7 +339,7 @@ namespace Mengine
             return;
         }
 
-        ParticleEmitterRenderFlush flush;
+        AstralaxEmitterRenderFlush flush;
         if( m_emitter->prepareParticles( flush ) == false )
         {
             return;
@@ -359,7 +359,7 @@ namespace Mengine
             m_indicies = Helper::reallocateArrayT<RenderIndex>( m_indicies, m_indexCount );
         }
 
-        ParticleMesh meshes[MENGINE_PARTICLE_MAX_MESH];
+        AstralaxMesh meshes[MENGINE_PARTICLE_MAX_MESH];
 
         if( m_emitter->flushParticles( meshes, MENGINE_PARTICLE_MAX_MESH, m_vertices, m_indicies, flush ) == false )
         {
@@ -381,7 +381,7 @@ namespace Mengine
             it_mesh != it_mesh_end;
             ++it_mesh )
         {
-            const ParticleMesh & mesh = meshes[it_mesh];
+            const AstralaxMesh & mesh = meshes[it_mesh];
 
             RenderTextureInterfacePtr textures[MENGINE_MAX_TEXTURE_STAGES];
 
@@ -389,7 +389,7 @@ namespace Mengine
             {
                 int textureId = mesh.texture[i];
 
-                const ResourceImagePtr & image = PARTICLE_SYSTEM2()
+                const ResourceImagePtr & image = ASTRALAX_SYSTEM()
                     ->getResourceImage( textureId );
 
                 if( image == nullptr )
@@ -407,7 +407,7 @@ namespace Mengine
                 textures[i] = texture;
             }
 
-            const RenderMaterialStage * stage = PARTICLE_SYSTEM2()
+            const RenderMaterialStage * stage = ASTRALAX_SYSTEM()
                 ->getMaterialStage( mesh.material );
 
             const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
@@ -417,7 +417,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount )
+    void AstralaxEmitter::updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount )
     {
         ColourValue color;
         this->calcTotalColor( color );
@@ -450,7 +450,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount )
+    void AstralaxEmitter::updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount )
     {
         if( this->isIdentityWorldMatrix() == true )
         {
@@ -474,7 +474,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::setResourceParticle( const ResourcePtr & _resourceParticle )
+    void AstralaxEmitter::setResourceParticle( const ResourcePtr & _resourceParticle )
     {
         if( m_resourceParticle == _resourceParticle )
         {
@@ -484,12 +484,12 @@ namespace Mengine
         this->recompile( [this, _resourceParticle]() {m_resourceParticle = stdex::intrusive_static_cast<ResourceParticlePtr>(_resourceParticle); } );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourcePtr & ParticleEmitter2::getResourceParticle() const
+    const ResourcePtr & AstralaxEmitter::getResourceParticle() const
     {
         return m_resourceParticle;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::setEmitterTranslateWithParticle( bool _translateWithParticle )
+    void AstralaxEmitter::setEmitterTranslateWithParticle( bool _translateWithParticle )
     {
         m_emitterTranslateWithParticle = _translateWithParticle;
 
@@ -501,7 +501,7 @@ namespace Mengine
         m_emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::setEmitterPositionRelative( bool _positionRelative )
+    void AstralaxEmitter::setEmitterPositionRelative( bool _positionRelative )
     {
         m_emitterPositionRelative = _positionRelative;
 
@@ -538,7 +538,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::setEmitterCameraRelative( bool _cameraRelative )
+    void AstralaxEmitter::setEmitterCameraRelative( bool _cameraRelative )
     {
         m_emitterCameraRelative = _cameraRelative;
 
@@ -575,12 +575,12 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::setEmitterPositionProviderOriginOffset( const mt::vec3f & _originOffset )
+    void AstralaxEmitter::setEmitterPositionProviderOriginOffset( const mt::vec3f & _originOffset )
     {
         m_positionProviderOriginOffset = _originOffset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::changeEmitterImage( const ConstString & _emitterImageName )
+    void AstralaxEmitter::changeEmitterImage( const ConstString & _emitterImageName )
     {
         m_emitterImageName = _emitterImageName;
 
@@ -594,7 +594,7 @@ namespace Mengine
         this->compileEmitterImage_( m_emitter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::removeEmitterImage()
+    void AstralaxEmitter::removeEmitterImage()
     {
         m_emitterImageName.clear();
 
@@ -606,7 +606,7 @@ namespace Mengine
         m_emitter->changeEmitterImage( 0, 0, 0, 1 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEmitter2::compileEmitterImage_( const ParticleEmitterInterfacePtr & _emitter )
+    bool AstralaxEmitter::compileEmitterImage_( const AstralaxEmitterInterfacePtr & _emitter )
     {
         ResourcePtr resourceHIT = RESOURCE_SERVICE()
             ->getResource( m_emitterImageName );
@@ -655,7 +655,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEmitter2::changeEmitterPolygon( const Polygon & _polygon )
+    bool AstralaxEmitter::changeEmitterPolygon( const Polygon & _polygon )
     {
         m_polygon = _polygon;
 
@@ -672,7 +672,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEmitter2::compilePolygon_( const ParticleEmitterInterfacePtr & _emitter )
+    bool AstralaxEmitter::compilePolygon_( const AstralaxEmitterInterfacePtr & _emitter )
     {
         Polygon::size_type n = m_polygon.size();
 
@@ -715,7 +715,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::removeEmitterPolygon()
+    void AstralaxEmitter::removeEmitterPolygon()
     {
         m_polygon = Polygon();
 
@@ -727,14 +727,14 @@ namespace Mengine
         m_emitter->changeEmitterModel( nullptr, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::_updateBoundingBox( mt::box2f& _boundingBox ) const
+    void AstralaxEmitter::_updateBoundingBox( mt::box2f& _boundingBox ) const
     {
         const mt::box2f & bb = m_emitter->getBoundingBox();
 
         _boundingBox = bb;
     }
     /////////////////////////////////////////////////////////////////////////
-    float ParticleEmitter2::getDuration() const
+    float AstralaxEmitter::getDuration() const
     {
         if( this->isCompile() == false )
         {
@@ -750,7 +750,7 @@ namespace Mengine
         return duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::setEmitterRandomMode( bool _randomMode )
+    void AstralaxEmitter::setEmitterRandomMode( bool _randomMode )
     {
         m_randomMode = _randomMode;
 
@@ -762,12 +762,12 @@ namespace Mengine
         m_emitter->setRandomMode( _randomMode );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEmitter2::getEmitterRandomMode() const
+    bool AstralaxEmitter::getEmitterRandomMode() const
     {
         return m_randomMode;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::onProviderEmitterPosition( mt::vec3f & _position )
+    void AstralaxEmitter::onProviderEmitterPosition( mt::vec3f & _position )
     {
         uint8_t transformationFlag;
         mt::vec3f position;
@@ -783,7 +783,7 @@ namespace Mengine
         _position = wm.v3.to_vec3f();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEmitter2::onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction )
+    void AstralaxEmitter::onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction )
     {
         RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( this );
 

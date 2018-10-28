@@ -3,7 +3,7 @@
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 #include "Kernel/Scriptable.h"
 
 #include "Kernel/Logger.h"
@@ -39,7 +39,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<class T>
     class PythonScriptWrapper
-        : public ServantBase<ScriptWrapperInterface>
+        : public ScriptWrapperInterface
+        , public Factorable
     {
     public:
         bool initialize() override

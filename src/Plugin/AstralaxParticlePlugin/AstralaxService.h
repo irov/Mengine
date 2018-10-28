@@ -12,12 +12,12 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ParticleEngine2
-        : public ServiceBase<ParticleServiceInterface2>
+    class AstralaxService
+        : public ServiceBase<AstralaxServiceInterface>
     {
     public:
-        ParticleEngine2();
-        ~ParticleEngine2() override;
+        AstralaxService();
+        ~AstralaxService() override;
 
     public:
         bool _initializeService() override;
@@ -27,7 +27,7 @@ namespace Mengine
         bool isAvailable() const override;
 
     public:
-        ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) override;
+        AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) override;
 
     public:
         uint32_t getMaxParticlesCount() const override;

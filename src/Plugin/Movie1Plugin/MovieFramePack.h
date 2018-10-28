@@ -13,6 +13,7 @@ namespace Mengine
 {
     class MovieFramePack
         : public MovieFramePackInterface
+        , public Factorable
     {
     public:
         MovieFramePack();

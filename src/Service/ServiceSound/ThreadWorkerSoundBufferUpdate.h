@@ -8,7 +8,8 @@
 namespace Mengine
 {
     class ThreadWorkerSoundBufferUpdate
-        : public ServantBase<ThreadWorkerInterface>
+        : public ThreadWorkerInterface
+        , public Factorable
     {
     public:
         ThreadWorkerSoundBufferUpdate();

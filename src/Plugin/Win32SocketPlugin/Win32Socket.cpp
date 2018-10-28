@@ -48,9 +48,6 @@ namespace Mengine
 
         m_socket = socket;
 
-		m_receiveStream = new FactorableUnique<Win32SocketInputStream>(socket);
-		m_sendStream = new FactorableUnique<Win32SocketOutputStream>(socket);
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -60,13 +57,18 @@ namespace Mengine
         m_socket = INVALID_SOCKET;
     }
     //////////////////////////////////////////////////////////////////////////
-	const OutputStreamInterfacePtr & Win32Socket::getSendStream() const
+	OutputStreamInterfacePtr Win32Socket::getSendStream() const
 	{
-		return m_sendStream;
+		return this;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	const InputStreamInterfacePtr & Win32Socket::getReceiveStream() const
+	InputStreamInterfacePtr Win32Socket::getReceiveStream() const
 	{
-		return m_receiveStream;
+		return this;
 	}
+    //////////////////////////////////////////////////////////////////////////
+    SOCKET Win32Socket::getSocket() const
+    {
+        return m_socket;
+    }
 }

@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "stdex/thread_guard.h"
 
@@ -12,7 +12,8 @@ namespace Mengine
     class MemoryService;
 
     class MemoryCacheInput
-        : public ServantBase<MemoryCacheInputInterface>
+        : public MemoryCacheInputInterface
+        , public Factorable
     {
     public:
         MemoryCacheInput();

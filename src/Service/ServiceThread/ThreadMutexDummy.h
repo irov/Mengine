@@ -2,12 +2,13 @@
 
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class ThreadMutexDummy
-        : public ServantBase<ThreadMutexInterface>
+        : public ThreadMutexInterface
+        , public Factorable
     {
     protected:
         void lock() override
@@ -28,4 +29,7 @@ namespace Mengine
             return true;
         };
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ThreadMutexDummy> ThreadMutexDummyPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

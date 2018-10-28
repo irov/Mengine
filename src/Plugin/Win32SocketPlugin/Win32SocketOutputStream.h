@@ -2,18 +2,16 @@
 
 #include "Interface/StreamInterface.h"
 
-#pragma warning(push, 0)
-#   include <winsock2.h>
-#   include <ws2tcpip.h>
-#pragma warning(pop)
+#include "Win32SocketProviderInterface.h"
 
 namespace Mengine
 {
 	class Win32SocketOutputStream
 		: public OutputStreamInterface
+        , virtual public Win32SocketProviderInterface
 	{
 	public:
-		Win32SocketOutputStream(SOCKET _socket);
+		Win32SocketOutputStream();
 		~Win32SocketOutputStream() override;
 
 	public:
@@ -22,9 +20,6 @@ namespace Mengine
 
 	public:
 		bool flush() override;
-
-	protected:
-		SOCKET m_socket;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<Win32SocketOutputStream, OutputStreamInterface> Win32SocketOutputStreamPtr;

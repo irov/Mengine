@@ -2,14 +2,15 @@
 
 #include "Interface/FileMappedStreamInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "Environment/WIN32/WindowsIncluder.h"
 
 namespace Mengine
 {
     class Win32FileMappedStream
-        : public ServantBase<FileMappedStreamInterface>
+        : public FileMappedStreamInterface
+        , public Factorable
     {
     public:
         Win32FileMappedStream();

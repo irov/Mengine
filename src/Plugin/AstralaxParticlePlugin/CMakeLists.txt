@@ -10,12 +10,12 @@ src
 	AstralaxEmitterContainer2.h
 	AstralaxParticleSystem2.cpp
 	AstralaxParticleSystem2.h
-    ParticleEmitter2.cpp
-	ParticleEmitter2.h
-	ResourceParticle.cpp
-	ResourceParticle.h
-    ParticleEngine.h
-	ParticleEngine.cpp
+    AstralaxEmitter.cpp
+	AstralaxEmitter.h
+	ResourceAstralax.cpp
+	ResourceAstralax.h
+    AstralaxService.h
+	AstralaxService.cpp
     
     ParticleResourceValidateVisitor.cpp
     ParticleResourceValidateVisitor.h

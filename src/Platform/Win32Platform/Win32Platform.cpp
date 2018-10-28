@@ -7,6 +7,7 @@
 #include "Interface/UnicodeInterface.h"
 #include "Interface/TimerInterface.h"
 #include "Interface/FileSystemInterface.h"
+#include "Interface/InputServiceInterface.h"
 
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"

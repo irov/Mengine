@@ -2,7 +2,7 @@
 
 #include "Interface/PluginInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 
 #include "Config/Vector.h"
@@ -13,7 +13,8 @@ namespace Mengine
     typedef IntrusivePtr<class ModuleFactoryInterface> ModuleFactoryInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class PluginBase
-        : public ServantBase<PluginInterface>
+        : public PluginInterface
+        , public Factorable
     {
     public:
         PluginBase();

@@ -2,6 +2,8 @@
 
 #include "Interface/SoundIdentityInterface.h"
 
+#include "Kernel/Factorable.h"
+
 #include "ThreadWorkerSoundBufferUpdate.h"
 
 namespace Mengine
@@ -9,6 +11,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class SoundIdentity
         : public SoundIdentityInterface
+        , public Factorable
     {
     public:
         SoundIdentity();

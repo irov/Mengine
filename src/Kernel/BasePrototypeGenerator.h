@@ -2,12 +2,13 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class BasePrototypeGenerator
-        : public ServantBase<PrototypeGeneratorInterface>
+        : public PrototypeGeneratorInterface
+        , public Factorable
     {
     public:
         BasePrototypeGenerator();

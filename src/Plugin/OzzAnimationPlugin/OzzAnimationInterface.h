@@ -59,8 +59,7 @@ namespace Mengine
     typedef IntrusivePtr<UnknownResourceOzzMeshInterface> UnknownResourceOzzMeshInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SamplerOzzAnimationInterface
-        : public Servant
-        , public Compilable
+        : public Compilable
         , public Updatable
         , public Animatable
         , public Eventable

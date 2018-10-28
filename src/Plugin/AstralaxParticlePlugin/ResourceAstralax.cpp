@@ -1,4 +1,4 @@
-#include "ResourceParticle.h"
+#include "ResourceAstralax.h"
 
 #include "Metacode/Metacode.h"
 
@@ -11,54 +11,54 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ResourceParticle::ResourceParticle()
+    ResourceAstralax::ResourceAstralax()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceParticle::~ResourceParticle()
+    ResourceAstralax::~ResourceAstralax()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceParticle::setFilePath( const FilePath& _filePath )
+    void ResourceAstralax::setFilePath( const FilePath& _filePath )
     {
         m_filePath = _filePath;
     }
     //////////////////////////////////////////////////////////////////////////
-    const FilePath& ResourceParticle::getFilePath() const
+    const FilePath& ResourceAstralax::getFilePath() const
     {
         return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceParticle::setConverterType( const ConstString & _converterType )
+    void ResourceAstralax::setConverterType( const ConstString & _converterType )
     {
         m_converterType = _converterType;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceParticle::getConverterType() const
+    const ConstString & ResourceAstralax::getConverterType() const
     {
         return m_converterType;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceParticle::addResourceImage( const ResourceImagePtr & _resourceImage )
+    void ResourceAstralax::addResourceImage( const ResourceImagePtr & _resourceImage )
     {
         m_resourceImages.emplace_back( _resourceImage );
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ResourceParticle::getResourceImageCount() const
+    uint32_t ResourceAstralax::getResourceImageCount() const
     {
         VectorResourceImages::size_type resourceImageCount = m_resourceImages.size();
 
         return (uint32_t)resourceImageCount;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & ResourceParticle::getResourceImage( uint32_t _index ) const
+    const ResourceImagePtr & ResourceAstralax::getResourceImage( uint32_t _index ) const
     {
         const ResourceImagePtr & resourceImage = m_resourceImages[_index];
 
         return resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceParticle::_loader( const Metabuf::Metadata * _meta )
+    bool ResourceAstralax::_loader( const Metabuf::Metadata * _meta )
     {
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle *>(_meta);
@@ -103,19 +103,19 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceParticle::_convert()
+    bool ResourceAstralax::_convert()
     {
         bool result = this->convertDefault2_( m_converterType, m_filePath, m_filePath );
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceParticle::_compile()
+    bool ResourceAstralax::_compile()
     {
         const ConstString & name = this->getName();
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        ParticleEmitterContainerInterface2Ptr container = PARTICLE_SERVICE2()
+        AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
             ->createEmitterContainerFromFile( fileGroup, m_filePath, name );
 
         if( container == nullptr )
@@ -152,7 +152,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceParticle::_release()
+    void ResourceAstralax::_release()
     {
         for( const ResourceImagePtr & resourceImage : m_resourceImages )
         {
@@ -169,7 +169,7 @@ namespace Mengine
         m_container = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ParticleEmitterInterfacePtr ResourceParticle::createEmitter()
+    AstralaxEmitterInterfacePtr ResourceAstralax::createEmitter()
     {
         if( this->isCompile() == false )
         {
@@ -180,7 +180,7 @@ namespace Mengine
             return nullptr;
         }
 
-        ParticleEmitterInterfacePtr emitter = PARTICLE_SYSTEM2()
+        AstralaxEmitterInterfacePtr emitter = ASTRALAX_SYSTEM()
             ->createEmitter( m_container );
 
         return emitter;

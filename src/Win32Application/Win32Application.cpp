@@ -16,6 +16,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "PythonScriptWrapper/PythonWrapper.h"
 

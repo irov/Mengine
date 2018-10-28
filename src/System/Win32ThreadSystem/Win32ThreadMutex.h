@@ -1,10 +1,12 @@
 #pragma once
 
-#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Environment/WIN32/WindowsIncluder.h"
 
 #include "Kernel/Factorable.h"
+
+#include "Config/Char.h"
 
 namespace Mengine
 {

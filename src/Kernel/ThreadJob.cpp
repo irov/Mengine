@@ -1,6 +1,6 @@
 #include "ThreadJob.h"
 
-#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Logger.h"
 

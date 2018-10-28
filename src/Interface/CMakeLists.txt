@@ -24,6 +24,9 @@ src
 	InputServiceInterface.h
     InputHandlerInterface.h
 	ThreadInterface.h
+    ThreadTaskInterface.h
+    ThreadMutexInterface.h
+    ThreadServiceInterface.h
 	ThreadSystemInterface.h
 	ConverterInterface.h
 	StringizeInterface.h

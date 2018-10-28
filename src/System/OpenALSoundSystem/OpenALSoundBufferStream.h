@@ -1,18 +1,31 @@
 #pragma once
 
+#include "Interface/ThreadMutexInterface.h"
+
 #include "OpenALSoundBufferMemory.h"
+
+#include "Config/Atomic.h"
+
+#ifndef MENGINE_OPENAL_STREAM_BUFFER_COUNT
+#define MENGINE_OPENAL_STREAM_BUFFER_COUNT 4
+#endif
+
+#ifndef MENGINE_OPENAL_STREAM_BUFFER_SIZE
+#define MENGINE_OPENAL_STREAM_BUFFER_SIZE (44100)
+#endif
 
 namespace Mengine
 {
-#define OPENAL_STREAM_BUFFER_COUNT 2
-#define OPENAL_STREAM_BUFFER_SIZE (44100)
-
-    class OALSoundBufferStream
-        : public OALSoundBufferBase
+    //////////////////////////////////////////////////////////////////////////
+    class OpenALSoundBufferStream
+        : public OpenALSoundBufferBase
     {
     public:
-        OALSoundBufferStream();
-        ~OALSoundBufferStream() override;
+        OpenALSoundBufferStream();
+        ~OpenALSoundBufferStream() override;
+
+    protected:
+        bool _initialize() override;
 
     public:
         bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;
@@ -36,18 +49,20 @@ namespace Mengine
         void removeBuffers_();
 
     protected:
-        ALuint m_alBuffersId[OPENAL_STREAM_BUFFER_COUNT];
+        ALuint m_alBuffersId[MENGINE_OPENAL_STREAM_BUFFER_COUNT];
 
         ALuint m_sourceId;
 
-        bool m_looped;
-        bool m_updating;
+        AtomicBool m_looped;
+        AtomicBool m_updating;
+
+        ThreadMutexInterfacePtr m_mutexUpdating;
 
     protected:
         void setUpdating_( bool _updating );
         bool getUpdating_() const;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OALSoundBufferStream> OALSoundBufferStreamPtr;
+    typedef IntrusivePtr<OpenALSoundBufferStream> OpenALSoundBufferStreamPtr;
     //////////////////////////////////////////////////////////////////////////
 }

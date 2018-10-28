@@ -1727,6 +1727,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Win32Platform::sleep( uint32_t _ms )
+    {
+        ::Sleep( _ms );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::cmd( const WString & _command )
     {
         const wchar_t * wc = _command.c_str();

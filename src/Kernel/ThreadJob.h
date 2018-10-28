@@ -2,6 +2,8 @@
 
 #include "Config/Atomic.h"
 
+#include "Interface/ThreadMutexInterface.h"
+
 #include "Kernel/ThreadTask.h"
 
 #ifndef MENGINE_THREAD_JOB_WORK_COUNT

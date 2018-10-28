@@ -5,6 +5,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileSystemInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Logger.h"
 

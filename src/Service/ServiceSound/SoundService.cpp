@@ -5,6 +5,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/PrefetcherInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 #include "Interface/ConfigInterface.h"
 
 #include "Kernel/FactoryPool.h"
@@ -42,7 +43,7 @@ namespace Mengine
         if( m_supportStream == true )
         {
             m_threadJobSoundBufferUpdate = THREAD_SERVICE()
-                ->createJob( 5 );
+                ->createJob( 50 );
 
             THREAD_SERVICE()
                 ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), 0, __FILE__, __LINE__ );

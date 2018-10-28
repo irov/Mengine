@@ -8,18 +8,19 @@
 
 namespace Mengine
 {
-    class OALSoundSystem;
     //////////////////////////////////////////////////////////////////////////
-    class OALSoundSource
+    class OpenALSoundSystem;
+    //////////////////////////////////////////////////////////////////////////
+    class OpenALSoundSource
         : public SoundSourceInterface
         , public Factorable
     {
     public:
-        OALSoundSource();
-        ~OALSoundSource() override;
+        OpenALSoundSource();
+        ~OpenALSoundSource() override;
 
     public:
-        void initialize( OALSoundSystem* _soundSystem );
+        void initialize( OpenALSoundSystem* _soundSystem );
 
     public:
         bool play() override;
@@ -55,7 +56,7 @@ namespace Mengine
         void apply_( ALuint _source );
 
     protected:
-        OALSoundSystem * m_soundSystem;
+        OpenALSoundSystem * m_soundSystem;
 
         mt::vec3f m_position;
         float m_volume;
@@ -63,7 +64,7 @@ namespace Mengine
         ALuint m_sourceId;
         float m_timing;
 
-        OALSoundBufferBasePtr m_soundBuffer;
+        OpenALSoundBufferBasePtr m_soundBuffer;
 
         bool m_headMode;
         bool m_playing;
@@ -71,5 +72,5 @@ namespace Mengine
         bool m_loop;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OALSoundSource> OALSoundSourcePtr;
+    typedef IntrusivePtr<OpenALSoundSource> OpenALSoundSourcePtr;
 }

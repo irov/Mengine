@@ -6,7 +6,7 @@
 #include "Interface/TimelineInterface.h"
 #include "Interface/NodeInterface.h"
 
-#include "Plugin/AstralaxParticlePlugin/UnknownParticleEmitter2Interface.h"
+#include "Plugin/AstralaxParticlePlugin/UnknownParticleEmitterInterface.h"
 #include "Plugin/VideoPlugin/VideoUnknownInterface.h"
 
 #include "ResourceMovie.h"
@@ -1925,7 +1925,7 @@ namespace Mengine
             return false;
         }
 
-        UnknownParticleEmitter2InterfacePtr unknownParticleEmitter2 = layer_particles->getUnknown();
+        UnknownParticleEmitterInterfacePtr unknownParticleEmitter2 = layer_particles->getUnknown();
 
         AnimationInterface * animationParticleEmitter2 = layer_particles->getAnimation();
 

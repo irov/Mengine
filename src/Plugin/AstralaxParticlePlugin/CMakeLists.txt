@@ -2,16 +2,16 @@ set(MY_LIB_NAME AstralaxParticlePlugin)
 
 ADD_FILTER(
 src
-	AstralaxParticleModule2.cpp
-    AstralaxParticleModule2.h	
-    AstralaxEmitter2.cpp
-	AstralaxEmitter2.h
-	AstralaxEmitterContainer2.cpp
-	AstralaxEmitterContainer2.h
-	AstralaxParticleSystem2.cpp
-	AstralaxParticleSystem2.h
+	AstralaxParticleModule.cpp
+    AstralaxParticleModule.h	
     AstralaxEmitter.cpp
 	AstralaxEmitter.h
+    AstralaxEmitter2.cpp
+	AstralaxEmitter2.h
+	AstralaxEmitterContainer.cpp
+	AstralaxEmitterContainer.h
+	AstralaxParticleSystem.cpp
+	AstralaxParticleSystem.h
 	ResourceAstralax.cpp
 	ResourceAstralax.h
     AstralaxService.h
@@ -20,11 +20,11 @@ src
     ParticleResourceValidateVisitor.cpp
     ParticleResourceValidateVisitor.h
     
-    UnknownParticleEmitter2Interface.h
+    UnknownParticleEmitterInterface.h
 
-    AstralaxParticlePlugin2.cpp
-    AstralaxParticlePlugin2.h
-    AstralaxParticlePlugin2.def    
+    AstralaxParticlePlugin.cpp
+    AstralaxParticlePlugin.h
+    AstralaxParticlePlugin.def    
 )
 
 if(MENGINE_PLUGIN_ASTRALAX_DLL)

@@ -4,12 +4,13 @@
 
 namespace Mengine
 {
-    class OALSoundBufferMemory
-        : public OALSoundBufferBase
+    //////////////////////////////////////////////////////////////////////////
+    class OpenALSoundBufferMemory
+        : public OpenALSoundBufferBase
     {
     public:
-        OALSoundBufferMemory();
-        ~OALSoundBufferMemory() override;
+        OpenALSoundBufferMemory();
+        ~OpenALSoundBufferMemory() override;
 
     public:
         bool update() override;
@@ -30,6 +31,6 @@ namespace Mengine
         ALuint m_alBufferId;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<OALSoundBufferMemory> OALSoundBufferMemoryPtr;
+    typedef IntrusivePtr<OpenALSoundBufferMemory> OpenALSoundBufferMemoryPtr;
     //////////////////////////////////////////////////////////////////////////
 }

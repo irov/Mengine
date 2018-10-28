@@ -1,7 +1,7 @@
 #pragma once
 
 #include "AstralaxInterface.h"
-#include "UnknownParticleEmitter2Interface.h"
+#include "UnknownParticleEmitterInterface.h"
 
 #include "ResourceAstralax.h"
 
@@ -41,7 +41,7 @@ namespace Mengine
         , public BaseAnimation
         , public AstralaxPositionProviderInterface
         , public AstralaxCameraProviderInterface
-        , public UnknownParticleEmitter2Interface
+        , public UnknownParticleEmitterInterface
     {
         DECLARE_UNKNOWABLE();
         DECLARE_ANIMATABLE();

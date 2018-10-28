@@ -1,4 +1,4 @@
-#include "AstralaxParticleModule2.h"
+#include "AstralaxParticleModule.h"
 
 #include "AstralaxInterface.h"
 
@@ -61,15 +61,15 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxParticleModule2::AstralaxParticleModule2()
+    AstralaxParticleModule::AstralaxParticleModule()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxParticleModule2::~AstralaxParticleModule2()
+    AstralaxParticleModule::~AstralaxParticleModule()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxParticleModule2::_initialize()
+    bool AstralaxParticleModule::_initialize()
     {
         LOGGER_INFO( "Initializing Particle System ..." );
 
@@ -126,7 +126,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleModule2::_finalize()
+    void AstralaxParticleModule::_finalize()
     {
         SCRIPT_SERVICE()
             ->removeWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
@@ -145,7 +145,7 @@ namespace Mengine
         kernel->remove_scope<AstralaxEmitter>();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleModule2::_destroy()
+    void AstralaxParticleModule::_destroy()
     {
     }
 }

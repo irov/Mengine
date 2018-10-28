@@ -1,7 +1,5 @@
 #include "ThreadWorkerSoundBufferUpdate.h"
 
-#include "Interface/ThreadSystemInterface.h"
-
 #include "SoundService.h"
 
 #include "Kernel/Logger.h"

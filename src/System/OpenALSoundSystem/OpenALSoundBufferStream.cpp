@@ -3,31 +3,50 @@
 #include "OpenALSoundError.h"
 
 #include "Interface/SoundCodecInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
+#include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    OALSoundBufferStream::OALSoundBufferStream()
+    OpenALSoundBufferStream::OpenALSoundBufferStream()
         : m_sourceId( 0 )
         , m_looped( false )
         , m_updating( false )
     {
-        for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+        for( uint32_t i = 0; i != MENGINE_OPENAL_STREAM_BUFFER_COUNT; ++i )
         {
             m_alBuffersId[i] = 0;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    OALSoundBufferStream::~OALSoundBufferStream()
+    OpenALSoundBufferStream::~OpenALSoundBufferStream()
     {
         this->removeBuffers_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundBufferStream::removeBuffers_()
+    bool OpenALSoundBufferStream::_initialize()
     {
-        for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+        ThreadMutexInterfacePtr mutexUpdating = THREAD_SERVICE()
+            ->createMutex( __FILE__, __LINE__ );
+
+        if( mutexUpdating == nullptr )
+        {
+            return false;
+        }
+
+        m_mutexUpdating = mutexUpdating;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void OpenALSoundBufferStream::removeBuffers_()
+    {
+        this->setUpdating_( false );
+
+        for( uint32_t i = 0; i != MENGINE_OPENAL_STREAM_BUFFER_COUNT; ++i )
         {
             ALuint id = m_alBuffersId[i];
 
@@ -40,16 +59,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferStream::load( const SoundDecoderInterfacePtr & _soundDecoder )
+    bool OpenALSoundBufferStream::load( const SoundDecoderInterfacePtr & _soundDecoder )
     {
-        for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+        for( uint32_t i = 0; i != MENGINE_OPENAL_STREAM_BUFFER_COUNT; ++i )
         {
             ALuint id = m_soundSystem->genBufferId();
 
             if( id == 0 )
             {
                 // TODO: report in case of error
-                LOGGER_ERROR( "OALSoundBufferStream::load invalid gen %d buffer ID"
+                LOGGER_ERROR( "invalid gen %d buffer ID"
                     , i
                 );
 
@@ -68,7 +87,7 @@ namespace Mengine
 
         if( dataInfo->channels != 2 )
         {
-            LOGGER_ERROR( "OALSoundBufferStream::load invalid channels %d must be %d"
+            LOGGER_ERROR( "invalid channels %d must be %d"
                 , dataInfo->channels
                 , 2
             );
@@ -76,8 +95,7 @@ namespace Mengine
             return false;
         }
 
-        //m_channels = dataInfo->channels;
-        m_channels = 2;
+        m_channels = dataInfo->channels;
         m_length = dataInfo->length;
 
         if( m_channels == 1 )
@@ -118,7 +136,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_ERROR( "OALSoundBufferStream::load invalid channels %d"
+            LOGGER_ERROR( "invalid channels %d"
                 , m_channels
             );
 
@@ -128,14 +146,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferStream::play( ALuint _source, bool _looped, float _pos )
+    bool OpenALSoundBufferStream::play( ALuint _source, bool _looped, float _pos )
     {
         m_sourceId = _source;
         m_looped = _looped;
 
         if( _pos > m_length )
         {
-            LOGGER_ERROR( "OALSoundBufferStream::play pos %f > length %f"
+            LOGGER_ERROR( "pos %f > length %f"
                 , _pos
                 , m_length
             );
@@ -145,7 +163,7 @@ namespace Mengine
 
         ALint state = 0;
         alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         if( state != AL_STOPPED && state != AL_INITIAL )
         {
@@ -154,21 +172,21 @@ namespace Mengine
         }
 
         alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         if( m_soundDecoder->seek( _pos ) == false )
         {
-            LOGGER_ERROR( "OALSoundBufferStream::play invalid seek '%f'"
+            LOGGER_ERROR( "invalid seek '%f'"
                 , _pos
             );
 
             return false;
         }
 
-        for( uint32_t i = 0; i != OPENAL_STREAM_BUFFER_COUNT; ++i )
+        for( uint32_t i = 0; i != MENGINE_OPENAL_STREAM_BUFFER_COUNT; ++i )
         {
             ALuint bufferId = m_alBuffersId[i];
 
@@ -178,47 +196,57 @@ namespace Mengine
                 return false;
             }
 
+            if( bytesWritten == 0 )
+            {
+                break;
+            }
+
             alSourceQueueBuffers( m_sourceId, 1, &bufferId );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
+
+            if( bytesWritten != MENGINE_OPENAL_STREAM_BUFFER_SIZE )
+            {
+                break;
+            }
         }
 
         alSourcePlay( m_sourceId );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         this->setUpdating_( true );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferStream::resume( ALuint _source )
+    bool OpenALSoundBufferStream::resume( ALuint _source )
     {
         (void)_source;
 
         alSourcePlay( m_sourceId );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         this->setUpdating_( true );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundBufferStream::pause( ALuint _source )
+    void OpenALSoundBufferStream::pause( ALuint _source )
     {
         this->setUpdating_( false );
 
         alSourcePause( _source );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
         //m_soundSystem->clearSourceId( _source );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundBufferStream::stop( ALuint _source )
+    void OpenALSoundBufferStream::stop( ALuint _source )
     {
         this->setUpdating_( false );
 
         ALint process_count = 0;
         // Получаем количество отработанных буферов
         alGetSourcei( _source, AL_BUFFERS_PROCESSED, &process_count );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         // Если таковые существуют то
         while( process_count-- > 0 )
@@ -227,16 +255,16 @@ namespace Mengine
             ALuint buffer = 0;
 
             alSourceUnqueueBuffers( _source, 1, &buffer );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
         }
 
         alSourceStop( _source );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         ALint queued_count = 0;
         // unqueue remaining buffers
         alGetSourcei( _source, AL_BUFFERS_QUEUED, &queued_count );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         while( queued_count-- > 0 )
         {
@@ -244,26 +272,28 @@ namespace Mengine
             ALuint buffer = 0;
 
             alSourceUnqueueBuffers( _source, 1, &buffer );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
         }
 
         alSourcei( m_sourceId, AL_BUFFER, 0 ); // clear source buffering
 
         alSourceRewind( _source );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundBufferStream::setUpdating_( bool _updating )
+    void OpenALSoundBufferStream::setUpdating_( bool _updating )
     {
+        m_mutexUpdating->lock();
         m_updating = _updating;
+        m_mutexUpdating->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferStream::getUpdating_() const
+    bool OpenALSoundBufferStream::getUpdating_() const
     {
         return m_updating;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferStream::setTimePos( ALuint _source, float _pos ) const
+    bool OpenALSoundBufferStream::setTimePos( ALuint _source, float _pos ) const
     {
         (void)_source;
 
@@ -272,7 +302,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferStream::getTimePos( ALuint _source, float & _pos ) const
+    bool OpenALSoundBufferStream::getTimePos( ALuint _source, float & _pos ) const
     {
         (void)_source;
 
@@ -280,7 +310,7 @@ namespace Mengine
 
         if( timeTell > m_length )
         {
-            LOGGER_ERROR( "OALSoundBufferStream::getTimePos get tell %f > length %f"
+            LOGGER_ERROR( "get tell %f > length %f"
                 , timeTell
                 , m_length
             );
@@ -293,32 +323,32 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferStream::update()
+    bool OpenALSoundBufferStream::update()
     {
+        ThreadMutexScope mutexUpdatingScope( m_mutexUpdating );
+
         if( this->m_updating == false )
         {
             return true;
         }
 
-        //// Check the status of the Source.  If it is not playing, then playback was completed,
-        //// or the Source was starved of audio data, and needs to be restarted.
-        //alSourcei( m_sourceId, AL_LOOPING, AL_FALSE );
-        //      OAL_CHECK_ERROR();
+        ALint processed_count = 0;
+        alGetSourcei( m_sourceId, AL_BUFFERS_PROCESSED, &processed_count );
+        OPENAL_CHECK_ERROR();
 
-        //int queuedBuffers;
-        //alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queuedBuffers );
+        ALuint unqueueBuffersId[MENGINE_OPENAL_STREAM_BUFFER_COUNT];
+        alSourceUnqueueBuffers( m_sourceId, processed_count, unqueueBuffersId );
+        OPENAL_CHECK_ERROR();
 
-        ALint processed = 0;
-        alGetSourcei( m_sourceId, AL_BUFFERS_PROCESSED, &processed );
-        OAL_CHECK_ERROR();
+        ALint queued_count = 0;
+        alGetSourcei( m_sourceId, AL_BUFFERS_QUEUED, &queued_count );
+        OPENAL_CHECK_ERROR();
 
         bool end = false;
-        for( ALint curr_processed = 0; curr_processed != processed; ++curr_processed )
+        for( ALint curr_processed = 0; curr_processed != processed_count; ++curr_processed )
         {
             // Исключаем их из очереди
-            ALuint bufferId;
-            alSourceUnqueueBuffers( m_sourceId, 1, &bufferId );
-            OAL_CHECK_ERROR();
+            ALuint bufferId = unqueueBuffersId[curr_processed];
 
             // Читаем очередную порцию данных
             size_t bytesWritten;
@@ -326,13 +356,7 @@ namespace Mengine
 
             if( bytesWritten == 0 )
             {
-                if( m_looped == true )
-                {
-                    m_soundDecoder->rewind();
-
-                    this->bufferData_( bufferId, bytesWritten );
-                }
-                else
+                if( m_looped == false )
                 {
                     end = true;
 
@@ -341,7 +365,7 @@ namespace Mengine
             }
 
             alSourceQueueBuffers( m_sourceId, 1, &bufferId );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
         }
 
         if( end == true )
@@ -351,35 +375,42 @@ namespace Mengine
 
         ALint state;
         alGetSourcei( m_sourceId, AL_SOURCE_STATE, &state );
-        OAL_CHECK_ERROR();
+        OPENAL_CHECK_ERROR();
 
         if( state != AL_PLAYING && state != AL_PAUSED )
         {
             alSourcePlay( m_sourceId );
-            OAL_CHECK_ERROR();
+            OPENAL_CHECK_ERROR();
         }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferStream::bufferData_( ALuint _alBufferId, size_t & _bytes )
+    bool OpenALSoundBufferStream::bufferData_( ALuint _alBufferId, size_t & _bytes )
     {
-        char dataBuffer[OPENAL_STREAM_BUFFER_SIZE];
-        size_t bytesWritten = m_soundDecoder->decode( dataBuffer, OPENAL_STREAM_BUFFER_SIZE );
-
-        _bytes = bytesWritten;
+        char dataBuffer[MENGINE_OPENAL_STREAM_BUFFER_SIZE];
+        size_t bytesWritten = m_soundDecoder->decode( dataBuffer, MENGINE_OPENAL_STREAM_BUFFER_SIZE );
 
         if( bytesWritten == 0 )
         {
             return true;
         }
 
+        if( bytesWritten != MENGINE_OPENAL_STREAM_BUFFER_SIZE && m_looped == true )
+        {
+            m_soundDecoder->rewind();
+
+            size_t bytesWritten2 = m_soundDecoder->decode( dataBuffer + bytesWritten, MENGINE_OPENAL_STREAM_BUFFER_SIZE - bytesWritten );
+
+            bytesWritten += bytesWritten2;
+        }
+
         ALsizei al_bytesWritten = (ALsizei)bytesWritten;
         alBufferData( _alBufferId, m_format, dataBuffer, al_bytesWritten, m_frequency );
 
-        if( OAL_CHECK_ERROR() == false )
+        if( OPENAL_CHECK_ERROR() == false )
         {
-            LOGGER_ERROR( "OALSoundBufferStream::play buffer=%d id=%d format=%d bytes=%d frequency=%d"
+            LOGGER_ERROR( "buffer=%d id=%d format=%d bytes=%d frequency=%d"
                 , _alBufferId
                 , m_format
                 , bytesWritten
@@ -388,6 +419,8 @@ namespace Mengine
 
             return false;
         }
+
+        _bytes = bytesWritten;
 
         return true;
     }

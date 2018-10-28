@@ -1,5 +1,7 @@
 #include "MemoryService.h"
 
+#include "Interface/ThreadServiceInterface.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"
 

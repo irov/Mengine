@@ -5,7 +5,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    OALSoundBufferBase::OALSoundBufferBase()
+    OpenALSoundBufferBase::OpenALSoundBufferBase()
         : m_soundSystem( nullptr )
         , m_format( 0 )
         , m_frequency( 0 )
@@ -15,26 +15,37 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    OALSoundBufferBase::~OALSoundBufferBase()
+    OpenALSoundBufferBase::~OpenALSoundBufferBase()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void OALSoundBufferBase::initialize( OALSoundSystem * _soundSystem )
+    bool OpenALSoundBufferBase::initialize( OpenALSoundSystem * _soundSystem )
     {
         m_soundSystem = _soundSystem;
+
+        bool succesful = this->_initialize();
+
+        return succesful;
     }
     //////////////////////////////////////////////////////////////////////////
-    const SoundDecoderInterfacePtr & OALSoundBufferBase::getDecoder() const
+    bool OpenALSoundBufferBase::_initialize()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const SoundDecoderInterfacePtr & OpenALSoundBufferBase::getDecoder() const
     {
         return m_soundDecoder;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OALSoundBufferBase::isStereo() const
+    bool OpenALSoundBufferBase::isStereo() const
     {
         return m_isStereo;
     }
     //////////////////////////////////////////////////////////////////////////
-    float OALSoundBufferBase::getTimeTotal() const
+    float OpenALSoundBufferBase::getTimeTotal() const
     {
         return m_length;
     }

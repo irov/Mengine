@@ -1,31 +1,16 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
-#include "Kernel/ConstString.h"
+#include "Interface/ThreadTaskInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ThreadTaskInterface
-        : public Mixin
-    {
-    public:
-        virtual bool isRun() const = 0;
-        virtual bool isComplete() const = 0;
-        virtual bool isSuccessful() const = 0;
-        virtual bool isCancel() const = 0;
-
-    public:
-        virtual void preparation() = 0;
-        virtual void main() = 0;
-
-    public:
-        virtual bool run() = 0;
-        virtual bool cancel() = 0;
-        virtual bool update() = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadTaskInterface> ThreadTaskInterfacePtr;
+    const int32_t MENGINE_THREAD_PRIORITY_LOWEST = -2;
+    const int32_t MENGINE_THREAD_PRIORITY_BELOW_NORMAL = -1;
+    const int32_t MENGINE_THREAD_PRIORITY_NORMAL = 0;
+    const int32_t MENGINE_THREAD_PRIORITY_ABOVE_NORMAL = 1;
+    const int32_t MENGINE_THREAD_PRIORITY_HIGHEST = 2;
+    const int32_t MENGINE_THREAD_PRIORITY_TIME_CRITICAL = 3;
     //////////////////////////////////////////////////////////////////////////
     class ThreadQueueInterface
         : public Mixin
@@ -51,18 +36,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadIdentityInterface> ThreadIdentityInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class ThreadMutexInterface
-        : public Mixin
-    {
-    public:
-        virtual void lock() = 0;
-        virtual void unlock() = 0;
-
-    public:
-        virtual bool try_lock() = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadMutexInterface> ThreadMutexInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
 }

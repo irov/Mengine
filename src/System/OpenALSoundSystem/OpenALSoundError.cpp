@@ -6,7 +6,7 @@
 
 namespace Mengine
 {
-    bool s_OALErrorCheck( const char * _file, int _line )
+    bool s_OpenALErrorCheck( const char * _file, int _line )
     {
         ALenum error = alGetError();
 
@@ -17,7 +17,7 @@ namespace Mengine
 
         const char * message = alGetString( error );
 
-        LOGGER_ERROR( "OAL Error: (%s %d) %d:%s"
+        LOGGER_ERROR( "OpenAL Error: (%s %d) %d:%s"
             , _file
             , _line
             , error

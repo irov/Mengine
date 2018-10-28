@@ -1,5 +1,7 @@
 #include "NotificationService.h"
 
+#include "Interface/ThreadServiceInterface.h"
+
 #include "Kernel/Assertion.h"
 
 #include "Kernel/Logger.h"

@@ -12,8 +12,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitter2::AstralaxEmitter2()
         : m_emitterId( 0 )
-        , m_positionProvider( nullptr )
-        , m_cameraProvider( nullptr )
         , m_updateSpeed( 0.f )
         , m_leftBorder( 0.0 )
         , m_rightBorder( 0.0 )
@@ -31,7 +29,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::initialize( AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container )
+    bool AstralaxEmitter2::initialize( AstralaxParticleSystem2 * _particleSystem, const AstralaxEmitterContainerInterfacePtr & _container )
     {
         m_particleSystem = _particleSystem;
         m_container = _container;
@@ -86,6 +84,8 @@ namespace Mengine
         m_emitterId = 0;
 
         m_container = nullptr;
+        m_positionProvider = nullptr;
+        m_cameraProvider = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter2::setupBasePosition_()
@@ -194,7 +194,7 @@ namespace Mengine
         return m_is3d;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::getCamera( ParticleCamera & _camera ) const
+    bool AstralaxEmitter2::getCamera( AstralaxCamera & _camera ) const
     {
         MAGIC_VIEW view;
         if( Magic_GetView( m_emitterId, &view ) == MAGIC_ERROR )
@@ -396,14 +396,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::setPositionProvider( ParticlePositionProviderInterface * _positionProvider )
+    bool AstralaxEmitter2::setPositionProvider( const AstralaxPositionProviderInterfacePtr & _positionProvider )
     {
         m_positionProvider = _positionProvider;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::setCameraProvider( ParticleCameraProviderInterface * _cameraProvider )
+    bool AstralaxEmitter2::setCameraProvider( const AstralaxCameraProviderInterfacePtr & _cameraProvider )
     {
         m_cameraProvider = _cameraProvider;
 
@@ -516,7 +516,7 @@ namespace Mengine
         return mode;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::prepareParticles( ParticleEmitterRenderFlush & _flush )
+    bool AstralaxEmitter2::prepareParticles( AstralaxEmitterRenderFlush & _flush )
     {
         _flush.meshCount = 0;
         _flush.vertexCount = 0;
@@ -556,7 +556,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxEmitter2::flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, ParticleEmitterRenderFlush & _flush )
+    bool AstralaxEmitter2::flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush & _flush )
     {
         for( uint32_t i = 0; i != _flush.arrays; ++i )
         {
@@ -623,7 +623,7 @@ namespace Mengine
                 return false;
             }
 
-            ParticleMesh & mesh = _meshes[_flush.meshCount];
+            AstralaxMesh & mesh = _meshes[_flush.meshCount];
 
             mesh.vertexOffset = vrts.starting_index * 4 / 6;
             mesh.vertexCount = vrts.indexes_count * 4 / 6;
@@ -679,7 +679,7 @@ namespace Mengine
 
             if( m_is3d == true )
             {
-                ParticleCamera pc;
+                AstralaxCamera pc;
                 if( this->getCamera( pc ) == false )
                 {
                     return false;

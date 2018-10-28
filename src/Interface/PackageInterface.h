@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ServantInterface.h"
 #include "Interface/FileGroupInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
@@ -29,7 +29,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class PackageInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual const ConstString & getName() const = 0;

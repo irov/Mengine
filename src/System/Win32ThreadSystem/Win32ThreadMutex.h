@@ -4,12 +4,13 @@
 
 #include "Environment/WIN32/WindowsIncluder.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class Win32ThreadMutex
-        : public ServantBase<ThreadMutexInterface>
+        : public ThreadMutexInterface
+        , public Factorable
     {
     public:
         Win32ThreadMutex();

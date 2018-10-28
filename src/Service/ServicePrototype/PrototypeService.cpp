@@ -95,7 +95,7 @@ namespace Mengine
         return generator;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerFactorable PrototypeService::generatePrototype( const ConstString & _category, const ConstString & _prototype )
+    FactorablePointer PrototypeService::generatePrototype( const ConstString & _category, const ConstString & _prototype )
     {
         CategoryKey key;
         key.category = _category;

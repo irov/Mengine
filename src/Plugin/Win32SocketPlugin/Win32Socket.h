@@ -7,15 +7,13 @@
 
 #include "Environment/WIN32/WindowsIncluder.h"
 
-#pragma warning(push, 0)
-#   include <winsock2.h>
-#   include <ws2tcpip.h>
-#pragma warning(pop)
-
 namespace Mengine
 {
     class Win32Socket
         : public SocketInterface
+        , public Win32SocketInputStream
+        , public Win32SocketOutputStream
+        , public Factorable
     {
     public:
         Win32Socket();
@@ -26,13 +24,16 @@ namespace Mengine
         void disconnect() override;
 
     public:
-		const OutputStreamInterfacePtr & getSendStream() const override;
-		const InputStreamInterfacePtr & getReceiveStream() const override;
+		OutputStreamInterfacePtr getSendStream() const override;
+		InputStreamInterfacePtr getReceiveStream() const override;
+
+    protected:
+        SOCKET getSocket() const override;
 
     protected:
         SOCKET m_socket;
-
-		Win32SocketInputStreamPtr m_receiveStream;
-		Win32SocketOutputStreamPtr m_sendStream;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Win32Socket> Win32SocketPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

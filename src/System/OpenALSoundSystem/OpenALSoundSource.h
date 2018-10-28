@@ -11,7 +11,8 @@ namespace Mengine
     class OALSoundSystem;
     //////////////////////////////////////////////////////////////////////////
     class OALSoundSource
-        : public ServantBase<SoundSourceInterface>
+        : public SoundSourceInterface
+        , public Factorable
     {
     public:
         OALSoundSource();

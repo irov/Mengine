@@ -2,7 +2,6 @@
 
 #include "Kernel/ColourValue.h"
 #include "Kernel/Mixin.h"
-#include "Kernel/IntrusivePtr.h"
 
 namespace Mengine
 {

@@ -2,8 +2,6 @@
 
 #include "Kernel/FactoryPrototypeGenerator.h"
 
-#include "Kernel/Factory.h"
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -18,7 +16,7 @@ namespace Mengine
         FactoryPtr _initializeFactory() override;
 
     public:
-        PointerFactorable generate() override;
+        FactorablePointer generate() override;
 
     protected:
         FactoryPtr m_factoryFont;

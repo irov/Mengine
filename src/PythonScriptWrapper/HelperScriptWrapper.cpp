@@ -5,7 +5,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/TextInterface.h"
+#include "Interface/TextServiceInterface.h"
 #include "Interface/TimerInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UserdataInterface.h"
@@ -13,6 +13,7 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/WatchdogInterface.h"
+#include "Interface/InputServiceInterface.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
@@ -1004,11 +1005,11 @@ namespace Mengine
             return py_list;
         }
 
-        float s_watchdog( const String & _tag )
+        double s_watchdog( const String & _tag )
         {
             (void)_tag;
 
-            float watch = WATCHDOG( _tag );
+            double watch = WATCHDOG( _tag );
 
             return watch;
         }

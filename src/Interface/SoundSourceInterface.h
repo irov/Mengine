@@ -18,7 +18,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class SoundSourceInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool play() = 0;

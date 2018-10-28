@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/IntrusivePtr.h"
+#include "Kernel/Mixin.h"
 
 #ifndef NDEBUG
 #include "stdex/mpl.h"

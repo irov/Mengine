@@ -1,12 +1,13 @@
 #pragma once
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     template<class TEncoderInterface>
     class Encoder
-        : public ServantBase<TEncoderInterface>
+        : public TEncoderInterface
+        , public Factorable
     {
     public:
         Encoder()

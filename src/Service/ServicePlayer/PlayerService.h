@@ -4,7 +4,7 @@
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/GlobalHandleSystemInterface.h"
-#include "Interface/ScheduleManagerInterface.h"
+#include "Interface/SchedulerInterface.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
@@ -59,15 +59,15 @@ namespace Mengine
         void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) override;
 
     public:
-        ScheduleManagerInterfacePtr createSchedulerManager( const ConstString & _name ) override;
-        bool destroySchedulerManager( const ScheduleManagerInterfacePtr & _scheduler ) override;
+        SchedulerInterfacePtr createSchedulerManager( const ConstString & _name ) override;
+        bool destroySchedulerManager( const SchedulerInterfacePtr & _scheduler ) override;
 
     public:
         const GlobalHandleSystemInterfacePtr & getGlobalHandleSystem() const override;
 
     public:
-        const ScheduleManagerInterfacePtr & getScheduleManager() const override;
-        const ScheduleManagerInterfacePtr & getGlobalScheduleManager() const override;
+        const SchedulerInterfacePtr & getScheduleManager() const override;
+        const SchedulerInterfacePtr & getGlobalScheduleManager() const override;
 
     public:
         const AffectorablePtr & getAffectorable() const override;
@@ -140,12 +140,12 @@ namespace Mengine
         PickerServiceInterfacePtr m_pickerService;
         GlobalHandleSystemInterfacePtr m_globalHandleSystem;
 
-        ScheduleManagerInterfacePtr m_scheduleManager;
-        ScheduleManagerInterfacePtr m_scheduleManagerGlobal;
+        SchedulerInterfacePtr m_scheduleManager;
+        SchedulerInterfacePtr m_scheduleManagerGlobal;
 
         FactoryPtr m_factoryScheduleManager;
 
-        typedef Vector<ScheduleManagerInterfacePtr> VectorUserScheduler;
+        typedef Vector<SchedulerInterfacePtr> VectorUserScheduler;
         VectorUserScheduler m_schedulers;
 
         GlobalAffectorablePtr m_affectorable;

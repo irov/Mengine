@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/Mixin.h"
-#include "Kernel/IntrusivePtr.h"
 
 #ifndef MENGINE_FACTORABLE_DEBUG_ENABLE
 #   ifndef NDEBUG

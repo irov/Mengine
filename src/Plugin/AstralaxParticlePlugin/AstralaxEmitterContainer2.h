@@ -6,11 +6,10 @@
 
 #include "AstralaxEmitter2.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
+#include "Kernel/Factory.h"
 
 #include "Config/Vector.h"
-
-#include "Kernel/Factory.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
@@ -27,7 +26,8 @@ namespace Mengine
     class AstralaxParticleSystem2;
 
     class AstralaxEmitterContainer2
-        : public ServantBase<ParticleEmitterContainerInterface2>
+        : public AstralaxEmitterContainerInterface
+        , public Factorable
     {
     public:
         AstralaxEmitterContainer2();

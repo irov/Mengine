@@ -2,10 +2,6 @@
 
 #include "Interface/TextInterface.h"
 
-#include "Kernel/Servant.h"
-
-#include "Kernel/ServiceBase.h"
-
 #include "BitmapGlyph.h"
 
 namespace Mengine

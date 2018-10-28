@@ -3,14 +3,15 @@
 #include "Interface/PackageInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 #include "Kernel/String.h"
 #include "Kernel/FilePath.h"
 
 namespace Mengine
 {
     class Package
-        : public ServantBase<PackageInterface>
+        : public PackageInterface
+        , public Factorable
     {
     public:
         Package();

@@ -11,7 +11,7 @@
 namespace Mengine
 {
     class Win32FileGroupDirectory
-        : public ServantBase<FileGroupInterface>
+        : public FileGroupInterface
     {
     public:
         Win32FileGroupDirectory();

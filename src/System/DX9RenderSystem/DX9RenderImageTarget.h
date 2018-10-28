@@ -4,7 +4,7 @@
 
 #include "DX9RenderResourceHandler.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include <d3d9.h>
 
@@ -13,7 +13,8 @@ namespace Mengine
     typedef IntrusivePtr<class DX9RenderTargetTexture> DX9RenderTargetTexturePtr;
 
     class DX9RenderImageTarget
-        : public ServantBase<RenderImageInterface>
+        : public RenderImageInterface
+        , public Factorable
     {
     public:
         DX9RenderImageTarget();

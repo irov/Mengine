@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
-
 #include "Interface/RenderEnumInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/Pointer.h"
 #include "Kernel/Rect.h"
 #include "Kernel/PixelFormat.h"
@@ -26,7 +25,7 @@ namespace Mengine
     typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderImageLoaderInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual RenderImageDesc getImageDesc() const = 0;
@@ -39,7 +38,7 @@ namespace Mengine
     typedef IntrusivePtr<RenderImageLoaderInterface> RenderImageLoaderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderImageProviderInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual RenderImageLoaderInterfacePtr getLoader() const = 0;
@@ -48,7 +47,7 @@ namespace Mengine
     typedef IntrusivePtr<RenderImageProviderInterface> RenderImageProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderImageInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual void bind( uint32_t _stage ) = 0;

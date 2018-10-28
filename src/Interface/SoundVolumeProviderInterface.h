@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class SoundVolumeProviderInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual void onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute ) = 0;

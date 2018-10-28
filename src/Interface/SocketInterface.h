@@ -11,15 +11,15 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class SocketInterface
-        : public Factorable
+        : public Mixin
     {
     public:
         virtual bool connect( const Char * _ip, const Char * _port ) = 0;
         virtual void disconnect() = 0;
 
     public:		
-		virtual const OutputStreamInterfacePtr & getSendStream() const = 0;
-		virtual const InputStreamInterfacePtr & getReceiveStream() const = 0;
+		virtual OutputStreamInterfacePtr getSendStream() const = 0;
+		virtual InputStreamInterfacePtr getReceiveStream() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SocketInterface> SocketInterfacePtr;

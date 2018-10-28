@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Kernel/ServantBase.h"
 #include "Kernel/LoggerBase.h"
 
 namespace Mengine

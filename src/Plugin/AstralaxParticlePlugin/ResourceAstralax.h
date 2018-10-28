@@ -11,14 +11,14 @@
 
 namespace Mengine
 {
-    class ResourceParticle
+    class ResourceAstralax
         : public Resource
     {
         DECLARE_VISITABLE( Resource );
 
     public:
-        ResourceParticle();
-        ~ResourceParticle() override;
+        ResourceAstralax();
+        ~ResourceAstralax() override;
 
     public:
         void setFilePath( const FilePath& _filePath );
@@ -34,7 +34,7 @@ namespace Mengine
         const ResourceImagePtr & getResourceImage( uint32_t _index ) const;
 
     public:
-        ParticleEmitterInterfacePtr createEmitter();
+        AstralaxEmitterInterfacePtr createEmitter();
 
     public:
         bool _loader( const Metabuf::Metadata * _parser ) override;
@@ -52,8 +52,8 @@ namespace Mengine
         typedef Vector<ResourceImagePtr> VectorResourceImages;
         VectorResourceImages m_resourceImages;
 
-        ParticleEmitterContainerInterface2Ptr m_container;
+        AstralaxEmitterContainerInterfacePtr m_container;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceParticle, Resource> ResourceParticlePtr;
+    typedef IntrusivePtr<ResourceAstralax, Resource> ResourceParticlePtr;
 }

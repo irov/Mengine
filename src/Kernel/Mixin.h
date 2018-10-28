@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/IntrusivePtrBase.h"
+#include "Kernel/IntrusivePtr.h"
 
 namespace Mengine
 {
@@ -16,4 +17,7 @@ namespace Mengine
         {
         }
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Mixin> MixinPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

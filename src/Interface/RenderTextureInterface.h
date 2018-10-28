@@ -1,8 +1,8 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
 #include "Interface/FileGroupInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/Rect.h"
 
 #include "math/uv4.h"
@@ -13,7 +13,7 @@ namespace Mengine
     typedef IntrusivePtr<class RenderImageInterface> RenderImageInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderTextureInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual void release() = 0;

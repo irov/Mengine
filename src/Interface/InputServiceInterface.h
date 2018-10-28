@@ -3,7 +3,6 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputHandlerInterface.h"
 
-#include "Kernel/IntrusivePtr.h"
 #include "Kernel/Mixin.h"
 
 #include "Config/Typedef.h"

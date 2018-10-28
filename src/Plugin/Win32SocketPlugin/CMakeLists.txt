@@ -4,6 +4,7 @@ ADD_FILTER(
 src
 	Win32Socket.cpp
 	Win32Socket.h
+    Win32SocketProviderInterface.h
 	Win32SocketInputStream.cpp
 	Win32SocketInputStream.h
 	Win32SocketOutputStream.cpp

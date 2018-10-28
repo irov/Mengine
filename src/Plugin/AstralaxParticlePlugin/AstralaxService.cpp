@@ -1,4 +1,4 @@
-#include "ParticleEngine.h"
+#include "AstralaxService.h"
 
 #include "Interface/StringizeInterface.h"
 #include "Interface/ConfigInterface.h"
@@ -12,23 +12,23 @@
 #include "math/box2.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( ParticleService, Mengine::ParticleEngine2 );
+SERVICE_FACTORY( AstralaxService, Mengine::AstralaxService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    ParticleEngine2::ParticleEngine2()
+    AstralaxService::AstralaxService()
         : m_maxParticlesNum( 10000U )
         , m_available( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ParticleEngine2::~ParticleEngine2()
+    AstralaxService::~AstralaxService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEngine2::_initializeService()
+    bool AstralaxService::_initializeService()
     {
-        m_available = CONFIG_VALUE( "Engine", "ParticleService2Avaliable", true );
+        m_available = CONFIG_VALUE( "Engine", "AstralaxAvaliable", true );
 
         if( m_available == false )
         {
@@ -50,16 +50,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ParticleEngine2::_finalizeService()
+    void AstralaxService::_finalizeService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleEngine2::isAvailable() const
+    bool AstralaxService::isAvailable() const
     {
         return m_available;
     }
     //////////////////////////////////////////////////////////////////////////
-    ParticleEmitterContainerInterface2Ptr ParticleEngine2::createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _whoName )
+    AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _whoName )
     {
         if( m_available == false )
         {
@@ -81,7 +81,7 @@ namespace Mengine
             return nullptr;
         }
 
-        ParticleEmitterContainerInterface2Ptr container = PARTICLE_SYSTEM2()
+        AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SYSTEM()
             ->createEmitterContainerFromMemory( stream, m_archivator, _whoName );
 
         if( container == nullptr )
@@ -97,7 +97,7 @@ namespace Mengine
         return container;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t ParticleEngine2::getMaxParticlesCount() const
+    uint32_t AstralaxService::getMaxParticlesCount() const
     {
         return m_maxParticlesNum;
     }

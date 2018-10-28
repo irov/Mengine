@@ -3,8 +3,6 @@
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/LoggerInterface.h"
 
-#include "Kernel/Servant.h"
-
 #include "pybind/types.hpp"
 #include "pybind/pybind.hpp"
 
@@ -12,9 +10,11 @@ namespace Mengine
 {
     class ScriptModule
         : public ScriptModuleInterface
+        , public Factorable
     {
     public:
         ScriptModule();
+        ~ScriptModule() override;
 
     public:
         bool initialize( const pybind::module & _module );

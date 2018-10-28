@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Config/Typedef.h"
-
 #include "Interface/ServantInterface.h"
 
 namespace Mengine

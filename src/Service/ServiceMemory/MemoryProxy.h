@@ -3,14 +3,15 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "stdex/thread_guard.h"
 
 namespace Mengine
 {
     class MemoryProxy
-        : public ServantBase<MemoryProxyInterface>
+        : public MemoryProxyInterface
+        , public Factorable
     {
     public:
         MemoryProxy();

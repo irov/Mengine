@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Kernel/Servant.h"
+#include "Kernel/Mixin.h"
 #include "Config/String.h"
 
 #include "math/uv4.h"
@@ -13,6 +13,7 @@ namespace Mengine
     typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class TextureGlyphProviderInterface
+        : public Mixin
     {
     public:
         virtual bool onTextureGlyphFill( uint8_t * _memory, size_t _pitch, uint32_t _channel ) = 0;

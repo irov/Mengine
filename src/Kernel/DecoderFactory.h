@@ -3,7 +3,7 @@
 #include "Interface/CodecInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"
@@ -12,7 +12,8 @@ namespace Mengine
 {
     template<class T>
     class DecoderFactory
-        : public ServantBase<DecoderFactoryInterface>
+        : public DecoderFactoryInterface
+        , public Factorable
     {
     protected:
         bool initialize() override
@@ -25,7 +26,7 @@ namespace Mengine
     protected:
         DecoderInterfacePtr createDecoder() override
         {
-            DecoderInterfacePtr decoder = m_factory->createObject();
+            IntrusivePtr<T> decoder = m_factory->createObject();
 
             return decoder;
         }

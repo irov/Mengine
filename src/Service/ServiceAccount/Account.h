@@ -6,7 +6,7 @@
 
 #include "Config/Typedef.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 
 #include "Config/Map.h"
@@ -15,7 +15,8 @@ namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
     class Account
-        : public ServantBase<AccountInterface>
+        : public AccountInterface
+        , public Factorable
     {
     public:
         Account();

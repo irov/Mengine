@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "Kernel/Factorable.h"
 
@@ -15,7 +15,8 @@ namespace Mengine
     class MemoryService;
 
     class MemoryCacheBuffer
-        : public ServantBase<MemoryBufferInterface>
+        : public MemoryBufferInterface
+        , public Factorable
     {
     public:
         MemoryCacheBuffer();

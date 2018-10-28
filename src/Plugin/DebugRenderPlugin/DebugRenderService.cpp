@@ -4,10 +4,25 @@
 #include "Interface/PlayerInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/RenderServiceInterface.h"
+#include "Interface/RenderSystemInterface.h"
+#include "Interface/ApplicationInterface.h"
+#include "Interface/ResourceServiceInterface.h"
+#include "Interface/PrefetcherInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
+#include "Interface/FactoryInterface.h"
+
+#include "Plugin/AstralaxParticlePlugin/AstralaxInterface.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/ThreadTask.h"
+#include "Kernel/SchedulerHelper.h"
 
 #include "Config/Stringstream.h"
+
+#include "pybind/pybind.hpp"
+#include "stdex/allocator_report.h"
+
+#include <iomanip>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( DebugRenderService, Mengine::DebugRenderService );
@@ -16,7 +31,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     DebugRenderService::DebugRenderService()
-        : m_showDebugText( 0 )
+        : m_fps( 0 )
+        , m_showDebugText( 0 )
         , m_globalKeyHandlerF9( 0 )
     {
     }
@@ -48,10 +64,21 @@ namespace Mengine
             m_debugText->setLocalColor( ColourValue( 1.0, 0.0, 0.0, 1.0 ) );
             m_debugText->enable();
 
-            const ScheduleManagerInterfacePtr & scheduler = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
                 ->getGlobalScheduleManager();
 
-            scheduler->timing()
+            m_schedulerFPS = Helper::schedulerTiming( scheduler
+                , []( uint32_t, uint32_t ) { return 1000.f; }
+                , [this]( uint32_t, uint32_t, float )
+            {
+                const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
+                    ->getDebugInfo();
+
+                m_fps = debugInfo.frameCount;
+
+                RENDER_SERVICE()
+                    ->resetFrameCount();
+            }, nullptr );
         }
 
         return true;
@@ -73,6 +100,11 @@ namespace Mengine
                 m_debugText->disable();
                 m_debugText = nullptr;
             }
+
+            const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
+                ->getGlobalScheduleManager();
+
+            scheduler->remove( m_schedulerFPS );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -211,6 +243,13 @@ namespace Mengine
         m_renderVisitors.erase( it_erase );
     }
     //////////////////////////////////////////////////////////////////////////
+    void DebugRenderService::updateDebugInfo( const UpdateContext * _context )
+    {
+        (void)_context;
+
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
     void DebugRenderService::renderDebugInfo( const RenderContext * _context )
     {
         bool developmentMode = HAS_OPTION( "dev" );
@@ -227,27 +266,7 @@ namespace Mengine
 
             Stringstream ss;
 
-            static uint32_t fps = 0;
-
-            static float fpsTime = 0.f;
-            fpsTime += _context->time;
-            if( fpsTime >= 1000.f )
-            {
-                const RenderServiceDebugInfo & debugInfo = RENDER_SERVICE()
-                    ->getDebugInfo();
-
-                fps = debugInfo.frameCount;
-
-                RENDER_SERVICE()
-                    ->resetFrameCount();
-
-                while( fpsTime >= 1000.f )
-                {
-                    fpsTime -= 1000.f;
-                }
-            }
-
-            ss << "FPS: " << fps << std::endl;
+            ss << "FPS: " << m_fps << std::endl;
 
             if( m_showDebugText == 0 )
             {
@@ -283,9 +302,9 @@ namespace Mengine
 
                 ss << "Texture Count: " << textureCount << std::endl;
 
-                if( SERVICE_EXIST( Mengine::ParticleSystemInterface2 ) == true )
+                if( SERVICE_EXIST( Mengine::AstralaxSystemInterface ) == true )
                 {
-                    uint32_t particlesCount = PARTICLE_SYSTEM2()
+                    uint32_t particlesCount = ASTRALAX_SYSTEM()
                         ->getEmitterCount();
 
                     ss << "Particles: " << particlesCount << std::endl;
@@ -694,7 +713,7 @@ namespace Mengine
 
             m_debugText->setScale( mt::vec3f( scale, 1.f ) );
 
-            m_debugText->render( &context );
+            m_debugText->render( _context );
         }
     }
     //////////////////////////////////////////////////////////////////////////     

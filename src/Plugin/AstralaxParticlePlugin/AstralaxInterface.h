@@ -7,6 +7,7 @@
 #include "Interface/StreamInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ArchiveInterface.h"
+#include "Interface/RenderMaterialInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
@@ -14,6 +15,7 @@
 #include "Kernel/Magic.h"
 #include "Kernel/RenderVertex2D.h"
 #include "Kernel/RenderIndex.h"
+#include "Kernel/ResourceImage.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Factorable.h"
@@ -25,15 +27,13 @@
 #include "math/uv4.h"
 
 #ifndef MENGINE_PARTICLE_MAX_MESH
-#	define MENGINE_PARTICLE_MAX_MESH 1000
+#define MENGINE_PARTICLE_MAX_MESH 1000
 #endif
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
-    //////////////////////////////////////////////////////////////////////////
-    struct ParticleMesh
+    struct AstralaxMesh
     {
         uint32_t vertexOffset;
         uint32_t vertexCount;
@@ -46,7 +46,7 @@ namespace Mengine
         int material;
     };
     //////////////////////////////////////////////////////////////////////////
-    struct ParticleEmitterRenderFlush
+    struct AstralaxEmitterRenderFlush
     {
         uint32_t meshCount;
         uint32_t vertexCount;
@@ -56,7 +56,7 @@ namespace Mengine
         void * context;
     };
     //////////////////////////////////////////////////////////////////////////
-    struct ParticleCamera
+    struct AstralaxCamera
     {
         mt::vec3f pos;
         mt::vec3f dir;
@@ -71,20 +71,26 @@ namespace Mengine
         float height;
     };
     //////////////////////////////////////////////////////////////////////////
-    class ParticlePositionProviderInterface
+    class AstralaxPositionProviderInterface
+        : public Mixin
     {
     public:
         virtual void onProviderEmitterPosition( mt::vec3f & _position ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    class ParticleCameraProviderInterface
+    typedef IntrusivePtr<AstralaxPositionProviderInterface> AstralaxPositionProviderInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class AstralaxCameraProviderInterface
+        : public Mixin
     {
     public:
         virtual void onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    class ParticleEmitterInterface
-        : public ServantInterface
+    typedef IntrusivePtr<AstralaxCameraProviderInterface> AstralaxCameraProviderInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+    class AstralaxEmitterInterface
+        : public Mixin
     {
     public:
         virtual void play() = 0;
@@ -106,11 +112,11 @@ namespace Mengine
     public:
         virtual bool is3d() const = 0;
 
-        virtual bool getCamera( ParticleCamera & _camera ) const = 0;
+        virtual bool getCamera( AstralaxCamera & _camera ) const = 0;
 
     public:
-        virtual bool prepareParticles( ParticleEmitterRenderFlush & _flush ) = 0;
-        virtual bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, ParticleEmitterRenderFlush & _flush ) = 0;
+        virtual bool prepareParticles( AstralaxEmitterRenderFlush & _flush ) = 0;
+        virtual bool flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush & _flush ) = 0;
 
     public:
         virtual const mt::box2f & getBoundingBox() const = 0;
@@ -127,8 +133,8 @@ namespace Mengine
         virtual bool changeEmitterModel( float * _points, uint32_t _count ) = 0;
 
     public:
-        virtual bool setCameraProvider( ParticleCameraProviderInterface * _cameraProvider ) = 0;
-        virtual bool setPositionProvider( ParticlePositionProviderInterface * _positionProvider ) = 0;
+        virtual bool setCameraProvider( const AstralaxCameraProviderInterfacePtr & _cameraProvider ) = 0;
+        virtual bool setPositionProvider( const AstralaxPositionProviderInterfacePtr & _positionProvider ) = 0;
 
         virtual void setScale( float _scale ) = 0;
 
@@ -138,12 +144,12 @@ namespace Mengine
         virtual bool getRandomMode() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ParticleEmitterInterface> ParticleEmitterInterfacePtr;
+    typedef IntrusivePtr<AstralaxEmitterInterface> AstralaxEmitterInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     DECLARE_MAGIC_NUMBER( MAGIC_PTZ, 'P', 'T', 'Z', '2', 2 );
     //////////////////////////////////////////////////////////////////////////
-    class ParticleEmitterContainerInterface2
-        : public ServantInterface
+    class AstralaxEmitterContainerInterface
+        : public Mixin
     {
     public:
         virtual bool isValid() const = 0;
@@ -152,18 +158,16 @@ namespace Mengine
         virtual void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ParticleEmitterContainerInterface2> ParticleEmitterContainerInterface2Ptr;
+    typedef IntrusivePtr<AstralaxEmitterContainerInterface> AstralaxEmitterContainerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    struct RenderMaterialStage;
-    //////////////////////////////////////////////////////////////////////////
-    class ParticleSystemInterface2
+    class AstralaxSystemInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "ParticleSystem2" )
+        SERVICE_DECLARE( "AstralaxSystem" )
 
     public:
-        virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName ) = 0;
-        virtual ParticleEmitterInterfacePtr createEmitter( const ParticleEmitterContainerInterface2Ptr & _container ) = 0;
+        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName ) = 0;
+        virtual AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container ) = 0;
 
     public:
         virtual const RenderMaterialStage * getMaterialStage( int _index ) const = 0;
@@ -173,24 +177,24 @@ namespace Mengine
         virtual uint32_t getEmitterCount() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define PARTICLE_SYSTEM2()\
-	((ParticleSystemInterface2 *)SERVICE_GET(Mengine::ParticleSystemInterface2))
+#   define ASTRALAX_SYSTEM()\
+	((AstralaxSystemInterface *)SERVICE_GET(Mengine::AstralaxSystemInterface))
     //////////////////////////////////////////////////////////////////////////
-    class ParticleServiceInterface2
+    class AstralaxServiceInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "ParticleService2" )
+        SERVICE_DECLARE( "AstralaxService" )
 
     public:
         virtual bool isAvailable() const = 0;
 
     public:
-        virtual ParticleEmitterContainerInterface2Ptr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) = 0;
+        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) = 0;
 
     public:
         virtual uint32_t getMaxParticlesCount() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-#   define PARTICLE_SERVICE2()\
-	((ParticleServiceInterface2 *)SERVICE_GET(Mengine::ParticleServiceInterface2))
+#   define ASTRALAX_SERVICE()\
+	((AstralaxServiceInterface *)SERVICE_GET(Mengine::AstralaxServiceInterface))
 }

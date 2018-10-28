@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
+#include "Interface/ServiceInterface.h"
 
 #include "Interface/RenderEnumInterface.h"
 

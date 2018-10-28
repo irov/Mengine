@@ -17,7 +17,7 @@
 #include "Interface/CodecInterface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/ConverterInterface.h"
-#include "Interface/InputSystemInterface.h"
+#include "Interface/InputServiceInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/ConfigInterface.h"

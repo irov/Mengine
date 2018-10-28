@@ -258,6 +258,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class TTFFontTextureGlyphProvider
             : public TextureGlyphProviderInterface
+            , public Factorable
         {
         public:
             TTFFontTextureGlyphProvider( uint32_t _width, uint32_t _height, const void * _ttfbuffer, size_t _ttfpitch, uint32_t _ttfchannel )
@@ -266,6 +267,10 @@ namespace Mengine
                 , m_ttfbuffer( _ttfbuffer )
                 , m_ttfpitch( _ttfpitch )
                 , m_ttfchannel( _ttfchannel )
+            {
+            }
+
+            ~TTFFontTextureGlyphProvider() override
             {
             }
 

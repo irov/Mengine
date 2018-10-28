@@ -2,8 +2,9 @@
 
 #include "Config/Typedef.h"
 
-#include "Interface/ServantInterface.h"
 #include "Interface/ServiceInterface.h"
+
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
@@ -23,7 +24,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class LoggerInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool initialize() = 0;

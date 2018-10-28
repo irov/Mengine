@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/Mixin.h"
-#include "Kernel/IntrusivePtr.h"
 
 #include "math/mat4.h"
 

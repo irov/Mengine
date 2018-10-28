@@ -7,7 +7,7 @@
 #include "Interface/TimelineInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Interface/InputSystemInterface.h"
+#include "Interface/InputServiceInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/PrefetcherInterface.h"
@@ -23,9 +23,9 @@
 #include "Kernel/MT19937Randomizer.h"
 
 #include "Interface/ScriptSystemInterface.h"
-#include "Interface/ScheduleManagerInterface.h"
+#include "Interface/SchedulerInterface.h"
 
-#include "Interface/TextInterface.h"
+#include "Interface/TextServiceInterface.h"
 #include "Interface/AccountInterface.h"
 
 #include "Interface/UnicodeInterface.h"
@@ -116,7 +116,6 @@
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/ScriptablePrototypeGenerator.h"
 
-#include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
@@ -163,7 +162,7 @@ namespace Mengine
     public:
         EngineScriptMethod()
         {
-            m_factoryPythonScheduleTimer = new FactoryPool<PythonScheduleTiming, 8>();
+            m_factoryPythonScheduleTiming = new FactoryPool<PythonScheduleTiming, 8>();
             m_factoryPythonSchedulePipe = new FactoryPool<PythonSchedulePipe, 8>();
             m_factoryDelaySchedulePipe = new FactoryPool<DelaySchedulePipe, 8>();
             m_factoryPythonScheduleEvent = new FactoryPool<PythonScheduleEvent, 8>();
@@ -182,7 +181,7 @@ namespace Mengine
 
         ~EngineScriptMethod()
         {
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTimer );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTiming );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSchedulePipe );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipe );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
@@ -198,7 +197,7 @@ namespace Mengine
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyGlobalTextHandler );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPyInputMousePositionProvider );
 
-            m_factoryPythonScheduleTimer = nullptr;
+            m_factoryPythonScheduleTiming = nullptr;
             m_factoryPythonSchedulePipe = nullptr;
             m_factoryDelaySchedulePipe = nullptr;
             m_factoryPythonScheduleEvent = nullptr;
@@ -286,7 +285,7 @@ namespace Mengine
                 ->getInputMouseButtonEventBlock();
         }
         //////////////////////////////////////////////////////////////////////////
-        FactoryPtr m_factoryPythonScheduleTimer;
+        FactoryPtr m_factoryPythonScheduleTiming;
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPythonSchedulePipe;
         //////////////////////////////////////////////////////////////////////////
@@ -294,27 +293,31 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FactoryPtr m_factoryPythonScheduleEvent;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t timing( float _delay, const pybind::object & _listener, const pybind::args & _args )
+        uint32_t timing( float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
         {
-            const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
-            DelaySchedulePipePtr pipe = m_factoryDelaySchedulePipe->createObject();
+            DelaySchedulePipePtr py_pipe = m_factoryDelaySchedulePipe->createObject();
 
-            pipe->initialize( _delay );
+            py_pipe->initialize( _delay );
 
-            PythonScheduleTimerPtr listener = m_factoryPythonScheduleTimer->createObject();
+            PythonScheduleTimingPtr py_timing = m_factoryPythonScheduleTiming->createObject();
 
-            listener->initialize( _listener, _args );
+            py_timing->initialize( _timing, _args );
 
-            uint32_t id = tm->timing( pipe, listener );
+            PythonScheduleEventPtr py_event = m_factoryPythonScheduleEvent->createObject();
+
+            py_event->initialize( _event, _args );
+
+            uint32_t id = tm->timing( py_pipe, py_timing, py_event );
 
             return id;
         }
         //////////////////////////////////////////////////////////////////////////
         bool timingRemove( uint32_t _id )
         {
-            const ScheduleManagerInterfacePtr & tm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
             bool successful = tm->remove( _id );
@@ -322,15 +325,15 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        ScheduleManagerInterfacePtr createScheduler( const ConstString & _name )
+        SchedulerInterfacePtr createScheduler( const ConstString & _name )
         {
-            ScheduleManagerInterfacePtr sm = PLAYER_SERVICE()
+            SchedulerInterfacePtr sm = PLAYER_SERVICE()
                 ->createSchedulerManager( _name );
 
             return sm;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool destroyScheduler( const ScheduleManagerInterfacePtr & _sm )
+        bool destroyScheduler( const SchedulerInterfacePtr & _sm )
         {
             if( _sm == nullptr )
             {
@@ -348,7 +351,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
             PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject();
@@ -362,7 +365,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool scheduleRemove( uint32_t _id )
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
             if( sm == nullptr )
@@ -377,7 +380,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void scheduleRemoveAll()
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
             if( sm == nullptr )
@@ -390,7 +393,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_scheduleFreeze( uint32_t _id, bool _freeze )
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
             if( sm == nullptr )
@@ -405,7 +408,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_scheduleFreezeAll()
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
             if( sm == nullptr )
@@ -418,7 +421,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void scheduleResumeAll()
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
             if( sm == nullptr )
@@ -431,7 +434,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_scheduleIsFreeze( uint32_t _id )
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
             if( sm == nullptr )
@@ -444,7 +447,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         float s_scheduleTime( uint32_t _id )
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getScheduleManager();
 
             if( sm == nullptr )
@@ -459,7 +462,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::args & _args )
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduleManager();
 
             if( sm == nullptr )
@@ -478,7 +481,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_scheduleGlobalRemove( uint32_t _id )
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduleManager();
 
             if( sm == nullptr )
@@ -493,7 +496,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_scheduleGlobalRemoveAll()
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduleManager();
 
             if( sm == nullptr )
@@ -506,7 +509,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_scheduleGlobalFreeze( uint32_t _id, bool _freeze )
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduleManager();
 
             if( sm == nullptr )
@@ -521,7 +524,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_scheduleGlobalFreezeAll()
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduleManager();
 
             if( sm == nullptr )
@@ -534,7 +537,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_scheduleGlobalResumeAll()
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduleManager();
 
             if( sm == nullptr )
@@ -547,7 +550,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_scheduleGlobalIsFreeze( uint32_t _id )
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduleManager();
 
             if( sm == nullptr )
@@ -562,7 +565,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         float s_scheduleGlobalTime( uint32_t _id )
         {
-            const ScheduleManagerInterfacePtr & sm = PLAYER_SERVICE()
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduleManager();
 
             if( sm == nullptr )
@@ -1465,6 +1468,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class MyVisitorTextFont
             : public VisitorTextFontInterface
+            , public Factorable
         {
         public:
             MyVisitorTextFont( const pybind::object & _cb )
@@ -1489,16 +1493,19 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<MyVisitorTextFont> MyVisitorTextFontPtr;
+        //////////////////////////////////////////////////////////////////////////
         void s_visitFonts( const pybind::object & _cb )
         {
-            MyVisitorTextFont mvtf( _cb );
+            MyVisitorTextFontPtr mvtf = new FactorableUnique<MyVisitorTextFont>( _cb );
 
             TEXT_SERVICE()
-                ->visitFonts( &mvtf );
+                ->visitFonts( mvtf );
         }
         //////////////////////////////////////////////////////////////////////////
         class MyVisitorCollectTextFont
             : public VisitorTextFontInterface
+            , public Factorable
         {
         public:
             MyVisitorCollectTextFont( pybind::list & _l )
@@ -1523,13 +1530,16 @@ namespace Mengine
             }
         };
         //////////////////////////////////////////////////////////////////////////
+        typedef IntrusivePtr<MyVisitorCollectTextFont> MyVisitorCollectTextFontPtr;
+        //////////////////////////////////////////////////////////////////////////
+        //////////////////////////////////////////////////////////////////////////
         pybind::list s_getFonts( pybind::kernel_interface * _kernel )
         {
             pybind::list l( _kernel );
-            MyVisitorCollectTextFont mvtf( l );
+            MyVisitorCollectTextFontPtr mvtf = new FactorableUnique<MyVisitorCollectTextFont>( l );
 
             TEXT_SERVICE()
-                ->visitFonts( &mvtf );
+                ->visitFonts( mvtf );
 
             return l;
         }

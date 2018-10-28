@@ -93,7 +93,7 @@ namespace Mengine
         m_factoryPoolAstralaxEmitter = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    ParticleEmitterContainerInterface2Ptr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName )
+    AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem2::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName )
     {
         AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject();
 
@@ -146,7 +146,7 @@ namespace Mengine
         return new_container;
     }
     //////////////////////////////////////////////////////////////////////////
-    ParticleEmitterInterfacePtr AstralaxParticleSystem2::createEmitter( const ParticleEmitterContainerInterface2Ptr & _container )
+    AstralaxEmitterInterfacePtr AstralaxParticleSystem2::createEmitter( const AstralaxEmitterContainerInterfacePtr & _container )
     {
         AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject();
 

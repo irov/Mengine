@@ -4,15 +4,15 @@
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "Kernel/ServantBase.h"
-
+#include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 
 namespace Mengine
 {
     class DecoderRenderImageLoader
-        : public ServantBase<RenderImageLoaderInterface>
+        : public RenderImageLoaderInterface
+        , public Factorable
     {
     public:
         DecoderRenderImageLoader();

@@ -3,14 +3,15 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include <d3d9.h>
 
 namespace Mengine
 {
     class DX9RenderVertexShader
-        : public ServantBase<RenderVertexShaderInterface>
+        : public RenderVertexShaderInterface
+        , public Factorable
     {
     public:
         DX9RenderVertexShader();

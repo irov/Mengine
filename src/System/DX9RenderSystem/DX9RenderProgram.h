@@ -11,7 +11,8 @@
 namespace Mengine
 {
     class DX9RenderProgram
-        : public ServantBase<RenderProgramInterface>
+        : public RenderProgramInterface
+        , public Factorable
     {
     public:
         DX9RenderProgram();

@@ -6,8 +6,8 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 
-#include "ResourceParticle.h"
-#include "ParticleEmitter2.h"
+#include "ResourceAstralax.h"
+#include "AstralaxEmitter.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -25,7 +25,7 @@ namespace Mengine
     namespace Detail
     {
         ////////////////////////////////////////////////////////////////////////////        
-        PyObject * s_ParticleEmitter2_setEventListener( pybind::kernel_interface * _kernel, ParticleEmitter2 * _node, PyObject * _args, PyObject * _kwds )
+        static PyObject * s_ParticleEmitter2_setEventListener( pybind::kernel_interface * _kernel, AstralaxEmitter * _node, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
 
@@ -78,47 +78,47 @@ namespace Mengine
 
         pybind::set_kernel( kernel );
 
-        pybind::interface_<ParticleEmitter2, pybind::bases<Node, Eventable, Animatable> >( kernel, "ParticleEmitter2", false )
-            .def( "setResourceParticle", &ParticleEmitter2::setResourceParticle )
-            .def( "getResourceParticle", &ParticleEmitter2::getResourceParticle )
+        pybind::interface_<AstralaxEmitter, pybind::bases<Node, Eventable, Animatable> >( kernel, "ParticleEmitter2", false )
+            .def( "setResourceParticle", &AstralaxEmitter::setResourceParticle )
+            .def( "getResourceParticle", &AstralaxEmitter::getResourceParticle )
 
-            .def( "setEmitterTranslateWithParticle", &ParticleEmitter2::setEmitterTranslateWithParticle )
-            .def( "setEmitterPositionRelative", &ParticleEmitter2::setEmitterPositionRelative )
-            .def( "setEmitterCameraRelative", &ParticleEmitter2::setEmitterCameraRelative )
-            .def( "setEmitterPositionProviderOriginOffset", &ParticleEmitter2::setEmitterPositionProviderOriginOffset )
+            .def( "setEmitterTranslateWithParticle", &AstralaxEmitter::setEmitterTranslateWithParticle )
+            .def( "setEmitterPositionRelative", &AstralaxEmitter::setEmitterPositionRelative )
+            .def( "setEmitterCameraRelative", &AstralaxEmitter::setEmitterCameraRelative )
+            .def( "setEmitterPositionProviderOriginOffset", &AstralaxEmitter::setEmitterPositionProviderOriginOffset )
 
-            .def( "changeEmitterImage", &ParticleEmitter2::changeEmitterImage )
-            .def( "removeEmitterImage", &ParticleEmitter2::removeEmitterImage )
-            .def( "changeEmitterPolygon", &ParticleEmitter2::changeEmitterPolygon )
-            .def( "removeEmitterPolygon", &ParticleEmitter2::removeEmitterPolygon )
+            .def( "changeEmitterImage", &AstralaxEmitter::changeEmitterImage )
+            .def( "removeEmitterImage", &AstralaxEmitter::removeEmitterImage )
+            .def( "changeEmitterPolygon", &AstralaxEmitter::changeEmitterPolygon )
+            .def( "removeEmitterPolygon", &AstralaxEmitter::removeEmitterPolygon )
 
-            .def( "getDuration", &ParticleEmitter2::getDuration )
+            .def( "getDuration", &AstralaxEmitter::getDuration )
 
-            .def( "setEmitterRandomMode", &ParticleEmitter2::setEmitterRandomMode )
-            .def( "getEmitterRandomMode", &ParticleEmitter2::getEmitterRandomMode )
+            .def( "setEmitterRandomMode", &AstralaxEmitter::setEmitterRandomMode )
+            .def( "getEmitterRandomMode", &AstralaxEmitter::getEmitterRandomMode )
             .def_static_native_kernel( "setEventListener", &Detail::s_ParticleEmitter2_setEventListener )
             ;
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new PythonScriptWrapper<ParticleEmitter2>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new PythonScriptWrapper<AstralaxEmitter>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new FactorableUnique<NodePrototypeGenerator<ParticleEmitter2, 128> > ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new FactorableUnique<NodePrototypeGenerator<AstralaxEmitter, 128> > ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new PythonScriptWrapper<ResourceParticle>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new PythonScriptWrapper<ResourceAstralax>() ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceParticle, 128> > ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceAstralax, 128> > ) == false )
         {
             return false;
         }
@@ -142,7 +142,7 @@ namespace Mengine
 
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        kernel->remove_scope<ParticleEmitter2>();
+        kernel->remove_scope<AstralaxEmitter>();
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleModule2::_destroy()

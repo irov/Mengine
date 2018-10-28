@@ -28,7 +28,7 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerFactorable Factory::createObject()
+    FactorablePointer Factory::createObject()
     {
         STDEX_THREAD_GUARD_CHECK( this, "Factory::createObject" );
 

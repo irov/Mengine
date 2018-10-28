@@ -3,15 +3,14 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/StreamInterface.h"
 
-#include "Kernel/Factorable.h"
-
+#include "Kernel/Mixin.h"
 #include "Kernel/Pointer.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class MemoryInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual Pointer getBuffer() const = 0;

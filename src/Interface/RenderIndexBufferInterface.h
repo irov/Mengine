@@ -1,14 +1,14 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
-
 #include "Interface/MemoryInterface.h"
+
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class RenderIndexBufferInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual uint32_t getIndexCount() const = 0;

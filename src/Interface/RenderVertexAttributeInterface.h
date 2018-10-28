@@ -1,16 +1,15 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
-
 #include "Interface/RenderEnumInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class RenderVertexAttributeInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual const ConstString & getName() const = 0;

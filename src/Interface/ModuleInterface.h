@@ -1,10 +1,9 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
 #include "Interface/ServiceInterface.h"
 #include "Interface/UpdationInterface.h"
 
-#include "Kernel/Factorable.h"
+#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Params.h"
 
@@ -14,7 +13,7 @@ namespace Mengine
     struct RenderContext;
     //////////////////////////////////////////////////////////////////////////
     class ModuleInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool avaliable() = 0;
@@ -42,7 +41,7 @@ namespace Mengine
     typedef IntrusivePtr<ModuleInterface> ModuleInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class ModuleFactoryInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual ModuleInterfacePtr createModule( const ConstString & _name ) = 0;

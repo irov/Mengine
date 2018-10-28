@@ -12,7 +12,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<class T>
     class ModuleFactory
-        : public ServantBase<ModuleFactoryInterface>
+        : public ModuleFactoryInterface
+        , public Factorable
     {
     public:
         ModuleFactory()
@@ -23,7 +24,7 @@ namespace Mengine
     public:
         ModuleInterfacePtr createModule( const ConstString & _name ) override
         {
-            ModuleInterfacePtr module = m_factory->createObject();
+            IntrusivePtr<T> module = m_factory->createObject();
 
             module->setName( _name );
 

@@ -1,14 +1,12 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
-
 #include "Interface/SoundCodecInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class SoundBufferInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool update() = 0;

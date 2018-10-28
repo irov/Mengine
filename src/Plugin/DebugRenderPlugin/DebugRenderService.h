@@ -28,6 +28,7 @@ namespace Mengine
         void removeDebugNodeRenderVisitor( const RenderVisitorPtr & _renderVisitor ) override;
 
     public:
+        void updateDebugInfo( const UpdateContext * _context ) override;
         void renderDebugInfo( const RenderContext * _context ) override;
 
     protected:
@@ -39,7 +40,11 @@ namespace Mengine
 
         TextFieldPtr m_debugText;
 
+        uint32_t m_fps;
+
         uint32_t m_showDebugText;
         uint32_t m_globalKeyHandlerF9;
+
+        uint32_t m_schedulerFPS;
     };
 }

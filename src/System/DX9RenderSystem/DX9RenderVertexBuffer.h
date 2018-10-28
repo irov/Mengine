@@ -4,14 +4,15 @@
 
 #include "DX9RenderResourceHandler.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include <d3d9.h>
 
 namespace Mengine
 {
     class DX9RenderVertexBuffer
-        : public ServantBase<RenderVertexBufferInterface>
+        : public RenderVertexBufferInterface
+        , public Factorable
         , public DX9RenderResourceHandler
     {
     public:

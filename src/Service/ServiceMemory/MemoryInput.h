@@ -3,14 +3,15 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "stdex/thread_guard.h"
 
 namespace Mengine
 {
     class MemoryInput
-        : public ServantBase<MemoryInputInterface>
+        : public MemoryInputInterface
+        , public Factorable
     {
     public:
         MemoryInput();

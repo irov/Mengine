@@ -11,6 +11,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PythonEventReceiver
+        : public Mixin
     {
     public:
         void initialize( const pybind::object & _cb )

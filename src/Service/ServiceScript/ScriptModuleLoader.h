@@ -3,7 +3,7 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ArchiveInterface.h"
 
-#include "Kernel/Servant.h"
+#include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 
@@ -13,7 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ScriptModuleLoader
-        : public Servant
+        : public Factorable
     {
     public:
         ScriptModuleLoader();

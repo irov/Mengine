@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
-
 #include "Interface/SoundSourceInterface.h"
 
+#include "Kernel/Mixin.h"
 #include "Kernel/MixerValue.h"
 
 namespace Mengine
@@ -38,7 +37,7 @@ namespace Mengine
     typedef IntrusivePtr<class SoundListenerInterface> SoundListenerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class SoundIdentityInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual uint32_t getId() const = 0;

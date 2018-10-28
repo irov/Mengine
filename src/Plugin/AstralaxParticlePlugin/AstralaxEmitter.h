@@ -3,7 +3,7 @@
 #include "AstralaxInterface.h"
 #include "UnknownParticleEmitter2Interface.h"
 
-#include "ResourceParticle.h"
+#include "ResourceAstralax.h"
 
 #include "Kernel/Node.h"
 #include "Kernel/BaseEventation.h"
@@ -33,14 +33,14 @@ namespace Mengine
     public:
     };
     //////////////////////////////////////////////////////////////////////////
-    class ParticleEmitter2
+    class AstralaxEmitter
         : public Node
         , public BaseEventation
         , public BaseUpdation
         , public BaseRender
         , public BaseAnimation
-        , public ParticlePositionProviderInterface
-        , public ParticleCameraProviderInterface
+        , public AstralaxPositionProviderInterface
+        , public AstralaxCameraProviderInterface
         , public UnknownParticleEmitter2Interface
     {
         DECLARE_UNKNOWABLE();
@@ -50,8 +50,8 @@ namespace Mengine
         DECLARE_EVENTABLE( ParticleEmitter2EventReceiver );
 
     public:
-        ParticleEmitter2();
-        ~ParticleEmitter2() override;
+        AstralaxEmitter();
+        ~AstralaxEmitter() override;
 
     public:
         bool _play( uint32_t _enumerator, float _time ) override;
@@ -99,8 +99,8 @@ namespace Mengine
         void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
 
     private:
-        bool compileEmitterImage_( const ParticleEmitterInterfacePtr & _emitter );
-        bool compilePolygon_( const ParticleEmitterInterfacePtr & _emitter );
+        bool compileEmitterImage_( const AstralaxEmitterInterfacePtr & _emitter );
+        bool compilePolygon_( const AstralaxEmitterInterfacePtr & _emitter );
 
     protected:
         void updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount );
@@ -111,11 +111,11 @@ namespace Mengine
         void onProviderEmitterCamera( bool & _orthogonality, mt::vec3f & _position, mt::vec3f & _direction ) override;
 
     protected:
-        ResourceHolder<ResourceParticle> m_resourceParticle;
+        ResourceHolder<ResourceAstralax> m_resourceParticle;
 
         ConstString m_emitterImageName;
 
-        ParticleEmitterInterfacePtr m_emitter;
+        AstralaxEmitterInterfacePtr m_emitter;
 
         Polygon m_polygon;
 
@@ -135,6 +135,6 @@ namespace Mengine
         bool m_emitterTranslateWithParticle;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ParticleEmitter2> ParticleEmitter2Ptr;
+    typedef IntrusivePtr<AstralaxEmitter> ParticleEmitter2Ptr;
     //////////////////////////////////////////////////////////////////////////
 }

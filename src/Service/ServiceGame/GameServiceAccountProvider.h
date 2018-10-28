@@ -3,13 +3,14 @@
 #include "Interface/AccountInterface.h"
 
 #include "Kernel/Eventable.h"
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class GameServiceAccountProvider
-        : public ServantBase<AccountProviderInterface>
+        : public AccountProviderInterface
+        , public Factorable
     {
     public:
         GameServiceAccountProvider();

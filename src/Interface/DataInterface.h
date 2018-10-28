@@ -13,8 +13,9 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     class DataInterface
-        : public Factorable
+        : public Mixin
     {
     public:
         virtual Pointer allocateMemory( size_t _size ) const = 0;
@@ -27,13 +28,12 @@ namespace Mengine
 
             return this->allocateMemory( total_size );
         }
-
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataInterface> DataInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     class DataflowInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool initialize() = 0;
@@ -43,11 +43,11 @@ namespace Mengine
         virtual DataInterfacePtr create() = 0;
         virtual bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) = 0;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataflowInterface> DataflowInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     class DataflowFactoryInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool initialize() = 0;
@@ -55,9 +55,9 @@ namespace Mengine
     public:
         virtual DataflowInterfacePtr createDataflow() = 0;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataflowFactoryInterface> DataflowFactoryInterfacePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     class DataServiceInterface
         : public ServiceInterface
     {
@@ -96,8 +96,9 @@ namespace Mengine
             return t;
         }
     };
-
+}
+//////////////////////////////////////////////////////////////////////////
 #define DATA_SERVICE()\
     ((Mengine::DataServiceInterface*)SERVICE_GET(Mengine::DataServiceInterface))
-}
+//////////////////////////////////////////////////////////////////////////
 

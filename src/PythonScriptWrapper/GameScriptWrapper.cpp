@@ -17,6 +17,7 @@ namespace Mengine
         class PythonGameEventReceiver
             : public GameEventReceiver
             , public PythonEventReceiver
+            , public Factorable
         {
         protected:
             void onGameFullscreen( bool _fullscreen ) override

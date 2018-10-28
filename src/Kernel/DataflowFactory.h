@@ -2,7 +2,7 @@
 
 #include "Interface/DataInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 #include "Kernel/FactoryDefault.h"
 
 #include "Kernel/Logger.h"
@@ -11,7 +11,8 @@ namespace Mengine
 {
     template<class T>
     class DataflowFactory
-        : public ServantBase<DataflowFactoryInterface>
+        : public DataflowFactoryInterface
+        , public Factorable
     {
     protected:
         bool initialize() override

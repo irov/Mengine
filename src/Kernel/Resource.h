@@ -2,7 +2,6 @@
 
 #include "Kernel/Loadable.h"
 
-#include "Kernel/Servant.h"
 #include "Kernel/Compilable.h"
 #include "Kernel/Identity.h"
 #include "Kernel/Reference.h"
@@ -22,7 +21,7 @@ namespace Mengine
     typedef IntrusivePtr<class FileGroupInterface> FileGroupInterfacePtr;
 
     class Resource
-        : public Servant
+        : public Factorable
         , public Compilable
         , public Identity
         , public Reference

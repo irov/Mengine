@@ -3,7 +3,7 @@
 #include "Interface/CodecInterface.h"
 #include "Interface/StringizeInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "Kernel/FactoryPool.h"
 
@@ -11,7 +11,8 @@ namespace Mengine
 {
     template<class T>
     class EncoderFactory
-        : public ServantBase<EncoderFactoryInterface>
+        : public EncoderFactoryInterface
+        , public Factorable
     {
     protected:
         bool initialize() override
@@ -24,7 +25,7 @@ namespace Mengine
     protected:
         EncoderInterfacePtr createEncoder() override
         {
-            EncoderInterfacePtr encoder = m_factory->createObject();
+            IntrusivePtr<T> encoder = m_factory->createObject();
 
             return encoder;
         }

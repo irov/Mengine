@@ -8,7 +8,7 @@ namespace Mengine
     class Scriptable;
     //////////////////////////////////////////////////////////////////////////
     class ScriptWrapperInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool initialize() = 0;

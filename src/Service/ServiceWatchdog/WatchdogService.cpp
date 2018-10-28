@@ -16,28 +16,28 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    float WatchdogService::watch( const String & _tag )
+    double WatchdogService::watch( const String & _tag )
     {
 		uint64_t ms = TIMER_SYSTEM()
 			->getMilliseconds();
-
-        float sec = (float)(ms) * 0.0001f;
 
         MapWatchers::iterator it_found = m_watchers.find( _tag );
 
         if( it_found == m_watchers.end() )
         {
-            m_watchers[_tag] = sec;
+            m_watchers[_tag] = ms;
 
-            return 0.f;
+            return 0.0;
         }
 
-        float old_time = it_found->second;
+        uint64_t old_time = it_found->second;
 
-        float time = sec - old_time;
+        uint64_t time = ms - old_time;
 
-        it_found->second = sec;
+        it_found->second = ms;
 
-        return time;
+        double sec = (double)(time) * 0.001;
+
+        return sec;
     }
 }

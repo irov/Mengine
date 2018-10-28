@@ -31,6 +31,7 @@ namespace Mengine
         class PythonEntityEventReceiver
             : public PythonEventReceiver
             , public EntityEventReceiver
+            , public Factorable
         {
         public:
             void onEntityPreparation( const EntityBehaviorInterfacePtr & _behavior ) override
@@ -180,7 +181,7 @@ namespace Mengine
         return m_type;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerFactorable EntityPrototypeGenerator::generate()
+    FactorablePointer EntityPrototypeGenerator::generate()
     {
         const pybind::object & py_type = this->preparePythonType();
 

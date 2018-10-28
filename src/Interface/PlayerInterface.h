@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ScheduleManagerInterface.h"
+#include "Interface/SchedulerInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/GlobalHandleSystemInterface.h"
 #include "Interface/NodeInterface.h"
@@ -77,8 +77,8 @@ namespace Mengine
         virtual void calcGlobalMouseWorldDelta( const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) = 0;
 
     public:
-        virtual ScheduleManagerInterfacePtr createSchedulerManager( const ConstString & _name ) = 0;
-        virtual bool destroySchedulerManager( const ScheduleManagerInterfacePtr & _scheduler ) = 0;
+        virtual SchedulerInterfacePtr createSchedulerManager( const ConstString & _name ) = 0;
+        virtual bool destroySchedulerManager( const SchedulerInterfacePtr & _scheduler ) = 0;
 
     public:
         virtual void setRenderCamera( const RenderCameraInterfacePtr & _camera ) = 0;
@@ -96,8 +96,8 @@ namespace Mengine
         virtual const GlobalHandleSystemInterfacePtr & getGlobalHandleSystem() const = 0;
 
     public:
-        virtual const ScheduleManagerInterfacePtr & getScheduleManager() const = 0;
-        virtual const ScheduleManagerInterfacePtr & getGlobalScheduleManager() const = 0;
+        virtual const SchedulerInterfacePtr & getScheduleManager() const = 0;
+        virtual const SchedulerInterfacePtr & getGlobalScheduleManager() const = 0;
 
     public:
         virtual const AffectorablePtr & getAffectorable() const = 0;

@@ -1,17 +1,13 @@
 #pragma once
 
-#include "Interface/ServantInterface.h"
-
-#include "Kernel/Factorable.h"
-#include "Kernel/Factorable.h"
-
+#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ThreadTaskInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool isRun() const = 0;
@@ -32,7 +28,7 @@ namespace Mengine
     typedef IntrusivePtr<ThreadTaskInterface> ThreadTaskInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class ThreadQueueInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual void addTask( const ThreadTaskInterfacePtr & _task ) = 0;
@@ -44,7 +40,7 @@ namespace Mengine
     typedef IntrusivePtr<ThreadQueueInterface> ThreadQueueInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class ThreadIdentityInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual bool processTask( ThreadTaskInterface * _task ) = 0;
@@ -57,7 +53,7 @@ namespace Mengine
     typedef IntrusivePtr<ThreadIdentityInterface> ThreadIdentityInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class ThreadMutexInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual void lock() = 0;

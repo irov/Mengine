@@ -2,7 +2,7 @@
 
 #include "AstralaxInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #ifndef MENGINE_UNSUPPORT_PRAGMA_WARNING
 #	pragma warning(push, 0) 
@@ -19,14 +19,15 @@ namespace Mengine
     class AstralaxParticleSystem2;
 
     class AstralaxEmitter2
-        : public ServantBase<ParticleEmitterInterface>
+        : public AstralaxEmitterInterface
+        , public Factorable
     {
     public:
         AstralaxEmitter2();
         ~AstralaxEmitter2() override;
 
     public:
-        bool initialize( AstralaxParticleSystem2 * _particleSystem, const ParticleEmitterContainerInterface2Ptr & _container );
+        bool initialize( AstralaxParticleSystem2 * _particleSystem, const AstralaxEmitterContainerInterfacePtr & _container );
         void finalize();
 
     public:
@@ -53,11 +54,11 @@ namespace Mengine
     public:
         bool is3d() const override;
 
-        bool getCamera( ParticleCamera & _camera ) const override;
+        bool getCamera( AstralaxCamera & _camera ) const override;
 
     public:
-        bool prepareParticles( ParticleEmitterRenderFlush & _flush ) override;
-        bool flushParticles( ParticleMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, ParticleEmitterRenderFlush & _flush ) override;
+        bool prepareParticles( AstralaxEmitterRenderFlush & _flush ) override;
+        bool flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush & _flush ) override;
 
     public:
         //void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
@@ -70,8 +71,8 @@ namespace Mengine
         bool changeEmitterModel( float * _points, uint32_t _count ) override;
 
     public:
-        bool setPositionProvider( ParticlePositionProviderInterface * _positionProvider ) override;
-        bool setCameraProvider( ParticleCameraProviderInterface * _cameraProvider ) override;
+        bool setPositionProvider( const AstralaxPositionProviderInterfacePtr & _positionProvider ) override;
+        bool setCameraProvider( const AstralaxCameraProviderInterfacePtr & _cameraProvider ) override;
 
         void setScale( float _scale ) override;
 
@@ -91,12 +92,12 @@ namespace Mengine
     protected:
         AstralaxParticleSystem2 * m_particleSystem;
 
-        ParticleEmitterContainerInterface2Ptr m_container;
+        AstralaxEmitterContainerInterfacePtr m_container;
 
         HM_EMITTER m_emitterId;
 
-        ParticlePositionProviderInterface * m_positionProvider;
-        ParticleCameraProviderInterface * m_cameraProvider;
+        AstralaxPositionProviderInterfacePtr m_positionProvider;
+        AstralaxCameraProviderInterfacePtr m_cameraProvider;
 
         float m_updateSpeed;
         double m_leftBorder;

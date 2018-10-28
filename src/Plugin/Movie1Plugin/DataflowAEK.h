@@ -6,14 +6,15 @@
 
 #include "MovieFramePack.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "Kernel/Factory.h"
 
 namespace Mengine
 {
     class DataflowAEK
-        : public ServantBase<DataflowInterface>
+        : public DataflowInterface
+        , public Factorable
     {
     public:
         DataflowAEK();

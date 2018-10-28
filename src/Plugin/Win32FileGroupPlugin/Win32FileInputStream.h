@@ -2,7 +2,7 @@
 
 #include "Interface/FileInputStreamInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "Environment/WIN32/WindowsIncluder.h"
 
@@ -15,7 +15,8 @@
 namespace Mengine
 {
     class Win32FileInputStream
-        : public ServantBase<FileInputStreamInterface>
+        : public FileInputStreamInterface
+        , public Factorable
     {
     public:
         Win32FileInputStream();

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/TextInterface.h"
+#include "Interface/TextServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -61,7 +61,7 @@ namespace Mengine
         bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString & _arguments ) const override;
 
     public:
-        void visitFonts( VisitorTextFontInterface * _vistitor ) override;
+        void visitFonts( const VisitorTextFontInterfacePtr & _vistitor ) override;
 
     public:
         bool validate() const override;

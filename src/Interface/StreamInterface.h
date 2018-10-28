@@ -2,7 +2,7 @@
 
 #include "Config/Typedef.h"
 
-#include "Interface/ServantInterface.h"
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
@@ -11,7 +11,7 @@ namespace Mengine
     static const size_t UNKNOWN_SIZE = (size_t)-1;
     //////////////////////////////////////////////////////////////////////////
     class InputStreamInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual size_t read( void * _buffer, size_t _size ) = 0;
@@ -31,7 +31,7 @@ namespace Mengine
     typedef IntrusivePtr<InputStreamInterface> InputStreamInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class OutputStreamInterface
-        : public ServantInterface
+        : public Mixin
     {
     public:
         virtual size_t write( const void * _data, size_t _size ) = 0;

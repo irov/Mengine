@@ -4,14 +4,15 @@
 
 #include "Environment/WIN32/WindowsIncluder.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "Config/Atomic.h"
 
 namespace Mengine
 {
     class Win32ThreadIdentity
-        : public ServantBase<ThreadIdentityInterface>
+        : public ThreadIdentityInterface
+        , public Factorable
     {
     public:
         Win32ThreadIdentity();

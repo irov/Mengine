@@ -5,5 +5,5 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef PointerT<IntrusivePtr<class Factorable> > PointerFactorable;
+    typedef PointerT<IntrusivePtr<class Factorable> > FactorablePointer;
 }

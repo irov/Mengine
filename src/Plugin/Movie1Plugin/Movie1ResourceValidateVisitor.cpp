@@ -7,7 +7,7 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ConfigInterface.h"
 #include "Interface/CodecInterface.h"
-#include "Interface/TextInterface.h"
+#include "Interface/TextServiceInterface.h"
 
 #include "Movie1Interface.h"
 

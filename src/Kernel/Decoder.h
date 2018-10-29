@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/StreamInterface.h"
+#include "Interface/InputStreamInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Logger.h"

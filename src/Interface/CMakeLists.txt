@@ -27,8 +27,8 @@ src
     TextFontInterface.h
 	TextEntryInterface.h
     TextServiceInterface.h
-	StreamInterface.h
-	StreamInterface.h
+	InputStreamInterface.h
+	OutputStreamInterface.h
 	LoggerInterface.h
 	LoggerServiceInterface.h
 	ApplicationInterface.h

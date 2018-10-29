@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/PrefetcherInterface.h"
-#include "Interface/StreamInterface.h"
+#include "Interface/InputStreamInterface.h"
 
 #include "Kernel/ThreadTask.h"
 

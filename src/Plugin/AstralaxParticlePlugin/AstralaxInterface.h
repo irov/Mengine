@@ -4,7 +4,7 @@
 #include "Config/String.h"
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/StreamInterface.h"
+#include "Interface/InputStreamInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/RenderMaterialInterface.h"

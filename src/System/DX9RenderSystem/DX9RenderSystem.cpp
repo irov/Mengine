@@ -165,17 +165,17 @@ namespace Mengine
         LOGGER_WARNING( "Description: %s", AdID.Description );
         LOGGER_WARNING( "DeviceName: %s", AdID.DeviceName );
 
-        LOGGER_WARNING( "Version: %d.%d.%d.%d"
+        LOGGER_WARNING( "Version: %u.%u.%u.%u"
             , HIWORD( AdID.DriverVersion.HighPart )
             , LOWORD( AdID.DriverVersion.HighPart )
             , HIWORD( AdID.DriverVersion.LowPart )
             , LOWORD( AdID.DriverVersion.LowPart )
         );
 
-        LOGGER_WARNING( "VendorId: %d", AdID.VendorId );
-        LOGGER_WARNING( "DeviceId: %d", AdID.DeviceId );
-        LOGGER_WARNING( "SubSysId: %d", AdID.SubSysId );
-        LOGGER_WARNING( "Revision: %d", AdID.Revision );
+        LOGGER_WARNING( "VendorId: %u", AdID.VendorId );
+        LOGGER_WARNING( "DeviceId: %u", AdID.DeviceId );
+        LOGGER_WARNING( "SubSysId: %u", AdID.SubSysId );
+        LOGGER_WARNING( "Revision: %u", AdID.Revision );
 
         D3DCAPS9 caps;
         IF_DXCALL( m_pD3D, GetDeviceCaps, (m_adapterToUse, m_deviceType, &caps) )

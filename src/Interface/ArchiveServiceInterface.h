@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
+#include "Interface/InputStreamInterface.h"
 #include "Interface/ArchiveInterface.h"
-#include "Interface/StreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/ConstString.h"

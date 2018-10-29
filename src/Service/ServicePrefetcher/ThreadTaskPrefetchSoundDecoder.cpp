@@ -15,9 +15,18 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadTaskPrefetchSoundDecoder::setSoundCodec( const ConstString & _codec )
+    ThreadTaskPrefetchSoundDecoder::~ThreadTaskPrefetchSoundDecoder()
     {
-        m_codec = _codec;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadTaskPrefetchSoundDecoder::setSoundCodec( const ConstString & _soundCodec )
+    {
+        m_soundCodec = _soundCodec;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ThreadTaskPrefetchSoundDecoder::getSoundCodec() const
+    {
+        return m_soundCodec;
     }
     //////////////////////////////////////////////////////////////////////////
     const SoundDecoderInterfacePtr & ThreadTaskPrefetchSoundDecoder::getDecoder() const
@@ -44,12 +53,12 @@ namespace Mengine
         }
 
         m_soundDecoder = CODEC_SERVICE()
-            ->createDecoderT<SoundDecoderInterfacePtr>( m_codec );
+            ->createDecoderT<SoundDecoderInterfacePtr>( m_soundCodec );
 
         if( m_soundDecoder == nullptr )
         {
             LOGGER_ERROR( "ThreadTaskPrefetchSoundDecoder::_onRun: invalide create codec %s"
-                , m_codec.c_str()
+                , m_soundCodec.c_str()
             );
 
             return false;

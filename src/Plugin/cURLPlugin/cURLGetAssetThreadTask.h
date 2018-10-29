@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Interface/StreamInterface.h"
-#include "Interface/FileGroupInterface.h"
-
 #include "cURLThreadTask.h"
+
+#include "Interface/OutputStreamInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 namespace Mengine
 {

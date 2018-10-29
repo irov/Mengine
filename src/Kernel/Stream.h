@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Interface/StreamInterface.h"
+#include "Interface/InputStreamInterface.h"
+#include "Interface/OutputStreamInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/MemoryInterface.h"
 

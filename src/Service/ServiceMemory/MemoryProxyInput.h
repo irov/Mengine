@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/StreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Factorable.h"

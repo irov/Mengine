@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Interface/StreamInterface.h"
-#include "Interface/SoundCodecInterface.h"
-
 #include "ThreadTaskPrefetch.h"
+
+#include "Interface/SoundCodecInterface.h"
 
 namespace Mengine
 {
@@ -12,9 +11,11 @@ namespace Mengine
     {
     public:
         ThreadTaskPrefetchSoundDecoder();
+        ~ThreadTaskPrefetchSoundDecoder() override;
 
     public:
-        void setSoundCodec( const ConstString & _codec );
+        void setSoundCodec( const ConstString & _soundCodec );
+        const ConstString & getSoundCodec() const;
 
     public:
         const SoundDecoderInterfacePtr & getDecoder() const;
@@ -24,11 +25,12 @@ namespace Mengine
         bool _onMain() override;
 
     protected:
-        ConstString m_codec;
+        ConstString m_soundCodec;
 
     protected:
         SoundDecoderInterfacePtr m_soundDecoder;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadTaskPrefetchSoundDecoder> ThreadTaskPrefetchSoundDecoderPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

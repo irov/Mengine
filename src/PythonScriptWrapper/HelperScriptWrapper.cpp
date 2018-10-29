@@ -1061,17 +1061,17 @@ namespace Mengine
             return str.str();
         }
 
-        class MyAccountVisitorInterface
+        class MyAccountVisitor
             : public AccountVisitorInterface
 			, public Factorable
         {
         public:
-            MyAccountVisitorInterface( VectorConstString & _accounts )
+            MyAccountVisitor( VectorConstString * _accounts )
                 : m_accounts( _accounts )
             {
             }
 
-			~MyAccountVisitorInterface() override
+			~MyAccountVisitor() override
 			{
 			}
 
@@ -1080,14 +1080,14 @@ namespace Mengine
             {
                 const ConstString & name = _account->getID();
 
-                m_accounts.emplace_back( name );
+                m_accounts->emplace_back( name );
             }
 
         protected:
-            VectorConstString & m_accounts;
+            VectorConstString * m_accounts;
 
         private:
-            void operator = ( const MyAccountVisitorInterface & )
+            void operator = ( const MyAccountVisitor & )
             {
                 //Empty
             }
@@ -1097,7 +1097,7 @@ namespace Mengine
         {
             VectorConstString v_accounts;
 			
-			AccountVisitorInterfacePtr mav = new FactorableUnique<MyAccountVisitorInterface>(v_accounts);
+			AccountVisitorInterfacePtr mav = new FactorableUnique<MyAccountVisitor>(&v_accounts);
 
             ACCOUNT_SERVICE()
                 ->visitAccounts( mav );

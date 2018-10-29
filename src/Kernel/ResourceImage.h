@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/StreamInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
 #include "Kernel/Resource.h"

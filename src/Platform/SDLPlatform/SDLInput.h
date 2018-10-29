@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/InputSystemInterface.h"
+#include "Interface/InputServiceInterface.h"
 
-#include "Kernel/Servant.h"
+#include "Kernel/Factorable.h"
 
 #include "math/vec2.h"
 #include "stdex/stl_map.h"
@@ -13,11 +13,11 @@
 namespace Mengine
 {
     class SDLInput
-        : public Servant
+        : public Factorable
     {
     public:
         SDLInput();
-        ~SDLInput();
+        ~SDLInput() override;
 
     public:
         bool initialize();

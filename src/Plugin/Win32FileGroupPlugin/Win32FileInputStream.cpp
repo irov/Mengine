@@ -1,6 +1,6 @@
 #include "Win32FileInputStream.h"
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Win32FileHelper.h"

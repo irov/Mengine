@@ -1,8 +1,8 @@
 #include "PythonWrapper.h"
 
 #include "Interface/ScriptSystemInterface.h"
-#include "Interface/GameInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/GameServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 
 #include "Environment/Python/PythonEventReceiver.h"

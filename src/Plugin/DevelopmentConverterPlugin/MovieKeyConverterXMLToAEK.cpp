@@ -1,10 +1,11 @@
 #include "MovieKeyConverterXMLToAEK.h"
 
-#include "Interface/LoaderInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/MovieKeyFrameInterface.h"
 #include "Interface/FileSystemInterface.h"
+#include "Interface/DataServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 

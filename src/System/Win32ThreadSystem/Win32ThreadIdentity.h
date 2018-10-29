@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ThreadInterface.h"
+#include "Interface/ThreadIdentityInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
 #include "Environment/WIN32/WindowsIncluder.h"

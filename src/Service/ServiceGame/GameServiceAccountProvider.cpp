@@ -1,6 +1,6 @@
 #include "GameServiceAccountProvider.h"
 
-#include "Interface/GameInterface.h"
+#include "Interface/GameServiceInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine

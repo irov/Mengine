@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/TextInterface.h"
+#include "Interface/TextEntryInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/ColourValue.h"
@@ -11,9 +11,11 @@ namespace Mengine
 {
     class TextEntry
         : public TextEntryInterface
+		, public Factorable
     {
     public:
-        TextEntry();
+		TextEntry();
+		~TextEntry() override;
 
     public:
         void initialize( const ConstString & _key

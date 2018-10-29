@@ -5,9 +5,9 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/ConfigInterface.h"
-#include "Interface/DataInterface.h"
-#include "Interface/CodecInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/DataServiceInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 #include "Environment/Python/PythonScriptWrapper.h"

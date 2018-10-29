@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ThreadInterface.h"
+#include "Interface/ThreadQueueInterface.h"
 
 #include "Kernel/ThreadJob.h"
 #include "Kernel/ConstString.h"
@@ -23,7 +23,7 @@ namespace Mengine
         virtual ThreadJobPtr createJob( uint32_t _sleep ) = 0;
 
     public:
-        virtual bool createThread( const ConstString & _threadName, int _priority, const char * _file, uint32_t _line ) = 0;
+        virtual bool createThread( const ConstString & _threadName, int _priority, const Char * _doc, uint32_t _line ) = 0;
         virtual bool destroyThread( const ConstString & _threadName ) = 0;
 
     public:
@@ -41,7 +41,7 @@ namespace Mengine
         virtual void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) = 0;
 
     public:
-        virtual ThreadMutexInterfacePtr createMutex( const char * _file, uint32_t _line ) = 0;
+        virtual ThreadMutexInterfacePtr createMutex( const Char * _doc, uint32_t _line ) = 0;
 
     public:
         virtual void sleep( uint32_t _ms ) = 0;

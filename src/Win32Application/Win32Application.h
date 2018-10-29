@@ -5,7 +5,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/LoggerInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/ThreadSystemInterface.h"
@@ -20,8 +20,9 @@
 #include "Interface/InputServiceInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/PrefetcherInterface.h"
-#include "Interface/ConfigInterface.h"
-#include "Interface/TimerInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/TimeServiceInterface.h"
+#include "Interface/TimeSystemInterface.h"
 
 #include "Config/Map.h"
 

@@ -4,13 +4,14 @@
 
 #include "OpenGLRenderExtension.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderVertexAttribute
-        : public ServantBase<RenderVertexAttributeInterface>
+        : public RenderVertexAttributeInterface
+		, public Factorable
     {
     public:
         OpenGLRenderVertexAttribute();

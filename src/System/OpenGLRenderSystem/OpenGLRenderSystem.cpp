@@ -1365,7 +1365,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderProgramVariableDestroy_( OpenGLRenderProgramVariable * _variable )
     {
-        TVectorCacheRenderPrograms::iterator it_found = std::find( m_cacheRenderProgramVariables.begin(), m_cacheRenderProgramVariables.end(), _variable );
+		TVectorCacheRenderProgramVariables::iterator it_found = std::find( m_cacheRenderProgramVariables.begin(), m_cacheRenderProgramVariables.end(), _variable );
 
         if( it_found == m_cacheRenderProgramVariables.end() )
         {
@@ -1378,6 +1378,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::updatePMWMatrix_()
     {
-        m_totalWVPMatrix = m_worldMatrix * m_modelViewMatrix * m_projectionMatrix;
+        m_totalWVPMatrix = m_worldMatrix * m_viewMatrix * m_projectionMatrix;
     }
 }

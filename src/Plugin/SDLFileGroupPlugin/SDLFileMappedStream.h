@@ -1,11 +1,14 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/FileMappedStreamInterface.h"
+#include "Interface/FileMappedStreamInterface.h"
+
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class SDLFileMappedStream
         : public FileMappedStreamInterface
+		, public Factorable
     {
     public:
         SDLFileMappedStream();

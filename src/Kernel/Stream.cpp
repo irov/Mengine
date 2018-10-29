@@ -1,6 +1,7 @@
 #include "Stream.h"
 
 #include "Interface/ArchiveServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/CRC32.h"

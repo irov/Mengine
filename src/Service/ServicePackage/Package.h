@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/PackageInterface.h"
+#include "Interface/FileGroupInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 
 #include "Kernel/Factorable.h"
@@ -14,7 +15,8 @@ namespace Mengine
         , public Factorable
     {
     public:
-        Package();
+		Package();
+		~Package() override;
 
     public:
         void setup( const ConstString & _name
@@ -28,6 +30,7 @@ namespace Mengine
         );
 
     public:
+		void setName( const ConstString & _name ) override;
         const ConstString & getName() const override;
 
     public:
@@ -146,4 +149,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Package> PackagePtr;
+	//////////////////////////////////////////////////////////////////////////
 }

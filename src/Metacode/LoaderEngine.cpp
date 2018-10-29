@@ -1,11 +1,10 @@
 #include "LoaderEngine.h"
 
 #include "Interface/FileSystemInterface.h"
-#include "Interface/CodecInterface.h"
+#include "Interface/CodecServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
-#include "Interface/XmlCodecInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/FilePath.h"
@@ -15,6 +14,10 @@
 #include "Metacode.h"
 
 #include "Kernel/Logger.h"
+
+#ifndef MENGINE_MASTER_RELEASE
+#include "Plugin/XmlCodecPlugin/XmlCodecInterface.h"
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( LoaderService, Mengine::LoaderEngine );

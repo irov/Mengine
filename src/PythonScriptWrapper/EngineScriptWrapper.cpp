@@ -4,16 +4,18 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/TimelineInterface.h"
+#include "Interface/TimelineServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/NodeInterface.h"
-#include "Interface/MemoryInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/PackageInterface.h"
+#include "Interface/PackageServiceInterface.h"
 #include "Interface/RandomizerInterface.h"
+#include "Interface/PluginInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 
@@ -28,7 +30,7 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/AccountInterface.h"
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 #include "Interface/ResourceServiceInterface.h"
 
@@ -1570,7 +1572,8 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PyPrefetcherObserver
-            : public FactorableUnique<PrefetcherObserverInterface>
+            : public PrefetcherObserverInterface
+			, public Factorable
         {
         public:
             PyPrefetcherObserver( const pybind::object & _cb, const pybind::args & _args )
@@ -1580,6 +1583,10 @@ namespace Mengine
                 , m_successful( true )
             {
             }
+
+			~PyPrefetcherObserver() override
+			{
+			}
 
         protected:
             void onPrefetchPreparation() override
@@ -1706,7 +1713,7 @@ namespace Mengine
                 return false;
             }
 
-            PrefetchResourceVisitorPtr rv_gac = new FactorableUnique<PrefetchResourceVisitor>( fileGroup, new PyPrefetcherObserver( _cb, _args ) );
+            PrefetchResourceVisitorPtr rv_gac = new FactorableUnique<PrefetchResourceVisitor>( fileGroup, new FactorableUnique<PyPrefetcherObserver>( _cb, _args ) );
 
             RESOURCE_SERVICE()
                 ->visitGroupResources( fileGroup, _groupName, rv_gac );

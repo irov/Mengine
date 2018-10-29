@@ -5,6 +5,8 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/FileSystemInterface.h"
+#include "Interface/CodecServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 

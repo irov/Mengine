@@ -1,7 +1,7 @@
 #include "ThreadTaskPrefetchImageDecoder.h"
 
-#include "Interface/CodecInterface.h"
-#include "Interface/MemoryInterface.h"
+#include "Interface/CodecServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "Kernel/FactorableUnique.h"

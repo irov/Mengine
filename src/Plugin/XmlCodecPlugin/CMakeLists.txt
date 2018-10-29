@@ -7,6 +7,7 @@ src
 	XmlToBinDecoder.h
 	XmlToBinDecoder.cpp
     XmlCodecPlugin.def
+	XmlCodecInterface.h
 )
 
 add_definitions(-DMENGINE_PLUGIN_DLL)

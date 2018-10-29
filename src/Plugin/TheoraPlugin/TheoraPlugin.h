@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/CodecInterface.h"
+#include "Interface/DecoderFactoryInterface.h"
 
 #include "Kernel/PluginBase.h"
 

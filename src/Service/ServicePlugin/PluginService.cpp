@@ -1,6 +1,6 @@
 #include "PluginService.h"
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 #include "Kernel/Logger.h"
 

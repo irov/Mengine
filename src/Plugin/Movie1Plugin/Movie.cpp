@@ -3,7 +3,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/TimelineInterface.h"
+#include "Interface/TimelineServiceInterface.h"
 #include "Interface/NodeInterface.h"
 
 #include "Plugin/AstralaxParticlePlugin/UnknownParticleEmitterInterface.h"

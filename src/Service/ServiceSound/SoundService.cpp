@@ -3,10 +3,10 @@
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/CodecInterface.h"
+#include "Interface/CodecServiceInterface.h"
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"

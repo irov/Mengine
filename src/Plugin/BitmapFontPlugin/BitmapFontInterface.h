@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Interface/TextInterface.h"
+#include "Interface/ServiceInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "BitmapGlyph.h"
 
@@ -15,6 +16,7 @@ namespace Mengine
         virtual BitmapGlyphPtr getGlyph( const FileGroupInterfacePtr & _category, const FilePath & _path ) = 0;
     };
 }
-
+//////////////////////////////////////////////////////////////////////////
 #define BITMAPGLYPH_SERVICE()\
     ((Mengine::BitmapGlyphServiceInterface *)SERVICE_GET(Mengine::BitmapGlyphServiceInterface))
+//////////////////////////////////////////////////////////////////////////

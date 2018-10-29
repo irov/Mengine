@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/GameInterface.h"
+#include "Interface/GameServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/AccountInterface.h"
 #include "Interface/SoundSystemInterface.h"

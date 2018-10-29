@@ -1,7 +1,7 @@
 #include "Scheduler.h"
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/TimelineInterface.h"
+#include "Interface/TimelineServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 
 #include "Kernel/Logger.h"

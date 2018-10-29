@@ -1,6 +1,6 @@
 #include "Win32FileOutputStream.h"
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 #include "Win32FileHelper.h"
 

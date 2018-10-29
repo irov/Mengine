@@ -5,7 +5,8 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/GraveyardInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "RenderTexture.h"
 #include "DecoderRenderImageProvider.h"

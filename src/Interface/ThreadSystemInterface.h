@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ThreadInterface.h"
+#include "Interface/ThreadIdentityInterface.h"
 #include "Interface/ThreadMutexInterface.h"
 
 namespace Mengine
@@ -15,13 +15,13 @@ namespace Mengine
         virtual bool avaliable() const = 0;
 
     public:
-        virtual ThreadIdentityInterfacePtr createThread( int _priority, const char * _file, uint32_t _line ) = 0;
+        virtual ThreadIdentityInterfacePtr createThread( int _priority, const Char * _doc, uint32_t _line ) = 0;
 
     public:
         virtual void sleep( uint32_t _ms ) = 0;
 
     public:
-        virtual ThreadMutexInterfacePtr createMutex( const char * _file, uint32_t _line ) = 0;
+        virtual ThreadMutexInterfacePtr createMutex( const Char * _doc, uint32_t _line ) = 0;
 
     public:
         virtual ptrdiff_t getCurrentThreadId() const = 0;

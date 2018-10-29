@@ -13,7 +13,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::connect( const Char * _ip, const Char * _port )
+    bool Win32Socket::connect( const SocketConnectInfo & _info )
     {
         addrinfo hints;
         ZeroMemory( &hints, sizeof( hints ) );
@@ -23,7 +23,7 @@ namespace Mengine
         hints.ai_protocol = IPPROTO_TCP;
 
         addrinfo *addrinfo;
-        INT getaddrinfo_result = ::getaddrinfo( _ip, _port, &hints, &addrinfo );
+        INT getaddrinfo_result = ::getaddrinfo(_info.ip, _info.port, &hints, &addrinfo );
 
         if( getaddrinfo_result != 0 )
         {

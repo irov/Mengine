@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -11,6 +11,7 @@ namespace Mengine
     {
     public:
         Win32UnicodeSystem();
+		~Win32UnicodeSystem() override;
 
     public:
         bool unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size ) override;

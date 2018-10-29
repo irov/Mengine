@@ -2,7 +2,7 @@
 
 #include "Interface/FileInputStreamInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "stdex/thread_guard.h"
 
@@ -13,11 +13,12 @@
 namespace Mengine
 {
     class SDLFileInputStream
-        : public ServantBase<FileInputStreamInterface>
+        : public FileInputStreamInterface
+		, public Factorable
     {
     public:
         SDLFileInputStream();
-        ~SDLFileInputStream();
+        ~SDLFileInputStream() override;
 
     public:
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size ) override;

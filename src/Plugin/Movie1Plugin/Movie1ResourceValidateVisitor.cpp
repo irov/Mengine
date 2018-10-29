@@ -5,9 +5,11 @@
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderImageInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/ConfigInterface.h"
-#include "Interface/CodecInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/CodecServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
+#include "Interface/DataflowInterface.h"
+#include "Interface/DataServiceInterface.h"
 
 #include "Movie1Interface.h"
 

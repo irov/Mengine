@@ -3,7 +3,7 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"

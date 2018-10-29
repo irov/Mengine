@@ -1,32 +1,32 @@
-#include "C11TimerSystem.h"
+#include "C11TimeSystem.h"
 
 #include <chrono>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( TimerSystem, Mengine::C11TimerSystem );
+SERVICE_FACTORY( TimeSystem, Mengine::C11TimeSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    C11TimerSystem::C11TimerSystem()
+    C11TimeSystem::C11TimeSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    C11TimerSystem::~C11TimerSystem()
+    C11TimeSystem::~C11TimeSystem()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool C11TimerSystem::_initializeService()
+    bool C11TimeSystem::_initializeService()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void C11TimerSystem::_finalizeService()
+    void C11TimeSystem::_finalizeService()
     {
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t C11TimerSystem::getMilliseconds()
+    uint64_t C11TimeSystem::getMilliseconds()
     {
         std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
         std::chrono::system_clock::time_point::duration epoch = tp.time_since_epoch();

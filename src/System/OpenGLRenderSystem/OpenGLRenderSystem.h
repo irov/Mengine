@@ -8,11 +8,11 @@
 #include "OpenGLRenderVertexBuffer.h"
 #include "OpenGLRenderIndexBuffer.h"
 #include "OpenGLRenderProgram.h"
+#include "OpenGLRenderProgramVariable.h"
 #include "OpenGLRenderExtension.h"
 
 #include "Kernel/ServiceBase.h"
 #include "Kernel/Factory.h"
-
 
 namespace Mengine
 {

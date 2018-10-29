@@ -2,6 +2,7 @@
 
 #include "Interface/StringizeInterface.h"
 #include "Interface/RenderSystemInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 #include "ResourceOzzAnimation.h"
 

@@ -2,6 +2,9 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
+#include "Interface/ImageCodecInterface.h"
+#include "Interface/SoundCodecInterface.h"
+#include "Interface/DataInterface.h"
 
 #include "Kernel/IntrusivePtr.h"
 #include "Kernel/ConstString.h"
@@ -12,7 +15,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class PrefetcherObserverInterface
-        : public Factorable
+        : public Mixin
     {
     public:
         virtual void onPrefetchPreparation() = 0;
@@ -22,10 +25,6 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PrefetcherObserverInterface> PrefetcherObserverInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ImageDecoderInterface> ImageDecoderInterfacePtr;
-    typedef IntrusivePtr<class SoundDecoderInterface> SoundDecoderInterfacePtr;
-    typedef IntrusivePtr<class DataInterface> DataInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class PrefetcherServiceInterface
         : public ServiceInterface

@@ -1,6 +1,6 @@
 #include "BitmapFont.h"
 
-#include "Interface/CodecInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/RenderTextureInterface.h"

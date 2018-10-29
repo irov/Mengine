@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/PrototypeServiceInterface.h"

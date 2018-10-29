@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/FactoryInterface.h"
+#include "Interface/FactoryServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -20,7 +20,7 @@ namespace Mengine
         void unregisterFactory( const Factory * _factory ) override;
 
     public:
-        void visitFactories( VisitorFactoryService * _visitor ) override;
+        void visitFactories( const VisitorFactoryServicePtr & _visitor ) override;
 
     protected:
         typedef Vector<const Factory *> VectorFactories;

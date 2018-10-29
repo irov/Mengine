@@ -1,11 +1,13 @@
 #pragma once
 
-#include "Interface/CodecInterface.h"
+#include "Interface/DecoderInterface.h"
+#include "Interface/EncoderInterface.h"
 
 #include "Kernel/PixelFormat.h"
 
 namespace Mengine
 {
+	//////////////////////////////////////////////////////////////////////////
     struct ImageCodecDataInfo
         : public CodecDataInfo
     {
@@ -61,7 +63,7 @@ namespace Mengine
             return size;
         }
     };
-
+	//////////////////////////////////////////////////////////////////////////
     enum ImageDecoderOptions
     {
         DF_NONE = 0x00000000,
@@ -71,7 +73,7 @@ namespace Mengine
         DF_WRITE_ALPHA_ONLY = 0x00000008,
         DF_NOT_ADD_ALPHA = 0x00000010,
     };
-
+	//////////////////////////////////////////////////////////////////////////
     struct ImageCodecOptions
         : public CodecOptions
     {
@@ -93,20 +95,21 @@ namespace Mengine
             return (flags & _flag) != 0;
         }
     };
-
+	//////////////////////////////////////////////////////////////////////////
     class ImageDecoderInterface
         : public DecoderInterface
     {
     public:
         virtual const ImageCodecDataInfo * getCodecDataInfo() const override = 0;
     };
-
+	//////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ImageDecoderInterface> ImageDecoderInterfacePtr;
-
+	//////////////////////////////////////////////////////////////////////////
     class ImageEncoderInterface
         : public EncoderInterface
     {
     };
-
+	//////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ImageEncoderInterface> ImageEncoderInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
 }

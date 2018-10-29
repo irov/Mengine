@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/CodecInterface.h"
+#include "Interface/DecoderInterface.h"
 
 #include "Kernel/PixelFormat.h"
 

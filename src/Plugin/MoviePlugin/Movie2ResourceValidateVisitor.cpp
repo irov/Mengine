@@ -5,7 +5,7 @@
 #include "Interface/RenderImageInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 

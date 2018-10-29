@@ -329,7 +329,7 @@ Core
 	ColourValue.h
 	ColourValue.cpp
         
-    GlyphChar.h
+    GlyphCode.h
     
     IniUtil.h
     IniUtil.cpp

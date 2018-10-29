@@ -1,8 +1,8 @@
 #include "RenderMaterialService.h"
 
 #include "Interface/StringizeInterface.h"
-#include "Interface/ConfigInterface.h"
-#include "Interface/LoaderInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 

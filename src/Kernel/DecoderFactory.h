@@ -2,6 +2,7 @@
 
 #include "Interface/CodecInterface.h"
 #include "Interface/StringizeInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/Factorable.h"
 

@@ -11,6 +11,7 @@ namespace Mengine
 
     public:
         SDLFileGroupPlugin();
+		~SDLFileGroupPlugin() override;
 
     protected:
         bool _initialize() override;

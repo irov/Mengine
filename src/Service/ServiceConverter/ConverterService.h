@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Interface/ConverterInterface.h"
+#include "Interface/ConverterServiceInterface.h"
+#include "Interface/ConverterFactoryInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/CodecInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

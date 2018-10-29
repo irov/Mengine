@@ -2,7 +2,7 @@
 
 #include "Interface/MemoryInterface.h"
 #include "Interface/PlatformInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 #include "Win32FileHelper.h"
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/ServiceInterface.h"
 #include "Interface/StreamInterface.h"
 #include "Interface/MemoryInterface.h"
 
@@ -8,11 +7,13 @@
 #include "Kernel/Factorable.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Magic.h"
+#include "Kernel/Mixin.h"
 
 #include "Config/String.h"
 
 namespace Mengine
 {
+	//////////////////////////////////////////////////////////////////////////
     DECLARE_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA, 'A', 'C', 'D', '1', 1 );
 	//////////////////////////////////////////////////////////////////////////
 	class AccountSettingProviderInterface
@@ -58,71 +59,5 @@ namespace Mengine
     };
 	//////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AccountInterface> AccountInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-    class AccountProviderInterface
-        : public Mixin
-    {
-    public:
-        virtual void onCreateAccount( const ConstString & _accountID, bool _global ) = 0;
-        virtual void onDeleteAccount( const ConstString & _accountID ) = 0;
-        virtual void onSelectAccount( const ConstString & _accountID ) = 0;
-        virtual void onUnselectAccount( const ConstString & _accountID ) = 0;
-    };
-	//////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<AccountProviderInterface> AccountProviderInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
-    class AccountVisitorInterface
-    {
-    public:
-        virtual void onAccount( const AccountInterfacePtr & _account ) = 0;
-    };
-	//////////////////////////////////////////////////////////////////////////
-    class AccountServiceInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE( "AccountService" )
-
-    public:
-        virtual void setAccountProviderInterface( const AccountProviderInterfacePtr & _accountProvider ) = 0;
-
-    public:
-        virtual AccountInterfacePtr createAccount() = 0;
-        virtual AccountInterfacePtr createGlobalAccount() = 0;
-
-    public:
-        virtual void deleteAccount( const ConstString& _accountID ) = 0;
-        virtual bool selectAccount( const ConstString& _accountID ) = 0;
-
-    public:
-        virtual bool loadAccounts() = 0;
-        virtual bool saveAccounts() = 0;
-
-    public:
-        virtual void setDefaultAccount( const ConstString & _accountID ) = 0;
-        virtual const ConstString & getDefaultAccountID() const = 0;
-        virtual bool isCurrentDefaultAccount() const = 0;
-
-        virtual bool hasDefaultAccount() const = 0;
-
-        virtual bool selectDefaultAccount() = 0;
-
-    public:
-        virtual void setGlobalAccount( const ConstString & _accountID ) = 0;
-        virtual const ConstString & getGlobalAccountID() const = 0;
-
-        virtual bool hasGlobalAccount() const = 0;
-
-    public:
-        virtual bool hasCurrentAccount() const = 0;
-        virtual const ConstString & getCurrentAccountID() const = 0;
-
-    public:
-        virtual AccountInterfacePtr getAccount( const ConstString& _accountID ) = 0;
-
-    public:
-        virtual void visitAccounts( AccountVisitorInterface * _visitor ) const = 0;
-    };
-
-#define ACCOUNT_SERVICE()\
-    ((AccountServiceInterface*)SERVICE_GET(Mengine::AccountServiceInterface))
+	//////////////////////////////////////////////////////////////////////////    
 }

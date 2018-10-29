@@ -1,7 +1,7 @@
 #include "SilentSoundBuffer.h"
 
 #include "Interface/SoundCodecInterface.h"
-#include "Interface/TimerInterface.h"
+#include "Interface/TimeSystemInterface.h"
 
 namespace Mengine
 {
@@ -69,7 +69,7 @@ namespace Mengine
         (void)_looped;
         (void)_pos;
 
-        uint64_t time = TIMER_SYSTEM()
+        uint64_t time = TIME_SYSTEM()
             ->getMilliseconds();
 
         m_playTime = time;
@@ -80,7 +80,7 @@ namespace Mengine
     {
         (void)_id;
 
-        uint64_t time = TIMER_SYSTEM()
+        uint64_t time = TIME_SYSTEM()
             ->getMilliseconds();
 
         uint64_t deltha = m_pauseTime - m_playTime;
@@ -95,7 +95,7 @@ namespace Mengine
     {
         (void)_id;
 
-        uint64_t time = TIMER_SYSTEM()
+        uint64_t time = TIME_SYSTEM()
             ->getMilliseconds();
         
         m_pauseTime = time;
@@ -120,7 +120,7 @@ namespace Mengine
             return (float)timePos;
         }
 
-        uint64_t time = TIMER_SYSTEM()
+        uint64_t time = TIME_SYSTEM()
             ->getMilliseconds();
 
         uint64_t timePos = time - m_playTime;

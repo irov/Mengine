@@ -9,7 +9,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/FactoryInterface.h"
+#include "Interface/FactoryServiceInterface.h"
 
 #include "Plugin/AstralaxParticlePlugin/AstralaxInterface.h"
 
@@ -568,6 +568,7 @@ namespace Mengine
             {
                 class MyVisitorFactoryService
                     : public VisitorFactoryService
+					, public Factorable
                 {
                 public:
                     MyVisitorFactoryService()
@@ -634,11 +635,13 @@ namespace Mengine
                     MapPybindScope m_scopes;
                 };
 
-                MyVisitorFactoryService mvcts;
-                FACTORY_SERVICE()
-                    ->visitFactories( &mvcts );
+				typedef IntrusivePtr<MyVisitorFactoryService> MyVisitorFactoryServicePtr;
 
-                String msg_python = mvcts.getMsg();
+                MyVisitorFactoryServicePtr mvcts = new FactorableUnique< MyVisitorFactoryService>;
+                FACTORY_SERVICE()
+                    ->visitFactories( mvcts );
+
+                String msg_python = mvcts->getMsg();
                 ss << msg_python << std::endl;
             }
             else if( m_showDebugText == 6 )

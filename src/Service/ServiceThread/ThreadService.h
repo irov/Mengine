@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/ThreadIdentityInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

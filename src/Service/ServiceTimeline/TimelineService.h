@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/TimelineInterface.h"
+#include "Interface/TimelineServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

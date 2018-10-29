@@ -1,8 +1,12 @@
 #pragma once
 
-#include "Interface/TextInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Kernel/GlyphCode.h"
+
+#include "math/vec4.h"
+#include "math/vec2.h"
 
 namespace Mengine
 {

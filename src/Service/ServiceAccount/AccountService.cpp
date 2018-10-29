@@ -3,10 +3,10 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
@@ -362,15 +362,11 @@ namespace Mengine
         return account;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountService::visitAccounts( AccountVisitorInterface * _visitor ) const
+    void AccountService::visitAccounts( const AccountVisitorInterfacePtr & _visitor ) const
     {
-        for( MapAccounts::const_iterator
-            it = m_accounts.begin(),
-            it_end = m_accounts.end();
-            it != it_end;
-            ++it )
+        for( const MapAccounts::value_type & value : m_accounts )
         {
-            const AccountInterfacePtr & account = it->second;
+            const AccountInterfacePtr & account = value.second;
 
             const ConstString & accountID = account->getID();
 

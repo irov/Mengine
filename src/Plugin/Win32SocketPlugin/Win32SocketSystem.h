@@ -1,12 +1,9 @@
 #pragma once
 
-#include "Interface/SocketInterface.h"
+#include "Interface/SocketSystemInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
 #include "Kernel/Factory.h"
-
-#include "Win32Socket.h"
 
 #include <winsock2.h> 
 

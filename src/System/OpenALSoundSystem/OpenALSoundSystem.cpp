@@ -41,14 +41,11 @@ namespace Mengine
 
             m_device = alcOpenDevice( "Generic Software" );
 
-            OPENAL_CHECK_ERROR();
-
             if( m_device == nullptr )
             {
                 LOGGER_ERROR( "Failed to open default sound device try hardware" );
 
                 m_device = alcOpenDevice( "Generic Hardware" );
-                OPENAL_CHECK_ERROR();
 
                 if( m_device == nullptr )
                 {
@@ -66,7 +63,6 @@ namespace Mengine
             LOGGER_ERROR( "Failed to create context" );
 
             alcCloseDevice( m_device );
-            OPENAL_CHECK_ERROR();
 
             m_device = nullptr;
 
@@ -98,7 +94,7 @@ namespace Mengine
         ALCint minorVersion;
         alcGetIntegerv( m_device, ALC_MINOR_VERSION, 1, &minorVersion );
 
-        LOGGER_WARNING( "OpenAL version %d.%d"
+        LOGGER_WARNING( "OpenAL version %u.%u"
             , majorVersion
             , minorVersion
         );

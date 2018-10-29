@@ -393,6 +393,8 @@ namespace Mengine
 
         if( bytesWritten == 0 )
         {
+            _bytes = 0;
+
             return true;
         }
 

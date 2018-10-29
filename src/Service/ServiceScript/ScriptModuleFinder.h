@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/StreamInterface.h"
 #include "Interface/ArchiveInterface.h"
 
 #include "ScriptModuleLoaderSource.h"

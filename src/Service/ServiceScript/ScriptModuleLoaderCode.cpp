@@ -15,6 +15,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    ScriptModuleLoaderCode::~ScriptModuleLoaderCode()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleLoaderCode::load_module( pybind::kernel_interface * _kernel, PyObject * _module )
     {
         InputStreamInterfacePtr stream = m_group->createInputFile( m_path, false );

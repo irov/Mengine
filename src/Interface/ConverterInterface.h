@@ -2,7 +2,7 @@
 
 #include "Config/Typedef.h"
 
-#include "Interface/StreamInterface.h"
+#include "Interface/InputStreamInterface.h"
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/Mixin.h"

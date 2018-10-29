@@ -1,9 +1,9 @@
 #pragma once
 
-#include "Interface/ServiceInterface.h"
-#include "Interface/StreamInterface.h"
+#include "Interface/InputStreamInterface.h"
 
 #include "Kernel/FilePath.h"
+#include "Kernel/Mixin.h"
 
 namespace Mengine
 {

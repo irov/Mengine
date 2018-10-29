@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/StreamInterface.h"
 #include "Interface/ImageCodecInterface.h"
 
 #include "ThreadTaskPrefetch.h"
@@ -17,8 +16,7 @@ namespace Mengine
     public:
         void setImageCodec( const ConstString & _codec );
         const ConstString & getImageCodec() const;
-
-
+        
     public:
         const ImageDecoderInterfacePtr & getDecoder() const;
 
@@ -29,9 +27,9 @@ namespace Mengine
     protected:
         ConstString m_imageCodec;
 
-    protected:
         ImageDecoderInterfacePtr m_imageDecoder;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ThreadTaskPrefetchImageDecoder> ThreadTaskPrefetchImageDecoderPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

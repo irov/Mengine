@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/StreamInterface.h"
+#include "Interface/InputStreamInterface.h"
 #include "Interface/ArchiveInterface.h"
 
 #include "Kernel/ServiceBase.h"

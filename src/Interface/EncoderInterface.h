@@ -3,7 +3,7 @@
 #include "Config/Typedef.h"
 
 #include "Interface/CodecInterface.h"
-#include "Interface/StreamInterface.h"
+#include "Interface/OutputStreamInterface.h"
 
 #include "Kernel/Mixin.h"
 

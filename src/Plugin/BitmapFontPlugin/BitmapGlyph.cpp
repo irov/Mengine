@@ -1,6 +1,5 @@
 ﻿#include "BitmapGlyph.h"
 
-#include "Interface/StreamInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "Interface/FileSystemInterface.h"

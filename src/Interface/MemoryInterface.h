@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/StreamInterface.h"
+#include "Interface/InputStreamInterface.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/Pointer.h"

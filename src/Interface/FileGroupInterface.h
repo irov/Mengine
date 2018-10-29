@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Interface/ServantInterface.h"
-#include "Interface/StreamInterface.h"
+#include "Interface/InputStreamInterface.h"
+#include "Interface/OutputStreamInterface.h"
 
 #include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"

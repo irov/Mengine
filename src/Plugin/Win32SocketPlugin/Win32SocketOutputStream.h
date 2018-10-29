@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/StreamInterface.h"
+#include "Interface/OutputStreamInterface.h"
 
 #include "Win32SocketProviderInterface.h"
 

@@ -1,6 +1,5 @@
 #pragma once
 
-#include "Interface/StreamInterface.h"
 #include "Interface/ArchiveInterface.h"
 
 #include "ScriptModuleLoader.h"
@@ -20,6 +19,7 @@ namespace Mengine
     {
     public:
         ScriptModuleLoaderCode();
+        ~ScriptModuleLoaderCode() override;
 
     public:
         PyObject * load_module( pybind::kernel_interface * _kernel, PyObject * _module ) override;

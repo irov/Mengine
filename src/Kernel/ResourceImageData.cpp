@@ -2,12 +2,12 @@
 
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/CodecServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 
 #include "Kernel/Logger.h"
-
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
 

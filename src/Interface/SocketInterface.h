@@ -1,20 +1,25 @@
 #pragma once
 
-#include "Interface/ServiceInterface.h"
 #include "Interface/StreamInterface.h"
 
-#include "Kernel/Factorable.h"
+#include "Kernel/Mixin.h"
 
-#include "Kernel/IntrusivePtr.h"
+#include "Config/Char.h"
 
 namespace Mengine
 {
+	//////////////////////////////////////////////////////////////////////////
+	struct SocketConnectInfo
+	{
+		const Char * ip;
+		const Char * port;
+	};
     //////////////////////////////////////////////////////////////////////////
     class SocketInterface
         : public Mixin
     {
     public:
-        virtual bool connect( const Char * _ip, const Char * _port ) = 0;
+        virtual bool connect( const SocketConnectInfo & _data ) = 0;
         virtual void disconnect() = 0;
 
     public:		
@@ -24,15 +29,4 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SocketInterface> SocketInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class SocketSystemInterface
-        : public ServiceInterface
-    {
-        SERVICE_DECLARE( "SocketSystem" )
-
-    public:
-        virtual SocketInterfacePtr createSocket() = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-#define SOCKET_SYSTEM( serviceProvider )\
-    ((Mengine::SocketSystemInterface*)SERVICE_GET(serviceProvider, Mengine::SocketSystemInterface))
 }

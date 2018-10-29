@@ -4,7 +4,7 @@
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderImageInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
 

@@ -2,6 +2,7 @@
 
 #include "Interface/StringizeInterface.h"
 #include "Interface/OptionsInterface.h"
+#include "Interface/LoggerServiceInterface.h"
 
 #include "Win32ConsoleLogger.h"
 

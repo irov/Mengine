@@ -4,7 +4,7 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/PlayerInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 
 #include "Plugin/DebugRenderPlugin/DebugRenderInterface.h"

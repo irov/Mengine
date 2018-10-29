@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/DataInterface.h"
+#include "Interface/DataflowInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/FactoryDefault.h"

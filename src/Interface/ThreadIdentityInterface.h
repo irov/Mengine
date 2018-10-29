@@ -2,6 +2,8 @@
 
 #include "Interface/ThreadTaskInterface.h"
 
+#include "Kernel/Mixin.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -11,18 +13,6 @@ namespace Mengine
     const int32_t MENGINE_THREAD_PRIORITY_ABOVE_NORMAL = 1;
     const int32_t MENGINE_THREAD_PRIORITY_HIGHEST = 2;
     const int32_t MENGINE_THREAD_PRIORITY_TIME_CRITICAL = 3;
-    //////////////////////////////////////////////////////////////////////////
-    class ThreadQueueInterface
-        : public Mixin
-    {
-    public:
-        virtual void addTask( const ThreadTaskInterfacePtr & _task ) = 0;
-
-    public:
-        virtual void cancel() = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadQueueInterface> ThreadQueueInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class ThreadIdentityInterface
         : public Mixin

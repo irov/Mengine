@@ -3,7 +3,7 @@
 #include "TTFServiceInterface.h"
 
 #include "Interface/MemoryInterface.h"
-#include "Interface/TextInterface.h"
+#include "Interface/TextFontInterface.h"
 
 #include "Config/String.h"
 

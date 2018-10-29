@@ -3,7 +3,7 @@
 #include "Kernel/Logger.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Environment/WIN32/WindowsIncluder.h"

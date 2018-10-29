@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/MemoryInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

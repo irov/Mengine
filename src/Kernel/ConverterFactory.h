@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ConverterInterface.h"
+#include "Interface/ConverterServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "Kernel/Factorable.h"

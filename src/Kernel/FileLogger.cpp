@@ -3,7 +3,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "Kernel/Date.h"

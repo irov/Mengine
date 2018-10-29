@@ -2,10 +2,10 @@
 
 #include "Interface/OptionsInterface.h"
 #include "Interface/ApplicationInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/UnicodeInterface.h"
-#include "Interface/TimerInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
+#include "Interface/TimeServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
 
@@ -256,7 +256,7 @@ namespace Mengine
     {
         this->setActive_( true );
 
-        TIMER_SERVICE()
+        TIME_SERVICE()
             ->resetDeltaTime();
 
         bool nopause = HAS_OPTION( "nopause" );
@@ -267,7 +267,7 @@ namespace Mengine
         {
             while( m_close == false )
             {
-                float frameTime = TIMER_SERVICE()
+                float frameTime = TIME_SERVICE()
                     ->getDeltaTime();
 
                 MSG  msg;

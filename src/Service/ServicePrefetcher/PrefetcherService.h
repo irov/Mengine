@@ -1,5 +1,5 @@
 #include "Interface/PrefetcherInterface.h"
-#include "Interface/ThreadInterface.h"
+#include "Interface/ThreadQueueInterface.h"
 
 #include "ThreadTaskPrefetchImageDecoder.h"
 #include "ThreadTaskPrefetchSoundDecoder.h"
@@ -12,21 +12,22 @@
 #include "Config/Map.h"
 
 #ifndef MENGINE_PREFETCHER_THREAD_COUNT
-#	define MENGINE_PREFETCHER_THREAD_COUNT 2
+#define MENGINE_PREFETCHER_THREAD_COUNT 2
 #endif
 
 #ifndef MENGINE_PREFETCHER_PACKET_SIZE
-#	define MENGINE_PREFETCHER_PACKET_SIZE 64
+#define MENGINE_PREFETCHER_PACKET_SIZE 64
 #endif
 
 namespace Mengine
 {
+	//////////////////////////////////////////////////////////////////////////
     struct PrefetchReceiver
     {
         uint32_t refcount;
         ThreadTaskPrefetchPtr prefetcher;
     };
-
+	//////////////////////////////////////////////////////////////////////////
     class PrefetcherService
         : public ServiceBase<PrefetcherServiceInterface>
     {
@@ -75,4 +76,5 @@ namespace Mengine
 
         bool m_avaliable;
     };
+	//////////////////////////////////////////////////////////////////////////
 }

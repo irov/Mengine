@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/LoaderInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 #include "Interface/StreamInterface.h"
 #include "Interface/ArchiveInterface.h"
 

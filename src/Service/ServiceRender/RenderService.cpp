@@ -5,7 +5,7 @@
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"

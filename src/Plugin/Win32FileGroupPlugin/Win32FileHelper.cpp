@@ -1,6 +1,6 @@
 #include "Win32FileHelper.h"
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"

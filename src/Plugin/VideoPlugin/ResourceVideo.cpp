@@ -3,10 +3,10 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/OptionsInterface.h"
-#include "Interface/CodecInterface.h"
+#include "Interface/CodecServiceInterface.h"
 #include "Interface/ConverterInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 

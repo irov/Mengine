@@ -1,6 +1,6 @@
 #include "cURLHeaderDataThreadTask.h"
 
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
 

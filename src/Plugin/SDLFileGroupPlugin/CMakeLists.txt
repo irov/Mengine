@@ -6,12 +6,16 @@ src
     SDLFileGroupPlugin.cpp
     SDLFileGroupDirectory.cpp
     SDLFileGroupDirectory.h
+	SDLFileGroupDirectoryFactory.h
+	SDLFileGroupDirectoryFactory.cpp
     SDLFileInputStream.h
     SDLFileInputStream.cpp
     SDLFileOutputStream.cpp
     SDLFileOutputStream.h
     SDLFileMappedStream.h
     SDLFileMappedStream.cpp
+	SDLFileHelper.h
+	SDLFileHelper.cpp
 )
 
 INCLUDE_DIRECTORIES(

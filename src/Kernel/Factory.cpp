@@ -1,7 +1,7 @@
 #include "Factory.h"
 #include "Factorable.h"
 
-#include "Interface/FactoryInterface.h"
+#include "Interface/FactoryServiceInterface.h"
 
 #ifndef NDEBUG
 #   include "Kernel/Logger.h"
@@ -15,8 +15,10 @@ namespace Mengine
         : m_name( _name )
         , m_count( 0 )
     {
+#ifndef MENGINE_MASTER_RELEASE
         FACTORY_SERVICE()
             ->registerFactory( this );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     Factory::~Factory()
@@ -63,8 +65,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Factory::_destroy()
     {
+#ifndef MENGINE_MASTER_RELEASE
         FACTORY_SERVICE()
             ->unregisterFactory( this );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void Factory::destroy()

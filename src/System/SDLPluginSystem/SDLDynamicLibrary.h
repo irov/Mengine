@@ -2,16 +2,17 @@
 
 #include "Interface/PluginInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class SDLDynamicLibrary 
-        : public ServantBase<DynamicLibraryInterface>
+        : public DynamicLibraryInterface
+		, public Factorable
     {
     public:
         SDLDynamicLibrary();
-        ~SDLDynamicLibrary();
+        ~SDLDynamicLibrary() override;
 
     public:
         void setName( const String & _name );

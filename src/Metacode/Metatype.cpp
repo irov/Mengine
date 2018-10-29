@@ -1,7 +1,7 @@
 #include "Metatype.h"
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 
 #include "Kernel/Logger.h"

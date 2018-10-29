@@ -2,18 +2,17 @@
 
 #include "Interface/FileSystemInterface.h"
 
-#include "Kernel/ServantBase.h"
-
+#include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
 
 namespace Mengine
 {
     class SDLFileGroupDirectory
-        : public ServantBase<FileGroupInterface>
+        : public FileGroupInterface
     {
     public:
         SDLFileGroupDirectory();
-        ~SDLFileGroupDirectory();
+        ~SDLFileGroupDirectory() override;
 
     public:
         bool initialize( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _folderPath ) override;
@@ -57,4 +56,4 @@ namespace Mengine
         FactoryPtr m_factoryInputStream;
         FactoryPtr m_factoryOutputStream;
     };
-}	// namespace Mengine
+}

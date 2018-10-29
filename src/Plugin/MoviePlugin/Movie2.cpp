@@ -1,6 +1,6 @@
 #include "Movie2.h"
 
-#include "Interface/TimelineInterface.h"
+#include "Interface/TimelineServiceInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/PrototypeServiceInterface.h"

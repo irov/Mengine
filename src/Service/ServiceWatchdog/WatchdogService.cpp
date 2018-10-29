@@ -1,6 +1,6 @@
 #include "WatchdogService.h"
 
-#include "Interface/TimerInterface.h"
+#include "Interface/TimeSystemInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( WatchdogService, Mengine::WatchdogService );
@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     double WatchdogService::watch( const String & _tag )
     {
-		uint64_t ms = TIMER_SYSTEM()
+		uint64_t ms = TIME_SYSTEM()
 			->getMilliseconds();
 
         MapWatchers::iterator it_found = m_watchers.find( _tag );

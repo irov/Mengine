@@ -8,36 +8,44 @@ src
     ModuleInterface.h
 	ScriptSystemInterface.h
 	CodecInterface.h
-    ConfigInterface.h
+	CodecFactoryInterface.h
+	DecoderInterface.h
+	DecoderFactoryInterface.h
+	EncoderInterface.h
+	EncoderFactoryInterface.h
+	CodecServiceInterface.h	
+    ConfigServiceInterface.h
     DataInterface.h
+	DataflowInterface.h
+	DataServiceInterface.h
     MemoryInterface.h
-    PlatformInterface.h
-	XmlCodecInterface.h
+	MemoryServiceInterface.h
+    PlatformInterface.h	
 	ImageCodecInterface.h
     PickCodecInterface.h
 	SoundCodecInterface.h
-    TextInterface.h
+    TextFontInterface.h
+	TextEntryInterface.h
     TextServiceInterface.h
 	StreamInterface.h
+	StreamInterface.h
 	LoggerInterface.h
+	LoggerServiceInterface.h
 	ApplicationInterface.h
 	InputServiceInterface.h
     InputHandlerInterface.h
-	ThreadInterface.h
-    ThreadTaskInterface.h
-    ThreadMutexInterface.h
-    ThreadServiceInterface.h
-	ThreadSystemInterface.h
+
 	ConverterInterface.h
+	ConverterFactoryInterface.h
+	ConverterServiceInterface.h
 	StringizeInterface.h
-    GameInterface.h
+    GameServiceInterface.h
     NodeInterface.h
     PlayerInterface.h
     SchedulerInterface.h
     PickerServiceInterface.h
     MovieKeyFrameInterface.h
     PlayerInterface.h
-    GameInterface.h    
     PrototypeServiceInterface.h
     WatchdogInterface.h
     ArchiveInterface.h
@@ -48,21 +56,25 @@ src
     GraveyardInterface.h
     GlobalHandleSystemInterface.h
     NotificationServiceInterface.h
-    SDLLayerInterface.h
-    TimerInterface.h
+    TimeServiceInterface.h
+	TimeSystemInterface.h
     PackageInterface.h
-    UserdataInterface.h    
+	PackageServiceInterface.h
+    UserdataServiceInterface.h
     OptionsInterface.h
-    TimelineInterface.h
+    TimelineServiceInterface.h
     SocketInterface.h
-	FactoryInterface.h
+	SocketSystemInterface.h
+	FactoryServiceInterface.h
     ResourceServiceInterface.h
-    UnicodeInterface.h
-    NotificatorInterface.h
-    LoaderInterface.h
+    UnicodeSystemInterface.h
+    NotificatorInterface.h    
+	LoaderServiceInterface.h
     RandomizerInterface.h
     AnimationInterface.h
     AccountInterface.h
+	AccountProviderInterface.h
+	AccountServiceInterface.h
     EventationInterface.h
     UnknownInterface.h    
     RenderProgramVariableInterface.h
@@ -93,6 +105,16 @@ File
 	FileOutputStreamInterface.h
 	FileGroupInterface.h
 )   
+
+ADD_FILTER(
+Thread     
+	ThreadIdentityInterface.h
+	ThreadQueueInterface.h
+    ThreadTaskInterface.h
+    ThreadMutexInterface.h
+    ThreadServiceInterface.h
+	ThreadSystemInterface.h
+)
 
 ADD_FILTER(
 Render     

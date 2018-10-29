@@ -7,16 +7,20 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
-#include "Interface/ConfigInterface.h"
-#include "Interface/PackageInterface.h"
-#include "Interface/UserdataInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/PackageServiceInterface.h"
+#include "Interface/UserdataServiceInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/DataServiceInterface.h"
+#include "Interface/CodecServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
+#include "Interface/ConverterServiceInterface.h"
 
 #include "PythonScriptWrapper/PythonWrapper.h"
 
@@ -74,8 +78,8 @@ SERVICE_EXTERN( PrefetcherService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( ConverterService );
 SERVICE_EXTERN( InputService );
-SERVICE_EXTERN( TimerService );
-SERVICE_EXTERN( TimerSystem );
+SERVICE_EXTERN( TimeService );
+SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( PrototypeService );
@@ -621,8 +625,8 @@ namespace Mengine
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
 
-        SERVICE_CREATE( TimerSystem );
-        SERVICE_CREATE( TimerService );
+        SERVICE_CREATE( TimeSystem );
+        SERVICE_CREATE( TimeService );
 
 #ifndef NDEBUG
         {
@@ -1014,8 +1018,8 @@ namespace Mengine
 
         SERVICE_FINALIZE( Mengine::ThreadServiceInterface );
 
-        SERVICE_FINALIZE( Mengine::TimerServiceInterface );
-        SERVICE_FINALIZE( Mengine::TimerSystemInterface );
+        SERVICE_FINALIZE( Mengine::TimeServiceInterface );
+        SERVICE_FINALIZE( Mengine::TimeSystemInterface );
 
         SERVICE_FINALIZE( Mengine::PlatformInterface );
 

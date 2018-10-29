@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Interface/XmlCodecInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/FileGroupInterface.h"
+
+#include "XmlCodecInterface.h"
 
 #include "Kernel/Factorable.h"
 
@@ -14,6 +15,7 @@ namespace Mengine
     {
     public:
         XmlToBinDecoder();
+		~XmlToBinDecoder() override;
 
     public:
         bool initialize() override;

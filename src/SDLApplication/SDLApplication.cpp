@@ -7,21 +7,23 @@
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/UnicodeInterface.h"
-#include "Interface/PackageInterface.h"
+#include "Interface/PackageServiceInterface.h"
 #include "Interface/UserdataInterface.h"
+#include "Interface/DataServiceInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
-#include "Interface/TextInterface.h"
-#include "Interface/InputSystemInterface.h"
+#include "Interface/TextServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
+#include "Interface/InputServiceInterface.h"
 #include "Interface/TimerInterface.h"
 #include "Interface/OptionsInterface.h"
-#include "Interface/HttpSystemInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 
-#include "PythonScriptWrapper/PythonScriptWrapper.h"
+#include "PythonScriptWrapper/PythonWrapper.h"
 
 #include <cstdio>
 #include <clocale>
@@ -125,7 +127,6 @@ SERVICE_EXTERN( OptionsSystem );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( TimerSystem );
 SERVICE_EXTERN( TimerService );
-SERVICE_EXTERN( HttpSystem );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( UpdateService );
 SERVICE_EXTERN( NodeService );
@@ -607,8 +608,6 @@ namespace Mengine
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
 
-        SERVICE_CREATE( HttpSystem );
-
         SERVICE_CREATE( TimerSystem );
         SERVICE_CREATE( TimerService );
 
@@ -617,13 +616,13 @@ namespace Mengine
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
 
-        PythonScriptWrapper::constsWrap();
-        PythonScriptWrapper::helperWrap();
-        PythonScriptWrapper::mathWrap();
-        PythonScriptWrapper::nodeWrap();
-        PythonScriptWrapper::entityWrap();
-        PythonScriptWrapper::engineWrap();
-        PythonScriptWrapper::soundWrap();
+        PythonWrapper::constsWrap();
+        PythonWrapper::helperWrap();
+        PythonWrapper::mathWrap();
+        PythonWrapper::nodeWrap();
+        PythonWrapper::entityWrap();
+        PythonWrapper::engineWrap();
+        PythonWrapper::soundWrap();
 
         SERVICE_CREATE( RenderService );
         SERVICE_CREATE( RenderMaterialService );
@@ -915,7 +914,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::TextServiceInterface );
         SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
         SERVICE_FINALIZE( Mengine::ApplicationInterface );
-        SERVICE_FINALIZE( Mengine::HttpSystemInterface );
         SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
         SERVICE_FINALIZE( Mengine::DataServiceInterface );
         SERVICE_FINALIZE( Mengine::PluginServiceInterface );

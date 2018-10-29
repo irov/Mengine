@@ -2,7 +2,8 @@
 
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/DataServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"

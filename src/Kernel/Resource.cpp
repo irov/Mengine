@@ -1,10 +1,7 @@
 #include "Resource.h"
 
-#include "Interface/ServiceInterface.h"
-
-#include "Interface/CodecInterface.h"
-#include "Interface/ConverterInterface.h"
-
+#include "Interface/CodecServiceInterface.h"
+#include "Interface/ConverterServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"

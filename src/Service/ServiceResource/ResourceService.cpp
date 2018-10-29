@@ -1,10 +1,10 @@
 #include "ResourceService.h"
 
-#include "Interface/UnicodeInterface.h"
-#include "Interface/LoaderInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 

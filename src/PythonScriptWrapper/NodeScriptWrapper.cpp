@@ -1,7 +1,7 @@
 #include "PythonWrapper.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/TimelineInterface.h"
+#include "Interface/TimelineServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
@@ -20,10 +20,10 @@
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/SchedulerInterface.h"
 
-#include "Interface/TextInterface.h"
+#include "Interface/TextFontInterface.h"
 #include "Interface/AccountInterface.h"
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 #include "Interface/ResourceServiceInterface.h"
 

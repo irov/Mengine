@@ -2,10 +2,11 @@
 
 #include "Interface/UnicodeInterface.h"
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/SDLLayerInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/Logger.h"
+
+#include "SDLFileHelper.h"
 
 #include "stdex/memorycopy.h"
 
@@ -109,8 +110,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, Char * _fullPath )
     {
-        if( SDLLAYER_SERVICE()
-            ->concatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
+        if( Helper::concatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
@@ -332,8 +332,7 @@ namespace Mengine
     {
 #ifndef NDEBUG
         Char filePath[MENGINE_MAX_PATH];
-        if( SDLLAYER_SERVICE()
-            ->concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH ) == false )
+        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()

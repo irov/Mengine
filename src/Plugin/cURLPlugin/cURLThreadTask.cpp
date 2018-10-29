@@ -1,7 +1,7 @@
 #include "cURLThreadTask.h"
 
 #include "Interface/FileGroupInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/Logger.h"
 

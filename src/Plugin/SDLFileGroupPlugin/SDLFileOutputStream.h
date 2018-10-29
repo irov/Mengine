@@ -2,24 +2,25 @@
 
 #include "Interface/FileOutputStreamInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "SDL_rwops.h"
 
 namespace Mengine
 {
     class SDLFileOutputStream
-        : public ServantBase<FileOutputStreamInterface>
+        : public FileOutputStreamInterface
+		, public Factorable
     {
     public:
         SDLFileOutputStream();
-        ~SDLFileOutputStream();
+        ~SDLFileOutputStream() override;
 
     public:
         bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath ) override;
 
     public:
-        bool write( const void * _data, size_t _size ) override;
+        size_t write( const void * _data, size_t _size ) override;
         size_t size() const override;
 
     public:

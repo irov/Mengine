@@ -1,17 +1,17 @@
 #pragma once
 
-#include "Interface/TimerInterface.h"
+#include "Interface/TimeSystemInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
 namespace Mengine
 {
-    class C11TimerSystem
-        : public ServiceBase<TimerSystemInterface>
+    class C11TimeSystem
+        : public ServiceBase<TimeSystemInterface>
     {
     public:
-        C11TimerSystem();
-        ~C11TimerSystem() override;
+        C11TimeSystem();
+        ~C11TimeSystem() override;
 
     public:
         bool _initializeService() override;

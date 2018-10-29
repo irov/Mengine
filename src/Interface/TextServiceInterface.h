@@ -1,7 +1,8 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/TextInterface.h"
+#include "Interface/TextFontInterface.h"
+#include "Interface/TextEntryInterface.h"
 
 namespace Mengine
 {

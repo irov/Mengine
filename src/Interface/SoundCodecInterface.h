@@ -1,11 +1,12 @@
 #pragma once
 
-#include "Interface/CodecInterface.h"
+#include "Interface/DecoderInterface.h"
 
 #include "Kernel/ConstString.h"
 
 namespace Mengine
 {
+	//////////////////////////////////////////////////////////////////////////
     struct SoundCodecDataInfo
         : public CodecDataInfo
     {
@@ -25,18 +26,19 @@ namespace Mengine
 
         float length;
     };
-
+	//////////////////////////////////////////////////////////////////////////
     struct SoundCodecOptions
         : public CodecOptions
     {
     };
-
+	//////////////////////////////////////////////////////////////////////////
     class SoundDecoderInterface
         : public DecoderInterface
     {
     public:
         virtual const SoundCodecDataInfo * getCodecDataInfo() const override = 0;
     };
-
+	//////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SoundDecoderInterface> SoundDecoderInterfacePtr;
+	//////////////////////////////////////////////////////////////////////////
 }

@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/TextInterface.h"
-
 #include "Kernel/Compilable.h"
 #include "Kernel/Reference.h"
 

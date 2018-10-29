@@ -2,7 +2,7 @@
 
 #include "Interface/RenderSystemInterface.h"
 
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "stdex/memorycopy.h"
 

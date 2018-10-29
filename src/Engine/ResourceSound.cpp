@@ -4,7 +4,7 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/ConverterInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 

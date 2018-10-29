@@ -11,7 +11,7 @@
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/ConverterInterface.h"
-#include "Interface/InputSystemInterface.h"
+#include "Interface/InputServiceInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/ModuleInterface.h"
@@ -103,7 +103,8 @@ namespace Mengine
 		bool createDirectory(const WString & _path) override;
 
 	public:
-		bool removeFile( const WString & _path ) override;
+		bool existFile(const WChar * _path) override;
+		bool removeFile( const WChar * _path ) override;
 
 	public:
 		uint64_t getFileTime( const WString & _filePath ) const override;

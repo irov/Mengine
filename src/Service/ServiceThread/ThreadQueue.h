@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ThreadInterface.h"
+#include "Interface/ThreadQueueInterface.h"
 
 #include "Kernel/ThreadTaskPacket.h"
 #include "Kernel/ConstString.h"

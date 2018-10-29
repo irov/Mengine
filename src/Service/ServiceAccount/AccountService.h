@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/AccountInterface.h"
+#include "Interface/AccountServiceInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/FileGroupInterface.h"
 
@@ -61,7 +61,7 @@ namespace Mengine
     public:
         AccountInterfacePtr getAccount( const ConstString& _accountID ) override;
 
-        void visitAccounts( AccountVisitorInterface * _visitor ) const override;
+        void visitAccounts( const AccountVisitorInterfacePtr & _visitor ) const override;
 
     protected:
         bool loadAccount_( const AccountInterfacePtr & _account );

@@ -1,18 +1,16 @@
 #include "SDLFileGroupDirectory.h"
 
-#include "Interface/SDLLayerInterface.h"
 #include "Interface/UnicodeInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "SDLFileInputStream.h"
 #include "SDLFileOutputStream.h"
 #include "SDLFileMappedStream.h"
+#include "SDLFileHelper.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"
-
 #include "Kernel/Logger.h"
-
 #include "Kernel/String.h"
 
 #include "SDL_rwops.h"
@@ -81,8 +79,7 @@ namespace Mengine
         // SDL doesn't have this, so we're emulating ... ugly way :(
 
         Char filePath[MENGINE_MAX_PATH];
-        if( SDLLAYER_SERVICE()
-            ->concatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
+        if( Helper::concatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()

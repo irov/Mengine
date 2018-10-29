@@ -1,13 +1,13 @@
 #include "Package.h"
 
-#include "Interface/LoaderInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ProfilerInterface.h"
-#include "Interface/UserdataInterface.h"
+#include "Interface/UserdataServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 
@@ -26,6 +26,10 @@ namespace Mengine
         , m_enable( false )
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	Package::~Package()
+	{
+	}
     //////////////////////////////////////////////////////////////////////////
     void Package::setup( const ConstString & _name
         , const ConstString & _type
@@ -55,6 +59,11 @@ namespace Mengine
     {
         return m_preload;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void Package::setName( const ConstString & _name )
+	{
+		m_name = _name;
+	}
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Package::getName() const
     {

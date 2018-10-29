@@ -1,9 +1,9 @@
-SET( MY_LIB_NAME C11TimerSystem )
+SET( MY_LIB_NAME C11TimeSystem )
 
 ADD_FILTER(
 src
-    C11TimerSystem.h
-    C11TimerSystem.cpp
+    C11TimeSystem.h
+    C11TimeSystem.cpp
 )
 
 ADD_MENGINE_LIBRARY()

@@ -1,6 +1,6 @@
 #include "VideoConverterFFMPEGToOGVA.h"
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/PlatformInterface.h"
 

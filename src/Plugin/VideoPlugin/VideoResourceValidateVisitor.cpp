@@ -2,7 +2,7 @@
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/ConfigInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 

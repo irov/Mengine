@@ -1,6 +1,6 @@
 #include "ArchiveService.h"
 
-#include "Interface/MemoryInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 

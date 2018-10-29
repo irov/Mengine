@@ -6,6 +6,7 @@
 #include "Interface/UnicodeInterface.h"
 
 #include "SDLFileGroupDirectory.h"
+#include "SDLFileGroupDirectoryFactory.h"
 
 #include "Kernel/FactoryDefault.h"
 
@@ -15,47 +16,19 @@ PLUGIN_FACTORY( SDLFileGroup, Mengine::SDLFileGroupPlugin)
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    namespace Detail
-    {
-        class SDLFileGroupDirectoryFactory
-            : public Factory
-        {
-        public:
-            SDLFileGroupDirectoryFactory( const FilePath & _relationPath )
-                : Factory( "SDLFileGroupDirectory" )
-                , m_relationPath( _relationPath )
-            {
-            }
-
-        protected:
-            Factorable * _createObject() override
-            {
-                SDLFileGroupDirectory * t = Helper::allocateT<SDLFileGroupDirectory>();
-
-                t->setRelationPath( m_relationPath );
-
-                return t;
-            }
-
-            void _destroyObject( Factorable * _obj ) override
-            {
-                Helper::freeT( _obj );
-            }
-
-        protected:
-            FilePath m_relationPath;
-        };
-    }
-    //////////////////////////////////////////////////////////////////////////
     SDLFileGroupPlugin::SDLFileGroupPlugin()
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	SDLFileGroupPlugin::~SDLFileGroupPlugin()
+	{
+	}
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileGroupPlugin::_initialize()
     {
         FILE_SERVICE()
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "global" )
-                , new Detail::SDLFileGroupDirectoryFactory( STRINGIZE_FILEPATH_LOCAL( "" ) )
+                , new SDLFileGroupDirectoryFactory( STRINGIZE_FILEPATH_LOCAL( "" ) )
             );
 
         WChar currentPathW[MENGINE_MAX_PATH];
@@ -69,7 +42,7 @@ namespace Mengine
 
         FILE_SERVICE()
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "dir" )
-                , new Detail::SDLFileGroupDirectoryFactory( relationPath )
+                , new SDLFileGroupDirectoryFactory( relationPath )
             );
 
         return true;

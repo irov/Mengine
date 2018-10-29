@@ -5,13 +5,13 @@
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/UnicodeInterface.h"
-#include "Interface/InputSystemInterface.h"
+#include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/TimerInterface.h"
 
 #ifdef WIN32
-#	include "WIN32/WindowsIncluder.h"
+#	include "Environment/WIN32/WindowsIncluder.h"
 #endif
 
 #ifdef __APPLE__
@@ -24,6 +24,7 @@
 #include "Kernel/FileLogger.h"
 #include "Kernel/IniUtil.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/FilePathHelper.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
@@ -783,13 +784,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLPlatform::removeFile( const WString & _path )
+    bool SDLPlatform::removeFile( const WChar * _path )
     {
         WChar userPath[MENGINE_MAX_PATH];
         this->getUserPath( userPath, MENGINE_MAX_PATH );
 
         WChar pathCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
+        Helper::pathCorrectBackslash( pathCorrect, _path );
 
         WChar fullPath[MENGINE_MAX_PATH];
         wcscpy( fullPath, userPath );

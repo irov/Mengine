@@ -35,7 +35,7 @@ namespace Mengine
         m_factories.erase( it_found );
     }
     //////////////////////////////////////////////////////////////////////////
-    void FactoryService::visitFactories( VisitorFactoryService * _visitor )
+    void FactoryService::visitFactories( const VisitorFactoryServicePtr & _visitor )
     {
         for( const Factory * factory : m_factories )
         {

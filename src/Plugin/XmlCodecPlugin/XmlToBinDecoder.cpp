@@ -1,6 +1,6 @@
 #include "XmlToBinDecoder.h"
 
-#include "Interface/LoaderInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryInterface.h"
@@ -64,6 +64,10 @@ namespace Mengine
     XmlToBinDecoder::XmlToBinDecoder()
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	XmlToBinDecoder::~XmlToBinDecoder()
+	{
+	}
     //////////////////////////////////////////////////////////////////////////
     const InputStreamInterfacePtr & XmlToBinDecoder::getStream() const
     {

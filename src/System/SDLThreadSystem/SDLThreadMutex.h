@@ -2,20 +2,22 @@
 
 #include "Interface/ThreadSystemInterface.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 #include "SDL_thread.h"
 
 namespace Mengine
 {
     class SDLThreadMutex
-        : public ServantBase<ThreadMutexInterface>
+        : public ThreadMutexInterface
+		, public Factorable
     {
     public:
         SDLThreadMutex();
+		~SDLThreadMutex() override;
 
     public:
-        bool initialize( const char * _file, uint32_t _line );
+        bool initialize( const Char * _doc, uint32_t _line );
 
     protected:
         void lock() override;

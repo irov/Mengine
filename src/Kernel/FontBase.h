@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/TextInterface.h"
+#include "Interface/TextFontInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Compilable.h"

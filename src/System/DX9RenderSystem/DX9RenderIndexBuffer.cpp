@@ -1,5 +1,7 @@
 #include "DX9RenderIndexBuffer.h"
 
+#include "Interface/MemoryServiceInterface.h"
+
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
 

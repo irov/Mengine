@@ -7,6 +7,8 @@
 
 #include "Environment/WIN32/WindowsIncluder.h"
 
+#include "Kernel/Factorable.h"
+
 namespace Mengine
 {
     class Win32Socket
@@ -20,7 +22,7 @@ namespace Mengine
         ~Win32Socket() override;
 
     public:
-        bool connect( const Char * _ip, const Char * _port ) override;
+        bool connect( const SocketConnectInfo & _info ) override;
         void disconnect() override;
 
     public:

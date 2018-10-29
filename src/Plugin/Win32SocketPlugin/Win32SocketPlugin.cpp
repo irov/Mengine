@@ -1,6 +1,6 @@
 #include "Win32SocketPlugin.h"
 
-#include "Interface/SocketInterface.h"
+#include "Interface/SocketSystemInterface.h"
 
 #include "Kernel/Logger.h"
 

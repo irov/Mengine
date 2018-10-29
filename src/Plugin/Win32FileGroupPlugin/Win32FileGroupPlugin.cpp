@@ -2,7 +2,7 @@
 
 #include "Interface/StringizeInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/FactoryDefault.h"

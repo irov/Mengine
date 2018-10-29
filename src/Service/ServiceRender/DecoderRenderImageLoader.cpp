@@ -2,6 +2,7 @@
 
 #include "Interface/PrefetcherInterface.h"
 #include "Interface/FileSystemInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/Logger.h"
 

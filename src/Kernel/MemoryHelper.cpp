@@ -1,6 +1,7 @@
 #include "MemoryHelper.h"
 
 #include "Interface/FileSystemInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 namespace Mengine
 {

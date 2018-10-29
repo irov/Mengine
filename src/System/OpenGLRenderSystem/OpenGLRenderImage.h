@@ -10,7 +10,8 @@
 namespace Mengine
 {
     class OpenGLRenderImage
-        : public ServantBase<RenderImageInterface>
+        : public RenderImageInterface
+		, public Factorable
     {
     public:
         OpenGLRenderImage();

@@ -1,7 +1,7 @@
 #include "Win32FileMappedStream.h"
 
-#include "Interface/MemoryInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/MemoryServiceInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 #include "Win32FileHelper.h"
 

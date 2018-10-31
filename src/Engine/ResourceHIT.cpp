@@ -8,8 +8,6 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Kernel/Logger.h"
 
 #include <math.h>
@@ -48,18 +46,16 @@ namespace Mengine
     {
         return m_codecType;
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceHIT::_loader( const Metabuf::Metadata * _meta )
-    {
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceHIT * metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceHIT *>(_meta);
-
-        m_filePath = metadata->get_File_Path();
-        metadata->get_File_Converter( &m_converterType );
-        metadata->get_File_Codec( &m_codecType );
-
-        return true;
-    }
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceHIT::setConverterType( const ConstString & _converterType )
+	{
+		m_converterType = _converterType;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceHIT::getConverterType() const
+	{
+		return m_converterType;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_convert()
     {

@@ -69,6 +69,7 @@ src
     ResourceServiceInterface.h
     UnicodeSystemInterface.h
     NotificatorInterface.h    
+	LoadableInterface.h
 	LoaderServiceInterface.h
     RandomizerInterface.h
     AnimationInterface.h

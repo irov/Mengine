@@ -11,9 +11,13 @@ namespace Mengine
 
     public:
         ResourceCursorICO();
+		~ResourceCursorICO() override;
+
+	public:
+		void setFilePath( const FilePath & _filePath );
 
     public:
-        const FilePath & getPath() const override;
+        const FilePath & getFilePath() const override;
         const MemoryInterfacePtr & getBuffer() const override;
 
     public:
@@ -21,11 +25,11 @@ namespace Mengine
         void _release() override;
 
     protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
-
-    protected:
-        FilePath m_path;
+        FilePath m_filePath;
 
         MemoryInterfacePtr m_buffer;
     };
+	//////////////////////////////////////////////////////////////////////////
+	typedef IntrusivePtr<ResourceCursorICO> ResourceCursorICOPtr;
+	//////////////////////////////////////////////////////////////////////////
 }

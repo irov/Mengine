@@ -16,9 +16,6 @@ namespace Mengine
         ~ResourceFile() override;
 
     public:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
-
-    public:
         void setFilePath( const FilePath & _filePath );
         const FilePath & getFilePath() const;
 
@@ -27,4 +24,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceFile> ResourceFilePtr;
+	//////////////////////////////////////////////////////////////////////////
 }

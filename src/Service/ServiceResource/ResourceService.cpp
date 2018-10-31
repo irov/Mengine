@@ -168,6 +168,9 @@ namespace Mengine
                 return false;
             }
 
+			LoadablePtr resource =
+				this->createLoadable
+
             if( resource->loader( meta_resource ) == false )
             {
                 LOGGER_ERROR( "ResourceManager::loadResource '%s' category '%s' group '%s' name '%s' type '%s' invalid load"

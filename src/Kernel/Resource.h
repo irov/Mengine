@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Loadable.h"
+#include "Interface/LoadableInterface.h"
 
 #include "Kernel/Compilable.h"
 #include "Kernel/Identity.h"
@@ -25,10 +25,10 @@ namespace Mengine
         , public Compilable
         , public Identity
         , public Reference
-        , public Loadable
         , public Scriptable
         , public Visitable
         , public Unknowable
+		, public LoadableInterface
     {
         DECLARE_VISITABLE_BASE();
 
@@ -51,9 +51,6 @@ namespace Mengine
 
     protected:
         virtual bool _initialize();
-
-    public:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
 
     public:
         bool convert();

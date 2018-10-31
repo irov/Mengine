@@ -6,7 +6,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "LoaderEngine.h"
+#include "LoaderService.h"
 
 namespace Metabuf
 {
@@ -70,7 +70,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::ConstString & _value, void * _userData )
     {
-        Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
+        Mengine::LoaderService * loader = static_cast<Mengine::LoaderService *>(_userData);
 
         uint32_t index;
         ar.readSize( index );
@@ -80,7 +80,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::FilePath & _value, void * _userData )
     {
-        Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
+        Mengine::LoaderService * loader = static_cast<Mengine::LoaderService *>(_userData);
 
         uint32_t index;
         ar.readSize( index );
@@ -109,7 +109,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Tags & _value, void * _userData )
     {
-        Mengine::LoaderEngine * loader = static_cast<Mengine::LoaderEngine *>(_userData);
+        Mengine::LoaderService * loader = static_cast<Mengine::LoaderService *>(_userData);
 
         uint32_t count;
         ar.readSize( count );

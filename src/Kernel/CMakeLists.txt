@@ -234,16 +234,7 @@ ADD_FILTER(
 Resource\\\\Image
 	ResourceImage.cpp
 	ResourceImage.h
-	ResourceImageData.cpp
-	ResourceImageData.h
 )
-
-ADD_FILTER(
-Resource\\\\Music
-    ResourceMusic.cpp
-    ResourceMusic.h
-)
-
 
 ADD_FILTER(
 Vertices
@@ -260,12 +251,6 @@ ThreadTask
     ThreadJob.cpp
 	ThreadTaskPacket.h
 	ThreadTaskPacket.cpp
-)
-
-ADD_FILTER(
-Loadable
-	Loadable.h
-	Loadable.cpp
 )
 
 ADD_FILTER(

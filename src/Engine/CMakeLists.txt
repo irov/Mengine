@@ -156,10 +156,22 @@ Resource\\\\File
 )
 
 ADD_FILTER(
-Resource\\\\Animation
+Resource\\\\ImageData
+	ResourceImageData.cpp
+	ResourceImageData.h
+)
+
+ADD_FILTER(
+Resource\\\\ImageSequence
 	ResourceImageSequence.cpp
 	ResourceImageSequence.h
 )
+
+ADD_FILTER(
+Resource\\\\ResourceMusic
+	ResourceMusic.h
+	ResourceMusic.cpp
+)	
 
 ADD_FILTER(
 Resource\\\\Cursor

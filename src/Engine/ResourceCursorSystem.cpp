@@ -10,20 +10,19 @@ namespace Mengine
     ResourceCursorSystem::ResourceCursorSystem()
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	ResourceCursorSystem::~ResourceCursorSystem()
+	{
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceCursorSystem::setFilePath( const FilePath & _filePath )
+	{
+		m_filePath = _filePath;
+	}
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceCursorSystem::_loader( const Metabuf::Metadata * _meta )
+    const FilePath & ResourceCursorSystem::getFilePath() const
     {
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorSystem * metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorSystem *>(_meta);
-
-        m_path = metadata->get_File_Path();
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceCursorSystem::getPath() const
-    {
-        return m_path;
+        return m_filePath;
     }
     //////////////////////////////////////////////////////////////////////////
     const MemoryInterfacePtr & ResourceCursorSystem::getBuffer() const

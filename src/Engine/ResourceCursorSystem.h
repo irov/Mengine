@@ -11,17 +11,21 @@ namespace Mengine
 
     public:
         ResourceCursorSystem();
+		~ResourceCursorSystem() override;
+
+	public:
+		void setFilePath( const FilePath & _filePath );
 
     public:
-        const FilePath & getPath() const override;
+        const FilePath & getFilePath() const override;
         const MemoryInterfacePtr & getBuffer() const override;
 
     protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
-
-    protected:
-        FilePath m_path;
+        FilePath m_filePath;
 
         MemoryInterfacePtr m_buffer;
     };
+	//////////////////////////////////////////////////////////////////////////
+	typedef IntrusivePtr<ResourceCursorSystem> ResourceCursorSystemPtr;
+	//////////////////////////////////////////////////////////////////////////
 }

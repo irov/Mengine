@@ -23,8 +23,10 @@ namespace Mengine
         void setCodecType( const ConstString & _codec );
         const ConstString & getCodecType() const;
 
+		void setConverterType( const ConstString & _converterType );
+		const ConstString & getConverterType() const;
+
     public:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
         bool _convert() override;
 
     protected:

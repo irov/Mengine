@@ -5,7 +5,7 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/SoundServiceInterface.h"
 
-#include "Kernel/ResourceMusic.h"
+#include "Engine/ResourceMusic.h"
 
 #include "Kernel/Logger.h"
 

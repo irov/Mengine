@@ -44,14 +44,6 @@ namespace Mengine
     {
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool Resource::_loader( const Metabuf::Metadata * _parser )
-    {
-        (void)_parser;
-        //Empty
-
-        return true;
-    }
     //////////////////////////////////////////////////////////////////////////        
     bool Resource::convert()
     {

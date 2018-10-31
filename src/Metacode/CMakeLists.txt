@@ -11,8 +11,8 @@ Metabuf
 
 ADD_FILTER(
 Loader
-	LoaderEngine.cpp
-	LoaderEngine.h
+	LoaderService.cpp
+	LoaderService.h
 )
    
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )

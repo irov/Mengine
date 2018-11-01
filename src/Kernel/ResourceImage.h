@@ -78,7 +78,7 @@ namespace Mengine
         RenderTextureInterfacePtr m_texture;
         RenderTextureInterfacePtr m_textureAlpha;
 
-        ColourValue m_textureColor;
+        ColourValue m_color;
 
         mt::vec2f m_maxSize;
         mt::vec2f m_size;
@@ -158,12 +158,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     inline void ResourceImage::setColor( const ColourValue & _colour )
     {
-        m_textureColor = _colour;
+        m_color = _colour;
     }
     //////////////////////////////////////////////////////////////////////////
     inline const ColourValue & ResourceImage::getColor() const
     {
-        return m_textureColor;
+        return m_color;
     }
     //////////////////////////////////////////////////////////////////////////
     inline void ResourceImage::setUVImageRotate( bool _rotate )

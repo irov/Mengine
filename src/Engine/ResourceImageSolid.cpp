@@ -22,7 +22,7 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSolid * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSolid *>(_meta);
 
-        m_textureColor = metadata->get_Color_Value();
+        m_color = metadata->get_Color_Value();
 
         const mt::vec2f & size = metadata->get_Size_Value();
 

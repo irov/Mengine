@@ -1,48 +1,36 @@
-#include "ResourceImageSolid.h"
+#include "LoaderResourceImageSolid.h"
+
+#include "Engine/ResourceImageSolid.h"
 
 #include "Metacode/Metacode.h"
-
-#include "Kernel/Logger.h"
-
-#include "Interface/RenderSystemInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ResourceImageSolid::ResourceImageSolid()
+	LoaderResourceImageSolid::LoaderResourceImageSolid()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceImageSolid::~ResourceImageSolid()
+	LoaderResourceImageSolid::~LoaderResourceImageSolid()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageSolid::_loader( const Metabuf::Metadata * _meta )
+    bool LoaderResourceImageSolid::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
+		ResourceImageSolidPtr resource = stdex::intrusive_static_cast<ResourceImageSolidPtr>(_loadable);
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSolid * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSolid *>(_meta);
 
-        m_textureColor = metadata->get_Color_Value();
-
+        const ColourValue & color = metadata->get_Color_Value();
         const mt::vec2f & size = metadata->get_Size_Value();
 
-        m_maxSize = size;
-        m_size = size;
-        m_offset = mt::vec2f( 0.f, 0.f );
+		resource->setColor( color );
 
-        m_hasAlpha = false;
-
-        m_texture = nullptr;
-        m_textureAlpha = nullptr;
+		resource->setMaxSize( size );
+		resource->setSize( size );
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageSolid::_compile()
-    {
-        this->setPow2( true );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
+    
 }

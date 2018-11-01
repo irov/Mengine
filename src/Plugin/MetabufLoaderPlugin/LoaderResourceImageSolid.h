@@ -1,27 +1,17 @@
 #pragma once
 
-#include "Kernel/ResourceImage.h"
-
-#include "Config/Typedef.h"
-#include "Kernel/ColourValue.h"
+#include "Interface/LoaderServiceInterface.h"
 
 namespace Mengine
 {
-    class ResourceImageSolid
-        : public ResourceImage
+    class LoaderResourceImageSolid
+		: public LoaderInterface
     {
-        DECLARE_VISITABLE( ResourceImage );
-
     public:
-        ResourceImageSolid();
-        ~ResourceImageSolid() override;
+		LoaderResourceImageSolid();
+        ~LoaderResourceImageSolid() override;
 
     protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
-
-    protected:
-        bool _compile() override;
+		bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceImageSolid> ResourceImageSolidPtr;
 }

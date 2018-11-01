@@ -27,16 +27,12 @@ namespace Mengine
 		resource->setFilePath( filePath );
         
 		ConstString converterType;
-		if( metadata->get_File_Converter( &converterType ) == true )
-		{
-			resource->setConverterType( converterType );
-		}
+		metadata->get_File_Converter( &converterType );
+		resource->setConverterType( converterType );
 
 		ConstString codecType;
-		if( metadata->get_File_Codec( &codecType ) == true )
-		{
-			resource->setCodecType( codecType );
-		}
+		metadata->get_File_Codec( &codecType );
+		resource->setCodecType( codecType );
 
         return true;
     }    

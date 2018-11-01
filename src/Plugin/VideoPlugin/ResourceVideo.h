@@ -3,6 +3,7 @@
 #include "VideoInterface.h"
 
 #include "Kernel/Resource.h"
+#include "Kernel/Content.h"
 #include "Kernel/ResourceCacher.h"
 
 #include "math/vec2.h"
@@ -11,6 +12,7 @@ namespace Mengine
 {
     class ResourceVideo
         : public Resource
+		, public Content
     {
         DECLARE_VISITABLE( Resource );
 
@@ -58,11 +60,6 @@ namespace Mengine
         void _release() override;
 
     protected:
-        FilePath m_filePath;
-
-        ConstString m_converterType;
-        ConstString m_codecType;
-
         float m_frameRate;
         float m_duration;
 

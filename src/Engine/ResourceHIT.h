@@ -4,27 +4,19 @@
 
 #include "ResourceTestPick.h"
 
+#include "Kernel/Content.h"
+
 namespace Mengine
 {
     class ResourceHIT
         : public ResourceTestPick
+		, public Content
     {
         DECLARE_VISITABLE( ResourceTestPick );
 
     public:
         ResourceHIT();
         ~ResourceHIT() override;
-
-    public:
-        void setFilePath( const FilePath & _filePath );
-        const FilePath & getFilePath() const;
-
-    public:
-        void setCodecType( const ConstString & _codec );
-        const ConstString & getCodecType() const;
-
-		void setConverterType( const ConstString & _converterType );
-		const ConstString & getConverterType() const;
 
     public:
         bool _convert() override;
@@ -50,10 +42,6 @@ namespace Mengine
         uint8_t * getHitBuffer_( uint32_t _level ) const;
 
     protected:
-        FilePath m_filePath;
-        ConstString m_codecType;
-        ConstString m_converterType;
-
         uint32_t m_width;
         uint32_t m_height;
         uint32_t m_mipmaplevel;

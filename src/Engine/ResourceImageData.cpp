@@ -19,40 +19,20 @@ namespace Mengine
         , m_width( 0 )
         , m_height( 0 )
         , m_buffer( nullptr )
-        , m_validNoExist( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceImageData::~ResourceImageData()
     {
-    }
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageData::setFilePath( const FilePath & _filePath )
-	{
-		m_fileName = _filePath;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceImageData::getFilePath() const
-    {
-        return m_fileName;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceImageData::setCodecType( const ConstString & _codecType )
-    {
-        m_codecType = _codecType;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceImageData::getCodecType() const
-    {
-        return m_codecType;
-    }
+    }	
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageData::_compile()
     {
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+		const FilePath & filePath = this->getFilePath();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, m_fileName, false );
+            ->openInputFile( fileGroup, filePath, false );
 
         if( stream == nullptr )
         {
@@ -135,21 +115,6 @@ namespace Mengine
         m_buffer = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceImageData::setImagePath( const FilePath & _imagePath )
-    {
-        m_fileName = _imagePath;
-
-        m_codecType = CODEC_SERVICE()
-            ->findCodecType( _imagePath );
-
-        m_maxSize = mt::vec2f( 0.f, 0.f );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceImageData::getImagePath() const
-    {
-        return m_fileName;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void ResourceImageData::setImageMaxSize( const mt::vec2f & _maxSize )
     {
         m_maxSize = _maxSize;
@@ -183,15 +148,5 @@ namespace Mengine
     Pointer ResourceImageData::getImageBuffer() const
     {
         return m_buffer;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageData::setValidNoExist( bool _validNoExist )
-	{
-		m_validNoExist = _validNoExist;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageData::isValidNoExist() const
-    {
-        return m_validNoExist;
     }
 }

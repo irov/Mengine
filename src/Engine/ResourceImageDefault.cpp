@@ -20,6 +20,10 @@ namespace Mengine
         : m_validNoExist( false )
     {
     }
+	//////////////////////////////////////////////////////////////////////////
+	ResourceImageDefault::~ResourceImageDefault()
+	{
+	}
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageDefault::setFilePath( const FilePath & _filePath )
     {
@@ -40,6 +44,16 @@ namespace Mengine
     {
         return m_codecType;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageDefault::setConverterType( const ConstString & _converterType )
+	{
+		m_converterType = _converterType;
+	}
+	//////////////////////////////////////////////////////////////////////////
+	const ConstString & ResourceImageDefault::getConverterType() const
+	{
+		return m_converterType;
+	}
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_loader( const Metabuf::Metadata * _meta )
     {
@@ -54,7 +68,7 @@ namespace Mengine
                 ->findCodecType( m_filePath );
         }
 
-        metadata->get_File_Converter( &m_converter );
+        metadata->get_File_Converter( &m_converterType );
 
         m_hasAlpha = true;
         metadata->get_File_Alpha( &m_hasAlpha );
@@ -76,7 +90,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_convert()
     {
-        bool result = this->convertDefault_( m_converter, m_filePath, m_filePath, m_codecType );
+        bool result = this->convertDefault_( m_converterType, m_filePath, m_filePath, m_codecType );
 
         return result;
     }

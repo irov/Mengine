@@ -27,36 +27,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceHIT::setFilePath( const FilePath & _filePath )
-    {
-        m_filePath = _filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceHIT::getFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceHIT::setCodecType( const ConstString & _codec )
-    {
-        m_codecType = _codec;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceHIT::getCodecType() const
-    {
-        return m_codecType;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceHIT::setConverterType( const ConstString & _converterType )
-	{
-		m_converterType = _converterType;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceHIT::getConverterType() const
-	{
-		return m_converterType;
-	}
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_convert()
     {
         bool result = this->convertDefault_( m_converterType, m_filePath, m_filePath, m_codecType );

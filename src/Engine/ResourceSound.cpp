@@ -23,26 +23,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceSound::setFilePath( const FilePath& _path )
-    {
-        m_filePath = _path;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceSound::getFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceSound::setCodecType( const ConstString& _codec )
-    {
-        m_codecType = _codec;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceSound::getCodecType() const
-    {
-        return m_codecType;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_loader( const Metabuf::Metadata * _meta )
     {
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSound * metadata

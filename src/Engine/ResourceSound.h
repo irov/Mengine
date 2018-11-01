@@ -1,26 +1,21 @@
 #pragma once
 
-#include "Interface/SoundSystemInterface.h"
+#include "Interface/SoundBufferInterface.h"
 
 #include "Kernel/Resource.h"
+#include "Kernel/Content.h"
 
 namespace Mengine
 {
     class ResourceSound
         : public Resource
+		, public Content
     {
         DECLARE_VISITABLE( Resource );
 
     public:
         ResourceSound();
         ~ResourceSound() override;
-
-    public:
-        void setFilePath( const FilePath & _path );
-        const FilePath& getFilePath() const;
-
-        void setCodecType( const ConstString & _codec );
-        const ConstString & getCodecType() const;
 
     public:
         bool isStreamable() const;
@@ -42,10 +37,6 @@ namespace Mengine
         void _debugDecrementReference() override;
 
     protected:
-        FilePath m_filePath;
-
-        ConstString m_codecType;
-        ConstString m_converterType;
         float m_defaultVolume;
 
         SoundBufferInterfacePtr m_soundBufferNoStreamableCache;

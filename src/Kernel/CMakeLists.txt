@@ -237,6 +237,12 @@ Resource\\\\Image
 )
 
 ADD_FILTER(
+Resource\\\\Content
+	Content.cpp
+	Content.h
+)
+
+ADD_FILTER(
 Vertices
 	FixedVertices.h
 	VectorVertices.cpp

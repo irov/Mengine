@@ -4,8 +4,6 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/Logger.h"
@@ -22,38 +20,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageSequence::_loader( const Metabuf::Metadata * _meta )
-    {
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence * metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence *>(_meta);
-
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence::VectorMeta_Sequence & includes_sequence = metadata->get_Includes_Sequence();
-
-        m_duration = 0.f;
-
-        for( Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence::VectorMeta_Sequence::const_iterator
-            it = includes_sequence.begin(),
-            it_end = includes_sequence.end();
-            it != it_end;
-            ++it )
-        {
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence::Meta_Sequence & meta_sequence = *it;
-
-            AnimationSequence sq;
-
-            sq.resourceName = meta_sequence.get_ResourceImageName();
-            float delay = meta_sequence.get_Delay();
-
-            sq.delay = delay;
-
-            m_duration += delay;
-
-            m_sequence.emplace_back( sq );
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSequence::_compile()
     {
         if( m_sequence.empty() )
@@ -65,7 +31,7 @@ namespace Mengine
             return false;
         }
 
-        for( AnimationSequence & sequence : m_sequence )
+        for( FrameImageSequence & sequence : m_sequence )
         {
             ResourceImagePtr resource = RESOURCE_SERVICE()
                 ->getResource( sequence.resourceName );
@@ -88,7 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSequence::_release()
     {
-        for( AnimationSequence & sequence : m_sequence )
+        for( FrameImageSequence & sequence : m_sequence )
         {
             sequence.resource->decrementReference();
             sequence.resource = nullptr;
@@ -97,7 +63,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t ResourceImageSequence::getSequenceCount() const
     {
-        VectorAnimationSequence::size_type sequenceCount = m_sequence.size();
+        VectorFrameImageSequence::size_type sequenceCount = m_sequence.size();
 
         return (uint32_t)sequenceCount;
     }
@@ -119,7 +85,7 @@ namespace Mengine
         }
 #endif
 
-        const AnimationSequence & sequence = m_sequence[_index];
+        const FrameImageSequence & sequence = m_sequence[_index];
 
         float delay = sequence.delay;
 
@@ -143,7 +109,7 @@ namespace Mengine
         }
 #endif
 
-        const AnimationSequence & sequence = m_sequence[_index];
+        const FrameImageSequence & sequence = m_sequence[_index];
 
         const ConstString & resourceName = sequence.resourceName;
 
@@ -169,13 +135,22 @@ namespace Mengine
 
         return lastIndex;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageSequence::addFrame( const ConstString & _resourceName, float _delay )
+	{
+		FrameImageSequence frame;
+		frame.resourceName = _resourceName;
+		frame.delay = _delay;
+
+		m_sequence.emplace_back( frame );
+	}
     //////////////////////////////////////////////////////////////////////////
-    void ResourceImageSequence::setSequences( const VectorAnimationSequence & _sequence )
+    void ResourceImageSequence::setSequence( const VectorFrameImageSequence & _sequence )
     {
         m_sequence = _sequence;
     }
     //////////////////////////////////////////////////////////////////////////
-    const VectorAnimationSequence & ResourceImageSequence::getSequences() const
+    const VectorFrameImageSequence & ResourceImageSequence::getSequence() const
     {
         return m_sequence;
     }
@@ -197,12 +172,17 @@ namespace Mengine
         }
 #endif
 
-        const AnimationSequence & sequence = m_sequence[_index];
+        const FrameImageSequence & sequence = m_sequence[_index];
 
         const ResourceImagePtr & resource = sequence.resource;
 
         return resource;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void ResourceImageSequence::setSequenceDuration( float _duration )
+	{
+		m_duration = _duration;
+	}
     //////////////////////////////////////////////////////////////////////////
     float ResourceImageSequence::getSequenceDuration() const
     {

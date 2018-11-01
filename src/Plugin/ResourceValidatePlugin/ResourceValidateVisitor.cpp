@@ -375,9 +375,9 @@ namespace Mengine
     {
         size_t total_memory = 0;
 
-        const VectorAnimationSequence & sequences = _resource->getSequences();
+        const VectorFrameImageSequence & sequences = _resource->getSequence();
 
-        for( const AnimationSequence & sequence : sequences )
+        for( const FrameImageSequence & sequence : sequences )
         {
             ResourceImagePtr resourceImage;
             if( RESOURCE_SERVICE()

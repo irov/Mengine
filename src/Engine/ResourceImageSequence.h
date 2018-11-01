@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Resource.h"
+#include "Kernel/ResourceImage.h"
 
 #include "Config/Vector.h"
 
@@ -9,14 +10,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
     //////////////////////////////////////////////////////////////////////////
-    struct AnimationSequence
+    struct FrameImageSequence
     {
         ResourceImagePtr resource;
         float delay;
         ConstString resourceName;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef Vector<AnimationSequence> VectorAnimationSequence;
+    typedef Vector<FrameImageSequence> VectorFrameImageSequence;
     //////////////////////////////////////////////////////////////////////////
     class ResourceImageSequence
         : public Resource
@@ -30,25 +31,27 @@ namespace Mengine
     public:
         uint32_t getSequenceCount() const;
         float getSequenceDelay( uint32_t _index ) const;
-        const ConstString& getSequenceResourceName( uint32_t _index ) const;
+        const ConstString & getSequenceResourceName( uint32_t _index ) const;
         const ResourceImagePtr & getSequenceResource( uint32_t _index ) const;
 
         uint32_t getLastFrameIndex() const;
+
+		void setSequenceDuration( float _duration );
         float getSequenceDuration() const;
 
-    public:
-        void setSequences( const VectorAnimationSequence & _sequence );
-        const VectorAnimationSequence & getSequences() const;
+	public:
+		void addFrame( const ConstString & _resourceName, float _delay );
 
-    protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
+    public:
+        void setSequence( const VectorFrameImageSequence & _sequence );
+        const VectorFrameImageSequence & getSequence() const;
 
     protected:
         bool _compile() override;
         void _release() override;
 
     protected:
-        VectorAnimationSequence m_sequence;
+        VectorFrameImageSequence m_sequence;
 
         float m_duration;
     };

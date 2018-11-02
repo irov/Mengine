@@ -33,7 +33,7 @@ namespace Mengine
 
         for( FrameImageSequence & sequence : m_sequence )
         {
-            ResourceImagePtr resource = RESOURCE_SERVICE()
+            const ResourceImagePtr & resource = RESOURCE_SERVICE()
                 ->getResource( sequence.resourceName );
 
             if( resource == nullptr )

@@ -1,40 +1,17 @@
 #pragma once
 
-#include "Kernel/Resource.h"
-
-#include "Config/Vector.h"
+#include "Interface/LoaderServiceInterface.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    class ResourceMusic
-        : public Resource
+{    
+    class LoaderResourceMusic
+        : public LoaderInterface
     {
-        DECLARE_VISITABLE( Resource );
-
     public:
-        ResourceMusic();
-        ~ResourceMusic() override;
-
-    public:
-        const FilePath & getPath() const;
-        const ConstString & getCodec() const;
-
-        float getVolume() const;
-        bool isExternal() const;
+        LoaderResourceMusic();
+        ~LoaderResourceMusic() override;
 
     protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
-        bool _convert() override;
-
-    private:
-        FilePath m_path;
-        ConstString m_codec;
-        ConstString m_converter;
-
-        float m_volume;
-        bool m_external;
+        bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceMusic> ResourceMusicPtr;
 }

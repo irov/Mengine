@@ -4,12 +4,12 @@
 
 namespace Mengine
 {
-    class LoaderResourceSound
+    class LoaderResourceInternalObject
         : public LoaderInterface
     {
     public:
-        LoaderResourceSound();
-        ~LoaderResourceSound() override;
+        LoaderResourceInternalObject();
+        ~LoaderResourceInternalObject() override;
 
     protected:
         bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;

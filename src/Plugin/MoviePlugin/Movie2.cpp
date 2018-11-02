@@ -144,7 +144,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::createCompositionLayers_()
     {
-        const ResourceMovie2Composition * composition = m_resourceMovie2->getCompositionDesc( m_compositionName );
+        const ResourceMovie2CompositionDesc * composition = m_resourceMovie2->getCompositionDesc( m_compositionName );
 
         if( composition == nullptr )
         {

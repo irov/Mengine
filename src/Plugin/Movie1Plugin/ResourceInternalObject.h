@@ -14,11 +14,11 @@ namespace Mengine
         ~ResourceInternalObject() override;
 
     public:
+        void setInternalName( const ConstString & _internalName );
         const ConstString & getInternalName() const;
-        const ConstString & getInternalGroup() const;
 
-    protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
+        void setInternalGroup( const ConstString & _internalGroup );
+        const ConstString & getInternalGroup() const;
 
     protected:
         bool _compile() override;

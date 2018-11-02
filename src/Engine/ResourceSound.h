@@ -18,11 +18,13 @@ namespace Mengine
         ~ResourceSound() override;
 
     public:
+        void setStreamable( bool _streamable );
         bool isStreamable() const;
+
+        void setDefaultVolume( float _defaultVolume );
         float getDefaultVolume() const;
 
     public:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
         bool _convert() override;
 
     public:
@@ -33,10 +35,6 @@ namespace Mengine
         void _release() override;
 
     protected:
-        void _debugIncrementReference() override;
-        void _debugDecrementReference() override;
-
-    protected:
         float m_defaultVolume;
 
         SoundBufferInterfacePtr m_soundBufferNoStreamableCache;
@@ -45,4 +43,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusiveResourcePtr<ResourceSound> ResourceSoundPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

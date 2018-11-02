@@ -11,10 +11,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Reference::incrementReference()
     {
-#ifndef NDEBUG
-        this->_debugIncrementReference();
-#endif
-
         if( ++m_refcounter == 1 )
         {
             if( this->_incrementZero() == false )
@@ -30,10 +26,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Reference::decrementReference()
     {
-#ifndef NDEBUG
-        this->_debugDecrementReference();
-#endif
-
         if( m_refcounter == 0 )
         {
             return false;
@@ -53,16 +45,6 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Reference::_decrementZero()
-    {
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Reference::_debugIncrementReference()
-    {
-        //Empty
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Reference::_debugDecrementReference()
     {
         //Empty
     }

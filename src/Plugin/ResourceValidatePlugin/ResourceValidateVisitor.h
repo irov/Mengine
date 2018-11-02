@@ -1,9 +1,9 @@
 #pragma once
 
 #include "Engine/ResourceImageDefault.h"
-#include "Kernel/ResourceImageData.h"
+#include "Engine/ResourceImageData.h"
 #include "Engine/ResourceImageSequence.h"
-#include "Kernel/ResourceMusic.h"
+#include "Engine/ResourceMusic.h"
 #include "Engine/ResourceSound.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceFile.h"

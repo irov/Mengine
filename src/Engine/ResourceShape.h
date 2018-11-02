@@ -16,10 +16,8 @@ namespace Mengine
         ~ResourceShape() override;
 
     public:
+        void setPolygon( const Polygon & _polygon );
         const Polygon & getPolygon() const;
-
-    public:
-        bool _loader( const Metabuf::Metadata * _meta ) override;
 
     protected:
         bool _compile() override;

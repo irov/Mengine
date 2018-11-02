@@ -53,40 +53,7 @@ namespace Mengine
 	const ConstString & ResourceImageDefault::getConverterType() const
 	{
 		return m_converterType;
-	}
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageDefault::_loader( const Metabuf::Metadata * _meta )
-    {
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageDefault * metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
-
-        m_filePath = metadata->get_File_Path();
-
-        if( metadata->get_File_Codec( &m_codecType ) == false )
-        {
-            m_codecType = CODEC_SERVICE()
-                ->findCodecType( m_filePath );
-        }
-
-        metadata->get_File_Converter( &m_converterType );
-
-        m_hasAlpha = true;
-        metadata->get_File_Alpha( &m_hasAlpha );
-
-        m_isPremultiply = false;
-        metadata->get_File_Premultiply( &m_isPremultiply );
-
-        m_maxSize = metadata->get_File_MaxSize();
-
-        m_size = m_maxSize;
-        metadata->get_File_Size( &m_size );
-        metadata->get_File_Offset( &m_offset );
-
-        m_validNoExist = false;
-        metadata->get_File_NoExist( &m_validNoExist );
-
-        return true;
-    }
+	}    
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_convert()
     {

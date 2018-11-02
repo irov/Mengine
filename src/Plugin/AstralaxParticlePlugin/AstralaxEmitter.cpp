@@ -608,7 +608,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::compileEmitterImage_( const AstralaxEmitterInterfacePtr & _emitter )
     {
-        ResourcePtr resourceHIT = RESOURCE_SERVICE()
+        const ResourcePtr & resourceHIT = RESOURCE_SERVICE()
             ->getResource( m_emitterImageName );
 
         if( resourceHIT == nullptr )

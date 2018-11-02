@@ -448,7 +448,7 @@ namespace Mengine
             return true;
         }
 
-        const FilePath & filePath = _resource->getPath();
+        const FilePath & filePath = _resource->getFilePath();
 
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
@@ -457,7 +457,7 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' music '%s' not exist"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
-                , _resource->getPath().c_str()
+                , _resource->getFilePath().c_str()
             );
 
             return false;

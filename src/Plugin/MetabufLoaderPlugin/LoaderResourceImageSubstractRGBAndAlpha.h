@@ -1,36 +1,17 @@
 #pragma once
 
-#include "Kernel/ResourceImage.h"
-
-#include "Config/Typedef.h"
+#include "Interface/LoaderServiceInterface.h"
 
 namespace Mengine
 {
-    class ResourceImageSubstractRGBAndAlpha
-        : public ResourceImage
+    class LoaderResourceImageSubstractRGBAndAlpha
+        : public LoaderInterface
     {
-        DECLARE_VISITABLE( ResourceImage );
-
     public:
-        ResourceImageSubstractRGBAndAlpha();
-        ~ResourceImageSubstractRGBAndAlpha() override;
-
-    public:
-        const ConstString & getResourceRGBName() const;
-        const ConstString & getResourceAlphaName() const;
+        LoaderResourceImageSubstractRGBAndAlpha();
+        ~LoaderResourceImageSubstractRGBAndAlpha() override;
 
     protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
-
-    protected:
-        bool _compile() override;
-        void _release() override;
-
-    protected:
-        ConstString m_resourceImageRGBName;
-        ResourceImagePtr m_resourceImageRGB;
-
-        ConstString m_resourceImageAlphaName;
-        ResourceImagePtr m_resourceImageAlpha;
+        bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;
     };
 }

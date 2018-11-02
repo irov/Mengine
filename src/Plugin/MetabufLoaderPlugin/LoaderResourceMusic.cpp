@@ -1,70 +1,54 @@
-#include "ResourceMusic.h"
+#include "LoaderResourceMusic.h"
 
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/FileGroupInterface.h"
+
+#include "Engine/ResourceMusic.h"
 
 #include "Metacode/Metacode.h"
-
-#include "Kernel/Logger.h"
-#include "Kernel/String.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ResourceMusic::ResourceMusic()
-        : m_volume( 1.f )
-        , m_external( false )
+    LoaderResourceMusic::LoaderResourceMusic()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceMusic::~ResourceMusic()
+    LoaderResourceMusic::~LoaderResourceMusic()
     {
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceMusic::getPath() const
+    bool LoaderResourceMusic::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        return m_path;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceMusic::getCodec() const
-    {
-        return m_codec;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float ResourceMusic::getVolume() const
-    {
-        return m_volume;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceMusic::isExternal() const
-    {
-        return m_external;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceMusic::_loader( const Metabuf::Metadata * _meta )
-    {
+        ResourceMusicPtr resource = stdex::intrusive_static_cast<ResourceMusicPtr>(_loadable);
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMusic * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMusic *>(_meta);
 
-        m_path = metadata->get_File_Path();
+        const FilePath & filePath = metadata->get_File_Path();
 
-        if( metadata->get_File_Codec( &m_codec ) == false )
+        resource->setFilePath( filePath );
+
+        ConstString codecType;
+        if( metadata->get_File_Codec( &codecType ) == false )
         {
-            m_codec = CODEC_SERVICE()
-                ->findCodecType( m_path );
+            codecType = CODEC_SERVICE()
+                ->findCodecType( filePath );
         }
 
-        metadata->get_File_Converter( &m_converter );
-        metadata->get_File_External( &m_external );
-        metadata->get_DefaultVolume_Value( &m_volume );
+        resource->setCodecType( codecType );
+
+        ConstString converterType;
+        metadata->get_File_Converter( &converterType );
+        resource->setConverterType( converterType );
+
+        bool external = false;
+        metadata->get_File_External( &external );
+        resource->setExternal( external );
+
+        float volume = 1.f;
+        metadata->get_DefaultVolume_Value( &volume );
+        resource->setVolume( volume );
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceMusic::_convert()
-    {
-        bool result = this->convertDefault_( m_converter, m_path, m_path, m_codec );
-
-        return result;
     }
 }

@@ -1,40 +1,31 @@
-#include "ResourceShape.h"
+#include "LoaderResourceShape.h"
+
+#include "Engine/ResourceShape.h"
 
 #include "Metacode/Metacode.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ResourceShape::ResourceShape()
+    LoaderResourceShape::LoaderResourceShape()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceShape::~ResourceShape()
+    LoaderResourceShape::~LoaderResourceShape()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    const Polygon & ResourceShape::getPolygon() const
+    bool LoaderResourceShape::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        return m_polygon;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceShape::_loader( const Metabuf::Metadata * _meta )
-    {
+        ResourceShapePtr resource = stdex::intrusive_static_cast<ResourceShapePtr>(_loadable);
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceShape * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceShape *>(_meta);
 
-        m_polygon = metadata->get_Polygon_Value();
+        const Polygon & polygon = metadata->get_Polygon_Value();
+
+        resource->setPolygon( polygon );
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceShape::_compile()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceShape::_release()
-    {
-        //Empty
-    }
+    }    
 }

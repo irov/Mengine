@@ -1,34 +1,17 @@
 #pragma once
 
-#include "Kernel/Resource.h"
-
-#include "Kernel/Polygon.h"
+#include "Interface/LoaderServiceInterface.h"
 
 namespace Mengine
 {
-    class ResourceShape
-        : public Resource
+    class LoaderResourceShape
+        : public LoaderInterface
     {
-        DECLARE_VISITABLE( Resource );
-
     public:
-        ResourceShape();
-        ~ResourceShape() override;
-
-    public:
-        const Polygon & getPolygon() const;
-
-    public:
-        bool _loader( const Metabuf::Metadata * _meta ) override;
+        LoaderResourceShape();
+        ~LoaderResourceShape() override;
 
     protected:
-        bool _compile() override;
-        void _release() override;
-
-    protected:
-        Polygon m_polygon;
+        bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;
     };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusiveResourcePtr<ResourceShape> ResourceShapePtr;
-    //////////////////////////////////////////////////////////////////////////
 }

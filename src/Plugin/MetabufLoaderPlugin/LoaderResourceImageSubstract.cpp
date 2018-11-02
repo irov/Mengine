@@ -1,91 +1,65 @@
-#include "LoaderResourceImageSequence.h"
+#include "LoaderResourceImageSubstract.h"
 
 #include "Engine/ResourceImageSubstract.h"
 
 #include "Metacode/Metacode.h"
 
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ResourceImageSubstract::ResourceImageSubstract()
+    LoaderResourceImageSubstract::LoaderResourceImageSubstract()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceImageSubstract::~ResourceImageSubstract()
+    LoaderResourceImageSubstract::~LoaderResourceImageSubstract()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageSubstract::_loader( const Metabuf::Metadata * _meta )
+    bool LoaderResourceImageSubstract::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
+        ResourceImageSubstractPtr resource = stdex::intrusive_static_cast<ResourceImageSubstractPtr>(_loadable);
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstract * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
 
-        m_hasAlpha = true;
+        const ConstString & resourceImageName = metadata->get_Image_Name();
 
-        m_resourceImageName = metadata->get_Image_Name();
+        resource->setResourceImageName( resourceImageName );
 
-        m_uvImage = metadata->get_Image_UV();
-        m_uvAlpha = m_uvImage;
+        const mt::uv4f & uvImage = metadata->get_Image_UV();
 
-        metadata->get_Image_UVRotate( &m_uvImageRotate );
-        m_uvAlphaRotate = m_uvImageRotate;
+        resource->setUVImage( uvImage );
+        resource->setUVAlpha( uvImage );
 
-        metadata->get_Image_Alpha( &m_hasAlpha );
+        bool uvImageRotate = false;
+        metadata->get_Image_UVRotate( &uvImageRotate );
+        
+        resource->setUVImageRotate( uvImageRotate );
+        resource->setUVAlphaRotate( uvImageRotate );
 
-        m_maxSize = metadata->get_Image_MaxSize();
+        bool hasAlpha;
+        metadata->get_Image_Alpha( &hasAlpha );
 
-        m_size = m_maxSize;
-        metadata->get_Image_Size( &m_size );
-        metadata->get_Image_Offset( &m_offset );
+        resource->setAlpha( hasAlpha );
+
+        const mt::vec2f & maxSize = metadata->get_Image_MaxSize();
+
+        resource->setMaxSize( maxSize );
+
+        mt::vec2f size;
+        if( metadata->get_Image_Size( &size ) == true )
+        {
+            resource->setSize( size );
+        }
+        else
+        {
+            resource->setSize( maxSize );
+        }
+        
+        mt::vec2f offset;
+        metadata->get_Image_Offset( &offset );
+        resource->setOffset( offset );
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageSubstract::_compile()
-    {
-        if( m_resourceImageName.empty() == true )
-        {
-            LOGGER_ERROR( "ResourceImageSubstract::_compile '%s' not setup image resource"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
-
-        m_resourceImage = RESOURCE_SERVICE()
-            ->getResource( m_resourceImageName );
-
-        if( m_resourceImage == nullptr )
-        {
-            LOGGER_ERROR( "ResourceImageSubstract::_compile '%s' category '%s' group '%s' invalid get image resource '%s'"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getGroupName().c_str()
-                , m_resourceImageName.c_str()
-            );
-
-            return false;
-        }
-
-        m_texture = m_resourceImage->getTexture();
-        m_textureAlpha = m_resourceImage->getTextureAlpha();
-
-        bool pow2 = m_texture->isPow2();
-
-        this->setPow2( pow2 );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceImageSubstract::_release()
-    {
-        ResourceImage::_release();
-
-        if( m_resourceImage != nullptr )
-        {
-            m_resourceImage->decrementReference();
-            m_resourceImage = nullptr;
-        }
     }
 }

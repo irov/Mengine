@@ -23,6 +23,10 @@ src
     ResourceMovie.h
     ResourceInternalObject.cpp
     ResourceInternalObject.h
+    LoaderResourceMovie.cpp
+    LoaderResourceMovie.h
+    LoaderResourceInternalObject.cpp
+    LoaderResourceInternalObject.h
     
     Movie1ResourceValidateVisitor.cpp
     Movie1ResourceValidateVisitor.h

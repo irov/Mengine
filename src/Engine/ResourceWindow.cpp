@@ -2,8 +2,6 @@
 
 #include "Interface/ResourceServiceInterface.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Kernel/Logger.h"
 
 #include "Kernel/ResourceImage.h"
@@ -15,7 +13,7 @@ namespace Mengine
     {
         for( int i = 0; i < ResourceWindow_Count; i++ )
         {
-            m_images[i].resource = nullptr;
+            m_elements[i].resourceImage = nullptr;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -23,41 +21,15 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceWindow::_loader( const Metabuf::Metadata * _meta )
-    {
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceWindow * metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceWindow *>(_meta);
-
-        metadata->get_WindowBackground_ResourceImageName( &m_images[ResourceWindow_Background].resourceName );
-
-        m_images[ResourceWindow_Bottom].resourceName = metadata->get_WindowBottom_ResourceImageName();
-        m_images[ResourceWindow_Left].resourceName = metadata->get_WindowLeft_ResourceImageName();
-        m_images[ResourceWindow_LeftBottom].resourceName = metadata->get_WindowLeftBottom_ResourceImageName();
-        m_images[ResourceWindow_LeftTop].resourceName = metadata->get_WindowLeftTop_ResourceImageName();
-        m_images[ResourceWindow_Right].resourceName = metadata->get_WindowRight_ResourceImageName();
-        m_images[ResourceWindow_RightBottom].resourceName = metadata->get_WindowRightBottom_ResourceImageName();
-        m_images[ResourceWindow_RightTop].resourceName = metadata->get_WindowRightTop_ResourceImageName();
-        m_images[ResourceWindow_Top].resourceName = metadata->get_WindowTop_ResourceImageName();
-
-        m_images[ResourceWindow_Bottom].offset = metadata->get_WindowBottom_Offset();
-        m_images[ResourceWindow_Left].offset = metadata->get_WindowLeft_Offset();
-        m_images[ResourceWindow_LeftBottom].offset = metadata->get_WindowLeftBottom_Offset();
-        m_images[ResourceWindow_LeftTop].offset = metadata->get_WindowLeftTop_Offset();
-        m_images[ResourceWindow_Right].offset = metadata->get_WindowRight_Offset();
-        m_images[ResourceWindow_RightBottom].offset = metadata->get_WindowRightBottom_Offset();
-        m_images[ResourceWindow_RightTop].offset = metadata->get_WindowRightTop_Offset();
-        m_images[ResourceWindow_Top].offset = metadata->get_WindowTop_Offset();
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceWindow::_compile()
     {
         for( int i = 0; i < ResourceWindow_Count; i++ )
         {
-            m_images[i].resource = nullptr;
+            WindowElement & element = m_elements[i];
 
-            if( m_images[i].resourceName.empty() == true )
+            element.resourceImage = nullptr;
+
+            if( element.resourceImageName.empty() == true )
             {
                 if( i == ResourceWindow_Background )
                 {
@@ -65,20 +37,20 @@ namespace Mengine
                 }
             }
 
-            ResourceImagePtr resource = RESOURCE_SERVICE()
-                ->getResource( m_images[i].resourceName );
+            const ResourceImagePtr & resourceImage = RESOURCE_SERVICE()
+                ->getResource( m_elements[i].resourceImageName );
 
-            if( resource == 0 )
+            if( resourceImage == nullptr )
             {
-                LOGGER_ERROR( "ResourceWindow: '%s' Image resource not found resource '%s'"
+                LOGGER_ERROR( "window '%s' not found resource '%s'"
                     , m_name.c_str()
-                    , m_images[i].resourceName.c_str()
+                    , element.resourceImageName.c_str()
                 );
 
                 return false;
             }
 
-            m_images[i].resource = resource;
+            element.resourceImage = resourceImage;
         }
 
         return true;
@@ -88,26 +60,65 @@ namespace Mengine
     {
         for( int i = 0; i < ResourceWindow_Count; i++ )
         {
-            if( m_images[i].resource != nullptr )
+            WindowElement & element = m_elements[i];
+
+            if( element.resourceImage != nullptr )
             {
-                m_images[i].resource->decrementReference();
-                m_images[i].resource = nullptr;
+                element.resourceImage->decrementReference();
+                element.resourceImage = nullptr;
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & ResourceWindow::getResource( int _type ) const
+    void ResourceWindow::setElementResourceImageName( uint32_t _type, const ConstString & _resourceImageName )
     {
-        const ResourceImagePtr & resource = m_images[_type].resource;
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count );
 
-        return resource;
+        WindowElement & element = m_elements[_type];
+
+        element.resourceImageName = _resourceImageName;
     }
     //////////////////////////////////////////////////////////////////////////
-    const mt::vec2f & ResourceWindow::getOffset( int _type ) const
+    const ConstString & ResourceWindow::getElementResourceImageName( uint32_t _type ) const
     {
-        const mt::vec2f & offset = m_images[_type].offset;
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count );
+
+        const WindowElement & element = m_elements[_type];
+
+        const ConstString & resourceImageName = element.resourceImageName;
+
+        return resourceImageName;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceWindow::setElementOffset( uint32_t _type, const mt::vec2f & _offset )
+    {
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count );
+
+        WindowElement & element = m_elements[_type];
+
+        element.offset = _offset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const mt::vec2f & ResourceWindow::getElementOffset( uint32_t _type ) const
+    {
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count );
+
+        const WindowElement & element = m_elements[_type];
+
+        const mt::vec2f & offset = element.offset;
 
         return offset;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceImagePtr & ResourceWindow::getElementResourceImage( uint32_t _type ) const
+    {
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count );
+
+        const WindowElement & element = m_elements[_type];
+
+        const ResourceImagePtr & resourceImage = element.resourceImage;
+
+        return resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
 }

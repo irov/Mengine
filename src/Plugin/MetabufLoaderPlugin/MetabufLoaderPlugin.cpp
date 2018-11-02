@@ -1,37 +1,27 @@
-#include "LZ4Plugin.h"
-
-#include "Interface/StringizeInterface.h"
-#include "Interface/ArchiveServiceInterface.h"
-
-#include "ArchivatorLZ4.h"
+#include "MetabufLoaderPlugin.h"
 
 #include "Kernel/FactorableUnique.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( LZ4, Mengine::LZ4Plugin );
+PLUGIN_FACTORY( MetabufLoader, Mengine::MetabufLoaderPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    LZ4Plugin::LZ4Plugin()
+    MetabufLoaderPlugin::MetabufLoaderPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    LZ4Plugin::~LZ4Plugin()
+    MetabufLoaderPlugin::~MetabufLoaderPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LZ4Plugin::_initialize()
+    bool MetabufLoaderPlugin::_initialize()
     {
-        ARCHIVE_SERVICE()
-            ->registerArchivator( STRINGIZE_STRING_LOCAL( "lz4" ), new FactorableUnique<ArchivatorLZ4>() );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LZ4Plugin::_finalize()
+    void MetabufLoaderPlugin::_finalize()
     {
-        ARCHIVE_SERVICE()
-            ->unregisterArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
     }
 }

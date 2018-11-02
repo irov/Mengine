@@ -2048,7 +2048,7 @@ namespace Mengine
             m_cursorResource->decrementReference();
         }
 
-        ResourceCursorPtr cursorResource = RESOURCE_SERVICE()
+        const ResourceCursorPtr & cursorResource = RESOURCE_SERVICE()
             ->getResource( _resourceName );
 
         if( cursorResource == nullptr )

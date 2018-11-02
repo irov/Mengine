@@ -1131,7 +1131,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_writeImageToFile( const ConstString& _resource, const FilePath& _fileName )
         {
-            ResourceImagePtr resource = RESOURCE_SERVICE()
+            const ResourceImagePtr & resource = RESOURCE_SERVICE()
                 ->getResource( _resource );
 
             if( resource == nullptr )
@@ -1977,7 +1977,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_copyFile_( const ConstString & _resourceFileName, const MemoryBufferInterfacePtr & _blob )
         {
-            ResourceFilePtr resourceFile = RESOURCE_SERVICE()
+            const ResourceFilePtr & resourceFile = RESOURCE_SERVICE()
                 ->getResource( _resourceFileName );
 
             if( resourceFile == nullptr )

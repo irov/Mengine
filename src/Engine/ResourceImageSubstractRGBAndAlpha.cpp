@@ -3,8 +3,6 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -18,40 +16,25 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void ResourceImageSubstractRGBAndAlpha::setResourceImageRGBName( const ConstString & _resourceImageRGBName )
+    {
+        m_resourceImageRGBName = _resourceImageRGBName;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceImageSubstractRGBAndAlpha::getResourceRGBName() const
     {
         return m_resourceImageRGBName;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ResourceImageSubstractRGBAndAlpha::setResourceImageAlphaName( const ConstString & _resourceImageAlphaName )
+    {
+        m_resourceImageAlphaName = _resourceImageAlphaName;
+    }
+    //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceImageSubstractRGBAndAlpha::getResourceAlphaName() const
     {
         return m_resourceImageAlphaName;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageSubstractRGBAndAlpha::_loader( const Metabuf::Metadata * _meta )
-    {
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha * metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha *>(_meta);
-
-        m_hasAlpha = true;
-
-        m_resourceImageRGBName = metadata->get_Image_NameRGB();
-        m_resourceImageAlphaName = metadata->get_Image_NameAlpha();
-
-        m_uvImage = metadata->get_Image_UVRGB();
-        m_uvAlpha = metadata->get_Image_UVAlpha();
-
-        metadata->get_Image_UVRGBRotate( &m_uvImageRotate );
-        metadata->get_Image_UVAlphaRotate( &m_uvAlphaRotate );
-
-        m_maxSize = metadata->get_Image_MaxSize();
-
-        m_size = m_maxSize;
-        metadata->get_Image_Size( &m_size );
-        metadata->get_Image_Offset( &m_offset );
-
-        return true;
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstractRGBAndAlpha::_compile()
     {

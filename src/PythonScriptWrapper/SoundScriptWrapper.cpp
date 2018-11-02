@@ -141,7 +141,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundIdentityInterfacePtr s_createSoundSource( const ConstString & _resourceName, bool _loop, ESoundSourceCategory _category, const pybind::object & _cb, const pybind::args & _args )
         {
-            ResourceSoundPtr resource = RESOURCE_SERVICE()
+            const ResourceSoundPtr & resource = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
 
             if( resource == nullptr )

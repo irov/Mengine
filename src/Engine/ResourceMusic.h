@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Kernel/Resource.h"
+#include "Kernel/Content.h"
 
 #include "Config/Vector.h"
 
@@ -9,6 +10,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceMusic
         : public Resource
+        , public Content
     {
         DECLARE_VISITABLE( Resource );
 
@@ -17,24 +19,20 @@ namespace Mengine
         ~ResourceMusic() override;
 
     public:
-        const FilePath & getPath() const;
-        const ConstString & getCodec() const;
-
+        void setVolume( float _volume );
         float getVolume() const;
+
+        void setExternal( bool _external );
         bool isExternal() const;
 
     protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
         bool _convert() override;
 
     private:
-        FilePath m_path;
-        ConstString m_codec;
-        ConstString m_converter;
-
         float m_volume;
         bool m_external;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceMusic> ResourceMusicPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

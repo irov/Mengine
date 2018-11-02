@@ -23,26 +23,26 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceSound::_loader( const Metabuf::Metadata * _meta )
+    void ResourceSound::setStreamable( bool _streamable )
     {
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSound * metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSound *>(_meta);
-
-        m_filePath = metadata->get_File_Path();
-
-        metadata->get_File_Codec( &m_codecType );
-        metadata->get_File_Converter( &m_converterType );
-
-        metadata->get_DefaultVolume_Value( &m_defaultVolume );
-        metadata->get_IsStreamable_Value( &m_isStreamable );
-
-        return true;
+        m_isStreamable = _streamable;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::isStreamable() const
     {
         return m_isStreamable;
     }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceSound::setDefaultVolume( float _defaultVolume )
+    {
+        m_defaultVolume = _defaultVolume;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float ResourceSound::getDefaultVolume() const
+    {
+        return m_defaultVolume;
+    }
+
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_convert()
     {
@@ -73,14 +73,6 @@ namespace Mengine
         m_soundBufferNoStreamableCache = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceSound::_debugIncrementReference()
-    {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceSound::_debugDecrementReference()
-    {
-    }    
-    //////////////////////////////////////////////////////////////////////////
     SoundBufferInterfacePtr ResourceSound::createSoundBuffer() const
     {
         if( m_isStreamable == false && m_soundBufferNoStreamableCache != nullptr )
@@ -105,10 +97,5 @@ namespace Mengine
         }
 
         return soundBuffer;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float ResourceSound::getDefaultVolume() const
-    {
-        return m_defaultVolume;
     }
 }

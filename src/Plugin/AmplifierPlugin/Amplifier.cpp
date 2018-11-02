@@ -103,8 +103,8 @@ namespace Mengine
         }
 
         const FileGroupInterfacePtr & fileGroup = resourceMusic->getFileGroup();
-        const FilePath & path = resourceMusic->getPath();
-        const ConstString & codec = resourceMusic->getCodec();
+        const FilePath & filePath = resourceMusic->getFilePath();
+        const ConstString & codecType = resourceMusic->getCodecType();
         bool external = resourceMusic->isExternal();
         float volume = resourceMusic->getVolume();
 
@@ -113,7 +113,7 @@ namespace Mengine
         if( fileGroup->isPacked() == false || external == false )
         {
             buffer = SOUND_SERVICE()
-                ->createSoundBufferFromFile( fileGroup, path, codec, true );
+                ->createSoundBufferFromFile( fileGroup, filePath, codecType, true );
         }
         else
         {
@@ -121,13 +121,13 @@ namespace Mengine
                 ->getDefaultFileGroup();
 
             buffer = SOUND_SERVICE()
-                ->createSoundBufferFromFile( defaultFileGroup, path, codec, true );
+                ->createSoundBufferFromFile( defaultFileGroup, filePath, codecType, true );
         }
 
         if( buffer == nullptr )
         {
             LOGGER_ERROR( "can't load sample '%s'"
-                , path.c_str()
+                , filePath.c_str()
             );
 
             return false;
@@ -139,7 +139,7 @@ namespace Mengine
         if( soundEmitter == nullptr )
         {
             LOGGER_ERROR( "can't create sound source '%s'"
-                , path.c_str()
+                , filePath.c_str()
             );
 
             return false;
@@ -154,7 +154,7 @@ namespace Mengine
             ->setSourceVolume( soundEmitter, volume, 0.f, false ) == false )
         {
             LOGGER_ERROR( "can't set sound '%s' volume '%f'"
-                , path.c_str()
+                , filePath.c_str()
                 , volume
             );
 
@@ -165,7 +165,7 @@ namespace Mengine
             ->setPosMs( soundEmitter, _pos ) == false )
         {
             LOGGER_ERROR( "can't set sound '%s' pos '%f'"
-                , path.c_str()
+                , filePath.c_str()
                 , _pos
             );
 
@@ -176,7 +176,7 @@ namespace Mengine
             ->setLoop( soundEmitter, _looped ) == false )
         {
             LOGGER_ERROR( "can't set sound '%s' lood '%d'"
-                , path.c_str()
+                , filePath.c_str()
                 , _looped
             );
 
@@ -187,7 +187,7 @@ namespace Mengine
             ->playEmitter( soundEmitter ) == false )
         {
             LOGGER_ERROR( "sound emitter '%s' invalid play %d"
-                , path.c_str()
+                , filePath.c_str()
                 , soundEmitter->getId()
             );
 

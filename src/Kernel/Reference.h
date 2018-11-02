@@ -23,10 +23,6 @@ namespace Mengine
         virtual void _decrementZero();
 
     protected:
-        virtual void _debugIncrementReference();
-        virtual void _debugDecrementReference();
-
-    protected:
         uint32_t m_refcounter;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -1257,7 +1257,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static float s_getMovieDuration( const ConstString & _resourceName )
         {
-            ResourceMoviePtr resourceMovie = RESOURCE_SERVICE()
+            const ResourceMoviePtr & resourceMovie = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
 
             if( resourceMovie == nullptr )
@@ -1350,7 +1350,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         static bool s_hasMovieElement( const ConstString & _resourceName, const ConstString & _slotName, const ConstString & _typeName )
         {
-            ResourceMoviePtr resource = RESOURCE_SERVICE()
+            const ResourceMoviePtr & resource = RESOURCE_SERVICE()
                 ->getResource( _resourceName );
 
             if( resource == nullptr )

@@ -82,7 +82,7 @@ namespace Mengine
 
         for( uint32_t i = 0; i < ResourceWindow_Count; ++i )
         {
-            const ResourceImagePtr & image = m_resourceWindow->getResource( i );
+            const ResourceImagePtr & image = m_resourceWindow->getElementResourceImage( i );
 
             if( image == nullptr )
             {
@@ -214,7 +214,7 @@ namespace Mengine
 
         TQuad quads[ResourceWindow_Count];
 
-        const mt::vec2f & offsetLeftTop = m_resourceWindow->getOffset( ResourceWindow_LeftTop );
+        const mt::vec2f & offsetLeftTop = m_resourceWindow->getElementOffset( ResourceWindow_LeftTop );
 
         quads[ResourceWindow_LeftTop].a.x = offsetLeftTop.x;
         quads[ResourceWindow_LeftTop].a.y = offsetLeftTop.y;
@@ -229,12 +229,12 @@ namespace Mengine
         quads[ResourceWindow_LeftTop].d.y = quads[ResourceWindow_LeftTop].c.y;
 
         /////////////////////////////////////////////////////////////////
-        const mt::vec2f & offsetTop = m_resourceWindow->getOffset( ResourceWindow_Top );
+        const mt::vec2f & offsetTop = m_resourceWindow->getElementOffset( ResourceWindow_Top );
 
         quads[ResourceWindow_Top].a.x = quads[ResourceWindow_LeftTop].b.x;
         quads[ResourceWindow_Top].a.y = offsetTop.y;
 
-        const mt::vec2f & offsetRightTop = m_resourceWindow->getOffset( ResourceWindow_RightTop );
+        const mt::vec2f & offsetRightTop = m_resourceWindow->getElementOffset( ResourceWindow_RightTop );
         float distance = m_clientSize.x - ((m_edge[ResourceWindow_LeftTop].initialSize.x + offsetLeftTop.x) + (m_edge[ResourceWindow_RightTop].initialSize.x - offsetRightTop.x));
 
         quads[ResourceWindow_Top].b.x = quads[ResourceWindow_Top].a.x + distance;
@@ -261,12 +261,12 @@ namespace Mengine
         quads[ResourceWindow_RightTop].d.y = quads[ResourceWindow_RightTop].c.y;
 
         /////////////////////////////////////////////////////////////////
-        const mt::vec2f & offsetRight = m_resourceWindow->getOffset( ResourceWindow_Right );
+        const mt::vec2f & offsetRight = m_resourceWindow->getElementOffset( ResourceWindow_Right );
 
         quads[ResourceWindow_Right].b.x = m_clientSize.x + offsetRight.x;
         quads[ResourceWindow_Right].b.y = quads[ResourceWindow_RightTop].d.y;
 
-        const mt::vec2f & offsetRightBottom = m_resourceWindow->getOffset( ResourceWindow_RightBottom );
+        const mt::vec2f & offsetRightBottom = m_resourceWindow->getElementOffset( ResourceWindow_RightBottom );
         float distanceRight = m_clientSize.y - ((m_edge[ResourceWindow_RightTop].initialSize.y + offsetRightTop.y) + (m_edge[ResourceWindow_RightBottom].initialSize.y - offsetRightBottom.y));
 
         quads[ResourceWindow_Right].c.x = quads[ResourceWindow_Right].b.x;
@@ -294,12 +294,12 @@ namespace Mengine
 
         /////////////////////////////////////////////////////////////////
 
-        const mt::vec2f & offsetBottom = m_resourceWindow->getOffset( ResourceWindow_Bottom );
+        const mt::vec2f & offsetBottom = m_resourceWindow->getElementOffset( ResourceWindow_Bottom );
 
         quads[ResourceWindow_Bottom].c.x = quads[ResourceWindow_RightBottom].a.x;
         quads[ResourceWindow_Bottom].c.y = m_clientSize.y + offsetBottom.y;
 
-        const mt::vec2f & offsetLeftBottom = m_resourceWindow->getOffset( ResourceWindow_LeftBottom );
+        const mt::vec2f & offsetLeftBottom = m_resourceWindow->getElementOffset( ResourceWindow_LeftBottom );
         float distanceBottom = m_clientSize.x - ((m_edge[ResourceWindow_LeftBottom].initialSize.x + offsetLeftBottom.x) + (m_edge[ResourceWindow_RightBottom].initialSize.x - offsetRightBottom.x));
 
         quads[ResourceWindow_Bottom].d.x = quads[ResourceWindow_Bottom].c.x - distanceBottom;
@@ -327,7 +327,7 @@ namespace Mengine
 
         /////////////////////////////////////////////////////////////////
 
-        const mt::vec2f & offsetLeft = m_resourceWindow->getOffset( ResourceWindow_Left );
+        const mt::vec2f & offsetLeft = m_resourceWindow->getElementOffset( ResourceWindow_Left );
 
         quads[ResourceWindow_Left].d.x = offsetLeft.x;
         quads[ResourceWindow_Left].d.y = quads[ResourceWindow_LeftBottom].a.y;
@@ -379,7 +379,7 @@ namespace Mengine
             mt::uv4f uv1;
             mt::uv4f uv2;
 
-            const ResourceImagePtr & image = m_resourceWindow->getResource( i );
+            const ResourceImagePtr & image = m_resourceWindow->getElementResourceImage( i );
 
             if( image != nullptr )
             {

@@ -16,11 +16,11 @@ namespace Mengine
         ~ResourceImageSubstractRGBAndAlpha() override;
 
     public:
+        void setResourceImageRGBName( const ConstString & _resourceImageRGBName );
         const ConstString & getResourceRGBName() const;
-        const ConstString & getResourceAlphaName() const;
 
-    protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
+        void setResourceImageAlphaName( const ConstString & _resourceImageAlphaName );
+        const ConstString & getResourceAlphaName() const;
 
     protected:
         bool _compile() override;
@@ -33,4 +33,7 @@ namespace Mengine
         ConstString m_resourceImageAlphaName;
         ResourceImagePtr m_resourceImageAlpha;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ResourceImageSubstractRGBAndAlpha> ResourceImageSubstractRGBAndAlphaPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

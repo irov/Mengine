@@ -219,7 +219,7 @@ namespace Mengine
             return 0.f;
         }
 
-        const ResourceMovie2Composition & composition = it_found->second;
+        const ResourceMovie2CompositionDesc & composition = it_found->second;
 
         return composition.duration * 1000.f;
     }
@@ -233,7 +233,7 @@ namespace Mengine
             return 0.f;
         }
 
-        const ResourceMovie2Composition & composition = it_found->second;
+        const ResourceMovie2CompositionDesc & composition = it_found->second;
 
         return composition.frameDuration;
     }
@@ -266,7 +266,12 @@ namespace Mengine
         return compositionData;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceMovie2Composition * ResourceMovie2::getCompositionDesc( const ConstString & _name ) const
+    void ResourceMovie2::setCompositionDesc( const ConstString & _name, const ResourceMovie2CompositionDesc & _composition )
+    {
+        m_compositions[_name] = _composition;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ResourceMovie2CompositionDesc * ResourceMovie2::getCompositionDesc( const ConstString & _name ) const
     {
         MapCompositions::const_iterator it_found = m_compositions.find( _name );
 
@@ -275,7 +280,7 @@ namespace Mengine
             return nullptr;
         }
 
-        const ResourceMovie2Composition & composition = it_found->second;
+        const ResourceMovie2CompositionDesc & composition = it_found->second;
 
         return &composition;
     }
@@ -298,63 +303,6 @@ namespace Mengine
     const ArchivatorInterfacePtr & ResourceMovie2::getMovieArchivator() const
     {
         return m_movieArchivator;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceMovie2::_loader( const Metabuf::Metadata * _meta )
-    {
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 * metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 *>(_meta);
-
-        m_filePath = metadata->get_File_Path();
-
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::VectorMeta_Composition & includes_composition = metadata->get_Includes_Composition();
-
-        for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition & meta_composition : includes_composition )
-        {
-            const ConstString & compositionName = meta_composition.get_Name();
-
-            ResourceMovie2Composition & composition = m_compositions[compositionName];
-
-            composition.duration = meta_composition.get_Duration();
-            composition.frameDuration = meta_composition.get_FrameDuration();            
-            composition.has_bounds = meta_composition.get_Bounds( &composition.bounds );
-
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::VectorMeta_Layer & includes_layer = meta_composition.get_Includes_Layer();
-
-            for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_Layer & meta_layer : includes_layer )
-            {
-                uint32_t layerIndex = meta_layer.get_Index();
-                const ConstString & layerName = meta_layer.get_Name();
-                const ConstString & layerType = meta_layer.get_Type();
-                const mt::mat4f & layerMatrix = meta_layer.get_Matrix();
-                const ColourValue & layerColor = meta_layer.get_Color();
-
-                ResourceMovie2CompositionLayer layer;
-                layer.index = layerIndex;
-                layer.name = layerName;
-                layer.type = layerType;
-                layer.matrix = layerMatrix;
-                layer.color = layerColor;
-
-                composition.layers.emplace_back( layer );
-            }
-
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::VectorMeta_SubComposition & includes_subcomposition = meta_composition.get_Includes_SubComposition();
-
-            for( const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition & meta_subcomposition : includes_subcomposition )
-            {
-                uint32_t subcompositionIndex = meta_subcomposition.get_Index();
-                const ConstString & subcompositionName = meta_subcomposition.get_Name();
-
-                ResourceMovie2CompositionSubComposition subcomposition;
-                subcomposition.index = subcompositionIndex;
-                subcomposition.name = subcompositionName;
-
-                composition.subcompositions.emplace_back( subcomposition );
-            }
-        }
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::_compile()
@@ -465,7 +413,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Resource * ResourceMovie2::getResource_( const ae_string_t _name )
     {
-        ResourcePtr resource = RESOURCE_SERVICE()
+        const ResourcePtr & resource = RESOURCE_SERVICE()
             ->getResource( Helper::stringizeString( _name ) );
 
         if( resource == nullptr )

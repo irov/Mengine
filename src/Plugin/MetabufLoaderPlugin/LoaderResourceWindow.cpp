@@ -1,113 +1,67 @@
-#include "ResourceWindow.h"
+#include "LoaderResourceWindow.h"
 
-#include "Interface/ResourceServiceInterface.h"
+#include "Engine/ResourceWindow.h"
 
 #include "Metacode/Metacode.h"
-
-#include "Kernel/Logger.h"
-
-#include "Kernel/ResourceImage.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ResourceWindow::ResourceWindow()
-    {
-        for( int i = 0; i < ResourceWindow_Count; i++ )
-        {
-            m_images[i].resource = nullptr;
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ResourceWindow::~ResourceWindow()
+    LoaderResourceWindow::LoaderResourceWindow()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceWindow::_loader( const Metabuf::Metadata * _meta )
+    LoaderResourceWindow::~LoaderResourceWindow()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoaderResourceWindow::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
+    {
+        ResourceWindowPtr resource = stdex::intrusive_static_cast<ResourceWindowPtr>(_loadable);
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceWindow * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceWindow *>(_meta);
 
-        metadata->get_WindowBackground_ResourceImageName( &m_images[ResourceWindow_Background].resourceName );
+        ConstString resources[ResourceWindow_Count];
 
-        m_images[ResourceWindow_Bottom].resourceName = metadata->get_WindowBottom_ResourceImageName();
-        m_images[ResourceWindow_Left].resourceName = metadata->get_WindowLeft_ResourceImageName();
-        m_images[ResourceWindow_LeftBottom].resourceName = metadata->get_WindowLeftBottom_ResourceImageName();
-        m_images[ResourceWindow_LeftTop].resourceName = metadata->get_WindowLeftTop_ResourceImageName();
-        m_images[ResourceWindow_Right].resourceName = metadata->get_WindowRight_ResourceImageName();
-        m_images[ResourceWindow_RightBottom].resourceName = metadata->get_WindowRightBottom_ResourceImageName();
-        m_images[ResourceWindow_RightTop].resourceName = metadata->get_WindowRightTop_ResourceImageName();
-        m_images[ResourceWindow_Top].resourceName = metadata->get_WindowTop_ResourceImageName();
+        metadata->get_WindowBackground_ResourceImageName( &resources[ResourceWindow_Background] );
 
-        m_images[ResourceWindow_Bottom].offset = metadata->get_WindowBottom_Offset();
-        m_images[ResourceWindow_Left].offset = metadata->get_WindowLeft_Offset();
-        m_images[ResourceWindow_LeftBottom].offset = metadata->get_WindowLeftBottom_Offset();
-        m_images[ResourceWindow_LeftTop].offset = metadata->get_WindowLeftTop_Offset();
-        m_images[ResourceWindow_Right].offset = metadata->get_WindowRight_Offset();
-        m_images[ResourceWindow_RightBottom].offset = metadata->get_WindowRightBottom_Offset();
-        m_images[ResourceWindow_RightTop].offset = metadata->get_WindowRightTop_Offset();
-        m_images[ResourceWindow_Top].offset = metadata->get_WindowTop_Offset();
+        resources[ResourceWindow_Bottom] = metadata->get_WindowBottom_ResourceImageName();
+        resources[ResourceWindow_Left] = metadata->get_WindowLeft_ResourceImageName();
+        resources[ResourceWindow_LeftBottom] = metadata->get_WindowLeftBottom_ResourceImageName();
+        resources[ResourceWindow_LeftTop] = metadata->get_WindowLeftTop_ResourceImageName();
+        resources[ResourceWindow_Right] = metadata->get_WindowRight_ResourceImageName();
+        resources[ResourceWindow_RightBottom] = metadata->get_WindowRightBottom_ResourceImageName();
+        resources[ResourceWindow_RightTop] = metadata->get_WindowRightTop_ResourceImageName();
+        resources[ResourceWindow_Top] = metadata->get_WindowTop_ResourceImageName();
 
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceWindow::_compile()
-    {
-        for( int i = 0; i < ResourceWindow_Count; i++ )
+        for( uint32_t index = 0; index != ResourceWindow_Count; ++index )
         {
-            m_images[i].resource = nullptr;
+            const ConstString & resourceImageName = resources[index];
 
-            if( m_images[i].resourceName.empty() == true )
-            {
-                if( i == ResourceWindow_Background )
-                {
-                    continue;
-                }
-            }
+            resource->setElementResourceImageName( index, resourceImageName );
+        }
 
-            ResourceImagePtr resource = RESOURCE_SERVICE()
-                ->getResource( m_images[i].resourceName );
+        mt::vec2f offsets[ResourceWindow_Count];
 
-            if( resource == 0 )
-            {
-                LOGGER_ERROR( "ResourceWindow: '%s' Image resource not found resource '%s'"
-                    , m_name.c_str()
-                    , m_images[i].resourceName.c_str()
-                );
+        offsets[ResourceWindow_Background] = mt::vec2f( 0.f, 0.f );
 
-                return false;
-            }
+        offsets[ResourceWindow_Bottom] = metadata->get_WindowBottom_Offset();
+        offsets[ResourceWindow_Left] = metadata->get_WindowLeft_Offset();
+        offsets[ResourceWindow_LeftBottom] = metadata->get_WindowLeftBottom_Offset();
+        offsets[ResourceWindow_LeftTop] = metadata->get_WindowLeftTop_Offset();
+        offsets[ResourceWindow_Right] = metadata->get_WindowRight_Offset();
+        offsets[ResourceWindow_RightBottom] = metadata->get_WindowRightBottom_Offset();
+        offsets[ResourceWindow_RightTop] = metadata->get_WindowRightTop_Offset();
+        offsets[ResourceWindow_Top] = metadata->get_WindowTop_Offset();
 
-            m_images[i].resource = resource;
+        for( uint32_t index = 0; index != ResourceWindow_Count; ++index )
+        {
+            const mt::vec2f & offset = offsets[index];
+
+            resource->setElementOffset( index, offset );
         }
 
         return true;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceWindow::_release()
-    {
-        for( int i = 0; i < ResourceWindow_Count; i++ )
-        {
-            if( m_images[i].resource != nullptr )
-            {
-                m_images[i].resource->decrementReference();
-                m_images[i].resource = nullptr;
-            }
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & ResourceWindow::getResource( int _type ) const
-    {
-        const ResourceImagePtr & resource = m_images[_type].resource;
-
-        return resource;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const mt::vec2f & ResourceWindow::getOffset( int _type ) const
-    {
-        const mt::vec2f & offset = m_images[_type].offset;
-
-        return offset;
-    }
-    //////////////////////////////////////////////////////////////////////////
 }

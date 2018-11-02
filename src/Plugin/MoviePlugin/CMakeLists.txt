@@ -17,6 +17,8 @@ src
     Movie2SubComposition.h
     ResourceMovie2.cpp
     ResourceMovie2.h
+    LoaderResourceMovie2.cpp
+    LoaderResourceMovie2.h
     
     Movie2DebugRenderVisitor.cpp
     Movie2DebugRenderVisitor.h

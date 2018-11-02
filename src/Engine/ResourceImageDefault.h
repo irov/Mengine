@@ -20,7 +20,6 @@ namespace Mengine
         bool setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize );
 
     protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
         bool _convert() override;
 
     protected:

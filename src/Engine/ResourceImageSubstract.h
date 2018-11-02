@@ -15,8 +15,9 @@ namespace Mengine
         ResourceImageSubstract();
         ~ResourceImageSubstract() override;
 
-    protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
+    public:
+        void setResourceImageName( const ConstString & _resourceImageName );
+        const ConstString & getResourceImageName() const;
 
     protected:
         bool _compile() override;
@@ -26,4 +27,7 @@ namespace Mengine
         ConstString m_resourceImageName;
         ResourceImagePtr m_resourceImage;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ResourceImageSubstract> ResourceImageSubstractPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

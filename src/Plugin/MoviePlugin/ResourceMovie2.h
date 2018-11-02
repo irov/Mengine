@@ -34,7 +34,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<ResourceMovie2CompositionSubComposition> ResourceMovie2CompositionSubCompositions;
     //////////////////////////////////////////////////////////////////////////
-    struct ResourceMovie2Composition
+    struct ResourceMovie2CompositionDesc
     {
         float duration;
         float frameDuration;
@@ -77,10 +77,8 @@ namespace Mengine
         const aeMovieCompositionData * getCompositionData( const ConstString & _name ) const;
 
     public:
-        const ResourceMovie2Composition * getCompositionDesc( const ConstString & _name ) const;
-
-    protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
+        void setCompositionDesc( const ConstString & _name, const ResourceMovie2CompositionDesc & _composition );
+        const ResourceMovie2CompositionDesc * getCompositionDesc( const ConstString & _name ) const;
 
     protected:
         bool _compile() override;
@@ -102,7 +100,7 @@ namespace Mengine
         typedef Vector<ResourcePtr> VectorResources;
         VectorResources m_resources;
 
-        typedef Map<ConstString, ResourceMovie2Composition> MapCompositions;
+        typedef Map<ConstString, ResourceMovie2CompositionDesc> MapCompositions;
         MapCompositions m_compositions;
     };
     //////////////////////////////////////////////////////////////////////////

@@ -17,11 +17,9 @@ namespace Mengine
         ~ResourceImageSolid() override;
 
     protected:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
-
-    protected:
         bool _compile() override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceImageSolid> ResourceImageSolidPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -1300,7 +1300,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieImageSolid_( const MovieLayer & _layer )
     {
-        ResourceImageSolidPtr resource = RESOURCE_SERVICE()
+        const ResourceImageSolidPtr & resource = RESOURCE_SERVICE()
             ->getResource( _layer.source );
 
         if( resource == nullptr )
@@ -1568,7 +1568,7 @@ namespace Mengine
             return false;
         }
 
-        ResourceInternalObjectPtr resourceInternalObject = RESOURCE_SERVICE()
+        const ResourceInternalObjectPtr & resourceInternalObject = RESOURCE_SERVICE()
             ->getResource( _layer.source );
 
         if( resourceInternalObject == nullptr )

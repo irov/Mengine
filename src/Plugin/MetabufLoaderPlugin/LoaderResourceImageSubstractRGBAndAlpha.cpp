@@ -1,133 +1,66 @@
-#include "ResourceImageSubstractRGBAndAlpha.h"
+#include "LoaderResourceImageSubstractRGBAndAlpha.h"
 
-#include "Interface/RenderSystemInterface.h"
-#include "Interface/ResourceServiceInterface.h"
+#include "Engine/ResourceImageSubstractRGBAndAlpha.h"
 
 #include "Metacode/Metacode.h"
-
-#include "Kernel/Logger.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ResourceImageSubstractRGBAndAlpha::ResourceImageSubstractRGBAndAlpha()
+    LoaderResourceImageSubstractRGBAndAlpha::LoaderResourceImageSubstractRGBAndAlpha()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceImageSubstractRGBAndAlpha::~ResourceImageSubstractRGBAndAlpha()
+    LoaderResourceImageSubstractRGBAndAlpha::~LoaderResourceImageSubstractRGBAndAlpha()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceImageSubstractRGBAndAlpha::getResourceRGBName() const
+    bool LoaderResourceImageSubstractRGBAndAlpha::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        return m_resourceImageRGBName;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceImageSubstractRGBAndAlpha::getResourceAlphaName() const
-    {
-        return m_resourceImageAlphaName;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageSubstractRGBAndAlpha::_loader( const Metabuf::Metadata * _meta )
-    {
+        ResourceImageSubstractRGBAndAlphaPtr resource = stdex::intrusive_static_cast<ResourceImageSubstractRGBAndAlphaPtr>(_loadable);
+
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstractRGBAndAlpha *>(_meta);
 
-        m_hasAlpha = true;
+        resource->setAlpha( true );
 
-        m_resourceImageRGBName = metadata->get_Image_NameRGB();
-        m_resourceImageAlphaName = metadata->get_Image_NameAlpha();
+        const ConstString & resourceImageRGBName = metadata->get_Image_NameRGB();
+        const ConstString & resourceImageAlphaName = metadata->get_Image_NameAlpha();
 
-        m_uvImage = metadata->get_Image_UVRGB();
-        m_uvAlpha = metadata->get_Image_UVAlpha();
+        resource->setResourceImageRGBName( resourceImageRGBName );
+        resource->setResourceImageAlphaName( resourceImageAlphaName );
 
-        metadata->get_Image_UVRGBRotate( &m_uvImageRotate );
-        metadata->get_Image_UVAlphaRotate( &m_uvAlphaRotate );
+        const mt::uv4f & uvImage = metadata->get_Image_UVRGB();
+        const mt::uv4f & uvAlpha = metadata->get_Image_UVAlpha();
 
-        m_maxSize = metadata->get_Image_MaxSize();
+        resource->setUVImage( uvImage );
+        resource->setUVAlpha( uvAlpha );
 
-        m_size = m_maxSize;
-        metadata->get_Image_Size( &m_size );
-        metadata->get_Image_Offset( &m_offset );
+        bool uvImageRotate = false;
+        metadata->get_Image_UVRGBRotate( &uvImageRotate );
+        resource->setUVImageRotate( uvImageRotate );
+
+        bool m_uvAlphaRotate = false;
+        metadata->get_Image_UVAlphaRotate( &uvAlphaRotate );
+        resource->setUVAlphaRotate( uvAlphaRotate );
+
+        const mt::vec2f & maxSize = metadata->get_Image_MaxSize();
+
+        resource->setMaxSize( maxSize );
+
+        mt::vec2f size;
+        if( metadata->get_Image_Size( &size ) == true )
+        {
+            resource->setSize( size );
+        }
+        else
+        {
+            resource->setSize( maxSize );
+        }
+
+        mt::vec2f offset;
+        metadata->get_Image_Offset( &offset );
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageSubstractRGBAndAlpha::_compile()
-    {
-        if( m_resourceImageRGBName.empty() == true )
-        {
-            LOGGER_ERROR( "ResourceImageSubstractRGBAndAlpha::_compile '%s' not setup rgb resource"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
-
-        if( m_resourceImageAlphaName.empty() == true )
-        {
-            LOGGER_ERROR( "ResourceImageSubstractRGBAndAlpha::_compile '%s' not setup alpha resource"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
-
-        m_resourceImageRGB = RESOURCE_SERVICE()
-            ->getResource( m_resourceImageRGBName );
-
-        if( m_resourceImageRGB == nullptr )
-        {
-            LOGGER_ERROR( "ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get rgb resource '%s'"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getGroupName().c_str()
-                , m_resourceImageRGBName.c_str()
-            );
-
-            return false;
-        }
-
-        m_resourceImageAlpha = RESOURCE_SERVICE()
-            ->getResource( m_resourceImageAlphaName );
-
-        if( m_resourceImageAlpha == nullptr )
-        {
-            LOGGER_ERROR( "ResourceImageSubstractRGBAndAlpha::_compile '%s' category '%s' group '%s' invalid get alpha resource '%s'"
-                , this->getName().c_str()
-                , this->getFileGroup()->getName().c_str()
-                , this->getGroupName().c_str()
-                , m_resourceImageRGBName.c_str()
-            );
-
-            return false;
-        }
-
-        m_texture = m_resourceImageRGB->getTexture();
-        m_textureAlpha = m_resourceImageAlpha->getTexture();
-
-        bool pow2 = m_texture->isPow2();
-
-        this->setPow2( pow2 );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceImageSubstractRGBAndAlpha::_release()
-    {
-        ResourceImage::_release();
-
-        if( m_resourceImageRGB != nullptr )
-        {
-            m_resourceImageRGB->decrementReference();
-            m_resourceImageRGB = nullptr;
-        }
-
-        if( m_resourceImageAlpha != nullptr )
-        {
-            m_resourceImageAlpha->decrementReference();
-            m_resourceImageAlpha = nullptr;
-        }
-    }
-    /////////////////////////////////////////////////////////////////////////
+    }    
 }

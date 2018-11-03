@@ -341,7 +341,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
             pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
             xmlResource.append_attribute( "Name" ).set_value( resource_particle->name );
-            xmlResource.append_attribute( "Type" ).set_value( "ResourceParticle" );
+            xmlResource.append_attribute( "Type" ).set_value( "ResourceAstralax" );
             xmlResource.append_attribute( "Unique" ).set_value( 0U );
 
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
@@ -453,7 +453,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
             xmlLayer.append_attribute( "Index" ).set_value( node_index );
             xmlLayer.append_attribute( "Name" ).set_value( layer_name );
-            xmlLayer.append_attribute( "Type" ).set_value( "ParticleEmitter2" );
+            xmlLayer.append_attribute( "Type" ).set_value( "AstralaxEmitter" );
 
             xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
 

@@ -116,8 +116,20 @@ namespace Mengine
             return false;
         }
 
+        if( SCRIPT_SERVICE()
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), new PythonScriptWrapper<AstralaxEmitter>() ) == false )
+        {
+            return false;
+        }
+
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new FactorableUnique<NodePrototypeGenerator<AstralaxEmitter, 128> > ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), new FactorableUnique<NodePrototypeGenerator<AstralaxEmitter, 128> > ) == false )
         {
             return false;
         }
@@ -168,8 +180,14 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->removeWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
 
+        SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );        
+
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );
 
         SCRIPT_SERVICE()
             ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );

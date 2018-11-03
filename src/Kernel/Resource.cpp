@@ -70,7 +70,7 @@ namespace Mengine
             if( CONVERTER_SERVICE()
                 ->convert( _converter, m_category, _path, _out ) == false )
             {
-                LOGGER_ERROR( "ResourceReference::convertDefault_: '%s' can't convert '%s':'%s'"
+                LOGGER_ERROR( "resource '%s' can't convert '%s':'%s'"
                     , this->getName().c_str()
                     , _path.c_str()
                     , _converter.c_str()
@@ -95,7 +95,7 @@ namespace Mengine
 
         if( codecType.empty() == true )
         {
-            LOGGER_ERROR( "ResourceReference::convertDefault_: '%s' you must determine codec for file '%s'"
+            LOGGER_ERROR( "resource '%s' you must determine codec for file '%s'"
                 , this->getName().c_str()
                 , _path.c_str()
             );

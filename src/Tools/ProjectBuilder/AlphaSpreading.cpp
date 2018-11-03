@@ -1,25 +1,24 @@
-#	include "AlphaSpreading.h"
+#include "AlphaSpreading.h"
 
-#   include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/ArchiveInterface.h"
-#   include "Interface/LoggerInterface.h"
-#   include "Interface/CodecInterface.h"
-#   include "Interface/ConverterInterface.h"
-#   include "Interface/FileSystemInterface.h"
-#   include "Interface/PluginInterface.h"
-#   include "Interface/WindowsLayerInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/ImageCodecInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/LoggerInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/ConverterInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/PluginInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
+#include "Interface/ImageCodecInterface.h"
+#include "Interface/CodecServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
-#   include "WindowsLayer/VistaWindowsLayer.h"
-
-#   include "Kernel\Logger.h"
+#include "Kernel/Logger.h"
 
 namespace Mengine
 {
-    PyObject * spreadingPngAlpha( const wchar_t * pngPathIn, const wchar_t * pngPathOut )
+    PyObject * spreadingPngAlpha( pybind::kernel_interface * _kernel, const wchar_t * pngPathIn, const wchar_t * pngPathOut )
     {
         LOGGER_INFO("spreadingPngAlpha\n");
 
@@ -44,7 +43,7 @@ namespace Mengine
                 , inputFileName.c_str()
                 );
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
 
         ConstString codec = Helper::stringizeString("pngImage");
@@ -58,7 +57,7 @@ namespace Mengine
                 , inputFileName.c_str()
                 );
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
 
 		if( imageDecoder->prepareData( input_stream ) == false )
@@ -67,7 +66,7 @@ namespace Mengine
 				, inputFileName.c_str()
 				);
 
-			return pybind::ret_none();
+			return _kernel->ret_none();
 		}
 
         const ImageCodecDataInfo* decode_dataInfo = imageDecoder->getCodecDataInfo();
@@ -90,14 +89,14 @@ namespace Mengine
 		
 		if( memory_textureBuffer == nullptr )
 		{
-			return pybind::ret_none();
+			return _kernel->ret_none();
 		}
 
 		unsigned char * textureBuffer = memory_textureBuffer->newBuffer( bufferSize, "spreadingPngAlpha", __FILE__, __LINE__ );
 
 		if( textureBuffer == nullptr )
 		{
-			return pybind::ret_none();
+			return _kernel->ret_none();
 		}
 
 		if( imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
@@ -106,7 +105,7 @@ namespace Mengine
 				, inputFileName.c_str()
 				);
 
-			return pybind::ret_none();
+			return _kernel->ret_none();
 		}
 
 		if( channels == 4 )
@@ -179,7 +178,7 @@ namespace Mengine
                 , outputFileName.c_str()
                 );
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
@@ -191,7 +190,7 @@ namespace Mengine
                 , outputFileName.c_str()
                 );
 
-            return pybind::ret_none();
+            return _kernel->ret_none();
         }
 
 		if( imageEncoder->initialize( output_stream ) == false )
@@ -200,7 +199,7 @@ namespace Mengine
 				, outputFileName.c_str()
 				);
 
-			return pybind::ret_none();
+			return _kernel->ret_none();
 		}
 
         ImageCodecOptions encode_options;		
@@ -226,9 +225,9 @@ namespace Mengine
                 , outputFileName.c_str()
                 );
 
-			return pybind::ret_none();
+			return _kernel->ret_none();
         }
                
-        return pybind::ret_none();
+        return _kernel->ret_none();
     } 
 }

@@ -1,9 +1,11 @@
-#	include "Image.h"
+#include "Image.h"
 
-#	include "Interface/InputSystemInterface.h"
-#	include "Interface/ImageCodecInterface.h"
-#	include "Interface/FileSystemInterface.h"
-#	include "Interface/ScriptSystemInterface.h"
+#include "Interface/InputServiceInterface.h"
+#include "Interface/ImageCodecInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/ScriptSystemInterface.h"
+#include "Interface/CodecServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 
 namespace Mengine
 {
@@ -12,19 +14,11 @@ namespace Mengine
 		: m_width(0)
 		, m_height(0)
 		, m_channels(0)
-		, m_embed(nullptr)
 	{
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Image::~Image()
 	{
-		if( m_embed != nullptr )
-		{
-			pybind::unwrap( m_embed );
-			pybind::decref( m_embed );
-
-			m_embed = nullptr;
-		}
 	}
 	//////////////////////////////////////////////////////////////////////////
 	bool Image::load( const FilePath & _path )

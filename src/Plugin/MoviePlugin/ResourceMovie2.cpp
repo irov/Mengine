@@ -12,8 +12,6 @@
 #include "Engine/ResourceImageDefault.h"
 #include "Engine/ResourceSound.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
 
@@ -389,7 +387,7 @@ namespace Mengine
                 , minor_version
             );
 
-            return 0;
+            return false;
         }
 
         ae_delete_movie_stream( movie_stream );

@@ -61,7 +61,7 @@ src
     PackageInterface.h
 	PackageServiceInterface.h
     UserdataServiceInterface.h
-    OptionsInterface.h
+    OptionsServiceInterface.h
     TimelineServiceInterface.h
     SocketInterface.h
 	SocketSystemInterface.h
@@ -70,6 +70,7 @@ src
     UnicodeSystemInterface.h
     NotificatorInterface.h    
 	LoadableInterface.h
+    LoaderInterface.h
 	LoaderServiceInterface.h
     RandomizerInterface.h
     AnimationInterface.h

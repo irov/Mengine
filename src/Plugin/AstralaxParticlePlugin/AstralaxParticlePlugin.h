@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Kernel/PluginBase.h"
-#include "Kernel/Visitor.h"
 
 namespace Mengine
 {
@@ -20,8 +19,5 @@ namespace Mengine
 
     protected:
         void _destroy() override;
-
-    protected:
-        VisitorPtr m_particleValidateVisitor;
     };
 }

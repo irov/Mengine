@@ -6,6 +6,7 @@
 #include "Interface/PlayerInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 
 #include "Plugin/DebugRenderPlugin/DebugRenderInterface.h"
 #include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
@@ -28,6 +29,7 @@
 
 #include "Movie2.h"
 #include "ResourceMovie2.h"
+#include "LoaderResourceMovie2.h"
 #include "Movie2Slot.h"
 
 #include "Movie2ResourceValidateVisitor.h"
@@ -488,6 +490,9 @@ namespace Mengine
             ->addResourceValidateVisitor( movie2ValidateVisitor );
 
         m_movie2ValidateVisitor = movie2ValidateVisitor;
+
+        LOADER_SERVICE()
+            ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
 
         return true;
     }

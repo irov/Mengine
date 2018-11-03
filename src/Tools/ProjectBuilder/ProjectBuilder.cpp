@@ -1,75 +1,76 @@
-#	ifdef _WIN32_WINNT	
-#       undef _WIN32_WINNT
-#       define _WIN32_WINNT 0x0500
-#   endif
+//#ifdef _WIN32_WINNT	
+//#undef _WIN32_WINNT
+//#define _WIN32_WINNT 0x0500
+//#endif
+//
+//#ifdef _WIN32_WINDOWS
+//#undef _WIN32_WINDOWS
+//#define _WIN32_WINDOWS 0x0500
+//#endif
+//
+//#define WIN32_LEAN_AND_MEAN
+//
+//#ifndef NOMINMAX
+//#define NOMINMAX
+//#endif
+//
+//#pragma warning(push, 0) 
+//#include <Windows.h>
+//#include <WinUser.h>
+//
+//#include <shellapi.h>
+//#include <shlwapi.h>
+//#include <shlobj.h>
+//#include <fcntl.h>
+//#pragma warning(pop) 
+//
+//#pragma comment ( lib, "Ws2_32.lib" )
+//#pragma comment ( lib, "Crypt32.lib" )
 
-#   ifdef _WIN32_WINDOWS
-#       undef _WIN32_WINDOWS
-#       define _WIN32_WINDOWS 0x0500
-#   endif
+#include <iostream>
 
-#	define WIN32_LEAN_AND_MEAN
+#include "Interface/ServiceInterface.h"
 
-#	ifndef NOMINMAX
-#	define NOMINMAX
-#	endif
+#include "XmlToBinDecoder.h"
+#include "AlphaSpreading.h"
+#include "XmlToAekConverter.h"
 
-#pragma warning(push, 0) 
-#	include <Windows.h>
-#   include <WinUser.h>
+#include "Interface/StringizeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/LoggerInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/DataInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/ConverterInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/PluginInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
+#include "Interface/ImageCodecInterface.h"
+#include "Interface/LoaderInterface.h"
+#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/OptionsInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
-#   include <shellapi.h>
-#   include <shlwapi.h>
-#   include <shlobj.h>
-#	include <fcntl.h>
-#pragma warning(pop) 
+#include "Environment/WIN32/WindowsIncluder.h"
 
-#pragma comment ( lib, "Ws2_32.lib" )
-#pragma comment ( lib, "Crypt32.lib" )
+#include "Config/String.h"
 
-#   include <iostream>
+#include "Kernel/ConverterFactory.h"
+#include "Kernel/LoggerBase.h"
 
-#	include "Interface/ServiceInterface.h"
+#include "Image.h"
 
-#	include "XmlToBinDecoder.h"
-#	include "AlphaSpreading.h"
-#	include "XmlToAekConverter.h"
+#include "Kernel/Logger.h"
+#include "Kernel/FilePathHelper.h"
 
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/UnicodeInterface.h"
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/LoggerInterface.h"
-#	include "Interface/CodecInterface.h"
-#	include "Interface/DataInterface.h"
-#	include "Interface/MemoryInterface.h"
-#   include "Interface/ConverterInterface.h"
-#   include "Interface/FileSystemInterface.h"
-#   include "Interface/PluginInterface.h"
-#   include "Interface/WindowsLayerInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/ImageCodecInterface.h"
-#	include "Interface/LoaderInterface.h"
-#	include "Interface/ThreadSystemInterface.h"
-#	include "Interface/ParticleSystemInterface.h"
-#	include "Interface/ConfigInterface.h"
-#	include "Interface/OptionsInterface.h"
+#include "pybind/pybind.hpp"
+#include "pybind/stl_type_cast.hpp"
 
-#   include "WindowsLayer/VistaWindowsLayer.h"
+#include "stdex/sha1.h"
 
-#	include "Config/String.h"
-
-#	include "Kernel/ConverterFactory.h"
-
-#	include "Image.h"
-
-#   include "Kernel/Logger.h"
-
-#	include "pybind/pybind.hpp"
-#	include "pybind/stl_type_cast.hpp"
-
-#	include "stdex/sha1.h"
-
-#	include <io.h>
+#include <io.h>
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( Win32FileGroup );
@@ -97,7 +98,6 @@ SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 
-SERVICE_EXTERN( WindowsLayer );
 SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( LoaderService );
 //////////////////////////////////////////////////////////////////////////
@@ -173,38 +173,9 @@ namespace Mengine
 		SERVICE_CREATE( ArchiveService );
 		SERVICE_CREATE( LoggerService );
 		
-		class MyLoggerInterface
-			: public LoggerInterface
+		class MyLogger
+			: public LoggerBase
 		{
-		public:
-			bool initialize() override 
-			{ 
-				return true; 
-			}
-			
-			void finalize() override 
-			{
-			};
-
-			void setVerboseLevel( EMessageLevel _level ) override 
-			{
-				(void)_level;
-			};
-
-			void setVerboseFlag( size_t _flag ) override 
-			{
-				(void)_flag;
-			};
-
-		public:
-			bool validMessage( EMessageLevel _level, size_t _flag ) const override 
-			{ 
-				(void)_level;
-				(void)_flag;
-
-				return true; 
-			};
-
 		public:
 			void log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count ) override
 			{
@@ -216,17 +187,13 @@ namespace Mengine
                     , _data
                 );
 			}
-
-			void flush() override 
-			{
-			}
 		};
 
 		LOGGER_SERVICE()
 			->setVerboseLevel( LM_WARNING );
 
 		LOGGER_SERVICE()
-			->registerLogger( new MyLoggerInterface );
+			->registerLogger( new MyLogger );
 
         LOGGER_WARNING( "Inititalizing Config Manager..." );
 		
@@ -240,7 +207,6 @@ namespace Mengine
 		SERVICE_CREATE( PluginSystem );
 		SERVICE_CREATE( PluginService );
 
-		SERVICE_CREATE( WindowsLayer );
         SERVICE_CREATE( Platform );
 		SERVICE_CREATE( FileService );
 				
@@ -344,16 +310,16 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * isAlphaInImageFile( const wchar_t * _path )
+	PyObject * isAlphaInImageFile( pybind::kernel_interface * _kernel, const wchar_t * _path )
 	{
 		String utf8_path;
 		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
 		{
-            pybind::error_message( "invalid get utf8 path from '%ls'"
+            _kernel->error_message( "invalid get utf8 path from '%ls'"
                 , _path
             );
 
-			return NULL;
+			return nullptr;
 		}
 
 		FilePath c_path = Helper::stringizeFilePath(utf8_path);
@@ -366,11 +332,11 @@ namespace Mengine
 		
 		if( stream == nullptr )
 		{
-            pybind::error_message( "invalid open file '%s'"
+            _kernel->error_message( "invalid open file '%s'"
                 , c_path.c_str()
             );
 
-			return NULL;
+			return nullptr;
 		}
 
 		const ConstString & codecType = CODEC_SERVICE()
@@ -381,31 +347,31 @@ namespace Mengine
 
 		if( imageDecoder == nullptr )
 		{
-            pybind::error_message( "file '%s' invalid create decoder '%s'"
+            _kernel->error_message( "file '%s' invalid create decoder '%s'"
                 , c_path.c_str()
                 , codecType.c_str()
             );
 
-			return NULL;
+			return nullptr;
 		}
 
 		if( imageDecoder->prepareData( stream ) == false )
 		{
-            pybind::error_message( "file '%s' invalid prepare data"
+            _kernel->error_message( "file '%s' invalid prepare data"
                 , c_path.c_str()
             );
 
-			return NULL;
+			return nullptr;
 		}
 
 		const ImageCodecDataInfo * dataInfo = imageDecoder->getCodecDataInfo();
 
 		bool isAlpha = (dataInfo->channels == 4);
 
-		return pybind::ret_bool( isAlpha );
+		return _kernel->ret_bool( isAlpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * isUselessAlphaInImageFile( const wchar_t * _path )
+	PyObject * isUselessAlphaInImageFile( pybind::kernel_interface * _kernel, const wchar_t * _path )
 	{
 		String utf8_path;
 		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
@@ -432,14 +398,14 @@ namespace Mengine
 
 		if( image->getChannels() != 4 )
 		{
-			return pybind::ret_true();
+			return _kernel->ret_true();
 		}
 
 		bool useless = image->uselessalpha();
 
 		delete image;
 
-		return pybind::ret_bool( useless );
+		return _kernel->ret_bool( useless );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	Image * loadImage( const wchar_t * _path )
@@ -482,62 +448,43 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	static ColourValue color_convert( pybind::kernel_interface * _kernel, PyObject * _obj )
 	{
-		if( pybind::tuple_check( _obj ) == true )
+		if( _kernel->tuple_check( _obj ) == true )
 		{
-			if( pybind::tuple_size( _obj ) == 4 )
+			if( _kernel->tuple_size( _obj ) == 4 )
 			{
-				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
-				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
-				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
-				PyObject * i3 = pybind::tuple_getitem( _obj, 3 );
-
-				float r = pybind::extract<float>( _kernel, i0);
-				float g = pybind::extract<float>( _kernel, i1);
-				float b = pybind::extract<float>( _kernel, i2);
-				float a = pybind::extract<float>( _kernel, i3);
-
+                float r = pybind::tuple_getitem_t( _kernel, _obj, 0 );
+                float g = pybind::tuple_getitem_t( _kernel, _obj, 1 );
+                float b = pybind::tuple_getitem_t( _kernel, _obj, 2 );
+                float a = pybind::tuple_getitem_t( _kernel, _obj, 3 );
+				
 				return ColourValue( r, g, b, a );
 			}
-			else if( pybind::tuple_size( _obj ) == 3 )
+			else if( _kernel->tuple_size( _obj ) == 3 )
 			{
-				PyObject * i0 = pybind::tuple_getitem( _obj, 0 );
-				PyObject * i1 = pybind::tuple_getitem( _obj, 1 );
-				PyObject * i2 = pybind::tuple_getitem( _obj, 2 );
-
-				float r = pybind::extract<float>( _kernel, i0);
-				float g = pybind::extract<float>( _kernel, i1);
-				float b = pybind::extract<float>( _kernel, i2);
+                float r = pybind::tuple_getitem_t( _kernel, _obj, 0 );
+                float g = pybind::tuple_getitem_t( _kernel, _obj, 1 );
+                float b = pybind::tuple_getitem_t( _kernel, _obj, 2 );
 				float a = 1.f;
 
 				return ColourValue( r, g, b, a );
 			}
 		}
-		else if( pybind::list_check( _obj ) == true )
+		else if( _kernel->list_check( _obj ) == true )
 		{
-			if( pybind::list_size( _obj ) == 4 )
+			if( _kernel->list_size( _obj ) == 4 )
 			{
-				PyObject * i0 = pybind::list_getitem( _obj, 0 );
-				PyObject * i1 = pybind::list_getitem( _obj, 1 );
-				PyObject * i2 = pybind::list_getitem( _obj, 2 );
-				PyObject * i3 = pybind::list_getitem( _obj, 3 );
-
-				float r = pybind::extract<float>( _kernel, i0);
-				float g = pybind::extract<float>( _kernel, i1);
-				float b = pybind::extract<float>( _kernel, i2);
-				float a = pybind::extract<float>( _kernel, i3);
+                float r = pybind::list_getitem_t( _kernel, _obj, 0 );
+                float g = pybind::list_getitem_t( _kernel, _obj, 1 );
+                float b = pybind::list_getitem_t( _kernel, _obj, 2 );
+                float a = pybind::list_getitem_t( _kernel, _obj, 3 );
 
 				return ColourValue( r, g, b, a );
 			}				
-			else if( pybind::list_size( _obj ) == 3 )
+			else if( _kernel->list_size( _obj ) == 3 )
 			{
-				PyObject * i0 = pybind::list_getitem( _obj, 0 );
-				PyObject * i1 = pybind::list_getitem( _obj, 1 );
-				PyObject * i2 = pybind::list_getitem( _obj, 2 );
-
-
-				float r = pybind::extract<float>( _kernel, i0);
-				float g = pybind::extract<float>( _kernel, i1);
-				float b = pybind::extract<float>( _kernel, i2);
+                float r = pybind::list_getitem_t( _kernel, _obj, 0 );
+                float g = pybind::list_getitem_t( _kernel, _obj, 1 );
+                float b = pybind::list_getitem_t( _kernel, _obj, 2 );
 				float a = 1.f;
 
 				return ColourValue( r, g, b, a );
@@ -620,48 +567,48 @@ namespace Mengine
 		}
 
 	public:
-		PyObject * py_write( PyObject * _args, PyObject * _kwds )
+		PyObject * py_write( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds )
 		{
 			(void)_kwds;
 
-			if( pybind::tuple_check( _args ) == false )
+			if( _kernel->tuple_check( _args ) == false )
 			{
-				return pybind::ret_none();
+				return _kernel->ret_none();
 			}
 
-			size_t tuple_size = pybind::tuple_size(_args);
+			size_t tuple_size = _kernel->tuple_size(_args);
 
 			if( tuple_size == 0 )
 			{
-				return pybind::ret_none();
+				return _kernel->ret_none();
 			}
 
-			PyObject * arg = pybind::tuple_getitem(_args, 0);
+			PyObject * arg = _kernel->tuple_getitem(_args, 0);
 
-			if( pybind::string_check( arg ) == true )
+			if( _kernel->string_check( arg ) == true )
 			{
 				size_t size;
-				const char * str = pybind::string_to_char_and_size( arg, size );
+				const char * str = _kernel->string_to_char_and_size( arg, size );
 
 				this->write( str, size );
 			}
-			else if( pybind::unicode_check( arg ) == true )
+			else if( _kernel->unicode_check( arg ) == true )
 			{
 				size_t size;
-				const char * utf8 = pybind::unicode_to_utf8_and_size( arg, size );
+				const char * utf8 = _kernel->unicode_to_utf8_and_size( arg, size );
 
 				this->write( utf8, size );
 			}
 
-			return pybind::ret_none();
+			return _kernel->ret_none();
 		}
 
-		PyObject * py_flush( PyObject * _args, PyObject * _kwds )
+		PyObject * py_flush( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds )
 		{
 			(void)_args;
 			(void)_kwds;
 
-			return pybind::ret_none();
+			return _kernel->ret_none();
 		}
 
 	public:
@@ -759,23 +706,21 @@ public:
         (void)_kernel;
         (void)_nothrow;
 
-        if( pybind::string_check( _obj ) == true )
-        {
-            uint32_t size;
-            const Mengine::String::value_type * string_char = pybind::string_to_char_and_size( _obj, size );
-
-            if( string_char == 0 )
-            {
-                return false;
-            }
-
-            _value.assign( string_char, size );
-        }
-        else
+        if( _kernel->string_check( _obj ) == false )
         {
             return false;
         }
 
+        uint32_t size;
+        const Mengine::String::value_type * string_char = _kernel->string_to_char_and_size( _obj, size );
+
+        if( string_char == nullptr )
+        {
+            return false;
+        }
+
+        _value.assign( string_char, size );
+        
         return true;
     }
 
@@ -787,7 +732,7 @@ public:
         const Mengine::String::value_type * value_str = _value.c_str();
         Mengine::String::size_type value_size = _value.size();
 
-        PyObject * py_value = pybind::string_from_char_size( value_str, (uint32_t)value_size );
+        PyObject * py_value = _kernel->string_from_char_size( value_str, (uint32_t)value_size );
 
         return py_value;
     }
@@ -802,22 +747,20 @@ public:
         (void)_kernel;
         (void)_nothrow;
 
-        if( pybind::unicode_check( _obj ) == true )
-        {
-            uint32_t size = 0;
-            const Mengine::WString::value_type * value_char = pybind::unicode_to_wchar_and_size( _obj, size );
-
-            if( value_char == nullptr )
-            {
-                return false;
-            }
-
-            _value.assign( value_char, size );
-        }
-        else
+        if( _kernel->unicode_check( _obj ) == false )
         {
             return false;
         }
+         
+        uint32_t size = 0;
+        const Mengine::WString::value_type * value_char = _kernel->unicode_to_wchar_and_size( _obj, size );
+
+        if( value_char == nullptr )
+        {
+            return false;
+        }
+
+        _value.assign( value_char, size );        
 
         return true;
     }
@@ -825,12 +768,10 @@ public:
 public:
     PyObject * wrap( pybind::kernel_interface * _kernel, pybind::type_cast_result<Mengine::WString>::TCastRef _value ) override
     {
-        (void)_kernel;
-
         const Mengine::WString::value_type * value_str = _value.c_str();
         Mengine::WString::size_type value_size = _value.size();
 
-        PyObject * py_value = pybind::unicode_from_wchar_size( value_str, (uint32_t)value_size );
+        PyObject * py_value = _kernel->unicode_from_wchar_size( value_str, (uint32_t)value_size );
 
         return py_value;
     }
@@ -864,23 +805,19 @@ bool run()
 
 	const WCHAR * szRegPath = L"SOFTWARE\\Python\\PythonCore\\3.6-32\\PythonPath";
 
-	{
-		WCHAR szPythonPath[512];
-		if( getCurrentUserRegValue( szRegPath, szPythonPath, 512 ) == false )
-		{
-			LOGGER_ERROR( "invalid get reg value '%ls'"
-				, szRegPath
-				);
-		}
+    WCHAR szPythonPath[512];
+    if( getCurrentUserRegValue( szRegPath, szPythonPath, 512 ) == false )
+    {
+        LOGGER_ERROR( "invalid get reg value '%ls'"
+            , szRegPath
+        );
+    }
 
-		pybind::set_path( szPythonPath );
+    LOGGER_ERROR( "python path '%ls'"
+        , szPythonPath
+    );
 
-        LOGGER_ERROR( "set python path '%ls'"
-			, szPythonPath
-			);
-	}	
-
-	pybind::kernel_interface * kernel = pybind::initialize( false, false, false );
+	pybind::kernel_interface * kernel = pybind::initialize( szPythonPath, false, false, false );
 
 	if( kernel == nullptr )
 	{
@@ -889,7 +826,7 @@ bool run()
 	
     LOGGER_ERROR( "pybind::initialize complete" );
 
-	PyObject * py_tools_module = pybind::module_init( "ToolsBuilderPlugin" );
+	PyObject * py_tools_module = kernel->module_init( "ToolsBuilderPlugin" );
 
     pybind::registration_type_cast<Mengine::String>(kernel, new extract_String_type);
     pybind::registration_type_cast<Mengine::WString>(kernel, new extract_WString_type);
@@ -898,8 +835,8 @@ bool run()
     pybind::registration_stl_vector_type_cast<Mengine::WString, stdex::vector<Mengine::WString>>(kernel);
 
 	pybind::interface_<Mengine::PythonLogger>( kernel, "XlsScriptLogger", true, py_tools_module)
-		.def_native("write", &Mengine::PythonLogger::py_write )
-		.def_native("flush", &Mengine::PythonLogger::py_flush )
+		.def_native_kernel("write", &Mengine::PythonLogger::py_write )
+		.def_native_kernel("flush", &Mengine::PythonLogger::py_flush )
 		.def_property("softspace", &Mengine::PythonLogger::getSoftspace, &Mengine::PythonLogger::setSoftspace )
 		.def_property("errors", &Mengine::PythonLogger::getErrors, &Mengine::PythonLogger::setErrors )
 		.def_property("encoding", &Mengine::PythonLogger::getEncoding, &Mengine::PythonLogger::setEncoding )
@@ -907,17 +844,17 @@ bool run()
     Mengine::PythonLogger * logger = new Mengine::PythonLogger();
 	PyObject * py_logger = pybind::ptr( kernel, logger);
 
-	pybind::setStdOutHandle( py_logger );
-	pybind::setStdErrorHandle( py_logger );
+	kernel->setStdOutHandle( py_logger );
+	kernel->setStdErrorHandle( py_logger );
 
-	pybind::def_function( kernel, "spreadingPngAlpha", &Mengine::spreadingPngAlpha, py_tools_module );
-	pybind::def_function( kernel, "writeBin", &Mengine::writeBin, py_tools_module );
-	pybind::def_function( kernel, "writeAek", &Mengine::writeAek, py_tools_module );
+	pybind::def_function_kernel( kernel, "spreadingPngAlpha", &Mengine::spreadingPngAlpha, py_tools_module );
+	pybind::def_function_kernel( kernel, "writeBin", &Mengine::writeBin, py_tools_module );
+	pybind::def_function_kernel( kernel, "writeAek", &Mengine::writeAek, py_tools_module );
 
 
 	pybind::def_function( kernel, "convert", &Mengine::convert, py_tools_module );
-	pybind::def_function( kernel, "isAlphaInImageFile", &Mengine::isAlphaInImageFile, py_tools_module );
-	pybind::def_function( kernel, "isUselessAlphaInImageFile", &Mengine::isUselessAlphaInImageFile, py_tools_module );
+	pybind::def_function_kernel( kernel, "isAlphaInImageFile", &Mengine::isAlphaInImageFile, py_tools_module );
+	pybind::def_function_kernel( kernel, "isUselessAlphaInImageFile", &Mengine::isUselessAlphaInImageFile, py_tools_module );
 
     Mengine::Image::embedding( kernel, py_tools_module );
 
@@ -927,12 +864,12 @@ bool run()
 
 	pybind::def_function( kernel, "pathSHA1", &Mengine::pathSHA1, py_tools_module );
 
-	PyObject * module_builtins = pybind::get_builtins();
+	PyObject * module_builtins = kernel->get_builtins();
 
 	pybind::def_function( kernel, "Error", &s_error, module_builtins );
 
-	pybind::incref( py_tools_module );
-	pybind::module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
+	kernel->incref( py_tools_module );
+	kernel->module_addobject( module_builtins, "ToolsBuilderPlugin", py_tools_module );
 
     Mengine::WChar currentDirectory[MAX_PATH];
 
@@ -941,17 +878,9 @@ bool run()
 		return false;
 	}
 
-	PyObject * py_syspath = pybind::list_new( 0 );
+	PyObject * py_syspath = kernel->list_new( 0 );
 
 	{
-		WCHAR szPythonPath[512];
-		if( getCurrentUserRegValue( szRegPath, szPythonPath, 512 ) == false )
-		{
-			LOGGER_ERROR( "invalid get reg value '%ls'"
-				, szRegPath
-				);
-		}
-
 #ifdef _MSC_VER
 		WCHAR * ch_buffer;
 		WCHAR * ch = wcstok( szPythonPath, L";", &ch_buffer );
@@ -964,8 +893,8 @@ bool run()
 		while( ch != NULL )
 		{
 			PyObject * py_stdpath = pybind::ptr( kernel, ch );
-			pybind::list_appenditem( py_syspath, py_stdpath );
-			pybind::decref( py_stdpath );
+			kernel->list_appenditem( py_syspath, py_stdpath );
+			kernel->decref( py_stdpath );
 
 #ifdef _MSC_VER
             ch = wcstok( NULL, L";", &ch_buffer );
@@ -978,12 +907,12 @@ bool run()
 	}
 
 	PyObject * py_currentpath = pybind::ptr( kernel, currentDirectory );
-	pybind::list_appenditem( py_syspath, py_currentpath );
-	pybind::decref( py_currentpath );
+	kernel->list_appenditem( py_syspath, py_currentpath );
+	kernel->decref( py_currentpath );
 
-	pybind::set_syspath( py_syspath );
+	kernel->set_syspath( py_syspath );
 
-	pybind::decref( py_syspath );
+	kernel->decref( py_syspath );
 
 	LPWSTR lpwCmdLine = GetCommandLineW();
 
@@ -1012,7 +941,7 @@ bool run()
 		);
 
 	bool exist_run;
-	PyObject * py_run_module = py_run_module = pybind::module_import( utf8_ModuleName.c_str(), exist_run );
+	PyObject * py_run_module = kernel->module_import( utf8_ModuleName.c_str(), exist_run );
 
 	if( py_run_module == nullptr )
 	{
@@ -1024,7 +953,7 @@ bool run()
 		return false;
 	}
 
-	PyObject * py_args = pybind::tuple_new( nArgs - 3 );
+	PyObject * py_args = kernel->tuple_new( nArgs - 3 );
 
 	for( int i = 3; i != nArgs; ++i )
 	{
@@ -1033,9 +962,9 @@ bool run()
 		pybind::tuple_setitem_t( kernel, py_args, i - 3, arg );
 	}
 
-	pybind::call_method_native( py_run_module, utf8_FunctionName.c_str(), py_args );
+    kernel->call_method_native( py_run_module, utf8_FunctionName.c_str(), py_args );
 
-	pybind::decref( py_args );
+    kernel->decref( py_args );
 
 	return true;
 }

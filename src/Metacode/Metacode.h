@@ -1083,6 +1083,133 @@ namespace Metacode
                 bool m_Unique;
             };
             
+            class Meta_ResourceAstralax
+                : public Meta_Resource
+            { 
+            public:
+                Meta_ResourceAstralax();
+            
+            public:
+                uint32_t getVersion() const override;
+                uint32_t getId() const override;
+            
+            public:
+                template<class C, class M>
+                void getm_AtlasCount_Value( C _self, M _method ) const
+                {
+                    (_self->*_method)( this->m_AtlasCount_Value );
+                }
+                
+                uint32_t get_AtlasCount_Value() const
+                {
+                    return this->m_AtlasCount_Value;
+                }
+                
+                bool has_File_Converter() const
+                {
+                    return m_File_Converter_successful;
+                }
+                
+                template<class C, class M>
+                void getm_File_Converter( C _self, M _method ) const
+                {
+                    if( m_File_Converter_successful == false )
+                    {
+                        return;
+                    }
+                
+                    (_self->*_method)( this->m_File_Converter );
+                }
+                
+                bool get_File_Converter( Mengine::ConstString * _value ) const
+                {
+                    if( m_File_Converter_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Converter;
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                void getm_File_Path( C _self, M _method ) const
+                {
+                    (_self->*_method)( this->m_File_Path );
+                }
+                
+                const Mengine::FilePath & get_File_Path() const
+                {
+                    return this->m_File_Path;
+                }
+                
+            protected:
+                void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+                void _preparationIncludes( uint32_t _id, uint32_t _count ) override;
+                void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
+            public:
+                class Meta_Atlas
+                    : public Metabuf::Metadata
+                { 
+                public:
+                    Meta_Atlas();
+                
+                public:
+                    uint32_t getVersion() const override;
+                    uint32_t getId() const override;
+                
+                public:
+                    template<class C, class M>
+                    void getm_Index( C _self, M _method ) const
+                    {
+                        (_self->*_method)( this->m_Index );
+                    }
+                    
+                    uint32_t get_Index() const
+                    {
+                        return this->m_Index;
+                    }
+                    
+                    template<class C, class M>
+                    void getm_ResourceName( C _self, M _method ) const
+                    {
+                        (_self->*_method)( this->m_ResourceName );
+                    }
+                    
+                    const Mengine::ConstString & get_ResourceName() const
+                    {
+                        return this->m_ResourceName;
+                    }
+                    
+                protected:
+                    void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
+                public:
+                protected:
+                protected:
+                    uint32_t m_Index;
+                    Mengine::ConstString m_ResourceName;
+                };
+                
+            protected:
+            protected:
+                uint32_t m_AtlasCount_Value;
+                bool m_File_Converter_successful;
+                Mengine::ConstString m_File_Converter;
+                Mengine::FilePath m_File_Path;
+            public:
+                typedef Metabuf::Vector<Meta_Atlas> VectorMeta_Atlas;
+            
+                const VectorMeta_Atlas & get_Includes_Atlas() const
+                {
+                    return this->includes_Meta_Atlas;
+                }
+            
+            protected:
+                VectorMeta_Atlas includes_Meta_Atlas;
+            };
+            
             class Meta_ResourceCal3dAnimation
                 : public Meta_Resource
             { 
@@ -4736,6 +4863,57 @@ namespace Metacode
                         return this->m_FrameDuration;
                     }
                     
+                    bool has_Master() const
+                    {
+                        return m_Master_successful;
+                    }
+                    
+                    bool getd_Master( bool _default ) const
+                    {
+                        if( m_Master_successful == false )
+                        {
+                            return _default;
+                        }
+                    
+                        return this->m_Master;
+                    }
+                    
+                    bool get_Master( bool * _value ) const
+                    {
+                        if( m_Master_successful == false )
+                        {
+                            return false;
+                        }
+                    
+                        *_value = this->m_Master;
+                    
+                        return true;
+                    }
+                    
+                    template<class C, class M>
+                    void getm_Master( C _self, M _method ) const
+                    {
+                        if( m_Master_successful == false )
+                        {
+                            return;
+                        }
+                    
+                        (_self->*_method)( this->m_Master );
+                    }
+                    
+                    bool getd_Master( bool * _value, const bool & _default ) const
+                    {
+                        if( m_Master_successful == false )
+                        {
+                            *_value = _default;
+                    
+                            return false;
+                        }
+                    
+                        *_value = this->m_Master;
+                    
+                        return true;
+                    }
                     template<class C, class M>
                     void getm_Name( C _self, M _method ) const
                     {
@@ -4879,6 +5057,8 @@ namespace Metacode
                     Mengine::Viewport m_Bounds;
                     float m_Duration;
                     float m_FrameDuration;
+                    bool m_Master_successful;
+                    bool m_Master;
                     Mengine::ConstString m_Name;
                 public:
                     typedef Metabuf::Vector<Meta_Layer> VectorMeta_Layer;

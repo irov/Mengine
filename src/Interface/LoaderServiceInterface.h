@@ -2,9 +2,8 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
-#include "Interface/LoadableInterface.h"
+#include "Interface/LoaderInterface.h"
 
-#include "Kernel/Mixin.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 
@@ -16,15 +15,6 @@ namespace Metabuf
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class LoaderInterface
-		: public Mixin
-	{
-	public:
-		virtual bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<LoaderInterface> LoaderInterfacePtr;
 	//////////////////////////////////////////////////////////////////////////
     class LoaderServiceInterface
         : public ServiceInterface

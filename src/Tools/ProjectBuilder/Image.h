@@ -1,11 +1,12 @@
-#	pragma once
+#pragma once
 
-#	include "Interface/ImageCodecInterface.h"
-#	include "Interface/MemoryInterface.h"
+#include "Interface/ImageCodecInterface.h"
+#include "Interface/MemoryInterface.h"
 
-#	include "Kernel/ColourValue.h"
+#include "Kernel/ColourValue.h"
+#include "Kernel/FilePath.h"
 
-#	include "pybind/pybind.hpp"
+#include "pybind/pybind.hpp"
 
 namespace Mengine
 {
@@ -54,7 +55,5 @@ namespace Mengine
 		uint32_t m_width;
 		uint32_t m_height;
 		uint32_t m_channels;
-
-		PyObject * m_embed;
 	};
 }

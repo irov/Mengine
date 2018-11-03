@@ -1,7 +1,5 @@
 #include "ResourceImageSolid.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Kernel/Logger.h"
 
 #include "Interface/RenderSystemInterface.h"

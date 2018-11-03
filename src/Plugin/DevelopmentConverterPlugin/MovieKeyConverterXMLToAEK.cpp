@@ -14,8 +14,6 @@
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryAllocator.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Kernel/Logger.h"
 
 #include "Config/Vector.h"

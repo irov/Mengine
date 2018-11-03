@@ -2,11 +2,14 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 
 #include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 
 #include "SurfaceVideo.h"
 #include "VideoResourceValidateVisitor.h"
+
+#include "LoaderResourceVideo.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -26,7 +29,7 @@ namespace Mengine
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
-        PyObject * s_SurfaceVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
+        static PyObject * s_SurfaceVideo_setEventListener( pybind::kernel_interface * _kernel, SurfaceVideo * _surface, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
 
@@ -112,6 +115,9 @@ namespace Mengine
             ->addResourceValidateVisitor( videoValidateVisitor );
 
         m_videoValidateVisitor = videoValidateVisitor;
+
+        LOADER_SERVICE()
+            ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<LoaderResourceVideo>() );
 
         return true;
     }

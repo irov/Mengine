@@ -1,11 +1,14 @@
 #pragma once
 
-#include "Interface/LoaderServiceInterface.h"
+#include "Interface/LoaderInterface.h"
+
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class LoaderResourceImageSubstractRGBAndAlpha
         : public LoaderInterface
+        , public Factorable
     {
     public:
         LoaderResourceImageSubstractRGBAndAlpha();

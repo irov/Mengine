@@ -1,28 +1,28 @@
-#	include "XmlToAekConverter.h"
+#include "XmlToAekConverter.h"
 
-#   include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#   include "Interface/StringizeInterface.h"
-#   include "Interface/ArchiveInterface.h"
-#   include "Interface/LoggerInterface.h"
-#   include "Interface/LoaderInterface.h"
-#   include "Interface/CodecInterface.h"
-#   include "Interface/ConverterInterface.h"
-#   include "Interface/FileSystemInterface.h"
-#   include "Interface/PluginInterface.h"
-#   include "Interface/WindowsLayerInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/XmlCodecInterface.h"
-#   include "Interface/ConfigInterface.h"
+#include "Interface/StringizeInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/LoggerInterface.h"
+#include "Interface/LoaderInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/ConverterInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/PluginInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/LoaderServiceInterface.h"
+#include "Interface/ConverterServiceInterface.h"
 
-#   include "WindowsLayer/VistaWindowsLayer.h"
+#include "Plugin/XmlCodecPlugin/XmlCodecInterface.h"
 
-#   include "Kernel/Logger.h"
+#include "Kernel/Logger.h"
 
-#	include "xml2metabuf/Xml2Metabuf.hpp"
-#	include "xml2metabuf/Xml2Metacode.hpp"
+#include "xml2metabuf/Xml2Metabuf.hpp"
+#include "xml2metabuf/Xml2Metacode.hpp"
 
-#   include "Config/Typedef.h"
+#include "Config/Typedef.h"
 
 namespace Mengine
 {
@@ -91,17 +91,17 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * writeAek( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * aekPath )
+	PyObject * writeAek( pybind::kernel_interface * _kernel, const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * aekPath )
 	{
 		if( s_writeAek( protocolPath, xmlPath, aekPath ) == false )
 		{
             LOGGER_ERROR( "writeAek: error write bin"
 				);
 
-			return NULL;
+			return nullptr;
 		}
 
-		return pybind::ret_none();
+		return _kernel->ret_none();
 	}
 }
 

@@ -1,4 +1,4 @@
-<Protocol Version = "127">
+<Protocol Version = "128">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -224,6 +224,18 @@
           </Node>
         </Node>
 
+        <Node Name="ResourceAstralax" Inheritance = "Resource">
+          <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Converter" Type="Mengine::ConstString"/>
+
+          <Member Node="AtlasCount" Name="Value" Type="uint32_t" Required="1"/>
+
+          <Node Name="Atlas">
+            <Attribute Name="Index" Type="uint32_t" Required="1"/>
+            <Attribute Name="ResourceName" Type="Mengine::ConstString" Required="1"/>
+          </Node>
+        </Node>
+
         <Node Name="ResourceCursorSystem" Inheritance = "Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
         </Node>
@@ -282,7 +294,8 @@
             <Attribute Name="Duration" Type="float" Required="1"/>
             <Attribute Name="FrameDuration" Type="float" Required="1"/>
             <Attribute Name="Bounds" Type="Mengine::Viewport"/>
-            
+            <Attribute Name="Master" Type="bool"/>
+
             <Node Name="Layer">
               <Attribute Name="Index" Type="uint32_t" Required="1"/>
               <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>

@@ -1,32 +1,31 @@
-#	include <Windows.h>
+#include "Interface/PluginInterface.h"
 
-#	include <shellapi.h>
+#include "Interface/StringizeInterface.h"
+#include "Interface/LoggerInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/DataInterface.h"
+#include "Interface/MemoryInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/ImageCodecInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
+#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
-#	include <stdio.h>
+#include "Plugin/XmlCodecPlugin/XmlCodecInterface.h"
 
-#	include <string>
-#	include <vector>
+#include "Kernel/Logger.h"
+#include "Kernel/LoggerBase.h"
+#include "Kernel/FilePathHelper.h"
+#include "ToolUtils/ToolUtils.h"
 
-#	include "Interface/PluginInterface.h"
+#include "Environment/WIN32/WindowsIncluder.h"
 
-#	include "Interface/StringizeInterface.h"
-#	include "Interface/LoggerInterface.h"
-#	include "Interface/CodecInterface.h"
-#	include "Interface/DataInterface.h"
-#	include "Interface/MemoryInterface.h"
-#   include "Interface/FileSystemInterface.h"
-#   include "Interface/WindowsLayerInterface.h"
-#   include "Interface/ImageCodecInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/ThreadSystemInterface.h"
-#	include "Interface/ArchiveInterface.h"
-#	include "Interface/ConfigInterface.h"
-#	include "Interface/XmlCodecInterface.h"
+#include <string>
+#include <vector>
 
-#   include "WindowsLayer/VistaWindowsLayer.h"
-
-#	include "Kernel/Logger.h"
-#	include "ToolUtils/ToolUtils.h"
+#include <stdio.h>
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( Win32FileGroup );
@@ -46,7 +45,6 @@ SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
-SERVICE_EXTERN( WindowsLayer );
 SERVICE_EXTERN( FileService );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
@@ -70,7 +68,7 @@ namespace Mengine
         SERVICE_CREATE( LoggerService );
 
         class MyLogger
-            : public LoggerInterface
+            : public LoggerBase
         {
         public:
             MyLogger()
@@ -78,48 +76,6 @@ namespace Mengine
                 , m_verboseFlag( 0xFFFFFFFF )
             {
             }
-
-        public:
-            bool initialize() override
-            {
-                return true;
-            }
-
-            void finalize() override
-            {
-            };
-
-        public:
-            void setVerboseLevel( EMessageLevel _level ) override
-            {
-                m_verboseLevel = _level;
-            };
-
-            void setVerboseFlag( size_t _flag ) override
-            {
-                m_verboseFlag = _flag;
-            };
-
-        public:
-            bool validMessage( EMessageLevel _level, size_t _flag ) const override
-            {
-                if( m_verboseLevel < _level )
-                {
-                    return false;
-                }
-
-                if( _flag == 0 )
-                {
-                    return true;
-                }
-
-                if( (m_verboseFlag & _flag) == 0 )
-                {
-                    return false;
-                }
-
-                return true;
-            };
 
         public:
             void log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count ) override
@@ -131,10 +87,6 @@ namespace Mengine
                 message_error( "%s"
                     , _data
                 );
-            }
-
-            void flush() override
-            {
             }
 
         protected:
@@ -159,7 +111,6 @@ namespace Mengine
         SERVICE_CREATE( PluginSystem );
         SERVICE_CREATE( PluginService );
 
-        SERVICE_CREATE( WindowsLayer );
         SERVICE_CREATE( FileService );
 
         PLUGIN_CREATE( Win32FileGroup );

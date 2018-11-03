@@ -154,8 +154,11 @@ namespace Mengine
 
             m_resourceMovie2->foreachCompositionDesc( [&ss]( const ConstString & _name, const ResourceMovie2CompositionDesc & _desc )
             {
-                (void)_desc;
-
+                if( _desc.master == false )
+                {
+                    return;
+                }
+                
                 ss << _name.c_str() << ", ";
             } );
 

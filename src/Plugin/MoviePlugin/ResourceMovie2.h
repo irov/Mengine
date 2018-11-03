@@ -42,6 +42,8 @@ namespace Mengine
         bool has_bounds;
         Viewport bounds;
 
+        bool master;
+
         ResourceMovie2CompositionLayers layers;
         ResourceMovie2CompositionSubCompositions subcompositions;
     };

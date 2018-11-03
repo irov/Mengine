@@ -109,8 +109,18 @@ PLUGIN_EXPORT( LZ4 );
 PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( Win32FileGroup );
 PLUGIN_EXPORT( BitmapFont );
-PLUGIN_EXPORT( DebugRender );
-PLUGIN_EXPORT( ResourceValidate );
+
+#ifdef MENGINE_PLUGIN_DEBUGRENDER
+    PLUGIN_EXPORT( DebugRender );
+#endif
+
+#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
+    PLUGIN_EXPORT( ResourceValidate );
+#endif
+
+#ifdef MENGINE_PLUGIN_METABUFLOADER
+    PLUGIN_EXPORT( MetabufLoader );
+#endif
 
 #ifdef MENGINE_PLUGIN_VIDEO
 PLUGIN_EXPORT( Video );
@@ -720,6 +730,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
         MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_METABUFLOADER
+        MENGINE_ADD_PLUGIN( MetabufLoader, "initialize Plugin Metabuf Loader..." );
 #endif
 
         MENGINE_ADD_PLUGIN( ImageCodec, "initialize Plugin Image Codec..." );

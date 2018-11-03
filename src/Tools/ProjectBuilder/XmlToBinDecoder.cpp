@@ -9,11 +9,10 @@
 #   include "Interface/ConverterInterface.h"
 #   include "Interface/FileSystemInterface.h"
 #   include "Interface/PluginInterface.h"
-#   include "Interface/WindowsLayerInterface.h"
-#   include "Interface/UnicodeInterface.h"
-#   include "Interface/XmlCodecInterface.h"
+#   include "Interface/UnicodeSystemInterface.h"
+#   include "Interface/CodecServiceInterface.h"
 
-#   include "WindowsLayer/VistaWindowsLayer.h"
+#   include "Plugin/XmlCodecPlugin/XmlCodecInterface.h"
 
 #   include "Kernel/Logger.h"
 
@@ -83,7 +82,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * writeBin( const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * binPath )
+    PyObject * writeBin( pybind::kernel_interface * _kernel, const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * binPath )
     {
 		if( s_writeBin( protocolPath, xmlPath, binPath ) == false )
         {
@@ -93,7 +92,7 @@ namespace Mengine
             return nullptr;
         }
 
-        return pybind::ret_none();
+        return _kernel->ret_none();
     }
 }
 

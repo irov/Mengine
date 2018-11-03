@@ -675,6 +675,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
             continue;
         }
 
+        ae_bool_t master = ae_is_movie_composition_data_master( compositionData );
+
         const ae_char_t * compositionDataName = ae_get_movie_composition_data_name( compositionData );
         ae_float_t duration = ae_get_movie_composition_data_duration( compositionData );
         ae_float_t frame_duration = ae_get_movie_composition_data_frame_duration( compositionData );
@@ -684,6 +686,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         xmlDataResourceComposition.append_attribute( "Name" ).set_value( compositionDataName );
         xmlDataResourceComposition.append_attribute( "Duration" ).set_value( sf( duration ).c_str() );
         xmlDataResourceComposition.append_attribute( "FrameDuration" ).set_value( sf( frame_duration ).c_str() );
+        xmlDataResourceComposition.append_attribute( "Master" ).set_value( master ? "1" : "0" );
 
         ae_viewport_t viewport;
         if( ae_get_movie_composition_data_bounds( compositionData, &viewport ) == AE_TRUE )

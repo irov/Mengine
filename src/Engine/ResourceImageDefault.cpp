@@ -6,8 +6,6 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ConstString.h"

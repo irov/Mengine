@@ -2,6 +2,9 @@
 
 #include "Kernel/Logger.h"
 
+#include "Interface/OptionsInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+
 #ifdef _WIN32
 #   include "Environment/WIN32/WindowsIncluder.h"
 #endif
@@ -19,6 +22,11 @@ namespace Mengine
             , _message );
 
         LOGGER_ERROR( assert_message );
+
+        if( HAS_OPTION( "assert" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false )
+        {
+            return;
+        }
 
 #ifdef _WIN32
         DebugBreak();

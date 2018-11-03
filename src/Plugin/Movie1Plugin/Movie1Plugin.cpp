@@ -8,6 +8,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 
 #include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -18,11 +19,9 @@
 #include "Engine/ResourceShape.h"
 
 #include "Kernel/RenderScissor.h"
-
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
 #include "Kernel/ResourcePrototypeGenerator.h"
-
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/PolygonHelper.h"
 
@@ -36,6 +35,8 @@
 
 #include "ResourceMovie.h"
 #include "ResourceInternalObject.h"
+
+#include "LoaderResourceMovie.h"
 
 #include "DataflowAEK.h"
 
@@ -1609,6 +1610,9 @@ namespace Mengine
             ->addResourceValidateVisitor( resourceValidateVisitor );
 
         m_resourceValidateVisitor = resourceValidateVisitor;
+
+        LOADER_SERVICE()
+            ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<LoaderResourceMovie>() );
 
         return true;
     }

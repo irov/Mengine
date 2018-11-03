@@ -1,7 +1,5 @@
 #include "ResourceCursorICO.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Interface/FileSystemInterface.h"
 
 #include "Kernel/MemoryHelper.h"

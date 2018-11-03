@@ -1,7 +1,5 @@
 #include "ResourceCursorSystem.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Kernel/Logger.h"
 
 namespace Mengine

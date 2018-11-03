@@ -5,9 +5,15 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ScriptSystemInterface.h"
+#include "Interface/LoaderServiceInterface.h"
 
 #include "ResourceAstralax.h"
+#include "LoaderResourceAstralax.h"
+
 #include "AstralaxEmitter.h"
+
+#include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "ParticleResourceValidateVisitor.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -117,6 +123,13 @@ namespace Mengine
         }
 
         if( SCRIPT_SERVICE()
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new PythonScriptWrapper<ResourceAstralax>() ) == false )
+        {
+            return false;
+        }
+
+
+        if( SCRIPT_SERVICE()
             ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new PythonScriptWrapper<ResourceAstralax>() ) == false )
         {
             return false;
@@ -127,6 +140,25 @@ namespace Mengine
         {
             return false;
         }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceAstralax, 128> > ) == false )
+        {
+            return false;
+        }
+
+        VisitorPtr particleValidateVisitor = new FactorableUnique<ParticleResourceValidateVisitor>();
+
+        RESOURCEVALIDATE_SERVICE()
+            ->addResourceValidateVisitor( particleValidateVisitor );
+
+        m_particleValidateVisitor = particleValidateVisitor;
+
+        LOADER_SERVICE()
+            ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<LoaderResourceAstralax>() );
+
+        LOADER_SERVICE()
+            ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<LoaderResourceAstralax>() );
 
         return true;
     }
@@ -142,12 +174,22 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
 
+        SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
 
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
         kernel->remove_scope<AstralaxEmitter>();
+
+        RESOURCEVALIDATE_SERVICE()
+            ->removeResourceValidateVisitor( m_particleValidateVisitor );
+        m_particleValidateVisitor = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleModule::_destroy()

@@ -8,8 +8,6 @@
 #include "Interface/StringizeInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Kernel/Logger.h"
 
 namespace Mengine

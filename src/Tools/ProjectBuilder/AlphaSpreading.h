@@ -4,5 +4,5 @@
 
 namespace Mengine
 {
-    PyObject * spreadingPngAlpha( const wchar_t * pngPathIn, const wchar_t * pngPathOut );
+    PyObject * spreadingPngAlpha( pybind::kernel_interface * _kernel, const wchar_t * pngPathIn, const wchar_t * pngPathOut );
 }  

@@ -19,13 +19,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceMusic::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceMusicPtr resource = stdex::intrusive_static_cast<ResourceMusicPtr>(_loadable);
+        ResourceMusic * resource = stdex::intrusive_get<ResourceMusic *>(_loadable);
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMusic * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMusic *>(_meta);
 
         const FilePath & filePath = metadata->get_File_Path();
-
         resource->setFilePath( filePath );
 
         ConstString codecType;
@@ -37,17 +36,9 @@ namespace Mengine
 
         resource->setCodecType( codecType );
 
-        ConstString converterType;
-        metadata->get_File_Converter( &converterType );
-        resource->setConverterType( converterType );
-
-        bool external = false;
-        metadata->get_File_External( &external );
-        resource->setExternal( external );
-
-        float volume = 1.f;
-        metadata->get_DefaultVolume_Value( &volume );
-        resource->setVolume( volume );
+        metadata->getm_File_Converter( resource, &ResourceMusic::setConverterType );        
+        metadata->getm_File_External( resource, &ResourceMusic::setExternal );
+        metadata->getm_DefaultVolume_Value( resource, &ResourceMusic::setVolume );
 
         return true;
     }

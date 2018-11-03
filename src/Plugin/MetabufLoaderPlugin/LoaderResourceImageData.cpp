@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceImageData::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-		ResourceImageDataPtr resource = stdex::intrusive_static_cast<ResourceImageDataPtr>(_loadable);
+		ResourceImageData * resource = stdex::intrusive_get<ResourceImageData *>(_loadable);
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageData * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageData *>(_meta);
@@ -45,10 +45,7 @@ namespace Mengine
 		resource->setImageWidth( width );
 		resource->setImageHeight( height );
 
-        bool validNoExist = false;
-        metadata->get_File_NoExist( &validNoExist );
-
-		resource->setValidNoExist( validNoExist );
+        metadata->getm_File_NoExist( resource, &ResourceImageData::setValidNoExist );
 
         return true;
     }    

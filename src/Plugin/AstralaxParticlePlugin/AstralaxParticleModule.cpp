@@ -78,6 +78,11 @@ namespace Mengine
 
         pybind::set_kernel( kernel );
 
+        pybind::interface_<ResourceAstralax, pybind::bases<Resource, Content> >( kernel, "ResourceAstralax", false )
+            .def( "getResourceImageCount", &ResourceAstralax::getResourceImageCount )
+            .def( "getResourceImage", &ResourceAstralax::getResourceImage )
+            ;
+
         pybind::interface_<AstralaxEmitter, pybind::bases<Node, Eventable, Animatable> >( kernel, "ParticleEmitter2", false )
             .def( "setResourceParticle", &AstralaxEmitter::setResourceParticle )
             .def( "getResourceParticle", &AstralaxEmitter::getResourceParticle )

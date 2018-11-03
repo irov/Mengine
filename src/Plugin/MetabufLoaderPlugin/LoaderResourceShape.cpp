@@ -17,13 +17,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceShape::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceShapePtr resource = stdex::intrusive_static_cast<ResourceShapePtr>(_loadable);
+        ResourceShape * resource = stdex::intrusive_get<ResourceShape *>(_loadable);
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceShape * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceShape *>(_meta);
 
         const Polygon & polygon = metadata->get_Polygon_Value();
-
         resource->setPolygon( polygon );
 
         return true;

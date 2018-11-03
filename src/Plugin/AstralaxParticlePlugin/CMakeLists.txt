@@ -14,6 +14,8 @@ src
 	AstralaxParticleSystem.h
 	ResourceAstralax.cpp
 	ResourceAstralax.h
+    LoaderResourceAstralax.cpp
+    LoaderResourceAstralax.h
     AstralaxService.h
 	AstralaxService.cpp
     

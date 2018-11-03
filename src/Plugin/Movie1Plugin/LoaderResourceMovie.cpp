@@ -1,11 +1,46 @@
 #include "LoaderResourceMovie.h"
 
+#include "Interface/StringizeInterface.h"
+
 #include "ResourceMovie.h"
+
+#include "Kernel/Logger.h"
 
 #include "Metacode/Metacode.h"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        //////////////////////////////////////////////////////////////////////////
+        bool isThreeDNode( const VectorMovieLayers & _layers, uint32_t _index )
+        {
+            for( const MovieLayer & layer : _layers )
+            {
+                if( layer.index != _index )
+                {
+                    continue;
+                }
+
+                if( layer.isThreeD() == true )
+                {
+                    return true;
+                }
+
+                if( layer.parent == 0 || layer.parent == movie_layer_parent_none )
+                {
+                    return false;
+                }
+
+                bool threeD = Detail::isThreeDNode( _layers, layer.parent );
+
+                return threeD;
+            }
+
+            return false;
+        }
+    }
     //////////////////////////////////////////////////////////////////////////
     LoaderResourceMovie::LoaderResourceMovie()        
     {
@@ -15,36 +50,43 @@ namespace Mengine
     {
     }    
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceMovie::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
+    bool LoaderResourceMovie::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceMoviePtr resource = stdex::intrusive_static_cast<ResourceMoviePtr>(_loadable);
+        ResourceMovie * resource = stdex::intrusive_get<ResourceMovie *>(_loadable);
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie *>(_meta);
 
-        m_duration = metadata->get_Duration_Value();
-        m_frameDuration = metadata->get_FrameDuration_Value();
-        m_size.x = metadata->get_Width_Value();
-        m_size.y = metadata->get_Height_Value();
+        float duration = metadata->get_Duration_Value();
+        resource->setDuration( duration );
 
-        metadata->get_Loop_Segment( &m_loopSegment );
+        float frameDuration = metadata->get_FrameDuration_Value();
+        resource->setFrameDuration( frameDuration );
 
-        m_hasBoundBox = metadata->get_Bounds_Box( &m_boundBox );
-        m_hasAnchorPoint = metadata->get_Anchor_Point( &m_anchorPoint );
-        m_hasOffsetPoint = metadata->get_Offset_Point( &m_offsetPoint );
+        float width = metadata->get_Width_Value();
+        float height = metadata->get_Height_Value();
+        resource->setSize( mt::vec2f( width, height ) );
 
-        m_filePath = metadata->get_KeyFramesPackPath_Path();
+        metadata->getm_Loop_Segment( resource, &ResourceMovie::setLoopSegment );        
+        metadata->getm_Bounds_Box( resource, &ResourceMovie::setBoundBox );
+        metadata->getm_Anchor_Point( resource, &ResourceMovie::setAnchorPoint );
+        metadata->getm_Offset_Point( resource, &ResourceMovie::setOffsetPoint );
 
-        metadata->get_KeyFramesPackPath_Codec( &m_dataflowType );
-        metadata->get_KeyFramesPackPath_Converter( &m_converterType );
+        const FilePath & filePath = metadata->get_KeyFramesPackPath_Path();
+        resource->setFilePath( filePath );
+
+        metadata->getm_KeyFramesPackPath_Codec( resource, &ResourceMovie::setDataflowType );
+        metadata->getm_KeyFramesPackPath_Converter( resource, &ResourceMovie::setConverterType );
+        
+        const ConstString & dataflowType = resource->getDataflowType();
 
         //FIX THIS
-        if( m_dataflowType.empty() == true )
+        if( dataflowType.empty() == true )
         {
-            m_converterType = STRINGIZE_STRING_LOCAL( "xmlToAekMovie" );
+            resource->setConverterType( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ) );
         }
 
-        m_layers.clear();
+        VectorMovieLayers layers;
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::VectorMeta_MovieLayer2D & includes_layer2d = metadata->get_Includes_MovieLayer2D();
 
@@ -56,8 +98,7 @@ namespace Mengine
         {
             const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer2D & meta_layer2d = *it;
 
-            m_layers.emplace_back( MovieLayer() );
-            MovieLayer & ml = m_layers.back();
+            MovieLayer ml;
 
             ml.state = 0;
 
@@ -97,9 +138,9 @@ namespace Mengine
                     ml.in = 0.f;
                 }
 
-                if( ml.out > m_duration )
+                if( ml.out > duration )
                 {
-                    ml.out = m_duration;
+                    ml.out = duration;
                 }
             }
             else
@@ -107,8 +148,10 @@ namespace Mengine
                 ml.startInterval = 0.f;
 
                 ml.in = 0.f;
-                ml.out = m_duration;
+                ml.out = duration;
             }
+
+            layers.emplace_back( ml );
         }
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::VectorMeta_MovieLayer3D & includes_layer3d = metadata->get_Includes_MovieLayer3D();
@@ -121,8 +164,7 @@ namespace Mengine
         {
             const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieLayer3D & meta_layer3d = *it;
 
-            m_layers.emplace_back( MovieLayer() );
-            MovieLayer & ml = m_layers.back();
+            MovieLayer ml;
 
             ml.state |= MOVIE_LAYER_THREED;
 
@@ -159,9 +201,9 @@ namespace Mengine
                     ml.in = 0.f;
                 }
 
-                if( ml.out > m_duration )
+                if( ml.out > duration )
                 {
-                    ml.out = m_duration;
+                    ml.out = duration;
                 }
             }
             else
@@ -169,8 +211,10 @@ namespace Mengine
                 ml.startInterval = 0.f;
 
                 ml.in = 0.f;
-                ml.out = m_duration;
+                ml.out = duration;
             }
+
+            layers.emplace_back( ml );
         }
 
 
@@ -184,19 +228,22 @@ namespace Mengine
         {
             const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie::Meta_MovieCamera3D & meta_camera3d = *it;
 
-            m_camera3D.cameraPosition = meta_camera3d.get_CameraPosition();
-            m_camera3D.cameraInterest = meta_camera3d.get_CameraInterest();
-            m_camera3D.cameraFOV = meta_camera3d.get_CameraFOV();
-            m_camera3D.cameraAspect = meta_camera3d.get_CameraAspect();
-            m_camera3D.width = meta_camera3d.get_Width();
-            m_camera3D.height = meta_camera3d.get_Height();
+            MovieLayerCamera3D camera3D;
+            camera3D.cameraPosition = meta_camera3d.get_CameraPosition();
+            camera3D.cameraInterest = meta_camera3d.get_CameraInterest();
+            camera3D.cameraFOV = meta_camera3d.get_CameraFOV();
+            camera3D.cameraAspect = meta_camera3d.get_CameraAspect();
+            camera3D.width = meta_camera3d.get_Width();
+            camera3D.height = meta_camera3d.get_Height();
 
-            m_hasCamera3D = true;
+            resource->setCamera3D( camera3D );
         }
 
-        for( MovieLayer & layer : m_layers )
+        uint32_t maxLayerIndex = 0U;
+
+        for( MovieLayer & layer : layers )
         {
-            m_maxLayerIndex = m_maxLayerIndex > layer.index ? m_maxLayerIndex : layer.index;
+            maxLayerIndex = maxLayerIndex > layer.index ? maxLayerIndex : layer.index;
 
             if( layer.type == STRINGIZE_STRING_LOCAL( "MovieSlot" ) )
             {
@@ -297,8 +344,8 @@ namespace Mengine
             else
             {
                 LOGGER_ERROR( "ResourceMovie: '%s' group '%s' can't setup layer2d '%s' type '%s'"
-                    , this->getName().c_str()
-                    , this->getGroupName().c_str()
+                    , resource->getName().c_str()
+                    , resource->getGroupName().c_str()
                     , layer.source.c_str()
                     , layer.type.c_str()
                 );
@@ -307,22 +354,28 @@ namespace Mengine
             }
 
             if( mt::equal_f_z( layer.in ) == true &&
-                mt::equal_f_f_e( layer.out, m_duration, m_frameDuration ) == true &&
+                mt::equal_f_f_e( layer.out, duration, frameDuration ) == true &&
                 mt::equal_f_z( layer.startInterval ) == true )
             {
                 layer.loop = true;
             }
         }
 
-        for( MovieLayer & layer : m_layers )
+        resource->setMaxLayerIndex( maxLayerIndex );
+
+        for( MovieLayer & layer : layers )
         {
-            if( this->isThreeDNode( layer.index ) == true )
+            if( Detail::isThreeDNode( layers, layer.index ) == true )
             {
                 layer.state |= MOVIE_LAYER_THREED;
             }
         }
 
-        m_frameCount = (uint32_t)((m_duration / m_frameDuration) + 0.5f);
+        resource->setLayers( layers );
+
+        uint32_t frameCount = (uint32_t)((duration / frameDuration) + 0.5f);
+
+        resource->setFrameCount( frameCount );
 
         return true;
     }

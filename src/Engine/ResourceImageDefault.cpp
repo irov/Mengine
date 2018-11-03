@@ -17,42 +17,11 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceImageDefault::ResourceImageDefault()
-        : m_validNoExist( false )
     {
     }
 	//////////////////////////////////////////////////////////////////////////
 	ResourceImageDefault::~ResourceImageDefault()
 	{
-	}
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceImageDefault::setFilePath( const FilePath & _filePath )
-    {
-        m_filePath = _filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceImageDefault::getFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceImageDefault::setCodecType( const ConstString & _codecType )
-    {
-        m_codecType = _codecType;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceImageDefault::getCodecType() const
-    {
-        return m_codecType;
-    }
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageDefault::setConverterType( const ConstString & _converterType )
-	{
-		m_converterType = _converterType;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const ConstString & ResourceImageDefault::getConverterType() const
-	{
-		return m_converterType;
 	}    
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_convert()
@@ -194,10 +163,5 @@ namespace Mengine
         bool pow2 = m_texture->isPow2();
 
         this->setPow2( pow2 );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageDefault::isValidNoExist() const
-    {
-        return m_validNoExist;
     }
 }

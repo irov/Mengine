@@ -11,6 +11,9 @@ src
     
     ResourceVideo.cpp
     ResourceVideo.h
+    
+    LoaderResourceVideo.cpp
+    LoaderResourceVideo.h    
 	
 	SurfaceVideo.cpp
 	SurfaceVideo.h

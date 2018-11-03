@@ -2,6 +2,7 @@
 
 #include "Interface/AmplifierInterface.h"
 #include "Interface/SoundServiceInterface.h"
+#include "Interface/SoundSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/StringizeInterface.h"

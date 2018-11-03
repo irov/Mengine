@@ -21,7 +21,6 @@ namespace Mengine
         ~ResourceVideo() override;
 
     public:
-        bool _loader( const Metabuf::Metadata * _parser ) override;
         bool _convert() override;
 
     public:
@@ -31,13 +30,6 @@ namespace Mengine
     public:
         void setDuration( float _duration );
         float getDuration() const;
-
-    public:
-        void setFilePath( const FilePath & _path );
-        const FilePath & getFilePath() const;
-
-        void setCodecType( const ConstString & _type );
-        const ConstString & getCodecType() const;
 
     public:
         VideoDecoderInterfacePtr createVideoDecoder() const;
@@ -51,9 +43,8 @@ namespace Mengine
         void setAlpha( bool _alpha );
         bool isAlpha() const;
 
-    public:
-        const mt::vec2f& getFrameSize() const;
-        bool isNoSkeep() const;
+        void setNoSeek( bool _noSeek );
+        bool isNoSeek() const;
 
     protected:
         bool _compile() override;

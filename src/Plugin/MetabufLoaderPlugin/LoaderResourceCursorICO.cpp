@@ -17,13 +17,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceCursorICO::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-		ResourceCursorICOPtr resource = stdex::intrusive_static_cast<ResourceCursorICOPtr>(_loadable);
+		ResourceCursorICO * resource = stdex::intrusive_get<ResourceCursorICO *>(_loadable);
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorICO * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceCursorICO *>(_meta);
 
-        const FilePath & path = metadata->get_File_Path();
-		resource->setFilePath( path );
+        metadata->getm_File_Path( resource, &ResourceCursorICO::setFilePath );
 
         return true;
     }    

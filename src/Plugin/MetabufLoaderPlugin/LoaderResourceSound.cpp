@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceSound::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceSoundPtr resource = stdex::intrusive_static_cast<ResourceSoundPtr>(_loadable);
+        ResourceSound * resource = stdex::intrusive_get<ResourceSound *>(_loadable);
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSound * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceSound *>(_meta);
@@ -25,25 +25,10 @@ namespace Mengine
         const FilePath & filePath = metadata->get_File_Path();
         resource->setFilePath( filePath );
 
-        ConstString codecType;
-        metadata->get_File_Codec( &codecType );
-        resource->setCodecType( codecType );
-
-        ConstString converterType;
-        metadata->get_File_Converter( &converterType );
-        resource->setConverterType( converterType );
-
-        float defaultVolume;
-        if( metadata->get_DefaultVolume_Value( &defaultVolume ) == true )
-        {
-            resource->setDefaultVolume( defaultVolume );
-        }
-
-        bool isStreamable;
-        if( metadata->get_IsStreamable_Value( &isStreamable ) == true )
-        {
-            resource->setStreamable( isStreamable );
-        }
+        metadata->getm_File_Codec( resource, &ResourceSound::setCodecType );
+        metadata->getm_File_Converter( resource, &ResourceSound::setConverterType );
+        metadata->getm_DefaultVolume_Value( resource, &ResourceSound::setDefaultVolume );
+        metadata->getm_IsStreamable_Value( resource, &ResourceSound::setStreamable );
 
         return true;
     }

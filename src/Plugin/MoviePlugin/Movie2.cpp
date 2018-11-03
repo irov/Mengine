@@ -26,6 +26,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "Config/Stringstream.h"
+
 #include "math/quat.h"
 
 namespace Mengine
@@ -148,10 +150,22 @@ namespace Mengine
 
         if( composition == nullptr )
         {
-            LOGGER_ERROR( "Movie2::createCompositionLayers_ '%s' invalid get composition desc '%s'"
+            Stringstream ss;
+
+            m_resourceMovie2->foreachCompositionDesc( [&ss]( const ConstString & _name, const ResourceMovie2CompositionDesc & _desc )
+            {
+                (void)_desc;
+
+                ss << _name.c_str() << ", ";
+            } );
+
+            LOGGER_ERROR( "movie '%s' resource '%s' path '%s' invalid get composition name '%s' in [%s]"
                 , this->getName().c_str()
+                , this->getResourceMovie2()->getName().c_str()
+                , this->getResourceMovie2()->getFilePath().c_str()
                 , m_compositionName.c_str()
-            );
+                , ss.str().c_str()
+            );         
 
             return false;
         }

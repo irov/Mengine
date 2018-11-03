@@ -16,39 +16,31 @@
 #include "Interface/RandomizerInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/CodecServiceInterface.h"
-
-#include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Interface/ScriptSystemInterface.h"
+#include "Interface/SchedulerInterface.h"
+#include "Interface/TextServiceInterface.h"
+#include "Interface/AccountInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
+#include "Interface/ResourceServiceInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
 #include "Kernel/Arrow.h"
 #include "Kernel/MT19937Randomizer.h"
 
-#include "Interface/ScriptSystemInterface.h"
-#include "Interface/SchedulerInterface.h"
-
-#include "Interface/TextServiceInterface.h"
-#include "Interface/AccountInterface.h"
-
-#include "Interface/UnicodeSystemInterface.h"
-
-#include "Interface/ResourceServiceInterface.h"
-
-#include "Kernel/ResourceImageData.h"
-
 #include "Engine/ResourceFile.h"
-#include "Engine/ResourceImageSequence.h"
-#include "Engine/ResourceSound.h"
-#include "Engine/ResourceImageSolid.h"
-
 #include "Engine/ResourceImageDefault.h"
+#include "Engine/ResourceImageSubstractRGBAndAlpha.h"
+#include "Engine/ResourceImageSubstract.h"
+#include "Engine/ResourceImageSequence.h"
+#include "Engine/ResourceImageSolid.h"
+#include "Engine/ResourceImageData.h"
+#include "Engine/ResourceSound.h"
 #include "Engine/ResourceTestPick.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
 
-#include "Engine/ResourceImageSubstractRGBAndAlpha.h"
-#include "Engine/ResourceImageSubstract.h"
-
+#include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
 #include "Plugin/MoviePlugin/ResourceMovie2.h"
 
 #include "Interface/ApplicationInterface.h"

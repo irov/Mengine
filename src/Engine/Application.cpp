@@ -84,9 +84,8 @@
 
 // All Resource type
 #include "ResourceImageSequence.h"
-
-#include "Kernel/ResourceImageData.h"
-#include "Kernel/ResourceMusic.h"
+#include "ResourceImageData.h"
+#include "ResourceMusic.h"
 
 #include "ResourceImageSolid.h"
 #include "ResourceImageDefault.h"
@@ -2024,13 +2023,11 @@ namespace Mengine
         if( m_cursorMode == true && m_cursorResource != nullptr )
         {
             const ConstString & name = m_cursorResource->getName();
-
-            const FilePath & path = m_cursorResource->getPath();
-
+            const FilePath & filePath = m_cursorResource->getFilePath();
             const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
             PLATFORM_SERVICE()
-                ->notifyCursorIconSetup( name, path, buffer );
+                ->notifyCursorIconSetup( name, filePath, buffer );
         }
 
         m_invalidateCursorMode = true;
@@ -2068,12 +2065,11 @@ namespace Mengine
         }
 
         const ConstString & name = m_cursorResource->getName();
-        const FilePath & path = m_cursorResource->getPath();
-
+        const FilePath & filePath = m_cursorResource->getFilePath();
         const MemoryInterfacePtr & buffer = m_cursorResource->getBuffer();
 
         PLATFORM_SERVICE()
-            ->notifyCursorIconSetup( name, path, buffer );
+            ->notifyCursorIconSetup( name, filePath, buffer );
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::showKeyboard()

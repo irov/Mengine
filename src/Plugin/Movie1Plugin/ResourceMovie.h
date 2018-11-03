@@ -3,15 +3,15 @@
 #include "Interface/MovieKeyFrameInterface.h"
 
 #include "Kernel/Resource.h"
-
-#include "math/vec2.h"
-#include "math/vec3.h"
-#include "math/mat4.h"
-
+#include "Kernel/Content.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Polygon.h"
 
 #include "Config/Vector.h"
+
+#include "math/vec2.h"
+#include "math/vec3.h"
+#include "math/mat4.h"
 
 namespace Mengine
 {
@@ -192,6 +192,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceMovie
         : public Resource
+        , public Content
     {
         DECLARE_VISITABLE( Resource );
 
@@ -200,41 +201,54 @@ namespace Mengine
         ~ResourceMovie() override;
 
     public:
+        void setFrameDuration( float _frameDuration );
         float getFrameDuration() const;
+
+        void setDuration( float _duration );
         float getDuration() const;
 
+        void setFrameCount( uint32_t _frameCount );
         uint32_t getFrameCount() const;
+
+        void setMaxLayerIndex( uint32_t _maxLayerIndex );
         uint32_t getMaxLayerIndex() const;
 
+        void setSize( const mt::vec2f & _size );
         const mt::vec2f & getSize() const;
 
+        void setLoopSegment( const mt::vec2f & _loopSegment );
         const mt::vec2f & getLoopSegment() const;
 
     public:
-        const FilePath & getFilePath() const;
+        void setDataflowType( const ConstString & _dataflowType );
         const ConstString & getDataflowType() const;
 
     public:
+        void setLayers( const VectorMovieLayers & _layers );
         const VectorMovieLayers & getLayers() const;
+
+    public:
+        bool hasCamera3D() const;
+        void setCamera3D( const MovieLayerCamera3D & _camera3d );
         const MovieLayerCamera3D & getCamera3D() const;
 
     public:
         ResourceShapePtr getSocketResourceShape( const ConstString & _socketName ) const;
 
-    public:
+    public:        
         bool hasAnchorPoint() const;
-        const mt::vec3f & getAnchorPoint() const;
+        void setAnchorPoint( const mt::vec3f & _anchorPoint );
+        const mt::vec3f & getAnchorPoint() const;        
 
     public:
         bool hasOffsetPoint() const;
+        void setOffsetPoint( const mt::vec3f &  _offsetPoint );
         const mt::vec3f & getOffsetPoint() const;
 
     public:
         bool hasBoundBox() const;
+        void setBoundBox( const mt::box2f & _boundBox );
         const mt::box2f & getBoundBox() const;
-
-    public:
-        bool hasCamera3D() const;
 
     public:
         inline const MovieFramePackInterfacePtr & getFramePack() const;
@@ -257,9 +271,6 @@ namespace Mengine
         DataInterfacePtr compileData_( const FileGroupInterfacePtr & _category, const FilePath & _path );
 
     protected:
-        bool isThreeDNode( uint32_t _index ) const;
-
-    protected:
         float m_frameDuration;
         float m_duration;
 
@@ -274,9 +285,7 @@ namespace Mengine
         bool m_hasOffsetPoint;
         mt::vec3f m_offsetPoint;
 
-        FilePath m_filePath;
         ConstString m_dataflowType;
-        ConstString m_converterType;
 
         MovieFramePackInterfacePtr m_keyFramePack;
 

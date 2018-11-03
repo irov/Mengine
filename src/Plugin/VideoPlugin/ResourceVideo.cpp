@@ -45,25 +45,7 @@ namespace Mengine
     float ResourceVideo::getDuration() const
     {
         return m_duration;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceVideo::_loader( const Metabuf::Metadata * _meta )
-    {
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceVideo * metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceVideo *>(_meta);
-
-        m_filePath = metadata->get_File_Path();
-
-        metadata->get_File_Codec( &m_codecType );
-        metadata->get_File_Converter( &m_converterType );
-
-        metadata->get_File_Alpha( &m_alpha );
-        metadata->get_File_NoSeek( &m_noSeek );
-        metadata->get_File_FrameRate( &m_frameRate );
-        metadata->get_File_Duration( &m_duration );
-
-        return true;
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideo::_convert()
     {
@@ -200,7 +182,12 @@ namespace Mengine
         return m_alpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceVideo::isNoSkeep() const
+    void ResourceVideo::setNoSeek( bool _noSeek )
+    {
+        m_noSeek = _noSeek;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ResourceVideo::isNoSeek() const
     {
         return m_noSeek;
     }

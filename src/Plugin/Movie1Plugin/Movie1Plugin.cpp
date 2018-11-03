@@ -1488,7 +1488,7 @@ namespace Mengine
         pybind::interface_<MovieInternalObject, pybind::bases<Node> >( kernel, "MovieInternalObject", false )
             ;
 
-        pybind::interface_<ResourceMovie, pybind::bases<Resource> >( kernel, "ResourceMovie", false )
+        pybind::interface_<ResourceMovie, pybind::bases<Resource, Content> >( kernel, "ResourceMovie", false )
             .def( "getSize", &ResourceMovie::getSize )
             .def( "getLoopSegment", &ResourceMovie::getLoopSegment )
             .def( "getFrameCount", &ResourceMovie::getFrameCount )

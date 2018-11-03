@@ -1,7 +1,5 @@
 #include "ResourceAstralax.h"
 
-#include "Metacode/Metacode.h"
-
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/NodeInterface.h"
@@ -19,29 +17,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceAstralax::setFilePath( const FilePath& _filePath )
+    void ResourceAstralax::setResourceImages( const VectorResourceImages & _resourceImages )
     {
-        m_filePath = _filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath& ResourceAstralax::getFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceAstralax::setConverterType( const ConstString & _converterType )
-    {
-        m_converterType = _converterType;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceAstralax::getConverterType() const
-    {
-        return m_converterType;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceAstralax::addResourceImage( const ResourceImagePtr & _resourceImage )
-    {
-        m_resourceImages.emplace_back( _resourceImage );
+        m_resourceImages = _resourceImages;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t ResourceAstralax::getResourceImageCount() const
@@ -56,52 +34,7 @@ namespace Mengine
         const ResourceImagePtr & resourceImage = m_resourceImages[_index];
 
         return resourceImage;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceAstralax::_loader( const Metabuf::Metadata * _meta )
-    {
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle * metadata
-            = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle *>(_meta);
-
-        m_filePath = metadata->get_File_Path();
-        metadata->get_File_Converter( &m_converterType );
-
-        uint32_t atlasCount = metadata->get_AtlasCount_Value();
-
-        m_resourceImages.resize( atlasCount );
-
-        const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle::VectorMeta_Atlas & includes_atlas = metadata->get_Includes_Atlas();
-
-        for( Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle::VectorMeta_Atlas::const_iterator
-            it = includes_atlas.begin(),
-            it_end = includes_atlas.end();
-            it != it_end;
-            ++it )
-        {
-            const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceParticle::Meta_Atlas & atlas = *it;
-
-            uint32_t index = atlas.get_Index();
-            const ConstString & resourceName = atlas.get_ResourceName();
-
-            ResourceImagePtr resourceImage = RESOURCE_SERVICE()
-                ->getResourceReference( resourceName );
-
-            if( resourceImage == nullptr )
-            {
-                LOGGER_ERROR( "resource %s container %s can't get atlas image %s"
-                    , this->getName().c_str()
-                    , this->getFilePath().c_str()
-                    , resourceName.c_str()
-                );
-
-                return false;
-            }
-
-            m_resourceImages[index] = resourceImage;
-        }
-
-        return true;
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool ResourceAstralax::_convert()
     {

@@ -285,6 +285,17 @@ namespace Mengine
         return &composition;
     }
     //////////////////////////////////////////////////////////////////////////
+    void ResourceMovie2::foreachCompositionDesc( const LambdaCompositionDescs & _lambda )
+    {
+        for( const MapCompositions::value_type & value : m_compositions )
+        {
+            const ConstString & name = value.first;
+            const ResourceMovie2CompositionDesc & desc = value.second;
+
+            _lambda( name, desc );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ResourceMovie2::setMovieInstance( const aeMovieInstance * _movieInstance )
     {
         m_movieInstance = _movieInstance;

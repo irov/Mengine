@@ -27,21 +27,18 @@
 
 #include "Interface/ResourceServiceInterface.h"
 
-#include "Kernel/ResourceImageData.h"
-
+#include "Engine/ResourceImageData.h"
 #include "Engine/ResourceFile.h"
-#include "Kernel/ResourceMusic.h"
+#include "Engine/ResourceMusic.h"
 #include "Engine/ResourceImageSequence.h"
 #include "Engine/ResourceSound.h"
 #include "Engine/ResourceImageSolid.h"
-
 #include "Engine/ResourceImageDefault.h"
 #include "Engine/ResourceTestPick.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
 #include "Engine/ResourceCursorICO.h"
 #include "Engine/ResourceCursorSystem.h"
-
 #include "Engine/ResourceImageSubstractRGBAndAlpha.h"
 #include "Engine/ResourceImageSubstract.h"
 
@@ -2483,6 +2480,17 @@ namespace Mengine
             .def( "uncache", &Resource::uncache )
             ;
 
+        pybind::interface_<Content, pybind::bases<Mixin> >( kernel, "Content", false )
+            .def( "setFilePath", &Content::setFilePath )
+            .def( "getFilePath", &Content::getFilePath )
+            .def( "setCodecType", &Content::setCodecType )
+            .def( "getCodecType", &Content::getCodecType )
+            .def( "setConverterType", &Content::setConverterType )
+            .def( "getConverterType", &Content::getConverterType )
+            .def( "setValidNoExist", &Content::setValidNoExist )
+            .def( "isValidNoExist", &Content::isValidNoExist )
+            ;
+
         pybind::interface_<ResourceImage, pybind::bases<Resource> >( kernel, "ResourceImage", false )
             .def( "setMaxSize", &ResourceImage::setMaxSize )
             .def( "getMaxSize", &ResourceImage::getMaxSize )
@@ -2504,20 +2512,18 @@ namespace Mengine
             .def( "getColor", &ResourceImage::getColor )
             ;
 
-        pybind::interface_<ResourceImageData, pybind::bases<Resource> >( kernel, "ResourceImageData", false )
-            .def( "setImagePath", &ResourceImageData::setImagePath )
-            .def( "getImagePath", &ResourceImageData::getImagePath )
-            .def( "setCodecType", &ResourceImageData::setCodecType )
-            .def( "getCodecType", &ResourceImageData::getCodecType )
+        pybind::interface_<ResourceImageData, pybind::bases<Resource, Content> >( kernel, "ResourceImageData", false )
+            .def_deprecated( "setImagePath", &ResourceImageData::setFilePath, "use setFilePath" )
+            .def_deprecated( "getImagePath", &ResourceImageData::getFilePath, "use getFilePath" )
             .def( "setImageMaxSize", &ResourceImageData::setImageMaxSize )
             .def( "getImageMaxSize", &ResourceImageData::getImageMaxSize )
+            .def( "setImageWidth", &ResourceImageData::setImageWidth )
+            .def( "getImageWidth", &ResourceImageData::getImageWidth )
+            .def( "setImageHeight", &ResourceImageData::setImageHeight )
+            .def( "getImageHeight", &ResourceImageData::getImageHeight )
             ;
 
-        pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage> >( kernel, "ResourceImageDefault", false )
-            .def( "setFilePath", &ResourceImageDefault::setFilePath )
-            .def( "getFilePath", &ResourceImageDefault::getFilePath )
-            .def( "setCodecType", &ResourceImageDefault::setCodecType )
-            .def( "getCodecType", &ResourceImageDefault::getCodecType )
+        pybind::interface_<ResourceImageDefault, pybind::bases<ResourceImage, Content> >( kernel, "ResourceImageDefault", false )
             ;
 
         pybind::interface_<ResourceImageSubstractRGBAndAlpha, pybind::bases<ResourceImage> >( kernel, "ResourceImageSubstractRGBAndAlpha", false )
@@ -2529,13 +2535,13 @@ namespace Mengine
         pybind::interface_<ResourceImageSolid, pybind::bases<ResourceImage> >( kernel, "ResourceImageSolid", false )
             ;
 
-        pybind::interface_<ResourceMusic, pybind::bases<Resource> >( kernel, "ResourceMusic", false )
+        pybind::interface_<ResourceMusic, pybind::bases<Resource, Content> >( kernel, "ResourceMusic", false )
             ;
 
         pybind::interface_<ResourceImageSequence, pybind::bases<Resource> >( kernel, "ResourceImageSequence", false )
             ;
 
-        pybind::interface_<ResourceSound, pybind::bases<Resource> >( kernel, "ResourceSound", false )
+        pybind::interface_<ResourceSound, pybind::bases<Resource, Content> >( kernel, "ResourceSound", false )
             ;
 
         pybind::interface_<ResourceFile, pybind::bases<Resource> >( kernel, "ResourceFile", false )
@@ -2564,11 +2570,7 @@ namespace Mengine
             .def( "getImageHeight", &ResourceTestPick::getImageHeight )
             ;
 
-        pybind::interface_<ResourceHIT, pybind::bases<ResourceTestPick> >( kernel, "ResourceHIT", false )
-            .def( "setFilePath", &ResourceHIT::setFilePath )
-            .def( "getFilePath", &ResourceHIT::getFilePath )
-            .def( "setCodecType", &ResourceHIT::setCodecType )
-            .def( "getCodecType", &ResourceHIT::getCodecType )
+        pybind::interface_<ResourceHIT, pybind::bases<ResourceTestPick, Content> >( kernel, "ResourceHIT", false )
             ;
 
         pybind::interface_<UpdationInterface, pybind::bases<Mixin> >( kernel, "Updation" )

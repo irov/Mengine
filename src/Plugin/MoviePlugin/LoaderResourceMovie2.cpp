@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceMovie2::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceMovie2Ptr resource = stdex::intrusive_static_cast<ResourceMovie2Ptr>(_loadable);
+        ResourceMovie2 * resource = stdex::intrusive_get<ResourceMovie2 *>( _loadable );
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 *>(_meta);

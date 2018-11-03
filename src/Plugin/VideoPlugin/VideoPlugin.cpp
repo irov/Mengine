@@ -69,7 +69,7 @@ namespace Mengine
 
         pybind::set_kernel( kernel );
 
-        pybind::interface_<ResourceVideo, pybind::bases<Resource> >( kernel, "ResourceVideo", false )
+        pybind::interface_<ResourceVideo, pybind::bases<Resource, Content> >( kernel, "ResourceVideo", false )
             ;
 
         pybind::interface_<SurfaceVideo, pybind::bases<Surface, Eventable, Animatable> >( kernel, "SurfaceVideo", false )

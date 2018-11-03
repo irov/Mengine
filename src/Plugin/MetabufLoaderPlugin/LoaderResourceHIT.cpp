@@ -1,4 +1,4 @@
-#include "LoaderResourceFile.h"
+#include "LoaderResourceHIT.h"
 
 #include "Engine/ResourceHIT.h"
 
@@ -7,32 +7,24 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	LoaderResourceFile::LoaderResourceFile()
+    LoaderResourceHIT::LoaderResourceHIT()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	LoaderResourceFile::~LoaderResourceFile()
+    LoaderResourceHIT::~LoaderResourceHIT()
     {
     }    
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderResourceFile::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
+    bool LoaderResourceHIT::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-		ResourceHITPtr resource = stdex::intrusive_static_cast<ResourceHITPtr>(_loadable);
+		ResourceHIT * resource = stdex::intrusive_get<ResourceHIT *>(_loadable);
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceHIT * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceHIT *>(_meta);
 
-        const FilePath & filePath = metadata->get_File_Path();
-
-		resource->setFilePath( filePath );
-        
-		ConstString converterType;
-		metadata->get_File_Converter( &converterType );
-		resource->setConverterType( converterType );
-
-		ConstString codecType;
-		metadata->get_File_Codec( &codecType );
-		resource->setCodecType( codecType );
+        metadata->getm_File_Path( resource, &ResourceHIT::setFilePath );
+		metadata->getm_File_Converter( resource, &ResourceHIT::setConverterType );
+        metadata->getm_File_Codec( resource, &ResourceHIT::setCodecType );
 
         return true;
     }    

@@ -17,9 +17,9 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderResourceImageDefault::_loader( const Metabuf::Metadata * _meta )
+    bool LoaderResourceImageDefault::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-		ResourceImageDefaultPtr resource = stdex::intrusive_static_cast<ResourceImageDefaultPtr>(_loadable);
+		ResourceImageDefault * resource = stdex::intrusive_get<ResourceImageDefault *>(_loadable);
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageDefault * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageDefault *>(_meta);
@@ -37,17 +37,9 @@ namespace Mengine
 
 		resource->setCodecType( codecType );
 
-		ConstString converterType;
-        metadata->get_File_Converter( &converterType );
-		resource->setConverterType( converterType );
-
-        bool hasAlpha = true;
-        metadata->get_File_Alpha( &hasAlpha );
-		resource->setAlpha( hasAlpha );
-
-        bool isPremultiply = false;
-        metadata->get_File_Premultiply( &isPremultiply );
-		resource->setPremultiply( isPremultiply );
+        metadata->getm_File_Converter( resource, &ResourceImageDefault::setConverterType );
+        metadata->getm_File_Alpha( resource, &ResourceImageDefault::setAlpha );
+        metadata->getm_File_Premultiply( resource, &ResourceImageDefault::setPremultiply );
 
         const mt::vec2f & maxSize = metadata->get_File_MaxSize();
 		resource->setMaxSize( maxSize );
@@ -62,13 +54,8 @@ namespace Mengine
 			resource->setSize( maxSize );
 		}
 
-		mt::vec2f offset;
-        metadata->get_File_Offset( &offset );
-		resource->setOffset( offset );
-
-        bool validNoExist = false;
-        metadata->get_File_NoExist( &validNoExist );
-		resource->setValidNoExist( validNoExist );
+        metadata->getm_File_Offset( resource, &ResourceImageDefault::setOffset );
+        metadata->getm_File_NoExist( resource, &ResourceImageDefault::setValidNoExist );
 
         return true;
     }

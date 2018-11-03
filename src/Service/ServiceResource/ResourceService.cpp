@@ -8,7 +8,6 @@
 
 #include "Metacode/Metacode.h"
 
-#include "Kernel/Loadable.h"
 #include "Kernel/Resource.h"
 
 #include "Kernel/Logger.h"
@@ -157,7 +156,7 @@ namespace Mengine
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR( "ResourceManager::loadResource: '%s' invalid create resource '%s:%s' name %s type %s"
+                LOGGER_ERROR( "ResourceManager::loadResource: '%s' invalid create resource '%s:%s' name '%s' type '%s'"
                     , _path.c_str()
                     , _pak->getName().c_str()
                     , groupName.c_str()
@@ -168,10 +167,22 @@ namespace Mengine
                 return false;
             }
 
-			LoadablePtr resource =
-				this->createLoadable
+            const LoaderInterfacePtr & loader = LOADER_SERVICE()
+                ->getLoader( type );
 
-            if( resource->loader( meta_resource ) == false )
+            if( loader == nullptr )
+            {
+                LOGGER_ERROR( "ResourceManager::loadResource: '%s' resource '%s:%s' invalid create loader '%s'"
+                    , _path.c_str()
+                    , _pak->getName().c_str()
+                    , groupName.c_str()
+                    , type.c_str()
+                );
+
+                return false;
+            }
+            
+            if( loader->load( resource, meta_resource ) == false )
             {
                 LOGGER_ERROR( "ResourceManager::loadResource '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
                     , _path.c_str()

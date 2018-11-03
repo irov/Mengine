@@ -298,10 +298,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateVisitor::accept( ResourceImageData * _resource )
     {
-        const FilePath & fileName = _resource->getFileName();
+        const FilePath & filePath = _resource->getFilePath();
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
-        bool exist = fileGroup->existFile( fileName );
+        bool exist = fileGroup->existFile( filePath );
 
         if( exist == false )
         {
@@ -316,14 +316,14 @@ namespace Mengine
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFileName().c_str()
+                , _resource->getFilePath().c_str()
             );
 
             return false;
         }
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, fileName, false );
+            ->openInputFile( fileGroup, filePath, false );
 
         if( stream == nullptr )
         {
@@ -331,7 +331,7 @@ namespace Mengine
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFileName().c_str()
+                , _resource->getFilePath().c_str()
             );
 
             return false;
@@ -348,7 +348,7 @@ namespace Mengine
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFileName().c_str()
+                , _resource->getFilePath().c_str()
                 , _resource->getCodecType().c_str()
             );
 
@@ -361,7 +361,7 @@ namespace Mengine
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()
-                , _resource->getFileName().c_str()
+                , _resource->getFilePath().c_str()
                 , _resource->getCodecType().c_str()
             );
 

@@ -3,10 +3,11 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/StringizeInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
-#include "Interface/MemoryInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Metacode/Metacode.h"
 
 #include "metabuf/Metadata.hpp"
 
@@ -153,10 +154,29 @@ namespace Mengine
 
         size_t protocol_size = protocol_stream->size();
 
-        Blobject protocol_buf;
-        protocol_buf.resize( protocol_size );
+        MemoryBufferInterfacePtr memory_protocol = MEMORY_SERVICE()
+            ->createMemoryBuffer();
 
-        if( protocol_stream->read( &protocol_buf[0], protocol_size ) != protocol_size )
+        if( memory_protocol == nullptr )
+        {
+            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid create memory for protocol"
+            );
+
+            return 0;
+        }
+
+        void * memory_protocol_buffer = memory_protocol->newBuffer( protocol_size, "XmlToBinDecoder::decode", __FILE__, __LINE__ );
+
+        if( memory_protocol_buffer == nullptr )
+        {
+            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid new memory buffer '%u'"
+                , protocol_size
+            );
+
+            return 0;
+        }
+
+        if( protocol_stream->read( memory_protocol_buffer, protocol_size ) != protocol_size )
         {
             LOGGER_ERROR( "Xml2BinDecoder::decode: error read protocol %s error invalid read size"
                 , m_options.pathProtocol.c_str()
@@ -169,7 +189,7 @@ namespace Mengine
 
         Metabuf::XmlProtocol xml_protocol;
 
-        if( xml_protocol.readProtocol( &protocol_buf[0], protocol_size ) == false )
+        if( xml_protocol.readProtocol( memory_protocol_buffer, protocol_size ) == false )
         {
             LOGGER_ERROR( "Xml2BinDecoder::decode: error read protocol %s error:\n%s"
                 , m_options.pathProtocol.c_str()
@@ -178,6 +198,8 @@ namespace Mengine
 
             return 0;
         }
+
+        memory_protocol = nullptr;
 
         InputStreamInterfacePtr xml_stream = FILE_SERVICE()
             ->openInputFile( m_fileGroup, m_options.pathXml, false );
@@ -202,13 +224,41 @@ namespace Mengine
             return 0;
         }
 
-        Blobject xml_buf;
-        xml_buf.resize( xml_size );
+        MemoryBufferInterfacePtr memory_xml = MEMORY_SERVICE()
+            ->createMemoryBuffer();
 
-        xml_stream->read( &xml_buf[0], xml_size );
+        if( memory_xml == nullptr )
+        {
+            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid create memory for xml"
+            );
+
+            return 0;
+        }
+
+        void * memory_xml_buffer = memory_xml->newBuffer( xml_size, "XmlToBinDecoder::decode", __FILE__, __LINE__ );
+
+        if( memory_xml == nullptr )
+        {
+            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid new memory buffer '%u'"
+                , xml_size
+            );
+
+            return 0;
+        }
+
+        if( xml_stream->read( memory_xml_buffer, xml_size ) != xml_size )
+        {
+            return 0;
+        }
+
         xml_stream = nullptr;
 
         const Metabuf::XmlMeta * xml_meta = xml_protocol.getMeta( "Data" );
+
+        if( xml_meta == nullptr )
+        {
+            return 0;
+        }
 
         Metabuf::Xml2Metabuf xml_metabuf( &xml_protocol, xml_meta );
 
@@ -223,25 +273,66 @@ namespace Mengine
         xml_metabuf.addSerializator( "wchar_t", &s_write_wchar_t, (void*)nullptr );
         xml_metabuf.addSerializator( "utf8", &s_write_utf8, (void*)nullptr );
 
-        Blobject header_buf;
-        header_buf.resize( Metabuf::header_size );
+        MemoryBufferInterfacePtr memory_header = MEMORY_SERVICE()
+            ->createMemoryBuffer();
+
+        if( memory_header == nullptr )
+        {
+            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid create memory for bin"
+            );
+
+            return 0;
+        }
+
+        void * memory_header_buffer = memory_header->newBuffer( Metacode::header_size, "XmlToBinDecoder::decode", __FILE__, __LINE__ );
+
+        if( memory_header_buffer == nullptr )
+        {
+            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid new memory buffer '%u'"
+                , Metacode::header_size
+            );
+
+            return 0;
+        }
+
+        uint32_t xml_meta_version = xml_meta->getVersion();
 
         size_t header_size;
-        if( xml_metabuf.header( &header_buf[0], 16, xml_meta->getVersion(), header_size ) == false )
+        if( xml_metabuf.header( memory_header_buffer, Metacode::header_size, xml_meta_version, header_size ) == false )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error header %s error:\n%s"
+            LOGGER_ERROR( "Xml2BinDecoder::decode: error header '%s' version '%u' error:\n%s"
                 , m_options.pathXml.c_str()
+                , xml_meta_version
                 , xml_metabuf.getError().c_str()
             );
 
             return 0;
         }
 
-        Blobject bin_buf;
-        bin_buf.resize( xml_size * 2 );
+        MemoryBufferInterfacePtr memory_bin = MEMORY_SERVICE()
+            ->createMemoryBuffer();
+
+        if( memory_bin == nullptr )
+        {
+            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid create memory for bin"
+            );
+
+            return 0;
+        }
+
+        void * memory_bin_buffer = memory_bin->newBuffer( xml_size * 2, "XmlToBinDecoder::decode", __FILE__, __LINE__ );
+
+        if( memory_bin_buffer == nullptr )
+        {
+            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid new memory buffer '%u'"
+                , xml_size * 2
+            );
+
+            return 0;
+        }
 
         size_t bin_size;
-        if( xml_metabuf.convert( &bin_buf[0], xml_size * 2, &xml_buf[0], xml_size, bin_size ) == false )
+        if( xml_metabuf.convert( memory_bin_buffer, xml_size * 2, memory_xml_buffer, xml_size, bin_size ) == false )
         {
             LOGGER_ERROR( "Xml2BinDecoder::decode: error convert %s error:\n%s"
                 , m_options.pathXml.c_str()
@@ -252,7 +343,7 @@ namespace Mengine
         }
 
         MemoryInputInterfacePtr compress_memory = ARCHIVE_SERVICE()
-            ->compressBuffer( m_archivator, &bin_buf[0], bin_size, EAC_BEST );
+            ->compressBuffer( m_archivator, memory_bin_buffer, bin_size, EAC_BEST );
 
         if( compress_memory == nullptr )
         {
@@ -275,7 +366,7 @@ namespace Mengine
             return 0;
         }
 
-        bin_stream->write( &header_buf[0], Metabuf::header_size );
+        bin_stream->write( memory_header_buffer, Metacode::header_size );
 
         uint32_t write_bin_size = (uint32_t)bin_size;
         bin_stream->write( &write_bin_size, sizeof( write_bin_size ) );
@@ -285,7 +376,7 @@ namespace Mengine
 
         if( compress_buffer == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error create bin %s invalid get memory"
+            LOGGER_ERROR( "Xml2BinDecoder::decode: error create bin '%s' invalid get memory"
                 , m_options.pathBin.c_str()
             );
 

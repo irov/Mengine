@@ -1,12 +1,31 @@
 #pragma once
 
-//////////////////////////////////////////////////////////////////////////
+#include "Config/Typedef.h"
 #include "Config/Char.h"
-//////////////////////////////////////////////////////////////////////////
+
 namespace Mengine
 {
-    void Assertion( const Char* _message, const Char* _file, int _line );
+    class AssertionOperator
+    {
+    public:
+        AssertionOperator( const Char * _test, const Char * _file, uint32_t _line );
+        ~AssertionOperator();
+
+    public:
+        AssertionOperator & operator()( const Char * _format, ... );
+
+    protected:
+        const Char * m_test;
+        const Char * m_file;
+        uint32_t m_line;
+    };
+
+    void Assertion( const Char * _test, const Char * _file, int _line, const Char * _info );
 }
 //////////////////////////////////////////////////////////////////////////
-#define MENGINE_ASSERTION(Condition) if((Condition) == false){ Mengine::Assertion( #Condition, __FILE__, __LINE__ ); } else {}
+#ifndef NDEBUG
+#   define MENGINE_ASSERTION(Condition) if((Condition) == false) AssertionOperator( #Condition, __FILE__, __LINE__)
+#else
+#   define MENGINE_ASSERTION(Condition)
+#endif
 //////////////////////////////////////////////////////////////////////////

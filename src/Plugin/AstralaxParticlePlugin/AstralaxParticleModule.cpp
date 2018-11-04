@@ -203,11 +203,18 @@ namespace Mengine
 
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
+        kernel->remove_scope<ResourceAstralax>();
         kernel->remove_scope<AstralaxEmitter>();
 
         RESOURCEVALIDATE_SERVICE()
             ->removeResourceValidateVisitor( m_particleValidateVisitor );
         m_particleValidateVisitor = nullptr;
+
+        LOADER_SERVICE()
+            ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+
+        LOADER_SERVICE()
+            ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleModule::_destroy()

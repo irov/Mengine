@@ -1,6 +1,5 @@
 #include "Factory.h"
 
-#ifndef NDEBUG
 #include "Kernel/Assertion.h"
 
 #include <stdlib.h>
@@ -10,7 +9,7 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
-        void assertionFactoryEmpty( const FactoryPtr & _factory )
+        void assertionFactoryEmpty( const FactoryPtr & _factory, const Char * _file, uint32_t _line )
         {
             if( _factory->isEmptyObjects() == true )
             {
@@ -26,8 +25,7 @@ namespace Mengine
                 , count
             );
 
-            Mengine::Assertion( msg, __FILE__, __LINE__ );
+            Mengine::Assertion( msg, _file, _line, "Assertion Factory Empty" );
         }
     }
 }
-#endif

@@ -54,7 +54,8 @@ namespace Mengine
     {
         m_archivator = nullptr;
 
-        m_protocolPath.clear();
+        m_loaders.clear();
+
         m_bufferConstString.clear();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -152,9 +153,9 @@ namespace Mengine
             return false;
         }
 
-        uint8_t header_buff[Metabuf::header_size];
+        uint8_t header_buff[Metacode::header_size];
 
-        stream->read( header_buff, Metabuf::header_size );
+        stream->read( header_buff, Metacode::header_size );
 
         size_t header_read = 0;
         uint32_t readVersion;
@@ -164,7 +165,7 @@ namespace Mengine
         uint32_t metaMetaVersion = _metadata->getVersion();
         uint32_t needMetaVersion;
 
-        if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion ) == false )
+        if( Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion ) != Metacode::HEADER_OK )
         {
             return false;
         }
@@ -184,9 +185,8 @@ namespace Mengine
             return false;
         }
 
-        uint8_t header_buff[Metabuf::header_size];
-
-        _stream->read( header_buff, Metabuf::header_size );
+        uint8_t header_buff[Metacode::header_size];
+        _stream->read( header_buff, Metacode::header_size );
 
         size_t header_read = 0;
         uint32_t readVersion;
@@ -196,7 +196,7 @@ namespace Mengine
         uint32_t metaMetaVersion = _metadata->getVersion();
         uint32_t needMetaVersion;
 
-        if( Metacode::readHeader( header_buff, Metabuf::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion ) == false )
+        if( Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion ) != Metacode::HEADER_OK )
         {
             if( _reimport == nullptr )
             {
@@ -257,11 +257,7 @@ namespace Mengine
 
         m_bufferConstString.resize( stringCount );
 
-        for( VectorConstString::iterator
-            it = m_bufferConstString.begin(),
-            it_end = m_bufferConstString.end();
-            it != it_end;
-            ++it )
+        for( ConstString & buffer : m_bufferConstString )
         {
             uint32_t stringSize;
             int64_t stringHash;
@@ -275,7 +271,8 @@ namespace Mengine
                 return false;
             }
 
-            *it = Helper::stringizeStringSizeHash( str, stringSize, stringHash );
+            STRINGIZE_SERVICE()
+                ->stringize( str, stringSize, stringHash, buffer );
         }
 
         if( _metadata->parseRoot( binary_memory, bin_size, read_size, (void *)this ) == false )

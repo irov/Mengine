@@ -17,6 +17,7 @@ namespace Mengine
         ~DebugRenderService() override;
 
     public:
+        void _dependencyService() override;
         bool _initializeService() override;
         void _finalizeService() override;
 

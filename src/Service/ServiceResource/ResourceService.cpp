@@ -59,26 +59,26 @@ namespace Mengine
         m_resources.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceService::loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _pak, const FilePath & _path, bool _ignored )
+    bool ResourceService::loadResources( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, bool _ignored )
     {
         Metacode::Meta_Data::Meta_DataBlock datablock;
 
         bool exist = false;
         if( LOADER_SERVICE()
-            ->load( _pak, _path, &datablock, exist ) == false )
+            ->load( _fileGroup, _filePath, &datablock, exist ) == false )
         {
             if( exist == false )
             {
                 LOGGER_ERROR( "ResourceManager::loadResource: resource '%s:%s' not found"
-                    , _pak->getName().c_str()
-                    , _path.c_str()
+                    , _fileGroup->getName().c_str()
+                    , _filePath.c_str()
                 );
             }
             else
             {
                 LOGGER_ERROR( "ResourceManager::loadResource: Invalid parse resource '%s:%s'"
-                    , _pak->getName().c_str()
-                    , _path.c_str()
+                    , _fileGroup->getName().c_str()
+                    , _filePath.c_str()
                 );
             }
 
@@ -99,11 +99,11 @@ namespace Mengine
 
             const FilePath & path = meta_include.get_Path();
 
-            if( this->loadResources( _locale, _pak, path, _ignored ) == false )
+            if( this->loadResources( _locale, _fileGroup, path, _ignored ) == false )
             {
                 LOGGER_ERROR( "ResourceManager::loadResource load %s:%s resource invalid load include %s"
-                    , _pak->getName().c_str()
-                    , _path.c_str()
+                    , _fileGroup->getName().c_str()
+                    , _filePath.c_str()
                     , path.c_str()
                 );
 
@@ -138,10 +138,10 @@ namespace Mengine
                 const FileGroupInterfacePtr & resource_category = has_resource->getFileGroup();
 
                 LOGGER_ERROR( "ResourceManager::loadResource: path %s already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
-                    , _path.c_str()
+                    , _filePath.c_str()
                     , name.c_str()
                     , groupName.c_str()
-                    , _pak->getName().c_str()
+                    , _fileGroup->getName().c_str()
                     , resource_category->getName().c_str()
                     , has_resource->getFileGroup()->getName().c_str()
                     , has_resource->getGroupName().c_str()
@@ -152,13 +152,13 @@ namespace Mengine
             }
 
             ResourcePtr resource =
-                this->createResource( _locale, _pak, groupName, name, type );
+                this->createResource( _locale, _fileGroup, groupName, name, type );
 
             if( resource == nullptr )
             {
                 LOGGER_ERROR( "ResourceManager::loadResource: '%s' invalid create resource '%s:%s' name '%s' type '%s'"
-                    , _path.c_str()
-                    , _pak->getName().c_str()
+                    , _filePath.c_str()
+                    , _fileGroup->getName().c_str()
                     , groupName.c_str()
                     , name.c_str()
                     , type.c_str()
@@ -173,8 +173,8 @@ namespace Mengine
             if( loader == nullptr )
             {
                 LOGGER_ERROR( "ResourceManager::loadResource: '%s' resource '%s:%s' invalid create loader '%s'"
-                    , _path.c_str()
-                    , _pak->getName().c_str()
+                    , _filePath.c_str()
+                    , _fileGroup->getName().c_str()
                     , groupName.c_str()
                     , type.c_str()
                 );
@@ -185,8 +185,8 @@ namespace Mengine
             if( loader->load( resource, meta_resource ) == false )
             {
                 LOGGER_ERROR( "ResourceManager::loadResource '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
-                    , _path.c_str()
-                    , _pak->getName().c_str()
+                    , _filePath.c_str()
+                    , _fileGroup->getName().c_str()
                     , groupName.c_str()
                     , name.c_str()
                     , type.c_str()

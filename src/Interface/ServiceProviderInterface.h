@@ -69,6 +69,9 @@ namespace Mengine
         virtual bool destroyService( const Char * _name ) = 0;
 
     public:
+        virtual void dependencyService( const Char * _name, const Char * _dependency ) = 0;
+
+    public:
         virtual void stopServices() = 0;
 
     public:

@@ -19,6 +19,8 @@ src
     MovieInternalObject.cpp
     MovieEvent.h
     MovieEvent.cpp
+    MovieMesh2D.h
+    MovieMesh2D.cpp
     ResourceMovie.cpp
     ResourceMovie.h
     ResourceInternalObject.cpp

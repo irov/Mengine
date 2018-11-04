@@ -1,24 +1,25 @@
 #pragma once
 
-#include "Interface/GlobalHandleSystemInterface.h"
+#include "Interface/GlobalInputHandlerInterface.h"
 
-#include "Kernel/ServiceBase.h"
+#include "Kernel/Factorable.h"
 
 #include "Config/Vector.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class GlobalHandleSystem
-        : public ServiceBase<GlobalHandleSystemInterface>
+    class PlayerGlobalInputHandler
+        : public GlobalInputHandlerInterface
+        , public Factorable
     {
     public:
-        GlobalHandleSystem();
-        ~GlobalHandleSystem() override;
+        PlayerGlobalInputHandler();
+        ~PlayerGlobalInputHandler() override;
 
     public:
-        bool _initializeService() override;
-        void _finalizeService() override;
+        bool initialize() override;
+        void finalize() override;
 
     public:
         uint32_t addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc ) override;

@@ -1,5 +1,7 @@
 #include "ResourceMovie.h"
 
+#include "MovieKeyFrameInterface.h"
+
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
@@ -8,7 +10,6 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/DataServiceInterface.h"
-#include "Interface/MovieKeyFrameInterface.h"
 
 #include "Engine/ResourceShape.h"
 

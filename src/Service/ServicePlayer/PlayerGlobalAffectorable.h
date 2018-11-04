@@ -8,19 +8,19 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class GlobalAffectorable
-        : public FactorableUnique<Factorable>
-        , public Affectorable
+    class PlayerGlobalAffectorable
+        : public Affectorable
+        , public Factorable
     {
     public:
-        GlobalAffectorable();
-        ~GlobalAffectorable() override;
+        PlayerGlobalAffectorable();
+        ~PlayerGlobalAffectorable() override;
 
     protected:
         uint32_t getAffectorableUpdatableMode() const override;
         uint32_t getAffectorableUpdatableLeafDeep() const override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<GlobalAffectorable, Affectorable> GlobalAffectorablePtr;
+    typedef IntrusivePtr<PlayerGlobalAffectorable, Affectorable> PlayerGlobalAffectorablePtr;
     //////////////////////////////////////////////////////////////////////////
 }

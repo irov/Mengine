@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/MovieKeyFrameInterface.h"
+#include "MovieKeyFrameInterface.h"
 
 #include "Config/Typedef.h"
 

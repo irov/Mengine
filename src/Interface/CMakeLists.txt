@@ -44,7 +44,6 @@ src
     PlayerInterface.h
     SchedulerInterface.h
     PickerServiceInterface.h
-    MovieKeyFrameInterface.h
     PlayerInterface.h
     PrototypeServiceInterface.h
     WatchdogInterface.h
@@ -54,7 +53,7 @@ src
     PrefetcherInterface.h
     AmplifierInterface.h
     GraveyardInterface.h
-    GlobalHandleSystemInterface.h
+    GlobalInputHandlerInterface.h
     NotificationServiceInterface.h
     TimeServiceInterface.h
 	TimeSystemInterface.h

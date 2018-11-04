@@ -4,10 +4,10 @@ ADD_FILTER(
 src
 	PlayerService.h
 	PlayerService.cpp    
-    GlobalAffectorable.h
-    GlobalAffectorable.cpp
-    GlobalHandleSystem.h
-    GlobalHandleSystem.cpp
+    PlayerGlobalAffectorable.h
+    PlayerGlobalAffectorable.cpp
+    PlayerGlobalInputHandler.h
+    PlayerGlobalInputHandler.cpp
 )
 
 ADD_MENGINE_LIBRARY()

@@ -1,5 +1,7 @@
 #pragma once
 
+#include "MovieKeyFrameInterface.h"
+
 #include "Kernel/Node.h"
 #include "Kernel/Soundable.h"
 
@@ -8,10 +10,17 @@
 #include "Kernel/BaseAnimation.h"
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/BaseRender.h"
-
+#include "Kernel/RenderCameraProjection.h"
+#include "Kernel/RenderViewport.h"
+#include "Kernel/RenderScissor.h"
+#include "Kernel/Materialable.h"
 #include "Kernel/ResourceHolder.h"
 
 #include "ResourceMovie.h"
+#include "MovieNodeExtra.h"
+#include "MovieEvent.h"
+#include "MovieSceneEffect.h"
+#include "MovieInternalObject.h"
 
 #include "Config/Vector.h"
 
@@ -20,27 +29,17 @@
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class RenderCameraProjection> RenderCameraProjectionPtr;
-    typedef IntrusivePtr<class RenderViewport> RenderViewportPtr;
-    typedef IntrusivePtr<class RenderScissor> RenderScissorPtr;
-
-    typedef IntrusivePtr<class MovieNodeExtra> MovieNodeExtraPtr;
-    typedef IntrusivePtr<class MovieEvent> MovieEventPtr;
-    typedef IntrusivePtr<class MovieSceneEffect> MovieSceneEffectPtr;
-    typedef IntrusivePtr<class MovieInternalObject> MovieInternalObjectPtr;
-
-    typedef IntrusivePtr<class Materialable> MaterialablePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Movie> MoviePtr;
-
-    struct MovieLayer;
-    struct MovieFrameSource;
     //////////////////////////////////////////////////////////////////////////
     class VisitorMovieNode
+        : public Mixin
     {
     public:
         virtual void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<VisitorMovieNode> VisitorMovieNodePtr;
     //////////////////////////////////////////////////////////////////////////
     enum MovieEventFlag
     {
@@ -86,7 +85,7 @@ namespace Mengine
         bool isParentMovie() const;
 
     public:
-        bool visitMovieLayer( const ConstString & _type, VisitorMovieNode * _visitor );
+        bool visitMovieLayer( const ConstString & _type, const VisitorMovieNodePtr & _visitor );
 
     public:
         bool getMovieNode( const ConstString & _name, const ConstString & _type, NodePtr* _node, MoviePtr* _movie );

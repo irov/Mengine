@@ -17,4 +17,7 @@ namespace Mengine
     protected:
         virtual void _movieForwardUpdate( float _time, uint32_t _beginFrame, uint32_t _endFrame, const MovieLayer & _layer ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<MovieNodeExtra> MovieNodeExtraPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

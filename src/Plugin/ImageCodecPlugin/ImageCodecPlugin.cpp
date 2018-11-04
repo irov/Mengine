@@ -30,7 +30,6 @@
 
 #include "Kernel/DecoderFactory.h"
 #include "Kernel/EncoderFactory.h"
-#include "Kernel/DataflowFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( ImageCodec, Mengine::ImageCodecPlugin );

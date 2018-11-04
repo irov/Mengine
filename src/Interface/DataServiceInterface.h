@@ -13,18 +13,6 @@
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	class DataflowFactoryInterface
-		: public Mixin
-	{
-	public:
-		virtual bool initialize() = 0;
-
-	public:
-		virtual DataflowInterfacePtr createDataflow() = 0;
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<DataflowFactoryInterface> DataflowFactoryInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
 	class DataServiceInterface
 		: public ServiceInterface
 	{

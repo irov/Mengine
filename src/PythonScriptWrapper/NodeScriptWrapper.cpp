@@ -55,7 +55,6 @@
 #include "Engine/HotSpotShape.h"
 #include "Engine/Landscape2D.h"
 #include "Engine/Grid2D.h"
-#include "Engine/Mesh2D.h"
 
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/ShapeQuadFlex.h"
@@ -2323,7 +2322,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Line );
         SCRIPT_CLASS_WRAPPING( Landscape2D );
         SCRIPT_CLASS_WRAPPING( Grid2D );
-        SCRIPT_CLASS_WRAPPING( Mesh2D );
 
         SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
@@ -3075,11 +3073,6 @@ namespace Mengine
 
             pybind::interface_<Landscape2D, pybind::bases<Node, Materialable> >( kernel, "Landscape2D", false )
                 .def( "setBackParts", &Landscape2D::setBackParts )
-                ;
-
-            pybind::interface_<Mesh2D, pybind::bases<Node, Materialable> >( kernel, "Mesh2D", false )
-                .def( "setResourceImage", &Mesh2D::setResourceImage )
-                .def( "getResourceImage", &Mesh2D::getResourceImage )
                 ;
 
             pybind::interface_<Grid2D, pybind::bases<Node, Materialable> >( kernel, "Grid2D", false )

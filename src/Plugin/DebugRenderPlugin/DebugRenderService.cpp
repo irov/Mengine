@@ -52,8 +52,8 @@ namespace Mengine
 
         if( developmentMode == true )
         {
-            const GlobalHandleSystemInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalHandleSystem();
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
             m_globalKeyHandlerF9 = globalHandleSystem->addGlobalKeyHandler( "DebugRenderService toggleDebugText", KC_F9, [this]( const InputKeyEvent & _event )
             {
@@ -70,7 +70,7 @@ namespace Mengine
             m_debugText->enable();
 
             const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
-                ->getGlobalScheduleManager();
+                ->getGlobalScheduler();
 
             m_schedulerFPS = Helper::schedulerTiming( scheduler
                 , []( uint32_t, uint32_t ) { return 1000.f; }
@@ -95,8 +95,8 @@ namespace Mengine
 
         if( developmentMode == true )
         {
-            const GlobalHandleSystemInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalHandleSystem();
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
             globalHandleSystem->removeGlobalHandler( m_globalKeyHandlerF9 );
 
@@ -107,7 +107,7 @@ namespace Mengine
             }
 
             const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()
-                ->getGlobalScheduleManager();
+                ->getGlobalScheduler();
 
             scheduler->remove( m_schedulerFPS );
         }

@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Interface/MovieKeyFrameInterface.h"
+#include "MovieKeyFrameInterface.h"
+
 #include "Interface/DataflowInterface.h"
 #include "Interface/ArchiveInterface.h"
 

@@ -1,22 +1,22 @@
-#include "GlobalAffectorable.h"
+#include "PlayerGlobalAffectorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    GlobalAffectorable::GlobalAffectorable()
+    PlayerGlobalAffectorable::PlayerGlobalAffectorable()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    GlobalAffectorable::~GlobalAffectorable()
+    PlayerGlobalAffectorable::~PlayerGlobalAffectorable()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t GlobalAffectorable::getAffectorableUpdatableMode() const
+    uint32_t PlayerGlobalAffectorable::getAffectorableUpdatableMode() const
     {
         return 3U;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t GlobalAffectorable::getAffectorableUpdatableLeafDeep() const
+    uint32_t PlayerGlobalAffectorable::getAffectorableUpdatableLeafDeep() const
     {
         return 0U;
     }

@@ -21,6 +21,7 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
+#include "Interface/AccountServiceInterface.h"
 
 #include "PythonScriptWrapper/PythonWrapper.h"
 
@@ -96,7 +97,9 @@ SERVICE_EXTERN( ProfilerService );
 SERVICE_EXTERN( GraveyardService );
 SERVICE_EXTERN( PackageService );
 SERVICE_EXTERN( UserdataService );
+SERVICE_EXTERN( PickerService )
 SERVICE_EXTERN( PlayerService );
+SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( Application );
@@ -705,7 +708,9 @@ namespace Mengine
         SERVICE_CREATE( GraveyardService );
         SERVICE_CREATE( PackageService );
         SERVICE_CREATE( UserdataService );
+        SERVICE_CREATE( PickerService );
         SERVICE_CREATE( PlayerService );
+        SERVICE_CREATE( AccountService );
         SERVICE_CREATE( GameService );
         SERVICE_CREATE( TimelineService );
 
@@ -992,7 +997,9 @@ namespace Mengine
                 ->stopTasks();
         }
 
+        SERVICE_FINALIZE( Mengine::AccountServiceInterface );
         SERVICE_FINALIZE( Mengine::GameServiceInterface );
+        SERVICE_FINALIZE( Mengine::PickerServiceInterface );
         SERVICE_FINALIZE( Mengine::PlayerServiceInterface );
         SERVICE_FINALIZE( Mengine::PackageServiceInterface );
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );

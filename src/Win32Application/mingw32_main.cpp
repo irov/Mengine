@@ -1,6 +1,6 @@
-#	include "WIN32/WindowsIncluder.h"
+#include "Environment/WIN32/WindowsIncluder.h"
 
-#	include "Win32Application.h"
+#include "Win32Application.h"
 
 //////////////////////////////////////////////////////////////////////////
 int main( int argc, char *argv[] )

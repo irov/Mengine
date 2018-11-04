@@ -32,6 +32,7 @@
 #include "MovieSceneEffect.h"
 #include "MovieEvent.h"
 #include "MovieInternalObject.h"
+#include "MovieMesh2D.h"
 
 #include "ResourceMovie.h"
 #include "ResourceInternalObject.h"
@@ -293,6 +294,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovieSlot
             : public VisitorMovieNode
+            , public Factorable
         {
         public:
             PythonVisitorMovieSlot( pybind::kernel_interface * _kernel, pybind::list & _list )
@@ -329,14 +331,15 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            PythonVisitorMovieSlot visitor( _kernel, py_list );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSlot" ), &visitor );
+            VisitorMovieNodePtr visitor = new FactorableUnique<PythonVisitorMovieSlot>( _kernel, py_list );
+            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSlot" ), visitor );
 
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovieSocket
             : public VisitorMovieNode
+            , public Factorable
         {
         public:
             PythonVisitorMovieSocket( pybind::kernel_interface * _kernel, const pybind::list & _list )
@@ -369,15 +372,16 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            PythonVisitorMovieSocket visitor( _kernel, py_list );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), &visitor );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), &visitor );
+            VisitorMovieNodePtr visitor = new FactorableUnique<PythonVisitorMovieSocket>( _kernel, py_list );
+            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), visitor );
+            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), visitor );
 
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovieSubMovie
             : public VisitorMovieNode
+            , public Factorable
         {
         public:
             PythonVisitorMovieSubMovie( pybind::kernel_interface * _kernel, const pybind::list & _list )
@@ -410,14 +414,15 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            PythonVisitorMovieSubMovie visitor( _kernel, py_list );
-            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "SubMovie" ), &visitor );
+            VisitorMovieNodePtr visitor = new FactorableUnique<PythonVisitorMovieSubMovie>( _kernel, py_list );
+            _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "SubMovie" ), visitor );
 
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovieLayer
             : public VisitorMovieNode
+            , public Factorable
         {
         public:
             PythonVisitorMovieLayer( pybind::kernel_interface * _kernel, const pybind::list & _list )
@@ -441,8 +446,8 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            PythonVisitorMovieLayer visitor( _kernel, py_list );
-            _movie->visitMovieLayer( _type, &visitor );
+            VisitorMovieNodePtr visitor = new FactorableUnique<PythonVisitorMovieLayer>( _kernel, py_list );
+            _movie->visitMovieLayer( _type, visitor );
 
             return py_list;
         }
@@ -1489,6 +1494,11 @@ namespace Mengine
         pybind::interface_<MovieInternalObject, pybind::bases<Node> >( kernel, "MovieInternalObject", false )
             ;
 
+        pybind::interface_<MovieMesh2D, pybind::bases<Node, Materialable> >( kernel, "MovieMesh2D", false )
+            .def( "setResourceImage", &MovieMesh2D::setResourceImage )
+            .def( "getResourceImage", &MovieMesh2D::getResourceImage )
+            ;
+
         pybind::interface_<ResourceMovie, pybind::bases<Resource, Content> >( kernel, "ResourceMovie", false )
             .def( "getSize", &ResourceMovie::getSize )
             .def( "getLoopSegment", &ResourceMovie::getLoopSegment )
@@ -1541,6 +1551,9 @@ namespace Mengine
             ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new PythonScriptWrapper<MovieInternalObject>() );
 
         SCRIPT_SERVICE()
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), new PythonScriptWrapper<MovieMesh2D>() );
+
+        SCRIPT_SERVICE()
             ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ), new PythonScriptWrapper<MovieEvent>() );
 
         SCRIPT_SERVICE()
@@ -1575,6 +1588,12 @@ namespace Mengine
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), new FactorableUnique<NodePrototypeGenerator<MovieEvent, 128> > ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), new FactorableUnique<NodePrototypeGenerator<MovieMesh2D, 128> > ) == false )
         {
             return false;
         }
@@ -1623,7 +1642,25 @@ namespace Mengine
             ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie" ) );
 
         SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
+
+        SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) );
+
+        SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) );
+
+        SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
+
+        SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
+
+        SCRIPT_SERVICE()
             ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
+
+        SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ) );
@@ -1639,6 +1676,9 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );

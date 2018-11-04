@@ -454,7 +454,6 @@ Codec
     DecoderFactory.h
     EncoderFactory.h    
     ConverterFactory.h
-    DataflowFactory.h
 )
 
 ADD_FILTER(

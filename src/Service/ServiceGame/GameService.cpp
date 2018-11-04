@@ -30,8 +30,6 @@
 #include "Kernel/Stream.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( AccountService );
-//////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( GameService, Mengine::GameService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -386,9 +384,7 @@ namespace Mengine
     bool GameService::_initializeService()
     {
         CONFIG_SECTION( "Params", m_params );
-
-        SERVICE_CREATE( AccountService );
-
+        
         GameAccountProviderPtr accountProvider = new FactorableUnique<GameServiceAccountProvider>();
         accountProvider->setEventable( this );
 
@@ -408,8 +404,6 @@ namespace Mengine
     {
         EVENTABLE_METHOD( this, EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();
-
-        SERVICE_FINALIZE( Mengine::AccountServiceInterface );
 
         SCRIPT_SERVICE()
             ->finalizeModules();

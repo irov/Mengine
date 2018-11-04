@@ -63,7 +63,7 @@ namespace Mengine
 
     public:
         void setMovieArchivator( const ArchivatorInterfacePtr & _movieArchivator );
-        const ArchivatorInterfacePtr & ResourceMovie2::getMovieArchivator() const;
+        const ArchivatorInterfacePtr & getMovieArchivator() const;
 
     public:
         void setFilePath( const FilePath & _filePath );

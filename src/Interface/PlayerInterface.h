@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/SchedulerInterface.h"
 #include "Interface/PickerServiceInterface.h"
-#include "Interface/GlobalHandleSystemInterface.h"
+#include "Interface/GlobalInputHandlerInterface.h"
 #include "Interface/NodeInterface.h"
 #include "Interface/UpdationInterface.h"
 
@@ -93,11 +93,11 @@ namespace Mengine
         virtual const RenderScissorInterfacePtr & getRenderScissor() const = 0;
 
     public:
-        virtual const GlobalHandleSystemInterfacePtr & getGlobalHandleSystem() const = 0;
+        virtual const GlobalInputHandlerInterfacePtr & getGlobalInputHandler() const = 0;
 
     public:
-        virtual const SchedulerInterfacePtr & getScheduleManager() const = 0;
-        virtual const SchedulerInterfacePtr & getGlobalScheduleManager() const = 0;
+        virtual const SchedulerInterfacePtr & getScheduler() const = 0;
+        virtual const SchedulerInterfacePtr & getGlobalScheduler() const = 0;
 
     public:
         virtual const AffectorablePtr & getAffectorable() const = 0;

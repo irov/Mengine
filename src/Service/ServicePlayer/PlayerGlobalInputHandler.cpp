@@ -1,37 +1,41 @@
-#include "GlobalHandleSystem.h"
+#include "PlayerGlobalInputHandler.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/Assertion.h"
 
 #include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( GlobalHandleSystem, Mengine::GlobalHandleSystem );
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    GlobalHandleSystem::GlobalHandleSystem()
+    PlayerGlobalInputHandler::PlayerGlobalInputHandler()
         : m_handlersEnumerator( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    GlobalHandleSystem::~GlobalHandleSystem()
+    PlayerGlobalInputHandler::~PlayerGlobalInputHandler()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GlobalHandleSystem::_initializeService()
+    bool PlayerGlobalInputHandler::initialize()
     {
+        //Empty
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GlobalHandleSystem::_finalizeService()
+    void PlayerGlobalInputHandler::finalize()
     {
+        MENGINE_ASSERTION( m_handlers.empty() == true );
+        MENGINE_ASSERTION( m_handlersAdd.empty() == true );
+
         m_handlers.clear();
         m_handlersAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GlobalHandleSystem::handleKeyEvent( const InputKeyEvent & _event )
+    bool PlayerGlobalInputHandler::handleKeyEvent( const InputKeyEvent & _event )
     {
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
@@ -51,7 +55,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GlobalHandleSystem::handleTextEvent( const InputTextEvent & _event )
+    bool PlayerGlobalInputHandler::handleTextEvent( const InputTextEvent & _event )
     {
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
@@ -71,7 +75,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GlobalHandleSystem::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
+    bool PlayerGlobalInputHandler::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
@@ -91,7 +95,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GlobalHandleSystem::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
+    bool PlayerGlobalInputHandler::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
     {
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
@@ -111,7 +115,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GlobalHandleSystem::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
+    bool PlayerGlobalInputHandler::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
     {
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
@@ -131,7 +135,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GlobalHandleSystem::handleMouseMove( const InputMouseMoveEvent & _event )
+    bool PlayerGlobalInputHandler::handleMouseMove( const InputMouseMoveEvent & _event )
     {
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
@@ -151,7 +155,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GlobalHandleSystem::handleMouseWheel( const InputMouseWheelEvent & _event )
+    bool PlayerGlobalInputHandler::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
         for( const GlobalHandlerDesc & desc : m_handlers )
         {
@@ -171,7 +175,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t GlobalHandleSystem::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc )
+    uint32_t PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc )
     {
         GlobalHandlerDesc desc;
 
@@ -188,7 +192,7 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputHandlerInterfacePtr GlobalHandleSystem::removeGlobalHandler( uint32_t _id )
+    InputHandlerInterfacePtr PlayerGlobalInputHandler::removeGlobalHandler( uint32_t _id )
     {
         VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), [_id]( const GlobalHandlerDesc & _handle ) { return _handle.id == _id; } );
 
@@ -229,7 +233,7 @@ namespace Mengine
             , public Factorable
         {
         public:
-            GlobalKeyHandler( KeyCode _code, const GlobalHandleSystem::LambdaKeyHandler & _handler )
+            GlobalKeyHandler( KeyCode _code, const PlayerGlobalInputHandler::LambdaKeyHandler & _handler )
                 : m_code( _code )
                 , m_handler( _handler )
             {
@@ -295,18 +299,18 @@ namespace Mengine
 
         protected:
             KeyCode m_code;
-            GlobalHandleSystem::LambdaKeyHandler m_handler;
+            PlayerGlobalInputHandler::LambdaKeyHandler m_handler;
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t GlobalHandleSystem::addGlobalKeyHandler( const String & _doc, KeyCode _code, const LambdaKeyHandler & _handler )
+    uint32_t PlayerGlobalInputHandler::addGlobalKeyHandler( const String & _doc, KeyCode _code, const LambdaKeyHandler & _handler )
     {
         uint32_t id = this->addGlobalHandler( new FactorableUnique<Detail::GlobalKeyHandler>( _code, _handler ), _doc );
 
         return id;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GlobalHandleSystem::enableGlobalHandler( uint32_t _id, bool _value )
+    bool PlayerGlobalInputHandler::enableGlobalHandler( uint32_t _id, bool _value )
     {
         VectorGlobalHandler::iterator it_found_add = std::find_if( m_handlersAdd.begin(), m_handlersAdd.end(), [_id]( const GlobalHandlerDesc & _handle ) { return _handle.id == _id; } );
 
@@ -333,7 +337,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GlobalHandleSystem::update()
+    void PlayerGlobalInputHandler::update()
     {
         VectorGlobalHandler::iterator it_mouse_erase = std::remove_if( m_handlers.begin(), m_handlers.end(), []( const GlobalHandlerDesc & _handle ) {return _handle.dead; } );
         m_handlers.erase( it_mouse_erase, m_handlers.end() );
@@ -342,7 +346,7 @@ namespace Mengine
         m_handlersAdd.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void GlobalHandleSystem::clear()
+    void PlayerGlobalInputHandler::clear()
     {
         this->update();
 
@@ -359,5 +363,4 @@ namespace Mengine
             }
         }
     }
-
 }

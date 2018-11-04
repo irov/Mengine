@@ -27,7 +27,6 @@
 #include "Kernel/RenderScissor.h"
 
 #include "Engine/ShapeQuadFixed.h"
-#include "Engine/Mesh2D.h"
 #include "Engine/TextField.h"
 #include "Engine/HotSpotImage.h"
 #include "Engine/HotSpotShape.h"
@@ -38,6 +37,7 @@
 #include "MovieSlot.h"
 #include "MovieNodeExtra.h"
 #include "MovieEvent.h"
+#include "MovieMesh2D.h"
 
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceImageSequence.h"
@@ -284,7 +284,7 @@ namespace Mengine
         if( _layer.isMesh2D() == true )
         {
 #ifndef NDEBUG
-            if( stdex::intrusive_dynamic_cast<Mesh2DPtr>(_node) == nullptr )
+            if( stdex::intrusive_dynamic_cast<MovieMesh2DPtr>(_node) == nullptr )
             {
                 LOGGER_ERROR( "Movie::updateFrameNode_ %s resource %s layer %s is Mesh2D but node is not Mesh2D %s:%s"
                     , this->getName().c_str()
@@ -298,7 +298,7 @@ namespace Mengine
             }
 #endif
 
-            Mesh2DPtr mesh2D = stdex::intrusive_static_cast<Mesh2DPtr>(_node);
+            MovieMesh2DPtr mesh2D = stdex::intrusive_static_cast<MovieMesh2DPtr>(_node);
 
             const MovieFrameShape * shape;
             if( framePack->getLayerShape( _layer.index, _frameId, &shape ) == false )
@@ -486,7 +486,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::visitMovieLayer( const ConstString & _type, VisitorMovieNode * _visitor )
+    bool Movie::visitMovieLayer( const ConstString & _type, const VisitorMovieNodePtr & _visitor )
     {
         if( m_resourceMovie == nullptr )
         {
@@ -1275,7 +1275,7 @@ namespace Mengine
             return false;
         }
 
-        Mesh2DPtr layer_mesh = NODE_SERVICE()
+        MovieMesh2DPtr layer_mesh = NODE_SERVICE()
             ->createNode( STRINGIZE_STRING_LOCAL( "Mesh2D" ) );
 
         if( layer_mesh == nullptr )
@@ -1357,7 +1357,7 @@ namespace Mengine
             return false;
         }
 
-        Mesh2DPtr layer_mesh = NODE_SERVICE()
+        MovieMesh2DPtr layer_mesh = NODE_SERVICE()
             ->createNode( STRINGIZE_STRING_LOCAL( "Mesh2D" ) );
 
         if( layer_mesh == nullptr )

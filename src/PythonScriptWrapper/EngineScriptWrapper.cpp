@@ -289,7 +289,7 @@ namespace Mengine
         uint32_t timing( float _delay, const pybind::object & _timing, const pybind::object & _event, const pybind::args & _args )
         {
             const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
-                ->getScheduleManager();
+                ->getScheduler();
 
             DelaySchedulePipePtr py_pipe = m_factoryDelaySchedulePipe->createObject();
 
@@ -311,7 +311,7 @@ namespace Mengine
         bool timingRemove( uint32_t _id )
         {
             const SchedulerInterfacePtr & tm = PLAYER_SERVICE()
-                ->getScheduleManager();
+                ->getScheduler();
 
             bool successful = tm->remove( _id );
 
@@ -345,7 +345,7 @@ namespace Mengine
         uint32_t schedule( float _timing, const pybind::object & _script, const pybind::args & _args )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
+                ->getScheduler();
 
             PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject();
 
@@ -359,7 +359,7 @@ namespace Mengine
         bool scheduleRemove( uint32_t _id )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
+                ->getScheduler();
 
             if( sm == nullptr )
             {
@@ -374,7 +374,7 @@ namespace Mengine
         void scheduleRemoveAll()
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
+                ->getScheduler();
 
             if( sm == nullptr )
             {
@@ -387,7 +387,7 @@ namespace Mengine
         bool s_scheduleFreeze( uint32_t _id, bool _freeze )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
+                ->getScheduler();
 
             if( sm == nullptr )
             {
@@ -402,7 +402,7 @@ namespace Mengine
         void s_scheduleFreezeAll()
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
+                ->getScheduler();
 
             if( sm == nullptr )
             {
@@ -415,7 +415,7 @@ namespace Mengine
         void scheduleResumeAll()
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
+                ->getScheduler();
 
             if( sm == nullptr )
             {
@@ -428,7 +428,7 @@ namespace Mengine
         bool s_scheduleIsFreeze( uint32_t _id )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
+                ->getScheduler();
 
             if( sm == nullptr )
             {
@@ -441,7 +441,7 @@ namespace Mengine
         float s_scheduleTime( uint32_t _id )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getScheduleManager();
+                ->getScheduler();
 
             if( sm == nullptr )
             {
@@ -456,7 +456,7 @@ namespace Mengine
         uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::args & _args )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getGlobalScheduleManager();
+                ->getGlobalScheduler();
 
             if( sm == nullptr )
             {
@@ -475,7 +475,7 @@ namespace Mengine
         bool s_scheduleGlobalRemove( uint32_t _id )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getGlobalScheduleManager();
+                ->getGlobalScheduler();
 
             if( sm == nullptr )
             {
@@ -490,7 +490,7 @@ namespace Mengine
         void s_scheduleGlobalRemoveAll()
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getGlobalScheduleManager();
+                ->getGlobalScheduler();
 
             if( sm == nullptr )
             {
@@ -503,7 +503,7 @@ namespace Mengine
         bool s_scheduleGlobalFreeze( uint32_t _id, bool _freeze )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getGlobalScheduleManager();
+                ->getGlobalScheduler();
 
             if( sm == nullptr )
             {
@@ -518,7 +518,7 @@ namespace Mengine
         void s_scheduleGlobalFreezeAll()
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getGlobalScheduleManager();
+                ->getGlobalScheduler();
 
             if( sm == nullptr )
             {
@@ -531,7 +531,7 @@ namespace Mengine
         void s_scheduleGlobalResumeAll()
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getGlobalScheduleManager();
+                ->getGlobalScheduler();
 
             if( sm == nullptr )
             {
@@ -544,7 +544,7 @@ namespace Mengine
         bool s_scheduleGlobalIsFreeze( uint32_t _id )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getGlobalScheduleManager();
+                ->getGlobalScheduler();
 
             if( sm == nullptr )
             {
@@ -559,7 +559,7 @@ namespace Mengine
         float s_scheduleGlobalTime( uint32_t _id )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
-                ->getGlobalScheduleManager();
+                ->getGlobalScheduler();
 
             if( sm == nullptr )
             {
@@ -2982,8 +2982,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_addMouseMoveHandler( const pybind::object & _cb, const pybind::args & _args )
         {
-            const GlobalHandleSystemInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalHandleSystem();
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
             PyGlobalMouseMoveHandlerPtr handler = m_factoryPyGlobalMouseMoveHandlers->createObject();
 
@@ -3026,8 +3026,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_addMouseButtonHandler( const pybind::object & _cb, const pybind::args & _args )
         {
-            const GlobalHandleSystemInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalHandleSystem();
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
             PyGlobalMouseHandlerButtonPtr handler = m_factoryPyGlobalMouseHandlerButtons->createObject();
 
@@ -3071,8 +3071,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_addMouseButtonHandlerEnd( const pybind::object & _cb, const pybind::args & _args )
         {
-            const GlobalHandleSystemInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalHandleSystem();
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
             PyGlobalMouseHandlerButtonEndPtr handler = m_factoryPyGlobalMouseHandlerButtonEnds->createObject();
 
@@ -3110,8 +3110,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_addMouseWheelHandler( const pybind::object & _cb, const pybind::args & _args )
         {
-            const GlobalHandleSystemInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalHandleSystem();
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
             const PyGlobalMouseHandlerWheelPtr & handler = m_factoryPyGlobalMouseHandlerWheels->createObject();
 
@@ -3155,8 +3155,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_addMouseButtonHandlerBegin( const pybind::object & _cb, const pybind::args & _args )
         {
-            const GlobalHandleSystemInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalHandleSystem();
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
             PyGlobalMouseHandlerButtonBeginPtr handler = m_factoryPyGlobalMouseHandlerButtonBegins->createObject();
 
@@ -3193,8 +3193,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_addKeyHandler( const pybind::object & _cb, const pybind::args & _args )
         {
-            const GlobalHandleSystemInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalHandleSystem();
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
             PyGlobalKeyHandlerPtr handler = m_factoryPyGlobalKeyHandler->createObject();
 
@@ -3229,8 +3229,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_addTextHandler( const pybind::object & _cb, const pybind::args & _args )
         {
-            const GlobalHandleSystemInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalHandleSystem();
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
             PyGlobalBaseHandlerPtr handler = m_factoryPyGlobalTextHandler->createObject();
 
@@ -3243,8 +3243,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_removeGlobalHandler( uint32_t _id )
         {
-            const GlobalHandleSystemInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalHandleSystem();
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
             InputHandlerInterfacePtr handler = globalHandleSystem->removeGlobalHandler( _id );
 
@@ -3266,8 +3266,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_enableGlobalHandler( uint32_t _id, bool _value )
         {
-            const GlobalHandleSystemInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
-                ->getGlobalHandleSystem();
+            const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
+                ->getGlobalInputHandler();
 
             bool successful = globalHandleSystem->enableGlobalHandler( _id, _value );
 

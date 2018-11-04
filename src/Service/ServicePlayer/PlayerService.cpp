@@ -38,7 +38,8 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"
 
-#include "GlobalAffectorable.h"
+#include "PlayerGlobalInputHandler.h"
+#include "PlayerGlobalAffectorable.h"
 
 #include "Kernel/Logger.h"
 
@@ -52,9 +53,6 @@
 #include <iomanip>
 #include <algorithm>
 
-//////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( PickerService );
-SERVICE_EXTERN( GlobalHandleSystem );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PlayerService, Mengine::PlayerService );
 //////////////////////////////////////////////////////////////////////////
@@ -298,7 +296,7 @@ namespace Mengine
             m_scheduleManager->removeAll();
             m_affectorable->stopAllAffectors();
 
-            m_globalHandleSystem->clear();
+            m_globalInputHandler->clear();
 
             m_scene->release();
 
@@ -439,17 +437,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const GlobalHandleSystemInterfacePtr & PlayerService::getGlobalHandleSystem() const
+    const GlobalInputHandlerInterfacePtr & PlayerService::getGlobalInputHandler() const
     {
-        return m_globalHandleSystem;
+        return m_globalInputHandler;
     }
     //////////////////////////////////////////////////////////////////////////
-    const SchedulerInterfacePtr & PlayerService::getScheduleManager() const
+    const SchedulerInterfacePtr & PlayerService::getScheduler() const
     {
         return m_scheduleManager;
     }
     //////////////////////////////////////////////////////////////////////////
-    const SchedulerInterfacePtr & PlayerService::getGlobalScheduleManager() const
+    const SchedulerInterfacePtr & PlayerService::getGlobalScheduler() const
     {
         return m_scheduleManagerGlobal;
     }
@@ -466,10 +464,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::_initializeService()
     {
-        SERVICE_CREATE( PickerService );
-        SERVICE_CREATE( GlobalHandleSystem );
-
-        m_globalHandleSystem = SERVICE_GET( GlobalHandleSystemInterface );
+        m_globalInputHandler = new FactorableUnique<PlayerGlobalInputHandler>();
 
         m_factoryScheduleManager = new FactoryPool<Scheduler, 16>();
 
@@ -491,8 +486,8 @@ namespace Mengine
 
         m_scheduleManagerGlobal = scheduleManagerGlobal;
 
-        m_affectorable = new GlobalAffectorable;
-        m_affectorableGlobal = new GlobalAffectorable;
+        m_affectorable = new FactorableUnique<PlayerGlobalAffectorable>();
+        m_affectorableGlobal = new FactorableUnique<PlayerGlobalAffectorable>();
 
         return true;
     }
@@ -541,10 +536,7 @@ namespace Mengine
 
         m_renderTarget = nullptr;
 
-        m_globalHandleSystem = nullptr;
-
-        SERVICE_FINALIZE( PickerServiceInterface );
-        SERVICE_FINALIZE( GlobalHandleSystemInterface );
+        m_globalInputHandler = nullptr;
 
         if( m_scheduleManager != nullptr )
         {
@@ -630,9 +622,9 @@ namespace Mengine
     {
         bool handler = false;
 
-        if( m_globalHandleSystem != nullptr )
+        if( m_globalInputHandler != nullptr )
         {
-            m_globalHandleSystem->handleKeyEvent( _event );
+            m_globalInputHandler->handleKeyEvent( _event );
         }
 
         if( handler == false )
@@ -648,9 +640,9 @@ namespace Mengine
     {
         bool handler = false;
 
-        if( m_globalHandleSystem != nullptr )
+        if( m_globalInputHandler != nullptr )
         {
-            m_globalHandleSystem->handleTextEvent( _event );
+            m_globalInputHandler->handleTextEvent( _event );
         }
 
 		if( handler == false )
@@ -664,9 +656,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
-        if( m_globalHandleSystem != nullptr )
+        if( m_globalInputHandler != nullptr )
         {
-            m_globalHandleSystem->handleMouseButtonEvent( _event );
+            m_globalInputHandler->handleMouseButtonEvent( _event );
         }
 
         bool handler = false;
@@ -682,9 +674,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
     {
-        if( m_globalHandleSystem != nullptr )
+        if( m_globalInputHandler != nullptr )
         {
-            m_globalHandleSystem->handleMouseButtonEventBegin( _event );
+            m_globalInputHandler->handleMouseButtonEventBegin( _event );
         }
 
         bool handler = false;
@@ -701,9 +693,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
     {
-        if( m_globalHandleSystem != nullptr )
+        if( m_globalInputHandler != nullptr )
         {
-            m_globalHandleSystem->handleMouseButtonEventEnd( _event );
+            m_globalInputHandler->handleMouseButtonEventEnd( _event );
         }
 
         bool handler = false;
@@ -720,9 +712,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseMove( const InputMouseMoveEvent & _event )
     {
-        if( m_globalHandleSystem != nullptr )
+        if( m_globalInputHandler != nullptr )
         {
-            m_globalHandleSystem->handleMouseMove( _event );
+            m_globalInputHandler->handleMouseMove( _event );
         }
 
         bool handler = false;
@@ -738,9 +730,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
-        if( m_globalHandleSystem != nullptr )
+        if( m_globalInputHandler != nullptr )
         {
-            m_globalHandleSystem->handleMouseWheel( _event );
+            m_globalInputHandler->handleMouseWheel( _event );
         }
 
         bool handler = false;
@@ -767,9 +759,9 @@ namespace Mengine
 		PICKER_SERVICE()
 			->update();
     
-        if( m_globalHandleSystem != nullptr )
+        if( m_globalInputHandler != nullptr )
         {
-            m_globalHandleSystem->update();
+            m_globalInputHandler->update();
         }
 
         NODE_SERVICE()

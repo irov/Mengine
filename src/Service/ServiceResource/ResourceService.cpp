@@ -284,13 +284,12 @@ namespace Mengine
             const ConstString & name = meta_resource->get_Name();
             const ConstString & type = meta_resource->get_Type();
 
-#ifndef MENGINE_MASTER_RELEASE
             ResourcePtr has_resource = nullptr;
             if( this->hasResource( name, &has_resource ) == false )
             {
                 const FileGroupInterfacePtr & resource_category = has_resource->getFileGroup();
 
-                LOGGER_ERROR( "ResourceManager::unloadResource: path %s not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
+                LOGGER_ERROR( "path %s not found resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
                     , _path.c_str()
                     , name.c_str()
                     , groupName.c_str()
@@ -303,11 +302,10 @@ namespace Mengine
 
                 return false;
             }
-#endif
 
             if( this->removeResource( has_resource ) == false )
             {
-                LOGGER_ERROR( "ResourceManager::unloadResource: '%s' invalid remove resource '%s:%s' name %s type %s"
+                LOGGER_ERROR( "path '%s' invalid remove resource '%s:%s' name %s type %s"
                     , _path.c_str()
                     , _pak->getName().c_str()
                     , groupName.c_str()
@@ -414,7 +412,7 @@ namespace Mengine
 
         const ConstString & name = _resource->getName();
 
-        if( m_resources.remove( name ) == false )
+        if( m_resources.remove( name ) == nullptr )
         {
             return false;
         }

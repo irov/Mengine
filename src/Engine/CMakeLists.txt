@@ -122,12 +122,6 @@ Object\\\\Grid2D
 )
 
 ADD_FILTER(
-Object\\\\Mesh2D
-	Mesh2D.cpp
-	Mesh2D.h
-)
-
-ADD_FILTER(
 Object\\\\Gyroscope
 	Gyroscope.cpp
 	Gyroscope.h

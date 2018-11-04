@@ -3,7 +3,7 @@
 #include "Interface/PlayerInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
-#include "Interface/GlobalHandleSystemInterface.h"
+#include "Interface/GlobalInputHandlerInterface.h"
 #include "Interface/SchedulerInterface.h"
 
 #include "Kernel/ServiceBase.h"
@@ -23,8 +23,6 @@ namespace Mengine
     typedef IntrusivePtr<class RenderViewport> RenderViewportPtr;
     typedef IntrusivePtr<class RenderCameraOrthogonal> RenderCameraOrthogonalPtr;
     typedef IntrusivePtr<class RenderTargetInterface> RenderTargetInterfacePtr;
-    typedef IntrusivePtr<class GlobalHandleSystem> GlobalHandleSystemPtr;
-    typedef IntrusivePtr<class GlobalAffectorable, class Affectorable> GlobalAffectorablePtr;
 
     class PlayerService
         : public ServiceBase<PlayerServiceInterface>
@@ -63,11 +61,11 @@ namespace Mengine
         bool destroySchedulerManager( const SchedulerInterfacePtr & _scheduler ) override;
 
     public:
-        const GlobalHandleSystemInterfacePtr & getGlobalHandleSystem() const override;
+        const GlobalInputHandlerInterfacePtr & getGlobalInputHandler() const override;
 
     public:
-        const SchedulerInterfacePtr & getScheduleManager() const override;
-        const SchedulerInterfacePtr & getGlobalScheduleManager() const override;
+        const SchedulerInterfacePtr & getScheduler() const override;
+        const SchedulerInterfacePtr & getGlobalScheduler() const override;
 
     public:
         const AffectorablePtr & getAffectorable() const override;
@@ -138,7 +136,7 @@ namespace Mengine
         RenderTargetInterfacePtr m_renderTarget;
 
         PickerServiceInterfacePtr m_pickerService;
-        GlobalHandleSystemInterfacePtr m_globalHandleSystem;
+        GlobalInputHandlerInterfacePtr m_globalInputHandler;
 
         SchedulerInterfacePtr m_scheduleManager;
         SchedulerInterfacePtr m_scheduleManagerGlobal;
@@ -148,8 +146,8 @@ namespace Mengine
         typedef Vector<SchedulerInterfacePtr> VectorUserScheduler;
         VectorUserScheduler m_schedulers;
 
-        GlobalAffectorablePtr m_affectorable;
-        GlobalAffectorablePtr m_affectorableGlobal;
+        AffectorablePtr m_affectorable;
+        AffectorablePtr m_affectorableGlobal;
 
         bool m_arrowHided;
         bool m_focus;

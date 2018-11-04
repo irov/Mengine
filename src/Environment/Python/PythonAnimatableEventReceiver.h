@@ -3,6 +3,7 @@
 #include "PythonEventReceiver.h"
 
 #include "Kernel/Animatable.h"
+#include "Kernel/AnimationEventReceiver.h"
 
 namespace Mengine
 {

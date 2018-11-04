@@ -7,6 +7,8 @@
 #include "Kernel/Magic.h"
 #include "Kernel/Logger.h"
 
+#include <string.h>
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

@@ -51,7 +51,6 @@
 #include "Point.h"
 #include "Line.h"
 #include "SoundEmitter.h"
-#include "Mesh2D.h"
 #include "Grid2D.h"
 #include "TextField.h"
 #include "Meshget.h"
@@ -296,8 +295,7 @@ namespace Mengine
         //NODE_FACTORY( TilePolygon );
         NODE_FACTORY( Point );
         NODE_FACTORY( Line );
-        NODE_FACTORY( SoundEmitter );
-        NODE_FACTORY( Mesh2D );
+        NODE_FACTORY( SoundEmitter );        
         NODE_FACTORY( Grid2D );
         NODE_FACTORY( TextField );
         //NODE_FACTORY( TileMap );

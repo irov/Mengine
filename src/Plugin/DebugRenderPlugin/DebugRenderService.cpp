@@ -41,6 +41,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void DebugRenderService::_dependencyService()
+    {
+        SERVICE_DEPENDENCY( DebugRenderService, PlayerServiceInterface );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DebugRenderService::_initializeService()
     {
         bool developmentMode = HAS_OPTION( "dev" );

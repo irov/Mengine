@@ -2,4 +2,8 @@
 
 #include "Assertion.h"
 
-#define MENGINE_ASSERTION_NOT_IMPLEMENTED() Mengine::Assertion( "This method not implemented, don't use that", __FILE__, __LINE__ )
+#ifndef NDEBUG
+#   define MENGINE_ASSERTION_NOT_IMPLEMENTED() Mengine::Assertion( "true", __FILE__, __LINE__, "This method not implemented, don't use that" )
+#else
+#   define MENGINE_ASSERTION_NOT_IMPLEMENTED()
+#endif

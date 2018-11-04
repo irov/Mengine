@@ -16,10 +16,10 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator::LoggerOperator( EMessageLevel _level, uint32_t _flag, const Char * _function, uint32_t _line )
+    LoggerOperator::LoggerOperator( EMessageLevel _level, uint32_t _flag, const Char * _file, uint32_t _line )
         : m_level( _level )
         , m_flag( _flag )
-        , m_function( _function )
+        , m_file( _file )
         , m_line( _line )
     {
     }
@@ -34,14 +34,14 @@ namespace Mengine
 
         va_start( argList, _format );
 
-        char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
+        Char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
         int size = vsnprintf( str, MENGINE_LOGGER_MAX_MESSAGE, _format, argList );
 
         va_end( argList );
 
         if( size < 0 )
         {
-            const char msg[] = "LoggerOperator::operator invalid message :(\n";
+            const Char msg[] = "LoggerOperator::operator invalid message :(\n";
             this->logMessage( msg, sizeof( msg ) );
 
             size = sprintf( str, "%s", _format );
@@ -67,7 +67,7 @@ namespace Mengine
         str[size + 0] = '\n';
         str[size + 1] = 0;
 
-        if( m_function != nullptr )
+        if( m_file != nullptr )
         {
             Char str2[MENGINE_LOGGER_MAX_MESSAGE + 256] = { 0 };
 
@@ -77,7 +77,7 @@ namespace Mengine
             //    correct_function += sizeof( "Mengine::" ) - 1;
             //}
 
-            String str_function = m_function;
+            String str_function = m_file;
 
             StringRegex regex_lambda_remove( "::<lambda_.*>::operator \\(\\)" );
 

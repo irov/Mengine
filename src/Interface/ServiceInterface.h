@@ -20,7 +20,6 @@ namespace Mengine
         virtual void finalizeService() = 0;
         virtual bool isInitializeService() const = 0;
 
-
     protected:
         virtual void stopService() = 0;
         virtual bool isStopService() const = 0;
@@ -133,6 +132,9 @@ namespace Mengine
 	try{*_service=new Implement();}catch(...){return false;}\
     return true;}\
 	struct __mengine_dummy_factory##Name{}
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_DEPENDENCY(Name, Dependency)\
+    SERVICE_PROVIDER_GET()->dependencyService(Name::getStaticServiceID(), SERVICE_GET(Dependency)->getServiceID())
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_EXTERN(Name)\
 	extern bool SERVICE_NAME_CREATE( Name )(Mengine::ServiceInterfacePtr*);

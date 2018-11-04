@@ -5,6 +5,7 @@
 #include "Interface/UpdateServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Assertion.h"
 
 #include "math/utils.h"
 
@@ -59,6 +60,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t Scheduler::event( float _delay, const ScheduleEventInterfacePtr & _event )
     {
+        MENGINE_ASSERTION( _event != nullptr )("event '%s' delay '%f' event is nullptr"
+            , this->getName().c_str()
+            , _delay
+            );
+
         uint32_t new_id = ++m_enumerator;
 
         ScheduleEventDesc desc;
@@ -230,7 +236,10 @@ namespace Mengine
                 _event.timer = nullptr;
                 _event.pipe = nullptr;
 
-                event->onScheduleStop( _event.id );
+                if( event != nullptr )
+                {
+                    event->onScheduleStop( _event.id );
+                }
             }break;
         }
 

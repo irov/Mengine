@@ -26,6 +26,8 @@ namespace Mengine
                 return true;
             }
 
+            this->_dependencyService();
+
             bool successful = this->_initializeService();
 
             m_initializeService = successful;
@@ -52,6 +54,11 @@ namespace Mengine
         }
 
     protected:
+        virtual void _dependencyService()
+        {
+            //Empty
+        }
+
         virtual bool _initializeService()
         {
             //Empty

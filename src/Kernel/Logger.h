@@ -8,7 +8,7 @@ namespace Mengine
     class LoggerOperator
     {
     public:
-        LoggerOperator( EMessageLevel _level, uint32_t _flag, const Char * _function, uint32_t _line );
+        LoggerOperator( EMessageLevel _level, uint32_t _flag, const Char * _file, uint32_t _line );
         ~LoggerOperator();
 
     public:
@@ -21,7 +21,7 @@ namespace Mengine
         EMessageLevel m_level;
         uint32_t m_flag;
 
-        const Char * m_function;
+        const Char * m_file;
         uint32_t m_line;
     };
 }

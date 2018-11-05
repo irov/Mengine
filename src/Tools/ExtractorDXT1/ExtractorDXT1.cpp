@@ -191,7 +191,9 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 	FILE * file_out = _wfopen( outCanonicalizeQuote, L"wb" );
 
 	fwrite( dxt1_byte, 1, size, file_out );
-	fclose( file_out );	
+	fclose( file_out );
+
+    delete[] dxt1_byte;
 			
 	return 0;
 }

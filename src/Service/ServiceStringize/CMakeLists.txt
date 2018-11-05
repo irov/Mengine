@@ -1,4 +1,4 @@
-SET( MY_LIB_NAME ServiceStringize )
+SET( MY_LIB_NAME StringizeService )
 
 ADD_FILTER(
 src
@@ -16,7 +16,7 @@ src
 ADD_MENGINE_LIBRARY()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Service
+    FOLDER Services
 )
 
 SET( APPLICATION_DEPENDENCIES

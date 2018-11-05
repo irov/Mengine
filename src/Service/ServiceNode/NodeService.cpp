@@ -27,25 +27,25 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeService::_initializeService()
     {
-        m_homeless = new FactorableUnique<Node>();
+        m_shelter = new FactorableUnique<Node>();
 
-        if( m_homeless == nullptr )
+        if( m_shelter == nullptr )
         {
             return false;
         }
 
-        m_homeless->setName( STRINGIZE_STRING_LOCAL( "Homeless" ) );
-        m_homeless->setType( STRINGIZE_STRING_LOCAL( "Node" ) );
+        m_shelter->setName( STRINGIZE_STRING_LOCAL( "Homeless" ) );
+        m_shelter->setType( STRINGIZE_STRING_LOCAL( "Node" ) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeService::_finalizeService()
     {
-        if( m_homeless != nullptr )
+        if( m_shelter != nullptr )
         {
-            NodePtr homeless = m_homeless;
-            m_homeless = nullptr;
+            NodePtr homeless = m_shelter;
+            m_shelter = nullptr;
 
             homeless->destroyAllChild();
         }
@@ -68,9 +68,14 @@ namespace Mengine
         return node;
     }
     //////////////////////////////////////////////////////////////////////////
+    const NodePtr & NodeService::getShelter() const
+    {
+        return m_shelter;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeService::addHomeless( const NodePtr & _homeless )
     {
-        if( m_homeless == nullptr )
+        if( m_shelter == nullptr )
         {
             LOGGER_ERROR( "NodeManager::addHomeless: not initialize"
             );
@@ -92,7 +97,7 @@ namespace Mengine
             );
         }
 
-        m_homeless->addChild( _homeless );
+        m_shelter->addChild( _homeless );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeService::isHomeless( const NodePtr & _node ) const
@@ -104,13 +109,16 @@ namespace Mengine
 
         Node * parent = _node->getParent();
 
-        bool is = (parent == m_homeless);
+        if( parent != m_shelter )
+        {
+            return false;
+        }
 
-        return is;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeService::clearHomeless()
     {
-        m_homeless->destroyAllChild();
+        m_shelter->destroyAllChild();
     }
 }

@@ -17,9 +17,12 @@ namespace Mengine
 #endif
     {
     }
+    static uint32_t total_memory = 0;
     //////////////////////////////////////////////////////////////////////////
     MemoryBuffer::~MemoryBuffer()
     {
+        total_memory -= m_size;
+
         Helper::freeMemory( m_memory, m_doc );
         m_memory = nullptr;
     }
@@ -35,6 +38,9 @@ namespace Mengine
     {
         (void)_file;
         (void)_line;
+
+        total_memory -= m_size;
+        total_memory += _size;
 
         void * new_memory = Helper::reallocateMemory( m_memory, _size, _doc );
 

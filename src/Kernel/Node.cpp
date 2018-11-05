@@ -283,7 +283,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::removeChildren()
+    void Node::removeChildren( const LambdaRemoveChildren & _lambda )
     {
         if( m_children.empty() == true )
         {
@@ -312,6 +312,8 @@ namespace Mengine
             node->setParent_( nullptr );
 
             m_children.erase( it_node );
+
+            _lambda( node );
         }
     }
     //////////////////////////////////////////////////////////////////////////

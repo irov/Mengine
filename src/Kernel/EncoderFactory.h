@@ -49,7 +49,7 @@ namespace Mengine
         template<class T>
         inline EncoderFactoryInterfacePtr registerEncoder( const Char * _type )
         {
-            EncoderFactoryInterfacePtr encoder = new EncoderFactory<T>();
+            EncoderFactoryInterfacePtr encoder = new FactorableUnique<EncoderFactory<T> >();
 
             if( encoder->initialize() == false )
             {

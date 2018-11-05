@@ -892,6 +892,40 @@ namespace Mengine
             return _kernel->ret_none();
         }        
         //////////////////////////////////////////////////////////////////////////
+        bool s_Node_removeChild( Node * _node, const NodePtr & _child )
+        {
+            if( _node->removeChild( _child ) == false )
+            {
+                return false;
+            }
+
+            NODE_SERVICE()
+                ->addHomeless( _child );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Node_removeAllChild( Node * _node )
+        {
+            _node->removeChildren( []( const NodePtr & _child )
+            {
+                NODE_SERVICE()
+                    ->addHomeless( _child );
+            } );
+        }
+        bool s_Node_removeFromParent( Node * _node )
+        {
+            if( _node->removeFromParent() == false )
+            {
+                return false;
+            }
+
+            NODE_SERVICE()
+                ->addHomeless( _node );
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool s_Node_isHomeless( Node * _node )
         {
             return NODE_SERVICE()
@@ -2291,10 +2325,12 @@ namespace Mengine
     static bool classWrapping()
     {
 #define SCRIPT_CLASS_WRAPPING( Class )\
-    if( SCRIPT_SERVICE()->setWrapper( STRINGIZE_STRING_LOCAL(#Class), new PythonScriptWrapper<Class>() ) == false )\
+    if( SCRIPT_SERVICE()->setWrapper( STRINGIZE_STRING_LOCAL(#Class), new FactorableUnique<PythonScriptWrapper<Class> >(kernel) ) == false )\
     {\
         return false;\
     }
+
+        pybind::kernel_interface * kernel = pybind::get_kernel();
 
         SCRIPT_CLASS_WRAPPING( Node );
         SCRIPT_CLASS_WRAPPING( Layer );
@@ -2365,6 +2401,14 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( SurfaceSolidColor );
 
 #undef SCRIPT_CLASS_WRAPPING
+
+        const ScriptWrapperInterfacePtr & nodeScriptWrapper = SCRIPT_SERVICE()
+            ->getWrapper( STRINGIZE_STRING_LOCAL( "Node" ) );
+
+        const NodePtr & shelter = NODE_SERVICE()
+            ->getShelter();
+
+        shelter->setScriptWrapper( nodeScriptWrapper );
 
         return true;
     }
@@ -2689,9 +2733,9 @@ namespace Mengine
             .def( "addChildren", &Node::addChild )
             .def( "addChildrenFront", &Node::addChildFront )
             .def( "addChildrenAfter", &Node::addChildAfter )
-            .def( "removeChildren", &Node::removeChild )
-            .def( "removeAllChild", &Node::removeChildren )
-            .def( "removeFromParent", &Node::removeFromParent )
+            .def_proxy_static( "removeChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_removeChild )
+            .def_proxy_static( "removeAllChild", nodeScriptMethod, &NodeScriptMethod::s_Node_removeAllChild )
+            .def_proxy_static( "removeFromParent", nodeScriptMethod, &NodeScriptMethod::s_Node_removeFromParent )
             .def( "destroyAllChild", &Node::destroyAllChild )
             //.def( "isHomeless", &Node::isHomeless )
             .def_proxy_static( "isHomeless", nodeScriptMethod, &NodeScriptMethod::s_Node_isHomeless )

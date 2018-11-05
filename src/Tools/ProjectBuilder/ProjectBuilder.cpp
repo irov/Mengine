@@ -64,9 +64,10 @@
 
 #include "Kernel/Logger.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/FactoryDefault.h"
 
 #include "pybind/pybind.hpp"
-#include "pybind/stl_type_cast.hpp"
+#include "pybind/stl/stl_type_cast.hpp"
 
 #include "stdex/sha1.h"
 
@@ -193,7 +194,7 @@ namespace Mengine
 			->setVerboseLevel( LM_WARNING );
 
 		LOGGER_SERVICE()
-			->registerLogger( new MyLogger );
+			->registerLogger( new FactorableUnique<MyLogger> );
 
         LOGGER_WARNING( "Inititalizing Config Manager..." );
 		
@@ -294,7 +295,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool convert( const wchar_t * fromPath, const wchar_t * toPath, const wchar_t * convertType, const wchar_t * params )
+    static bool convert( const wchar_t * fromPath, const wchar_t * toPath, const wchar_t * convertType, const wchar_t * params )
 	{
 		if( s_convert( fromPath, toPath, convertType, params ) == false )
 		{
@@ -310,7 +311,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * isAlphaInImageFile( pybind::kernel_interface * _kernel, const wchar_t * _path )
+    static PyObject * isAlphaInImageFile( pybind::kernel_interface * _kernel, const wchar_t * _path )
 	{
 		String utf8_path;
 		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
@@ -371,7 +372,7 @@ namespace Mengine
 		return _kernel->ret_bool( isAlpha );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	PyObject * isUselessAlphaInImageFile( pybind::kernel_interface * _kernel, const wchar_t * _path )
+    static PyObject * isUselessAlphaInImageFile( pybind::kernel_interface * _kernel, const wchar_t * _path )
 	{
 		String utf8_path;
 		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
@@ -385,7 +386,7 @@ namespace Mengine
 
 		FilePath c_path = Helper::stringizeFilePath(utf8_path);
 
-		Image * image = new Image();
+		ImagePtr image = newImage();
 
 		if( image->load( c_path ) == false )
 		{
@@ -403,12 +404,10 @@ namespace Mengine
 
 		bool useless = image->uselessalpha();
 
-		delete image;
-
 		return _kernel->ret_bool( useless );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Image * loadImage( const wchar_t * _path )
+	static ImagePtr loadImage( const wchar_t * _path )
 	{
 		String utf8_path;
 		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
@@ -418,7 +417,7 @@ namespace Mengine
 
 		FilePath c_path = Helper::stringizeFilePath(utf8_path);
 
-		Image * image = new Image();
+        ImagePtr image = newImage();
 
 		if( image->load( c_path ) == false )
 		{
@@ -428,7 +427,7 @@ namespace Mengine
 		return image;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool saveImage( Image * _image, const wchar_t * _path )
+    static bool saveImage( const ImagePtr & _image, const wchar_t * _path )
 	{
 		String utf8_path;
 		if( Helper::unicodeToUtf8( _path, utf8_path ) == false )
@@ -494,9 +493,9 @@ namespace Mengine
 		return ColourValue();
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Image * createImage( pybind::kernel_interface * _kernel, uint32_t _width, uint32_t _height, uint32_t _channel, PyObject * _colour )
+	ImagePtr createImage( pybind::kernel_interface * _kernel, uint32_t _width, uint32_t _height, uint32_t _channel, PyObject * _colour )
 	{
-		Image * image = new Image();
+		ImagePtr image = newImage();
 
 		image->create( _width, _height, _channel );
 		image->fill( color_convert( _kernel, _colour) );
@@ -777,6 +776,50 @@ public:
     }
 };
 //////////////////////////////////////////////////////////////////////////
+static void* my_stdex_malloc( void *ctx, size_t size )
+{
+    (void)ctx;
+    if( size == 0 )
+        size = 1;
+
+    return stdex_malloc( size, "python3" );
+}
+//////////////////////////////////////////////////////////////////////////
+static void* my_stdex_calloc( void *ctx, size_t nelem, size_t elsize )
+{
+    (void)ctx;
+    if( nelem == 0 || elsize == 0 )
+    {
+        nelem = 1;
+        elsize = 1;
+    }
+
+    return stdex_calloc( nelem, elsize, "python3" );
+}
+//////////////////////////////////////////////////////////////////////////
+static void* my_stdex_realloc( void *ctx, void *ptr, size_t new_size )
+{
+    (void)ctx;
+    if( new_size == 0 )
+        new_size = 1;
+
+    void* ptr2 = stdex_realloc( ptr, new_size, "python3" );
+
+    if( ptr2 == nullptr )
+    {
+        return nullptr;
+    }
+
+    return ptr2;
+}
+//////////////////////////////////////////////////////////////////////////
+static void my_stdex_free( void *ctx, void *ptr )
+{
+    (void)ctx;
+
+    stdex_free( ptr, "python3" );
+}
+//////////////////////////////////////////////////////////////////////////
 bool run()
 {
 	try
@@ -817,7 +860,19 @@ bool run()
         , szPythonPath
     );
 
-	pybind::kernel_interface * kernel = pybind::initialize( szPythonPath, false, false, false );
+    pybind::kernel_allocator_t stdex_alloc;
+    stdex_alloc.ctx = nullptr;
+    stdex_alloc.malloc = &my_stdex_malloc;
+    stdex_alloc.calloc = &my_stdex_calloc;
+    stdex_alloc.realloc = &my_stdex_realloc;
+    stdex_alloc.free = &my_stdex_free;
+
+    pybind::kernel_domain_allocator_t da;
+    da.raw = &stdex_alloc;
+    da.mem = &stdex_alloc;
+    da.obj = &stdex_alloc;
+
+	pybind::kernel_interface * kernel = pybind::initialize( &da, szPythonPath, false, false, false );
 
 	if( kernel == nullptr )
 	{

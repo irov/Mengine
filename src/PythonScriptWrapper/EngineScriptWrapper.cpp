@@ -139,7 +139,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryAssertion.h"
 
-#include "pybind/stl_type_cast.hpp"
+#include "pybind/stl/stl_type_cast.hpp"
 #include "stdex/xml_sax_parser.h"
 #include "utf8.h"
 
@@ -950,6 +950,9 @@ namespace Mengine
 
             shape->setName( _name );
             shape->setSurface( surface );
+
+            NODE_SERVICE()
+                ->addHomeless( shape );
 
             return shape;
         }
@@ -2430,11 +2433,9 @@ namespace Mengine
             virtual void follow( const pybind::object & _target ) = 0;
 
         protected:
-            PyObject * _embedded() override
+            PyObject * _embedded( pybind::kernel_interface * _kernel ) override
             {
-                pybind::kernel_interface * kernel = pybind::get_kernel();
-
-                PyObject * py_obj = kernel->scope_create_holder_t( this );
+                PyObject * py_obj = _kernel->scope_create_holder_t( this );
 
                 return py_obj;
             }
@@ -3882,7 +3883,7 @@ namespace Mengine
         pybind::def_functor( kernel, "destroyValueFollower", nodeScriptMethod, &EngineScriptMethod::s_destroyValueFollower );
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( Helper::stringizeString( "PythonValueFollower" ), new PythonScriptWrapper<PythonValueFollower>() ) == false )
+            ->setWrapper( Helper::stringizeString( "PythonValueFollower" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollower> >( kernel ) ) == false )
         {
             return false;
         }

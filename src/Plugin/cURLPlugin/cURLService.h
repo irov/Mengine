@@ -19,6 +19,7 @@ namespace Mengine
         ~cURLService() override;
 
     protected:
+        void _dependencyService() override;
         bool _initializeService() override;
         void _finalizeService() override;
 

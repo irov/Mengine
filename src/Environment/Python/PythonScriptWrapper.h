@@ -30,7 +30,7 @@ namespace Mengine
 
                 pybind::bindable * bindable = static_cast<pybind::bindable *>(_self);
 
-                PyObject * py_obj = bindable->getEmbed();
+                PyObject * py_obj = bindable->getEmbed( _kernel );
 
                 return py_obj;
             }
@@ -43,20 +43,26 @@ namespace Mengine
         , public Factorable
     {
     public:
+        PythonScriptWrapper( pybind::kernel_interface * _kernel )
+            : m_kernel( _kernel )
+        {
+        }
+
+        ~PythonScriptWrapper() override
+        {
+        }
+
+    public:
         bool initialize() override
         {
-            pybind::kernel_interface * kernel = pybind::get_kernel();
-
-            pybind::registration_type_cast<T>(kernel, new Helper::ScriptExtract<T>());
+            pybind::registration_type_cast<T>(m_kernel, new Helper::ScriptExtract<T>());
 
             return true;
         }
 
         void finalize() override
         {
-            pybind::kernel_interface * kernel = pybind::get_kernel();
-
-            pybind::unregistration_type_cast<T>(kernel);
+            pybind::unregistration_type_cast<T>(m_kernel);
         }
 
     protected:
@@ -74,9 +80,7 @@ namespace Mengine
 
             T * obj = static_cast<T *>(_scriptable);
 
-            pybind::kernel_interface * kernel = pybind::get_kernel();
-
-            PyObject * py_obj = kernel->scope_create_holder_t( obj );
+            PyObject * py_obj = m_kernel->scope_create_holder_t( obj );
 
             //pybind::set_attr( py_embedded, "Mengine_name", pybind::ptr(_node->getName()) );
             //pybind::set_attr( py_embedded, "Mengine_type", pybind::ptr(_node->getType()) );
@@ -86,9 +90,6 @@ namespace Mengine
         }
 
     protected:
-        void destroy() override
-        {
-            delete this;
-        }
+        pybind::kernel_interface * m_kernel;
     };
 }

@@ -23,14 +23,14 @@
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 
-#include "PythonScriptWrapper/PythonWrapper.h"
-
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
 
 #include "Kernel/Date.h"
 
 #include "Kernel/Logger.h"
+
+#include "PythonScriptWrapper/PythonWrapper.h"
 
 #include <cstdio>
 #include <clocale>

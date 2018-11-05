@@ -150,7 +150,7 @@ namespace Mengine
             Py_ErrFormatFlag = 0;
         }
 
-        pybind::kernel_interface * kernel = pybind::initialize( nullptr, false, false, true );
+        pybind::kernel_interface * kernel = pybind::initialize( nullptr, nullptr, false, false, true );
 
         if( kernel == nullptr )
         {

@@ -141,6 +141,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
 	fwrite( etc1_byte, 1, size, file_out );
 	fclose( file_out );	
+
+    delete[] etc1_byte;
 			
 	return 0;
 }

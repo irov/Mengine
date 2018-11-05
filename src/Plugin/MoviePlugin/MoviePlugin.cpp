@@ -434,16 +434,16 @@ namespace Mengine
             ;
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ), new PythonScriptWrapper<Movie2>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<PythonScriptWrapper<Movie2> >( kernel ) );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new PythonScriptWrapper<Movie2Slot>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new FactorableUnique<PythonScriptWrapper<Movie2Slot> >( kernel ) );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new PythonScriptWrapper<Movie2SubComposition>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new FactorableUnique<PythonScriptWrapper<Movie2SubComposition> >( kernel ) );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new PythonScriptWrapper<ResourceMovie2>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie2> >( kernel ) );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<NodePrototypeGenerator<Movie2, 128> > ) == false )

@@ -7,8 +7,26 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
+#include "Kernel/FactoryDefault.h"
+
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    static const FactoryPtr & getFactoryImage()
+    {
+        static FactoryPtr factoryLoader = new FactoryDefault<Image>();
+
+        return factoryLoader;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ImagePtr newImage()
+    {
+        const FactoryPtr & factory = getFactoryImage();
+
+        ImagePtr image = factory->createObject();
+
+        return image;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	Image::Image()
 		: m_width(0)
@@ -196,7 +214,7 @@ namespace Mengine
 		}
 	}
 	//////////////////////////////////////////////////////////////////////////
-	bool Image::paste( Image * _image, uint32_t _x, uint32_t _y )
+	bool Image::paste( const ImagePtr & _image, uint32_t _x, uint32_t _y )
 	{
 		uint32_t paste_width = _image->getWidth();
 		uint32_t paste_height = _image->getHeight();
@@ -311,11 +329,11 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	Image * Image::rotate( float _angle )
+	ImagePtr Image::rotate( float _angle )
 	{
 		(void)_angle;
 
-		Image * image = new Image();
+		ImagePtr image = newImage();
 
 		image->create( m_height, m_width, m_channels );
 
@@ -423,11 +441,11 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	pybind::tuple Image::split() const
 	{
-		Image * imageRGB = new Image();
-		imageRGB->create(m_width, m_height, 3);
+        ImagePtr imageRGB = newImage();
+        imageRGB->create( m_width, m_height, 3 );
 
-		Image * imageAlpha = new Image();
-		imageAlpha->create(m_width, m_height, 1);
+        ImagePtr imageAlpha = newImage();
+        imageAlpha->create( m_width, m_height, 1 );
 
 		uint8_t * memory_buffer_this = m_memory->getBuffer();
 		uint8_t * memory_buffer_rgb = imageRGB->getMemory();
@@ -453,10 +471,16 @@ namespace Mengine
 
 		return pybind::make_tuple_t( kernel, imageRGB, imageAlpha );
 	}
+    //////////////////////////////////////////////////////////////////////////
+    void Image::release()
+    {
+        m_memory = nullptr;
+    }
 	//////////////////////////////////////////////////////////////////////////
 	void Image::embedding( pybind::kernel_interface * _kernel, PyObject * _module )
 	{
-		pybind::class_<Image>( _kernel, "Image", true, _module)
+		pybind::interface_<Image>( _kernel, "Image", true, _module)
+            .def_smart_pointer()
 			.def( "getWidth", &Image::getWidth )
 			.def( "getHeight", &Image::getHeight )
 			.def( "getChannels", &Image::getChannels )
@@ -467,6 +491,7 @@ namespace Mengine
 			.def( "getextrema", &Image::getextrema )
 			.def( "uselessalpha", &Image::uselessalpha )
 			.def( "split", &Image::split)
+            .def( "release", &Image::release )
 			;		
 	}
 }

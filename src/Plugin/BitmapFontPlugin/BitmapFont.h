@@ -17,7 +17,10 @@ namespace Mengine
         ~BitmapFont() override;
 
     protected:
-        bool initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini ) override;
+        bool initialize( const FileGroupInterfacePtr & _fileGroup, const IniUtil::IniStore & _ini ) override;
+
+    protected:
+        bool isValid() override;
 
     protected:
         bool _compile() override;
@@ -50,7 +53,7 @@ namespace Mengine
     protected:
         BitmapGlyphPtr m_glyph;
 
-        FileGroupInterfacePtr m_category;
+        FileGroupInterfacePtr m_fileGroup;
         FilePath m_pathFontImage;
 
         float m_height;

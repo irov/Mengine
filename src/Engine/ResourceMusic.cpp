@@ -41,12 +41,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMusic::_convert()
     {
+        const ConstString & codecType = this->getCodecType();
         const ConstString & converterType = this->getConverterType();
         const FilePath & filePath = this->getFilePath();
 
         FilePath newFilePath;
         ConstString newCodecType;
-        if( this->convertDefault_( converterType, filePath, newFilePath, newCodecType ) == false )
+        if( this->convertDefault_( converterType, filePath, newFilePath, codecType, newCodecType ) == false )
         {
             return false;
         }

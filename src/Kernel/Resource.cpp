@@ -58,22 +58,22 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Resource::convertDefault2_( const ConstString & _converter, const FilePath & _path, FilePath & _out )
+    bool Resource::convertDefault2_( const ConstString & _converterType, const FilePath & _filePath, FilePath & _outFilePath )
     {
-        if( _path.empty() == true )
+        if( _filePath.empty() == true )
         {
             return false;
         }
 
-        if( _converter.empty() == false )
+        if( _converterType.empty() == false )
         {
             if( CONVERTER_SERVICE()
-                ->convert( _converter, m_category, _path, _out ) == false )
+                ->convert( _converterType, m_category, _filePath, _outFilePath ) == false )
             {
                 LOGGER_ERROR( "resource '%s' can't convert '%s':'%s'"
                     , this->getName().c_str()
-                    , _path.c_str()
-                    , _converter.c_str()
+                    , _filePath.c_str()
+                    , _converterType.c_str()
                 );
 
                 return false;
@@ -83,27 +83,35 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Resource::convertDefault_( const ConstString & _converter, const FilePath & _path, FilePath & _out, ConstString & _codecType )
+    bool Resource::convertDefault_( const ConstString & _converterType, const FilePath & _filePath, FilePath & _outFilePath, const ConstString & _codecType, ConstString & _outCodecType )
     {
-        if( this->convertDefault2_( _converter, _path, _out ) == false )
+        if( this->convertDefault2_( _converterType, _filePath, _outFilePath ) == false )
         {
             return false;
         }
 
+        if( _outFilePath.empty() == true )
+        {
+            _outFilePath = _filePath;
+            _outCodecType = _codecType;
+
+            return true;
+        }
+
         const ConstString & codecType = CODEC_SERVICE()
-            ->findCodecType( _out );
+            ->findCodecType( _outFilePath );
 
         if( codecType.empty() == true )
         {
             LOGGER_ERROR( "resource '%s' you must determine codec for file '%s'"
                 , this->getName().c_str()
-                , _path.c_str()
+                , _filePath.c_str()
             );
 
             return false;
         }
 
-        _codecType = codecType;
+        _outCodecType = codecType;
 
         return true;
     }

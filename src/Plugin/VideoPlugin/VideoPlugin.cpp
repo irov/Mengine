@@ -96,7 +96,6 @@ namespace Mengine
             return false;
         }
 
-
         if( SCRIPT_SERVICE()
             ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<PythonScriptWrapper<ResourceVideo> >( kernel ) ) == false )
         {
@@ -109,12 +108,15 @@ namespace Mengine
             return false;
         }
 
-        VisitorPtr videoValidateVisitor = new FactorableUnique<VideoResourceValidateVisitor>();
+        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+        {
+            VisitorPtr videoValidateVisitor = new FactorableUnique<VideoResourceValidateVisitor>();
 
-        RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidateVisitor( videoValidateVisitor );
+            RESOURCEVALIDATE_SERVICE()
+                ->addResourceValidateVisitor( videoValidateVisitor );
 
-        m_videoValidateVisitor = videoValidateVisitor;
+            m_videoValidateVisitor = videoValidateVisitor;
+        }
 
         LOADER_SERVICE()
             ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<LoaderResourceVideo>() );
@@ -124,5 +126,39 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void VideoPlugin::_finalize()
     {
+        if( PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) ) == false )
+        {
+            return;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) ) == false )
+        {
+            return;
+        }
+
+        if( SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) ) == false )
+        {
+            return;
+        }
+
+        if( SCRIPT_SERVICE()
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) ) == false )
+        {
+            return;
+        }
+
+        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+        {
+            RESOURCEVALIDATE_SERVICE()
+                ->removeResourceValidateVisitor( m_videoValidateVisitor );
+
+            m_videoValidateVisitor = nullptr;
+        }
+
+        LOADER_SERVICE()
+            ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
     }
 }

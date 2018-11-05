@@ -56,7 +56,7 @@ namespace Mengine
 
     public:
         virtual bool setWrapper( const ConstString& _type, const ScriptWrapperInterfacePtr & _wrapper ) = 0;
-        virtual void removeWrapper( const ConstString& _type ) = 0;
+        virtual bool removeWrapper( const ConstString& _type ) = 0;
         virtual const ScriptWrapperInterfacePtr & getWrapper( const ConstString & _type ) const = 0;
 
     public:

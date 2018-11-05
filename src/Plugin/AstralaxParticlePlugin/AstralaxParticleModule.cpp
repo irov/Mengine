@@ -159,12 +159,15 @@ namespace Mengine
             return false;
         }
 
-        VisitorPtr particleValidateVisitor = new FactorableUnique<ParticleResourceValidateVisitor>();
+        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+        {
+            VisitorPtr particleValidateVisitor = new FactorableUnique<ParticleResourceValidateVisitor>();
 
-        RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidateVisitor( particleValidateVisitor );
+            RESOURCEVALIDATE_SERVICE()
+                ->addResourceValidateVisitor( particleValidateVisitor );
 
-        m_particleValidateVisitor = particleValidateVisitor;
+            m_particleValidateVisitor = particleValidateVisitor;
+        }
 
         LOADER_SERVICE()
             ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<LoaderResourceAstralax>() );
@@ -206,9 +209,12 @@ namespace Mengine
         kernel->remove_scope<ResourceAstralax>();
         kernel->remove_scope<AstralaxEmitter>();
 
-        RESOURCEVALIDATE_SERVICE()
-            ->removeResourceValidateVisitor( m_particleValidateVisitor );
-        m_particleValidateVisitor = nullptr;
+        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+        {
+            RESOURCEVALIDATE_SERVICE()
+                ->removeResourceValidateVisitor( m_particleValidateVisitor );
+            m_particleValidateVisitor = nullptr;
+        }
 
         LOADER_SERVICE()
             ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );

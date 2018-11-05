@@ -1623,12 +1623,15 @@ namespace Mengine
         CODEC_SERVICE()
             ->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
-        VisitorPtr resourceValidateVisitor = new FactorableUnique<Movie1ResourceValidateVisitor>();
+        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+        {
+            VisitorPtr resourceValidateVisitor = new FactorableUnique<Movie1ResourceValidateVisitor>();
 
-        RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidateVisitor( resourceValidateVisitor );
+            RESOURCEVALIDATE_SERVICE()
+                ->addResourceValidateVisitor( resourceValidateVisitor );
 
-        m_resourceValidateVisitor = resourceValidateVisitor;
+            m_resourceValidateVisitor = resourceValidateVisitor;
+        }
 
         LOADER_SERVICE()
             ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<LoaderResourceMovie>() );
@@ -1686,8 +1689,12 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );
 
-        RESOURCEVALIDATE_SERVICE()
-            ->removeResourceValidateVisitor( m_resourceValidateVisitor );
+        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+        {
+            RESOURCEVALIDATE_SERVICE()
+                ->removeResourceValidateVisitor( m_resourceValidateVisitor );
+            m_resourceValidateVisitor = nullptr;
+        }
 
         DATA_SERVICE()
             ->unregisterDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );

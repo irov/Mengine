@@ -477,19 +477,25 @@ namespace Mengine
             return false;
         }
 
-        RenderVisitorPtr movie2RenderVisitor = new FactorableUnique<Movie2DebugRenderVisitor>();
+        if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+        {
+            RenderVisitorPtr movie2RenderVisitor = new FactorableUnique<Movie2DebugRenderVisitor>();
 
-        DEBUGRENDER_SERVICE()
-            ->addDebugNodeRenderVisitor( movie2RenderVisitor );
+            DEBUGRENDER_SERVICE()
+                ->addDebugNodeRenderVisitor( movie2RenderVisitor );
 
-        m_movie2RenderVisitor = movie2RenderVisitor;
+            m_movie2RenderVisitor = movie2RenderVisitor;
+        }
+        
+        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+        {
+            VisitorPtr movie2ValidateVisitor = new FactorableUnique<Movie2ResourceValidateVisitor>();
 
-        VisitorPtr movie2ValidateVisitor = new FactorableUnique<Movie2ResourceValidateVisitor>();
+            RESOURCEVALIDATE_SERVICE()
+                ->addResourceValidateVisitor( movie2ValidateVisitor );
 
-        RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidateVisitor( movie2ValidateVisitor );
-
-        m_movie2ValidateVisitor = movie2ValidateVisitor;
+            m_movie2ValidateVisitor = movie2ValidateVisitor;
+        }
 
         LOADER_SERVICE()
             ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
@@ -520,12 +526,18 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
 
-        DEBUGRENDER_SERVICE()
-            ->removeDebugNodeRenderVisitor( m_movie2RenderVisitor );
-        m_movie2RenderVisitor = nullptr;
+        if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+        {
+            DEBUGRENDER_SERVICE()
+                ->removeDebugNodeRenderVisitor( m_movie2RenderVisitor );
+            m_movie2RenderVisitor = nullptr;
+        }
 
-        RESOURCEVALIDATE_SERVICE()
-            ->removeResourceValidateVisitor( m_movie2ValidateVisitor );
-        m_movie2ValidateVisitor = nullptr;
+        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+        {
+            RESOURCEVALIDATE_SERVICE()
+                ->removeResourceValidateVisitor( m_movie2ValidateVisitor );
+            m_movie2ValidateVisitor = nullptr;
+        }
     }
 }

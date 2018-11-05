@@ -615,19 +615,21 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::removeWrapper( const ConstString& _type )
+    bool ScriptService::removeWrapper( const ConstString& _type )
     {
         MapScriptWrapper::iterator it_found = m_scriptWrapper.find( _type );
 
         if( it_found == m_scriptWrapper.end() )
         {
-            return;
+            return false;
         }
 
         it_found->second->finalize();
         it_found->second = nullptr;
 
         m_scriptWrapper.erase( it_found );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////|
     const ScriptWrapperInterfacePtr & ScriptService::getWrapper( const ConstString & _type ) const

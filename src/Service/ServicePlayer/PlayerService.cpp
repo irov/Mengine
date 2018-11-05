@@ -835,8 +835,11 @@ namespace Mengine
             }
             else
             {
-                DEBUGRENDER_SERVICE()
-                    ->renderDebugNode( m_scene, &context, false );
+                if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+                {
+                    DEBUGRENDER_SERVICE()
+                        ->renderDebugNode( m_scene, &context, false );
+                }
             }
         }
 
@@ -855,13 +858,19 @@ namespace Mengine
             }
             else
             {
-                DEBUGRENDER_SERVICE()
-                    ->renderDebugNode( m_arrow, &context, false );
+                if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+                {
+                    DEBUGRENDER_SERVICE()
+                        ->renderDebugNode( m_arrow, &context, false );
+                }
             }
         }
 
-        DEBUGRENDER_SERVICE()
-            ->renderDebugInfo( &context );
+        if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+        {
+            DEBUGRENDER_SERVICE()
+                ->renderDebugInfo( &context );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::onAppMouseLeave( const InputMousePositionEvent & _event )

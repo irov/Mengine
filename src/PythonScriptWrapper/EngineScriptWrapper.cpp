@@ -3624,6 +3624,11 @@ namespace Mengine
                 return false;
             }
 
+            if( SERVICE_EXIST( ResourceValidateServiceInterface ) == false )
+            {
+                return true;
+            }
+
             bool valid = RESOURCEVALIDATE_SERVICE()
                 ->validResource( resource );
 

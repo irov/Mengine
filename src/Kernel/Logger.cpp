@@ -101,12 +101,15 @@ namespace Mengine
                 str_function = String( engine_remove_prefix.first, engine_remove_prefix.second ) + String( engine_remove_suffix.first, engine_remove_suffix.second );
             }
 
-            int size2 = snprintf( str2, MENGINE_LOGGER_MAX_MESSAGE + 256, "%s[%u]: %.*s\n"
+            int size2 = snprintf( str2, MENGINE_LOGGER_MAX_MESSAGE + 256, "%s[%u]: %.*s"
                 , str_function.c_str()
                 , m_line
                 , size
                 , str
             );
+
+            str2[size2 + 0] = '\n';
+            str2[size2 + 1] = 0;
 
             this->logMessage( str2, size2 + 1 );
         }

@@ -66,7 +66,7 @@ namespace Mengine
 
     public:
         bool setWrapper( const ConstString& _type, const ScriptWrapperInterfacePtr & _wrapper ) override;
-        void removeWrapper( const ConstString& _type ) override;
+        bool removeWrapper( const ConstString& _type ) override;
         const ScriptWrapperInterfacePtr & getWrapper( const ConstString & _type ) const override;
 
     public:

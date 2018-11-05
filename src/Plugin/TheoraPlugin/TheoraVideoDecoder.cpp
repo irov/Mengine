@@ -2,7 +2,11 @@
 
 #include "Kernel/Logger.h"
 
-#define THEORA_OGG_BUFFER_SIZE 4096
+#include <string.h>
+
+#ifndef MENGINE_THEORA_OGG_BUFFER_SIZE
+#define MENGINE_THEORA_OGG_BUFFER_SIZE 4096
+#endif
 
 //Defines
 #define THEORA_MAX( a, b ) ((a > b) ? a : b)
@@ -753,14 +757,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t TheoraVideoDecoder::read_buffer_data_()
     {
-        char * buffer = ogg_sync_buffer( &m_oggSyncState, THEORA_OGG_BUFFER_SIZE );
+        char * buffer = ogg_sync_buffer( &m_oggSyncState, MENGINE_THEORA_OGG_BUFFER_SIZE );
 
         if( buffer == nullptr )
         {
             return 0;
         }
 
-        size_t bytes = m_stream->read( buffer, THEORA_OGG_BUFFER_SIZE );
+        size_t bytes = m_stream->read( buffer, MENGINE_THEORA_OGG_BUFFER_SIZE );
 
         long ogg_bytes = (long)bytes;
 

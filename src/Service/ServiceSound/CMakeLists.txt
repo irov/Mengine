@@ -1,4 +1,4 @@
-SET( MY_LIB_NAME ServiceSound )
+SET( MY_LIB_NAME SoundService )
 
 ADD_FILTER(
 src
@@ -13,7 +13,7 @@ src
 ADD_MENGINE_LIBRARY()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Service
+    FOLDER Services
 )
 
 INCLUDE_DIRECTORIES( 

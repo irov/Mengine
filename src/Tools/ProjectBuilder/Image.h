@@ -5,13 +5,17 @@
 
 #include "Kernel/ColourValue.h"
 #include "Kernel/FilePath.h"
+#include "Kernel/Factorable.h"
 
 #include "pybind/pybind.hpp"
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<class Image> ImagePtr;
 	//////////////////////////////////////////////////////////////////////////
 	class Image
+        : public Factorable
 	{
 	public:
 		Image();
@@ -25,17 +29,19 @@ namespace Mengine
 		
 		void fill( const ColourValue & _colour );
 
-		bool paste( Image * _image, uint32_t _x, uint32_t _y );
+		bool paste( const ImagePtr & _image, uint32_t _x, uint32_t _y );
 
 		pybind::list getdata() const;
 		bool putdata( const pybind::list & _data );
 
-		Image * rotate( float _angle );
+		ImagePtr rotate( float _angle );
 
 		pybind::list getextrema() const;
 		bool uselessalpha() const;
 
 		pybind::tuple split() const;
+
+        void release();
 
 	public:
 		uint8_t * getMemory() const;
@@ -56,4 +62,9 @@ namespace Mengine
 		uint32_t m_height;
 		uint32_t m_channels;
 	};
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Image> ImagePtr;
+    //////////////////////////////////////////////////////////////////////////
+    ImagePtr newImage();
+    //////////////////////////////////////////////////////////////////////////
 }

@@ -1,4 +1,4 @@
-SET( MY_LIB_NAME ServiceRender )
+SET( MY_LIB_NAME RenderService )
 
 ADD_FILTER(
 src
@@ -21,7 +21,7 @@ src
 ADD_MENGINE_LIBRARY()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Service
+    FOLDER Services
 )
 
 INCLUDE_DIRECTORIES( 

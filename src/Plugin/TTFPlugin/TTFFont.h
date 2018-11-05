@@ -40,6 +40,9 @@ namespace Mengine
         bool initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini ) override;
 
     protected:
+        bool isValid() override;
+
+    protected:
         bool _compile() override;
         void _release() override;
 

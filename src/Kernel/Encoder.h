@@ -58,6 +58,12 @@ namespace Mengine
             //Empty
         }
 
+    protected:
+        void _destroy() override
+        {
+            this->finalize();
+        }
+
     public:
         OutputStreamInterfacePtr getStream() const override
         {

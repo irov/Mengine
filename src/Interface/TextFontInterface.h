@@ -58,7 +58,14 @@ namespace Mengine
         virtual const ConstString & getName() const = 0;
 
     public:
-        virtual bool initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini ) = 0;
+        virtual void setType( const ConstString & _name ) = 0;
+        virtual const ConstString & getType() const = 0;
+
+    public:
+        virtual bool initialize( const FileGroupInterfacePtr & _fileGroup, const IniUtil::IniStore & _ini ) = 0;
+
+    public:
+        virtual bool isValid() = 0;
 
     public:
         virtual bool compileFont() = 0;

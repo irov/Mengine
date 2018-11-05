@@ -23,8 +23,10 @@ namespace Mengine
         return m_scriptWrapper;
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * Scriptable::_embedded()
+    PyObject * Scriptable::_embedded( pybind::kernel_interface * _kernel )
     {
+        (void)_kernel;
+
         if( m_scriptWrapper == nullptr )
         {
             return nullptr;

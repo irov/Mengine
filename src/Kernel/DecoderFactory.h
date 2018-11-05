@@ -51,7 +51,7 @@ namespace Mengine
         template<class T>
         inline DecoderFactoryInterfacePtr registerDecoder( const Char * _type )
         {
-            DecoderFactoryInterfacePtr decoder = new DecoderFactory<T>();
+            DecoderFactoryInterfacePtr decoder = new FactorableUnique<DecoderFactory<T> >();
 
             if( decoder->initialize() == false )
             {

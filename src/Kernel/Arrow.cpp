@@ -13,7 +13,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Arrow::ArrowInputMousePositionProvider
-        : public FactorableUnique<Factorable>
+        : public Factorable
         , public InputMousePositionProviderInterface
     {
     public:
@@ -89,7 +89,7 @@ namespace Mengine
         }
 
         m_inputMousePositionProviderId = INPUT_SERVICE()
-            ->addMousePositionProvider( new ArrowInputMousePositionProvider( this ) );
+            ->addMousePositionProvider( new FactorableUnique<ArrowInputMousePositionProvider>( this ) );
 
         const mt::vec2f & cursor_pos = INPUT_SERVICE()
             ->getCursorPosition( 0 );

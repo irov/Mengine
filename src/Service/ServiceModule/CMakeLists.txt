@@ -1,4 +1,4 @@
-SET( MY_LIB_NAME ServiceModule )
+SET( MY_LIB_NAME ModuleService )
 
 ADD_FILTER(
 src
@@ -9,7 +9,7 @@ src
 ADD_MENGINE_LIBRARY()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Service
+    FOLDER Services
 )
 
 INCLUDE_DIRECTORIES( 

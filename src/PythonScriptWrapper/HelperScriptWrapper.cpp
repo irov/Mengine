@@ -56,7 +56,7 @@
 
 #include "pybind/pybind.hpp"
 #include "pybind/pickle.hpp"
-#include "pybind/stl_type_cast.hpp"
+#include "pybind/stl/stl_type_cast.hpp"
 
 #include <math.h>
 
@@ -2856,7 +2856,7 @@ namespace Mengine
 
             if( _kernel->list_check( _obj ) == true )
             {
-                pybind::list l( _kernel, _obj, pybind::borrowed() );
+                pybind::list l( _kernel, _obj, pybind::borrowed );
 
                 uint32_t tags_size = l.size();
 

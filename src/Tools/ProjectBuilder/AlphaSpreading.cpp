@@ -18,8 +18,10 @@
 
 namespace Mengine
 {
-    PyObject * spreadingPngAlpha( pybind::kernel_interface * _kernel, const wchar_t * pngPathIn, const wchar_t * pngPathOut )
+    bool spreadingPngAlpha( pybind::kernel_interface * _kernel, const wchar_t * pngPathIn, const wchar_t * pngPathOut )
     {
+        (void)_kernel;
+
         LOGGER_INFO("spreadingPngAlpha\n");
 
         String utf8_inputFileName;
@@ -43,7 +45,7 @@ namespace Mengine
                 , inputFileName.c_str()
                 );
 
-            return _kernel->ret_none();
+            return false;
         }
 
         ConstString codec = Helper::stringizeString("pngImage");
@@ -57,7 +59,7 @@ namespace Mengine
                 , inputFileName.c_str()
                 );
 
-            return _kernel->ret_none();
+            return false;
         }
 
 		if( imageDecoder->prepareData( input_stream ) == false )
@@ -66,7 +68,7 @@ namespace Mengine
 				, inputFileName.c_str()
 				);
 
-			return _kernel->ret_none();
+            return false;
 		}
 
         const ImageCodecDataInfo* decode_dataInfo = imageDecoder->getCodecDataInfo();
@@ -89,14 +91,14 @@ namespace Mengine
 		
 		if( memory_textureBuffer == nullptr )
 		{
-			return _kernel->ret_none();
+            return false;
 		}
 
 		unsigned char * textureBuffer = memory_textureBuffer->newBuffer( bufferSize, "spreadingPngAlpha", __FILE__, __LINE__ );
 
 		if( textureBuffer == nullptr )
 		{
-			return _kernel->ret_none();
+            return false;
 		}
 
 		if( imageDecoder->decode( textureBuffer, bufferSize ) == 0 )
@@ -105,7 +107,7 @@ namespace Mengine
 				, inputFileName.c_str()
 				);
 
-			return _kernel->ret_none();
+            return false;
 		}
 
 		if( channels == 4 )
@@ -178,7 +180,7 @@ namespace Mengine
                 , outputFileName.c_str()
                 );
 
-            return _kernel->ret_none();
+            return false;
         }
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
@@ -190,7 +192,7 @@ namespace Mengine
                 , outputFileName.c_str()
                 );
 
-            return _kernel->ret_none();
+            return false;
         }
 
 		if( imageEncoder->initialize( output_stream ) == false )
@@ -199,7 +201,7 @@ namespace Mengine
 				, outputFileName.c_str()
 				);
 
-			return _kernel->ret_none();
+            return false;
 		}
 
         ImageCodecOptions encode_options;		
@@ -225,9 +227,9 @@ namespace Mengine
                 , outputFileName.c_str()
                 );
 
-			return _kernel->ret_none();
+            return false;
         }
                
-        return _kernel->ret_none();
+        return true;
     } 
 }

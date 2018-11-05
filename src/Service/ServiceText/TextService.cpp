@@ -522,10 +522,18 @@ namespace Mengine
 
             if( font == nullptr )
             {
+                LOGGER_ERROR( "TextService::loadFonts invalid initialize '%s:%s' font '%s' not found type '%s'"
+                    , _fileGroup->getName().c_str()
+                    , _path.c_str()
+                    , fontName.c_str()
+                    , fontType.c_str()
+                );
+
                 return false;
             }
 
             font->setName( fontName );
+            font->setType( fontType );
 
             if( font->initialize( _fileGroup, ini ) == false )
             {
@@ -560,6 +568,32 @@ namespace Mengine
 
             m_fonts.emplace( fontName, font );
         }
+
+                
+#ifndef MENGINE_MASTER_RELEASE
+        bool valid_successful = true;
+
+        for( const MapTextFont::value_type & value : m_fonts )
+        {
+            const TextFontInterfacePtr & font = value.second;
+
+            if( font->isValid() == false )
+            {
+                LOGGER_ERROR( "TextService::loadFonts invalid initialize '%s:%s' font '%s' invalidate!"
+                    , _fileGroup->getName().c_str()
+                    , _path.c_str()
+                    , font->getName().c_str()
+                );
+
+                valid_successful = false;
+            }
+        }
+
+        if( valid_successful == false )
+        {
+            return false;
+        }
+#endif
 
         ConstString defaultFontName;
         if( IniUtil::getIniValue( ini, "GAME_FONTS", "Default", defaultFontName ) == true )

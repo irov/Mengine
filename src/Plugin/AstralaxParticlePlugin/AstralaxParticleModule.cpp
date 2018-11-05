@@ -111,13 +111,13 @@ namespace Mengine
             ;
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new PythonScriptWrapper<AstralaxEmitter>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new FactorableUnique<PythonScriptWrapper<AstralaxEmitter> >( kernel ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), new PythonScriptWrapper<AstralaxEmitter>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), new FactorableUnique<PythonScriptWrapper<AstralaxEmitter> >( kernel ) ) == false )
         {
             return false;
         }
@@ -135,14 +135,14 @@ namespace Mengine
         }
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new PythonScriptWrapper<ResourceAstralax>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<PythonScriptWrapper<ResourceAstralax> >( kernel ) ) == false )
         {
             return false;
         }
 
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new PythonScriptWrapper<ResourceAstralax>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<PythonScriptWrapper<ResourceAstralax> >( kernel ) ) == false )
         {
             return false;
         }

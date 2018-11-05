@@ -1,4 +1,4 @@
-SET( MY_LIB_NAME ServiceMemory )
+SET( MY_LIB_NAME MemoryService )
 
 ADD_FILTER(
 src
@@ -27,7 +27,7 @@ src
 ADD_MENGINE_LIBRARY()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Service
+    FOLDER Services
 )
 
 SET( APPLICATION_DEPENDENCIES

@@ -30,6 +30,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void cURLService::_dependencyService()
+    {
+        SERVICE_DEPENDENCY( cURLService, ThreadServiceInterface );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool cURLService::_initializeService()
     {
         CURLcode code = curl_global_init( CURL_GLOBAL_ALL );
@@ -45,7 +50,7 @@ namespace Mengine
         }
 
         if( THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ), -1, __FILE__, __LINE__ ) == false )
+            ->createThread( STRINGIZE_STRING_LOCAL( "cURLService" ), -1, __FILE__, __LINE__ ) == false )
         {
             return false;
         }
@@ -60,8 +65,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void cURLService::_finalizeService()
     {
+        for( const ReceiverDesc & desc : m_receiverDescs )
+        {
+            THREAD_SERVICE()
+                ->joinTask( desc.task );            
+        }
+
+        m_receiverDescs.clear();
+
         THREAD_SERVICE()
-            ->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ) );
+            ->destroyThread( STRINGIZE_STRING_LOCAL( "cURLService" ) );
 
         m_factoryTaskDownloadAsset = nullptr;
         m_factoryTaskPostMessage = nullptr;
@@ -82,7 +95,7 @@ namespace Mengine
         task->initialize( _url );
 
         if( THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ), task ) == false )
+            ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
         {
             LOGGER_ERROR( "cURLHttpSystem::getMessage url '%s' invalid add task"
                 , _url.c_str()
@@ -112,7 +125,7 @@ namespace Mengine
         task->initialize( _url, _params );
 
         if( THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ), task ) == false )
+            ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
         {
             LOGGER_ERROR( "cURLHttpSystem::postMessage url '%s' invalid add task"
                 , _url.c_str()
@@ -142,7 +155,7 @@ namespace Mengine
         task->initialize( _url, _headers, _data );
 
         if( THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ), task ) == false )
+            ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
         {
             LOGGER_ERROR( "cURLHttpSystem::headerData url '%s' invalid add task"
                 , _url.c_str()
@@ -183,7 +196,7 @@ namespace Mengine
         task->initialize( _url, _login, _password, _fileGroup, _path );
 
         if( THREAD_SERVICE()
-            ->addTask( STRINGIZE_STRING_LOCAL( "ThreadCurlHttpSystem" ), task ) == false )
+            ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
         {
             LOGGER_ERROR( "CurlHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
                 , _url.c_str()

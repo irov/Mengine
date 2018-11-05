@@ -1,4 +1,4 @@
-SET( MY_LIB_NAME ServiceGame )
+SET( MY_LIB_NAME GameService )
 
 ADD_FILTER(
 src
@@ -13,7 +13,7 @@ src
 ADD_MENGINE_LIBRARY()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER Service
+    FOLDER Services
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )

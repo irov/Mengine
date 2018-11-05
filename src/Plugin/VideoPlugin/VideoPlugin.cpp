@@ -98,13 +98,13 @@ namespace Mengine
 
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new PythonScriptWrapper<ResourceVideo>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<PythonScriptWrapper<ResourceVideo> >( kernel ) ) == false )
         {
             return false;
         }
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), new PythonScriptWrapper<SurfaceVideo>() ) == false )
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), new FactorableUnique<PythonScriptWrapper<SurfaceVideo> >( kernel ) ) == false )
         {
             return false;
         }

@@ -66,13 +66,16 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}tinyini${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}movie${MENGINE_LIB_SUFFIX}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX}
+    Ws2_32.lib
+    Crypt32.lib
     )
     
+
 if(MSVC)
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}    
-        ${THIRDPARTY_DIR}/openssl/libcrypto.lib
-        ${THIRDPARTY_DIR}/openssl/libssl.lib
-    )
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
+            ${THIRDPARTY_DIR}/openssl/lib/libcryptoMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+            ${THIRDPARTY_DIR}/openssl/lib/libsslMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+        )
 endif()    
     
 foreach(dependency ${APPLICATION_DEPENDENCIES})

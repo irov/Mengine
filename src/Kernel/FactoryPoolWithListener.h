@@ -40,13 +40,13 @@ namespace Mengine
         template<class C, class M, class T>
         FactoryDestroyListenerInterfacePtr makeFactoryDestroyListener( C * _class, M _method )
         {
-            return new MethodFactoryDestroyListener<C, M, T>( _class, _method );
+            return new FactorableUnique<MethodFactoryDestroyListener<C, M, T> >( _class, _method );
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T, class C, class M>
         void setupFactoryDestroyListener( const FactoryWithListenerPtr & _factory, C * _class, M _method )
         {
-            FactoryDestroyListenerInterfacePtr destroyListener = new MethodFactoryDestroyListener<C, M, T>( _class, _method );
+            FactoryDestroyListenerInterfacePtr destroyListener = new FactorableUnique<MethodFactoryDestroyListener<C, M, T> >( _class, _method );
 
             _factory->setDestroyListener( destroyListener );
         }

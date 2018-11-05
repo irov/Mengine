@@ -2,6 +2,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "stdex/allocator.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -39,6 +41,20 @@ namespace Mengine
         stream->flush();
     }
     //////////////////////////////////////////////////////////////////////////
+    static png_voidp PNGAPI s_png_malloc_ptr( png_structp _png, png_size_t _size )
+    {
+        (void)_png;
+
+        return stdex_malloc( _size, "png encoder" );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void PNGAPI s_png_free_ptr( png_structp _png, png_voidp _ptr )
+    {
+        (void)_png;
+
+        stdex_free( _ptr, "png encoder" );
+    }
+    //////////////////////////////////////////////////////////////////////////
     ImageEncoderPNG::ImageEncoderPNG()
         : m_png_ptr( nullptr )
     {
@@ -53,22 +69,47 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ImageEncoderPNG::_initialize()
+    {
+        png_const_charp png_ver = PNG_LIBPNG_VER_STRING;
+
+        m_png_ptr = png_create_write_struct_2( png_ver, (png_voidp)this, &s_handlerError, &s_handlerWarning, (png_voidp)this, &s_png_malloc_ptr, &s_png_free_ptr );
+
+        if( m_png_ptr == nullptr )
+        {
+            LOGGER_ERROR( "PNG encoder error: Can't create write structure"
+            );
+
+            return false;
+        }
+
+        // init the IO
+        png_set_write_fn( m_png_ptr, m_stream.get(), s_writeProc, s_flushProc );
+
+        // allocate/initialize the image information data.
+        m_info_ptr = png_create_info_struct( m_png_ptr );
+
+        if( m_info_ptr == nullptr )
+        {
+            LOGGER_ERROR( "PNG encoder error: Can't create info structure"
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ImageEncoderPNG::_finalize()
+    {
+        png_destroy_write_struct( &m_png_ptr, &m_info_ptr );
+    }
+    //////////////////////////////////////////////////////////////////////////
     size_t ImageEncoderPNG::encode( const void * _buffer, size_t _size, const CodecDataInfo* _bufferDataInfo )
     {
         (void)_size;
 
         const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>(_bufferDataInfo);
-
-        // allocate/initialize the image information data.
-        png_infop info_ptr = png_create_info_struct( m_png_ptr );
-
-        if( info_ptr == nullptr )
-        {
-            LOGGER_ERROR( "PNG encoder error: Can't create info structure"
-            );
-
-            return 0;
-        }
 
         int color_type;
         if( dataInfo->channels == 1 )
@@ -89,8 +130,6 @@ namespace Mengine
                 , dataInfo->channels
             );
 
-            png_destroy_info_struct( m_png_ptr, &info_ptr );
-
             return 0;
         }
 
@@ -98,13 +137,13 @@ namespace Mengine
         png_uint_32 height = (png_uint_32)dataInfo->height;
         int pixel_depth = 8;
 
-        png_set_IHDR( m_png_ptr, info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE,
+        png_set_IHDR( m_png_ptr, m_info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE,
             PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE );
 
         png_set_bgr( m_png_ptr );
 
         // Write the file header information.
-        png_write_info( m_png_ptr, info_ptr );
+        png_write_info( m_png_ptr, m_info_ptr );
 
         size_t pitch = m_options.pitch;
 
@@ -118,31 +157,11 @@ namespace Mengine
         //}
         // It is REQUIRED to call this to finish writing the rest of the file
         // Bug with png_flush
-        png_write_end( m_png_ptr, info_ptr );
-
-        png_destroy_info_struct( m_png_ptr, &info_ptr );
+        png_write_end( m_png_ptr, m_info_ptr );
 
         size_t writeBytes = pitch * height;
 
         return writeBytes;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ImageEncoderPNG::_initialize()
-    {
-        m_png_ptr = png_create_write_struct( PNG_LIBPNG_VER_STRING, (png_voidp)this, s_handlerError, s_handlerWarning );
-
-        if( m_png_ptr == nullptr )
-        {
-            LOGGER_ERROR( "PNG encoder error: Can't create write structure"
-            );
-
-            return false;
-        }
-
-        // init the IO
-        png_set_write_fn( m_png_ptr, m_stream.get(), s_writeProc, s_flushProc );
-
-        return true;
     }
     //////////////////////////////////////////////////////////////////////////
 }

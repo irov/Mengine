@@ -899,7 +899,7 @@ namespace Mengine
                 return false;
             }
 
-            node->removeChildren();
+            node->removeChildren( []( const NodePtr & ) {} );
 
             return true;
         }
@@ -1539,28 +1539,28 @@ namespace Mengine
 
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie" ), new PythonScriptWrapper<Movie>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<PythonScriptWrapper<Movie> >( kernel ) );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ), new PythonScriptWrapper<MovieSlot>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ), new FactorableUnique<PythonScriptWrapper<MovieSlot> >( kernel ) );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new PythonScriptWrapper<MovieSceneEffect>() );        
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new FactorableUnique<PythonScriptWrapper<MovieSceneEffect> >( kernel ) );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new PythonScriptWrapper<MovieInternalObject>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new FactorableUnique<PythonScriptWrapper<MovieInternalObject> >( kernel ) );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), new PythonScriptWrapper<MovieMesh2D>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), new FactorableUnique<PythonScriptWrapper<MovieMesh2D> >( kernel ) );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ), new PythonScriptWrapper<MovieEvent>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ), new FactorableUnique<PythonScriptWrapper<MovieEvent> >( kernel ) );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new PythonScriptWrapper<ResourceMovie>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie> >( kernel ) );
 
         SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new PythonScriptWrapper<ResourceInternalObject>() );
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new FactorableUnique<PythonScriptWrapper<ResourceInternalObject> >( kernel ) );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<NodePrototypeGenerator<Movie, 128> > ) == false )

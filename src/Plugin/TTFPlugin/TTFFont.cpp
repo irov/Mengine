@@ -93,6 +93,45 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::isValid()
+    {
+        if( m_ttfFEPath.empty() == false )
+        {
+            MemoryInterfacePtr ttfEffectMemory = Helper::createMemoryFile( m_category, m_ttfFEPath, false, "TTFFont", __FILE__, __LINE__ );
+
+            if( ttfEffectMemory == nullptr )
+            {
+                LOGGER_ERROR( "font '%s' invalid get FE '%s'"
+                    , m_name.c_str()
+                    , m_ttfFEPath.c_str()
+                );
+
+                return false;
+            }
+
+            const void * ttfEffectMemory_buffer = ttfEffectMemory->getBuffer();
+            size_t ttfEffectMemory_size = ttfEffectMemory->getSize();
+
+            fe_bundle * ttfFEBundle = fe_bundle_load( (const uint8_t *)ttfEffectMemory_buffer, (int)ttfEffectMemory_size );
+
+            if( ttfFEBundle == nullptr )
+            {
+                return false;
+            }
+
+            fe_effect* ttfFEEffect = fe_bundle_get_effect_by_name( ttfFEBundle, m_ttfFEName.c_str() );
+
+            fe_bundle_free( ttfFEBundle );
+
+            if( ttfFEEffect == nullptr )
+            {
+                return false;
+            }            
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_compile()
     {
         if( m_ttfFEPath.empty() == false )

@@ -25,9 +25,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFont::initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini )
+    bool BitmapFont::initialize( const FileGroupInterfacePtr & _fileGroup, const IniUtil::IniStore & _ini )
     {
-        m_category = _category;
+        m_fileGroup = _fileGroup;
 
         if( this->initializeBase_( _ini ) == false )
         {
@@ -45,7 +45,7 @@ namespace Mengine
         }
 
         BitmapGlyphPtr glyph = BITMAPGLYPH_SERVICE()
-            ->getGlyph( _category, glyphPath );
+            ->getGlyph( _fileGroup, glyphPath );
 
         if( glyph == nullptr )
         {
@@ -73,13 +73,28 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool BitmapFont::isValid()
+    {
+        if( m_fileGroup->existFile( m_pathFontImage ) == false )
+        {
+            LOGGER_ERROR( "font '%s' not found file '%s'"
+                , m_name.c_str()
+                , m_pathFontImage.c_str()
+            );
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool BitmapFont::_compile()
     {
         const ConstString & fontImageCodec = CODEC_SERVICE()
             ->findCodecType( m_pathFontImage );
 
         m_textureFont = RENDERTEXTURE_SERVICE()
-            ->loadTexture( m_category, m_pathFontImage, fontImageCodec );
+            ->loadTexture( m_fileGroup, m_pathFontImage, fontImageCodec );
 
         if( m_textureFont == nullptr )
         {

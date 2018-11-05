@@ -122,10 +122,12 @@ namespace Mengine
     static bool classWrapping()
     {
 # define SCRIPT_CLASS_WRAPPING( Class )\
-    if( SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new PythonScriptWrapper<Class>() ) == false )\
+    if( SCRIPT_SERVICE()->setWrapper( Helper::stringizeString(#Class), new FactorableUnique<PythonScriptWrapper<Class> >(kernel) ) == false )\
     {\
         return false;\
     }
+
+        pybind::kernel_interface * kernel = pybind::get_kernel();
 
         SCRIPT_CLASS_WRAPPING( Entity );
         SCRIPT_CLASS_WRAPPING( Scene );
@@ -150,7 +152,7 @@ namespace Mengine
             EntityPtr entity = NODE_SERVICE()
                 ->createNode( STRINGIZE_STRING_LOCAL( "Entity" ) );
 
-            entity->setEmbed( _obj );
+            entity->setEmbed( _kernel, _obj );
 
             _kernel->decref( _obj );
 
@@ -192,7 +194,7 @@ namespace Mengine
             ArrowPtr arrow = NODE_SERVICE()
                 ->createNode( STRINGIZE_STRING_LOCAL( "Arrow" ) );
 
-            arrow->setEmbed( _obj );
+            arrow->setEmbed( _kernel, _obj );
 
             _kernel->decref( _obj );
 
@@ -234,7 +236,7 @@ namespace Mengine
             ScenePtr scene = NODE_SERVICE()
                 ->createNode( STRINGIZE_STRING_LOCAL( "Scene" ) );
 
-            scene->setEmbed( _obj );
+            scene->setEmbed( _kernel, _obj );
 
             _kernel->decref( _obj );
 

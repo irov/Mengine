@@ -22,6 +22,10 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
+        void setType( const ConstString & _name ) override;
+        const ConstString & getType() const override;
+
+    public:
         bool compileFont() override;
         void releaseFont() override;
 
@@ -56,6 +60,7 @@ namespace Mengine
 
     protected:
         ConstString m_name;
+        ConstString m_type;
 
         uint32_t m_params;
 

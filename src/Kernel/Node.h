@@ -61,7 +61,9 @@ namespace Mengine
         void addChildFront( const NodePtr & _node );
         bool addChildAfter( const NodePtr & _node, const NodePtr & _after );
         bool removeChild( const NodePtr & _node );
-        void removeChildren();
+
+        typedef Lambda<void( const NodePtr & node )> LambdaRemoveChildren;
+        void removeChildren( const LambdaRemoveChildren & _lambda );
         bool removeFromParent();
 
         void destroyAllChild();

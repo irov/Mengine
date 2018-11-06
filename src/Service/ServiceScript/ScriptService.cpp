@@ -19,13 +19,6 @@
 
 #include <algorithm>
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-    extern int Py_ErrFormatFlag;
-#ifdef __cplusplus
-}
-#endif
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ScriptService, Mengine::ScriptService );
 //////////////////////////////////////////////////////////////////////////
@@ -141,16 +134,7 @@ namespace Mengine
     {
         bool developmentMode = HAS_OPTION( "dev" );
 
-        if( developmentMode == true )
-        {
-            Py_ErrFormatFlag = 1;
-        }
-        else
-        {
-            Py_ErrFormatFlag = 0;
-        }
-
-        pybind::kernel_interface * kernel = pybind::initialize( nullptr, nullptr, false, false, true );
+        pybind::kernel_interface * kernel = pybind::initialize( nullptr, nullptr, developmentMode, false, true );
 
         if( kernel == nullptr )
         {

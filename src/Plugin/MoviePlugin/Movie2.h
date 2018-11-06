@@ -13,6 +13,10 @@
 #include "Kernel/RenderIndex.h"
 #include "Kernel/MatrixProxy.h"
 
+#include "Engine/ShapeQuadFixed.h"
+#include "Engine/HotSpotPolygon.h"
+#include "Engine/TextField.h"
+
 #include "ResourceMovie2.h"
 #include "Movie2Slot.h"
 #include "Movie2SubComposition.h"
@@ -25,10 +29,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class ShapeQuadFixed> ShapeQuadFixedPtr;
-    typedef IntrusivePtr<class HotSpotPolygon> HotSpotPolygonPtr;
-    typedef IntrusivePtr<class TextField> TextFieldPtr;
-    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Movie2> Movie2Ptr;
     //////////////////////////////////////////////////////////////////////////
     class Movie2EventReceiver
@@ -37,11 +37,14 @@ namespace Mengine
     public:
     };
     //////////////////////////////////////////////////////////////////////////
-    class VisitorMovie2Layer
+    class VisitorMovie2LayerInterface
+        : public Mixin
     {
     public:
         virtual void visitMovieLayer( const Movie2Ptr & _movie, uint32_t _index, const NodePtr & _node ) = 0;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<VisitorMovie2LayerInterface> VisitorMovie2LayerInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class Movie2
         : public Node
@@ -157,7 +160,7 @@ namespace Mengine
     public:
         const Movie2SlotPtr & findSlot( const ConstString & _name ) const;
         bool hasSlot( const ConstString & _name ) const;
-        void visitSlots( VisitorMovie2Layer * _visitor );
+        void visitSlots( const VisitorMovie2LayerInterfacePtr & _visitor );
 
     protected:
         void addSocket_( uint32_t _index, const HotSpotPolygonPtr & _hotspot );
@@ -166,7 +169,7 @@ namespace Mengine
     public:
         const HotSpotPolygonPtr & findSocket( const ConstString & _name ) const;
         bool hasSocket( const ConstString & _name ) const;
-        void visitSockets( VisitorMovie2Layer * _visitor );
+        void visitSockets( const VisitorMovie2LayerInterfacePtr & _visitor );
 
     protected:
         void addText_( uint32_t _index, const TextFieldPtr & _text );
@@ -175,7 +178,7 @@ namespace Mengine
     public:
         const TextFieldPtr & findText( const ConstString & _name ) const;
         bool hasText( const ConstString & _name ) const;
-        void visitTexts( VisitorMovie2Layer * _visitor );
+        void visitTexts( const VisitorMovie2LayerInterfacePtr & _visitor );
 
     public:
         void addSubMovieComposition_( const ConstString & _name, const Movie2SubCompositionPtr & _subComposition );

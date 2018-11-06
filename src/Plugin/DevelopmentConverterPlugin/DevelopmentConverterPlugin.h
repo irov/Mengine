@@ -13,6 +13,7 @@ namespace Mengine
 
     public:
         DevelopmentConverterPlugin();
+        ~DevelopmentConverterPlugin() override;
 
     protected:
         bool _initialize() override;

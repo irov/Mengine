@@ -11,13 +11,16 @@
 
 #include "ResourceMovie.h"
 
-#include "Engine/ResourceImageDefault.h"
 #include "Engine/ResourceImageSequence.h"
 #include "Engine/ResourceImageSolid.h"
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceSound.h"
 #include "Engine/ResourceShape.h"
-
+#include "Engine/ShapeQuadFixed.h"
+#include "Engine/TextField.h"
+#include "Engine/HotSpotImage.h"
+#include "Engine/HotSpotShape.h"
+#include "Engine/SoundEmitter.h"
 
 #include "Kernel/Layer.h"
 #include "Kernel/Scene.h"
@@ -25,12 +28,6 @@
 #include "Kernel/RenderCameraProjection.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/RenderScissor.h"
-
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/TextField.h"
-#include "Engine/HotSpotImage.h"
-#include "Engine/HotSpotShape.h"
-#include "Engine/SoundEmitter.h"
 
 #include "MovieSceneEffect.h"
 #include "MovieInternalObject.h"
@@ -486,7 +483,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::visitMovieLayer( const ConstString & _type, const VisitorMovieNodePtr & _visitor )
+    bool Movie::visitMovieLayer( const ConstString & _type, const VisitorMovieNodeInterfacePtr & _visitor )
     {
         if( m_resourceMovie == nullptr )
         {
@@ -1276,7 +1273,7 @@ namespace Mengine
         }
 
         MovieMesh2DPtr layer_mesh = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "Mesh2D" ) );
+            ->createNode( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
 
         if( layer_mesh == nullptr )
         {
@@ -1358,7 +1355,7 @@ namespace Mengine
         }
 
         MovieMesh2DPtr layer_mesh = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "Mesh2D" ) );
+            ->createNode( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
 
         if( layer_mesh == nullptr )
         {

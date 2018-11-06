@@ -232,15 +232,7 @@ SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
  ${MY_LIB_NAME}  
  Kernel
- Metacode 
- ServiceText
- ServiceGraveyard
- ServiceRender
- ServicePackage
- ServiceProfiler
- ServiceUserdata
- ServiceTimeline
- ServiceNotification
+ Metacode
 )
 
 SET( APPLICATION_DEPENDENCIES

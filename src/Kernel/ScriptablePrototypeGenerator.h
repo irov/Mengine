@@ -36,10 +36,13 @@ namespace Mengine
     protected:
         FactoryPtr _initializeFactory() override
         {
-            const ConstString & prototype = this->getPrototype();
+            if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+            {
+                const ConstString & prototype = this->getPrototype();
 
-            m_scriptWrapper = SCRIPT_SERVICE()
-                ->getWrapper( prototype );
+                m_scriptWrapper = SCRIPT_SERVICE()
+                    ->getWrapper( prototype );
+            }
 
             FactoryPtr factory = new FactoryPool<Type, Count>();
 
@@ -55,7 +58,7 @@ namespace Mengine
 
             if( scriptable == nullptr )
             {
-                LOGGER_ERROR( "ScriptablePrototypeGenerator::generate can't generate %s %s"
+                LOGGER_ERROR( "can't generate %s %s"
                     , this->getCategory().c_str()
                     , this->getPrototype().c_str()
                 );

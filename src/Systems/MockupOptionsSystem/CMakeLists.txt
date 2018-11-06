@@ -9,7 +9,7 @@ src
 ADD_MENGINE_LIBRARY()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
-    FOLDER System
+    FOLDER Systems
 )
 
 SET( APPLICATION_DEPENDENCIES

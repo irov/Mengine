@@ -21,7 +21,7 @@ ADD_SUBDIRECTORY( Environment )
 ADD_SUBDIRECTORY( Plugins )
 ADD_SUBDIRECTORY( Platform )
 
-ADD_SUBDIRECTORY( System )
+ADD_SUBDIRECTORY( Systems )
 
 ADD_SUBDIRECTORY( PythonScriptWrapper )
 

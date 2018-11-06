@@ -86,10 +86,10 @@ namespace Mengine
                     return;
                 }
 
-                LOGGER_ERROR( "script call %s::%s and get error!"
+                LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, nullptr, 0 )("script call %s::%s and get error!"
                     , _className
                     , _functionName
-                );
+                    );
 
                 bool exist;
                 PyObject * module_traceback = _kernel->module_import( "traceback", exist );

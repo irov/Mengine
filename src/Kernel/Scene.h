@@ -12,10 +12,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     enum SceneEventFlag
     {
-        EVENT_APP_MOUSE_LEAVE = __EVENT_ENTITY_LAST__,
-        EVENT_APP_MOUSE_ENTER,
-        EVENT_FOCUS,
-        EVENT_ON_SUB_SCENE,
+        EVENT_SCENE_APP_MOUSE_LEAVE = __EVENT_ENTITY_LAST__,
+        EVENT_SCENE_APP_MOUSE_ENTER,
+        EVENT_SCENE_FOCUS,
     };
     //////////////////////////////////////////////////////////////////////////
     class SceneEventReceiver

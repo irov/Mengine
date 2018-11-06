@@ -123,7 +123,7 @@ namespace Mengine
 
         float crop_timing = mt::crop( _time, 0.f, duration );
 
-        bool loop = this->getLoop();
+        bool loop = this->isLoop();
 
         float frameDuration = m_resourceMovie->getFrameDuration();
 
@@ -2015,7 +2015,7 @@ namespace Mengine
             return false;
         }
 
-        bool loop = this->getLoop();
+        bool loop = this->isLoop();
         this->updateLoop_( loop );
 
         float animationSpeedFactor = this->getAnimationSpeedFactor();
@@ -2374,7 +2374,7 @@ namespace Mengine
     {
         Node::_afterActivate();
 
-        bool autoPlay = this->getAutoPlay();
+        bool autoPlay = this->isAutoPlay();
 
         if( autoPlay == true )
         {
@@ -2498,7 +2498,7 @@ namespace Mengine
             {
                 this->updateForwardFrame_( _time, lastFrame, frameCount - 1 );
 
-                bool loop = this->getLoop();
+                bool loop = this->isLoop();
                 bool interrupt = this->isInterrupt();
 
                 if( (loop == false && --m_playIterator == 0) || interrupt == true )
@@ -2852,7 +2852,7 @@ namespace Mengine
 
                     if( layer.timeRemap == false )
                     {
-                        if( animation->isPlay() == true && animation->getLoop() == false )
+                        if( animation->isPlay() == true && animation->isLoop() == false )
                         {
                             animation->stop();
                         }

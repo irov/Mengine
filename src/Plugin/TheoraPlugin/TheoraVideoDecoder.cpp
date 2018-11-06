@@ -401,7 +401,7 @@ namespace Mengine
         if( m_readyFrame == false )
         {
             float time;
-            if( this->readNextFrame( time ) == VDRS_FAILURE )
+            if( this->readNextFrame( 0.f, time ) == VDRS_FAILURE )
             {
                 return 0;
             }
@@ -776,8 +776,9 @@ namespace Mengine
         return bytes;
     }
     //////////////////////////////////////////////////////////////////////////
-    EVideoDecoderReadState TheoraVideoDecoder::readNextFrame( float & _pts )
+    EVideoDecoderReadState TheoraVideoDecoder::readNextFrame( float _request, float & _pts )
     {
+        (void)_request;
         (void)_pts;
 
         EVideoDecoderReadState state = VDRS_SUCCESS;
@@ -952,6 +953,11 @@ namespace Mengine
     void TheoraVideoDecoder::setPitch( size_t _pitch )
     {
         m_pitch = (uint32_t)_pitch;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t TheoraVideoDecoder::getPitch() const
+    {
+        return (size_t)m_pitch;
     }
     //////////////////////////////////////////////////////////////////////////
 }

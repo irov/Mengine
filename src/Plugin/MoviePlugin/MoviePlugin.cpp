@@ -17,7 +17,6 @@
 
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
-#include "Engine/TextField.h"
 
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/NodePrototypeGenerator.h"
@@ -220,12 +219,17 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovie2Socket
-            : public VisitorMovie2Layer
+            : public VisitorMovie2LayerInterface
+            , public Factorable
         {
         public:
             PythonVisitorMovie2Socket( pybind::kernel_interface * _kernel, const pybind::list & _list )
                 : m_kernel( _kernel )
                 , m_list( _list )
+            {
+            }
+
+            ~PythonVisitorMovie2Socket() override
             {
             }
 
@@ -268,19 +272,24 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            PythonVisitorMovie2Socket visitor( _kernel, py_list );
-            _movie->visitSockets( &visitor );
+            VisitorMovie2LayerInterfacePtr visitor = new FactorableUnique<PythonVisitorMovie2Socket>( _kernel, py_list );
+            _movie->visitSockets( visitor );
 
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovie2Slots
-            : public VisitorMovie2Layer
+            : public VisitorMovie2LayerInterface
+            , public Factorable
         {
         public:
             PythonVisitorMovie2Slots( pybind::kernel_interface * _kernel, const pybind::list & _list )
                 : m_kernel( _kernel )
                 , m_list( _list )
+            {
+            }
+
+            ~PythonVisitorMovie2Slots() override
             {
             }
 
@@ -310,8 +319,8 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            PythonVisitorMovie2Slots visitor( _kernel, py_list );
-            _movie->visitSockets( &visitor );
+            VisitorMovie2LayerInterfacePtr visitor = new FactorableUnique<PythonVisitorMovie2Slots>( _kernel, py_list );
+            _movie->visitSockets( visitor );
 
             return py_list;
         }
@@ -380,70 +389,73 @@ namespace Mengine
 
         m_hashkey = hashkey;
 
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+                ->getKernel();
 
-        pybind::set_kernel( kernel );
+            pybind::set_kernel( kernel );
 
-        m_instance = ae_create_movie_instance( m_hashkey.c_str(), &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
+            m_instance = ae_create_movie_instance( m_hashkey.c_str(), &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
 
-        pybind::interface_<Movie2, pybind::bases<Node, Animatable> >( kernel, "Movie2", false )
-            .def( "setResourceMovie2", &Movie2::setResourceMovie2 )
-            .def( "getResourceMovie2", &Movie2::getResourceMovie2 )
-            .def( "setCompositionName", &Movie2::setCompositionName )
-            .def( "getCompositionName", &Movie2::getCompositionName )
-            .def( "setTextAliasEnvironment", &Movie2::setTextAliasEnvironment )
-            .def( "getTextAliasEnvironment", &Movie2::getTextAliasEnvironment )
-            .def( "getDuration", &Movie2::getDuration )
-            .def( "setWorkAreaFromEvent", &Movie2::setWorkAreaFromEvent )
-            .def( "removeWorkArea", &Movie2::removeWorkArea )
-            .def( "hasSubComposition", &Movie2::hasSubComposition )
-            .def( "getSubComposition", &Movie2::getSubComposition )
-            .def( "hasCompositionBounds", &Movie2::hasCompositionBounds )
-            .def( "getCompositionBounds", &Movie2::getCompositionBounds )
-            .def_static( "getCompositionBoundsWM", &Detail::s_Movie2_getCompositionBoundsWM )
-            .def_static_native_kernel( "setEventListener", &Detail::s_Movie2_setEventListener )
-            .def_static_kernel( "getSockets", &Detail::s_Movie2_getSockets )
-            .def_static_kernel( "getSlots", &Detail::s_Movie2_getSlots )
-            .def( "findSprite", &Movie2::findSprite )
-            .def( "hasSprite", &Movie2::hasSprite )
-            .def( "findParticle", &Movie2::findParticle )
-            .def( "hasParticle", &Movie2::hasParticle )
-            .def( "findSlot", &Movie2::findSlot )
-            .def( "hasSlot", &Movie2::hasSlot )
-            .def( "findSocket", &Movie2::findSocket )
-            .def( "hasSocket", &Movie2::hasSocket )
-            .def( "findText", &Movie2::findText )
-            .def( "hasText", &Movie2::hasText )
-            .def( "setEnableMovieLayers", &Movie2::setEnableMovieLayers )
-            ;
+            pybind::interface_<Movie2, pybind::bases<Node, Animatable> >( kernel, "Movie2", false )
+                .def( "setResourceMovie2", &Movie2::setResourceMovie2 )
+                .def( "getResourceMovie2", &Movie2::getResourceMovie2 )
+                .def( "setCompositionName", &Movie2::setCompositionName )
+                .def( "getCompositionName", &Movie2::getCompositionName )
+                .def( "setTextAliasEnvironment", &Movie2::setTextAliasEnvironment )
+                .def( "getTextAliasEnvironment", &Movie2::getTextAliasEnvironment )
+                .def( "getDuration", &Movie2::getDuration )
+                .def( "setWorkAreaFromEvent", &Movie2::setWorkAreaFromEvent )
+                .def( "removeWorkArea", &Movie2::removeWorkArea )
+                .def( "hasSubComposition", &Movie2::hasSubComposition )
+                .def( "getSubComposition", &Movie2::getSubComposition )
+                .def( "hasCompositionBounds", &Movie2::hasCompositionBounds )
+                .def( "getCompositionBounds", &Movie2::getCompositionBounds )
+                .def_static( "getCompositionBoundsWM", &Detail::s_Movie2_getCompositionBoundsWM )
+                .def_static_native_kernel( "setEventListener", &Detail::s_Movie2_setEventListener )
+                .def_static_kernel( "getSockets", &Detail::s_Movie2_getSockets )
+                .def_static_kernel( "getSlots", &Detail::s_Movie2_getSlots )
+                .def( "findSprite", &Movie2::findSprite )
+                .def( "hasSprite", &Movie2::hasSprite )
+                .def( "findParticle", &Movie2::findParticle )
+                .def( "hasParticle", &Movie2::hasParticle )
+                .def( "findSlot", &Movie2::findSlot )
+                .def( "hasSlot", &Movie2::hasSlot )
+                .def( "findSocket", &Movie2::findSocket )
+                .def( "hasSocket", &Movie2::hasSocket )
+                .def( "findText", &Movie2::findText )
+                .def( "hasText", &Movie2::hasText )
+                .def( "setEnableMovieLayers", &Movie2::setEnableMovieLayers )
+                ;
 
-        pybind::interface_<Movie2Slot, pybind::bases<Node> >( kernel, "Movie2Slot", false )
-            ;
+            pybind::interface_<Movie2Slot, pybind::bases<Node> >( kernel, "Movie2Slot", false )
+                ;
 
-        pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable> >( kernel, "Movie2SubComposition", false )
-            .def( "setSubMovieCompositionName", &Movie2SubComposition::setSubMovieCompositionName )
-            .def( "getSubMovieCompositionName", &Movie2SubComposition::getSubMovieCompositionName )
-            .def_static_native_kernel( "setEventListener", &Detail::s_Movie2SubComposition_setEventListener )
-            ;
+            pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable> >( kernel, "Movie2SubComposition", false )
+                .def( "setSubMovieCompositionName", &Movie2SubComposition::setSubMovieCompositionName )
+                .def( "getSubMovieCompositionName", &Movie2SubComposition::getSubMovieCompositionName )
+                .def_static_native_kernel( "setEventListener", &Detail::s_Movie2SubComposition_setEventListener )
+                ;
 
-        pybind::interface_<ResourceMovie2, pybind::bases<Resource> >( kernel, "ResourceMovie2", false )
-            .def( "hasComposition", &ResourceMovie2::hasComposition )
-            .def( "getCompositionDuration", &ResourceMovie2::getCompositionDuration )
-            .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
-            ;
+            pybind::interface_<ResourceMovie2, pybind::bases<Resource> >( kernel, "ResourceMovie2", false )
+                .def( "hasComposition", &ResourceMovie2::hasComposition )
+                .def( "getCompositionDuration", &ResourceMovie2::getCompositionDuration )
+                .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
+                ;
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<PythonScriptWrapper<Movie2> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<PythonScriptWrapper<Movie2> >( kernel ) );
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new FactorableUnique<PythonScriptWrapper<Movie2Slot> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new FactorableUnique<PythonScriptWrapper<Movie2Slot> >( kernel ) );
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new FactorableUnique<PythonScriptWrapper<Movie2SubComposition> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new FactorableUnique<PythonScriptWrapper<Movie2SubComposition> >( kernel ) );
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie2> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie2> >( kernel ) );
+        }
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<NodePrototypeGenerator<Movie2, 128> > ) == false )
@@ -497,8 +509,11 @@ namespace Mengine
             m_movie2ValidateVisitor = movie2ValidateVisitor;
         }
 
-        LOADER_SERVICE()
-            ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
+        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        {
+            LOADER_SERVICE()
+                ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
+        }
 
         return true;
     }
@@ -508,11 +523,20 @@ namespace Mengine
         ae_delete_movie_instance( m_instance );
         m_instance = nullptr;
 
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ) );
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ) );
 
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie2Slot" ) );
+
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
+
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+        }
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie2" ) );
@@ -538,6 +562,12 @@ namespace Mengine
             RESOURCEVALIDATE_SERVICE()
                 ->removeResourceValidateVisitor( m_movie2ValidateVisitor );
             m_movie2ValidateVisitor = nullptr;
+        }
+
+        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        {
+            LOADER_SERVICE()
+                ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
         }
     }
 }

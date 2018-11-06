@@ -9,9 +9,7 @@
 
 #include "Movie2Interface.h"
 
-#include "Engine/ResourceImageDefault.h"
-#include "Engine/ResourceSound.h"
-
+#include "Kernel/ResourceImage.h"
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
 

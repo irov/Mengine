@@ -27,6 +27,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    DevelopmentConverterPlugin::~DevelopmentConverterPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DevelopmentConverterPlugin::_initialize()
     {
         Helper::registerConverter<HotspotImageConverterPNGToHIT>( "png2hit" );

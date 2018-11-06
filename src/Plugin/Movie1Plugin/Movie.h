@@ -32,14 +32,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Movie> MoviePtr;
     //////////////////////////////////////////////////////////////////////////
-    class VisitorMovieNode
+    class VisitorMovieNodeInterface
         : public Mixin
     {
     public:
         virtual void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<VisitorMovieNode> VisitorMovieNodePtr;
+    typedef IntrusivePtr<VisitorMovieNodeInterface> VisitorMovieNodeInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     enum MovieEventFlag
     {
@@ -85,7 +85,7 @@ namespace Mengine
         bool isParentMovie() const;
 
     public:
-        bool visitMovieLayer( const ConstString & _type, const VisitorMovieNodePtr & _visitor );
+        bool visitMovieLayer( const ConstString & _type, const VisitorMovieNodeInterfacePtr & _visitor );
 
     public:
         bool getMovieNode( const ConstString & _name, const ConstString & _type, NodePtr* _node, MoviePtr* _movie );

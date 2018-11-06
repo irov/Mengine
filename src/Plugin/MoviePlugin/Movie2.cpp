@@ -9,10 +9,6 @@
 #include "Plugin/AstralaxParticlePlugin/UnknownParticleEmitterInterface.h"
 #include "Plugin/VideoPlugin/VideoUnknownInterface.h"
 
-#include "Engine/ShapeQuadFixed.h"
-#include "Engine/HotSpotPolygon.h"
-#include "Engine/TextField.h"
-
 #include "Engine/SurfaceImage.h"
 #include "Engine/SurfaceSound.h"
 #include "Engine/SurfaceTrackMatte.h"
@@ -2597,7 +2593,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::visitSlots( VisitorMovie2Layer * _visitor )
+    void Movie2::visitSlots( const VisitorMovie2LayerInterfacePtr & _visitor )
     {
         for( const MapSlots::value_type & value : m_slots )
         {
@@ -2658,7 +2654,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::visitSockets( VisitorMovie2Layer * _visitor )
+    void Movie2::visitSockets( const VisitorMovie2LayerInterfacePtr & _visitor )
     {
         for( const MapSockets::value_type & value : m_sockets )
         {
@@ -2719,7 +2715,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::visitTexts( VisitorMovie2Layer * _visitor )
+    void Movie2::visitTexts( const VisitorMovie2LayerInterfacePtr & _visitor )
     {
         for( const MapTexts::value_type & value : m_texts )
         {

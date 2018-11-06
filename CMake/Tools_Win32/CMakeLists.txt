@@ -61,6 +61,8 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceLogger ${CMAKE_TEMP_DIR}/Service/
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServicePlugin ${CMAKE_TEMP_DIR}/Service/ServicePlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceThread ${CMAKE_TEMP_DIR}/Service/ServiceThread )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceConfig ${CMAKE_TEMP_DIR}/Service/ServiceConfig )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServiceText ${CMAKE_TEMP_DIR}/Service/ServiceText )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Service/ServicePrototype ${CMAKE_TEMP_DIR}/Service/ServicePrototype )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Platform/Win32Platform ${CMAKE_TEMP_DIR}/Platform/Win32Platform )
 
@@ -69,6 +71,8 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ImageCodecPlugin ${CMAKE_TEMP_DIR}/Plugin
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/XmlCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/XmlCodecPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ZipPlugin ${CMAKE_TEMP_DIR}/Plugin/ZipPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/LZ4Plugin ${CMAKE_TEMP_DIR}/Plugin/LZ4Plugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/Movie1Plugin ${CMAKE_TEMP_DIR}/Plugin/Movie1Plugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MoviePlugin ${CMAKE_TEMP_DIR}/Plugin/MoviePlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/Win32FileGroupPlugin ${CMAKE_TEMP_DIR}/Plugin/Win32FileGroupPlugin )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Tools ${CMAKE_TEMP_DIR}/Tools )

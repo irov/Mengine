@@ -76,6 +76,8 @@
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( Win32FileGroup );
 PLUGIN_EXPORT( ImageCodec );
+PLUGIN_EXPORT( Movie1 );
+PLUGIN_EXPORT( Movie );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
 //////////////////////////////////////////////////////////////////////////
@@ -98,9 +100,8 @@ SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
-
+SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( FileService );
-SERVICE_EXTERN( LoaderService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {		
@@ -207,6 +208,7 @@ namespace Mengine
 		SERVICE_CREATE( MemoryService );
 		SERVICE_CREATE( PluginSystem );
 		SERVICE_CREATE( PluginService );
+        SERVICE_CREATE( PrototypeService );
 
         SERVICE_CREATE( Platform );
 		SERVICE_CREATE( FileService );
@@ -215,9 +217,9 @@ namespace Mengine
 		PLUGIN_CREATE( Zip );
 		PLUGIN_CREATE( LZ4 );
 		PLUGIN_CREATE( ImageCodec );
-
-		SERVICE_CREATE( LoaderService );
-		
+        PLUGIN_CREATE( Movie1 );
+        PLUGIN_CREATE( Movie );
+        		
 		PLUGIN_SERVICE()
 			->loadPlugin( L"DevelopmentConverterPlugin.dll" );
 

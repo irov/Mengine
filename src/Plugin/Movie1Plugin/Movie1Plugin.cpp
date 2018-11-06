@@ -293,7 +293,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovieSlot
-            : public VisitorMovieNode
+            : public VisitorMovieNodeInterface
             , public Factorable
         {
         public:
@@ -331,14 +331,14 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodePtr visitor = new FactorableUnique<PythonVisitorMovieSlot>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = new FactorableUnique<PythonVisitorMovieSlot>( _kernel, py_list );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSlot" ), visitor );
 
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovieSocket
-            : public VisitorMovieNode
+            : public VisitorMovieNodeInterface
             , public Factorable
         {
         public:
@@ -372,7 +372,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodePtr visitor = new FactorableUnique<PythonVisitorMovieSocket>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = new FactorableUnique<PythonVisitorMovieSocket>( _kernel, py_list );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketImage" ), visitor );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "MovieSocketShape" ), visitor );
 
@@ -380,7 +380,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovieSubMovie
-            : public VisitorMovieNode
+            : public VisitorMovieNodeInterface
             , public Factorable
         {
         public:
@@ -414,14 +414,14 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodePtr visitor = new FactorableUnique<PythonVisitorMovieSubMovie>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = new FactorableUnique<PythonVisitorMovieSubMovie>( _kernel, py_list );
             _movie->visitMovieLayer( STRINGIZE_STRING_LOCAL( "SubMovie" ), visitor );
 
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonVisitorMovieLayer
-            : public VisitorMovieNode
+            : public VisitorMovieNodeInterface
             , public Factorable
         {
         public:
@@ -446,7 +446,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodePtr visitor = new FactorableUnique<PythonVisitorMovieLayer>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = new FactorableUnique<PythonVisitorMovieLayer>( _kernel, py_list );
             _movie->visitMovieLayer( _type, visitor );
 
             return py_list;
@@ -1440,127 +1440,130 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie1Plugin::_initialize()
     {
-        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
-            ->getKernel();
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+                ->getKernel();
 
-        pybind::set_kernel( kernel );
+            pybind::set_kernel( kernel );
 
-        pybind::interface_<Movie, pybind::bases<Node, Eventable, Animatable> >( kernel, "Movie", false )
-            .def( "setResourceMovie", &Movie::setResourceMovie )
-            .def( "getResourceMovie", &Movie::getResourceMovie )
-            .def( "hasMovieLayer", &Movie::hasMovieLayer )
-            .def( "setEnableMovieLayer", &Movie::setEnableMovieLayer )
-            .def( "setEnableMovieLayers", &Movie::setEnableMovieLayers )
-            .def_static( "getWorldAnchorPoint", &Detail::Movie_getWorldAnchorPoint )
-            .def_static_kernel( "getEnableMovieLayer", &Detail::Movie_getEnableMovieLayer )
-            .def_static( "getMovieSlot", &Detail::Movie_getMovieSlot )
-            .def_static( "hasMovieSlot", &Detail::Movie_hasMovieSlot )
-            .def_static( "getMovieText", &Detail::Movie_getMovieText )
-            .def_static( "hasMovieText", &Detail::Movie_hasMovieText )
-            .def_static( "getMovieScissor", &Detail::Movie_getMovieScissor )
-            .def_static( "hasMovieScissor", &Detail::Movie_hasMovieScissor )
-            .def_static( "getSubMovie", &Detail::Movie_getSubMovie )
-            .def_static( "hasSubMovie", &Detail::Movie_hasSubMovie )
-            .def_static( "getSocket", &Detail::Movie_getSocket )
-            .def_static( "hasSocket", &Detail::Movie_hasSocket )
-            .def_static_args( "setMovieEvent", &Detail::Movie_setMovieEvent )
-            .def_static( "removeMovieEvent", &Detail::Movie_removeMovieEvent )
-            .def_static( "hasMovieEvent", &Detail::Movie_hasMovieEvent )
-            .def_static_kernel( "getSockets", &Detail::Movie_getSockets )
-            .def_static_kernel( "getSlots", &Detail::Movie_getSlots )
-            .def_static_kernel( "getSubMovies", &Detail::Movie_getSubMovies )
-            .def_static( "getMovieNode", &Detail::Movie_getMovieNode )
-            .def_static( "hasMovieNode", &Detail::Movie_hasMovieNode )
-            .def_static_kernel( "filterLayers", &Detail::Movie_filterLayers )
-            .def_static( "getFrameDuration", &Detail::Movie_getFrameDuration )
-            .def_static( "getDuration", &Detail::Movie_getDuration )
-            .def_static( "getFrameCount", &Detail::Movie_getFrameCount )
-            .def_static( "getSize", &Detail::Movie_getSize )
-            .def_static( "getLayerPathLength", &Detail::Movie_getLayerPathLength )
-            .def_static_kernel( "getLayerPath", &Detail::Movie_getLayerPath )
-            .def_static_kernel( "getLayerPath2", &Detail::Movie_getLayerPath2 )
-            .def_static_kernel( "getLayerPath3", &Detail::Movie_getLayerPath3 )
-            .def_static_kernel( "getLayerPath4", &Detail::Movie_getLayerPath4 )
-            .def_static( "getMovieSlotWorldPosition", &Detail::Movie_getMovieSlotWorldPosition )
-            .def_static( "getMovieSlotOffsetPosition", &Detail::Movie_getMovieSlotOffsetPosition )
-            .def_static( "attachMovieSlotNode", &Detail::Movie_attachMovieSlotNode )
-            .def_static( "removeAllMovieSlotNode", &Detail::Movie_removeAllMovieSlotNode )
-            .def_static_native_kernel( "setEventListener", &Detail::Movie_setEventListener )
-            ;
+            pybind::interface_<Movie, pybind::bases<Node, Eventable, Animatable> >( kernel, "Movie", false )
+                .def( "setResourceMovie", &Movie::setResourceMovie )
+                .def( "getResourceMovie", &Movie::getResourceMovie )
+                .def( "hasMovieLayer", &Movie::hasMovieLayer )
+                .def( "setEnableMovieLayer", &Movie::setEnableMovieLayer )
+                .def( "setEnableMovieLayers", &Movie::setEnableMovieLayers )
+                .def_static( "getWorldAnchorPoint", &Detail::Movie_getWorldAnchorPoint )
+                .def_static_kernel( "getEnableMovieLayer", &Detail::Movie_getEnableMovieLayer )
+                .def_static( "getMovieSlot", &Detail::Movie_getMovieSlot )
+                .def_static( "hasMovieSlot", &Detail::Movie_hasMovieSlot )
+                .def_static( "getMovieText", &Detail::Movie_getMovieText )
+                .def_static( "hasMovieText", &Detail::Movie_hasMovieText )
+                .def_static( "getMovieScissor", &Detail::Movie_getMovieScissor )
+                .def_static( "hasMovieScissor", &Detail::Movie_hasMovieScissor )
+                .def_static( "getSubMovie", &Detail::Movie_getSubMovie )
+                .def_static( "hasSubMovie", &Detail::Movie_hasSubMovie )
+                .def_static( "getSocket", &Detail::Movie_getSocket )
+                .def_static( "hasSocket", &Detail::Movie_hasSocket )
+                .def_static_args( "setMovieEvent", &Detail::Movie_setMovieEvent )
+                .def_static( "removeMovieEvent", &Detail::Movie_removeMovieEvent )
+                .def_static( "hasMovieEvent", &Detail::Movie_hasMovieEvent )
+                .def_static_kernel( "getSockets", &Detail::Movie_getSockets )
+                .def_static_kernel( "getSlots", &Detail::Movie_getSlots )
+                .def_static_kernel( "getSubMovies", &Detail::Movie_getSubMovies )
+                .def_static( "getMovieNode", &Detail::Movie_getMovieNode )
+                .def_static( "hasMovieNode", &Detail::Movie_hasMovieNode )
+                .def_static_kernel( "filterLayers", &Detail::Movie_filterLayers )
+                .def_static( "getFrameDuration", &Detail::Movie_getFrameDuration )
+                .def_static( "getDuration", &Detail::Movie_getDuration )
+                .def_static( "getFrameCount", &Detail::Movie_getFrameCount )
+                .def_static( "getSize", &Detail::Movie_getSize )
+                .def_static( "getLayerPathLength", &Detail::Movie_getLayerPathLength )
+                .def_static_kernel( "getLayerPath", &Detail::Movie_getLayerPath )
+                .def_static_kernel( "getLayerPath2", &Detail::Movie_getLayerPath2 )
+                .def_static_kernel( "getLayerPath3", &Detail::Movie_getLayerPath3 )
+                .def_static_kernel( "getLayerPath4", &Detail::Movie_getLayerPath4 )
+                .def_static( "getMovieSlotWorldPosition", &Detail::Movie_getMovieSlotWorldPosition )
+                .def_static( "getMovieSlotOffsetPosition", &Detail::Movie_getMovieSlotOffsetPosition )
+                .def_static( "attachMovieSlotNode", &Detail::Movie_attachMovieSlotNode )
+                .def_static( "removeAllMovieSlotNode", &Detail::Movie_removeAllMovieSlotNode )
+                .def_static_native_kernel( "setEventListener", &Detail::Movie_setEventListener )
+                ;
 
-        pybind::interface_<MovieSlot, pybind::bases<Node> >( kernel, "MovieSlot", false )
-            ;
+            pybind::interface_<MovieSlot, pybind::bases<Node> >( kernel, "MovieSlot", false )
+                ;
 
-        pybind::interface_<MovieInternalObject, pybind::bases<Node> >( kernel, "MovieInternalObject", false )
-            ;
+            pybind::interface_<MovieInternalObject, pybind::bases<Node> >( kernel, "MovieInternalObject", false )
+                ;
 
-        pybind::interface_<MovieMesh2D, pybind::bases<Node, Materialable> >( kernel, "MovieMesh2D", false )
-            .def( "setResourceImage", &MovieMesh2D::setResourceImage )
-            .def( "getResourceImage", &MovieMesh2D::getResourceImage )
-            ;
+            pybind::interface_<MovieMesh2D, pybind::bases<Node, Materialable> >( kernel, "MovieMesh2D", false )
+                .def( "setResourceImage", &MovieMesh2D::setResourceImage )
+                .def( "getResourceImage", &MovieMesh2D::getResourceImage )
+                ;
 
-        pybind::interface_<ResourceMovie, pybind::bases<Resource, Content> >( kernel, "ResourceMovie", false )
-            .def( "getSize", &ResourceMovie::getSize )
-            .def( "getLoopSegment", &ResourceMovie::getLoopSegment )
-            .def( "getFrameCount", &ResourceMovie::getFrameCount )
-            .def( "getFrameDuration", &ResourceMovie::getFrameDuration )
-            .def( "getDuration", &ResourceMovie::getDuration )
-            .def( "getSocketResourceShape", &ResourceMovie::getSocketResourceShape )
-            .def( "hasAnchorPoint", &ResourceMovie::hasAnchorPoint )
-            .def( "getAnchorPoint", &ResourceMovie::getAnchorPoint )
-            .def( "hasBoundBox", &ResourceMovie::hasBoundBox )
-            .def( "getBoundBox", &ResourceMovie::getBoundBox )
-            .def_static( "hasLayer", &Detail::ResourceMovie_hasLayer )
-            .def_static( "hasLayerType", &Detail::ResourceMovie_hasLayerType )
-            .def_static( "getLayerPosition", &Detail::ResourceMovie_getLayerPosition )
-            .def_static( "getLayerIn", &Detail::ResourceMovie_getLayerIn )
-            ;
+            pybind::interface_<ResourceMovie, pybind::bases<Resource, Content> >( kernel, "ResourceMovie", false )
+                .def( "getSize", &ResourceMovie::getSize )
+                .def( "getLoopSegment", &ResourceMovie::getLoopSegment )
+                .def( "getFrameCount", &ResourceMovie::getFrameCount )
+                .def( "getFrameDuration", &ResourceMovie::getFrameDuration )
+                .def( "getDuration", &ResourceMovie::getDuration )
+                .def( "getSocketResourceShape", &ResourceMovie::getSocketResourceShape )
+                .def( "hasAnchorPoint", &ResourceMovie::hasAnchorPoint )
+                .def( "getAnchorPoint", &ResourceMovie::getAnchorPoint )
+                .def( "hasBoundBox", &ResourceMovie::hasBoundBox )
+                .def( "getBoundBox", &ResourceMovie::getBoundBox )
+                .def_static( "hasLayer", &Detail::ResourceMovie_hasLayer )
+                .def_static( "hasLayerType", &Detail::ResourceMovie_hasLayerType )
+                .def_static( "getLayerPosition", &Detail::ResourceMovie_getLayerPosition )
+                .def_static( "getLayerIn", &Detail::ResourceMovie_getLayerIn )
+                ;
 
-        pybind::interface_<ResourceInternalObject, pybind::bases<Resource> >( kernel, "ResourceInternalObject", false )
-            ;
+            pybind::interface_<ResourceInternalObject, pybind::bases<Resource> >( kernel, "ResourceInternalObject", false )
+                ;
 
-        pybind::def_function( kernel, "intersectsMoviesHotspot", &Detail::s_intersectsMoviesHotspot );
-        pybind::def_function( kernel, "intersectMoviesHotspotVsPolygon", &Detail::s_intersectMoviesHotspotVsPolygon );
+            pybind::def_function( kernel, "intersectsMoviesHotspot", &Detail::s_intersectsMoviesHotspot );
+            pybind::def_function( kernel, "intersectMoviesHotspotVsPolygon", &Detail::s_intersectMoviesHotspotVsPolygon );
 
-        pybind::def_function_kernel( kernel, "getMovieSlotsPosition", &Detail::s_getMovieSlotsPosition );
-        pybind::def_function_kernel( kernel, "getMovieSlotPosition", &Detail::s_getMovieSlotPosition );
+            pybind::def_function_kernel( kernel, "getMovieSlotsPosition", &Detail::s_getMovieSlotsPosition );
+            pybind::def_function_kernel( kernel, "getMovieSlotPosition", &Detail::s_getMovieSlotPosition );
 
-        pybind::def_function( kernel, "getMovieDuration", &Detail::s_getMovieDuration );
+            pybind::def_function( kernel, "getMovieDuration", &Detail::s_getMovieDuration );
 
-        pybind::def_function_kernel( kernel, "getNullObjectsFromResourceMovie", &Detail::s_getNullObjectsFromResourceMovie );
+            pybind::def_function_kernel( kernel, "getNullObjectsFromResourceMovie", &Detail::s_getNullObjectsFromResourceMovie );
 
-        pybind::def_function( kernel, "hasMovieSlot", &Detail::s_hasMovieSlot );
-        pybind::def_function( kernel, "hasMovieSubMovie", &Detail::s_hasMovieSubMovie );
-        pybind::def_function( kernel, "hasMovieSocket", &Detail::s_hasMovieSocket );
-        pybind::def_function( kernel, "hasMovieEvent", &Detail::s_hasMovieEvent );
+            pybind::def_function( kernel, "hasMovieSlot", &Detail::s_hasMovieSlot );
+            pybind::def_function( kernel, "hasMovieSubMovie", &Detail::s_hasMovieSubMovie );
+            pybind::def_function( kernel, "hasMovieSocket", &Detail::s_hasMovieSocket );
+            pybind::def_function( kernel, "hasMovieEvent", &Detail::s_hasMovieEvent );
 
-        pybind::def_function_kernel( kernel, "getMovieSlotsPosition", &Detail::s_getMovieSlotsPosition );
-        pybind::def_function_kernel( kernel, "getMovieSlotPosition", &Detail::s_getMovieSlotPosition );
+            pybind::def_function_kernel( kernel, "getMovieSlotsPosition", &Detail::s_getMovieSlotsPosition );
+            pybind::def_function_kernel( kernel, "getMovieSlotPosition", &Detail::s_getMovieSlotPosition );
 
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<PythonScriptWrapper<Movie> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<PythonScriptWrapper<Movie> >( kernel ) );
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ), new FactorableUnique<PythonScriptWrapper<MovieSlot> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ), new FactorableUnique<PythonScriptWrapper<MovieSlot> >( kernel ) );
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new FactorableUnique<PythonScriptWrapper<MovieSceneEffect> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new FactorableUnique<PythonScriptWrapper<MovieSceneEffect> >( kernel ) );
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new FactorableUnique<PythonScriptWrapper<MovieInternalObject> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new FactorableUnique<PythonScriptWrapper<MovieInternalObject> >( kernel ) );
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), new FactorableUnique<PythonScriptWrapper<MovieMesh2D> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), new FactorableUnique<PythonScriptWrapper<MovieMesh2D> >( kernel ) );
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ), new FactorableUnique<PythonScriptWrapper<MovieEvent> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ), new FactorableUnique<PythonScriptWrapper<MovieEvent> >( kernel ) );
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie> >( kernel ) );
 
-        SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new FactorableUnique<PythonScriptWrapper<ResourceInternalObject> >( kernel ) );
+            SCRIPT_SERVICE()
+                ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new FactorableUnique<PythonScriptWrapper<ResourceInternalObject> >( kernel ) );
+        }
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<NodePrototypeGenerator<Movie, 128> > ) == false )
@@ -1633,37 +1636,43 @@ namespace Mengine
             m_resourceValidateVisitor = resourceValidateVisitor;
         }
 
-        LOADER_SERVICE()
-            ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<LoaderResourceMovie>() );
+        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        {
+            LOADER_SERVICE()
+                ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<LoaderResourceMovie>() );
+        }
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie1Plugin::_finalize()
     {
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie" ) );
+        if( SERVICE_EXIST( ScriptServiceInterface ) == true )
+        {
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie" ) );
 
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
 
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) );
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) );
 
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) );
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) );
 
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
 
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
 
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
 
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );
+            SCRIPT_SERVICE()
+                ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );
+        }
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ) );
@@ -1698,5 +1707,11 @@ namespace Mengine
 
         DATA_SERVICE()
             ->unregisterDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+
+        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        {
+            LOADER_SERVICE()
+                ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
+        }
     }
 }

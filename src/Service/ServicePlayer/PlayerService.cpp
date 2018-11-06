@@ -17,8 +17,8 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
-#include "Plugin/AstralaxParticlePlugin/AstralaxInterface.h"
-#include "Plugin/DebugRenderPlugin/DebugRenderInterface.h"
+#include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
+#include "Plugins/DebugRenderPlugin/DebugRenderInterface.h"
 
 #include "Config/Stringstream.h"
 

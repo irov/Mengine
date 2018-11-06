@@ -1,0 +1,2 @@
+LIBRARY		"OggVorbisPlugin"
+EXPORTS 	dllCreatePlugin 	@1

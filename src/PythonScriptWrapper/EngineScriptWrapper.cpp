@@ -40,8 +40,8 @@
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
 
-#include "Plugin/ResourceValidatePlugin/ResourceValidateInterface.h"
-#include "Plugin/MoviePlugin/ResourceMovie2.h"
+#include "Plugins/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugins/MoviePlugin/ResourceMovie2.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PickerServiceInterface.h"

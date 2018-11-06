@@ -1,0 +1,3 @@
+LIBRARY		"Win32SocketPlugin"
+EXPORTS 	
+	dllCreatePlugin 	@1

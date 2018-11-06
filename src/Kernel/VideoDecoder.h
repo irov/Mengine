@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Plugin/VideoPlugin/VideoInterface.h"
+#include "Plugins/VideoPlugin/VideoInterface.h"
 
 #include "Kernel/Decoder.h"
 

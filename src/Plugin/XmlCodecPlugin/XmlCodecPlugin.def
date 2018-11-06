@@ -1,2 +1,0 @@
-LIBRARY		"XmlCodecPlugin"
-EXPORTS 	dllCreatePlugin 	@1

@@ -42,7 +42,7 @@
 #include "Engine/ResourceImageSubstractRGBAndAlpha.h"
 #include "Engine/ResourceImageSubstract.h"
 
-#include "Plugin/MoviePlugin/ResourceMovie2.h"
+#include "Plugins/MoviePlugin/ResourceMovie2.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/PickerServiceInterface.h"

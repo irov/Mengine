@@ -62,7 +62,7 @@ namespace Mengine
 		options.outputFileName = Helper::stringizeFilePath(utf8_aekPath);
 		
 		ConverterInterfacePtr converter = CONVERTER_SERVICE()
-			->createConverter( Helper::stringizeString("xmlToAekMovie") );
+            ->createConverter( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ) );
 
 		if( converter == nullptr )
 		{
@@ -80,7 +80,7 @@ namespace Mengine
 		if( converter->convert() == false )
 		{
 			LOGGER_ERROR( "ConverterEngine::convert can't convert '%s'\nfrom: %s\nto: %s\n"
-				, Helper::stringizeString("xmlToAekMovie").c_str()
+				, "xmlToAekMovie"
 				, options.inputFileName.c_str()
 				, options.outputFileName.c_str()
 				);

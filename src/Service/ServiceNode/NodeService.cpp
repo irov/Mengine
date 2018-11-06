@@ -47,7 +47,7 @@ namespace Mengine
             NodePtr homeless = m_shelter;
             m_shelter = nullptr;
 
-            homeless->destroyAllChild();
+            homeless->destroyChildren( []( const NodePtr & ) {} );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -119,6 +119,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeService::clearHomeless()
     {
-        m_shelter->destroyAllChild();
+        m_shelter->destroyChildren( []( const NodePtr & ) {} );
     }
 }

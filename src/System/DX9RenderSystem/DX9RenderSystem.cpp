@@ -401,7 +401,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
                     , hr
                 );
 
@@ -413,7 +413,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_HARDWARE_VERTEXPROCESSING (hr:%u) Try another"
                     , hr
                 );
 
@@ -425,7 +425,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
                     , hr
                 );
 
@@ -437,7 +437,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_MIXED_VERTEXPROCESSING (hr:%u) Try another"
                     , hr
                 );
 
@@ -449,7 +449,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DCREATE_SOFTWARE_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE (hr:%u) Try another"
                     , hr
                 );
 
@@ -461,7 +461,7 @@ namespace Mengine
 
             if( FAILED( hr ) )
             {
-                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%u) Try another"
+                LOGGER_ERROR( "Can't create D3D device D3DDEVTYPE_REF | D3DCREATE_SOFTWARE_VERTEXPROCESSING (hr:%u) Try another"
                     , hr
                 );
 
@@ -474,7 +474,7 @@ namespace Mengine
 
         if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't create D3D device (hr:%u, hwnd:%u) BackBuffer Size %d:%d Format %d"
+            LOGGER_ERROR( "Can't create D3D device (hr:%u, hwnd:%u) BackBuffer Size %d:%d Format %d"
                 , hr
                 , (HWND)windowHandle
                 , m_d3dpp->BackBufferWidth

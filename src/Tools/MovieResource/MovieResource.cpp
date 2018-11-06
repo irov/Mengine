@@ -296,8 +296,8 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
             char xmlSize[256];
             sprintf( xmlSize, "%u;%u"
-                , (uint32_t)resource_video->width
-                , (uint32_t)resource_video->height
+                , (uint32_t)resource_video->base_width
+                , (uint32_t)resource_video->base_height
             );
 
             xmlResourceFile.append_attribute( "Size" ).set_value( xmlSize );

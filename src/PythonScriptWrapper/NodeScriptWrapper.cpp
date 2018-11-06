@@ -913,6 +913,7 @@ namespace Mengine
                     ->addHomeless( _child );
             } );
         }
+        //////////////////////////////////////////////////////////////////////////
         bool s_Node_removeFromParent( Node * _node )
         {
             if( _node->removeFromParent() == false )
@@ -924,6 +925,15 @@ namespace Mengine
                 ->addHomeless( _node );
 
             return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void s_Node_destroyAllChild( Node * _node )
+        {
+            _node->destroyChildren( []( const NodePtr & _child )
+            {
+                NODE_SERVICE()
+                    ->addHomeless( _child );
+            } );
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_Node_isHomeless( Node * _node )
@@ -2738,7 +2748,7 @@ namespace Mengine
             .def_proxy_static( "removeChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_removeChild )
             .def_proxy_static( "removeAllChild", nodeScriptMethod, &NodeScriptMethod::s_Node_removeAllChild )
             .def_proxy_static( "removeFromParent", nodeScriptMethod, &NodeScriptMethod::s_Node_removeFromParent )
-            .def( "destroyAllChild", &Node::destroyAllChild )
+            .def_proxy_static( "destroyAllChild", nodeScriptMethod, &NodeScriptMethod::s_Node_destroyAllChild )
             //.def( "isHomeless", &Node::isHomeless )
             .def_proxy_static( "isHomeless", nodeScriptMethod, &NodeScriptMethod::s_Node_isHomeless )
             //.def_static( "getChild", &ScriptMethod::s_getChild )

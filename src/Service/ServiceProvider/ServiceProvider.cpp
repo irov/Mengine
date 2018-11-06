@@ -52,12 +52,16 @@ namespace Mengine
         return service;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::initializeService( TServiceProviderGenerator _generator )
+    bool ServiceProvider::initializeService( TServiceProviderGenerator _generator, const Char * _doc, const Char * _file, int _line )
     {
         ServiceInterfacePtr service = this->generateService( _generator );
 
         if( service == nullptr )
         {
+            MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid generate service doc '%s'"
+                , _doc
+                );
+
             return false;
         }
 
@@ -65,6 +69,12 @@ namespace Mengine
 
         if( strlen( name ) + 1 > MENGINE_SERVICE_PROVIDER_NAME_SIZE )
         {
+            MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid service name '%s' max size '%d' > '%d'"
+                , name
+                , strlen( name + 1 )
+                , MENGINE_SERVICE_PROVIDER_NAME_SIZE
+                );
+
             return false;
         }
 
@@ -90,6 +100,11 @@ namespace Mengine
 
             return true;
         }
+
+        MENGINE_THROW_EXCEPTION_FL( _file, _line )("invalid allocate service name '%s' max count '%d'"
+            , name
+            , MENGINE_SERVICE_PROVIDER_COUNT
+            );
 
         return false;
     }

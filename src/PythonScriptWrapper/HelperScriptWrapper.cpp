@@ -153,6 +153,15 @@ namespace Mengine
 #endif			
         }
 
+        void s_debugNode( Node * _node )
+        {
+            printf( "debug node!\n" );
+
+#if defined(_MSC_VER) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)
+            _asm int 3;
+#endif	
+        }
+
         bool s_hasGameData( const ConstString & _name )
         {
             bool result = USERDATA_SERVICE()
@@ -3224,6 +3233,7 @@ namespace Mengine
         pybind::def_functor( kernel, "setCursorPosition", helperScriptMethod, &HelperScriptMethod::s_setCursorPosition );
 
         pybind::def_functor( kernel, "debug", helperScriptMethod, &HelperScriptMethod::s_debug );
+        pybind::def_functor( kernel, "debugNode", helperScriptMethod, &HelperScriptMethod::s_debugNode );
 
         pybind::def_functor( kernel, "hasGameData", helperScriptMethod, &HelperScriptMethod::s_hasGameData );
         pybind::def_functor_kernel( kernel, "writeGameData", helperScriptMethod, &HelperScriptMethod::s_writeGameData );

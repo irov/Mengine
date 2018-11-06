@@ -66,7 +66,8 @@ namespace Mengine
         void removeChildren( const LambdaRemoveChildren & _lambda );
         bool removeFromParent();
 
-        void destroyAllChild();
+        typedef Lambda<void( const NodePtr & node )> LambdaDestroyChildren;
+        void destroyChildren( const LambdaDestroyChildren & _lambda );
 
         inline IntrusiveSlugListNodeChild & getChildren();
         inline const IntrusiveSlugListNodeChild & getChildren() const;

@@ -31,7 +31,7 @@ namespace Mengine
 
     protected:
         ServiceInterfacePtr generateService( TServiceProviderGenerator _generator ) override;
-        bool initializeService( TServiceProviderGenerator _generator ) override;
+        bool initializeService( TServiceProviderGenerator _generator, const Char * _doc, const Char * _file, int _line ) override;
         bool finalizeService( const Char * _name ) override;
 
         bool destroyService( const Char * _name ) override;

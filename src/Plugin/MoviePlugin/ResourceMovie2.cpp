@@ -116,6 +116,14 @@ namespace Mengine
         (void)_ud;
     }
     //////////////////////////////////////////////////////////////////////////
+    static ae_bool_t __movie_cache_uv_available( const aeMovieDataCacheUVAvailableCallbackData * _callbackData, ae_voidptr_t _ud )
+    {
+        AE_UNUSED( _callbackData );
+        AE_UNUSED( _ud );
+
+        return AE_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_cache_uv_provider( const aeMovieDataCacheUVProviderCallbackData * _callbackData, ae_voidptrptr_t _cud, ae_voidptr_t _ud )
     {
         (void)_ud;
@@ -359,6 +367,7 @@ namespace Mengine
 
         data_providers.resource_provider = &__movie_resource_provider;
         data_providers.resource_deleter = &__movie_resource_deleter;
+        data_providers.cache_uv_available = &__movie_cache_uv_available;
         data_providers.cache_uv_provider = &__movie_cache_uv_provider;
         data_providers.cache_uv_deleter = &__movie_cache_uv_deleter;
 

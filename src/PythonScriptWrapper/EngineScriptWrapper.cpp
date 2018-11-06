@@ -874,6 +874,9 @@ namespace Mengine
 
             _node->removeFromParent();
             _node->release();
+
+            NODE_SERVICE()
+                ->addHomeless( _node );
         }
         //////////////////////////////////////////////////////////////////////////
         NodePtr createNode( const ConstString & _type )

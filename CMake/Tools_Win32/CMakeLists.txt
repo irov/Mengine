@@ -74,5 +74,6 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/LZ4Plugin ${CMAKE_TEMP_DIR}/Plugin/LZ4Plu
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/Movie1Plugin ${CMAKE_TEMP_DIR}/Plugin/Movie1Plugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MoviePlugin ${CMAKE_TEMP_DIR}/Plugin/MoviePlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/Win32FileGroupPlugin ${CMAKE_TEMP_DIR}/Plugin/Win32FileGroupPlugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/MetabufLoaderPlugin ${CMAKE_TEMP_DIR}/Plugin/MetabufLoaderPlugin )
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Tools ${CMAKE_TEMP_DIR}/Tools )

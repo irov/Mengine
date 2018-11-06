@@ -74,7 +74,7 @@ namespace Mengine
 
                 if( m_currentFrame == frameCount )
                 {
-                    bool loop = this->getLoop();
+                    bool loop = this->isLoop();
                     bool interrupt = this->isInterrupt();
 
                     if( (loop == false && --m_playIterator == 0) || interrupt == true )

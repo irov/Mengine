@@ -10,7 +10,7 @@ namespace Mengine
     {
     public:
         virtual void setLoop( bool _value ) = 0;
-        virtual bool getLoop() const = 0;
+        virtual bool isLoop() const = 0;
 
         virtual void setAnimationSpeedFactor( float _factor ) = 0;
         virtual float getAnimationSpeedFactor() const = 0;
@@ -36,7 +36,7 @@ namespace Mengine
         virtual uint32_t getPlayIterator() const = 0;
 
         virtual void setAutoPlay( bool _autoPlay ) = 0;
-        virtual bool getAutoPlay() const = 0;
+        virtual bool isAutoPlay() const = 0;
 
         virtual void setStretch( float _scretch ) = 0;
         virtual float getStretch() const = 0;

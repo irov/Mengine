@@ -16,7 +16,7 @@ namespace Mengine
 
     public:
         void setLoop( bool _value ) override;
-        bool getLoop() const override;
+        bool isLoop() const override;
 
         void setAnimationSpeedFactor( float _factor ) override;
         float getAnimationSpeedFactor() const override;
@@ -42,7 +42,7 @@ namespace Mengine
         uint32_t getPlayIterator() const override;
 
         void setAutoPlay( bool _autoPlay ) override;
-        bool getAutoPlay() const override;
+        bool isAutoPlay() const override;
 
         void setStretch( float _scretch ) override;
         float getStretch() const override;
@@ -130,7 +130,7 @@ namespace Mengine
         return m_pause;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseAnimation::getLoop() const
+    inline bool BaseAnimation::isLoop() const
     {
         return m_loop;
     }
@@ -205,7 +205,7 @@ namespace Mengine
         return m_intervalEnd;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline bool BaseAnimation::getAutoPlay() const
+    inline bool BaseAnimation::isAutoPlay() const
     {
         return m_autoPlay;
     }

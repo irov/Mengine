@@ -32,10 +32,11 @@ namespace Mengine
         float _tell() const override;
 
     public:
-        EVideoDecoderReadState readNextFrame( float & _pts ) override;
+        EVideoDecoderReadState readNextFrame( float _request, float & _pts ) override;
 
     public:
         void setPitch( size_t _pitch ) override;
+        size_t getPitch() const override;
 
     protected:
         bool seekToFrame( float _timing );

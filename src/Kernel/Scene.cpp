@@ -18,7 +18,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onAppMouseLeave()
     {
-        bool handle = EVENTABLE_METHODR( this, EVENT_APP_MOUSE_LEAVE, false )
+        bool handle = EVENTABLE_METHODR( this, EVENT_SCENE_APP_MOUSE_LEAVE, false )
             ->onSceneAppMouseLeave( m_behavior );
 
         if( handle == false )
@@ -39,7 +39,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onAppMouseEnter()
     {
-        bool handle = EVENTABLE_METHODR( this, EVENT_APP_MOUSE_ENTER, false )
+        bool handle = EVENTABLE_METHODR( this, EVENT_SCENE_APP_MOUSE_ENTER, false )
             ->onSceneAppMouseEnter( m_behavior );
 
         if( handle == false )
@@ -60,7 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Scene::onFocus( bool _focus )
     {
-        bool handle = EVENTABLE_METHODR( this, EVENT_FOCUS, false )
+        bool handle = EVENTABLE_METHODR( this, EVENT_SCENE_FOCUS, false )
             ->onSceneAppFocus( m_behavior, _focus );
 
         if( handle == false )

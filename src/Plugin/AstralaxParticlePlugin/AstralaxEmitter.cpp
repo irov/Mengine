@@ -106,7 +106,7 @@ namespace Mengine
 
         emitter->setRandomMode( m_randomMode );
 
-        bool loop = this->getLoop();
+        bool loop = this->isLoop();
         emitter->setLoop( loop );
 
         Polygon::size_type polygon_count = m_polygon.size();

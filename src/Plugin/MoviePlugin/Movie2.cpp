@@ -1267,7 +1267,7 @@ namespace Mengine
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-                        if( _callbackData->loop == AE_TRUE )
+                        if( _callbackData->loop == AE_TRUE && surface_animation->isLoop() == true )
                         {
                             if( surface_animation->isPlay() == false )
                             {
@@ -1800,7 +1800,7 @@ namespace Mengine
             m_indices.resize( info.max_index_count );
         }
 
-        bool loop = this->getLoop();
+        bool loop = this->isLoop();
 
         ae_set_movie_composition_loop( composition, loop ? AE_TRUE : AE_FALSE );
 
@@ -1903,7 +1903,7 @@ namespace Mengine
     {
         Node::_afterActivate();
 
-        bool autoPlay = this->getAutoPlay();
+        bool autoPlay = this->isAutoPlay();
 
         if( autoPlay == true )
         {

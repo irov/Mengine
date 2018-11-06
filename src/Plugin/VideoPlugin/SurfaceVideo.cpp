@@ -295,6 +295,16 @@ namespace Mengine
         m_needUpdateVideoBuffer = true;
         m_updateFirstFrame = true;
 
+        if( m_videoDecoder->rewind() == false )
+        {
+            LOGGER_ERROR( "video '%s' resource '%s' invalid rewind"
+                , this->getName().c_str()
+                , m_resourceVideo->getName().c_str()
+            );
+
+            return false;
+        }
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -302,6 +312,20 @@ namespace Mengine
     {
         (void)_time;
         (void)_enumerator;
+
+        m_time = 0.f;
+        m_needUpdateVideoBuffer = true;
+        m_updateFirstFrame = true;
+
+        if( m_videoDecoder->rewind() == false )
+        {
+            LOGGER_ERROR( "video '%s' resource '%s' invalid rewind"
+                , this->getName().c_str()
+                , m_resourceVideo->getName().c_str()
+            );
+
+            return false;
+        }
 
         return true;
     }
@@ -324,7 +348,7 @@ namespace Mengine
         {
             if( this->fillVideoBuffer_() == false )
             {
-                LOGGER_ERROR( "Video::_render %s invalid fill video buffer (%s)"
+                LOGGER_ERROR( "video '%s' resource '%s' invalid fill video buffer"
                     , this->getName().c_str()
                     , m_resourceVideo->getName().c_str()
                 );
@@ -350,7 +374,7 @@ namespace Mengine
         while( m_time >= frameTime || m_updateFirstFrame == true )
         {
             float pts;
-            EVideoDecoderReadState state = m_videoDecoder->readNextFrame( pts );
+            EVideoDecoderReadState state = m_videoDecoder->readNextFrame( m_time, pts );
 
             needUpdate = true;
 
@@ -360,7 +384,7 @@ namespace Mengine
             }
             else if( state == VDRS_END_STREAM )
             {
-                if( this->getLoop() == false && (--m_playIterator == 0) )
+                if( this->isLoop() == false && (--m_playIterator == 0) )
                 {
                     m_videoDecoder->rewind();
 
@@ -386,7 +410,7 @@ namespace Mengine
 
                     if( m_videoDecoder->seek( time ) == false )
                     {
-                        LOGGER_ERROR( "Video::sync_ %s:%s invalid seek to %f"
+                        LOGGER_ERROR( "video '%s' resource '%s' invalid seek to '%f'"
                             , this->getName().c_str()
                             , m_resourceVideo->getName().c_str()
                             , time
@@ -396,7 +420,7 @@ namespace Mengine
             }
             else if( state == VDRS_FAILURE )
             {
-                LOGGER_ERROR( "Video::_sync: '%s' error reading frame timing %4.2f total timing %4.2f"
+                LOGGER_ERROR( "video '%s' error reading frame timing '%4.2f' total timing '%4.2f'"
                     , this->getName().c_str()
                     , _time
                     , m_time
@@ -422,8 +446,9 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Video::_setTiming %s not compile"
+            LOGGER_ERROR( "vide '%s' resource '%s' not compile"
                 , this->getName().c_str()
+                , this->getResourceVideo()->getName().c_str()
             );
 
             return;
@@ -467,7 +492,7 @@ namespace Mengine
 
         if( m_videoDecoder->seek( seek_time ) == false )
         {
-            LOGGER_ERROR( "Video::_setTiming %s:%s invalid seek to %f"
+            LOGGER_ERROR( "video '%s' resource '%s' invalid seek to '%f'"
                 , this->getName().c_str()
                 , m_resourceVideo->getName().c_str()
                 , seek_time

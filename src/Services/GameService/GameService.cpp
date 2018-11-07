@@ -11,9 +11,8 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
-#include "Interface/NodeInterface.h"
 #include "Interface/TextServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerInterface.h"
 

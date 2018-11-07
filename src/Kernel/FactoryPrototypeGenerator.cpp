@@ -1,5 +1,5 @@
 #include "FactoryPrototypeGenerator.h"
-#include "FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 namespace Mengine
 {

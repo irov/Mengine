@@ -1,8 +1,7 @@
 #include "Movie2.h"
 
 #include "Interface/TimelineServiceInterface.h"
-#include "Interface/NodeInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 
@@ -257,8 +256,8 @@ namespace Mengine
             }
             else if( layer.type == STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) )
             {
-                HotSpotPolygonPtr node = NODE_SERVICE()
-                    ->createNode( STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
+                HotSpotPolygonPtr node = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
 
                 if( node == nullptr )
                 {
@@ -290,8 +289,8 @@ namespace Mengine
             }
             else if( layer.type == STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) )
             {
-                NodePtr node = NODE_SERVICE()
-                    ->createNode( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
+                NodePtr node = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
 
                 if( node == nullptr )
                 {
@@ -352,8 +351,8 @@ namespace Mengine
 
                 surface->setResourceImage( resourceImage );
 
-                ShapeQuadFixedPtr node = NODE_SERVICE()
-                    ->createNode( layer.type );
+                ShapeQuadFixedPtr node = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), layer.type );
 
                 if( node == nullptr )
                 {
@@ -676,8 +675,8 @@ namespace Mengine
             return AE_TRUE;
         }
 
-        RenderCameraProjectionPtr renderCameraProjection = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ) );
+        RenderCameraProjectionPtr renderCameraProjection = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ) );
 
         renderCameraProjection->setName( c_name );
 
@@ -696,8 +695,8 @@ namespace Mengine
         renderCameraProjection->setCameraFOV( _callbackData->fov );
         renderCameraProjection->setCameraAspect( aspect );
 
-        RenderViewportPtr renderViewport = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
+        RenderViewportPtr renderViewport = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
 
         renderViewport->setName( c_name );
 
@@ -1777,13 +1776,10 @@ namespace Mengine
             return false;
         }
 
-        aeMovieCompositionRenderInfo info;
-        ae_calculate_movie_composition_render_info( composition, &info );
+        m_composition = composition;
 
-        //if( info.max_render_node != 0 )
-        //{
-        //    m_meshes.resize( info.max_render_node );
-        //}
+        aeMovieCompositionRenderInfo info;
+        ae_calculate_movie_composition_render_info( m_composition, &info );
 
         if( info.max_vertex_count != 0 )
         {
@@ -1802,7 +1798,7 @@ namespace Mengine
 
         bool loop = this->isLoop();
 
-        ae_set_movie_composition_loop( composition, loop ? AE_TRUE : AE_FALSE );
+        ae_set_movie_composition_loop( m_composition, loop ? AE_TRUE : AE_FALSE );
 
         bool play = this->isPlay();
 
@@ -1810,17 +1806,17 @@ namespace Mengine
         {
             float timing = this->getTime();
 
-            ae_play_movie_composition( composition, timing * 0.001f );
+            ae_play_movie_composition( m_composition, timing * 0.001f );
         }
-
-        m_composition = composition;
 
         float animationSpeedFactor = this->getAnimationSpeedFactor();
         this->updateAnimationSpeedFactor_( animationSpeedFactor );
 
         for( MapSubCompositions::value_type & value : m_subCompositions )
         {
-            if( value.second->initialize( m_composition ) == false )
+            const Movie2SubCompositionPtr & subComposition = value.second;
+
+            if( subComposition->initialize( m_composition ) == false )
             {
                 return false;
             }
@@ -1936,7 +1932,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Movie2::_setTiming '%s' invalid compile"
+            LOGGER_ERROR( "movie '%s' invalid compile"
                 , this->getName().c_str()
             );
 
@@ -1967,7 +1963,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Movie._setLastFrame: '%s' not activate"
+            LOGGER_ERROR( "movie '%s' not activate"
                 , this->getName().c_str()
             );
 
@@ -2009,11 +2005,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_update( const UpdateContext * _context )
     {
-        //if( this->isPlay() == false )
-        //{
-        //    return;
-        //}
-
         if( m_composition == nullptr )
         {
             return;
@@ -2597,7 +2588,10 @@ namespace Mengine
     {
         for( const MapSlots::value_type & value : m_slots )
         {
-            _visitor->visitMovieLayer( this, value.first, value.second );
+            uint32_t index = value.first;
+            const Movie2SlotPtr & node = value.second;
+
+            _visitor->visitMovieLayer( this, index, node );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2719,7 +2713,10 @@ namespace Mengine
     {
         for( const MapTexts::value_type & value : m_texts )
         {
-            _visitor->visitMovieLayer( this, value.first, value.second );
+            uint32_t index = value.first;
+            const TextFieldPtr & node = value.second;
+
+            _visitor->visitMovieLayer( this, index, node );
         }
     }
     //////////////////////////////////////////////////////////////////////////

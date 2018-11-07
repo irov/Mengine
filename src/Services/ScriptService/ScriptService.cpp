@@ -4,14 +4,13 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsInterface.h"
-#include "Interface/NodeInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactorableUnique.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
 

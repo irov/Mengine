@@ -2,9 +2,8 @@
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
-#include "Interface/NodeInterface.h"
 
 #include "Plugins/AstralaxParticlePlugin/UnknownParticleEmitterInterface.h"
 #include "Plugins/VideoPlugin/VideoUnknownInterface.h"
@@ -206,8 +205,7 @@ namespace Mengine
 
         if( this->isActivate() == false )
         {
-            if( NODE_SERVICE()
-                ->isHomeless( this ) == true )
+            if( this->hasParent() == false )
             {
                 LOGGER_ERROR( "Movie::_play: '%s' is homeless"
                     , this->getName().c_str()
@@ -411,8 +409,8 @@ namespace Mengine
 
         if( _layer.hasViewport == true )
         {
-            RenderScissorPtr scissor = NODE_SERVICE()
-                ->createNode( STRINGIZE_STRING_LOCAL( "RenderScissor" ) );
+            RenderScissorPtr scissor = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderScissor" ) );
 
             if( scissor == nullptr )
             {
@@ -1165,8 +1163,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSlot_( const MovieLayer & _layer )
     {
-        MovieSlotPtr layer_slot = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
+        MovieSlotPtr layer_slot = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
 
         if( layer_slot == nullptr )
         {
@@ -1185,8 +1183,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSceneEffect_( const MovieLayer & _layer )
     {
-        MovieSceneEffectPtr sceneeffect_slot = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) );
+        MovieSceneEffectPtr sceneeffect_slot = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) );
 
         if( sceneeffect_slot == nullptr )
         {
@@ -1203,8 +1201,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieNullObject_( const MovieLayer & _layer )
     {
-        NodePtr layer_slot = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "Interender" ) );
+        NodePtr layer_slot = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Interender" ) );
 
         if( layer_slot == nullptr )
         {
@@ -1244,8 +1242,8 @@ namespace Mengine
             return false;
         }
 
-        ShapeQuadFixedPtr layer_sprite = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
+        ShapeQuadFixedPtr layer_sprite = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
         if( layer_sprite == nullptr )
         {
@@ -1272,8 +1270,8 @@ namespace Mengine
             return false;
         }
 
-        MovieMesh2DPtr layer_mesh = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
+        MovieMesh2DPtr layer_mesh = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
 
         if( layer_mesh == nullptr )
         {
@@ -1326,8 +1324,8 @@ namespace Mengine
             return false;
         }
 
-        ShapeQuadFixedPtr layer_sprite = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
+        ShapeQuadFixedPtr layer_sprite = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
         if( layer_sprite == nullptr )
         {
@@ -1354,8 +1352,8 @@ namespace Mengine
             return false;
         }
 
-        MovieMesh2DPtr layer_mesh = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
+        MovieMesh2DPtr layer_mesh = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
 
         if( layer_mesh == nullptr )
         {
@@ -1387,8 +1385,8 @@ namespace Mengine
             return false;
         }
 
-        HotSpotImagePtr layer_hotspotimage = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "HotSpotImage" ) );
+        HotSpotImagePtr layer_hotspotimage = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotImage" ) );
 
         if( layer_hotspotimage == nullptr )
         {
@@ -1407,8 +1405,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSocketShape_( const MovieLayer & _layer )
     {
-        HotSpotShapePtr layer_hotspotshape = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "HotSpotShape" ) );
+        HotSpotShapePtr layer_hotspotshape = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "HotSpotShape" ) );
 
         if( layer_hotspotshape == nullptr )
         {
@@ -1464,8 +1462,8 @@ namespace Mengine
             return false;
         }
 
-        ShapeQuadFixedPtr layer_animation = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
+        ShapeQuadFixedPtr layer_animation = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
         if( layer_animation == nullptr )
         {
@@ -1485,8 +1483,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieMovie_( const MovieLayer & _layer )
     {
-        MoviePtr layer_movie = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "Movie" ) );
+        MoviePtr layer_movie = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ) );
 
         if( layer_movie == nullptr )
         {
@@ -1521,8 +1519,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSubMovie_( const MovieLayer & _layer )
     {
-        MoviePtr layer_movie = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "Movie" ) );
+        MoviePtr layer_movie = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Movie" ) );
 
         if( layer_movie == nullptr )
         {
@@ -1557,8 +1555,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieInternalObject_( const MovieLayer & _layer )
     {
-        MovieInternalObjectPtr movie_internal = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) );
+        MovieInternalObjectPtr movie_internal = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) );
 
         if( movie_internal == nullptr )
         {
@@ -1620,8 +1618,8 @@ namespace Mengine
             return false;
         }
 
-        ShapeQuadFixedPtr layer_video = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
+        ShapeQuadFixedPtr layer_video = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
         if( layer_video == nullptr )
         {
@@ -1640,8 +1638,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSound_( const MovieLayer & _layer )
     {
-        SoundEmitterPtr layer_sound = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "SoundEmitter" ) );
+        SoundEmitterPtr layer_sound = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "SoundEmitter" ) );
 
         if( layer_sound == nullptr )
         {
@@ -1684,8 +1682,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieSoundId_( const MovieLayer & _layer )
     {
-        SoundEmitterPtr layer_sound = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "SoundEmitter" ) );
+        SoundEmitterPtr layer_sound = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "SoundEmitter" ) );
 
         if( layer_sound == nullptr )
         {
@@ -1727,8 +1725,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieText_( const MovieLayer & _layer )
     {
-        TextFieldPtr layer_text = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "TextField" ) );
+        TextFieldPtr layer_text = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
 
         if( layer_text == nullptr )
         {
@@ -1762,8 +1760,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieTextCenter_( const MovieLayer & _layer )
     {
-        TextFieldPtr layer_text = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "TextField" ) );
+        TextFieldPtr layer_text = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
 
         if( layer_text == nullptr )
         {
@@ -1818,8 +1816,8 @@ namespace Mengine
             return false;
         }
 
-        ShapeQuadFixedPtr layer_sprite = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
+        ShapeQuadFixedPtr layer_sprite = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
         if( layer_sprite == nullptr )
         {
@@ -1899,8 +1897,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieEvent_( const MovieLayer & _layer )
     {
-        MovieEventPtr layer_event = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
+        MovieEventPtr layer_event = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
 
         layer_event->setResourceMovie( m_resourceMovie );
 
@@ -1914,8 +1912,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieParticleEmitter2_( const MovieLayer & _layer )
     {
-        NodePtr layer_particles = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
+        NodePtr layer_particles = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
 
         if( layer_particles == nullptr )
         {
@@ -2963,8 +2961,8 @@ namespace Mengine
             return;
         }
 
-        m_renderCameraProjection = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ) );
+        m_renderCameraProjection = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraProjection" ) );
 
         const ConstString & name = this->getName();
         m_renderCameraProjection->setName( name );
@@ -2987,8 +2985,8 @@ namespace Mengine
 
         this->addChild( m_renderCameraProjection );
 
-        m_renderViewport = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
+        m_renderViewport = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
 
         m_renderViewport->setName( name );
 

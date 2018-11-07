@@ -1,7 +1,7 @@
 #include "DX9RenderSystem.h"
 
 #include "Interface/RenderServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
@@ -24,7 +24,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/FactoryDefault.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 #include <algorithm>
 #include <cmath>

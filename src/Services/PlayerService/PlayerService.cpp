@@ -11,8 +11,8 @@
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/StringizeInterface.h"
-#include "Interface/PrefetcherInterface.h"
+#include "Interface/StringizeServiceInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ModuleInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/MemoryServiceInterface.h"
@@ -36,7 +36,7 @@
 
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "PlayerGlobalInputHandler.h"
 #include "PlayerGlobalAffectorable.h"
@@ -62,7 +62,7 @@ namespace Mengine
     namespace
     {
         class PlayerResourceUselessCompile
-            : public FactorableUnique<Factorable>
+            : public Factorable
             , public Observable
         {
         public:
@@ -109,7 +109,7 @@ namespace Mengine
                     return;
                 }
 
-                LOGGER_PERFORMANCE( "Useless Compile %s %s:%s"
+                LOGGER_PERFORMANCE( "Useless Compile '%s' '%s' '%s'"
                     , _resource->getType().c_str()
                     , _resource->getGroupName().c_str()
                     , _resource->getName().c_str()
@@ -198,15 +198,15 @@ namespace Mengine
         }
 
 #ifndef MENGINE_MASTER_RELEASE
-        PlayerResourceUselessCompilePtr unlessCompile = new PlayerResourceUselessCompile;
+        PlayerResourceUselessCompilePtr unlessCompile = new FactorableUnique<PlayerResourceUselessCompile>();
         unlessCompile->begin();
 #endif
 
-        m_scene->enable();
+        m_scene->enableForce();
 
         if( m_arrow != nullptr )
         {
-            m_arrow->enable();
+            m_arrow->enableForce();
         }
 
 #ifndef MENGINE_MASTER_RELEASE
@@ -260,7 +260,7 @@ namespace Mengine
         }
 
 #ifndef MENGINE_MASTER_RELEASE
-        PlayerResourceUselessCompilePtr unlessCompile = new PlayerResourceUselessCompile;
+        PlayerResourceUselessCompilePtr unlessCompile = new FactorableUnique<PlayerResourceUselessCompile>();
         unlessCompile->begin();
 #endif
 
@@ -576,8 +576,8 @@ namespace Mengine
         contentResolution.calcSize( cr );
         Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
-        m_camera2D = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+        m_camera2D = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
         m_camera2D->setOrthogonalViewport( vp );
 
@@ -585,16 +585,16 @@ namespace Mengine
 
         this->setRenderCamera( m_camera2D );
 
-        m_viewport2D = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
+        m_viewport2D = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
 
         m_viewport2D->setViewport( vp );
         m_viewport2D->enable();
 
         this->setRenderViewport( m_viewport2D );
 
-        m_arrowCamera2D = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+        m_arrowCamera2D = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
         m_arrowCamera2D->setOrthogonalViewport( vp );
         m_arrowCamera2D->enable();
@@ -606,8 +606,8 @@ namespace Mengine
             m_arrow->setRenderScissor( m_renderScissor );
         }
 
-        m_debugCamera2D = NODE_SERVICE()
-            ->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+        m_debugCamera2D = PROTOTYPE_SERVICE()
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
         m_debugCamera2D->setOrthogonalViewport( vp );
 
@@ -763,9 +763,6 @@ namespace Mengine
         {
             m_globalInputHandler->update();
         }
-
-        NODE_SERVICE()
-            ->clearHomeless();
 
         return true;
     }

@@ -1,8 +1,7 @@
 #include "ResourceAstralax.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/StringizeInterface.h"
-#include "Interface/NodeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Logger.h"
 

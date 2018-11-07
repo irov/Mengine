@@ -3,7 +3,7 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/TimeServiceInterface.h"
 #include "Interface/FileSystemInterface.h"

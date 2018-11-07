@@ -2,7 +2,7 @@
 
 #include "Interface/CodecInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "ImageDecoderPNG.h"
 #include "ImageDecoderJPEG.h"

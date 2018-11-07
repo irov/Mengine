@@ -2,9 +2,9 @@
 
 #include "Interface/ApplicationInterface.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundSystemInterface.h"
@@ -17,8 +17,8 @@
 #include "Interface/ModuleInterface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/ConfigInterface.h"
-#include "Interface/PrefetcherInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 
 #include "Kernel/FileLogger.h"
 #include "Kernel/ServiceBase.h"
@@ -68,6 +68,8 @@ namespace Mengine
 		bool getNoFullscreen() const override;
 		bool getAlwaysFullscreen() const override;
 
+        bool setProcessDPIAware() override;
+
         size_t getCurrentPath( WChar * _path, size_t _len ) const override;
 		size_t getUserPath( WChar * _path, size_t _len ) const override;
 
@@ -113,6 +115,11 @@ namespace Mengine
         bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
         bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
         
+    public:
+        bool getErrorMessage( uint32_t _messageId, WString & _out ) const override;
+        void sleep( uint32_t _ms ) override;
+        bool cmd( const WString & _command ) override;
+
     protected:
         void changeWindow_( const Resolution & _resolution, bool _fullscreen );
         bool createWindow_( const Resolution & _resolution, bool _fullscreen );

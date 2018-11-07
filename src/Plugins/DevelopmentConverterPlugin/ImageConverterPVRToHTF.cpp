@@ -1,7 +1,7 @@
 #include "ImageConverterPVRToHTF.h"
 
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileSystemInterface.h"

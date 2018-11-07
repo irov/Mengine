@@ -3,7 +3,7 @@
 #include "Win32DynamicLibrary.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
 

@@ -1,6 +1,6 @@
 #include "NodeOzzAnimation.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 

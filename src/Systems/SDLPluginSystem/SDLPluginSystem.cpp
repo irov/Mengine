@@ -3,10 +3,10 @@
 #include "SDLDynamicLibrary.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PluginSystem, Mengine::SDLPluginSystem);

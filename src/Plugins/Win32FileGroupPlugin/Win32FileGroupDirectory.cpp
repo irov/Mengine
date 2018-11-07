@@ -7,7 +7,7 @@
 #include "Win32FileHelper.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
 #include "Kernel/String.h"

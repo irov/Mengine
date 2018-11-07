@@ -1,6 +1,6 @@
 #include "SDLFileGroupDirectory.h"
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "SDLFileInputStream.h"
@@ -9,7 +9,7 @@
 #include "SDLFileHelper.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
 #include "Kernel/String.h"
 

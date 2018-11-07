@@ -38,9 +38,8 @@ src
 	ConverterInterface.h
 	ConverterFactoryInterface.h
 	ConverterServiceInterface.h
-	StringizeInterface.h
+	StringizeServiceInterface.h
     GameServiceInterface.h
-    NodeInterface.h
     PlayerInterface.h
     SchedulerInterface.h
     PickerServiceInterface.h
@@ -50,7 +49,7 @@ src
     ArchiveInterface.h
     ArchiveServiceInterface.h
     ProfilerInterface.h
-    PrefetcherInterface.h
+    PrefetcherServiceInterface.h
     AmplifierInterface.h
     GraveyardInterface.h
     GlobalInputHandlerInterface.h

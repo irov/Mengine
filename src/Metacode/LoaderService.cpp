@@ -3,7 +3,7 @@
 #include "Interface/FileSystemInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
@@ -16,7 +16,7 @@
 #include "Kernel/Logger.h"
 
 #ifndef MENGINE_MASTER_RELEASE
-#include "Plugins/XmlCodecPlugin/XmlCodecInterface.h"
+#   include "Plugins/XmlCodecPlugin/XmlCodecInterface.h"
 #endif
 
 //////////////////////////////////////////////////////////////////////////

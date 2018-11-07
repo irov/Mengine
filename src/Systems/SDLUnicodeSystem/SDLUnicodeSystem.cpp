@@ -17,6 +17,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    SDLUnicodeSystem::~SDLUnicodeSystem()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLUnicodeSystem::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {
 		size_t unicodeSize = (_unicodeSize == UNICODE_UNSIZE) ? wcslen( _unicode ) + 1 : _unicodeSize + 1;

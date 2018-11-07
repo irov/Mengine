@@ -13,7 +13,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
-#include "Plugin/XmlCodecPlugin/XmlCodecInterface.h"
+#include "Plugins/XmlCodecPlugin/XmlCodecInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/LoggerBase.h"

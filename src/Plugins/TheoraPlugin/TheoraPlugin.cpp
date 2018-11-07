@@ -4,7 +4,7 @@
 
 #include "Kernel/DecoderFactory.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( Theora, Mengine::TheoraPlugin);

@@ -3,7 +3,7 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/TimeServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
@@ -155,6 +155,8 @@ namespace Mengine
 
         void s_debugNode( Node * _node )
         {
+            (void)_node;
+
             printf( "debug node!\n" );
 
 #if defined(_MSC_VER) && !defined(I3D_ARCH_ARM) && !defined(_WIN64)

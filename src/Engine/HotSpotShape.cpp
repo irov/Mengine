@@ -1,7 +1,7 @@
 #include "HotSpotShape.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "ResourceShape.h"
 

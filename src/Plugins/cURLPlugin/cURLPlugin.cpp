@@ -2,7 +2,7 @@
 
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ScriptSystemInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 

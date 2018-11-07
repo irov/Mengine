@@ -2,9 +2,9 @@
 
 #include "Interface/ApplicationInterface.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundSystemInterface.h"
@@ -17,8 +17,8 @@
 #include "Interface/ModuleInterface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/ConfigInterface.h"
-#include "Interface/PrefetcherInterface.h"
+#include "Interface/ConfigServiceInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 
 #include "Kernel/FileLogger.h"
 
@@ -32,7 +32,7 @@ namespace Mengine
         ~SDLApplication();
 
     public:
-        bool initialize(const int argc, char** argv);
+        bool initialize( const int argc, char** argv );
         void finalize();
 
     public:
@@ -40,7 +40,7 @@ namespace Mengine
         void stop();
 
     protected:
-        bool getApplicationPath_(const char * _section, const char * _key, ConstString & _path);
+        bool getApplicationPath_( const char * _section, const char * _key, ConstString & _path );
 
     protected:
         bool initializeStringizeService_();
@@ -69,13 +69,13 @@ namespace Mengine
         bool initializePrefetcherService_();
 
     public:
-        void setActivate(bool _value);
+        void setActivate( bool _value );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
-        
+
         LoggerInterfacePtr m_loggerMessageBox;
-		LoggerInterfacePtr m_loggerStdio;
+        LoggerInterfacePtr m_loggerStdio;
         LoggerInterfacePtr m_fileLog;
 
         ConstString m_platformName;

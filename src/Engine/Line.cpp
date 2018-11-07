@@ -1,6 +1,6 @@
 #include "Line.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 namespace Mengine
 {

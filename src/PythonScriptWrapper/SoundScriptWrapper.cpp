@@ -5,7 +5,7 @@
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PlayerInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Affectorable.h"
 #include "Kernel/Affector.h"

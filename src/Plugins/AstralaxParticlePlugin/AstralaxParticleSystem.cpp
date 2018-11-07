@@ -1,12 +1,12 @@
 #include "AstralaxParticleSystem.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "Kernel/String.h"
 #include "Kernel/Logger.h"

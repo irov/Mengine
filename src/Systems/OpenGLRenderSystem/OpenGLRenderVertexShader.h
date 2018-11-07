@@ -5,13 +5,14 @@
 
 #include "OpenGLRenderExtension.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderVertexShader
-        : public ServantBase<RenderVertexShaderInterface>
+        : public RenderVertexShaderInterface
+        , public Factorable
     {
     public:
         OpenGLRenderVertexShader();

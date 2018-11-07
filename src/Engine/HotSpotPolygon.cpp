@@ -1,7 +1,7 @@
 #include "HotSpotPolygon.h"
 
 #include "Interface/PickerServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/RenderCameraInterface.h"

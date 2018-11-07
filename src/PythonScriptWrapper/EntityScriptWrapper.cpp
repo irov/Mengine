@@ -1,9 +1,8 @@
 #include "PythonWrapper.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ScriptSystemInterface.h"
-#include "Interface/NodeInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
 
@@ -82,9 +81,6 @@ namespace Mengine
                 return pybind::object::get_invalid();
             }
 
-            NODE_SERVICE()
-                ->addHomeless( entity );
-
             const PythonEntityBehaviorPtr & behavior = entity->getBehavior();
             const pybind::object & py_entity = behavior->getScriptObject();
 
@@ -149,8 +145,8 @@ namespace Mengine
             (void)_args;
             (void)_kwds;
 
-            EntityPtr entity = NODE_SERVICE()
-                ->createNode( STRINGIZE_STRING_LOCAL( "Entity" ) );
+            EntityPtr entity = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Entity" ) );
 
             entity->setEmbed( _kernel, _obj );
 
@@ -191,8 +187,8 @@ namespace Mengine
             (void)_args;
             (void)_kwds;
 
-            ArrowPtr arrow = NODE_SERVICE()
-                ->createNode( STRINGIZE_STRING_LOCAL( "Arrow" ) );
+            ArrowPtr arrow = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ) );
 
             arrow->setEmbed( _kernel, _obj );
 
@@ -233,8 +229,8 @@ namespace Mengine
             (void)_args;
             (void)_kwds;
 
-            ScenePtr scene = NODE_SERVICE()
-                ->createNode( STRINGIZE_STRING_LOCAL( "Scene" ) );
+            ScenePtr scene = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
 
             scene->setEmbed( _kernel, _obj );
 

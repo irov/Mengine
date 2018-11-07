@@ -1,7 +1,7 @@
 #include "Layer2D.h"
 
-#include "Interface/NodeInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
 #include "Kernel/RenderCameraOrthogonal.h"
@@ -92,8 +92,8 @@ namespace Mengine
     {
         if( m_renderCamera == nullptr )
         {
-            m_renderCamera = NODE_SERVICE()
-                ->createNode( STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+            m_renderCamera = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
             if( m_renderCamera == nullptr )
             {
@@ -109,8 +109,8 @@ namespace Mengine
 
         if( m_renderViewport == nullptr )
         {
-            m_renderViewport = NODE_SERVICE()
-                ->createNode( STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
+            m_renderViewport = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
 
             if( m_renderViewport == nullptr )
             {

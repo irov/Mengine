@@ -4,11 +4,11 @@
 
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/OptionsInterface.h"
-#include "Interface/TimerInterface.h"
+#include "Interface/TimeServiceInterface.h"
 
 #ifdef WIN32
 #	include "Environment/WIN32/WindowsIncluder.h"
@@ -25,6 +25,7 @@
 #include "Kernel/IniUtil.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/AssertionNotImplemented.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
@@ -38,8 +39,6 @@
 #include <iomanip>
 
 #include <sys/stat.h>
-
-#define PARAM_UNUSED(x) ((void)x)
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( Platform, Mengine::SDLPlatform );
@@ -319,12 +318,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::update()
     {
-        TIMER_SERVICE()
+        TIME_SERVICE()
             ->resetDeltaTime();
 
         while( true )
         {
-            float frameTime = TIMER_SERVICE()
+            float frameTime = TIME_SERVICE()
                 ->getDeltaTime();
 
             if( m_pause == true )
@@ -376,7 +375,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::openUrlInDefaultBrowser( const WString & _url )
     {
-        PARAM_UNUSED( _url );
+        MENGINE_UNUSED( _url );
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -531,6 +530,13 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::setProcessDPIAware()
+    {
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::minimizeWindow()
     {
         SDL_MinimizeWindow( m_window );
@@ -585,7 +591,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::notifyVsyncChanged( bool _vsync )
     {
-        PARAM_UNUSED( _vsync );
+        MENGINE_UNUSED( _vsync );
 
         if( _vsync == false )
         {
@@ -611,16 +617,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::notifyCursorIconSetup( const ConstString & _name, const FilePath & _path, const MemoryInterfacePtr & _buffer )
     {
-        PARAM_UNUSED( _name );
-        PARAM_UNUSED( _path );
-        PARAM_UNUSED( _buffer );
+        MENGINE_UNUSED( _name );
+        MENGINE_UNUSED( _path );
+        MENGINE_UNUSED( _buffer );
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLPlatform::onEvent( const ConstString & _event, const MapWParams & _params )
     {
-        PARAM_UNUSED( _event );
-        PARAM_UNUSED( _params );
+        MENGINE_UNUSED( _event );
+        MENGINE_UNUSED( _params );
     }
     //////////////////////////////////////////////////////////////////////////
     static bool s_createDurectoryFullpath( const WChar * _fullpath )
@@ -784,6 +790,30 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::existFile( const WChar * _path )
+    {
+        WChar userPath[MENGINE_MAX_PATH];
+        this->getUserPath( userPath, MENGINE_MAX_PATH );
+
+        WChar pathCorrect[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslash( pathCorrect, _path );
+
+        WChar fullPath[MENGINE_MAX_PATH];
+        wcscpy( fullPath, userPath );
+        wcscat( fullPath, pathCorrect );
+
+        Char utf8_fullpath[MENGINE_MAX_PATH];
+        Helper::unicodeToUtf8( fullPath, utf8_fullpath, MENGINE_MAX_PATH );
+
+        struct stat sb;
+        if( stat( utf8_fullpath, &sb ) == 0 && ((sb.st_mode)& S_IFMT) != S_IFDIR )
+        {
+            return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::removeFile( const WChar * _path )
     {
         WChar userPath[MENGINE_MAX_PATH];
@@ -908,20 +938,46 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
     {
-        PARAM_UNUSED( _path );
-        PARAM_UNUSED( _file );
-        PARAM_UNUSED( _data );
-        PARAM_UNUSED( _size );
+        MENGINE_UNUSED( _path );
+        MENGINE_UNUSED( _file );
+        MENGINE_UNUSED( _data );
+        MENGINE_UNUSED( _size );
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLPlatform::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
     {
-        PARAM_UNUSED( _path );
-        PARAM_UNUSED( _file );
-        PARAM_UNUSED( _data );
-        PARAM_UNUSED( _size );
+        MENGINE_UNUSED( _path );
+        MENGINE_UNUSED( _file );
+        MENGINE_UNUSED( _data );
+        MENGINE_UNUSED( _size );
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::getErrorMessage( uint32_t _messageId, WString & _out ) const
+    {
+        MENGINE_UNUSED( _messageId );
+        MENGINE_UNUSED( _out );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLPlatform::sleep( uint32_t _ms )
+    {
+        MENGINE_UNUSED( _ms );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLPlatform::cmd( const WString & _command )
+    {
+        MENGINE_UNUSED( _command );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
     }

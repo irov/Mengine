@@ -1,6 +1,6 @@
 #include "Win32SocketOutputStream.h"
 
-#include "Kernel/NotImplementedAssertion.h"
+#include "Kernel/AssertionNotImplemented.h"
 
 namespace Mengine
 {

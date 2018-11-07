@@ -153,6 +153,9 @@ namespace Mengine
         void disable();
 
     public:
+        bool enableForce();
+
+    public:
         inline bool isEnable() const;
 
     public:

@@ -2,7 +2,7 @@
 
 #include "AstralaxInterface.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "AstralaxParticleModule.h"
 

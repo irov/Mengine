@@ -1,6 +1,6 @@
 #include "SDLFileInputStream.h"
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 

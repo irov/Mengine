@@ -5,12 +5,11 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/TimelineServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
-#include "Interface/NodeInterface.h"
 #include "Interface/MemoryServiceInterface.h"
-#include "Interface/PrefetcherInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/RandomizerInterface.h"
@@ -137,7 +136,7 @@
 #include "Kernel/ValueFollower.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "pybind/stl/stl_type_cast.hpp"
 #include "stdex/xml_sax_parser.h"
@@ -579,18 +578,12 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_addHomeless( Node * _node )
         {
-            NODE_SERVICE()
-                ->addHomeless( _node );
-
             _node->release();
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_isHomeless( Node * _node )
         {
-            bool is = NODE_SERVICE()
-                ->isHomeless( _node );
-
-            return is;
+            return _node->hasParent() == false;
         }
         //////////////////////////////////////////////////////////////////////////
         float s_getTimeFactor()
@@ -874,23 +867,17 @@ namespace Mengine
 
             _node->removeFromParent();
             _node->release();
-
-            NODE_SERVICE()
-                ->addHomeless( _node );
         }
         //////////////////////////////////////////////////////////////////////////
         NodePtr createNode( const ConstString & _type )
         {
-            NodePtr node = NODE_SERVICE()
-                ->createNode( _type );
+            NodePtr node = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type );
 
             if( node == nullptr )
             {
                 return nullptr;
             }
-
-            NODE_SERVICE()
-                ->addHomeless( node );
 
             return node;
         }
@@ -938,8 +925,8 @@ namespace Mengine
             surface->setName( _name );
             surface->setResourceImage( _resource );
 
-            ShapeQuadFixedPtr shape = NODE_SERVICE()
-                ->createNode( STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
+            ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
             if( shape == nullptr )
             {
@@ -953,9 +940,6 @@ namespace Mengine
 
             shape->setName( _name );
             shape->setSurface( surface );
-
-            NODE_SERVICE()
-                ->addHomeless( shape );
 
             return shape;
         }
@@ -2683,13 +2667,13 @@ namespace Mengine
             affectorable->stopAffector( id );
         }
         //////////////////////////////////////////////////////////////////////////
-        ScenePtr s_findNodeScene( const NodePtr & _node )
+        Scene * s_findNodeScene( Node * _node )
         {
-            NodePtr node_iterator = _node;
+            Node * node_iterator = _node;
 
             while( node_iterator != nullptr )
             {
-                ScenePtr node_scene = stdex::intrusive_dynamic_cast<ScenePtr>(node_iterator);
+                Scene * node_scene = dynamic_cast<Scene *>(node_iterator);
 
                 if( node_scene != nullptr )
                 {

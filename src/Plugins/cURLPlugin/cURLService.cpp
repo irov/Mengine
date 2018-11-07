@@ -1,7 +1,7 @@
 #include "cURLService.h"
 
 #include "Interface/FileGroupInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "cURLGetMessageThreadTask.h"

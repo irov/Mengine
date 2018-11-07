@@ -2,11 +2,11 @@
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/TimelineServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 
 #include "Interface/InputServiceInterface.h"
-#include "Interface/NodeInterface.h"
+#include "Interface/PrototypeServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PackageInterface.h"
@@ -138,7 +138,7 @@
 #include "Kernel/ValueFollower.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "stdex/xml_sax_parser.h"
 #include "utf8.h"
@@ -899,9 +899,6 @@ namespace Mengine
                 return false;
             }
 
-            NODE_SERVICE()
-                ->addHomeless( _child );
-
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -909,8 +906,7 @@ namespace Mengine
         {
             _node->removeChildren( []( const NodePtr & _child )
             {
-                NODE_SERVICE()
-                    ->addHomeless( _child );
+                (void)_child;
             } );
         }
         //////////////////////////////////////////////////////////////////////////
@@ -921,9 +917,6 @@ namespace Mengine
                 return false;
             }
 
-            NODE_SERVICE()
-                ->addHomeless( _node );
-
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -931,15 +924,13 @@ namespace Mengine
         {
             _node->destroyChildren( []( const NodePtr & _child )
             {
-                NODE_SERVICE()
-                    ->addHomeless( _child );
+                (void)_child;
             } );
         }
         //////////////////////////////////////////////////////////////////////////
         bool s_Node_isHomeless( Node * _node )
         {
-            return NODE_SERVICE()
-                ->isHomeless( _node );
+            return _node->hasParent() == false;
         }
         //////////////////////////////////////////////////////////////////////////
         mt::vec3f s_Node_getWorldOffsetPosition( Node * _node, const mt::vec3f & _position )
@@ -970,8 +961,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         NodePtr s_Node_createChildren( Node * _node, const ConstString & _type )
         {
-            NodePtr newNode = NODE_SERVICE()
-                ->createNode( _type );
+            NodePtr newNode = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type );
 
             if( newNode == nullptr )
             {
@@ -2411,14 +2402,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( SurfaceSolidColor );
 
 #undef SCRIPT_CLASS_WRAPPING
-
-        const ScriptWrapperInterfacePtr & nodeScriptWrapper = SCRIPT_SERVICE()
-            ->getWrapper( STRINGIZE_STRING_LOCAL( "Node" ) );
-
-        const NodePtr & shelter = NODE_SERVICE()
-            ->getShelter();
-
-        shelter->setScriptWrapper( nodeScriptWrapper );
 
         return true;
     }

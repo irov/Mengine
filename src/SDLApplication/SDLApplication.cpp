@@ -6,9 +6,12 @@
 
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
+#include "Interface/CodecServiceInterface.h"
+#include "Interface/ConverterServiceInterface.h"
+#include "Interface/MemoryServiceInterface.h"
 #include "Interface/PackageServiceInterface.h"
-#include "Interface/UserdataInterface.h"
+#include "Interface/UserdataServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/ResourceServiceInterface.h"
@@ -19,7 +22,8 @@
 #include "Interface/TextServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
-#include "Interface/TimerInterface.h"
+#include "Interface/TimeServiceInterface.h"
+#include "Interface/TimeSystemInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 
@@ -85,7 +89,6 @@
 SERVICE_PROVIDER_EXTERN( ServiceProvider );
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( FactoryService );
-SERVICE_EXTERN( SDLLayer );
 SERVICE_EXTERN( Platform );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( StringizeService );
@@ -123,22 +126,20 @@ SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( ConverterService );
 SERVICE_EXTERN( ConfigService );
 SERVICE_EXTERN( PrefetcherService );
-SERVICE_EXTERN( OptionsSystem );
 SERVICE_EXTERN( OptionsService );
-SERVICE_EXTERN( TimerSystem );
-SERVICE_EXTERN( TimerService );
+SERVICE_EXTERN( TimeSystem );
+SERVICE_EXTERN( TimeService );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( UpdateService );
-SERVICE_EXTERN( NodeService );
 SERVICE_EXTERN( LoaderService );
 SERVICE_EXTERN( RenderService );
 SERVICE_EXTERN( RenderMaterialService );
 SERVICE_EXTERN( RenderTextureService );
 SERVICE_EXTERN( ResourceService );
 SERVICE_EXTERN( TextService );
-SERVICE_EXTERN( Watchdog );
+SERVICE_EXTERN( WatchdogService );
 SERVICE_EXTERN( ProfilerService );
-SERVICE_EXTERN( Graveyard );
+SERVICE_EXTERN( GraveyardService );
 SERVICE_EXTERN( PackageService );
 SERVICE_EXTERN( UserdataService );
 SERVICE_EXTERN( PlayerService );
@@ -147,13 +148,20 @@ SERVICE_EXTERN( TimelineService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
-PLUGIN_EXPORT( VideoCodec );
 PLUGIN_EXPORT( Amplifier );
 PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
 PLUGIN_EXPORT( BitmapFont );
 PLUGIN_EXPORT( DebugRender );
 PLUGIN_EXPORT( ResourceValidate );
+
+#ifdef MENGINE_PLUGIN_VIDEO
+PLUGIN_EXPORT( Video );
+#endif
+
+#ifdef MENGINE_PLUGIN_THEORA
+PLUGIN_EXPORT( Theora );
+#endif
 
 #ifdef MENGINE_PLUGIN_TTF
 #ifndef MENGINE_PLUGIN_TTF_DLL
@@ -261,7 +269,7 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( "application.ini" );
-        
+
         IniUtil::IniStore ini;
         if( IniUtil::loadIni( ini, defaultFileGroup, applicationPath ) == false )
         {
@@ -550,7 +558,6 @@ namespace Mengine
 
         SERVICE_CREATE( UnicodeSystem );
 
-        SERVICE_CREATE( SDLLayer );
         SERVICE_CREATE( Platform );
 
         SERVICE_CREATE( PluginSystem );
@@ -608,11 +615,10 @@ namespace Mengine
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
 
-        SERVICE_CREATE( TimerSystem );
-        SERVICE_CREATE( TimerService );
+        SERVICE_CREATE( TimeSystem );
+        SERVICE_CREATE( TimeService );
 
         SERVICE_CREATE( PrototypeService );
-        SERVICE_CREATE( NodeService );
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
 
@@ -630,9 +636,9 @@ namespace Mengine
 
         SERVICE_CREATE( ResourceService );
         SERVICE_CREATE( TextService );
-        SERVICE_CREATE( Watchdog );
+        SERVICE_CREATE( WatchdogService );
         SERVICE_CREATE( ProfilerService );
-        SERVICE_CREATE( Graveyard );
+        SERVICE_CREATE( GraveyardService );
         SERVICE_CREATE( PackageService );
         SERVICE_CREATE( UserdataService );
         SERVICE_CREATE( PlayerService );
@@ -659,7 +665,14 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( SoundCodec, "initialize Plugin Sound Codec..." );
         MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
         MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier..." );
-        MENGINE_ADD_PLUGIN( VideoCodec, "initialize Plugin Video Codec..." );
+
+#ifdef MENGINE_PLUGIN_VIDEO
+        MENGINE_ADD_PLUGIN( Video, "initialize Plugin Video..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_THEORA
+        MENGINE_ADD_PLUGIN( Theora, "initialize Plugin Theora..." );
+#endif
 
         MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin TTF..." );
 
@@ -694,17 +707,17 @@ namespace Mengine
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK
-        MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native...");
+        MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native..." );
 #endif
-        
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS
-        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "initialize Android Unity Ads Native...");
+        MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "initialize Android Unity Ads Native..." );
 #endif
-        
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB
         MENGINE_ADD_PLUGIN( AndroidNativeAdMob, "initialize Android AdMob Native..." );
 #endif
-        
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV
         MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native..." );
 #endif
@@ -909,7 +922,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
         SERVICE_FINALIZE( Mengine::GraveyardInterface );
         SERVICE_FINALIZE( Mengine::UpdateServiceInterface );
-        SERVICE_FINALIZE( Mengine::NodeServiceInterface );
         SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
         SERVICE_FINALIZE( Mengine::TextServiceInterface );
         SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
@@ -944,8 +956,8 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::ThreadServiceInterface );
         SERVICE_FINALIZE( Mengine::ThreadSystemInterface );
 
-        SERVICE_FINALIZE( Mengine::TimerServiceInterface );
-        SERVICE_FINALIZE( Mengine::TimerSystemInterface );
+        SERVICE_FINALIZE( Mengine::TimeServiceInterface );
+        SERVICE_FINALIZE( Mengine::TimeSystemInterface );
 
         SERVICE_FINALIZE( Mengine::PlatformInterface );
 

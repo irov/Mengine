@@ -1,6 +1,6 @@
 #include "AstralaxService.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/ArchiveServiceInterface.h"

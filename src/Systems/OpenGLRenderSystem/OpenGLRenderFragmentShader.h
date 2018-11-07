@@ -5,13 +5,14 @@
 
 #include "OpenGLRenderExtension.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderFragmentShader
-        : public ServantBase<RenderFragmentShaderInterface>
+        : public RenderFragmentShaderInterface
+        , public Factorable
     {
     public:
         OpenGLRenderFragmentShader();

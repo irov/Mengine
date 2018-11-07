@@ -84,7 +84,6 @@ SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( PrototypeService );
-SERVICE_EXTERN( NodeService );
 SERVICE_EXTERN( UpdateService );
 SERVICE_EXTERN( LoaderService );
 SERVICE_EXTERN( RenderService );
@@ -658,7 +657,6 @@ namespace Mengine
 #endif
 
         SERVICE_CREATE( PrototypeService );
-        SERVICE_CREATE( NodeService );
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
 
@@ -1005,7 +1003,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
         SERVICE_FINALIZE( Mengine::GraveyardInterface );
         SERVICE_FINALIZE( Mengine::UpdateServiceInterface );
-        SERVICE_FINALIZE( Mengine::NodeServiceInterface );
         SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
         SERVICE_FINALIZE( Mengine::TextServiceInterface );
         SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );

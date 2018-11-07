@@ -1,6 +1,6 @@
 #include "Win32FileGroupPlugin.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"

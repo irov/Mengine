@@ -2,8 +2,8 @@
 
 #include "Interface/FileSystemInterface.h"
 #include "Interface/WatchdogInterface.h"
-#include "Interface/StringizeInterface.h"
-#include "Interface/PrefetcherInterface.h"
+#include "Interface/StringizeServiceInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
@@ -13,7 +13,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "stdex/memorycopy.h"
 

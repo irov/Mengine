@@ -3,13 +3,13 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "Kernel/IniUtil.h"
 

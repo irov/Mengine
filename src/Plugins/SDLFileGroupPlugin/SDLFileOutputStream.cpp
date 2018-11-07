@@ -1,6 +1,5 @@
 #include "SDLFileOutputStream.h"
 
-#include "Interface/UnicodeInterface.h"
 #include "Kernel/Logger.h"
 
 #include "SDLFileHelper.h"

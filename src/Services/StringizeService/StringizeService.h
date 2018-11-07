@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

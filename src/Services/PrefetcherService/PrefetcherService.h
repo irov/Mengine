@@ -1,4 +1,4 @@
-#include "Interface/PrefetcherInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadQueueInterface.h"
 
 #include "ThreadTaskPrefetchImageDecoder.h"

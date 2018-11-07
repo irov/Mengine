@@ -1,7 +1,7 @@
 #include "ThreadTaskPrefetchDataflow.h"
 
 #include "Interface/CodecInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Logger.h"
 

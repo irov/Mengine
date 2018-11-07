@@ -1,6 +1,6 @@
 #include "LoaderResourceVideo.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "ResourceVideo.h"
 

@@ -1,12 +1,12 @@
 #include "PrefetcherService.h"
 
 #include "Interface/ThreadServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
 

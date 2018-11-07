@@ -1,7 +1,7 @@
 #include "MoviePlugin.h"
 
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/ConfigServiceInterface.h"

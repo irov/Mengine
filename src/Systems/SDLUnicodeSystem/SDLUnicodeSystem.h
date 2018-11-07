@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/UnicodeInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -11,6 +11,7 @@ namespace Mengine
     {
     public:
         SDLUnicodeSystem();
+        ~SDLUnicodeSystem() override;
 
     public:
         bool unicodeToUtf8(const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size) override;

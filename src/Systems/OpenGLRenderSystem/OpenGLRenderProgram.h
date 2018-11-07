@@ -8,7 +8,7 @@
 
 #include "OpenGLRenderExtension.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
@@ -24,7 +24,8 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class OpenGLRenderProgram
-        : public ServantBase<RenderProgramInterface>
+        : public RenderProgramInterface
+        , public Factorable
     {
     public:
         OpenGLRenderProgram();

@@ -1,7 +1,7 @@
 #include "SurfaceTrackMatte.h"
 
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/ResourceImage.h"
 

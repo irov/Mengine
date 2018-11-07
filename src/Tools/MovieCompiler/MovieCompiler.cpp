@@ -1,6 +1,6 @@
 #include "ToolUtils/ToolUtils.h"
 
-#include "Plugin/MoviePlugin/Movie2Interface.h"
+#include "Plugins/MoviePlugin/Movie2Interface.h"
 
 #include "lz4.h"
 #include "lz4hc.h"

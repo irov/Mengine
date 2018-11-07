@@ -1,7 +1,7 @@
 #include "ResourceMovie2.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/FileSystemInterface.h"
 
@@ -124,7 +124,7 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_bool_t __movie_cache_uv_provider( const aeMovieDataCacheUVProviderCallbackData * _callbackData, ae_voidptrptr_t _cud, ae_voidptr_t _ud )
+    static ae_bool_t __movie_cache_uv_provider( const aeMovieDataCacheUVProviderCallbackData * _callbackData, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
     {
         (void)_ud;
 
@@ -160,7 +160,7 @@ namespace Mengine
                     resource_image->correctUVImage( uvs[index], uv );
                 }
 
-                *_cud = uvs;
+                *_rd = uvs;
             }break;
         default:
             {

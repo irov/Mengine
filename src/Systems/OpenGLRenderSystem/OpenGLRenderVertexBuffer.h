@@ -4,12 +4,13 @@
 
 #include "OpenGLRenderExtension.h"
 
-#include "Kernel/ServantBase.h"
+#include "Kernel/Factorable.h"
 
 namespace Mengine
 {
     class OpenGLRenderVertexBuffer
-        : public ServantBase<RenderVertexBufferInterface>
+        : public RenderVertexBufferInterface
+        , public Factorable
     {
     public:
         OpenGLRenderVertexBuffer();

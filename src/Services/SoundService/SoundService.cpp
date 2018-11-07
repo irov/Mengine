@@ -2,14 +2,14 @@
 
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/PrefetcherInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
 

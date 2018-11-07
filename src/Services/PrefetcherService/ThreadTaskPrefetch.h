@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/PrefetcherInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/InputStreamInterface.h"
 
 #include "Kernel/ThreadTask.h"

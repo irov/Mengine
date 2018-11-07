@@ -1,7 +1,7 @@
 #include "TextLocalePak.h"
 
 #include "Interface/FileSystemInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/Logger.h"

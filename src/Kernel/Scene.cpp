@@ -1,7 +1,5 @@
 #include "Scene.h"
 
-#include "Interface/NodeInterface.h"
-
 #include "Kernel/BaseEventation.h"
 #include "Kernel/Logger.h"
 

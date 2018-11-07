@@ -3,7 +3,7 @@
 #include "AstralaxInterface.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 

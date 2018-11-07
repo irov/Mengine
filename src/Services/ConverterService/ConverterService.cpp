@@ -1,6 +1,6 @@
 #include "ConverterService.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
 
 #include "Kernel/Logger.h"

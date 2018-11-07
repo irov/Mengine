@@ -1,13 +1,13 @@
 #pragma once
 
 #include "Interface/CodecInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/Factorable.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 namespace Mengine
 {

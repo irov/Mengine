@@ -2,12 +2,12 @@
 
 #include "Interface/OptionsInterface.h"
 #include "Interface/PlayerInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/PrefetcherInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 
@@ -61,8 +61,8 @@ namespace Mengine
                 this->toggleDebugText_();
             } );
 
-            m_debugText = NODE_SERVICE()
-                ->createNode( "TextField"_c );
+            m_debugText = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), "TextField"_c );
 
             m_debugText->setFontName( "__CONSOLE_FONT__"_c );
             m_debugText->setTextID( "__ID_TEXT_CONSOLE"_c );

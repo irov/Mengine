@@ -1,6 +1,6 @@
 #include "FilePathHelper.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/FileSystemInterface.h"
 

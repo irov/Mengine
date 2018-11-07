@@ -3,7 +3,7 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
 #include "Metacode/Metacode.h"

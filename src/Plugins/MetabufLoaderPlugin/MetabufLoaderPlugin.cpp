@@ -1,7 +1,7 @@
 #include "MetabufLoaderPlugin.h"
 
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "LoaderResourceCursorICO.h"
 #include "LoaderResourceCursorSystem.h"

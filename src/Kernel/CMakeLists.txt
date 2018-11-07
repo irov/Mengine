@@ -282,8 +282,9 @@ ADD_FILTER(
 Core
     Assertion.h
     Assertion.cpp
-	
-	NotImplementedAssertion.h
+    AssertionFactory.h
+    AssertionFactory.cpp	
+	AssertionNotImplemented.h
 
     CRC32.h
     CRC32.cpp
@@ -464,8 +465,6 @@ Factory
     FactorableUnique.h
 	Factory.h
 	Factory.cpp
-    FactoryAssertion.h
-    FactoryAssertion.cpp
     FactoryWithListener.h
     FactoryWithListener.cpp
     FactoryWithMutex.h

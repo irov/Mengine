@@ -11,12 +11,11 @@
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerInterface.h"
-#include "Interface/PrefetcherInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/PickerServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/NodeInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/ConverterInterface.h"
 #include "Interface/ResourceServiceInterface.h"
@@ -363,8 +362,8 @@ namespace Mengine
         protected:
             FactorablePointer generate() override
             {
-                ScenePtr scene = NODE_SERVICE()
-                    ->createNode( STRINGIZE_STRING_LOCAL( "Scene" ) );
+                ScenePtr scene = PROTOTYPE_SERVICE()
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
 
                 if( scene == nullptr )
                 {

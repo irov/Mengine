@@ -1,6 +1,6 @@
 #include "DecoderRenderImageLoader.h"
 
-#include "Interface/PrefetcherInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/CodecServiceInterface.h"
 

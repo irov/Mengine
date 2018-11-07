@@ -1,6 +1,6 @@
 #include "PythonWrapper.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 
 #include "pybind/pybind.hpp"

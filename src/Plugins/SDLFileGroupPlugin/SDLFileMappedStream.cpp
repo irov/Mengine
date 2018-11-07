@@ -1,7 +1,6 @@
 #include "SDLFileMappedStream.h"
 
 #include "Interface/MemoryInterface.h"
-#include "Interface/UnicodeInterface.h"
 
 #include "Kernel/Logger.h"
 

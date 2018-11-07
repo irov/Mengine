@@ -1,7 +1,7 @@
 #include "ImageEncoderHTF.h"
 #include "ImageVerifyHTF.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 
 #include "Kernel/Stream.h"

@@ -177,6 +177,35 @@ namespace Mengine
                 return true;
             }
         }
+        else
+        {
+            return true;
+        }
+
+        if( this->activate() == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Node::enableForce()
+    {
+        if( this->isActivate() == true )
+        {
+            return true;
+        }
+
+        m_enable = true;
+
+        if( m_parent != nullptr )
+        {
+            if( m_parent->isActivate() == false )
+            {
+                return true;
+            }
+        }
 
         if( this->activate() == false )
         {
@@ -191,8 +220,6 @@ namespace Mengine
         stdex::intrusive_this_acquire( this );
 
         this->deactivate();
-
-        //this->release();
 
         m_enable = false;
 
@@ -232,6 +259,7 @@ namespace Mengine
             if( oldRenderParent != newRenderParent )
             {
                 render->setRelationRender( newRenderParent );
+                render->invalidateColor();
             }
         }
         else
@@ -408,7 +436,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::addChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node )
     {
-        NodePtr parent = _node->getParent();
+        Node * parent = _node->getParent();
 
         stdex::intrusive_this_acquire( this );
 

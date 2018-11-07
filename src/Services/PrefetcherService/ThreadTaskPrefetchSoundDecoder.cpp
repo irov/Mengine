@@ -2,7 +2,7 @@
 
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 

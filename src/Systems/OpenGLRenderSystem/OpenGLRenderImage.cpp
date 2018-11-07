@@ -1,4 +1,7 @@
 #include "OpenGLRenderImage.h"
+
+#include "Interface/MemoryServiceInterface.h"
+
 #include "OpenGLRenderError.h"
 
 #include "Kernel/Logger.h"

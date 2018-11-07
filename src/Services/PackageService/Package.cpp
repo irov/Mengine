@@ -3,7 +3,7 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
 #include "Interface/TextServiceInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ProfilerInterface.h"

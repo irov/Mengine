@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/ScriptSystemInterface.h"
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Scriptable.h"

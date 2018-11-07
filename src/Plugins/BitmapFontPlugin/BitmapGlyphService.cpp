@@ -1,7 +1,7 @@
 ﻿#include "BitmapGlyphService.h"
 
 #include "Kernel/FactoryPool.h"
-#include "Kernel/FactoryAssertion.h"
+#include "Kernel/AssertionFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( BitmapGlyphService, Mengine::BitmapGlyphService );

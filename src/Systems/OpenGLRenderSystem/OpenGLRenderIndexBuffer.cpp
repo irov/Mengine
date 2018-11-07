@@ -1,5 +1,7 @@
 #include "OpenGLRenderIndexBuffer.h"
 
+#include "Interface/MemoryServiceInterface.h"
+
 #include "OpenGLRenderError.h"
 #include "OpenGLRenderEnum.h"
 

@@ -2,7 +2,7 @@
 
 #include "Interface/ApplicationInterface.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
@@ -19,7 +19,7 @@
 #include "Interface/ConverterInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/PluginInterface.h"
-#include "Interface/PrefetcherInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/TimeServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"

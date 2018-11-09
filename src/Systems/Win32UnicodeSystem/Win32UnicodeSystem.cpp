@@ -93,13 +93,13 @@ namespace Mengine
         {
             DWORD err = GetLastError();
 
-            WString wstr_err;
+            Char wstr_err[1024];
             PLATFORM_SERVICE()
                 ->getErrorMessage( err, wstr_err );
 
-            LOGGER_ERROR( "Win32UnicodeSystem::utf8ToUnicode %s MultiByteToWideChar %ls"
+            LOGGER_ERROR( " '%s' MultiByteToWideChar '%ls'"
                 , _utf8
-                , wstr_err.c_str()
+                , wstr_err
             );
 
             return false;

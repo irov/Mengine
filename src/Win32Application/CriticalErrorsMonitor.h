@@ -8,7 +8,7 @@ namespace Mengine
     class CriticalErrorsMonitor
     {
     public:
-        static void run( const WString & _dumpPath );
+        static void run( const Char * _dumpPath );
         static void stop();
     };
 }

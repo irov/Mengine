@@ -1116,7 +1116,7 @@ namespace Mengine
             return v_accounts;
         }
 
-        bool s_addSetting( const ConstString & _setting, const WString & _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        bool s_addSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
         {
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
@@ -1131,10 +1131,10 @@ namespace Mengine
             const ConstString & accountID = ACCOUNT_SERVICE()
                 ->getCurrentAccountID();
 
-            return s_addAccountSetting( accountID, _setting, _defaultValue, _cb, _args );
+            return s_addAccountSetting( _kernel, accountID, _setting, _defaultValue, _cb, _args );
         }
 
-        bool s_changeSetting( const ConstString & _setting, const WString & _value )
+        bool s_changeSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _value )
         {
             if( ACCOUNT_SERVICE()
                 ->hasCurrentAccount() == false )
@@ -1149,7 +1149,7 @@ namespace Mengine
             const ConstString & accountID = ACCOUNT_SERVICE()
                 ->getCurrentAccountID();
 
-            return s_changeAccountSetting( accountID, _setting, _value );
+            return s_changeAccountSetting( _kernel, accountID, _setting, _value );
         }
 
         bool s_changeSettingBool( const ConstString & _setting, bool _value )
@@ -1265,26 +1265,33 @@ namespace Mengine
             , public AccountSettingProviderInterface
         {
         public:
-            PyAccountSettingProvider( const pybind::object & _cb, const pybind::args & _args )
-                : m_cb( _cb )
+            PyAccountSettingProvider( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
+                : m_kernel( _kernel )
+                , m_cb( _cb )
                 , m_args( _args )
             {
             }
 
         protected:
-            void onChangeSetting( const WString& _value ) override
+            void onChangeSetting( const Char * _value ) override
             {
-                m_cb.call_args( _value, m_args );
+                PyObject * pyunicode_value = m_kernel->unicode_from_utf8( _value );
+
+                m_cb.call_args( pyunicode_value, m_args );
+
+                m_kernel->decref( pyunicode_value );
             }
 
         protected:
+            pybind::kernel_interface * m_kernel;
+
             pybind::object m_cb;
             pybind::args m_args;
         };
 
         typedef IntrusivePtr<PyAccountSettingProvider> PyAccountSettingProviderPtr;
 
-        bool s_addAccountSetting( const ConstString & _accountID, const ConstString & _setting, const WString & _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        bool s_addAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
         {
             AccountInterfacePtr account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -1302,10 +1309,12 @@ namespace Mengine
 
             if( _cb.is_none() == false )
             {
-                provider = new FactorableUnique<PyAccountSettingProvider>( _cb, _args );
+                provider = new FactorableUnique<PyAccountSettingProvider>( _kernel, _cb, _args );
             }
 
-            bool result = account->addSetting( _setting, _defaultValue, provider );
+            const Char * utf8_defaultValue = _kernel->unicode_to_utf8( _defaultValue );
+
+            bool result = account->addSetting( _setting, utf8_defaultValue, provider );
 
             return result;
         }
@@ -1329,7 +1338,7 @@ namespace Mengine
             return result;
         }
 
-        bool s_changeAccountSetting( const ConstString & _accountID, const ConstString & _setting, const WString & _value )
+        bool s_changeAccountSetting( pybind::kernel_interface * _kernel, const ConstString & _accountID, const ConstString & _setting, PyObject * _value )
         {
             AccountInterfacePtr account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
@@ -1353,7 +1362,9 @@ namespace Mengine
                 return false;
             }
 
-            bool result = account->changeSetting( _setting, _value );
+            const Char * utf8_defaultValue = _kernel->unicode_to_utf8( _value );
+
+            bool result = account->changeSetting( _setting, utf8_defaultValue );
 
             return result;
         }
@@ -1382,17 +1393,9 @@ namespace Mengine
                 return false;
             }
 
-            WString setting_value;
-            if( _value == true )
-            {
-                setting_value = L"True";
-            }
-            else
-            {
-                setting_value = L"False";
-            }
+            const Char * value_str = _value == true ? "True" : "False";
 
-            bool result = account->changeSetting( _setting, setting_value );
+            bool result = account->changeSetting( _setting, value_str );
 
             return result;
         }
@@ -1421,10 +1424,10 @@ namespace Mengine
                 return false;
             }
 
-            WString setting_value;
-            Helper::intToWString( _value, setting_value );
+            String setting_value;
+            Helper::intToString( _value, setting_value );
 
-            bool result = account->changeSetting( _setting, setting_value );
+            bool result = account->changeSetting( _setting, setting_value.c_str() );
 
             return result;
         }
@@ -1453,10 +1456,10 @@ namespace Mengine
                 return false;
             }
 
-            WString setting_value;
-            Helper::unsignedToWString( _value, setting_value );
+            String setting_value;
+            Helper::unsignedToString( _value, setting_value );
 
-            bool result = account->changeSetting( _setting, setting_value );
+            bool result = account->changeSetting( _setting, setting_value.c_str() );
 
             return result;
         }
@@ -1485,10 +1488,10 @@ namespace Mengine
                 return false;
             }
 
-            WString setting_value;
-            Helper::unsigned64ToWString( _value, setting_value );
+            String setting_value;
+            Helper::unsigned64ToString( _value, setting_value );
 
-            bool result = account->changeSetting( _setting, setting_value );
+            bool result = account->changeSetting( _setting, setting_value.c_str() );
 
             return result;
         }
@@ -1517,10 +1520,10 @@ namespace Mengine
                 return false;
             }
 
-            WString setting_value;
-            Helper::floatToWString( _value, setting_value );
+            String setting_value;
+            Helper::floatToString( _value, setting_value );
 
-            bool result = account->changeSetting( _setting, setting_value );
+            bool result = account->changeSetting( _setting, setting_value.c_str() );
 
             return result;
         }
@@ -1549,24 +1552,27 @@ namespace Mengine
                 return false;
             }
 
-            WString setting_value;
+            String setting_value;
 
             for( const WString & value : _values )
             {
                 if( setting_value.empty() == false )
                 {
-                    setting_value += L" ,,, ";
+                    setting_value += " ,,, ";
                 }
 
-                setting_value += value;
+                String utf8_value;
+                Helper::unicodeToUtf8( value, utf8_value );
+
+                setting_value += utf8_value;
             }
 
-            bool result = account->changeSetting( _setting, setting_value );
+            bool result = account->changeSetting( _setting, setting_value.c_str() );
 
             return result;
         }
 
-        bool s_addGlobalSetting( const ConstString & _setting, const WString & _defaultValue, const pybind::object & _cb, const pybind::args & _args )
+        bool s_addGlobalSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _defaultValue, const pybind::object & _cb, const pybind::args & _args )
         {
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
@@ -1580,7 +1586,7 @@ namespace Mengine
             const ConstString & accountID = ACCOUNT_SERVICE()
                 ->getGlobalAccountID();
 
-            return s_addAccountSetting( accountID, _setting, _defaultValue, _cb, _args );
+            return s_addAccountSetting( _kernel, accountID, _setting, _defaultValue, _cb, _args );
         }
 
         bool s_hasGlobalSetting( const ConstString & _setting )
@@ -1600,7 +1606,7 @@ namespace Mengine
             return s_hasAccountSetting( accountID, _setting );
         }
 
-        bool s_changeGlobalSetting( const ConstString & _setting, const WString & _value )
+        bool s_changeGlobalSetting( pybind::kernel_interface * _kernel, const ConstString & _setting, PyObject * _value )
         {
             if( ACCOUNT_SERVICE()
                 ->hasGlobalAccount() == false )
@@ -1614,7 +1620,7 @@ namespace Mengine
             const ConstString & accountID = ACCOUNT_SERVICE()
                 ->getGlobalAccountID();
 
-            return s_changeAccountSetting( accountID, _setting, _value );
+            return s_changeAccountSetting( _kernel, accountID, _setting, _value );
         }
 
         bool s_changeGlobalSettingBool( const ConstString & _setting, bool _value )
@@ -1982,17 +1988,19 @@ namespace Mengine
                 return _kernel->ret_none();
             }
 
-            const WString & value = account->getSetting( _setting );
+            Char value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
+            if( account->getSetting( _setting, value ) == false )
+            {
+                return _kernel->ret_none();
+            }
 
-            PyObject * py_value = pybind::ptr( _kernel, value );
+            PyObject * py_value = _kernel->unicode_from_utf8( value );
 
             return py_value;
         }
 
         PyObject * s_getAccountSettingBool( pybind::kernel_interface * _kernel, const ConstString& _accountID, const ConstString & _setting )
         {
-            (void)_kernel;
-
             AccountInterfacePtr account = ACCOUNT_SERVICE()
                 ->getAccount( _accountID );
 
@@ -2005,16 +2013,22 @@ namespace Mengine
                 return _kernel->ret_none();
             }
 
-            const WString & value = account->getSetting( _setting );
+            Char value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
+            if( account->getSetting( _setting, value ) == false )
+            {
+                LOGGER_ERROR( "account '%s' setting '%s' not found"
+                    , _accountID.c_str()
+                    , _setting.c_str()
+                );
 
-            if( value == L"True" ||
-                value == L"true" )
+                return _kernel->ret_none();
+            }
+
+            if( strcmp( value, "True" ) == 0 || strcmp( value, "true" ) == 0 || strcmp( value, "TRUE" ) == 0 )
             {
                 return _kernel->ret_true();
             }
-
-            if( value == L"False" ||
-                value == L"false" )
+            else if( strcmp( value, "False" ) == 0 || strcmp( value, "false" ) == 0 || strcmp( value, "FALSE" ) == 0 )
             {
                 return _kernel->ret_false();
             }
@@ -2022,7 +2036,7 @@ namespace Mengine
             LOGGER_ERROR( "getAccountSettingBool account '%s' setting '%s' value '%ls' is not bool [True|False]"
                 , _accountID.c_str()
                 , _setting.c_str()
-                , value.c_str()
+                , value
             );
 
             return _kernel->ret_none();
@@ -2035,21 +2049,31 @@ namespace Mengine
 
             if( account == nullptr )
             {
-                LOGGER_ERROR( "s_getAccountSettingInt account '%s' is none"
+                LOGGER_ERROR( "account '%s' is none"
                     , _accountID.c_str()
                 );
 
                 return _kernel->ret_none();
             }
 
-            const WString & setting = account->getSetting( _setting );
-
-            int32_t value;
-            if( Helper::wstringToInt( setting, value ) == false )
+            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
+            if( account->getSetting( _setting, setting_value ) == false )
             {
-                LOGGER_ERROR( "s_getAccountSettingInt account '%s' can't scanf from '%s'"
+                LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()
                     , _setting.c_str()
+                );
+
+                return _kernel->ret_none();
+            }
+
+            int32_t value;
+            if( Helper::charsToInt( setting_value, value ) == false )
+            {
+                LOGGER_ERROR( "account '%s' setting '%s' can't scanf from '%s'"
+                    , _accountID.c_str()
+                    , _setting.c_str()
+                    , setting_value
                 );
 
                 return _kernel->ret_none();
@@ -2067,21 +2091,31 @@ namespace Mengine
 
             if( account == nullptr )
             {
-                LOGGER_ERROR( "getAccountSettingUInt account '%s' is none"
+                LOGGER_ERROR( "account '%s' is none"
                     , _accountID.c_str()
                 );
 
                 return _kernel->ret_none();
             }
 
-            const WString & setting = account->getSetting( _setting );
-
-            uint32_t value;
-            if( Helper::wstringToUnsigned( setting, value ) == false )
+            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
+            if( account->getSetting( _setting, setting_value ) == false )
             {
-                LOGGER_ERROR( "getAccountSettingUInt account '%s'can't scanf from '%s'"
+                LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()
                     , _setting.c_str()
+                );
+
+                return _kernel->ret_none();
+            }
+
+            uint32_t value;
+            if( Helper::charsToUnsigned( setting_value, value ) == false )
+            {
+                LOGGER_ERROR( "account '%s' setting '%s' can't scanf from '%s'"
+                    , _accountID.c_str()
+                    , _setting.c_str()
+                    , setting_value
                 );
 
                 return _kernel->ret_none();
@@ -2106,14 +2140,24 @@ namespace Mengine
                 return _kernel->ret_none();
             }
 
-            const WString & setting = account->getSetting( _setting );
-
-            uint64_t value;
-            if( Helper::wstringToUnsigned64( setting, value ) == false )
+            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
+            if( account->getSetting( _setting, setting_value ) == false )
             {
-                LOGGER_ERROR( "getAccountSettingUInt64 account '%s' can't scanf from '%s'"
+                LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()
                     , _setting.c_str()
+                );
+
+                return _kernel->ret_none();
+            }
+
+            uint64_t value;
+            if( Helper::charsToUnsigned64( setting_value, value ) == false )
+            {
+                LOGGER_ERROR( "account '%s' setting '%s' can't scanf from '%s'"
+                    , _accountID.c_str()
+                    , _setting.c_str()
+                    , setting_value
                 );
 
                 return _kernel->ret_none();
@@ -2138,17 +2182,31 @@ namespace Mengine
                 return _kernel->ret_none();
             }
 
-            const WString & setting = account->getSetting( _setting );
+            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
+            if( account->getSetting( _setting, setting_value ) == false )
+            {
+                LOGGER_ERROR( "account '%s' setting '%s' not found"
+                    , _accountID.c_str()
+                    , _setting.c_str()
+                );
 
-            if( setting.empty() == true )
+                return _kernel->ret_none();
+            }
+
+            size_t setting_value_len = strlen( setting_value );
+
+            if( setting_value_len == 0 )
             {
                 pybind::list l( _kernel );
 
                 return l.ret();
             }
 
+            WChar setting_valueW[MENGINE_ACCOUNT_SETTING_MAXVALUE];
+            Helper::utf8ToUnicode( setting_value, setting_valueW, MENGINE_ACCOUNT_SETTING_MAXVALUE );
+
             VectorWString strings;
-            Helper::wsplit( strings, setting, true, L" ,,, " );
+            Helper::wsplit( strings, setting_valueW, true, L" ,,, " );
 
             pybind::list l = pybind::make_list_container_t( _kernel, strings );
 
@@ -2169,14 +2227,24 @@ namespace Mengine
                 return _kernel->ret_none();
             }
 
-            const WString & setting = account->getSetting( _setting );
-
-            float value;
-            if( Helper::wstringToFloat( setting, value ) == false )
+            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
+            if( account->getSetting( _setting, setting_value ) == false )
             {
-                LOGGER_ERROR( "getAccountSettingFloat account '%s' can't scanf from '%s'"
+                LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()
                     , _setting.c_str()
+                );
+
+                return _kernel->ret_none();
+            }
+
+            float value;
+            if( Helper::charsToFloat( setting_value, value ) == false )
+            {
+                LOGGER_ERROR( "account '%s' setting '%s' can't scanf from '%s'"
+                    , _accountID.c_str()
+                    , _setting.c_str()
+                    , setting_value
                 );
 
                 return _kernel->ret_none();
@@ -2206,14 +2274,24 @@ namespace Mengine
                 return _default;
             }
 
-            const WString & setting = account->getSetting( _setting );
-
-            float value;
-            if( Helper::wstringToFloat( setting, value ) == false )
+            Char setting_value[MENGINE_ACCOUNT_SETTING_MAXVALUE];
+            if( account->getSetting( _setting, setting_value ) == false )
             {
-                LOGGER_ERROR( "getAccountSettingFloatDefault account '%s' can't scanf from '%s'"
+                LOGGER_ERROR( "account '%s' setting '%s' not found"
                     , _accountID.c_str()
                     , _setting.c_str()
+                );
+
+                return _default;
+            }
+
+            float value;
+            if( Helper::charsToFloat( setting_value, value ) == false )
+            {
+                LOGGER_ERROR( "account '%s' setting '%s' can't scanf from '%s'"
+                    , _accountID.c_str()
+                    , _setting.c_str()
+                    , setting_value
                 );
 
                 return _default;
@@ -2702,15 +2780,27 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         mt::vec2f s_getNodeScreenPosition( const NodePtr & _node )
         {
-            const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _node.get() );
+            RenderViewportInterfacePtr viewport = Helper::getNodeRenderViewportInheritance( _node.get() );
+
+            if( viewport == nullptr )
+            {
+                viewport = PLAYER_SERVICE()
+                    ->getRenderViewport();
+            }
+
+            RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( _node.get() );
+
+            if( camera == nullptr )
+            {
+                camera = PLAYER_SERVICE()
+                    ->getRenderCamera();
+            }
 
             const Viewport & vp = viewport->getViewport();
-
-            const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _node.get() );
+            
+            const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
 
             const mt::mat4f & wm = _node->getWorldMatrix();
-
-            const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
 
             mt::mat4f wvpm;
             mt::mul_m4_m4( wvpm, wm, vpm );
@@ -3085,9 +3175,9 @@ namespace Mengine
         pybind::def_functor_kernel( kernel, "getSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getSettingStrings );
         pybind::def_functor( kernel, "getSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getSettingFloatDefault );
 
-        pybind::def_functor_args( kernel, "addSetting", helperScriptMethod, &HelperScriptMethod::s_addSetting );
+        pybind::def_functor_kernel_args( kernel, "addSetting", helperScriptMethod, &HelperScriptMethod::s_addSetting );
         pybind::def_functor( kernel, "hasSetting", helperScriptMethod, &HelperScriptMethod::s_hasSetting );
-        pybind::def_functor( kernel, "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );
+        pybind::def_functor_kernel( kernel, "changeSetting", helperScriptMethod, &HelperScriptMethod::s_changeSetting );
         pybind::def_functor( kernel, "changeSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeSettingBool );
         pybind::def_functor( kernel, "changeSettingInt", helperScriptMethod, &HelperScriptMethod::s_changeSettingInt );
         pybind::def_functor( kernel, "changeSettingUInt", helperScriptMethod, &HelperScriptMethod::s_changeSettingUInt );
@@ -3106,9 +3196,9 @@ namespace Mengine
         pybind::def_functor_kernel( kernel, "getAccountSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingStrings );
         pybind::def_functor( kernel, "getAccountSettingFloatDefault", helperScriptMethod, &HelperScriptMethod::s_getAccountSettingFloatDefault );
 
-        pybind::def_functor_args( kernel, "addAccountSetting", helperScriptMethod, &HelperScriptMethod::s_addAccountSetting );
+        pybind::def_functor_kernel_args( kernel, "addAccountSetting", helperScriptMethod, &HelperScriptMethod::s_addAccountSetting );
         pybind::def_functor( kernel, "hasAccountSetting", helperScriptMethod, &HelperScriptMethod::s_hasAccountSetting );
-        pybind::def_functor( kernel, "changeAccountSetting", helperScriptMethod, &HelperScriptMethod::s_changeAccountSetting );
+        pybind::def_functor_kernel( kernel, "changeAccountSetting", helperScriptMethod, &HelperScriptMethod::s_changeAccountSetting );
         pybind::def_functor( kernel, "changeAccountSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingBool );
         pybind::def_functor( kernel, "changeAccountSettingInt", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingInt );
         pybind::def_functor( kernel, "changeAccountSettingUInt", helperScriptMethod, &HelperScriptMethod::s_changeAccountSettingUInt );
@@ -3126,9 +3216,9 @@ namespace Mengine
         pybind::def_functor_kernel( kernel, "getGlobalSettingFloat", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingFloat );
         pybind::def_functor_kernel( kernel, "getGlobalSettingStrings", helperScriptMethod, &HelperScriptMethod::s_getGlobalSettingStrings );
 
-        pybind::def_functor_args( kernel, "addGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_addGlobalSetting );
+        pybind::def_functor_kernel_args( kernel, "addGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_addGlobalSetting );
         pybind::def_functor( kernel, "hasGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_hasGlobalSetting );
-        pybind::def_functor( kernel, "changeGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSetting );
+        pybind::def_functor_kernel( kernel, "changeGlobalSetting", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSetting );
         pybind::def_functor( kernel, "changeGlobalSettingBool", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingBool );
         pybind::def_functor( kernel, "changeGlobalSettingInt", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingInt );
         pybind::def_functor( kernel, "changeGlobalSettingUint", helperScriptMethod, &HelperScriptMethod::s_changeGlobalSettingUInt );

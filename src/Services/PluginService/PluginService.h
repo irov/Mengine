@@ -24,7 +24,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool loadPlugin( const WString & _dllName ) override;
+        bool loadPlugin( const Char * _dllName ) override;
         bool createPlugin( const DynamicLibraryInterfacePtr & _dlib, TPluginCreate _create, bool _dynamic ) override;
 
     public:

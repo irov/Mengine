@@ -666,8 +666,8 @@ namespace Mengine
             IniUtil::writeIniSetting( file, "SelectAccountID", m_currentAccountID );
         }
 
-        WString AccountEnumerator;
-        Helper::unsignedToWString( m_playerEnumerator, AccountEnumerator );
+        String AccountEnumerator;
+        Helper::unsignedToString( m_playerEnumerator, AccountEnumerator );
 
         IniUtil::writeIniSetting( file, "AccountEnumerator", AccountEnumerator );
 

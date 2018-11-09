@@ -68,7 +68,7 @@ namespace Mengine
         SERVICE_DECLARE( "PluginService" )
 
     public:
-        virtual bool loadPlugin( const WString & _dllName ) = 0;
+        virtual bool loadPlugin( const Char * _dllName ) = 0;
         virtual bool createPlugin( const DynamicLibraryInterfacePtr & _dlib, TPluginCreate _create, bool _dynamic ) = 0;
 
     public:

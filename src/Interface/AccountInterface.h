@@ -12,6 +12,10 @@
 
 #include "Config/String.h"
 
+#ifndef MENGINE_ACCOUNT_SETTING_MAXVALUE
+#define MENGINE_ACCOUNT_SETTING_MAXVALUE 1024
+#endif
+
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -21,7 +25,7 @@ namespace Mengine
 		: public Mixin
 	{
 	public:
-		virtual void onChangeSetting( const WString& _value ) = 0;
+		virtual void onChangeSetting( const Char * _value ) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////
 	typedef IntrusivePtr<AccountSettingProviderInterface> AccountSettingProviderInterfacePtr;
@@ -38,9 +42,9 @@ namespace Mengine
         virtual const String & getUID() const = 0;
 
     public:
-        virtual bool addSetting( const ConstString & _setting, const WString& _defaultValue, const AccountSettingProviderInterfacePtr & _provider ) = 0;
-        virtual bool changeSetting( const ConstString & _setting, const WString& _value ) = 0;
-        virtual WString getSetting( const ConstString & _setting ) const = 0;
+        virtual bool addSetting( const ConstString & _setting, const Char * _defaultValue, const AccountSettingProviderInterfacePtr & _provider ) = 0;
+        virtual bool changeSetting( const ConstString & _setting, const Char * _value ) = 0;
+        virtual bool getSetting( const ConstString & _setting, Char * _value ) const = 0;
         virtual bool hasSetting( const ConstString & _setting ) const = 0;
 
     public:

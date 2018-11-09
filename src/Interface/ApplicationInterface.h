@@ -15,6 +15,14 @@
 #include "Interface/GameServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
 
+#ifndef MENGINE_APPLICATION_COMPANY_MAXNAME
+#define MENGINE_APPLICATION_COMPANY_MAXNAME 256
+#endif
+
+#ifndef MENGINE_APPLICATION_PROJECT_MAXNAME
+#define MENGINE_APPLICATION_PROJECT_MAXNAME 256
+#endif
+
 namespace Mengine
 {
     class ApplicationInterface
@@ -56,8 +64,8 @@ namespace Mengine
         virtual bool loadPersonality() = 0;
 
     public:
-        virtual const WString & getCompanyName() const = 0;
-        virtual const WString & getProjectName() const = 0;
+        virtual void getCompanyName( Char * _companyName ) const = 0;
+        virtual void getProjectName( Char * _projectName ) const = 0;
 
     public:
         virtual const ConstString & getProjectCodename() const = 0;

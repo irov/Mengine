@@ -23,6 +23,7 @@ namespace Mengine
 
         bool intToString( int32_t _value, String & _str );
         bool unsignedToString( uint32_t _value, String & _str );
+        bool unsigned64ToString( uint64_t _value, String & _str );
         bool floatToString( float _value, String & _str );
 
         bool intToWString( int32_t _value, WString & _str );
@@ -32,7 +33,12 @@ namespace Mengine
 
         bool stringToInt( const String & _str, int32_t & _value );
         bool stringToUnsigned( const String & _str, uint32_t & _value );
-        bool wstringToFloat( const String & _str, float & _value );
+        bool stringToFloat( const String & _str, float & _value );
+
+        bool charsToInt( const Char * _str, int32_t & _value );
+        bool charsToUnsigned( const Char * _str, uint32_t & _value );
+        bool charsToUnsigned64( const Char * _str, uint64_t & _value );
+        bool charsToFloat( const Char * _str, float & _value );
 
         bool wstringToInt( const WString & _str, int32_t & _value );
         bool wstringToInt2( const WString & _str, int32_t & _value1, int32_t & _value2, bool _separator );

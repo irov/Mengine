@@ -4,6 +4,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
@@ -84,20 +85,25 @@ namespace Mengine
     {
         m_frames = 0;
 
-        WString d3d9_dll = CONFIG_VALUE( "Render", "D3D9_DLL", L"d3d9.dll" );
+        String utf8_d3d9DLL = CONFIG_VALUE( "Render", "D3D9_DLL", "d3d9.dll" );
 
-        m_hd3d9 = ::LoadLibrary( d3d9_dll.c_str() );
+        WString unicode_d3d9DLL;
+        Helper::utf8ToUnicode( utf8_d3d9DLL, unicode_d3d9DLL );
+
+        m_hd3d9 = ::LoadLibrary( unicode_d3d9DLL.c_str() );
 
         if( m_hd3d9 == nullptr )
         {
-            LOGGER_ERROR( "Failed to load d3d9.dll"
+            LOGGER_ERROR( "Failed to load d3d9 dll '%s'"
+                , utf8_d3d9DLL.c_str()
             );
 
             return false;
         }
 
         PDIRECT3DCREATE9 pDirect3DCreate9 = (PDIRECT3DCREATE9)::GetProcAddress( m_hd3d9, "Direct3DCreate9" );
-        if( pDirect3DCreate9 == NULL )
+
+        if( pDirect3DCreate9 == nullptr )
         {
             LOGGER_ERROR( "Failed to get Direct3DCreate9 proc address"
             );

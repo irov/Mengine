@@ -115,14 +115,8 @@ namespace Mengine
         accountString.append( _folderName );
         accountString.append( '/' );
 
-        WString unicode_folderPath;
-        if( Helper::utf8ToUnicode( accountString, unicode_folderPath ) == false )
-        {
-            return false;
-        }
-
         if( PLATFORM_SERVICE()
-            ->existDirectory( unicode_folderPath ) == false )
+            ->existDirectory( accountString.c_str() ) == false )
         {
             return false;
         }
@@ -140,20 +134,14 @@ namespace Mengine
         accountString.append( folderPath );
         accountString.append( _folderName );
 
-        WString unicode_folderPath;
-        if( Helper::utf8ToUnicode( accountString, unicode_folderPath ) == false )
-        {
-            return false;
-        }
-
         if( PLATFORM_SERVICE()
-            ->existDirectory( unicode_folderPath ) == true )
+            ->existDirectory( accountString.c_str() ) == true )
         {
             return true;
         }
 
         if( PLATFORM_SERVICE()
-            ->createDirectory( unicode_folderPath ) == false )
+            ->createDirectory( accountString.c_str() ) == false )
         {
             return false;
         }

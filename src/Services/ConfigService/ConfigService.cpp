@@ -167,11 +167,6 @@ namespace Mengine
         return Helper::s_getValueT<String>( m_ini, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    WString ConfigService::getValue( const char * _section, const char * _key, const WChar * _default ) const
-    {
-        return Helper::s_getValueT<WString>( m_ini, m_platformTags, _section, _key, _default );
-    }
-    //////////////////////////////////////////////////////////////////////////
     ConstString ConfigService::getValue( const Char * _section, const Char * _key, const ConstString & _default ) const
     {
         return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
@@ -192,17 +187,12 @@ namespace Mengine
         Helper::s_calcValueT( m_ini, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConfigService::getValues( const Char * _section, const Char * _key, VectorWString & _value ) const
-    {
-        Helper::s_calcValueT( m_ini, m_platformTags, _section, _key, _value );
-    }
-    //////////////////////////////////////////////////////////////////////////
     void ConfigService::getValues( const Char * _section, const Char * _key, VectorString & _value ) const
     {
         Helper::s_calcValueT( m_ini, m_platformTags, _section, _key, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConfigService::getSection( const Char * _section, MapWParams & _params ) const
+    void ConfigService::getSection( const Char * _section, MapParams & _params ) const
     {
         IniUtil::getIniAllSettings( m_ini, _section, _params );
     }

@@ -256,10 +256,9 @@ namespace Mengine
             PLUGIN_CREATE( Win32FileGroup );
         }
 
-        WChar currentPath[MENGINE_MAX_PATH];
-
+        Char currentPath[MENGINE_MAX_PATH];
         size_t currentPathLen = PLATFORM_SERVICE()
-            ->getCurrentPath( currentPath, MENGINE_MAX_PATH );
+            ->getCurrentPath( currentPath );
 
         if( currentPathLen == 0 )
         {
@@ -269,17 +268,7 @@ namespace Mengine
             return false;
         }
 
-        String utf8_currentPath;
-        if( Helper::unicodeToUtf8Size( currentPath, currentPathLen, utf8_currentPath ) == false )
-        {
-            LOGGER_ERROR( "WinApplication::setupFileService: failed to convert %ls to utf8"
-                , currentPath
-            );
-
-            return false;
-        }
-
-        LOGGER_WARNING( "Current Path %ls"
+        LOGGER_WARNING( "Current Path '%s'"
             , currentPath
         );
 
@@ -308,46 +297,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::makeUserPath_( WString & _wstring ) const
-    {
-        _wstring.clear();
-
-        WChar userPath[MENGINE_MAX_PATH];
-        size_t userPathLen = PLATFORM_SERVICE()
-            ->getUserPath( userPath, MENGINE_MAX_PATH );
-
-        if( userPathLen == 0 )
-        {
-            return false;
-        }
-
-        _wstring.assign( userPath, userPathLen );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Win32Application::initializeUserDirectory_()
     {
-        //m_tempPath.clear();
-        WString userPath;
-        this->makeUserPath_( userPath );
-
-        String utf8_userPath;
-        if( Helper::unicodeToUtf8( userPath, utf8_userPath ) == false )
-        {
-            LOGGER_ERROR( "WinApplication: failed user directory %ls convert to ut8f"
-                , userPath.c_str()
-            );
-
-            return false;
-        }
+        Char userPath[MENGINE_MAX_PATH] = { 0 };
+        size_t userPathLen = PLATFORM_SERVICE()
+            ->getUserPath( userPath );
 
         // mount user directory
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, Helper::stringizeFilePath( utf8_userPath ), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, Helper::stringizeFilePath( userPath, userPathLen ), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
         {
             LOGGER_ERROR( "WinApplication: failed to mount user directory %ls"
-                , userPath.c_str()
+                , userPath
             );
 
             return false;
@@ -648,8 +609,9 @@ namespace Mengine
 
             if( developmentMode == true && (roamingMode == false || noroamingMode == true) )
             {
-                WString userPath;
-                this->makeUserPath_( userPath );
+                Char userPath[MENGINE_MAX_PATH] = { 0 };
+                PLATFORM_SERVICE()
+                    ->getUserPath( userPath );
 
                 CriticalErrorsMonitor::run( userPath );
             }
@@ -773,13 +735,13 @@ namespace Mengine
 
 #	undef MENGINE_ADD_PLUGIN
 
-        VectorWString plugins;
+        VectorString plugins;
         CONFIG_VALUES( "Plugins", "Name", plugins );
 
-        for( const WString & pluginName : plugins )
+        for( const String & pluginName : plugins )
         {
             if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName ) == false )
+                ->loadPlugin( pluginName.c_str() ) == false )
             {
                 LOGGER_CRITICAL( "Application Failed to load plugin %ls"
                     , pluginName.c_str()
@@ -804,13 +766,13 @@ namespace Mengine
 
         if( devplugins == true && nodevplugins == false )
         {
-            VectorWString devPlugins;
+            VectorString devPlugins;
             CONFIG_VALUES( "DevPlugins", "Name", devPlugins );
 
-            for( const WString & pluginName : devPlugins )
+            for( const String & pluginName : devPlugins )
             {
                 if( PLUGIN_SERVICE()
-                    ->loadPlugin( pluginName ) == false )
+                    ->loadPlugin( pluginName.c_str() ) == false )
                 {
                     LOGGER_WARNING( "Application Failed to load dev plugin %ls"
                         , pluginName.c_str()
@@ -909,16 +871,8 @@ namespace Mengine
             projectTitle = entry->getValue();
         }
 
-        WString wprojectTitle;
-        if( Helper::utf8ToUnicodeSize( projectTitle.c_str(), projectTitle.size(), wprojectTitle ) == false )
-        {
-            LOGGER_ERROR( "Application project title %s not convert to unicode"
-                , projectTitle.c_str()
-            );
-        }
-
         PLATFORM_SERVICE()
-            ->setProjectTitle( wprojectTitle );
+            ->setProjectTitle( projectTitle.c_str() );
 
         Resolution windowResolution;
         APPLICATION_SERVICE()

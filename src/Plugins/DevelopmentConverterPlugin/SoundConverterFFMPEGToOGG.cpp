@@ -34,37 +34,18 @@ namespace Mengine
         String full_output = pakPath.c_str();
         full_output += m_options.outputFileName.c_str();
 
-        WString unicode_input;
-        if( Helper::utf8ToUnicode( full_input, unicode_input ) == false )
-        {
-            LOGGER_ERROR( "invalid convert input utf8 to unicode %s"
-                , full_input.c_str()
-            );
+        String buffer = "ffmpeg -loglevel error -y -threads 4 -i \"" + full_input + "\" -map_metadata -1 -ac 2 -ar 44100 -acodec libvorbis -aq 100 \"" + full_output + "\"";
 
-            return false;
-        }
-
-        WString unicode_output;
-        if( Helper::utf8ToUnicode( full_output, unicode_output ) == false )
-        {
-            LOGGER_ERROR( "invalid convert output utf8 to unicode %s"
-                , full_output.c_str()
-            );
-
-            return false;
-        }
-
-        WString buffer = L"ffmpeg -loglevel error -y -threads 4 -i \"" + unicode_input + L"\" -map_metadata -1 -ac 2 -ar 44100 -acodec libvorbis -aq 100 \"" + unicode_output + L"\"";
-
-        LOGGER_WARNING( "converting file '%ls' to '%ls'"
-            , unicode_input.c_str()
-            , unicode_output.c_str()
+        LOGGER_WARNING( "converting file '%s' to '%s'"
+            , full_input.c_str()
+            , full_output.c_str()
         );
 
         if( PLATFORM_SERVICE()
-            ->cmd( buffer ) == false )
+            ->cmd( buffer.c_str() ) == false )
         {
-            LOGGER_ERROR( "invalid convert:"
+            LOGGER_ERROR( "invalid convert:\n%s"
+                , buffer.c_str()
             );
 
             return false;

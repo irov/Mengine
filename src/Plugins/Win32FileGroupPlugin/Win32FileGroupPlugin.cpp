@@ -2,7 +2,6 @@
 
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileSystemInterface.h"
-#include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/FactoryDefault.h"
@@ -60,14 +59,11 @@ namespace Mengine
                 , new Detail::Win32FileGroupDirectoryFactory( STRINGIZE_FILEPATH_LOCAL( "" ) )
             );
 
-        WChar currentPathW[MENGINE_MAX_PATH];
+        Char currentPath[MENGINE_MAX_PATH];
         PLATFORM_SERVICE()
-            ->getCurrentPath( currentPathW, MENGINE_MAX_PATH );
+            ->getCurrentPath( currentPath );
 
-        String utf8_currentPath;
-        Helper::unicodeToUtf8( currentPathW, utf8_currentPath );
-
-        FilePath relationPath = Helper::stringizeFilePath( utf8_currentPath );
+        FilePath relationPath = Helper::stringizeFilePath( currentPath );
 
         FILE_SERVICE()
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "dir" )

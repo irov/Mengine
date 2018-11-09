@@ -31,14 +31,11 @@ namespace Mengine
                 , new SDLFileGroupDirectoryFactory( STRINGIZE_FILEPATH_LOCAL( "" ) )
             );
 
-        WChar currentPathW[MENGINE_MAX_PATH];
-        PLATFORM_SERVICE()
-            ->getCurrentPath( currentPathW, MENGINE_MAX_PATH );
+        Char utf8_currentPath[MENGINE_MAX_PATH];
+        size_t utf8_currentPathLen = PLATFORM_SERVICE()
+            ->getCurrentPath( utf8_currentPath );
 
-        String utf8_currentPath;
-        Helper::unicodeToUtf8( currentPathW, utf8_currentPath );
-
-        FilePath relationPath = Helper::stringizeFilePath( utf8_currentPath );
+        FilePath relationPath = Helper::stringizeFilePath( utf8_currentPath, utf8_currentPathLen );
 
         FILE_SERVICE()
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "dir" )

@@ -19,6 +19,10 @@ namespace Mengine
     {
         void nodeRenderChildrenVisitor( const NodePtr & _node, const RenderVisitorPtr & _visitor, const RenderContext * _context );        
         RenderInterface * getNodeRenderInheritance( Node * _node );
+        const RenderViewportInterfacePtr & getRenderViewportInheritance( RenderInterface * _render );
+        const RenderCameraInterfacePtr & getRenderCameraInheritance( RenderInterface * _render );
+        const RenderScissorInterfacePtr & getRenderScissorInheritance( RenderInterface * _render );
+        const RenderTargetInterfacePtr & getRenderTargetInheritance( RenderInterface * _render );
         const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( Node * _node );
         const RenderCameraInterfacePtr & getNodeRenderCameraInheritance( Node * _node );
         const RenderScissorInterfacePtr & getNodeRenderScissorInheritance( Node * _node );

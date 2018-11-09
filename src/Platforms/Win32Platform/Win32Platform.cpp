@@ -30,7 +30,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_WINDOW_CLASSNAME
-#	define MENGINE_WINDOW_CLASSNAME (L"MengineWindow")
+#define MENGINE_WINDOW_CLASSNAME (L"MengineWindow")
 #endif
     //////////////////////////////////////////////////////////////////////////
     Win32Platform::Win32Platform()
@@ -55,6 +55,7 @@ namespace Mengine
         , m_lastMouseY( 0 )
         , m_touchpad( false )
     {
+        m_projectTitle[0] = '\0';
     }
     //////////////////////////////////////////////////////////////////////////
     Win32Platform::~Win32Platform()
@@ -365,19 +366,35 @@ namespace Mengine
         return m_icon;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::setProjectTitle( const WString & _projectTitle )
+    void Win32Platform::setProjectTitle( const Char * _projectTitle )
     {
-        m_projectTitle = _projectTitle;
+        Helper::utf8ToUnicode( _projectTitle, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
-    const WString & Win32Platform::getProjectTitle() const
+    void Win32Platform::getProjectTitle( Char * _projectTitle ) const
     {
-        return m_projectTitle;
+        Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getShortPathName( const WString & _path, WChar * _shortpath, size_t _len ) const
+    size_t Win32Platform::getShortPathName( const Char * _path, Char * _shortpath, size_t _len ) const
     {
-        DWORD len = GetShortPathName( _path.c_str(), _shortpath, (DWORD)_len );
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            LOGGER_ERROR( "invalid convert path to unicode" );
+
+            return 0;
+        }
+
+        WChar unicode_shortpath[MENGINE_MAX_PATH] = { 0 };
+        DWORD len = GetShortPathName( unicode_path, unicode_shortpath, (DWORD)_len );
+
+        if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH ) == false )
+        {
+            LOGGER_ERROR( "invalid convert shortpath to utf8" );
+
+            return 0;
+        }
 
         return (size_t)len;
     }
@@ -1033,7 +1050,7 @@ namespace Mengine
         DWORD exStyle = _fullscreen ? WS_EX_TOPMOST : 0;
         //DWORD exStyle = 0;
 
-        m_hWnd = ::CreateWindowEx( exStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle.c_str()
+        m_hWnd = ::CreateWindowEx( exStyle, MENGINE_WINDOW_CLASSNAME, m_projectTitle
             , dwStyle
             , rc.left, rc.top, rc.right - rc.left, rc.bottom - rc.top
             , NULL, NULL, m_hInstance, (LPVOID)this );
@@ -1389,10 +1406,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::existDirectory( const WString & _path ) const
+    bool Win32Platform::existDirectory( const Char * _path ) const
     {
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
         WChar fullPath[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( fullPath, _path.c_str() );
+        Helper::pathCorrectBackslash( fullPath, unicode_path );
 
         Helper::pathRemoveFileSpec( fullPath );
 
@@ -1418,13 +1441,28 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createDirectory( const WString & _path )
+    bool Win32Platform::createDirectory( const Char * _path )
     {
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        bool result = this->createDirectory_( unicode_path );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::createDirectory_( const WChar * _path )
+    {
+        size_t unicode_pathSize = wcslen( _path );
+
         WChar fullPath[MENGINE_MAX_PATH];
 
-        if( _path.empty() == false )
+        if( unicode_pathSize != 0 )
         {
-            Helper::pathCorrectBackslash( fullPath, _path.c_str() );
+            Helper::pathCorrectBackslash( fullPath, _path );
 
             Helper::pathRemoveFileSpec( fullPath );
 
@@ -1508,12 +1546,26 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::existFile( const WChar * _path )
+    bool Win32Platform::existFile( const Char * _path )
+    {
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        bool result = this->existFile_( unicode_path );
+
+        return result;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::existFile_( const WChar * _path )
     {
         WChar pathCorrect[MENGINE_MAX_PATH];
         Helper::pathCorrectBackslash( pathCorrect, _path );
 
         size_t len = wcslen( pathCorrect );
+
         if( len == 0 )	// current dir
         {
             return true;
@@ -1534,16 +1586,28 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::removeFile( const WChar * _path )
+    bool Win32Platform::removeFile( const Char * _path )
     {
-        WChar userPath[MENGINE_MAX_PATH];
-        this->getUserPath( userPath, MENGINE_MAX_PATH );
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        Char userPath[MENGINE_MAX_PATH];
+        this->getUserPath( userPath );
+
+        WChar unicode_userPath[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( userPath, unicode_userPath, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
 
         WChar pathCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( pathCorrect, _path );
+        Helper::pathCorrectBackslash( pathCorrect, unicode_path );
 
         WChar fullPath[MENGINE_MAX_PATH];
-        wcscpy( fullPath, userPath );
+        wcscpy( fullPath, unicode_userPath );
         wcscat( fullPath, pathCorrect );
 
         if( DeleteFile( fullPath ) == FALSE )
@@ -1561,32 +1625,31 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t Win32Platform::getFileTime( const WString & _path ) const
+    uint64_t Win32Platform::getFileTime( const Char * _path ) const
     {
         (void)_path;
 
         return 0U;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WString & _path, const WString & _file, const void * _data, size_t _size )
+    bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size )
     {
-        WChar szPath[MENGINE_MAX_PATH] = { 0 };
-
+        WChar szPath[MENGINE_MAX_PATH];
         PathAppend( szPath, _userPath );
 
         WChar pathCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( pathCorrect, _path.c_str() );
+        Helper::pathCorrectBackslash( pathCorrect, _path );
 
         WChar fileCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( fileCorrect, _file.c_str() );
+        Helper::pathCorrectBackslash( fileCorrect, _file );
 
         PathAppend( szPath, pathCorrect );
 
-        if( this->existFile( szPath ) == false )
+        if( this->existFile_( szPath ) == false )
         {
-            if( this->createDirectory( szPath ) == false )
+            if( this->createDirectory_( szPath ) == false )
             {
-                LOGGER_ERROR( "Win32Platform::createDirectoryUser_: %ls:%ls invalid createDirectory %s"
+                LOGGER_ERROR( "%ls:%ls invalid createDirectory %s"
                     , pathCorrect
                     , fileCorrect
                     , szPath
@@ -1603,7 +1666,7 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "Win32Platform::createDirectoryUser_: %ls:%ls invalid createFile %s"
+            LOGGER_ERROR( "%ls:%ls invalid createFile %s"
                 , pathCorrect
                 , fileCorrect
                 , szPath
@@ -1619,7 +1682,7 @@ namespace Mengine
 
         if( result == FALSE )
         {
-            LOGGER_ERROR( "Win32Platform::createDirectoryUser_: %ls:%ls invalid writeFile %s"
+            LOGGER_ERROR( "%ls:%ls invalid writeFile %s"
                 , pathCorrect
                 , fileCorrect
                 , szPath
@@ -1631,8 +1694,20 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size )
+    bool Win32Platform::createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size )
     {
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar unicode_file[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _file, unicode_file, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
         WCHAR szPath[MENGINE_MAX_PATH];
 
         if( FAILED( SHGetFolderPath( NULL
@@ -1641,19 +1716,19 @@ namespace Mengine
             , 0
             , szPath ) ) )
         {
-            LOGGER_ERROR( "Win32Platform::createDirectoryUserPicture: '%ls:%ls' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
-                , _path.c_str()
-                , _file.c_str()
+            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_PICTURES"
+                , _path
+                , _file
             );
 
             return false;
         }
 
-        if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
+        if( this->createDirectoryUser_( szPath, unicode_path, unicode_file, _data, _size ) == false )
         {
-            LOGGER_ERROR( "Win32Platform::createDirectoryUserPicture: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
-                , _path.c_str()
-                , _file.c_str()
+            LOGGER_ERROR( "'%s:%s' invalid createDirectoryUser_ '%ls'"
+                , _path
+                , _file
                 , szPath
             );
 
@@ -1663,8 +1738,20 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size )
+    bool Win32Platform::createDirectoryUserMusic( const Char * _path, const Char * _file, const void * _data, size_t _size )
     {
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        WChar unicode_file[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _file, unicode_file, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
         WCHAR szPath[MENGINE_MAX_PATH];
 
         if( FAILED( SHGetFolderPath( NULL
@@ -1673,19 +1760,19 @@ namespace Mengine
             , 0
             , szPath ) ) )
         {
-            LOGGER_ERROR( "Win32Platform::createDirectoryUserMusic: %ls:%ls invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
-                , _path.c_str()
-                , _file.c_str()
+            LOGGER_ERROR( "'%s:%s' invalid SHGetFolderPath CSIDL_COMMON_MUSIC"
+                , _path
+                , _file
             );
 
             return false;
         }
 
-        if( this->createDirectoryUser_( szPath, _path, _file, _data, _size ) == false )
+        if( this->createDirectoryUser_( szPath, unicode_path, unicode_file, _data, _size ) == false )
         {
-            LOGGER_ERROR( "Win32Platform::createDirectoryUserMusic: '%ls:%ls' invalid createDirectoryUser_ '%ls'"
-                , _path.c_str()
-                , _file.c_str()
+            LOGGER_ERROR( "'%s:%s' invalid createDirectoryUser_ '%ls'"
+                , _path
+                , _file
                 , szPath
             );
 
@@ -1695,7 +1782,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::getErrorMessage( uint32_t _messageId, WString & _out ) const
+    bool Win32Platform::getErrorMessage( uint32_t _messageId, Char * _out ) const
     {
         LPTSTR errorText = NULL;
         if( FormatMessage(
@@ -1713,13 +1800,13 @@ namespace Mengine
             0, // minimum size for output buffer
             NULL ) == 0 )
         {
-            _out.clear();
+            _out[0] = '\0';
 
             return false;
         }
         else
         {
-            _out = errorText;
+            Helper::unicodeToUtf8( errorText, _out, 2048 );
 
             LocalFree( errorText );
         }
@@ -1732,16 +1819,17 @@ namespace Mengine
         ::Sleep( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::cmd( const WString & _command )
+    bool Win32Platform::cmd( const Char * _command )
     {
-        const wchar_t * wc = _command.c_str();
-
-        int err = _wsystem( wc );
+        WChar unicode_command[4096];
+        Helper::utf8ToUnicode( _command, unicode_command, 4096 );
+                
+        int err = _wsystem( unicode_command );
 
         if( err != 0 )
         {
-            LOGGER_ERROR( "command:\n%ls\nerror: %d"
-                , _command.c_str()
+            LOGGER_ERROR( "command:\n%s\nerror: %d"
+                , _command
                 , errno
             );
 
@@ -1772,25 +1860,34 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getCurrentPath( WChar * _path, size_t _len ) const
+    size_t Win32Platform::getCurrentPath( Char * _path ) const
     {
-        DWORD len = (DWORD)::GetCurrentDirectory( (DWORD)_len, _path );
+        WChar unicode_path[MENGINE_MAX_PATH];
+        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, unicode_path );
 
         if( len == 0 )
         {
+            _path[0] = '\0';
+
             return 0;
         }
 
-        _path[len] = L'/';
-        _path[len + 1] = L'\0';
+        unicode_path[len] = L'/';
+        unicode_path[len + 1] = L'\0';
 
-        return (size_t)len + 1;
+        size_t path_len;
+        if( Helper::unicodeToUtf8( unicode_path, _path, MENGINE_MAX_PATH, &path_len ) == false )
+        {
+            _path[0] = '\0';
+
+            return 0;
+        }
+
+        return path_len;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getUserPath( WChar * _path, size_t _len ) const
+    size_t Win32Platform::getUserPath( Char * _path ) const
     {
-        (void)_len;
-
         bool developmentMode = HAS_OPTION( "dev" );
         bool roamingMode = HAS_OPTION( "roaming" );
         bool noroamingMode = HAS_OPTION( "noroaming" );
@@ -1804,9 +1901,9 @@ namespace Mengine
             if( len == 0 )
             {
                 LOGGER_ERROR( "WinApplication::makeUserPath_: failed to get current directory"
-                );
+                ); 
 
-                return false;
+                return 0;
             }
 
             currentPath[len] = L'/';
@@ -1815,81 +1912,112 @@ namespace Mengine
             wcscat( currentPath, L"User" );
             wcscat( currentPath, L"/" );
 
-            Helper::pathCorrectBackslash( _path, currentPath );
+            WChar unicode_path[MENGINE_MAX_PATH];
+            Helper::pathCorrectBackslash( unicode_path, currentPath );
 
-            size_t currentPathLen = wcslen( currentPath );
+            size_t currentPathLen;
+            if( Helper::unicodeToUtf8( unicode_path, _path, MENGINE_MAX_PATH, &currentPathLen ) == false )
+            {
+                return 0;
+            }
 
             return currentPathLen;
         }
-        else	// create user directory in ~/Local Settings/Application Data/<uUserPath>/
+
+        LPITEMIDLIST itemIDList;
+
+        HRESULT hr = SHGetSpecialFolderLocation( NULL,
+            CSIDL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
+
+        if( hr != S_OK )
         {
-            LPITEMIDLIST itemIDList;
-
-            HRESULT hr = SHGetSpecialFolderLocation( NULL,
-                CSIDL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
-
-            if( hr != S_OK )
+            LPTSTR errorText = NULL;
+            if( FormatMessage(
+                // use system message tables to retrieve error text
+                FORMAT_MESSAGE_FROM_SYSTEM
+                // allocate buffer on local heap for error text
+                | FORMAT_MESSAGE_ALLOCATE_BUFFER
+                // Important! will fail otherwise, since we're not 
+                // (and CANNOT) pass insertion parameters
+                | FORMAT_MESSAGE_IGNORE_INSERTS,
+                NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
+                hr,
+                MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
+                (LPTSTR)&errorText,  // output 
+                0, // minimum size for output buffer
+                NULL ) == 0 )
             {
-                LPTSTR errorText = NULL;
-                if( FormatMessage(
-                    // use system message tables to retrieve error text
-                    FORMAT_MESSAGE_FROM_SYSTEM
-                    // allocate buffer on local heap for error text
-                    | FORMAT_MESSAGE_ALLOCATE_BUFFER
-                    // Important! will fail otherwise, since we're not 
-                    // (and CANNOT) pass insertion parameters
-                    | FORMAT_MESSAGE_IGNORE_INSERTS,
-                    NULL,    // unused with FORMAT_MESSAGE_FROM_SYSTEM
-                    hr,
-                    MAKELANGID( LANG_NEUTRAL, SUBLANG_DEFAULT ),
-                    (LPTSTR)&errorText,  // output 
-                    0, // minimum size for output buffer
-                    NULL ) == 0 )
-                {
-                    LOGGER_ERROR( "SHGetSpecialFolderLocation invalid '%d'"
-                        , hr
-                    );
-                }
-                else
-                {
-                    LOGGER_ERROR( "SHGetSpecialFolderLocation invalid '%ls' '%d'"
-                        , errorText
-                        , hr
-                    );
-
-                    LocalFree( errorText );
-                }
-
-                return false;
+                LOGGER_ERROR( "SHGetSpecialFolderLocation invalid '%d'"
+                    , hr
+                );
             }
-
-            WChar currentPath[MENGINE_MAX_PATH];
-            BOOL result = SHGetPathFromIDListW( itemIDList, currentPath );
-
-            if( result == FALSE )
+            else
             {
-                LOGGER_ERROR( "SHGetPathFromIDListW invalid"
+                LOGGER_ERROR( "SHGetSpecialFolderLocation invalid '%ls' '%d'"
+                    , errorText
+                    , hr
                 );
 
-                return false;
+                LocalFree( errorText );
             }
 
-            CoTaskMemFree( itemIDList );
-
-            wcscat( currentPath, L"/" );
-            WString wcompany = CONFIG_VALUE( "Project", "Company", L"NONAME" );
-            wcscat( currentPath, wcompany.c_str() );
-            wcscat( currentPath, L"/" );
-            WString wname = CONFIG_VALUE( "Project", "Name", L"UNKNOWN" );
-            wcscat( currentPath, wname.c_str() );
-            wcscat( currentPath, L"/" );
-
-            Helper::pathCorrectBackslash( _path, currentPath );
-
-            size_t currentPathLen = wcslen( _path );
-
-            return currentPathLen;
+            return 0;
         }
+
+        WChar currentPath[MENGINE_MAX_PATH];
+        BOOL result = SHGetPathFromIDListW( itemIDList, currentPath );
+
+        if( result == FALSE )
+        {
+            LOGGER_ERROR( "SHGetPathFromIDListW invalid"
+            );
+
+            return 0;
+        }
+
+        CoTaskMemFree( itemIDList );
+
+        //wcscat( currentPath, L"/" );
+        //String companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
+
+        Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME];
+        APPLICATION_SERVICE()
+            ->getCompanyName( companyName );
+
+        WChar companyNameW[MENGINE_APPLICATION_COMPANY_MAXNAME];
+        if( Helper::utf8ToUnicode( companyName, companyNameW, MENGINE_APPLICATION_COMPANY_MAXNAME ) == false )
+        {
+            return 0;
+        }
+
+        wcscat( currentPath, companyNameW );
+        wcscat( currentPath, L"/" );
+
+        //String projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+
+        Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];
+        APPLICATION_SERVICE()
+            ->getCompanyName( projectName );
+
+        WChar projectNameW[MENGINE_APPLICATION_PROJECT_MAXNAME];
+        if( Helper::utf8ToUnicode( projectName, projectNameW, MENGINE_APPLICATION_PROJECT_MAXNAME ) == false )
+        {
+            return 0;
+        }
+
+        wcscat( currentPath, projectNameW );
+        wcscat( currentPath, L"/" );
+
+        WChar unicode_path[MENGINE_MAX_PATH];
+        Helper::pathCorrectBackslash( unicode_path, currentPath );
+
+        size_t currentPathLen;
+        if( Helper::unicodeToUtf8( unicode_path, _path, MENGINE_MAX_PATH, &currentPathLen ) == false )
+        {
+            return 0;
+        }
+
+        return currentPathLen;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::minimizeWindow()
@@ -1931,55 +2059,15 @@ namespace Mengine
         return 0.f;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::openUrlInDefaultBrowser( const WString & _url )
+    bool Win32Platform::openUrlInDefaultBrowser( const Char * _url )
     {
-        //size_t cmd_path_size = 0;
-        //wchar_t cmd_path [MENGINE_MAX_PATH];
-        //wchar_t * cmd_path = _wgetenv( L"COMSPEC" );
+        WChar unicode_url[4096];
+        if( Helper::utf8ToUnicode( _url, unicode_url, 4096 ) == false )
+        {
+            return false;
+        }
 
-        //WString params = L"/c start \"";
-        //params += _url;
-        //params += L"\"";
-
-        //STARTUPINFO startup_info;
-        //memset( &startup_info, 0, sizeof( startup_info ) );
-        //startup_info.cb = sizeof( startup_info );
-        //startup_info.wShowWindow = SW_HIDE;
-        //startup_info.dwFlags |= STARTF_USESHOWWINDOW;
-
-        //PROCESS_INFORMATION process_info;
-        //memset( &process_info, 0, sizeof( process_info ) );
-
-        //WCHAR lpCommandLine[32768] = {0};
-        //wcscpy( lpCommandLine, params.c_str() );
-
-        //BOOL result = ::CreateProcess(
-        //	cmd_path,          // path
-        //	lpCommandLine, // command line
-        //	NULL,            // process attributes
-        //	NULL,            // thread attributes
-        //	FALSE,            // inherit handles
-        //	NORMAL_PRIORITY_CLASS,    // creation flags
-        //	NULL,            // environment
-        //	NULL,            // current directory
-        //	&startup_info,        // startup info structure
-        //	&process_info        // process info structure
-        //	);
-
-        //LOGGER_WARNING("WinApplication::openUrlInDefaultBrowser %ls %d"
-        //	, _url.c_str()
-        //	, result
-        //	);
-
-        //if( result == FALSE )
-        //{
-        //	return false;
-        //}
-
-  //      CloseHandle( process_info.hProcess );
-  //      CloseHandle( process_info.hThread );
-
-        ShellExecute( NULL, L"open", _url.c_str(), NULL, NULL, SW_SHOWNORMAL );
+        ShellExecute( NULL, L"open", unicode_url, NULL, NULL, SW_SHOWNORMAL );
 
         return true;
     }

@@ -72,23 +72,6 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, WString & _value )
-        {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
-
-            if( ini_value == nullptr )
-            {
-                return false;
-            }
-
-            if( Helper::utf8ToUnicodeSize( ini_value, UNICODE_UNSIZE, _value ) == false )
-            {
-                return false;
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, String & _value )
         {
             const Char * ini_value = _ini.getSettingValue( _section, _key );
@@ -367,7 +350,7 @@ namespace Mengine
 
             for( uint32_t index = 0; index != count; ++index )
             {
-                const char * value = _ini.getSettingValues( _section, _key, index );
+                const Char * value = _ini.getSettingValues( _section, _key, index );
 
                 _values.emplace_back( String( value ) );
             }
@@ -381,28 +364,11 @@ namespace Mengine
 
             for( uint32_t index = 0; index != count; ++index )
             {
-                const char * value = _ini.getSettingValues( _section, _key, index );
+                const Char * value = _ini.getSettingValues( _section, _key, index );
 
                 ConstString cs = Helper::stringizeString( value );
 
                 _values.emplace_back( cs );
-            }
-
-            return true;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorWString & _values )
-        {
-            uint32_t count = _ini.countSettingValues( _section, _key );
-
-            for( uint32_t index = 0; index != count; ++index )
-            {
-                const char * value = _ini.getSettingValues( _section, _key, index );
-
-                WString w_value;
-                Helper::utf8ToUnicodeSize( value, UNICODE_UNSIZE, w_value );
-
-                _values.emplace_back( w_value );
             }
 
             return true;
@@ -414,7 +380,7 @@ namespace Mengine
 
             for( uint32_t index = 0; index != count; ++index )
             {
-                const char * ini_value = _ini.getSettingValues( _section, _key, index );
+                const Char * ini_value = _ini.getSettingValues( _section, _key, index );
 
                 AspectRatioViewports arv;
 
@@ -442,31 +408,25 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapWParams & _values )
+        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams & _values )
         {
             uint32_t count = _ini.countSettings( _section );
 
             for( uint32_t index = 0; index != count; ++index )
             {
-                const char * key;
-                const char * value;
+                const Char * key;
+                const Char * value;
                 _ini.getSettings( _section, index, &key, &value );
 
                 ConstString c_key = Helper::stringizeString( key );
 
-                WString w_value;
-                if( Helper::utf8ToUnicodeSize( value, UNICODE_UNSIZE, w_value ) == false )
-                {
-                    return false;
-                }
-
-                _values.emplace( c_key, w_value );
+                _values.emplace( c_key, value );
             }
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeIniSection( const OutputStreamInterfacePtr & _file, const char * _section, uint32_t _sectionSize )
+        bool writeIniSection( const OutputStreamInterfacePtr & _file, const Char * _section, uint32_t _sectionSize )
         {
             _file->write( _section, _sectionSize );
             _file->write( "\n", sizeof( "\n" ) - 1 );
@@ -474,7 +434,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const ConstString & _value )
+        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const Char * _key, const ConstString & _value )
         {
             size_t len = strlen( _key );
             _file->write( _key, len );
@@ -486,24 +446,12 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const WString & _value )
+        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const Char * _key, const String & _value )
         {
             size_t len = strlen( _key );
             _file->write( _key, len );
-            _file->write( " = ", sizeof( " = " ) - 1 );
-
-            size_t utf8_size = 0;
-
-            Char utf8_value[512];
-            if( UNICODE_SYSTEM()
-                ->unicodeToUtf8( _value.c_str(), _value.size(), utf8_value, 512, &utf8_size ) == false )
-            {
-                return false;
-            }
-
-            utf8_value[utf8_size] = '\0';
-
-            _file->write( utf8_value, utf8_size );
+            _file->write( " = ", sizeof( " = " ) - 1 );            
+            _file->write( _value.c_str(), _value.size() );
             _file->write( "\n", sizeof( "\n" ) - 1 );
 
             return true;

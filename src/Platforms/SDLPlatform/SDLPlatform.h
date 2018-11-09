@@ -48,8 +48,8 @@ namespace Mengine
         void setIcon( uint32_t _icon ) override;
         uint32_t getIcon() const override;
 
-        void setProjectTitle( const WString & _projectTitle ) override;
-        const WString & getProjectTitle() const override;
+        void setProjectTitle( const Char * _projectTitle ) override;
+        void getProjectTitle( Char * _projectTitle ) const override;
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;
@@ -70,8 +70,8 @@ namespace Mengine
 
         bool setProcessDPIAware() override;
 
-        size_t getCurrentPath( WChar * _path, size_t _len ) const override;
-		size_t getUserPath( WChar * _path, size_t _len ) const override;
+        size_t getCurrentPath( Char * _path ) const override;
+		size_t getUserPath( Char * _path ) const override;
 
         void minimizeWindow() override;
 
@@ -92,33 +92,33 @@ namespace Mengine
         float getJoystickAxis( uint32_t _index ) const override;
 
     public:
-        size_t getShortPathName( const WString & _path, WChar * _short, size_t _len ) const override;
+        size_t getShortPathName( const Char * _path, Char * _short, size_t _len ) const override;
 
     public:
         void getMaxClientResolution( Resolution & _resolution ) const override;
 
     public:
-        bool openUrlInDefaultBrowser( const WString & _url ) override;
+        bool openUrlInDefaultBrowser( const Char * _url ) override;
         
     public:
-		bool existDirectory( const WString & _path ) const override;
-		bool createDirectory(const WString & _path) override;
+		bool existDirectory( const Char * _path ) const override;
+		bool createDirectory(const Char * _path) override;
 
 	public:
-		bool existFile(const WChar * _path) override;
-		bool removeFile( const WChar * _path ) override;
+        bool existFile( const Char * _path ) override;
+        bool removeFile( const Char * _path ) override;
 
 	public:
-		uint64_t getFileTime( const WString & _filePath ) const override;
+		uint64_t getFileTime( const Char * _filePath ) const override;
 
 	public:
-        bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
-        bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) override;
+        bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
+        bool createDirectoryUserMusic( const Char * _path, const Char * _file, const void * _data, size_t _size ) override;
         
     public:
-        bool getErrorMessage( uint32_t _messageId, WString & _out ) const override;
+        bool getErrorMessage( uint32_t _messageId, Char * _out ) const override;
         void sleep( uint32_t _ms ) override;
-        bool cmd( const WString & _command ) override;
+        bool cmd( const Char * _command ) override;
 
     protected:
         void changeWindow_( const Resolution & _resolution, bool _fullscreen );

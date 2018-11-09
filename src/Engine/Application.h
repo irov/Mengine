@@ -127,8 +127,8 @@ namespace Mengine
         uint32_t getDebugMask() const override;
 
     public:
-        const WString & getCompanyName() const override;
-        const WString & getProjectName() const override;
+        void getCompanyName( Char * _companyName ) const override;
+        void getProjectName( Char * _projectName ) const override;
 
     public:
         const ConstString & getProjectCodename() const override;
@@ -221,8 +221,8 @@ namespace Mengine
 
         ResourceCursorPtr m_cursorResource;
 
-        WString m_companyName;
-        WString m_projectName;
+        String m_companyName;
+        String m_projectName;
 
         ConstString m_locale;
 

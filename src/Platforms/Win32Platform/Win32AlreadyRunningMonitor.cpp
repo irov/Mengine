@@ -15,11 +15,11 @@ namespace Mengine
         this->stop();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32AlreadyRunningMonitor::run( int _policy, const WChar * _windowClassName, const WString & _title )
+    bool Win32AlreadyRunningMonitor::run( int _policy, const WChar * _windowClassName, const WChar * _projectTitle )
     {
         // try to create mutex to sure that we are not running already
         WString mutexName = L"MengineAlreadyRunningMonitorMutex_";
-        mutexName += _title;
+        mutexName += _projectTitle;
 
         m_mutex = ::CreateMutex( NULL, FALSE, mutexName.c_str() );
 
@@ -33,7 +33,7 @@ namespace Mengine
 
         if( _policy == EARP_SETFOCUS )
         {
-            HWND otherHwnd = ::FindWindow( _windowClassName, _title.c_str() );
+            HWND otherHwnd = ::FindWindow( _windowClassName, _projectTitle );
             ::SetForegroundWindow( otherHwnd );
 
             LOGGER_ERROR( "AlreadyRunningMonitor FOCUS to other instance of engine"
@@ -45,10 +45,10 @@ namespace Mengine
         if( _policy == EARP_SHOWMESSAGE )
         {
             WString message = WString( L"Another instance of " )
-                + _title
+                + _projectTitle
                 + WString( L" is already running" );
 
-            ::MessageBoxW( NULL, message.c_str(), _title.c_str(), MB_ICONWARNING );
+            ::MessageBoxW( NULL, message.c_str(), _projectTitle, MB_ICONWARNING );
 
             return false;
         }

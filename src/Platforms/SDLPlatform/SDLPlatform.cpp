@@ -63,22 +63,34 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////    
-    size_t SDLPlatform::getCurrentPath( WChar * _path, size_t _len ) const
+    size_t SDLPlatform::getCurrentPath( Char * _path ) const
     {
 #ifdef WIN32
-        DWORD len = (DWORD)::GetCurrentDirectory( (DWORD)_len, _path );
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return 0;
+        }
+
+        DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, unicode_path );
 
         if( len == 0 )
         {
             return 0;
         }
 
-        _path[len] = L'/';
-        _path[len + 1] = L'\0';
+        unicode_path[len] = L'/';
+        unicode_path[len + 1] = L'\0';
 
-        Helper::pathCorrectBackslash( _path, _path );
+        Helper::pathCorrectBackslash( unicode_path, unicode_path );
+        
+        size_t pathLen;
+        if( Helper::unicodeToUtf8( unicode_path, _path, MENGINE_MAX_PATH, &pathLen ) == false )
+        {
+            return 0;
+        }
 
-        return (size_t)len + 1;
+        return pathLen;
 #elif TARGET_OS_IPHONE
         wcscpy( _path, L"deploy-ios-data/" );
 
@@ -90,7 +102,7 @@ namespace Mengine
 #endif
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t SDLPlatform::getUserPath( WChar * _path, size_t _len ) const
+    size_t SDLPlatform::getUserPath( Char * _path ) const
     {
         bool developmentMode = HAS_OPTION( "dev" );
         bool roamingMode = HAS_OPTION( "roaming" );
@@ -99,20 +111,22 @@ namespace Mengine
         FilePath userPath;
         if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
         {
-            WChar currentPathW[MENGINE_MAX_PATH];
+            Char currentPath[MENGINE_MAX_PATH];
             size_t currentPathLen = PLATFORM_SERVICE()
-                ->getCurrentPath( currentPathW, MENGINE_MAX_PATH );
+                ->getCurrentPath( currentPath );
 
-            if( _len <= currentPathLen + 5 )
+            if( MENGINE_MAX_PATH <= currentPathLen + 5 )
             {
                 return 0;
             }
 
-            wcscpy( _path, currentPathW );
-            wcscat( _path, L"User" );
-            wcscat( _path, L"/" );
+            strcpy( _path, currentPath );
+            strcat( _path, "User" );
+            strcat( _path, "/" );
 
-            return wcslen( _path );
+            size_t pathLen = strlen( _path );
+
+            return pathLen;
         }
         else
         {
@@ -132,7 +146,7 @@ namespace Mengine
 
             SDL_free( sdl_prefPath );
 
-            if( _len <= unicode_UserPath.size() )
+            if( MENGINE_MAX_PATH <= unicode_UserPath.size() )
             {
                 return 0;
             }

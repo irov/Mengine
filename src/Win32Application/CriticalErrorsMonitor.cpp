@@ -1,5 +1,7 @@
 #include "CriticalErrorsMonitor.h"
 
+#include "Interface/UnicodeSystemInterface.h"
+
 #include "Kernel/Date.h"
 
 #include "Kernel/Logger.h"
@@ -105,21 +107,22 @@ namespace Mengine
         return EXCEPTION_EXECUTE_HANDLER;
     }
     //////////////////////////////////////////////////////////////////////////
-    void CriticalErrorsMonitor::run( const WString & _userPath )
+    void CriticalErrorsMonitor::run( const Char * _userPath )
     {
-        WString dumpPath;
+        String dumpPath;
         dumpPath += _userPath;
-        dumpPath += L"Dump";
-        dumpPath += L"_";
+        dumpPath += "Dump";
+        dumpPath += "_";
 
-        WString date;
-        Helper::makeDateTimeW( date );
+        String date;
+        Helper::makeDateTime( date );
 
         dumpPath += date;
-        dumpPath += L".dmp";
+        dumpPath += ".dmp";
 
         g_crashDumpExceptionHandlerData = new CrashDumpExceptionHandlerData;
-        g_crashDumpExceptionHandlerData->dumpPath = dumpPath;
+
+        Helper::utf8ToUnicode( dumpPath, g_crashDumpExceptionHandlerData->dumpPath );
 
         ::SetErrorMode( SEM_FAILCRITICALERRORS | SEM_NOGPFAULTERRORBOX );
         ::SetUnhandledExceptionFilter( &s_exceptionHandler );

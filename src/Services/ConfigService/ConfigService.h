@@ -31,18 +31,16 @@ namespace Mengine
         float getValue( const Char * _section, const Char * _key, float _default ) const override;
         double getValue( const Char * _section, const Char * _key, double _default ) const override;
         String getValue( const Char * _section, const Char * _key, const Char * _default ) const override;
-        WString getValue( const Char * _section, const Char * _key, const WChar * _default ) const override;
         ConstString getValue( const Char * _section, const Char * _key, const ConstString & _default ) const override;
         FilePath getValue( const Char * _section, const Char * _key, const FilePath & _default ) const override;
         Resolution getValue( const Char * _section, const Char * _key, const Resolution & _default ) const override;
 
     public:
         void getValues( const Char * _section, const Char * _key, VectorAspectRatioViewports & _value ) const override;
-        void getValues( const Char * _section, const Char * _key, VectorWString & _value ) const override;
         void getValues( const Char * _section, const Char * _key, VectorString & _value ) const override;
 
     public:
-        void getSection( const Char * _section, MapWParams & _params ) const override;
+        void getSection( const Char * _section, MapParams & _params ) const override;
 
     protected:
         Tags m_platformTags;

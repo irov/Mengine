@@ -257,6 +257,16 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool unsigned64ToString( uint64_t _value, String & _str )
+        {
+            Stringstream ss;
+            ss << _value;
+
+            _str = ss.str();
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool floatToString( float _value, String & _str )
         {
             Stringstream ss;
@@ -311,7 +321,6 @@ namespace Mengine
         {
             Stringstream ss;
             ss << _str;
-
             ss >> _value;
 
             if( ss.fail() == true )
@@ -337,6 +346,62 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         bool stringToFloat( const String & _str, float & _value )
+        {
+            Stringstream ss;
+            ss << _str;
+            ss >> _value;
+
+            if( ss.fail() == true )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool charsToInt( const Char * _str, int32_t & _value )
+        {
+            Stringstream ss;
+            ss << _str;
+            ss >> _value;
+
+            if( ss.fail() == true )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool charsToUnsigned( const Char * _str, uint32_t & _value )
+        {
+            Stringstream ss;
+            ss << _str;
+            ss >> _value;
+
+            if( ss.fail() == true )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool charsToUnsigned64( const Char * _str, uint64_t & _value )
+        {
+            Stringstream ss;
+            ss << _str;
+            ss >> _value;
+
+            if( ss.fail() == true )
+            {
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool charsToFloat( const Char * _str, float & _value )
         {
             Stringstream ss;
             ss << _str;

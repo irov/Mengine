@@ -81,7 +81,7 @@ namespace Mengine
         void turnSound( bool _turn ) override;
 
     public:
-        WString getParam( const ConstString & _paramName ) const override;
+        bool getParam( const ConstString & _paramName, Char * _param ) const override;
         bool hasParam( const ConstString & _paramName ) const override;
 
     public:
@@ -96,7 +96,7 @@ namespace Mengine
 
         FilePath m_iconPath;
 
-        MapWParams m_params;
+        MapParams m_params;
 
         struct UserEvent
         {

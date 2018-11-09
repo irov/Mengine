@@ -63,9 +63,6 @@ namespace Mengine
         bool getApplicationPath_( const char * _section, const char * _key, ConstString & _value );
 
     protected:
-        bool makeUserPath_( WString & _wstring ) const;
-
-    protected:
         ServiceProviderInterface * m_serviceProvider;
 
         LoggerInterfacePtr m_fileLog;

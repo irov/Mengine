@@ -49,19 +49,25 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::loadPlugin( const WString & _dllName )
+    bool PluginService::loadPlugin( const Char * _dllName )
     {
-        LOGGER_WARNING( "load Plugin %ls"
-            , _dllName.c_str()
+        LOGGER_WARNING( "load Plugin '%s'"
+            , _dllName
         );
 
+        WChar unicode_dllName[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _dllName, unicode_dllName, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
         DynamicLibraryInterfacePtr dlib = PLUGIN_SYSTEM()
-            ->loadDynamicLibrary( _dllName );
+            ->loadDynamicLibrary( unicode_dllName );
 
         if( dlib == nullptr )
         {
-            LOGGER_ERROR( "PluginService::loadPlugin can't load %ls plugin [invalid load]"
-                , _dllName.c_str()
+            LOGGER_ERROR( "PluginService::loadPlugin can't load '%s' plugin [invalid load]"
+                , _dllName
             );
 
             return false;
@@ -74,8 +80,8 @@ namespace Mengine
 
         if( function_dllCreatePlugin == nullptr )
         {
-            LOGGER_ERROR( "PluginService::loadPlugin can't load %ls plugin symbol '%s'"
-                , _dllName.c_str()
+            LOGGER_ERROR( "PluginService::loadPlugin can't load %s plugin symbol '%s'"
+                , _dllName
                 , symbol
             );
 
@@ -86,8 +92,8 @@ namespace Mengine
 
         if( this->createPlugin( dlib, dllCreatePlugin, true ) == false )
         {
-            LOGGER_ERROR( "PluginService::loadPlugin can't load %ls plugin [invalid create]"
-                , _dllName.c_str()
+            LOGGER_ERROR( "PluginService::loadPlugin can't load '%s' plugin [invalid create]"
+                , _dllName
             );
 
             return false;

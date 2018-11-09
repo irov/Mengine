@@ -28,7 +28,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        inline bool unicodeToUtf8Size( const WString::value_type * _unicode, WString::size_type _unicodeSize, String & _utf8 )
+        inline bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, String & _utf8 )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
@@ -64,40 +64,120 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
-        inline bool unicodeToUtf8( const WChar * _unicode, Char * _utf8, size_t _utf8Capacity )
+        inline bool unicodeToUtf8( const WChar * _unicode, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size = nullptr )
         {
-            size_t unicode_size = wcslen( _unicode );
+            size_t unicodeSize = wcslen( _unicode );
 
-            size_t utf8_size;
+            size_t utf8Size;
             if( UNICODE_SYSTEM()
-                ->unicodeToUtf8( _unicode, unicode_size, _utf8, _utf8Capacity, &utf8_size ) == false )
+                ->unicodeToUtf8( _unicode, unicodeSize, _utf8, _utf8Capacity, &utf8Size ) == false )
             {
                 return false;
             }
 
-            _utf8[utf8_size] = '\0';
+            _utf8[utf8Size] = '\0';
+
+            if( _utf8Size != nullptr )
+            {
+                *_utf8Size = utf8Size;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        inline bool unicodeToUtf8Size( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity )
+        {
+            size_t utf8Size;
+            if( UNICODE_SYSTEM()
+                ->unicodeToUtf8( _unicode, _unicodeSize, _utf8, _utf8Capacity, &utf8Size ) == false )
+            {
+                return false;
+            }
+
+            _utf8[utf8Size] = '\0';
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
         inline bool unicodeToUtf8( const WString & _unicode, Char * _utf8, size_t _utf8Capacity )
         {
-            const WChar * unicode_str = _unicode.c_str();
-            size_t unicode_size = _unicode.size();
+            const WChar * unicodeStr = _unicode.c_str();
+            size_t unicodeSize = _unicode.size();
 
-            size_t utf8_size;
+            size_t utf8Size;
             if( UNICODE_SYSTEM()
-                ->unicodeToUtf8( unicode_str, unicode_size, _utf8, _utf8Capacity, &utf8_size ) == false )
+                ->unicodeToUtf8( unicodeStr, unicodeSize, _utf8, _utf8Capacity, &utf8Size ) == false )
             {
                 return false;
             }
 
-            _utf8[utf8_size] = '\0';
+            _utf8[utf8Size] = '\0';
 
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        inline bool utf8ToUnicodeSize( const String::value_type * _utf8, String::size_type _utf8Size, WString & _unicode )
+        inline bool utf8ToUnicode( const Char * _utf8, WChar * _unicode, size_t _unicodeCapacity )
+        {
+            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
+
+            size_t utf8Size = strlen( _utf8 );
+
+            size_t unicodeSize;
+            if( unicodeService->utf8ToUnicode( _utf8, utf8Size, _unicode, _unicodeCapacity, &unicodeSize ) == false )
+            {
+                return false;
+            }
+
+            _unicode[unicodeSize] = L'\0';
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        inline bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity )
+        {
+            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
+
+            size_t unicodeSize;
+            if( unicodeService->utf8ToUnicode( _utf8, _utf8Size, _unicode, _unicodeCapacity, &unicodeSize ) == false )
+            {
+                return false;
+            }
+
+            _unicode[unicodeSize] = L'\0';
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        inline bool utf8ToUnicodeSize( const Char * _utf8, WString & _unicode )
+        {
+            UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
+
+            size_t unicodeSize;
+            if( unicodeService->utf8ToUnicode( _utf8, UNICODE_UNSIZE, nullptr, 0, &unicodeSize ) == false )
+            {
+                return false;
+            }
+
+            if( unicodeSize == 0 )
+            {
+                _unicode.clear();
+
+                return true;
+            }
+
+            _unicode.resize( unicodeSize );
+
+            if( unicodeService->utf8ToUnicode( _utf8, UNICODE_UNSIZE, &_unicode[0], unicodeSize, nullptr ) == false )
+            {
+                _unicode.clear();
+
+                return false;
+            }
+
+            return true;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        inline bool utf8ToUnicodeSize( const Char * _utf8, size_t _utf8Size, WString & _unicode )
         {
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 

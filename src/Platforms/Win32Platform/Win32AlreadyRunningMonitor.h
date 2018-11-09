@@ -24,7 +24,7 @@ namespace Mengine
         ~Win32AlreadyRunningMonitor();
 
     public:
-        bool run( int _policy, const WChar * _windowClassName, const WString & _title );
+        bool run( int _policy, const WChar * _windowClassName, const WChar * _projectTitle );
         void stop();
 
     protected:

@@ -342,11 +342,8 @@ namespace Mengine
             return false;
         }
 
-        WString unicode_filePath;
-        Helper::utf8ToUnicodeSize( filePath, UNICODE_UNSIZE, unicode_filePath );
-
         uint64_t ft = PLATFORM_SERVICE()
-            ->getFileTime( unicode_filePath );
+            ->getFileTime( filePath );
 
         _time = ft;
         return true;

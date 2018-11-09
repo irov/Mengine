@@ -39,7 +39,6 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key );
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, WString & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, String & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags & _value );
@@ -54,13 +53,12 @@ namespace Mengine
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorString & _values );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorWString & _values );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values );
         //////////////////////////////////////////////////////////////////////////
-        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapWParams & _values );
+        bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams & _values );
         //////////////////////////////////////////////////////////////////////////
         bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const ConstString & _value );
-        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const WString & _value );
+        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const String & _value );
         bool writeIniSection( const OutputStreamInterfacePtr & _file, const char * _section, uint32_t _sectionSize );
         //////////////////////////////////////////////////////////////////////////
         template<class T, size_t I_Size>

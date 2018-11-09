@@ -3102,7 +3102,7 @@ namespace Mengine
                 .def( "getCustomSize", &ShapeQuadFlex::getCustomSize )
                 .def( "removeCustomSize", &ShapeQuadFlex::removeCustomSize )
                 .def( "hasCustomSize", &ShapeQuadFlex::hasCustomSize )
-                .def_proxy_static( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::s_ShapeQuadFlex_setPercentVisibilityTo )
+                .def_proxy_static_args( "setPercentVisibilityTo", nodeScriptMethod, &NodeScriptMethod::s_ShapeQuadFlex_setPercentVisibilityTo )
                 .def_proxy_static( "setPercentVisibilityStop", nodeScriptMethod, &NodeScriptMethod::s_ShapeQuadFlex_setPercentVisibilityStop )
                 .def( "setTextureUVOffset", &ShapeQuadFlex::setTextureUVOffset )
                 .def( "getTextureUVOffset", &ShapeQuadFlex::getTextureUVOffset )

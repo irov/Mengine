@@ -28,6 +28,7 @@
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Scene.h"
@@ -188,9 +189,8 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderMemory>( "memoryImage" );
         Helper::registerDecoder<ImageDecoderArchive>( "archiveImage" );
 
-        m_companyName = CONFIG_VALUE( "Project", "Company", L"NONAME" );
-        m_projectName = CONFIG_VALUE( "Project", "Name", L"UNKNOWN" );
-
+        m_companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
+        m_projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
         m_projectCodename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
         m_projectVersion = CONFIG_VALUE( "Project", "Version", 0U );
 
@@ -1811,14 +1811,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const WString & Application::getCompanyName() const
+    void Application::getCompanyName( Char * _companyName ) const
     {
-        return m_companyName;
+        strcpy( _companyName, m_companyName.c_str() );
     }
     //////////////////////////////////////////////////////////////////////////
-    const WString & Application::getProjectName() const
+    void Application::getProjectName( Char * _projectName ) const
     {
-        return m_projectName;
+        strcpy( _projectName, m_projectName.c_str() );
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & Application::getProjectCodename() const

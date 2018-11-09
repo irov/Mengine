@@ -13,6 +13,10 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
+#ifndef MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME
+#define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
+#endif
+
 namespace Mengine
 {
     class PlatformInterface
@@ -28,8 +32,8 @@ namespace Mengine
         virtual void setIcon( uint32_t _icon ) = 0;
         virtual uint32_t getIcon() const = 0;
 
-        virtual void setProjectTitle( const WString & _projectTitle ) = 0;
-        virtual const WString & getProjectTitle() const = 0;
+        virtual void setProjectTitle( const Char * _projectTitle ) = 0;
+        virtual void getProjectTitle( Char * _projectTitle ) const = 0;
 
     public:
         virtual bool createWindow( const Resolution & _resolution, bool _fullscreen ) = 0;
@@ -50,8 +54,8 @@ namespace Mengine
 
         virtual bool setProcessDPIAware() = 0;
 
-        virtual size_t getCurrentPath( WChar * _path, size_t _len ) const = 0;
-        virtual size_t getUserPath( WChar * _path, size_t _len ) const = 0;
+        virtual size_t getCurrentPath( Char * _path ) const = 0;
+        virtual size_t getUserPath( Char * _path ) const = 0;
 
         virtual void minimizeWindow() = 0;
 
@@ -72,37 +76,37 @@ namespace Mengine
         virtual float getJoystickAxis( uint32_t _index ) const = 0;
 
     public:
-        virtual size_t getShortPathName( const WString & _path, WChar * _short, size_t _len ) const = 0;
+        virtual size_t getShortPathName( const Char * _path, Char * _short, size_t _len ) const = 0;
 
     public:
         virtual void getMaxClientResolution( Resolution & _resolution ) const = 0;
 
     public:
-        virtual bool openUrlInDefaultBrowser( const WString & _url ) = 0;
+        virtual bool openUrlInDefaultBrowser( const Char * _url ) = 0;
 
     public:
-        virtual bool existDirectory( const WString & _path ) const = 0;
-        virtual bool createDirectory( const WString & _path ) = 0;
+        virtual bool existDirectory( const Char * _path ) const = 0;
+        virtual bool createDirectory( const Char * _path ) = 0;
 
     public:
-        virtual bool existFile( const WChar * _path ) = 0;
-        virtual bool removeFile( const WChar * _path ) = 0;
+        virtual bool existFile( const Char * _path ) = 0;
+        virtual bool removeFile( const Char * _path ) = 0;
 
     public:
-        virtual uint64_t getFileTime( const WString & _path ) const = 0;
+        virtual uint64_t getFileTime( const Char * _path ) const = 0;
 
     public:
-        virtual bool createDirectoryUserPicture( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
-        virtual bool createDirectoryUserMusic( const WString & _path, const WString & _file, const void * _data, size_t _size ) = 0;
+        virtual bool createDirectoryUserPicture( const Char * _path, const Char * _file, const void * _data, size_t _size ) = 0;
+        virtual bool createDirectoryUserMusic( const Char * _path, const Char * _file, const void * _data, size_t _size ) = 0;
 
     public:
-        virtual bool getErrorMessage( uint32_t _messageId, WString & _out ) const = 0;
+        virtual bool getErrorMessage( uint32_t _messageId, Char * _out ) const = 0;
 
     public:
         virtual void sleep( uint32_t _ms ) = 0;
 
     public:
-        virtual bool cmd( const WString & _command ) = 0;
+        virtual bool cmd( const Char * _command ) = 0;
     };
 
 #define PLATFORM_SERVICE()\

@@ -82,8 +82,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::existFile( const FilePath & _fileName ) const
     {
-        WChar filePath[MENGINE_MAX_PATH];
-        if( Helper::Win32ConcatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
+        WChar unicode_filePath[MENGINE_MAX_PATH];
+        if( Helper::Win32ConcatenateFilePath( m_relationPath, m_folderPath, _fileName, unicode_filePath, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "Win32FileSystem::existFile invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
@@ -93,13 +93,16 @@ namespace Mengine
             return false;
         }
 
-        if( PLATFORM_SERVICE()
-            ->existFile( filePath ) == false )
+        Char utf8_filePath[MENGINE_MAX_PATH];
+        if( Helper::unicodeToUtf8( unicode_filePath, utf8_filePath, MENGINE_MAX_PATH ) == false )
         {
             return false;
         }
 
-        return true;
+        bool result = PLATFORM_SERVICE()
+            ->existFile( utf8_filePath );
+
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::existDirectory( const FilePath & _folderName ) const
@@ -107,20 +110,14 @@ namespace Mengine
         const FilePath & relationPath = this->getRelationPath();
         const FilePath & folderPath = this->getFolderPath();
 
-        PathString accountString;
-        accountString.append( relationPath );
-        accountString.append( folderPath );
-        accountString.append( _folderName );
-        accountString.append( '/' );
-
-        WString unicode_folderPath;
-        if( Helper::utf8ToUnicode( accountString, unicode_folderPath ) == false )
-        {
-            return false;
-        }
+        PathString account_folderPath;
+        account_folderPath.append( relationPath );
+        account_folderPath.append( folderPath );
+        account_folderPath.append( _folderName );
+        account_folderPath.append( '/' );
 
         if( PLATFORM_SERVICE()
-            ->existDirectory( unicode_folderPath ) == false )
+            ->existDirectory( account_folderPath.c_str() ) == false )
         {
             return false;
         }
@@ -133,25 +130,19 @@ namespace Mengine
         const FilePath & relationPath = this->getRelationPath();
         const FilePath & folderPath = this->getFolderPath();
 
-        PathString accountString;
-        accountString.append( relationPath );
-        accountString.append( folderPath );
-        accountString.append( _folderName );
-
-        WString unicode_folderPath;
-        if( Helper::utf8ToUnicode( accountString, unicode_folderPath ) == false )
-        {
-            return false;
-        }
+        PathString account_folderPath;
+        account_folderPath.append( relationPath );
+        account_folderPath.append( folderPath );
+        account_folderPath.append( _folderName );
 
         if( PLATFORM_SERVICE()
-            ->existDirectory( unicode_folderPath ) == true )
+            ->existDirectory( account_folderPath.c_str() ) == true )
         {
             return true;
         }
 
         if( PLATFORM_SERVICE()
-            ->createDirectory( unicode_folderPath ) == false )
+            ->createDirectory( account_folderPath.c_str() ) == false )
         {
             return false;
         }

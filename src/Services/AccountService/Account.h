@@ -35,9 +35,9 @@ namespace Mengine
 
 
     public:
-        bool addSetting( const ConstString & _setting, const WString& _defaultValue, const AccountSettingProviderInterfacePtr & _provider) override;
-        bool changeSetting( const ConstString & _setting, const WString& _value ) override;
-        WString getSetting( const ConstString & _setting ) const override;
+        bool addSetting( const ConstString & _setting, const Char * _defaultValue, const AccountSettingProviderInterfacePtr & _provider ) override;
+        bool changeSetting( const ConstString & _setting, const Char * _value ) override;
+        bool getSetting( const ConstString & _setting, Char * _value ) const override;
         bool hasSetting( const ConstString & _setting ) const override;
 
     public:
@@ -68,7 +68,7 @@ namespace Mengine
 
         struct Setting
         {
-            WString value;
+            String value;
 			AccountSettingProviderInterfacePtr provider;
         };
 

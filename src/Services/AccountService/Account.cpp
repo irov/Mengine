@@ -63,7 +63,7 @@ namespace Mengine
         return m_folder;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::addSetting( const ConstString & _setting, const WString& _defaultValue, const AccountSettingProviderInterfacePtr & _provider )
+    bool Account::addSetting( const ConstString & _setting, const Char * _defaultValue, const AccountSettingProviderInterfacePtr & _provider )
     {
         MapSettings::iterator it = m_settings.find( _setting );
 
@@ -86,7 +86,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Account::changeSetting( const ConstString & _setting, const WString& _value )
+    bool Account::changeSetting( const ConstString & _setting, const Char * _value )
     {
         MapSettings::iterator it_found = m_settings.find( _setting );
 
@@ -112,7 +112,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    WString Account::getSetting( const ConstString & _setting ) const
+    bool Account::getSetting( const ConstString & _setting, Char * _value ) const
     {
         MapSettings::const_iterator it_found = m_settings.find( _setting );
 
@@ -123,12 +123,16 @@ namespace Mengine
                 , _setting.c_str()
             );
 
-            return WString();
+            return false;
         }
 
         const Setting & st = it_found->second;
 
-        return st.value;
+        const Char * value_str = st.value.c_str();
+
+        strcpy( _value, value_str );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Account::hasSetting( const ConstString & _setting ) const
@@ -248,17 +252,14 @@ namespace Mengine
 
         IniUtil::writeIniSection( file, "[ACCOUNT]" );
 
-        WString projectVersion_s;
-        if( Helper::unsignedToWString( m_projectVersion, projectVersion_s ) == false )
+        String projectVersion_s;
+        if( Helper::unsignedToString( m_projectVersion, projectVersion_s ) == false )
         {
             return false;
         }
 
-        WString wuid;
-        Helper::utf8ToUnicode( m_uid, wuid );
-
         IniUtil::writeIniSetting( file, "PROJECT_VERSION", projectVersion_s );
-        IniUtil::writeIniSetting( file, "UID", wuid );
+        IniUtil::writeIniSetting( file, "UID", m_uid );
 
         IniUtil::writeIniSection( file, "[SETTINGS]" );
 
@@ -292,7 +293,9 @@ namespace Mengine
                 continue;
             }
 
-            st.provider->onChangeSetting( st.value );
+            const Char * value_str = st.value.c_str();
+
+            st.provider->onChangeSetting( value_str );
         }
     }
     //////////////////////////////////////////////////////////////////////////

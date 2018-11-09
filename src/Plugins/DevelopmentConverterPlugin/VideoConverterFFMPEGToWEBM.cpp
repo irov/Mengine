@@ -34,38 +34,38 @@ namespace Mengine
         String full_output = pakPath.c_str();
         full_output += m_options.outputFileName.c_str();
 
-        WString unicode_input;
-        if( Helper::utf8ToUnicode( full_input, unicode_input ) == false )
-        {
-            LOGGER_ERROR( "VideoConverterFFMPEGToWEBM::convert_: invalid convert input utf8 to unicode %s"
-                , full_input.c_str()
-            );
+        //WString unicode_input;
+        //if( Helper::utf8ToUnicode( full_input, unicode_input ) == false )
+        //{
+        //    LOGGER_ERROR( "VideoConverterFFMPEGToWEBM::convert_: invalid convert input utf8 to unicode %s"
+        //        , full_input.c_str()
+        //    );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        WString unicode_output;
-        if( Helper::utf8ToUnicode( full_output, unicode_output ) == false )
-        {
-            LOGGER_ERROR( "VideoConverterFFMPEGToWEBM::convert_: invalid convert output utf8 to unicode %s"
-                , full_output.c_str()
-            );
+        //WString unicode_output;
+        //if( Helper::utf8ToUnicode( full_output, unicode_output ) == false )
+        //{
+        //    LOGGER_ERROR( "VideoConverterFFMPEGToWEBM::convert_: invalid convert output utf8 to unicode %s"
+        //        , full_output.c_str()
+        //    );
 
-            return false;
-        }
+        //    return false;
+        //}
 
-        WString buffer = L"ffmpeg -loglevel error -y -i \"" + unicode_input + L"\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 4 \"" + unicode_output + L"\"";
+        String buffer = "ffmpeg -loglevel error -y -i \"" + full_input + "\" -codec:v libvpx -f webm -qmin 5 -qmax 15 -threads 4 \"" + full_output + "\"";
 
-        LOGGER_WARNING( "VideoConverterFFMPEGToWEBM:: converting file '%ls' to '%ls'\n%ls"
-            , unicode_input.c_str()
-            , unicode_output.c_str()
+        LOGGER_WARNING( "VideoConverterFFMPEGToWEBM:: converting file '%s' to '%s'\n%s"
+            , full_input.c_str()
+            , full_output.c_str()
             , buffer.c_str()
         );
 
         if( PLATFORM_SERVICE()
-            ->cmd( buffer ) == false )
+            ->cmd( buffer.c_str() ) == false )
         {
-            LOGGER_ERROR( "VideoConverterFFMPEGToWEBM::convert_: invalid convert:\n%ls"
+            LOGGER_ERROR( "invalid convert:\n%s"
                 , buffer.c_str()
             );
 

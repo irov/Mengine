@@ -11,6 +11,10 @@
 #include "Kernel/Viewport.h"
 #include "Kernel/Resolution.h"
 
+#ifndef MENGINE_GAME_PARAM_MAXVALUE
+#define MENGINE_GAME_PARAM_MAXVALUE 1024
+#endif
+
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
@@ -123,7 +127,7 @@ namespace Mengine
         virtual void setTimeFactor( float _factor ) = 0;
 
     public:
-        virtual WString getParam( const ConstString & _paramName ) const = 0;
+        virtual bool getParam( const ConstString & _paramName, Char * _param ) const = 0;
         virtual bool hasParam( const ConstString & _paramName ) const = 0;
 
     public:

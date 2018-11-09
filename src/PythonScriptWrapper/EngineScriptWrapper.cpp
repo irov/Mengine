@@ -247,8 +247,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_loadPlugin( const WString & _pluginName )
         {
+            Char utf8_pluginName[MENGINE_MAX_PATH];
+            if( Helper::unicodeToUtf8( _pluginName, utf8_pluginName, MENGINE_MAX_PATH ) == false )
+            {
+                return false;
+            }
+
             bool successful = PLUGIN_SERVICE()
-                ->loadPlugin( _pluginName );
+                ->loadPlugin( utf8_pluginName );
 
             return successful;
         }
@@ -1362,11 +1368,8 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_removeFile( const FilePath & _path )
         {
-            WString unicode_path;
-            Helper::utf8ToUnicode( _path, unicode_path );
-
             bool result = PLATFORM_SERVICE()
-                ->removeFile( unicode_path.c_str() );
+                ->removeFile( _path.c_str() );
 
             return result;
         }
@@ -2003,17 +2006,12 @@ namespace Mengine
                 return false;
             }
 
-            const WString & projectName = APPLICATION_SERVICE()
-                ->getProjectName();
-
-            WString wc_fileName;
-            if( Helper::utf8ToUnicode( _fileName, wc_fileName ) == false )
-            {
-                return false;
-            }
+            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];                
+            APPLICATION_SERVICE()
+                ->getProjectName( projectName );
 
             if( PLATFORM_SERVICE()
-                ->createDirectoryUserPicture( projectName, wc_fileName, memory->getBuffer(), memory->getSize() ) == false )
+                ->createDirectoryUserPicture( projectName, _fileName.c_str(), memory->getBuffer(), memory->getSize() ) == false )
             {
                 return false;
             }
@@ -2031,17 +2029,12 @@ namespace Mengine
                 return false;
             }
 
-            const WString & projectName = APPLICATION_SERVICE()
-                ->getProjectName();
-
-            WString wc_fileName;
-            if( Helper::utf8ToUnicode( _fileName, wc_fileName ) == false )
-            {
-                return false;
-            }
+            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];
+            APPLICATION_SERVICE()
+                ->getProjectName( projectName );
 
             if( PLATFORM_SERVICE()
-                ->createDirectoryUserMusic( projectName, wc_fileName, memory->getBuffer(), memory->getSize() ) == false )
+                ->createDirectoryUserMusic( projectName, _fileName.c_str(), memory->getBuffer(), memory->getSize() ) == false )
             {
                 return false;
             }
@@ -3297,67 +3290,59 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGameParam( pybind::kernel_interface * _kernel, const ConstString & _paramName )
         {
+            Char param_value[MENGINE_GAME_PARAM_MAXVALUE];
             if( GAME_SERVICE()
-                ->hasParam( _paramName ) == false )
+                ->getParam( _paramName, param_value ) == false )
             {
                 return _kernel->ret_none();
             }
 
-            const WString & val = GAME_SERVICE()
-                ->getParam( _paramName );
+            PyObject * py_param = _kernel->unicode_from_utf8( param_value );
 
-            return pybind::ptr( _kernel, val );
+            return py_param;
         }
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGameParamFloat( pybind::kernel_interface * _kernel, const ConstString & _paramName )
         {
+            Char param_value[MENGINE_GAME_PARAM_MAXVALUE];
             if( GAME_SERVICE()
-                ->hasParam( _paramName ) == false )
+                ->getParam( _paramName, param_value ) == false )
             {
                 return _kernel->ret_none();
             }
 
-            const WString & val = GAME_SERVICE()
-                ->getParam( _paramName );
-
             float value;
-            Helper::wstringToFloat( val, value );
+            Helper::charsToFloat( param_value, value );
 
             return pybind::ptr( _kernel, value );
         }
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGameParamInt( pybind::kernel_interface * _kernel, const ConstString & _paramName )
         {
+            Char param_value[MENGINE_GAME_PARAM_MAXVALUE];
             if( GAME_SERVICE()
-                ->hasParam( _paramName ) == false )
+                ->getParam( _paramName, param_value ) == false )
             {
                 return _kernel->ret_none();
             }
 
-            const WString & val = GAME_SERVICE()
-                ->getParam( _paramName );
-
-            int value;
-            Helper::wstringToInt( val, value );
+            int32_t value;
+            Helper::charsToInt( param_value, value );
 
             return pybind::ptr( _kernel, value );
         }
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_getGameParamBool( pybind::kernel_interface * _kernel, const ConstString & _paramName )
         {
-            (void)_kernel;
-
+            Char param_value[MENGINE_GAME_PARAM_MAXVALUE];
             if( GAME_SERVICE()
-                ->hasParam( _paramName ) == false )
+                ->getParam( _paramName, param_value ) == false )
             {
                 return _kernel->ret_none();
             }
 
-            const WString & val = GAME_SERVICE()
-                ->getParam( _paramName );
-
-            int value;
-            Helper::wstringToInt( val, value );
+            int32_t value;
+            Helper::charsToInt( param_value, value );
 
             bool b_value = value != 0;
 
@@ -3366,8 +3351,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_openUrlInDefaultBrowser( const WString & _url )
         {
+            Char utf8_url[4096];
+            Helper::unicodeToUtf8( _url, utf8_url, 4096 );
+
             bool val = PLATFORM_SERVICE()
-                ->openUrlInDefaultBrowser( _url );
+                ->openUrlInDefaultBrowser( utf8_url );
 
             return val;
         }
@@ -3719,7 +3707,7 @@ namespace Mengine
 
         pybind::def_functor( kernel, "existText", nodeScriptMethod, &EngineScriptMethod::s_existText );
 
-        pybind::def_functor( kernel, "pickHotspot", nodeScriptMethod, &EngineScriptMethod::s_pickHotspot );
+        pybind::def_functor_kernel( kernel, "pickHotspot", nodeScriptMethod, &EngineScriptMethod::s_pickHotspot );
 
         pybind::def_functor( kernel, "blockInput", nodeScriptMethod, &EngineScriptMethod::s_setMousePickerBlockInput );
         pybind::def_functor( kernel, "setMousePickerHandleValue", nodeScriptMethod, &EngineScriptMethod::s_setMousePickerHandleValue );

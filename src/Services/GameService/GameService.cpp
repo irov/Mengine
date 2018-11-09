@@ -561,9 +561,9 @@ namespace Mengine
             ->onGameTimingFactor( _timingFactor );
     }
     //////////////////////////////////////////////////////////////////////////
-    WString GameService::getParam( const ConstString & _paramName ) const
+    bool GameService::getParam( const ConstString & _paramName, Char * _param ) const
     {
-        MapWParams::const_iterator it_find = m_params.find( _paramName );
+        MapParams::const_iterator it_find = m_params.find( _paramName );
 
         if( it_find == m_params.end() )
         {
@@ -571,17 +571,19 @@ namespace Mengine
                 , _paramName.c_str()
             );
 
-            return WString();
+            return false;
         }
 
-        const WString & param = it_find->second;
+        const String & param = it_find->second;
 
-        return param;
+        strcpy( _param, param.c_str() );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool GameService::hasParam( const ConstString & _paramName ) const
     {
-        MapWParams::const_iterator it_find = m_params.find( _paramName );
+        MapParams::const_iterator it_find = m_params.find( _paramName );
 
         if( it_find == m_params.end() )
         {

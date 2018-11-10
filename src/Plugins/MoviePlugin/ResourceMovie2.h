@@ -4,7 +4,7 @@
 
 #include "Kernel/Resource.h"
 #include "Kernel/Viewport.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 
 #include "math/mat4.h"
 
@@ -21,7 +21,7 @@ namespace Mengine
         ConstString name;
         ConstString type;
         mt::mat4f matrix;
-        ColourValue color;
+        Color color;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<ResourceMovie2CompositionLayer> ResourceMovie2CompositionLayers;

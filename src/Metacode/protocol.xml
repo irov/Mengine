@@ -1,4 +1,4 @@
-<Protocol Version = "128">
+<Protocol Version = "129">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -14,8 +14,8 @@
   <Type Name="mt::mat4f" Evict="float16"/>
   <Type Name="mt::box2f" Evict="float4"/>
   <Type Name="mt::uv4f" Evict="float8"/>  
-  <Type Name="Color255" Type="Mengine::ColourValue" Evict="float4inv255"/>
-  <Type Name="Color" Type="Mengine::ColourValue" Evict="float4"/>
+  <Type Name="Color255" Type="Mengine::Color" Evict="float4inv255"/>
+  <Type Name="Color" Type="Mengine::Color" Evict="float4"/>
   <Type Name="Mengine::Polygon" Evict="floats"/>
   <Type Name="Mengine::Viewport" Evict="float4"/>  
   <Type Name="Mengine::Floats" Evict="floats"/>

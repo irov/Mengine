@@ -76,7 +76,7 @@ namespace Mengine
             return;
         }
 
-        const ColourValue & personal_colour = this->getPersonalColor();
+        const Color & personal_colour = this->getPersonalColor();
 
         RenderInterface * render = m_propagate->getRender();
         

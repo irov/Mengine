@@ -200,6 +200,7 @@ namespace Mengine
         bool getCamera( const ConstString & _name, Camera ** _camera );
 
     public:
+        bool interruptElements();
         bool checkInterruptElement() const;
 
     protected:

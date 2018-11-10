@@ -101,7 +101,7 @@ namespace Mengine
 
             float charScale = 1.f;
 
-            ColourValue colorFont;
+            Color colorFont;
 
             bool isOverride = false;
             bool isEmpty = false;
@@ -641,7 +641,7 @@ namespace Mengine
     bool TextService::addTextEntry( const ConstString& _key
         , const String & _text
         , const ConstString & _font
-        , const ColourValue & _colorFont
+        , const Color & _colorFont
         , float _lineOffset
         , float _charOffset
         , float _maxLength

@@ -253,7 +253,7 @@ namespace Mengine
                     {
                         if( _resourceImage != nullptr )
                         {
-                            const ColourValue & colour = _resourceImage->getColor();
+                            const Color & colour = _resourceImage->getColor();
 
                             if( colour.isSolid() == false || _solid == false )
                             {

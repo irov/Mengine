@@ -469,7 +469,7 @@ namespace Mengine
                 return;
             }
 
-            ColourValue color;
+            Color color;
             this->calcTotalColor( color );
 
             // Handles colors which aren't affected by skinning.

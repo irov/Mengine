@@ -4,7 +4,7 @@
 
 #include "Kernel/Resource.h"
 
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 
 #include "math/vec4.h"
 #include "math/uv4.h"
@@ -64,8 +64,8 @@ namespace Mengine
         void setTextureAlpha( const RenderTextureInterfacePtr & _textureAlpha );
         inline const RenderTextureInterfacePtr & getTextureAlpha() const;
 
-        inline void setColor( const ColourValue & _colour );
-        inline const ColourValue & getColor() const;
+        inline void setColor( const Color & _colour );
+        inline const Color & getColor() const;
 
     public:
         void correctUVImage( mt::vec2f & _out, const mt::vec2f & _in );
@@ -78,7 +78,7 @@ namespace Mengine
         RenderTextureInterfacePtr m_texture;
         RenderTextureInterfacePtr m_textureAlpha;
 
-        ColourValue m_color;
+        Color m_color;
 
         mt::vec2f m_maxSize;
         mt::vec2f m_size;
@@ -156,12 +156,12 @@ namespace Mengine
         return m_textureAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setColor( const ColourValue & _colour )
+    inline void ResourceImage::setColor( const Color & _colour )
     {
         m_color = _colour;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const ColourValue & ResourceImage::getColor() const
+    inline const Color & ResourceImage::getColor() const
     {
         return m_color;
     }

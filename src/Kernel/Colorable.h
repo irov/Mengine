@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/Mixin.h"
 
 namespace Mengine
@@ -13,14 +13,14 @@ namespace Mengine
         ~Colorable() override;
 
     public:
-        void setPersonalColor( const ColourValue& _color );
-        inline const ColourValue & getPersonalColor() const;
+        void setPersonalColor( const Color& _color );
+        inline const Color & getPersonalColor() const;
 
         void setPersonalAlpha( float _alpha );
         inline float getPersonalAlpha() const;
 
-        void setLocalColor( const ColourValue& _color );
-        inline const ColourValue & getLocalColor() const;
+        void setLocalColor( const Color& _color );
+        inline const Color & getLocalColor() const;
 
         void setLocalColorR( float _value );
         inline float getLocalColorR() const;
@@ -42,17 +42,17 @@ namespace Mengine
         inline bool isPersonalTransparent() const;
 
     protected:
-        inline const ColourValue & getRelationColor() const;
+        inline const Color & getRelationColor() const;
 
     public:
         virtual void invalidateColor();
         inline bool isInvalidateColor() const;
 
     protected:
-        const ColourValue& updateRelationColor( const ColourValue& _parentColor ) const;
+        const Color& updateRelationColor( const Color& _parentColor ) const;
 
     protected:
-        virtual void _setPersonalColor( const ColourValue& _color );
+        virtual void _setPersonalColor( const Color& _color );
         virtual void _setPersonalAlpha( float _alpha );
 
         virtual void _invalidateColor();
@@ -62,8 +62,8 @@ namespace Mengine
         virtual void _setPersonalTransparent( bool _transparent );
 
     public:
-        virtual const ColourValue & getWorldColor() const = 0;
-        virtual void calcTotalColor( ColourValue & _color ) const = 0;
+        virtual const Color & getWorldColor() const = 0;
+        virtual void calcTotalColor( Color & _color ) const = 0;
         virtual bool isSolidColor() const = 0;
 
     protected:
@@ -71,10 +71,10 @@ namespace Mengine
         void updatePersonalTransparent_();
 
     protected:
-        ColourValue m_personalColor;
-        ColourValue m_localColor;
+        Color m_personalColor;
+        Color m_localColor;
                 
-        mutable ColourValue m_relationColor;
+        mutable Color m_relationColor;
         mutable bool m_invalidateColor;
 
         bool m_personalTransparent;
@@ -93,7 +93,7 @@ namespace Mengine
         return m_personalTransparent;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & Colorable::getRelationColor() const
+    const Color & Colorable::getRelationColor() const
     {
         return m_relationColor;
     }
@@ -103,7 +103,7 @@ namespace Mengine
         return m_invalidateColor;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const ColourValue & Colorable::getPersonalColor() const
+    inline const Color & Colorable::getPersonalColor() const
     {
         return m_personalColor;
     }
@@ -115,7 +115,7 @@ namespace Mengine
         return alpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const ColourValue& Colorable::getLocalColor() const
+    inline const Color& Colorable::getLocalColor() const
     {
         return m_localColor;
     }

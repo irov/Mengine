@@ -165,7 +165,9 @@ namespace Mengine
         uint32_t metaMetaVersion = _metadata->getVersion();
         uint32_t needMetaVersion;
 
-        if( Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion ) != Metacode::HEADER_OK )
+        Metacode::HeaderError result = Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion );
+
+        if( result != Metacode::HEADER_SUCCESSFUL )
         {
             return false;
         }
@@ -196,11 +198,14 @@ namespace Mengine
         uint32_t metaMetaVersion = _metadata->getVersion();
         uint32_t needMetaVersion;
 
-        if( Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion ) != Metacode::HEADER_OK )
+        Metacode::HeaderError result = Metacode::readHeader( header_buff, Metacode::header_size, header_read, readVersion, needVersion, readProtocol, needProtocol, metaMetaVersion, needMetaVersion );
+
+        if( result != Metacode::HEADER_SUCCESSFUL )
         {
             if( _reimport == nullptr )
             {
-                LOGGER_ERROR( "LoaderService::loadBinary invalid version read %d need %d or protocol %d need %d (Update you protocol file)"
+                LOGGER_ERROR( "error '%s' invalid version read %d need %d or protocol %d need %d (Update you protocol file)"
+                    , Metacode::getHeaderErrorMessage( result )
                     , readVersion
                     , needVersion
                     , readProtocol
@@ -416,6 +421,9 @@ namespace Mengine
 
         options.pathXml = Helper::concatenationFilePath( folderPath, _pathXml );
         options.pathBin = Helper::concatenationFilePath( folderPath, _pathBin );
+
+        options.useProtocolVersion = Metacode::get_metacode_protocol_version();
+        options.useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
 
         if( decoder->setOptions( &options ) == false )
         {

@@ -7,6 +7,7 @@
 #include "Kernel/Logger.h"
 
 #include "Config/Vector.h"
+#include "Config/String.h"
 
 namespace Mengine
 {
@@ -29,6 +30,9 @@ namespace Mengine
         uint32_t getCountMessage( EMessageLevel _level ) override;
 
     public:
+        void writeHistory( const LoggerInterfacePtr & _logger ) const override;
+
+    public:
         bool registerLogger( const LoggerInterfacePtr & _logger ) override;
         bool unregisterLogger( const LoggerInterfacePtr & _logger ) override;
 
@@ -40,5 +44,17 @@ namespace Mengine
         VectorLoggers m_loggers;
 
         uint32_t m_countMessage[LM_MAX];
+        
+#ifdef MENGINE_LOGGER_HISTORY
+        struct Record
+        {
+            EMessageLevel level;
+            uint32_t flag;
+            String message;
+        };
+
+        typedef Vector<Record> VectorHistory;
+        VectorHistory m_history;
+#endif
     };
 }

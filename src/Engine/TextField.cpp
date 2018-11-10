@@ -160,7 +160,7 @@ namespace Mengine
         this->invalidateVerticesWM_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, VectorRenderVertex2D & _vertexData )
+    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D & _vertexData )
     {
         _vertexData.clear();
         m_chunks.clear();
@@ -232,8 +232,8 @@ namespace Mengine
 
         uint32_t cacheFontARGB[16] = { 0 };
 
-        const ColourValue & paramsFontColor = this->calcFontColor();
-        ColourValue colorBaseFont = paramsFontColor * _color;
+        const Color & paramsFontColor = this->calcFontColor();
+        Color colorBaseFont = paramsFontColor * _color;
 
         if( premultiply == true )
         {
@@ -248,8 +248,8 @@ namespace Mengine
 
             const TextFontInterfacePtr & font = cache.font;
 
-            const ColourValue & fontColor = font->getFontColor();
-            ColourValue totalFontColor = fontColor * _color;
+            const Color & fontColor = font->getFontColor();
+            Color totalFontColor = fontColor * _color;
 
             if( premultiply == true )
             {
@@ -484,7 +484,7 @@ namespace Mengine
         return m_fontName;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::setFontColor( const ColourValue & _color )
+    void TextField::setFontColor( const Color & _color )
     {
         m_colorFont = _color;
 
@@ -493,7 +493,7 @@ namespace Mengine
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue& TextField::getFontColor() const
+    const Color& TextField::getFontColor() const
     {
         return m_colorFont;
     }
@@ -1148,7 +1148,7 @@ namespace Mengine
         return m_maxLength;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & TextField::calcFontColor() const
+    const Color & TextField::calcFontColor() const
     {
         const TextEntryInterfacePtr & textEntry = this->getTextEntry();
 
@@ -1158,7 +1158,7 @@ namespace Mengine
 
             if( params & EFP_COLOR_FONT )
             {
-                const ColourValue & value = textEntry->getColorFont();
+                const Color & value = textEntry->getColorFont();
 
                 return value;
             }
@@ -1177,7 +1177,7 @@ namespace Mengine
 
             if( params & EFP_COLOR_FONT )
             {
-                const ColourValue & value = font->getFontColor();
+                const Color & value = font->getFontColor();
 
                 return value;
             }
@@ -1717,7 +1717,7 @@ namespace Mengine
     {
         m_invalidateVertices = false;
 
-        ColourValue colorNode;
+        Color colorNode;
         this->calcTotalColor( colorNode );
 
         this->updateVertexData_( _font, colorNode, m_vertexDataText );

@@ -419,7 +419,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount )
     {
-        ColourValue color;
+        Color color;
         this->calcTotalColor( color );
 
         if( color.isIdentity() == true )
@@ -443,7 +443,7 @@ namespace Mengine
             }
             else
             {
-                ColourValue cv( p.color );
+                Color cv( p.color );
                 cv *= color;
                 p.color = cv.getAsARGB();
             }

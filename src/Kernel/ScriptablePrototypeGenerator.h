@@ -40,8 +40,15 @@ namespace Mengine
             {
                 const ConstString & prototype = this->getPrototype();
 
-                m_scriptWrapper = SCRIPT_SERVICE()
+                const ScriptWrapperInterfacePtr & scriptWrapper = SCRIPT_SERVICE()
                     ->getWrapper( prototype );
+
+                if( scriptWrapper == nullptr )
+                {
+                    return nullptr;
+                }
+
+                m_scriptWrapper = scriptWrapper;
             }
 
             FactoryPtr factory = new FactoryPool<Type, Count>();

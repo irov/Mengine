@@ -117,9 +117,9 @@ namespace Mengine
         return mt::uv4f::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceTrackMatte::getColor() const
+    const Color & SurfaceTrackMatte::getColor() const
     {
-        const ColourValue & color = m_resourceImage->getColor();
+        const Color & color = m_resourceImage->getColor();
 
         return color;
     }

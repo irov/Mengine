@@ -164,7 +164,7 @@ namespace Metabuf
         Mengine::Helper::utf8ToUnicode( utf8, _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    void archive_read( Reader & ar, Mengine::ColourValue & _value, void * _userData )
+    void archive_read( Reader & ar, Mengine::Color & _value, void * _userData )
     {
         (void)_userData;
 

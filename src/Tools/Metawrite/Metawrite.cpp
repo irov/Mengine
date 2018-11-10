@@ -1,6 +1,6 @@
 #include "Interface/PluginInterface.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/DataInterface.h"
@@ -184,7 +184,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     Mengine::FilePath fp_out = Mengine::Helper::unicodeToFilePath( out );
 
     if( PLUGIN_SERVICE()
-        ->loadPlugin( L"XmlCodecPlugin.dll" ) == false )
+        ->loadPlugin( "XmlCodecPlugin.dll" ) == false )
     {
         return 0;
     }

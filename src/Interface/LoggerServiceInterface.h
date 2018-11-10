@@ -5,6 +5,12 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/LoggerInterface.h"
 
+#ifndef MENGINE_LOGGER_HISTORY
+#ifndef MENGINE_MASTER_RELEASE
+#define MENGINE_LOGGER_HISTORY
+#endif
+#endif
+
 namespace Mengine
 {    
     class LoggerServiceInterface
@@ -22,6 +28,9 @@ namespace Mengine
     public:
         virtual void logMessage( EMessageLevel _level, uint32_t _flag, const Char * _message, uint32_t _size ) = 0;
         virtual uint32_t getCountMessage( EMessageLevel _level ) = 0;
+
+    public:
+        virtual void writeHistory( const LoggerInterfacePtr & _logger ) const = 0;
 
     public:
         virtual bool registerLogger( const LoggerInterfacePtr & _logger ) = 0;

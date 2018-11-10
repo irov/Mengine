@@ -14,7 +14,8 @@ add_definitions(-DMENGINE_PLUGIN_DLL)
 
 INCLUDE_DIRECTORIES( 
 			         ${THIRDPARTY_DIR}/pugixml/src
-                     ${THIRDPARTY_DIR}/metabuf
+                     ${THIRDPARTY_DIR}/metabuf/include
+					 ${THIRDPARTY_DIR}/metabuf/xml2metabuf
                      ${THIRDPARTY_DIR}/utf8/source
                      ${THIRDPARTY_DIR}/libmath/include
 )

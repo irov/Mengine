@@ -304,6 +304,24 @@ namespace Mengine
         pybind::def_functor_kernel( kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
         //pybind::def_function( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );
 
+        if( SCRIPT_SERVICE()
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Arrow" ), new FactorableUnique<PythonScriptWrapper<Arrow> >( kernel ) ) == false )
+        {
+            return false;
+        }
+
+        if( SCRIPT_SERVICE()
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Entity" ), new FactorableUnique<PythonScriptWrapper<Entity> >( kernel ) ) == false )
+        {
+            return false;
+        }
+
+        if( SCRIPT_SERVICE()
+            ->setWrapper( STRINGIZE_STRING_LOCAL( "Scene" ), new FactorableUnique<PythonScriptWrapper<Scene> >( kernel ) ) == false )
+        {
+            return false;
+        }
+
         return true;
     }
 }

@@ -2727,7 +2727,7 @@ namespace Mengine
         this->setHide( _value );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::_setPersonalColor( const ColourValue& _color )
+    void Movie::_setPersonalColor( const Color& _color )
     {
         this->setLocalColor( _color );
     }

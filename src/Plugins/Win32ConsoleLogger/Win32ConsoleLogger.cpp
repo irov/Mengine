@@ -1,5 +1,7 @@
 #include "Win32ConsoleLogger.h"
 
+#include "Interface/LoggerServiceInterface.h"
+
 #include "Environment/WIN32/WindowsIncluder.h"
 
 #include <io.h>
@@ -26,6 +28,9 @@ namespace Mengine
     bool Win32ConsoleLogger::initialize()
     {
         this->createConsole_();
+
+        LOGGER_SERVICE()
+            ->writeHistory( this );        
 
         return true;
     }

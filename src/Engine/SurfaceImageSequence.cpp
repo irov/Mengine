@@ -485,7 +485,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceImageSequence::getColor() const
+    const Color & SurfaceImageSequence::getColor() const
     {
         if( this->isCompile() == false )
         {
@@ -493,12 +493,12 @@ namespace Mengine
                 , this->getName().c_str()
             );
 
-            return ColourValue::identity();
+            return Color::identity();
         }
 
         const ResourceImagePtr & resourceImage = m_resourceImageSequence->getSequenceResource( m_currentFrame );
 
-        const ColourValue & color = resourceImage->getColor();
+        const Color & color = resourceImage->getColor();
 
         return color;
     }

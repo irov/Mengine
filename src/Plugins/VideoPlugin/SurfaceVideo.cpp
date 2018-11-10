@@ -261,9 +261,9 @@ namespace Mengine
         mt::uv4_quad_point( _out, m_uv, _in );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceVideo::getColor() const
+    const Color & SurfaceVideo::getColor() const
     {
-        return ColourValue::identity();
+        return Color::identity();
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_stop( uint32_t _enumerator )
@@ -384,7 +384,10 @@ namespace Mengine
             }
             else if( state == VDRS_END_STREAM )
             {
-                if( this->isLoop() == false && (--m_playIterator == 0) )
+                bool loop = this->isLoop();
+                bool interrupt = this->isInterrupt();
+
+                if( (loop == false && (--m_playIterator == 0)) || interrupt == true )
                 {
                     m_videoDecoder->rewind();
 
@@ -576,7 +579,7 @@ namespace Mengine
     {
         (void)_enumerator;
 
-        return false;
+        return true;
     }
     ////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceVideo::_updateMaterial() const
@@ -590,7 +593,7 @@ namespace Mengine
 
         if( material == nullptr )
         {
-            LOGGER_ERROR( "Video::_updateMaterial %s invalid make material"
+            LOGGER_ERROR( "surface %s invalid make material"
                 , this->getName().c_str()
             );
 

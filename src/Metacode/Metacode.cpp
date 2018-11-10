@@ -3,28 +3,47 @@
 namespace Metacode
 {
     //////////////////////////////////////////////////////////////////////////
-    static const uint32_t metacode_magic = 3133062829u;
-    static const uint32_t metacode_version = 6;
-    static const uint32_t metacode_protocol_version = 128;
-    static const uint32_t metacode_protocol_crc32 = 12692750;
-    //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_magic()
     {
-        return metacode_magic;
+        return 3133062829u;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_version()
     {
-        return metacode_version;
+        return 6;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return metacode_protocol_version;
+        return 129;
     }
     //////////////////////////////////////////////////////////////////////////
-    HeaderError readHeader( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, uint32_t & _readProtocol, uint32_t & _needProtocol, uint32_t _metaVersion, uint32_t & _readMetaVersion )
+    uint32_t get_metacode_protocol_crc32()
     {
+        return 3950385042; 
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const char * getHeaderErrorMessage( HeaderError _error )
+    {
+        switch( _error )
+        {
+        case HEADER_SUCCESSFUL: return "Successful";
+        case HEADER_INVALID_MAGIC: return "invalid magic header";
+        case HEADER_INVALID_VERSION: return "invalid version";
+        case HEADER_INVALID_PROTOCOL_VERSION: return "invalid protocol version";
+        case HEADER_INVALID_PROTOCOL_CRC32: return "invalid protocol crc32";
+        case HEADER_INVALID_METAVERSION: return "invalid meta version";
+        default: return "invalid error";
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HeaderError readHeader( const void * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, uint32_t & _readProtocol, uint32_t & _needProtocol, uint32_t _metaVersion, uint32_t & _readMetaVersion )
+    {
+        uint32_t metacode_magic = get_metacode_magic();
+        uint32_t metacode_version = get_metacode_version();
+        uint32_t metacode_protocol_version = get_metacode_protocol_version();
+        uint32_t metacode_protocol_crc32 = get_metacode_protocol_crc32();
+
         Metabuf::Reader ar(_buff, _size, _read);
 
         uint32_t head;
@@ -35,48 +54,48 @@ namespace Metacode
             return HEADER_INVALID_MAGIC;
         }
 
-        uint32_t version;
-        ar.readPOD( version );
+        uint32_t read_version;
+        ar.readPOD( read_version );
 
-        uint32_t protocol_version;
-        ar.readPOD( protocol_version );
+        uint32_t read_protocol_version;
+        ar.readPOD( read_protocol_version );
 
-        uint32_t protocol_crc32;
-        ar.readPOD( protocol_crc32 );
+        uint32_t read_protocol_crc32;
+        ar.readPOD( read_protocol_crc32 );
 
-        uint32_t meta_version;
-        ar.readPOD( meta_version );
+        uint32_t read_meta_version;
+        ar.readPOD( read_meta_version );
 
-        _readVersion = version;
+        _readVersion = read_version;
         _needVersion = metacode_version;
-        _readProtocol = protocol_version;
+        _readProtocol = read_protocol_version;
         _needProtocol = metacode_protocol_version;
-        _readMetaVersion = meta_version;
+        _readMetaVersion = read_meta_version;
 
-        if( version != metacode_version )
+        if( read_version != metacode_version )
         {
             return HEADER_INVALID_VERSION;
         }
 
-        if( protocol_version != metacode_protocol_version )
+        if( read_protocol_version != metacode_protocol_version )
         {
             return HEADER_INVALID_PROTOCOL_VERSION;
         }
 
-        if( protocol_crc32 != metacode_protocol_crc32 )
+        if( read_protocol_crc32 != metacode_protocol_crc32 )
         {
             return HEADER_INVALID_PROTOCOL_CRC32;
         }
 
-        if( meta_version != _metaVersion )
+        if( read_meta_version != _metaVersion )
         {
             return HEADER_INVALID_METAVERSION;
         }
 
-        return HEADER_OK;
+        return HEADER_SUCCESSFUL;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool readStrings( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t & _stringCount )
+    bool readStrings( const void * _buff, size_t _size, size_t & _read, uint32_t & _stringCount )
     {
         Metabuf::Reader ar(_buff, _size, _read);
 
@@ -88,7 +107,7 @@ namespace Metacode
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const char * readString( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int64_t & _stringHash )
+    const char * readString( const void * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int64_t & _stringHash )
     {
         Metabuf::Reader ar(_buff, _size, _read);
 

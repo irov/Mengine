@@ -208,7 +208,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceImage::getColor() const
+    const Color & SurfaceImage::getColor() const
     {
         if( m_resourceImage == nullptr )
         {
@@ -216,10 +216,10 @@ namespace Mengine
                 , this->getName().c_str()
             );
 
-            return ColourValue::identity();
+            return Color::identity();
         }
 
-        const ColourValue & color = m_resourceImage->getColor();
+        const Color & color = m_resourceImage->getColor();
 
         return color;
     }

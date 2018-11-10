@@ -91,7 +91,7 @@ namespace Mengine
         return m_countY;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Grid2D::setGridColor( uint32_t _i, uint32_t _j, const ColourValue & _value )
+    bool Grid2D::setGridColor( uint32_t _i, uint32_t _j, const Color & _value )
     {
         if( _i >= m_countX || _j >= m_countY )
         {
@@ -109,7 +109,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Grid2D::getGridColor( uint32_t _i, uint32_t _j, ColourValue & _value ) const
+    bool Grid2D::getGridColor( uint32_t _i, uint32_t _j, Color & _value ) const
     {
         if( _i >= m_countX || _j >= m_countY )
         {
@@ -259,12 +259,12 @@ namespace Mengine
 
         VectorRenderVertex2D::iterator it_w = m_verticesWM.begin();
 
-        ColourValue color;
+        Color color;
         this->calcTotalColor( color );
 
         if( m_resourceImage != nullptr )
         {
-            const ColourValue & textureColour = m_resourceImage->getColor();
+            const Color & textureColour = m_resourceImage->getColor();
             color *= textureColour;
         }
 
@@ -278,8 +278,8 @@ namespace Mengine
 
             mt::mul_v3_v3_m4( vertex_w.position, vertex.position, wm );
 
-            ColourValue vertex_color( color );
-            vertex_color *= ColourValue( vertex.color );
+            Color vertex_color( color );
+            vertex_color *= Color( vertex.color );
 
             uint32_t argb = vertex_color.getAsARGB();
 

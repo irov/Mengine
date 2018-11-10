@@ -314,41 +314,41 @@ namespace Mengine
         return debugMaterial;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & BaseRender::getWorldColor() const
+    const Color & BaseRender::getWorldColor() const
     {
         if( m_relationRender == nullptr )
         {
-            const ColourValue & localColor = Colorable::getLocalColor();
+            const Color & localColor = Colorable::getLocalColor();
 
             return localColor;
         }
 
         if( Colorable::isInvalidateColor() == false )
         {
-            const ColourValue & relationColor = Colorable::getRelationColor();
+            const Color & relationColor = Colorable::getRelationColor();
 
             return relationColor;
         }
 
-        const ColourValue & parentColor = m_relationRender->getWorldColor();
+        const Color & parentColor = m_relationRender->getWorldColor();
 
-        const ColourValue & relationColor = Colorable::updateRelationColor( parentColor );
+        const Color & relationColor = Colorable::updateRelationColor( parentColor );
 
         return relationColor;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::calcTotalColor( ColourValue & _color ) const
+    void BaseRender::calcTotalColor( Color & _color ) const
     {
-        const ColourValue & worldColour = this->getWorldColor();
+        const Color & worldColour = this->getWorldColor();
         _color = worldColour;
 
-        const ColourValue & personalColour = this->getPersonalColor();
+        const Color & personalColour = this->getPersonalColor();
         _color *= personalColour;
     }
     //////////////////////////////////////////////////////////////////////////
     bool BaseRender::isSolidColor() const
     {
-        const ColourValue & worldColour = this->getWorldColor();
+        const Color & worldColour = this->getWorldColor();
 
         float worldAlpha = worldColour.getA();
         float personalAlpha = this->getPersonalAlpha();

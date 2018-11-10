@@ -175,9 +175,9 @@ namespace Mengine
         _out = _in;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceSound::getColor() const
+    const Color & SurfaceSound::getColor() const
     {
-        return ColourValue::identity();
+        return Color::identity();
     }
     //////////////////////////////////////////////////////////////////////////
     bool SurfaceSound::_play( uint32_t _enumerator, float _time )

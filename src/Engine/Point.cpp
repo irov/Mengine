@@ -121,7 +121,7 @@ namespace Mengine
         m_vertices[3].position.y = fromWM.y - perp.y * m_width;
         m_vertices[3].position.z = fromWM.z;
 
-        ColourValue color;
+        Color color;
         this->calcTotalColor( color );
 
         uint32_t argb = color.getAsARGB();

@@ -22,7 +22,7 @@ namespace Mengine
     void TextEntry::initialize( const ConstString & _key
         , const String & _text
         , const ConstString & _fontName
-        , const ColourValue & _colorFont
+        , const Color & _colorFont
         , float _lineOffset
         , float _charOffset
         , float _maxLength
@@ -65,7 +65,7 @@ namespace Mengine
         return m_fontName;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & TextEntry::getColorFont() const
+    const Color & TextEntry::getColorFont() const
     {
         return m_colorFont;
     }

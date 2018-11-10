@@ -64,7 +64,7 @@ namespace Mengine
         this->release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void FontBase::setColourFont( const ColourValue & _colour )
+    void FontBase::setColourFont( const Color & _colour )
     {
         m_colourFont = _colour;
 
@@ -90,7 +90,7 @@ namespace Mengine
         return m_params;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & FontBase::getFontColor() const
+    const Color & FontBase::getFontColor() const
     {
         return m_colourFont;
     }
@@ -275,7 +275,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontBase::initializeBase_( const IniUtil::IniStore & _ini )
     {
-        ColourValue colourFont;
+        Color colourFont;
         if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorFont", colourFont ) == true )
         {
             this->setColourFont( colourFont );

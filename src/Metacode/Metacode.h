@@ -13,10 +13,11 @@ namespace Metacode
     uint32_t get_metacode_magic();
     uint32_t get_metacode_version();
     uint32_t get_metacode_protocol_version();
+    uint32_t get_metacode_protocol_crc32();
 
     enum HeaderError
     {
-        HEADER_OK,
+        HEADER_SUCCESSFUL,
         HEADER_INVALID_MAGIC,
         HEADER_INVALID_VERSION,
         HEADER_INVALID_PROTOCOL_VERSION,
@@ -24,10 +25,12 @@ namespace Metacode
         HEADER_INVALID_METAVERSION,
     };
 
-    HeaderError readHeader( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, uint32_t & _readProtocol, uint32_t & _needProtocol, uint32_t _metaVersion, uint32_t & _readMetaVersion );
+    const char * getHeaderErrorMessage( HeaderError _error );
 
-    bool readStrings( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t & _stringCount );
-    const char * readString( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int64_t & _stringHash );
+    HeaderError readHeader( const void * _buff, size_t _size, size_t & _read, uint32_t & _readVersion, uint32_t & _needVersion, uint32_t & _readProtocol, uint32_t & _needProtocol, uint32_t _metaVersion, uint32_t & _readMetaVersion );
+
+    bool readStrings( const void * _buff, size_t _size, size_t & _read, uint32_t & _stringCount );
+    const char * readString( const void * _buff, size_t _size, size_t & _read, uint32_t & _stringSize, int64_t & _stringHash );
 
     namespace Meta_Data
     {
@@ -2076,7 +2079,7 @@ namespace Metacode
                     (_self->*_method)( this->m_Color_Value );
                 }
                 
-                const Mengine::ColourValue & get_Color_Value() const
+                const Mengine::Color & get_Color_Value() const
                 {
                     return this->m_Color_Value;
                 }
@@ -2097,7 +2100,7 @@ namespace Metacode
             public:
             protected:
             protected:
-                Mengine::ColourValue m_Color_Value;
+                Mengine::Color m_Color_Value;
                 mt::vec2f m_Size_Value;
             };
             
@@ -4962,7 +4965,7 @@ namespace Metacode
                             (_self->*_method)( this->m_Color );
                         }
                         
-                        const Mengine::ColourValue & get_Color() const
+                        const Mengine::Color & get_Color() const
                         {
                             return this->m_Color;
                         }
@@ -5016,7 +5019,7 @@ namespace Metacode
                     public:
                     protected:
                     protected:
-                        Mengine::ColourValue m_Color;
+                        Mengine::Color m_Color;
                         uint32_t m_Index;
                         mt::mat4f m_Matrix;
                         Mengine::ConstString m_Name;

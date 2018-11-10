@@ -11,7 +11,7 @@ src
 )
 
 INCLUDE_DIRECTORIES( 
-        ${THIRDPARTY_DIR}/metabuf
+        ${THIRDPARTY_DIR}/metabuf/include
         ${THIRDPARTY_DIR}/pybind/include
         ${THIRDPARTY_DIR}/spine-c/spine-c/include
 )

@@ -15,7 +15,7 @@
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/AspectRatioViewports.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 
 #ifndef MENGINE_INI_BUFFER_SIZE 
 #	define MENGINE_INI_BUFFER_SIZE 16384U
@@ -43,7 +43,7 @@ namespace Mengine
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution & _value );
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ColourValue & _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Color & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, bool & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t & _value );

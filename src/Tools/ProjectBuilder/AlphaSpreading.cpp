@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/CodecInterface.h"

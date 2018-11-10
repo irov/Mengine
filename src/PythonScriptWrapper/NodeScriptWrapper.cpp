@@ -2157,9 +2157,9 @@ namespace Mengine
             _node->stopAffectors( ETA_COLOR );
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<ColourValue> m_nodeAffectorCreatorInterpolateLinearColour;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color> m_nodeAffectorCreatorInterpolateLinearColour;
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_Node_colorTo( Node * _node, float _time, const ColourValue& _color, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_Node_colorTo( Node * _node, float _time, const Color& _color, const pybind::object & _cb, const pybind::args & _args )
         {
             if( _node == nullptr )
             {
@@ -2202,7 +2202,7 @@ namespace Mengine
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateLinearColour.create( ETA_COLOR
                     , callback
-                    , [render]( const ColourValue & _v ) { render->setLocalColor( _v ); }
+                    , [render]( const Color & _v ) { render->setLocalColor( _v ); }
                     , render->getLocalColor(), _color, _time
                 );
 
@@ -2351,7 +2351,6 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Interender );
         SCRIPT_CLASS_WRAPPING( Isometric );
         SCRIPT_CLASS_WRAPPING( MatrixProxy );
-        SCRIPT_CLASS_WRAPPING( Arrow );
         SCRIPT_CLASS_WRAPPING( TextField );
         SCRIPT_CLASS_WRAPPING( SoundEmitter );
         SCRIPT_CLASS_WRAPPING( Meshget );

@@ -13,8 +13,8 @@ namespace Mengine
         ~SurfaceSolidColor() override;
 
     public:
-        void setSolidColor( const ColourValue & _color );
-        const ColourValue & getSolidColor() const;
+        void setSolidColor( const Color & _color );
+        const Color & getSolidColor() const;
 
         void setSolidSize( const mt::vec2f & _size );
         const mt::vec2f & getSolidSize() const;
@@ -27,7 +27,7 @@ namespace Mengine
         uint32_t getUVCount() const override;
         const mt::uv4f & getUV( uint32_t _index ) const override;
 
-        const ColourValue & getColor() const override;
+        const Color & getColor() const override;
 
         void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) override;
 
@@ -35,7 +35,7 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        ColourValue m_color;
+        Color m_color;
         mt::vec2f m_size;
     };
     //////////////////////////////////////////////////////////////////////////

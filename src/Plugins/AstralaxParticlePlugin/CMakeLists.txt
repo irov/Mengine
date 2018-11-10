@@ -37,7 +37,7 @@ add_definitions(-DMAGIC_3D)
 
 INCLUDE_DIRECTORIES( 
     ${THIRDPARTY_DIR}/pybind/include    
-    ${THIRDPARTY_DIR}/metabuf
+    ${THIRDPARTY_DIR}/metabuf/include
     ${THIRDPARTY_DIR}/libmath/include
     )
 

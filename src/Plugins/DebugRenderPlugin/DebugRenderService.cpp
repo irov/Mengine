@@ -66,7 +66,7 @@ namespace Mengine
 
             m_debugText->setFontName( "__CONSOLE_FONT__"_c );
             m_debugText->setTextID( "__ID_TEXT_CONSOLE"_c );
-            m_debugText->setLocalColor( ColourValue( 1.0, 0.0, 0.0, 1.0 ) );
+            m_debugText->setLocalColor( Color( 1.0, 0.0, 0.0, 1.0 ) );
             m_debugText->enable();
 
             const SchedulerInterfacePtr & scheduler = PLAYER_SERVICE()

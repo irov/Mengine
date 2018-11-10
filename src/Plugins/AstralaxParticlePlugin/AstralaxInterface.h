@@ -11,7 +11,7 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/Magic.h"
 #include "Kernel/RenderVertex2D.h"
 #include "Kernel/RenderIndex.h"

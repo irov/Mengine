@@ -187,7 +187,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	void Image::fill( const ColourValue & _colour )
+	void Image::fill( const Color & _colour )
 	{
 		uint8_t * memory = this->getMemory();
 

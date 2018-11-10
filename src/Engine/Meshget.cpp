@@ -183,10 +183,10 @@ namespace Mengine
     {
         m_invalidateVerticesColor = false;
 
-        ColourValue color;
+        Color color;
         this->calcTotalColor( color );
 
-        const ColourValue & textureColour = m_surface->getColor();
+        const Color & textureColour = m_surface->getColor();
         color *= textureColour;
 
         VectorPosition::size_type vertexCount = m_positions.size();
@@ -195,7 +195,7 @@ namespace Mengine
         {
             const mt::vec4f & c = m_colors[i];
 
-            ColourValue v_color( c.x, c.y, c.z, c.w );
+            Color v_color( c.x, c.y, c.z, c.w );
             v_color *= color;
 
             uint32_t argb = v_color.getAsARGB();

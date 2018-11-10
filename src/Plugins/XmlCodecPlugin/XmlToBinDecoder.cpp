@@ -11,8 +11,8 @@
 
 #include "metabuf/Metadata.hpp"
 
-#include "xml2metabuf/Xml2Metabuf.hpp"
-#include "xml2metabuf/Xml2Metacode.hpp"
+#include "Xml2Metabuf.hpp"
+#include "Xml2Metacode.hpp"
 
 #include "Config/Blobject.h"
 
@@ -194,6 +194,28 @@ namespace Mengine
             LOGGER_ERROR( "Xml2BinDecoder::decode: error read protocol %s error:\n%s"
                 , m_options.pathProtocol.c_str()
                 , xml_protocol.getError().c_str()
+            );
+
+            return 0;
+        }
+
+        if( m_options.useProtocolVersion != xml_protocol.getVersion() )
+        {
+            LOGGER_ERROR( "protocol '%s' invalid version '%d' use '%d'"
+                , m_options.pathProtocol.c_str()
+                , xml_protocol.getVersion()
+                , m_options.useProtocolVersion
+            );
+
+            return 0;
+        }
+
+        if( m_options.useProtocolCrc32 != xml_protocol.getCrc32() )
+        {
+            LOGGER_ERROR( "protocol '%s' invalid version '%d' use '%d'"
+                , m_options.pathProtocol.c_str()
+                , xml_protocol.getVersion()
+                , m_options.useProtocolCrc32
             );
 
             return 0;

@@ -18,6 +18,9 @@ namespace Mengine
         FilePath pathProtocol;
         FilePath pathXml;
         FilePath pathBin;
+
+        uint32_t useProtocolVersion;
+        uint32_t useProtocolCrc32;
         //int version;
     };
     //////////////////////////////////////////////////////////////////////////

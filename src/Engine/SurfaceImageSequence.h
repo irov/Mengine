@@ -61,7 +61,7 @@ namespace Mengine
 
         void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) override;
 
-        const ColourValue & getColor() const override;
+        const Color & getColor() const override;
 
     protected:
         void _setTime( float _timming ) override;

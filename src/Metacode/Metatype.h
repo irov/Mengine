@@ -9,7 +9,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/Polygon.h"
 #include "Kernel/Viewport.h"
 
@@ -40,7 +40,7 @@ namespace Metabuf
     void archive_read( Reader & ar, Mengine::Tags & _value, void * _userData );
     void archive_read( Reader & ar, Mengine::WChar & _value, void * _userData );
     void archive_read( Reader & ar, Mengine::WString & _value, void * _userData );
-    void archive_read( Reader & ar, Mengine::ColourValue & _value, void * _userData );
+    void archive_read( Reader & ar, Mengine::Color & _value, void * _userData );
     void archive_read( Reader & ar, Mengine::Polygon & _value, void * _userData );
     void archive_read( Reader & ar, Mengine::Viewport & _value, void * _userData );
     void archive_read( Reader & ar, Mengine::Floats & _value, void * _userData );

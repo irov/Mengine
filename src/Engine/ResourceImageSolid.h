@@ -3,7 +3,7 @@
 #include "Kernel/ResourceImage.h"
 
 #include "Config/Typedef.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 
 namespace Mengine
 {

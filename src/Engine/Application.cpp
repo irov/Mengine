@@ -255,6 +255,13 @@ namespace Mengine
             m_debugMask |= MENGINE_DEBUG_HOTSPOTS;
         }
 
+        LOGGER_WARNING( "Application company '%s' project '%s' version '%d' locale '%s'"
+            , m_companyName.c_str()
+            , m_projectName.c_str()
+            , m_projectVersion
+            , m_locale.c_str()
+        );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -535,11 +542,12 @@ namespace Mengine
             );
         }
 
-        LOGGER_INFO( "Application:initializeGame load game resource"
-        );
-
         const Tags & platformTags = PLATFORM_SERVICE()
             ->getPlatformTags();
+
+        LOGGER_INFO( "Application:initializeGame load game resource tags '%s'"
+            , platformTags.to_str().c_str()
+        );
 
         if( PACKAGE_SERVICE()
             ->enablePackages( m_locale, platformTags ) == false )

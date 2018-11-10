@@ -41,10 +41,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ShapeQuad::updateVerticesColor() const
     {
-        ColourValue color;
+        Color color;
         this->calcTotalColor( color );
 
-        const ColourValue & surfaceColor = m_surface->getColor();
+        const Color & surfaceColor = m_surface->getColor();
 
         color *= surfaceColor;
 

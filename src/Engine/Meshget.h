@@ -6,7 +6,7 @@
 #include "Kernel/BaseRender.h"
 #include "Kernel/Materialable.h"
 #include "Kernel/Surface.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/RenderVertex2D.h"
 #include "Kernel/BaseEventation.h"

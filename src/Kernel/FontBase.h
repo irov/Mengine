@@ -34,8 +34,8 @@ namespace Mengine
         void _decrementZero() override;
 
     public:
-        void setColourFont( const ColourValue & _colour ) override;
-        const ColourValue & getFontColor() const override;
+        void setColourFont( const Color & _colour ) override;
+        const Color & getFontColor() const override;
 
         void setLineOffset( float _lineOffset ) override;
         float getLineOffset() const override;
@@ -64,7 +64,7 @@ namespace Mengine
 
         uint32_t m_params;
 
-        ColourValue m_colourFont;
+        Color m_colourFont;
 
         float m_lineOffset;
         float m_charOffset;

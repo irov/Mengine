@@ -22,7 +22,8 @@ add_definitions(-DPYBIND_PYTHON_VERSION=342)
 
 INCLUDE_DIRECTORIES( 
     ${THIRDPARTY_DIR}/pugixml/src
-    ${THIRDPARTY_DIR}/metabuf                     
+    ${THIRDPARTY_DIR}/metabuf/include
+	${THIRDPARTY_DIR}/metabuf/xml2metabuf
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/libmovie/include
     ${THIRDPARTY_DIR}/tinyini/include
@@ -33,6 +34,7 @@ LINK_DIRECTORIES( ${CMAKE_ARCHIVE_OUTPUT_DIRECTORY} )
 ADD_EXECUTABLE( ${MY_LIB_NAME} WIN32 ${SRC_FILES} )
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Kernel)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Engine)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Metacode)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} CodecService)

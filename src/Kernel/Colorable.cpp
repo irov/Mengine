@@ -16,7 +16,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Colorable::setPersonalColor( const ColourValue& _color )
+    void Colorable::setPersonalColor( const Color& _color )
     {
         if( m_personalColor == _color )
         {
@@ -48,7 +48,7 @@ namespace Mengine
         this->invalidateColor();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Colorable::setLocalColor( const ColourValue& _color )
+    void Colorable::setLocalColor( const Color& _color )
     {
         if( m_localColor == _color )
         {
@@ -128,7 +128,7 @@ namespace Mengine
         this->invalidateColor();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue& Colorable::updateRelationColor( const ColourValue& _parentColor ) const
+    const Color& Colorable::updateRelationColor( const Color& _parentColor ) const
     {
         m_invalidateColor = false;
 
@@ -201,7 +201,7 @@ namespace Mengine
         this->_invalidateColor();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Colorable::_setPersonalColor( const ColourValue& _color )
+    void Colorable::_setPersonalColor( const Color& _color )
     {
         (void)_color;
         //Empty

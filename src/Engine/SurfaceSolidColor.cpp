@@ -16,12 +16,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSolidColor::setSolidColor( const ColourValue & _color )
+    void SurfaceSolidColor::setSolidColor( const Color & _color )
     {
         m_color = _color;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceSolidColor::getSolidColor() const
+    const Color & SurfaceSolidColor::getSolidColor() const
     {
         return m_color;
     }
@@ -72,7 +72,7 @@ namespace Mengine
         return mt::uv4f::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    const ColourValue & SurfaceSolidColor::getColor() const
+    const Color & SurfaceSolidColor::getColor() const
     {
         return m_color;
     }

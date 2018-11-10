@@ -8,7 +8,7 @@
 #include "Config/String.h"
 #include "Config/Vector.h"
 
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/GlyphChar.h"
 
 #include "math/vec4.h"

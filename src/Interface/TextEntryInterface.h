@@ -3,7 +3,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/GlyphChar.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 
 #include "Config/String.h"
 #include "Config/VectorString.h"
@@ -36,7 +36,7 @@ namespace Mengine
 
     public:
         virtual const ConstString & getFontName() const = 0;
-        virtual const ColourValue & getColorFont() const = 0;
+        virtual const Color & getColorFont() const = 0;
         virtual float getLineOffset() const = 0;
         virtual float getCharOffset() const = 0;
         virtual float getMaxLength() const = 0;

@@ -418,7 +418,7 @@ namespace Mengine
             v3.uv[1] = uv2[3];
         }
 
-        ColourValue color;
+        Color color;
         this->calcTotalColor( color );
 
         uint32_t argb = color.getAsARGB();

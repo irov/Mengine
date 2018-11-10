@@ -1,4 +1,4 @@
-#include "ColourValue.h"
+#include "Color.h"
 
 namespace Mengine
 {
@@ -27,7 +27,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::updateRGBA_() const
+    void Color::updateRGBA_() const
     {
         m_argb = Helper::makeARGB( m_r, m_g, m_b, m_a );
 
@@ -41,7 +41,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setRGBA( float _r, float _g, float _b, float _a )
+    void Color::setRGBA( float _r, float _g, float _b, float _a )
     {
         m_r = _r;
         m_g = _g;
@@ -51,7 +51,7 @@ namespace Mengine
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::multiplyRGBA( float _r, float _g, float _b, float _a )
+    void Color::multiplyRGBA( float _r, float _g, float _b, float _a )
     {
         m_r *= _r;
         m_g *= _g;
@@ -61,7 +61,7 @@ namespace Mengine
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::premultiplyRGB()
+    void Color::premultiplyRGB()
     {
         m_r *= m_a;
         m_g *= m_a;
@@ -70,7 +70,7 @@ namespace Mengine
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setRGB( float _r, float _g, float _b )
+    void Color::setRGB( float _r, float _g, float _b )
     {
         m_r = _r;
         m_g = _g;
@@ -107,7 +107,7 @@ namespace Mengine
         240.f / 255.f, 241.f / 255.f, 242.f / 255.f, 243.f / 255.f, 244.f / 255.f, 245.f / 255.f, 246.f / 255.f, 247.f / 255.f, 248.f / 255.f, 249.f / 255.f,
         250.f / 255.f, 251.f / 255.f, 252.f / 255.f, 253.f / 255.f, 254.f / 255.f, 255.f / 255.f };
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setAsARGB( ColourValue_ARGB _val )
+    void Color::setAsARGB( ColourValue_ARGB _val )
     {
         m_argb = _val;
 
@@ -143,28 +143,28 @@ namespace Mengine
         m_invalidateARGB = COLOUR_VALUE_INVALIDATE_FALSE;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setA( float _a )
+    void Color::setA( float _a )
     {
         m_a = _a;
 
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setR( float _r )
+    void Color::setR( float _r )
     {
         m_r = _r;
 
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setG( float _g )
+    void Color::setG( float _g )
     {
         m_g = _g;
 
         this->invalidate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void ColourValue::setB( float _b )
+    void Color::setB( float _b )
     {
         m_b = _b;
 

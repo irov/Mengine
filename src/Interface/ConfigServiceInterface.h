@@ -10,7 +10,7 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/AspectRatioViewports.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/Params.h"
 
 namespace Mengine

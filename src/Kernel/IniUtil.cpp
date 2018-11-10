@@ -187,7 +187,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ColourValue & _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Color & _value )
         {
             const Char * ini_value = _ini.getSettingValue( _section, _key );
 

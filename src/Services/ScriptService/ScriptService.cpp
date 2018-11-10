@@ -621,7 +621,7 @@ namespace Mengine
 
         if( it_found == m_scriptWrapper.end() )
         {
-            LOGGER_ERROR( "ScriptService::wrap not found type %s"
+            LOGGER_ERROR( "not found type %s"
                 , _type.c_str()
             );
 
@@ -648,7 +648,7 @@ namespace Mengine
 
         if( code == nullptr )
         {
-            m_kernel->error_message( "ScriptService::loadModuleSource %s invalid marshal get object"
+            m_kernel->error_message( "module '%s' invalid marshal get object"
                 , str_moduleName 
             );
 
@@ -657,7 +657,7 @@ namespace Mengine
 
         if( m_kernel->code_check( code ) == false )
         {
-            LOGGER_ERROR( "ScriptService::loadModuleSource %s marshal get object not code"
+            LOGGER_ERROR( "module '%s' marshal get object not code"
                 , str_moduleName
             );
 
@@ -709,7 +709,7 @@ namespace Mengine
 
         if( file_magic != py_magic )
         {
-            LOGGER_ERROR( "ScriptService::loadModuleBinary %s invalid magic %u need %u"
+            LOGGER_ERROR( "module '%s' invalid magic %u need %u"
                 , str_moduleName
                 , file_magic
                 , py_magic
@@ -722,7 +722,7 @@ namespace Mengine
 
         if( code == nullptr )
         {
-            m_kernel->error_message( "ScriptService::loadModuleBinary %s invalid marshal get object"
+            m_kernel->error_message( "module '%s' invalid marshal get object"
                 , str_moduleName
             );
 
@@ -731,7 +731,7 @@ namespace Mengine
 
         if( m_kernel->code_check( code ) == false )
         {
-            LOGGER_ERROR( "ScriptService::loadModuleBinary %s marshal get object not code"
+            LOGGER_ERROR( "module '%s' marshal get object not code"
                 , str_moduleName
             );
 
@@ -742,7 +742,7 @@ namespace Mengine
 
         if( py_module == nullptr )
         {
-            LOGGER_ERROR( "ScriptService::loadModuleBinary %s invalid module init"
+            LOGGER_ERROR( "module '%s' invalid module init"
                 , str_moduleName
             );
 

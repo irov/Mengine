@@ -9,7 +9,7 @@
 #include "Kernel/Observable.h"
 #include "Kernel/Materialable.h"
 
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/RenderVertex2D.h"
@@ -71,8 +71,8 @@ namespace Mengine
         float getFontHeight() const;
 
     public:
-        void setFontColor( const ColourValue & _color );
-        const ColourValue & getFontColor() const;
+        void setFontColor( const Color & _color );
+        const Color & getFontColor() const;
 
         void setLineOffset( float _offset );
         float getLineOffset() const;
@@ -145,7 +145,7 @@ namespace Mengine
 
         inline const VectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font );
 
-        void updateVertexData_( const TextFontInterfacePtr & _font, const ColourValue & _color, VectorRenderVertex2D& _vertexData );
+        void updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D& _vertexData );
 
     protected:
         void invalidateTextLines() const;
@@ -169,7 +169,7 @@ namespace Mengine
         float calcCharOffset() const;
         float calcMaxLength() const;
 
-        const ColourValue & calcFontColor() const;
+        const Color & calcFontColor() const;
 
         ETextHorizontAlign calcHorizontalAlign() const;
         ETextVerticalAlign calcVerticalAlign() const;
@@ -202,7 +202,7 @@ namespace Mengine
         float m_lineOffset;
         float m_charOffset;
 
-        ColourValue m_colorFont;
+        Color m_colorFont;
 
         uint32_t m_fontParams;
 

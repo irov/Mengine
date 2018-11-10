@@ -1210,7 +1210,7 @@ namespace Mengine
             return resource;
         }
         //////////////////////////////////////////////////////////////////////////
-        ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const ColourValue & _colour, const mt::vec2f & _maxSize )
+        ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const Color & _colour, const mt::vec2f & _maxSize )
         {
             ResourceImageSolidPtr resource = RESOURCE_SERVICE()
                 ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageSolid" ) );
@@ -2270,11 +2270,11 @@ namespace Mengine
 
                         if( pos_sqrdistance < radius * radius )
                         {
-                            m_grid->setGridColor( i, j, ColourValue( 0x00FFFFFF ) );
+                            m_grid->setGridColor( i, j, Color( 0x00FFFFFF ) );
                         }
                         else if( pos_sqrdistance < (radius + penumbra) * (radius + penumbra) )
                         {
-                            ColourValue cv;
+                            Color cv;
                             m_grid->getGridColor( i, j, cv );
 
                             float cv_a = cv.getA();
@@ -2288,7 +2288,7 @@ namespace Mengine
                                 continue;
                             }
 
-                            m_grid->setGridColor( i, j, ColourValue( 1.f, 1.f, 1.f, a0 ) );
+                            m_grid->setGridColor( i, j, Color( 1.f, 1.f, 1.f, a0 ) );
                         }
                     }
                 }

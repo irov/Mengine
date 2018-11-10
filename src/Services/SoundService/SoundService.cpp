@@ -747,6 +747,15 @@ namespace Mengine
 
                 const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
+                if( source == nullptr )
+                {
+                    LOGGER_ERROR( "SoundService::play invalid play %d source is nullptr"
+                        , identity->id
+                    );
+
+                    return false;
+                }
+
                 float length_ms = source->getDuration();
                 float pos_ms = source->getPosition();
 
@@ -1059,6 +1068,15 @@ namespace Mengine
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
         const SoundSourceInterfacePtr & source = identity->getSoundSource();
+
+        if( source == nullptr )
+        {
+            LOGGER_ERROR( "SoundService::getDuration source is nullptr id '%d'"
+                , _identity->getId()
+            );
+
+            return 0.f;
+        }
 
         float ms = source->getDuration();
 

@@ -98,7 +98,7 @@ namespace Mengine
         for( MapTexts::value_type & value : m_texts )
         {
             const TextFieldPtr & text = value.second;
-            
+
             text->setTextAliasEnvironment( m_aliasEnvironment );
         }
     }
@@ -106,6 +106,63 @@ namespace Mengine
     const ConstString & Movie2::getTextAliasEnvironment() const
     {
         return m_aliasEnvironment;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2::interruptElements()
+    {
+        for( const SurfacePtr & surface : m_surfaces )
+        {
+            AnimationInterface * animation = surface->getAnimation();
+
+            if( animation == nullptr )
+            {
+                continue;
+            }
+
+            if( animation->isPlay() == false )
+            {
+                continue;
+            }
+
+            if( animation->isLoop() == false )
+            {
+                continue;
+            }
+
+            if( animation->interrupt() == false )
+            {
+                return false;
+            }
+        }
+
+        for( const MapParticleEmitter2s::value_type & value : m_particleEmitters )
+        {
+            const NodePtr & particle = value.second;
+
+            AnimationInterface * animation = particle->getAnimation();
+
+            if( animation == nullptr )
+            {
+                continue;
+            }
+
+            if( animation->isPlay() == false )
+            {
+                continue;
+            }
+
+            if( animation->isLoop() == false )
+            {
+                continue;
+            }
+
+            if( animation->isInterrupt() == true )
+            {
+                return false;
+            }
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::checkInterruptElement() const
@@ -155,7 +212,7 @@ namespace Mengine
                 {
                     return;
                 }
-                
+
                 ss << _name.c_str() << ", ";
             } );
 
@@ -165,7 +222,7 @@ namespace Mengine
                 , this->getResourceMovie2()->getFilePath().c_str()
                 , m_compositionName.c_str()
                 , ss.str().c_str()
-            );         
+            );
 
             return false;
         }
@@ -287,10 +344,10 @@ namespace Mengine
 
                 this->addMatrixProxy_( matrixProxy );
             }
-            else if( layer.type == STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) )
+            else if( layer.type == STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) || layer.type == STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) )
             {
                 NodePtr node = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
+                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );
 
                 if( node == nullptr )
                 {
@@ -330,7 +387,7 @@ namespace Mengine
 
                 if( resourceImage == nullptr )
                 {
-                    LOGGER_ERROR( "Movie2 '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image %s"
+                    LOGGER_ERROR( "movie '%s' resource '%s' composition '%s' layer '%s' invalid get resource for image %s"
                         , this->getName().c_str()
                         , this->getResourceMovie2()->getName().c_str()
                         , this->getCompositionName().c_str()
@@ -356,7 +413,7 @@ namespace Mengine
 
                 if( node == nullptr )
                 {
-                    LOGGER_ERROR( "Movie::createMovieSprite_ '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
+                    LOGGER_ERROR( "movie '%s' resource '%s' composition '%s' layer '%s' invalid create 'Sprite'"
                         , this->getName().c_str()
                         , this->getResourceMovie2()->getName().c_str()
                         , this->getCompositionName().c_str()
@@ -391,6 +448,18 @@ namespace Mengine
                 this->addChild( matrixProxy );
 
                 this->addMatrixProxy_( matrixProxy );
+            }
+            else
+            {
+                LOGGER_ERROR( "movie '%s' resource '%s' composition '%s' layer '%s' invalid create type '%s'"
+                    , this->getName().c_str()
+                    , this->getResourceMovie2()->getName().c_str()
+                    , this->getCompositionName().c_str()
+                    , layer.name.c_str()
+                    , layer.type.c_str()
+                );
+
+                return false;
             }
         }
 
@@ -1050,24 +1119,24 @@ namespace Mengine
                     }
 
                     ConstString c_name = Helper::stringizeString( layer_name );
-					surface->setName( c_name );
+                    surface->setName( c_name );
 
                     Resource * resourceVideo = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
 
-					UnknownVideoSurfaceInterfacePtr unknownVideoSurface = surface->getUnknown();
+                    UnknownVideoSurfaceInterfacePtr unknownVideoSurface = surface->getUnknown();
 
-					unknownVideoSurface->setResourceVideo( resourceVideo );
+                    unknownVideoSurface->setResourceVideo( resourceVideo );
 
                     EMaterialBlendMode blend_mode = Detail::getMovieLayerBlendMode( layer );
 
-					AnimationInterface * surface_animation = surface->getAnimation();
+                    AnimationInterface * surface_animation = surface->getAnimation();
 
-					surface_animation->setLoop( _callbackData->incessantly );
+                    surface_animation->setLoop( _callbackData->incessantly );
 
-					surface->setBlendMode( blend_mode );
-					surface->setPremultiplyAlpha( true );
+                    surface->setBlendMode( blend_mode );
+                    surface->setPremultiplyAlpha( true );
 
-                    movie2->addSurface(surface);
+                    movie2->addSurface( surface );
 
                     *_nd = surface.get();
 
@@ -1222,10 +1291,10 @@ namespace Mengine
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
-                case AE_MOVIE_STATE_UPDATE_INTERRUPT:
-                    {
-                        particle_animation->interrupt();
-                    }break;
+                //case AE_MOVIE_STATE_UPDATE_INTERRUPT:
+                //    {
+                //        particle_animation->interrupt();
+                //    }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
                         particle_animation->stop();
@@ -1284,15 +1353,15 @@ namespace Mengine
                             }
                         }
 
-						surface_animation->setTime( _callbackData->offset * 1000.f );
+                        surface_animation->setTime( _callbackData->offset * 1000.f );
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
-                case AE_MOVIE_STATE_UPDATE_INTERRUPT:
-                    {
-                        surface_animation->interrupt();
-                    }break;
+                //case AE_MOVIE_STATE_UPDATE_INTERRUPT:
+                //    {
+                //        surface_animation->interrupt();
+                //    }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
                         surface_animation->stop();
@@ -1301,19 +1370,19 @@ namespace Mengine
                     {
                         if( _callbackData->loop == AE_FALSE )
                         {
-							surface_animation->stop();
+                            surface_animation->stop();
                         }
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PAUSE:
                     {
-						surface_animation->pause();
+                        surface_animation->pause();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_RESUME:
                     {
                         float time = TIMELINE_SERVICE()
                             ->getTime();
 
-						surface_animation->resume( time );
+                        surface_animation->resume( time );
                     }break;
                 default:
                     {
@@ -1358,10 +1427,10 @@ namespace Mengine
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
-                case AE_MOVIE_STATE_UPDATE_INTERRUPT:
-                    {
-                        surface_animation->interrupt();
-                    }break;
+                //case AE_MOVIE_STATE_UPDATE_INTERRUPT:
+                //    {
+                //        surface_animation->interrupt();
+                //    }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
                         surface_animation->stop();
@@ -1501,9 +1570,21 @@ namespace Mengine
     {
         Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_ud);
 
-        if( _callbackData->state == AE_MOVIE_COMPOSITION_END )
+        switch( _callbackData->state )
         {
-            m2->end();
+        case AE_MOVIE_COMPOSITION_INTERRUPT:
+            {
+                if( m2->interruptElements() == false )
+                {
+                    LOGGER_ERROR( "movie '%s' invalid interrupt elements"
+                        , m2->getName().c_str()
+                    );
+                }
+            }break;
+        case AE_MOVIE_COMPOSITION_END:
+            {
+                m2->end();
+            }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1550,7 +1631,7 @@ namespace Mengine
 
         parent_layer->setOrientationX( angle );
 
-        ColourValue color( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+        Color color( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
         RenderInterface * parent_layer_render = parent_layer->getRender();
         parent_layer_render->setLocalColor( color );
@@ -1587,7 +1668,7 @@ namespace Mengine
 
         parent_layer->setOrientationX( angle );
 
-        ColourValue color( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
+        Color color( _callbackData->color.r, _callbackData->color.g, _callbackData->color.b, _callbackData->opacity );
 
         RenderInterface * parent_layer_render = parent_layer->getRender();
         parent_layer_render->setLocalColor( color );
@@ -1598,13 +1679,13 @@ namespace Mengine
         Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_ud);
 
         const aeMovieLayerData * layer = _callbackData->layer;
-        
+
         const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer );
 
         ConstString c_name = Helper::stringizeString( layer_name );
 
         const Movie2SubCompositionPtr & subcomposition = m2->getSubComposition( c_name );
-    
+
         if( subcomposition == nullptr )
         {
             return AE_FALSE;
@@ -1767,7 +1848,7 @@ namespace Mengine
 
         if( composition == nullptr )
         {
-            LOGGER_ERROR( "Movie2::_compile '%s' resource %s invalid create composition '%s'"
+            LOGGER_ERROR( "Movie2::_compile '%s' resource '%s' invalid create composition '%s'"
                 , m_name.c_str()
                 , m_resourceMovie2->getName().c_str()
                 , m_compositionName.c_str()
@@ -1800,15 +1881,6 @@ namespace Mengine
 
         ae_set_movie_composition_loop( m_composition, loop ? AE_TRUE : AE_FALSE );
 
-        bool play = this->isPlay();
-
-        if( play == true )
-        {
-            float timing = this->getTime();
-
-            ae_play_movie_composition( m_composition, timing * 0.001f );
-        }
-
         float animationSpeedFactor = this->getAnimationSpeedFactor();
         this->updateAnimationSpeedFactor_( animationSpeedFactor );
 
@@ -1820,6 +1892,15 @@ namespace Mengine
             {
                 return false;
             }
+        }
+
+        bool play = this->isPlay();
+
+        if( play == true )
+        {
+            float timing = this->getTime();
+
+            ae_play_movie_composition( m_composition, timing * 0.001f );
         }
 
         return true;
@@ -1988,7 +2069,7 @@ namespace Mengine
         this->updateAnimationSpeedFactor_( _factor );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::updateAnimationSpeedFactor_( float _factor )    
+    void Movie2::updateAnimationSpeedFactor_( float _factor )
     {
         for( const SurfacePtr & surface : m_surfaces )
         {
@@ -2030,7 +2111,7 @@ namespace Mengine
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        ColourValue total_color;
+        Color total_color;
         this->calcTotalColor( total_color );
 
         float total_color_r = total_color.getR();
@@ -2078,7 +2159,7 @@ namespace Mengine
                 context.scissor = _context->scissor;
             }
 
-            ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
+            //ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
 
             if( mesh.track_matte_data == nullptr )
             {
@@ -2127,6 +2208,8 @@ namespace Mengine
                             continue;
                         }
 
+                        ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
+
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -2164,6 +2247,8 @@ namespace Mengine
                         {
                             continue;
                         }
+
+                        ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
 
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
@@ -2205,7 +2290,11 @@ namespace Mengine
                         }
 
                         ResourceImage * resource_image = reinterpret_node_cast<ResourceImage *>(resource_reference);
-                        
+
+                        const Color & imageColor = resource_image->getColor();
+
+                        ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
+
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -2270,7 +2359,11 @@ namespace Mengine
                         }
 
                         Surface * surface = reinterpret_node_cast<Surface *>(mesh.element_data);
-                        
+
+                        const Color & surfaceColor = surface->getColor();
+
+                        ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * surfaceColor.getR(), total_color_g * mesh.color.g * surfaceColor.getG(), total_color_b * mesh.color.b * surfaceColor.getB(), total_color_a * mesh.opacity * surfaceColor.getA() );
+
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -2286,8 +2379,8 @@ namespace Mengine
                             mt::vec2f uv;
                             uv.from_f2( &mesh.uv[index][0] );
 
-							surface->correctUV( 0, v.uv[0], uv );
-							surface->correctUV( 1, v.uv[1], uv );
+                            surface->correctUV( 0, v.uv[0], uv );
+                            surface->correctUV( 1, v.uv[1], uv );
 
                             v.color = total_mesh_color;
                         }
@@ -2318,7 +2411,7 @@ namespace Mengine
                         }
 
                         const SurfaceTrackMatte * surfaceTrackMatte = reinterpret_node_cast<const SurfaceTrackMatte *>(mesh.element_data);
-                        
+
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -2328,6 +2421,10 @@ namespace Mengine
                         const TrackMatteDesc * track_matte_desc = reinterpret_cast<const TrackMatteDesc *>(mesh.track_matte_data);
 
                         const aeMovieRenderMesh * track_matte_mesh = &track_matte_desc->mesh;
+
+                        const Color & imageColor = resourceImage->getColor();
+
+                        ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {

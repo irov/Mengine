@@ -7,7 +7,7 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/GlyphChar.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 
 #include "Config/String.h"
 #include "Config/VectorString.h"
@@ -75,7 +75,7 @@ namespace Mengine
         virtual uint32_t getLayoutCount() const = 0;
 
     public:
-        virtual void setColourFont( const ColourValue & _colour ) = 0;
+        virtual void setColourFont( const Color & _colour ) = 0;
         virtual void setLineOffset( float _lineOffset ) = 0;
         virtual void setCharOffset( float _charOffset ) = 0;
 
@@ -98,7 +98,7 @@ namespace Mengine
     public:
         virtual uint32_t getFontParams() const = 0;
 
-        virtual const ColourValue & getFontColor() const = 0;
+        virtual const Color & getFontColor() const = 0;
 
         virtual float getLineOffset() const = 0;
         virtual float getCharOffset() const = 0;

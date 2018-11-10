@@ -3,7 +3,7 @@
 #include "Interface/TextEntryInterface.h"
 
 #include "Kernel/ConstString.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 
 #include "stdex/intrusive_tree.h"
 
@@ -21,7 +21,7 @@ namespace Mengine
         void initialize( const ConstString & _key
             , const String & _text
             , const ConstString & _font
-            , const ColourValue & _colorFont
+            , const Color & _colorFont
             , float _lineOffset
             , float _charOffset
             , float _maxLength
@@ -36,7 +36,7 @@ namespace Mengine
 
     public:
         const ConstString & getFontName() const override;
-        const ColourValue & getColorFont() const override;
+        const Color & getColorFont() const override;
         float getLineOffset() const override;
         float getCharOffset() const override;
         float getMaxLength() const override;
@@ -53,7 +53,7 @@ namespace Mengine
 
         ConstString m_fontName;
 
-        ColourValue m_colorFont;
+        Color m_colorFont;
 
         float m_lineOffset;
         float m_charOffset;

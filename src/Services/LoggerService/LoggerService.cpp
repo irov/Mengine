@@ -69,6 +69,15 @@ namespace Mengine
 
             logger->log( _level, _flag, _message, _size );
         }
+
+#ifdef MENGINE_LOGGER_HISTORY
+        Record history;
+        history.level = _level;
+        history.flag = _flag;
+        history.message.assign( _message, _size );
+
+        m_history.emplace_back( history );
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t LoggerService::getCountMessage( EMessageLevel _level )
@@ -76,6 +85,21 @@ namespace Mengine
         uint32_t count = m_countMessage[_level];
 
         return count;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::writeHistory( const LoggerInterfacePtr & _logger ) const
+    {
+        (void)_logger;
+
+#ifdef MENGINE_LOGGER_HISTORY
+        for( const Record & record : m_history )
+        {
+            const Char * record_message_str = record.message.c_str();
+            uint32_t record_message_size = record.message.size();
+
+            _logger->log( record.level, record.flag, record_message_str, record_message_size );
+        }
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     bool LoggerService::registerLogger( const LoggerInterfacePtr & _logger )

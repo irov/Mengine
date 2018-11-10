@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/LoaderInterface.h"
@@ -15,12 +15,12 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 
-#include "Plugin/XmlCodecPlugin/XmlCodecInterface.h"
+#include "Plugins/XmlCodecPlugin/XmlCodecInterface.h"
 
 #include "Kernel/Logger.h"
 
-#include "xml2metabuf/Xml2Metabuf.hpp"
-#include "xml2metabuf/Xml2Metacode.hpp"
+#include "Xml2Metabuf.hpp"
+#include "Xml2Metacode.hpp"
 
 #include "Config/Typedef.h"
 

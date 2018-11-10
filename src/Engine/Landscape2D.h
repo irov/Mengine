@@ -6,7 +6,7 @@
 
 #include "Kernel/ResourceImage.h"
 
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/RenderVertex2D.h"
 

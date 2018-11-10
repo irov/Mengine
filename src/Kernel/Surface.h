@@ -13,7 +13,7 @@
 
 #include "math/vec2.h"
 #include "math/uv4.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 
 namespace Mengine
 {
@@ -47,7 +47,7 @@ namespace Mengine
 
         virtual void correctUV( uint32_t _index, mt::vec2f & _out, const mt::vec2f & _in ) = 0;
 
-        virtual const ColourValue & getColor() const = 0;
+        virtual const Color & getColor() const = 0;
 
     public:
         bool initialize();

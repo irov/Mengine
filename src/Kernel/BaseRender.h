@@ -107,8 +107,8 @@ namespace Mengine
         const RenderMaterialInterfacePtr & getDebugMaterial() const;
 
     protected:
-        const ColourValue & getWorldColor() const override;
-        void calcTotalColor( ColourValue & _color ) const override;
+        const Color & getWorldColor() const override;
+        void calcTotalColor( Color & _color ) const override;
         bool isSolidColor() const override;
 
     protected:

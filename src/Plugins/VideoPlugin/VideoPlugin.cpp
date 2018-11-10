@@ -84,18 +84,6 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_SurfaceVideo_setEventListener )
             ;
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceVideo, 128> > ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), new FactorableUnique<SurfacePrototypeGenerator<SurfaceVideo, 128> > ) == false )
-        {
-            return false;
-        }
-
         if( SCRIPT_SERVICE()
             ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<PythonScriptWrapper<ResourceVideo> >( kernel ) ) == false )
         {
@@ -104,6 +92,18 @@ namespace Mengine
 
         if( SCRIPT_SERVICE()
             ->setWrapper( STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), new FactorableUnique<PythonScriptWrapper<SurfaceVideo> >( kernel ) ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceVideo, 128> > ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), new FactorableUnique<SurfacePrototypeGenerator<SurfaceVideo, 128> > ) == false )
         {
             return false;
         }

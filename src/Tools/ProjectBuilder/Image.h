@@ -3,7 +3,7 @@
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/MemoryInterface.h"
 
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Factorable.h"
 
@@ -27,7 +27,7 @@ namespace Mengine
 		
 		bool create( uint32_t _width, uint32_t _height, uint32_t _channel );
 		
-		void fill( const ColourValue & _colour );
+		void fill( const Color & _colour );
 
 		bool paste( const ImagePtr & _image, uint32_t _x, uint32_t _y );
 

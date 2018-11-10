@@ -14,7 +14,7 @@
 #include "math/uv4.h"
 #include "math/utils.h"
 
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Polygon.h"
@@ -359,7 +359,7 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        static String color_repr( ColourValue * _v )
+        static String color_repr( Color * _v )
         {
             Stringstream ss;
             ss << "<color: " << _v->getA() << ", " << _v->getR() << ", " << _v->getG() << ", " << _v->getB() << ">";
@@ -369,7 +369,7 @@ namespace Mengine
             return repr;
         }
         //////////////////////////////////////////////////////////////////////////
-        static bool color_convert( pybind::kernel_interface * _kernel, PyObject * _obj, ColourValue * _place, void * _user )
+        static bool color_convert( pybind::kernel_interface * _kernel, PyObject * _obj, Color * _place, void * _user )
         {
             (void)_kernel;
             (void)_user;
@@ -714,21 +714,21 @@ namespace Mengine
             .def( "getIntersectionSquareBBox", &Viewport::getIntersectionSquareBBox )
             ;
 
-        pybind::struct_<ColourValue>( kernel, "Color" )
+        pybind::struct_<Color>( kernel, "Color" )
             .def_constructor( pybind::init<float, float, float, float>() )
             .def_convert( &ScriptMethod::color_convert, nullptr )
             .def_repr( &ScriptMethod::color_repr )
-            .def( "getA", &ColourValue::getA )
-            .def( "getR", &ColourValue::getR )
-            .def( "getG", &ColourValue::getG )
-            .def( "getB", &ColourValue::getB )
-            .def_property( "a", &ColourValue::getA, &ColourValue::setA )
-            .def_property( "r", &ColourValue::getR, &ColourValue::setR )
-            .def_property( "g", &ColourValue::getG, &ColourValue::setG )
-            .def_property( "b", &ColourValue::getB, &ColourValue::setB )
-            .def( "isSolid", &ColourValue::isSolid )
-            .def( "isIdentity", &ColourValue::isIdentity )
-            .def( "isSolid", &ColourValue::isSolid )
+            .def( "getA", &Color::getA )
+            .def( "getR", &Color::getR )
+            .def( "getG", &Color::getG )
+            .def( "getB", &Color::getB )
+            .def_property( "a", &Color::getA, &Color::setA )
+            .def_property( "r", &Color::getR, &Color::setR )
+            .def_property( "g", &Color::getG, &Color::setG )
+            .def_property( "b", &Color::getB, &Color::setB )
+            .def( "isSolid", &Color::isSolid )
+            .def( "isIdentity", &Color::isIdentity )
+            .def( "isSolid", &Color::isSolid )
             ;
 
         pybind::struct_<Resolution>( kernel, "Resolution" )

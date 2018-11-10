@@ -7,7 +7,7 @@
 #include "Kernel/ResourceImage.h"
 #include "Kernel/ResourceHolder.h"
 
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/ValueInterpolator.h"
 #include "Kernel/RenderVertex2D.h"
 #include "Kernel/RenderIndex.h"
@@ -50,8 +50,8 @@ namespace Mengine
         void setCountY( uint32_t _count );
         uint32_t getCountY() const;
 
-        bool setGridColor( uint32_t _i, uint32_t _j, const ColourValue & _value );
-        bool getGridColor( uint32_t _i, uint32_t _j, ColourValue & _value ) const;
+        bool setGridColor( uint32_t _i, uint32_t _j, const Color & _value );
+        bool getGridColor( uint32_t _i, uint32_t _j, Color & _value ) const;
 
     protected:
         bool _compile() override;

@@ -192,10 +192,10 @@ namespace Mengine
     {
         m_invalidateVerticesColor = false;
 
-        ColourValue color;
+        Color color;
         this->calcTotalColor( color );
 
-        const ColourValue & textureColour = m_resourceImage->getColor();
+        const Color & textureColour = m_resourceImage->getColor();
         color *= textureColour;
 
         uint32_t argb = color.getAsARGB();

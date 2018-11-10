@@ -3,7 +3,7 @@
 #include "Interface/RenderImageInterface.h"
 
 #include "Kernel/RenderVertex2D.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 
 #include "math/box2.h"
 
@@ -16,7 +16,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         uint32_t getImageMemorySize( const RenderImageInterfacePtr & _image );
         //////////////////////////////////////////////////////////////////////////
-        void multiplyColorBuffer( const ColourValue & _color, uint8_t * _out, const uint8_t * _in );
+        void multiplyColorBuffer( const Color & _color, uint8_t * _out, const uint8_t * _in );
         //////////////////////////////////////////////////////////////////////////
     }
 }

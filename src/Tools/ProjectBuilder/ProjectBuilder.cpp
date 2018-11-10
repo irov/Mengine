@@ -35,7 +35,7 @@
 #include "AlphaSpreading.h"
 #include "XmlToAekConverter.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ArchiveInterface.h"
 #include "Interface/LoggerInterface.h"
@@ -226,10 +226,10 @@ namespace Mengine
         PLUGIN_CREATE( MetabufLoader );
         		
 		PLUGIN_SERVICE()
-			->loadPlugin( L"DevelopmentConverterPlugin.dll" );
+			->loadPlugin( "DevelopmentConverterPlugin.dll" );
 
 		PLUGIN_SERVICE()
-			->loadPlugin( L"XmlCodecPlugin.dll" );
+			->loadPlugin( "XmlCodecPlugin.dll" );
 
 		if( FILE_SERVICE()
 			->mountFileGroup( ConstString::none(), nullptr, Helper::emptyPath(), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
@@ -452,7 +452,7 @@ namespace Mengine
 		return true;
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static ColourValue color_convert( pybind::kernel_interface * _kernel, PyObject * _obj )
+	static Color color_convert( pybind::kernel_interface * _kernel, PyObject * _obj )
 	{
 		if( _kernel->tuple_check( _obj ) == true )
 		{
@@ -463,7 +463,7 @@ namespace Mengine
                 float b = pybind::tuple_getitem_t( _kernel, _obj, 2 );
                 float a = pybind::tuple_getitem_t( _kernel, _obj, 3 );
 				
-				return ColourValue( r, g, b, a );
+				return Color( r, g, b, a );
 			}
 			else if( _kernel->tuple_size( _obj ) == 3 )
 			{
@@ -472,7 +472,7 @@ namespace Mengine
                 float b = pybind::tuple_getitem_t( _kernel, _obj, 2 );
 				float a = 1.f;
 
-				return ColourValue( r, g, b, a );
+				return Color( r, g, b, a );
 			}
 		}
 		else if( _kernel->list_check( _obj ) == true )
@@ -484,7 +484,7 @@ namespace Mengine
                 float b = pybind::list_getitem_t( _kernel, _obj, 2 );
                 float a = pybind::list_getitem_t( _kernel, _obj, 3 );
 
-				return ColourValue( r, g, b, a );
+				return Color( r, g, b, a );
 			}				
 			else if( _kernel->list_size( _obj ) == 3 )
 			{
@@ -493,11 +493,11 @@ namespace Mengine
                 float b = pybind::list_getitem_t( _kernel, _obj, 2 );
 				float a = 1.f;
 
-				return ColourValue( r, g, b, a );
+				return Color( r, g, b, a );
 			}
 		}
 
-		return ColourValue();
+		return Color();
 	}
 	//////////////////////////////////////////////////////////////////////////
 	ImagePtr createImage( pybind::kernel_interface * _kernel, uint32_t _width, uint32_t _height, uint32_t _channel, PyObject * _colour )

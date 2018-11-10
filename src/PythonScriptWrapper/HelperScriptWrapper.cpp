@@ -27,7 +27,7 @@
 
 #include "Kernel/Polygon.h"
 #include "Kernel/PolygonHelper.h"
-#include "Kernel/ColourValue.h"
+#include "Kernel/Color.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/UID.h"
 
@@ -297,7 +297,7 @@ namespace Mengine
 
                 it.next_shuffle();
 
-                ColourValue color;
+                Color color;
                 if( RenderInterface * render = Helper::getNodeRenderInheritance( child.get() ) )
                 {
                     render->calcTotalColor( color );
@@ -2778,9 +2778,16 @@ namespace Mengine
         }
 
         //////////////////////////////////////////////////////////////////////////
-        mt::vec2f s_getNodeScreenPosition( const NodePtr & _node )
+        mt::vec2f s_getNodeScreenPosition( Node * _node )
         {
-            RenderViewportInterfacePtr viewport = Helper::getNodeRenderViewportInheritance( _node.get() );
+            if( _node == nullptr )
+            {
+                LOGGER_ERROR( "Menge.getNodeScreenPosition node is null" );
+
+                return mt::vec2f( 0.f, 0.f );
+            }
+
+            RenderViewportInterfacePtr viewport = Helper::getNodeRenderViewportInheritance( _node );
 
             if( viewport == nullptr )
             {
@@ -2788,7 +2795,7 @@ namespace Mengine
                     ->getRenderViewport();
             }
 
-            RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( _node.get() );
+            RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( _node );
 
             if( camera == nullptr )
             {

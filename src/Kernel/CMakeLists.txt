@@ -318,8 +318,8 @@ Core
 	Resolution.h
 	Resolution.cpp	
 
-	ColourValue.h
-	ColourValue.cpp
+	Color.h
+	Color.cpp
         
     GlyphCode.h
     
@@ -489,7 +489,7 @@ Visitors
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/boost )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/utf8/source )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/tinyini/include )
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/metabuf )
+INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/metabuf/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
 

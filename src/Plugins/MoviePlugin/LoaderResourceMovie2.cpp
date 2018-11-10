@@ -47,7 +47,7 @@ namespace Mengine
                 const ConstString & layerName = meta_layer.get_Name();
                 const ConstString & layerType = meta_layer.get_Type();
                 const mt::mat4f & layerMatrix = meta_layer.get_Matrix();
-                const ColourValue & layerColor = meta_layer.get_Color();
+                const Color & layerColor = meta_layer.get_Color();
 
                 ResourceMovie2CompositionLayer layer;
                 layer.index = layerIndex;

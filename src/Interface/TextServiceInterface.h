@@ -33,7 +33,7 @@ namespace Mengine
         virtual bool addTextEntry( const ConstString & _key
             , const String & _text
             , const ConstString & _font
-            , const ColourValue & _colorFont
+            , const Color & _colorFont
             , float _lineOffset
             , float _charOffset
             , float _maxLength

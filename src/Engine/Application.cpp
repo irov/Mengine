@@ -986,7 +986,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::notifyDebugOpenFile_( const char * _folder, const char * _fileName )
     {
-        LOGGER_WARNING( "open %s:%s"
+        LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("open %s%s"
             , _folder
             , _fileName
         );

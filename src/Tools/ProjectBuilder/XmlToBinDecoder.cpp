@@ -1,25 +1,27 @@
-#	include "XmlToBinDecoder.h"
+#include "XmlToBinDecoder.h"
 
-#   include "Interface/ServiceInterface.h"
+#include "Interface/ServiceInterface.h"
 
-#   include "Interface/StringizeServiceInterface.h"
-#   include "Interface/ArchiveInterface.h"
-#   include "Interface/LoggerInterface.h"
-#   include "Interface/CodecInterface.h"
-#   include "Interface/ConverterInterface.h"
-#   include "Interface/FileSystemInterface.h"
-#   include "Interface/PluginInterface.h"
-#   include "Interface/UnicodeSystemInterface.h"
-#   include "Interface/CodecServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
+#include "Interface/ArchiveInterface.h"
+#include "Interface/LoggerInterface.h"
+#include "Interface/CodecInterface.h"
+#include "Interface/ConverterInterface.h"
+#include "Interface/FileSystemInterface.h"
+#include "Interface/PluginInterface.h"
+#include "Interface/UnicodeSystemInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
-#   include "Plugins/XmlCodecPlugin/XmlCodecInterface.h"
+#include "Plugins/XmlCodecPlugin/XmlCodecInterface.h"
 
-#   include "Kernel/Logger.h"
+#include "Kernel/Logger.h"
 
-#	include "Xml2Metabuf.hpp"
-#	include "Xml2Metacode.hpp"
+#include "Xml2Metabuf.hpp"
+#include "Xml2Metacode.hpp"
 
-#   include "Config/Typedef.h"
+#include "Metacode/Metacode.h"
+
+#include "Config/Typedef.h"
 
 namespace Mengine
 {
@@ -60,6 +62,9 @@ namespace Mengine
         options.pathProtocol = Helper::stringizeFilePath( utf8_protocolPath );
         options.pathXml = Helper::stringizeFilePath( utf8_xmlPath );
         options.pathBin = Helper::stringizeFilePath( utf8_binPath );
+
+        options.useProtocolVersion = Metacode::get_metacode_protocol_version();
+        options.useProtocolCrc32 = Metacode::get_metacode_protocol_crc32();
 
         if( decoder->setOptions( &options ) == false )
         {

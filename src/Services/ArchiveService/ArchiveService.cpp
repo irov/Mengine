@@ -31,7 +31,7 @@ namespace Mengine
 
         if( it_found == m_archivators.end() )
         {
-            LOGGER_ERROR( "ArchiveService::unregisterArchivator: not registry archivator '%s'"
+            LOGGER_ERROR( "not registry archivator '%s'"
                 , _type.c_str()
             );
 
@@ -59,7 +59,7 @@ namespace Mengine
 
         if( it_found == m_archivators.end() )
         {
-            LOGGER_ERROR( "ArchiveService::getArchivator: not registry archivator '%s'"
+            LOGGER_ERROR( "not registry archivator '%s'"
                 , _type.c_str()
             );
 
@@ -77,7 +77,7 @@ namespace Mengine
 
         if( compress_buffer == nullptr )
         {
-            LOGGER_ERROR( "ArchiveService::decomress: invalid compress buffer %d"
+            LOGGER_ERROR( "invalid compress buffer %d"
                 , _size
             );
 
@@ -89,7 +89,7 @@ namespace Mengine
         size_t uncompressSize = 0;
         if( _archivator->decompress( _memory, _capacity, compress_memory, _size, uncompressSize ) == false )
         {
-            LOGGER_ERROR( "ArchiveService::decomress: invalid decompress"
+            LOGGER_ERROR( "invalid decompress"
             );
 
             return false;
@@ -106,7 +106,7 @@ namespace Mengine
 
         if( uncompress_buffer == nullptr )
         {
-            LOGGER_ERROR( "ArchiveService::compressStream: invalid cache buffer"
+            LOGGER_ERROR( "invalid cache buffer"
             );
 
             return nullptr;
@@ -131,7 +131,8 @@ namespace Mengine
 
         if( buffer == nullptr )
         {
-            LOGGER_ERROR( "ArchiveService::compress: invalid new memory"
+            LOGGER_ERROR( "invalid new memory size '%d'"
+                , compressSize2
             );
 
             return nullptr;
@@ -140,7 +141,7 @@ namespace Mengine
         size_t compressSize;
         if( _archivator->compress( buffer, compressSize2, _buffer, _size, compressSize, _compress ) == false )
         {
-            LOGGER_ERROR( "ArchiveService::compress: invalid compress"
+            LOGGER_ERROR( "invalid compress"
             );
 
             return nullptr;
@@ -150,7 +151,8 @@ namespace Mengine
 
         if( new_memory == nullptr )
         {
-            LOGGER_ERROR( "ArchiveService::compress: invalid new memory"
+            LOGGER_ERROR( "invalid new memory '%d'"
+                , compressSize
             );
 
             return nullptr;

@@ -5,6 +5,7 @@
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
@@ -57,7 +58,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderIndexBuffer::finalize()
-    {
+    {        
         if( m_pIB != nullptr )
         {
             ULONG ref = m_pIB->Release();
@@ -107,7 +108,7 @@ namespace Mengine
     {
         if( _offset + _count > m_indexCount )
         {
-            LOGGER_ERROR( "DX9RenderIndexBuffer::lock %d offset %d more max size %d"
+            LOGGER_ERROR( "lock count %d offset %d more max size %d"
                 , _count
                 , _offset
                 , m_indexCount
@@ -132,7 +133,7 @@ namespace Mengine
         void * lock_memory = nullptr;
         IF_DXCALL( m_pIB, Lock, (_offset * m_indexSize, _count * m_indexSize, &lock_memory, d3d_flag) )
         {
-            LOGGER_ERROR( "DX9RenderIndexBuffer::lock %d offset %d invalid lock"
+            LOGGER_ERROR( "invalid lock count %d offset %d"
                 , _count
                 , _offset
             );
@@ -142,6 +143,8 @@ namespace Mengine
 
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxy();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr )( "invalid create memory proxy" );
 
         memory->setBuffer( lock_memory, _count * m_indexSize, __FILE__, __LINE__ );
 

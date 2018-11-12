@@ -46,7 +46,7 @@ namespace Mengine
 
         if( applicationInputStream == nullptr )
         {
-            LOGGER_ERROR( "ConfigService::loadConfig Invalid open application settings %s"
+            LOGGER_ERROR( "invalid open application settings '%s'"
                 , _applicationPath.c_str()
             );
 
@@ -55,7 +55,7 @@ namespace Mengine
 
         if( IniUtil::loadIni( m_ini, applicationInputStream ) == false )
         {
-            LOGGER_ERROR( "ConfigService::loadConfig Invalid load application settings %s"
+            LOGGER_ERROR( "invalid load application settings '%s'"
                 , _applicationPath.c_str()
             );
 

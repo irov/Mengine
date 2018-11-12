@@ -54,7 +54,7 @@ namespace Mengine
 
         if( it_found == m_mapDecoderSystem.end() )
         {
-            LOGGER_ERROR( "CodecService::createDecoder not found codec '%s'"
+            LOGGER_ERROR( "not found codec '%s'"
                 , _type.c_str()
             );
 
@@ -67,7 +67,7 @@ namespace Mengine
 
         if( decoder->initialize() == false )
         {
-            LOGGER_ERROR( "CodecService::createDecoder invalid initialize codec %s"
+            LOGGER_ERROR( "invalid initialize codec '%s'"
                 , _type.c_str()
             );
 
@@ -83,7 +83,7 @@ namespace Mengine
 
         if( it_found == m_mapEncoderSystem.end() )
         {
-            LOGGER_ERROR( "CodecService::createEncoder not found codec %s"
+            LOGGER_ERROR( "not found codec '%s'"
                 , _type.c_str()
             );
 
@@ -105,7 +105,7 @@ namespace Mengine
         {
             const ConstString & alredyCodec = it_found->second;
 
-            LOGGER_ERROR( "CodecService::registerCodecExt '%s' '%s' alredy registry in '%s'"
+            LOGGER_ERROR( "ext '%s' codec type '%s' alredy registry in '%s'"
                 , _ext.c_str()
                 , _codecType.c_str()
                 , alredyCodec.c_str()

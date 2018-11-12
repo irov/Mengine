@@ -98,7 +98,7 @@ namespace Mengine
 
         if( m_textureFont == nullptr )
         {
-            LOGGER_ERROR( "TextFont::_compile '%s' invalid loading font image '%s'"
+            LOGGER_ERROR( "font '%s' invalid loading font image '%s'"
                 , m_name.c_str()
                 , m_pathFontImage.c_str()
             );

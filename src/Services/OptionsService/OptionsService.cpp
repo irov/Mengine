@@ -9,6 +9,14 @@ SERVICE_FACTORY( OptionsService, Mengine::OptionsService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    OptionsService::OptionsService()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    OptionsService::~OptionsService()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     void OptionsService::setArgs( const VectorString & _args )
     {
         for( const String & arg : _args )

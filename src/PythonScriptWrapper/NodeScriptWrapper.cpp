@@ -582,7 +582,7 @@ namespace Mengine
                 ->getTime();
 
             _animation->resume( time );
-        }        
+        }
         //////////////////////////////////////////////////////////////////////////
         PyObject * s_SurfaceImageSequence_setEventListener( pybind::kernel_interface * _kernel, SurfaceImageSequence * _surface, PyObject * _args, PyObject * _kwds )
         {
@@ -890,7 +890,7 @@ namespace Mengine
             _node->removeEvents();
 
             return _kernel->ret_none();
-        }        
+        }
         //////////////////////////////////////////////////////////////////////////
         bool s_Node_removeChild( Node * _node, const NodePtr & _child )
         {
@@ -956,7 +956,7 @@ namespace Mengine
             char debugId[256];
             sprintf( debugId, "%p", _node );
 
-            return std::string(debugId);
+            return std::string( debugId );
         }
         //////////////////////////////////////////////////////////////////////////
         NodePtr s_Node_createChildren( Node * _node, const ConstString & _type )
@@ -1273,15 +1273,73 @@ namespace Mengine
                 return 0;
             }
 
-            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+            const mt::vec3f & from = _node->getLocalPosition();
 
-            mt::vec3f v[] = { _v0 };
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
                 , callback
                 , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
-                , _node->getLocalPosition(), _to, v, _time
-            );
+            , [from]() { return from; }
+            , [_to]() { return _to; }
+            , [_v0]( mt::vec3f * _v ) { _v[0] = _v0; }
+                , _time
+                );
+
+            if( affector == nullptr )
+            {
+                return 0;
+            }
+
+            s_Node_moveStop( _node );
+
+            if( _node->isActivate() == false )
+            {
+                return 0;
+            }
+
+            AFFECTOR_ID id = _node->addAffector( affector );
+
+            return id;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        uint32_t s_Node_bezier2Follower( Node * _node
+            , float _time
+            , const NodePtr & _follow
+            , const pybind::object & _cb
+            , const pybind::args & _args )
+        {
+            if( _follow == nullptr )
+            {
+                return 0;
+            }
+
+            if( _node->isActivate() == false )
+            {
+                return 0;
+            }
+
+            if( _node->isAfterActive() == false )
+            {
+                return 0;
+            }
+
+            ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
+
+            AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
+                , callback
+                , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
+            , [_node]() { return _node->getLocalPosition(); }
+            , [_follow]() { return _follow->getLocalPosition(); }
+                , [_node, _follow]( mt::vec3f * _v )
+            {
+                float x = _follow->getLocalPositionX();
+                float y = _node->getLocalPositionY();
+
+                _v[0] = mt::vec3f( x, y, 0.f );
+            }
+                , _time
+                );
 
             if( affector == nullptr )
             {
@@ -1322,13 +1380,14 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            mt::vec3f v[] = { _v0, _v1 };
-
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateCubicBezier.create( ETA_POSITION
                     , callback
                     , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
-                    , _node->getLocalPosition(), _to, v, _time
+            , [_node]() {return _node->getLocalPosition(); }
+            , [_to]() {return _to; }
+            , [_v0, _v1]( mt::vec3f * _v ) {_v[0] = _v0; _v[1] = _v1; }
+                , _time
                 );
 
             if( affector == nullptr )
@@ -1371,13 +1430,14 @@ namespace Mengine
 
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
-            mt::vec3f v[] = { _v0, _v1, _v2 };
-
             AffectorPtr affector =
                 m_nodeAffectorCreatorInterpolateQuarticBezier.create( ETA_POSITION
                     , callback
                     , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
-                    , _node->getLocalPosition(), _to, v, _time
+            , [_node]() { return _node->getLocalPosition(); }
+            , [_to]() { return _to; }
+            , [_v0, _v1, _v2]( mt::vec3f * _v ) {_v[0] = _v0; _v[1] = _v1; _v[2] = _v2; }
+                , _time
                 );
 
             if( affector == nullptr )
@@ -2377,7 +2437,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceImage );
         SCRIPT_CLASS_WRAPPING( ResourceImageData );
         SCRIPT_CLASS_WRAPPING( ResourceImageDefault );
-        SCRIPT_CLASS_WRAPPING( ResourceMusic );        
+        SCRIPT_CLASS_WRAPPING( ResourceMusic );
         SCRIPT_CLASS_WRAPPING( ResourceImageSequence );
         SCRIPT_CLASS_WRAPPING( ResourceSound );
         SCRIPT_CLASS_WRAPPING( ResourceFile );
@@ -2389,7 +2449,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ResourceWindow );
         SCRIPT_CLASS_WRAPPING( ResourceImageSubstractRGBAndAlpha );
         SCRIPT_CLASS_WRAPPING( ResourceImageSubstract );
-        
+
         SCRIPT_CLASS_WRAPPING( ResourceTestPick );
         SCRIPT_CLASS_WRAPPING( ResourceHIT );
 
@@ -2507,7 +2567,7 @@ namespace Mengine
             .def( "setLocale", &Resource::setLocale )
             .def( "getLocale", &Resource::getLocale )
             .def( "setFileGroup", &Resource::setFileGroup )
-            .def( "getFileGroup", &Resource::getFileGroup )            
+            .def( "getFileGroup", &Resource::getFileGroup )
             .def( "setGroupName", &Resource::setGroupName )
             .def( "getGroupName", &Resource::getGroupName )
             .def( "cache", &Resource::cache )
@@ -2579,7 +2639,7 @@ namespace Mengine
             ;
 
         pybind::interface_<ResourceFile, pybind::bases<Resource> >( kernel, "ResourceFile", false )
-            ;        
+            ;
 
         pybind::interface_<ResourceShape, pybind::bases<Resource> >( kernel, "ResourceShape", false )
             .def( "getPolygon", &ResourceShape::getPolygon )
@@ -2587,7 +2647,7 @@ namespace Mengine
 
         pybind::interface_<ResourceCursor, pybind::bases<Resource> >( kernel, "ResourceCursor", false )
             ;
-        
+
         pybind::interface_<ResourceCursorICO, pybind::bases<ResourceCursor> >( kernel, "ResourceCursorICO", false )
             ;
 
@@ -2609,7 +2669,7 @@ namespace Mengine
 
         pybind::interface_<UpdationInterface, pybind::bases<Mixin> >( kernel, "Updation" )
             ;
-                
+
         pybind::interface_<Updatable, pybind::bases<Mixin> >( kernel, "Updatable" )
             .def( "getUpdation", &Updatable::getUpdation )
             ;
@@ -2825,7 +2885,7 @@ namespace Mengine
             .def( "getResourceTrackMatteImage", &SurfaceTrackMatte::getResourceTrackMatteImage )
             .def( "setTrackMatteMode", &SurfaceTrackMatte::setTrackMatteMode )
             .def( "getTrackMatteMode", &SurfaceTrackMatte::getTrackMatteMode )
-            ;        
+            ;
 
         pybind::interface_<SurfaceSolidColor, pybind::bases<Surface> >( kernel, "SurfaceSolidColor", false )
             .def( "setSolidColor", &SurfaceSolidColor::setSolidColor )
@@ -2857,7 +2917,7 @@ namespace Mengine
         pybind::interface_<RenderScissor, pybind::bases<Node, RenderScissorInterface> >( kernel, "RenderScissor", false )
             .def( "setViewport", &RenderScissor::setViewport )
             .def( "getViewport", &RenderScissor::getViewport )
-            ;        
+            ;
 
         pybind::interface_<RenderCameraInterface, pybind::bases<Mixin> >( kernel, "RenderCameraInterface" )
             ;

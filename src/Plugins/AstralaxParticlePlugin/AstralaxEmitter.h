@@ -133,6 +133,7 @@ namespace Mengine
         uint32_t m_indexCount;
 
         bool m_emitterTranslateWithParticle;
+        bool m_emitterTranslateWithParticleSetup;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AstralaxEmitter> ParticleEmitter2Ptr;

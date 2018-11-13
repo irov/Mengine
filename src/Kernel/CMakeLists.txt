@@ -348,6 +348,8 @@ Core
 	
     ValueInterpolator.h
     ValueFollower.h
+    ValueFollowerLinear.h
+    ValueFollowerAcceleration.h
     
     String.h
 	String.cpp

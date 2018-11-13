@@ -28,7 +28,7 @@ namespace Mengine
         if( dataInfo->frameWidth % MENGINE_VIDEO_SIZE_DIV != 0 ||
             dataInfo->frameHeight % MENGINE_VIDEO_SIZE_DIV != 0 )
         {
-            LOGGER_ERROR( "ResourceVideo::checkValidVideoDecoder_ invalid width or heigth '%d:%d' need '%d:%d' maybe div %d"
+            LOGGER_ERROR( "invalid width or heigth '%d:%d' need '%d:%d' maybe div %d"
                 , dataInfo->frameWidth
                 , dataInfo->frameHeight
                 , (dataInfo->frameWidth / MENGINE_VIDEO_SIZE_DIV + 1) * MENGINE_VIDEO_SIZE_DIV
@@ -44,7 +44,7 @@ namespace Mengine
 
         if( dataInfo->width > limitVideoWidth || dataInfo->height > limitVideoHeight )
         {
-            LOGGER_ERROR( "ResourceVideo.isValid: '%s' group '%s' path '%s' invalid size %d:%d limit %d:%d"
+            LOGGER_ERROR( "resource '%s' group '%s' path '%s' invalid size %d:%d limit %d:%d"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFilePath().c_str()
@@ -61,7 +61,7 @@ namespace Mengine
 
         if( dataInfo->fps > Limit_VideoFrameRate && Limit_VideoFrameRate != 0.0 )
         {
-            LOGGER_ERROR( "ResourceVideo.isValid: '%s' group '%s' path '%s' invalid Frame rate %f more that %f"
+            LOGGER_ERROR( "resource '%s' group '%s' path '%s' invalid Frame rate %f more that %f"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFilePath().c_str()
@@ -81,7 +81,7 @@ namespace Mengine
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( "ResourceVideo::isValid: name '%s' group '%s' can't create decoder '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' can't create decoder '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFilePath().c_str()

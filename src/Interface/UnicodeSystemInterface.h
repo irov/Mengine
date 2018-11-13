@@ -213,6 +213,13 @@ namespace Mengine
             return result;
         }
         //////////////////////////////////////////////////////////////////////////
+        inline bool utf8ToUnicode( const String & _utf8, WChar * _unicode, size_t _unicodeCapacity )
+        {
+            bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode, _unicodeCapacity );
+
+            return result;
+        }
+        //////////////////////////////////////////////////////////////////////////
         inline bool utf8ToUnicode( const ConstString & _utf8, WString & _unicode )
         {
             bool result = utf8ToUnicodeSize( _utf8.c_str(), _utf8.size(), _unicode );

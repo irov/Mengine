@@ -166,8 +166,8 @@ namespace Mengine
         uint32_t limitTextureWidth = CONFIG_VALUE( "Limit", "TextureWidth", 2048U );
         uint32_t limitTextureHeight = CONFIG_VALUE( "Limit", "TextureHeight", 2048U );
 
-        float width = (float)dataInfo->width;
-        float height = (float)dataInfo->height;
+        uint32_t width = dataInfo->width;
+        uint32_t height = dataInfo->height;
 
         if( (width > limitTextureWidth && limitTextureWidth != 0U) || (height > limitTextureHeight && limitTextureHeight != 0U) )
         {

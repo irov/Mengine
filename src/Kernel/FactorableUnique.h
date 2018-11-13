@@ -4,7 +4,7 @@
 
 namespace Mengine
 {
-    template<class T>
+    template<class T, class ... Bases>
     class FactorableUnique
         : public T
         , public MemoryAllocator<T>

@@ -1977,12 +1977,7 @@ namespace Mengine
 
         CoTaskMemFree( itemIDList );
 
-        //wcscat( currentPath, L"/" );
-        //String companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
-
-        Char companyName[MENGINE_APPLICATION_COMPANY_MAXNAME];
-        APPLICATION_SERVICE()
-            ->getCompanyName( companyName );
+        String companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
 
         WChar companyNameW[MENGINE_APPLICATION_COMPANY_MAXNAME];
         if( Helper::utf8ToUnicode( companyName, companyNameW, MENGINE_APPLICATION_COMPANY_MAXNAME ) == false )
@@ -1993,11 +1988,7 @@ namespace Mengine
         wcscat( currentPath, companyNameW );
         wcscat( currentPath, L"/" );
 
-        //String projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
-
-        Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];
-        APPLICATION_SERVICE()
-            ->getCompanyName( projectName );
+        String projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
         WChar projectNameW[MENGINE_APPLICATION_PROJECT_MAXNAME];
         if( Helper::utf8ToUnicode( projectName, projectNameW, MENGINE_APPLICATION_PROJECT_MAXNAME ) == false )

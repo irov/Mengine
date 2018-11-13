@@ -1025,7 +1025,7 @@ namespace Mengine
                 {
                     unknownParticleEmitter2->setEmitterPositionRelative( false );
                     unknownParticleEmitter2->setEmitterCameraRelative( false );
-                    unknownParticleEmitter2->setEmitterTranslateWithParticle( true );
+                    //unknownParticleEmitter2->setEmitterTranslateWithParticle( true );
                 }
 
                 Resource * resourceParticle = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));

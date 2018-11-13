@@ -3,8 +3,6 @@
 #include "Kernel/Affector.h"
 #include "Kernel/Scriptable.h"
 
-#include "Kernel/ValueFollower.h"
-
 #include "pybind/pybind.hpp"
 
 namespace Mengine
@@ -18,32 +16,14 @@ namespace Mengine
         ~PythonValueFollower() override;
 
     public:
-        bool initialize( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args );
-
-    public:
-        void setSpeed( float _value );
-        float getSpeed() const;
-
-        void setValue( float _value );
-        float getValue() const;
-
-        void setFollow( float _value );
-        float getFollow() const;
-
-    public:
-        void resetValue( float _value );
+        void setCb( const pybind::object & _cb, const pybind::args & _args );
 
     protected:
-        bool _affect( const UpdateContext * _context, float * _used ) override;
+        void callCb( float _value );
 
     protected:
         pybind::object m_cb;
         pybind::args m_args;
-
-        typedef ValueFollowerLinear<float> ValueFollowerLinearFloat;
-        ValueFollowerLinearFloat m_valueFollower;
-
-        float m_cacheValue;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PythonValueFollower> PythonValueFollowerPtr;

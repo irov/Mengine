@@ -51,7 +51,6 @@ namespace Mengine
             m_lambda = _lambda;
         }
 
-        template<class T>
         void process( const T & _value )
         {
             m_lambda( _value );

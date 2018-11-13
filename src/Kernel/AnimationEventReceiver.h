@@ -18,7 +18,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class AnimationEventReceiver
-        : public EventReceiver
+        : public EventReceiverInterface
     {
     public:
         virtual void onAnimationPlay( uint32_t _enumerator, float _time ) = 0;

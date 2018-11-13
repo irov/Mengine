@@ -19,6 +19,12 @@ PythonValueFollower
 )
 
 ADD_FILTER(
+PythonHotSpotEventReceiver
+    PythonHotSpotEventReceiver.cpp
+    PythonHotSpotEventReceiver.h
+)
+
+ADD_FILTER(
 PythonSchedule
     PythonScheduleTiming.cpp
     PythonScheduleTiming.h

@@ -936,9 +936,9 @@ namespace Mengine
             pybind::dict py_kwds( _kernel, _kwds );
             Helper::registerAnimatableEventReceiver<PythonMovieEventReceiver>( py_kwds, _node );
 
-            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
-            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
-            Helper::registerScriptEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
+            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieGetInternal", EVENT_MOVIE_GET_INTERNAL );
+            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieActivateInternal", EVENT_MOVIE_ACTIVATE_INTERNAL );
+            Helper::registerPythonEventReceiver<PythonMovieEventReceiver>( py_kwds, _node, "onMovieDeactivateInternal", EVENT_MOVIE_DEACTIVATE_INTERNAL );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )

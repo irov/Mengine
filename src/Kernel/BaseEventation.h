@@ -19,11 +19,11 @@ namespace Mengine
         ~BaseEventation() noexcept override;
 
     public:
-        bool registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver ) override;
+        bool registerEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) override;
         void removeEventReceiver( uint32_t _event ) override;
 
     public:
-        const EventReceiverPtr & getEventReciever( uint32_t _event ) const override;
+        const EventReceiverInterfacePtr & getEventReciever( uint32_t _event ) const override;
         bool hasEventReceiver( uint32_t _event ) const override;
 
     public:
@@ -33,7 +33,7 @@ namespace Mengine
         struct EventReceiverDesc
         {
             uint32_t event;
-            EventReceiverPtr receiver;
+            EventReceiverInterfacePtr receiver;
         };
 
         typedef Vector<EventReceiverDesc> VectorEventReceivers;

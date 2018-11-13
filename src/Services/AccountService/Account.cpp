@@ -69,7 +69,7 @@ namespace Mengine
 
         if( it != m_settings.end() )
         {
-            LOGGER_ERROR( "Account::addSetting: account '%s' setting '%s' already exist"
+            LOGGER_ERROR( "account '%s' setting '%s' already exist"
                 , m_id.c_str()
                 , _setting.c_str()
             );
@@ -92,7 +92,7 @@ namespace Mengine
 
         if( it_found == m_settings.end() )
         {
-            LOGGER_ERROR( "Account::changeSetting account %s setting '%s' does not exist. Can't change"
+            LOGGER_ERROR( "account %s setting '%s' does not exist. Can't change"
                 , m_id.c_str()
                 , _setting.c_str()
             );
@@ -118,7 +118,7 @@ namespace Mengine
 
         if( it_found == m_settings.end() )
         {
-            LOGGER_ERROR( "Account::getSetting account '%s' setting '%s' does not exist. Can't get"
+            LOGGER_ERROR( "account '%s' setting '%s' does not exist. Can't get"
                 , m_id.c_str()
                 , _setting.c_str()
             );
@@ -151,7 +151,7 @@ namespace Mengine
     {
         if( m_fileGroup->existFile( m_settingsPath ) == false )
         {
-            LOGGER_ERROR( "Account::load account '%s' settings not found '%s'"
+            LOGGER_ERROR( "account '%s' settings not found '%s'"
                 , m_id.c_str()
                 , m_settingsPath.c_str()
             );
@@ -162,7 +162,7 @@ namespace Mengine
         IniUtil::IniStore ini;
         if( IniUtil::loadIni( ini, m_fileGroup, m_settingsPath ) == false )
         {
-            LOGGER_ERROR( "Account::load parsing Account '%s' settings failed '%s'"
+            LOGGER_ERROR( "parsing Account '%s' settings failed '%s'"
                 , m_id.c_str()
                 , m_settingsPath.c_str()
             );
@@ -173,7 +173,7 @@ namespace Mengine
         String projectVersion_s;
         if( IniUtil::getIniValue( ini, "ACCOUNT", "PROJECT_VERSION", projectVersion_s ) == false )
         {
-            LOGGER_ERROR( "Account::load account '%s' failed not found project version"
+            LOGGER_ERROR( "account '%s' failed not found project version"
                 , m_id.c_str()
             );
 
@@ -183,7 +183,7 @@ namespace Mengine
         uint32_t projectVersion = 0;
         if( Helper::stringToUnsigned( projectVersion_s, projectVersion ) == false )
         {
-            LOGGER_ERROR( "Account::load account '%s' failed invalid project version '%s'"
+            LOGGER_ERROR( "account '%s' failed invalid project version '%s'"
                 , m_id.c_str()
                 , projectVersion_s.c_str()
             );
@@ -193,7 +193,7 @@ namespace Mengine
 
         if( m_projectVersion != projectVersion )
         {
-            LOGGER_ERROR( "Account::load account '%s' failed invalid project version '%d' need '%d'"
+            LOGGER_ERROR( "account '%s' failed invalid project version '%d' need '%d'"
                 , m_id.c_str()
                 , projectVersion
                 , m_projectVersion
@@ -205,7 +205,7 @@ namespace Mengine
         String uid;
         if( IniUtil::getIniValue( ini, "ACCOUNT", "UID", uid ) == false )
         {
-            LOGGER_ERROR( "Account::load account '%s' failed not found uid"
+            LOGGER_ERROR( "account '%s' failed not found uid"
                 , m_id.c_str()
             );
 
@@ -225,7 +225,7 @@ namespace Mengine
 
             if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), st.value ) == false )
             {
-                LOGGER_WARNING( "Account::load account '%s' failed get setting '%s'"
+                LOGGER_WARNING( "account '%s' failed get setting '%s'"
                     , m_id.c_str()
                     , key.c_str()
                 );
@@ -242,7 +242,7 @@ namespace Mengine
 
         if( file == nullptr )
         {
-            LOGGER_ERROR( "Account::save can't open file for writing. Account '%s' settings not saved %s"
+            LOGGER_ERROR( "can't open file for writing. Account '%s' settings not saved '%s'"
                 , m_id.c_str()
                 , m_settingsPath.c_str()
             );
@@ -313,7 +313,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "Account::openReadBinaryFile: account %s invalid open file %s"
+            LOGGER_ERROR( "account '%s' invalid open file '%s'"
                 , m_id.c_str()
                 , fullpath.c_str()
             );
@@ -338,7 +338,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "Account::openWriteBinaryFile: account %s invalid open file %s"
+            LOGGER_ERROR( "account '%s' invalid open file '%s'"
                 , m_id.c_str()
                 , _filepath.c_str()
             );
@@ -355,7 +355,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "Account::loadBinaryFile: account %s invalid open file %s"
+            LOGGER_ERROR( "account '%s' invalid open file '%s'"
                 , m_id.c_str()
                 , _filepath.c_str()
             );
@@ -367,7 +367,7 @@ namespace Mengine
         
         if( binaryBuffer == nullptr )
         {
-            LOGGER_ERROR( "Account::loadBinaryFile: account %s invalid load stream archive %s"
+            LOGGER_ERROR( "account '%s' invalid load stream archive '%s'"
                 , m_id.c_str()
                 , _filepath.c_str()
             );
@@ -382,7 +382,7 @@ namespace Mengine
     {
         if( _data == nullptr || _size == 0 )
         {
-            LOGGER_ERROR( "Account::writeBinaryFile: account %s write empty file %s"
+            LOGGER_ERROR( "account '%s' write empty file '%s'"
                 , m_id.c_str()
                 , _filepath.c_str()
             );
@@ -394,7 +394,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "Account::writeBinaryFile: account %s invalid open file %s"
+            LOGGER_ERROR( "account '%s' invalid open file '%s'"
                 , m_id.c_str()
                 , _filepath.c_str()
             );
@@ -407,7 +407,7 @@ namespace Mengine
 
         if( Helper::writeStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), true, data_memory, data_size, EAC_NORMAL ) == false )
         {
-            LOGGER_ERROR( "Account::writeBinaryFile: account %s invalid write file %s"
+            LOGGER_ERROR( "account '%s' invalid write file '%s'"
                 , m_id.c_str()
                 , _filepath.c_str()
             );
@@ -421,7 +421,6 @@ namespace Mengine
     bool Account::hasBinaryFile( const FilePath & _fileName ) const
     {
         PathString path;
-
         path += m_folder;
         path += _fileName;
 

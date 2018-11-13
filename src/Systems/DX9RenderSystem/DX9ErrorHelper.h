@@ -6,7 +6,7 @@
 
 #ifndef MENGINE_RENDER_CHECK_ERROR
 #ifndef NDEBUG
-#   define MENGINE_RENDER_CHECK_ERROR 1
+#   define MENGINE_RENDER_CHECK_ERROR
 #endif
 #endif
 
@@ -33,7 +33,7 @@ namespace Mengine
 #define IF_DXERRORCHECK( Method, HRES )\
 	if( DXERRORCHECK(#Method, HRES) )
     //////////////////////////////////////////////////////////////////////////
-#if MENGINE_RENDER_CHECK_ERROR == 1
+#ifdef MENGINE_RENDER_CHECK_ERROR
 #define DXCALL( Device, Method, Args )\
 	(DXERRORCHECK(#Method, Device -> Method Args))
     //////////////////////////////////////////////////////////////////////////

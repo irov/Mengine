@@ -26,8 +26,8 @@ namespace Mengine
         void disconnect() override;
 
     public:
-		OutputStreamInterfacePtr getSendStream() const override;
-		InputStreamInterfacePtr getReceiveStream() const override;
+        OutputStreamInterfacePtr getSendStream() const override;
+        InputStreamInterfacePtr getReceiveStream() const override;
 
     protected:
         SOCKET getSocket() const override;

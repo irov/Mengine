@@ -19,7 +19,7 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_ERROR( "DX9RenderSystem error file %s line %d DX call '%s' get error '%p'"
+        LOGGER_ERROR( "file '%s' line %d DX call '%s' get error '%p'"
             , m_file
             , m_line
             , m_method

@@ -16,7 +16,7 @@ namespace Mengine
     public:
         void setImageCodec( const ConstString & _codec );
         const ConstString & getImageCodec() const;
-        
+
     public:
         const ImageDecoderInterfacePtr & getDecoder() const;
 

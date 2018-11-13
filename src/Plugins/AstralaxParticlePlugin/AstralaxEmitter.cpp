@@ -30,6 +30,7 @@ namespace Mengine
         , m_emitterPositionRelative( false )
         , m_emitterCameraRelative( false )
         , m_emitterTranslateWithParticle( true )
+        , m_emitterTranslateWithParticleSetup( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -94,7 +95,10 @@ namespace Mengine
             return false;
         }
 
-        emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
+        if( m_emitterTranslateWithParticleSetup == true )
+        {
+            emitter->setEmitterTranslateWithParticle( m_emitterTranslateWithParticle );
+        }
 
         if( m_emitterImageName.empty() == false )
         {
@@ -492,6 +496,8 @@ namespace Mengine
     void AstralaxEmitter::setEmitterTranslateWithParticle( bool _translateWithParticle )
     {
         m_emitterTranslateWithParticle = _translateWithParticle;
+
+        m_emitterTranslateWithParticleSetup = true;
 
         if( this->isCompile() == false )
         {

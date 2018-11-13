@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Kernel/ConstString.h"
-#include "Kernel/ValueFollower.h"
+#include "Kernel/ValueFollowerLinear.h"
 
 #include "Config/Vector.h"
 
@@ -13,7 +13,8 @@ namespace Mengine
     class MixerValue
     {
     public:
-        MixerValue();
+        MixerValue();        
+        ~MixerValue();
 
     public:
         void setSpeed( float _speed );

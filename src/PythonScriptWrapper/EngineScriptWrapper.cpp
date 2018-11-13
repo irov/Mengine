@@ -111,7 +111,8 @@
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 
-#include "PythonValueFollower.h"
+#include "PythonValueFollowerLinear.h"
+#include "PythonValueFollowerAcceleration.h"
 
 #include "PythonEntityBehavior.h"
 #include "PythonScheduleTiming.h"
@@ -2635,12 +2636,27 @@ namespace Mengine
             return wp_screen;
         }
         //////////////////////////////////////////////////////////////////////////
-        PythonValueFollowerPtr s_createValueFollower( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
+        PythonValueFollowerLinearPtr s_createValueFollowerLinear( float _value, float _speed, const pybind::object & _cb, const pybind::args & _args )
         {
-            PythonValueFollowerPtr follower = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollower" ) );
+            PythonValueFollowerLinearPtr follower = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ) );
 
             follower->initialize( _value, _speed, _cb, _args );
+
+            const AffectorablePtr & affectorable = PLAYER_SERVICE()
+                ->getGlobalAffectorable();
+
+            affectorable->addAffector( follower );
+
+            return follower;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        PythonValueFollowerAccelerationPtr s_createValueFollowerAcceleration( float _value, float _speed, float _acceleration, const pybind::object & _cb, const pybind::args & _args )
+        {
+            PythonValueFollowerAccelerationPtr follower = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ) );
+
+            follower->initialize( _value, _speed, _acceleration, _cb, _args );
 
             const AffectorablePtr & affectorable = PLAYER_SERVICE()
                 ->getGlobalAffectorable();
@@ -3850,29 +3866,57 @@ namespace Mengine
         pybind::def_functor( kernel, "getCameraPosition", nodeScriptMethod, &EngineScriptMethod::s_getCameraPosition );
 
         pybind::interface_<PythonValueFollower, pybind::bases<Affector, Scriptable> >( kernel, "PythonValueFollower" )
-            .def( "setSpeed", &PythonValueFollower::setSpeed )
-            .def( "getSpeed", &PythonValueFollower::getSpeed )
-            .def( "setValue", &PythonValueFollower::setValue )
-            .def( "getValue", &PythonValueFollower::getValue )
-            .def( "setFollow", &PythonValueFollower::setFollow )
-            .def( "getFollow", &PythonValueFollower::getFollow )
-            .def( "resetValue", &PythonValueFollower::resetValue )
             ;
 
-        pybind::def_functor_args( kernel, "createValueFollower", nodeScriptMethod, &EngineScriptMethod::s_createValueFollower );
+        pybind::interface_<PythonValueFollowerLinear, pybind::bases<PythonValueFollower> >( kernel, "PythonValueFollowerLinear" )
+            .def( "setSpeed", &PythonValueFollowerLinear::setSpeed )
+            .def( "getSpeed", &PythonValueFollowerLinear::getSpeed )
+            .def( "setValue", &PythonValueFollowerLinear::setValue )
+            .def( "getValue", &PythonValueFollowerLinear::getValue )
+            .def( "setFollow", &PythonValueFollowerLinear::setFollow )
+            .def( "getFollow", &PythonValueFollowerLinear::getFollow )
+            .def( "resetValue", &PythonValueFollowerLinear::resetValue )
+            ;
+
+        pybind::interface_<PythonValueFollowerAcceleration, pybind::bases<PythonValueFollower> >( kernel, "PythonValueFollowerAcceleration" )
+            .def( "setSpeed", &PythonValueFollowerAcceleration::setSpeed )
+            .def( "getSpeed", &PythonValueFollowerAcceleration::getSpeed )
+            .def( "setAcceleration", &PythonValueFollowerAcceleration::setAcceleration )
+            .def( "getAcceleration", &PythonValueFollowerAcceleration::getAcceleration )
+            .def( "setValue", &PythonValueFollowerAcceleration::setValue )
+            .def( "getValue", &PythonValueFollowerAcceleration::getValue )
+            .def( "setFollow", &PythonValueFollowerAcceleration::setFollow )
+            .def( "getFollow", &PythonValueFollowerAcceleration::getFollow )
+            .def( "resetValue", &PythonValueFollowerAcceleration::resetValue )
+            ;
+
+        pybind::def_functor_args( kernel, "createValueFollowerLinear", nodeScriptMethod, &EngineScriptMethod::s_createValueFollowerLinear );
+        pybind::def_functor_args( kernel, "createValueFollowerAcceleration", nodeScriptMethod, &EngineScriptMethod::s_createValueFollowerAcceleration );
         pybind::def_functor( kernel, "destroyValueFollower", nodeScriptMethod, &EngineScriptMethod::s_destroyValueFollower );
 
         if( SCRIPT_SERVICE()
-            ->setWrapper( Helper::stringizeString( "PythonValueFollower" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollower> >( kernel ) ) == false )
+            ->setWrapper( Helper::stringizeString( "PythonValueFollowerLinear" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( kernel ) ) == false )
+        {
+            return false;
+        }
+
+        if( SCRIPT_SERVICE()
+            ->setWrapper( Helper::stringizeString( "PythonValueFollowerAcceleration" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( kernel ) ) == false )
         {
             return false;
         }
 
         if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollower" ), new FactorableUnique<ScriptablePrototypeGenerator<PythonValueFollower, 32> >() ) == false )
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), new FactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32> >() ) == false )
         {
             return false;
-        }            
+        }
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), new FactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerAcceleration, 32> >() ) == false )
+        {
+            return false;
+        }
 
         pybind::interface_<RandomizerInterface, pybind::bases<Mixin> >( kernel, "Randomizer" )
             .def( "setSeed", &RandomizerInterface::setSeed )

@@ -91,23 +91,8 @@ namespace Mengine
     public:
         virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
 #define SCRIPT_SERVICE()\
     ((Mengine::ScriptServiceInterface*)SERVICE_GET(Mengine::ScriptServiceInterface))
-    //////////////////////////////////////////////////////////////////////////
-    namespace Helper
-    {
-        inline pybind::kernel_interface * getPybindkernel()
-        {
-            static pybind::kernel_interface * kernel = nullptr;
-
-            if( kernel == nullptr )
-            {
-                kernel = SCRIPT_SERVICE()
-                    ->getKernel();
-            }
-
-            return kernel;
-        }
-    }
-}
+//////////////////////////////////////////////////////////////////////////

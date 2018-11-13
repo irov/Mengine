@@ -91,6 +91,17 @@ namespace Mengine
         }
 
     public:
+        void setValue1( const T & _value )
+        {
+            m_value1 = _value;
+        }
+
+        void setValue2( const T & _value )
+        {
+            m_value2 = _value;
+        }
+
+    public:
         void stop()
         {
             m_started = false;
@@ -313,6 +324,15 @@ namespace Mengine
         : public ValueInterpolator<T>
     {
     public:
+        void setV( const T * _v )
+        {
+            for( uint32_t i = 0; i != N; ++i )
+            {
+                m_v[i] = _v[i];
+            }
+        }
+
+    public:
         bool start( const T& _value1, const T& _value2, const T * _v, float _time )
         {
             ValueInterpolator<T>::m_started = false;
@@ -329,10 +349,7 @@ namespace Mengine
                 return false;
             }
 
-            for( uint32_t i = 0; i != N; ++i )
-            {
-                m_v[i] = _v[i];
-            }
+            this->setV( _v );
 
             ValueInterpolator<T>::m_started = true;
 

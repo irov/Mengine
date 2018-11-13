@@ -16,6 +16,10 @@ ADD_FILTER(
 PythonValueFollower
     PythonValueFollower.cpp
     PythonValueFollower.h
+    PythonValueFollowerLinear.cpp
+    PythonValueFollowerLinear.h
+    PythonValueFollowerAcceleration.cpp
+    PythonValueFollowerAcceleration.h
 )
 
 ADD_FILTER(

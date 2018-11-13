@@ -285,6 +285,7 @@ Core
     AssertionFactory.h
     AssertionFactory.cpp	
 	AssertionNotImplemented.h
+    AssertionMemoryPanic.h
 
     CRC32.h
     CRC32.cpp

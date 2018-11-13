@@ -69,7 +69,7 @@ namespace Mengine
         m_factoryMemoryInput = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    CacheBufferID MemoryService::lockBuffer( size_t _size, void ** _memory, const char * _doc, const char * _file, uint32_t _line )
+    CacheBufferID MemoryService::lockBuffer( size_t _size, void ** _memory, const Char * _doc, const Char * _file, uint32_t _line )
     {
         m_memoryCacheMutex->lock();
 
@@ -81,7 +81,7 @@ namespace Mengine
         return buffer_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    CacheBufferID MemoryService::lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc, const char * _file, uint32_t _line )
+    CacheBufferID MemoryService::lockBufferNoMutex_( size_t _size, void ** _memory, const Char * _doc, const Char * _file, uint32_t _line )
     {
         size_t minSize = (size_t)(0);
         size_t maxSize = (size_t)(-1);
@@ -138,7 +138,7 @@ namespace Mengine
 
             if( memory == nullptr )
             {
-                LOGGER_ERROR( "CacheManager::lockBuffer invalid realloc %p memory %d to %d"
+                LOGGER_ERROR( "invalid realloc %p memory %d to %d"
                     , buffer.memory
                     , buffer.size
                     , _size
@@ -163,7 +163,7 @@ namespace Mengine
 
         if( memory == nullptr )
         {
-            LOGGER_ERROR( "CacheManager::lockBuffer invalid malloc memory %d"
+            LOGGER_ERROR( "invalid malloc memory %d"
                 , _size
             );
 

@@ -105,7 +105,7 @@ namespace Mengine
 
         if( converter == nullptr )
         {
-            LOGGER_ERROR( "ConverterService::convert: can't create converter '%s'"
+            LOGGER_ERROR( "can't create converter '%s'"
                 , _converter.c_str()
             );
 
@@ -131,7 +131,7 @@ namespace Mengine
 
         if( options.inputFileName.empty() == true )
         {
-            LOGGER_ERROR( "ConverterService::convert input file is empty"
+            LOGGER_ERROR( "input file is empty"
             );
 
             return false;
@@ -139,7 +139,7 @@ namespace Mengine
 
         if( options.outputFileName.empty() == true )
         {
-            LOGGER_ERROR( "ConverterService::convert output file is empty"
+            LOGGER_ERROR( "output file is empty"
             );
 
             return false;
@@ -147,7 +147,7 @@ namespace Mengine
 
         if( options.fileGroup->existFile( options.inputFileName ) == false )
         {
-            LOGGER_ERROR( "ConverterService::convert: input file '%s:%s' not found"
+            LOGGER_ERROR( "input file '%s:%s' not found"
                 , options.fileGroup->getName().c_str()
                 , options.inputFileName.c_str()
             );
@@ -162,7 +162,7 @@ namespace Mengine
 
             if( oldFile == nullptr )
             {
-                LOGGER_ERROR( "ConverterService::convert '%s' can't open input file '%s:%s' (time)"
+                LOGGER_ERROR( "converter '%s' can't open input file '%s:%s' (time)"
                     , _converter.c_str()
                     , options.fileGroup->getName().c_str()
                     , options.inputFileName.c_str()
@@ -181,7 +181,7 @@ namespace Mengine
 
             if( newFile == nullptr )
             {
-                LOGGER_ERROR( "ConverterService::convert '%s' can't open output file '%s:%s' (time)"
+                LOGGER_ERROR( "converter '%s' can't open output file '%s:%s' (time)"
                     , _converter.c_str()
                     , options.fileGroup->getName().c_str()
                     , options.outputFileName.c_str()
@@ -202,14 +202,14 @@ namespace Mengine
                     return true;
                 }
 
-                LOGGER_WARNING( "ConverterService::convert invalid version '%s:%s'"
+                LOGGER_WARNING( "invalid version '%s:%s'"
                     , options.fileGroup->getName().c_str()
                     , options.outputFileName.c_str()
                 );
             }
         }
 
-        LOGGER_WARNING( "ConverterService::convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
+        LOGGER_WARNING( "converter '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
             , _converter.c_str()
             , options.fileGroup->getName().c_str()
             , options.inputFileName.c_str()
@@ -219,7 +219,7 @@ namespace Mengine
 
         if( converter->convert() == false )
         {
-            LOGGER_ERROR( "ConverterService::convert can't convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
+            LOGGER_ERROR( "can't convert '%s:%s'\nfrom: %s\nto: '%s:%s'\n"
                 , _converter.c_str()
                 , options.fileGroup->getName().c_str()
                 , options.inputFileName.c_str()

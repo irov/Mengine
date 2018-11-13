@@ -33,7 +33,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        CacheBufferID lockBuffer( size_t _size, void ** _memory, const char * _doc, const char * _file, uint32_t _line );
+        CacheBufferID lockBuffer( size_t _size, void ** _memory, const Char * _doc, const Char * _file, uint32_t _line );
         void unlockBuffer( CacheBufferID _bufferId );
 
     public:
@@ -55,9 +55,9 @@ namespace Mengine
         {
             CacheBufferID id;
             void * memory;
-            const char * doc;
+            const Char * doc;
             size_t size;
-            const char * file;
+            const Char * file;
             uint32_t line;
             bool lock;
         };

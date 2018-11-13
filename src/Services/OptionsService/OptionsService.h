@@ -6,19 +6,23 @@
 
 #include "Config/Char.h"
 
-namespace Mengine
-{
 #ifndef MENGINE_OPTIONS_KEY_SIZE
-#	define MENGINE_OPTIONS_KEY_SIZE 32
+#define MENGINE_OPTIONS_KEY_SIZE 32
 #endif
 
 #ifndef MENGINE_OPTIONS_VALUE_SIZE
-#	define MENGINE_OPTIONS_VALUE_SIZE 32
+#define MENGINE_OPTIONS_VALUE_SIZE 32
 #endif
 
+namespace Mengine
+{
     class OptionsService
         : public ServiceBase<OptionsServiceInterface>
     {
+    public:
+        OptionsService();
+        ~OptionsService() override;
+
     public:
         bool _initializeService() override;
         void _finalizeService() override;

@@ -11,6 +11,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Win32Socket::~Win32Socket()
     {
+        this->disconnect();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Socket::connect( const SocketConnectInfo & _info )
@@ -23,7 +24,7 @@ namespace Mengine
         hints.ai_protocol = IPPROTO_TCP;
 
         addrinfo *addrinfo;
-        INT getaddrinfo_result = ::getaddrinfo(_info.ip, _info.port, &hints, &addrinfo );
+        INT getaddrinfo_result = ::getaddrinfo( _info.ip, _info.port, &hints, &addrinfo );
 
         if( getaddrinfo_result != 0 )
         {
@@ -32,10 +33,10 @@ namespace Mengine
 
         SOCKET socket = ::socket( addrinfo->ai_family, addrinfo->ai_socktype, addrinfo->ai_protocol );
 
-		if (socket == 0)
-		{
-			return false;
-		}
+        if( socket == 0 )
+        {
+            return false;
+        }
 
         int connect_result = ::connect( socket, addrinfo->ai_addr, (int)addrinfo->ai_addrlen );
 
@@ -53,19 +54,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Socket::disconnect()
     {
-        closesocket( m_socket );
-        m_socket = INVALID_SOCKET;
+        if( m_socket != INVALID_SOCKET )
+        {
+            ::closesocket( m_socket );
+            m_socket = INVALID_SOCKET;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-	OutputStreamInterfacePtr Win32Socket::getSendStream() const
-	{
-		return this;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	InputStreamInterfacePtr Win32Socket::getReceiveStream() const
-	{
-		return this;
-	}
+    OutputStreamInterfacePtr Win32Socket::getSendStream() const
+    {
+        return this;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    InputStreamInterfacePtr Win32Socket::getReceiveStream() const
+    {
+        return this;
+    }
     //////////////////////////////////////////////////////////////////////////
     SOCKET Win32Socket::getSocket() const
     {

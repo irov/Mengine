@@ -138,7 +138,7 @@ namespace Mengine
 
         if( it_find != m_accounts.end() )
         {
-            LOGGER_ERROR( "AccountManager::createAccount_: Account with ID '%s' already exist. Account not created"
+            LOGGER_ERROR( "Account with ID '%s' already exist. Account not created"
                 , _accountID.c_str()
             );
 
@@ -151,7 +151,7 @@ namespace Mengine
 
         if( newAccount == nullptr )
         {
-            LOGGER_ERROR( "AccountManager::createAccount_: Account with ID '%s' invalid create. Account not created"
+            LOGGER_ERROR( "Account with ID '%s' invalid create. Account not created"
                 , _accountID.c_str()
             );
 
@@ -187,7 +187,7 @@ namespace Mengine
 
         if( it_find != m_accounts.end() )
         {
-            LOGGER_ERROR( "AccountManager::createGlobalAccount_: Account with ID '%s' already exist. Account not created"
+            LOGGER_ERROR( "Account with ID '%s' already exist. Account not created"
                 , _accountID.c_str()
             );
 
@@ -198,7 +198,7 @@ namespace Mengine
 
         if( newAccount == nullptr )
         {
-            LOGGER_ERROR( "AccountManager::createGlobalAccount_: Account with ID '%s' invalid create. Account not created"
+            LOGGER_ERROR( "Account with ID '%s' invalid create. Account not created"
                 , _accountID.c_str()
             );
 
@@ -248,7 +248,7 @@ namespace Mengine
 
         if( m_fileGroup->createDirectory( accountPath ) == false )
         {
-            LOGGER_ERROR( "AccountManager::createAccount_: Account '%s' failed create directory"
+            LOGGER_ERROR( "Account '%s' failed create directory"
                 , accountPath.c_str()
             );
 
@@ -274,7 +274,7 @@ namespace Mengine
 
         if( it_find == m_accounts.end() )
         {
-            LOGGER_ERROR( "AccountManager::deleteAccount Can't delete account '%s'. There is no account with such ID"
+            LOGGER_ERROR( "Can't delete account '%s'. There is no account with such ID"
                 , _accountID.c_str()
             );
 
@@ -305,7 +305,7 @@ namespace Mengine
 
         if( it_find == m_accounts.end() )
         {
-            LOGGER_ERROR( "AccountManager::selectAccount Can't select account '%s'. There is no account with such ID"
+            LOGGER_ERROR( "Can't select account '%s'. There is no account with such ID"
                 , _accountID.c_str()
             );
 
@@ -350,7 +350,7 @@ namespace Mengine
 
         if( it_found == m_accounts.end() )
         {
-            LOGGER_ERROR( "AccountManager::getAccount account with ID '%s' not found"
+            LOGGER_ERROR( "account with ID '%s' not found"
                 , _accountID.c_str()
             );
 
@@ -443,7 +443,7 @@ namespace Mengine
 
         if( this->selectAccount( m_defaultAccountID ) == false )
         {
-            LOGGER_ERROR( "AccountManager::selectDefaultAccount invalid select account %s"
+            LOGGER_ERROR( "invalid select account '%s'"
                 , m_defaultAccountID.c_str()
             );
 
@@ -466,7 +466,7 @@ namespace Mengine
 
         if( _account->load() == false )
         {
-            LOGGER_ERROR( "AccountManager::loadAccount_ invalid load account %s"
+            LOGGER_ERROR( "invalid load account '%s'"
                 , accountID.c_str()
             );
 
@@ -489,7 +489,7 @@ namespace Mengine
 
         if( m_fileGroup->existFile( accountsPath ) == false )
         {
-            LOGGER_WARNING( "AccountManager::loadAccounts not exist accounts '%s'"
+            LOGGER_WARNING( "not exist accounts '%s'"
                 , accountsPath.c_str()
             );
 
@@ -499,7 +499,7 @@ namespace Mengine
         IniUtil::IniStore ini;
         if( IniUtil::loadIni( ini, m_fileGroup, accountsPath ) == false )
         {
-            LOGGER_ERROR( "AccountManager::loadAccounts parsing accounts failed '%s'"
+            LOGGER_ERROR( "parsing accounts failed '%s'"
                 , accountsPath.c_str()
             );
 
@@ -511,7 +511,7 @@ namespace Mengine
         //config.getSettingUInt( L"SETTINGS", L"AccountCount", playerCount );
         if( IniUtil::getIniValue( ini, "SETTINGS", "AccountEnumerator", m_playerEnumerator ) == false )
         {
-            LOGGER_ERROR( "AccountManager::loadAccounts get AccountEnumerator failed '%s'"
+            LOGGER_ERROR( "get AccountEnumerator failed '%s'"
                 , accountsPath.c_str()
             );
 
@@ -520,14 +520,14 @@ namespace Mengine
 
         if( IniUtil::getIniValue( ini, "SETTINGS", "GlobalAccountID", m_globalAccountID ) == false )
         {
-            LOGGER_INFO( "AccountManager::loadAccounts get GlobalAccountID failed '%s'"
+            LOGGER_INFO( "get GlobalAccountID failed '%s'"
                 , accountsPath.c_str()
             );
         }
 
         if( IniUtil::getIniValue( ini, "SETTINGS", "DefaultAccountID", m_defaultAccountID ) == false )
         {
-            LOGGER_INFO( "AccountManager::loadAccounts get DefaultAccountID failed '%s'"
+            LOGGER_INFO( "get DefaultAccountID failed '%s'"
                 , accountsPath.c_str()
             );
         }
@@ -535,7 +535,7 @@ namespace Mengine
         ConstString selectAccountID;
         if( IniUtil::getIniValue( ini, "SETTINGS", "SelectAccountID", selectAccountID ) == false )
         {
-            LOGGER_INFO( "AccountManager::loadAccounts get SelectAccountID failed '%s'"
+            LOGGER_INFO( "get SelectAccountID failed '%s'"
                 , accountsPath.c_str()
             );
         }
@@ -543,7 +543,7 @@ namespace Mengine
         VectorConstString values;
         if( IniUtil::getIniValue( ini, "ACCOUNTS", "Account", values ) == false )
         {
-            LOGGER_INFO( "AccountManager::loadAccounts get ACCOUNTS failed '%s'"
+            LOGGER_INFO( "get ACCOUNTS failed '%s'"
                 , accountsPath.c_str()
             );
         }
@@ -556,7 +556,7 @@ namespace Mengine
 
             if( account == nullptr )
             {
-                LOGGER_ERROR( "AccountManager::loadAccountsInfo invalid create account %s"
+                LOGGER_ERROR( "invalid create account %s"
                     , accountID.c_str()
                 );
 
@@ -567,7 +567,7 @@ namespace Mengine
 
             if( this->loadAccount_( account ) == false )
             {
-                LOGGER_ERROR( "AccountManager::loadAccountsInfo invalid load account '%s'"
+                LOGGER_ERROR( "invalid load account '%s'"
                     , accountID.c_str()
                 );
 
@@ -579,13 +579,13 @@ namespace Mengine
 
         if( selectAccountID.empty() == false )
         {
-            LOGGER_INFO( "AccountManager::loadAccounts select account '%s'"
+            LOGGER_INFO( "select account '%s'"
                 , selectAccountID.c_str()
             );
 
             if( this->selectAccount( selectAccountID ) == false )
             {
-                LOGGER_ERROR( "AccountManager::loadAccounts invalid set select account '%s'"
+                LOGGER_ERROR( "invalid set select account '%s'"
                     , selectAccountID.c_str()
                 );
 
@@ -594,13 +594,13 @@ namespace Mengine
         }
         else if( m_defaultAccountID.empty() == false )
         {
-            LOGGER_INFO( "AccountManager::loadAccounts set default account '%s'"
+            LOGGER_INFO( "set default account '%s'"
                 , m_defaultAccountID.c_str()
             );
 
             if( this->selectAccount( m_defaultAccountID ) == false )
             {
-                LOGGER_ERROR( "AccountManager::loadAccounts invalid set default account '%s'"
+                LOGGER_ERROR( "invalid set default account '%s'"
                     , m_defaultAccountID.c_str()
                 );
 
@@ -611,13 +611,13 @@ namespace Mengine
         {
             const ConstString & accountID = validAccount->getID();
 
-            LOGGER_WARNING( "AccountManager::loadAccounts set valid account '%s'"
+            LOGGER_WARNING( "set valid account '%s'"
                 , accountID.c_str()
             );
 
             if( this->selectAccount( accountID ) == false )
             {
-                LOGGER_ERROR( "AccountManager::loadAccounts invalid set valid account '%s'"
+                LOGGER_ERROR( "invalid set valid account '%s'"
                     , accountID.c_str()
                 );
 
@@ -626,7 +626,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_INFO( "AccountManager::loadAccounts invalid set any accounts"
+            LOGGER_INFO( "invalid set any accounts"
             );
         }
 
@@ -642,7 +642,7 @@ namespace Mengine
 
         if( file == nullptr )
         {
-            LOGGER_ERROR( "AccountManager::saveAccountsInfo can't open file for writing. Accounts '%s' settings not saved"
+            LOGGER_ERROR( "can't open file for writing. Accounts '%s' settings not saved"
                 , accountsPath.c_str()
             );
 
@@ -694,7 +694,7 @@ namespace Mengine
 
             if( account->save() == false )
             {
-                LOGGER_ERROR( "AccountManager::finalize invalid save account %s:%s"
+                LOGGER_ERROR( "invalid save account '%s:%s'"
                     , account->getID().c_str()
                     , account->getFolder().c_str()
                 );

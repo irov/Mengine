@@ -4,7 +4,10 @@
 
 #include "Kernel/FactorableUnique.h"
 
+#include "Config/Char.h"
+
 #include "pybind/object.hpp"
+#include "pybind/dict.hpp"
 #include "pybind/module.hpp"
 
 namespace Mengine
@@ -13,6 +16,10 @@ namespace Mengine
     class PythonEventReceiver
         : public Mixin
     {
+    public:
+        PythonEventReceiver(){};
+        ~PythonEventReceiver() override {};
+
     public:
         void initialize( const pybind::object & _cb )
         {
@@ -27,7 +34,7 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
-        void registerScriptEventReceiver( const pybind::dict & _kwds, Eventable * _eventable, const char * _method, uint32_t _event )
+        void registerPythonEventReceiver( const pybind::dict & _kwds, Eventable * _eventable, const Char * _method, uint32_t _event )
         {
             EventationInterface * event = _eventable->getEventation();
 
@@ -62,7 +69,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
-        void registerScriptEventReceiverModule( const pybind::module & _module, Eventable * _eventable, const char * _method, uint32_t _event )
+        void registerPythonEventReceiverModule( const pybind::module & _module, Eventable * _eventable, const Char * _method, uint32_t _event )
         {
             EventationInterface * event = _eventable->getEventation();
 
@@ -93,7 +100,7 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         template<class T_Receiver>
-        void registerScriptEventReceiverMethod( const pybind::object & _obj, Eventable * _eventable, const char * _method, uint32_t _event )
+        void registerPythonEventReceiverMethod( const pybind::object & _obj, Eventable * _eventable, const Char * _method, uint32_t _event )
         {
             EventationInterface * event = _eventable->getEventation();
 

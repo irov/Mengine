@@ -16,8 +16,6 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerInterface.h"
 
-#include "Environment/Python/PythonEventReceiver.h"
-
 #include "GameServiceAccountProvider.h"
 #include "GameServiceSoundVolumeProvider.h"
 

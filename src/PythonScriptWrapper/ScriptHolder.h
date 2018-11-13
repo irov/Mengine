@@ -15,7 +15,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class ScriptHolderEventReceiver
-        : public EventReceiver
+        : public EventReceiverInterface
     {
     public:
         virtual pybind::object onScriptHolderKeepScript() = 0;

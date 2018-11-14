@@ -3,7 +3,7 @@
 #include "Config/Stringstream.h"
 
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Logger.h"

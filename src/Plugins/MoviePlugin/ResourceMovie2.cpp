@@ -3,9 +3,7 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/OptionsInterface.h"
-#include "Interface/FileSystemInterface.h"
-
-#include "Plugins/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Interface/FileServiceInterface.h"
 
 #include "Movie2Interface.h"
 

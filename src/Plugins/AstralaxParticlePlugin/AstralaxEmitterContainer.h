@@ -44,7 +44,7 @@ namespace Mengine
         uint32_t getPtcId() const;
 
     public:
-        void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) override;
+        bool setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) override;
 
     public:
         const ResourceImagePtr & getAtlasResourceImage( const Char * _file ) const;

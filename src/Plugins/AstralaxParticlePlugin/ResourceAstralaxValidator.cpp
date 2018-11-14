@@ -1,25 +1,19 @@
-#include "AstralaxResourceValidateVisitor.h"
-
-#include "Interface/ResourceServiceInterface.h"
-#include "Interface/RenderTextureInterface.h"
-#include "Interface/RenderImageInterface.h"
-#include "Interface/FileSystemInterface.h"
-#include "Interface/ConfigServiceInterface.h"
+#include "ResourceAstralaxValidator.h"
 
 #include "Kernel/Logger.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AstralaxResourceValidateVisitor::AstralaxResourceValidateVisitor()
+    ResourceAstralaxValidator::ResourceAstralaxValidator()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxResourceValidateVisitor::~AstralaxResourceValidateVisitor()
+    ResourceAstralaxValidator::~ResourceAstralaxValidator()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxResourceValidateVisitor::accept( ResourceAstralax * _resource )
+    bool ResourceAstralaxValidator::_validate( const ResourceAstralaxPtr & _resource )
     {
         const FilePath & filePath = _resource->getFilePath();
         const ConstString & name = _resource->getName();

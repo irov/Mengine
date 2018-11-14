@@ -10,7 +10,7 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 
-#include "Plugins/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 
@@ -41,7 +41,7 @@
 
 #include "DataflowAEK.h"
 
-#include "Movie1ResourceValidateVisitor.h"
+#include "ResourceMovieValidator.h"
 
 #include "pybind/pybind.hpp"
 
@@ -1538,8 +1538,7 @@ namespace Mengine
 
             pybind::def_function_kernel( kernel, "getMovieSlotsPosition", &Detail::s_getMovieSlotsPosition );
             pybind::def_function_kernel( kernel, "getMovieSlotPosition", &Detail::s_getMovieSlotPosition );
-
-
+            
             SCRIPT_SERVICE()
                 ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<PythonScriptWrapper<Movie> >( kernel ) );
 
@@ -1628,12 +1627,8 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            VisitorPtr resourceValidateVisitor = new FactorableUnique<Movie1ResourceValidateVisitor>();
-
             RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidateVisitor( resourceValidateVisitor );
-
-            m_resourceValidateVisitor = resourceValidateVisitor;
+                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<ResourceMovieValidator>() );
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
@@ -1701,8 +1696,7 @@ namespace Mengine
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
             RESOURCEVALIDATE_SERVICE()
-                ->removeResourceValidateVisitor( m_resourceValidateVisitor );
-            m_resourceValidateVisitor = nullptr;
+                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
         }
 
         DATA_SERVICE()

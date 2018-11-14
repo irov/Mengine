@@ -46,18 +46,24 @@ namespace Mengine
         {
         }
 
-        void setup( const LambdaSettuper & _lambda )
+    public:
+        void setSettuper( const LambdaSettuper & _lambda )
         {
-            m_lambda = _lambda;
+            m_settuper = _lambda;
         }
 
-        void process( const T & _value )
+        const LambdaSettuper & getSettuper() const
         {
-            m_lambda( _value );
+            return m_settuper;
+        }
+
+        void callSettuper( const T & _value )
+        {
+            m_settuper( _value );
         }
 
     protected:        
-        LambdaSettuper m_lambda;
+        LambdaSettuper m_settuper;
     };
     //////////////////////////////////////////////////////////////////////////
     template<class T, class Interpolator>
@@ -65,12 +71,18 @@ namespace Mengine
         : public LambdaAffector<T>
     {
     protected:
+        Interpolator & getInterpolator()
+        {
+            return m_interpolator;
+        }
+
+    protected:
         bool _affect( const UpdateContext * _context, float * _used ) override
         {
             T value;
             bool finish = m_interpolator.update( _context, &value, _used );
 
-            this->process( value );
+            this->callSettuper( value );
 
             return finish;
         }
@@ -84,33 +96,9 @@ namespace Mengine
         Interpolator m_interpolator;
     };
     //////////////////////////////////////////////////////////////////////////
-    template<class T, class Accumulator>
-    class LambdaAffectorAccumulate
-        : public LambdaAffector<T>
-    {
-    protected:
-        bool _affect( const UpdateContext * _context, float * _used ) override
-        {
-            T value;
-            bool finish = m_accumulator.update( _context, &value, _used );
-
-            this->process( value );
-
-            return finish;
-        }
-
-        void _stop() override
-        {
-            m_accumulator.stop();
-        }
-
-    protected:
-        Accumulator m_accumulator;
-    };
-    //////////////////////////////////////////////////////////////////////////
     template<class T>
     class LambdaAffectorAccumulateLinear
-        : public LambdaAffectorAccumulate<T, ValueAccumulateLinear<T> >
+        : public LambdaAffectorInterpolate<T, ValueAccumulateLinear<T> >
     {
     public:
         typedef typename LambdaAffector<T>::LambdaSettuper LambdaSettuper;
@@ -118,9 +106,11 @@ namespace Mengine
     public:
         bool initialize( const LambdaSettuper & _lambda, const T & _start, const T & _dir, float _speed )
         {
-            this->setup( _lambda );
+            this->setSettuper( _lambda );
 
-            if( LambdaAffectorAccumulate<T, ValueAccumulateLinear<T> >::m_accumulator.start( _start, _dir, _speed ) == false )
+            ValueAccumulateLinear<T> & interpolator = this->getInterpolator();
+
+            if( interpolator.start( _start, _dir, _speed ) == false )
             {
                 return false;
             }
@@ -139,9 +129,11 @@ namespace Mengine
     public:
         bool initialize( const LambdaSettuper & _lambda, const T & _start, const T & _end, float _time )
         {
-            this->setup( _lambda );
+            this->setSettuper( _lambda );
 
-            bool successful = LambdaAffectorInterpolate<T, ValueInterpolatorLinear<T> >::m_interpolator.start( _start, _end, _time );
+            ValueInterpolatorLinear<T> & interpolator = this->getInterpolator();
+
+            bool successful = interpolator.start( _start, _end, _time );
 
             return successful;
         }
@@ -157,9 +149,11 @@ namespace Mengine
     public:
         bool initialize( const LambdaSettuper & _lambda, const T & _start, const T & _end, const T & _v0, float _time )
         {
-            this->setup( _lambda );
+            this->setSettuper( _lambda );
 
-            bool successful = LambdaAffectorInterpolate<T, ValueInterpolatorQuadratic<T> >::m_interpolator.start( _start, _end, _v0, _time );
+            ValueInterpolatorQuadratic<T> & interpolator = this->getInterpolator();
+
+            bool successful = interpolator.start( _start, _end, _v0, _time );
 
             return successful;
         }
@@ -167,7 +161,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<class T, uint32_t N>
     class LambdaAffectorInterpolateBezier
-        : public BaseAffector
+        : public LambdaAffectorInterpolate<T, ValueInterpolatorBezier<T, N> >
     {
     public:
         typedef Lambda<void( const T & )> LambdaSettuper;
@@ -188,7 +182,9 @@ namespace Mengine
             T v[N];
             _points( v );
 
-            bool successful = m_interpolator.start( from, to, v, _time );
+            ValueInterpolatorBezier<T, N> & interpolator = this->getInterpolator();
+
+            bool successful = interpolator.start( from, to, v, _time );
 
             return successful;
         }
@@ -196,18 +192,20 @@ namespace Mengine
     protected:
         bool _affect( const UpdateContext * _context, float * _used ) override
         {
+            ValueInterpolatorBezier<T, N> & interpolator = this->getInterpolator();
+
             T value1 = m_getterFrom();
-            m_interpolator.setValue1( value1 );
+            interpolator.setValue1( value1 );
 
             T value2 = m_getterTo();
-            m_interpolator.setValue2( value2 );
+            interpolator.setValue2( value2 );
 
             T v[N];
             m_points( v );
-            m_interpolator.setV( v );
+            interpolator.setV( v );
 
             T value;
-            bool finish = m_interpolator.update( _context, &value, _used );
+            bool finish = interpolator.update( _context, &value, _used );
 
             m_settuper( value );
 
@@ -224,9 +222,6 @@ namespace Mengine
         LambdaGetter m_getterFrom;
         LambdaGetter m_getterTo;
         LambdaPoints m_points;
-
-        typedef ValueInterpolatorBezier<T, N> Interpolator;
-        Interpolator m_interpolator;
     };
     //////////////////////////////////////////////////////////////////////////
     namespace NodeAffectorCreator
@@ -265,7 +260,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                affector->process( _pos );
+                affector->callSettuper( _pos );
 
                 return affector;
             }
@@ -308,7 +303,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                affector->process( _start );
+                affector->callSettuper( _start );
 
                 return affector;
             }
@@ -351,7 +346,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                affector->process( _start );
+                affector->callSettuper( _start );
 
                 return affector;
             }

@@ -3,8 +3,8 @@
 #include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-
 #include "Kernel/ConstString.h"
+#include "Kernel/Hashtable.h"
 
 #include "Config/Map.h"
 
@@ -19,11 +19,11 @@ namespace Mengine
 
     public:
         bool registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory ) override;
-        bool unregisterDecoder( const ConstString& _type ) override;
+        DecoderFactoryInterfacePtr unregisterDecoder( const ConstString& _type ) override;
 
     public:
         bool registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory ) override;
-        bool unregisterEncoder( const ConstString& _type ) override;
+        EncoderFactoryInterfacePtr unregisterEncoder( const ConstString& _type ) override;
 
     public:
         DecoderInterfacePtr createDecoder( const ConstString& _type ) override;
@@ -36,11 +36,11 @@ namespace Mengine
         const ConstString & findCodecType( const FilePath & _path ) const override;
 
     protected:
-        typedef Map<ConstString, DecoderFactoryInterfacePtr> MapDecoderSystem;
-        MapDecoderSystem m_mapDecoderSystem;
+        typedef Hashtable<ConstString, DecoderFactoryInterfacePtr> MapFactorDecoders;
+        MapFactorDecoders m_factorDecoders;
 
-        typedef Map<ConstString, EncoderFactoryInterfacePtr> MapEncoderSystem;
-        MapEncoderSystem m_mapEncoderSystem;
+        typedef Hashtable<ConstString, EncoderFactoryInterfacePtr> MapFactoryEncoders;
+        MapFactoryEncoders m_factorEncoders;
 
         typedef Map<String, ConstString> MapCodecTypes;
         MapCodecTypes m_codecTypes;

@@ -99,7 +99,7 @@ Sound
 
 ADD_FILTER(
 File
-    FileSystemInterface.h
+    FileServiceInterface.h
 	FileInputStreamInterface.h
 	FileMappedStreamInterface.h
 	FileOutputStreamInterface.h

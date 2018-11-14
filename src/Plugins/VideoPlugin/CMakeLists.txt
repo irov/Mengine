@@ -18,8 +18,8 @@ src
 	SurfaceVideo.cpp
 	SurfaceVideo.h
 	
-	VideoResourceValidateVisitor.cpp
-	VideoResourceValidateVisitor.h
+	ResourceVideoValidator.cpp
+	ResourceVideoValidator.h
 	)
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )

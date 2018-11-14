@@ -4,7 +4,7 @@
 #include "Interface/ArchiveInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Logger.h"

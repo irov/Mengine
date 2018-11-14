@@ -1,7 +1,7 @@
 #include "Win32FileGroupPlugin.h"
 
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/FactoryDefault.h"

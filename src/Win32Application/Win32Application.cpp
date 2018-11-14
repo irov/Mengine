@@ -6,7 +6,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/LoggerInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"

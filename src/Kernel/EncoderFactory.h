@@ -22,6 +22,13 @@ namespace Mengine
             return true;
         }
 
+        void finalize() override
+        {
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+
+            m_factory = nullptr;
+        }
+
     protected:
         EncoderInterfacePtr createEncoder() override
         {
@@ -33,10 +40,6 @@ namespace Mengine
     protected:
         void destroy() override
         {
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
-
-            m_factory = nullptr;
-
             delete this;
         }
 
@@ -64,8 +67,19 @@ namespace Mengine
 
         inline void unregisterEncoder( const Char * _type )
         {
-            CODEC_SERVICE()
+            EncoderFactoryInterfacePtr encoder = CODEC_SERVICE()
                 ->unregisterEncoder( Helper::stringizeString( _type ) );
+
+            if( encoder == nullptr )
+            {
+                LOGGER_ERROR( "invalid unregister encoder '%s'"
+                    , _type
+                );
+
+                return;
+            }
+
+            encoder->finalize();
         }
     }
 }

@@ -22,37 +22,37 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CodecService::registerDecoder( const ConstString& _type, const DecoderFactoryInterfacePtr & _factory )
     {
-        m_mapDecoderSystem.emplace( _type, _factory );
+        m_factorDecoders.insert( _type, _factory );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool CodecService::unregisterDecoder( const ConstString& _type )
+    DecoderFactoryInterfacePtr CodecService::unregisterDecoder( const ConstString& _type )
     {
-        m_mapDecoderSystem.erase( _type );
+        DecoderFactoryInterfacePtr remove_decoder = m_factorDecoders.remove( _type );
 
-        return true;
+        return remove_decoder;
     }
     //////////////////////////////////////////////////////////////////////////
     bool CodecService::registerEncoder( const ConstString& _type, const EncoderFactoryInterfacePtr & _factory )
     {
-        m_mapEncoderSystem.emplace( _type, _factory );
+        m_factorEncoders.insert( _type, _factory );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool CodecService::unregisterEncoder( const ConstString& _type )
+    EncoderFactoryInterfacePtr CodecService::unregisterEncoder( const ConstString& _type )
     {
-        m_mapEncoderSystem.erase( _type );
+        EncoderFactoryInterfacePtr remove_encoder = m_factorEncoders.remove( _type );
 
-        return true;
+        return remove_encoder;
     }
     //////////////////////////////////////////////////////////////////////////
     DecoderInterfacePtr CodecService::createDecoder( const ConstString& _type )
     {
-        MapDecoderSystem::iterator it_found = m_mapDecoderSystem.find( _type );
+        const DecoderFactoryInterfacePtr & factory = m_factorDecoders.find( _type );
 
-        if( it_found == m_mapDecoderSystem.end() )
+        if( factory == nullptr )
         {
             LOGGER_ERROR( "not found codec '%s'"
                 , _type.c_str()
@@ -61,9 +61,7 @@ namespace Mengine
             return nullptr;
         }
 
-        const DecoderFactoryInterfacePtr & decoderFactory = it_found->second;
-
-        DecoderInterfacePtr decoder = decoderFactory->createDecoder();
+        DecoderInterfacePtr decoder = factory->createDecoder();
 
         if( decoder->initialize() == false )
         {
@@ -79,9 +77,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     EncoderInterfacePtr CodecService::createEncoder( const ConstString& _type )
     {
-        MapEncoderSystem::iterator it_found = m_mapEncoderSystem.find( _type );
+        const EncoderFactoryInterfacePtr & factory = m_factorEncoders.find( _type );
 
-        if( it_found == m_mapEncoderSystem.end() )
+        if( factory == nullptr )
         {
             LOGGER_ERROR( "not found codec '%s'"
                 , _type.c_str()
@@ -90,9 +88,7 @@ namespace Mengine
             return nullptr;
         }
 
-        const EncoderFactoryInterfacePtr & encoderFactory = it_found->second;
-
-        EncoderInterfacePtr encoder = encoderFactory->createEncoder();
+        EncoderInterfacePtr encoder = factory->createEncoder();
 
         return encoder;
     }

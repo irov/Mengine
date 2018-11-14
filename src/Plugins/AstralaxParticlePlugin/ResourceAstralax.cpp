@@ -74,7 +74,16 @@ namespace Mengine
                 return false;
             }
 
-            container->setAtlasResourceImage( iterator, resourceImage );
+            if( container->setAtlasResourceImage( iterator, resourceImage ) == false )
+            {
+                LOGGER_ERROR( "resource '%s' file '%s' invalid set atlas resource image '%s'"
+                    , this->getName().c_str()
+                    , this->getFilePath().c_str()
+                    , resourceImage->getName().c_str()
+                );
+
+                return false;
+            }
 
             ++iterator;
         }

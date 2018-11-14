@@ -22,8 +22,8 @@ src
     
     Movie2DebugRenderVisitor.cpp
     Movie2DebugRenderVisitor.h
-    Movie2ResourceValidateVisitor.cpp
-    Movie2ResourceValidateVisitor.h
+    ResourceMovie2Validator.cpp
+    ResourceMovie2Validator.h
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )

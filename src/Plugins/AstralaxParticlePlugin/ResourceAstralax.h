@@ -45,5 +45,5 @@ namespace Mengine
         AstralaxEmitterContainerInterfacePtr m_container;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ResourceAstralax, Resource> ResourceParticlePtr;
+    typedef IntrusivePtr<ResourceAstralax, Resource> ResourceAstralaxPtr;
 }

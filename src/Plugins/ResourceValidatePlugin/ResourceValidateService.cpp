@@ -35,18 +35,14 @@ namespace Mengine
             ->removeObserver( NOTIFICATOR_ENGINE_ENABLE_PACKAGES, this );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceValidateService::addResourceValidateVisitor( const VisitorPtr & _visitor )
+    void ResourceValidateService::addResourceValidator( const ConstString & _type, const ResourceValidatorInterfacePtr & _validator )
     {
-        m_visitors.emplace_back( _visitor );
+        m_validators.insert( _type, _validator );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceValidateService::removeResourceValidateVisitor( const VisitorPtr & _visitor )
+    void ResourceValidateService::removeResourceValidator( const ConstString & _type )
     {
-        VectorResourceValidateVisitor::iterator it_erase = std::find( m_visitors.begin(), m_visitors.end(), _visitor );
-
-        MENGINE_ASSERTION( it_erase != m_visitors.end() );
-
-        m_visitors.erase( it_erase );
+        m_validators.remove( _type );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::validResource( const ResourcePtr & _resource ) const
@@ -58,7 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::visitableResource_( const ResourcePtr & _resource ) const
     {
-        LOGGER_INFO( "ResourceValidateService::visitableResource_: '%s' type '%s' group '%s' file group '%s' locale '%s'"
+        LOGGER_INFO( "resource '%s' type '%s' group '%s' file group '%s' locale '%s'"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()
@@ -66,15 +62,18 @@ namespace Mengine
             , _resource->getLocale().c_str()
         );
 
-        for( const VisitorPtr & visitor : m_visitors )
+        const ConstString & resourceType = _resource->getType();
+
+        const ResourceValidatorInterfacePtr & validator = m_validators.find( resourceType );
+
+        if( validator == nullptr )
         {
-            if( _resource->visitIf( visitor ) == false )
-            {
-                return false;
-            }
+            return true;
         }
 
-        return true;
+        bool successful = validator->validate( _resource );
+
+        return successful;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceValidateService::visitableResources_() const
@@ -112,7 +111,7 @@ namespace Mengine
             } );
 
             if( successful == false )
-            {                
+            {
                 throw ExceptionNotificationFailed();
             }
         }

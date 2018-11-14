@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

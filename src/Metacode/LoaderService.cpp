@@ -1,6 +1,6 @@
 #include "LoaderService.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"

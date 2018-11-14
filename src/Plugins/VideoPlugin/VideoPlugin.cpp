@@ -4,10 +4,10 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 
-#include "Plugins/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
 #include "SurfaceVideo.h"
-#include "VideoResourceValidateVisitor.h"
+#include "ResourceVideoValidator.h"
 
 #include "LoaderResourceVideo.h"
 
@@ -110,12 +110,8 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            VisitorPtr videoValidateVisitor = new FactorableUnique<VideoResourceValidateVisitor>();
-
             RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidateVisitor( videoValidateVisitor );
-
-            m_videoValidateVisitor = videoValidateVisitor;
+                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<ResourceVideoValidator>() );
         }
 
         LOADER_SERVICE()
@@ -153,9 +149,7 @@ namespace Mengine
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
             RESOURCEVALIDATE_SERVICE()
-                ->removeResourceValidateVisitor( m_videoValidateVisitor );
-
-            m_videoValidateVisitor = nullptr;
+                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
         }
 
         LOADER_SERVICE()

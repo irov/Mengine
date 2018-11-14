@@ -4,7 +4,7 @@
 #include "Interface/ConverterInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 

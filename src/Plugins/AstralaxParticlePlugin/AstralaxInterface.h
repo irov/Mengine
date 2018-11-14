@@ -155,7 +155,7 @@ namespace Mengine
         virtual bool isValid() const = 0;
 
     public:
-        virtual void setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) = 0;
+        virtual bool setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<AstralaxEmitterContainerInterface> AstralaxEmitterContainerInterfacePtr;

@@ -10,7 +10,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/UserdataServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/InputServiceInterface.h"

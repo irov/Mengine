@@ -1,8 +1,16 @@
 #include "ResourceValidatePlugin.h"
 
-#include "ResourceValidateInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
-#include "ResourceValidateVisitor.h"
+#include "ResourceValidateServiceInterface.h"
+
+#include "ResourceImageDefaultValidator.h"
+#include "ResourceImageDataValidator.h"
+#include "ResourceImageSequenceValidator.h"
+#include "ResourceMusicValidator.h"
+#include "ResourceSoundValidator.h"
+#include "ResourceHITValidator.h"
+#include "ResourceFileValidator.h"
 
 #include "Kernel/FactorableUnique.h"
 
@@ -31,12 +39,26 @@ namespace Mengine
     {
         SERVICE_CREATE( ResourceValidateService );
 
-        VisitorPtr resourceValidateVisitor = new FactorableUnique<ResourceValidateVisitor>();
+        RESOURCEVALIDATE_SERVICE()
+            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceFile" ), new FactorableUnique<ResourceFileValidator>() );
 
         RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidateVisitor( resourceValidateVisitor );
+            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceHIT" ), new FactorableUnique<ResourceHITValidator>() );
 
-        m_resourceValidateVisitor = resourceValidateVisitor;
+        RESOURCEVALIDATE_SERVICE()
+            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageData" ), new FactorableUnique<ResourceImageDataValidator>() );
+
+        RESOURCEVALIDATE_SERVICE()
+            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), new FactorableUnique<ResourceImageDefaultValidator>() );
+
+        RESOURCEVALIDATE_SERVICE()
+            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageSequence" ), new FactorableUnique<ResourceImageSequenceValidator>() );
+
+        RESOURCEVALIDATE_SERVICE()
+            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMusic" ), new FactorableUnique<ResourceMusicValidator>() );
+
+        RESOURCEVALIDATE_SERVICE()
+            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceSound" ), new FactorableUnique<ResourceSoundValidator>() );
 
         return true;
     }
@@ -44,9 +66,25 @@ namespace Mengine
     void ResourceValidatePlugin::_finalize()
     {
         RESOURCEVALIDATE_SERVICE()
-            ->removeResourceValidateVisitor( m_resourceValidateVisitor );
+            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceFile" ) );
 
-        m_resourceValidateVisitor = nullptr;
+        RESOURCEVALIDATE_SERVICE()
+            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceHIT" ) );
+
+        RESOURCEVALIDATE_SERVICE()
+            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageData" ) );
+
+        RESOURCEVALIDATE_SERVICE()
+            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
+
+        RESOURCEVALIDATE_SERVICE()
+            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageSequence" ) );
+
+        RESOURCEVALIDATE_SERVICE()
+            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMusic" ) );
+
+        RESOURCEVALIDATE_SERVICE()
+            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
 
         SERVICE_FINALIZE( Mengine::ResourceValidateServiceInterface );
     }

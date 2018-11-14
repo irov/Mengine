@@ -31,6 +31,5 @@ namespace Mengine
         String m_hashkey;
 
         RenderVisitorPtr m_movie2RenderVisitor;
-        VisitorPtr m_movie2ValidateVisitor;
     };
 }

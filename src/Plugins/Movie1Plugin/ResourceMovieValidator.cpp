@@ -1,20 +1,18 @@
-#include "Movie1ResourceValidateVisitor.h"
+#include "ResourceMovieValidator.h"
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/RenderTextureInterface.h"
-#include "Interface/RenderImageInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
-#include "Interface/TextServiceInterface.h"
-#include "Interface/DataflowInterface.h"
 #include "Interface/DataServiceInterface.h"
+#include "Interface/TextServiceInterface.h"
+
+#include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
 #include "Movie1Interface.h"
 
 #include "Kernel/Stream.h"
-
 #include "Kernel/Logger.h"
 
 #include <algorithm>
@@ -22,15 +20,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Movie1ResourceValidateVisitor::Movie1ResourceValidateVisitor()
+    ResourceMovieValidator::ResourceMovieValidator()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Movie1ResourceValidateVisitor::~Movie1ResourceValidateVisitor()
+    ResourceMovieValidator::~ResourceMovieValidator()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie1ResourceValidateVisitor::accept( ResourceMovie * _resource )
+    bool ResourceMovieValidator::_validate( const ResourceMoviePtr & _resource )
     {
         float frameDuration = _resource->getFrameDuration();
 

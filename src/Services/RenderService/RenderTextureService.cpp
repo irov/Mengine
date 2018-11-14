@@ -1,6 +1,6 @@
 #include "RenderTextureService.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"

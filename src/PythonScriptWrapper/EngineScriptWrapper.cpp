@@ -3,7 +3,7 @@
 #include "Config/Lambda.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
@@ -39,7 +39,7 @@
 #include "Engine/ResourceHIT.h"
 #include "Engine/ResourceShape.h"
 
-#include "Plugins/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
 
 #include "Interface/ApplicationInterface.h"

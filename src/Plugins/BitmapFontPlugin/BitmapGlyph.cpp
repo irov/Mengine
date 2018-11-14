@@ -2,7 +2,7 @@
 
 #include "Interface/StringizeServiceInterface.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/MemoryHelper.h"

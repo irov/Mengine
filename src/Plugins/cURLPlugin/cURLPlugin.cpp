@@ -1,6 +1,6 @@
 #include "cURLPlugin.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 

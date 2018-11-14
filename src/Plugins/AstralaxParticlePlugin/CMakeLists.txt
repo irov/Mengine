@@ -19,8 +19,8 @@ src
     AstralaxService.h
 	AstralaxService.cpp
     
-    AstralaxResourceValidateVisitor.cpp
-    AstralaxResourceValidateVisitor.h
+    ResourceAstralaxValidator.cpp
+    ResourceAstralaxValidator.h
     
     UnknownParticleEmitterInterface.h
 

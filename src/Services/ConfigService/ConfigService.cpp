@@ -1,6 +1,6 @@
 #include "ConfigService.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 
 #include "Kernel/Exception.h"

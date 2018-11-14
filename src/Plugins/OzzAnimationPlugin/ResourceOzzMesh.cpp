@@ -1,6 +1,6 @@
 #include "ResourceOzzMesh.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 

@@ -4,11 +4,7 @@
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/RenderCameraHelper.h"
-
-#include "ResourceHIT.h"
-
 #include "Kernel/Logger.h"
-
 #include "Kernel/String.h"
 
 #include "Config/Config.h"

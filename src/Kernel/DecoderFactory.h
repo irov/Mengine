@@ -4,8 +4,8 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
+#include "Kernel/Logger.h"
 #include "Kernel/Factorable.h"
-
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
@@ -24,6 +24,13 @@ namespace Mengine
             return true;
         }
 
+        void finalize() override
+        {
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
+
+            m_factory = nullptr;
+        }
+
     protected:
         DecoderInterfacePtr createDecoder() override
         {
@@ -35,10 +42,6 @@ namespace Mengine
     protected:
         void destroy() override
         {
-            MENGINE_ASSERTION_FACTORY_EMPTY( m_factory );
-
-            m_factory = nullptr;
-
             delete this;
         }
 
@@ -69,8 +72,19 @@ namespace Mengine
 
         inline void unregisterDecoder( const Char * _type )
         {
-            CODEC_SERVICE()
+            DecoderFactoryInterfacePtr decoder = CODEC_SERVICE()
                 ->unregisterDecoder( Helper::stringizeString( _type ) );
+
+            if( decoder == nullptr )
+            {
+                LOGGER_ERROR( "invalid unregister decoder '%s'"
+                    , _type
+                );
+
+                return;
+            }
+
+            decoder->finalize();
         }
     }
 }

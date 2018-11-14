@@ -4,15 +4,15 @@
 
 namespace Mengine
 {
-    template<class T, class ... Bases>
+    template<class Base>
     class FactorableUnique
-        : public T
-        , public MemoryAllocator<T>
+        : public Base
+        , public MemoryAllocator<Base>
     {
     public:
         template<class ... Args>
         FactorableUnique( Args ... args )
-            : T( args ... )
+            : Base( args ... )
         {
         }
 

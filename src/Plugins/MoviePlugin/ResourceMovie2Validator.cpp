@@ -1,28 +1,24 @@
-#include "Movie2ResourceValidateVisitor.h"
+#include "ResourceMovie2Validator.h"
 
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/RenderTextureInterface.h"
-#include "Interface/RenderImageInterface.h"
-#include "Interface/FileSystemInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ConfigServiceInterface.h"
+#include "Interface/FileServiceInterface.h"
 
-#include "Plugins/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
 #include "Movie2Interface.h"
 
 #include "Kernel/Stream.h"
-
 #include "Kernel/Logger.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Movie2ResourceValidateVisitor::Movie2ResourceValidateVisitor()
+    ResourceMovie2Validator::ResourceMovie2Validator()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Movie2ResourceValidateVisitor::~Movie2ResourceValidateVisitor()
+    ResourceMovie2Validator::~ResourceMovie2Validator()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -156,13 +152,13 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2ResourceValidateVisitor::accept( ResourceMovie2 * _resource )
+    bool ResourceMovie2Validator::_validate( const ResourceMovie2Ptr & _resource )
     {
         const FilePath & filePath = _resource->getFilePath();
 
         if( filePath.empty() == true )
         {
-            LOGGER_ERROR( "ResourceMovie::_isValid: '%s' group '%s' don`t have Key Frames Pack Path"
+            LOGGER_ERROR( "movie2 '%s' group '%s' don`t have Key Frames Pack Path"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
             );
@@ -177,7 +173,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ResourceMovie2::_isValid: '%s' group '%s' can`t open file '%s'"
+            LOGGER_ERROR( "movie2 '%s' group '%s' can`t open file '%s'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFilePath().c_str()
@@ -204,7 +200,7 @@ namespace Mengine
 
         const aeMovieInstance * instance = _resource->getMovieInstance();
 
-        aeMovieData * movieData = ae_create_movie_data( instance, &data_providers, (ae_voidptr_t)_resource );
+        aeMovieData * movieData = ae_create_movie_data( instance, &data_providers, (ae_voidptr_t)_resource.get() );
 
         aeMovieStream * movieStream = ae_create_movie_stream( instance, &__movie_read_stream, &__movie_copy_stream, memory_buffer );
 
@@ -216,7 +212,7 @@ namespace Mengine
         {
             const ae_char_t * result_string_info = ae_get_result_string_info( result_load_movie_data );
 
-            LOGGER_ERROR( "ResourceMovie2::_isValid: '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
+            LOGGER_ERROR( "movie2 '%s' group '%s' file '%s' check movie data invalid '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFilePath().c_str()
@@ -230,7 +226,7 @@ namespace Mengine
             return false;
         }
 
-        ae_visit_movie_layer_data( movieData, &__movie_layer_data_visitor, (ae_voidptr_t)_resource );
+        ae_visit_movie_layer_data( movieData, &__movie_layer_data_visitor, (ae_voidptr_t)_resource.get() );
 
         ae_delete_movie_data( movieData );
         ae_delete_movie_stream( movieStream );

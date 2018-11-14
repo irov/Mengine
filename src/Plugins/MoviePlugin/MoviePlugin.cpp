@@ -9,7 +9,7 @@
 #include "Interface/LoaderServiceInterface.h"
 
 #include "Plugins/DebugRenderPlugin/DebugRenderInterface.h"
-#include "Plugins/ResourceValidatePlugin/ResourceValidateInterface.h"
+#include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
 
@@ -31,7 +31,7 @@
 #include "LoaderResourceMovie2.h"
 #include "Movie2Slot.h"
 
-#include "Movie2ResourceValidateVisitor.h"
+#include "ResourceMovie2Validator.h"
 
 #include "pybind/pybind.hpp"
 
@@ -501,12 +501,8 @@ namespace Mengine
         
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            VisitorPtr movie2ValidateVisitor = new FactorableUnique<Movie2ResourceValidateVisitor>();
-
             RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidateVisitor( movie2ValidateVisitor );
-
-            m_movie2ValidateVisitor = movie2ValidateVisitor;
+                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<ResourceMovie2Validator>() );
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
@@ -560,8 +556,8 @@ namespace Mengine
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
             RESOURCEVALIDATE_SERVICE()
-                ->removeResourceValidateVisitor( m_movie2ValidateVisitor );
-            m_movie2ValidateVisitor = nullptr;
+                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )

@@ -3,7 +3,7 @@
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
 #include "Plugins/Movie1Plugin/MovieKeyFrameInterface.h"

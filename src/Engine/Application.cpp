@@ -265,6 +265,35 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Application::_finalizeService()
+    {
+        NOTIFICATION_SERVICE()
+            ->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, this );
+
+        if( SERVICE_EXIST( GameServiceInterface ) == true )
+        {
+            GAME_SERVICE()
+                ->finalizeRenderResources();
+        }
+
+        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
+        {
+            PLAYER_SERVICE()
+                ->finalizeRenderResources();
+        }
+
+        PLAYER_SERVICE()
+            ->destroyCurrentScene();
+
+        m_cursorResource = nullptr;
+
+        Helper::unregisterDecoder( "memoryImage" );
+        Helper::unregisterDecoder( "archiveImage" );
+
+        m_locale.clear();
+        m_projectCodename.clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
     {
 #	define NODE_FACTORY( Type )\
@@ -1371,38 +1400,6 @@ namespace Mengine
             SOUND_SERVICE()
                 ->updateVolume();
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Application::_finalizeService()
-    {
-        NOTIFICATION_SERVICE()
-            ->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, this );
-
-        if( SERVICE_EXIST( GameServiceInterface ) == true )
-        {
-            GAME_SERVICE()
-                ->finalizeRenderResources();
-        }
-
-        if( SERVICE_EXIST( PlayerServiceInterface ) == true )
-        {
-            PLAYER_SERVICE()
-                ->finalizeRenderResources();
-        }
-
-        PLAYER_SERVICE()
-            ->destroyCurrentScene();
-
-        m_cursorResource = nullptr;
-
-        CODEC_SERVICE()
-            ->unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
-
-        CODEC_SERVICE()
-            ->unregisterDecoder( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
-
-        m_locale.clear();
-        m_projectCodename.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void Application::calcWindowResolution( Resolution & _windowResolution ) const

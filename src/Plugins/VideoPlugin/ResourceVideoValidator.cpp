@@ -1,25 +1,22 @@
-#include "VideoResourceValidateVisitor.h"
+#include "ResourceVideoValidator.h"
 
-#include "Interface/ResourceServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
-#include "Plugins/ResourceValidatePlugin/ResourceValidateInterface.h"
-
+#include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    VideoResourceValidateVisitor::VideoResourceValidateVisitor()
+    ResourceVideoValidator::ResourceVideoValidator()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    VideoResourceValidateVisitor::~VideoResourceValidateVisitor()
+    ResourceVideoValidator::~ResourceVideoValidator()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool s_checkValidVideoDecoder( ResourceVideo * _resource, const VideoDecoderInterfacePtr & _decoder )
+    static bool s_checkValidVideoDecoder( const ResourceVideoPtr & _resource, const VideoDecoderInterfacePtr & _decoder )
     {
         const VideoCodecDataInfo * dataInfo = _decoder->getCodecDataInfo();
 
@@ -28,7 +25,10 @@ namespace Mengine
         if( dataInfo->frameWidth % MENGINE_VIDEO_SIZE_DIV != 0 ||
             dataInfo->frameHeight % MENGINE_VIDEO_SIZE_DIV != 0 )
         {
-            LOGGER_ERROR( "invalid width or heigth '%d:%d' need '%d:%d' maybe div %d"
+            LOGGER_ERROR( "resource '%s' group '%s' path '%s' invalid width or heigth '%d:%d' need '%d:%d' maybe div %d"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , _resource->getFilePath().c_str()
                 , dataInfo->frameWidth
                 , dataInfo->frameHeight
                 , (dataInfo->frameWidth / MENGINE_VIDEO_SIZE_DIV + 1) * MENGINE_VIDEO_SIZE_DIV
@@ -75,7 +75,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VideoResourceValidateVisitor::accept( ResourceVideo * _resource )
+    bool ResourceVideoValidator::_validate( const ResourceVideoPtr & _resource )
     {
         VideoDecoderInterfacePtr decoder = _resource->createVideoDecoder();
 

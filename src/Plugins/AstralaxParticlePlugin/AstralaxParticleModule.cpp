@@ -12,8 +12,8 @@
 
 #include "AstralaxEmitter.h"
 
-#include "Plugins/ResourceValidatePlugin/ResourceValidateInterface.h"
-#include "AstralaxResourceValidateVisitor.h"
+#include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
+#include "ResourceAstralaxValidator.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -161,12 +161,11 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            VisitorPtr particleValidateVisitor = new FactorableUnique<AstralaxResourceValidateVisitor>();
+            RESOURCEVALIDATE_SERVICE()
+                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<ResourceAstralaxValidator>() );
 
             RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidateVisitor( particleValidateVisitor );
-
-            m_particleValidateVisitor = particleValidateVisitor;
+                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<ResourceAstralaxValidator>() );
         }
 
         LOADER_SERVICE()
@@ -212,8 +211,10 @@ namespace Mengine
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
             RESOURCEVALIDATE_SERVICE()
-                ->removeResourceValidateVisitor( m_particleValidateVisitor );
-            m_particleValidateVisitor = nullptr;
+                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+
+            RESOURCEVALIDATE_SERVICE()
+                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
         }
 
         LOADER_SERVICE()

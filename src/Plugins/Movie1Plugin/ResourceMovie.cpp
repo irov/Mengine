@@ -8,7 +8,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
 #include "Engine/ResourceShape.h"

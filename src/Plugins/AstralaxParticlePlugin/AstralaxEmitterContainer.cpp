@@ -98,7 +98,7 @@ namespace Mengine
         return m_ptcId;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitterContainer::setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage )
+    bool AstralaxEmitterContainer::setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage )
     {
         if( _index >= m_resourceImages.size() )
         {
@@ -108,10 +108,12 @@ namespace Mengine
                 , m_resourceImages.size()
             );
 
-            return;
+            return false;
         }
 
         m_resourceImages[_index] = _resourceImage;
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & AstralaxEmitterContainer::getAtlasResourceImage( const Char * _file ) const

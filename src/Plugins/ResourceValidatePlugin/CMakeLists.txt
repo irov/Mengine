@@ -2,7 +2,8 @@ set( MY_LIB_NAME ResourceValidatePlugin )
 
 ADD_FILTER(
 src
-    ResourceValidateInterface.h
+    ResourceValidatorInterface.h
+    ResourceValidateServiceInterface.h
 
 	ResourceValidatePlugin.h
     ResourceValidatePlugin.def
@@ -11,8 +12,21 @@ src
     ResourceValidateService.h
     ResourceValidateService.cpp
     
-    ResourceValidateVisitor.h
-    ResourceValidateVisitor.cpp
+    ResourceValidatorHelper.h
+    ResourceImageDefaultValidator.h
+    ResourceImageDefaultValidator.cpp
+    ResourceImageDataValidator.h
+    ResourceImageDataValidator.cpp
+    ResourceImageSequenceValidator.h
+    ResourceImageSequenceValidator.cpp
+    ResourceMusicValidator.h
+    ResourceMusicValidator.cpp
+    ResourceSoundValidator.h
+    ResourceSoundValidator.cpp
+    ResourceHITValidator.h
+    ResourceHITValidator.cpp
+    ResourceFileValidator.h
+    ResourceFileValidator.cpp
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )

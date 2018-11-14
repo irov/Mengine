@@ -1,6 +1,6 @@
 #include "ResourceImageData.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"

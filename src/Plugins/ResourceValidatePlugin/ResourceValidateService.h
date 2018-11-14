@@ -1,10 +1,10 @@
 #pragma once
 
-#include "ResourceValidateInterface.h"
+#include "ResourceValidateServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Resource.h"
 #include "Kernel/Observable.h"
+#include "Kernel/Hashtable.h"
 
 namespace Mengine
 {
@@ -22,8 +22,10 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void addResourceValidateVisitor( const VisitorPtr & _visitor ) override;
-        void removeResourceValidateVisitor( const VisitorPtr & _visitor ) override;
+        void addResourceValidator( const ConstString & _type, const ResourceValidatorInterfacePtr & _validator ) override;
+        void removeResourceValidator( const ConstString & _type ) override;
+
+    public:
         bool validResource( const ResourcePtr & _resource ) const override;
         
     protected:
@@ -31,7 +33,7 @@ namespace Mengine
         void visitableResources_() const;
 
     protected:
-        typedef Vector<VisitorPtr> VectorResourceValidateVisitor;
-        VectorResourceValidateVisitor m_visitors;
+        typedef Hashtable<ConstString, ResourceValidatorInterfacePtr> HashtableResourceValidators;
+        HashtableResourceValidators m_validators;
     };
 }

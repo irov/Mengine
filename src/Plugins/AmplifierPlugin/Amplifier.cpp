@@ -2,7 +2,7 @@
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/SoundServiceInterface.h"
 
 #include "Engine/ResourceMusic.h"

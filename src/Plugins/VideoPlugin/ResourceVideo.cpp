@@ -1,6 +1,6 @@
 #include "ResourceVideo.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/CodecServiceInterface.h"

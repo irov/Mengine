@@ -6,7 +6,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/TimeServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 
 #include "Kernel/FilePathHelper.h"

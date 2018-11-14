@@ -4,7 +4,7 @@
 #include "Interface/ApplicationInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"

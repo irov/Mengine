@@ -1,7 +1,7 @@
 #include "SoundService.h"
 
 #include "Interface/SoundCodecInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"

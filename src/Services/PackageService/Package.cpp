@@ -1,7 +1,7 @@
 #include "Package.h"
 
 #include "Interface/LoaderServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"

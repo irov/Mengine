@@ -30,8 +30,8 @@ src
     LoaderResourceInternalObject.cpp
     LoaderResourceInternalObject.h
     
-    Movie1ResourceValidateVisitor.cpp
-    Movie1ResourceValidateVisitor.h
+    ResourceMovieValidator.cpp
+    ResourceMovieValidator.h
     
     DataflowAEK.h
     DataflowAEK.cpp

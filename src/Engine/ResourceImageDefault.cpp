@@ -1,6 +1,6 @@
 #include "ResourceImageDefault.h"
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ConfigServiceInterface.h"

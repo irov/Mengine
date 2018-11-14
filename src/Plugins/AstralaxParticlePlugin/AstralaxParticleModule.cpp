@@ -13,7 +13,7 @@
 #include "AstralaxEmitter.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateInterface.h"
-#include "ParticleResourceValidateVisitor.h"
+#include "AstralaxResourceValidateVisitor.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -161,7 +161,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            VisitorPtr particleValidateVisitor = new FactorableUnique<ParticleResourceValidateVisitor>();
+            VisitorPtr particleValidateVisitor = new FactorableUnique<AstralaxResourceValidateVisitor>();
 
             RESOURCEVALIDATE_SERVICE()
                 ->addResourceValidateVisitor( particleValidateVisitor );

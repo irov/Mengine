@@ -100,6 +100,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitterContainer::setAtlasResourceImage( uint32_t _index, const ResourceImagePtr & _resourceImage )
     {
+        if( _index >= m_resourceImages.size() )
+        {
+            LOGGER_ERROR( "invalid add resource image '%s' index '%d' atlas count '%d'"
+                , _resourceImage->getName().c_str()
+                , _index
+                , m_resourceImages.size()
+            );
+
+            return;
+        }
+
         m_resourceImages[_index] = _resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////

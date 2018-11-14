@@ -395,7 +395,16 @@ namespace Mengine
         if( NOTIFICATION_SERVICE()
             ->notify( NOTIFICATOR_ENGINE_ENABLE_PACKAGES ) == false )
         {
-            return false;
+            LOGGER_ERROR( "Resources validation is invalid!!!!!!!!!!!!!" );
+
+            bool resourceCheckCritical = HAS_OPTION( "noresourcecheckcritical" );
+
+            if( resourceCheckCritical == false )
+            {
+                LOGGER_CRITICAL( "Fix Resources" );
+
+                return false;
+            }
         }
 
         return true;

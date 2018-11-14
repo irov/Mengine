@@ -112,10 +112,7 @@ namespace Mengine
             } );
 
             if( successful == false )
-            {
-                LOGGER_ERROR( "Resources validation is invalid!!!!!!!!!!!!!"
-                );
-
+            {                
                 throw ExceptionNotificationFailed();
             }
         }

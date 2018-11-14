@@ -1,4 +1,4 @@
-#include "ParticleResourceValidateVisitor.h"
+#include "AstralaxResourceValidateVisitor.h"
 
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderTextureInterface.h"
@@ -11,15 +11,15 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ParticleResourceValidateVisitor::ParticleResourceValidateVisitor()
+    AstralaxResourceValidateVisitor::AstralaxResourceValidateVisitor()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ParticleResourceValidateVisitor::~ParticleResourceValidateVisitor()
+    AstralaxResourceValidateVisitor::~AstralaxResourceValidateVisitor()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ParticleResourceValidateVisitor::accept( ResourceAstralax * _resource )
+    bool AstralaxResourceValidateVisitor::accept( ResourceAstralax * _resource )
     {
         const FilePath & filePath = _resource->getFilePath();
         const ConstString & name = _resource->getName();

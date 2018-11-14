@@ -8,19 +8,19 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class ParticleResourceValidateVisitor
+    class AstralaxResourceValidateVisitor
         : public Visitor
         , public Factorable
         , public ConcreteVisitorR<ResourceAstralax, bool>
     {
     public:
-        ParticleResourceValidateVisitor();
-        ~ParticleResourceValidateVisitor() override;
+        AstralaxResourceValidateVisitor();
+        ~AstralaxResourceValidateVisitor() override;
 
     protected:
         bool accept( ResourceAstralax * _resource ) override;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ParticleResourceValidateVisitor> ParticleResourceValidateVisitorPtr;
+    typedef IntrusivePtr<AstralaxResourceValidateVisitor> AstralaxResourceValidateVisitorPtr;
     //////////////////////////////////////////////////////////////////////////
 }

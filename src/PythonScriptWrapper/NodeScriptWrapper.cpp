@@ -116,6 +116,7 @@
 
 #include "ScriptableAffectorCallback.h"
 #include "PythonEntityBehavior.h"
+#include "PythonHotSpotEventReceiver.h"
 #include "PythonScheduleTiming.h"
 #include "PythonSchedulePipe.h"
 #include "PythonScheduleEvent.h"
@@ -678,7 +679,7 @@ namespace Mengine
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerScriptEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
+            Helper::registerPythonEventReceiver<PythonMeshEventReceiver>( py_kwds, _node, "onMeshgetUpdate", EVENT_MESHGET_UPDATE );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )
@@ -731,8 +732,8 @@ namespace Mengine
             }
 
             pybind::dict py_kwds( _kernel, _kwds );
-            Helper::registerScriptEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
-            Helper::registerScriptEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
+            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onKeepScript", EVENT_KEEP_SCRIPT );
+            Helper::registerPythonEventReceiver<PythonScriptHolderEventReceiver>( py_kwds, _node, "onReleaseScript", EVENT_RELEASE_SCRIPT );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )
@@ -758,83 +759,6 @@ namespace Mengine
             return _kernel->ret_none();
         }
         //////////////////////////////////////////////////////////////////////////
-        class PythonHotSpotEventReceiver
-            : public PythonEventReceiver
-            , public HotSpotEventReceiver
-            , public Factorable
-        {
-        public:
-            void onHotSpotActivate() override
-            {
-                m_cb.call();
-            }
-
-            void onHotSpotDeactivate() override
-            {
-                m_cb.call();
-            }
-
-            void onHotSpotMouseLeave() override
-            {
-                m_cb.call();
-            }
-
-            bool onHotSpotMouseEnter( float _x, float _y ) override
-            {
-                return m_cb.call( _x, _y );
-            }
-
-            bool onHotSpotKey( const InputKeyEvent & _event ) override
-            {
-                return m_cb.call( _event.x, _event.y, (uint32_t)_event.code, _event.isDown, _event.isRepeat );
-            }
-
-            bool onHotSpotText( const InputTextEvent & _event ) override
-            {
-                return m_cb.call( _event.x, _event.y, _event.key );
-            }
-
-            bool onHotSpotMouseButton( const InputMouseButtonEvent & _event ) override
-            {
-                return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
-            }
-
-            bool onHotSpotMouseButtonBegin( const InputMouseButtonEvent & _event ) override
-            {
-                return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
-            }
-
-            bool onHotSpotMouseButtonEnd( const InputMouseButtonEvent & _event ) override
-            {
-                return m_cb.call( _event.touchId, _event.x, _event.y, _event.button, _event.pressure, _event.isDown, _event.isPressed );
-            }
-
-            bool onHotSpotMouseMove( const InputMouseMoveEvent & _event ) override
-            {
-                return m_cb.call( _event.touchId, _event.x, _event.y, _event.dx, _event.dy, _event.pressure );
-            }
-
-            bool onHotSpotMouseWheel( const InputMouseWheelEvent & _event ) override
-            {
-                return m_cb.call( _event.x, _event.y, _event.button, _event.wheel );
-            }
-
-            void onHotSpotMouseOverDestroy() override
-            {
-                m_cb.call();
-            }
-
-            void onHotSpotMouseButtonBegin( uint32_t _enumerator, bool _isEnd ) override
-            {
-                m_cb.call( _enumerator, _isEnd );
-            }
-
-            void onHotSpotMouseButtonEnd( uint32_t _enumerator, bool _isEnd ) override
-            {
-                m_cb.call( _enumerator, _isEnd );
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
         PyObject * s_HotSpot_setEventListener( pybind::kernel_interface * _kernel, HotSpot * _node, PyObject * _args, PyObject * _kwds )
         {
             (void)_args;
@@ -846,17 +770,17 @@ namespace Mengine
 
             pybind::dict py_kwds( _kernel, _kwds );
 
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
-            Helper::registerScriptEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleKeyEvent", EVENT_KEY );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEvent", EVENT_MOUSE_BUTTON );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventBegin", EVENT_MOUSE_BUTTON_BEGIN );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseButtonEventEnd", EVENT_MOUSE_BUTTON_END );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseMove", EVENT_MOUSE_MOVE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseWheel", EVENT_MOUSE_WHEEL );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseEnter", EVENT_MOUSE_ENTER );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseLeave", EVENT_MOUSE_LEAVE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onHandleMouseOverDestroy", EVENT_MOUSE_OVER_DESTROY );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onActivate", EVENT_ACTIVATE );
+            Helper::registerPythonEventReceiver<PythonHotSpotEventReceiver>( py_kwds, _node, "onDeactivate", EVENT_DEACTIVATE );
 
 #ifndef NDEBUG
             if( py_kwds.empty() == false )

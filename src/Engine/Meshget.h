@@ -29,7 +29,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class MeshgetEventReceiver
-        : public EventReceiver
+        : public EventReceiverInterface
     {
     public:
         virtual void onMeshgetUpdate( const UpdateContext * _context ) = 0;

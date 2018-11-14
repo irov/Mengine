@@ -29,7 +29,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class EntityEventReceiver
-        : public EventReceiver
+        : public EventReceiverInterface
     {
     public:
         virtual void onEntityCreate( const EntityBehaviorInterfacePtr & _behavior, Node * _node ) = 0;

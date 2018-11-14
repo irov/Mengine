@@ -32,7 +32,7 @@ namespace Mengine
         uint32_t m_event;
     };
     //////////////////////////////////////////////////////////////////////////
-    bool BaseEventation::registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver )
+    bool BaseEventation::registerEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver )
     {
 #ifndef NDEBUG
         if( _event >= (sizeof( m_flag ) * 8 - 1) )
@@ -82,7 +82,7 @@ namespace Mengine
         m_flag &= ~(1L << _event);
     }
     //////////////////////////////////////////////////////////////////////////
-    const EventReceiverPtr & BaseEventation::getEventReciever( uint32_t _event ) const
+    const EventReceiverInterfacePtr & BaseEventation::getEventReciever( uint32_t _event ) const
     {
 #ifndef NDEBUG
         if( _event >= (sizeof( m_flag ) * 8) )
@@ -95,10 +95,10 @@ namespace Mengine
 
         if( it_found == m_receivers.end() )
         {
-            return EventReceiverPtr::none();
+            return EventReceiverInterfacePtr::none();
         }
 
-        const EventReceiverPtr & receiver = it_found->receiver;
+        const EventReceiverInterfacePtr & receiver = it_found->receiver;
 
         return receiver;
     }

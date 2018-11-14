@@ -21,8 +21,6 @@ namespace Mengine
         {
             PyObject * wrap( pybind::kernel_interface * _kernel, typename pybind::interface_<T>::extract_type_ptr::TCastRef _self ) override
             {
-                (void)_kernel;
-
                 if( _self == nullptr )
                 {
                     return _kernel->ret_none();

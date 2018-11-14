@@ -60,7 +60,7 @@ namespace Mengine
 	};
 	//////////////////////////////////////////////////////////////////////////
 	class GameEventReceiver
-		: public EventReceiver
+		: public EventReceiverInterface
 	{
 	public:
 		virtual void onGameFullscreen(bool _fullscreen) = 0;

@@ -5,22 +5,22 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class EventReceiver
+    class EventReceiverInterface
         : public Mixin
     {
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<EventReceiver> EventReceiverPtr;
+    typedef IntrusivePtr<EventReceiverInterface> EventReceiverInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class EventationInterface
         : public Mixin
     {
     public:
-        virtual bool registerEventReceiver( uint32_t _event, const EventReceiverPtr & _receiver ) = 0;
+        virtual bool registerEventReceiver( uint32_t _event, const EventReceiverInterfacePtr & _receiver ) = 0;
         virtual void removeEventReceiver( uint32_t _event ) = 0;
 
     public:
-        virtual const EventReceiverPtr & getEventReciever( uint32_t _event ) const = 0;
+        virtual const EventReceiverInterfacePtr & getEventReciever( uint32_t _event ) const = 0;
         virtual bool hasEventReceiver( uint32_t _event ) const = 0;
 
     public:
@@ -30,14 +30,14 @@ namespace Mengine
         template<class T>
         T getEventRecieverT( uint32_t _event ) const
         {
-            const EventReceiverPtr & reciever = this->getEventReciever( _event );
+            const EventReceiverInterfacePtr & reciever = this->getEventReciever( _event );
 
             if( reciever == nullptr )
             {
                 return nullptr;
             }
 
-            EventReceiver * r = reciever.get();
+            EventReceiverInterface * r = reciever.get();
 
 #ifndef NDEBUG
             if( dynamic_cast<T>(r) == nullptr )

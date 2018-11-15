@@ -5,8 +5,8 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 
-#ifdef _WIN32
-#   include "Environment/WIN32/WindowsIncluder.h"
+#ifdef _WINDOWS
+#   include "Environment/Windows/WindowsIncluder.h"
 #endif
 
 #include <stdio.h>
@@ -63,7 +63,7 @@ namespace Mengine
             return;
         }
 
-#ifdef _WIN32
+#ifdef _WINDOWS
         DebugBreak();
 #endif
     }

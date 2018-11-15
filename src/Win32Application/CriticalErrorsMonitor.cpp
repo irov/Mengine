@@ -8,7 +8,8 @@
 
 #include "stdex/stack.h"
 
-#include "Environment/WIN32/WindowsIncluder.h"
+#include "Environment/Windows/WindowsIncluder.h"
+
 #include "DbgHelp.h"
 
 #include <cstdio>

@@ -124,9 +124,9 @@ namespace Mengine
                 continue;
             }
 
-            if( animation->isLoop() == false )
+            if( animation->isInterrupt() == true )
             {
-                continue;
+                return false;
             }
 
             if( animation->interrupt() == false )
@@ -151,12 +151,12 @@ namespace Mengine
                 continue;
             }
 
-            if( animation->isLoop() == false )
+            if( animation->isInterrupt() == true )
             {
-                continue;
+                return false;
             }
 
-            if( animation->isInterrupt() == true )
+            if( animation->interrupt() == false )
             {
                 return false;
             }

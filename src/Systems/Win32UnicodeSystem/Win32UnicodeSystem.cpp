@@ -4,7 +4,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "Environment/WIN32/WindowsIncluder.h"
+#include "Environment/Windows/WindowsIncluder.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( UnicodeSystem, Mengine::Win32UnicodeSystem );

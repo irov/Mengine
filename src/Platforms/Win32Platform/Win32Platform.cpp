@@ -12,7 +12,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
 
-#include "Environment/WIN32/WindowsIncluder.h"
+#include "Environment/Windows/WindowsIncluder.h"
 
 #include <cstdio>
 #include <clocale>

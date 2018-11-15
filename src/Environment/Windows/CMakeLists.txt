@@ -1,4 +1,4 @@
-set( MY_LIB_NAME WIN32 )
+set(MY_LIB_NAME Windows)
 
 ADD_FILTER(
 src     

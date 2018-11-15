@@ -5,7 +5,7 @@
 #include "Win32SocketInputStream.h"
 #include "Win32SocketOutputStream.h"
 
-#include "Environment/WIN32/WindowsIncluder.h"
+#include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/Factorable.h"
 

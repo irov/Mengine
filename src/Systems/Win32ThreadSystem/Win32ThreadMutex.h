@@ -2,7 +2,7 @@
 
 #include "Interface/ThreadMutexInterface.h"
 
-#include "Environment/WIN32/WindowsIncluder.h"
+#include "Environment/Windows/WindowsIncluder.h"
 
 #include "Kernel/Factorable.h"
 

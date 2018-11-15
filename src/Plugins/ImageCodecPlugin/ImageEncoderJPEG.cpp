@@ -22,7 +22,9 @@ namespace Mengine
     struct EncoderJPEGErrorManager
     {
         jpeg_error_mgr pub;
+#if !defined(MENGINE_SETJMP_UNSUPPORTED)
         jmp_buf setjmp_buffer;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     static void	s_jpegErrorExit( j_common_ptr _cinfo )
@@ -47,7 +49,9 @@ namespace Mengine
             jpeg_destroy( _cinfo );
 
             // Return control to the setjmp point
+#if !defined(MENGINE_SETJMP_UNSUPPORTED)
             longjmp( mErr->setjmp_buffer, 1 );
+#endif
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -170,6 +174,7 @@ namespace Mengine
         errorMgr.pub.error_exit = &s_jpegErrorExit;
         errorMgr.pub.output_message = &s_jpegOutputMessage;
 
+#if !defined(MENGINE_SETJMP_UNSUPPORTED)
         if( setjmp( errorMgr.setjmp_buffer ) )
         {
             // If we get here, the JPEG code has signaled an error.
@@ -179,6 +184,7 @@ namespace Mengine
 
             return 0;
         }
+#endif
 
         struct jpeg_compress_struct cinfo = { 0 };
         cinfo.err = jpeg_std_error( &errorMgr.pub );

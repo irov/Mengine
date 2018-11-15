@@ -95,9 +95,9 @@ namespace Mengine
         for( const Record & record : m_history )
         {
             const Char * record_message_str = record.message.c_str();
-            uint32_t record_message_size = record.message.size();
+            String::size_type record_message_size = record.message.size();
 
-            _logger->log( record.level, record.flag, record_message_str, record_message_size );
+            _logger->log( record.level, record.flag, record_message_str, (uint32_t)record_message_size );
         }
 #endif
     }

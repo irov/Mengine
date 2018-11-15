@@ -37,11 +37,11 @@ namespace Mengine
     {
         float polygon_area = 0.f;
 
-        Polygon::size_type points_size = m_points.size();
+        VectorPoints::size_type points_size = m_points.size();
 
-        for( Polygon::size_type i = 0; i < points_size; ++i )
+        for( VectorPoints::size_type i = 0; i < points_size; ++i )
         {
-            Polygon::size_type j = (i + 1) % points_size;
+            VectorPoints::size_type j = (i + 1) % points_size;
 
             const mt::vec2f & pi = m_points[i];
             const mt::vec2f & pj = m_points[j];
@@ -199,9 +199,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Polygon::size_type Polygon::size() const
     {
-        Polygon::size_type size = m_points.size();
+        VectorPoints::size_type size = m_points.size();
 
-        return size;
+        return (Polygon::size_type)size;
     }
 
 }

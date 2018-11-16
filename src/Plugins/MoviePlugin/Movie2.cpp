@@ -575,7 +575,7 @@ namespace Mengine
     {
         if( m_composition == nullptr )
         {
-            LOGGER_ERROR( "Movie2::setEnableMovieLayers '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR( "movie '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , _name.c_str()
             );

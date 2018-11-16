@@ -46,6 +46,10 @@ namespace Mengine
         void setSubMovieCompositionName( const ConstString & _subcompositionName );
         const ConstString & getSubMovieCompositionName() const;
 
+	public:
+        void setEnable( bool _enable );
+        bool getEnable() const;
+
     public:
         bool initialize( const aeMovieComposition * _composition );
 

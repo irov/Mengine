@@ -36,6 +36,18 @@ namespace Mengine
         return m_subcompositionName;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::setEnable( bool _enable )
+    {
+        ae_set_movie_sub_composition_enable( m_subcomposition, _enable == true ? AE_TRUE : AE_FALSE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2SubComposition::getEnable() const
+    {
+        ae_bool_t enable = ae_get_movie_sub_composition_enable( m_subcomposition );
+
+        return enable == AE_TRUE ? true : false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::initialize( const aeMovieComposition * _composition )
     {
         const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( _composition, m_subcompositionName.c_str() );

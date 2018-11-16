@@ -700,8 +700,7 @@ namespace Mengine
 
         m_currentTexturesID[_stage] = 0;
 
-        m_renderSystem
-            ->setTexture( _stage, nullptr );
+		m_renderSystem->setTexture(_stage, nullptr);
 
         m_renderSystem->setTextureAddressing( _stage
             , m_defaultTextureStage.addressU

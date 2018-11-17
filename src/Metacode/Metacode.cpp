@@ -15,12 +15,12 @@ namespace Metacode
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_version()
     {
-        return 129;
+        return 130;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t get_metacode_protocol_crc32()
     {
-        return 3950385042; 
+        return 1990841702; 
     }
     //////////////////////////////////////////////////////////////////////////
     const char * getHeaderErrorMessage( HeaderError _error )
@@ -2350,6 +2350,8 @@ namespace Metacode
         //////////////////////////////////////////////////////////////////////////
         void Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::Meta_SubComposition::_parseData( const uint8_t * _buff, size_t _size, size_t & _read )
         {
+            this->read( _buff, _size, _read, this->m_Duration );
+            this->read( _buff, _size, _read, this->m_FrameDuration );
             this->read( _buff, _size, _read, this->m_Index );
             this->read( _buff, _size, _read, this->m_Name );
         }

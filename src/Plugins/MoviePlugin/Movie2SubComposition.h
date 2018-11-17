@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Kernel/Identity.h"
 #include "Kernel/Scriptable.h"
 #include "Kernel/Animatable.h"
 #include "Kernel/AnimationEventReceiver.h"
@@ -25,6 +26,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Movie2SubComposition
         : public Factorable
+        , public Identity
         , public Eventable
         , public BaseEventation
         , public Animatable
@@ -42,13 +44,18 @@ namespace Mengine
         void setMovie( const Movie2Ptr & _movie );
         const Movie2Ptr & getMovie() const;
 
-    public:
-        void setSubMovieCompositionName( const ConstString & _subcompositionName );
-        const ConstString & getSubMovieCompositionName() const;
+        void setDuration( float _duration );
+        float getDuration() const;
+
+        void setFrameDuration( float _frameDuration );
+        float getFrameDuration() const;
 
 	public:
         void setEnable( bool _enable );
         bool getEnable() const;
+
+    protected:
+        void updateEnable_();
 
     public:
         bool initialize( const aeMovieComposition * _composition );
@@ -64,13 +71,21 @@ namespace Mengine
 
     protected:
         void _setLoop( bool _value ) override;
+        void _setTime( float _time ) override;
+        float _getTime() const override;
+        void _setFirstFrame() override;
+        void _setLastFrame() override;
 
     protected:
         Movie2Ptr m_movie;
-        ConstString m_subcompositionName;
 
+        float m_duration;
+        float m_frameDuration;
+        
         const aeMovieComposition * m_composition;
         const aeMovieSubComposition * m_subcomposition;
+
+        bool m_enable;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Movie2SubComposition> Movie2SubCompositionPtr;

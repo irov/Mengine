@@ -2,10 +2,10 @@
 
 #include "Interface/AnimationInterface.h"
 
+#include "Kernel/UpdateContext.h"
+
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct UpdateContext;
     //////////////////////////////////////////////////////////////////////////
     class BaseAnimation
         : public AnimationInterface

@@ -2,14 +2,12 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/ValueFollowerLinear.h"
+#include "Kernel/UpdateContext.h"
 
 #include "Config/Vector.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    struct UpdateContext;
-    //////////////////////////////////////////////////////////////////////////
+{    
     class MixerValue
     {
     public:

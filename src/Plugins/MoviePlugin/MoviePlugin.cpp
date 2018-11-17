@@ -432,9 +432,7 @@ namespace Mengine
             pybind::interface_<Movie2Slot, pybind::bases<Node> >( kernel, "Movie2Slot", false )
                 ;
 
-            pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable> >( kernel, "Movie2SubComposition", false )
-                .def( "setSubMovieCompositionName", &Movie2SubComposition::setSubMovieCompositionName )
-                .def( "getSubMovieCompositionName", &Movie2SubComposition::getSubMovieCompositionName )
+            pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable, Identity> >( kernel, "Movie2SubComposition", false )
                 .def( "setEnable", &Movie2SubComposition::setEnable )
                 .def( "getEnable", &Movie2SubComposition::getEnable )
                 .def_static_native_kernel( "setEventListener", &Detail::s_Movie2SubComposition_setEventListener )

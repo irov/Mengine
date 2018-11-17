@@ -9,6 +9,9 @@ namespace Mengine
     Movie2SubComposition::Movie2SubComposition()
         : m_composition( nullptr )
         , m_subcomposition( nullptr )
+        , m_duration( 0.f )
+        , m_frameDuration( 0.f )
+        , m_enable( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -26,31 +29,53 @@ namespace Mengine
         return m_movie;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::setSubMovieCompositionName( const ConstString & _subcompositionName )
+    void Movie2SubComposition::setDuration( float _duration )
     {
-        m_subcompositionName = _subcompositionName;
+        m_duration = _duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & Movie2SubComposition::getSubMovieCompositionName() const
+    float Movie2SubComposition::getDuration() const
     {
-        return m_subcompositionName;
+        return m_duration;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::setFrameDuration( float _frameDuration )
+    {
+        m_frameDuration = _frameDuration;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Movie2SubComposition::getFrameDuration() const
+    {
+        return m_frameDuration;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::setEnable( bool _enable )
     {
-        ae_set_movie_sub_composition_enable( m_subcomposition, _enable == true ? AE_TRUE : AE_FALSE );
+        m_enable = _enable;
+
+        if( m_subcomposition == nullptr )
+        {
+            return;
+        }
+
+        this->updateEnable_();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::getEnable() const
     {
-        ae_bool_t enable = ae_get_movie_sub_composition_enable( m_subcomposition );
-
-        return enable == AE_TRUE ? true : false;
+        return m_enable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::updateEnable_()
+    {
+        ae_set_movie_sub_composition_enable( m_subcomposition, m_enable == true ? AE_TRUE : AE_FALSE );        
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::initialize( const aeMovieComposition * _composition )
     {
-        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( _composition, m_subcompositionName.c_str() );
+        const ConstString & name = this->getName();
+
+        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( _composition, name.c_str() );
 
         if( subcomposition == AE_NULL )
         {
@@ -59,6 +84,8 @@ namespace Mengine
 
         m_composition = _composition;
         m_subcomposition = subcomposition;
+
+        this->updateEnable_();
 
         return true;
     }
@@ -126,4 +153,45 @@ namespace Mengine
         ae_set_movie_sub_composition_loop( m_subcomposition, _value == true ? AE_TRUE : AE_FALSE );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::_setTime( float _time )
+    {
+        if( m_subcomposition == nullptr )
+        {
+            LOGGER_ERROR( "submovie '%s' invalid initialized"
+                , this->getName().c_str()
+            );
+
+            return;
+        }
+
+        ae_set_movie_sub_composition_time( m_composition, m_subcomposition, _time * 0.001f );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Movie2SubComposition::_getTime() const
+    {
+        if( m_subcomposition == nullptr )
+        {
+            LOGGER_ERROR( "submovie '%s' not initialized"
+                , this->getName().c_str()
+            );
+
+            return 0.f;
+        }
+
+        float timing = ae_get_movie_sub_composition_time( m_subcomposition );
+
+        return timing * 1000.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::_setFirstFrame()
+    {
+        this->setTime( 0.f );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::_setLastFrame()
+    {
+        this->setTime( m_duration - m_frameDuration );
+    }
+    //////////////////////////////////////////////////////////////////////////
+
 }

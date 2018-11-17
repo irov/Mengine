@@ -5,7 +5,7 @@
 #include "Interface/CodecInterface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
@@ -20,7 +20,7 @@
 #include "Kernel/FilePathHelper.h"
 #include "ToolUtils/ToolUtils.h"
 
-#include "Environment/WIN32/WindowsIncluder.h"
+#include "Environment/Windows/WindowsIncluder.h"
 
 #include <string>
 #include <vector>

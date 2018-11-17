@@ -65,10 +65,14 @@ namespace Mengine
             {
                 uint32_t subcompositionIndex = meta_subcomposition.get_Index();
                 const ConstString & subcompositionName = meta_subcomposition.get_Name();
+                float subcompositionDuration = meta_subcomposition.get_Duration();
+                float subcompositionFrameDuration = meta_subcomposition.get_FrameDuration();
 
                 ResourceMovie2CompositionSubComposition subcomposition;
                 subcomposition.index = subcompositionIndex;
                 subcomposition.name = subcompositionName;
+                subcomposition.duration = subcompositionDuration;
+                subcomposition.frameDuration = subcompositionFrameDuration;
 
                 desc.subcompositions.emplace_back( subcomposition );
             }

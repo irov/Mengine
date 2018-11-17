@@ -4,13 +4,12 @@
 #include "Kernel/Updatable.h"
 #include "Kernel/BaseUpdation.h"
 #include "Kernel/Factorable.h"
+#include "Kernel/UpdateContext.h"
 
 #include "stdex/intrusive_slug_linked_ptr.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    struct UpdateContext;
     //////////////////////////////////////////////////////////////////////////
     class AffectorCallbackInterface
         : public Factorable

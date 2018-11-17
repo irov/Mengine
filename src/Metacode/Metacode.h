@@ -5038,6 +5038,28 @@ namespace Metacode
                     
                     public:
                         template<class C, class M>
+                        void getm_Duration( C _self, M _method ) const
+                        {
+                            (_self->*_method)( this->m_Duration );
+                        }
+                        
+                        float get_Duration() const
+                        {
+                            return this->m_Duration;
+                        }
+                        
+                        template<class C, class M>
+                        void getm_FrameDuration( C _self, M _method ) const
+                        {
+                            (_self->*_method)( this->m_FrameDuration );
+                        }
+                        
+                        float get_FrameDuration() const
+                        {
+                            return this->m_FrameDuration;
+                        }
+                        
+                        template<class C, class M>
                         void getm_Index( C _self, M _method ) const
                         {
                             (_self->*_method)( this->m_Index );
@@ -5064,6 +5086,8 @@ namespace Metacode
                     public:
                     protected:
                     protected:
+                        float m_Duration;
+                        float m_FrameDuration;
                         uint32_t m_Index;
                         Mengine::ConstString m_Name;
                     };

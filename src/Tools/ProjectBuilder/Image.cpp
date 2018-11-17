@@ -2,7 +2,7 @@
 
 #include "Interface/InputServiceInterface.h"
 #include "Interface/ImageCodecInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/ScriptSystemInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"

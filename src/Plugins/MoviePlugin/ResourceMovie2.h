@@ -30,6 +30,9 @@ namespace Mengine
     {
         uint32_t index;
         ConstString name;
+
+        float duration;
+        float frameDuration;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<ResourceMovie2CompositionSubComposition> ResourceMovie2CompositionSubCompositions;

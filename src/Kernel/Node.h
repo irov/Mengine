@@ -84,6 +84,7 @@ namespace Mengine
 
     protected:
         void removeChild_( const NodePtr & _node );
+        void removeParent_();
         void setParent_( Node * _node );
 
     protected:
@@ -110,6 +111,9 @@ namespace Mengine
         typedef Lambda<void( const NodePtr & )> LambdaNode;
         void foreachChildren( const LambdaNode & _lambda ) const;
         void foreachChildrenUnslug( const LambdaNode & _lambda ) const;
+
+        void removeParentRender_();
+        void setParentRender_( IntrusiveSlugListNodeChild::iterator _insert, Node * _parent );
 
         typedef const Lambda<void( RenderInterface * )> LambdaNodeRenderCloseChildren;
         void foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );

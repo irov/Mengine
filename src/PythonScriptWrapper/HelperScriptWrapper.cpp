@@ -50,7 +50,7 @@
 
 #include "math/angle.h"
 
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "Config/Blobject.h"
 

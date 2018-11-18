@@ -17,7 +17,7 @@
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/MatrixProxy.h"
 
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/SchedulerInterface.h"
 
 #include "Interface/TextFontInterface.h"

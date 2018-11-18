@@ -102,9 +102,9 @@ namespace Mengine
         IntrusiveSlugListNodeChild m_children;
 
     private:
-        void addChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node );
+        void addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
 
-        void insertChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node );
+        void insertChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
         void eraseChild_( const NodePtr & _node );
 
     public:

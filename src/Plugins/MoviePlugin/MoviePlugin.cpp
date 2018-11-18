@@ -2,7 +2,7 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"

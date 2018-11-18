@@ -231,7 +231,7 @@ namespace Mengine
             FilePath c_xml_path = Helper::stringizeFilePath( xml_path );
 
             if( CONVERTER_SERVICE()
-                ->convert( m_converterType, m_category, c_xml_path, m_filePath ) == false )
+                ->convert( m_converterType, m_fileGroup, c_xml_path, m_filePath ) == false )
             {
                 LOGGER_ERROR( "ResourceMovie::_convert: '%s' group '%s' can't convert '%s':'%s'"
                     , this->getName().c_str()

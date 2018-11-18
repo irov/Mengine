@@ -2,7 +2,7 @@
 
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
 

@@ -18,7 +18,7 @@ namespace Mengine
         virtual void removeResourceValidator( const ConstString & _type ) = 0;
 
     public:
-        virtual bool validResource( const ResourcePtr & _name ) const = 0;
+        virtual bool validResource( const ResourcePtr & _resource ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

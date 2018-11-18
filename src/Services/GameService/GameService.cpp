@@ -7,7 +7,7 @@
 #include "Interface/WatchdogInterface.h"
 #include "Interface/ArchiveInterface.h"
 
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"

@@ -4,7 +4,7 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 
 #include "ResourceAstralax.h"

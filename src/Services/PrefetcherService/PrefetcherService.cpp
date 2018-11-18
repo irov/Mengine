@@ -75,45 +75,32 @@ namespace Mengine
         m_factoryThreadTaskPrefetchDataflow = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-        //////////////////////////////////////////////////////////////////////////
-        struct FReceiverComplete
-        {
-            bool operator ()( const PrefetchReceiver & _receiver ) const
-            {
-                if( _receiver.refcount != 0 )
-                {
-                    return false;
-                }
-
-                return true;
-            }
-        };
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PrefetcherService::update()
     {
-        //TMapPrefetchReceiver::iterator it_erase = std::remove_if( m_prefetchReceiver.begin(), m_prefetchReceiver.end(), FReceiverComplete() );
-        //m_prefetchReceiver.erase( it_erase, m_prefetchReceiver.end() );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::prefetchImageDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer )
+    bool PrefetcherService::prefetchImageDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer )
     {
         if( m_avaliable == false )
         {
-            return false;
+            _observer->onPrefetchIgnored();
+
+            return true;
         }
 
         if( m_threadQueue == nullptr )
         {
-            return false;
+            _observer->onPrefetchIgnored();
+
+            return true;
         }
 
         PrefetchReceiver * receiver;
-        if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == true )
+        if( this->hasPrefetch_( _fileGroup, _filePath, &receiver ) == true )
         {
             ++receiver->refcount;
+
+            _observer->onPrefetchAlreadyExist();
 
             return true;
         }
@@ -125,7 +112,7 @@ namespace Mengine
         ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject();
 
         task->initialize( _fileGroup, _filePath, _observer );
-        task->setImageCodec( _codec );
+        task->setImageCodec( _codecType );
 
         new_receiver.prefetcher = task;
 
@@ -136,7 +123,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::getImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ImageDecoderInterfacePtr & _decoder ) const
+    bool PrefetcherService::getImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ImageDecoderInterfacePtr & _decoder )
     {
         if( m_avaliable == false )
         {
@@ -144,17 +131,7 @@ namespace Mengine
         }
 
         PrefetchReceiver * receiver;
-        if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == false )
-        {
-            return false;
-        }
-
-        if( receiver->prefetcher->isComplete() == false )
-        {
-            return false;
-        }
-
-        if( receiver->prefetcher->isSuccessful() == false )
+        if( this->popPrefetch_( _fileGroup, _filePath, &receiver ) == false )
         {
             return false;
         }
@@ -173,22 +150,28 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::prefetchSoundDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer )
+    bool PrefetcherService::prefetchSoundDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer )
     {
         if( m_avaliable == false )
         {
-            return false;
+            _observer->onPrefetchIgnored();
+
+            return true;
         }
 
         if( m_threadQueue == nullptr )
         {
-            return false;
+            _observer->onPrefetchIgnored();
+
+            return true;
         }
 
         PrefetchReceiver * receiver;
-        if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == true )
+        if( this->hasPrefetch_( _fileGroup, _filePath, &receiver ) == true )
         {
             ++receiver->refcount;
+
+            _observer->onPrefetchAlreadyExist();
 
             return true;
         }
@@ -200,7 +183,7 @@ namespace Mengine
         ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject();
 
         task->initialize( _fileGroup, _filePath, _observer );
-        task->setSoundCodec( _codec );
+        task->setSoundCodec( _codecType );
 
         new_receiver.prefetcher = task;
 
@@ -211,7 +194,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::getSoundDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder ) const
+    bool PrefetcherService::getSoundDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder )
     {
         if( m_avaliable == false )
         {
@@ -219,17 +202,7 @@ namespace Mengine
         }
 
         PrefetchReceiver * receiver;
-        if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == false )
-        {
-            return false;
-        }
-
-        if( receiver->prefetcher->isComplete() == false )
-        {
-            return false;
-        }
-
-        if( receiver->prefetcher->isSuccessful() == false )
+        if( this->popPrefetch_( _fileGroup, _filePath, &receiver ) == false )
         {
             return false;
         }
@@ -252,18 +225,24 @@ namespace Mengine
     {
         if( m_avaliable == false )
         {
-            return false;
+            _observer->onPrefetchIgnored();
+
+            return true;
         }
 
         if( m_threadQueue == nullptr )
         {
-            return false;
+            _observer->onPrefetchIgnored();
+
+            return true;
         }
 
         PrefetchReceiver * receiver;
-        if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == true )
+        if( this->hasPrefetch_( _fileGroup, _filePath, &receiver ) == true )
         {
             ++receiver->refcount;
+
+            _observer->onPrefetchAlreadyExist();
 
             return true;
         }
@@ -301,7 +280,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////			
-    bool PrefetcherService::getData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data ) const
+    bool PrefetcherService::getData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
     {
         if( m_avaliable == false )
         {
@@ -309,17 +288,7 @@ namespace Mengine
         }
 
         PrefetchReceiver * receiver;
-        if( this->hasPrefetch( _fileGroup, _filePath, &receiver ) == false )
-        {
-            return false;
-        }
-
-        if( receiver->prefetcher->isComplete() == false )
-        {
-            return false;
-        }
-
-        if( receiver->prefetcher->isSuccessful() == false )
+        if( this->popPrefetch_( _fileGroup, _filePath, &receiver ) == false )
         {
             return false;
         }
@@ -338,25 +307,27 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PrefetcherService::unfetch( const FileGroupInterfacePtr& _fileGroup, const FilePath& _filePath )
+    bool PrefetcherService::unfetch( const FileGroupInterfacePtr& _fileGroup, const FilePath& _filePath )
     {
         MapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
         if( it_found == m_prefetchReceiver.end() )
         {
-            return;
+            return false;
         }
 
         PrefetchReceiver & receiver = it_found->second;
 
         if( --receiver.refcount > 0 )
         {
-            return;
+            return true;
         }
 
         receiver.prefetcher->cancel();
 
         m_prefetchReceiver.erase( it_found );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PrefetcherService::visitPrefetches( const VisitorPtr & _visitor ) const
@@ -375,7 +346,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::hasPrefetch( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
+    bool PrefetcherService::hasPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
     {
         MapPrefetchReceiver::const_iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
 
@@ -385,6 +356,34 @@ namespace Mengine
         }
 
         const PrefetchReceiver & receiver = it_found->second;
+
+        *_receiver = const_cast<PrefetchReceiver *>(&receiver);
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PrefetcherService::popPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver )
+    {
+        MapPrefetchReceiver::iterator it_found = m_prefetchReceiver.find( std::make_pair( _fileGroup->getName(), _filePath ) );
+
+        if( it_found == m_prefetchReceiver.end() )
+        {
+            return false;
+        }
+
+        PrefetchReceiver & receiver = it_found->second;
+
+        if( receiver.prefetcher->isComplete() == false ||
+            receiver.prefetcher->isSuccessful() == false )
+        {
+            --receiver.refcount;
+
+            receiver.prefetcher->cancel();
+
+            m_prefetchReceiver.erase( it_found );
+
+            return false;
+        }
 
         *_receiver = const_cast<PrefetchReceiver *>(&receiver);
 

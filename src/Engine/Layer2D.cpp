@@ -195,6 +195,10 @@ namespace Mengine
             {
             }
 
+            ~RenderLayer2DTarget()
+            {
+            }
+
         protected:
             void _render( const RenderContext * _context )
             {

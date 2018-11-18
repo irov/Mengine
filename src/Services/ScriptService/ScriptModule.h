@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptModuleInterface.h"
 #include "Interface/LoggerInterface.h"
 
 #include "pybind/types.hpp"
@@ -31,4 +31,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ScriptModule> ScriptModulePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

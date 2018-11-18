@@ -8,7 +8,7 @@
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/SoundServiceInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"

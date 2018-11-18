@@ -43,25 +43,26 @@ namespace Mengine
         void update() override;
 
     public:
-        bool prefetchImageDecoder( const FileGroupInterfacePtr & _pakName, const FilePath & _fileName, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer ) override;
-        bool getImageDecoder( const FileGroupInterfacePtr & _pakName, const FilePath & _fileName, ImageDecoderInterfacePtr & _decoder ) const override;
+        bool prefetchImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer ) override;
+        bool getImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ImageDecoderInterfacePtr & _decoder ) override;
 
     public:
-        bool prefetchSoundDecoder( const FileGroupInterfacePtr & _pakName, const FilePath & _fileName, const ConstString & _codec, const PrefetcherObserverInterfacePtr & _observer ) override;
-        bool getSoundDecoder( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, SoundDecoderInterfacePtr & _decoder ) const override;
+        bool prefetchSoundDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer ) override;
+        bool getSoundDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder ) override;
 
     public:
-        bool prefetchData( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, const ConstString & _dataflowType, const PrefetcherObserverInterfacePtr & _observer ) override;
-        bool getData( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, DataInterfacePtr & _data ) const override;
+        bool prefetchData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _dataflowType, const PrefetcherObserverInterfacePtr & _observer ) override;
+        bool getData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data ) override;
 
     public:
-        void unfetch( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName ) override;
+        bool unfetch( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath ) override;
 
     public:
         void visitPrefetches( const VisitorPtr & _visitor ) const override;
 
     protected:
-        bool hasPrefetch( const FileGroupInterfacePtr& _pakName, const FilePath & _fileName, PrefetchReceiver ** _receiver ) const;
+        bool hasPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const;
+        bool popPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver );
 
     protected:
         ThreadQueueInterfacePtr m_threadQueue;

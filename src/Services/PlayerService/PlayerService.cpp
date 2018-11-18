@@ -3,7 +3,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/TimelineServiceInterface.h"

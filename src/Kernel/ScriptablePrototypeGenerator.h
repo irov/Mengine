@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "FactoryPrototypeGenerator.h"
 

@@ -2,7 +2,7 @@
 
 #include "Interface/PackageInterface.h"
 #include "Interface/FileGroupInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/String.h"

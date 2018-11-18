@@ -460,56 +460,56 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::addChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node )
+    void Node::addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _child )
     {
-        Node * parent = _node->getParent();
-
         stdex::intrusive_this_acquire( this );
 
-        if( parent == this )
-        {
-            this->eraseChild_( _node );
+        Node * child_parent = _child->getParent();
 
-            this->insertChild_( _insert, _node );
+        if( child_parent == this )
+        {
+            this->eraseChild_( _child );
+
+            this->insertChild_( _insert, _child );
         }
         else
         {
-            if( parent != nullptr )
+            if( child_parent != nullptr )
             {
-                parent->removeChild_( _node );
+                child_parent->removeChild_( _child );
             }
 
-            this->insertChild_( _insert, _node );
+            this->insertChild_( _insert, _child );
 
-            _node->setParent_( this );
+            _child->setParent_( this );
         }
 
-        this->_addChild( _node );
+        this->_addChild( _child );
 
-        if( this->isFreeze() == false && _node->isFreeze() == true )
+        if( this->isFreeze() == false && _child->isFreeze() == true )
         {
-            _node->freeze( false );
+            _child->freeze( false );
         }
-        else if( this->isFreeze() == true && _node->isFreeze() == false )
+        else if( this->isFreeze() == true && _child->isFreeze() == false )
         {
-            _node->freeze( true );
+            _child->freeze( true );
         }
 
-        if( this->isActivate() == false && _node->isActivate() == true )
+        if( this->isActivate() == false && _child->isActivate() == true )
         {
-            _node->deactivate();
+            _child->deactivate();
         }
-        else if( this->isActivate() == true && _node->isActivate() == false )
+        else if( this->isActivate() == true && _child->isActivate() == false )
         {
-            _node->activate();
+            _child->activate();
         }
 
-        _node->invalidateWorldMatrix();        
+        _child->invalidateWorldMatrix();        
 
         stdex::intrusive_this_release( this );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::insertChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node )
+    void Node::insertChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node )
     {
         m_children.insert( _insert, _node );
     }

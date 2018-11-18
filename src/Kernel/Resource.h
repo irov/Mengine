@@ -40,7 +40,7 @@ namespace Mengine
         void setLocale( const ConstString & _locale );
         inline const ConstString & getLocale() const;
 
-        void setFileGroup( const FileGroupInterfacePtr & _category );
+        void setFileGroup( const FileGroupInterfacePtr & _fileGroup );
         inline const FileGroupInterfacePtr & getFileGroup() const;
 
         void setGroupName( const ConstString & _groupName );
@@ -79,7 +79,7 @@ namespace Mengine
 
     protected:
         ConstString m_locale;
-        FileGroupInterfacePtr m_category;
+        FileGroupInterfacePtr m_fileGroup;
         ConstString m_groupName;
 
         bool m_cache;
@@ -94,7 +94,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     inline const FileGroupInterfacePtr & Resource::getFileGroup() const
     {
-        return m_category;
+        return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
     inline const ConstString & Resource::getGroupName() const

@@ -110,10 +110,17 @@ PLUGIN_EXPORT( Zip );
 PLUGIN_EXPORT( LZ4 );
 PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( Win32FileGroup );
-PLUGIN_EXPORT( BitmapFont );
+
+#ifdef MENGINE_PLUGIN_BITMAPFONT
+    PLUGIN_EXPORT( BitmapFont );
+#endif
 
 #ifdef MENGINE_PLUGIN_DEBUGRENDER
     PLUGIN_EXPORT( DebugRender );
+#endif
+
+#ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER
+    PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
@@ -693,6 +700,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( DebugRender, "initialize Plugin Debug Render..." );
 #endif
 
+#ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER
+        MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher..." );
+#endif
+
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
         MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
 #endif
@@ -727,7 +738,9 @@ namespace Mengine
         //MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
         //MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
 
-        MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin BitmapFont..." );
+#ifdef MENGINE_PLUGIN_BITMAPFONT
+        MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin Bitmap Font..." );
+#endif
 
 #ifdef MENGINE_PLUGIN_TTF
         MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );

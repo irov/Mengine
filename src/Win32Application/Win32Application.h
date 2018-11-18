@@ -13,7 +13,7 @@
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/SoundSystemInterface.h"
 #include "Interface/SoundServiceInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/DataInterface.h"
 #include "Interface/ConverterInterface.h"

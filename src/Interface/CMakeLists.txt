@@ -6,7 +6,8 @@ src
     ServiceProviderInterface.h
 	PluginInterface.h
     ModuleInterface.h
-	ScriptSystemInterface.h
+    ScriptModuleInterface.h
+	ScriptServiceInterface.h
 	CodecInterface.h
 	CodecFactoryInterface.h
 	DecoderInterface.h
@@ -49,6 +50,7 @@ src
     ArchiveInterface.h
     ArchiveServiceInterface.h
     ProfilerInterface.h
+    PrefetcherObserverInterface.h
     PrefetcherServiceInterface.h
     AmplifierInterface.h
     GraveyardInterface.h

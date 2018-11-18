@@ -1,0 +1,2 @@
+LIBRARY		"ResourcePrefetcherPlugin"
+EXPORTS 	dllCreatePlugin 	@1

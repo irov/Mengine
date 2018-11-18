@@ -23,9 +23,9 @@ namespace Mengine
         m_locale = _locale;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Resource::setFileGroup( const FileGroupInterfacePtr & _category )
+    void Resource::setFileGroup( const FileGroupInterfacePtr & _fileGroup )
     {
-        m_category = _category;
+        m_fileGroup = _fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
     void Resource::setGroupName( const ConstString & _groupName )
@@ -68,7 +68,7 @@ namespace Mengine
         if( _converterType.empty() == false )
         {
             if( CONVERTER_SERVICE()
-                ->convert( _converterType, m_category, _filePath, _outFilePath ) == false )
+                ->convert( _converterType, m_fileGroup, _filePath, _outFilePath ) == false )
             {
                 LOGGER_ERROR( "resource '%s' can't convert '%s':'%s'"
                     , this->getName().c_str()

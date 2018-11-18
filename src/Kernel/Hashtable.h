@@ -120,6 +120,16 @@ namespace Mengine
             this->rebalance_( _capacity );
         }
 
+        bool empty() const
+        {
+            return m_size == 0;
+        }
+
+        uint32_t size() const
+        {
+            return m_size;
+        }
+
         void clear()
         {
             for( size_type index = 0; index != m_capacity; ++index )

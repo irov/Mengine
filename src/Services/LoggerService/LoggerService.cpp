@@ -36,8 +36,11 @@ namespace Mengine
             logger->flush();
         }
 
-        m_history.clear();
         m_loggers.clear();
+
+#ifdef MENGINE_LOGGER_HISTORY
+        m_history.clear();
+#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::setVerboseLevel( EMessageLevel _level )

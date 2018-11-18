@@ -8,6 +8,7 @@
 #include "Interface/UpdationInterface.h"
 
 #include "Kernel/NodeRenderHelper.h"
+#include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
 
 #include "Config/Config.h"
@@ -252,7 +253,7 @@ namespace Mengine
 
             if( oldRenderParent != nullptr )
             {
-                render->setRelationRender( nullptr );
+                render->removeRelationRender();
                 render->invalidateColor();
             }
         }
@@ -264,14 +265,14 @@ namespace Mengine
             {
                 this->foreachRenderCloseChildren( []( RenderInterface * _render )
                 {
-                    _render->setRelationRender( nullptr );
+                    _render->removeRelationRender();
                     _render->invalidateColor();
                 } );
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::setParentRender_( IntrusiveSlugListNodeChild::iterator _insert, Node * _parent )
+    void Node::setParentRender_( Node * _parent )
     {
         RenderInterface * render = this->getRender();
 
@@ -307,7 +308,8 @@ namespace Mengine
         Node * oldparent = m_parent;
         m_parent = nullptr;
 
-        this->setRelationTransformation( nullptr );
+        this->removeRelationTransformation();
+        this->setParentRender_( nullptr );
 
         this->_changeParent( oldparent, nullptr );
     }
@@ -318,34 +320,7 @@ namespace Mengine
         m_parent = _parent;
 
         this->setRelationTransformation( _parent );
-
-        RenderInterface * render = this->getRender();
-
-        if( render != nullptr )
-        {
-            RenderInterface * oldRenderParent = render->getRelationRender();
-            RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
-            
-            if( oldRenderParent != newRenderParent )
-            {
-                render->setRelationRender( newRenderParent );
-                render->invalidateColor();
-            }
-        }
-        else
-        {
-            RenderInterface * oldRenderParent = Helper::getNodeRenderInheritance( oldparent );
-            RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
-
-            if( oldRenderParent != newRenderParent )
-            {
-                this->foreachRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
-                {
-                    _render->setRelationRender( newRenderParent );
-                    _render->invalidateColor();
-                } );
-            }
-        }
+        this->setParentRender_( _parent );
 
         UpdationInterface * updation = this->getUpdation();
 
@@ -441,73 +416,44 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::addChild( const NodePtr & _node )
     {
-        if( _node == nullptr )
-        {
-            LOGGER_ERROR( "Node::addChildren '%s' invalid add NULL node"
-                , this->getName().c_str()
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION( _node != nullptr, ("node '%s' invalid add child NULL node"
+            , this->getName().c_str()
+            ) );
 
         this->addChild_( m_children.end(), _node );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::addChildFront( const NodePtr & _node )
     {
-        if( _node == nullptr )
-        {
-            LOGGER_ERROR( "Node::addChildrenFront '%s' invalid add NULL node"
-                , this->getName().c_str()
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION( _node != nullptr, ("node '%s' invalid add front child NULL node"
+            , this->getName().c_str()
+            ) );
 
         this->addChild_( m_children.begin(), _node );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::addChildAfter( const NodePtr & _node, const NodePtr & _after )
     {
-        if( _node == nullptr )
-        {
-            LOGGER_ERROR( "node '%s' invalid add NULL node (node)"
+        MENGINE_ASSERTION( _node != nullptr, ("node '%s' invalid add child NULL node (node)"
                 , this->getName().c_str()
-            );
+            ) );
 
-            return false;
-        }
+        MENGINE_ASSERTION( _after != nullptr, ("node '%s' invalid add after NULL node (node)"
+            , this->getName().c_str()
+            ) );
 
-        if( _after == nullptr )
-        {
-            LOGGER_ERROR( "node '%s' invalid add NULL node (after)"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
-
-        if( _node == _after )
-        {
-            LOGGER_ERROR( "node '%s' invalid add SELF node '%s' (after)"
-                , this->getName().c_str()
-                , _node->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION( _node != _after, ("node '%s' invalid add child '%s' is equal after '%s' (node)"
+            , this->getName().c_str()
+            , _node->getName().c_str()
+            , _after->getName().c_str()
+            ) );
 
         IntrusiveSlugListNodeChild::iterator it_found =
             stdex::helper::intrusive_find( m_children.begin(), m_children.end(), _after );
 
-        if( it_found == m_children.end() )
-        {
-            LOGGER_ERROR( "Node::addChildrenAfter '%s' after is not child"
-                , this->getName().c_str()
-            );
-
-            return false;
-        }
+        MENGINE_ASSERTION( it_found != m_children.end(), ("node '%s' after is not child"
+            , this->getName().c_str()
+            ) );
 
         this->addChild_( it_found, _node );
 

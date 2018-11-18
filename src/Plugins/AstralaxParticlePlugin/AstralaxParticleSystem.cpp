@@ -988,7 +988,7 @@ namespace Mengine
 
         MapHashEmitterContainers::iterator it_found = m_containers.find( id );
 
-        MENGINE_ASSERTION( it_found != m_containers.end() );
+        MENGINE_ASSERTION( it_found != m_containers.end(), ("deleted container not found on cache") );
 
         AstralaxEmitterContainerDesc & desc = it_found->second;
         --desc.reference;

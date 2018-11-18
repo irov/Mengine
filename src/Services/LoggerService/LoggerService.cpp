@@ -20,10 +20,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LoggerService::~LoggerService()
     {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool LoggerService::_initializeService()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoggerService::_finalizeService()
+    {
         for( const LoggerInterfacePtr & logger : m_loggers )
         {
             logger->flush();
         }
+
+        m_history.clear();
+        m_loggers.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::setVerboseLevel( EMessageLevel _level )

@@ -53,7 +53,7 @@ namespace Mengine
 
             (void)observers;
 
-            MENGINE_ASSERTION( observers.empty() == true );
+            MENGINE_ASSERTION( observers.empty() == true, ("finalized notification service has observers") );
         }
 
         m_mutex = nullptr;

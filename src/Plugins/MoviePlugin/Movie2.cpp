@@ -2140,6 +2140,7 @@ namespace Mengine
 
                 context.camera = camera->projection;
                 context.viewport = camera->viewport;
+
                 context.transformation = _context->transformation;
                 context.scissor = _context->scissor;
                 context.target = _context->target;

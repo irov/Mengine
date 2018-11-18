@@ -38,6 +38,17 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void BaseRender::removeRelationRender()
+    {
+        if( m_relationRender == nullptr )
+        {
+            return;
+        }
+
+        m_relationRender->removeRelationRenderChildren_( this );
+        m_relationRender = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void BaseRender::foreachChildren( const LambdaRender & _lambda )
     {
         for( RenderInterface * child : m_relationRenderChildren )
@@ -102,7 +113,7 @@ namespace Mengine
     {
         VectorBaseRender::iterator it_erase = std::find( m_relationRenderChildren.begin(), m_relationRenderChildren.end(), _child );
 
-        MENGINE_ASSERTION( it_erase != m_relationRenderChildren.end() );
+        MENGINE_ASSERTION( it_erase != m_relationRenderChildren.end(), ("remove relation child is not found") );
 
         m_relationRenderChildren.erase( it_erase );
     }

@@ -243,7 +243,7 @@ namespace Mengine
     {
         VectorRenderVisitor::iterator it_erase = std::find( m_renderVisitors.begin(), m_renderVisitors.end(), _renderVisitor );
 
-        MENGINE_ASSERTION( it_erase != m_renderVisitors.end() );
+        MENGINE_ASSERTION( it_erase != m_renderVisitors.end(), ("removed render visitor not found") );
 
         m_renderVisitors.erase( it_erase );
     }

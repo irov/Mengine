@@ -113,7 +113,7 @@ namespace Mengine
         void foreachChildrenUnslug( const LambdaNode & _lambda ) const;
 
         void removeParentRender_();
-        void setParentRender_( IntrusiveSlugListNodeChild::iterator _insert, Node * _parent );
+        void setParentRender_( Node * _parent );
 
         typedef const Lambda<void( RenderInterface * )> LambdaNodeRenderCloseChildren;
         void foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );

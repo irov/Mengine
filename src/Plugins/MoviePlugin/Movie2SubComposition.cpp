@@ -11,6 +11,7 @@ namespace Mengine
         , m_subcomposition( nullptr )
         , m_duration( 0.f )
         , m_frameDuration( 0.f )
+        , m_startTime( -1.f )
         , m_enable( true )
     {
     }
@@ -86,6 +87,8 @@ namespace Mengine
         m_subcomposition = subcomposition;
 
         this->updateEnable_();
+        this->updateLoop_();
+        this->updateTime_();
 
         return true;
     }
@@ -150,21 +153,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_setLoop( bool _value )
     {
-        ae_set_movie_sub_composition_loop( m_subcomposition, _value == true ? AE_TRUE : AE_FALSE );
+        MENGINE_UNUSED( _value );
+
+        if( m_subcomposition == nullptr )
+        {
+            return;
+        }
+
+        this->updateLoop_();        
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_setTime( float _time )
     {
+        m_startTime = _time;
+
         if( m_subcomposition == nullptr )
         {
-            LOGGER_ERROR( "submovie '%s' invalid initialized"
-                , this->getName().c_str()
-            );
-
             return;
         }
 
-        ae_set_movie_sub_composition_time( m_composition, m_subcomposition, _time * 0.001f );
+        this->updateTime_();
     }
     //////////////////////////////////////////////////////////////////////////
     float Movie2SubComposition::_getTime() const
@@ -193,5 +201,21 @@ namespace Mengine
         this->setTime( m_duration - m_frameDuration );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::updateLoop_()
+    {
+        AnimationInterface * animation = this->getAnimation();
+        bool loop = animation->isLoop();
 
+        ae_set_movie_sub_composition_loop( m_subcomposition, loop == true ? AE_TRUE : AE_FALSE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::updateTime_()
+    {
+        if( m_startTime < 0.f )
+        {
+            return;
+        }
+
+        ae_set_movie_sub_composition_time( m_composition, m_subcomposition, m_startTime * 0.001f );
+    }
 }

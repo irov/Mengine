@@ -77,6 +77,10 @@ namespace Mengine
         void _setLastFrame() override;
 
     protected:
+        void updateLoop_();
+        void updateTime_();
+
+    protected:
         Movie2Ptr m_movie;
 
         float m_duration;
@@ -84,6 +88,8 @@ namespace Mengine
         
         const aeMovieComposition * m_composition;
         const aeMovieSubComposition * m_subcomposition;
+
+        float m_startTime;
 
         bool m_enable;
     };

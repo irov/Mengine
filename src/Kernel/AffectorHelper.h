@@ -165,7 +165,7 @@ namespace Mengine
     {
     public:
         typedef Lambda<void( const T & )> LambdaSettuper;
-        typedef Lambda<const T & ()> LambdaGetter;
+        typedef Lambda<T ()> LambdaGetter;
         typedef Lambda<void( T * )> LambdaPoints;
 
     public:

@@ -19,6 +19,10 @@ namespace Mengine
         ~LoggerService() override;
 
     public:
+        bool _initializeService() override;
+        void _finalizeService() override;
+
+    public:
         void setVerboseLevel( EMessageLevel _level ) override;
         void setVerboseFlag( uint32_t _flag ) override;
 

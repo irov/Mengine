@@ -165,8 +165,8 @@ namespace Mengine
         bool setupSceneEffect_();
         void enableSceneEffect_( bool _value );
 
-        bool setupParent_();
-        void removeParent_();
+        bool setupLayersParent_();
+        void removeLayersParent_();
 
         void updateCamera_();
 

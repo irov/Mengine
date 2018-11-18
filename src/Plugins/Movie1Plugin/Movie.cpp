@@ -1993,7 +1993,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->setupParent_() == false )
+        if( this->setupLayersParent_() == false )
         {
             LOGGER_ERROR( "Movie::_compile: %s resource %s can't setup layer parents"
                 , m_name.c_str()
@@ -2024,7 +2024,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::_release()
     {
-        this->removeParent_();
+        this->removeLayersParent_();
 
         m_resourceMovie.release();
     }
@@ -2119,7 +2119,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::setupParent_()
+    bool Movie::setupLayersParent_()
     {
         //float frameDuration = m_resourceMovie->getFrameDuration();
 
@@ -2161,7 +2161,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::removeParent_()
+    void Movie::removeLayersParent_()
     {
         const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 

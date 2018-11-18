@@ -214,7 +214,9 @@ namespace Mengine
 
         void _stop() override
         {
-            m_interpolator.stop();
+            ValueInterpolatorBezier<T, N> & interpolator = this->getInterpolator();
+
+            interpolator.stop();
         }
 
     protected:

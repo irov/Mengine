@@ -44,18 +44,18 @@ PLUGIN_FACTORY( Movie, Mengine::MoviePlugin )
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static void * stdex_movie_alloc( void * _data, size_t _size )
+    static ae_voidptr_t stdex_movie_alloc( ae_userdata_t _userdata, ae_size_t _size )
     {
-        (void)_data;
+        AE_UNUSED( _userdata );
 
         return stdex_malloc( _size, "Movie" );
         //return new uint8_t[_size];
         //return malloc( _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void * stdex_movie_alloc_n( void * _data, size_t _size, size_t _count )
+    static ae_voidptr_t stdex_movie_alloc_n( ae_userdata_t _userdata, ae_size_t _size, ae_size_t _count )
     {
-        (void)_data;
+        AE_UNUSED( _userdata );
 
         size_t total = _size * _count;
 
@@ -64,27 +64,27 @@ namespace Mengine
         //return malloc( total );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void stdex_movie_free( void * _data, const void * _ptr )
+    static void stdex_movie_free( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
     {
-        (void)_data;
+        AE_UNUSED( _userdata );
 
         stdex_free( (void *)_ptr, "Movie" );
         //delete[] _ptr;
         //free( (void *)_ptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void stdex_movie_free_n( void * _data, const void * _ptr )
+    static void stdex_movie_free_n( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
     {
-        (void)_data;
+        AE_UNUSED( _userdata );
 
         stdex_free( (void *)_ptr, "Movie" );
         //delete[] _ptr;
         //free( (void *)_ptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void stdex_movie_logerror( void * _data, aeMovieErrorCode _code, const char * _format, ... )
+    static void stdex_movie_logerror( ae_userdata_t _userdata, aeMovieErrorCode _code, const ae_char_t * _format, ... )
     {
-        (void)_data;
+        AE_UNUSED( _userdata );
 
         switch( _code )
         {

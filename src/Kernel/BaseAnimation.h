@@ -93,7 +93,7 @@ namespace Mengine
         virtual bool _restart( uint32_t _enumerator, float _time ) = 0;
         virtual void _pause( uint32_t _enumerator ) = 0;
         virtual void _resume( uint32_t _enumerator, float _time ) = 0;
-        virtual void _stop( uint32_t _enumerator ) = 0;
+        virtual bool _stop( uint32_t _enumerator ) = 0;
         virtual void _end( uint32_t _enumerator ) = 0;
         virtual bool _interrupt( uint32_t _enumerator ) = 0;
 

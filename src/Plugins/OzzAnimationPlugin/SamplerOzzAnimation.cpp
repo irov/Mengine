@@ -207,10 +207,12 @@ namespace Mengine
         m_time = _time;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::_stop( uint32_t _enumerator )
+    bool SamplerOzzAnimation::_stop( uint32_t _enumerator )
     {
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SamplerOzzAnimation::_end( uint32_t _enumerator )

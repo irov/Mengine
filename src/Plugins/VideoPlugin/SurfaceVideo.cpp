@@ -266,7 +266,7 @@ namespace Mengine
         return Color::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::_stop( uint32_t _enumerator )
+    bool SurfaceVideo::_stop( uint32_t _enumerator )
     {
         (void)_enumerator;
 
@@ -274,6 +274,8 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_end( uint32_t _enumerator )

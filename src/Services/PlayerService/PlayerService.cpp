@@ -18,7 +18,7 @@
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
-#include "Plugins/DebugRenderPlugin/DebugRenderInterface.h"
+#include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 
 #include "Config/Stringstream.h"
 
@@ -832,9 +832,9 @@ namespace Mengine
             }
             else
             {
-                if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+                if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
                 {
-                    DEBUGRENDER_SERVICE()
+                    NODEDEBUGRENDER_SERVICE()
                         ->renderDebugNode( m_scene, &context, false );
                 }
             }
@@ -855,17 +855,17 @@ namespace Mengine
             }
             else
             {
-                if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+                if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
                 {
-                    DEBUGRENDER_SERVICE()
+                    NODEDEBUGRENDER_SERVICE()
                         ->renderDebugNode( m_arrow, &context, false );
                 }
             }
         }
 
-        if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+        if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
         {
-            DEBUGRENDER_SERVICE()
+            NODEDEBUGRENDER_SERVICE()
                 ->renderDebugInfo( &context );
         }
     }

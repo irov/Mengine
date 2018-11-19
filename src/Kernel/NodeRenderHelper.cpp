@@ -6,116 +6,116 @@ namespace Mengine
 {
     namespace Helper
     {
-        //////////////////////////////////////////////////////////////////////////
-        void nodeRenderChildrenVisitor( const NodePtr & _node, const RenderVisitorPtr & _visitor, const RenderContext * _context )
-        {
-            RenderInterface * selfRender = _node->getRender();
+        ////////////////////////////////////////////////////////////////////////////
+        //void nodeRenderChildrenVisitor( const NodePtr & _node, const RenderVisitorPtr & _visitor, const RenderContext * _context )
+        //{
+        //    RenderInterface * selfRender = _node->getRender();
 
-            if( selfRender != nullptr )
-            {
-                if( selfRender->isRenderEnable() == false )
-                {
-                    return;
-                }
+        //    if( selfRender != nullptr )
+        //    {
+        //        if( selfRender->isRenderEnable() == false )
+        //        {
+        //            return;
+        //        }
 
-                if( selfRender->isExternalRender() == true )
-                {
-                    return;
-                }
+        //        if( selfRender->isExternalRender() == true )
+        //        {
+        //            return;
+        //        }
 
-                if( selfRender->isHide() == true )
-                {
-                    return;
-                }
+        //        if( selfRender->isHide() == true )
+        //        {
+        //            return;
+        //        }
 
-                if( selfRender->isLocalTransparent() == true )
-                {
-                    return;
-                }
+        //        if( selfRender->isLocalTransparent() == true )
+        //        {
+        //            return;
+        //        }
 
-                RenderContext self_context;
+        //        RenderContext self_context;
 
-                const RenderViewportInterfacePtr & renderViewport = selfRender->getRenderViewport();
+        //        const RenderViewportInterfacePtr & renderViewport = selfRender->getRenderViewport();
 
-                if( renderViewport != nullptr )
-                {
-                    self_context.viewport = renderViewport;
-                }
-                else
-                {
-                    self_context.viewport = _context->viewport;
-                }
+        //        if( renderViewport != nullptr )
+        //        {
+        //            self_context.viewport = renderViewport;
+        //        }
+        //        else
+        //        {
+        //            self_context.viewport = _context->viewport;
+        //        }
 
-                const RenderCameraInterfacePtr & renderCamera = selfRender->getRenderCamera();
+        //        const RenderCameraInterfacePtr & renderCamera = selfRender->getRenderCamera();
 
-                if( renderCamera != nullptr )
-                {
-                    self_context.camera = renderCamera;
-                }
-                else
-                {
-                    self_context.camera = _context->camera;
-                }
+        //        if( renderCamera != nullptr )
+        //        {
+        //            self_context.camera = renderCamera;
+        //        }
+        //        else
+        //        {
+        //            self_context.camera = _context->camera;
+        //        }
 
-                const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
+        //        const RenderScissorInterfacePtr & renderScissor = selfRender->getRenderScissor();
 
-                if( renderScissor != nullptr )
-                {
-                    self_context.scissor = renderScissor;
-                }
-                else
-                {
-                    self_context.scissor = _context->scissor;
-                }
+        //        if( renderScissor != nullptr )
+        //        {
+        //            self_context.scissor = renderScissor;
+        //        }
+        //        else
+        //        {
+        //            self_context.scissor = _context->scissor;
+        //        }
 
-                const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
+        //        const RenderTargetInterfacePtr & renderTarget = selfRender->getRenderTarget();
 
-                if( renderTarget != nullptr )
-                {
-                    self_context.target = renderTarget;
-                }
-                else
-                {
-                    self_context.target = _context->target;
-                }
+        //        if( renderTarget != nullptr )
+        //        {
+        //            self_context.target = renderTarget;
+        //        }
+        //        else
+        //        {
+        //            self_context.target = _context->target;
+        //        }
 
-                if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
-                {
-                    _visitor->setRenderContext( &self_context );
+        //        if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
+        //        {
+        //            _visitor->setRenderContext( &self_context );
 
-                    _node->visit( _visitor );
+        //            _node->visit( _visitor );
 
-                    selfRender->render( &self_context );
-                }
+        //            selfRender->render( &self_context );
+        //        }
 
-                const RenderContext * children_context = &self_context;
-                _node->foreachChildrenUnslug( [children_context, _visitor]( const NodePtr & _child )
-                {
-                    Helper::nodeRenderChildrenVisitor( _child, _visitor, children_context );
-                } );
+        //        const RenderContext * children_context = &self_context;
+        //        _node->foreachChildrenUnslug( [children_context, _visitor]( const NodePtr & _child )
+        //        {
+        //            Helper::nodeRenderChildrenVisitor( _child, _visitor, children_context );
+        //        } );
 
-                if( self_context.target != nullptr )
-                {
-                    const RenderInterfacePtr & targetRender = selfRender->makeTargetRender( &self_context );
+        //        if( self_context.target != nullptr )
+        //        {
+        //            const RenderInterfacePtr & targetRender = selfRender->makeTargetRender( &self_context );
 
-                    if( targetRender != nullptr )
-                    {
-                        targetRender->render( _context );
-                    }
-                }
-            }
-            else
-            {
-                _visitor->setRenderContext( _context );
+        //            if( targetRender != nullptr )
+        //            {
+        //                targetRender->render( _context );
+        //            }
+        //        }
+        //    }
+        //    else
+        //    {
+        //        _visitor->setRenderContext( _context );
 
-                _node->visit( _visitor );
+        //        _node->visit( _visitor );
 
-                _node->foreachChildrenUnslug( [_context, _visitor]( const NodePtr & _child )
-                {
-                    Helper::nodeRenderChildrenVisitor( _child, _visitor, _context );
-                } );
-            }
-        }
+        //        _node->foreachChildrenUnslug( [_context, _visitor]( const NodePtr & _child )
+        //        {
+        //            Helper::nodeRenderChildrenVisitor( _child, _visitor, _context );
+        //        } );
+        //    }
+        //}
         //////////////////////////////////////////////////////////////////////////
         RenderInterface * getNodeRenderInheritance( Node * _node )
         {

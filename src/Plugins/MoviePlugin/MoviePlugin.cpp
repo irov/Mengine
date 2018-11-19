@@ -8,12 +8,12 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 
-#include "Plugins/DebugRenderPlugin/DebugRenderInterface.h"
+#include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
 
-#include "Movie2DebugRenderVisitor.h"
+#include "Movie2DebugRender.h"
 
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
@@ -489,14 +489,10 @@ namespace Mengine
             return false;
         }
 
-        if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+        if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
         {
-            RenderVisitorPtr movie2RenderVisitor = new FactorableUnique<Movie2DebugRenderVisitor>();
-
-            DEBUGRENDER_SERVICE()
-                ->addDebugNodeRenderVisitor( movie2RenderVisitor );
-
-            m_movie2RenderVisitor = movie2RenderVisitor;
+            NODEDEBUGRENDER_SERVICE()
+                ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<Movie2DebugRender>() );
         }
         
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
@@ -546,18 +542,16 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
 
-        if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+        if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
         {
-            DEBUGRENDER_SERVICE()
-                ->removeDebugNodeRenderVisitor( m_movie2RenderVisitor );
-            m_movie2RenderVisitor = nullptr;
+            NODEDEBUGRENDER_SERVICE()
+                ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ) );
         }
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
             RESOURCEVALIDATE_SERVICE()
                 ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
-
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )

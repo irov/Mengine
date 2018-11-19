@@ -95,6 +95,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::_play( uint32_t _enumerator, float _time )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         ae_play_movie_sub_composition( m_composition, m_subcomposition, 0.f );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_PLAY )
@@ -105,6 +114,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::_restart( uint32_t _enumerator, float _time )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         EVENTABLE_METHOD( this, EVENT_ANIMATION_RESTART )
             ->onAnimationRestart( _enumerator, _time );
 
@@ -113,6 +131,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_pause( uint32_t _enumerator )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return;
+        }
+
         ae_pause_movie_sub_composition( m_composition, m_subcomposition );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_PAUSE )
@@ -121,18 +148,38 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_resume( uint32_t _enumerator, float _time )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return;
+        }
+
         ae_resume_movie_sub_composition( m_composition, m_subcomposition );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_RESUME )
             ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::_stop( uint32_t _enumerator )
+    bool Movie2SubComposition::_stop( uint32_t _enumerator )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         ae_stop_movie_sub_composition( m_composition, m_subcomposition );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_end( uint32_t _enumerator )
@@ -143,6 +190,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::_interrupt( uint32_t _enumerator )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         ae_interrupt_movie_sub_composition( m_composition, m_subcomposition, AE_FALSE );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_INTERRUPT )
@@ -179,11 +235,7 @@ namespace Mengine
     {
         if( m_subcomposition == nullptr )
         {
-            LOGGER_ERROR( "submovie '%s' not initialized"
-                , this->getName().c_str()
-            );
-
-            return 0.f;
+            return m_startTime;
         }
 
         float timing = ae_get_movie_sub_composition_time( m_subcomposition );

@@ -676,6 +676,10 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
+            LOGGER_ERROR( "movie '%s' is not compile"
+                , this->getName().c_str()
+            );
+
             return false;
         }
 
@@ -707,8 +711,17 @@ namespace Mengine
             ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_stop( uint32_t _enumerator )
+    bool Movie2::_stop( uint32_t _enumerator )
     {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "movie '%s' is not compile"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         ae_stop_movie_composition( m_composition );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
@@ -724,6 +737,15 @@ namespace Mengine
     bool Movie2::_interrupt( uint32_t _enumerator )
     {
         (void)_enumerator;
+
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "movie '%s' is not compile"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
 
         ae_interrupt_movie_composition( m_composition, AE_FALSE );
 

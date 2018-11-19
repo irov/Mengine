@@ -201,7 +201,7 @@ namespace Mengine
 
         if( (test_size.x != width || test_size.y != height) && (test_size.x > 4.f && test_size.y > 4.f) )
         {
-            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' incorrect size %f:%f texture %f:%f"
+            LOGGER_ERROR( "resource '%s' group '%s' file '%s:%s' incorrect size %f:%f texture %d:%d"
                 , _resource->getName().c_str()
                 , _resource->getGroupName().c_str()
                 , _resource->getFileGroup()->getName().c_str()

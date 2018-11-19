@@ -206,7 +206,10 @@ namespace Mengine
         m_pause = false;
         m_interrupt = false;
 
-        this->_stop( m_enumerator );
+        if( this->_stop( m_enumerator ) == false )
+        {
+            return false;
+        }
 
         return true;
     }

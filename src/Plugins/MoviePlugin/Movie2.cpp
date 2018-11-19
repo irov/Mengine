@@ -726,6 +726,8 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_end( uint32_t _enumerator )
@@ -876,7 +878,7 @@ namespace Mengine
         {
             Node * nodeParent = _node->getParent();
 
-            MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+            MatrixProxy * matrixProxy = node_static_cast<MatrixProxy *>(nodeParent);
 
             if( _immutable_matrix == AE_FALSE )
             {

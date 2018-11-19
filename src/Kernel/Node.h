@@ -276,7 +276,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    inline T static_node_cast( Node * _node )
+    inline T node_static_cast( Node * _node )
     {
 #ifndef NDEBUG
         if( _node == nullptr )
@@ -294,7 +294,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    inline T static_node_cast( const Node * _node )
+    inline T node_static_cast( const Node * _node )
     {
 #ifndef NDEBUG
         if( _node == nullptr )

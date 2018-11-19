@@ -5,14 +5,14 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class DebugRenderPlugin
+    class NodeDebugRenderPlugin
         : public PluginBase
     {
         PLUGIN_DECLARE( "DebugRender" )
 
     public:
-        DebugRenderPlugin();
-        ~DebugRenderPlugin() override;
+        NodeDebugRenderPlugin();
+        ~NodeDebugRenderPlugin() override;
 
     protected:
         bool _avaliable() override;

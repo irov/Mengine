@@ -115,8 +115,8 @@ PLUGIN_EXPORT( Win32FileGroup );
     PLUGIN_EXPORT( BitmapFont );
 #endif
 
-#ifdef MENGINE_PLUGIN_DEBUGRENDER
-    PLUGIN_EXPORT( DebugRender );
+#ifdef MENGINE_PLUGIN_NODEDEBUGRENDER
+    PLUGIN_EXPORT( NodeDebugRender );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER
@@ -696,8 +696,8 @@ namespace Mengine
 		LOGGER_ERROR( "Invalid %s", Info );}else{\
 		LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
 
-#ifdef MENGINE_PLUGIN_DEBUGRENDER
-        MENGINE_ADD_PLUGIN( DebugRender, "initialize Plugin Debug Render..." );
+#ifdef MENGINE_PLUGIN_NODEDEBUGRENDER
+        MENGINE_ADD_PLUGIN( NodeDebugRender, "initialize Plugin Node Debug Render..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER

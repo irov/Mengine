@@ -1,27 +1,27 @@
-#include "Movie2DebugRenderVisitor.h"
+#include "Movie2DebugRender.h"
 
 #include "Interface/RenderServiceInterface.h"
 
 #include "Kernel/RenderVertex2D.h"
 
-#include "Plugins/DebugRenderPlugin/DebugRenderInterface.h"
+#include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Movie2DebugRenderVisitor::Movie2DebugRenderVisitor()
+    Movie2DebugRender::Movie2DebugRender()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Movie2DebugRenderVisitor::~Movie2DebugRenderVisitor()
+    Movie2DebugRender::~Movie2DebugRender()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2DebugRenderVisitor::accept( Movie2 * _node )
+    void Movie2DebugRender::_render( const RenderContext * _context, Movie2 * _node )
     {
-        _node->foreachRenderSlots( m_context, []( Node * _node, const RenderContext * _context )
+        _node->foreachRenderSlots( _context, []( Node * _node, const RenderContext * _context )
         {
-            DEBUGRENDER_SERVICE()
+            NODEDEBUGRENDER_SERVICE()
                 ->renderDebugNode( _node, _context, true );
         } );
     }

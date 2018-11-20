@@ -389,11 +389,11 @@ namespace Mengine
                 bool loop = this->isLoop();
                 bool interrupt = this->isInterrupt();
 
-                if( (loop == false && (--m_playIterator == 0)) || interrupt == true )
+                if( (loop == false && --m_playIterator == 0) || interrupt == true )
                 {
                     m_videoDecoder->rewind();
 
-                    this->stop();
+                    this->end();
 
                     return false;
                 }

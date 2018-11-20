@@ -468,6 +468,13 @@ namespace Mengine
 
         if( child_parent == this )
         {
+            if( *_insert == _child )
+            {
+                stdex::intrusive_this_release( this );
+
+                return;
+            }
+
             this->eraseChild_( _child );
 
             this->insertChild_( _insert, _child );

@@ -827,8 +827,9 @@ namespace Mengine
         {
             if( debugMask == false )
             {
-                RenderInterface * render = m_scene->getRender();
-                render->renderWithChildren( &context, false );
+                //RenderInterface * render = m_scene->getRender();
+                //render->renderWithChildren( &context, false );
+                Helper::nodeRenderChildren( m_scene, &context, false );
             }
             else
             {
@@ -850,8 +851,9 @@ namespace Mengine
         {
             if( debugMask == false )
             {
-                RenderInterface * render = m_arrow->getRender();
-                render->renderWithChildren( &context, false );
+                //RenderInterface * render = m_arrow->getRender();
+                //render->renderWithChildren( &context, false );
+                Helper::nodeRenderChildren( m_arrow, &context, false );
             }
             else
             {

@@ -71,7 +71,7 @@ namespace Mengine
 
                 this->accept( _node );
 
-                IntrusiveSlugListNodeChild & child = _node->getChildren();
+                const IntrusiveSlugListNodeChild & child = _node->getChildren();
 
                 NodePtr single_child = child.single();
 
@@ -81,7 +81,7 @@ namespace Mengine
                 }
                 else if( child.countSlugs() == 0 )
                 {
-                    for( IntrusiveSlugListNodeChild::unslug_iterator
+                    for( IntrusiveSlugListNodeChild::unslug_const_iterator
                         it = child.ubegin(),
                         it_end = child.uend();
                         it != it_end;
@@ -96,7 +96,7 @@ namespace Mengine
                 {
                     for( IntrusiveSlugChild it( child ); it.eof() == false; )
                     {
-                        const NodePtr & children = (*it);
+                        NodePtr children = (*it);
 
                         it.next_shuffle();
 

@@ -24,7 +24,7 @@ namespace Mengine
         void _finalize() override;
 
     protected:
-        const aeMovieInstance * m_instance;
+        const aeMovieInstance * m_movieInstance;
 
         String m_hashkey;
     };

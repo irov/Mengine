@@ -61,10 +61,14 @@ namespace Mengine
     class TextService::TextManagerLoadSaxCallback
     {
     public:
-        TextManagerLoadSaxCallback( TextService * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
+        TextManagerLoadSaxCallback( TextService * _textManager, const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
             : m_textManager( _textManager )
             , m_fileGroup( _fileGroup )
-            , m_path( _path )
+            , m_filePath( _filePath )
+        {
+        }
+
+        ~TextManagerLoadSaxCallback()
         {
         }
 
@@ -130,7 +134,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextService::loadResource %s:%s invalid read text key %s value |%s| invalid utf8 char |%s|"
                             , m_fileGroup->getName().c_str()
-                            , m_path.c_str()
+                            , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                             , str_value_valid
@@ -161,7 +165,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' charOffset '%s'"
                             , m_fileGroup->getName().c_str()
-                            , m_path.c_str()
+                            , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                         );
@@ -178,7 +182,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextService::loadResource %s:%s invalid read for text '%s' lineOffset '%s'"
                             , m_fileGroup->getName().c_str()
-                            , m_path.c_str()
+                            , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                         );
@@ -198,7 +202,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' lineOffset '%s'"
                             , m_fileGroup->getName().c_str()
-                            , m_path.c_str()
+                            , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                         );
@@ -215,7 +219,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' Override '%s'"
                             , m_fileGroup->getName().c_str()
-                            , m_path.c_str()
+                            , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                         );
@@ -232,7 +236,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' tag 'Override' '%s'"
                             , m_fileGroup->getName().c_str()
-                            , m_path.c_str()
+                            , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                         );
@@ -258,7 +262,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Bottom, Center, Top]"
                             , m_fileGroup->getName().c_str()
-                            , m_path.c_str()
+                            , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                         );
@@ -284,7 +288,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' VerticalAlign '%s' [Left, Center, Right]"
                             , m_fileGroup->getName().c_str()
-                            , m_path.c_str()
+                            , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                         );
@@ -299,7 +303,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' Scale '%s'"
                             , m_fileGroup->getName().c_str()
-                            , m_path.c_str()
+                            , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                         );
@@ -316,7 +320,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' tag 'Empty' '%s'"
                             , m_fileGroup->getName().c_str()
-                            , m_path.c_str()
+                            , m_filePath.c_str()
                             , text_key.c_str()
                             , str_value
                         );
@@ -328,7 +332,7 @@ namespace Mengine
                 {
                     LOGGER_ERROR( "TextService::loadResource %s:%s invalid tag '%s' for text '%s'"
                         , m_fileGroup->getName().c_str()
-                        , m_path.c_str()
+                        , m_filePath.c_str()
                         , str_key
                         , text_key.c_str()
                     );
@@ -339,7 +343,7 @@ namespace Mengine
             {
                 LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid text key '%s' value is empty"
                     , m_fileGroup->getName().c_str()
-                    , m_path.c_str()
+                    , m_filePath.c_str()
                     , text_key.c_str()
                 );
             }
@@ -356,18 +360,18 @@ namespace Mengine
         TextService * m_textManager;
 
         const FileGroupInterfacePtr & m_fileGroup;
-        const FilePath & m_path;
+        const FilePath & m_filePath;
     };
     //////////////////////////////////////////////////////////////////////////
-    bool TextService::loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
+    bool TextService::loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         TextLocalePackPtr pak = m_factoryTextLocalePak->createObject();
 
-        if( pak->initialize( _fileGroup, _path ) == false )
+        if( pak->initialize( _fileGroup, _filePath ) == false )
         {
-            LOGGER_ERROR( "TextService::loadTextEntry '%s:%s' invalid initialize pak"
+            LOGGER_ERROR( "file '%s:%s' invalid initialize pak"
                 , _fileGroup->getName().c_str()
-                , _path.c_str()
+                , _filePath.c_str()
             );
 
             return false;
@@ -379,12 +383,12 @@ namespace Mengine
 
         Char * xml_buff = xml_memory->getBuffer();
 
-        TextManagerLoadSaxCallback tmsc( this, _fileGroup, _path );
+        TextManagerLoadSaxCallback tmsc( this, _fileGroup, _filePath );
         if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
         {
             LOGGER_ERROR( "TextService::loadTextEntry '%s:%s' invalid parse pak"
                 , _fileGroup->getName().c_str()
-                , _path.c_str()
+                , _filePath.c_str()
             );
 
             return false;
@@ -502,7 +506,7 @@ namespace Mengine
         {
             if( ini.hasSection( fontName.c_str() ) == false )
             {
-                LOGGER_ERROR( "TextService::loadFonts invalid '%s:%s' section for FONT '%s'"
+                LOGGER_ERROR( "invalid '%s:%s' section for FONT '%s'"
                     , _fileGroup->getName().c_str()
                     , _path.c_str()
                     , fontName.c_str()
@@ -522,7 +526,7 @@ namespace Mengine
 
             if( font == nullptr )
             {
-                LOGGER_ERROR( "TextService::loadFonts invalid initialize '%s:%s' font '%s' not found type '%s'"
+                LOGGER_ERROR( "invalid initialize '%s:%s' font '%s' not found type '%s'"
                     , _fileGroup->getName().c_str()
                     , _path.c_str()
                     , fontName.c_str()
@@ -537,7 +541,7 @@ namespace Mengine
 
             if( font->initialize( _fileGroup, ini ) == false )
             {
-                LOGGER_ERROR( "TextService::loadFonts invalid initialize '%s:%s' font '%s'"
+                LOGGER_ERROR( "invalid initialize '%s:%s' font '%s'"
                     , _fileGroup->getName().c_str()
                     , _path.c_str()
                     , fontName.c_str()
@@ -550,7 +554,7 @@ namespace Mengine
             {
                 if( font->compileFont() == false )
                 {
-                    LOGGER_ERROR( "TextService::loadFonts invalid precompile '%s:%s' font %s"
+                    LOGGER_ERROR( "invalid precompile '%s:%s' font %s"
                         , _fileGroup->getName().c_str()
                         , _path.c_str()
                         , fontName.c_str()
@@ -560,7 +564,7 @@ namespace Mengine
                 }
             }
 
-            LOGGER_INFO( "TextService::loadFonts add font '%s' path '%s:%s'"
+            LOGGER_INFO( "add font '%s' path '%s:%s'"
                 , fontName.c_str()
                 , _fileGroup->getName().c_str()
                 , _path.c_str()

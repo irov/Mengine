@@ -174,6 +174,7 @@ namespace Mengine
         void invalidateWindow_();
 
     protected:
+        void updateDebugOpenFile_();
         void notifyDebugOpenFile_( const char * _folder, const char * _fileName );
 
     protected:

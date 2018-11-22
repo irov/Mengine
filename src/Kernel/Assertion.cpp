@@ -20,8 +20,9 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    AssertionOperator::AssertionOperator( const Char * _test, const Char * _file, uint32_t _line )
-        : m_test( _test )
+    AssertionOperator::AssertionOperator( uint32_t _level, const Char * _test, const Char * _file, uint32_t _line )
+        : m_level( _level )
+        , m_test( _test )
         , m_file( _file )
         , m_line( _line )
     {
@@ -31,10 +32,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    AssertionOperator & AssertionOperator::operator()( const Char * _format, ... )
+    const AssertionOperator & AssertionOperator::operator()( const Char * _format, ... ) const
     {
         va_list argList;
-
         va_start( argList, _format );
 
         Char str_info[MENGINE_ASSERTION_MAX_MESSAGE] = { 0 };
@@ -42,12 +42,12 @@ namespace Mengine
 
         va_end( argList );
 
-        Assertion( m_test, m_file, m_line, str_info );
+        Assertion( m_level, m_test, m_file, m_line, str_info );
 
         return *this;
     }
     //////////////////////////////////////////////////////////////////////////
-    extern void Assertion( const Char * _test, const Char * _file, int _line, const Char * _info )
+    void Assertion( uint32_t _level, const Char * _test, const Char * _file, int _line, const Char * _info )
     {
         Char assert_message[2048];
         snprintf( assert_message, 2048, "File [%s:%d] Assertion: '%s' info '%s'"
@@ -58,7 +58,7 @@ namespace Mengine
 
         LOGGER_ERROR( assert_message );
 
-        if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false )
+        if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false && _level != ASSERTION_LEVEL_FATAL )
         {
             return;
         }

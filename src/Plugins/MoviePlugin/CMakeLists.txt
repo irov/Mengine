@@ -15,8 +15,16 @@ src
     Movie2Scissor.h
     Movie2SubComposition.cpp
     Movie2SubComposition.h
+    Movie2DataInterface.h
+    
+    DataflowAEZ.cpp
+    DataflowAEZ.h
+    Movie2Data.cpp
+    Movie2Data.h
     ResourceMovie2.cpp
     ResourceMovie2.h
+    ResourceMovie2Prefetcher.cpp
+    ResourceMovie2Prefetcher.h
     LoaderResourceMovie2.cpp
     LoaderResourceMovie2.h
     

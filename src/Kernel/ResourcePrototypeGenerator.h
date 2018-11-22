@@ -21,7 +21,7 @@ namespace Mengine
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR( "ResourcePrototypeGenerator can't generate %s %s"
+                LOGGER_ERROR( "can't generate %s %s"
                     , this->getCategory().c_str()
                     , this->getPrototype().c_str()
                 );

@@ -7,23 +7,27 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class DataInterface
-		: public Mixin
-	{
-	public:
-		virtual Pointer allocateMemory(size_t _size) const = 0;
+    //////////////////////////////////////////////////////////////////////////
+    class DataInterface
+        : public Mixin
+    {
+    public:
+        virtual bool acquire() = 0;
+        virtual void release() = 0;
 
-	public:
-		template<class T>
-		inline Pointer allocateMemoryT(size_t _count) const
-		{
-			size_t total_size = sizeof(T) * _count;
+    public:
+        virtual Pointer allocateMemory( size_t _size ) const = 0;
 
-			return this->allocateMemory(total_size);
-		}
-	};
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<DataInterface> DataInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////    
+    public:
+        template<class T>
+        inline Pointer allocateMemoryT( size_t _count ) const
+        {
+            size_t total_size = sizeof( T ) * _count;
+
+            return this->allocateMemory( total_size );
+        }
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<DataInterface> DataInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////    
 }

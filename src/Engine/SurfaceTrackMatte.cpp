@@ -107,11 +107,11 @@ namespace Mengine
     {
         if( _index == 0 )
         {
-            return m_resourceImage->getUVImage();
+            return m_resourceImage->getUVTextureImage();
         }
         if( _index == 1 )
         {
-            return m_resourceTrackMatteImage->getUVImage();
+            return m_resourceTrackMatteImage->getUVTextureImage();
         }
 
         return mt::uv4f::identity();

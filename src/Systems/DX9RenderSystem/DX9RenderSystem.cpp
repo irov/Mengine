@@ -315,7 +315,7 @@ namespace Mengine
         m_d3dppW.MultiSampleType = D3DMULTISAMPLE_NONE;
         m_d3dppW.MultiSampleQuality = 0;
 
-        m_d3dppW.SwapEffect = D3DSWAPEFFECT_FLIP;
+        m_d3dppW.SwapEffect = D3DSWAPEFFECT_DISCARD;
 
         HWND windowHandle = PLATFORM_SERVICE()
             ->getWindowHandle();
@@ -329,7 +329,7 @@ namespace Mengine
 
         //m_d3dppW.Flags			= D3DPRESENTFLAG_LOCKABLE_BACKBUFFER;
 
-        m_d3dppW.FullScreen_RefreshRateInHz = 0;
+        m_d3dppW.FullScreen_RefreshRateInHz = D3DPRESENT_RATE_DEFAULT;
 
         m_d3dppFS.MultiSampleType = multiSampleType;
         m_d3dppFS.MultiSampleQuality = 0;

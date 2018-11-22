@@ -30,7 +30,7 @@ namespace Mengine
         bool validMessage( EMessageLevel _level, uint32_t _flag ) const override;
 
     public:
-        void logMessage( EMessageLevel _level, uint32_t _flag, const char * _message, uint32_t _size ) override;
+        void logMessage( EMessageLevel _level, uint32_t _flag, const Char * _message, uint32_t _size ) override;
         uint32_t getCountMessage( EMessageLevel _level ) override;
 
     public:

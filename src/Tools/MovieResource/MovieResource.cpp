@@ -170,7 +170,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
         {
             const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
 
-            if( resource_image->atlas_image == AE_NULL )
+            if( resource_image->atlas_image == AE_NULLPTR )
             {
                 pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
                 xmlResource.append_attribute( "Name" ).set_value( resource_image->name );
@@ -367,7 +367,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
         }break;
     }
 
-    *_rd = AE_NULL;
+    *_rd = AE_NULLPTR;
     return AE_TRUE;
 }
 //////////////////////////////////////////////////////////////////////////
@@ -390,7 +390,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
     if( is_track_matte == AE_TRUE )
     {
-        *_nd = AE_NULL;
+        *_nd = AE_NULLPTR;
 
         return AE_TRUE;
     }
@@ -411,7 +411,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
             xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
 
-            *_nd = AE_NULL;
+            *_nd = AE_NULLPTR;
 
             return AE_TRUE;
         }break;
@@ -427,7 +427,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
             xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
             
-            *_nd = AE_NULL;
+            *_nd = AE_NULLPTR;
 
             return AE_TRUE;
         }break;
@@ -443,7 +443,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
             xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
           
-            *_nd = AE_NULL;
+            *_nd = AE_NULLPTR;
 
             return AE_TRUE;
         }break;
@@ -459,7 +459,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
             xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
 
-            *_nd = AE_NULL;
+            *_nd = AE_NULLPTR;
 
             return AE_TRUE;
         }break;
@@ -475,7 +475,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
             xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
 
-            *_nd = AE_NULL;
+            *_nd = AE_NULLPTR;
 
             return AE_TRUE;
         }break;
@@ -483,7 +483,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
         break;
     };
     
-    *_nd = AE_NULL;
+    *_nd = AE_NULLPTR;
 
     return AE_TRUE;
 }
@@ -595,7 +595,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         , &stdlib_movie_free
         , &stdlib_movie_free_n
         , 0
-        , &stdlib_movie_logerror, AE_NULL );
+        , &stdlib_movie_logerror, AE_NULLPTR );
 
     if( movieInstance == nullptr )
     {

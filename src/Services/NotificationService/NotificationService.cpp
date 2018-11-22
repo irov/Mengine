@@ -3,8 +3,8 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Assertion.h"
-
 #include "Kernel/Logger.h"
+#include "Kernel/ThreadMutexScope.h"
 
 #include <algorithm>
 
@@ -61,6 +61,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::addObserver( uint32_t _id, const ObservablePtr & _observer, const ObserverCallableInterfacePtr & _callable )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         if( m_visiting != 0 )
         {
             ObserverQueue desc;
@@ -78,6 +80,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NotificationService::removeObserver( uint32_t _id, const ObservablePtr & _observer )
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         if( m_visiting != 0 )
         {
             ObserverQueue desc;
@@ -94,7 +98,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NotificationService::visitObservers( uint32_t _id, ObserverVisitorCallableInterface * _visitor )
     {
-        MapObservers::iterator it_find = m_mapObserves.find( _id );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
+        MapObservers::const_iterator it_find = m_mapObserves.find( _id );
 
         if( it_find == m_mapObserves.end() )
         {
@@ -102,8 +108,6 @@ namespace Mengine
         }
 
         const VectorObservers & observers = it_find->second;
-
-        m_mutex->lock();
 
         bool successful = true;
 
@@ -139,8 +143,6 @@ namespace Mengine
 
             m_remove.clear();
         }
-
-        m_mutex->unlock();
 
         return successful;
     }

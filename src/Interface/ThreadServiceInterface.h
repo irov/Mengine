@@ -41,7 +41,7 @@ namespace Mengine
         virtual void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) = 0;
 
     public:
-        virtual ThreadMutexInterfacePtr createMutex( const Char * _doc, uint32_t _line ) = 0;
+        virtual ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) = 0;
 
     public:
         virtual void sleep( uint32_t _ms ) = 0;

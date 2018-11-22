@@ -53,7 +53,7 @@ namespace Mengine
         void update() override;
 
     public:
-        ThreadMutexInterfacePtr createMutex( const char * _file, uint32_t _line ) override;
+        ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) override;
 
     public:
         void sleep( uint32_t _ms ) override;

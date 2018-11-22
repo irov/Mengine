@@ -512,7 +512,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & ResourceService::getResourceReference( const ConstString & _name ) const
     {
-        ThreadMutexScope scope( m_mutex );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
 
         const ResourcePtr & resource = m_resources.find( _name );
 

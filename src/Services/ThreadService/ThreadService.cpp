@@ -443,7 +443,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterfacePtr ThreadService::createMutex( const char * _file, uint32_t _line )
+    ThreadMutexInterfacePtr ThreadService::createMutex( const Char * _file, uint32_t _line )
     {
         if( m_avaliable == false )
         {

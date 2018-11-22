@@ -73,8 +73,11 @@ namespace Mengine
 
         m_soundEmitter->setSoundListener( this );
 
+        AnimationInterface * animation = this->getAnimation();
+        bool loop = animation->isLoop();
+
         SOUND_SERVICE()
-            ->setLoop( m_soundEmitter, m_loop );
+            ->setLoop( m_soundEmitter, loop );
 
         float volume = m_resourceSound->getDefaultVolume();
         this->setVolume( volume );
@@ -246,7 +249,7 @@ namespace Mengine
             ->resumeEmitter( m_soundEmitter );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceSound::_stop( uint32_t _enumerator )
+    bool SurfaceSound::_stop( uint32_t _enumerator )
     {
         if( m_soundEmitter != nullptr )
         {
@@ -256,6 +259,8 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
             ->onAnimationStop( _enumerator );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceSound::_end( uint32_t _enumerator )
@@ -321,8 +326,11 @@ namespace Mengine
             return;
         }
 
+        AnimationInterface * animation = this->getAnimation();
+        bool loop = animation->isLoop();
+
         SOUND_SERVICE()
-            ->setLoop( m_soundEmitter, m_loop );
+            ->setLoop( m_soundEmitter, loop );
     }
     //////////////////////////////////////////////////////////////////////////
     float SurfaceSound::getDuration() const

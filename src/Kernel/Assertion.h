@@ -24,8 +24,8 @@ namespace Mengine
 }
 //////////////////////////////////////////////////////////////////////////
 #ifndef NDEBUG
-#   define MENGINE_ASSERTION(Condition) if(!(Condition)) AssertionOperator( #Condition, __FILE__, __LINE__ )
+#   define MENGINE_ASSERTION(Condition, Message) if(!(Condition)) AssertionOperator( #Condition, __FILE__, __LINE__ ) Message
 #else
-#   define MENGINE_ASSERTION(Condition)
+#   define MENGINE_ASSERTION(Condition, Message)
 #endif
 //////////////////////////////////////////////////////////////////////////

@@ -1,7 +1,7 @@
 #include "cURLPlugin.h"
 
 #include "Interface/FileServiceInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"

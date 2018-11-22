@@ -120,6 +120,16 @@ namespace Mengine
             this->rebalance_( _capacity );
         }
 
+        bool empty() const
+        {
+            return m_size == 0;
+        }
+
+        uint32_t size() const
+        {
+            return m_size;
+        }
+
         void clear()
         {
             for( size_type index = 0; index != m_capacity; ++index )
@@ -307,7 +317,7 @@ namespace Mengine
             {
                 Record * record = _buffer + (mask & hash_mask);
 
-                MENGINE_ASSERTION( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element.get() == reinterpret_cast<const value_type *>(~0)) );
+                MENGINE_ASSERTION( !(record->hash == _hash && record->key == _key && record->element != nullptr && record->element.get() == reinterpret_cast<const value_type *>(~0)), ("hash push") );
 
                 if( record->element == nullptr || record->element.get() == reinterpret_cast<const value_type *>(~0) )
                 {

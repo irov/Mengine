@@ -33,6 +33,12 @@ namespace Mengine
     {
         NOTIFICATION_SERVICE()
             ->removeObserver( NOTIFICATOR_ENGINE_ENABLE_PACKAGES, this );
+
+        MENGINE_ASSERTION( m_validators.empty() == true, ("resource validate service validators not empty '%d'"
+            , m_validators.size()
+            ) );
+
+        m_validators.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceValidateService::addResourceValidator( const ConstString & _type, const ResourceValidatorInterfacePtr & _validator )
@@ -54,7 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::visitableResource_( const ResourcePtr & _resource ) const
     {
-        LOGGER_INFO( "resource '%s' type '%s' group '%s' file group '%s' locale '%s'"
+        LOGGER_INFO( "validate resource '%s' type '%s' group '%s' file group '%s' locale '%s'"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()

@@ -20,8 +20,8 @@ src
     LoaderResourceMovie2.cpp
     LoaderResourceMovie2.h
     
-    Movie2DebugRenderVisitor.cpp
-    Movie2DebugRenderVisitor.h
+    Movie2DebugRender.cpp
+    Movie2DebugRender.h
     ResourceMovie2Validator.cpp
     ResourceMovie2Validator.h
 )

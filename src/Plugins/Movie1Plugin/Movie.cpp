@@ -256,12 +256,14 @@ namespace Mengine
         this->resumeAnimation_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::_stop( uint32_t _enumerator )
+    bool Movie::_stop( uint32_t _enumerator )
     {
         this->stopAnimation_();
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie::_end( uint32_t _enumerator )
@@ -1993,7 +1995,7 @@ namespace Mengine
             return false;
         }
 
-        if( this->setupParent_() == false )
+        if( this->setupLayersParent_() == false )
         {
             LOGGER_ERROR( "Movie::_compile: %s resource %s can't setup layer parents"
                 , m_name.c_str()
@@ -2024,7 +2026,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie::_release()
     {
-        this->removeParent_();
+        this->removeLayersParent_();
 
         m_resourceMovie.release();
     }
@@ -2119,7 +2121,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::setupParent_()
+    bool Movie::setupLayersParent_()
     {
         //float frameDuration = m_resourceMovie->getFrameDuration();
 
@@ -2161,7 +2163,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::removeParent_()
+    void Movie::removeLayersParent_()
     {
         const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 
@@ -2969,8 +2971,10 @@ namespace Mengine
 
         const MovieLayerCamera3D & camera3D = m_resourceMovie->getCamera3D();
 
+        mt::vec3f cameraDirection = camera3D.cameraInterest - camera3D.cameraPosition;
+
         m_renderCameraProjection->setCameraPosition( camera3D.cameraPosition );
-        m_renderCameraProjection->setCameraDirection( camera3D.cameraInterest - camera3D.cameraPosition );
+        m_renderCameraProjection->setCameraDirection( cameraDirection );
         m_renderCameraProjection->setCameraFOV( camera3D.cameraFOV );
         m_renderCameraProjection->setCameraAspect( camera3D.cameraAspect );
 

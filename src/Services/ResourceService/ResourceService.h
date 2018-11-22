@@ -46,10 +46,11 @@ namespace Mengine
 
     public:
         void foreachResources( const LambdaResource & _lambda ) const override;
+        void foreachGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const LambdaResource & _lambda ) const override;
 
     public:        
         void visitResources( const VisitorPtr & _visitor ) const override;
-        void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, const VisitorPtr & _visitor ) const override;
+        void visitGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const VisitorPtr & _visitor ) const override;
 
     protected:
         typedef Hashtable<ConstString, ResourcePtr> HashtableResources;

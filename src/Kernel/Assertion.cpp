@@ -58,7 +58,7 @@ namespace Mengine
 
         LOGGER_ERROR( assert_message );
 
-        if( HAS_OPTION( "assert" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false )
+        if( HAS_OPTION( "assertion" ) == false && CONFIG_VALUE( "Engine", "AssertionDebugBreak", false ) == false )
         {
             return;
         }

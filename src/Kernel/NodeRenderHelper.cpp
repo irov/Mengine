@@ -7,7 +7,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void nodeRenderChildrenVisitor( const NodePtr & _node, const RenderVisitorPtr & _visitor, const RenderContext * _context )
+        void nodeRenderChildren( const NodePtr & _node, const RenderContext * _context, bool _external )
         {
             RenderInterface * selfRender = _node->getRender();
 
@@ -18,7 +18,7 @@ namespace Mengine
                     return;
                 }
 
-                if( selfRender->isExternalRender() == true )
+                if( selfRender->isExternalRender() == true && _external == false )
                 {
                     return;
                 }
@@ -81,17 +81,13 @@ namespace Mengine
 
                 if( selfRender->isLocalHide() == false && selfRender->isPersonalTransparent() == false )
                 {
-                    _visitor->setRenderContext( &self_context );
-
-                    _node->visit( _visitor );
-
                     selfRender->render( &self_context );
                 }
 
                 const RenderContext * children_context = &self_context;
-                _node->foreachChildrenUnslug( [children_context, _visitor]( const NodePtr & _child )
+                _node->foreachChildrenUnslug( [children_context]( const NodePtr & _child )
                 {
-                    Helper::nodeRenderChildrenVisitor( _child, _visitor, children_context );
+                    Helper::nodeRenderChildren( _child, children_context, false );
                 } );
 
                 if( self_context.target != nullptr )
@@ -106,13 +102,9 @@ namespace Mengine
             }
             else
             {
-                _visitor->setRenderContext( _context );
-
-                _node->visit( _visitor );
-
-                _node->foreachChildrenUnslug( [_context, _visitor]( const NodePtr & _child )
+                _node->foreachChildrenUnslug( [_context]( const NodePtr & _child )
                 {
-                    Helper::nodeRenderChildrenVisitor( _child, _visitor, _context );
+                    Helper::nodeRenderChildren( _child, _context, false );
                 } );
             }
         }

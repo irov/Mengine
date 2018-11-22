@@ -84,6 +84,7 @@ namespace Mengine
 
     protected:
         void removeChild_( const NodePtr & _node );
+        void removeParent_();
         void setParent_( Node * _node );
 
     protected:
@@ -101,15 +102,18 @@ namespace Mengine
         IntrusiveSlugListNodeChild m_children;
 
     private:
-        void addChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node );
+        void addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
 
-        void insertChild_( IntrusiveSlugListNodeChild::iterator _insert, const NodePtr & _node );
+        void insertChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
         void eraseChild_( const NodePtr & _node );
 
     public:
         typedef Lambda<void( const NodePtr & )> LambdaNode;
         void foreachChildren( const LambdaNode & _lambda ) const;
         void foreachChildrenUnslug( const LambdaNode & _lambda ) const;
+
+        void removeParentRender_();
+        void setParentRender_( Node * _parent );
 
         typedef const Lambda<void( RenderInterface * )> LambdaNodeRenderCloseChildren;
         void foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );
@@ -272,7 +276,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    inline T static_node_cast( Node * _node )
+    inline T node_static_cast( Node * _node )
     {
 #ifndef NDEBUG
         if( _node == nullptr )
@@ -290,7 +294,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    inline T static_node_cast( const Node * _node )
+    inline T node_static_cast( const Node * _node )
     {
 #ifndef NDEBUG
         if( _node == nullptr )

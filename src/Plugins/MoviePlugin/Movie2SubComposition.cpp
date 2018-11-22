@@ -9,6 +9,10 @@ namespace Mengine
     Movie2SubComposition::Movie2SubComposition()
         : m_composition( nullptr )
         , m_subcomposition( nullptr )
+        , m_duration( 0.f )
+        , m_frameDuration( 0.f )
+        , m_startTime( -1.f )
+        , m_enable( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -26,19 +30,53 @@ namespace Mengine
         return m_movie;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::setSubMovieCompositionName( const ConstString & _subcompositionName )
+    void Movie2SubComposition::setDuration( float _duration )
     {
-        m_subcompositionName = _subcompositionName;
+        m_duration = _duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & Movie2SubComposition::getSubMovieCompositionName() const
+    float Movie2SubComposition::getDuration() const
     {
-        return m_subcompositionName;
+        return m_duration;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::setFrameDuration( float _frameDuration )
+    {
+        m_frameDuration = _frameDuration;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Movie2SubComposition::getFrameDuration() const
+    {
+        return m_frameDuration;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::setEnable( bool _enable )
+    {
+        m_enable = _enable;
+
+        if( m_subcomposition == nullptr )
+        {
+            return;
+        }
+
+        this->updateEnable_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Movie2SubComposition::getEnable() const
+    {
+        return m_enable;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::updateEnable_()
+    {
+        ae_set_movie_sub_composition_enable( m_subcomposition, m_enable == true ? AE_TRUE : AE_FALSE );        
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::initialize( const aeMovieComposition * _composition )
     {
-        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( _composition, m_subcompositionName.c_str() );
+        const ConstString & name = this->getName();
+
+        const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( _composition, name.c_str() );
 
         if( subcomposition == AE_NULL )
         {
@@ -48,11 +86,24 @@ namespace Mengine
         m_composition = _composition;
         m_subcomposition = subcomposition;
 
+        this->updateEnable_();
+        this->updateLoop_();
+        this->updateTime_();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::_play( uint32_t _enumerator, float _time )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         ae_play_movie_sub_composition( m_composition, m_subcomposition, 0.f );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_PLAY )
@@ -63,6 +114,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::_restart( uint32_t _enumerator, float _time )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         EVENTABLE_METHOD( this, EVENT_ANIMATION_RESTART )
             ->onAnimationRestart( _enumerator, _time );
 
@@ -71,6 +131,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_pause( uint32_t _enumerator )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return;
+        }
+
         ae_pause_movie_sub_composition( m_composition, m_subcomposition );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_PAUSE )
@@ -79,18 +148,38 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_resume( uint32_t _enumerator, float _time )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return;
+        }
+
         ae_resume_movie_sub_composition( m_composition, m_subcomposition );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_RESUME )
             ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::_stop( uint32_t _enumerator )
+    bool Movie2SubComposition::_stop( uint32_t _enumerator )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         ae_stop_movie_sub_composition( m_composition, m_subcomposition );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_end( uint32_t _enumerator )
@@ -101,6 +190,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::_interrupt( uint32_t _enumerator )
     {
+        if( m_composition == nullptr )
+        {
+            LOGGER_ERROR( "subcomposition '%s' is not initialized"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         ae_interrupt_movie_sub_composition( m_composition, m_subcomposition, AE_FALSE );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_INTERRUPT )
@@ -111,7 +209,65 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_setLoop( bool _value )
     {
-        ae_set_movie_sub_composition_loop( m_subcomposition, _value == true ? AE_TRUE : AE_FALSE );
+        MENGINE_UNUSED( _value );
+
+        if( m_subcomposition == nullptr )
+        {
+            return;
+        }
+
+        this->updateLoop_();        
     }
     //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::_setTime( float _time )
+    {
+        m_startTime = _time;
+
+        if( m_subcomposition == nullptr )
+        {
+            return;
+        }
+
+        this->updateTime_();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Movie2SubComposition::_getTime() const
+    {
+        if( m_subcomposition == nullptr )
+        {
+            return m_startTime;
+        }
+
+        float timing = ae_get_movie_sub_composition_time( m_subcomposition );
+
+        return timing * 1000.f;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::_setFirstFrame()
+    {
+        this->setTime( 0.f );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::_setLastFrame()
+    {
+        this->setTime( m_duration - m_frameDuration );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::updateLoop_()
+    {
+        AnimationInterface * animation = this->getAnimation();
+        bool loop = animation->isLoop();
+
+        ae_set_movie_sub_composition_loop( m_subcomposition, loop == true ? AE_TRUE : AE_FALSE );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Movie2SubComposition::updateTime_()
+    {
+        if( m_startTime < 0.f )
+        {
+            return;
+        }
+
+        ae_set_movie_sub_composition_time( m_composition, m_subcomposition, m_startTime * 0.001f );
+    }
 }

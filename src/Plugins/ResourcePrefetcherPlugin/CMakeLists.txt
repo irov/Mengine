@@ -1,18 +1,24 @@
-set( MY_LIB_NAME DebugRenderPlugin )
+set( MY_LIB_NAME ResourcePrefetcherPlugin )
 
 ADD_FILTER(
 src
-    DebugRenderInterface.h
+    ResourcePrefetcherInterface.h
+    ResourcePrefetcherServiceInterface.h
 
-	DebugRenderPlugin.h
-    DebugRenderPlugin.def
-	DebugRenderPlugin.cpp
+	ResourcePrefetcherPlugin.h
+    ResourcePrefetcherPlugin.def
+	ResourcePrefetcherPlugin.cpp
     
-    DebugRenderService.h
-    DebugRenderService.cpp
+    ResourcePrefetcherService.h
+    ResourcePrefetcherService.cpp
     
-    NodeDebugRenderVisitor.h
-    NodeDebugRenderVisitor.cpp
+    ResourcePrefetcherHelper.h
+    ResourceDefaultPrefetcher.h
+    ResourceDefaultPrefetcher.cpp
+    ResourceImageDefaultPrefetcher.h
+    ResourceImageDefaultPrefetcher.cpp
+    ResourceSoundPrefetcher.h
+    ResourceSoundPrefetcher.cpp
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )

@@ -77,10 +77,11 @@ namespace Mengine
     public:
         typedef Lambda<void( const ResourcePtr & )> LambdaResource;
         virtual void foreachResources( const LambdaResource & _lambda ) const = 0;
+        virtual void foreachGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const LambdaResource & _lambda ) const = 0;
 
     public:
         virtual void visitResources( const VisitorPtr & _visitor ) const = 0;
-        virtual void visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, const VisitorPtr & _visitor ) const = 0;
+        virtual void visitGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const VisitorPtr & _visitor ) const = 0;
     };
 
 #define RESOURCE_SERVICE()\

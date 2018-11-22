@@ -3,7 +3,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/RenderServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/GraveyardInterface.h"
 #include "Interface/TimelineServiceInterface.h"
@@ -18,7 +18,7 @@
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
-#include "Plugins/DebugRenderPlugin/DebugRenderInterface.h"
+#include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 #include "Plugins/NodeDebuggerPlugin/NodeDebuggerInterface.h"
 
 #include "Config/Stringstream.h"
@@ -846,14 +846,15 @@ namespace Mengine
         {
             if( debugMask == false )
             {
-                RenderInterface * render = m_scene->getRender();
-                render->renderWithChildren( &context, false );
+                //RenderInterface * render = m_scene->getRender();
+                //render->renderWithChildren( &context, false );
+                Helper::nodeRenderChildren( m_scene, &context, false );
             }
             else
             {
-                if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+                if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
                 {
-                    DEBUGRENDER_SERVICE()
+                    NODEDEBUGRENDER_SERVICE()
                         ->renderDebugNode( m_scene, &context, false );
                 }
             }
@@ -869,22 +870,23 @@ namespace Mengine
         {
             if( debugMask == false )
             {
-                RenderInterface * render = m_arrow->getRender();
-                render->renderWithChildren( &context, false );
+                //RenderInterface * render = m_arrow->getRender();
+                //render->renderWithChildren( &context, false );
+                Helper::nodeRenderChildren( m_arrow, &context, false );
             }
             else
             {
-                if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+                if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
                 {
-                    DEBUGRENDER_SERVICE()
+                    NODEDEBUGRENDER_SERVICE()
                         ->renderDebugNode( m_arrow, &context, false );
                 }
             }
         }
 
-        if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+        if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
         {
-            DEBUGRENDER_SERVICE()
+            NODEDEBUGRENDER_SERVICE()
                 ->renderDebugInfo( &context );
         }
     }

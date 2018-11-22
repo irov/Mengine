@@ -1,4 +1,4 @@
-<Protocol Version = "129">
+<Protocol Version = "130">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -307,6 +307,8 @@
             <Node Name="SubComposition">
               <Attribute Name="Index" Type="uint32_t" Required="1"/>
               <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
+              <Attribute Name="Duration" Type="float" Required="1"/>
+              <Attribute Name="FrameDuration" Type="float" Required="1"/>
             </Node>
           </Node>
         </Node>

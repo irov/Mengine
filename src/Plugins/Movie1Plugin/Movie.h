@@ -125,7 +125,7 @@ namespace Mengine
         bool _restart( uint32_t _enumerator, float _time ) override;
         void _pause( uint32_t _enumerator ) override;
         void _resume( uint32_t _enumerator, float _time ) override;
-        void _stop( uint32_t _enumerator ) override;
+        bool _stop( uint32_t _enumerator ) override;
         void _end( uint32_t _enumerator ) override;
         bool _interrupt( uint32_t _enumerator ) override;
 
@@ -165,8 +165,8 @@ namespace Mengine
         bool setupSceneEffect_();
         void enableSceneEffect_( bool _value );
 
-        bool setupParent_();
-        void removeParent_();
+        bool setupLayersParent_();
+        void removeLayersParent_();
 
         void updateCamera_();
 

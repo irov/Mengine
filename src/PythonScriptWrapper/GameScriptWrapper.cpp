@@ -1,6 +1,6 @@
 #include "PythonWrapper.h"
 
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/GameServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsInterface.h"

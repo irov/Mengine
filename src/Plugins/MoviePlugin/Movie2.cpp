@@ -1313,22 +1313,26 @@ namespace Mengine
                             {
                                 return;
                             }
+
+                            if( _callbackData->interrupt == AE_TRUE )
+                            {
+                                if( particle_animation->interrupt() == false )
+                                {
+                                    return;
+                                }
+                            }
                         }
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
-                //case AE_MOVIE_STATE_UPDATE_INTERRUPT:
-                //    {
-                //        particle_animation->interrupt();
-                //    }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
                         particle_animation->stop();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_END:
                     {
-                        if( _callbackData->loop == AE_FALSE )
+                        if( _callbackData->loop == AE_FALSE && _callbackData->interrupt == AE_FALSE )
                         {
                             particle_animation->stop();
                         }
@@ -1378,6 +1382,14 @@ namespace Mengine
                             {
                                 return;
                             }
+
+                            if( _callbackData->interrupt == AE_TRUE )
+                            {
+                                if( surface_animation->interrupt() == false )
+                                {
+                                    return;
+                                }
+                            }
                         }
 
                         surface_animation->setTime( _callbackData->offset * 1000.f );
@@ -1385,17 +1397,13 @@ namespace Mengine
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
-                //case AE_MOVIE_STATE_UPDATE_INTERRUPT:
-                //    {
-                //        surface_animation->interrupt();
-                //    }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
                         surface_animation->stop();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_END:
                     {
-                        if( _callbackData->loop == AE_FALSE )
+                        if( _callbackData->loop == AE_FALSE && _callbackData->interrupt == AE_FALSE )
                         {
                             surface_animation->stop();
                         }
@@ -1449,22 +1457,26 @@ namespace Mengine
                             {
                                 return;
                             }
+
+                            if( _callbackData->interrupt == AE_TRUE )
+                            {
+                                if( surface_animation->interrupt() == false )
+                                {
+                                    return;
+                                }
+                            }
                         }
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
-                //case AE_MOVIE_STATE_UPDATE_INTERRUPT:
-                //    {
-                //        surface_animation->interrupt();
-                //    }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
                         surface_animation->stop();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_END:
                     {
-                        if( _callbackData->loop == AE_FALSE )
+                        if( _callbackData->loop == AE_FALSE && _callbackData->interrupt == AE_FALSE )
                         {
                             surface_animation->stop();
                         }

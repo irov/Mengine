@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/LoggerInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -21,6 +22,10 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
+
+    public:
+        void setThreadMutex( const ThreadMutexInterfacePtr & _threadMutex ) override;
+        const ThreadMutexInterfacePtr & setThreadMutex() const override;
 
     public:
         void setVerboseLevel( EMessageLevel _level ) override;
@@ -46,6 +51,8 @@ namespace Mengine
 
         typedef Vector<LoggerInterfacePtr> VectorLoggers;
         VectorLoggers m_loggers;
+
+        ThreadMutexInterfacePtr m_threadMutex;
 
         uint32_t m_countMessage[LM_MAX];
         

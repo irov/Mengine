@@ -52,6 +52,75 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Socket::bind( const SocketConnectInfo & _info )
+    {
+        m_socket = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+
+        if( !m_socket || INVALID_SOCKET == m_socket )
+        {
+            return false;
+        }
+
+        SOCKADDR_IN addr;
+        ZeroMemory( &addr, sizeof( addr ) );
+
+        const uint16_t port = static_cast<uint16_t>( std::stoi( _info.port ) );
+
+        addr.sin_family = AF_INET;
+        addr.sin_port = ::htons( port );
+        addr.sin_addr.s_addr = ::inet_addr( _info.ip );
+
+        if( ::bind( m_socket, reinterpret_cast<LPSOCKADDR>( &addr ), sizeof( addr ) ) == SOCKET_ERROR )
+        {
+            ::closesocket( m_socket );
+            m_socket = INVALID_SOCKET;
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Socket::waitForClient()
+    {
+        if( ::listen( m_socket, SOMAXCONN ) == SOCKET_ERROR )
+        {
+            ::closesocket( m_socket );
+            m_socket = INVALID_SOCKET;
+
+            return false;
+        }
+
+        sockaddr_in clientAddr;
+        int addLen = sizeof( clientAddr );
+        ZeroMemory( &clientAddr, addLen );
+
+        SOCKET clientSocket = ::accept( m_socket, reinterpret_cast<LPSOCKADDR>( &clientAddr ), &addLen );
+
+        ::closesocket( m_socket );
+
+        if( !clientSocket || clientSocket == INVALID_SOCKET )
+        {
+            return false;
+        }
+
+        m_socket = clientSocket;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Socket::send( const Mengine::String & _str )
+    {
+        if( m_socket == INVALID_SOCKET )
+        {
+            return false;
+        }
+
+        ::send( m_socket, _str.c_str(), static_cast<int>( _str.size() ), 0 );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32Socket::disconnect()
     {
         if( m_socket != INVALID_SOCKET )

@@ -9,6 +9,7 @@
 
 #include "Kernel/Factorable.h"
 
+
 namespace Mengine
 {
     class Win32Socket
@@ -23,6 +24,9 @@ namespace Mengine
 
     public:
         bool connect( const SocketConnectInfo & _info ) override;
+        bool bind( const SocketConnectInfo & _info ) override;
+        bool waitForClient() override;
+        bool send( const Mengine::String & _str ) override;
         void disconnect() override;
 
     public:

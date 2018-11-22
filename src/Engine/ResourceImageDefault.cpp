@@ -31,7 +31,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_compile()
     {
-        LOGGER_INFO( "ResourceImageDefault::loadImageFrame_ %s load texture %s"
+        LOGGER_INFO( "name %s load texture %s"
             , this->getName().c_str()
             , this->getFilePath().c_str()
         );
@@ -40,7 +40,7 @@ namespace Mengine
 
         if( fileGroup == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_compile: '%s' group '%s' file path '%s' invalid setup category"
+            LOGGER_ERROR( "name '%s' group '%s' file path '%s' invalid setup category"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
                 , this->getFilePath().c_str()
@@ -54,7 +54,7 @@ namespace Mengine
 
         if( texture == nullptr )
         {
-            LOGGER_ERROR( "ResourceImageDefault::_compile: '%s' category '%s' group '%s' can't load image file '%s'"
+            LOGGER_ERROR( "name '%s' category '%s' group '%s' can't load image file '%s'"
                 , this->getName().c_str()
                 , this->getFileGroup()->getName().c_str()
                 , this->getGroupName().c_str()
@@ -73,23 +73,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageDefault::_release()
     {
-        float width_inv = m_texture->getWidthInv();
-        float height_inv = m_texture->getHeightInv();
-
-        const RenderImageInterfacePtr & image = m_texture->getImage();
-
-        float hwWidth = (float)image->getHWWidth();
-        float hwHeight = (float)image->getHWHeight();
-
-        mt::vec2f uv_unscale;
-        uv_unscale.x = hwWidth * width_inv;
-        uv_unscale.y = hwHeight * height_inv;
-
-        for( uint32_t i = 0; i != 4; ++i )
-        {
-            m_uvImage[i] *= uv_unscale;
-        }
-
         ResourceImage::_release();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -108,17 +91,19 @@ namespace Mengine
             }
         }
 
-        this->setUVImage( _uv_image );
-        this->setUVAlpha( _uv_alpha );
-
         this->setMaxSize( _maxSize );
         this->setSize( m_size );
         this->setOffset( mt::vec2f( 0.f, 0.f ) );
+
+        this->setUVImage( _uv_image );
+        this->setUVAlpha( _uv_alpha );
 
         this->setTexture( nullptr );
         this->setTextureAlpha( nullptr );
 
         this->setAlpha( true );
+
+        this->correctUVTexture();
 
         if( this->recompile( [this, _imagePath]() { m_filePath = _imagePath; } ) == false )
         {
@@ -130,22 +115,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageDefault::prepareImageFrame_()
     {
-        float width = (float)m_texture->getWidth();
-        float height = (float)m_texture->getHeight();
-
         const RenderImageInterfacePtr & image = m_texture->getImage();
-
-        float hwWidthInv = image->getHWWidthInv();
-        float hwHeightInv = image->getHWHeightInv();
-
-        mt::vec2f uv_scale;
-        uv_scale.x = width * hwWidthInv;
-        uv_scale.y = height * hwHeightInv;
-
-        for( uint32_t i = 0; i != 4; ++i )
-        {
-            m_uvImage[i] *= uv_scale;
-        }
 
         uint32_t hwChannels = image->getHWChannels();
 

@@ -73,7 +73,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void LoggerService::logMessage( EMessageLevel _level, uint32_t _flag, const char * _message, uint32_t _size )
+    void LoggerService::logMessage( EMessageLevel _level, uint32_t _flag, const Char * _message, uint32_t _size )
     {
         ++m_countMessage[_level];
 

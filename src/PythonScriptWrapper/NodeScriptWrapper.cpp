@@ -2520,6 +2520,8 @@ namespace Mengine
             .def( "getUVImage", &ResourceImage::getUVImage )
             .def( "setUVAlpha", &ResourceImage::setUVAlpha )
             .def( "getUVAlpha", &ResourceImage::getUVAlpha )
+            .def( "getUVTextureImage", &ResourceImage::getUVTextureImage )
+            .def( "getUVTextureAlpha", &ResourceImage::getUVTextureAlpha )
             .def( "setAlpha", &ResourceImage::setAlpha )
             .def( "isAlpha", &ResourceImage::hasAlpha )
             .def( "setPremultiply", &ResourceImage::setPremultiply )

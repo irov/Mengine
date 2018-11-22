@@ -68,7 +68,7 @@ namespace Mengine
             return !(n & (n - 1));
         }
         //////////////////////////////////////////////////////////////////////////
-        inline uint32_t Power2( uint32_t _n )
+        inline uint32_t getPower2( uint32_t _n )
         {
             uint32_t np = 1 << _n;
 

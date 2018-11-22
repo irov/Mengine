@@ -6,15 +6,14 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
+#include "Kernel/Logger.h"
 
 #include "Metacode/Metacode.h"
 
 #include "stdex/memory_reader.h"
-
-#include "Kernel/Logger.h"
 
 namespace Mengine
 {
@@ -53,9 +52,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataflowAEK::create()
     {
-        MovieFramePackPtr pack = m_poolMovieFramePack->createObject();
+        MovieFramePackPtr data = m_poolMovieFramePack->createObject();
 
-        return pack;
+        MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
+
+        return data;
     }
     //////////////////////////////////////////////////////////////////////////
     bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
@@ -126,7 +127,7 @@ namespace Mengine
 
             if( maxIndex != 0 )
             {
-                _pack->initialize( maxIndex );
+                _pack->initializeLayers( maxIndex );
 
                 for( uint32_t it_layer = 0; it_layer != maxIndex; ++it_layer )
                 {
@@ -136,7 +137,7 @@ namespace Mengine
                     uint8_t immutable;
                     ar << immutable;
 
-                    MovieLayerFrame & frame = _pack->initializeLayer( it_layer, frames_size, !!immutable );
+                    MovieLayerFrame & frame = _pack->setupLayer( it_layer, frames_size, !!immutable );
 
                     if( frames_size == 0 )
                     {

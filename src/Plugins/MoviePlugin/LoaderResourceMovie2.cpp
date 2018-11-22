@@ -22,8 +22,12 @@ namespace Mengine
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 *>(_meta);
 
-        const FilePath & filePath = metadata->get_File_Path();
-        resource->setFilePath( filePath );
+        metadata->getm_File_Path( resource, &ResourceMovie2::setFilePath );
+        
+        if( metadata->getm_File_Dataflow( resource, &ResourceMovie2::setDataflowType ) == false )
+        {
+            resource->setDataflowType( STRINGIZE_FILEPATH_LOCAL( "aezMovie" ) );
+        }
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::VectorMeta_Composition & includes_composition = metadata->get_Includes_Composition();
 

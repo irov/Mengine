@@ -72,7 +72,19 @@ namespace Mengine
         Helper::freeArrayT( m_polygons );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieFramePack::initialize( uint32_t _size )
+    bool MovieFramePack::acquire()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MovieFramePack::release()
+    {
+        //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MovieFramePack::initializeLayers( uint32_t _size )
     {
         m_sizeLayers = _size;
 
@@ -100,7 +112,7 @@ namespace Mengine
         m_polygons = Helper::allocateArrayT<MovieLayerPolygon>( _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    MovieLayerFrame & MovieFramePack::initializeLayer( uint32_t _layerIndex, uint32_t _count, bool _immutable )
+    MovieLayerFrame & MovieFramePack::setupLayer( uint32_t _layerIndex, uint32_t _count, bool _immutable )
     {
         MovieLayerFrame & layer = m_layers[_layerIndex];
 

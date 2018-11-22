@@ -1415,7 +1415,7 @@ namespace Mengine
         }
 
         WChar fullPath[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( fullPath, unicode_path );
+        Helper::pathCorrectBackslashTo( fullPath, unicode_path );
 
         Helper::pathRemoveFileSpec( fullPath );
 
@@ -1454,15 +1454,15 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::createDirectory_( const WChar * _path )
+    bool Win32Platform::createDirectory_( const WChar * _directoryPath )
     {
-        size_t unicode_pathSize = wcslen( _path );
+        size_t unicode_pathSize = wcslen( _directoryPath );
 
         WChar fullPath[MENGINE_MAX_PATH];
 
         if( unicode_pathSize != 0 )
         {
-            Helper::pathCorrectBackslash( fullPath, _path );
+            Helper::pathCorrectBackslashTo( fullPath, _directoryPath );
 
             Helper::pathRemoveFileSpec( fullPath );
 
@@ -1562,7 +1562,7 @@ namespace Mengine
     bool Win32Platform::existFile_( const WChar * _path )
     {
         WChar pathCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( pathCorrect, _path );
+        Helper::pathCorrectBackslashTo( pathCorrect, _path );
 
         size_t len = wcslen( pathCorrect );
 
@@ -1604,7 +1604,7 @@ namespace Mengine
         }
 
         WChar pathCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( pathCorrect, unicode_path );
+        Helper::pathCorrectBackslashTo( pathCorrect, unicode_path );
 
         WChar fullPath[MENGINE_MAX_PATH];
         wcscpy( fullPath, unicode_userPath );
@@ -1638,10 +1638,10 @@ namespace Mengine
         PathAppend( szPath, _userPath );
 
         WChar pathCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( pathCorrect, _path );
+        Helper::pathCorrectBackslashTo( pathCorrect, _path );
 
         WChar fileCorrect[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( fileCorrect, _file );
+        Helper::pathCorrectBackslashTo( fileCorrect, _file );
 
         PathAppend( szPath, pathCorrect );
 
@@ -1860,14 +1860,14 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getCurrentPath( Char * _path ) const
+    size_t Win32Platform::getCurrentPath( Char * _currentPath ) const
     {
         WChar unicode_path[MENGINE_MAX_PATH];
         DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, unicode_path );
 
         if( len == 0 )
         {
-            _path[0] = '\0';
+            _currentPath[0] = '\0';
 
             return 0;
         }
@@ -1876,9 +1876,9 @@ namespace Mengine
         unicode_path[len + 1] = L'\0';
 
         size_t path_len;
-        if( Helper::unicodeToUtf8( unicode_path, _path, MENGINE_MAX_PATH, &path_len ) == false )
+        if( Helper::unicodeToUtf8( unicode_path, _currentPath, MENGINE_MAX_PATH, &path_len ) == false )
         {
-            _path[0] = '\0';
+            _currentPath[0] = '\0';
 
             return 0;
         }
@@ -1886,7 +1886,7 @@ namespace Mengine
         return path_len;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Platform::getUserPath( Char * _path ) const
+    size_t Win32Platform::getUserPath( Char * _userPath ) const
     {
         bool developmentMode = HAS_OPTION( "dev" );
         bool roamingMode = HAS_OPTION( "roaming" );
@@ -1913,10 +1913,10 @@ namespace Mengine
             wcscat( currentPath, L"/" );
 
             WChar unicode_path[MENGINE_MAX_PATH];
-            Helper::pathCorrectBackslash( unicode_path, currentPath );
+            Helper::pathCorrectBackslashTo( unicode_path, currentPath );
 
             size_t currentPathLen;
-            if( Helper::unicodeToUtf8( unicode_path, _path, MENGINE_MAX_PATH, &currentPathLen ) == false )
+            if( Helper::unicodeToUtf8( unicode_path, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
             {
                 return 0;
             }
@@ -1977,6 +1977,8 @@ namespace Mengine
 
         CoTaskMemFree( itemIDList );
 
+        WChar roamingPath[MENGINE_MAX_PATH];
+
         String companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
 
         WChar companyNameW[MENGINE_APPLICATION_COMPANY_MAXNAME];
@@ -1984,9 +1986,8 @@ namespace Mengine
         {
             return 0;
         }
-
-        wcscat( currentPath, companyNameW );
-        wcscat( currentPath, L"/" );
+                
+        PathCombine( roamingPath, currentPath, companyNameW );
 
         String projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
@@ -1996,14 +1997,12 @@ namespace Mengine
             return 0;
         }
 
-        wcscat( currentPath, projectNameW );
-        wcscat( currentPath, L"/" );
+        PathCombine( roamingPath, roamingPath, projectNameW );
 
-        WChar unicode_path[MENGINE_MAX_PATH];
-        Helper::pathCorrectBackslash( unicode_path, currentPath );
+        Helper::pathCorrectBackslash( roamingPath );
 
         size_t currentPathLen;
-        if( Helper::unicodeToUtf8( unicode_path, _path, MENGINE_MAX_PATH, &currentPathLen ) == false )
+        if( Helper::unicodeToUtf8( roamingPath, _userPath, MENGINE_MAX_PATH, &currentPathLen ) == false )
         {
             return 0;
         }

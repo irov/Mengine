@@ -1,16 +1,19 @@
 #pragma once
 
-#include "Interface/ArchiveInterface.h"
+#include "Interface/DataInterface.h"
+
+
+#include "Movie2DataInterface.h"
 
 #include "Kernel/Resource.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Color.h"
 
+#include "Config/Map.h"
+
 #include "math/mat4.h"
 
 #include "movie/movie.hpp"
-
-#include "Config/Map.h"
 
 namespace Mengine
 {
@@ -61,16 +64,12 @@ namespace Mengine
         ~ResourceMovie2() override;
 
     public:
-        void setMovieInstance( const aeMovieInstance * _movieInstance );
-        const aeMovieInstance * getMovieInstance() const;
-
-    public:
-        void setMovieArchivator( const ArchivatorInterfacePtr & _movieArchivator );
-        const ArchivatorInterfacePtr & getMovieArchivator() const;
-
-    public:
         void setFilePath( const FilePath & _filePath );
         const FilePath & getFilePath() const;
+
+    public:
+        void setDataflowType( const ConstString & _dataflowType );
+        const ConstString & getDataflowType() const;
 
     public:
         bool hasComposition( const ConstString & _name ) const;
@@ -78,7 +77,7 @@ namespace Mengine
         float getCompositionFrameDuration( const ConstString & _name ) const;
 
     public:
-        const aeMovieData * getMovieData() const;
+        const Movie2DataInterfacePtr & getMovieData() const;
         const aeMovieCompositionData * getCompositionData( const ConstString & _name ) const;
 
     public:
@@ -93,20 +92,13 @@ namespace Mengine
         void _release() override;
 
     public:
-        bool storeResource_( const ResourcePtr & _resource );
-        Resource * getResource_( const ae_string_t _name );
+        DataInterfacePtr compileData_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) const;
 
     protected:
-        const aeMovieInstance * m_movieInstance;
-
-        ArchivatorInterfacePtr m_movieArchivator;
-
-        const aeMovieData * m_movieData;
+        Movie2DataInterfacePtr m_movieData;
 
         FilePath m_filePath;
-
-        typedef Vector<ResourcePtr> VectorResources;
-        VectorResources m_resources;
+        ConstString m_dataflowType;
 
         typedef Map<ConstString, ResourceMovie2CompositionDesc> MapCompositions;
         MapCompositions m_compositions;

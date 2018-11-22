@@ -4,6 +4,8 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/FileServiceInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
+#include "Interface/DataServiceInterface.h"
 
 #include "Movie2Interface.h"
 
@@ -14,175 +16,9 @@
 #include "stdex/memorycopy.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    static ae_size_t __movie_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size )
-    {
-        stdex::memorycopy( _buff, 0U, (ae_uint8_t *)_data + _carriage, _size );
-
-        return _size;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_copy_stream( ae_voidptr_t _data, ae_constvoidptr_t _src, ae_voidptr_t _dst, ae_size_t _size )
-    {
-        (void)_data;
-
-        stdex::memorycopy( _dst, 0U, _src, _size );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static ae_bool_t __movie_resource_provider( const aeMovieResource * _resource, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
-    {
-        ResourceMovie2 * resourceMovie2 = (ResourceMovie2 *)_ud;
-
-        aeMovieResourceTypeEnum resource_type = _resource->type;
-
-        switch( resource_type )
-        {
-        case AE_MOVIE_RESOURCE_IMAGE:
-            {
-                const aeMovieResourceImage * resource_image = (const aeMovieResourceImage *)_resource;
-
-                Resource * data_resource = resourceMovie2->getResource_( resource_image->name );
-
-                if( data_resource == AE_NULL )
-                {
-                    return AE_FALSE;
-                }
-
-                *_rd = data_resource;
-
-                return AE_TRUE;
-            }break;
-        case AE_MOVIE_RESOURCE_VIDEO:
-            {
-                const aeMovieResourceVideo * resource_video = (const aeMovieResourceVideo *)_resource;
-
-                Resource * data_resource = resourceMovie2->getResource_( resource_video->name );
-                
-                if( data_resource == AE_NULL )
-                {
-                    return AE_FALSE;
-                }
-
-                *_rd = data_resource;
-
-                return AE_TRUE;
-            }break;
-        case AE_MOVIE_RESOURCE_SOUND:
-            {
-                const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
-
-                Resource * data_resource = resourceMovie2->getResource_( resource_sound->name );
-
-                if( data_resource == AE_NULL )
-                {
-                    return AE_FALSE;
-                }
-
-                *_rd = data_resource;
-
-                return AE_TRUE;
-            }break;
-        case AE_MOVIE_RESOURCE_PARTICLE:
-            {
-                const aeMovieResourceParticle * resource_particle = (const aeMovieResourceParticle *)_resource;
-
-                Resource * data_resource = resourceMovie2->getResource_( resource_particle->name );
-
-                if( data_resource == AE_NULL )
-                {
-                    return AE_FALSE;
-                }
-
-                *_rd = data_resource;
-
-                return AE_TRUE;
-            }break;
-        default:
-            break;
-        }
-
-        *_rd = AE_NULL;
-
-        return AE_TRUE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_resource_deleter( aeMovieResourceTypeEnum _type, ae_voidptr_t _data, ae_voidptr_t _ud )
-    {
-        (void)_type;
-        (void)_data;
-        (void)_ud;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static ae_bool_t __movie_cache_uv_available( const aeMovieDataCacheUVAvailableCallbackData * _callbackData, ae_voidptr_t _ud )
-    {
-        AE_UNUSED( _callbackData );
-        AE_UNUSED( _ud );
-
-        return AE_TRUE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static ae_bool_t __movie_cache_uv_provider( const aeMovieDataCacheUVProviderCallbackData * _callbackData, ae_voidptrptr_t _rd, ae_voidptr_t _ud )
-    {
-        (void)_ud;
-
-        const aeMovieResource * movie_resource = _callbackData->resource;
-
-        Resource * resource = reinterpret_cast<Resource *>(movie_resource->userdata);
-
-        aeMovieResourceTypeEnum resource_type = movie_resource->type;
-
-        switch( resource_type )
-        {
-        case AE_MOVIE_RESOURCE_IMAGE:
-            {
-                const aeMovieResourceImage * movie_resource_image = reinterpret_cast<const aeMovieResourceImage *>(movie_resource);
-
-                if( movie_resource_image->atlas_image != AE_NULL )
-                {
-                    break;
-                }
-
-                ResourceImage * resource_image = static_cast<ResourceImage *>(resource);
-
-                ae_uint32_t vertex_count = _callbackData->vertex_count;
-
-                mt::vec2f * uvs = Helper::allocateArrayT<mt::vec2f>( vertex_count );
-
-                for( uint32_t index = 0; index != vertex_count; ++index )
-                {
-                    mt::vec2f uv;
-                    const float * uv2 = _callbackData->uvs[index];
-                    uv.from_f2( uv2 );
-
-                    resource_image->correctUVImage( uvs[index], uv );
-                }
-
-                *_rd = uvs;
-            }break;
-        default:
-            {
-            }break;
-        }
-
-        return AE_TRUE;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_cache_uv_deleter( const aeMovieDataCacheUVDeleterCallbackData * _callbackData, ae_userdata_t _ud )
-    {
-        (void)_ud;
-
-        if( _callbackData->uv_cache_userdata == AE_NULL )
-        {
-            return;
-        }
-
-        Helper::freeArrayT( reinterpret_cast<mt::vec2f *>(_callbackData->uv_cache_userdata) );
-    }
+{    
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie2::ResourceMovie2()
-        : m_movieInstance( nullptr )
-        , m_movieData( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -198,6 +34,16 @@ namespace Mengine
     const FilePath & ResourceMovie2::getFilePath() const
     {
         return m_filePath;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceMovie2::setDataflowType( const ConstString & _dataflowType )
+    {
+        m_dataflowType = _dataflowType;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & ResourceMovie2::getDataflowType() const
+    {
+        return m_dataflowType;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::hasComposition( const ConstString & _name ) const
@@ -240,7 +86,7 @@ namespace Mengine
         return composition.frameDuration;
     }
     //////////////////////////////////////////////////////////////////////////
-    const aeMovieData * ResourceMovie2::getMovieData() const
+    const Movie2DataInterfacePtr & ResourceMovie2::getMovieData() const
     {
         return m_movieData;
     }
@@ -252,7 +98,9 @@ namespace Mengine
             return nullptr;
         }
 
-        const aeMovieCompositionData * compositionData = ae_get_movie_composition_data( m_movieData, _name.c_str() );
+        const aeMovieData * movieData = m_movieData->getMovieData();
+
+        const aeMovieCompositionData * compositionData = ae_get_movie_composition_data( movieData, _name.c_str() );
 
         if( compositionData == nullptr )
         {
@@ -298,36 +146,11 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::setMovieInstance( const aeMovieInstance * _movieInstance )
-    {
-        m_movieInstance = _movieInstance;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const aeMovieInstance * ResourceMovie2::getMovieInstance() const
-    {
-        return m_movieInstance;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::setMovieArchivator( const ArchivatorInterfacePtr & _movieArchivator )
-    {
-        m_movieArchivator = _movieArchivator;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ArchivatorInterfacePtr & ResourceMovie2::getMovieArchivator() const
-    {
-        return m_movieArchivator;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::_compile()
     {
-        if( Resource::_compile() == false )
-        {
-            return false;
-        }
-
         if( m_filePath.empty() == true )
         {
-            LOGGER_ERROR( "ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
+            LOGGER_ERROR( "resource movie '%s' group '%s' don`t set file path"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
             );
@@ -337,115 +160,91 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, m_filePath, false );
-        
-        if( stream == nullptr )
+        DataInterfacePtr data = this->compileData_( fileGroup, m_filePath );
+
+        if( data == nullptr )
         {
-            LOGGER_ERROR( "ResourceMovie2::_compile: '%s' group '%s' can`t open file '%s'"
+            LOGGER_ERROR( "resource movie '%s' group '%s' invalid compile data"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
-                , this->getFilePath().c_str()
             );
 
             return false;
         }
 
-        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, m_movieArchivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), "ResourceMovie2::_compile", __FILE__, __LINE__ );
-
-        if( memory == nullptr )
+        if( data->acquire() == false )
         {
             return false;
         }
 
-        void * memory_buffer = memory->getBuffer();
-
-        aeMovieDataProviders data_providers;
-        ae_clear_movie_data_providers( &data_providers );
-
-        data_providers.resource_provider = &__movie_resource_provider;
-        data_providers.resource_deleter = &__movie_resource_deleter;
-        data_providers.cache_uv_available = &__movie_cache_uv_available;
-        data_providers.cache_uv_provider = &__movie_cache_uv_provider;
-        data_providers.cache_uv_deleter = &__movie_cache_uv_deleter;
-
-        aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, this );
-
-        aeMovieStream * movie_stream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, memory_buffer );
-
-        ae_uint32_t major_version;
-        ae_uint32_t minor_version;
-        ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movie_stream, &major_version, &minor_version );
-
-        if( result_load_movie_data != AE_RESULT_SUCCESSFUL )
-        {
-            const ae_char_t * result_string_info = ae_get_result_string_info( result_load_movie_data );
-
-            LOGGER_ERROR( "ResourceMovie2::_compile: '%s' group '%s' invalid load data from file '%s' result '%s'\ncurrent version '%u.%u'\nload version '%u.%u'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , this->getFilePath().c_str()
-                , result_string_info
-                , AE_MOVIE_SDK_MAJOR_VERSION
-                , AE_MOVIE_SDK_MINOR_VERSION
-                , major_version
-                , minor_version
-            );
-
-            return false;
-        }
-
-        ae_delete_movie_stream( movie_stream );
-
-        m_movieData = movieData;
-        stream = nullptr;
+        m_movieData = data;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceMovie2::_release()
     {
-        for( const ResourcePtr & resource : m_resources )
+        if( m_movieData != nullptr )
         {
-            resource->decrementReference();
+            m_movieData->release();
+            m_movieData = nullptr;
         }
-
-        m_resources.clear();
-
-        ae_delete_movie_data( m_movieData );
-        m_movieData = nullptr;
-
-        Resource::_release();
     }    
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceMovie2::storeResource_( const ResourcePtr & _resource )
+    DataInterfacePtr ResourceMovie2::compileData_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) const
     {
-        m_resources.emplace_back( _resource );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    Resource * ResourceMovie2::getResource_( const ae_string_t _name )
-    {
-        const ResourcePtr & resource = RESOURCE_SERVICE()
-            ->getResource( Helper::stringizeString( _name ) );
-
-        if( resource == nullptr )
+        DataInterfacePtr prefetch_data;
+        if( PREFETCHER_SERVICE()
+            ->getData( _fileGroup, _filePath, prefetch_data ) == true )
         {
-            LOGGER_ERROR( "ResourceMovie2::storeResource_ resource nullptr name '%s' group '%s' path '%s'"
+            return prefetch_data;
+        }
+
+        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+
+        InputStreamInterfacePtr stream = FILE_SERVICE()
+            ->openInputFile( fileGroup, _filePath, false );
+
+        if( stream == nullptr )
+        {
+            LOGGER_ERROR( "resource '%s' group '%s' don`t open file '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
-                , this->getFilePath().c_str()
+                , _filePath.c_str()
             );
 
             return nullptr;
         }
 
-        if( this->storeResource_( resource ) == false )
+        const DataflowInterfacePtr & dataflow = DATA_SERVICE()
+            ->getDataflow( m_dataflowType );
+
+        if( dataflow == nullptr )
         {
+            LOGGER_ERROR( "resource '%s' group '%s' can` t find dataflow type '%s'"
+                , this->getName().c_str()
+                , this->getGroupName().c_str()
+                , m_dataflowType.c_str()
+            );
+
             return nullptr;
         }
 
-        return resource.get();
+        DataInterfacePtr data = DATA_SERVICE()
+            ->dataflow( dataflow, stream );
+
+        if( data == nullptr )
+        {
+            LOGGER_ERROR( "resource '%s' group '%s' can` t dataflow '%s' from '%s'"
+                , this->getName().c_str()
+                , this->getGroupName().c_str()
+                , m_dataflowType.c_str()
+                , _filePath.c_str()
+            );
+
+            return nullptr;
+        }
+
+        return data;
     }
 }

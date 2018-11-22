@@ -56,8 +56,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SoundEmitter::_release()
     {
-        Node::_release();
-
         m_surfaceSound->release();
     }
 }

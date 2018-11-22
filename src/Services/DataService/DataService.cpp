@@ -50,7 +50,7 @@ namespace Mengine
 
         if( data == nullptr )
         {
-            LOGGER_ERROR( "DataService::dataflow invalid create data"
+            LOGGER_ERROR( "invalid create data"
             );
 
             return nullptr;
@@ -58,7 +58,7 @@ namespace Mengine
 
         if( _dataflow->load( data, _stream ) == false )
         {
-            LOGGER_ERROR( "DataService::dataflow invalid load data"
+            LOGGER_ERROR( "invalid load data"
             );
 
             return nullptr;

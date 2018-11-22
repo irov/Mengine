@@ -344,7 +344,7 @@ namespace Mengine
             ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::updateVideoBuffer_()
+    void SurfaceVideo::updateVideoBuffer_() const
     {
         if( m_needUpdateVideoBuffer == true )
         {
@@ -528,7 +528,7 @@ namespace Mengine
         this->_setTime( dataInfo->duration );
     }
     ////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::fillVideoBuffer_()
+    bool SurfaceVideo::fillVideoBuffer_() const
     {
         const RenderTextureInterfacePtr & texture = m_textures[0];
 
@@ -586,11 +586,8 @@ namespace Mengine
     ////////////////////////////////////////////////////////////////////
     RenderMaterialInterfacePtr SurfaceVideo::_updateMaterial() const
     {
-        if( m_needUpdateVideoBuffer == true )
-        {
-            return nullptr;
-        }
-
+        this->updateVideoBuffer_();
+        
         RenderMaterialInterfacePtr material = this->makeTextureMaterial( m_textures, 1, false );
 
         if( material == nullptr )

@@ -63,8 +63,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieMesh2D::_release()
     {
-        Node::_release();
-
         m_resourceImage.release();
 
         this->releaseMaterial();

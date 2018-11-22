@@ -48,6 +48,7 @@ namespace Mengine
 
     public:
         virtual ptrdiff_t getCurrentThreadId() = 0;
+        virtual bool isMainThread() const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

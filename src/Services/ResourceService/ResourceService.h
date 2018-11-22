@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ResourceServiceInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/Resource.h"
 
@@ -53,6 +54,8 @@ namespace Mengine
         void visitGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const VisitorPtr & _visitor ) const override;
 
     protected:
+        ThreadMutexInterfacePtr m_mutex;
+
         typedef Hashtable<ConstString, ResourcePtr> HashtableResources;
         HashtableResources m_resources;
 

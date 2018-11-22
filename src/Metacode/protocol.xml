@@ -1,4 +1,4 @@
-<Protocol Version = "130">
+<Protocol Version = "131">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -288,6 +288,7 @@
 
         <Node Name="ResourceMovie2" Inheritance = "Resource">
           <Member Node="File" Name="Path" Type="Mengine::FilePath" Required="1"/>
+          <Member Node="File" Name="Dataflow" Type="Mengine::ConstString"/>
           
           <Node Name="Composition">
             <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>

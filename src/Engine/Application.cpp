@@ -225,6 +225,11 @@ namespace Mengine
         m_nofullscreen = CONFIG_VALUE( "Window", "NoFullscreen", false );
         m_vsync = CONFIG_VALUE( "Window", "VSync", true );
 
+        if( HAS_OPTION( "novsync" ) == true )
+        {
+            m_vsync = false;
+        }
+
         if( HAS_OPTION( "nofullscreen" ) == true )
         {
             m_nofullscreen = true;
@@ -261,6 +266,15 @@ namespace Mengine
             , m_projectVersion
             , m_locale.c_str()
         );
+                
+        bool logopenfiles = HAS_OPTION( "logopenfiles" );
+
+        if( logopenfiles == true )
+        {
+            m_debugFileOpen = true;
+
+            this->updateDebugOpenFile_();
+        }
 
         return true;
     }
@@ -831,16 +845,7 @@ namespace Mengine
             {
                 m_debugFileOpen = !m_debugFileOpen;
 
-                if( m_debugFileOpen == true )
-                {
-                    NOTIFICATION_SERVICE()
-                        ->addObserverMethod( NOTIFICATOR_DEBUG_OPEN_FILE, this, &Application::notifyDebugOpenFile_ );
-                }
-                else
-                {
-                    NOTIFICATION_SERVICE()
-                        ->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, this );
-                }
+                this->updateDebugOpenFile_();
             }
 
             if( _event.code == KC_P && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
@@ -1013,12 +1018,39 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Application::updateDebugOpenFile_()
+    {
+        if( m_debugFileOpen == true )
+        {
+            NOTIFICATION_SERVICE()
+                ->addObserverMethod( NOTIFICATOR_DEBUG_OPEN_FILE, this, &Application::notifyDebugOpenFile_ );
+        }
+        else
+        {
+            NOTIFICATION_SERVICE()
+                ->removeObserver( NOTIFICATOR_DEBUG_OPEN_FILE, this );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Application::notifyDebugOpenFile_( const char * _folder, const char * _fileName )
     {
-        LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("open %s%s"
-            , _folder
-            , _fileName
-        );
+        bool isMainThread = THREAD_SERVICE()
+            ->isMainThread();
+
+        if( isMainThread == true )
+        {
+            LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("open %s%s"
+                , _folder
+                , _fileName
+                );
+        }
+        else
+        {
+            LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("[multithread] open %s%s"
+                , _folder
+                , _fileName
+                );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::mouseWheel( const InputMouseWheelEvent & _event )

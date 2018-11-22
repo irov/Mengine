@@ -1227,54 +1227,12 @@ namespace Mengine
         , const RenderIndex * _indices, uint32_t _indexCount
         , const mt::box2f * _bb, bool _debug )
     {
-#ifndef NDEBUG
-        if( _context == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D context == NULL"
-            );
-
-            return;
-        }
-
-        if( _context->viewport == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D viewport == NULL"
-            );
-
-            return;
-        }
-
-        if( _context->camera == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D camera == NULL"
-            );
-
-            return;
-        }
-
-        if( _material == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D _material == NULL"
-            );
-
-            return;
-        }
-
-        if( _vertices == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D _vertices == NULL"
-            );
-
-            return;
-        }
-
-        if( _indices == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D _indices == NULL"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_FATAL( _context != nullptr, ("context == nullptr") );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, ("_context->viewport == nullptr") );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, ("_context->camera == nullptr") );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, ("_material == nullptr") );
+        MENGINE_ASSERTION_FATAL( _vertices != nullptr, ("_vertices == nullptr") );
+        MENGINE_ASSERTION_FATAL( _indices != nullptr, ("_indices == nullptr") );
 
         if( _vertexCount >= RenderVertexBatchMax )
         {
@@ -1285,7 +1243,6 @@ namespace Mengine
 
             return;
         }
-#endif
 
         if( m_renderObjects.full() )
         {

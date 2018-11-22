@@ -52,8 +52,8 @@ namespace Mengine
         bool getNoFullscreen() const override;
         bool getAlwaysFullscreen() const override;
 
-        size_t getCurrentPath( Char * _path ) const override;
-        size_t getUserPath( Char * _path ) const override;
+        size_t getCurrentPath( Char * _currentPath ) const override;
+        size_t getUserPath( Char * _userPath ) const override;
 
         void minimizeWindow() override;
 

@@ -19,6 +19,7 @@
 
 #include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
 #include "Plugins/DebugRenderPlugin/DebugRenderInterface.h"
+#include "Plugins/NodeDebuggerPlugin/NodeDebuggerInterface.h"
 
 #include "Config/Stringstream.h"
 
@@ -191,7 +192,13 @@ namespace Mengine
 
 		PICKER_SERVICE()
 			->setScene( m_scene );
-        
+
+        if( SERVICE_EXIST( Mengine::NodeDebuggerServiceInterface ) == true )
+        {
+            NODEDEBUGGER_SERVICE()
+                ->setScene( m_scene );
+        }
+
         if( _cb != nullptr )
         {
             _cb->onSceneChange( m_scene, false, false );
@@ -314,6 +321,12 @@ namespace Mengine
 
 		PICKER_SERVICE()
 			->setScene( nullptr );
+
+        if( SERVICE_EXIST( Mengine::NodeDebuggerServiceInterface ) == true )
+        {
+            NODEDEBUGGER_SERVICE()
+                ->setScene( nullptr );
+        }
 
         if( _cb != nullptr )
         {
@@ -758,6 +771,12 @@ namespace Mengine
     {
 		PICKER_SERVICE()
 			->update();
+
+        if( SERVICE_EXIST( Mengine::NodeDebuggerServiceInterface ) == true )
+        {
+            NODEDEBUGGER_SERVICE()
+                ->update();
+        }
     
         if( m_globalInputHandler != nullptr )
         {

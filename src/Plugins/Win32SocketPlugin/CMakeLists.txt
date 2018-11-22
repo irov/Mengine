@@ -11,23 +11,23 @@ src
 	Win32SocketOutputStream.h
 	Win32SocketSystem.cpp
 	Win32SocketSystem.h
-    
+
     Win32SocketPlugin.cpp
     Win32SocketPlugin.h
 	Win32SocketPlugin.def
 )
 
-if( MENGINE_PLUGIN_WIN32_SOCKET_DLL )
+#if( MENGINE_PLUGIN_WIN32_SOCKET_DLL )
     add_definitions(-DMENGINE_PLUGIN_DLL)
-endif()
+#endif()
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
 
-if( MENGINE_PLUGIN_WIN32_SOCKET_DLL )
-    ADD_MENGINE_SHARED()
-else()
+#if( MENGINE_PLUGIN_WIN32_SOCKET_DLL )
+#    ADD_MENGINE_SHARED()
+#else()
     ADD_MENGINE_LIBRARY()
-endif()    
+#endif()
 
 set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER Plugins

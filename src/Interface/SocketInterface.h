@@ -6,6 +6,7 @@
 #include "Kernel/Mixin.h"
 
 #include "Config/Char.h"
+#include "Config/String.h"
 
 namespace Mengine
 {
@@ -21,11 +22,14 @@ namespace Mengine
     {
     public:
         virtual bool connect( const SocketConnectInfo & _data ) = 0;
+        virtual bool bind( const SocketConnectInfo & _data ) = 0;
+        virtual bool waitForClient() = 0;
+        virtual bool send( const Mengine::String & _str ) = 0;
         virtual void disconnect() = 0;
 
-    public:		
-		virtual OutputStreamInterfacePtr getSendStream() const = 0;
-		virtual InputStreamInterfacePtr getReceiveStream() const = 0;
+    public:
+        virtual OutputStreamInterfacePtr getSendStream() const = 0;
+        virtual InputStreamInterfacePtr getReceiveStream() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SocketInterface> SocketInterfacePtr;

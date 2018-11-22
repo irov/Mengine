@@ -10,16 +10,14 @@
 #include "Kernel/Animatable.h"
 #include "Kernel/Eventable.h"
 #include "Kernel/Unknowable.h"
+#include "Kernel/UpdateContext.h"
 
 #include "math/vec2.h"
 #include "math/uv4.h"
 #include "Kernel/Color.h"
 
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////
-    struct UpdateContext;
-    //////////////////////////////////////////////////////////////////////////
+{    
     class Surface
         : public Factorable
         , public Identity
@@ -69,4 +67,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Surface> SurfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

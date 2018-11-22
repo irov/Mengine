@@ -6,18 +6,15 @@
 #include "Interface/RenderScissorInterface.h"
 #include "Interface/RenderTargetInterface.h"
 
-#include "Kernel/RenderVisitor.h"
+#include "Kernel/Node.h"
 
 #include "Config/Lambda.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Node> NodePtr;    
-    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        void nodeRenderChildrenVisitor( const NodePtr & _node, const RenderVisitorPtr & _visitor, const RenderContext * _context );        
+        void nodeRenderChildren( const NodePtr & _node, const RenderContext * _context, bool _external );
         RenderInterface * getNodeRenderInheritance( Node * _node );
         const RenderViewportInterfacePtr & getRenderViewportInheritance( RenderInterface * _render );
         const RenderCameraInterfacePtr & getRenderCameraInheritance( RenderInterface * _render );

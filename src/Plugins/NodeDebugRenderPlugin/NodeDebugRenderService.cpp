@@ -1,4 +1,4 @@
-#include "DebugRenderService.h"
+#include "NodeDebugRenderService.h"
 
 #include "Interface/OptionsInterface.h"
 #include "Interface/PlayerInterface.h"
@@ -25,28 +25,28 @@
 #include <iomanip>
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( DebugRenderService, Mengine::DebugRenderService );
+SERVICE_FACTORY( NodeDebugRenderService, Mengine::NodeDebugRenderService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DebugRenderService::DebugRenderService()
+    NodeDebugRenderService::NodeDebugRenderService()
         : m_fps( 0 )
         , m_showDebugText( 0 )
         , m_globalKeyHandlerF9( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DebugRenderService::~DebugRenderService()
+    NodeDebugRenderService::~NodeDebugRenderService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugRenderService::_dependencyService()
+    void NodeDebugRenderService::_dependencyService()
     {
-        SERVICE_DEPENDENCY( DebugRenderService, PlayerServiceInterface );
+        SERVICE_DEPENDENCY( NodeDebugRenderService, PlayerServiceInterface );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DebugRenderService::_initializeService()
+    bool NodeDebugRenderService::_initializeService()
     {
         bool developmentMode = HAS_OPTION( "dev" );
 
@@ -89,7 +89,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugRenderService::_finalizeService()
+    void NodeDebugRenderService::_finalizeService()
     {
         bool developmentMode = HAS_OPTION( "dev" );
 
@@ -113,7 +113,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugRenderService::renderDebugNode( const NodePtr & _node, const RenderContext * _context, bool _external )
+    void NodeDebugRenderService::renderDebugNode( const NodePtr & _node, const RenderContext * _context, bool _external )
     {
         if( _node->isActivate() == false )
         {
@@ -194,11 +194,13 @@ namespace Mengine
             {
                 selfRender->render( &self_context );
 
-                for( const RenderVisitorPtr & visitor : m_renderVisitors )
-                {
-                    visitor->setRenderContext( &self_context );
+                const ConstString & type = _node->getType();
 
-                    _node->visit( visitor );
+                const NodeDebugRenderInterfacePtr & nodeDebugRender = m_nodeDebugRenders.find( type );
+
+                if( nodeDebugRender != nullptr )
+                {
+                    nodeDebugRender->render( &self_context, _node.get() );
                 }
             }
 
@@ -225,37 +227,35 @@ namespace Mengine
                 this->renderDebugNode( _child, _context, false );
             } );
 
-            for( const RenderVisitorPtr & visitor : m_renderVisitors )
-            {
-                visitor->setRenderContext( _context );
+            const ConstString & type = _node->getType();
 
-                _node->visit( visitor );
+            const NodeDebugRenderInterfacePtr & nodeDebugRender = m_nodeDebugRenders.find( type );
+
+            if( nodeDebugRender != nullptr )
+            {
+                nodeDebugRender->render( _context, _node.get() );
             }
         }
     }    
     //////////////////////////////////////////////////////////////////////////
-    void DebugRenderService::addDebugNodeRenderVisitor( const RenderVisitorPtr & _renderVisitor )
+    void NodeDebugRenderService::addNodeDebugRender( const ConstString & _type, const NodeDebugRenderInterfacePtr & _nodeDebugRender )
     {
-        m_renderVisitors.emplace_back( _renderVisitor );
+        m_nodeDebugRenders.insert( _type, _nodeDebugRender );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugRenderService::removeDebugNodeRenderVisitor( const RenderVisitorPtr & _renderVisitor )
+    void NodeDebugRenderService::removeNodeDebugRender( const ConstString & _type )
     {
-        VectorRenderVisitor::iterator it_erase = std::find( m_renderVisitors.begin(), m_renderVisitors.end(), _renderVisitor );
-
-        MENGINE_ASSERTION( it_erase != m_renderVisitors.end() );
-
-        m_renderVisitors.erase( it_erase );
+        m_nodeDebugRenders.remove( _type );
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugRenderService::updateDebugInfo( const UpdateContext * _context )
+    void NodeDebugRenderService::updateDebugInfo( const UpdateContext * _context )
     {
         (void)_context;
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void DebugRenderService::renderDebugInfo( const RenderContext * _context )
+    void NodeDebugRenderService::renderDebugInfo( const RenderContext * _context )
     {
         bool developmentMode = HAS_OPTION( "dev" );
 
@@ -725,7 +725,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////     
-    void DebugRenderService::toggleDebugText_()
+    void NodeDebugRenderService::toggleDebugText_()
     {
         ++m_showDebugText;
         m_showDebugText %= 7;

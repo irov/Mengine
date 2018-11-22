@@ -2,18 +2,18 @@
 
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 
-#include "Plugins/DebugRenderPlugin/DebugRenderInterface.h"
+#include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
 
-#include "Movie2DebugRenderVisitor.h"
+#include "Movie2DebugRender.h"
 
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
@@ -44,18 +44,18 @@ PLUGIN_FACTORY( Movie, Mengine::MoviePlugin )
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static void * stdex_movie_alloc( void * _data, size_t _size )
+    static ae_voidptr_t stdex_movie_alloc( ae_userdata_t _userdata, ae_size_t _size )
     {
-        (void)_data;
+        AE_UNUSED( _userdata );
 
         return stdex_malloc( _size, "Movie" );
         //return new uint8_t[_size];
         //return malloc( _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void * stdex_movie_alloc_n( void * _data, size_t _size, size_t _count )
+    static ae_voidptr_t stdex_movie_alloc_n( ae_userdata_t _userdata, ae_size_t _size, ae_size_t _count )
     {
-        (void)_data;
+        AE_UNUSED( _userdata );
 
         size_t total = _size * _count;
 
@@ -64,27 +64,27 @@ namespace Mengine
         //return malloc( total );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void stdex_movie_free( void * _data, const void * _ptr )
+    static void stdex_movie_free( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
     {
-        (void)_data;
+        AE_UNUSED( _userdata );
 
         stdex_free( (void *)_ptr, "Movie" );
         //delete[] _ptr;
         //free( (void *)_ptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void stdex_movie_free_n( void * _data, const void * _ptr )
+    static void stdex_movie_free_n( ae_userdata_t _userdata, ae_constvoidptr_t _ptr )
     {
-        (void)_data;
+        AE_UNUSED( _userdata );
 
         stdex_free( (void *)_ptr, "Movie" );
         //delete[] _ptr;
         //free( (void *)_ptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    static void stdex_movie_logerror( void * _data, aeMovieErrorCode _code, const char * _format, ... )
+    static void stdex_movie_logerror( ae_userdata_t _userdata, aeMovieErrorCode _code, const ae_char_t * _format, ... )
     {
-        (void)_data;
+        AE_UNUSED( _userdata );
 
         switch( _code )
         {
@@ -432,9 +432,9 @@ namespace Mengine
             pybind::interface_<Movie2Slot, pybind::bases<Node> >( kernel, "Movie2Slot", false )
                 ;
 
-            pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable> >( kernel, "Movie2SubComposition", false )
-                .def( "setSubMovieCompositionName", &Movie2SubComposition::setSubMovieCompositionName )
-                .def( "getSubMovieCompositionName", &Movie2SubComposition::getSubMovieCompositionName )
+            pybind::interface_<Movie2SubComposition, pybind::bases<Eventable, Animatable, Scriptable, Identity> >( kernel, "Movie2SubComposition", false )
+                .def( "setEnable", &Movie2SubComposition::setEnable )
+                .def( "getEnable", &Movie2SubComposition::getEnable )
                 .def_static_native_kernel( "setEventListener", &Detail::s_Movie2SubComposition_setEventListener )
                 ;
 
@@ -489,14 +489,10 @@ namespace Mengine
             return false;
         }
 
-        if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+        if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
         {
-            RenderVisitorPtr movie2RenderVisitor = new FactorableUnique<Movie2DebugRenderVisitor>();
-
-            DEBUGRENDER_SERVICE()
-                ->addDebugNodeRenderVisitor( movie2RenderVisitor );
-
-            m_movie2RenderVisitor = movie2RenderVisitor;
+            NODEDEBUGRENDER_SERVICE()
+                ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<Movie2DebugRender>() );
         }
         
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
@@ -546,18 +542,16 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
 
-        if( SERVICE_EXIST( DebugRenderServiceInterface ) == true )
+        if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
         {
-            DEBUGRENDER_SERVICE()
-                ->removeDebugNodeRenderVisitor( m_movie2RenderVisitor );
-            m_movie2RenderVisitor = nullptr;
+            NODEDEBUGRENDER_SERVICE()
+                ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ) );
         }
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
             RESOURCEVALIDATE_SERVICE()
                 ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
-
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )

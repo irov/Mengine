@@ -128,7 +128,7 @@ namespace Mengine
 
         const aeMovieResource * movie_resource = _callbackData->resource;
 
-        Resource * resource = reinterpret_cast<Resource *>(movie_resource->data);
+        Resource * resource = reinterpret_cast<Resource *>(movie_resource->userdata);
 
         aeMovieResourceTypeEnum resource_type = movie_resource->type;
 
@@ -168,16 +168,16 @@ namespace Mengine
         return AE_TRUE;
     }
     //////////////////////////////////////////////////////////////////////////
-    static ae_void_t __movie_cache_uv_deleter( const aeMovieDataCacheUVDeleterCallbackData * _callbackData, ae_voidptr_t _ud )
+    static ae_void_t __movie_cache_uv_deleter( const aeMovieDataCacheUVDeleterCallbackData * _callbackData, ae_userdata_t _ud )
     {
         (void)_ud;
 
-        if( _callbackData->uv_cache_data == AE_NULL )
+        if( _callbackData->uv_cache_userdata == AE_NULL )
         {
             return;
         }
 
-        Helper::freeArrayT( reinterpret_cast<mt::vec2f *>(_callbackData->uv_cache_data) );
+        Helper::freeArrayT( reinterpret_cast<mt::vec2f *>(_callbackData->uv_cache_userdata) );
     }
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie2::ResourceMovie2()

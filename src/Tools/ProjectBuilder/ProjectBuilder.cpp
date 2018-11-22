@@ -43,7 +43,7 @@
 #include "Interface/DataInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/ConverterInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ImageCodecInterface.h"
@@ -53,7 +53,7 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
-#include "Environment/WIN32/WindowsIncluder.h"
+#include "Environment/Windows/WindowsIncluder.h"
 
 #include "Config/String.h"
 

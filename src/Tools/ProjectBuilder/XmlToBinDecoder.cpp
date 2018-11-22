@@ -7,7 +7,7 @@
 #include "Interface/LoggerInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/ConverterInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/PluginInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/CodecServiceInterface.h"

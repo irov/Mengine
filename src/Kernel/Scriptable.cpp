@@ -1,6 +1,6 @@
 #include "Kernel/Scriptable.h"
 
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 namespace Mengine
 {

@@ -62,6 +62,26 @@ namespace Mengine
         this->invalidateWorldMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
+    void Transformation::removeRelationTransformation()
+    {
+        if( m_relationTransformation == nullptr )
+        {
+            return;
+        }
+        
+        bool identityPrevTransformation = m_relationTransformation->isIdentityWorldMatrix();
+
+        m_relationTransformation->removeRelationTransformationChild_( this );
+        m_relationTransformation = nullptr;
+
+        if( identityPrevTransformation == true )
+        {
+            return;
+        }
+
+        this->invalidateWorldMatrix();
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Transformation::addRelationTransformationChild_( Transformation * _child )
     {
         m_relationChildren.push_back( _child );
@@ -71,7 +91,7 @@ namespace Mengine
     {
         VectorTransformation::iterator it_erase = std::find( m_relationChildren.begin(), m_relationChildren.end(), _child );
 
-        MENGINE_ASSERTION( it_erase != m_relationChildren.end() );
+        MENGINE_ASSERTION( it_erase != m_relationChildren.end(), ("remove relation transformation not found") );
         
         *it_erase = m_relationChildren.back();
         m_relationChildren.pop_back();

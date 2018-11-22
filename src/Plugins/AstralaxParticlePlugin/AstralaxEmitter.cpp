@@ -255,17 +255,19 @@ namespace Mengine
         m_emitter->resume();
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::_stop( uint32_t _enumerator )
+    bool AstralaxEmitter::_stop( uint32_t _enumerator )
     {
         if( this->isActivate() == false )
         {
-            return;
+            return false;
         }
 
         m_emitter->stop();
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::_end( uint32_t _enumerator )

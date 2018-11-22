@@ -543,6 +543,25 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void ResourceService::foreachGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const LambdaResource & _lambda ) const
+    {
+        ResourceCacheKey cache_key = std::make_pair( _fileGroup->getName(), _groupName );
+
+        MapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( cache_key );
+
+        if( it_cache_found == m_resourcesCache.end() )
+        {
+            return;
+        }
+
+        const VectorResources & resources = it_cache_found->second;
+
+        for( const ResourcePtr & resource : resources )
+        {
+            _lambda( resource );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void ResourceService::visitResources( const VisitorPtr & _visitor ) const
     {
         for( const ResourcePtr & resource : m_resources )
@@ -551,9 +570,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceService::visitGroupResources( const FileGroupInterfacePtr & _category, const ConstString & _group, const VisitorPtr & _visitor ) const
+    void ResourceService::visitGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const VisitorPtr & _visitor ) const
     {
-        ResourceCacheKey cache_key = std::make_pair( _category->getName(), _group );
+        ResourceCacheKey cache_key = std::make_pair( _fileGroup->getName(), _groupName );
 
         MapResourceCache::const_iterator it_cache_found = m_resourcesCache.find( cache_key );
 

@@ -21,6 +21,7 @@ namespace Mengine
 
     public:
         void setRelationRender( RenderInterface * _relationRender ) override;
+        void removeRelationRender() override;
         inline BaseRender * getRelationRender() const override;
 
     public:

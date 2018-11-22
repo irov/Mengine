@@ -500,6 +500,14 @@ static ae_bool_t __visit_sub_composition( const aeMovieComposition * _compositio
     xmlSubComposition.append_attribute( "Index" ).set_value( _index );
     xmlSubComposition.append_attribute( "Name" ).set_value( _name );
 
+    const aeMovieCompositionData * subcomposition_composition_data = ae_get_movie_sub_composition_composition_data( _subcomposition );
+
+    ae_float_t subcomposition_composition_data_duration = ae_get_movie_composition_data_duration( subcomposition_composition_data );
+    ae_float_t subcomposition_composition_data_frame_duration = ae_get_movie_composition_data_frame_duration( subcomposition_composition_data );
+
+    xmlSubComposition.append_attribute( "Duration" ).set_value( sf( subcomposition_composition_data_duration * 1000.f ).c_str() );
+    xmlSubComposition.append_attribute( "FrameDuration" ).set_value( sf( subcomposition_composition_data_frame_duration * 1000.f ).c_str() );
+
     return AE_TRUE;
 }
 //////////////////////////////////////////////////////////////////////////

@@ -470,7 +470,10 @@ namespace Mengine
 
             node->setMovie( this );
 
-            node->setSubMovieCompositionName( subcomposition.name );
+            node->setName( subcomposition.name );
+            node->setType( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
+            node->setDuration( subcomposition.duration );
+            node->setFrameDuration( subcomposition.frameDuration );
 
             this->addSubMovieComposition_( subcomposition.name, node );
         }
@@ -575,7 +578,7 @@ namespace Mengine
     {
         if( m_composition == nullptr )
         {
-            LOGGER_ERROR( "Movie2::setEnableMovieLayers '%s' invalid get layer '%s' not compile"
+            LOGGER_ERROR( "movie '%s' invalid get layer '%s' not compile"
                 , this->getName().c_str()
                 , _name.c_str()
             );
@@ -590,8 +593,8 @@ namespace Mengine
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        ae_voidptr_t composition_camera_data = ae_get_movie_composition_camera_data( m_composition );
-        (void)composition_camera_data;
+        ae_userdata_t composition_camera_userdata = ae_get_movie_composition_camera_userdata( m_composition );
+        (void)composition_camera_userdata;
 
         ae_uint32_t compute_movie_mesh_iterator = 0;
 
@@ -600,9 +603,9 @@ namespace Mengine
         {
             RenderContext context;
 
-            if( mesh.camera_data != nullptr )
+            if( mesh.camera_userdata != nullptr )
             {
-                Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_data);
+                Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_userdata);
 
                 context.camera = camera->projection;
                 context.viewport = camera->viewport;
@@ -628,37 +631,37 @@ namespace Mengine
                 context.scissor = _context->scissor;
             }
 
-            if( mesh.track_matte_data == nullptr )
+            if( mesh.track_matte_userdata == nullptr )
             {
                 switch( mesh.layer_type )
                 {
                 case AE_MOVIE_LAYER_TYPE_SLOT:
                     {
-                        Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_data);
+                        Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_userdata);
 
                         _lambda( node, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
-                        HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(mesh.element_data);
+                        HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(mesh.element_userdata);
 
                         _lambda( node, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
-                        ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_data);
+                        ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_userdata);
 
                         _lambda( node, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_TEXT:
                     {
-                        TextField * node = reinterpret_node_cast<TextField *>(mesh.element_data);
+                        TextField * node = reinterpret_node_cast<TextField *>(mesh.element_userdata);
 
                         _lambda( node, &context );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        Node * node = reinterpret_node_cast<Node *>(mesh.element_data);
+                        Node * node = reinterpret_node_cast<Node *>(mesh.element_userdata);
 
                         _lambda( node, &context );
                     }break;
@@ -673,6 +676,10 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
+            LOGGER_ERROR( "movie '%s' is not compile"
+                , this->getName().c_str()
+            );
+
             return false;
         }
 
@@ -704,12 +711,23 @@ namespace Mengine
             ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_stop( uint32_t _enumerator )
+    bool Movie2::_stop( uint32_t _enumerator )
     {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "movie '%s' is not compile"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
+
         ae_stop_movie_composition( m_composition );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_end( uint32_t _enumerator )
@@ -721,6 +739,15 @@ namespace Mengine
     bool Movie2::_interrupt( uint32_t _enumerator )
     {
         (void)_enumerator;
+
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "movie '%s' is not compile"
+                , this->getName().c_str()
+            );
+
+            return false;
+        }
 
         ae_interrupt_movie_composition( m_composition, AE_FALSE );
 
@@ -798,7 +825,7 @@ namespace Mengine
     {
         (void)_data;
 
-        Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(_callbackData->camera_data);
+        Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(_callbackData->camera_userdata);
 
         //camera
         mt::vec3f cameraTarget;
@@ -851,7 +878,7 @@ namespace Mengine
         {
             Node * nodeParent = _node->getParent();
 
-            MatrixProxy * matrixProxy = static_node_cast<MatrixProxy *>(nodeParent);
+            MatrixProxy * matrixProxy = node_static_cast<MatrixProxy *>(nodeParent);
 
             if( _immutable_matrix == AE_FALSE )
             {
@@ -1028,7 +1055,7 @@ namespace Mengine
                     //unknownParticleEmitter2->setEmitterTranslateWithParticle( true );
                 }
 
-                Resource * resourceParticle = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
+                Resource * resourceParticle = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
 
                 unknownParticleEmitter2->setResourceParticle( resourceParticle );
 
@@ -1067,8 +1094,8 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surfaceTrackMatte->setName( c_name );
 
-                    ResourceImage * resourceImage = reinterpret_node_cast<ResourceImage *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
-                    ResourceImage * resourceTrackMatteImage = reinterpret_node_cast<ResourceImage *>(ae_get_movie_layer_data_resource_data( _callbackData->track_matte_layer ));
+                    ResourceImage * resourceImage = reinterpret_node_cast<ResourceImage *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
+                    ResourceImage * resourceTrackMatteImage = reinterpret_node_cast<ResourceImage *>(ae_get_movie_layer_data_resource_userdata( _callbackData->track_matte_layer ));
 
                     surfaceTrackMatte->setResourceImage( resourceImage );
                     surfaceTrackMatte->setResourceTrackMatteImage( resourceTrackMatteImage );
@@ -1121,7 +1148,7 @@ namespace Mengine
                     ConstString c_name = Helper::stringizeString( layer_name );
                     surface->setName( c_name );
 
-                    Resource * resourceVideo = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
+                    Resource * resourceVideo = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
 
                     UnknownVideoSurfaceInterfacePtr unknownVideoSurface = surface->getUnknown();
 
@@ -1168,7 +1195,7 @@ namespace Mengine
                         surfaceSound->setSoundCategory( ES_SOURCE_CATEGORY_MUSIC );
                     }
 
-                    ResourceSound * resourceSound = reinterpret_node_cast<ResourceSound *>(ae_get_movie_layer_data_resource_data( _callbackData->layer ));
+                    ResourceSound * resourceSound = reinterpret_node_cast<ResourceSound *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
 
                     surfaceSound->setResourceSound( resourceSound );
 
@@ -1255,7 +1282,7 @@ namespace Mengine
         {
         case AE_MOVIE_LAYER_TYPE_PARTICLE:
             {
-                Node * particle = reinterpret_node_cast<Node *>(_callbackData->element);
+                Node * particle = reinterpret_node_cast<Node *>(_callbackData->element_userdata);
 
                 Detail::updateMatrixProxy( particle, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
 
@@ -1324,7 +1351,7 @@ namespace Mengine
             }break;
         case AE_MOVIE_LAYER_TYPE_VIDEO:
             {
-                Surface * surface = reinterpret_node_cast<Surface *>(_callbackData->element);
+                Surface * surface = reinterpret_node_cast<Surface *>(_callbackData->element_userdata);
 
                 AnimationInterface * surface_animation = surface->getAnimation();
 
@@ -1391,7 +1418,7 @@ namespace Mengine
             }break;
         case AE_MOVIE_LAYER_TYPE_SOUND:
             {
-                SurfaceSound * surface = reinterpret_node_cast<SurfaceSound *>(_callbackData->element);
+                SurfaceSound * surface = reinterpret_node_cast<SurfaceSound *>(_callbackData->element_userdata);
 
                 AnimationInterface * surface_animation = surface->getAnimation();
 
@@ -1460,25 +1487,25 @@ namespace Mengine
             }break;
         case AE_MOVIE_LAYER_TYPE_SLOT:
             {
-                Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(_callbackData->element);
+                Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(_callbackData->element_userdata);
 
                 Detail::updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
         case AE_MOVIE_LAYER_TYPE_SPRITE:
             {
-                ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(_callbackData->element);
+                ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(_callbackData->element_userdata);
 
                 Detail::updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
         case AE_MOVIE_LAYER_TYPE_TEXT:
             {
-                TextField * node = reinterpret_node_cast<TextField *>(_callbackData->element);
+                TextField * node = reinterpret_node_cast<TextField *>(_callbackData->element_userdata);
 
                 Detail::updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
         case AE_MOVIE_LAYER_TYPE_SOCKET:
             {
-                HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(_callbackData->element);
+                HotSpotPolygon * node = reinterpret_node_cast<HotSpotPolygon *>(_callbackData->element_userdata);
 
                 Detail::updateMatrixProxy( node, _callbackData->immutable_matrix, _callbackData->matrix, _callbackData->immutable_color, _callbackData->color, _callbackData->opacity );
             }break;
@@ -1518,14 +1545,14 @@ namespace Mengine
         {
         case AE_MOVIE_STATE_UPDATE_BEGIN:
             {
-                TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
+                TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->track_matte_userdata);
 
                 desc->matrix.from_f12( _callbackData->matrix );
                 desc->mesh = *_callbackData->mesh;
             }break;
         case AE_MOVIE_STATE_UPDATE_PROCESS:
             {
-                TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->track_matte_data);
+                TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->track_matte_userdata);
 
                 desc->matrix.from_f12( _callbackData->matrix );
                 desc->mesh = *_callbackData->mesh;
@@ -1539,7 +1566,7 @@ namespace Mengine
     {
         (void)_ud;
 
-        TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->element);
+        TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->element_userdata);
 
         delete desc;
     }
@@ -1645,7 +1672,7 @@ namespace Mengine
     {
         (void)_ud;
 
-        Layer * parent_layer = reinterpret_node_cast<Layer *>(_callbackData->scene_effect_data);
+        Layer * parent_layer = reinterpret_node_cast<Layer *>(_callbackData->scene_effect_userdata);
 
         mt::vec3f anchor_point;
         anchor_point.from_f2( _callbackData->anchor_point, 0.f );
@@ -1708,7 +1735,7 @@ namespace Mengine
     {
         (void)_ud;
 
-        Movie2SubComposition * m2sc = reinterpret_node_cast<Movie2SubComposition *>(_callbackData->subcomposition_data);
+        Movie2SubComposition * m2sc = reinterpret_node_cast<Movie2SubComposition *>(_callbackData->subcomposition_userdata);
 
         if( _callbackData->state == AE_MOVIE_COMPOSITION_END )
         {
@@ -2119,24 +2146,25 @@ namespace Mengine
         float total_color_b = total_color.getB();
         float total_color_a = total_color.getA();
 
-        ae_voidptr_t composition_camera_data = ae_get_movie_composition_camera_data( m_composition );
-        (void)composition_camera_data;
+        ae_voidptr_t composition_camera_userdata = ae_get_movie_composition_camera_userdata( m_composition );
+        (void)composition_camera_userdata;
 
         ae_uint32_t compute_movie_mesh_iterator = 0;
 
         aeMovieRenderMesh mesh;
         while( ae_compute_movie_mesh( m_composition, &compute_movie_mesh_iterator, &mesh ) == AE_TRUE )
         {
-            Resource * resource_reference = reinterpret_node_cast<Resource *>(mesh.resource_data);
+            Resource * resource_reference = reinterpret_node_cast<Resource *>(mesh.resource_userdata);
 
             RenderContext context;
 
-            if( mesh.camera_data != nullptr )
+            if( mesh.camera_userdata != nullptr )
             {
-                Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_data);
+                Movie2::Camera * camera = reinterpret_cast<Movie2::Camera *>(mesh.camera_userdata);
 
                 context.camera = camera->projection;
                 context.viewport = camera->viewport;
+
                 context.transformation = _context->transformation;
                 context.scissor = _context->scissor;
                 context.target = _context->target;
@@ -2161,16 +2189,17 @@ namespace Mengine
 
             //ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
 
-            if( mesh.track_matte_data == nullptr )
+            if( mesh.track_matte_userdata == nullptr )
             {
                 switch( mesh.layer_type )
                 {
                 case AE_MOVIE_LAYER_TYPE_SLOT:
                     {
-                        Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_data);
+                        Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_userdata);
 
-                        RenderInterface * render = node->getRender();
-                        render->renderWithChildren( &context, true );
+                        //RenderInterface * render = node->getRender();
+                        //render->renderWithChildren( &context, true );
+                        Helper::nodeRenderChildren( node, &context, true );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
@@ -2182,24 +2211,27 @@ namespace Mengine
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SPRITE:
                     {
-                        ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_data);
+                        ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_userdata);
 
-                        RenderInterface * render = node->getRender();
-                        render->renderWithChildren( &context, true );
+                        //RenderInterface * render = node->getRender();
+                        //render->renderWithChildren( &context, true );
+                        Helper::nodeRenderChildren( node, &context, true );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_TEXT:
                     {
-                        TextField * node = reinterpret_node_cast<TextField *>(mesh.element_data);
+                        TextField * node = reinterpret_node_cast<TextField *>(mesh.element_userdata);
 
-                        RenderInterface * render = node->getRender();
-                        render->renderWithChildren( &context, true );
+                        //RenderInterface * render = node->getRender();
+                        //render->renderWithChildren( &context, true );
+                        Helper::nodeRenderChildren( node, &context, true );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
-                        Node * node = reinterpret_node_cast<Node *>(mesh.element_data);
+                        Node * node = reinterpret_node_cast<Node *>(mesh.element_userdata);
 
-                        RenderInterface * render = node->getRender();
-                        render->renderWithChildren( &context, true );
+                        //RenderInterface * render = node->getRender();
+                        //render->renderWithChildren( &context, true );
+                        Helper::nodeRenderChildren( node, &context, true );
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {
@@ -2311,7 +2343,7 @@ namespace Mengine
                             v.color = total_mesh_color;
                         }
 
-                        if( mesh.uv_cache_data == AE_NULL )
+                        if( mesh.uv_cache_userdata == AE_NULL )
                         {
                             for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                             {
@@ -2327,7 +2359,7 @@ namespace Mengine
                         }
                         else
                         {
-                            const mt::vec2f * uvs = reinterpret_cast<const mt::vec2f *>(mesh.uv_cache_data);
+                            const mt::vec2f * uvs = reinterpret_cast<const mt::vec2f *>(mesh.uv_cache_userdata);
 
                             for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                             {
@@ -2358,7 +2390,7 @@ namespace Mengine
                             continue;
                         }
 
-                        Surface * surface = reinterpret_node_cast<Surface *>(mesh.element_data);
+                        Surface * surface = reinterpret_node_cast<Surface *>(mesh.element_userdata);
 
                         const Color & surfaceColor = surface->getColor();
 
@@ -2410,7 +2442,7 @@ namespace Mengine
                             continue;
                         }
 
-                        const SurfaceTrackMatte * surfaceTrackMatte = reinterpret_node_cast<const SurfaceTrackMatte *>(mesh.element_data);
+                        const SurfaceTrackMatte * surfaceTrackMatte = reinterpret_node_cast<const SurfaceTrackMatte *>(mesh.element_userdata);
 
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
@@ -2418,7 +2450,7 @@ namespace Mengine
                         const ResourceImagePtr & resourceImage = surfaceTrackMatte->getResourceImage();
                         const ResourceImagePtr & resourceTrackMatteImage = surfaceTrackMatte->getResourceTrackMatteImage();
 
-                        const TrackMatteDesc * track_matte_desc = reinterpret_cast<const TrackMatteDesc *>(mesh.track_matte_data);
+                        const TrackMatteDesc * track_matte_desc = reinterpret_cast<const TrackMatteDesc *>(mesh.track_matte_userdata);
 
                         const aeMovieRenderMesh * track_matte_mesh = &track_matte_desc->mesh;
 

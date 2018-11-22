@@ -50,6 +50,9 @@ namespace Mengine
         void setRelationTransformation( const TransformationPtr & _relation );
         inline Transformation * getRelationTransformation() const;
 
+    public:
+        void removeRelationTransformation();
+
     protected:
         void addRelationTransformationChild_( Transformation * _child );
         void removeRelationTransformationChild_( Transformation * _child );

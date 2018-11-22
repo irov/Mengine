@@ -1,7 +1,7 @@
 #include "PythonWrapper.h"
 
-#include "Interface/StringizeServiceInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "pybind/pybind.hpp"
 #include "pybind/stl/stl_type_cast.hpp"

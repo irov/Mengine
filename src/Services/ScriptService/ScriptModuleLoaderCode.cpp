@@ -2,7 +2,7 @@
 
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/MemoryInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
 

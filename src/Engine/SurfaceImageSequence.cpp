@@ -220,7 +220,7 @@ namespace Mengine
         (void)_enumerator;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceImageSequence::_stop( uint32_t _enumerator )
+    bool SurfaceImageSequence::_stop( uint32_t _enumerator )
     {
         if( this->isCompile() == false )
         {
@@ -228,11 +228,13 @@ namespace Mengine
                 , getName().c_str()
             );
 
-            return;
+            return false;
         }
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceImageSequence::_end( uint32_t _enumerator )

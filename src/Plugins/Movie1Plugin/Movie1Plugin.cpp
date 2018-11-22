@@ -3,14 +3,16 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ScriptSystemInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 
+#include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
+
 #include "Environment/Python/PythonScriptWrapper.h"
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 
@@ -41,6 +43,7 @@
 
 #include "DataflowAEK.h"
 
+#include "ResourceMoviePrefetcher.h"
 #include "ResourceMovieValidator.h"
 
 #include "pybind/pybind.hpp"
@@ -420,14 +423,18 @@ namespace Mengine
             return py_list;
         }
         //////////////////////////////////////////////////////////////////////////
-        class PythonVisitorMovieLayer
+        class PyVisitorMovieLayer
             : public VisitorMovieNodeInterface
             , public Factorable
         {
         public:
-            PythonVisitorMovieLayer( pybind::kernel_interface * _kernel, const pybind::list & _list )
+            PyVisitorMovieLayer( pybind::kernel_interface * _kernel, const pybind::list & _list )
                 : m_kernel( _kernel )
                 , m_list( _list )
+            {
+            }
+
+            ~PyVisitorMovieLayer()
             {
             }
 
@@ -446,7 +453,7 @@ namespace Mengine
         {
             pybind::list py_list( _kernel );
 
-            VisitorMovieNodeInterfacePtr visitor = new FactorableUnique<PythonVisitorMovieLayer>( _kernel, py_list );
+            VisitorMovieNodeInterfacePtr visitor = new FactorableUnique<PyVisitorMovieLayer>( _kernel, py_list );
             _movie->visitMovieLayer( _type, visitor );
 
             return py_list;
@@ -1625,6 +1632,12 @@ namespace Mengine
         CODEC_SERVICE()
             ->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
+        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
+        {
+            RESOURCEPREFETCHER_SERVICE()
+                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<ResourceMoviePrefetcher>() );
+        }
+
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
             RESOURCEVALIDATE_SERVICE()
@@ -1692,6 +1705,12 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );
+
+        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
+        {
+            RESOURCEPREFETCHER_SERVICE()
+                ->removeResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
+        }
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {

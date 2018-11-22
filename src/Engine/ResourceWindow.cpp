@@ -72,7 +72,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceWindow::setElementResourceImageName( uint32_t _type, const ConstString & _resourceImageName )
     {
-        MENGINE_ASSERTION( _type >= ResourceWindow_Count );
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count, ("resource window '%s' set invalid type '%d' (resource)"
+            , this->getName().c_str()
+            , _type
+            ) );
 
         WindowElement & element = m_elements[_type];
 
@@ -81,7 +84,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceWindow::getElementResourceImageName( uint32_t _type ) const
     {
-        MENGINE_ASSERTION( _type >= ResourceWindow_Count );
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count, ("resource window '%s' get invalid type '%d' (resource)"            
+            , this->getName().c_str()
+            , _type
+        ) );
 
         const WindowElement & element = m_elements[_type];
 
@@ -92,7 +98,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceWindow::setElementOffset( uint32_t _type, const mt::vec2f & _offset )
     {
-        MENGINE_ASSERTION( _type >= ResourceWindow_Count );
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count, ("resource window '%s' set invalid type '%d' (offset)"
+            , this->getName().c_str()
+            , _type
+            ) );
 
         WindowElement & element = m_elements[_type];
 
@@ -101,7 +110,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const mt::vec2f & ResourceWindow::getElementOffset( uint32_t _type ) const
     {
-        MENGINE_ASSERTION( _type >= ResourceWindow_Count );
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count, ("resource window '%s' get invalid type '%d' (offset)"
+            , this->getName().c_str()
+            , _type
+            ) );
 
         const WindowElement & element = m_elements[_type];
 
@@ -112,7 +124,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & ResourceWindow::getElementResourceImage( uint32_t _type ) const
     {
-        MENGINE_ASSERTION( _type >= ResourceWindow_Count );
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count, ("resource window '%s' get invalid type '%d' (image)"
+            , this->getName().c_str()
+            , _type
+            ) );
 
         const WindowElement & element = m_elements[_type];
 

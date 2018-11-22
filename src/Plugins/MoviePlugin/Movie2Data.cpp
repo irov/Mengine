@@ -15,8 +15,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Movie2Data::~Movie2Data()
     {
-        ae_delete_movie_data( m_movieData );
-        m_movieData = nullptr;
+        if( m_movieData != nullptr )
+        {
+            ae_delete_movie_data( m_movieData );
+            m_movieData = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2Data::acquire()

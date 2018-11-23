@@ -65,7 +65,7 @@ namespace Mengine
             uint32_t channels = 3;
 
             if( resourceImage->hasAlpha() == true )
-            { 
+            {
                 channels = 4;
             }
 

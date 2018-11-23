@@ -3,76 +3,76 @@
 //////////////////////////////////////////////////////////////////////////
 void message_error( const char * _format, ... )
 {
-	va_list argList;
+    va_list argList;
 
-	va_start( argList, _format );
+    va_start( argList, _format );
 
-	char str[2048];
+    char str[2048];
 
-	vsnprintf( str, 2048 - 1, _format, argList );
-    
-	va_end( argList );
+    vsnprintf( str, 2048 - 1, _format, argList );
 
-	printf( str );
+    va_end( argList );
+
+    printf( str );
 }
 //////////////////////////////////////////////////////////////////////////
 void parse_arg( const std::wstring & _str, bool & _value )
 {
-	uint32_t value;
-	swscanf( _str.c_str(), L"%u", &value );
+    uint32_t value;
+    swscanf( _str.c_str(), L"%u", &value );
 
-	_value = (value != 0);
+    _value = (value != 0);
 }
 //////////////////////////////////////////////////////////////////////////
 void parse_arg( const std::wstring & _str, uint32_t & _value )
 {
-	uint32_t value;
-	swscanf( _str.c_str(), L"%u", &value );
+    uint32_t value;
+    swscanf( _str.c_str(), L"%u", &value );
 
-	_value = value;
+    _value = value;
 }
 //////////////////////////////////////////////////////////////////////////
 void parse_arg( const std::wstring & _str, float & _value )
 {
-	float value;
-	swscanf( _str.c_str(), L"%f", &value );
+    float value;
+    swscanf( _str.c_str(), L"%f", &value );
 
-	_value = value;
+    _value = value;
 }
 //////////////////////////////////////////////////////////////////////////
 void parse_arg( const std::wstring & _str, double & _value )
 {
-	double value;
-	swscanf( _str.c_str(), L"%lf", &value );
+    double value;
+    swscanf( _str.c_str(), L"%lf", &value );
 
-	_value = value;
+    _value = value;
 }
 //////////////////////////////////////////////////////////////////////////
 void parse_arg( const std::wstring & _str, std::wstring & _value )
 {
-	_value = _str;
+    _value = _str;
 }
 //////////////////////////////////////////////////////////////////////////
 void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
 {
-	if( _path.empty() == true )
-	{
-		wcscpy( _quotePath, L"" );
+    if( _path.empty() == true )
+    {
+        wcscpy( _quotePath, L"" );
 
-		return;
-	}
+        return;
+    }
 
-	std::wstring true_path = _path;
+    std::wstring true_path = _path;
 
-	if( _path[0] == L'/' )
-	{
-		true_path[0] = true_path[1];
-		true_path[1] = L':';
-	}
+    if( _path[0] == L'/' )
+    {
+        true_path[0] = true_path[1];
+        true_path[1] = L':';
+    }
 
-	const WCHAR * pathBuffer = true_path.c_str();
+    const WCHAR * pathBuffer = true_path.c_str();
 
-	PathCanonicalize( _quotePath, pathBuffer );
+    PathCanonicalize( _quotePath, pathBuffer );
 
     if( _quotePath[0] == L'\"' )
     {
@@ -81,60 +81,60 @@ void ForcePathQuoteSpaces( WCHAR * _quotePath, const std::wstring & _path )
 
     size_t pathSize = wcslen( _quotePath );
 
-	wmemmove( _quotePath + 1, _quotePath, pathSize );
-	_quotePath[0] = '\"';
-	_quotePath[pathSize + 1] = '\"';
-	_quotePath[pathSize + 2] = 0;
+    wmemmove( _quotePath + 1, _quotePath, pathSize );
+    _quotePath[0] = '\"';
+    _quotePath[pathSize + 1] = '\"';
+    _quotePath[pathSize + 2] = 0;
 };
 //////////////////////////////////////////////////////////////////////////
 int ForceRemoveDirectory( LPCTSTR dir )
 {
-	size_t len = wcslen( dir ) + 2; // required to set 2 nulls at end of argument to SHFileOperation.
-	wchar_t * tempdir = (wchar_t*)malloc( len * sizeof( wchar_t ) );
-	memset( tempdir, 0, len * sizeof( wchar_t ) );
-	wcscpy( tempdir, dir );
+    size_t len = wcslen( dir ) + 2; // required to set 2 nulls at end of argument to SHFileOperation.
+    wchar_t * tempdir = (wchar_t*)malloc( len * sizeof( wchar_t ) );
+    memset( tempdir, 0, len * sizeof( wchar_t ) );
+    wcscpy( tempdir, dir );
 
-	SHFILEOPSTRUCT file_op = {
-		NULL,
-		FO_DELETE,
-		tempdir,
-		L"",
-		FOF_NOCONFIRMATION |
-		FOF_NOERRORUI |
-		FOF_SILENT,
-		false,
-		0,
-		L"" };
+    SHFILEOPSTRUCT file_op = {
+        NULL,
+        FO_DELETE,
+        tempdir,
+        L"",
+        FOF_NOCONFIRMATION |
+        FOF_NOERRORUI |
+        FOF_SILENT,
+        false,
+        0,
+        L"" };
 
-	int ret = SHFileOperation( &file_op );
+    int ret = SHFileOperation( &file_op );
 
-	free( tempdir );
+    free( tempdir );
 
-	return ret;
+    return ret;
 }
 //////////////////////////////////////////////////////////////////////////
 bool SelectFile( LPCTSTR _dir, Files & _files )
 {
-	WIN32_FIND_DATA fd;
+    WIN32_FIND_DATA fd;
 
-	HANDLE hFind = ::FindFirstFile( _dir, &fd );
+    HANDLE hFind = ::FindFirstFile( _dir, &fd );
 
-	if( hFind == INVALID_HANDLE_VALUE )
-	{
-		return false;
-	}
-	
-	do
-	{
-		if( fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
-		{
-			continue;
-		}
+    if( hFind == INVALID_HANDLE_VALUE )
+    {
+        return false;
+    }
 
-		_files.push_back( fd.cFileName );
-	} while( ::FindNextFile( hFind, &fd ) );
+    do
+    {
+        if( fd.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+        {
+            continue;
+        }
 
-	::FindClose( hFind );
-	
-	return true;
+        _files.push_back( fd.cFileName );
+    } while( ::FindNextFile( hFind, &fd ) );
+
+    ::FindClose( hFind );
+
+    return true;
 }

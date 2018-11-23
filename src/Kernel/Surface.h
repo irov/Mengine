@@ -17,7 +17,7 @@
 #include "Kernel/Color.h"
 
 namespace Mengine
-{    
+{
     class Surface
         : public Factorable
         , public Identity
@@ -27,7 +27,7 @@ namespace Mengine
         , public Compilable
         , public Animatable
         , public Eventable
-		, public Unknowable
+        , public Unknowable
     {
         DECLARE_VISITABLE_BASE();
 

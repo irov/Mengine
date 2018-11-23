@@ -16,7 +16,7 @@
 #include "stdex/memorycopy.h"
 
 namespace Mengine
-{    
+{
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie2::ResourceMovie2()
     {
@@ -189,7 +189,7 @@ namespace Mengine
             m_movieData->release();
             m_movieData = nullptr;
         }
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr ResourceMovie2::compileData_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) const
     {

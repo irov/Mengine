@@ -41,7 +41,7 @@ namespace Mengine
         std::reverse( reverse_plugins.begin(), reverse_plugins.end() );
 
         m_plugins.clear();
-        
+
         for( PluginDesc & desc : reverse_plugins )
         {
             desc.plugin->finalize();

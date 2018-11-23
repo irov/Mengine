@@ -5,7 +5,7 @@
 #include "Kernel/Factorable.h"
 
 namespace Mengine
-{    
+{
     class LoaderResourceMovie
         : public LoaderInterface
         , public Factorable

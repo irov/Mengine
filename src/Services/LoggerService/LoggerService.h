@@ -55,7 +55,7 @@ namespace Mengine
         ThreadMutexInterfacePtr m_threadMutex;
 
         uint32_t m_countMessage[LM_MAX];
-        
+
 #ifdef MENGINE_LOGGER_HISTORY
         struct Record
         {

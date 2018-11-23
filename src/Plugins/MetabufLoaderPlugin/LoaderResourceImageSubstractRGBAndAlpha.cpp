@@ -58,5 +58,5 @@ namespace Mengine
         resource->correctUVTexture();
 
         return true;
-    }    
+    }
 }

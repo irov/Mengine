@@ -87,5 +87,5 @@ namespace Mengine
     protected:
         T m_value;
         T m_follow;
-    };    
+    };
 }

@@ -99,7 +99,7 @@ namespace Mengine
             const element_type_ptr & element = Hashtable::find_( m_buffer, m_capacity, hash, _key );
 
             return element;
-        }        
+        }
 
     public:
         void reserve( uint32_t _capacity )
@@ -348,7 +348,7 @@ namespace Mengine
 
                     return prev;
                 }
-                
+
                 if( record->element == nullptr || record->element.get() == reinterpret_cast<const value_type *>(~0) )
                 {
                     record->hash = _hash;
@@ -420,7 +420,7 @@ namespace Mengine
     protected:
         size_type m_size;
         size_type m_capacity;
-        
+
         Record * m_buffer;
     };
 }

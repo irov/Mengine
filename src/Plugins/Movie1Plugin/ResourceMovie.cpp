@@ -208,7 +208,7 @@ namespace Mengine
     const mt::box2f & ResourceMovie::getBoundBox() const
     {
         return m_boundBox;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie::_convert()
     {

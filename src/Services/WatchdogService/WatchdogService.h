@@ -13,8 +13,8 @@ namespace Mengine
         : public ServiceBase<WatchdogInterface>
     {
     public:
-		WatchdogService();
-		~WatchdogService() override;
+        WatchdogService();
+        ~WatchdogService() override;
 
     public:
         double watch( const String & _tag ) override;

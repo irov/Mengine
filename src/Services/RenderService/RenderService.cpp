@@ -168,7 +168,7 @@ namespace Mengine
         m_currentRenderViewport = nullptr;
         m_currentRenderCamera = nullptr;
         m_currentRenderTransformation = nullptr;
-        m_currentRenderScissor = nullptr;        
+        m_currentRenderScissor = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderPass );
@@ -700,7 +700,7 @@ namespace Mengine
 
         m_currentTexturesID[_stage] = 0;
 
-		m_renderSystem->setTexture(_stage, nullptr);
+        m_renderSystem->setTexture( _stage, nullptr );
 
         m_renderSystem->setTextureAddressing( _stage
             , m_defaultTextureStage.addressU
@@ -757,7 +757,7 @@ namespace Mengine
 
         uint32_t width = m_windowResolution.getWidth();
         uint32_t height = m_windowResolution.getHeight();
-        
+
         Viewport renderViewport;
         renderViewport.begin.x = 0.f;
         renderViewport.begin.y = 0.f;

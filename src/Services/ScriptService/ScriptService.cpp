@@ -649,7 +649,7 @@ namespace Mengine
         if( code == nullptr )
         {
             m_kernel->error_message( "module '%s' invalid marshal get object"
-                , str_moduleName 
+                , str_moduleName
             );
 
             return nullptr;

@@ -853,7 +853,7 @@ namespace Mengine
         uint32_t material_table_index = material_hash % MENGINE_RENDER_MATERIAL_HASH_TABLE_SIZE;
 
         IntrusiveListRenderMaterial & materials = m_materials[material_table_index];
-        
+
         //for( const RenderMaterialPtr & material : materials )
         for( const RenderMaterial * material : materials )
         {
@@ -931,7 +931,7 @@ namespace Mengine
         material->initialize( materialName, id, material_hash, _primitiveType, _textureCount, _textures, stage );
 
         materials.push_back( material.get() );
-        
+
         return material;
     }
     //////////////////////////////////////////////////////////////////////////

@@ -849,7 +849,7 @@ namespace Mengine
 
                         if( length + word_length > maxLength )
                         {
-                            length = word_length;                            
+                            length = word_length;
 
                             new_textChunks.emplace_back( new_textChunk );
                             new_textChunk.value.clear();
@@ -877,7 +877,7 @@ namespace Mengine
                         {
                             new_textChunk.value.insert( new_textChunk.value.end(), space_delim.begin(), space_delim.end() );
                             new_textChunk.value.insert( new_textChunk.value.end(), word.begin(), word.end() );
-                        }                        
+                        }
                     }
 
                     new_textChunks.emplace_back( new_textChunk );
@@ -1681,7 +1681,7 @@ namespace Mengine
         VectorRenderVertex2D::const_iterator it = _fromVertex.begin();
         VectorRenderVertex2D::const_iterator it_end = _fromVertex.end();
 
-        VectorRenderVertex2D::iterator it_w = _outVertex.begin();        
+        VectorRenderVertex2D::iterator it_w = _outVertex.begin();
 
         if( m_pixelsnap == true )
         {

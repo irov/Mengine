@@ -156,7 +156,7 @@ namespace Mengine
 
         uint32_t m_fps;
 
-    protected:        
+    protected:
         RenderCameraOrthogonalPtr m_debugCamera2D;
     };
 }

@@ -7,17 +7,17 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	LoaderResourceImageSequence::LoaderResourceImageSequence()
+    LoaderResourceImageSequence::LoaderResourceImageSequence()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	LoaderResourceImageSequence::~LoaderResourceImageSequence()
+    LoaderResourceImageSequence::~LoaderResourceImageSequence()
     {
     }
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceImageSequence::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-		ResourceImageSequence * resource = stdex::intrusive_get<ResourceImageSequence *>(_loadable);
+        ResourceImageSequence * resource = stdex::intrusive_get<ResourceImageSequence *>( _loadable );
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSequence *>(_meta);
@@ -39,10 +39,10 @@ namespace Mengine
 
             duration += delay;
 
-			resource->addFrame( resourceName, delay );
+            resource->addFrame( resourceName, delay );
         }
 
-		resource->setSequenceDuration( duration );
+        resource->setSequenceDuration( duration );
 
         return true;
     }

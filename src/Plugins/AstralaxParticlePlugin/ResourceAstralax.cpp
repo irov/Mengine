@@ -33,7 +33,7 @@ namespace Mengine
         const ResourceImagePtr & resourceImage = m_resourceImages[_index];
 
         return resourceImage;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceAstralax::_convert()
     {

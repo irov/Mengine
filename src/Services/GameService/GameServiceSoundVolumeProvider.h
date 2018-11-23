@@ -13,20 +13,20 @@ namespace Mengine
         , public Factorable
     {
     public:
-		GameServiceSoundVolumeProvider();
-		~GameServiceSoundVolumeProvider() override;
+        GameServiceSoundVolumeProvider();
+        ~GameServiceSoundVolumeProvider() override;
 
-	public:
-		void setEventable(const EventablePtr & _eventable);
-		const EventablePtr & getEventable() const;
+    public:
+        void setEventable( const EventablePtr & _eventable );
+        const EventablePtr & getEventable() const;
 
     protected:
         void onSoundChangeVolume( float _sound, float _music, float _voice, bool _mute ) override;
 
     protected:
-		EventablePtr m_eventable;
+        EventablePtr m_eventable;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<GameServiceSoundVolumeProvider> GameSoundVolumeProviderPtr;
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 }

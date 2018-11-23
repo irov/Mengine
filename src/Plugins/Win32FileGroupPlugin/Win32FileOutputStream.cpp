@@ -62,7 +62,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-	size_t Win32FileOutputStream::write( const void * _data, size_t _size )
+    size_t Win32FileOutputStream::write( const void * _data, size_t _size )
     {
         DWORD bytesWritten = 0;
         BOOL result = ::WriteFile( m_hFile, _data, (DWORD)_size, &bytesWritten, NULL );

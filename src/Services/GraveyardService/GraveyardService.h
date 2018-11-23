@@ -12,7 +12,7 @@ namespace Mengine
         : public ServiceBase<GraveyardInterface>
     {
     public:
-		GraveyardService();
+        GraveyardService();
         ~GraveyardService() override;
 
     public:
@@ -33,22 +33,22 @@ namespace Mengine
         uint32_t m_count;
         float m_graveyardTime;
 
-		struct RenderTextureGraveEntry
-		{
-			FileGroupInterfacePtr category;
-			FilePath filePath;
+        struct RenderTextureGraveEntry
+        {
+            FileGroupInterfacePtr category;
+            FilePath filePath;
 
-			RenderImageInterfacePtr image;
-			uint32_t width;
-			uint32_t height;
+            RenderImageInterfacePtr image;
+            uint32_t width;
+            uint32_t height;
 
-			float timing;
-		};
+            float timing;
+        };
 
         typedef Vector<RenderTextureGraveEntry> VectorTextureGrave;
         VectorTextureGrave m_textures;
 
-	protected:
-		void updateTexture_(RenderTextureGraveEntry * _entry, float _timing);
+    protected:
+        void updateTexture_( RenderTextureGraveEntry * _entry, float _timing );
     };
 }

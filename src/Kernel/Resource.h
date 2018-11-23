@@ -28,7 +28,7 @@ namespace Mengine
         , public Scriptable
         , public Visitable
         , public Unknowable
-		, public LoadableInterface
+        , public LoadableInterface
     {
         DECLARE_VISITABLE_BASE();
 

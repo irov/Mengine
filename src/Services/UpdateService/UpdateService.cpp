@@ -54,13 +54,13 @@ namespace Mengine
         case 1:
             {
                 LeafUpdatable & leaf = m_leafs[_deep * 2 + 1];
-                
+
                 return &leaf;
             }break;
         case 2:
             {
                 LeafUpdatable & leaf = m_beforeLeaf[_deep];
-                
+
                 return &leaf;
             }break;
         case 3:
@@ -70,7 +70,7 @@ namespace Mengine
                 return &leaf;
             }break;
         default:
-            {   
+            {
             }break;
         }
 
@@ -118,7 +118,7 @@ namespace Mengine
     uint32_t UpdateService::createUpdatater( uint32_t _mode, uint32_t _deep, const UpdationInterfacePtr & _updation )
     {
         uint32_t id = this->placeProxy_( _mode, _deep, _updation );
-        
+
         LeafUpdatable * leaf = getLeafUpdatable( _mode, _deep );
 
         if( leaf == nullptr )

@@ -118,7 +118,7 @@ namespace Mengine
             try
             {
                 _visitor->visit( desc.callable );
-            } 
+            }
             catch( const ExceptionNotificationFailed & )
             {
                 successful = false;

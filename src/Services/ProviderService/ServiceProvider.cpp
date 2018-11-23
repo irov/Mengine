@@ -23,7 +23,7 @@ namespace Mengine
             DependencyDesc & desc = m_dependencies[index];
 
             desc.name[0] = '\0';
-            desc.dependency[0] = '\0';            
+            desc.dependency[0] = '\0';
         }
     }
     //////////////////////////////////////////////////////////////////////////

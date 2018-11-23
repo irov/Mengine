@@ -86,7 +86,7 @@ namespace Mengine
             {
                 const std::sub_match<String::const_iterator> & lambda_remove_prefix = match_lambda_remove.prefix();
                 const std::sub_match<String::const_iterator> & lambda_remove_suffix = match_lambda_remove.suffix();
-                
+
                 str_function = String( lambda_remove_prefix.first, lambda_remove_prefix.second ) + String( lambda_remove_suffix.first, lambda_remove_suffix.second );
             }
 

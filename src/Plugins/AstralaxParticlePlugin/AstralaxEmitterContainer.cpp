@@ -183,7 +183,7 @@ namespace Mengine
                 try
                 {
                     id = Magic_LoadEmitter( m_mf, magicName );
-                } 
+                }
                 catch( const std::exception & _ex )
                 {
                     LOGGER_ERROR( "invalid load emitter %s (catch exception '%s')"

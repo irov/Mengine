@@ -9,7 +9,7 @@ namespace Mengine
 {
     class ResourceSound
         : public Resource
-		, public Content
+        , public Content
     {
         DECLARE_VISITABLE( Resource );
 

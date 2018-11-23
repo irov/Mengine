@@ -39,7 +39,7 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
-    protected:        
+    protected:
         VectorResourceImages m_resourceImages;
 
         AstralaxEmitterContainerInterfacePtr m_container;

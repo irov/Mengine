@@ -58,7 +58,7 @@ namespace Mengine
 
             m_textureAlpha = nullptr;
         }
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImage::correctUVImage( mt::vec2f & _out, const mt::vec2f & _in )
     {

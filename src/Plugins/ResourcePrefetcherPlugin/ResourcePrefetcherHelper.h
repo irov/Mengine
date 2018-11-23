@@ -11,7 +11,7 @@ namespace Mengine
     {
     public:
         bool prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) override
-        {            
+        {
             const T & resourceT = stdex::intrusive_static_cast<T>(_resource);
 
             return this->_prefetch( resourceT, _observer );

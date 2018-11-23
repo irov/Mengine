@@ -24,7 +24,7 @@ namespace Mengine
 
     public:
         void renderDebugNode( const NodePtr & _node, const RenderContext * _context, bool _external ) override;
-        
+
     public:
         void addNodeDebugRender( const ConstString & _type, const NodeDebugRenderInterfacePtr & _nodeDebugRender ) override;
         void removeNodeDebugRender( const ConstString & _type ) override;

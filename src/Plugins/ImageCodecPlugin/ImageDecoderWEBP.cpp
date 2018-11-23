@@ -163,21 +163,21 @@ namespace Mengine
 
         if( m_dataInfo.channels == 4 && m_options.channels == 4 )
         {
-            if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, _buffer, _bufferSize, m_options.pitch ) == nullptr )
+            if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, _buffer, _bufferSize, (int)m_options.pitch ) == nullptr )
             {
                 return false;
             }
         }
         else if( m_dataInfo.channels == 3 && m_options.channels == 4 )
         {
-            if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, _buffer, _bufferSize, m_options.pitch ) == nullptr )
+            if( MENGINE_WEBP_DECODE_RGBA( _source, _sourceSize, _buffer, _bufferSize, (int)m_options.pitch ) == nullptr )
             {
                 return false;
             }
         }
         else if( m_dataInfo.channels == 3 && m_options.channels == 3 )
         {
-            if( MENGINE_WEBP_DECODE_RGB( _source, _sourceSize, _buffer, _bufferSize, m_options.pitch ) == nullptr )
+            if( MENGINE_WEBP_DECODE_RGB( _source, _sourceSize, _buffer, _bufferSize, (int)m_options.pitch ) == nullptr )
             {
                 return false;
             }

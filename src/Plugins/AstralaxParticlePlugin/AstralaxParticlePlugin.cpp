@@ -29,7 +29,7 @@ namespace Mengine
     bool AstralaxParticlePlugin::_initialize()
     {
         LOGGER_INFO( "Initializing Astralax Particle System..." );
-        
+
         SERVICE_CREATE( AstralaxService );
         SERVICE_CREATE( ParticleSystem );
 

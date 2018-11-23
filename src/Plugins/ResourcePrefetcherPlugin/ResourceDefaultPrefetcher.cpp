@@ -12,7 +12,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceDefaultPrefetcher::prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
-    {        
+    {
         _resource->incrementReference();
 
         _observer->onPrefetchIgnored();

@@ -47,7 +47,7 @@ namespace Mengine
         virtual FactorablePointer generatePrototype( const ConstString & _category, const ConstString & _prototype ) = 0;
 
     public:
-		typedef Lambda<void(const PrototypeGeneratorInterfacePtr & _factory)> LambdaPrototypeGenerator;
+        typedef Lambda<void( const PrototypeGeneratorInterfacePtr & _factory )> LambdaPrototypeGenerator;
         virtual void foreachGenerators( const LambdaPrototypeGenerator & _lambda ) const = 0;
     };
 }

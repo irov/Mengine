@@ -121,7 +121,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     MoviePlugin::~MoviePlugin()
     {
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool MoviePlugin::_avaliable()
     {
@@ -467,7 +467,7 @@ namespace Mengine
             NODEDEBUGRENDER_SERVICE()
                 ->addNodeDebugRender( STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<Movie2DebugRender>() );
         }
-        
+
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
             RESOURCEVALIDATE_SERVICE()

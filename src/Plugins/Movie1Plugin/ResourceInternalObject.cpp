@@ -32,7 +32,7 @@ namespace Mengine
     const ConstString & ResourceInternalObject::getInternalGroup() const
     {
         return m_internalGroup;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceInternalObject::_compile()
     {

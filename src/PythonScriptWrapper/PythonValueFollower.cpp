@@ -9,7 +9,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PythonValueFollower::~PythonValueFollower()
     {
-    }   
+    }
     //////////////////////////////////////////////////////////////////////////        
     void PythonValueFollower::setCb( const pybind::object & _cb, const pybind::args & _args )
     {

@@ -30,7 +30,7 @@ namespace Mengine
         this->createConsole_();
 
         LOGGER_SERVICE()
-            ->writeHistory( this );        
+            ->writeHistory( this );
 
         return true;
     }

@@ -79,7 +79,7 @@ namespace Mengine
         const Color & personal_colour = this->getPersonalColor();
 
         RenderInterface * render = m_propagate->getRender();
-        
+
         render->setLocalColor( personal_colour );
     }
     //////////////////////////////////////////////////////////////////////////

@@ -30,7 +30,7 @@ namespace Mengine
         : public Node
         , public BaseUpdation
         , public BaseRender
-        , public RenderTransformationInterface        
+        , public RenderTransformationInterface
         , public UnknownNodeOzzAnimationInterface
     {
         DECLARE_VISITABLE( Node );

@@ -258,5 +258,5 @@ namespace Mengine
         ae_delete_movie_stream( movieStream );
 
         return true;
-    }    
+    }
 }

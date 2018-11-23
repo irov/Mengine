@@ -189,9 +189,9 @@ namespace Mengine
 
         m_scene = _scene;
 
-		PICKER_SERVICE()
-			->setScene( m_scene );
-        
+        PICKER_SERVICE()
+            ->setScene( m_scene );
+
         if( _cb != nullptr )
         {
             _cb->onSceneChange( m_scene, false, false );
@@ -312,8 +312,8 @@ namespace Mengine
             m_scene = nullptr;
         }
 
-		PICKER_SERVICE()
-			->setScene( nullptr );
+        PICKER_SERVICE()
+            ->setScene( nullptr );
 
         if( _cb != nullptr )
         {
@@ -387,8 +387,8 @@ namespace Mengine
             }
         }
 
-		PICKER_SERVICE()
-			->setArrow( m_arrow );
+        PICKER_SERVICE()
+            ->setArrow( m_arrow );
     }
     //////////////////////////////////////////////////////////////////////////
     const ArrowPtr & PlayerService::getArrow() const
@@ -630,7 +630,7 @@ namespace Mengine
         if( handler == false )
         {
             handler = PICKER_SERVICE()
-				->handleKeyEvent( _event );
+                ->handleKeyEvent( _event );
         }
 
         return handler;
@@ -645,12 +645,12 @@ namespace Mengine
             m_globalInputHandler->handleTextEvent( _event );
         }
 
-		if( handler == false )
+        if( handler == false )
         {
             handler = PICKER_SERVICE()
-				->handleTextEvent( _event );
+                ->handleTextEvent( _event );
         }
-    
+
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -666,7 +666,7 @@ namespace Mengine
         if( handler == false )
         {
             handler = PICKER_SERVICE()
-				->handleMouseButtonEvent( _event );
+                ->handleMouseButtonEvent( _event );
         }
 
         return handler;
@@ -681,13 +681,13 @@ namespace Mengine
 
         bool handler = false;
 
-        
+
         if( handler == false )
         {
             handler = PICKER_SERVICE()
-				->handleMouseButtonEventBegin( _event );
+                ->handleMouseButtonEventBegin( _event );
         }
-    
+
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -704,9 +704,9 @@ namespace Mengine
         if( handler == false )
         {
             handler = PICKER_SERVICE()
-				->handleMouseButtonEventEnd( _event );
+                ->handleMouseButtonEventEnd( _event );
         }
-    
+
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -722,7 +722,7 @@ namespace Mengine
         if( handler == false )
         {
             handler = PICKER_SERVICE()
-				->handleMouseMove( _event );
+                ->handleMouseMove( _event );
         }
 
         return handler;
@@ -740,9 +740,9 @@ namespace Mengine
         if( handler == false )
         {
             handler = PICKER_SERVICE()
-				->handleMouseWheel( _event );
+                ->handleMouseWheel( _event );
         }
-    
+
         return handler;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -756,9 +756,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::update()
     {
-		PICKER_SERVICE()
-			->update();
-    
+        PICKER_SERVICE()
+            ->update();
+
         if( m_globalInputHandler != nullptr )
         {
             m_globalInputHandler->update();
@@ -771,8 +771,8 @@ namespace Mengine
     {
         m_renderCamera = _camera;
 
-		PICKER_SERVICE()
-			->setRenderCamera( m_renderCamera );
+        PICKER_SERVICE()
+            ->setRenderCamera( m_renderCamera );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderCameraInterfacePtr & PlayerService::getRenderCamera() const
@@ -784,8 +784,8 @@ namespace Mengine
     {
         m_renderViewport = _viewport;
 
-		PICKER_SERVICE()
-			->setRenderViewport( m_renderViewport );
+        PICKER_SERVICE()
+            ->setRenderViewport( m_renderViewport );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderViewportInterfacePtr & PlayerService::getRenderViewport() const
@@ -797,9 +797,9 @@ namespace Mengine
     {
         m_renderScissor = _scissor;
 
-        
-		PICKER_SERVICE()
-			->setRenderScissor( _scissor );
+
+        PICKER_SERVICE()
+            ->setRenderScissor( _scissor );
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderScissorInterfacePtr & PlayerService::getRenderScissor() const
@@ -884,8 +884,8 @@ namespace Mengine
             m_scene->onAppMouseLeave();
         }
 
-		PICKER_SERVICE()
-			->handleMouseLeave( _event );
+        PICKER_SERVICE()
+            ->handleMouseLeave( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::onAppMouseEnter( const InputMousePositionEvent & _event )
@@ -900,8 +900,8 @@ namespace Mengine
             m_scene->onAppMouseEnter();
         }
 
-		PICKER_SERVICE()
-			->handleMouseEnter( _event );
+        PICKER_SERVICE()
+            ->handleMouseEnter( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::onAppMousePosition( const InputMousePositionEvent & _event )

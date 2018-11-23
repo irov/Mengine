@@ -34,7 +34,7 @@ namespace Mengine
     const ConstString & ResourceImageSubstractRGBAndAlpha::getResourceAlphaName() const
     {
         return m_resourceImageAlphaName;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstractRGBAndAlpha::_compile()
     {

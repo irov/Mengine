@@ -18,7 +18,7 @@ namespace Mengine
 
     public:
         virtual void renderDebugNode( const NodePtr & _node, const RenderContext * _context, bool _external ) = 0;
-        
+
     public:
         virtual void addNodeDebugRender( const ConstString & _type, const NodeDebugRenderInterfacePtr & _renderVisitor ) = 0;
         virtual void removeNodeDebugRender( const ConstString & _type ) = 0;

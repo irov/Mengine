@@ -20,13 +20,17 @@ namespace Mengine
         ~MovieFramePack() override;
 
     public:
-        void initialize( uint32_t _size );
+        bool acquire() override;
+        void release() override;
+
+    public:
+        void initializeLayers( uint32_t _size );
         void initializeTimeremap( uint32_t _size );
         void initializeShapes( uint32_t _size );
         void initializePolygons( uint32_t _size );
 
     public:
-        MovieLayerFrame & initializeLayer( uint32_t _layerIndex, uint32_t _count, bool _immutable );
+        MovieLayerFrame & setupLayer( uint32_t _layerIndex, uint32_t _count, bool _immutable );
 
     public:
         bool hasLayer( uint32_t _layerIndex ) const override;

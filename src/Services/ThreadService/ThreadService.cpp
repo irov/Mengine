@@ -23,6 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadService::ThreadService()
         : m_threadCount( 0 )
+        , m_mainThreadId( 0 )
         , m_avaliable( false )
     {
     }
@@ -80,6 +81,9 @@ namespace Mengine
             , (stdex_allocator_thread_lock_t)&s_stdex_thread_lock
             , (stdex_allocator_thread_unlock_t)&s_stdex_thread_unlock
         );
+
+        m_mainThreadId = THREAD_SYSTEM()
+            ->getCurrentThreadId();
 
         return true;
     }
@@ -439,7 +443,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterfacePtr ThreadService::createMutex( const char * _file, uint32_t _line )
+    ThreadMutexInterfacePtr ThreadService::createMutex( const Char * _file, uint32_t _line )
     {
         if( m_avaliable == false )
         {
@@ -472,5 +476,23 @@ namespace Mengine
             ->getCurrentThreadId();
 
         return id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadService::isMainThread() const
+    {
+        if( m_avaliable == false )
+        {
+            return true;
+        }
+
+        ptrdiff_t id = THREAD_SYSTEM()
+            ->getCurrentThreadId();
+
+        if( m_mainThreadId != id )
+        {
+            return false;
+        }
+
+        return true;
     }
 }

@@ -383,8 +383,8 @@ namespace Mengine
 
             if( image != nullptr )
             {
-                const mt::uv4f & uv_image = image->getUVImage();
-                const mt::uv4f & uv_alpha = image->getUVImage();
+                const mt::uv4f & uv_image = image->getUVTextureImage();
+                const mt::uv4f & uv_alpha = image->getUVTextureAlpha();
 
                 mt::uv4_scale( uv1, uv_image, uvs[i] );
                 mt::uv4_scale( uv2, uv_alpha, uvs[i] );

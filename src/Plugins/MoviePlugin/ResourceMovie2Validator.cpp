@@ -22,6 +22,26 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void ResourceMovie2Validator::setMovieInstance( const aeMovieInstance * _movieInstance )
+    {
+        m_movieInstance = _movieInstance;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const aeMovieInstance * ResourceMovie2Validator::getMovieInstance() const
+    {
+        return m_movieInstance;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceMovie2Validator::setArchivator( const ArchivatorInterfacePtr & _archivator )
+    {
+        m_archivator = _archivator;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ArchivatorInterfacePtr & ResourceMovie2Validator::getArchivator() const
+    {
+        return m_archivator;
+    }
+    //////////////////////////////////////////////////////////////////////////
     static ae_size_t __movie_read_stream( ae_voidptr_t _data, ae_voidptr_t _buff, ae_size_t _carriage, ae_size_t _size )
     {
         stdex::memorycopy( _buff, 0U, (ae_uint8_t *)_data + _carriage, _size );
@@ -182,9 +202,7 @@ namespace Mengine
             return false;
         }
 
-        const ArchivatorInterfacePtr & archivator = _resource->getMovieArchivator();
-
-        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), "ResourceMovie2 Validate", __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), "ResourceMovie2 Validate", __FILE__, __LINE__ );
 
         if( memory == nullptr )
         {
@@ -198,11 +216,19 @@ namespace Mengine
 
         data_providers.resource_provider = &__movie_resource_provider;
 
-        const aeMovieInstance * instance = _resource->getMovieInstance();
+        aeMovieData * movieData = ae_create_movie_data( m_movieInstance, &data_providers, (ae_voidptr_t)_resource.get() );
 
-        aeMovieData * movieData = ae_create_movie_data( instance, &data_providers, (ae_voidptr_t)_resource.get() );
+        if( movieData == AE_NULLPTR )
+        {
+            return false;
+        }
 
-        aeMovieStream * movieStream = ae_create_movie_stream( instance, &__movie_read_stream, &__movie_copy_stream, memory_buffer );
+        aeMovieStream * movieStream = ae_create_movie_stream( m_movieInstance, &__movie_read_stream, &__movie_copy_stream, memory_buffer );
+
+        if( movieStream == AE_NULLPTR )
+        {
+            return false;
+        }
 
         ae_uint32_t major_version;
         ae_uint32_t minor_version;

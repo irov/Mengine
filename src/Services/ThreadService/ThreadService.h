@@ -53,11 +53,14 @@ namespace Mengine
         void update() override;
 
     public:
-        ThreadMutexInterfacePtr createMutex( const char * _file, uint32_t _line ) override;
+        ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) override;
 
     public:
         void sleep( uint32_t _ms ) override;
+
+    public:
         ptrdiff_t getCurrentThreadId() override;
+        bool isMainThread() const override;
 
     protected:
         ThreadMutexInterfacePtr m_mutexAllocatorPool;
@@ -91,6 +94,8 @@ namespace Mengine
 
         typedef Vector<ThreadDesc> VectorThreadDescs;
         VectorThreadDescs m_threads;
+
+        ptrdiff_t m_mainThreadId;
 
         bool m_avaliable;
     };

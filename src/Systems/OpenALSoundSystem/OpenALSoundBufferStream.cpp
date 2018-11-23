@@ -325,7 +325,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundBufferStream::update()
     {
-        ThreadMutexScope mutexUpdatingScope( m_mutexUpdating );
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
 
         if( this->m_updating == false )
         {

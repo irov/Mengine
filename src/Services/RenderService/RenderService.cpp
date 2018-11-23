@@ -212,7 +212,7 @@ namespace Mengine
 
         if( this->createNullTexture_() == false )
         {
-            LOGGER_ERROR( "RenderService::createRenderWindow invalid create __null__ texture"
+            LOGGER_ERROR( "invalid create __null__ texture"
             );
 
             return false;
@@ -220,7 +220,7 @@ namespace Mengine
 
         if( this->createWhitePixelTexture_() == false )
         {
-            LOGGER_ERROR( "RenderService::createRenderWindow invalid create WhitePixel texture"
+            LOGGER_ERROR( "invalid create WhitePixel texture"
             );
 
             return false;
@@ -259,7 +259,7 @@ namespace Mengine
 
         if( texture == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::createNullTexture_ invalid create null texture %d:%d"
+            LOGGER_ERROR( "invalid create null texture %d:%d"
                 , null_width
                 , null_height
             );
@@ -280,7 +280,7 @@ namespace Mengine
 
         if( textureData == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::createNullTexture_ invalid lock null texture %d:%d"
+            LOGGER_ERROR( "invalid lock null texture %d:%d"
                 , null_width
                 , null_height
             );
@@ -334,7 +334,7 @@ namespace Mengine
 
         if( texture == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::createWhitePixelTexture_ invalid create null texture %d:%d"
+            LOGGER_ERROR( "invalid create null texture %d:%d"
                 , null_width
                 , null_height
             );
@@ -355,7 +355,7 @@ namespace Mengine
 
         if( textureData == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::createWhitePixelTexture_ invalid lock null texture %d:%d"
+            LOGGER_ERROR( "invalid lock null texture %d:%d"
                 , null_width
                 , null_height
             );
@@ -404,7 +404,7 @@ namespace Mengine
 
         m_fullscreen = _fullscreen;
 
-        LOGGER_INFO( "RenderService::changeWindowMode:\nwindow resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
+        LOGGER_INFO( "window resolution [%d, %d]\ncontent resolution [%d, %d]\nrender viewport [%f %f %f %f]\nfullscreen %d"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , m_contentResolution.getWidth()
@@ -1227,69 +1227,26 @@ namespace Mengine
         , const RenderIndex * _indices, uint32_t _indexCount
         , const mt::box2f * _bb, bool _debug )
     {
-#ifndef NDEBUG
-        if( _context == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D context == NULL"
-            );
-
-            return;
-        }
-
-        if( _context->viewport == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D viewport == NULL"
-            );
-
-            return;
-        }
-
-        if( _context->camera == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D camera == NULL"
-            );
-
-            return;
-        }
-
-        if( _material == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D _material == NULL"
-            );
-
-            return;
-        }
-
-        if( _vertices == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D _vertices == NULL"
-            );
-
-            return;
-        }
-
-        if( _indices == nullptr )
-        {
-            LOGGER_ERROR( "RenderService::renderObject2D _indices == NULL"
-            );
-
-            return;
-        }
+        MENGINE_ASSERTION_FATAL( _context != nullptr, ("context == nullptr") );
+        MENGINE_ASSERTION_FATAL( _context->viewport != nullptr, ("_context->viewport == nullptr") );
+        MENGINE_ASSERTION_FATAL( _context->camera != nullptr, ("_context->camera == nullptr") );
+        MENGINE_ASSERTION_FATAL( _material != nullptr, ("_material == nullptr") );
+        MENGINE_ASSERTION_FATAL( _vertices != nullptr, ("_vertices == nullptr") );
+        MENGINE_ASSERTION_FATAL( _indices != nullptr, ("_indices == nullptr") );
 
         if( _vertexCount >= RenderVertexBatchMax )
         {
-            LOGGER_ERROR( "RenderService::renderObject2D _vertexCount(%u) >= RenderVertexBatchMax(%u)"
+            LOGGER_ERROR( "_vertexCount(%u) >= RenderVertexBatchMax(%u)"
                 , _vertexCount
                 , RenderVertexBatchMax
             );
 
             return;
         }
-#endif
 
         if( m_renderObjects.full() )
         {
-            LOGGER_ERROR( "RenderService::renderObject2D max render objects %u"
+            LOGGER_ERROR( "max render objects '%u'"
                 , m_renderObjects.size()
             );
 
@@ -1360,14 +1317,17 @@ namespace Mengine
 
                 if( texture != nullptr )
                 {
-                    LOGGER_ERROR( "texture: '%s'"
-                        , texture->getFileName().c_str()
+                    const Char * fileName = texture->getFileName().c_str();
 
+                    LOGGER_ERROR( "texture: '%s'"
+                        , fileName
                     );
                 }
 
+                EPrimitiveType primitiveType = _material->getPrimitiveType();
+
                 const RenderMaterialInterfacePtr & new_material = RENDERMATERIAL_SERVICE()
-                    ->getMaterial3( EM_COLOR_BLEND, _material->getPrimitiveType(), 0, nullptr );
+                    ->getMaterial3( EM_COLOR_BLEND, primitiveType, 0, nullptr );
 
                 if( new_material == nullptr )
                 {
@@ -1425,7 +1385,7 @@ namespace Mengine
 
         if( indicesNum >= m_indicesQuad.size() )
         {
-            LOGGER_ERROR( "RenderService::addRenderQuad count %d > max count %d"
+            LOGGER_ERROR( "count %d > max count %d"
                 , indicesNum
                 , m_indicesQuad.size()
             );
@@ -1447,7 +1407,7 @@ namespace Mengine
 
         if( indicesNum >= m_indicesLine.size() )
         {
-            LOGGER_ERROR( "RenderService::addRenderLine count %d > max count %d"
+            LOGGER_ERROR( "count %d > max count %d"
                 , indicesNum
                 , m_indicesLine.size()
             );

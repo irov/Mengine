@@ -13,7 +13,7 @@ namespace Mengine
         HANDLE Win32CreateFile( const WChar * _filePath, DWORD _desiredAccess, DWORD _sharedMode, DWORD _creationDisposition )
         {
             WChar pathCorrect[MENGINE_MAX_PATH];
-            Helper::pathCorrectBackslash( pathCorrect, _filePath );
+            Helper::pathCorrectBackslashTo( pathCorrect, _filePath );
 
             HANDLE handle = ::CreateFile( pathCorrect, _desiredAccess, _sharedMode, NULL,
                 _creationDisposition, FILE_ATTRIBUTE_NORMAL, NULL );
@@ -104,7 +104,7 @@ namespace Mengine
                 return false;
             }
 
-            Helper::pathCorrectBackslash( _concatenatePath, filePathW );
+            Helper::pathCorrectBackslashTo( _concatenatePath, filePathW );
 
             return true;
         }

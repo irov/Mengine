@@ -42,6 +42,9 @@ namespace Mengine
         inline void setUVAlpha( const mt::uv4f & _uv );
         inline const mt::uv4f & getUVAlpha() const;
 
+        inline const mt::uv4f & getUVTextureImage() const;
+        inline const mt::uv4f & getUVTextureAlpha() const;
+
         inline void setUVImageRotate( bool _rotate );
         inline bool isUVImageRotate() const;
 
@@ -68,6 +71,7 @@ namespace Mengine
         inline const Color & getColor() const;
 
     public:
+        void correctUVTexture();
         void correctUVImage( mt::vec2f & _out, const mt::vec2f & _in );
         void correctUVAlpha( mt::vec2f & _out, const mt::vec2f & _in );
 
@@ -86,6 +90,9 @@ namespace Mengine
 
         mt::uv4f m_uvImage;
         mt::uv4f m_uvAlpha;
+
+        mt::uv4f m_uvTextureImage;
+        mt::uv4f m_uvTextureAlpha;
 
         bool m_uvImageRotate;
         bool m_uvAlphaRotate;
@@ -144,6 +151,16 @@ namespace Mengine
     inline const mt::uv4f & ResourceImage::getUVAlpha() const
     {
         return m_uvAlpha;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline const mt::uv4f & ResourceImage::getUVTextureImage() const
+    {
+        return m_uvTextureImage;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    inline const mt::uv4f & ResourceImage::getUVTextureAlpha() const
+    {
+        return m_uvTextureAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
     inline const RenderTextureInterfacePtr & ResourceImage::getTexture() const

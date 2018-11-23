@@ -102,14 +102,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Compile( C _self, M _method ) const
+                bool getm_File_Compile( C _self, M _method ) const
                 {
                     if( m_File_Compile_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Compile );
+                
+                    return true;
                 }
                 
                 bool get_File_Compile( bool * _value ) const
@@ -217,14 +219,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Debug( C _self, M _method ) const
+                bool getm_Debug( C _self, M _method ) const
                 {
                     if( m_Debug_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Debug );
+                
+                    return true;
                 }
                 
                 bool getd_Debug( bool * _value, const bool & _default ) const
@@ -257,14 +261,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_RenderPlatform( C _self, M _method ) const
+                bool getm_RenderPlatform( C _self, M _method ) const
                 {
                     if( m_RenderPlatform_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_RenderPlatform );
+                
+                    return true;
                 }
                 
                 bool get_RenderPlatform( Mengine::ConstString * _value ) const
@@ -298,14 +304,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_AlphaBlend_Enable( C _self, M _method ) const
+                bool getm_AlphaBlend_Enable( C _self, M _method ) const
                 {
                     if( m_AlphaBlend_Enable_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_AlphaBlend_Enable );
+                
+                    return true;
                 }
                 
                 bool get_AlphaBlend_Enable( bool * _value ) const
@@ -326,14 +334,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_BlendFactor_Dest( C _self, M _method ) const
+                bool getm_BlendFactor_Dest( C _self, M _method ) const
                 {
                     if( m_BlendFactor_Dest_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_BlendFactor_Dest );
+                
+                    return true;
                 }
                 
                 bool get_BlendFactor_Dest( Mengine::EBlendFactor * _value ) const
@@ -354,14 +364,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_BlendFactor_Op( C _self, M _method ) const
+                bool getm_BlendFactor_Op( C _self, M _method ) const
                 {
                     if( m_BlendFactor_Op_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_BlendFactor_Op );
+                
+                    return true;
                 }
                 
                 bool get_BlendFactor_Op( Mengine::EBlendOp * _value ) const
@@ -382,14 +394,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_BlendFactor_Source( C _self, M _method ) const
+                bool getm_BlendFactor_Source( C _self, M _method ) const
                 {
                     if( m_BlendFactor_Source_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_BlendFactor_Source );
+                
+                    return true;
                 }
                 
                 bool get_BlendFactor_Source( Mengine::EBlendFactor * _value ) const
@@ -410,14 +424,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Program_Name( C _self, M _method ) const
+                bool getm_Program_Name( C _self, M _method ) const
                 {
                     if( m_Program_Name_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Program_Name );
+                
+                    return true;
                 }
                 
                 bool get_Program_Name( Mengine::ConstString * _value ) const
@@ -466,14 +482,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_AddressMode_Border( C _self, M _method ) const
+                    bool getm_AddressMode_Border( C _self, M _method ) const
                     {
                         if( m_AddressMode_Border_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_AddressMode_Border );
+                    
+                        return true;
                     }
                     
                     bool get_AddressMode_Border( uint32_t * _value ) const
@@ -494,14 +512,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_AddressMode_U( C _self, M _method ) const
+                    bool getm_AddressMode_U( C _self, M _method ) const
                     {
                         if( m_AddressMode_U_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_AddressMode_U );
+                    
+                        return true;
                     }
                     
                     bool get_AddressMode_U( Mengine::ETextureAddressMode * _value ) const
@@ -522,14 +542,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_AddressMode_V( C _self, M _method ) const
+                    bool getm_AddressMode_V( C _self, M _method ) const
                     {
                         if( m_AddressMode_V_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_AddressMode_V );
+                    
+                        return true;
                     }
                     
                     bool get_AddressMode_V( Mengine::ETextureAddressMode * _value ) const
@@ -616,14 +638,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_RenderPlatform( C _self, M _method ) const
+                bool getm_RenderPlatform( C _self, M _method ) const
                 {
                     if( m_RenderPlatform_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_RenderPlatform );
+                
+                    return true;
                 }
                 
                 bool get_RenderPlatform( Mengine::ConstString * _value ) const
@@ -905,14 +929,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Compile( C _self, M _method ) const
+                bool getm_File_Compile( C _self, M _method ) const
                 {
                     if( m_File_Compile_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Compile );
+                
+                    return true;
                 }
                 
                 bool get_File_Compile( bool * _value ) const
@@ -1001,14 +1027,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Precompile( C _self, M _method ) const
+                bool getm_Precompile( C _self, M _method ) const
                 {
                     if( m_Precompile_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Precompile );
+                
+                    return true;
                 }
                 
                 bool getd_Precompile( bool * _value, const bool & _default ) const
@@ -1063,14 +1091,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Unique( C _self, M _method ) const
+                bool getm_Unique( C _self, M _method ) const
                 {
                     if( m_Unique_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Unique );
+                
+                    return true;
                 }
                 
                 bool getd_Unique( bool * _value, const bool & _default ) const
@@ -1128,14 +1158,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Converter( C _self, M _method ) const
+                bool getm_File_Converter( C _self, M _method ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
                 }
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
@@ -1441,14 +1473,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Codec( C _self, M _method ) const
+                bool getm_File_Codec( C _self, M _method ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Codec );
+                
+                    return true;
                 }
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
@@ -1469,14 +1503,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Converter( C _self, M _method ) const
+                bool getm_File_Converter( C _self, M _method ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
                 }
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
@@ -1532,14 +1568,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Alpha( C _self, M _method ) const
+                bool getm_File_Alpha( C _self, M _method ) const
                 {
                     if( m_File_Alpha_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Alpha );
+                
+                    return true;
                 }
                 
                 bool get_File_Alpha( bool * _value ) const
@@ -1560,14 +1598,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Codec( C _self, M _method ) const
+                bool getm_File_Codec( C _self, M _method ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Codec );
+                
+                    return true;
                 }
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
@@ -1599,14 +1639,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_NoExist( C _self, M _method ) const
+                bool getm_File_NoExist( C _self, M _method ) const
                 {
                     if( m_File_NoExist_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
                 }
                 
                 bool get_File_NoExist( bool * _value ) const
@@ -1627,14 +1669,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Offset( C _self, M _method ) const
+                bool getm_File_Offset( C _self, M _method ) const
                 {
                     if( m_File_Offset_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Offset );
+                
+                    return true;
                 }
                 
                 bool get_File_Offset( mt::vec2f * _value ) const
@@ -1666,14 +1710,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Premultiply( C _self, M _method ) const
+                bool getm_File_Premultiply( C _self, M _method ) const
                 {
                     if( m_File_Premultiply_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Premultiply );
+                
+                    return true;
                 }
                 
                 bool get_File_Premultiply( bool * _value ) const
@@ -1694,14 +1740,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Size( C _self, M _method ) const
+                bool getm_File_Size( C _self, M _method ) const
                 {
                     if( m_File_Size_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Size );
+                
+                    return true;
                 }
                 
                 bool get_File_Size( mt::vec2f * _value ) const
@@ -1755,14 +1803,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Alpha( C _self, M _method ) const
+                bool getm_File_Alpha( C _self, M _method ) const
                 {
                     if( m_File_Alpha_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Alpha );
+                
+                    return true;
                 }
                 
                 bool get_File_Alpha( bool * _value ) const
@@ -1783,14 +1833,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Codec( C _self, M _method ) const
+                bool getm_File_Codec( C _self, M _method ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Codec );
+                
+                    return true;
                 }
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
@@ -1811,14 +1863,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Converter( C _self, M _method ) const
+                bool getm_File_Converter( C _self, M _method ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
                 }
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
@@ -1850,14 +1904,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_NoExist( C _self, M _method ) const
+                bool getm_File_NoExist( C _self, M _method ) const
                 {
                     if( m_File_NoExist_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_NoExist );
+                
+                    return true;
                 }
                 
                 bool get_File_NoExist( bool * _value ) const
@@ -1878,14 +1934,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Offset( C _self, M _method ) const
+                bool getm_File_Offset( C _self, M _method ) const
                 {
                     if( m_File_Offset_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Offset );
+                
+                    return true;
                 }
                 
                 bool get_File_Offset( mt::vec2f * _value ) const
@@ -1917,14 +1975,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Premultiply( C _self, M _method ) const
+                bool getm_File_Premultiply( C _self, M _method ) const
                 {
                     if( m_File_Premultiply_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Premultiply );
+                
+                    return true;
                 }
                 
                 bool get_File_Premultiply( bool * _value ) const
@@ -1945,14 +2005,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Size( C _self, M _method ) const
+                bool getm_File_Size( C _self, M _method ) const
                 {
                     if( m_File_Size_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Size );
+                
+                    return true;
                 }
                 
                 bool get_File_Size( mt::vec2f * _value ) const
@@ -2121,14 +2183,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Image_Alpha( C _self, M _method ) const
+                bool getm_Image_Alpha( C _self, M _method ) const
                 {
                     if( m_Image_Alpha_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Image_Alpha );
+                
+                    return true;
                 }
                 
                 bool get_Image_Alpha( bool * _value ) const
@@ -2171,14 +2235,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Image_Offset( C _self, M _method ) const
+                bool getm_Image_Offset( C _self, M _method ) const
                 {
                     if( m_Image_Offset_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Image_Offset );
+                
+                    return true;
                 }
                 
                 bool get_Image_Offset( mt::vec2f * _value ) const
@@ -2199,14 +2265,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Image_Premultiply( C _self, M _method ) const
+                bool getm_Image_Premultiply( C _self, M _method ) const
                 {
                     if( m_Image_Premultiply_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Image_Premultiply );
+                
+                    return true;
                 }
                 
                 bool get_Image_Premultiply( bool * _value ) const
@@ -2227,14 +2295,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Image_Size( C _self, M _method ) const
+                bool getm_Image_Size( C _self, M _method ) const
                 {
                     if( m_Image_Size_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Image_Size );
+                
+                    return true;
                 }
                 
                 bool get_Image_Size( mt::vec2f * _value ) const
@@ -2266,14 +2336,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Image_UVRotate( C _self, M _method ) const
+                bool getm_Image_UVRotate( C _self, M _method ) const
                 {
                     if( m_Image_UVRotate_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Image_UVRotate );
+                
+                    return true;
                 }
                 
                 bool get_Image_UVRotate( bool * _value ) const
@@ -2359,14 +2431,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Image_Offset( C _self, M _method ) const
+                bool getm_Image_Offset( C _self, M _method ) const
                 {
                     if( m_Image_Offset_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Image_Offset );
+                
+                    return true;
                 }
                 
                 bool get_Image_Offset( mt::vec2f * _value ) const
@@ -2387,14 +2461,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Image_Premultiply( C _self, M _method ) const
+                bool getm_Image_Premultiply( C _self, M _method ) const
                 {
                     if( m_Image_Premultiply_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Image_Premultiply );
+                
+                    return true;
                 }
                 
                 bool get_Image_Premultiply( bool * _value ) const
@@ -2415,14 +2491,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Image_Size( C _self, M _method ) const
+                bool getm_Image_Size( C _self, M _method ) const
                 {
                     if( m_Image_Size_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Image_Size );
+                
+                    return true;
                 }
                 
                 bool get_Image_Size( mt::vec2f * _value ) const
@@ -2454,14 +2532,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Image_UVAlphaRotate( C _self, M _method ) const
+                bool getm_Image_UVAlphaRotate( C _self, M _method ) const
                 {
                     if( m_Image_UVAlphaRotate_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Image_UVAlphaRotate );
+                
+                    return true;
                 }
                 
                 bool get_Image_UVAlphaRotate( bool * _value ) const
@@ -2493,14 +2573,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Image_UVRGBRotate( C _self, M _method ) const
+                bool getm_Image_UVRGBRotate( C _self, M _method ) const
                 {
                     if( m_Image_UVRGBRotate_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Image_UVRGBRotate );
+                
+                    return true;
                 }
                 
                 bool get_Image_UVRGBRotate( bool * _value ) const
@@ -2597,14 +2679,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Converter( C _self, M _method ) const
+                bool getm_File_Converter( C _self, M _method ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
                 }
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
@@ -2625,14 +2709,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Dataflow( C _self, M _method ) const
+                bool getm_File_Dataflow( C _self, M _method ) const
                 {
                     if( m_File_Dataflow_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Dataflow );
+                
+                    return true;
                 }
                 
                 bool get_File_Dataflow( Mengine::ConstString * _value ) const
@@ -2700,14 +2786,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Anchor_Point( C _self, M _method ) const
+                bool getm_Anchor_Point( C _self, M _method ) const
                 {
                     if( m_Anchor_Point_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Anchor_Point );
+                
+                    return true;
                 }
                 
                 bool get_Anchor_Point( mt::vec3f * _value ) const
@@ -2728,14 +2816,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Bounds_Box( C _self, M _method ) const
+                bool getm_Bounds_Box( C _self, M _method ) const
                 {
                     if( m_Bounds_Box_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Bounds_Box );
+                
+                    return true;
                 }
                 
                 bool get_Bounds_Box( mt::box2f * _value ) const
@@ -2789,14 +2879,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_KeyFramesPackPath_Codec( C _self, M _method ) const
+                bool getm_KeyFramesPackPath_Codec( C _self, M _method ) const
                 {
                     if( m_KeyFramesPackPath_Codec_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_KeyFramesPackPath_Codec );
+                
+                    return true;
                 }
                 
                 bool get_KeyFramesPackPath_Codec( Mengine::ConstString * _value ) const
@@ -2817,14 +2909,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_KeyFramesPackPath_Converter( C _self, M _method ) const
+                bool getm_KeyFramesPackPath_Converter( C _self, M _method ) const
                 {
                     if( m_KeyFramesPackPath_Converter_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_KeyFramesPackPath_Converter );
+                
+                    return true;
                 }
                 
                 bool get_KeyFramesPackPath_Converter( Mengine::ConstString * _value ) const
@@ -2856,14 +2950,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Loop_Segment( C _self, M _method ) const
+                bool getm_Loop_Segment( C _self, M _method ) const
                 {
                     if( m_Loop_Segment_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Loop_Segment );
+                
+                    return true;
                 }
                 
                 bool get_Loop_Segment( mt::vec2f * _value ) const
@@ -2884,14 +2980,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Offset_Point( C _self, M _method ) const
+                bool getm_Offset_Point( C _self, M _method ) const
                 {
                     if( m_Offset_Point_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Offset_Point );
+                
+                    return true;
                 }
                 
                 bool get_Offset_Point( mt::vec3f * _value ) const
@@ -3030,14 +3128,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_AnchorPoint( C _self, M _method ) const
+                    bool getm_AnchorPoint( C _self, M _method ) const
                     {
                         if( m_AnchorPoint_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_AnchorPoint );
+                    
+                        return true;
                     }
                     
                     bool get_AnchorPoint( mt::vec3f * _value ) const
@@ -3071,14 +3171,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_BlendingMode( C _self, M _method ) const
+                    bool getm_BlendingMode( C _self, M _method ) const
                     {
                         if( m_BlendingMode_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_BlendingMode );
+                    
+                        return true;
                     }
                     
                     bool get_BlendingMode( Mengine::ConstString * _value ) const
@@ -3156,14 +3258,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Loop( C _self, M _method ) const
+                    bool getm_Loop( C _self, M _method ) const
                     {
                         if( m_Loop_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Loop );
+                    
+                        return true;
                     }
                     
                     bool getd_Loop( bool * _value, const bool & _default ) const
@@ -3229,14 +3333,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Params( C _self, M _method ) const
+                    bool getm_Params( C _self, M _method ) const
                     {
                         if( m_Params_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Params );
+                    
+                        return true;
                     }
                     
                     bool getd_Params( uint32_t * _value, const uint32_t & _default ) const
@@ -3280,14 +3386,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Parent( C _self, M _method ) const
+                    bool getm_Parent( C _self, M _method ) const
                     {
                         if( m_Parent_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Parent );
+                    
+                        return true;
                     }
                     
                     bool getd_Parent( uint32_t * _value, const uint32_t & _default ) const
@@ -3331,14 +3439,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_PlayCount( C _self, M _method ) const
+                    bool getm_PlayCount( C _self, M _method ) const
                     {
                         if( m_PlayCount_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_PlayCount );
+                    
+                        return true;
                     }
                     
                     bool getd_PlayCount( uint32_t * _value, const uint32_t & _default ) const
@@ -3382,14 +3492,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Polygon( C _self, M _method ) const
+                    bool getm_Polygon( C _self, M _method ) const
                     {
                         if( m_Polygon_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Polygon );
+                    
+                        return true;
                     }
                     
                     bool getd_Polygon( bool * _value, const bool & _default ) const
@@ -3411,14 +3523,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Position( C _self, M _method ) const
+                    bool getm_Position( C _self, M _method ) const
                     {
                         if( m_Position_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Position );
+                    
+                        return true;
                     }
                     
                     bool get_Position( mt::vec3f * _value ) const
@@ -3452,14 +3566,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Rotation( C _self, M _method ) const
+                    bool getm_Rotation( C _self, M _method ) const
                     {
                         if( m_Rotation_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Rotation );
+                    
+                        return true;
                     }
                     
                     bool get_Rotation( mt::vec3f * _value ) const
@@ -3493,14 +3609,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Scale( C _self, M _method ) const
+                    bool getm_Scale( C _self, M _method ) const
                     {
                         if( m_Scale_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Scale );
+                    
+                        return true;
                     }
                     
                     bool get_Scale( mt::vec3f * _value ) const
@@ -3556,14 +3674,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Shape( C _self, M _method ) const
+                    bool getm_Shape( C _self, M _method ) const
                     {
                         if( m_Shape_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Shape );
+                    
+                        return true;
                     }
                     
                     bool getd_Shape( bool * _value, const bool & _default ) const
@@ -3618,14 +3738,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_StartInterval( C _self, M _method ) const
+                    bool getm_StartInterval( C _self, M _method ) const
                     {
                         if( m_StartInterval_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_StartInterval );
+                    
+                        return true;
                     }
                     
                     bool getd_StartInterval( float * _value, const float & _default ) const
@@ -3669,14 +3791,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Stretch( C _self, M _method ) const
+                    bool getm_Stretch( C _self, M _method ) const
                     {
                         if( m_Stretch_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Stretch );
+                    
+                        return true;
                     }
                     
                     bool getd_Stretch( float * _value, const float & _default ) const
@@ -3720,14 +3844,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Switch( C _self, M _method ) const
+                    bool getm_Switch( C _self, M _method ) const
                     {
                         if( m_Switch_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Switch );
+                    
+                        return true;
                     }
                     
                     bool getd_Switch( bool * _value, const bool & _default ) const
@@ -3771,14 +3897,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_TimeRemap( C _self, M _method ) const
+                    bool getm_TimeRemap( C _self, M _method ) const
                     {
                         if( m_TimeRemap_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_TimeRemap );
+                    
+                        return true;
                     }
                     
                     bool getd_TimeRemap( bool * _value, const bool & _default ) const
@@ -3811,14 +3939,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Viewport( C _self, M _method ) const
+                    bool getm_Viewport( C _self, M _method ) const
                     {
                         if( m_Viewport_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Viewport );
+                    
+                        return true;
                     }
                     
                     bool get_Viewport( Mengine::Viewport * _value ) const
@@ -3909,14 +4039,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_AnchorPoint( C _self, M _method ) const
+                    bool getm_AnchorPoint( C _self, M _method ) const
                     {
                         if( m_AnchorPoint_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_AnchorPoint );
+                    
+                        return true;
                     }
                     
                     bool get_AnchorPoint( mt::vec3f * _value ) const
@@ -3950,14 +4082,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_BlendingMode( C _self, M _method ) const
+                    bool getm_BlendingMode( C _self, M _method ) const
                     {
                         if( m_BlendingMode_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_BlendingMode );
+                    
+                        return true;
                     }
                     
                     bool get_BlendingMode( Mengine::ConstString * _value ) const
@@ -4035,14 +4169,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Loop( C _self, M _method ) const
+                    bool getm_Loop( C _self, M _method ) const
                     {
                         if( m_Loop_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Loop );
+                    
+                        return true;
                     }
                     
                     bool getd_Loop( bool * _value, const bool & _default ) const
@@ -4108,14 +4244,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Params( C _self, M _method ) const
+                    bool getm_Params( C _self, M _method ) const
                     {
                         if( m_Params_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Params );
+                    
+                        return true;
                     }
                     
                     bool getd_Params( uint32_t * _value, const uint32_t & _default ) const
@@ -4159,14 +4297,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Parent( C _self, M _method ) const
+                    bool getm_Parent( C _self, M _method ) const
                     {
                         if( m_Parent_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Parent );
+                    
+                        return true;
                     }
                     
                     bool getd_Parent( uint32_t * _value, const uint32_t & _default ) const
@@ -4210,14 +4350,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_PlayCount( C _self, M _method ) const
+                    bool getm_PlayCount( C _self, M _method ) const
                     {
                         if( m_PlayCount_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_PlayCount );
+                    
+                        return true;
                     }
                     
                     bool getd_PlayCount( uint32_t * _value, const uint32_t & _default ) const
@@ -4261,14 +4403,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Polygon( C _self, M _method ) const
+                    bool getm_Polygon( C _self, M _method ) const
                     {
                         if( m_Polygon_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Polygon );
+                    
+                        return true;
                     }
                     
                     bool getd_Polygon( bool * _value, const bool & _default ) const
@@ -4290,14 +4434,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Position( C _self, M _method ) const
+                    bool getm_Position( C _self, M _method ) const
                     {
                         if( m_Position_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Position );
+                    
+                        return true;
                     }
                     
                     bool get_Position( mt::vec3f * _value ) const
@@ -4331,14 +4477,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Rotation( C _self, M _method ) const
+                    bool getm_Rotation( C _self, M _method ) const
                     {
                         if( m_Rotation_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Rotation );
+                    
+                        return true;
                     }
                     
                     bool get_Rotation( mt::vec3f * _value ) const
@@ -4372,14 +4520,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Scale( C _self, M _method ) const
+                    bool getm_Scale( C _self, M _method ) const
                     {
                         if( m_Scale_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Scale );
+                    
+                        return true;
                     }
                     
                     bool get_Scale( mt::vec3f * _value ) const
@@ -4435,14 +4585,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Shape( C _self, M _method ) const
+                    bool getm_Shape( C _self, M _method ) const
                     {
                         if( m_Shape_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Shape );
+                    
+                        return true;
                     }
                     
                     bool getd_Shape( bool * _value, const bool & _default ) const
@@ -4497,14 +4649,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_StartInterval( C _self, M _method ) const
+                    bool getm_StartInterval( C _self, M _method ) const
                     {
                         if( m_StartInterval_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_StartInterval );
+                    
+                        return true;
                     }
                     
                     bool getd_StartInterval( float * _value, const float & _default ) const
@@ -4548,14 +4702,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Stretch( C _self, M _method ) const
+                    bool getm_Stretch( C _self, M _method ) const
                     {
                         if( m_Stretch_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Stretch );
+                    
+                        return true;
                     }
                     
                     bool getd_Stretch( float * _value, const float & _default ) const
@@ -4599,14 +4755,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Switch( C _self, M _method ) const
+                    bool getm_Switch( C _self, M _method ) const
                     {
                         if( m_Switch_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Switch );
+                    
+                        return true;
                     }
                     
                     bool getd_Switch( bool * _value, const bool & _default ) const
@@ -4650,14 +4808,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_TimeRemap( C _self, M _method ) const
+                    bool getm_TimeRemap( C _self, M _method ) const
                     {
                         if( m_TimeRemap_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_TimeRemap );
+                    
+                        return true;
                     }
                     
                     bool getd_TimeRemap( bool * _value, const bool & _default ) const
@@ -4790,6 +4950,36 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
+                bool has_File_Dataflow() const
+                {
+                    return m_File_Dataflow_successful;
+                }
+                
+                template<class C, class M>
+                bool getm_File_Dataflow( C _self, M _method ) const
+                {
+                    if( m_File_Dataflow_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_File_Dataflow );
+                
+                    return true;
+                }
+                
+                bool get_File_Dataflow( Mengine::ConstString * _value ) const
+                {
+                    if( m_File_Dataflow_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_File_Dataflow;
+                
+                    return true;
+                }
+                
                 template<class C, class M>
                 void getm_File_Path( C _self, M _method ) const
                 {
@@ -4803,6 +4993,7 @@ namespace Metacode
                 
             protected:
                 void _parseData( const uint8_t * _buff, size_t _size, size_t & _read ) override;
+                void _parseArguments( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
                 void _preparationIncludes( uint32_t _id, uint32_t _count ) override;
                 void _parseIncludes( const uint8_t * _buff, size_t _size, size_t & _read, uint32_t _id ) override;
             public:
@@ -4823,14 +5014,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Bounds( C _self, M _method ) const
+                    bool getm_Bounds( C _self, M _method ) const
                     {
                         if( m_Bounds_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Bounds );
+                    
+                        return true;
                     }
                     
                     bool get_Bounds( Mengine::Viewport * _value ) const
@@ -4908,14 +5101,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Master( C _self, M _method ) const
+                    bool getm_Master( C _self, M _method ) const
                     {
                         if( m_Master_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Master );
+                    
+                        return true;
                     }
                     
                     bool getd_Master( bool * _value, const bool & _default ) const
@@ -5125,6 +5320,8 @@ namespace Metacode
                 
             protected:
             protected:
+                bool m_File_Dataflow_successful;
+                Mengine::ConstString m_File_Dataflow;
                 Mengine::FilePath m_File_Path;
             public:
                 typedef Metabuf::Vector<Meta_Composition> VectorMeta_Composition;
@@ -5155,14 +5352,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_DefaultVolume_Value( C _self, M _method ) const
+                bool getm_DefaultVolume_Value( C _self, M _method ) const
                 {
                     if( m_DefaultVolume_Value_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_DefaultVolume_Value );
+                
+                    return true;
                 }
                 
                 bool get_DefaultVolume_Value( float * _value ) const
@@ -5183,14 +5382,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Codec( C _self, M _method ) const
+                bool getm_File_Codec( C _self, M _method ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Codec );
+                
+                    return true;
                 }
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
@@ -5211,14 +5412,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Converter( C _self, M _method ) const
+                bool getm_File_Converter( C _self, M _method ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
                 }
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
@@ -5239,14 +5442,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_External( C _self, M _method ) const
+                bool getm_File_External( C _self, M _method ) const
                 {
                     if( m_File_External_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_External );
+                
+                    return true;
                 }
                 
                 bool get_File_External( bool * _value ) const
@@ -5317,14 +5522,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Converter( C _self, M _method ) const
+                bool getm_File_Converter( C _self, M _method ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
                 }
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
@@ -5463,14 +5670,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_DefaultVolume_Value( C _self, M _method ) const
+                bool getm_DefaultVolume_Value( C _self, M _method ) const
                 {
                     if( m_DefaultVolume_Value_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_DefaultVolume_Value );
+                
+                    return true;
                 }
                 
                 bool get_DefaultVolume_Value( float * _value ) const
@@ -5491,14 +5700,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Codec( C _self, M _method ) const
+                bool getm_File_Codec( C _self, M _method ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Codec );
+                
+                    return true;
                 }
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
@@ -5519,14 +5730,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Converter( C _self, M _method ) const
+                bool getm_File_Converter( C _self, M _method ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
                 }
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
@@ -5558,14 +5771,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_IsStreamable_Value( C _self, M _method ) const
+                bool getm_IsStreamable_Value( C _self, M _method ) const
                 {
                     if( m_IsStreamable_Value_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_IsStreamable_Value );
+                
+                    return true;
                 }
                 
                 bool get_IsStreamable_Value( bool * _value ) const
@@ -5710,14 +5925,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Alpha( C _self, M _method ) const
+                bool getm_File_Alpha( C _self, M _method ) const
                 {
                     if( m_File_Alpha_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Alpha );
+                
+                    return true;
                 }
                 
                 bool get_File_Alpha( bool * _value ) const
@@ -5738,14 +5955,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Codec( C _self, M _method ) const
+                bool getm_File_Codec( C _self, M _method ) const
                 {
                     if( m_File_Codec_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Codec );
+                
+                    return true;
                 }
                 
                 bool get_File_Codec( Mengine::ConstString * _value ) const
@@ -5766,14 +5985,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Converter( C _self, M _method ) const
+                bool getm_File_Converter( C _self, M _method ) const
                 {
                     if( m_File_Converter_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Converter );
+                
+                    return true;
                 }
                 
                 bool get_File_Converter( Mengine::ConstString * _value ) const
@@ -5794,14 +6015,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_Duration( C _self, M _method ) const
+                bool getm_File_Duration( C _self, M _method ) const
                 {
                     if( m_File_Duration_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_Duration );
+                
+                    return true;
                 }
                 
                 bool get_File_Duration( float * _value ) const
@@ -5822,14 +6045,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_FrameRate( C _self, M _method ) const
+                bool getm_File_FrameRate( C _self, M _method ) const
                 {
                     if( m_File_FrameRate_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_FrameRate );
+                
+                    return true;
                 }
                 
                 bool get_File_FrameRate( float * _value ) const
@@ -5850,14 +6075,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_File_NoSeek( C _self, M _method ) const
+                bool getm_File_NoSeek( C _self, M _method ) const
                 {
                     if( m_File_NoSeek_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_File_NoSeek );
+                
+                    return true;
                 }
                 
                 bool get_File_NoSeek( bool * _value ) const
@@ -5921,14 +6148,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_WindowBackground_ResourceImageName( C _self, M _method ) const
+                bool getm_WindowBackground_ResourceImageName( C _self, M _method ) const
                 {
                     if( m_WindowBackground_ResourceImageName_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_WindowBackground_ResourceImageName );
+                
+                    return true;
                 }
                 
                 bool get_WindowBackground_ResourceImageName( Mengine::ConstString * _value ) const
@@ -6297,14 +6526,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Count( C _self, M _method ) const
+                bool getm_Count( C _self, M _method ) const
                 {
                     if( m_Count_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Count );
+                
+                    return true;
                 }
                 
                 bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
@@ -6337,14 +6568,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_ImageOffset( C _self, M _method ) const
+                bool getm_ImageOffset( C _self, M _method ) const
                 {
                     if( m_ImageOffset_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_ImageOffset );
+                
+                    return true;
                 }
                 
                 bool get_ImageOffset( mt::vec2f * _value ) const
@@ -6378,14 +6611,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_ImageSize( C _self, M _method ) const
+                bool getm_ImageSize( C _self, M _method ) const
                 {
                     if( m_ImageSize_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_ImageSize );
+                
+                    return true;
                 }
                 
                 bool get_ImageSize( mt::vec2f * _value ) const
@@ -6441,14 +6676,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Immutable( C _self, M _method ) const
+                bool getm_Immutable( C _self, M _method ) const
                 {
                     if( m_Immutable_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Immutable );
+                
+                    return true;
                 }
                 
                 bool getd_Immutable( bool * _value, const bool & _default ) const
@@ -6503,14 +6740,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Subtract( C _self, M _method ) const
+                bool getm_Subtract( C _self, M _method ) const
                 {
                     if( m_Subtract_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Subtract );
+                
+                    return true;
                 }
                 
                 bool getd_Subtract( bool * _value, const bool & _default ) const
@@ -6627,14 +6866,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Count( C _self, M _method ) const
+                bool getm_Count( C _self, M _method ) const
                 {
                     if( m_Count_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Count );
+                
+                    return true;
                 }
                 
                 bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
@@ -6678,14 +6919,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Immutable( C _self, M _method ) const
+                bool getm_Immutable( C _self, M _method ) const
                 {
                     if( m_Immutable_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Immutable );
+                
+                    return true;
                 }
                 
                 bool getd_Immutable( bool * _value, const bool & _default ) const
@@ -6735,14 +6978,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_AnchorPoint( C _self, M _method ) const
+                    bool getm_AnchorPoint( C _self, M _method ) const
                     {
                         if( m_AnchorPoint_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_AnchorPoint );
+                    
+                        return true;
                     }
                     
                     bool get_AnchorPoint( mt::vec2f * _value ) const
@@ -6798,14 +7043,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Count( C _self, M _method ) const
+                    bool getm_Count( C _self, M _method ) const
                     {
                         if( m_Count_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Count );
+                    
+                        return true;
                     }
                     
                     bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
@@ -6849,14 +7096,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Opacity( C _self, M _method ) const
+                    bool getm_Opacity( C _self, M _method ) const
                     {
                         if( m_Opacity_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Opacity );
+                    
+                        return true;
                     }
                     
                     bool getd_Opacity( float * _value, const float & _default ) const
@@ -6878,14 +7127,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Position( C _self, M _method ) const
+                    bool getm_Position( C _self, M _method ) const
                     {
                         if( m_Position_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Position );
+                    
+                        return true;
                     }
                     
                     bool get_Position( mt::vec2f * _value ) const
@@ -6941,14 +7192,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Rotation( C _self, M _method ) const
+                    bool getm_Rotation( C _self, M _method ) const
                     {
                         if( m_Rotation_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Rotation );
+                    
+                        return true;
                     }
                     
                     bool getd_Rotation( float * _value, const float & _default ) const
@@ -6970,14 +7223,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Scale( C _self, M _method ) const
+                    bool getm_Scale( C _self, M _method ) const
                     {
                         if( m_Scale_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Scale );
+                    
+                        return true;
                     }
                     
                     bool get_Scale( mt::vec2f * _value ) const
@@ -7033,14 +7288,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Volume( C _self, M _method ) const
+                    bool getm_Volume( C _self, M _method ) const
                     {
                         if( m_Volume_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Volume );
+                    
+                        return true;
                     }
                     
                     bool getd_Volume( float * _value, const float & _default ) const
@@ -7135,14 +7392,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Count( C _self, M _method ) const
+                bool getm_Count( C _self, M _method ) const
                 {
                     if( m_Count_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Count );
+                
+                    return true;
                 }
                 
                 bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
@@ -7186,14 +7445,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Immutable( C _self, M _method ) const
+                bool getm_Immutable( C _self, M _method ) const
                 {
                     if( m_Immutable_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Immutable );
+                
+                    return true;
                 }
                 
                 bool getd_Immutable( bool * _value, const bool & _default ) const
@@ -7243,14 +7504,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_AnchorPoint( C _self, M _method ) const
+                    bool getm_AnchorPoint( C _self, M _method ) const
                     {
                         if( m_AnchorPoint_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_AnchorPoint );
+                    
+                        return true;
                     }
                     
                     bool get_AnchorPoint( mt::vec3f * _value ) const
@@ -7306,14 +7569,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Count( C _self, M _method ) const
+                    bool getm_Count( C _self, M _method ) const
                     {
                         if( m_Count_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Count );
+                    
+                        return true;
                     }
                     
                     bool getd_Count( uint32_t * _value, const uint32_t & _default ) const
@@ -7357,14 +7622,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Opacity( C _self, M _method ) const
+                    bool getm_Opacity( C _self, M _method ) const
                     {
                         if( m_Opacity_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Opacity );
+                    
+                        return true;
                     }
                     
                     bool getd_Opacity( float * _value, const float & _default ) const
@@ -7386,14 +7653,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Orientation( C _self, M _method ) const
+                    bool getm_Orientation( C _self, M _method ) const
                     {
                         if( m_Orientation_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Orientation );
+                    
+                        return true;
                     }
                     
                     bool get_Orientation( mt::vec3f * _value ) const
@@ -7427,14 +7696,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Position( C _self, M _method ) const
+                    bool getm_Position( C _self, M _method ) const
                     {
                         if( m_Position_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Position );
+                    
+                        return true;
                     }
                     
                     bool get_Position( mt::vec3f * _value ) const
@@ -7468,14 +7739,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Rotation( C _self, M _method ) const
+                    bool getm_Rotation( C _self, M _method ) const
                     {
                         if( m_Rotation_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Rotation );
+                    
+                        return true;
                     }
                     
                     bool get_Rotation( mt::vec3f * _value ) const
@@ -7509,14 +7782,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Scale( C _self, M _method ) const
+                    bool getm_Scale( C _self, M _method ) const
                     {
                         if( m_Scale_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Scale );
+                    
+                        return true;
                     }
                     
                     bool get_Scale( mt::vec3f * _value ) const
@@ -7572,14 +7847,16 @@ namespace Metacode
                     }
                     
                     template<class C, class M>
-                    void getm_Volume( C _self, M _method ) const
+                    bool getm_Volume( C _self, M _method ) const
                     {
                         if( m_Volume_successful == false )
                         {
-                            return;
+                            return false;
                         }
                     
                         (_self->*_method)( this->m_Volume );
+                    
+                        return true;
                     }
                     
                     bool getd_Volume( float * _value, const float & _default ) const
@@ -7809,14 +8086,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Platform( C _self, M _method ) const
+                bool getm_Platform( C _self, M _method ) const
                 {
                     if( m_Platform_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Platform );
+                
+                    return true;
                 }
                 
                 bool get_Platform( Mengine::Tags * _value ) const
@@ -7935,14 +8214,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Platform( C _self, M _method ) const
+                bool getm_Platform( C _self, M _method ) const
                 {
                     if( m_Platform_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Platform );
+                
+                    return true;
                 }
                 
                 bool get_Platform( Mengine::Tags * _value ) const
@@ -7998,14 +8279,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Platform( C _self, M _method ) const
+                bool getm_Platform( C _self, M _method ) const
                 {
                     if( m_Platform_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Platform );
+                
+                    return true;
                 }
                 
                 bool get_Platform( Mengine::Tags * _value ) const
@@ -8123,14 +8406,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Ignored( C _self, M _method ) const
+                bool getm_Ignored( C _self, M _method ) const
                 {
                     if( m_Ignored_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Ignored );
+                
+                    return true;
                 }
                 
                 bool getd_Ignored( bool * _value, const bool & _default ) const
@@ -8152,14 +8437,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Platform( C _self, M _method ) const
+                bool getm_Platform( C _self, M _method ) const
                 {
                     if( m_Platform_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Platform );
+                
+                    return true;
                 }
                 
                 bool get_Platform( Mengine::Tags * _value ) const
@@ -8257,14 +8544,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Finalizer( C _self, M _method ) const
+                bool getm_Finalizer( C _self, M _method ) const
                 {
                     if( m_Finalizer_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Finalizer );
+                
+                    return true;
                 }
                 
                 bool get_Finalizer( Mengine::ConstString * _value ) const
@@ -8298,14 +8587,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Initializer( C _self, M _method ) const
+                bool getm_Initializer( C _self, M _method ) const
                 {
                     if( m_Initializer_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Initializer );
+                
+                    return true;
                 }
                 
                 bool get_Initializer( Mengine::ConstString * _value ) const
@@ -8339,14 +8630,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Module( C _self, M _method ) const
+                bool getm_Module( C _self, M _method ) const
                 {
                     if( m_Module_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Module );
+                
+                    return true;
                 }
                 
                 bool get_Module( Mengine::ConstString * _value ) const
@@ -8391,14 +8684,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Platform( C _self, M _method ) const
+                bool getm_Platform( C _self, M _method ) const
                 {
                     if( m_Platform_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Platform );
+                
+                    return true;
                 }
                 
                 bool get_Platform( Mengine::Tags * _value ) const
@@ -8460,14 +8755,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Platform( C _self, M _method ) const
+                bool getm_Platform( C _self, M _method ) const
                 {
                     if( m_Platform_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Platform );
+                
+                    return true;
                 }
                 
                 bool get_Platform( Mengine::Tags * _value ) const
@@ -8664,14 +8961,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_CharOffset( C _self, M _method ) const
+                bool getm_CharOffset( C _self, M _method ) const
                 {
                     if( m_CharOffset_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_CharOffset );
+                
+                    return true;
                 }
                 
                 bool getd_CharOffset( float * _value, const float & _default ) const
@@ -8693,14 +8992,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Font( C _self, M _method ) const
+                bool getm_Font( C _self, M _method ) const
                 {
                     if( m_Font_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Font );
+                
+                    return true;
                 }
                 
                 bool get_Font( Mengine::ConstString * _value ) const
@@ -8767,14 +9068,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_LineOffset( C _self, M _method ) const
+                bool getm_LineOffset( C _self, M _method ) const
                 {
                     if( m_LineOffset_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_LineOffset );
+                
+                    return true;
                 }
                 
                 bool getd_LineOffset( float * _value, const float & _default ) const
@@ -8796,14 +9099,16 @@ namespace Metacode
                 }
                 
                 template<class C, class M>
-                void getm_Value( C _self, M _method ) const
+                bool getm_Value( C _self, M _method ) const
                 {
                     if( m_Value_successful == false )
                     {
-                        return;
+                        return false;
                     }
                 
                     (_self->*_method)( this->m_Value );
+                
+                    return true;
                 }
                 
                 bool get_Value( Mengine::WString * _value ) const

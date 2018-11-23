@@ -78,7 +78,7 @@ namespace Mengine
 
         const aeMovieSubComposition * subcomposition = ae_get_movie_sub_composition( _composition, name.c_str() );
 
-        if( subcomposition == AE_NULL )
+        if( subcomposition == AE_NULLPTR )
         {
             return false;
         }

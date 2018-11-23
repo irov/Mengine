@@ -907,7 +907,7 @@ namespace Mengine
 
         if( is_track_matte == AE_TRUE )
         {
-            *_nd = AE_NULL;
+            *_nd = AE_NULLPTR;
 
             return AE_TRUE;
         }
@@ -1077,7 +1077,7 @@ namespace Mengine
             break;
         };
 
-        if( _callbackData->track_matte_layer != AE_NULL )
+        if( _callbackData->track_matte_layer != AE_NULLPTR )
         {
             switch( type )
             {
@@ -1210,7 +1210,7 @@ namespace Mengine
             }
         }
 
-        *_nd = AE_NULL;
+        *_nd = AE_NULLPTR;
 
         return AE_TRUE;
     }
@@ -1229,7 +1229,7 @@ namespace Mengine
 
         aeMovieLayerTypeEnum type = ae_get_movie_layer_data_type( _callbackData->layer );
 
-        if( _callbackData->track_matte_layer != AE_NULL )
+        if( _callbackData->track_matte_layer != AE_NULLPTR )
         {
             switch( type )
             {
@@ -1313,22 +1313,26 @@ namespace Mengine
                             {
                                 return;
                             }
+
+                            if( _callbackData->interrupt == AE_TRUE )
+                            {
+                                if( particle_animation->interrupt() == false )
+                                {
+                                    return;
+                                }
+                            }
                         }
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
-                //case AE_MOVIE_STATE_UPDATE_INTERRUPT:
-                //    {
-                //        particle_animation->interrupt();
-                //    }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
                         particle_animation->stop();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_END:
                     {
-                        if( _callbackData->loop == AE_FALSE )
+                        if( _callbackData->loop == AE_FALSE && _callbackData->interrupt == AE_FALSE )
                         {
                             particle_animation->stop();
                         }
@@ -1378,6 +1382,14 @@ namespace Mengine
                             {
                                 return;
                             }
+
+                            if( _callbackData->interrupt == AE_TRUE )
+                            {
+                                if( surface_animation->interrupt() == false )
+                                {
+                                    return;
+                                }
+                            }
                         }
 
                         surface_animation->setTime( _callbackData->offset * 1000.f );
@@ -1385,17 +1397,13 @@ namespace Mengine
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
-                //case AE_MOVIE_STATE_UPDATE_INTERRUPT:
-                //    {
-                //        surface_animation->interrupt();
-                //    }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
                         surface_animation->stop();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_END:
                     {
-                        if( _callbackData->loop == AE_FALSE )
+                        if( _callbackData->loop == AE_FALSE && _callbackData->interrupt == AE_FALSE )
                         {
                             surface_animation->stop();
                         }
@@ -1449,22 +1457,26 @@ namespace Mengine
                             {
                                 return;
                             }
+
+                            if( _callbackData->interrupt == AE_TRUE )
+                            {
+                                if( surface_animation->interrupt() == false )
+                                {
+                                    return;
+                                }
+                            }
                         }
                     }break;
                 case AE_MOVIE_STATE_UPDATE_PROCESS:
                     {
                     }break;
-                //case AE_MOVIE_STATE_UPDATE_INTERRUPT:
-                //    {
-                //        surface_animation->interrupt();
-                //    }break;
                 case AE_MOVIE_STATE_UPDATE_STOP:
                     {
                         surface_animation->stop();
                     }break;
                 case AE_MOVIE_STATE_UPDATE_END:
                     {
-                        if( _callbackData->loop == AE_FALSE )
+                        if( _callbackData->loop == AE_FALSE && _callbackData->interrupt == AE_FALSE )
                         {
                             surface_animation->stop();
                         }
@@ -1827,8 +1839,6 @@ namespace Mengine
             return false;
         }
 
-        const aeMovieData * movieData = m_resourceMovie2->getMovieData();
-
         const aeMovieCompositionData * compositionData = m_resourceMovie2->getCompositionData( m_compositionName );
 
         if( compositionData == nullptr )
@@ -1841,6 +1851,10 @@ namespace Mengine
 
             return false;
         }
+
+        const Movie2DataInterfacePtr & movieData = m_resourceMovie2->getMovieData();
+
+        const aeMovieData * data = movieData->getMovieData();
 
         aeMovieCompositionProviders providers;
         ae_clear_movie_composition_providers( &providers );
@@ -1871,7 +1885,7 @@ namespace Mengine
         providers.subcomposition_deleter = &__movie_subcomposition_deleter;
         providers.subcomposition_state = &__movie_subcomposition_state;
 
-        const aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &providers, this );
+        const aeMovieComposition * composition = ae_create_movie_composition( data, compositionData, AE_TRUE, &providers, this );
 
         if( composition == nullptr )
         {
@@ -1948,8 +1962,6 @@ namespace Mengine
         m_surfaces.clear();
 
         m_resourceMovie2.release();
-
-        Node::_release();
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_activate()
@@ -2343,7 +2355,7 @@ namespace Mengine
                             v.color = total_mesh_color;
                         }
 
-                        if( mesh.uv_cache_userdata == AE_NULL )
+                        if( mesh.uv_cache_userdata == AE_NULLPTR )
                         {
                             for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
                             {

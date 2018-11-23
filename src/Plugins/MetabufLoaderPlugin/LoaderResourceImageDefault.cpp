@@ -53,9 +53,11 @@ namespace Mengine
 		{
 			resource->setSize( maxSize );
 		}
-
+        
         metadata->getm_File_Offset( resource, &ResourceImageDefault::setOffset );
         metadata->getm_File_NoExist( resource, &ResourceImageDefault::setValidNoExist );
+
+        resource->correctUVTexture();
 
         return true;
     }

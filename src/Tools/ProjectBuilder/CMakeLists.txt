@@ -79,12 +79,21 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     )
     
 
-if(MSVC)
+if(MSVC AND MENGINE_PLATFORM_WIN32)
     TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
             ${THIRDPARTY_DIR}/openssl/lib/libcryptoMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
             ${THIRDPARTY_DIR}/openssl/lib/libsslMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
         )
-endif()    
+endif()
+
+if(MSVC AND MENGINE_PLATFORM_WIN64)
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
+            ${THIRDPARTY_DIR}/openssl/lib64/libcryptoMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+            ${THIRDPARTY_DIR}/openssl/lib64/libsslMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+        )
+endif()
+
+
     
 foreach(dependency ${APPLICATION_DEPENDENCIES})
 	#MESSAGE( ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )

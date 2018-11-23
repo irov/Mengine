@@ -26,6 +26,9 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
+    public:
+        void correctUVTexture();
+
     protected:
         ConstString m_resourceImageRGBName;
         ResourceImagePtr m_resourceImageRGB;

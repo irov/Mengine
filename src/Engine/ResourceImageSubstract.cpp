@@ -72,4 +72,12 @@ namespace Mengine
             m_resourceImage = nullptr;
         }
     }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImageSubstract::correctUVTexture()
+    {
+        for( uint32_t i = 0; i != 4; ++i )
+        {
+            m_uvTextureImage[i] = m_uvImage[i];
+        }
+    }
 }

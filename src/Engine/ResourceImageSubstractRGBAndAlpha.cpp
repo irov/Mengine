@@ -112,5 +112,13 @@ namespace Mengine
             m_resourceImageAlpha = nullptr;
         }
     }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImageSubstractRGBAndAlpha::correctUVTexture()
+    {
+        for( uint32_t i = 0; i != 4; ++i )
+        {
+            m_uvTextureImage[i] = m_uvImage[i];
+        }
+    }
     /////////////////////////////////////////////////////////////////////////
 }

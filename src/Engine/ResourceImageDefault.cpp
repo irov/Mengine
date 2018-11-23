@@ -131,5 +131,49 @@ namespace Mengine
         bool pow2 = m_texture->isPow2();
 
         this->setPow2( pow2 );
+    }    
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImageDefault::correctUVTexture()
+    {
+        uint32_t width = (uint32_t)(m_size.x + 0.5f);
+        uint32_t height = (uint32_t)(m_size.y + 0.5f);
+
+        if( Helper::isTexturePOW2( width ) == false )
+        {
+            uint32_t width_pow2 = Helper::getTexturePOW2( width );
+
+            float scale = m_size.x / float( width_pow2 );
+
+            for( uint32_t i = 0; i != 4; ++i )
+            {
+                m_uvTextureImage[i].x = m_uvImage[i].x * scale;
+            }
+        }
+        else
+        {
+            for( uint32_t i = 0; i != 4; ++i )
+            {
+                m_uvTextureImage[i].x = m_uvImage[i].x;
+            }
+        }
+
+        if( Helper::isTexturePOW2( height ) == false )
+        {
+            uint32_t height_pow2 = Helper::getTexturePOW2( height );
+
+            float scale = m_size.y / float( height_pow2 );
+
+            for( uint32_t i = 0; i != 4; ++i )
+            {
+                m_uvTextureImage[i].y = m_uvImage[i].y * scale;
+            }
+        }
+        else
+        {
+            for( uint32_t i = 0; i != 4; ++i )
+            {
+                m_uvTextureImage[i].y = m_uvImage[i].y;
+            }
+        }
     }
 }

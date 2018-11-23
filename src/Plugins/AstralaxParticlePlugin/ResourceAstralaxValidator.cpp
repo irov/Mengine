@@ -17,7 +17,7 @@ namespace Mengine
     {
         const FilePath & filePath = _resource->getFilePath();
         const ConstString & name = _resource->getName();
-        
+
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
@@ -45,5 +45,5 @@ namespace Mengine
         }
 
         return true;
-    }    
+    }
 }

@@ -28,7 +28,7 @@ namespace Mengine
         this->updatePersonalTransparent_();
 
         this->_setPersonalColor( _color );
-        
+
         this->invalidateColor();
     }
     //////////////////////////////////////////////////////////////////////////

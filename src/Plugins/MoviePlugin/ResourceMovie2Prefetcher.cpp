@@ -14,7 +14,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2Prefetcher::_prefetch( const ResourceMovie2Ptr & _resource, const PrefetcherObserverInterfacePtr & _observer )
-    {        
+    {
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
         const FilePath & filePath = _resource->getFilePath();
         const ConstString & dataflowType = _resource->getDataflowType();

@@ -38,25 +38,25 @@ namespace Mengine
         Helper::unicodeToUtf8( _binPath, utf8_binPath );
 
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString("xml2bin") );
+            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString( "xml2bin" ) );
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR("writeBin invalid create decoder xml2bin for %s"
+            LOGGER_ERROR( "writeBin invalid create decoder xml2bin for %s"
                 , utf8_xmlPath.c_str()
-                );
+            );
 
             return false;
         }
 
-		if( decoder->prepareData( nullptr ) == false )
-		{
-			LOGGER_ERROR("writeBin invalid initialize decoder xml2bin for %s"
-				, utf8_xmlPath.c_str()
-				);
+        if( decoder->prepareData( nullptr ) == false )
+        {
+            LOGGER_ERROR( "writeBin invalid initialize decoder xml2bin for %s"
+                , utf8_xmlPath.c_str()
+            );
 
-			return false;
-		}
+            return false;
+        }
 
         XmlCodecOptions options;
         options.pathProtocol = Helper::stringizeFilePath( utf8_protocolPath );
@@ -68,18 +68,18 @@ namespace Mengine
 
         if( decoder->setOptions( &options ) == false )
         {
-            LOGGER_ERROR("writeBin invalid setup decoder xml2bin for %s"
+            LOGGER_ERROR( "writeBin invalid setup decoder xml2bin for %s"
                 , utf8_xmlPath.c_str()
-                );
+            );
 
             return false;
         }
 
         if( decoder->decode( 0, 0 ) == 0 )
         {
-            LOGGER_ERROR("writeBin invalid decode %s"
+            LOGGER_ERROR( "writeBin invalid decode %s"
                 , utf8_xmlPath.c_str()
-                );
+            );
 
             return false;
         }
@@ -89,10 +89,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * writeBin( pybind::kernel_interface * _kernel, const wchar_t * protocolPath, const wchar_t * xmlPath, const wchar_t * binPath )
     {
-		if( s_writeBin( protocolPath, xmlPath, binPath ) == false )
+        if( s_writeBin( protocolPath, xmlPath, binPath ) == false )
         {
-            LOGGER_ERROR("writeBin: error write bin"
-                );
+            LOGGER_ERROR( "writeBin: error write bin"
+            );
 
             return nullptr;
         }

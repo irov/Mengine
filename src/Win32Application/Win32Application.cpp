@@ -112,23 +112,23 @@ PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( Win32FileGroup );
 
 #ifdef MENGINE_PLUGIN_BITMAPFONT
-    PLUGIN_EXPORT( BitmapFont );
+PLUGIN_EXPORT( BitmapFont );
 #endif
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGRENDER
-    PLUGIN_EXPORT( NodeDebugRender );
+PLUGIN_EXPORT( NodeDebugRender );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER
-    PLUGIN_EXPORT( ResourcePrefetcher );
+PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
 
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
-    PLUGIN_EXPORT( ResourceValidate );
+PLUGIN_EXPORT( ResourceValidate );
 #endif
 
 #ifdef MENGINE_PLUGIN_METABUFLOADER
-    PLUGIN_EXPORT( MetabufLoader );
+PLUGIN_EXPORT( MetabufLoader );
 #endif
 
 #ifdef MENGINE_PLUGIN_VIDEO

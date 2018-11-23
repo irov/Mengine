@@ -40,7 +40,7 @@ namespace Mengine
 
         typedef Vector<UpdatableProxy> VectorUpdatableProxies;
         VectorUpdatableProxies m_proxies;
-                
+
         typedef Vector<uint32_t> VectorUpdatableIndecies;
         VectorUpdatableIndecies m_proxyFrees;
 
@@ -49,7 +49,7 @@ namespace Mengine
             VectorUpdatableIndecies indecies;
             VectorUpdatableIndecies indeciesAdd;
         };
-        
+
         typedef Vector<LeafUpdatable> LeafUpdatables;
         LeafUpdatables m_leafs;
 

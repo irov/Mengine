@@ -24,10 +24,10 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class PickerTrapInterface> PickerTrapInterfacePtr;
-        
+
     typedef IntrusivePtr<class Node> NodePtr;
 
-    typedef stdex::intrusive_slug_list_size_ptr<Node> IntrusiveSlugListNodeChild;    
+    typedef stdex::intrusive_slug_list_size_ptr<Node> IntrusiveSlugListNodeChild;
     typedef stdex::intrusive_slug_ptr<IntrusiveSlugListNodeChild> IntrusiveSlugChild;
     //////////////////////////////////////////////////////////////////////////
     class Node

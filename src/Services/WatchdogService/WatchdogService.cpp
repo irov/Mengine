@@ -8,18 +8,18 @@ SERVICE_FACTORY( WatchdogService, Mengine::WatchdogService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	WatchdogService::WatchdogService()
+    WatchdogService::WatchdogService()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	WatchdogService::~WatchdogService()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    WatchdogService::~WatchdogService()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     double WatchdogService::watch( const String & _tag )
     {
-		uint64_t ms = TIME_SYSTEM()
-			->getMilliseconds();
+        uint64_t ms = TIME_SYSTEM()
+            ->getMilliseconds();
 
         MapWatchers::iterator it_found = m_watchers.find( _tag );
 

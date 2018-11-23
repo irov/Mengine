@@ -37,7 +37,7 @@ namespace Mengine
     bool ResourceMusic::isExternal() const
     {
         return m_external;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMusic::_convert()
     {

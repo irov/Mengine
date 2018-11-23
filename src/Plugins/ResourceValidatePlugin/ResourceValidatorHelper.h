@@ -11,7 +11,7 @@ namespace Mengine
     {
     public:
         bool validate( const ResourcePtr & _resource ) override
-        {            
+        {
             const T & resourceT = stdex::intrusive_static_cast<T>(_resource);
 
             return this->_validate( resourceT );

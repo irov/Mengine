@@ -43,7 +43,7 @@ namespace Mengine
     float ResourceVideo::getDuration() const
     {
         return m_duration;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideo::_convert()
     {

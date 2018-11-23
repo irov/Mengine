@@ -92,10 +92,10 @@ namespace Mengine
         }
 
         m_picker = PICKER_SERVICE()
-			->regTrap( this );
+            ->regTrap( this );
 
-		PICKER_SERVICE()
-			->updateTraps();
+        PICKER_SERVICE()
+            ->updateTraps();
 
         EVENTABLE_METHOD( this, EVENT_ACTIVATE )
             ->onHotSpotActivate();
@@ -115,11 +115,11 @@ namespace Mengine
         PickerTrapState * picker = m_picker;
         m_picker = nullptr;
 
-		PICKER_SERVICE()
-			->unregTrap( picker );
+        PICKER_SERVICE()
+            ->unregTrap( picker );
 
-		PICKER_SERVICE()
-			->updateTraps();
+        PICKER_SERVICE()
+            ->updateTraps();
 
         EVENTABLE_METHOD( this, EVENT_DEACTIVATE )
             ->onHotSpotDeactivate();
@@ -256,8 +256,8 @@ namespace Mengine
             return;
         }
 
-		PICKER_SERVICE()
-			->invalidateTraps();
+        PICKER_SERVICE()
+            ->invalidateTraps();
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::_activate()

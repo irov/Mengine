@@ -10,7 +10,7 @@
 #include "Kernel/FilePath.h"
 
 namespace Mengine
-{    
+{
     //////////////////////////////////////////////////////////////////////////
     class PackageServiceInterface
         : public ServiceInterface

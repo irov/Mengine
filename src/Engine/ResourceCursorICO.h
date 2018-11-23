@@ -11,10 +11,10 @@ namespace Mengine
 
     public:
         ResourceCursorICO();
-		~ResourceCursorICO() override;
+        ~ResourceCursorICO() override;
 
-	public:
-		void setFilePath( const FilePath & _filePath );
+    public:
+        void setFilePath( const FilePath & _filePath );
 
     public:
         const FilePath & getFilePath() const override;
@@ -29,7 +29,7 @@ namespace Mengine
 
         MemoryInterfacePtr m_buffer;
     };
-	//////////////////////////////////////////////////////////////////////////
-	typedef IntrusivePtr<ResourceCursorICO> ResourceCursorICOPtr;
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ResourceCursorICO> ResourceCursorICOPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

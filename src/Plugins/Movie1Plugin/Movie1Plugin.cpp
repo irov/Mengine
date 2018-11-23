@@ -54,13 +54,13 @@ PLUGIN_FACTORY( Movie1, Mengine::Movie1Plugin )
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    Movie1Plugin::Movie1Plugin()        
+    Movie1Plugin::Movie1Plugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
     Movie1Plugin::~Movie1Plugin()
     {
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Movie1Plugin::_avaliable()
     {
@@ -1545,7 +1545,7 @@ namespace Mengine
 
             pybind::def_function_kernel( kernel, "getMovieSlotsPosition", &Detail::s_getMovieSlotsPosition );
             pybind::def_function_kernel( kernel, "getMovieSlotPosition", &Detail::s_getMovieSlotPosition );
-            
+
             SCRIPT_SERVICE()
                 ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<PythonScriptWrapper<Movie> >( kernel ) );
 

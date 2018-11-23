@@ -11,11 +11,11 @@ namespace Mengine
 {
     class TextEntry
         : public TextEntryInterface
-		, public Factorable
+        , public Factorable
     {
     public:
-		TextEntry();
-		~TextEntry() override;
+        TextEntry();
+        ~TextEntry() override;
 
     public:
         void initialize( const ConstString & _key

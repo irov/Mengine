@@ -68,7 +68,7 @@ namespace Mengine
             FilePath c_folder = Helper::stringizeFilePath( str_fullpath, folder_delimiter - str_fullpath + 1 );
 
             return c_folder;
-        }        
+        }
         //////////////////////////////////////////////////////////////////////////
         FilePath unicodeToFilePath( const WString & _unicode )
         {

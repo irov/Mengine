@@ -11,10 +11,10 @@ namespace Mengine
         , public Factorable
     {
     public:
-		LoaderResourceCursorICO();
-		~LoaderResourceCursorICO() override;
+        LoaderResourceCursorICO();
+        ~LoaderResourceCursorICO() override;
 
     protected:
-		bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;
+        bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;
     };
 }

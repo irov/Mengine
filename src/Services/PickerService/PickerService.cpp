@@ -143,7 +143,7 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-	PickerService::PickerService()
+    PickerService::PickerService()
         : m_enumerator( 0 )
         , m_pickerTrapCount( 0 )
         , m_block( false )
@@ -152,7 +152,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	PickerService::~PickerService()
+    PickerService::~PickerService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -852,7 +852,7 @@ namespace Mengine
     {
         uint32_t count = 0;
 
-        for(const PickerTrapState & state : m_pickerTrapState )
+        for( const PickerTrapState & state : m_pickerTrapState )
         {
             if( state.dead == true )
             {

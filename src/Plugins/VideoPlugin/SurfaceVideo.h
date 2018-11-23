@@ -26,9 +26,9 @@ namespace Mengine
         : public Surface
         , public BaseEventation
         , public BaseAnimation
-		, public UnknownVideoSurfaceInterface
+        , public UnknownVideoSurfaceInterface
     {
-		DECLARE_UNKNOWABLE();
+        DECLARE_UNKNOWABLE();
         DECLARE_ANIMATABLE();
         DECLARE_EVENTABLE( SurfaceVideoEventReceiver );
 
@@ -37,7 +37,7 @@ namespace Mengine
         ~SurfaceVideo() override;
 
     public:
-        void setResourceVideo( const ResourcePtr & _resourceVideo) override;
+        void setResourceVideo( const ResourcePtr & _resourceVideo ) override;
         const ResourcePtr & getResourceVideo() const override;
 
     public:

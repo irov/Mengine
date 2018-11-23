@@ -347,7 +347,7 @@ namespace Mengine
             }
 
             MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveBuffer( _stream, _archivator, _doc, _file, _line );
-            
+
             return binaryBuffer;
         }
         //////////////////////////////////////////////////////////////////////////

@@ -27,7 +27,7 @@ namespace Mengine
 
     public:
         bool validResource( const ResourcePtr & _resource ) const override;
-        
+
     protected:
         bool visitableResource_( const ResourcePtr & _resource ) const;
         void visitableResources_() const;

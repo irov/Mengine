@@ -8,7 +8,7 @@
 #include "Kernel/Mixin.h"
 
 namespace Mengine
-{    
+{
     class DecoderInterface
         : public Mixin
     {

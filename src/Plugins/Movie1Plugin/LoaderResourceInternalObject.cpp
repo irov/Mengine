@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceInternalObject::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceInternalObject * resource = stdex::intrusive_get<ResourceInternalObject *>(_loadable);
+        ResourceInternalObject * resource = stdex::intrusive_get<ResourceInternalObject *>( _loadable );
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceInternalObject * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceInternalObject *>(_meta);
@@ -29,5 +29,5 @@ namespace Mengine
         resource->setInternalGroup( internalGroup );
 
         return true;
-    }    
+    }
 }

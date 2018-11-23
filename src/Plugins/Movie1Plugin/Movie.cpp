@@ -1602,11 +1602,11 @@ namespace Mengine
             return false;
         }
 
-		UnknownVideoSurfaceInterfacePtr unknownVideoSurface = surface->getUnknown();
+        UnknownVideoSurfaceInterfacePtr unknownVideoSurface = surface->getUnknown();
 
-		unknownVideoSurface->setResourceVideo( resourceVideo );
+        unknownVideoSurface->setResourceVideo( resourceVideo );
 
-		AnimationInterface * surface_animation = surface->getAnimation();
+        AnimationInterface * surface_animation = surface->getAnimation();
 
         surface_animation->setIntervalStart( _layer.startInterval );
         surface_animation->setPlayCount( _layer.playCount );

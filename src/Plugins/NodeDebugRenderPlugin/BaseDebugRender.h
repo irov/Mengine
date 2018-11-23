@@ -5,7 +5,7 @@
 #include "Kernel/Factorable.h"
 
 namespace Mengine
-{    
+{
     template<class T>
     class BaseDebugRenderT
         : public NodeDebugRenderInterface

@@ -7,11 +7,11 @@
 #include "Config/Vector.h"
 
 namespace Mengine
-{    
+{
     class MixerValue
     {
     public:
-        MixerValue();        
+        MixerValue();
         ~MixerValue();
 
     public:

@@ -236,7 +236,7 @@ namespace Mengine
                 nodeDebugRender->render( _context, _node.get() );
             }
         }
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebugRenderService::addNodeDebugRender( const ConstString & _type, const NodeDebugRenderInterfacePtr & _nodeDebugRender )
     {
@@ -573,7 +573,7 @@ namespace Mengine
             {
                 class MyVisitorFactoryService
                     : public VisitorFactoryService
-					, public Factorable
+                    , public Factorable
                 {
                 public:
                     MyVisitorFactoryService()
@@ -640,7 +640,7 @@ namespace Mengine
                     MapPybindScope m_scopes;
                 };
 
-				typedef IntrusivePtr<MyVisitorFactoryService> MyVisitorFactoryServicePtr;
+                typedef IntrusivePtr<MyVisitorFactoryService> MyVisitorFactoryServicePtr;
 
                 MyVisitorFactoryServicePtr mvcts = new FactorableUnique< MyVisitorFactoryService>;
                 FACTORY_SERVICE()

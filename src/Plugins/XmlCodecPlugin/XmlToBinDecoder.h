@@ -15,7 +15,7 @@ namespace Mengine
     {
     public:
         XmlToBinDecoder();
-		~XmlToBinDecoder() override;
+        ~XmlToBinDecoder() override;
 
     public:
         bool initialize() override;

@@ -30,7 +30,7 @@ namespace Mengine
 
     public:
         void setProtocolPath( const FilePath & _protocolPath ) override;
-		const FilePath & getProtocolPath() const override;
+        const FilePath & getProtocolPath() const override;
 
     public:
         bool load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const override;
@@ -47,18 +47,18 @@ namespace Mengine
     public:
         const ConstString & getCacheConstString( uint32_t _index ) const;
 
-	public:
-		bool addLoader( const ConstString & _type, const LoaderInterfacePtr & _loader ) override;
-		virtual void removeLoader( const ConstString & _type ) override;
-		virtual const LoaderInterfacePtr & getLoader( const ConstString & _type ) const override;
+    public:
+        bool addLoader( const ConstString & _type, const LoaderInterfacePtr & _loader ) override;
+        virtual void removeLoader( const ConstString & _type ) override;
+        virtual const LoaderInterfacePtr & getLoader( const ConstString & _type ) const override;
 
     protected:
         ArchivatorInterfacePtr m_archivator;
 
         FilePath m_protocolPath;
 
-		typedef Hashtable<ConstString, LoaderInterfacePtr> HashtableLoaders;
-		HashtableLoaders m_loaders;
+        typedef Hashtable<ConstString, LoaderInterfacePtr> HashtableLoaders;
+        HashtableLoaders m_loaders;
 
         mutable VectorConstString m_bufferConstString;
     };

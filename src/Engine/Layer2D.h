@@ -19,7 +19,7 @@ namespace Mengine
         , public BaseRender
     {
         DECLARE_VISITABLE( Layer );
-        DECLARE_RENDERABLE();        
+        DECLARE_RENDERABLE();
 
     public:
         Layer2D();

@@ -84,10 +84,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstString & ResourceWindow::getElementResourceImageName( uint32_t _type ) const
     {
-        MENGINE_ASSERTION( _type >= ResourceWindow_Count, ("resource window '%s' get invalid type '%d' (resource)"            
+        MENGINE_ASSERTION( _type >= ResourceWindow_Count, ("resource window '%s' get invalid type '%d' (resource)"
             , this->getName().c_str()
             , _type
-        ) );
+            ) );
 
         const WindowElement & element = m_elements[_type];
 

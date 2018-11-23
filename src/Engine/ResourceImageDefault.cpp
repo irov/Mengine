@@ -17,10 +17,10 @@ namespace Mengine
     ResourceImageDefault::ResourceImageDefault()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	ResourceImageDefault::~ResourceImageDefault()
-	{
-	}    
+    //////////////////////////////////////////////////////////////////////////
+    ResourceImageDefault::~ResourceImageDefault()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_convert()
     {
@@ -131,7 +131,7 @@ namespace Mengine
         bool pow2 = m_texture->isPow2();
 
         this->setPow2( pow2 );
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageDefault::correctUVTexture()
     {

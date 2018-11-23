@@ -57,14 +57,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-	TheoraVideoDecoder::TheoraVideoDecoder()
+    TheoraVideoDecoder::TheoraVideoDecoder()
         : m_pitch( 0 )
         , m_time( 0.f )
         , m_readyFrame( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	TheoraVideoDecoder::~TheoraVideoDecoder()
+    TheoraVideoDecoder::~TheoraVideoDecoder()
     {
     }
     //////////////////////////////////////////////////////////////////////////

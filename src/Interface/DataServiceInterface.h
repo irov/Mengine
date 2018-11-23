@@ -12,45 +12,45 @@
 
 namespace Mengine
 {
-	//////////////////////////////////////////////////////////////////////////
-	class DataServiceInterface
-		: public ServiceInterface
-	{
-		SERVICE_DECLARE("DataService")
+    //////////////////////////////////////////////////////////////////////////
+    class DataServiceInterface
+        : public ServiceInterface
+    {
+        SERVICE_DECLARE( "DataService" )
 
-	public:
-		virtual void registerDataflow(const ConstString& _type, const DataflowInterfacePtr & _dataflow) = 0;
-		virtual void unregisterDataflow(const ConstString& _type) = 0;
+    public:
+        virtual void registerDataflow( const ConstString& _type, const DataflowInterfacePtr & _dataflow ) = 0;
+        virtual void unregisterDataflow( const ConstString& _type ) = 0;
 
-	public:
-		virtual const DataflowInterfacePtr & getDataflow(const ConstString & _type) const = 0;
+    public:
+        virtual const DataflowInterfacePtr & getDataflow( const ConstString & _type ) const = 0;
 
-	public:
-		virtual DataInterfacePtr dataflow(const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream) = 0;
+    public:
+        virtual DataInterfacePtr dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream ) = 0;
 
-	public:
-		template<class T>
-		T dataflowT(const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream)
-		{
-			DataInterfacePtr data = this->dataflow(_dataflow, _stream);
+    public:
+        template<class T>
+        T dataflowT( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream )
+        {
+            DataInterfacePtr data = this->dataflow( _dataflow, _stream );
 
 #ifndef NDEBUG
-			if (data == nullptr)
-			{
-				return nullptr;
-			}
+            if( data == nullptr )
+            {
+                return nullptr;
+            }
 
-			if (stdex::intrusive_dynamic_cast<T>(data) == nullptr)
-			{
-				throw;
-			}
+            if( stdex::intrusive_dynamic_cast<T>(data) == nullptr )
+            {
+                throw;
+            }
 #endif
 
-			T t = stdex::intrusive_static_cast<T>(data);
+            T t = stdex::intrusive_static_cast<T>(data);
 
-			return t;
-		}
-	};
+            return t;
+        }
+    };
 }
 //////////////////////////////////////////////////////////////////////////
 #define DATA_SERVICE()\

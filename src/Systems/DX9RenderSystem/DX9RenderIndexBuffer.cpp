@@ -58,7 +58,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderIndexBuffer::finalize()
-    {        
+    {
         if( m_pIB != nullptr )
         {
             ULONG ref = m_pIB->Release();
@@ -144,7 +144,7 @@ namespace Mengine
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
             ->createMemoryProxy();
 
-        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr )( "invalid create memory proxy" );
+        MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr )("invalid create memory proxy");
 
         memory->setBuffer( lock_memory, _count * m_indexSize, __FILE__, __LINE__ );
 

@@ -15,8 +15,8 @@ namespace Mengine
         , public Factorable
     {
     public:
-		Package();
-		~Package() override;
+        Package();
+        ~Package() override;
 
     public:
         void setup( const ConstString & _name
@@ -30,7 +30,7 @@ namespace Mengine
         );
 
     public:
-		void setName( const ConstString & _name ) override;
+        void setName( const ConstString & _name ) override;
         const ConstString & getName() const override;
 
     public:
@@ -149,5 +149,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Package> PackagePtr;
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 }

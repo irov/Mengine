@@ -78,7 +78,7 @@ namespace Mengine
             }
 
         public:
-            void log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count ) override
+            void log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count ) override
             {
                 (void)_level;
                 (void)_flag;

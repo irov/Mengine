@@ -470,8 +470,13 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
+            ResourceMovie2ValidatorPtr movie2Validator = new FactorableUnique<ResourceMovie2Validator>();
+
+            movie2Validator->setMovieInstance( m_movieInstance );
+            movie2Validator->setArchivator( archivator );
+
             RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<ResourceMovie2Validator>() );
+                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), movie2Validator );
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )

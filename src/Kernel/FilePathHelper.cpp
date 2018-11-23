@@ -82,19 +82,23 @@ namespace Mengine
 
             return fp;
         }
-
         //////////////////////////////////////////////////////////////////////////
-        void pathCorrectBackslash( WChar * _out, const WChar * _in )
+        void pathCorrectBackslash( WChar * _path )
         {
-            wcscpy( _out, _in );
-
-            WChar * pch = wcschr( _out, L'\\' );
+            WChar * pch = wcschr( _path, L'\\' );
             while( pch != NULL )
             {
                 *pch = L'/';
 
                 pch = wcschr( pch, L'\\' );
             }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pathCorrectBackslashTo( WChar * _out, const WChar * _in )
+        {
+            wcscpy( _out, _in );
+
+            pathCorrectBackslash( _out );
         }
         //////////////////////////////////////////////////////////////////////////
         void pathRemoveBackslash( WChar * _path )

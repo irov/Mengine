@@ -19,6 +19,8 @@ namespace Mengine
 
 	public:
 		virtual DataInterfacePtr create() = 0;
+
+    public:
 		virtual bool load(const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream) = 0;
 	};
 	//////////////////////////////////////////////////////////////////////////

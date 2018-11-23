@@ -5,11 +5,13 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 
+#include "Kernel/AssertionMainThreadGuard.h"
+#include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Resource.h"
-
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -28,6 +30,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceService::_initializeService()
     {
+        m_mutex = THREAD_SERVICE()
+            ->createMutex( __FILE__, __LINE__ );
+
         uint32_t ResourceHashTableSize = CONFIG_VALUE( "Engine", "ResourceHashTableSize", 1024 * 32 );
 
         m_resources.reserve( ResourceHashTableSize );
@@ -37,6 +42,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceService::_finalizeService()
     {
+        m_mutex = nullptr;
+
         m_resourcesCache.clear();
 
 #ifndef MENGINE_MASTER_RELEASE
@@ -46,7 +53,7 @@ namespace Mengine
 
             if( refcount != 0 )
             {
-                LOGGER_WARNING( "ResourceManager::~ResourceManager resource '%s' type '%s' group '%s' refcount %d"
+                LOGGER_WARNING( "resource '%s' type '%s' group '%s' refcount %d"
                     , resource->getName().c_str()
                     , resource->getType().c_str()
                     , resource->getGroupName().c_str()
@@ -69,14 +76,14 @@ namespace Mengine
         {
             if( exist == false )
             {
-                LOGGER_ERROR( "ResourceManager::loadResource: resource '%s:%s' not found"
+                LOGGER_ERROR( "resource '%s:%s' not found"
                     , _fileGroup->getName().c_str()
                     , _filePath.c_str()
                 );
             }
             else
             {
-                LOGGER_ERROR( "ResourceManager::loadResource: Invalid parse resource '%s:%s'"
+                LOGGER_ERROR( "invalid parse resource '%s:%s'"
                     , _fileGroup->getName().c_str()
                     , _filePath.c_str()
                 );
@@ -101,7 +108,7 @@ namespace Mengine
 
             if( this->loadResources( _locale, _fileGroup, path, _ignored ) == false )
             {
-                LOGGER_ERROR( "ResourceManager::loadResource load %s:%s resource invalid load include %s"
+                LOGGER_ERROR( "load %s:%s resource invalid load include %s"
                     , _fileGroup->getName().c_str()
                     , _filePath.c_str()
                     , path.c_str()
@@ -137,7 +144,7 @@ namespace Mengine
 
                 const FileGroupInterfacePtr & resource_category = has_resource->getFileGroup();
 
-                LOGGER_ERROR( "ResourceManager::loadResource: path %s already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
+                LOGGER_ERROR( "path %s already exist resource name '%s' in group '%s' category '%s' ('%s')\nhas resource category '%s' group '%s' name '%s'"
                     , _filePath.c_str()
                     , name.c_str()
                     , groupName.c_str()
@@ -156,7 +163,7 @@ namespace Mengine
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR( "ResourceManager::loadResource: '%s' invalid create resource '%s:%s' name '%s' type '%s'"
+                LOGGER_ERROR( "file '%s' invalid create resource '%s:%s' name '%s' type '%s'"
                     , _filePath.c_str()
                     , _fileGroup->getName().c_str()
                     , groupName.c_str()
@@ -172,7 +179,7 @@ namespace Mengine
 
             if( loader == nullptr )
             {
-                LOGGER_ERROR( "ResourceManager::loadResource: '%s' resource '%s:%s' invalid create loader '%s'"
+                LOGGER_ERROR( "file '%s' resource '%s:%s' invalid create loader '%s'"
                     , _filePath.c_str()
                     , _fileGroup->getName().c_str()
                     , groupName.c_str()
@@ -184,7 +191,7 @@ namespace Mengine
             
             if( loader->load( resource, meta_resource ) == false )
             {
-                LOGGER_ERROR( "ResourceManager::loadResource '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
+                LOGGER_ERROR( "file '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
                     , _filePath.c_str()
                     , _fileGroup->getName().c_str()
                     , groupName.c_str()
@@ -206,7 +213,7 @@ namespace Mengine
 #ifndef MENGINE_MASTER_RELEASE
             if( _ignored == false && resource->convert() == false )
             {
-                LOGGER_ERROR( "ResourceManager::loadResource %s type [%s] invalid convert"
+                LOGGER_ERROR( "resource %s type [%s] invalid convert"
                     , name.c_str()
                     , type.c_str()
                 );
@@ -229,14 +236,14 @@ namespace Mengine
         {
             if( exist == false )
             {
-                LOGGER_ERROR( "ResourceManager::unloadResource: resource '%s:%s' not found"
+                LOGGER_ERROR( "resource '%s:%s' not found"
                     , _pak->getName().c_str()
                     , _path.c_str()
                 );
             }
             else
             {
-                LOGGER_ERROR( "ResourceManager::unloadResource: Invalid parse resource '%s:%s'"
+                LOGGER_ERROR( "invalid parse resource '%s:%s'"
                     , _pak->getName().c_str()
                     , _path.c_str()
                 );
@@ -261,7 +268,7 @@ namespace Mengine
 
             if( this->unloadResources( _locale, _pak, path ) == false )
             {
-                LOGGER_ERROR( "ResourceManager::unloadResource load %s:%s resource invalid load include %s"
+                LOGGER_ERROR( "load %s:%s resource invalid load include %s"
                     , _pak->getName().c_str()
                     , _path.c_str()
                     , path.c_str()
@@ -334,7 +341,7 @@ namespace Mengine
             return nullptr;
         }
 
-        LOGGER_INFO( "ResourceManager::generateResource type '%s'"
+        LOGGER_INFO( "type '%s'"
             , _type.c_str()
         );
 
@@ -346,15 +353,15 @@ namespace Mengine
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerResourceReference ResourceService::createResource( const ConstString & _locale, const FileGroupInterfacePtr& _category, const ConstString& _groupName, const ConstString& _name, const ConstString& _type )
+    PointerResourceReference ResourceService::createResource( const ConstString & _locale, const FileGroupInterfacePtr& _fileGroup, const ConstString& _groupName, const ConstString& _name, const ConstString& _type )
     {
         ResourcePtr resource = this->generateResource( _type );
 
         if( resource == nullptr )
         {
-            LOGGER_ERROR( "ResourceManager createResource: invalid generate resource locale '%s' category '%s' group '%s' name '%s' type '%s'"
+            LOGGER_ERROR( "invalid generate resource locale '%s' category '%s' group '%s' name '%s' type '%s'"
                 , _locale.c_str()
-                , _category->getName().c_str()
+                , _fileGroup->getName().c_str()
                 , _groupName.c_str()
                 , _name.c_str()
                 , _type.c_str()
@@ -364,13 +371,13 @@ namespace Mengine
         }
 
         resource->setLocale( _locale );
-        resource->setFileGroup( _category );
+        resource->setFileGroup( _fileGroup );
         resource->setGroupName( _groupName );
         resource->setName( _name );
 
         const ResourcePtr & prev_resource = m_resources.change( _name, resource );
 
-        ResourceCacheKey cache_key = std::make_pair( _category->getName(), _groupName );
+        ResourceCacheKey cache_key = std::make_pair( _fileGroup->getName(), _groupName );
 
         MapResourceCache::iterator it_cache_found = m_resourcesCache.find( cache_key );
 
@@ -477,11 +484,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & ResourceService::getResource( const ConstString& _name ) const
     {
+        MENGINE_ASSERTION_MAIN_THREAD_GUARD();
+
         const ResourcePtr & resource = m_resources.find( _name );
 
         if( resource == nullptr )
         {
-            LOGGER_ERROR( "ResourceManager::getResource: resource '%s' does not exist"
+            LOGGER_ERROR( "resource '%s' does not exist"
                 , _name.c_str()
             );
 
@@ -490,7 +499,7 @@ namespace Mengine
 
         if( resource->incrementReference() == false )
         {
-            LOGGER_ERROR( "ResourceManager::getResource: resource '%s' '%s' is not compile!"
+            LOGGER_ERROR( "resource '%s' '%s' is not compile!"
                 , _name.c_str()
                 , resource->getType().c_str()
             );
@@ -503,11 +512,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & ResourceService::getResourceReference( const ConstString & _name ) const
     {
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         const ResourcePtr & resource = m_resources.find( _name );
 
         if( resource == nullptr )
         {
-            LOGGER_WARNING( "ResourceManager::getResourceReference: resource '%s' does not exist"
+            LOGGER_WARNING( "resource '%s' does not exist"
                 , _name.c_str()
             );
 

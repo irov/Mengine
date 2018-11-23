@@ -85,11 +85,11 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        void updateVideoBuffer_();
+        void updateVideoBuffer_() const;
 
         bool sync_( float _time );
         bool createDecoder_();
-        bool fillVideoBuffer_();
+        bool fillVideoBuffer_() const;
         void updateUV_();
         void updateSize_();
 
@@ -102,7 +102,7 @@ namespace Mengine
 
         float m_time;
 
-        bool m_needUpdateVideoBuffer;
+        mutable bool m_needUpdateVideoBuffer;
         bool m_updateFirstFrame;
 
         mt::vec2f m_size;

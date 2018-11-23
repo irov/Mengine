@@ -15,10 +15,11 @@
 
 namespace Mengine
 {
+    //////////////////////////////////////////////////////////////////////////
     DECLARE_MAGIC_NUMBER( MAGIC_AEK, 'A', 'E', 'K', '1', 37 );
-
+    //////////////////////////////////////////////////////////////////////////
     const uint32_t MOVIE_KEY_FRAME_FORMAT_VERSION = 1;
-
+    //////////////////////////////////////////////////////////////////////////
     struct MovieFrameSource
     {
         mt::vec3f anchorPoint;
@@ -28,7 +29,7 @@ namespace Mengine
         float opacity;
         float volume;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_ANCHOR_POINT = 0x00000001;
     const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_POSITION = 0x00000002;
     const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_ROTATION_X = 0x00000004;
@@ -37,7 +38,7 @@ namespace Mengine
     const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_SCALE = 0x00000020;
     const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_OPACITY = 0x00000040;
     const uint32_t MOVIE_KEY_FRAME_IMMUTABLE_VOLUME = 0x00000080;
-
+    //////////////////////////////////////////////////////////////////////////
     struct MovieLayerFrame
     {
         uint32_t count;
@@ -56,20 +57,20 @@ namespace Mengine
         MovieFrameSource source;
         bool immutable;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     struct MovieLayerTimeRemap
     {
         uint32_t layerId;
 
         float * times;
     };
-
+    //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_MOVIE_SHAPE_MAX_VERTEX
-#	define MENGINE_MOVIE_SHAPE_MAX_VERTEX 128
+#define MENGINE_MOVIE_SHAPE_MAX_VERTEX 128
 #endif
-
+    //////////////////////////////////////////////////////////////////////////
 #	define MENGINE_MOVIE_SHAPE_MAX_INDICES ((MENGINE_MOVIE_SHAPE_MAX_VERTEX - 2) * 3)
-
+    //////////////////////////////////////////////////////////////////////////
     struct MovieFrameShape
     {
         mt::vec2f * pos;
@@ -79,7 +80,7 @@ namespace Mengine
         uint16_t vertexCount;
         uint16_t indexCount;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     struct MovieLayerShapes
     {
         uint32_t layerId;
@@ -87,11 +88,11 @@ namespace Mengine
         uint32_t shapes_size;
         MovieFrameShape * shapes;
     };
-
+    //////////////////////////////////////////////////////////////////////////
 #ifndef MENGINE_MOVIE_POLYGON_MAX_VERTEX
 #	define MENGINE_MOVIE_POLYGON_MAX_VERTEX 128
 #endif
-
+    //////////////////////////////////////////////////////////////////////////
     struct MovieLayerPolygon
     {
         uint32_t layerId;
@@ -99,7 +100,7 @@ namespace Mengine
         mt::vec2f * polygon;
         uint8_t vertexCount;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     class MovieFramePackInterface
         : public DataInterface
     {
@@ -119,6 +120,7 @@ namespace Mengine
     public:
         virtual bool isLayerPermanentlyHide( uint32_t _layerIndex ) const = 0;
     };
-
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MovieFramePackInterface> MovieFramePackInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

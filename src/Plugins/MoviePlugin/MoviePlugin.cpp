@@ -7,13 +7,17 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
+#include "Interface/DataServiceInterface.h"
 
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
+#include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
 
+#include "DataflowAEZ.h"
 #include "Movie2DebugRender.h"
+#include "ResourceMovie2Prefetcher.h"
 
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
@@ -111,63 +115,13 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     MoviePlugin::MoviePlugin()
-        : m_instance( nullptr )
+        : m_movieInstance( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
     MoviePlugin::~MoviePlugin()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-        class ResourceMovie2PrototypeGenerator
-            : public ResourcePrototypeGenerator<ResourceMovie2, 128>
-        {
-        public:
-            ResourceMovie2PrototypeGenerator( const aeMovieInstance * _instance, const ArchivatorInterfacePtr & _archivator )
-                : m_instance( _instance )
-                , m_archivator( _archivator )
-            {
-            }
-
-            ~ResourceMovie2PrototypeGenerator() override
-            {
-            }
-
-        protected:
-            FactorablePointer generate() override
-            {
-                const FactoryPtr & factory = this->getFactory();
-
-                ResourceMovie2Ptr resource = factory->createObject();
-
-                if( resource == nullptr )
-                {
-                    LOGGER_ERROR( "ResourcePrototypeGenerator can't generate %s %s"
-                        , m_category.c_str()
-                        , m_prototype.c_str()
-                    );
-
-                    return nullptr;
-                }
-
-                resource->setType( m_prototype );
-
-                this->setupScriptable( resource );
-
-                resource->setMovieInstance( m_instance );
-                resource->setMovieArchivator( m_archivator );
-
-                return resource;
-            }
-
-        protected:
-            const aeMovieInstance * m_instance;
-
-            ArchivatorInterfacePtr m_archivator;
-        };
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool MoviePlugin::_avaliable()
     {
@@ -396,7 +350,7 @@ namespace Mengine
 
             pybind::set_kernel( kernel );
 
-            m_instance = ae_create_movie_instance( m_hashkey.c_str(), &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
+            m_movieInstance = ae_create_movie_instance( m_hashkey.c_str(), &stdex_movie_alloc, &stdex_movie_alloc_n, &stdex_movie_free, &stdex_movie_free_n, 0, &stdex_movie_logerror, this );
 
             pybind::interface_<Movie2, pybind::bases<Node, Animatable> >( kernel, "Movie2", false )
                 .def( "setResourceMovie2", &Movie2::setResourceMovie2 )
@@ -483,10 +437,29 @@ namespace Mengine
             return false;
         }
 
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<ResourceMovie2PrototypeGenerator>( m_instance, archivator ) ) == false )
+        DataflowAEZPtr dataflowAEZ = new FactorableUnique<DataflowAEZ>();
+
+        dataflowAEZ->setMovieInstance( m_movieInstance );
+        dataflowAEZ->setArchivator( archivator );
+
+        if( dataflowAEZ->initialize() == false )
         {
             return false;
+        }
+
+        DATA_SERVICE()
+            ->registerDataflow( STRINGIZE_STRING_LOCAL( "aezMovie" ), dataflowAEZ );
+
+        if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceMovie2, 128> >() ) == false )
+        {
+            return false;
+        }
+
+        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
+        {
+            RESOURCEPREFETCHER_SERVICE()
+                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<ResourceMovie2Prefetcher>() );
         }
 
         if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
@@ -512,8 +485,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MoviePlugin::_finalize()
     {
-        ae_delete_movie_instance( m_instance );
-        m_instance = nullptr;
+        ae_delete_movie_instance( m_movieInstance );
+        m_movieInstance = nullptr;
 
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
@@ -541,6 +514,15 @@ namespace Mengine
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+
+        DATA_SERVICE()
+            ->unregisterDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+
+        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
+        {
+            RESOURCEPREFETCHER_SERVICE()
+                ->removeResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+        }
 
         if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
         {

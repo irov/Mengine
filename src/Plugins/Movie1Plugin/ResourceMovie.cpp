@@ -266,11 +266,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie::_compile()
     {
-        if( Resource::_compile() == false )
-        {
-            return false;
-        }
-
         if( m_filePath.empty() == true )
         {
             LOGGER_ERROR( "ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
@@ -287,7 +282,7 @@ namespace Mengine
 
         if( data == nullptr )
         {
-            LOGGER_ERROR( "ResourceMovie::_compile: '%s' group '%s' can` t get frame pack '%s'"
+            LOGGER_ERROR( "resource movie '%s' group '%s' can` t get frame pack '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
                 , m_filePath.c_str()
@@ -301,11 +296,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr ResourceMovie::compileData_( const FileGroupInterfacePtr & _category, const FilePath & _path )
+    DataInterfacePtr ResourceMovie::compileData_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
         DataInterfacePtr prefetch_data;
         if( PREFETCHER_SERVICE()
-            ->getData( _category, _path, prefetch_data ) == true )
+            ->getData( _fileGroup, _filePath, prefetch_data ) == true )
         {
             return prefetch_data;
         }
@@ -313,14 +308,14 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, _path, false );
+            ->openInputFile( fileGroup, _filePath, false );
 
         if( stream == nullptr )
         {
             LOGGER_ERROR( "ResourceMovie::compileData_: '%s' group '%s' don`t open Frames Pack '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
-                , _path.c_str()
+                , _filePath.c_str()
             );
 
             return nullptr;
@@ -349,7 +344,7 @@ namespace Mengine
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
                 , m_dataflowType.c_str()
-                , _path.c_str()
+                , _filePath.c_str()
             );
 
             return nullptr;
@@ -360,9 +355,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceMovie::_release()
     {
-        m_keyFramePack = nullptr;
-
-        Resource::_release();
+        if( m_keyFramePack != nullptr )
+        {
+            m_keyFramePack->release();
+            m_keyFramePack = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceMovie::visitResourceMovie( VisitorResourceMovie * _visitor )

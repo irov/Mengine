@@ -208,8 +208,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::_release()
     {
-        Node::_release();
-
         m_resourceImage.release();
 
         m_vertices.clear();

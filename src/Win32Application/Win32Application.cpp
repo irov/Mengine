@@ -583,6 +583,12 @@ namespace Mengine
         SERVICE_CREATE( ThreadSystem );
         SERVICE_CREATE( ThreadService );
 
+        ThreadMutexInterfacePtr threadMutexForLogger = THREAD_SERVICE()
+            ->createMutex( __FILE__, __LINE__ );
+
+        LOGGER_SERVICE()
+            ->setThreadMutex( threadMutexForLogger );
+
         SERVICE_CREATE( NotificationService );
 
         SERVICE_CREATE( RenderSystem );

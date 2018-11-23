@@ -25,7 +25,7 @@ namespace Mengine
                 , count
             );
 
-            Mengine::Assertion( msg, _file, _line, "Assertion Factory Empty" );
+            Mengine::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Factory Empty" );
         }
     }
 }

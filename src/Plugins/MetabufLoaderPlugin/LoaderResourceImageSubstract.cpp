@@ -53,6 +53,8 @@ namespace Mengine
         }
         
         metadata->getm_Image_Offset( resource, &ResourceImageSubstract::setOffset );
+
+        resource->correctUVTexture();
         
         return true;
     }

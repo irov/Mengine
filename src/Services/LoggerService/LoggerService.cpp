@@ -1,5 +1,7 @@
 #include "LoggerService.h"
 
+#include "Interface/ThreadServiceInterface.h"
+
 #include "Kernel/ThreadMutexScope.h"
 
 #include <algorithm>
@@ -29,7 +31,13 @@ namespace Mengine
         //Empty
 
         //ToDo
-        //WAIT_SERVICE( Mengine::ThreadServiceInterface, this, LoggerService::_createThreadService );
+        SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]( const ServiceInterfacePtr & _service )
+        {
+            MENGINE_UNUSED( _service );
+
+            m_threadMutex = THREAD_SERVICE()
+                ->createMutex( __FILE__, __LINE__ );
+        } );
 
         return true;
     }
@@ -48,16 +56,6 @@ namespace Mengine
 #endif
 
         m_threadMutex = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void LoggerService::setThreadMutex( const ThreadMutexInterfacePtr & _threadMutex )
-    {
-        m_threadMutex = _threadMutex;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ThreadMutexInterfacePtr & LoggerService::setThreadMutex() const
-    {
-        return m_threadMutex;
     }
     //////////////////////////////////////////////////////////////////////////
     void LoggerService::setVerboseLevel( EMessageLevel _level )

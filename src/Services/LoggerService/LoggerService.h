@@ -24,10 +24,6 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void setThreadMutex( const ThreadMutexInterfacePtr & _threadMutex ) override;
-        const ThreadMutexInterfacePtr & setThreadMutex() const override;
-
-    public:
         void setVerboseLevel( EMessageLevel _level ) override;
         void setVerboseFlag( uint32_t _flag ) override;
 

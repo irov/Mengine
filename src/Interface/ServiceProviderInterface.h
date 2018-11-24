@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config/Typedef.h"
+#include "Config/Lambda.h"
 #include "Config/Char.h"
 
 #include "Kernel/IntrusivePtr.h"
@@ -70,6 +71,9 @@ namespace Mengine
 
     public:
         virtual void dependencyService( const Char * _name, const Char * _dependency ) = 0;
+
+        typedef Lambda<void( const ServiceInterfacePtr & )> LambdaWaitService;
+        virtual void waitService( const Char * _name, const LambdaWaitService & _lambda ) = 0;
 
     public:
         virtual void stopServices() = 0;

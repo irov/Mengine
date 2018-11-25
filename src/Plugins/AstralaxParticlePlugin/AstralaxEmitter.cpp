@@ -433,7 +433,7 @@ namespace Mengine
             return;
         }
 
-        ColourValue_ARGB color_argb = color.getAsARGB();
+        ColorValue_ARGB color_argb = color.getAsARGB();
 
         for( uint32_t
             it = 0,

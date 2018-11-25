@@ -2252,7 +2252,7 @@ namespace Mengine
                             continue;
                         }
 
-                        ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
+                        ColorValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
 
                         if( (total_mesh_color & 0xFF000000) == 0 )
                         {
@@ -2297,7 +2297,7 @@ namespace Mengine
                             continue;
                         }
 
-                        ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
+                        ColorValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
 
                         if( (total_mesh_color & 0xFF000000) == 0 )
                         {
@@ -2347,7 +2347,7 @@ namespace Mengine
 
                         const Color & imageColor = resource_image->getColor();
 
-                        ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
+                        ColorValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
 
                         if( (total_mesh_color & 0xFF000000) == 0 )
                         {
@@ -2421,7 +2421,7 @@ namespace Mengine
 
                         const Color & surfaceColor = surface->getColor();
 
-                        ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * surfaceColor.getR(), total_color_g * mesh.color.g * surfaceColor.getG(), total_color_b * mesh.color.b * surfaceColor.getB(), total_color_a * mesh.opacity * surfaceColor.getA() );
+                        ColorValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * surfaceColor.getR(), total_color_g * mesh.color.g * surfaceColor.getG(), total_color_b * mesh.color.b * surfaceColor.getB(), total_color_a * mesh.opacity * surfaceColor.getA() );
 
                         if( (total_mesh_color & 0xFF000000) == 0 )
                         {
@@ -2488,7 +2488,7 @@ namespace Mengine
 
                         const Color & imageColor = resourceImage->getColor();
 
-                        ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
+                        ColorValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
 
                         if( (total_mesh_color & 0xFF000000) == 0 )
                         {

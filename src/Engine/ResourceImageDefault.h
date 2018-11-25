@@ -11,6 +11,7 @@ namespace Mengine
         , public Content
     {
         DECLARE_VISITABLE( ResourceImage );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceImageDefault();

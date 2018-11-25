@@ -2,19 +2,17 @@
 
 #include "ResourcePrefetcherInterface.h"
 
-#include "Engine/ResourceSound.h"
-
 #include "Kernel/Factorable.h"
 
 namespace Mengine
 {
-    class ResourceDefaultPrefetcher
+    class DataflowResourcePrefetcher
         : public ResourcePrefetcherInterface
         , public Factorable
     {
     public:
-        ResourceDefaultPrefetcher();
-        ~ResourceDefaultPrefetcher() override;
+        DataflowResourcePrefetcher();
+        ~DataflowResourcePrefetcher() override;
 
     public:
         bool prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) override;

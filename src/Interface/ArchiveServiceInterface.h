@@ -2,7 +2,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputStreamInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/ConstString.h"

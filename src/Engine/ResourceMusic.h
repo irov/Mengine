@@ -13,6 +13,7 @@ namespace Mengine
         , public Content
     {
         DECLARE_VISITABLE( Resource );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceMusic();

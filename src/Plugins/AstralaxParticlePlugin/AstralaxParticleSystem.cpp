@@ -93,7 +93,7 @@ namespace Mengine
         m_factoryPoolAstralaxEmitter = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName )
+    AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName )
     {
         AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject();
 
@@ -106,7 +106,7 @@ namespace Mengine
             return nullptr;
         }
 
-        if( container->initialize( _stream, _archivator ) == false )
+        if( container->initialize( _fileGroup, _fileName, _archivator ) == false )
         {
             LOGGER_ERROR( "'%s' invalid initialize container"
                 , _whoName.c_str()

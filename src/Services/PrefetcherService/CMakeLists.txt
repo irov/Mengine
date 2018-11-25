@@ -12,6 +12,8 @@ src
     ThreadTaskPrefetchImageDecoder.cpp
     ThreadTaskPrefetchSoundDecoder.h
     ThreadTaskPrefetchSoundDecoder.cpp
+    ThreadTaskPrefetchStream.h
+    ThreadTaskPrefetchStream.cpp
 )
 
 ADD_MENGINE_LIBRARY()

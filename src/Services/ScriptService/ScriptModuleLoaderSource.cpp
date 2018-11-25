@@ -1,6 +1,6 @@
 #include "ScriptModuleLoaderSource.h"
 
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 

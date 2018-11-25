@@ -13,6 +13,7 @@ namespace Mengine
         , public Content
     {
         DECLARE_VISITABLE( ResourceTestPick );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceHIT();

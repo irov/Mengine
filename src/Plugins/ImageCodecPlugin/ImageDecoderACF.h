@@ -2,7 +2,7 @@
 
 #include "Kernel/ImageDecoder.h"
 
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 
 #include "Kernel/Magic.h"
 

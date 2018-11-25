@@ -1,7 +1,7 @@
 #include "ScriptModuleFinder.h"
 
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"

@@ -3,7 +3,7 @@ set(MY_LIB_NAME AstralaxParticlePlugin)
 ADD_FILTER(
 src
 	AstralaxParticleModule.cpp
-    AstralaxParticleModule.h	
+    AstralaxParticleModule.h
     AstralaxEmitter.cpp
 	AstralaxEmitter.h
     AstralaxEmitter2.cpp
@@ -18,7 +18,7 @@ src
     LoaderResourceAstralax.h
     AstralaxService.h
 	AstralaxService.cpp
-    
+
     ResourceAstralaxValidator.cpp
     ResourceAstralaxValidator.h
     

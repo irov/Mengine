@@ -44,7 +44,7 @@ namespace Mengine
 
         if( _generator->initialize() == false )
         {
-            LOGGER_ERROR( "PrototypeManager::addPrototype add '%s:%s' invalid initialize!"
+            LOGGER_ERROR( "add '%s:%s' invalid initialize!"
                 , _category.c_str()
                 , _prototype.c_str()
             );
@@ -58,7 +58,7 @@ namespace Mengine
 
         m_generators.insert( key, _generator );
 
-        LOGGER_INFO( "PrototypeManager::addPrototype add '%s:%s'"
+        LOGGER_INFO( "add '%s:%s'"
             , _category.c_str()
             , _prototype.c_str()
         );
@@ -105,7 +105,7 @@ namespace Mengine
 
         if( generator == nullptr )
         {
-            LOGGER_ERROR( "PrototypeManager::generatePrototype prototype '%s:%s' not found"
+            LOGGER_ERROR( "prototype '%s:%s' not found"
                 , _category.c_str()
                 , _prototype.c_str()
             );

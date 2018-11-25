@@ -195,6 +195,7 @@ namespace Mengine
         , public Content
     {
         DECLARE_VISITABLE( Resource );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceMovie();
@@ -218,10 +219,6 @@ namespace Mengine
 
         void setLoopSegment( const mt::vec2f & _loopSegment );
         const mt::vec2f & getLoopSegment() const;
-
-    public:
-        void setDataflowType( const ConstString & _dataflowType );
-        const ConstString & getDataflowType() const;
 
     public:
         void setLayers( const VectorMovieLayers & _layers );

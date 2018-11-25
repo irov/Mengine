@@ -1,9 +1,7 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadQueueInterface.h"
 
-#include "ThreadTaskPrefetchImageDecoder.h"
-#include "ThreadTaskPrefetchSoundDecoder.h"
-#include "ThreadTaskPrefetchDataflow.h"
+#include "ThreadTaskPrefetch.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -55,6 +53,10 @@ namespace Mengine
         bool getData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data ) override;
 
     public:
+        bool prefetchStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, uint32_t _magicNumber, uint32_t _magicVersion, const PrefetcherObserverInterfacePtr & _observer ) override;
+        bool getStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, MemoryInterfacePtr & _memory ) override;
+        
+    public:
         bool unfetch( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath ) override;
 
     public:
@@ -70,6 +72,7 @@ namespace Mengine
         FactoryPtr m_factoryThreadTaskPrefetchImageDecoder;
         FactoryPtr m_factoryThreadTaskPrefetchSoundDecoder;
         FactoryPtr m_factoryThreadTaskPrefetchDataflow;
+        FactoryPtr m_factoryThreadTaskPrefetchStream;
 
         typedef std::pair<ConstString, FilePath> KeyPrefetchReceiver;
         typedef Map<KeyPrefetchReceiver, PrefetchReceiver> MapPrefetchReceiver;

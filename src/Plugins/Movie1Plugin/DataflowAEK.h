@@ -3,7 +3,7 @@
 #include "MovieKeyFrameInterface.h"
 
 #include "Interface/DataflowInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 
 #include "MovieFramePack.h"
 

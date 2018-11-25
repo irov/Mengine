@@ -19,6 +19,8 @@ namespace Mengine
         , public Content
     {
         DECLARE_VISITABLE( Resource );
+        DECLARE_CONTENTABLE();
+        DECLARE_MAGICABLE( MAGIC_PTZ );
 
     public:
         ResourceAstralax();

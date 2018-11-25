@@ -5,7 +5,7 @@
 #include "Interface/SoundServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/WatchdogInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"

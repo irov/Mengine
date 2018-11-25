@@ -2,7 +2,7 @@
 
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/InputStreamInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 
 #include "Kernel/ServiceBase.h"
 

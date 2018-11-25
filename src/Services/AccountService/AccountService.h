@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/AccountServiceInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/ServiceBase.h"

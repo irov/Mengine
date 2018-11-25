@@ -22,7 +22,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool StringizeService::_initializeService()
     {
-        for( uint32_t i = 0; i != 257; ++i )
+        for( uint32_t i = 0; i != MENGINE_STRINGIZE_INTERNAL_COUNT; ++i )
         {
             for( uint32_t j = 0; j != 8; ++j )
             {
@@ -38,7 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void StringizeService::_finalizeService()
     {
-        for( uint32_t i = 0; i != 257; ++i )
+        for( uint32_t i = 0; i != MENGINE_STRINGIZE_INTERNAL_COUNT; ++i )
         {
             for( uint32_t j = 0; j != 8; ++j )
             {
@@ -99,7 +99,7 @@ namespace Mengine
 
         ptrdiff_t ptr_diff = reinterpret_cast<ptrdiff_t>(_str);
 
-        uint32_t ptr_hash = (ptr_diff / sizeof( ptrdiff_t )) % 257;
+        uint32_t ptr_hash = (ptr_diff / sizeof( ptrdiff_t )) % MENGINE_STRINGIZE_INTERNAL_COUNT;
 
         for( uint32_t i = 0; i != 8; ++i )
         {
@@ -128,6 +128,50 @@ namespace Mengine
         }
 
         ConstStringHolder * holder = this->stringizeHolder_( _str, _size, _hash );
+
+        _cstr = ConstString( holder );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void StringizeService::stringizeUnique( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr )
+    {
+        if( _size == 0 )
+        {
+            _cstr = ConstString::none();
+
+            return;
+        }
+
+        ptrdiff_t ptr_diff = reinterpret_cast<ptrdiff_t>(_str);
+
+        uint32_t ptr_hash = (ptr_diff / sizeof( ptrdiff_t )) % MENGINE_STRINGIZE_INTERNAL_COUNT;
+
+        for( uint32_t i = 0; i != 8; ++i )
+        {
+            InternalHolder & inter = m_internals[ptr_hash][i];
+
+            if( inter.str == _str )
+            {
+                _cstr = ConstString( inter.holder );
+
+                return;
+            }
+
+            if( inter.holder != nullptr )
+            {
+                continue;
+            }
+
+            ConstStringHolder * holder = this->stringizeHolderUnique_( _str, _size, _hash );
+
+            inter.str = _str;
+            inter.holder = holder;
+
+            _cstr = ConstString( holder );
+
+            return;
+        }
+
+        ConstStringHolder * holder = this->stringizeHolderUnique_( _str, _size, _hash );
 
         _cstr = ConstString( holder );
     }
@@ -179,6 +223,29 @@ namespace Mengine
 
         if( test != nullptr )
         {
+            return test;
+        }
+
+        ConstStringHolderMemory * holder = m_poolHolderStringMemory.createT();
+
+        holder->setValue( _str, _size, _hash );
+
+        this->addHolder_( holder, _hash );
+
+        return holder;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ConstStringHolder * StringizeService::stringizeHolderUnique_( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash )
+    {
+        ConstStringHolder * test = this->testHolder_( _str, _size, _hash );
+
+        if( test != nullptr )
+        {
+            MENGINE_ASSERTION_FATAL( strcmp( test->c_str(), _str ) == 0, ("stringize unique '%s' alredy exist"
+                , _str
+                , test->c_str()
+                ) );
+
             return test;
         }
 

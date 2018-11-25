@@ -11,6 +11,10 @@
 #include "stdex/intrusive_list.h"
 #include "stdex/template_pool.h"
 
+#ifndef MENGINE_STRINGIZE_INTERNAL_COUNT
+#define MENGINE_STRINGIZE_INTERNAL_COUNT 1021
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -30,6 +34,7 @@ namespace Mengine
 
     public:
         void stringizeInternal( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) override;
+        void stringizeUnique( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) override;
         bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) override;
 
     protected:
@@ -45,10 +50,11 @@ namespace Mengine
             const ConstStringHolder * holder;
         };
 
-        InternalHolder m_internals[257][8];
+        InternalHolder m_internals[MENGINE_STRINGIZE_INTERNAL_COUNT][8];
 
     protected:
         ConstStringHolder * testHolder_( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash );
+        ConstStringHolder * stringizeHolderUnique_( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash );
         ConstStringHolder * stringizeHolder_( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash );
         void addHolder_( ConstStringHolder * _holder, ConstString::hash_type _hash );
         IntrusiveListConstStringHolder & getList_( ConstStringHolder::hash_type _hash );

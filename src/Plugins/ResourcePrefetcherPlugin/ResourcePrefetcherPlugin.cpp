@@ -4,12 +4,17 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "ResourcePrefetcherServiceInterface.h"
 
+#include "DataflowResourcePrefetcher.h"
+#include "ArchiveResourcePrefetcher.h"
+
 #include "ResourceImageDefaultPrefetcher.h"
 #include "ResourceSoundPrefetcher.h"
-#include "ResourceDefaultPrefetcher.h"
+#include "DefaultResourcePrefetcher.h"
 
 #include "Kernel/FactorableUnique.h"
 
@@ -169,6 +174,22 @@ namespace Mengine
             pybind::def_function( kernel, "unfetchResources", &Detail::s_unfetchResources );
         }
 
+        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ), new FactorableUnique<DataflowResourcePrefetcher>() );
+
+        ArchiveResourcePrefetcher * archivePrefetcherLZ4 = new FactorableUnique<ArchiveResourcePrefetcher>();
+
+        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
+            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+        if( archivator == nullptr )
+        {
+            return false;
+        }
+
+        archivePrefetcherLZ4->setArchivator( archivator );
+
+        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ArchiveLZ4" ), archivePrefetcherLZ4 );        
+
         RESOURCEPREFETCHER_SERVICE()
             ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), new FactorableUnique<ResourceImageDefaultPrefetcher>() );
 
@@ -176,7 +197,7 @@ namespace Mengine
             ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceSound" ), new FactorableUnique<ResourceSoundPrefetcher>() );
 
         RESOURCEPREFETCHER_SERVICE()
-            ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceHIT" ), new FactorableUnique<ResourceDefaultPrefetcher>() );
+            ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceHIT" ), new FactorableUnique<DefaultResourcePrefetcher>() );
 
         return true;
     }

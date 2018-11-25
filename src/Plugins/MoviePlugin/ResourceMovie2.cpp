@@ -26,26 +26,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::setFilePath( const FilePath & _filePath )
-    {
-        m_filePath = _filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceMovie2::getFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::setDataflowType( const ConstString & _dataflowType )
-    {
-        m_dataflowType = _dataflowType;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceMovie2::getDataflowType() const
-    {
-        return m_dataflowType;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::hasComposition( const ConstString & _name ) const
     {
         MapCompositions::const_iterator it_found = m_compositions.find( _name );

@@ -5,6 +5,11 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 
+#include "ThreadTaskPrefetchImageDecoder.h"
+#include "ThreadTaskPrefetchSoundDecoder.h"
+#include "ThreadTaskPrefetchDataflow.h"
+#include "ThreadTaskPrefetchStream.h"
+
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
@@ -45,6 +50,7 @@ namespace Mengine
         m_factoryThreadTaskPrefetchImageDecoder = new FactoryPool<ThreadTaskPrefetchImageDecoder, 16>();
         m_factoryThreadTaskPrefetchSoundDecoder = new FactoryPool<ThreadTaskPrefetchSoundDecoder, 16>();
         m_factoryThreadTaskPrefetchDataflow = new FactoryPool<ThreadTaskPrefetchDataflow, 16>();
+        m_factoryThreadTaskPrefetchStream = new FactoryPool<ThreadTaskPrefetchStream, 16>();
 
         return true;
     }
@@ -303,6 +309,80 @@ namespace Mengine
         }
 
         _data = prefetch_data;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PrefetcherService::prefetchStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, uint32_t _magicNumber, uint32_t _magicVersion, const PrefetcherObserverInterfacePtr & _observer )
+    {
+        if( m_avaliable == false )
+        {
+            _observer->onPrefetchIgnored();
+
+            return true;
+        }
+
+        if( m_threadQueue == nullptr )
+        {
+            _observer->onPrefetchIgnored();
+
+            return true;
+        }
+
+        PrefetchReceiver * receiver;
+        if( this->hasPrefetch_( _fileGroup, _filePath, &receiver ) == true )
+        {
+            ++receiver->refcount;
+
+            _observer->onPrefetchAlreadyExist();
+
+            return true;
+        }
+
+        PrefetchReceiver new_receiver;
+
+        new_receiver.refcount = 1;
+
+        ThreadTaskPrefetchStreamPtr task = m_factoryThreadTaskPrefetchStream->createObject();
+
+        task->initialize( _fileGroup, _filePath, _observer );
+
+        task->setArchivator( _archivator );
+        task->setMagicNumber( _magicNumber );
+        task->setMagicVersion( _magicVersion );
+
+        new_receiver.prefetcher = task;
+
+        m_prefetchReceiver.emplace( std::make_pair( _fileGroup->getName(), _filePath ), new_receiver );
+
+        m_threadQueue->addTask( task );
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PrefetcherService::getStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, MemoryInterfacePtr & _memory )
+    {
+        if( m_avaliable == false )
+        {
+            return false;
+        }
+
+        PrefetchReceiver * receiver;
+        if( this->popPrefetch_( _fileGroup, _filePath, &receiver ) == false )
+        {
+            return false;
+        }
+
+        ThreadTaskPrefetchStreamPtr prefetcherStream = stdex::intrusive_static_cast<ThreadTaskPrefetchStreamPtr>(receiver->prefetcher);
+
+        const MemoryInterfacePtr & prefetch_memory = prefetcherStream->getMemory();
+
+        if( prefetch_memory == nullptr )
+        {
+            return false;
+        }
+
+        _memory = prefetch_memory;
 
         return true;
     }

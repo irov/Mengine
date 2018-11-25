@@ -4,6 +4,7 @@
 #include "Win32Application.h"
 
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -84,6 +85,7 @@ SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( PrototypeService );
+SERVICE_EXTERN( VocabularyService );
 SERVICE_EXTERN( UpdateService );
 SERVICE_EXTERN( LoaderService );
 SERVICE_EXTERN( RenderService );
@@ -624,6 +626,7 @@ namespace Mengine
 #endif
 
         SERVICE_CREATE( PrototypeService );
+        SERVICE_CREATE( VocabularyService );
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
 
@@ -971,6 +974,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
         SERVICE_FINALIZE( Mengine::TextServiceInterface );
         SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
+        SERVICE_FINALIZE( Mengine::VocabularyServiceInterface );
         SERVICE_FINALIZE( Mengine::ApplicationInterface );
         SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
         SERVICE_FINALIZE( Mengine::DataServiceInterface );
@@ -983,7 +987,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::SoundServiceInterface );
         SERVICE_FINALIZE( Mengine::SoundSystemInterface );
 
-        SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
         SERVICE_FINALIZE( Mengine::ScriptServiceInterface );
         SERVICE_FINALIZE( Mengine::ConverterServiceInterface );
 

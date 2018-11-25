@@ -24,6 +24,9 @@ namespace Mengine
         void setConverterType( const ConstString & _converterType );
         const ConstString & getConverterType() const;
 
+        void setDataflowType( const ConstString & _dataflowType );
+        const ConstString & getDataflowType() const;
+
     public:
         void setValidNoExist( bool _valid );
         bool isValidNoExist() const;
@@ -32,6 +35,7 @@ namespace Mengine
         FilePath m_filePath;
         ConstString m_codecType;
         ConstString m_converterType;
+        ConstString m_dataflowType;
 
         bool m_validNoExist;
     };

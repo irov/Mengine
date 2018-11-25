@@ -8,6 +8,7 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
@@ -17,7 +18,6 @@
 
 #include "DataflowAEZ.h"
 #include "Movie2DebugRender.h"
-#include "ResourceMovie2Prefetcher.h"
 
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
@@ -458,8 +458,10 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {
+            ResourcePrefetcherInterfacePtr resourcePrefetcher = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );
+
             RESOURCEPREFETCHER_SERVICE()
-                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<ResourceMovie2Prefetcher>() );
+                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), resourcePrefetcher );
         }
 
         if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )

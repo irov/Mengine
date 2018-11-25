@@ -238,6 +238,7 @@ Resource\\\\Image
 
 ADD_FILTER(
 Resource\\\\Content
+    Contentable.h
 	Content.cpp
 	Content.h
 )
@@ -403,6 +404,8 @@ Core
    
     Magic.h    
     Mixin.h
+    MixinPointer.h
+    Magicable.h
 	
 	Callback.h
     

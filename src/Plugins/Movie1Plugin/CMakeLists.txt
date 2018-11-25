@@ -30,8 +30,6 @@ src
     LoaderResourceInternalObject.cpp
     LoaderResourceInternalObject.h
     
-    ResourceMoviePrefetcher.cpp
-    ResourceMoviePrefetcher.h
     ResourceMovieValidator.cpp
     ResourceMovieValidator.h
     

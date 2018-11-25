@@ -104,16 +104,6 @@ namespace Mengine
         return m_loopSegment;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie::setDataflowType( const ConstString & _dataflowType )
-    {
-        m_dataflowType = _dataflowType;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceMovie::getDataflowType() const
-    {
-        return m_dataflowType;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void ResourceMovie::setLayers( const VectorMovieLayers & _layers )
     {
         m_layers = _layers;

@@ -1,7 +1,7 @@
 #include "FileGroupZip.h"
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/FileServiceInterface.h"

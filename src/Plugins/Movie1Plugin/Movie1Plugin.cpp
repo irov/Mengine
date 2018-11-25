@@ -9,6 +9,7 @@
 #include "Interface/DataServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
@@ -43,7 +44,6 @@
 
 #include "DataflowAEK.h"
 
-#include "ResourceMoviePrefetcher.h"
 #include "ResourceMovieValidator.h"
 
 #include "pybind/pybind.hpp"
@@ -1634,8 +1634,10 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {
+            ResourcePrefetcherInterfacePtr resourcePrefetcher = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );
+
             RESOURCEPREFETCHER_SERVICE()
-                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<ResourceMoviePrefetcher>() );
+                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), resourcePrefetcher );
         }
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )

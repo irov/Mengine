@@ -25,6 +25,7 @@ namespace Mengine
 
     public:
         virtual void stringizeInternal( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) = 0;
+        virtual void stringizeUnique( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr ) = 0;        
         virtual bool stringizeExternal( ConstStringHolder * _holder, ConstString & _cstr ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -100,6 +101,23 @@ namespace Mengine
 
             return cstr;
         }
+        //////////////////////////////////////////////////////////////////////////
+        inline ConstString stringizeStringHashUnique( const Char * _value, size_t _size, ConstString::hash_type _hash )
+        {
+            ConstString cstr;
+            STRINGIZE_SERVICE()
+                ->stringizeUnique( _value, (ConstString::size_type)_size, _hash, cstr );
+
+            return cstr;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<ConstString::hash_type Hash>
+        inline ConstString stringizeStringTemplate( const Char * _value, ConstString::size_type _size )
+        {
+            static ConstString cstr = Helper::stringizeStringHashUnique( _value, _size, Hash );
+
+            return cstr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     inline ConstString operator "" _c( const Char * _value, size_t _size )
@@ -109,13 +127,13 @@ namespace Mengine
         return cstr;
     }
     //////////////////////////////////////////////////////////////////////////
+    constexpr ConstString::hash_type operator "" _hash( const Char * _value, size_t _size )
+    {
+        return Mengine::Helper::makeHash( _value, _size );
+    }
+    //////////////////////////////////////////////////////////////////////////
 #	define STRINGIZE_STRING_LOCAL( str )\
-	([]{\
-        constexpr size_t value_size = (sizeof(str) - 1);\
-        constexpr Mengine::ConstString::hash_type value_hash = Mengine::Helper::makeHash( str, value_size);\
-        static Mengine::ConstString cstr = Mengine::Helper::stringizeStringHashLocal( str, value_size, value_hash );\
-        return cstr;\
-    }())
+        Mengine::Helper::stringizeStringTemplate<str##_hash>( str, (sizeof(str) - 1) )
 }
 
 

@@ -9,6 +9,8 @@
 #include "Kernel/Scriptable.h"
 #include "Kernel/Visitable.h"
 #include "Kernel/Unknowable.h"
+#include "Kernel/Contentable.h"
+#include "Kernel/Magicable.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
@@ -23,6 +25,8 @@ namespace Mengine
     class Resource
         : public Factorable
         , public Compilable
+        , public Contentable
+        , public Magicable
         , public Identity
         , public Reference
         , public Scriptable

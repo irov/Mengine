@@ -17,6 +17,7 @@ namespace Mengine
     {
         DECLARE_UNKNOWABLE();
         DECLARE_VISITABLE( Resource );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceImageData();

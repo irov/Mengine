@@ -492,7 +492,7 @@ namespace Mengine
             }
             else
             {
-                ColourValue_ARGB argb = color.getAsARGB();
+                ColorValue_ARGB argb = color.getAsARGB();
 
                 for( uint8_t
                     *it = reinterpret_cast<uint8_t*>(vbo_map) + processed_vertex_count * ozz_vertex_stride + ozz_colors_offset,

@@ -1,0 +1,47 @@
+#include "Factory.h"
+
+#include "Interface/VocabularyServiceInterface.h"
+
+#include "Kernel/Assertion.h"
+
+#include <stdlib.h>
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        void assertionVocabularyEmpty( const ConstString & _category, const Char * _file, uint32_t _line )
+        {
+            MENGINE_UNUSED( _category );
+            MENGINE_UNUSED( _file );
+            MENGINE_UNUSED( _line );
+
+#ifndef MENGINE_MASTER_RELEASE
+            uint32_t count = 0;
+
+            VOCALUBARY_SERVICE()
+                ->foreachFactorable( _category, [&count]( const ConstString & _type, const MixinPtr & _mixin )
+            {
+                MENGINE_UNUSED( _type );
+                MENGINE_UNUSED( _mixin );
+
+                ++count;
+            } );
+
+            if( count == 0 )
+            {
+                return;
+            }
+
+            Char msg[1024];
+            sprintf( msg, "[Assert] Vocabulary '%s' not empty ['%d']"
+                , _category.c_str()
+                , count
+            );
+
+            Mengine::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Vocabulary Empty" );
+#endif
+        }
+    }
+}

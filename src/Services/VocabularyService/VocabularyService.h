@@ -6,7 +6,9 @@
 #include "Kernel/ConstString.h"
 #include "Kernel/Hashtable.h"
 
-#include "Config/Vector.h"
+#ifndef MENGINE_MASTER_RELEASE
+#   include "Config/Map.h"
+#endif
 
 namespace Mengine
 {
@@ -22,9 +24,14 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        bool setFactorable( const ConstString & _category, const ConstString & _prototype, const MixinPtr & _factorable ) override;
-        bool removeFactorable( const ConstString & _category, const ConstString & _prototype ) override;
-        MixinPointer getFactorable( const ConstString & _category, const ConstString & _prototype ) const override;
+        bool setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable ) override;
+        bool removeFactorable( const ConstString & _category, const ConstString & _type ) override;
+        MixinPointer getFactorable( const ConstString & _category, const ConstString & _type ) const override;
+
+#ifndef MENGINE_MASTER_RELEASE
+    protected:
+        void foreachFactorable( const ConstString & _category, const LambdaFactorable & _lambda ) const override;
+#endif
 
     protected:
         struct CategoryKey
@@ -48,5 +55,11 @@ namespace Mengine
 
         typedef Hashtable<CategoryKey, MixinPtr, CategoryKeyHashgen> HashtableMixins;
         HashtableMixins m_mixins;
+
+#ifndef MENGINE_MASTER_RELEASE
+        typedef Map<ConstString, MixinPtr> MapMixins;
+        typedef Map<ConstString, MapMixins> MapMixinss;
+        MapMixinss m_mixinss;
+#endif
     };
 }

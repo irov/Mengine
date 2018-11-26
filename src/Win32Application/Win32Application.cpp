@@ -125,6 +125,11 @@ PLUGIN_EXPORT( NodeDebugRender );
 PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
 
+#ifdef MENGINE_PLUGIN_RESOURCECONVERT
+PLUGIN_EXPORT( ResourceConvert );
+#endif
+
+
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
 PLUGIN_EXPORT( ResourceValidate );
 #endif
@@ -704,6 +709,10 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER
         MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher..." );
 #endif
+
+#ifdef MENGINE_PLUGIN_RESOURCECONVERT
+        MENGINE_ADD_PLUGIN( ResourceConvert, "initialize Plugin Resource Convert..." );
+#endif        
 
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
         MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );

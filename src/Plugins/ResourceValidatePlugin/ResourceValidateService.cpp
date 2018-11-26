@@ -60,14 +60,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::visitableResource_( const ResourcePtr & _resource ) const
     {
-        LOGGER_INFO( "validate resource '%s' type '%s' group '%s' file group '%s' locale '%s'"
-            , _resource->getName().c_str()
-            , _resource->getType().c_str()
-            , _resource->getGroupName().c_str()
-            , _resource->getFileGroup()->getName().c_str()
-            , _resource->getLocale().c_str()
-        );
-
         const ConstString & resourceType = _resource->getType();
 
         const ResourceValidatorInterfacePtr & validator = m_validators.find( resourceType );
@@ -76,6 +68,14 @@ namespace Mengine
         {
             return true;
         }
+
+        LOGGER_INFO( "validate resource '%s' type '%s' group '%s' file group '%s' locale '%s'"
+            , _resource->getName().c_str()
+            , _resource->getType().c_str()
+            , _resource->getGroupName().c_str()
+            , _resource->getFileGroup()->getName().c_str()
+            , _resource->getLocale().c_str()
+        );
 
         bool successful = validator->validate( _resource );
 

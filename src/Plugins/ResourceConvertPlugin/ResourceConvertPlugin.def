@@ -1,0 +1,2 @@
+LIBRARY		"ResourceConvertPlugin"
+EXPORTS 	dllCreatePlugin 	@1

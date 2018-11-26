@@ -18,6 +18,12 @@ namespace Mengine
         virtual bool setFactorable( const ConstString & _category, const ConstString & _prototype, const MixinPtr & _factorable ) = 0;
         virtual bool removeFactorable( const ConstString & _category, const ConstString & _prototype ) = 0;
         virtual MixinPointer getFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
+
+#ifndef MENGINE_MASTER_RELEASE
+    public:
+        typedef Lambda<void( const ConstString & _prototype, const MixinPtr & )> LambdaFactorable;
+        virtual void foreachFactorable( const ConstString & _category, const LambdaFactorable & _lambda ) const = 0;
+#endif
     };
 }
 //////////////////////////////////////////////////////////////////////////

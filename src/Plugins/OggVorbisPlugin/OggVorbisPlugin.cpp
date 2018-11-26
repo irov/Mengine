@@ -19,6 +19,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    OggVorbisPlugin::~OggVorbisPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool OggVorbisPlugin::_initialize()
     {
         Helper::registerDecoder<SoundDecoderOGGVorbis>( "oggSound" );

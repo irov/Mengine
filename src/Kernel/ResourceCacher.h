@@ -28,13 +28,13 @@ namespace Mengine
         void clear();
 
     public:
-        T findCache();
+        const T & findCache() const;
 
     protected:
         struct ResourceCacherDesc
         {
             T value;
-            bool use;
+            mutable bool use;
             bool lock;
         };
 
@@ -129,9 +129,9 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     template<class T>
-    T ResourceCacher<T>::findCache()
+    const T & ResourceCacher<T>::findCache() const
     {
-        for( ResourceCacherDesc & desc : m_cachers )
+        for( const ResourceCacherDesc & desc : m_cachers )
         {
             if( desc.use == true )
             {
@@ -143,6 +143,6 @@ namespace Mengine
             return desc.value;
         }
 
-        return nullptr;
+        return T::none();
     }
 }

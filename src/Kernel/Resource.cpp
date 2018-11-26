@@ -67,8 +67,10 @@ namespace Mengine
 
         if( _converterType.empty() == false )
         {
+            const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+
             if( CONVERTER_SERVICE()
-                ->convert( _converterType, m_fileGroup, _filePath, _outFilePath ) == false )
+                ->convert( _converterType, fileGroup, _filePath, _outFilePath ) == false )
             {
                 LOGGER_ERROR( "resource '%s' can't convert '%s':'%s'"
                     , this->getName().c_str()

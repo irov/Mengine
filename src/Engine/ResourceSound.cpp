@@ -79,9 +79,10 @@ namespace Mengine
         }
 
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        const FilePath & filePath = this->getFilePath();
 
         SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE()
-            ->createSoundBufferFromFile( fileGroup, m_filePath, m_codecType, m_isStreamable );
+            ->createSoundBufferFromFile( fileGroup, filePath, m_codecType, m_isStreamable );
 
         if( soundBuffer == nullptr )
         {

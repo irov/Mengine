@@ -282,8 +282,6 @@ namespace Mengine
         bool m_hasOffsetPoint;
         mt::vec3f m_offsetPoint;
 
-        ConstString m_dataflowType;
-
         MovieFramePackInterfacePtr m_keyFramePack;
 
         uint32_t m_frameCount;

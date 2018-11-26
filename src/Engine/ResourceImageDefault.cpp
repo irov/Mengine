@@ -49,8 +49,11 @@ namespace Mengine
             return false;
         }
 
+        const FilePath & filePath = this->getFilePath();
+        const ConstString & codecType = this->getCodecType();
+
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->loadTexture( fileGroup, m_filePath, m_codecType );
+            ->loadTexture( fileGroup, filePath, codecType );
 
         if( texture == nullptr )
         {
@@ -78,17 +81,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize )
     {
-        this->setCodecType( _codecType );
-
-        if( m_codecType.empty() == true )
+        if( _codecType.empty() == true )
         {
-            m_codecType = CODEC_SERVICE()
-                ->findCodecType( m_filePath );
+            const FilePath & filePath = this->getFilePath();
 
-            if( m_codecType.empty() == true )
+            const ConstString & newCodecType = CODEC_SERVICE()
+                ->findCodecType( filePath );
+
+            if( newCodecType.empty() == true )
             {
                 return false;
             }
+
+            this->setCodecType( newCodecType );
+        }
+        else
+        {
+            this->setCodecType( _codecType );
         }
 
         this->setMaxSize( _maxSize );
@@ -105,7 +114,7 @@ namespace Mengine
 
         this->correctUVTexture();
 
-        if( this->recompile( [this, _imagePath]() { m_filePath = _imagePath; } ) == false )
+        if( this->recompile( [this, _imagePath]() { this->setFilePath( _imagePath ); } ) == false )
         {
             return false;
         }

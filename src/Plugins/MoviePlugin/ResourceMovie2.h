@@ -80,6 +80,7 @@ namespace Mengine
         void setCompositionDesc( const ConstString & _name, const ResourceMovie2CompositionDesc & _composition );
         const ResourceMovie2CompositionDesc * getCompositionDesc( const ConstString & _name ) const;
 
+    public:
         typedef Lambda<void( const ConstString &, const ResourceMovie2CompositionDesc & )> LambdaCompositionDescs;
         void foreachCompositionDesc( const LambdaCompositionDescs & _lambda );
 

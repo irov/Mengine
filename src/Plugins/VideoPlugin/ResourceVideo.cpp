@@ -64,7 +64,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     VideoDecoderInterfacePtr ResourceVideo::createVideoDecoder() const
     {
-        VideoDecoderInterfacePtr cacheVideoDecoder = m_videoDecoderCacher.findCache();
+        const VideoDecoderInterfacePtr & cacheVideoDecoder = m_videoDecoderCacher.findCache();
 
         if( cacheVideoDecoder != nullptr )
         {
@@ -74,30 +74,33 @@ namespace Mengine
         }
 
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        const FilePath & filePath = this->getFilePath();
 
         InputStreamInterfacePtr videoStream = FILE_SERVICE()
-            ->openInputFile( fileGroup, m_filePath, true );
+            ->openInputFile( fileGroup, filePath, true );
 
         if( videoStream == nullptr )
         {
             LOGGER_ERROR( "ResourceVideo::createVideDecoder group '%s' name '%s' can't open video file '%s'"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
-                , m_filePath.c_str()
+                , this->getFilePath().c_str()
             );
 
             return nullptr;
         }
 
+        const ConstString & codecType = this->getCodecType();
+
         VideoDecoderInterfacePtr videoDecoder = CODEC_SERVICE()
-            ->createDecoderT<VideoDecoderInterfacePtr>( m_codecType );
+            ->createDecoderT<VideoDecoderInterfacePtr>( codecType );
 
         if( videoDecoder == nullptr )
         {
             LOGGER_ERROR( "ResourceVideo::createVideDecoder group '%s' name '%s' can't create video decoder for file '%s'"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
-                , m_filePath.c_str()
+                , this->getFilePath().c_str()
             );
 
             return nullptr;
@@ -133,7 +136,7 @@ namespace Mengine
             LOGGER_ERROR( "ResourceVideo::createVideDecoder group '%s' name '%s' can't setup options for file '%s'"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
-                , m_filePath.c_str()
+                , this->getFilePath().c_str()
             );
 
             return nullptr;
@@ -144,7 +147,7 @@ namespace Mengine
             LOGGER_ERROR( "ResourceVideo::createVideDecoder group '%s' name '%s' can't initialize video decoder for file '%s'"
                 , this->getGroupName().c_str()
                 , this->getName().c_str()
-                , m_filePath.c_str()
+                , this->getFilePath().c_str()
             );
 
             return nullptr;

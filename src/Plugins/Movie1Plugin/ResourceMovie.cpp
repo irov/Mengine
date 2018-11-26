@@ -204,51 +204,64 @@ namespace Mengine
     {
         //bool result = this->convertDefault_( m_converter, m_path, m_path, m_codecType );
 
-        if( m_filePath.empty() == true )
+        const FilePath & filePath = this->getFilePath();
+
+        if( filePath.empty() == true )
         {
             return false;
         }
 
-        if( m_converterType.empty() == false )
+        const ConstString & converterType = this->getConverterType();
+
+        if( converterType.empty() == false )
         {
             //FIX THIS
 
             PathString xml_path;
 
-            xml_path += m_filePath;
+            xml_path += filePath;
             xml_path.replace_last( "xml" );
 
             FilePath c_xml_path = Helper::stringizeFilePath( xml_path );
 
+            const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+
+            FilePath newFilePath = filePath;
             if( CONVERTER_SERVICE()
-                ->convert( m_converterType, m_fileGroup, c_xml_path, m_filePath ) == false )
+                ->convert( converterType, fileGroup, c_xml_path, newFilePath ) == false )
             {
                 LOGGER_ERROR( "ResourceMovie::_convert: '%s' group '%s' can't convert '%s':'%s'"
                     , this->getName().c_str()
                     , this->getGroupName().c_str()
                     , c_xml_path.c_str()
-                    , m_converterType.c_str()
+                    , this->getConverterType().c_str()
                 );
 
                 return false;
             }
+
+            this->setFilePath( newFilePath );
         }
 
-        if( m_dataflowType.empty() == true )
-        {
-            m_dataflowType = CODEC_SERVICE()
-                ->findCodecType( m_filePath );
+        const ConstString & dataflowType = this->getDataflowType();
 
-            if( m_dataflowType.empty() == true )
+        if( dataflowType.empty() == true )
+        {
+            const ConstString & newDataflowType = CODEC_SERVICE()
+                ->findCodecType( filePath );
+
+            if( newDataflowType.empty() == true )
             {
                 LOGGER_ERROR( "ResourceMovie::_convert: '%s' group '%s' you must determine codec for file '%s'"
                     , this->getName().c_str()
                     , this->getGroupName().c_str()
-                    , m_filePath.c_str()
+                    , this->getFilePath().c_str()
                 );
 
                 return false;
             }
+
+            this->setDataflowType( newDataflowType );
         }
 
         return true;
@@ -256,7 +269,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie::_compile()
     {
-        if( m_filePath.empty() == true )
+        const FilePath & filePath = this->getFilePath();
+
+        if( filePath.empty() == true )
         {
             LOGGER_ERROR( "ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
@@ -268,14 +283,14 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        DataInterfacePtr data = this->compileData_( fileGroup, m_filePath );
+        DataInterfacePtr data = this->compileData_( fileGroup, filePath );
 
         if( data == nullptr )
         {
             LOGGER_ERROR( "resource movie '%s' group '%s' can` t get frame pack '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
-                , m_filePath.c_str()
+                , this->getFilePath().c_str()
             );
 
             return false;
@@ -302,7 +317,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ResourceMovie::compileData_: '%s' group '%s' don`t open Frames Pack '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' don`t open Frames Pack '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
                 , _filePath.c_str()
@@ -311,15 +326,17 @@ namespace Mengine
             return nullptr;
         }
 
+        const ConstString & dataflowType = this->getDataflowType();
+
         const DataflowInterfacePtr & dataflow = DATA_SERVICE()
-            ->getDataflow( m_dataflowType );
+            ->getDataflow( dataflowType );
 
         if( dataflow == nullptr )
         {
-            LOGGER_ERROR( "ResourceMovie::compileData_: '%s' group '%s' can` t find dataflow type '%s'"
+            LOGGER_ERROR( "resource '%s' group '%s' can` t find dataflow type '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
-                , m_dataflowType.c_str()
+                , dataflowType.c_str()
             );
 
             return nullptr;
@@ -333,7 +350,7 @@ namespace Mengine
             LOGGER_ERROR( "ResourceMovie::compileData_: '%s' group '%s' can` t dataflow '%s' from '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
-                , m_dataflowType.c_str()
+                , dataflowType.c_str()
                 , _filePath.c_str()
             );
 
@@ -356,10 +373,12 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "ResourceMovie::visitResourceMovie '%s' group '%s' not compile"
+            LOGGER_ERROR( "resource '%s' group '%s' not compile"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
             );
+
+            return;
         }
 
         for( const MovieLayer & layer : m_layers )

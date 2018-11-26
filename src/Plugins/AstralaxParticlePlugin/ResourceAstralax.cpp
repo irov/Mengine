@@ -45,10 +45,12 @@ namespace Mengine
     bool ResourceAstralax::_compile()
     {
         const ConstString & name = this->getName();
+
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        const FilePath & filePath = this->getFilePath();
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
-            ->createEmitterContainerFromFile( fileGroup, m_filePath, name );
+            ->createEmitterContainerFromFile( fileGroup, filePath, name );
 
         if( container == nullptr )
         {

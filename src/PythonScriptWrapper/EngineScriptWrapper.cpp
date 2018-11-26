@@ -459,7 +459,7 @@ namespace Mengine
             return time;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::args & _args )
+        uint32_t s_scheduleGlobal( float _timing, const pybind::object & _cb, const pybind::args & _args )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduler();
@@ -471,7 +471,7 @@ namespace Mengine
 
             PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject();
 
-            sl->initialize( _script, _args );
+            sl->initialize( _cb, _args );
 
             uint32_t id = sm->event( _timing, sl );
 

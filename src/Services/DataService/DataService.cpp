@@ -32,7 +32,7 @@ namespace Mengine
 
         if( it_found == m_dataflows.end() )
         {
-            LOGGER_ERROR( "DataService::getDataflow '%s' don't register"
+            LOGGER_ERROR( "dataflow '%s' don't register"
                 , _type.c_str()
             );
 

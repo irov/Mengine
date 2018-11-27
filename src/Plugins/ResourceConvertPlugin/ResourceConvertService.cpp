@@ -4,10 +4,11 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileGroupInterface.h"
-
-#include "ResourceConverterInterface.h"
+#include "Interface/ConverterServiceInterface.h"
+#include "Interface/CodecServiceInterface.h"
 
 #include "Kernel/AssertionVocabulary.h"
+#include "Kernel/Content.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -42,27 +43,52 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceConvertService::convertResource_( const ResourcePtr & _resource )
     {
-        const ConstString & resourceType = _resource->getType();
+        Content * content = _resource->getContent();
 
-        ResourceConverterInterfacePtr converter = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Converter" ), resourceType );
-
-        if( converter == nullptr )
+        if( content == nullptr )
         {
             return;
         }
 
-        LOGGER_INFO( "convert resource '%s' type '%s' group '%s' file group '%s' locale '%s'"
+        const ConstString & converterType = content->getConverterType();
+
+        if( converterType.empty() == true )
+        {
+            return;
+        }
+
+        LOGGER_INFO( "convert resource '%s' type '%s' group '%s' file group '%s' locale '%s' converter '%s'"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
             , _resource->getGroupName().c_str()
             , _resource->getFileGroup()->getName().c_str()
             , _resource->getLocale().c_str()
+            , converterType.c_str()
         );
 
+        const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
+        const FilePath & filePath = content->getFilePath();
 
-        if( converter->convert( _resource ) == false )
+        FilePath newFilePath;
+        if( CONVERTER_SERVICE()
+            ->convert( converterType, fileGroup, filePath, newFilePath ) == false )
         {
+            LOGGER_ERROR( "resource '%s' group '%s' can't convert '%s':'%s'"
+                , _resource->getName().c_str()
+                , _resource->getGroupName().c_str()
+                , content->getFilePath().c_str()
+                , content->getConverterType().c_str()
+            );
+
             throw ExceptionNotificationFailed();
         }
+
+        content->setFilePath( newFilePath );
+
+        const ConstString & codecType = CODEC_SERVICE()
+            ->findCodecType( newFilePath );
+
+        content->setDataflowType( codecType );
+        content->setCodecType( codecType );
     }
 }

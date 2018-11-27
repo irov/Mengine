@@ -2,7 +2,6 @@ set(MY_LIB_NAME ResourceConvertPlugin)
 
 ADD_FILTER(
 src
-    ResourceConverterInterface.h
     ResourceConvertServiceInterface.h
 
 	ResourceConvertPlugin.h

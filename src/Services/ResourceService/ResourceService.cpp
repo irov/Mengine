@@ -214,6 +214,8 @@ namespace Mengine
 #ifndef MENGINE_MASTER_RELEASE
             if( _ignored == false )
             {
+                //resource->convert();
+
                 if( NOTIFICATION_SERVICE()
                     ->notify( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE, resource ) == false )
                 {

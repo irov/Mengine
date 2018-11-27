@@ -26,9 +26,6 @@ namespace Mengine
         void setExternal( bool _external );
         bool isExternal() const;
 
-    protected:
-        bool _convert() override;
-
     private:
         float m_volume;
         bool m_external;

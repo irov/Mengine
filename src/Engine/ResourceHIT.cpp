@@ -27,13 +27,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceHIT::_convert()
-    {
-        bool result = this->convertDefault_( m_converterType, m_filePath, m_filePath, m_codecType, m_codecType );
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_compile()
     {
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();

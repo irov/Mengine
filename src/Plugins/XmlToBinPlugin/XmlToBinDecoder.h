@@ -3,7 +3,7 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/FileGroupInterface.h"
 
-#include "XmlCodecInterface.h"
+#include "XmlToBinInterface.h"
 
 #include "Kernel/Factorable.h"
 

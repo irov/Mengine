@@ -562,7 +562,7 @@ namespace Mengine
             return freeze;
         }
         //////////////////////////////////////////////////////////////////////////
-        float s_scheduleGlobalTime( uint32_t _id )
+        float s_scheduleGlobalPassed( uint32_t _id )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduler();
@@ -573,6 +573,21 @@ namespace Mengine
             }
 
             float time = sm->getTimePassed( _id );
+
+            return time;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        float s_scheduleGlobalLeft( uint32_t _id )
+        {
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
+                ->getGlobalScheduler();
+
+            if( sm == nullptr )
+            {
+                return 0.f;
+            }
+
+            float time = sm->getTimeLeft( _id );
 
             return time;
         }
@@ -3453,8 +3468,9 @@ namespace Mengine
         pybind::def_functor( kernel, "scheduleGlobalFreezeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalFreezeAll );
         pybind::def_functor( kernel, "scheduleGlobalResumeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalResumeAll );
         pybind::def_functor( kernel, "scheduleGlobalIsFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalIsFreeze );
-        pybind::def_functor( kernel, "scheduleGlobalTime", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalTime );
-
+        pybind::def_functor_deprecated( kernel, "scheduleGlobalTime", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalPassed, "use scheduleGlobalPassed" );
+        pybind::def_functor( kernel, "scheduleGlobalPassed", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalPassed );
+        pybind::def_functor( kernel, "scheduleGlobalLeft", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalLeft );
 
         pybind::def_functor( kernel, "getCursorPosition", nodeScriptMethod, &EngineScriptMethod::s_getCursorPosition );
         pybind::def_functor( kernel, "getTouchPosition", nodeScriptMethod, &EngineScriptMethod::s_getTouchPosition );

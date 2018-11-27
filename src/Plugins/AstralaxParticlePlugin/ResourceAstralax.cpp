@@ -35,13 +35,6 @@ namespace Mengine
         return resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceAstralax::_convert()
-    {
-        bool result = this->convertDefault2_( m_converterType, m_filePath, m_filePath );
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceAstralax::_compile()
     {
         const ConstString & name = this->getName();

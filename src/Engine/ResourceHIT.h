@@ -19,9 +19,6 @@ namespace Mengine
         ResourceHIT();
         ~ResourceHIT() override;
 
-    public:
-        bool _convert() override;
-
     protected:
         bool _compile() override;
         void _release() override;

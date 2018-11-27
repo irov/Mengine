@@ -34,9 +34,6 @@ namespace Mengine
     public:
         AstralaxEmitterInterfacePtr createEmitter();
 
-    public:
-        bool _convert() override;
-
     protected:
         bool _compile() override;
         void _release() override;

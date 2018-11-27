@@ -22,9 +22,6 @@ namespace Mengine
         ~ResourceVideo() override;
 
     public:
-        bool _convert() override;
-
-    public:
         void setFrameRate( float _frameRate );
         float getFrameRate() const;
 
@@ -55,8 +52,8 @@ namespace Mengine
         float m_frameRate;
         float m_duration;
 
-        typedef ResourceCacher<VideoDecoderInterfacePtr> TCacherVideoDecoder;
-        mutable TCacherVideoDecoder m_videoDecoderCacher;
+        typedef ResourceCacher<VideoDecoderInterfacePtr> ResourceCacherVideoDecoder;
+        mutable ResourceCacherVideoDecoder m_videoDecoderCacher;
 
         bool m_alpha;
         bool m_noSeek;

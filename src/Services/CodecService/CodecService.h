@@ -42,7 +42,7 @@ namespace Mengine
         typedef Hashtable<ConstString, EncoderFactoryInterfacePtr> MapFactoryEncoders;
         MapFactoryEncoders m_factorEncoders;
 
-        typedef Map<String, ConstString> MapCodecTypes;
-        MapCodecTypes m_codecTypes;
+        typedef Map<String, ConstString> MapCodecExts;
+        MapCodecExts m_codecExts;
     };
 }

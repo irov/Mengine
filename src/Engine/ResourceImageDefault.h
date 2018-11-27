@@ -21,9 +21,6 @@ namespace Mengine
         bool setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize );
 
     protected:
-        bool _convert() override;
-
-    protected:
         bool _compile() override;
         void _release() override;
 

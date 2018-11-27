@@ -258,9 +258,6 @@ namespace Mengine
         void visitResourceMovie( VisitorResourceMovie * _visitor );
 
     protected:
-        bool _convert() override;
-
-    protected:
         bool _compile() override;
         void _release() override;
 

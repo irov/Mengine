@@ -22,13 +22,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceImageDefault::_convert()
-    {
-        bool result = this->convertDefault_( m_converterType, m_filePath, m_filePath, m_codecType, m_codecType );
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceImageDefault::_compile()
     {
         LOGGER_INFO( "name %s load texture %s"

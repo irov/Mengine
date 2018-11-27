@@ -57,16 +57,6 @@ namespace Mengine
         virtual bool _initialize();
 
     public:
-        bool convert();
-
-    protected:
-        virtual bool _convert();
-
-    protected:
-        bool convertDefault2_( const ConstString & _converterType, const FilePath & _filePath, FilePath & _outFilePath );
-        bool convertDefault_( const ConstString & _converterType, const FilePath & _filePath, FilePath & _outFilePath, const ConstString & _codecType, ConstString & _outCodecType );
-
-    public:
         bool cache();
         void uncache();
 

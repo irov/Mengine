@@ -12,18 +12,16 @@ src
     ResourcePrefetcherService.h
     ResourcePrefetcherService.cpp
     
+    DefaultResourcePrefetcher.h
+    DefaultResourcePrefetcher.cpp
     DataflowResourcePrefetcher.h
     DataflowResourcePrefetcher.cpp
     ArchiveResourcePrefetcher.h
     ArchiveResourcePrefetcher.cpp
-    
-    ResourcePrefetcherHelper.h
-    DefaultResourcePrefetcher.h
-    DefaultResourcePrefetcher.cpp
-    ResourceImageDefaultPrefetcher.h
-    ResourceImageDefaultPrefetcher.cpp
-    ResourceSoundPrefetcher.h
-    ResourceSoundPrefetcher.cpp
+    ImageDecoderResourcePrefetcher.h
+    ImageDecoderResourcePrefetcher.cpp
+    SoundDecoderResourcePrefetcher.h
+    SoundDecoderResourcePrefetcher.cpp
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )

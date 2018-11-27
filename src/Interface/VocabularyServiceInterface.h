@@ -30,6 +30,9 @@ namespace Mengine
 #define VOCALUBARY_GET(Category, Prototype)\
     VOCALUBARY_SERVICE()->getFactorable(Category, Prototype)
 //////////////////////////////////////////////////////////////////////////
+#define VOCALUBARY_REMOVE(Category, Prototype)\
+    VOCALUBARY_SERVICE()->removeFactorable(Category, Prototype)
+//////////////////////////////////////////////////////////////////////////
 
 
 

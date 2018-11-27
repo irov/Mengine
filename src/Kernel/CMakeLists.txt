@@ -288,6 +288,8 @@ Core
 	AssertionNotImplemented.h
     AssertionMemoryPanic.h
     AssertionMainThreadGuard.h
+    AssertionVocabulary.h
+    AssertionVocabulary.cpp
 
     CRC32.h
     CRC32.cpp

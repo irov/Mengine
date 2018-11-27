@@ -72,6 +72,10 @@ if(MENGINE_PLUGIN_RESOURCEPREFETCHER)
     ADD_SUBDIRECTORY(ResourcePrefetcherPlugin)
 endif()
 
+if(MENGINE_PLUGIN_RESOURCECONVERT)
+    ADD_SUBDIRECTORY(ResourceConvertPlugin)
+endif()
+
 if(MENGINE_TARGET_MSVC)
     ADD_SUBDIRECTORY( Win32SocketPlugin )    
     ADD_SUBDIRECTORY( Win32FileGroupPlugin )

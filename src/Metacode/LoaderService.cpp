@@ -16,7 +16,7 @@
 #include "Kernel/Logger.h"
 
 #ifndef MENGINE_MASTER_RELEASE
-#   include "Plugins/XmlCodecPlugin/XmlCodecInterface.h"
+#   include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 #endif
 
 //////////////////////////////////////////////////////////////////////////

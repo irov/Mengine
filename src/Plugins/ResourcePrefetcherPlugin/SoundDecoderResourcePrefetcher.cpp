@@ -1,31 +1,19 @@
-#include "ArchiveResourcePrefetcher.h"
+#include "SoundDecoderResourcePrefetcher.h"
 
 #include "Interface/PrefetcherServiceInterface.h"
-
-#include "Kernel/Content.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ArchiveResourcePrefetcher::ArchiveResourcePrefetcher()
+    SoundDecoderResourcePrefetcher::SoundDecoderResourcePrefetcher()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ArchiveResourcePrefetcher::~ArchiveResourcePrefetcher()
+    SoundDecoderResourcePrefetcher::~SoundDecoderResourcePrefetcher()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ArchiveResourcePrefetcher::setArchivator( const ArchivatorInterfacePtr & _archivator )
-    {
-        m_archivator = _archivator;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ArchivatorInterfacePtr & ArchiveResourcePrefetcher::getArchivator() const
-    {
-        return m_archivator;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ArchiveResourcePrefetcher::prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
+    bool SoundDecoderResourcePrefetcher::prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
     {
         Content * content = _resource->getContent();
 
@@ -35,12 +23,10 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
         const FilePath & filePath = content->getFilePath();
-
-        uint32_t magicNumber = _resource->getMagicNumber();
-        uint32_t magicVersion = _resource->getMagicVersion();
+        const ConstString & codecType = content->getCodecType();
 
         if( PREFETCHER_SERVICE()
-            ->prefetchStream( fileGroup, filePath, m_archivator, magicNumber, magicVersion, _observer ) == false )
+            ->prefetchSoundDecoder( fileGroup, filePath, codecType, _observer ) == false )
         {
             return false;
         }
@@ -48,7 +34,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////        
-    bool ArchiveResourcePrefetcher::unfetch( const ResourcePtr & _resource )
+    bool SoundDecoderResourcePrefetcher::unfetch( const ResourcePtr & _resource )
     {
         Content * content = _resource->getContent();
 

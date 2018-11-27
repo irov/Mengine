@@ -82,6 +82,8 @@ namespace Mengine
         return mixin;
     }
     //////////////////////////////////////////////////////////////////////////
+#ifndef MENGINE_MASTER_RELEASE
+    //////////////////////////////////////////////////////////////////////////
     void VocabularyService::foreachFactorable( const ConstString & _category, const LambdaFactorable & _lambda ) const
     {
         MapMixinss::const_iterator it_found = m_mixinss.find( _category );
@@ -101,4 +103,5 @@ namespace Mengine
             _lambda( type, factorable );
         }
     }
+#endif
 }

@@ -256,18 +256,13 @@ namespace Mengine
         T m_a;
     };
     //////////////////////////////////////////////////////////////////////////
-    template<class T>
-    void calculateBezierPosition( T & _out, const T & _begin, const T & _end, uint32_t _count, const T * _v, float _time )
+    template<class T, uint32_t N>
+    constexpr void calculateBezierPosition( T & _out, const T & _begin, const T & _end, const T * _v, float _dt )
     {
-        if( _count == 0 )
-        {
-            return;
-        }
+        uint32_t n = N + 1;
 
-        uint32_t n = _count + 1;
-
-        float t0 = mt::integral_powf( 1.f - _time, n );
-        float tn = mt::integral_powf( _time, n );
+        float t0 = mt::integral_powf( 1.f - _dt, n );
+        float tn = mt::integral_powf( _dt, n );
 
         _out = t0 * _begin + tn * _end;
 
@@ -276,14 +271,13 @@ namespace Mengine
         for( uint32_t i = 1; i != n; ++i )
         {
             float c = f_count / (mt::factorialf( i ) * mt::factorialf( n - i ));
-            float t = mt::integral_powf( _time, i ) * mt::integral_powf( 1.f - _time, n - i );
+            float t = mt::integral_powf( _dt, i ) * mt::integral_powf( 1.f - _dt, n - i );
 
             const T & v = _v[i - 1];
 
             _out += c * t * v;
         }
     }
-    //////////////////////////////////////////////////////////////////////////
     //////////////////////////////////////////////////////////////////////////
     template<class T, class LENGTH>
     float calculateBezierLength( const T & _begin, const T & _end, uint32_t _count, const T * _v, LENGTH _length )
@@ -358,7 +352,7 @@ namespace Mengine
 
         void _update( float _dt, T * _out ) override
         {
-            calculateBezierPosition( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, N, m_v, _dt );
+            calculateBezierPosition<T, N>( *_out, ValueInterpolator<T>::m_value1, ValueInterpolator<T>::m_value2, m_v, _dt );
         }
 
     protected:

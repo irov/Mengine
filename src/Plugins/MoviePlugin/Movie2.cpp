@@ -683,7 +683,9 @@ namespace Mengine
             return false;
         }
 
-        ae_play_movie_composition( m_composition, 0.f );
+        float timing = this->getTime();
+
+        ae_play_movie_composition( m_composition, timing * 0.001f );
 
         EVENTABLE_METHOD( this, EVENT_ANIMATION_PLAY )
             ->onAnimationPlay( _enumerator, _time );

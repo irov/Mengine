@@ -169,18 +169,18 @@ namespace Mengine
         typedef Lambda<void( T * )> LambdaPoints;
 
     public:
-        bool initialize( const LambdaSettuper & _settuper, const LambdaGetter & _getterFrom, const LambdaGetter & _getterTo, const LambdaPoints & _points, float _time )
+        bool initialize( const LambdaSettuper & _settuper, const LambdaGetter & _getterFrom, const LambdaGetter & _getterTo, const LambdaPoints & _getterPoints, float _time )
         {
             m_settuper = _settuper;
             m_getterFrom = _getterFrom;
             m_getterTo = _getterTo;
-            m_points = _points;
+            m_getterPoints = _getterPoints;
 
             T from = _getterFrom();
             T to = _getterTo();
 
             T v[N];
-            _points( v );
+            _getterPoints( v );
 
             ValueInterpolatorBezier<T, N> & interpolator = this->getInterpolator();
 
@@ -201,7 +201,7 @@ namespace Mengine
             interpolator.setValue2( value2 );
 
             T v[N];
-            m_points( v );
+            m_getterPoints( v );
             interpolator.setV( v );
 
             T value;
@@ -223,7 +223,7 @@ namespace Mengine
         LambdaSettuper m_settuper;
         LambdaGetter m_getterFrom;
         LambdaGetter m_getterTo;
-        LambdaPoints m_points;
+        LambdaPoints m_getterPoints;
     };
     //////////////////////////////////////////////////////////////////////////
     namespace NodeAffectorCreator

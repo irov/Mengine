@@ -1230,6 +1230,7 @@ namespace Mengine
         uint32_t s_Node_bezier2Follower( Node * _node
             , float _time
             , const NodePtr & _follow
+            , const mt::vec3f & _offset
             , const pybind::object & _cb
             , const pybind::args & _args )
         {
@@ -1248,19 +1249,20 @@ namespace Mengine
                 return 0;
             }
 
+            const mt::vec3f & node_pos = _node->getWorldPosition();
+            
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector = m_nodeAffectorCreatorInterpolateQuadraticBezier.create( ETA_POSITION
                 , callback
-                , [_node]( const mt::vec3f & _v ) { _node->setLocalPosition( _v ); }
-            , [_node]() { return _node->getLocalPosition(); }
-            , [_follow]() { return _follow->getLocalPosition(); }
-                , [_node, _follow]( mt::vec3f * _v )
+                , [_node]( const mt::vec3f & _v ) { _node->setWorldPosition( _v ); }
+            , [node_pos]() { return node_pos; }
+            , [_follow, _offset]() { return _follow->getWorldPosition() + _offset; }
+                , [node_pos, _follow, _offset]( mt::vec3f * _v )
             {
-                float x = _follow->getLocalPositionX();
-                float y = _node->getLocalPositionY();
+                float x = _follow->getWorldPosition().x + _offset.x;
 
-                _v[0] = mt::vec3f( x, y, 0.f );
+                _v[0] = mt::vec3f( x, node_pos.y, 0.f );
             }
                 , _time
                 );
@@ -2755,6 +2757,7 @@ namespace Mengine
             .def_proxy_static_args( "parabolaTo", nodeScriptMethod, &NodeScriptMethod::s_Node_parabolaTo )
             .def_proxy_static_args( "followTo", nodeScriptMethod, &NodeScriptMethod::s_Node_followTo )
             .def_proxy_static_args( "followToW", nodeScriptMethod, &NodeScriptMethod::s_Node_followToW )
+            .def_proxy_static_args( "bezier2Follower", nodeScriptMethod, &NodeScriptMethod::s_Node_bezier2Follower )
             .def_proxy_static( "moveStop", nodeScriptMethod, &NodeScriptMethod::s_Node_moveStop )
 
             .def_proxy_static_args( "angleTo", nodeScriptMethod, &NodeScriptMethod::s_Node_angleTo )

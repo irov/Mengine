@@ -121,6 +121,8 @@ namespace Mengine
 
         typedef Lambda<bool( const NodePtr & )> LambdaNodeBreak;
         void foreachChildrenUnslugBreak( const LambdaNodeBreak & _lambda ) const;
+
+        NodePtr findUniqueChild( uint32_t _uniqueIdentity ) const;
         
         void removeParentRender_();
         void setParentRender_( Node * _parent );

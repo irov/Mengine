@@ -2712,6 +2712,8 @@ namespace Mengine
             .def( "isActivate", &Node::isActivate )
             .def( "freeze", &Node::freeze )
             .def( "isFreeze", &Node::isFreeze )
+            .def( "getUniqueIdentity", &Node::getUniqueIdentity )
+            .def( "findUniqueChild", &Node::findUniqueChild )
             .def_deprecated( "setSpeedFactor", &Node::setSpeedFactor, "don't work, use getAnimation" )
             .def_deprecated( "getSpeedFactor", &Node::getSpeedFactor, "don't work, use getAnimation" )
             .def( "addChildren", &Node::addChild )

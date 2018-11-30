@@ -546,9 +546,9 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const NodePtr & node = (*it);
+            const NodePtr & child = (*it);
 
-            _lambda( node );
+            _lambda( child );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -560,9 +560,9 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const NodePtr & node = (*it);
+            NodePtr child = (*it);
 
-            _lambda( node );
+            _lambda( child );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -574,13 +574,36 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const NodePtr & node = (*it);
+            NodePtr child = (*it);
 
-            if( _lambda( node ) == false )
+            if( _lambda( child ) == false )
             {
                 break;
             }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    NodePtr Node::findUniqueChild( uint32_t _uniqueIdentity ) const
+    {
+        for( IntrusiveSlugListNodeChild::unslug_const_iterator
+            it = m_children.ubegin(),
+            it_end = m_children.uend();
+            it != it_end;
+            ++it )
+        {
+            NodePtr child = (*it);
+
+            uint32_t childUID = child->getUniqueIdentity();
+
+            if( childUID != _uniqueIdentity )
+            {
+                continue;
+            }
+
+            return child;
+        }
+
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda )

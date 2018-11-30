@@ -23,6 +23,7 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
@@ -104,6 +105,7 @@ SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( Application );
+SERVICE_EXTERN( EnumeratorService );
 
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
@@ -609,7 +611,7 @@ namespace Mengine
         SERVICE_CREATE( MemoryService );
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
-
+        SERVICE_CREATE( EnumeratorService );
         SERVICE_CREATE( TimeSystem );
         SERVICE_CREATE( TimeService );
 
@@ -686,6 +688,7 @@ namespace Mengine
         SERVICE_CREATE( AccountService );
         SERVICE_CREATE( GameService );
         SERVICE_CREATE( TimelineService );
+        SERVICE_CREATE( EnumeratorService );
 
         SERVICE_CREATE( Application );
 
@@ -1015,6 +1018,8 @@ namespace Mengine
 
         SERVICE_FINALIZE( Mengine::TimeServiceInterface );
         SERVICE_FINALIZE( Mengine::TimeSystemInterface );
+
+        SERVICE_FINALIZE( Mengine::EnumeratorServiceInterface );
 
         SERVICE_FINALIZE( Mengine::PlatformInterface );
 

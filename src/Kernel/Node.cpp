@@ -24,6 +24,7 @@ namespace Mengine
         , m_freeze( false )
         //, m_rendering( false )
         //, m_invalidateRendering( true )
+        , m_uniqueIdentity( 0 )
         , m_parent( nullptr )
     {
     }
@@ -414,6 +415,16 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::setUniqueIdentity( uint32_t _uniqueIdentity )
+    {
+        m_uniqueIdentity = _uniqueIdentity;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Node::getUniqueIdentity() const
+    {
+        return m_uniqueIdentity;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Node::addChild( const NodePtr & _node )
     {
         MENGINE_ASSERTION( _node != nullptr, ("node '%s' invalid add child NULL node"
@@ -552,6 +563,23 @@ namespace Mengine
             const NodePtr & node = (*it);
 
             _lambda( node );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::foreachChildrenUnslugBreak( const LambdaNodeBreak & _lambda ) const
+    {
+        for( IntrusiveSlugListNodeChild::unslug_const_iterator
+            it = m_children.ubegin(),
+            it_end = m_children.uend();
+            it != it_end;
+            ++it )
+        {
+            const NodePtr & node = (*it);
+
+            if( _lambda( node ) == false )
+            {
+                break;
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

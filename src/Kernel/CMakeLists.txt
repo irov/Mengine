@@ -99,6 +99,8 @@ Node
 	Node.h  
     NodeRenderHelper.cpp
     NodeRenderHelper.h
+    NodeUniqueFinder.cpp
+    NodeUniqueFinder.h
 )
 
 ADD_FILTER(

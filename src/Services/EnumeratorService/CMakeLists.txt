@@ -1,0 +1,24 @@
+SET( MY_LIB_NAME EnumeratorService )
+
+ADD_FILTER(
+src
+	EnumeratorService.cpp
+	EnumeratorService.h
+)
+
+ADD_MENGINE_LIBRARY()
+
+set_target_properties (${MY_LIB_NAME} PROPERTIES
+    FOLDER Services
+)
+
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ ${MY_LIB_NAME}
+)
+
+
+SET( APPLICATION_DEPENDENCIES
+ ${APPLICATION_DEPENDENCIES}
+ PARENT_SCOPE
+)

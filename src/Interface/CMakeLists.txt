@@ -86,6 +86,7 @@ src
     UpdateServiceInterface.h
     UpdationInterface.h
     ServantInterface.h
+    EnumeratorServiceInterface.h
     
 	dummy.cpp
 )

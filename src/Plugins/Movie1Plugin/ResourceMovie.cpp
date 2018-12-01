@@ -10,6 +10,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Engine/ResourceShape.h"
 
@@ -261,8 +262,7 @@ namespace Mengine
 
         const ConstString & dataflowType = this->getDataflowType();
 
-        const DataflowInterfacePtr & dataflow = DATA_SERVICE()
-            ->getDataflow( dataflowType );
+        DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
         if( dataflow == nullptr )
         {

@@ -5,6 +5,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/Movie1Plugin/MovieKeyFrameInterface.h"
 
@@ -63,8 +64,7 @@ namespace Mengine
 
         m_archivator = archivator;
 
-        m_dataflow = DATA_SERVICE()
-            ->getDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+        m_dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
         if( m_dataflow == nullptr )
         {

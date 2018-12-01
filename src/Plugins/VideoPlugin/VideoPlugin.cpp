@@ -3,6 +3,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
@@ -110,8 +111,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<ResourceVideoValidator>() );
+            VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<ResourceVideoValidator>() );
         }
 
         LOADER_SERVICE()
@@ -148,8 +148,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            RESOURCEVALIDATE_SERVICE()
-                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
         }
 
         LOADER_SERVICE()

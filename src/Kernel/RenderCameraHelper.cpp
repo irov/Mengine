@@ -5,7 +5,7 @@ namespace Mengine
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
-        void screenToWorldPosition( const RenderCameraInterfacePtr & _renderCamera, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint )
+        void screenToWorldPosition( const RenderCameraInterfacePtr & _renderCamera, const mt::vec2f & _screenPoint, mt::vec2f * _worldPoint )
         {
             const mt::mat4f & pm_inv = _renderCamera->getCameraProjectionMatrixInv();
 
@@ -25,10 +25,10 @@ namespace Mengine
             mt::vec2f p_vm;
             mt::mul_v2_v2_m4( p_vm, p, vm_inv );
 
-            _worldPoint = p_vm;
+            *_worldPoint = p_vm;
         }
         //////////////////////////////////////////////////////////////////////////
-        void screenToWorldDelta( const RenderCameraInterfacePtr & _renderCamera, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha )
+        void screenToWorldDelta( const RenderCameraInterfacePtr & _renderCamera, const mt::vec2f & _screenDeltha, mt::vec2f * _worldDeltha )
         {
             const mt::mat4f & pm_inv = _renderCamera->getCameraProjectionMatrixInv();
 
@@ -38,7 +38,7 @@ namespace Mengine
             mt::vec2f p_pm_deltha;
             mt::mul_v2_v2_m4( p_pm_deltha, p3, pm_inv );
 
-            _worldDeltha = p_pm_deltha;
+            *_worldDeltha = p_pm_deltha;
         }
         //////////////////////////////////////////////////////////////////////////
         void worldToScreenPosition( const RenderCameraInterfacePtr & _renderCamera, const RenderViewportInterfacePtr & _renderViewport, const Resolution & _contentResolution, const mt::vec2f & _worldPosition, mt::vec2f & _screenPosition )

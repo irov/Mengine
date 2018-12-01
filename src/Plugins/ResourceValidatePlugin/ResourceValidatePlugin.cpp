@@ -1,6 +1,7 @@
 #include "ResourceValidatePlugin.h"
 
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "ResourceValidateServiceInterface.h"
 
@@ -39,53 +40,27 @@ namespace Mengine
     {
         SERVICE_CREATE( ResourceValidateService );
 
-        RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceFile" ), new FactorableUnique<ResourceFileValidator>() );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceHIT" ), new FactorableUnique<ResourceHITValidator>() );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageData" ), new FactorableUnique<ResourceImageDataValidator>() );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), new FactorableUnique<ResourceImageDefaultValidator>() );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageSequence" ), new FactorableUnique<ResourceImageSequenceValidator>() );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMusic" ), new FactorableUnique<ResourceMusicValidator>() );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceSound" ), new FactorableUnique<ResourceSoundValidator>() );
+        VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceFile" ), new FactorableUnique<ResourceFileValidator>() );
+        VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceHIT" ), new FactorableUnique<ResourceHITValidator>() );
+        VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageData" ), new FactorableUnique<ResourceImageDataValidator>() );
+        VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), new FactorableUnique<ResourceImageDefaultValidator>() );
+        VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageSequence" ), new FactorableUnique<ResourceImageSequenceValidator>() );
+        VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMusic" ), new FactorableUnique<ResourceMusicValidator>() );
+        VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceSound" ), new FactorableUnique<ResourceSoundValidator>() );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceValidatePlugin::_finalize()
     {
-        RESOURCEVALIDATE_SERVICE()
-            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceFile" ) );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceHIT" ) );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageData" ) );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceImageSequence" ) );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMusic" ) );
-
-        RESOURCEVALIDATE_SERVICE()
-            ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
-
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceFile" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceHIT" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageData" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageSequence" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMusic" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
+        
         SERVICE_FINALIZE( Mengine::ResourceValidateServiceInterface );
     }
     //////////////////////////////////////////////////////////////////////////

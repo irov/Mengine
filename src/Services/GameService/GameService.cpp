@@ -52,7 +52,7 @@ namespace Mengine
 
             mt::vec2f wp;
             PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, wp );
+                ->calcGlobalMouseWorldPosition( point, &wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_KEY, handle )
                 ->onGameKey( _event.code, wp.x, wp.y, _event.isDown, _event.isRepeat );
@@ -77,7 +77,7 @@ namespace Mengine
 
             mt::vec2f wp;
             PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, wp );
+                ->calcGlobalMouseWorldPosition( point, &wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_TEXT, handle )
                 ->onGameText( _event.key, wp.x, wp.y );
@@ -102,7 +102,7 @@ namespace Mengine
 
             mt::vec2f wp;
             PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, wp );
+                ->calcGlobalMouseWorldPosition( point, &wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON, handle )
                 ->onGameMouseButton( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
@@ -127,7 +127,7 @@ namespace Mengine
 
             mt::vec2f wp;
             PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, wp );
+                ->calcGlobalMouseWorldPosition( point, &wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )
                 ->onGameMouseButtonBegin( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
@@ -152,7 +152,7 @@ namespace Mengine
 
             mt::vec2f wp;
             PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, wp );
+                ->calcGlobalMouseWorldPosition( point, &wp );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_END, handle )
                 ->onGameMouseButtonEnd( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
@@ -178,11 +178,11 @@ namespace Mengine
 
             mt::vec2f wp;
             PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( point, wp );
+                ->calcGlobalMouseWorldPosition( point, &wp );
 
             mt::vec2f wd;
             PLAYER_SERVICE()
-                ->calcGlobalMouseWorldDelta( delta, wd );
+                ->calcGlobalMouseWorldDelta( delta, &wd );
 
             handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_MOVE, handle )
                 ->onGameMouseMove( _event.touchId, wp.x, wp.y, wd.x, wd.y );

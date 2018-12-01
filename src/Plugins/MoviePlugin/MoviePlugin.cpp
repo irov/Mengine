@@ -447,8 +447,7 @@ namespace Mengine
             return false;
         }
 
-        DATA_SERVICE()
-            ->registerDataflow( STRINGIZE_STRING_LOCAL( "aezMovie" ), dataflowAEZ );
+        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aezMovie" ), dataflowAEZ );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceMovie2, 128> >() ) == false )
@@ -521,8 +520,7 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
 
-        DATA_SERVICE()
-            ->unregisterDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {

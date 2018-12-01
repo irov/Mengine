@@ -4,6 +4,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "ThreadTaskPrefetchImageDecoder.h"
 #include "ThreadTaskPrefetchSoundDecoder.h"
@@ -261,8 +262,7 @@ namespace Mengine
 
         task->initialize( _fileGroup, _filePath, _observer );
 
-        const DataflowInterfacePtr & dataflow = DATA_SERVICE()
-            ->getDataflow( _dataflowType );
+        DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), _dataflowType );
 
         if( dataflow == nullptr )
         {

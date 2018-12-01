@@ -7,6 +7,7 @@
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
@@ -140,8 +141,7 @@ namespace Mengine
             }
         }
 
-        const DataflowInterfacePtr & dataflow = DATA_SERVICE()
-            ->getDataflow( dataflowType );
+        DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
         if( dataflow == nullptr )
         {

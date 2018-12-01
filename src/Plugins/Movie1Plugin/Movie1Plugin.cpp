@@ -1619,16 +1619,15 @@ namespace Mengine
             return false;
         }
 
-        DataflowInterfacePtr aek = new FactorableUnique<DataflowAEK>();
+        DataflowInterfacePtr dataflowAEK = new FactorableUnique<DataflowAEK>();
 
-        if( aek->initialize() == false )
+        if( dataflowAEK->initialize() == false )
         {
             return false;
         }
 
-        DATA_SERVICE()
-            ->registerDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ), aek );
-
+        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ), dataflowAEK );
+        
         CODEC_SERVICE()
             ->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
@@ -1718,8 +1717,7 @@ namespace Mengine
             VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
         }
 
-        DATA_SERVICE()
-            ->unregisterDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {

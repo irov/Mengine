@@ -1,3 +1,4 @@
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "Win32Socket.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -109,16 +110,48 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::send( const Mengine::String & _str )
+    bool Win32Socket::waitForData( size_t timeoutMs )
     {
         if( m_socket == INVALID_SOCKET )
         {
             return false;
         }
 
-        ::send( m_socket, _str.c_str(), static_cast<int>( _str.size() ), 0 );
+        fd_set socketsSet;
+        socketsSet.fd_count = 1;
+        socketsSet.fd_array[0] = m_socket;
 
-        return true;
+        timeval tv;
+        tv.tv_sec = static_cast<long>(timeoutMs / 1000);
+        tv.tv_usec = static_cast<long>((timeoutMs - static_cast<size_t>(tv.tv_sec * 1000)) * 1000);
+
+        const int result = ::select( 0, &socketsSet, nullptr, nullptr, (timeoutMs == 0) ? nullptr : &tv );
+
+        return (1 == result);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32Socket::send( const void * _data, const size_t _numBytes )
+    {
+        if( m_socket == INVALID_SOCKET )
+        {
+            return 0;
+        }
+
+        const int numBytesSent = ::send( m_socket, reinterpret_cast<const char*>( _data ), static_cast<int>( _numBytes ), 0 );
+
+        return (numBytesSent > 0 ? static_cast<size_t>( numBytesSent ) : 0u);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32Socket::recieve( void* _data, const size_t _maxBytes )
+    {
+        if( m_socket == INVALID_SOCKET )
+        {
+            return 0;
+        }
+
+        const int numBytesReceived = ::recv( m_socket, reinterpret_cast<char*>( _data ), static_cast<int>( _maxBytes ), 0 );
+
+        return (numBytesReceived > 0 ? static_cast<size_t>( numBytesReceived ) : 0u);
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Socket::disconnect()

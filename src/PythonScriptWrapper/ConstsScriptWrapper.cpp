@@ -165,7 +165,7 @@ namespace Mengine
         }
         else if( _kernel->is_none( _obj ) == true )
         {
-            cstr = FilePath(ConstString::none());
+            cstr = FilePath( ConstString::none() );
 
             return true;
         }

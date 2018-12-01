@@ -14,7 +14,7 @@ namespace Mengine
         : public ServiceBase<PrototypeServiceInterface>
     {
     public:
-		PrototypeService();
+        PrototypeService();
         ~PrototypeService() override;
 
     public:
@@ -25,7 +25,7 @@ namespace Mengine
         bool addPrototype( const ConstString & _category, const ConstString & _prototype, const PrototypeGeneratorInterfacePtr & _generator ) override;
         bool removePrototype( const ConstString & _category, const ConstString & _prototype ) override;
         const PrototypeGeneratorInterfacePtr & getGenerator( const ConstString & _category, const ConstString & _prototype ) const override;
-        
+
     public:
         FactorablePointer generatePrototype( const ConstString & _category, const ConstString & _prototype ) override;
 
@@ -46,7 +46,7 @@ namespace Mengine
 
         struct CategoryKeyHashgen
         {
-            HashType operator() (const CategoryKey & _key ) const
+            HashType operator() ( const CategoryKey & _key ) const
             {
                 return _key.category.hash() + _key.prototype.hash();
             }

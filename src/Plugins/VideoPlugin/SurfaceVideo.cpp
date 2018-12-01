@@ -24,9 +24,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::setResourceVideo( const ResourcePtr & _resourceVideo)
+    void SurfaceVideo::setResourceVideo( const ResourcePtr & _resourceVideo )
     {
-        if( m_resourceVideo == _resourceVideo)
+        if( m_resourceVideo == _resourceVideo )
         {
             return;
         }
@@ -587,7 +587,7 @@ namespace Mengine
     RenderMaterialInterfacePtr SurfaceVideo::_updateMaterial() const
     {
         this->updateVideoBuffer_();
-        
+
         RenderMaterialInterfacePtr material = this->makeTextureMaterial( m_textures, 1, false );
 
         if( material == nullptr )

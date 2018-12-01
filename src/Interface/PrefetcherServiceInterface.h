@@ -13,7 +13,7 @@
 #include "Kernel/Visitor.h"
 
 namespace Mengine
-{    
+{
     class PrefetcherServiceInterface
         : public ServiceInterface
     {

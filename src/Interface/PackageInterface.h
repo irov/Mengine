@@ -29,7 +29,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-		virtual void setName( const ConstString & _name ) = 0;
+        virtual void setName( const ConstString & _name ) = 0;
         virtual const ConstString & getName() const = 0;
 
     public:

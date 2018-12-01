@@ -11,7 +11,7 @@ namespace Mengine
         : public VideoDecoder
     {
     public:
-		TheoraVideoDecoder();
+        TheoraVideoDecoder();
         ~TheoraVideoDecoder() override;
 
     public:

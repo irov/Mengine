@@ -7,7 +7,7 @@
 #include "Interface/RenderTargetInterface.h"
 
 namespace Mengine
-{    
+{
     struct RenderContext
     {
         RenderViewportInterfacePtr viewport;

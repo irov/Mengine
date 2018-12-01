@@ -527,7 +527,7 @@ namespace Mengine
             {
                 m_cb.call_args( 1, m_args );
             }
-            
+
             void onMusicStop()
             {
                 m_cb.call_args( 2, m_args );

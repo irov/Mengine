@@ -63,7 +63,7 @@ namespace Mengine
     protected:
         virtual bool _affect( const UpdateContext * _context, float * _used ) = 0;
 
-    public:        
+    public:
         void stop();
 
     protected:

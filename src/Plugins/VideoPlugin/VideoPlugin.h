@@ -13,7 +13,7 @@ namespace Mengine
         PLUGIN_DECLARE( "Video" )
 
     public:
-		VideoPlugin();
+        VideoPlugin();
 
     protected:
         bool _initialize() override;

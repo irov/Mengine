@@ -106,7 +106,7 @@ namespace Mengine
 
         if( st.provider != nullptr )
         {
-			st.provider->onChangeSetting( _value );
+            st.provider->onChangeSetting( _value );
         }
 
         return true;
@@ -364,7 +364,7 @@ namespace Mengine
         }
 
         MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA ), GET_MAGIC_VERSION( MAGIC_ACCOUNT_DATA ), "Account::loadBinaryFile", __FILE__, __LINE__ );
-        
+
         if( binaryBuffer == nullptr )
         {
             LOGGER_ERROR( "account '%s' invalid load stream archive '%s'"

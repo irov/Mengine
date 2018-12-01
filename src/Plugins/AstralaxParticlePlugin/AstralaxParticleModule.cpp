@@ -183,7 +183,7 @@ namespace Mengine
             ->removeWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
 
         SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );        
+            ->removeWrapper( STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );

@@ -266,7 +266,7 @@ namespace Mengine
             , m_projectVersion
             , m_locale.c_str()
         );
-                
+
         bool logopenfiles = HAS_OPTION( "logopenfiles" );
 
         if( logopenfiles == true )
@@ -344,7 +344,7 @@ namespace Mengine
         //NODE_FACTORY( TilePolygon );
         NODE_FACTORY( Point );
         NODE_FACTORY( Line );
-        NODE_FACTORY( SoundEmitter );        
+        NODE_FACTORY( SoundEmitter );
         NODE_FACTORY( Grid2D );
         NODE_FACTORY( TextField );
         //NODE_FACTORY( TileMap );
@@ -668,7 +668,7 @@ namespace Mengine
 
             LOGGER_ERROR( "%.*s-%s [%s] |%p| lp (%.2f, %.2f, %.2f) lo (%.2f, %.2f, %.2f) wp (%.2f, %.2f, %.2f) %s"
                 , _tab
-                , "                                         "                
+                , "                                         "
                 , child->getName().c_str()
                 , child->getType().c_str()
                 , child.get()
@@ -769,7 +769,7 @@ namespace Mengine
                     {
                     }
 
-				public:
+                public:
                     void visit( const PrototypeGeneratorInterfacePtr & _generator )
                     {
                         const ConstString & category = _generator->getCategory();
@@ -799,7 +799,7 @@ namespace Mengine
                 VisitorPlayerFactoryManager pfmv( STRINGIZE_STRING_LOCAL( "Node" ), ss );
 
                 PROTOTYPE_SERVICE()
-					->foreachGenerators([&pfmv](const PrototypeGeneratorInterfacePtr & _generator) {pfmv.visit(_generator); });
+                    ->foreachGenerators( [&pfmv]( const PrototypeGeneratorInterfacePtr & _generator ) {pfmv.visit( _generator ); } );
 
                 const String & str = ss.str();
 

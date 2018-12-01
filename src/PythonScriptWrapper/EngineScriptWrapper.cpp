@@ -169,7 +169,7 @@ namespace Mengine
             m_factoryPyGlobalMouseHandlerButtonBegins = new FactoryPool<PyGlobalMouseHandlerButtonBegin, 32>();
             m_factoryPyGlobalKeyHandler = new FactoryPool<PyGlobalKeyHandler, 32>();
             m_factoryPyGlobalTextHandler = new FactoryPool<PyGlobalTextHandler, 32>();
-            m_factoryPyInputMousePositionProvider = new FactoryPool<PyInputMousePositionProvider, 8>();            
+            m_factoryPyInputMousePositionProvider = new FactoryPool<PyInputMousePositionProvider, 8>();
         }
 
         ~EngineScriptMethod()
@@ -262,14 +262,14 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_setMousePickerBlockInput( bool _value )
         {
-			PICKER_SERVICE()
-				->setBlock( _value );
+            PICKER_SERVICE()
+                ->setBlock( _value );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_setMousePickerHandleValue( bool _value )
         {
-			PICKER_SERVICE()
-				->setHandleValue( _value );
+            PICKER_SERVICE()
+                ->setHandleValue( _value );
         }
         //////////////////////////////////////////////////////////////////////////
         void s_setInputMouseButtonEventBlock( bool _value )
@@ -1786,7 +1786,7 @@ namespace Mengine
                 return false;
             }
 
-            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];                
+            Char projectName[MENGINE_APPLICATION_PROJECT_MAXNAME];
             APPLICATION_SERVICE()
                 ->getProjectName( projectName );
 
@@ -1980,7 +1980,7 @@ namespace Mengine
             arrow->calcPointClick( camera, viewport, _screenPoint, wp );
 
             return wp;
-        }        
+        }
         //////////////////////////////////////////////////////////////////////////
         class AffectorGridBurnTransparency
             : public Affector
@@ -2539,8 +2539,8 @@ namespace Mengine
         pybind::list s_pickHotspot( pybind::kernel_interface * _kernel, const mt::vec2f & _point )
         {
             VectorPickerTraps traps;
-			PICKER_SERVICE()
-				->pickTrap( _point, traps );
+            PICKER_SERVICE()
+                ->pickTrap( _point, traps );
 
             pybind::list pyret( _kernel );
 
@@ -3324,7 +3324,7 @@ namespace Mengine
         class GetResourceVisitor
             : public Visitor
             , public Factorable
-            , public ConcreteVisitor<Resource>            
+            , public ConcreteVisitor<Resource>
         {
         public:
             GetResourceVisitor( pybind::kernel_interface * _kernel )

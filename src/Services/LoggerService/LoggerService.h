@@ -24,10 +24,6 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void setThreadMutex( const ThreadMutexInterfacePtr & _threadMutex ) override;
-        const ThreadMutexInterfacePtr & setThreadMutex() const override;
-
-    public:
         void setVerboseLevel( EMessageLevel _level ) override;
         void setVerboseFlag( uint32_t _flag ) override;
 
@@ -55,7 +51,7 @@ namespace Mengine
         ThreadMutexInterfacePtr m_threadMutex;
 
         uint32_t m_countMessage[LM_MAX];
-        
+
 #ifdef MENGINE_LOGGER_HISTORY
         struct Record
         {

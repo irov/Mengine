@@ -3,7 +3,7 @@
 namespace Mengine
 {
     ScriptModuleLoader::ScriptModuleLoader()
-        : m_kernel(nullptr)
+        : m_kernel( nullptr )
         , m_module( nullptr )
         , m_packagePath( false )
     {

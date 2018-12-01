@@ -11,7 +11,7 @@ namespace Mengine
 
     public:
         Win32SocketPlugin();
-		~Win32SocketPlugin() override;
+        ~Win32SocketPlugin() override;
 
     protected:
         bool _initialize() override;

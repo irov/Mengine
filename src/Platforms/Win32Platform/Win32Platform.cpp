@@ -1823,7 +1823,7 @@ namespace Mengine
     {
         WChar unicode_command[4096];
         Helper::utf8ToUnicode( _command, unicode_command, 4096 );
-                
+
         int err = _wsystem( unicode_command );
 
         if( err != 0 )
@@ -1901,7 +1901,7 @@ namespace Mengine
             if( len == 0 )
             {
                 LOGGER_ERROR( "WinApplication::makeUserPath_: failed to get current directory"
-                ); 
+                );
 
                 return 0;
             }
@@ -1986,7 +1986,7 @@ namespace Mengine
         {
             return 0;
         }
-                
+
         PathCombine( roamingPath, currentPath, companyNameW );
 
         String projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );

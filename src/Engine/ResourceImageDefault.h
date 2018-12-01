@@ -8,13 +8,13 @@ namespace Mengine
 {
     class ResourceImageDefault
         : public ResourceImage
-		, public Content
+        , public Content
     {
         DECLARE_VISITABLE( ResourceImage );
 
     public:
         ResourceImageDefault();
-		~ResourceImageDefault() override;
+        ~ResourceImageDefault() override;
 
     public:
         bool setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize );
@@ -26,7 +26,10 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
-    protected:        
+    public:
+        void correctUVTexture();
+
+    protected:
         void prepareImageFrame_();
     };
     //////////////////////////////////////////////////////////////////////////

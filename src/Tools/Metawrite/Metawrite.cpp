@@ -78,7 +78,7 @@ namespace Mengine
             }
 
         public:
-            void log( EMessageLevel _level, size_t _flag, const char * _data, size_t _count ) override
+            void log( EMessageLevel _level, uint32_t _flag, const Char * _data, uint32_t _count ) override
             {
                 (void)_level;
                 (void)_flag;
@@ -196,7 +196,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     {
         LOGGER_ERROR( "LoaderEngine::makeBin_ invalid create decoder xml2bin for %s"
             , fp_in.c_str()
-            );
+        );
 
         return 0;
     }
@@ -205,7 +205,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     {
         LOGGER_ERROR( "LoaderEngine::makeBin_ invalid initialize decoder xml2bin for %s"
             , fp_in.c_str()
-            );
+        );
 
         return 0;
     }
@@ -219,7 +219,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     if( fileGroup == nullptr )
     {
         LOGGER_ERROR( "LoaderEngine::makeBin_ invalid get file group"
-            );
+        );
 
         return 0;
     }

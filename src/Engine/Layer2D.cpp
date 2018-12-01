@@ -127,7 +127,7 @@ namespace Mengine
         m_renderCamera->setProxyViewMatrix( true );
         m_renderCamera->setOrthogonalViewport( m_viewport );
         m_renderViewport->setViewport( m_viewport );
-        
+
         RenderInterface * render = this->getRender();
 
         render->setRenderCamera( m_renderCamera );

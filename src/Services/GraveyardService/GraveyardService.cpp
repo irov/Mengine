@@ -14,13 +14,13 @@ SERVICE_FACTORY( GraveyardService, Mengine::GraveyardService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	GraveyardService::GraveyardService()
+    GraveyardService::GraveyardService()
         : m_count( 0 )
         , m_graveyardTime( 1000.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////		
-	GraveyardService::~GraveyardService()
+    GraveyardService::~GraveyardService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -50,17 +50,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GraveyardService::tick( const UpdateContext * _context )
     {
-		VectorTextureGrave::iterator it_erase = std::remove_if(m_textures.begin(), m_textures.end(), [_context](RenderTextureGraveEntry & _entry)
-		{
-			_entry.timing -= _context->time;
+        VectorTextureGrave::iterator it_erase = std::remove_if( m_textures.begin(), m_textures.end(), [_context]( RenderTextureGraveEntry & _entry )
+        {
+            _entry.timing -= _context->time;
 
-			if (_entry.timing > 0.f)
-			{
-				return false;
-			}
+            if( _entry.timing > 0.f )
+            {
+                return false;
+            }
 
-			return true; 
-		} );
+            return true;
+        } );
 
         for( VectorTextureGrave::iterator
             it = it_erase,
@@ -128,20 +128,20 @@ namespace Mengine
             return nullptr;
         }
 
-		VectorTextureGrave::iterator it_found = std::find_if(m_textures.begin(), m_textures.end(), [&_fileGroup, &_filePath](const RenderTextureGraveEntry & _entry)
-		{
-			if( _entry.category != _fileGroup )
-			{
-				return false;
-			}
+        VectorTextureGrave::iterator it_found = std::find_if( m_textures.begin(), m_textures.end(), [&_fileGroup, &_filePath]( const RenderTextureGraveEntry & _entry )
+        {
+            if( _entry.category != _fileGroup )
+            {
+                return false;
+            }
 
-			if( _entry.filePath != _filePath )
-			{
-				return false;
-			}
+            if( _entry.filePath != _filePath )
+            {
+                return false;
+            }
 
-			return true;
-		});
+            return true;
+        } );
 
         if( it_found == m_textures.end() )
         {

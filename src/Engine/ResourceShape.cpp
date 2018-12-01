@@ -19,7 +19,7 @@ namespace Mengine
     const Polygon & ResourceShape::getPolygon() const
     {
         return m_polygon;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceShape::_compile()
     {

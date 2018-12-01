@@ -15,6 +15,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie2Validator::ResourceMovie2Validator()
+        : m_movieInstance( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -258,5 +259,5 @@ namespace Mengine
         ae_delete_movie_stream( movieStream );
 
         return true;
-    }    
+    }
 }

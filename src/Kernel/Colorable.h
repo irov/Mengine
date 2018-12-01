@@ -73,7 +73,7 @@ namespace Mengine
     protected:
         Color m_personalColor;
         Color m_localColor;
-                
+
         mutable Color m_relationColor;
         mutable bool m_invalidateColor;
 

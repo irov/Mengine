@@ -23,83 +23,83 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Eventable> EventablePtr;
     //////////////////////////////////////////////////////////////////////////
-	namespace Helper
-	{
-		//////////////////////////////////////////////////////////////////////////
-		template<class T>
-		inline static bool hasEventableReceiver(T * _self, uint32_t _event)
-		{
-			EventationInterface * eventation = _self->getEventation();
+    namespace Helper
+    {
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        inline static bool hasEventableReceiver( T * _self, uint32_t _event )
+        {
+            EventationInterface * eventation = _self->getEventation();
 
-			if (eventation == nullptr)
-			{
-				return false;
-			}
+            if( eventation == nullptr )
+            {
+                return false;
+            }
 
-			bool exist = eventation->hasEventReceiver(_event);
+            bool exist = eventation->hasEventReceiver( _event );
 
-			return exist;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		template<class T>
-		inline static bool hasEventableReceiver(const IntrusivePtr<T> & _self, uint32_t _event)
-		{
-			EventationInterface * eventation = _self->getEventation();
+            return exist;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        inline static bool hasEventableReceiver( const IntrusivePtr<T> & _self, uint32_t _event )
+        {
+            EventationInterface * eventation = _self->getEventation();
 
-			if (eventation == nullptr)
-			{
-				return false;
-			}
+            if( eventation == nullptr )
+            {
+                return false;
+            }
 
-			bool exist = eventation->hasEventReceiver(_event);
+            bool exist = eventation->hasEventReceiver( _event );
 
-			return exist;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		template<class T>
-		static typename T::EventReceiverType * getThisEventRecieverT(T * _self, uint32_t _event)
-		{
-			typedef typename T::EventReceiverType * T_EventReceiverTypePtr;
+            return exist;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        static typename T::EventReceiverType * getThisEventRecieverT( T * _self, uint32_t _event )
+        {
+            typedef typename T::EventReceiverType * T_EventReceiverTypePtr;
 
-			EventationInterface * eventation = _self->getEventation();
+            EventationInterface * eventation = _self->getEventation();
 
-			T_EventReceiverTypePtr reciever = eventation->getEventRecieverT<T_EventReceiverTypePtr>(_event);
+            T_EventReceiverTypePtr reciever = eventation->getEventRecieverT<T_EventReceiverTypePtr>( _event );
 
-			return reciever;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		template<class T>
-		static typename T::EventReceiverType * getThisEventRecieverT(const IntrusivePtr<T> & _self, uint32_t _event)
-		{
-			typedef typename T::EventReceiverType * T_EventReceiverTypePtr;
+            return reciever;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        static typename T::EventReceiverType * getThisEventRecieverT( const IntrusivePtr<T> & _self, uint32_t _event )
+        {
+            typedef typename T::EventReceiverType * T_EventReceiverTypePtr;
 
-			EventationInterface * eventation = _self->getEventation();
+            EventationInterface * eventation = _self->getEventation();
 
-			T_EventReceiverTypePtr reciever = eventation->getEventRecieverT<T_EventReceiverTypePtr>(_event);
+            T_EventReceiverTypePtr reciever = eventation->getEventRecieverT<T_EventReceiverTypePtr>( _event );
 
-			return reciever;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		template<class T>
-		static T * getThisEventReciever(Eventable * _self, uint32_t _event)
-		{
-			EventationInterface * eventation = _self->getEventation();
+            return reciever;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        static T * getThisEventReciever( Eventable * _self, uint32_t _event )
+        {
+            EventationInterface * eventation = _self->getEventation();
 
-			T * reciever = eventation->getEventRecieverT<T *>(_event);
+            T * reciever = eventation->getEventRecieverT<T *>( _event );
 
-			return reciever;
-		}
-		//////////////////////////////////////////////////////////////////////////
-		template<class T>
-		static T * getThisEventReciever(const EventablePtr & _self, uint32_t _event)
-		{
-			EventationInterface * eventation = _self->getEventation();
+            return reciever;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        template<class T>
+        static T * getThisEventReciever( const EventablePtr & _self, uint32_t _event )
+        {
+            EventationInterface * eventation = _self->getEventation();
 
-			T * reciever = eventation->getEventRecieverT<T *>(_event);
+            T * reciever = eventation->getEventRecieverT<T *>( _event );
 
-			return reciever;
-		}
-	}
+            return reciever;
+        }
+    }
 }
 //////////////////////////////////////////////////////////////////////////
 #define DECLARE_EVENTABLE_TYPE( Type )\

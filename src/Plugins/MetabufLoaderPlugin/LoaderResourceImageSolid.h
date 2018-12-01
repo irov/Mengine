@@ -7,14 +7,14 @@
 namespace Mengine
 {
     class LoaderResourceImageSolid
-		: public LoaderInterface
+        : public LoaderInterface
         , public Factorable
     {
     public:
-		LoaderResourceImageSolid();
+        LoaderResourceImageSolid();
         ~LoaderResourceImageSolid() override;
 
     protected:
-		bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;
+        bool load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta ) override;
     };
 }

@@ -7,7 +7,7 @@
 #include "Kernel/Factorable.h"
 
 namespace Mengine
-{    
+{
     class ResourceImageDefaultValidator
         : public ResourceValidatorT<ResourceImageDefaultPtr>
         , public Factorable

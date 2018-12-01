@@ -5,7 +5,7 @@
 #include "Kernel/Mixin.h"
 
 namespace Mengine
-{    
+{
     class OutputStreamInterface
         : public Mixin
     {

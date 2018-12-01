@@ -97,7 +97,7 @@ namespace Mengine
 
         uint64_t time = TIME_SYSTEM()
             ->getMilliseconds();
-        
+
         m_pauseTime = time;
     }
     //////////////////////////////////////////////////////////////////////////

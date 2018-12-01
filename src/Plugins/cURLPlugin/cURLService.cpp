@@ -68,7 +68,7 @@ namespace Mengine
         for( const ReceiverDesc & desc : m_receiverDescs )
         {
             THREAD_SERVICE()
-                ->joinTask( desc.task );            
+                ->joinTask( desc.task );
         }
 
         m_receiverDescs.clear();

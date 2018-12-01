@@ -62,7 +62,7 @@ namespace Mengine
             m_settuper( _value );
         }
 
-    protected:        
+    protected:
         LambdaSettuper m_settuper;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -165,7 +165,7 @@ namespace Mengine
     {
     public:
         typedef Lambda<void( const T & )> LambdaSettuper;
-        typedef Lambda<T ()> LambdaGetter;
+        typedef Lambda<T()> LambdaGetter;
         typedef Lambda<void( T * )> LambdaPoints;
 
     public:
@@ -231,7 +231,7 @@ namespace Mengine
         template<class T>
         class NodeAffectorCreatorAccumulateLinear
         {
-        public:            
+        public:
             typedef LambdaAffectorAccumulateLinear<T> AffectorType;
             typedef typename AffectorType::LambdaSettuper LambdaType;
             typedef IntrusivePtr<AffectorType> AffectorTypePtr;
@@ -274,7 +274,7 @@ namespace Mengine
         template<class T>
         class NodeAffectorCreatorInterpolateLinear
         {
-        public:            
+        public:
             typedef LambdaAffectorInterpolateLinear<T> AffectorType;
             typedef typename AffectorType::LambdaSettuper LambdaSettuper;
             typedef IntrusivePtr<AffectorType> AffectorTypePtr;
@@ -317,7 +317,7 @@ namespace Mengine
         template<class T>
         class NodeAffectorCreatorInterpolateQuadratic
         {
-        public:            
+        public:
             typedef LambdaAffectorInterpolateQuadratic<T> AffectorType;
             typedef typename AffectorType::LambdaSettuper LambdaSettuper;
             typedef IntrusivePtr<AffectorType> AffectorTypePtr;
@@ -360,7 +360,7 @@ namespace Mengine
         template<class T, uint32_t N>
         class NodeAffectorCreatorInterpolateBezier
         {
-        public:            
+        public:
             typedef LambdaAffectorInterpolateBezier<T, N> AffectorType;
             typedef typename AffectorType::LambdaSettuper LambdaSettuper;
             typedef typename AffectorType::LambdaGetter LambdaGetter;

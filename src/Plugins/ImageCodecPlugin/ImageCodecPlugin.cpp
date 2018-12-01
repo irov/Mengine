@@ -107,7 +107,7 @@ namespace Mengine
         Helper::registerEncoder<PickEncoderHIT>( "hitPick" );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "hit", STRINGIZE_STRING_LOCAL( "hitPick" ) );        
+            ->registerCodecExt( "hit", STRINGIZE_STRING_LOCAL( "hitPick" ) );
 
         return true;
     }

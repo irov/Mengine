@@ -9,17 +9,17 @@ namespace Mengine
     GameServiceAccountProvider::GameServiceAccountProvider()
     {
     }
-	//////////////////////////////////////////////////////////////////////////
-	GameServiceAccountProvider::~GameServiceAccountProvider()
-	{
-	}
+    //////////////////////////////////////////////////////////////////////////
+    GameServiceAccountProvider::~GameServiceAccountProvider()
+    {
+    }
     //////////////////////////////////////////////////////////////////////////
     void GameServiceAccountProvider::setEventable( const EventablePtr & _eventable )
     {
         m_eventable = _eventable;
     }
     //////////////////////////////////////////////////////////////////////////
-	const EventablePtr & GameServiceAccountProvider::getEventable() const
+    const EventablePtr & GameServiceAccountProvider::getEventable() const
     {
         return m_eventable;
     }

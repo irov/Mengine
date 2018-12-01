@@ -361,7 +361,7 @@ namespace Mengine
             node->removeParent_();
 
             IntrusiveSlugListNodeChild::iterator it_node( node );
-            
+
             m_children.erase( it_node );
 
             _lambda( node );
@@ -435,7 +435,7 @@ namespace Mengine
     bool Node::addChildAfter( const NodePtr & _node, const NodePtr & _after )
     {
         MENGINE_ASSERTION( _node != nullptr, ("node '%s' invalid add child NULL node (node)"
-                , this->getName().c_str()
+            , this->getName().c_str()
             ) );
 
         MENGINE_ASSERTION( _after != nullptr, ("node '%s' invalid add after NULL node (node)"
@@ -511,7 +511,7 @@ namespace Mengine
             _child->activate();
         }
 
-        _child->invalidateWorldMatrix();        
+        _child->invalidateWorldMatrix();
 
         stdex::intrusive_this_release( this );
     }
@@ -864,7 +864,7 @@ namespace Mengine
     {
         (void)_node;
         //Empty
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void Node::freeze( bool _value )
     {
@@ -898,7 +898,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::setSpeedFactor( float _speedFactor )
-    {        
+    {
         (void)_speedFactor;
         //TODO: REMOVE
     }

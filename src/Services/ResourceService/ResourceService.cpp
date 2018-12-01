@@ -20,11 +20,11 @@ SERVICE_FACTORY( ResourceService, Mengine::ResourceService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	ResourceService::ResourceService()
+    ResourceService::ResourceService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	ResourceService::~ResourceService()
+    ResourceService::~ResourceService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -188,7 +188,7 @@ namespace Mengine
 
                 return false;
             }
-            
+
             if( loader->load( resource, meta_resource ) == false )
             {
                 LOGGER_ERROR( "file '%s' category '%s' group '%s' name '%s' type '%s' invalid load"
@@ -480,7 +480,7 @@ namespace Mengine
         }
 
         return true;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     const ResourcePtr & ResourceService::getResource( const ConstString& _name ) const
     {
@@ -598,5 +598,5 @@ namespace Mengine
         {
             resource->visit( _visitor );
         }
-    }    
+    }
 }

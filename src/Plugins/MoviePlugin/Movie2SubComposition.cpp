@@ -69,7 +69,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::updateEnable_()
     {
-        ae_set_movie_sub_composition_enable( m_subcomposition, m_enable == true ? AE_TRUE : AE_FALSE );        
+        ae_set_movie_sub_composition_enable( m_subcomposition, m_enable == true ? AE_TRUE : AE_FALSE );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2SubComposition::initialize( const aeMovieComposition * _composition )
@@ -216,7 +216,7 @@ namespace Mengine
             return;
         }
 
-        this->updateLoop_();        
+        this->updateLoop_();
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_setTime( float _time )

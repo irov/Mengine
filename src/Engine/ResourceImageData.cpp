@@ -24,12 +24,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceImageData::~ResourceImageData()
     {
-    }	
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageData::_compile()
     {
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-		const FilePath & filePath = this->getFilePath();
+        const FilePath & filePath = this->getFilePath();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
             ->openInputFile( fileGroup, filePath, false );
@@ -124,21 +124,21 @@ namespace Mengine
     {
         return m_maxSize;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageData::setImageWidth( uint32_t _width )
-	{
-		m_width = _width;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImageData::setImageWidth( uint32_t _width )
+    {
+        m_width = _width;
+    }
     //////////////////////////////////////////////////////////////////////////
     uint32_t ResourceImageData::getImageWidth() const
     {
         return m_width;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageData::setImageHeight( uint32_t _height )
-	{
-		m_height = _height;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImageData::setImageHeight( uint32_t _height )
+    {
+        m_height = _height;
+    }
     //////////////////////////////////////////////////////////////////////////
     uint32_t ResourceImageData::getImageHeight() const
     {

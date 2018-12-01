@@ -133,10 +133,10 @@ namespace Mengine
     return true;}\
 	struct __mengine_dummy_factory##Name{}
 //////////////////////////////////////////////////////////////////////////
-#define SERVICE_DEPENDENCY(Name, Dependency)\
-    SERVICE_PROVIDER_GET()->dependencyService(Name::getStaticServiceID(), SERVICE_GET(Dependency)->getServiceID())
+#define SERVICE_DEPENDENCY( Type, Dependency )\
+    SERVICE_PROVIDER_GET()->dependencyService(Type::getStaticServiceID(), SERVICE_GET(Dependency)->getServiceID())
 //////////////////////////////////////////////////////////////////////////
-#define SERVICE_EXTERN(Name)\
+#define SERVICE_EXTERN( Name )\
 	extern bool SERVICE_NAME_CREATE( Name )(Mengine::ServiceInterfacePtr*);
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_CREATE( Name )\
@@ -150,4 +150,7 @@ namespace Mengine
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_DESTROY( Type )\
 	SERVICE_PROVIDER_GET()->destroyServiceT<Type>()
+    //////////////////////////////////////////////////////////////////////////
+#define SERVICE_WAIT( Type, Lambda )\
+    SERVICE_PROVIDER_GET()->waitService(Type::getStaticServiceID(), Lambda)
 }

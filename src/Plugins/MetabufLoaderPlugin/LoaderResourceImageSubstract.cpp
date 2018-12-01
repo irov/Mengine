@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceImageSubstract::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceImageSubstract * resource = stdex::intrusive_get<ResourceImageSubstract *>(_loadable);
+        ResourceImageSubstract * resource = stdex::intrusive_get<ResourceImageSubstract *>( _loadable );
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstract * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceImageSubstract *>(_meta);
@@ -33,7 +33,7 @@ namespace Mengine
 
         bool uvImageRotate = false;
         metadata->get_Image_UVRotate( &uvImageRotate );
-        
+
         resource->setUVImageRotate( uvImageRotate );
         resource->setUVAlphaRotate( uvImageRotate );
 
@@ -51,11 +51,11 @@ namespace Mengine
         {
             resource->setSize( maxSize );
         }
-        
+
         metadata->getm_Image_Offset( resource, &ResourceImageSubstract::setOffset );
 
         resource->correctUVTexture();
-        
+
         return true;
     }
 }

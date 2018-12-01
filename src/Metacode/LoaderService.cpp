@@ -63,11 +63,11 @@ namespace Mengine
     {
         m_protocolPath = _protocolPath;
     }
-	//////////////////////////////////////////////////////////////////////////
-	const FilePath & LoaderService::getProtocolPath() const
-	{
-		return m_protocolPath;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    const FilePath & LoaderService::getProtocolPath() const
+    {
+        return m_protocolPath;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool LoaderService::load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const
     {
@@ -466,23 +466,23 @@ namespace Mengine
     {
         return m_bufferConstString[_index];
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool LoaderService::addLoader( const ConstString & _type, const LoaderInterfacePtr & _loader )
-	{
-		m_loaders.insert( _type, _loader );
+    //////////////////////////////////////////////////////////////////////////
+    bool LoaderService::addLoader( const ConstString & _type, const LoaderInterfacePtr & _loader )
+    {
+        m_loaders.insert( _type, _loader );
 
-		return true;
-	}
-	//////////////////////////////////////////////////////////////////////////
-	void LoaderService::removeLoader( const ConstString & _type )
-	{
-		m_loaders.remove( _type );
-	}
-	//////////////////////////////////////////////////////////////////////////
-	const LoaderInterfacePtr & LoaderService::getLoader( const ConstString & _type ) const
-	{
-		const LoaderInterfacePtr & loader = m_loaders.find( _type );
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void LoaderService::removeLoader( const ConstString & _type )
+    {
+        m_loaders.remove( _type );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const LoaderInterfacePtr & LoaderService::getLoader( const ConstString & _type ) const
+    {
+        const LoaderInterfacePtr & loader = m_loaders.find( _type );
 
-		return loader;
-	}
+        return loader;
+    }
 }

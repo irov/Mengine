@@ -58,7 +58,7 @@ namespace Mengine
         : public ServiceInterface
         , public InputHandlerInterface
     {
-		SERVICE_DECLARE("PickerService");
+        SERVICE_DECLARE( "PickerService" );
 
     public:
         virtual void setBlock( bool _value ) = 0;
@@ -96,7 +96,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PickerServiceInterface> PickerServiceInterfacePtr;
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 #define PICKER_SERVICE()\
     ((Mengine::PickerServiceInterface *)SERVICE_GET(Mengine::PickerServiceInterface))
 }

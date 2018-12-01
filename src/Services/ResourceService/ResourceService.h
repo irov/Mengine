@@ -19,7 +19,7 @@ namespace Mengine
         : public ServiceBase<ResourceServiceInterface>
     {
     public:
-		ResourceService();
+        ResourceService();
         ~ResourceService() override;
 
     public:
@@ -49,7 +49,7 @@ namespace Mengine
         void foreachResources( const LambdaResource & _lambda ) const override;
         void foreachGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const LambdaResource & _lambda ) const override;
 
-    public:        
+    public:
         void visitResources( const VisitorPtr & _visitor ) const override;
         void visitGroupResources( const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const VisitorPtr & _visitor ) const override;
 

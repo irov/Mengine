@@ -239,7 +239,7 @@ namespace Mengine
             {
                 targetRender->render( _context );
             }
-        }        
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const RenderInterfacePtr & BaseRender::makeTargetRender( const RenderContext * _context )

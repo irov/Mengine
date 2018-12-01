@@ -7,7 +7,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ShapeQuad
-        : public Shape        
+        : public Shape
     {
     public:
         ShapeQuad();

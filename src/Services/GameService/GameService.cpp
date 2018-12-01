@@ -288,7 +288,7 @@ namespace Mengine
 
         EVENTABLE_METHOD( this, EVENT_GAME_FRAME_END )
             ->onGameFrameEnd();
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool GameService::loadPersonality()
     {
@@ -381,7 +381,7 @@ namespace Mengine
     bool GameService::_initializeService()
     {
         CONFIG_SECTION( "Params", m_params );
-        
+
         GameAccountProviderPtr accountProvider = new FactorableUnique<GameServiceAccountProvider>();
         accountProvider->setEventable( this );
 

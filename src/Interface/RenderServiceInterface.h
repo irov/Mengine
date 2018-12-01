@@ -39,7 +39,7 @@
 #include "math/uv4.h"
 
 namespace Mengine
-{    
+{
     //////////////////////////////////////////////////////////////////////////
     struct RenderServiceDebugInfo
     {

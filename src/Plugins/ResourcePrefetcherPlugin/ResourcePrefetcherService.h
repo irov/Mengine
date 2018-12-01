@@ -28,7 +28,7 @@ namespace Mengine
     public:
         bool prefetchResource( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer ) override;
         bool unfetchResource( const ResourcePtr & _resource ) override;
-        
+
     protected:
         typedef Hashtable<ConstString, ResourcePrefetcherInterfacePtr> HashtableResourcePrefetchers;
         HashtableResourcePrefetchers m_prefetchers;

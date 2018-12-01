@@ -78,7 +78,7 @@ namespace Mengine
         {
             return _kernel->refcount( _obj );
         }
-        
+
         bool s_is_class( pybind::kernel_interface * _kernel, PyObject * _obj )
         {
             return _kernel->is_class( _obj );
@@ -1074,7 +1074,7 @@ namespace Mengine
 
         class MyAccountVisitor
             : public AccountVisitorInterface
-			, public Factorable
+            , public Factorable
         {
         public:
             MyAccountVisitor( VectorConstString * _accounts )
@@ -1082,9 +1082,9 @@ namespace Mengine
             {
             }
 
-			~MyAccountVisitor() override
-			{
-			}
+            ~MyAccountVisitor() override
+            {
+            }
 
         protected:
             void onAccount( const AccountInterfacePtr & _account ) override
@@ -1107,8 +1107,8 @@ namespace Mengine
         VectorConstString s_getAccounts()
         {
             VectorConstString v_accounts;
-			
-			AccountVisitorInterfacePtr mav = new FactorableUnique<MyAccountVisitor>(&v_accounts);
+
+            AccountVisitorInterfacePtr mav = new FactorableUnique<MyAccountVisitor>( &v_accounts );
 
             ACCOUNT_SERVICE()
                 ->visitAccounts( mav );
@@ -2804,7 +2804,7 @@ namespace Mengine
             }
 
             const Viewport & vp = viewport->getViewport();
-            
+
             const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
 
             const mt::mat4f & wm = _node->getWorldMatrix();

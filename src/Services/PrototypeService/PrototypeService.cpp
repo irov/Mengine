@@ -10,11 +10,11 @@ SERVICE_FACTORY( PrototypeService, Mengine::PrototypeService );
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-	PrototypeService::PrototypeService()
+    PrototypeService::PrototypeService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-	PrototypeService::~PrototypeService()
+    PrototypeService::~PrototypeService()
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -122,7 +122,7 @@ namespace Mengine
     {
         for( const PrototypeGeneratorInterfacePtr & generator : m_generators )
         {
-			_lambda( generator );
+            _lambda( generator );
         }
     }
 }

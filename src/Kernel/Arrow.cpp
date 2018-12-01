@@ -359,5 +359,5 @@ namespace Mengine
         mt::vec2f windowOffset = renderViewport.begin / currentResolutionSize;
 
         _adaptScreenPoint = _screenPoint * windowScale + windowOffset;
-    }    
+    }
 }

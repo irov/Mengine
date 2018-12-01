@@ -135,15 +135,15 @@ namespace Mengine
 
         return lastIndex;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageSequence::addFrame( const ConstString & _resourceName, float _delay )
-	{
-		FrameImageSequence frame;
-		frame.resourceName = _resourceName;
-		frame.delay = _delay;
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImageSequence::addFrame( const ConstString & _resourceName, float _delay )
+    {
+        FrameImageSequence frame;
+        frame.resourceName = _resourceName;
+        frame.delay = _delay;
 
-		m_sequence.emplace_back( frame );
-	}
+        m_sequence.emplace_back( frame );
+    }
     //////////////////////////////////////////////////////////////////////////
     void ResourceImageSequence::setSequence( const VectorFrameImageSequence & _sequence )
     {
@@ -178,11 +178,11 @@ namespace Mengine
 
         return resource;
     }
-	//////////////////////////////////////////////////////////////////////////
-	void ResourceImageSequence::setSequenceDuration( float _duration )
-	{
-		m_duration = _duration;
-	}
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImageSequence::setSequenceDuration( float _duration )
+    {
+        m_duration = _duration;
+    }
     //////////////////////////////////////////////////////////////////////////
     float ResourceImageSequence::getSequenceDuration() const
     {

@@ -42,17 +42,17 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    LoaderResourceMovie::LoaderResourceMovie()        
+    LoaderResourceMovie::LoaderResourceMovie()
     {
     }
     //////////////////////////////////////////////////////////////////////////
     LoaderResourceMovie::~LoaderResourceMovie()
     {
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceMovie::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceMovie * resource = stdex::intrusive_get<ResourceMovie *>(_loadable);
+        ResourceMovie * resource = stdex::intrusive_get<ResourceMovie *>( _loadable );
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie *>(_meta);
@@ -67,7 +67,7 @@ namespace Mengine
         float height = metadata->get_Height_Value();
         resource->setSize( mt::vec2f( width, height ) );
 
-        metadata->getm_Loop_Segment( resource, &ResourceMovie::setLoopSegment );        
+        metadata->getm_Loop_Segment( resource, &ResourceMovie::setLoopSegment );
         metadata->getm_Bounds_Box( resource, &ResourceMovie::setBoundBox );
         metadata->getm_Anchor_Point( resource, &ResourceMovie::setAnchorPoint );
         metadata->getm_Offset_Point( resource, &ResourceMovie::setOffsetPoint );
@@ -77,7 +77,7 @@ namespace Mengine
 
         metadata->getm_KeyFramesPackPath_Codec( resource, &ResourceMovie::setDataflowType );
         metadata->getm_KeyFramesPackPath_Converter( resource, &ResourceMovie::setConverterType );
-        
+
         const ConstString & dataflowType = resource->getDataflowType();
 
         //FIX THIS

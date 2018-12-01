@@ -10,6 +10,10 @@
 #define MENGINE_SERVICE_PROVIDER_COUNT 64
 #endif
 
+#ifndef MENGINE_SERVICE_PROVIDER_MAX_WAIT
+#define MENGINE_SERVICE_PROVIDER_MAX_WAIT 128
+#endif
+
 #ifndef MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT
 #define MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT 512
 #endif
@@ -38,6 +42,7 @@ namespace Mengine
 
     public:
         void dependencyService( const Char * _name, const Char * _dependency ) override;
+        void waitService( const Char * _name, const LambdaWaitService & _lambda ) override;
 
     protected:
         void stopServices() override;
@@ -47,6 +52,7 @@ namespace Mengine
 
     protected:
         void removeDependency_( const Char * _name );
+        void checkWaits_( const Char * _name, const ServiceInterfacePtr & _service );
 
     protected:
         struct ServiceDesc
@@ -57,6 +63,8 @@ namespace Mengine
 
         ServiceDesc m_services[MENGINE_SERVICE_PROVIDER_COUNT];
 
+        uint32_t m_servicesCount;
+
         struct DependencyDesc
         {
             Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
@@ -64,5 +72,17 @@ namespace Mengine
         };
 
         DependencyDesc m_dependencies[MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT];
+
+        uint32_t m_dependenciesCount;
+
+        struct WaitDesc
+        {
+            Char name[MENGINE_SERVICE_PROVIDER_NAME_SIZE];
+            LambdaWaitService lambda;
+        };
+
+        WaitDesc m_waits[MENGINE_SERVICE_PROVIDER_MAX_WAIT];
+
+        uint32_t m_waitsCount;
     };
 }

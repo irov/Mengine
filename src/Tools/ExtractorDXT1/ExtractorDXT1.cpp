@@ -48,29 +48,29 @@ static const uint32_t DDPF_BUMPDUDV = 0x00080000l;        // U,V
 
 #pragma pack( push, 1 )
 struct DDS_PIXELFORMAT {
-	uint32_t dwSize;
-	uint32_t dwFlags;
-	uint32_t dwFourCC;
-	uint32_t dwRGBBitCount;
-	uint32_t dwRBitMask;
-	uint32_t dwGBitMask;
-	uint32_t dwBBitMask;
-	uint32_t dwABitMask;
+    uint32_t dwSize;
+    uint32_t dwFlags;
+    uint32_t dwFourCC;
+    uint32_t dwRGBBitCount;
+    uint32_t dwRBitMask;
+    uint32_t dwGBitMask;
+    uint32_t dwBBitMask;
+    uint32_t dwABitMask;
 };
 
-typedef struct {		
-	uint32_t           dwSize;
-	uint32_t           dwFlags;
-	uint32_t           dwHeight;
-	uint32_t           dwWidth;
-	uint32_t           dwPitchOrLinearSize;
-	uint32_t           dwDepth;
-	uint32_t           dwMipMapCount;
-	uint32_t           dwReserved1[11];
-	DDS_PIXELFORMAT	 ddspf;
-	uint32_t           dwSurfaceFlags;
-	uint32_t           dwCubemapFlags;
-	uint32_t           dwReserved2[3];
+typedef struct {
+    uint32_t           dwSize;
+    uint32_t           dwFlags;
+    uint32_t           dwHeight;
+    uint32_t           dwWidth;
+    uint32_t           dwPitchOrLinearSize;
+    uint32_t           dwDepth;
+    uint32_t           dwMipMapCount;
+    uint32_t           dwReserved1[11];
+    DDS_PIXELFORMAT	 ddspf;
+    uint32_t           dwSurfaceFlags;
+    uint32_t           dwCubemapFlags;
+    uint32_t           dwReserved2[3];
 } DDS_HEADER;
 #pragma pack(pop)
 //////////////////////////////////////////////////////////////////////////
@@ -78,122 +78,122 @@ typedef struct {
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-	(void)hInstance;
-	(void)hPrevInstance;
-	(void)nShowCmd;
+    (void)hInstance;
+    (void)hPrevInstance;
+    (void)nShowCmd;
 
-	int cmd_num;
-	LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
+    int cmd_num;
+    LPWSTR * cmd_args = CommandLineToArgvW( lpCmdLine, &cmd_num );
 
-	std::wstring in;
-	std::wstring out;
+    std::wstring in;
+    std::wstring out;
 
-	for( int i = 0; i < cmd_num; i += 2 )
-	{
-		LPWSTR arg = cmd_args[i + 0];
-		LPWSTR value = cmd_args[i + 1];
+    for( int i = 0; i < cmd_num; i += 2 )
+    {
+        LPWSTR arg = cmd_args[i + 0];
+        LPWSTR value = cmd_args[i + 1];
 
-		if( wcscmp( arg, L"-in" ) == 0 )
-		{
-			in = value;
-		}
-		else if( wcscmp( arg, L"-out" ) == 0 )
-		{
-			out = value;
-		}
-	}
+        if( wcscmp( arg, L"-in" ) == 0 )
+        {
+            in = value;
+        }
+        else if( wcscmp( arg, L"-out" ) == 0 )
+        {
+            out = value;
+        }
+    }
 
-	if( in.empty() == true )
-	{
-		message_error("not found 'in' param\n"
-			);
+    if( in.empty() == true )
+    {
+        message_error( "not found 'in' param\n"
+        );
 
-		return 1;
-	}
+        return 1;
+    }
 
-	if( out.empty() == true )
-	{
-		message_error("not found 'out' param\n"
-			);
+    if( out.empty() == true )
+    {
+        message_error( "not found 'out' param\n"
+        );
 
-		return 1;
-	}
+        return 1;
+    }
 
-	WCHAR inCanonicalizeQuote[MAX_PATH];
-	ForcePathQuoteSpaces( inCanonicalizeQuote, in.c_str() );
-	PathUnquoteSpaces( inCanonicalizeQuote );
-	
-	FILE * file_in = _wfopen( inCanonicalizeQuote, L"rb" );
+    WCHAR inCanonicalizeQuote[MAX_PATH];
+    ForcePathQuoteSpaces( inCanonicalizeQuote, in.c_str() );
+    PathUnquoteSpaces( inCanonicalizeQuote );
 
-	uint32_t magic;
-	fread( &magic, sizeof(magic), 1, file_in );
+    FILE * file_in = _wfopen( inCanonicalizeQuote, L"rb" );
 
-	if( magic != FOURCC('D', 'D', 'S', ' ') )
-	{
-		message_error("ExtractDXT1 %ls invalid dds magic" 
-			, in.c_str()
-			);
+    uint32_t magic;
+    fread( &magic, sizeof( magic ), 1, file_in );
 
-		return 1;
-	}
+    if( magic != FOURCC( 'D', 'D', 'S', ' ' ) )
+    {
+        message_error( "ExtractDXT1 %ls invalid dds magic"
+            , in.c_str()
+        );
 
-	DDS_HEADER header;
-	fread( &header, sizeof(header), 1, file_in );
+        return 1;
+    }
 
-	//Check valid structure sizes
-	if( header.dwSize != 124 && header.ddspf.dwSize != 32)
-	{
-		message_error("ExtractDXT1 %ls invalid dds file header" 
-			, in.c_str()
-			);
+    DDS_HEADER header;
+    fread( &header, sizeof( header ), 1, file_in );
 
-		return 1;
-	}
+    //Check valid structure sizes
+    if( header.dwSize != 124 && header.ddspf.dwSize != 32 )
+    {
+        message_error( "ExtractDXT1 %ls invalid dds file header"
+            , in.c_str()
+        );
 
-	if( (header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT )
-	{
-		message_error("ExtractDXT1 %ls dds has mipmap" 
-			, in.c_str()
-			);
+        return 1;
+    }
 
-		return 1;
-	}
+    if( (header.dwFlags & DDSD_MIPMAPCOUNT) == DDSD_MIPMAPCOUNT )
+    {
+        message_error( "ExtractDXT1 %ls dds has mipmap"
+            , in.c_str()
+        );
 
-	if( (header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
-	{
-		message_error("ExtractDXT1 dds file no compress" 
-			);
+        return 1;
+    }
 
-		return false;
-	}
+    if( (header.ddspf.dwFlags & DDPF_FOURCC) == 0 )
+    {
+        message_error( "ExtractDXT1 dds file no compress"
+        );
 
-	if( header.ddspf.dwFourCC != FOURCC('D','X','T','1') )
-	{
-		message_error("ExtractDXT1 dds file no DXT1" 
-			);
+        return false;
+    }
 
-		return false;
-	}
+    if( header.ddspf.dwFourCC != FOURCC( 'D', 'X', 'T', '1' ) )
+    {
+        message_error( "ExtractDXT1 dds file no DXT1"
+        );
 
-	uint32_t w = (header.dwWidth + 3) / 4;
-	uint32_t h = (header.dwHeight + 3) / 4;
+        return false;
+    }
 
-	size_t size = w * h * 1 * 8;
-		
-	uint8_t * dxt1_byte = new uint8_t [size];
-	fread( dxt1_byte, 1, size, file_in );
-	fclose( file_in );
+    uint32_t w = (header.dwWidth + 3) / 4;
+    uint32_t h = (header.dwHeight + 3) / 4;
 
-	WCHAR outCanonicalizeQuote[MAX_PATH];
-	ForcePathQuoteSpaces( outCanonicalizeQuote, out.c_str() );
-	PathUnquoteSpaces( outCanonicalizeQuote );
+    size_t size = w * h * 1 * 8;
 
-	FILE * file_out = _wfopen( outCanonicalizeQuote, L"wb" );
+    uint8_t * dxt1_byte = new uint8_t[size];
+    fread( dxt1_byte, 1, size, file_in );
+    fclose( file_in );
 
-	fwrite( dxt1_byte, 1, size, file_out );
-	fclose( file_out );
+    WCHAR outCanonicalizeQuote[MAX_PATH];
+    ForcePathQuoteSpaces( outCanonicalizeQuote, out.c_str() );
+    PathUnquoteSpaces( outCanonicalizeQuote );
+
+    FILE * file_out = _wfopen( outCanonicalizeQuote, L"wb" );
+
+    fwrite( dxt1_byte, 1, size, file_out );
+    fclose( file_out );
 
     delete[] dxt1_byte;
-			
-	return 0;
+
+    return 0;
 }

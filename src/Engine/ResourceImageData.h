@@ -12,7 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceImageData
         : public Resource
-		, public Content
+        , public Content
         , public UnknownResourceImageDataInterface
     {
         DECLARE_UNKNOWABLE();
@@ -26,11 +26,11 @@ namespace Mengine
         void setImageMaxSize( const mt::vec2f & _maxSize );
         const mt::vec2f & getImageMaxSize() const;
 
-	public:
-		void setImageWidth( uint32_t _width );
+    public:
+        void setImageWidth( uint32_t _width );
         uint32_t getImageWidth() const override;
-		
-		void setImageHeight( uint32_t _height );
+
+        void setImageHeight( uint32_t _height );
         uint32_t getImageHeight() const override;
 
         Pointer getImageBuffer() const override;
@@ -48,5 +48,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ResourceImageData> ResourceImageDataPtr;
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 }

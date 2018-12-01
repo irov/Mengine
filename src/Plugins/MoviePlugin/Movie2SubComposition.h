@@ -50,7 +50,7 @@ namespace Mengine
         void setFrameDuration( float _frameDuration );
         float getFrameDuration() const;
 
-	public:
+    public:
         void setEnable( bool _enable );
         bool getEnable() const;
 
@@ -85,7 +85,7 @@ namespace Mengine
 
         float m_duration;
         float m_frameDuration;
-        
+
         const aeMovieComposition * m_composition;
         const aeMovieSubComposition * m_subcomposition;
 

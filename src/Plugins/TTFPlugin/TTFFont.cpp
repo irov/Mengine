@@ -126,7 +126,7 @@ namespace Mengine
             if( ttfFEEffect == nullptr )
             {
                 return false;
-            }            
+            }
         }
 
         return true;
@@ -576,7 +576,7 @@ namespace Mengine
                     max_bgra_width = bgra_image.w + 2;
                 }
 
-                total_bgra_height += bgra_image.h + 2;                
+                total_bgra_height += bgra_image.h + 2;
             }
 
             uint32_t bgra_image_offset = 0U;
@@ -840,7 +840,7 @@ namespace Mengine
     float TTFFont::getFontBearingYA() const
     {
         return m_ttfBearingYA;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::getFontPremultiply() const
     {

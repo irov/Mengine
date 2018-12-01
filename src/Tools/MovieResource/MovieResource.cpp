@@ -252,7 +252,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
 
                 xmlResourceImage.append_attribute( "UV" ).set_value( xmlUV );
 
-                xmlResourceImage.append_attribute( "UVRotate" ).set_value( resource_image->atlas_rotate );                
+                xmlResourceImage.append_attribute( "UVRotate" ).set_value( resource_image->atlas_rotate );
             }
         }break;
     case AE_MOVIE_RESOURCE_SEQUENCE:
@@ -284,7 +284,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             xmlResource.append_attribute( "Name" ).set_value( resource_video->name );
             xmlResource.append_attribute( "Type" ).set_value( "ResourceVideo" );
             xmlResource.append_attribute( "Unique" ).set_value( 0U );
-           
+
             pugi::xml_node xmlResourceFile = xmlResource.append_child( "File" );
 
             char xmlFilePath[MAX_PATH];
@@ -311,7 +311,7 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
     case AE_MOVIE_RESOURCE_SOUND:
         {
             const aeMovieResourceSound * resource_sound = (const aeMovieResourceSound *)_resource;
-            
+
             pugi::xml_node xmlResource = xmlDataBlock->append_child( "Resource" );
             xmlResource.append_attribute( "Name" ).set_value( resource_sound->name );
             xmlResource.append_attribute( "Type" ).set_value( "ResourceSound" );
@@ -354,13 +354,13 @@ static ae_bool_t my_resource_provider( const aeMovieResource * _resource, ae_voi
             xmlResourceFile.append_attribute( "Path" ).set_value( xmlFilePath );
 
             xmlResource.append_child( "AtlasCount" ).append_attribute( "Value" ).set_value( resource_particle->image_count );
-            
+
             for( uint32_t i = 0; i != resource_particle->image_count; ++i )
             {
                 const aeMovieResourceImage * image = resource_particle->images[i];
 
                 pugi::xml_node xmlResourceAtlas = xmlResource.append_child( "Atlas" );
-                
+
                 xmlResourceAtlas.append_attribute( "Index" ).set_value( i );
                 xmlResourceAtlas.append_attribute( "ResourceName" ).set_value( image->name );
             }
@@ -385,7 +385,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
 
     ae_uint32_t node_index = _callbackData->index;
     const ae_char_t * layer_name = ae_get_movie_layer_data_name( layer );
-    
+
     ae_bool_t is_track_matte = ae_is_movie_layer_data_track_mate( layer );
 
     if( is_track_matte == AE_TRUE )
@@ -426,7 +426,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
 
             xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
-            
+
             *_nd = AE_NULLPTR;
 
             return AE_TRUE;
@@ -442,7 +442,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
             xmlLayer.append_attribute( "Matrix" ).set_value( sm( _callbackData->matrix ).c_str() );
 
             xmlLayer.append_attribute( "Color" ).set_value( sc( _callbackData->color, _callbackData->opacity ).c_str() );
-          
+
             *_nd = AE_NULLPTR;
 
             return AE_TRUE;
@@ -482,7 +482,7 @@ static ae_bool_t __movie_composition_node_provider( const aeMovieNodeProviderCal
     default:
         break;
     };
-    
+
     *_nd = AE_NULLPTR;
 
     return AE_TRUE;
@@ -496,7 +496,7 @@ static ae_bool_t __visit_sub_composition( const aeMovieComposition * _compositio
     node_provider_t * np = (node_provider_t *)_ud;
 
     pugi::xml_node xmlSubComposition = np->xmlComposition->append_child( "SubComposition" );
-        
+
     xmlSubComposition.append_attribute( "Index" ).set_value( _index );
     xmlSubComposition.append_attribute( "Name" ).set_value( _name );
 
@@ -562,21 +562,21 @@ static bool save_xml( const pugi::xml_document & xmldoc, const std::wstring & ou
 //////////////////////////////////////////////////////////////////////////
 int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmdLine, int nShowCmd )
 {
-	(void)hInstance;
-	(void)hPrevInstance;
-	(void)nShowCmd;
-        
-	std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
-	std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
-    std::wstring movie_name = parse_kwds( lpCmdLine, L"--movie_name", std::wstring() );
-    
-	if( in_path.empty() == true )
-	{
-		message_error("not found 'in' param\n"
-			);
+    (void)hInstance;
+    (void)hPrevInstance;
+    (void)nShowCmd;
 
-		return EXIT_FAILURE;
-	}
+    std::wstring in_path = parse_kwds( lpCmdLine, L"--in_path", std::wstring() );
+    std::wstring out_path = parse_kwds( lpCmdLine, L"--out_path", std::wstring() );
+    std::wstring movie_name = parse_kwds( lpCmdLine, L"--movie_name", std::wstring() );
+
+    if( in_path.empty() == true )
+    {
+        message_error( "not found 'in' param\n"
+        );
+
+        return EXIT_FAILURE;
+    }
 
     if( out_path.empty() == true )
     {
@@ -588,7 +588,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     CHAR utf8_movie_name[128];
     unicode_to_utf8( utf8_movie_name, 128, movie_name.c_str(), movie_name.size() );
-    
+
     const aeMovieInstance *  movieInstance = ae_create_movie_instance( "f86464bbdebf0fe3e684b03ec263d049d079e6f1"
         , &stdlib_movie_alloc
         , &stdlib_movie_alloc_n
@@ -621,7 +621,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     pugi::xml_node xmlDataBlock = xmldoc.append_child( "DataBlock" );
     pugi::xml_attribute xmlDataBlockName = xmlDataBlock.append_attribute( "Name" );
     xmlDataBlockName.set_value( utf8_movie_name );
-    
+
     resource_provider_t rp;
     rp.xmlDataBlock = &xmlDataBlock;
     strcpy( rp.movie_name, utf8_movie_name );
@@ -661,7 +661,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     xmlDataResource.append_attribute( "Name" ).set_value( xmlMovieName );
     xmlDataResource.append_attribute( "Type" ).set_value( "ResourceMovie2" );
-        
+
     pugi::xml_node xmlDataResourceFile = xmlDataResource.append_child( "File" );
 
     char xmlMoviePath[MAX_PATH];
@@ -720,7 +720,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
         strcpy( np.movie_name, utf8_movie_name );
 
         const aeMovieComposition * composition = ae_create_movie_composition( movieData, compositionData, AE_TRUE, &composition_providers, &np );
-        
+
         ae_visit_movie_sub_composition( composition, __visit_sub_composition, &np );
 
         ae_delete_movie_composition( composition );
@@ -733,11 +733,11 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     ae_delete_movie_data( movieData );
 
     ae_delete_movie_instance( movieInstance );
-    
+
     if( save_xml( xmldoc, out_path ) == false )
     {
         return EXIT_FAILURE;
     }
- 
-	return EXIT_SUCCESS;
+
+    return EXIT_SUCCESS;
 }

@@ -13,8 +13,8 @@ namespace Mengine
         PLUGIN_DECLARE( "Theora" )
 
     public:
-		TheoraPlugin();
-		~TheoraPlugin() override;
+        TheoraPlugin();
+        ~TheoraPlugin() override;
 
     protected:
         bool _initialize() override;

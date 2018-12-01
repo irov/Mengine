@@ -53,12 +53,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_setPersonalColor( const Color& _color )
     {
-        this->setLocalColor( _color );        
+        this->setLocalColor( _color );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_setPersonalAlpha( float _alpha )
     {
-        this->setLocalAlpha( _alpha );        
+        this->setLocalAlpha( _alpha );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSlot::_changeParent( Node * _oldParent, Node * _newParent )

@@ -17,7 +17,7 @@ namespace Mengine
     protected:
         void setCategory( const ConstString & _category ) override;
         inline const ConstString & getCategory() const override;
-        
+
         void setPrototype( const ConstString & _prototype ) override;
         inline const ConstString & getPrototype() const override;
 

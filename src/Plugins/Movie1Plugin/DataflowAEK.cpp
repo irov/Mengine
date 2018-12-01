@@ -62,7 +62,7 @@ namespace Mengine
     bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
     {
         MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), "DataflowAEK", __FILE__, __LINE__ );
-        
+
         if( binaryBuffer == nullptr )
         {
             LOGGER_ERROR( "DataflowAEK::load: invalid get data"

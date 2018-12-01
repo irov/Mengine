@@ -7,7 +7,7 @@
 #include "Kernel/ConstString.h"
 
 namespace Mengine
-{    
+{
     class ThreadServiceInterface
         : public ServiceInterface
     {

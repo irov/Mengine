@@ -36,11 +36,11 @@ namespace Mengine
 
         uint32_t getLastFrameIndex() const;
 
-		void setSequenceDuration( float _duration );
+        void setSequenceDuration( float _duration );
         float getSequenceDuration() const;
 
-	public:
-		void addFrame( const ConstString & _resourceName, float _delay );
+    public:
+        void addFrame( const ConstString & _resourceName, float _delay );
 
     public:
         void setSequence( const VectorFrameImageSequence & _sequence );

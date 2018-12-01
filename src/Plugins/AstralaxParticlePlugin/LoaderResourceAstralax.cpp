@@ -17,7 +17,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LoaderResourceAstralax::~LoaderResourceAstralax()
     {
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceAstralax::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {

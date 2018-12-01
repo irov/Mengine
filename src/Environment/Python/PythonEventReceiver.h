@@ -17,7 +17,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        PythonEventReceiver(){};
+        PythonEventReceiver() {};
         ~PythonEventReceiver() override {};
 
     public:

@@ -17,7 +17,7 @@ namespace Mengine
 
     public:
         cURLPlugin();
-		~cURLPlugin() override;
+        ~cURLPlugin() override;
 
     protected:
         bool _initialize() override;

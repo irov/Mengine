@@ -573,7 +573,7 @@ namespace Mengine
             m_fonts.emplace( fontName, font );
         }
 
-                
+
 #ifndef MENGINE_MASTER_RELEASE
         bool valid_successful = true;
 

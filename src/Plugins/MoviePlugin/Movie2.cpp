@@ -2254,6 +2254,11 @@ namespace Mengine
 
                         ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
 
+                        if( (total_mesh_color & 0xFF000000) == 0 )
+                        {
+                            continue;
+                        }
+
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -2293,6 +2298,11 @@ namespace Mengine
                         }
 
                         ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
+
+                        if( (total_mesh_color & 0xFF000000) == 0 )
+                        {
+                            continue;
+                        }
 
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
@@ -2338,6 +2348,11 @@ namespace Mengine
                         const Color & imageColor = resource_image->getColor();
 
                         ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
+
+                        if( (total_mesh_color & 0xFF000000) == 0 )
+                        {
+                            continue;
+                        }
 
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
@@ -2408,6 +2423,11 @@ namespace Mengine
 
                         ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * surfaceColor.getR(), total_color_g * mesh.color.g * surfaceColor.getG(), total_color_b * mesh.color.b * surfaceColor.getB(), total_color_a * mesh.opacity * surfaceColor.getA() );
 
+                        if( (total_mesh_color & 0xFF000000) == 0 )
+                        {
+                            continue;
+                        }
+
                         RenderVertex2D * vertices = vertices_buffer + vertex_iterator;
                         vertex_iterator += mesh.vertexCount;
 
@@ -2469,6 +2489,11 @@ namespace Mengine
                         const Color & imageColor = resourceImage->getColor();
 
                         ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r * imageColor.getR(), total_color_g * mesh.color.g * imageColor.getG(), total_color_b * mesh.color.b * imageColor.getB(), total_color_a * mesh.opacity * imageColor.getA() );
+
+                        if( (total_mesh_color & 0xFF000000) == 0 )
+                        {
+                            continue;
+                        }
 
                         for( uint32_t index = 0; index != mesh.vertexCount; ++index )
                         {

@@ -9,6 +9,9 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ServiceProvider::ServiceProvider()
+        : m_servicesCount( 0 )
+        , m_dependenciesCount( 0 )
+        , m_waitsCount( 0 )
     {
         for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
         {
@@ -23,8 +26,16 @@ namespace Mengine
             DependencyDesc & desc = m_dependencies[index];
 
             desc.name[0] = '\0';
-            desc.dependency[0] = '\0';            
+            desc.dependency[0] = '\0';
         }
+
+        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_MAX_WAIT; ++index )
+        {
+            WaitDesc & desc = m_waits[index];
+
+            desc.name[0] = '\0';
+            desc.lambda = nullptr;
+        }        
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProvider::~ServiceProvider()
@@ -98,6 +109,10 @@ namespace Mengine
 
             desc.service = service;
 
+            ++m_servicesCount;
+
+            this->checkWaits_( name, service );
+
             return true;
         }
 
@@ -111,7 +126,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::finalizeService( const Char * _name )
     {
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT; ++index )
+        for( uint32_t index = 0; index != m_dependenciesCount; ++index )
         {
             const DependencyDesc & desc = m_dependencies[index];
 
@@ -123,7 +138,7 @@ namespace Mengine
             this->finalizeService( desc.name );
         }
 
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             ServiceDesc & desc = m_services[index];
 
@@ -147,7 +162,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::destroyService( const Char * _name )
     {
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT; ++index )
+        for( uint32_t index = 0; index != m_dependenciesCount; ++index )
         {
             const DependencyDesc & desc = m_dependencies[index];
 
@@ -159,7 +174,7 @@ namespace Mengine
             this->destroyService( desc.name );
         }
 
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             ServiceDesc & desc = m_services[index];
 
@@ -178,6 +193,8 @@ namespace Mengine
             desc.service->finalizeService();
             desc.service = nullptr;
 
+            --m_servicesCount;
+
             return true;
         }
 
@@ -186,44 +203,91 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::dependencyService( const Char * _name, const Char * _dependency )
     {
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT; ++index )
-        {
-            DependencyDesc & desc = m_dependencies[index];
+        DependencyDesc & desc = m_dependencies[m_dependenciesCount++];
 
-            if( desc.name[0] != '\0' )
-            {
-                continue;
-            }
-
-            strcpy( desc.name, _name );
-            strcpy( desc.dependency, _dependency );
-        }
+        strcpy( desc.name, _name );
+        strcpy( desc.dependency, _dependency );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::removeDependency_( const Char * _name )
+    void ServiceProvider::waitService( const Char * _name, const LambdaWaitService & _lambda )
     {
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_DEPENDENCY_COUNT; ++index )
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
-            DependencyDesc & desc = m_dependencies[index];
-
-            if( desc.name[0] != '\0' )
-            {
-                continue;
-            }
+            ServiceDesc & desc = m_services[index];
 
             if( strcmp( desc.name, _name ) != 0 )
             {
                 continue;
             }
 
-            desc.name[0] = '\0';
-            desc.dependency[0] = '\0';
+            if( desc.service == nullptr )
+            {
+                break;
+            }
+
+            _lambda( desc.service );
+
+            return;
+        }
+
+        WaitDesc & desc = m_waits[m_waitsCount++];
+
+        strcpy( desc.name, _name );
+        desc.lambda = _lambda;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ServiceProvider::removeDependency_( const Char * _name )
+    {
+        for( uint32_t index = 0; index != m_dependenciesCount; )
+        {
+            DependencyDesc & desc = m_dependencies[index];
+
+            if( desc.name[0] != '\0' )
+            {
+                ++index;
+
+                continue;
+            }
+
+            if( strcmp( desc.name, _name ) != 0 )
+            {
+                ++index;
+
+                continue;
+            }
+
+            DependencyDesc & last_desc = m_dependencies[--m_dependenciesCount];
+
+            strcpy( desc.name, last_desc.name );
+            strcpy( desc.dependency, last_desc.dependency );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ServiceProvider::checkWaits_( const Char * _name, const ServiceInterfacePtr & _service )
+    {
+        for( uint32_t index = 0; index != m_waitsCount; )
+        {
+            WaitDesc & desc = m_waits[index];
+
+            if( strcmp( desc.name, _name ) != 0 )
+            {
+                ++index;
+
+                continue;
+            }
+
+            desc.lambda( _service );
+
+            WaitDesc & last_desc = m_waits[--m_waitsCount];
+
+            strcpy( desc.name, last_desc.name );
+            desc.lambda = last_desc.lambda;
         }
     }
     //////////////////////////////////////////////////////////////////////////
     bool ServiceProvider::existService( const Char * _name ) const
     {
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             const ServiceDesc & desc = m_services[index];
 
@@ -245,7 +309,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ServiceInterfacePtr & ServiceProvider::getService( const Char * _name ) const
     {
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             const ServiceDesc & desc = m_services[index];
 
@@ -266,8 +330,15 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::destroy()
-    {
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
+    {        
+        for( uint32_t index = 0; index != m_waitsCount; ++index )
+        {
+            WaitDesc & desc = m_waits[index];
+
+            desc.lambda = nullptr;
+        }
+
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             ServiceDesc & desc = m_services[index];
 
@@ -279,7 +350,7 @@ namespace Mengine
             desc.service->finalizeService();
         }
 
-        for( uint32_t index = MENGINE_SERVICE_PROVIDER_COUNT; index != 0; --index )
+        for( uint32_t index = m_servicesCount; index != 0; --index )
         {
             ServiceDesc & desc = m_services[index - 1];
 
@@ -294,7 +365,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::stopServices()
     {
-        for( uint32_t index = 0; index != MENGINE_SERVICE_PROVIDER_COUNT; ++index )
+        for( uint32_t index = 0; index != m_servicesCount; ++index )
         {
             ServiceDesc & desc = m_services[index];
 

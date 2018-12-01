@@ -235,10 +235,10 @@ namespace Mengine
     public:
         ResourceShapePtr getSocketResourceShape( const ConstString & _socketName ) const;
 
-    public:        
+    public:
         bool hasAnchorPoint() const;
         void setAnchorPoint( const mt::vec3f & _anchorPoint );
-        const mt::vec3f & getAnchorPoint() const;        
+        const mt::vec3f & getAnchorPoint() const;
 
     public:
         bool hasOffsetPoint() const;

@@ -94,5 +94,5 @@ namespace Mengine
         }
 
         return true;
-    }    
+    }
 }

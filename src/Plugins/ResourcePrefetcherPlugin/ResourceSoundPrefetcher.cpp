@@ -14,7 +14,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSoundPrefetcher::_prefetch( const ResourceSoundPtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
-    {        
+    {
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
         const FilePath & filePath = _resource->getFilePath();
         const ConstString & codecType = _resource->getCodecType();

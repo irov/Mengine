@@ -135,7 +135,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     if( writeCompress( out_path, buffer, numberz, versionz ) == false )
     {
         return EXIT_FAILURE;
-    }    
+    }
 
     return EXIT_SUCCESS;
 }

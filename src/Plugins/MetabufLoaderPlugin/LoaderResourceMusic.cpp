@@ -15,11 +15,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LoaderResourceMusic::~LoaderResourceMusic()
     {
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceMusic::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
-        ResourceMusic * resource = stdex::intrusive_get<ResourceMusic *>(_loadable);
+        ResourceMusic * resource = stdex::intrusive_get<ResourceMusic *>( _loadable );
 
         const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMusic * metadata
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMusic *>(_meta);
@@ -36,7 +36,7 @@ namespace Mengine
 
         resource->setCodecType( codecType );
 
-        metadata->getm_File_Converter( resource, &ResourceMusic::setConverterType );        
+        metadata->getm_File_Converter( resource, &ResourceMusic::setConverterType );
         metadata->getm_File_External( resource, &ResourceMusic::setExternal );
         metadata->getm_DefaultVolume_Value( resource, &ResourceMusic::setVolume );
 

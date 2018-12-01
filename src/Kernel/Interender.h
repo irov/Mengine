@@ -11,12 +11,12 @@ namespace Mengine
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
-        
+
     public:
         Interender();
         ~Interender() override;
 
     protected:
         void _render( const RenderContext * _context ) override;
-    };    
+    };
 }

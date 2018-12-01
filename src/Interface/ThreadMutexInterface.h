@@ -3,7 +3,7 @@
 #include "Kernel/Mixin.h"
 
 namespace Mengine
-{    
+{
     //////////////////////////////////////////////////////////////////////////
     class ThreadMutexInterface
         : public Mixin

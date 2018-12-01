@@ -24,7 +24,7 @@ namespace Mengine
 
     public:
         void setGenerator( const pybind::object & _generator );
-		const pybind::object & getGenerator() const;
+        const pybind::object & getGenerator() const;
 
     public:
         bool initialize() override;
@@ -45,6 +45,6 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<EntityPrototypeGenerator> EntityPrototypeGeneratorPtr;
-	//////////////////////////////////////////////////////////////////////////
+    //////////////////////////////////////////////////////////////////////////
 
 }

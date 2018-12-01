@@ -5,7 +5,7 @@
 #include "Metacode/Metacode.h"
 
 namespace Mengine
-{   
+{
     //////////////////////////////////////////////////////////////////////////
     LoaderResourceMovie2::LoaderResourceMovie2()
     {
@@ -13,7 +13,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     LoaderResourceMovie2::~LoaderResourceMovie2()
     {
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool LoaderResourceMovie2::load( const LoadableInterfacePtr & _loadable, const Metabuf::Metadata * _meta )
     {
@@ -23,7 +23,7 @@ namespace Mengine
             = static_cast<const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2 *>(_meta);
 
         metadata->getm_File_Path( resource, &ResourceMovie2::setFilePath );
-        
+
         if( metadata->getm_File_Dataflow( resource, &ResourceMovie2::setDataflowType ) == false )
         {
             resource->setDataflowType( STRINGIZE_FILEPATH_LOCAL( "aezMovie" ) );
@@ -38,9 +38,9 @@ namespace Mengine
             ResourceMovie2CompositionDesc desc;
 
             desc.duration = meta_composition.get_Duration();
-            desc.frameDuration = meta_composition.get_FrameDuration();            
+            desc.frameDuration = meta_composition.get_FrameDuration();
             desc.has_bounds = meta_composition.get_Bounds( &desc.bounds );
-            
+
             desc.master = meta_composition.getd_Master( true );
 
             const Metacode::Meta_Data::Meta_DataBlock::Meta_ResourceMovie2::Meta_Composition::VectorMeta_Layer & includes_layer = meta_composition.get_Includes_Layer();

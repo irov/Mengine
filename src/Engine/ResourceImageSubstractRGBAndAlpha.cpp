@@ -34,7 +34,7 @@ namespace Mengine
     const ConstString & ResourceImageSubstractRGBAndAlpha::getResourceAlphaName() const
     {
         return m_resourceImageAlphaName;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceImageSubstractRGBAndAlpha::_compile()
     {
@@ -110,6 +110,14 @@ namespace Mengine
         {
             m_resourceImageAlpha->decrementReference();
             m_resourceImageAlpha = nullptr;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceImageSubstractRGBAndAlpha::correctUVTexture()
+    {
+        for( uint32_t i = 0; i != 4; ++i )
+        {
+            m_uvTextureImage[i] = m_uvImage[i];
         }
     }
     /////////////////////////////////////////////////////////////////////////

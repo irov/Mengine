@@ -2,9 +2,12 @@
 
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionVocabulary.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -34,21 +37,7 @@ namespace Mengine
         NOTIFICATION_SERVICE()
             ->removeObserver( NOTIFICATOR_ENGINE_ENABLE_PACKAGES, this );
 
-        MENGINE_ASSERTION( m_validators.empty() == true, ("resource validate service validators not empty '%d'"
-            , m_validators.size()
-            ) );
-
-        m_validators.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceValidateService::addResourceValidator( const ConstString & _type, const ResourceValidatorInterfacePtr & _validator )
-    {
-        m_validators.insert( _type, _validator );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceValidateService::removeResourceValidator( const ConstString & _type )
-    {
-        m_validators.remove( _type );
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Validator" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::validResource( const ResourcePtr & _resource ) const
@@ -62,8 +51,8 @@ namespace Mengine
     {
         const ConstString & resourceType = _resource->getType();
 
-        const ResourceValidatorInterfacePtr & validator = m_validators.find( resourceType );
-
+        const ResourceValidatorInterfacePtr & validator = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Validator" ), resourceType );
+        
         if( validator == nullptr )
         {
             return true;

@@ -1252,7 +1252,7 @@ namespace Mengine
                 ->minimizeWindow();
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f & _screen )
+        bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f * _screen )
         {
             const ArrowPtr & arrow = PLAYER_SERVICE()
                 ->getArrow();
@@ -1276,7 +1276,7 @@ namespace Mengine
                 ->getCursorPosition( _touchId );
 
             mt::vec2f pos_screen;
-            this->s_calcMouseScreenPosition( _pos, pos_screen );
+            this->s_calcMouseScreenPosition( _pos, &pos_screen );
 
             mt::vec2f mp = pos_screen - cp;
 
@@ -1287,7 +1287,7 @@ namespace Mengine
         void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, uint32_t _button, bool _isDown )
         {
             mt::vec2f pos_screen;
-            this->s_calcMouseScreenPosition( _pos, pos_screen );
+            this->s_calcMouseScreenPosition( _pos, &pos_screen );
 
             INPUT_SERVICE()
                 ->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
@@ -1863,7 +1863,7 @@ namespace Mengine
             void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) override
             {
                 mt::vec2f wp;
-                m_arrow->calcMouseWorldPosition( m_renderCamera, m_renderViewport, _position, wp );
+                m_arrow->calcMouseWorldPosition( m_renderCamera, m_renderViewport, _position, &wp );
 
                 mt::vec3f v3( wp.x, wp.y, 0.f );
 
@@ -1957,7 +1957,7 @@ namespace Mengine
             }
 
             mt::vec2f wp;
-            arrow->calcMouseWorldPosition( camera, viewport, _screenPoint, wp );
+            arrow->calcMouseWorldPosition( camera, viewport, _screenPoint, &wp );
 
             return wp;
         }
@@ -1992,7 +1992,7 @@ namespace Mengine
             }
 
             mt::vec2f wp;
-            arrow->calcPointClick( camera, viewport, _screenPoint, wp );
+            arrow->calcPointClick( camera, viewport, _screenPoint, &wp );
 
             return wp;
         }
@@ -2516,7 +2516,7 @@ namespace Mengine
 
             mt::vec2f wp;
             PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( pos, wp );
+                ->calcGlobalMouseWorldPosition( pos, &wp );
 
             return wp;
         }
@@ -2747,11 +2747,11 @@ namespace Mengine
 
                 mt::vec2f wp;
                 PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldPosition( point, wp );
+                    ->calcGlobalMouseWorldPosition( point, &wp );
 
                 mt::vec2f wd;
                 PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldDelta( delta, wd );
+                    ->calcGlobalMouseWorldDelta( delta, &wd );
 
                 pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, wd.x, wd.y, m_args );
 
@@ -2795,7 +2795,7 @@ namespace Mengine
 
                 mt::vec2f wp;
                 PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldPosition( point, wp );
+                    ->calcGlobalMouseWorldPosition( point, &wp );
 
                 pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
@@ -2840,7 +2840,7 @@ namespace Mengine
 
                 mt::vec2f wp;
                 PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldPosition( point, wp );
+                    ->calcGlobalMouseWorldPosition( point, &wp );
 
                 pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
@@ -2924,7 +2924,7 @@ namespace Mengine
 
                 mt::vec2f wp;
                 PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldPosition( point, wp );
+                    ->calcGlobalMouseWorldPosition( point, &wp );
 
                 pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
 

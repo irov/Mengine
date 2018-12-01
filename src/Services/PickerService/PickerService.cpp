@@ -430,7 +430,7 @@ namespace Mengine
             const RenderCameraInterfacePtr & camera = desc.camera;
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), wp );
+            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
 
             InputMouseButtonEvent ne = _event;
             ne.x = wp.x;
@@ -492,7 +492,7 @@ namespace Mengine
             const RenderCameraInterfacePtr & camera = desc.camera;
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), wp );
+            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
 
             InputMouseButtonEvent ne = _event;
             ne.x = wp.x;
@@ -557,7 +557,7 @@ namespace Mengine
             const RenderCameraInterfacePtr & camera = desc.camera;
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), wp );
+            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
 
             InputMouseButtonEvent ne = _event;
             ne.x = wp.x;
@@ -610,10 +610,10 @@ namespace Mengine
             const RenderCameraInterfacePtr & camera = desc.camera;
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), wp );
+            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
 
             mt::vec2f dp;
-            m_arrow->calcPointDeltha( camera, mt::vec2f( _event.dx, _event.dy ), dp );
+            m_arrow->calcPointDeltha( camera, mt::vec2f( _event.dx, _event.dy ), &dp );
 
             InputMouseMoveEvent ne = _event;
             ne.x = wp.x;
@@ -667,7 +667,7 @@ namespace Mengine
             const RenderCameraInterfacePtr & camera = desc.camera;
 
             mt::vec2f wp;
-            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), wp );
+            m_arrow->calcPointClick( camera, viewport, mt::vec2f( _event.x, _event.y ), &wp );
 
             InputMouseWheelEvent ne = _event;
             ne.x = wp.x;
@@ -766,7 +766,7 @@ namespace Mengine
             ->getContentResolution();
 
         mt::vec2f adapt_screen_position;
-        m_arrow->adaptScreenPosition_( mt::vec2f( vx, vy ), adapt_screen_position );
+        m_arrow->adaptScreenPosition_( mt::vec2f( vx, vy ), &adapt_screen_position );
 
         bool handle = false;
 

@@ -165,11 +165,8 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<ResourceAstralaxValidator>() );
-
-            RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<ResourceAstralaxValidator>() );
+            VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<ResourceAstralaxValidator>() );
+            VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<ResourceAstralaxValidator>() );
         }
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
@@ -222,11 +219,8 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            RESOURCEVALIDATE_SERVICE()
-                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
-
-            RESOURCEVALIDATE_SERVICE()
-                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
         }
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )

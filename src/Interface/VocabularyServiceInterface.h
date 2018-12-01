@@ -31,7 +31,7 @@ namespace Mengine
 	((Mengine::VocabularyServiceInterface *)SERVICE_GET(Mengine::VocabularyServiceInterface))
 //////////////////////////////////////////////////////////////////////////
 #define VOCALUBARY_SET(Interface, Category, Prototype, Factorable)\
-    VOCALUBARY_SERVICE()->setFactorable(Category, Prototype, static_cast<Interface *>(Factorable))
+    VOCALUBARY_SERVICE()->setFactorable(Category, Prototype, IntrusivePtr<Interface>(Factorable))
 //////////////////////////////////////////////////////////////////////////
 #define VOCALUBARY_GET(Category, Prototype)\
     VOCALUBARY_SERVICE()->getFactorable(Category, Prototype)

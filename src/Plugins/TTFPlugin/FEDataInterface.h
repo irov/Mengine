@@ -1,0 +1,19 @@
+#pragma once
+
+#include "Interface/DataInterface.h"
+
+#include "fe/fe.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    class FEDataInterface
+        : public DataInterface
+    {
+    public:
+        virtual fe_bundle * getFEBundle() const = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<FEDataInterface, DataInterface> FEDataInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+}

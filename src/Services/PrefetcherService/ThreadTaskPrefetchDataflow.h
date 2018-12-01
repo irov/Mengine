@@ -32,5 +32,5 @@ namespace Mengine
         DataInterfacePtr m_data;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadTaskPrefetchDataflow> ThreadTaskPrefetchDataflowPtr;
+    typedef IntrusivePtr<ThreadTaskPrefetchDataflow, ThreadTaskPrefetch> ThreadTaskPrefetchDataflowPtr;
 }

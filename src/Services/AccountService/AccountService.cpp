@@ -29,6 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     AccountService::AccountService()
         : m_playerEnumerator( 0 )
+        , m_invalidateAccounts( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -85,7 +86,7 @@ namespace Mengine
         m_factoryAccounts = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AccountService::setAccountProviderInterface( const AccountProviderInterfacePtr & _accountProvider )
+    void AccountService::setAccountProvider( const AccountProviderInterfacePtr & _accountProvider )
     {
         m_accountProvider = _accountProvider;
     }
@@ -265,6 +266,8 @@ namespace Mengine
             return nullptr;
         }
 
+        m_invalidateAccounts = true;
+
         return newAccount;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -297,6 +300,8 @@ namespace Mengine
         {
             m_accountProvider->onDeleteAccount( _accountID );
         }
+
+        m_invalidateAccounts = true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::selectAccount( const ConstString& _accountID )
@@ -330,6 +335,8 @@ namespace Mengine
         {
             m_accountProvider->onSelectAccount( _accountID );
         }
+
+        m_invalidateAccounts = true;
 
         return true;
     }
@@ -382,6 +389,8 @@ namespace Mengine
     void AccountService::setDefaultAccount( const ConstString & _accountID )
     {
         m_defaultAccountID = _accountID;
+
+        m_invalidateAccounts = true;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & AccountService::getDefaultAccountID() const
@@ -417,6 +426,8 @@ namespace Mengine
     void AccountService::setGlobalAccount( const ConstString & _accountID )
     {
         m_globalAccountID = _accountID;
+
+        m_invalidateAccounts = true;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & AccountService::getGlobalAccountID() const
@@ -630,11 +641,18 @@ namespace Mengine
             );
         }
 
+        m_invalidateAccounts = true;
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::saveAccounts()
-    {
+    {   
+        if( m_invalidateAccounts == false )
+        {
+            return true;
+        }
+
         FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
         OutputStreamInterfacePtr file = FILE_SERVICE()

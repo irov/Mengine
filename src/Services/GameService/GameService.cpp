@@ -386,7 +386,7 @@ namespace Mengine
         accountProvider->setEventable( this );
 
         ACCOUNT_SERVICE()
-            ->setAccountProviderInterface( accountProvider );
+            ->setAccountProvider( accountProvider );
 
         GameSoundVolumeProviderPtr soundVolumeProvider = new FactorableUnique<GameServiceSoundVolumeProvider>();
         soundVolumeProvider->setEventable( this );

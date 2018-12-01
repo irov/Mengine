@@ -111,6 +111,11 @@ namespace Mengine
 
         m_tasks.clear();
 
+        for( const ThreadQueueInterfacePtr & queue : m_threadQueues )
+        {
+            queue->finalize();
+        }
+
         m_threadQueues.clear();
 
         for( ThreadDesc & desc : m_threads )
@@ -320,7 +325,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadQueueInterfacePtr ThreadService::runTaskQueue( const ConstString & _threadName, uint32_t _countThread, uint32_t _packetSize )
+    ThreadQueueInterfacePtr ThreadService::runTaskQueue( uint32_t _packetSize )
     {
         if( m_avaliable == false )
         {
@@ -329,9 +334,12 @@ namespace Mengine
 
         ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject();
 
-        taskQueue->setThreadName( _threadName );
-        taskQueue->setThreadCount( _countThread );
         taskQueue->setPacketSize( _packetSize );
+
+        if( taskQueue->initialize() == false )
+        {
+            return nullptr;
+        }
 
         m_threadQueues.emplace_back( taskQueue );
 
@@ -354,6 +362,8 @@ namespace Mengine
             {
                 continue;
             }
+
+            queue->finalize();
 
             *it = m_threadQueues.back();
             m_threadQueues.pop_back();

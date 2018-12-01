@@ -9,14 +9,6 @@
 
 #include "Config/Map.h"
 
-#ifndef MENGINE_PREFETCHER_THREAD_COUNT
-#define MENGINE_PREFETCHER_THREAD_COUNT 2
-#endif
-
-#ifndef MENGINE_PREFETCHER_PACKET_SIZE
-#define MENGINE_PREFETCHER_PACKET_SIZE 64
-#endif
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -64,10 +56,14 @@ namespace Mengine
 
     protected:
         bool hasPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const;
+        bool getPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const;
         bool popPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver );
 
     protected:
         ThreadQueueInterfacePtr m_threadQueue;
+
+        typedef Vector<ConstString> VectorThreads;
+        VectorThreads m_threads;
 
         FactoryPtr m_factoryThreadTaskPrefetchImageDecoder;
         FactoryPtr m_factoryThreadTaskPrefetchSoundDecoder;

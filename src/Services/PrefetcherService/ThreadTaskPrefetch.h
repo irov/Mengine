@@ -46,6 +46,6 @@ namespace Mengine
         return m_fileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadTaskPrefetch> ThreadTaskPrefetchPtr;
+    typedef IntrusivePtr<ThreadTaskPrefetch, ThreadTaskInterface> ThreadTaskPrefetchPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -13,8 +13,9 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-
 #include "Kernel/Logger.h"
+
+#include "Config/Stringstream.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PrefetcherService, Mengine::PrefetcherService );
@@ -42,11 +43,25 @@ namespace Mengine
             return true;
         }
 
-        THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "ThreadPrefetcherManager" ), -1, __FILE__, __LINE__ );
+        uint32_t PrefetcherServiceThreadCount = CONFIG_VALUE( "PrefetcherService", "ThreadCount", 2 );
+        uint32_t PrefetcherServicePacketSize = CONFIG_VALUE( "PrefetcherService", "PacketSize", 64 );
 
         m_threadQueue = THREAD_SERVICE()
-            ->runTaskQueue( STRINGIZE_STRING_LOCAL( "ThreadPrefetcherManager" ), MENGINE_PREFETCHER_THREAD_COUNT, MENGINE_PREFETCHER_PACKET_SIZE );
+            ->runTaskQueue( PrefetcherServicePacketSize );
+
+        for( uint32_t index = 0; index != PrefetcherServiceThreadCount; ++index )
+        {
+            Stringstream ss; 
+            ss << "ThreadPrefetcherService_" << index;
+            ConstString threadName = Helper::stringizeString( ss.str() );
+
+            THREAD_SERVICE()
+                ->createThread( threadName, -1, __FILE__, __LINE__ );
+
+            m_threads.emplace_back( threadName );
+            
+            m_threadQueue->addThread( threadName );
+        }
 
         m_factoryThreadTaskPrefetchImageDecoder = new FactoryPool<ThreadTaskPrefetchImageDecoder, 16>();
         m_factoryThreadTaskPrefetchSoundDecoder = new FactoryPool<ThreadTaskPrefetchSoundDecoder, 16>();
@@ -62,6 +77,14 @@ namespace Mengine
         {
             return;
         }
+
+        for( const ConstString & threadName : m_threads )
+        {
+            THREAD_SERVICE()
+                ->destroyThread( threadName );
+        }
+
+        m_threads.clear();
 
         if( m_threadQueue != nullptr )
         {
@@ -138,7 +161,7 @@ namespace Mengine
         }
 
         PrefetchReceiver * receiver;
-        if( this->popPrefetch_( _fileGroup, _filePath, &receiver ) == false )
+        if( this->getPrefetch_( _fileGroup, _filePath, &receiver ) == false )
         {
             return false;
         }
@@ -209,7 +232,7 @@ namespace Mengine
         }
 
         PrefetchReceiver * receiver;
-        if( this->popPrefetch_( _fileGroup, _filePath, &receiver ) == false )
+        if( this->getPrefetch_( _fileGroup, _filePath, &receiver ) == false )
         {
             return false;
         }
@@ -294,7 +317,7 @@ namespace Mengine
         }
 
         PrefetchReceiver * receiver;
-        if( this->popPrefetch_( _fileGroup, _filePath, &receiver ) == false )
+        if( this->getPrefetch_( _fileGroup, _filePath, &receiver ) == false )
         {
             return false;
         }
@@ -368,7 +391,7 @@ namespace Mengine
         }
 
         PrefetchReceiver * receiver;
-        if( this->popPrefetch_( _fileGroup, _filePath, &receiver ) == false )
+        if( this->getPrefetch_( _fileGroup, _filePath, &receiver ) == false )
         {
             return false;
         }
@@ -438,6 +461,29 @@ namespace Mengine
         const PrefetchReceiver & receiver = it_found->second;
 
         *_receiver = const_cast<PrefetchReceiver *>(&receiver);
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PrefetcherService::getPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const
+    {
+        PrefetchReceiver * receiver;
+        if( this->hasPrefetch_( _fileGroup, _filePath, &receiver ) == false )
+        {
+            return false;
+        }
+
+        if( receiver->prefetcher->isComplete() == false )
+        {
+            return false;
+        }
+
+        if( receiver->prefetcher->isSuccessful() == false )
+        {
+            return false;
+        }
+
+        *_receiver = receiver;
 
         return true;
     }

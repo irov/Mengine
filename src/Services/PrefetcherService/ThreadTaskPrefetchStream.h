@@ -42,6 +42,6 @@ namespace Mengine
         MemoryInterfacePtr m_memory;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadTaskPrefetchStream> ThreadTaskPrefetchStreamPtr;
+    typedef IntrusivePtr<ThreadTaskPrefetchStream, ThreadTaskInterface> ThreadTaskPrefetchStreamPtr;
     //////////////////////////////////////////////////////////////////////////
 }

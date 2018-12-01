@@ -175,7 +175,7 @@ namespace Mengine
 
     protected:
         void updateDebugOpenFile_();
-        void notifyDebugOpenFile_( const char * _folder, const char * _fileName );
+        void notifyDebugOpenFile_( const Char * _folder, const Char * _fileName, bool _streaming );
 
     protected:
         Resolution m_currentResolution;

@@ -174,7 +174,7 @@ namespace Mengine
 
         FileInputStreamInterface * file = stdex::intrusive_get<FileInputStreamInterface *>( _stream );
 
-        if( file->open( m_relationPath, m_folderPath, _filePath, _offset, _size ) == false )
+        if( file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming ) == false )
         {
             LOGGER_ERROR( "Win32FileGroupDirectory::openInputFile failed open file '%s':'%s'"
                 , m_folderPath.c_str()

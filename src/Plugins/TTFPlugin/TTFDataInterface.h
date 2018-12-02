@@ -14,7 +14,6 @@ namespace Mengine
         : public DataInterface
     {
     public:
-        virtual const MemoryInterfacePtr & getTTFMemory() const = 0;
         virtual FT_Face getFTFace() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////

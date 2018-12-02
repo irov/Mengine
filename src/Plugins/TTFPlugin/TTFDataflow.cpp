@@ -68,6 +68,8 @@ namespace Mengine
             return false;
         }
 
+        data->setTTFMemory( memory );
+
         FT_Byte * memory_byte = memory->getBuffer();
         size_t memory_size = memory->getSize();
 
@@ -87,7 +89,7 @@ namespace Mengine
             return false;
         }
 
-        data->setFTFace( face );
+        data->setFTFace( face );        
 
         return true;
     }

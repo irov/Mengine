@@ -6,6 +6,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
+#include "Interface/TextServiceInterface.h"
 
 #include "ResourcePrefetcherServiceInterface.h"
 
@@ -143,6 +144,30 @@ namespace Mengine
                     ->unfetchResource( _resource );
             } );
         }
+        //////////////////////////////////////////////////////////////////////////
+        static bool s_prefetchFonts( const pybind::object & _cb, const pybind::args & _args )
+        {
+            PyPrefetcherObserverPtr observer = new FactorableUnique<PyPrefetcherObserver>( _cb, _args );
+
+            TEXT_SERVICE()
+                ->foreachFonts( [observer]( const TextFontInterfacePtr & _textFont )
+            {
+                _textFont->prefetch( observer );
+            } );
+
+            uint32_t count = observer->getCount();
+
+            return count != 0;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        static void s_unfetchFonts()
+        {
+            TEXT_SERVICE()
+                ->foreachFonts( []( const TextFontInterfacePtr & _font )
+            {
+                _font->unfetch();
+            } );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     ResourcePrefetcherPlugin::ResourcePrefetcherPlugin()
@@ -171,6 +196,8 @@ namespace Mengine
 
             pybind::def_function_args( kernel, "prefetchResources", &Detail::s_prefetchResources );
             pybind::def_function( kernel, "unfetchResources", &Detail::s_unfetchResources );
+            pybind::def_function_args( kernel, "prefetchFonts", &Detail::s_prefetchFonts );
+            pybind::def_function( kernel, "unfetchFonts", &Detail::s_unfetchFonts );
         }
 
         VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Default" ), new FactorableUnique<DefaultResourcePrefetcher>() );

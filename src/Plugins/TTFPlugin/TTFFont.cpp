@@ -4,12 +4,17 @@
 
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/FileGroupInterface.h"
+#include "Interface/StringizeServiceInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 
+#include "TTFDataInterface.h"
+#include "FEDataInterface.h"
+
+#include "Kernel/Dataflow.h"
 #include "Kernel/Stream.h"
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/IniUtil.h"
-
 #include "Kernel/Logger.h"
 
 #include "utf8.h"
@@ -21,14 +26,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     TTFFont::TTFFont()
         : m_ftlibrary( nullptr )
-        , m_face( nullptr )
         , m_ttfAscender( 0.f )
         , m_ttfDescender( 0.f )
         , m_ttfHeight( 0.f )
         , m_ttfBearingYA( 0.f )
         , m_ttfSpacing( 0.f )
         , m_ttfLayoutCount( 1 )
-        , m_ttfFEBundle( nullptr )
         , m_ttfFEEffect( nullptr )
         , m_height( 0 )
         , m_FESample( 1 )
@@ -44,9 +47,9 @@ namespace Mengine
         m_ftlibrary = _ftlibrary;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFFont::initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini )
+    bool TTFFont::initialize( const FileGroupInterfacePtr & _fileGroup, const IniUtil::IniStore & _ini )
     {
-        m_category = _category;
+        m_fileGroup = _fileGroup;
 
         if( this->initializeBase_( _ini ) == false )
         {
@@ -97,22 +100,14 @@ namespace Mengine
     {
         if( m_ttfFEPath.empty() == false )
         {
-            MemoryInterfacePtr ttfEffectMemory = Helper::createMemoryFile( m_category, m_ttfFEPath, false, "TTFFont", __FILE__, __LINE__ );
-
-            if( ttfEffectMemory == nullptr )
+            FEDataInterfacePtr data = Helper::dataflow( m_fileGroup, m_ttfFEPath, STRINGIZE_STRING_LOCAL( "feFont" ) );
+            
+            if( data == nullptr )
             {
-                LOGGER_ERROR( "font '%s' invalid get FE '%s'"
-                    , m_name.c_str()
-                    , m_ttfFEPath.c_str()
-                );
-
                 return false;
             }
 
-            const void * ttfEffectMemory_buffer = ttfEffectMemory->getBuffer();
-            size_t ttfEffectMemory_size = ttfEffectMemory->getSize();
-
-            fe_bundle * ttfFEBundle = fe_bundle_load( (const uint8_t *)ttfEffectMemory_buffer, (int)ttfEffectMemory_size );
+            fe_bundle * ttfFEBundle = data->getFEBundle();
 
             if( ttfFEBundle == nullptr )
             {
@@ -120,8 +115,6 @@ namespace Mengine
             }
 
             fe_effect* ttfFEEffect = fe_bundle_get_effect_by_name( ttfFEBundle, m_ttfFEName.c_str() );
-
-            fe_bundle_free( ttfFEBundle );
 
             if( ttfFEEffect == nullptr )
             {
@@ -136,31 +129,18 @@ namespace Mengine
     {
         if( m_ttfFEPath.empty() == false )
         {
-            MemoryInterfacePtr ttfEffectMemory = Helper::createMemoryFile( m_category, m_ttfFEPath, false, "TTFFont", __FILE__, __LINE__ );
+            FEDataInterfacePtr data = Helper::dataflow( m_fileGroup, m_ttfFEPath, STRINGIZE_STRING_LOCAL( "feFont" ) );
 
-            if( ttfEffectMemory == nullptr )
-            {
-                LOGGER_ERROR( "font '%s' invalid get FE '%s'"
-                    , m_name.c_str()
-                    , m_ttfFEPath.c_str()
-                );
-
-                return false;
-            }
-
-            const void * ttfEffectMemory_buffer = ttfEffectMemory->getBuffer();
-            size_t ttfEffectMemory_size = ttfEffectMemory->getSize();
-
-            fe_bundle * ttfFEBundle = fe_bundle_load( (const uint8_t *)ttfEffectMemory_buffer, (int)ttfEffectMemory_size );
-
-            if( ttfFEBundle == nullptr )
+            if( data == nullptr )
             {
                 return false;
             }
 
-            m_ttfFEBundle = ttfFEBundle;
+            m_dataFE = data;
 
-            fe_effect * ttfFEEffect = fe_bundle_get_effect_by_name( m_ttfFEBundle, m_ttfFEName.c_str() );
+            fe_bundle * ttfFEBundle = m_dataFE->getFEBundle();
+
+            fe_effect * ttfFEEffect = fe_bundle_get_effect_by_name( ttfFEBundle, m_ttfFEName.c_str() );
 
             if( ttfFEEffect == nullptr )
             {
@@ -196,39 +176,23 @@ namespace Mengine
             }
         }
 
-        MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, "TTFFont", __FILE__, __LINE__ );
+        TTFDataInterfacePtr data = Helper::dataflow( m_fileGroup, m_ttfPath, STRINGIZE_STRING_LOCAL( "ttfFont" ) );
 
-        if( memory == nullptr )
+        if( data == nullptr )
         {
             return false;
         }
 
-        FT_Byte * memory_byte = memory->getBuffer();
-        size_t memory_size = memory->getSize();
+        m_dataTTF = data;
 
-        if( memory_byte == nullptr )
+        FT_Face face = m_dataTTF->getFTFace();
+
+        if( FT_Select_Charmap( face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
         {
             return false;
         }
 
-        FT_Error err_code = FT_New_Memory_Face( m_ftlibrary, memory_byte, (FT_Long)memory_size, 0, &m_face );
-
-        if( err_code != 0 )
-        {
-            LOGGER_ERROR( "TTFFont::_compile invalid FT_New_Memory_Face font '%s' path '%s'"
-                , m_name.c_str()
-                , m_ttfPath.c_str()
-            );
-
-            return false;
-        }
-
-        if( FT_Select_Charmap( m_face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
-        {
-            return false;
-        }
-
-        if( FT_Set_Pixel_Sizes( m_face, 0, m_height * m_FESample ) != FT_Err_Ok )
+        if( FT_Set_Pixel_Sizes( face, 0, m_height * m_FESample ) != FT_Err_Ok )
         {
             LOGGER_ERROR( "TTFFont::_compile font '%s' invalid set pixel height '%u'"
                 , m_name.c_str()
@@ -238,9 +202,7 @@ namespace Mengine
             return false;
         }
 
-        m_memory = memory;
-
-        FT_Size face_size = m_face->size;
+        FT_Size face_size = face->size;
         const FT_Size_Metrics & face_size_metrics = face_size->metrics;
 
         FT_Pos ascender = face_size_metrics.ascender >> 6;
@@ -260,14 +222,14 @@ namespace Mengine
 
         m_ttfSpacing = m_ttfHeight - (m_ttfAscender + m_ttfDescender);
 
-        FT_UInt glyph_index = FT_Get_Char_Index( m_face, 'A' );
+        FT_UInt glyph_index = FT_Get_Char_Index( face, 'A' );
 
-        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT ) )
+        if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT ) )
         {
             return false;
         }
 
-        FT_GlyphSlot face_glyphA = m_face->glyph;
+        FT_GlyphSlot face_glyphA = face->glyph;
 
         const FT_Glyph_Metrics & face_glyphA_metrics = face_glyphA->metrics;
 
@@ -285,15 +247,48 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TTFFont::_release()
     {
-        FT_Done_Face( m_face );
-
-        m_memory = nullptr;
-
-        if( m_ttfFEBundle != nullptr )
+        m_dataTTF = nullptr;
+        m_dataFE = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
+    {
+        if( m_ttfFEPath.empty() == false )
         {
-            fe_bundle_free( m_ttfFEBundle );
-            m_ttfFEBundle = nullptr;
+            if( PREFETCHER_SERVICE()
+                ->prefetchData( m_fileGroup, m_ttfFEPath, STRINGIZE_STRING_LOCAL( "feFont" ), _observer ) == false )
+            {
+                return false;
+            }
         }
+
+        if( PREFETCHER_SERVICE()
+            ->prefetchData( m_fileGroup, m_ttfPath, STRINGIZE_STRING_LOCAL( "ttfFont" ), _observer ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::_unfetch()
+    {
+        if( m_ttfFEPath.empty() == false )
+        {
+            if( PREFETCHER_SERVICE()
+                ->unfetch( m_fileGroup, m_ttfFEPath ) == false )
+            {
+                return false;
+            }
+        }
+
+        if( PREFETCHER_SERVICE()
+            ->unfetch( m_fileGroup, m_ttfPath ) == false )
+        {
+            return false;
+        }
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     namespace
@@ -446,14 +441,16 @@ namespace Mengine
             return true;
         }
 
-        FT_UInt glyph_index = FT_Get_Char_Index( m_face, _code );
+        FT_Face face = m_dataTTF->getFTFace();
 
-        if( FT_Load_Glyph( m_face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+        FT_UInt glyph_index = FT_Get_Char_Index( face, _code );
+
+        if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
         {
             return false;
         }
 
-        FT_GlyphSlot glyph = m_face->glyph;
+        FT_GlyphSlot glyph = face->glyph;
 
         const FT_Glyph_Metrics & metrics = glyph->metrics;
 
@@ -676,7 +673,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFFont::_validateGlyphes( const U32String & _codes ) const
     {
-        MemoryInterfacePtr memory = Helper::createMemoryFile( m_category, m_ttfPath, false, "TTFFont", __FILE__, __LINE__ );
+        MemoryInterfacePtr memory = Helper::createMemoryFile( m_fileGroup, m_ttfPath, false, "TTFFont", __FILE__, __LINE__ );
 
         FT_Byte * memory_byte = memory->getBuffer();
         size_t memory_size = memory->getSize();
@@ -799,7 +796,9 @@ namespace Mengine
             return true;
         }
 
-        FT_UInt rindex = FT_Get_Char_Index( m_face, _next );
+        FT_Face face = m_dataTTF->getFTFace();
+
+        FT_UInt rindex = FT_Get_Char_Index( face, _next );
 
         if( rindex == 0 )
         {
@@ -807,7 +806,7 @@ namespace Mengine
         }
 
         FT_Vector ttf_kerning;
-        FT_Get_Kerning( m_face, _code, _next, FT_KERNING_DEFAULT, &ttf_kerning );
+        FT_Get_Kerning( face, _code, _next, FT_KERNING_DEFAULT, &ttf_kerning );
 
         if( ttf_kerning.x == 0 )
         {

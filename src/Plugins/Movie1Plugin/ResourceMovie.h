@@ -262,9 +262,6 @@ namespace Mengine
         void _release() override;
 
     protected:
-        DataInterfacePtr compileData_( const FileGroupInterfacePtr & _category, const FilePath & _path );
-
-    protected:
         float m_frameDuration;
         float m_duration;
 

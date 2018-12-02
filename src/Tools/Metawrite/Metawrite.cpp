@@ -9,11 +9,11 @@
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ThreadSystemInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
-#include "Plugins/XmlCodecPlugin/XmlCodecInterface.h"
+#include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/LoggerBase.h"
@@ -188,6 +188,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     {
         return 0;
     }
+
+    using namespace Mengine::Literals;
 
     Mengine::XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
         ->createDecoderT<Mengine::XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ) );

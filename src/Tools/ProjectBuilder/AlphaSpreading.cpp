@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/ConverterInterface.h"

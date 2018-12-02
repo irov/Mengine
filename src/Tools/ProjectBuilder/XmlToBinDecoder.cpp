@@ -3,7 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/ConverterInterface.h"
@@ -12,7 +12,7 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/CodecServiceInterface.h"
 
-#include "Plugins/XmlCodecPlugin/XmlCodecInterface.h"
+#include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 
 #include "Kernel/Logger.h"
 

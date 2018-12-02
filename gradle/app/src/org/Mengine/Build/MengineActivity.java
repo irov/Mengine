@@ -105,7 +105,15 @@ public class MengineActivity extends SDLActivity {
             return false;
         }
     }
-
+ 
+    public static String facebookGetAccessToken() {
+        if (_instance != null && _instance.facebookInteractionLayer != null) {
+            return _instance.facebookInteractionLayer.getAccessToken();
+        } else {
+            return "";
+        }
+    }
+    
     public static void facebookPerformLogin(String[] readPermissions) {
         if (_instance != null && _instance.facebookInteractionLayer != null) {
             _instance.facebookInteractionLayer.performLogin(_instance, readPermissions);

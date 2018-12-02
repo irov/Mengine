@@ -979,8 +979,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::GameServiceInterface );
         SERVICE_FINALIZE( Mengine::PickerServiceInterface );
         SERVICE_FINALIZE( Mengine::PlayerServiceInterface );
-        SERVICE_FINALIZE( Mengine::ApplicationInterface );
-        SERVICE_FINALIZE( Mengine::PluginServiceInterface );
+        SERVICE_FINALIZE( Mengine::ApplicationInterface );        
         SERVICE_FINALIZE( Mengine::PackageServiceInterface );
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
         SERVICE_FINALIZE( Mengine::GraveyardInterface );
@@ -990,6 +989,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
         SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
         SERVICE_FINALIZE( Mengine::DataServiceInterface );
+        SERVICE_FINALIZE( Mengine::PluginServiceInterface );
         SERVICE_FINALIZE( Mengine::InputServiceInterface );
         SERVICE_FINALIZE( Mengine::UnicodeSystemInterface );
 

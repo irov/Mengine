@@ -1540,7 +1540,7 @@ namespace Mengine
     {
         (void)_ud;
 
-        TrackMatteDesc * desc = new TrackMatteDesc;
+        TrackMatteDesc * desc = Helper::allocateT<TrackMatteDesc>();
 
         desc->matrix.from_f12( _callbackData->matrix );
         desc->mesh = *_callbackData->mesh;
@@ -1582,8 +1582,22 @@ namespace Mengine
 
         TrackMatteDesc * desc = reinterpret_cast<TrackMatteDesc *>(_callbackData->element_userdata);
 
-        delete desc;
+        Helper::freeT( desc );
     }
+    //////////////////////////////////////////////////////////////////////////
+    struct ShaderParameterDesc
+    {
+        char uniform[32];
+        ae_uint8_t type;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    struct ShaderDesc
+    {
+        ConstString materialName;
+
+        typedef Vector<ShaderParameterDesc> VectorShaderParameters;
+        VectorShaderParameters m_parameters;
+    };
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_composition_shader_provider( const aeMovieShaderProviderCallbackData * _callbackData, ae_voidptrptr_t _sd, ae_voidptr_t _ud )
     {
@@ -1591,7 +1605,36 @@ namespace Mengine
         (void)_sd;
         (void)_ud;
 
+        ShaderDesc * desc = Helper::allocateT<ShaderDesc>();
+
+        if( strcmp( _callbackData->name, "desaturate" ) == 0 )
+        {
+            desc->materialName = STRINGIZE_STRING_LOCAL( "Texture_Desaturate" );
+
+            for( ae_uint32_t index = 0; index != _callbackData->parameter_count; ++index )
+            {
+                ShaderParameterDesc parameter;
+
+                strcpy( parameter.uniform, _callbackData->parameter_uniforms[index] );
+                parameter.type = _callbackData->parameter_types[index];
+
+                desc->m_parameters.emplace_back( parameter );
+            }            
+        }
+
+        *_sd = desc;
+
         return AE_TRUE;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static ae_void_t __movie_composition_shader_deleter( const aeMovieShaderDeleterCallbackData * _callbackData, ae_userdata_t _ud )
+    {
+        (void)_callbackData;
+        (void)_ud;
+
+        ShaderDesc * desc = reinterpret_cast<ShaderDesc *>(_callbackData->element_userdata);
+
+        Helper::freeT( desc );
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_shader_property_update( const aeMovieShaderPropertyUpdateCallbackData * _callbackData, ae_voidptr_t _ud )
@@ -1870,10 +1913,11 @@ namespace Mengine
         providers.node_update = &__movie_composition_node_update;
 
         providers.track_matte_provider = &__movie_composition_track_matte_provider;
-        providers.track_matte_update = &__movie_composition_track_matte_update;
         providers.track_matte_deleter = &__movie_composition_track_matte_deleter;
+        providers.track_matte_update = &__movie_composition_track_matte_update;        
 
         providers.shader_provider = &__movie_composition_shader_provider;
+        providers.shader_deleter = &__movie_composition_shader_deleter;
         providers.shader_property_update = &__movie_composition_shader_property_update;
 
         providers.composition_event = &__movie_composition_event;

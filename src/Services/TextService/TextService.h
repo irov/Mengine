@@ -61,7 +61,7 @@ namespace Mengine
         bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString & _arguments ) const override;
 
     public:
-        void visitFonts( const VisitorTextFontInterfacePtr & _vistitor ) override;
+        void foreachFonts( const LambdaTextFont & _lambda ) override;
 
     public:
         bool validate() const override;

@@ -14,6 +14,7 @@
 
 #include "Engine/ResourceShape.h"
 
+#include "Kernel/Dataflow.h"
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
 
@@ -217,7 +218,9 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        DataInterfacePtr data = this->compileData_( fileGroup, filePath );
+        const ConstString & dataflowType = this->getDataflowType();
+
+        DataInterfacePtr data = Helper::dataflow( fileGroup, filePath, dataflowType );
 
         if( data == nullptr )
         {
@@ -233,65 +236,7 @@ namespace Mengine
         m_keyFramePack = data;
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr ResourceMovie::compileData_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
-    {
-        DataInterfacePtr prefetch_data;
-        if( PREFETCHER_SERVICE()
-            ->getData( _fileGroup, _filePath, prefetch_data ) == true )
-        {
-            return prefetch_data;
-        }
-
-        const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
-
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, _filePath, false );
-
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "resource '%s' group '%s' don`t open Frames Pack '%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , _filePath.c_str()
-            );
-
-            return nullptr;
-        }
-
-        const ConstString & dataflowType = this->getDataflowType();
-
-        DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
-
-        if( dataflow == nullptr )
-        {
-            LOGGER_ERROR( "resource '%s' group '%s' can` t find dataflow type '%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , dataflowType.c_str()
-            );
-
-            return nullptr;
-        }
-
-        DataInterfacePtr data = DATA_SERVICE()
-            ->dataflow( dataflow, stream );
-
-        if( data == nullptr )
-        {
-            LOGGER_ERROR( "ResourceMovie::compileData_: '%s' group '%s' can` t dataflow '%s' from '%s'"
-                , this->getName().c_str()
-                , this->getGroupName().c_str()
-                , dataflowType.c_str()
-                , _filePath.c_str()
-            );
-
-            return nullptr;
-        }
-
-        return data;
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     void ResourceMovie::_release()
     {

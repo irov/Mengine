@@ -34,6 +34,14 @@ namespace Mengine
         void _decrementZero() override;
 
     public:
+        bool prefetch( const PrefetcherObserverInterfacePtr & _observer ) override;
+        bool unfetch() override;
+
+    protected:
+        virtual bool _prefetch( const PrefetcherObserverInterfacePtr & _observer );
+        virtual bool _unfetch();
+
+    public:
         void setColourFont( const Color & _colour ) override;
         const Color & getFontColor() const override;
 

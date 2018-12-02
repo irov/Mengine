@@ -323,6 +323,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool MoviePlugin::_initialize()
     {
+        this->addDependencyService( "PrefetcherService" );
+
         String hashkey = CONFIG_VALUE( "MoviePlugin", "HASHKEY", "" );
 
         if( hashkey.empty() == true )
@@ -520,7 +522,8 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
 
-        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+        DataflowInterfacePtr dataflow = VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aezMovie" ) );
+        dataflow->finalize();
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {

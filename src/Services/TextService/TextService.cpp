@@ -881,13 +881,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextService::visitFonts( const VisitorTextFontInterfacePtr & _vistitor )
+    void TextService::foreachFonts( const LambdaTextFont & _lambda )
     {
         for( const MapTextFont::value_type & value : m_fonts )
         {
             const TextFontInterfacePtr & font = value.second;
 
-            _vistitor->onTextFont( font );
+            _lambda( font );
         }
     }
     //////////////////////////////////////////////////////////////////////////

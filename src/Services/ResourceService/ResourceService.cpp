@@ -48,8 +48,10 @@ namespace Mengine
         m_resourcesCache.clear();
 
 #ifndef MENGINE_MASTER_RELEASE
-        for( const ResourcePtr & resource : m_resources )
+        for( const HashtableResources::value_type & value : m_resources )
         {
+            const ResourcePtr & resource = value.element;
+
             uint32_t refcount = resource->countReference();
 
             if( refcount != 0 )
@@ -553,8 +555,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceService::foreachResources( const LambdaResource & _lambda ) const
     {
-        for( const ResourcePtr & resource : m_resources )
+        for( const HashtableResources::value_type & value : m_resources )
         {
+            const ResourcePtr & resource = value.element;
+
             _lambda( resource );
         }
     }
@@ -580,8 +584,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceService::visitResources( const VisitorPtr & _visitor ) const
     {
-        for( const ResourcePtr & resource : m_resources )
+        for( const HashtableResources::value_type & value : m_resources )
         {
+            const ResourcePtr & resource = value.element;
+
             resource->visit( _visitor );
         }
     }

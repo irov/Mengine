@@ -1468,80 +1468,28 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
-        class MyVisitorTextFont
-            : public VisitorTextFontInterface
-            , public Factorable
-        {
-        public:
-            MyVisitorTextFont( const pybind::object & _cb )
-                : m_cb( _cb )
-            {
-            }
-
-        protected:
-            void onTextFont( const TextFontInterfacePtr & _font ) override
-            {
-                const ConstString & name = _font->getName();
-
-                m_cb.call( name );
-            }
-
-        protected:
-            pybind::object m_cb;
-
-        private:
-            void operator = ( const MyVisitorTextFont & )
-            {
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<MyVisitorTextFont> MyVisitorTextFontPtr;
-        //////////////////////////////////////////////////////////////////////////
         void s_visitFonts( const pybind::object & _cb )
         {
-            MyVisitorTextFontPtr mvtf = new FactorableUnique<MyVisitorTextFont>( _cb );
-
             TEXT_SERVICE()
-                ->visitFonts( mvtf );
-        }
-        //////////////////////////////////////////////////////////////////////////
-        class MyVisitorCollectTextFont
-            : public VisitorTextFontInterface
-            , public Factorable
-        {
-        public:
-            MyVisitorCollectTextFont( pybind::list & _l )
-                : m_l( _l )
-            {
-            }
-
-        protected:
-            void onTextFont( const TextFontInterfacePtr & _font ) override
+                ->foreachFonts( [_cb]( const TextFontInterfacePtr & _font )
             {
                 const ConstString & name = _font->getName();
 
-                m_l.append( name );
-            }
-
-        protected:
-            pybind::list & m_l;
-
-        private:
-            void operator = ( const MyVisitorCollectTextFont & )
-            {
-            }
-        };
-        //////////////////////////////////////////////////////////////////////////
-        typedef IntrusivePtr<MyVisitorCollectTextFont> MyVisitorCollectTextFontPtr;
-        //////////////////////////////////////////////////////////////////////////
+                _cb.call( name );
+            } );
+        }
         //////////////////////////////////////////////////////////////////////////
         pybind::list s_getFonts( pybind::kernel_interface * _kernel )
         {
             pybind::list l( _kernel );
-            MyVisitorCollectTextFontPtr mvtf = new FactorableUnique<MyVisitorCollectTextFont>( l );
 
             TEXT_SERVICE()
-                ->visitFonts( mvtf );
+                ->foreachFonts( [&l]( const TextFontInterfacePtr & _font )
+            {
+                const ConstString & name = _font->getName();
+
+                l.append( name );
+            } );
 
             return l;
         }

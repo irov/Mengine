@@ -25,7 +25,7 @@ namespace Mengine
 
     protected:
         bool setFactorable( const ConstString & _category, const ConstString & _type, const MixinPtr & _factorable ) override;
-        bool removeFactorable( const ConstString & _category, const ConstString & _type ) override;
+        MixinPointer removeFactorable( const ConstString & _category, const ConstString & _type ) override;
         MixinPointer getFactorable( const ConstString & _category, const ConstString & _type ) const override;
 
 #ifndef MENGINE_MASTER_RELEASE
@@ -37,11 +37,11 @@ namespace Mengine
         struct CategoryKey
         {
             ConstString category;
-            ConstString prototype;
+            ConstString type;
 
             bool operator == ( const CategoryKey & _key ) const
             {
-                return category == _key.category && prototype == _key.prototype;
+                return category == _key.category && type == _key.type;
             }
         };
 
@@ -49,7 +49,7 @@ namespace Mengine
         {
             HashType operator() ( const CategoryKey & _key ) const
             {
-                return _key.category.hash() + _key.prototype.hash();
+                return _key.category.hash() + _key.type.hash();
             }
         };
 

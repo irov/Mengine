@@ -7,15 +7,6 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    class VisitorTextFontInterface
-        : public Mixin
-    {
-    public:
-        virtual void onTextFont( const TextFontInterfacePtr & _font ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<VisitorTextFontInterface> VisitorTextFontInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class TextServiceInterface
         : public ServiceInterface
     {
@@ -63,7 +54,8 @@ namespace Mengine
         virtual bool getTextAliasArguments( const ConstString & _environment, const ConstString & _alias, VectorString & _arguments ) const = 0;
 
     public:
-        virtual void visitFonts( const VisitorTextFontInterfacePtr & _vistitor ) = 0;
+        typedef Lambda<void( const TextFontInterfacePtr & )> LambdaTextFont;
+        virtual void foreachFonts( const LambdaTextFont & _lambda ) = 0;
 
     public:
         virtual const ConstString & getDefaultFontName() const = 0;

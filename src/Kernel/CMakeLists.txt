@@ -435,6 +435,11 @@ Core
     
     ThreadMutexScope.h
     ThreadMutexScope.cpp
+    
+    Dataflow.h
+    Dataflow.cpp
+
+    DataPointer.h
 )
 
 ADD_FILTER(

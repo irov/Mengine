@@ -3,6 +3,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/Logger.h"
 
 #include <stdlib.h>
 
@@ -21,10 +22,15 @@ namespace Mengine
             uint32_t count = 0;
 
             VOCALUBARY_SERVICE()
-                ->foreachFactorable( _category, [&count]( const ConstString & _type, const MixinPtr & _mixin )
+                ->foreachFactorable( _category, [_category, &count]( const ConstString & _type, const MixinPtr & _mixin )
             {
                 MENGINE_UNUSED( _type );
                 MENGINE_UNUSED( _mixin );
+
+                LOGGER_ERROR( "Vocabulary '%s' type '%s'"
+                    , _category.c_str()
+                    , _type.c_str() 
+                );
 
                 ++count;
             } );

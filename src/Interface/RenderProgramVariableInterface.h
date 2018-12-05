@@ -19,6 +19,11 @@ namespace Mengine
         virtual void setPixelVariableFloats( uint32_t _index, float * _values, uint32_t _count ) = 0;
         virtual void setPixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
         virtual void setPixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
+
+    public:
+        virtual void updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _count ) = 0;
+        virtual void updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
+        virtual void updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderProgramVariableInterface> RenderProgramVariableInterfacePtr;

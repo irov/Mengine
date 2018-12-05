@@ -4,6 +4,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
+#include "Interface/RenderSystemInterface.h"
 
 #include "Plugins/AstralaxParticlePlugin/UnknownParticleEmitterInterface.h"
 #include "Plugins/VideoPlugin/VideoUnknownInterface.h"
@@ -1594,9 +1595,7 @@ namespace Mengine
     struct ShaderDesc
     {
         ConstString materialName;
-
-        typedef Vector<ShaderParameterDesc> VectorShaderParameters;
-        VectorShaderParameters m_parameters;
+        RenderProgramVariableInterfacePtr programVariable;
     };
     //////////////////////////////////////////////////////////////////////////
     static ae_bool_t __movie_composition_shader_provider( const aeMovieShaderProviderCallbackData * _callbackData, ae_voidptrptr_t _sd, ae_voidptr_t _ud )
@@ -1606,6 +1605,9 @@ namespace Mengine
         (void)_ud;
 
         ShaderDesc * desc = Helper::allocateT<ShaderDesc>();
+
+        RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
+            ->createProgramVariable( 0, _callbackData->parameter_count );
 
         if( strcmp( _callbackData->name, "desaturate" ) == 0 )
         {
@@ -1618,9 +1620,33 @@ namespace Mengine
                 strcpy( parameter.uniform, _callbackData->parameter_uniforms[index] );
                 parameter.type = _callbackData->parameter_types[index];
 
-                desc->m_parameters.emplace_back( parameter );
+                float shader_values[4] = { 0.f };
+                switch( parameter.type )
+                {
+                case AE_MOVIE_EXTENSION_SHADER_PARAMETER_SLIDER:
+                    {
+                        ae_float_t value = _callbackData->parameter_values[index];
+
+                        shader_values[0] = value;
+
+                        programVariable->setPixelVariableFloats( index, shader_values, 1 );
+                    }break;
+                case AE_MOVIE_EXTENSION_SHADER_PARAMETER_COLOR:
+                    {
+                        ae_color_t color_value = _callbackData->parameter_colors[index];
+
+                        shader_values[0] = color_value.r;
+                        shader_values[1] = color_value.g;
+                        shader_values[2] = color_value.b;
+                        shader_values[3] = 1.f;
+
+                        programVariable->setPixelVariableFloats( index, shader_values, 4 );
+                    }break;
+                }                
             }            
         }
+
+        desc->programVariable = programVariable;
 
         *_sd = desc;
 
@@ -1634,6 +1660,8 @@ namespace Mengine
 
         ShaderDesc * desc = reinterpret_cast<ShaderDesc *>(_callbackData->element_userdata);
 
+        desc->programVariable = nullptr;
+
         Helper::freeT( desc );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1641,7 +1669,31 @@ namespace Mengine
     {
         (void)_callbackData;
         (void)_ud;
+        
+        ShaderDesc * desc = reinterpret_cast<ShaderDesc *>(_callbackData->element_userdata);
 
+        const RenderProgramVariableInterfacePtr & programVariable = desc->programVariable;
+
+        float shader_values[4] = { 0.f };
+
+        switch( _callbackData->type )
+        {
+        case AE_MOVIE_EXTENSION_SHADER_PARAMETER_SLIDER:
+            {
+                shader_values[0] = _callbackData->value;
+
+                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1 );
+            }break;
+        case AE_MOVIE_EXTENSION_SHADER_PARAMETER_COLOR:
+            {
+                shader_values[0] = _callbackData->color.r;
+                shader_values[1] = _callbackData->color.g;
+                shader_values[2] = _callbackData->color.b;
+                shader_values[3] = 1.f;
+
+                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 4 );
+            }break;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_event( const aeMovieCompositionEventCallbackData * _callbackData, ae_voidptr_t _ud )
@@ -2452,9 +2504,22 @@ namespace Mengine
 
                         EMaterialBlendMode blend_mode = Detail::getMovieBlendMode( mesh.blend_mode );
 
-                        const RenderMaterialInterfacePtr & material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
+                        if( mesh.shader_userdata == AE_NULLPTR )
+                        {
+                            const RenderMaterialInterfacePtr & material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
 
-                        this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                            this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        }
+                        else
+                        {
+                            ShaderDesc * shader_desc = reinterpret_cast<ShaderDesc *>(mesh.shader_userdata);
+
+                            const RenderMaterialInterfacePtr & material = Helper::makeImageMaterial( resource_image, shader_desc->materialName, blend_mode, false, false );
+
+                            const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
+
+                            this->addRenderObject( &context, material, programVariable, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
+                        }
                     }break;
                 case AE_MOVIE_LAYER_TYPE_VIDEO:
                     {

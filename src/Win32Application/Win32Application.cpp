@@ -777,6 +777,10 @@ namespace Mengine
             }
         }
 
+        bool nopause = HAS_OPTION( "nopause" );
+        APPLICATION_SERVICE()
+            ->setNopause( nopause );
+
 #ifdef MENGINE_MASTER_RELEASE
         bool devplugins = false;
 #else

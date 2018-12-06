@@ -119,21 +119,27 @@ namespace Mengine
             return cstr;
         }
     }
-    //////////////////////////////////////////////////////////////////////////
-    inline ConstString operator "" _c( const Char * _value, size_t _size )
+    namespace Literals
     {
-        ConstString cstr = Helper::stringizeStringSize( _value, (ConstString::size_type)_size );
+        //////////////////////////////////////////////////////////////////////////
+        inline ConstString operator "" _c( const Char * _value, size_t _size )
+        {
+            ConstString cstr = Helper::stringizeStringSize( _value, (ConstString::size_type)_size );
 
-        return cstr;
+            return cstr;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        constexpr ConstString::hash_type operator "" _hash( const Char * _value, size_t _size )
+        {
+            return Mengine::Helper::makeHash( _value, _size );
+        }
     }
-    //////////////////////////////////////////////////////////////////////////
-    constexpr ConstString::hash_type operator "" _hash( const Char * _value, size_t _size )
-    {
-        return Mengine::Helper::makeHash( _value, _size );
-    }
-    //////////////////////////////////////////////////////////////////////////
-#	define STRINGIZE_STRING_LOCAL( str )\
-        Mengine::Helper::stringizeStringTemplate<str##_hash>( str, (sizeof(str) - 1) )
+
+    using namespace Literals;
 }
+//////////////////////////////////////////////////////////////////////////
+#define STRINGIZE_STRING_LOCAL( str )\
+    Mengine::Helper::stringizeStringTemplate<str##_hash>( str, (sizeof(str) - 1) )
+//////////////////////////////////////////////////////////////////////////
 
 

@@ -64,6 +64,36 @@ namespace Mengine
         this->release();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool FontBase::prefetch( const PrefetcherObserverInterfacePtr & _observer )
+    {
+        bool successful = this->_prefetch( _observer );
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontBase::unfetch()
+    {
+        bool successful = this->_unfetch();
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontBase::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
+    {
+        MENGINE_UNUSED( _observer );
+
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FontBase::_unfetch()
+    {
+        //Empty
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void FontBase::setColourFont( const Color & _colour )
     {
         m_colourFont = _colour;

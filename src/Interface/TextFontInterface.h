@@ -3,6 +3,7 @@
 #include "Interface/ServantInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/RenderTextureInterface.h"
+#include "Interface/PrefetcherObserverInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
@@ -70,6 +71,10 @@ namespace Mengine
     public:
         virtual bool compileFont() = 0;
         virtual void releaseFont() = 0;
+
+    public:
+        virtual bool prefetch( const PrefetcherObserverInterfacePtr & _observer ) = 0;
+        virtual bool unfetch() = 0;
 
     public:
         virtual uint32_t getLayoutCount() const = 0;

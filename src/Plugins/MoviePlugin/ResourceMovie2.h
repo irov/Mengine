@@ -88,9 +88,6 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
 
-    public:
-        DataInterfacePtr compileData_( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath ) const;
-
     protected:
         Movie2DataInterfacePtr m_movieData;
 

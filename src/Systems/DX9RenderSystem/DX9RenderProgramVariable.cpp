@@ -87,6 +87,30 @@ namespace Mengine
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
+    void DX9RenderProgramVariable::updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _count )
+    {
+        Variable & v = m_pixelVariables[_index];
+        
+        float * values = &m_dataFloats[v.offset];
+        std::copy( _values, _values + _count, values );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count )
+    {
+        Variable & v = m_pixelVariables[_index];
+
+        int32_t * values = &m_dataIntegers[v.offset];
+        std::copy( _values, _values + _count, values );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void DX9RenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count )
+    {
+        Variable & v = m_pixelVariables[_index];
+
+        int32_t * values = &m_dataBooleans[v.offset];
+        std::copy( _values, _values + _count, values );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool DX9RenderProgramVariable::apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program )
     {
         (void)_program;

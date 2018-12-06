@@ -1,6 +1,8 @@
 #pragma once
 
 #include "TTFServiceInterface.h"
+#include "TTFDataInterface.h"
+#include "FEDataInterface.h"
 
 #include "Interface/MemoryInterface.h"
 #include "Interface/TextFontInterface.h"
@@ -37,7 +39,7 @@ namespace Mengine
         void setFTLibrary( FT_Library _library );
 
     public:
-        bool initialize( const FileGroupInterfacePtr & _category, const IniUtil::IniStore & _ini ) override;
+        bool initialize( const FileGroupInterfacePtr & _fileGroup, const IniUtil::IniStore & _ini ) override;
 
     protected:
         bool isValid() override;
@@ -45,6 +47,10 @@ namespace Mengine
     protected:
         bool _compile() override;
         void _release() override;
+
+    protected:
+        bool _prefetch( const PrefetcherObserverInterfacePtr & _observer ) override;
+        bool _unfetch() override;
 
     public:
         bool hasGlyph( GlyphCode _code ) const override;
@@ -68,12 +74,10 @@ namespace Mengine
         bool _prepareGlyph( GlyphCode _code ) override;
 
     protected:
-        MemoryInterfacePtr m_memory;
-
         FT_Library m_ftlibrary;
-        FT_Face m_face;
+        TTFDataInterfacePtr m_dataTTF;
 
-        FileGroupInterfacePtr m_category;
+        FileGroupInterfacePtr m_fileGroup;
         FilePath m_ttfPath;
 
         uint32_t m_height;
@@ -89,7 +93,8 @@ namespace Mengine
 
         FilePath m_ttfFEPath;
         ConstString m_ttfFEName;
-        fe_bundle * m_ttfFEBundle;
+        
+        FEDataInterfacePtr m_dataFE;
         fe_effect * m_ttfFEEffect;
         const fe_node * m_ttfEffectNodes[FE_MAX_PINS];
 

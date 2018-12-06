@@ -33,6 +33,11 @@ namespace Mengine
         void setPixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count ) override;
 
     public:
+        void updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _count ) override;
+        void updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count ) override;
+        void updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count ) override;
+
+    public:
         bool apply( IDirect3DDevice9 * _pD3DDevice, const RenderProgramInterfacePtr & _program );
 
     protected:
@@ -61,4 +66,5 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DX9RenderProgramVariable> DX9RenderProgramVariablePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

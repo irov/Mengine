@@ -16,7 +16,7 @@ namespace Mengine
 
     public:
         virtual bool setFactorable( const ConstString & _category, const ConstString & _prototype, const MixinPtr & _factorable ) = 0;
-        virtual bool removeFactorable( const ConstString & _category, const ConstString & _prototype ) = 0;
+        virtual MixinPointer removeFactorable( const ConstString & _category, const ConstString & _prototype ) = 0;
         virtual MixinPointer getFactorable( const ConstString & _category, const ConstString & _prototype ) const = 0;
 
 #ifndef MENGINE_MASTER_RELEASE

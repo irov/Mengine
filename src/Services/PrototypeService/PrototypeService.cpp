@@ -29,8 +29,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PrototypeService::_finalizeService()
     {
-        for( const PrototypeGeneratorInterfacePtr & generator : m_generators )
+        for( const HashtablePrototypes::value_type & value : m_generators )
         {
+            const PrototypeGeneratorInterfacePtr & generator = value.element;
+
             generator->finalize();
         }
 
@@ -120,8 +122,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PrototypeService::foreachGenerators( const LambdaPrototypeGenerator & _lambda ) const
     {
-        for( const PrototypeGeneratorInterfacePtr & generator : m_generators )
+        for( const HashtablePrototypes::value_type & value : m_generators )
         {
+            const PrototypeGeneratorInterfacePtr & generator = value.element;
+
             _lambda( generator );
         }
     }

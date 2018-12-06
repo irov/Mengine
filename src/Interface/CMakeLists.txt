@@ -46,8 +46,9 @@ src
     PickerServiceInterface.h
     PlayerInterface.h
     PrototypeServiceInterface.h
+    VocabularyServiceInterface.h
     WatchdogInterface.h
-    ArchiveInterface.h
+    ArchivatorInterface.h
     ArchiveServiceInterface.h
     ProfilerInterface.h
     PrefetcherObserverInterface.h
@@ -85,6 +86,7 @@ src
     UpdateServiceInterface.h
     UpdationInterface.h
     ServantInterface.h
+    EnumeratorServiceInterface.h
     
 	dummy.cpp
 )

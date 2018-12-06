@@ -7,6 +7,16 @@ src
     TTFServiceInterface.h
     TTFFont.h
     TTFFont.cpp
+    TTFDataInterface.h
+    TTFData.h
+    TTFData.cpp
+    TTFDataflow.h
+    TTFDataflow.cpp
+    FEDataInterface.h
+    FEData.h
+    FEData.cpp
+    FEDataflow.h
+    FEDataflow.cpp
     TTFAtlasService.h
     TTFAtlasService.cpp    
     TTFPrototypeGenerator.h

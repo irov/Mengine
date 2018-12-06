@@ -30,6 +30,6 @@ namespace Mengine
         ImageDecoderInterfacePtr m_imageDecoder;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ThreadTaskPrefetchImageDecoder> ThreadTaskPrefetchImageDecoderPtr;
+    typedef IntrusivePtr<ThreadTaskPrefetchImageDecoder, ThreadTaskInterface> ThreadTaskPrefetchImageDecoderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

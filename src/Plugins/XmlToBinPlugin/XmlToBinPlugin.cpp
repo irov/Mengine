@@ -1,31 +1,34 @@
-#include "XmlCodecPlugin.h"
-
-#include "XmlToBinDecoder.h"
+#include "XmlToBinPlugin.h"
 
 #include "Interface/StringizeServiceInterface.h"
 
-#include "Kernel/ConstString.h"
+#include "XmlToBinDecoder.h"
 
+#include "Kernel/ConstString.h"
 #include "Kernel/DecoderFactory.h"
 
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( XmlCodec, Mengine::XmlCodecPlugin )
+PLUGIN_FACTORY( XmlToBin, Mengine::XmlToBinPlugin )
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    XmlCodecPlugin::XmlCodecPlugin()
+    XmlToBinPlugin::XmlToBinPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool XmlCodecPlugin::_initialize()
+    XmlToBinPlugin::~XmlToBinPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool XmlToBinPlugin::_initialize()
     {
         Helper::registerDecoder<XmlToBinDecoder>( "xml2bin" );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void XmlCodecPlugin::_finalize()
+    void XmlToBinPlugin::_finalize()
     {
         Helper::unregisterDecoder( "xml2bin" );
     }

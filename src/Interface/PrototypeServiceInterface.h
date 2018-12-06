@@ -51,8 +51,8 @@ namespace Mengine
         virtual void foreachGenerators( const LambdaPrototypeGenerator & _lambda ) const = 0;
     };
 }
-
+//////////////////////////////////////////////////////////////////////////
 #define PROTOTYPE_SERVICE()\
-	((PrototypeServiceInterface *)SERVICE_GET(Mengine::PrototypeServiceInterface))
-
+	((Mengine::PrototypeServiceInterface *)SERVICE_GET(Mengine::PrototypeServiceInterface))
+//////////////////////////////////////////////////////////////////////////
 

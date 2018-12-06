@@ -4,6 +4,7 @@
 #include "Win32Application.h"
 
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/LoggerInterface.h"
 #include "Interface/FileServiceInterface.h"
@@ -22,6 +23,7 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
@@ -84,6 +86,7 @@ SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( PrototypeService );
+SERVICE_EXTERN( VocabularyService );
 SERVICE_EXTERN( UpdateService );
 SERVICE_EXTERN( LoaderService );
 SERVICE_EXTERN( RenderService );
@@ -102,6 +105,7 @@ SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( Application );
+SERVICE_EXTERN( EnumeratorService );
 
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
@@ -122,6 +126,11 @@ PLUGIN_EXPORT( NodeDebugRender );
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER
 PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
+
+#ifdef MENGINE_PLUGIN_RESOURCECONVERT
+PLUGIN_EXPORT( ResourceConvert );
+#endif
+
 
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
 PLUGIN_EXPORT( ResourceValidate );
@@ -605,7 +614,7 @@ namespace Mengine
         SERVICE_CREATE( MemoryService );
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
-
+        SERVICE_CREATE( EnumeratorService );
         SERVICE_CREATE( TimeSystem );
         SERVICE_CREATE( TimeService );
 
@@ -627,6 +636,7 @@ namespace Mengine
 #endif
 
         SERVICE_CREATE( PrototypeService );
+        SERVICE_CREATE( VocabularyService );
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
 
@@ -681,6 +691,7 @@ namespace Mengine
         SERVICE_CREATE( AccountService );
         SERVICE_CREATE( GameService );
         SERVICE_CREATE( TimelineService );
+        SERVICE_CREATE( EnumeratorService );
 
         SERVICE_CREATE( Application );
 
@@ -704,6 +715,10 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER
         MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher..." );
 #endif
+
+#ifdef MENGINE_PLUGIN_RESOURCECONVERT
+        MENGINE_ADD_PLUGIN( ResourceConvert, "initialize Plugin Resource Convert..." );
+#endif        
 
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
         MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
@@ -977,6 +992,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
         SERVICE_FINALIZE( Mengine::TextServiceInterface );
         SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
+        SERVICE_FINALIZE( Mengine::VocabularyServiceInterface );
         SERVICE_FINALIZE( Mengine::ApplicationInterface );
         SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
         SERVICE_FINALIZE( Mengine::DataServiceInterface );
@@ -989,7 +1005,6 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::SoundServiceInterface );
         SERVICE_FINALIZE( Mengine::SoundSystemInterface );
 
-        SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
         SERVICE_FINALIZE( Mengine::ScriptServiceInterface );
         SERVICE_FINALIZE( Mengine::ConverterServiceInterface );
 
@@ -1009,6 +1024,8 @@ namespace Mengine
 
         SERVICE_FINALIZE( Mengine::TimeServiceInterface );
         SERVICE_FINALIZE( Mengine::TimeSystemInterface );
+
+        SERVICE_FINALIZE( Mengine::EnumeratorServiceInterface );
 
         SERVICE_FINALIZE( Mengine::PlatformInterface );
 

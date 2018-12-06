@@ -40,14 +40,6 @@ namespace Mengine
     {
         return m_defaultVolume;
     }
-
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceSound::_convert()
-    {
-        bool result = this->convertDefault_( m_converterType, m_filePath, m_filePath, m_codecType, m_codecType );
-
-        return result;
-    }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceSound::_compile()
     {
@@ -79,9 +71,10 @@ namespace Mengine
         }
 
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        const FilePath & filePath = this->getFilePath();
 
         SoundBufferInterfacePtr soundBuffer = SOUND_SERVICE()
-            ->createSoundBufferFromFile( fileGroup, m_filePath, m_codecType, m_isStreamable );
+            ->createSoundBufferFromFile( fileGroup, filePath, m_codecType, m_isStreamable );
 
         if( soundBuffer == nullptr )
         {

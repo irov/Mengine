@@ -6,6 +6,8 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "ResourceAstralax.h"
 #include "LoaderResourceAstralax.h"
@@ -14,6 +16,8 @@
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 #include "ResourceAstralaxValidator.h"
+
+#include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 
 #include "Environment/Python/PythonAnimatableEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -161,11 +165,16 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<ResourceAstralaxValidator>() );
+            VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<ResourceAstralaxValidator>() );
+            VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<ResourceAstralaxValidator>() );
+        }
 
-            RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<ResourceAstralaxValidator>() );
+        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
+        {
+            ResourcePrefetcherInterfacePtr archivePrefetcherLZ4 = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ArchiveLZ4" ) );
+
+            RESOURCEPREFETCHER_SERVICE()
+                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), archivePrefetcherLZ4 );
         }
 
         LOADER_SERVICE()
@@ -210,11 +219,14 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            RESOURCEVALIDATE_SERVICE()
-                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
+        }
 
-            RESOURCEVALIDATE_SERVICE()
-                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
+        if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
+        {
+            RESOURCEPREFETCHER_SERVICE()
+                ->removeResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
         }
 
         LOADER_SERVICE()

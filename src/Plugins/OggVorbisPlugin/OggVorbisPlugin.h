@@ -13,6 +13,7 @@ namespace Mengine
 
     public:
         OggVorbisPlugin();
+        ~OggVorbisPlugin() override;
 
     protected:
         bool _initialize() override;

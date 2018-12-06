@@ -5,7 +5,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        ColourValue_ARGB makeARGB( float _r, float _g, float _b, float _a )
+        ColorValue_ARGB makeARGB( float _r, float _g, float _b, float _a )
         {
             const float rgba_255 = 255.5f;
 
@@ -21,7 +21,7 @@ namespace Mengine
             uint8_t a8 = static_cast<uint8_t>(_a * rgba_255);
 #endif
 
-            ColourValue_ARGB argb = (a8 << 24) | (r8 << 16) | (g8 << 8) | (b8 << 0);
+            ColorValue_ARGB argb = (a8 << 24) | (r8 << 16) | (g8 << 8) | (b8 << 0);
 
             return argb;
         }
@@ -33,11 +33,11 @@ namespace Mengine
 
         if( m_argb == 0xFFFFFFFF )
         {
-            m_invalidateARGB = COLOUR_VALUE_INVALIDATE_IDENTITY;
+            m_invalidateARGB = Detail::COLOR_INVALIDATE_IDENTITY;
         }
         else
         {
-            m_invalidateARGB = COLOUR_VALUE_INVALIDATE_FALSE;
+            m_invalidateARGB = Detail::COLOR_INVALIDATE_FALSE;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -107,7 +107,7 @@ namespace Mengine
         240.f / 255.f, 241.f / 255.f, 242.f / 255.f, 243.f / 255.f, 244.f / 255.f, 245.f / 255.f, 246.f / 255.f, 247.f / 255.f, 248.f / 255.f, 249.f / 255.f,
         250.f / 255.f, 251.f / 255.f, 252.f / 255.f, 253.f / 255.f, 254.f / 255.f, 255.f / 255.f };
     //////////////////////////////////////////////////////////////////////////
-    void Color::setAsARGB( ColourValue_ARGB _val )
+    void Color::setAsARGB( ColorValue_ARGB _val )
     {
         m_argb = _val;
 
@@ -118,7 +118,7 @@ namespace Mengine
             m_b = 1.f;
             m_a = 1.f;
 
-            m_invalidateARGB = COLOUR_VALUE_INVALIDATE_IDENTITY;
+            m_invalidateARGB = Detail::COLOR_INVALIDATE_IDENTITY;
 
             return;
         }
@@ -140,7 +140,7 @@ namespace Mengine
         m_b = one_div_255[b8];
         m_a = one_div_255[a8];
 
-        m_invalidateARGB = COLOUR_VALUE_INVALIDATE_FALSE;
+        m_invalidateARGB = Detail::COLOR_INVALIDATE_FALSE;
     }
     //////////////////////////////////////////////////////////////////////////
     void Color::setA( float _a )

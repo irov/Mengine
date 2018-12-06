@@ -19,13 +19,6 @@ namespace Mengine
         SERVICE_DECLARE( "DataService" )
 
     public:
-        virtual void registerDataflow( const ConstString& _type, const DataflowInterfacePtr & _dataflow ) = 0;
-        virtual void unregisterDataflow( const ConstString& _type ) = 0;
-
-    public:
-        virtual const DataflowInterfacePtr & getDataflow( const ConstString & _type ) const = 0;
-
-    public:
         virtual DataInterfacePtr dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream ) = 0;
 
     public:

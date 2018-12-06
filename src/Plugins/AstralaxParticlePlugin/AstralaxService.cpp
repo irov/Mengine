@@ -68,21 +68,10 @@ namespace Mengine
             return nullptr;
         }
 
-        InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _fileName, false );
 
-        if( stream == nullptr )
-        {
-            LOGGER_ERROR( "can't open file %s:%s"
-                , _fileGroup->getName().c_str()
-                , _fileName.c_str()
-            );
-
-            return nullptr;
-        }
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SYSTEM()
-            ->createEmitterContainerFromMemory( stream, m_archivator, _whoName );
+            ->createEmitterContainerFromMemory( _fileGroup, _fileName, m_archivator, _whoName );
 
         if( container == nullptr )
         {

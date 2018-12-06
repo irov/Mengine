@@ -34,6 +34,8 @@ ADD_SUBDIRECTORY( WatchdogService )
 ADD_SUBDIRECTORY( PickerService )
 ADD_SUBDIRECTORY( GameService )
 ADD_SUBDIRECTORY( PlayerService )
+ADD_SUBDIRECTORY( VocabularyService )
+ADD_SUBDIRECTORY( EnumeratorService )
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}

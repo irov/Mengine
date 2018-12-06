@@ -151,19 +151,23 @@ namespace Mengine
             const void * ttfEffectMemory_buffer = ttfEffectMemory->getBuffer();
             size_t ttfEffectMemory_size = ttfEffectMemory->getSize();
 
-            m_ttfFEBundle = fe_bundle_load( (const uint8_t *)ttfEffectMemory_buffer, (int)ttfEffectMemory_size );
+            fe_bundle * ttfFEBundle = fe_bundle_load( (const uint8_t *)ttfEffectMemory_buffer, (int)ttfEffectMemory_size );
 
-            if( m_ttfFEBundle == nullptr )
+            if( ttfFEBundle == nullptr )
             {
                 return false;
             }
 
-            m_ttfFEEffect = fe_bundle_get_effect_by_name( m_ttfFEBundle, m_ttfFEName.c_str() );
+            m_ttfFEBundle = ttfFEBundle;
 
-            if( m_ttfFEEffect == nullptr )
+            fe_effect * ttfFEEffect = fe_bundle_get_effect_by_name( m_ttfFEBundle, m_ttfFEName.c_str() );
+
+            if( ttfFEEffect == nullptr )
             {
                 return false;
             }
+
+            m_ttfFEEffect = ttfFEEffect;
 
             fe_node * effect_node_out = fe_effect_find_node_by_type( m_ttfFEEffect, fe_node_type_out );
 

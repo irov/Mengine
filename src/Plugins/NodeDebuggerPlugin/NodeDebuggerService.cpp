@@ -12,8 +12,6 @@
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/SocketSystemInterface.h"
 
-#include "Plugins/XmlCodecPlugin/XmlCodecInterface.h"
-
 #include "Kernel/Assertion.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/SchedulerHelper.h"
@@ -29,31 +27,10 @@
 #define PUGIXML_HEADER_ONLY
 #include "pugixml.hpp"
 
-
 #include <iomanip>
 
-
-class MyXMLWriter : public pugi::xml_writer
-{
-public:
-    MyXMLWriter() = delete;
-    MyXMLWriter( const MyXMLWriter& ) = delete;
-    ~MyXMLWriter() = default;
-
-    MyXMLWriter( Mengine::Vector<uint8_t>& buffer )
-        : m_buffer( buffer )
-    {
-    }
-
-    virtual void write( const void* data, size_t size ) override
-    {
-        const uint8_t* ptr = reinterpret_cast<const uint8_t*>( data );
-        m_buffer.insert( m_buffer.end(), ptr, ptr + size );
-    }
-
-private:
-    Mengine::Vector<uint8_t>& m_buffer;
-};
+#define NODE_SERIALIZATION_INGAME
+#include "NodePropsSerializaton.h"
 
 
 //////////////////////////////////////////////////////////////////////////
@@ -103,6 +80,8 @@ namespace Mengine
                 }
 
                 m_serverState = NodeDebuggerServerState::Connected;
+
+                APPLICATION_SERVICE()->setNopause( true );
 
                 sendScene( m_scene );
             } break;
@@ -257,28 +236,33 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void serializeRender( RenderInterface * _render, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerService::serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Render" );
 
-        xmlNode.append_attribute( "enable" ).set_value( _render->isRenderEnable() );
-        xmlNode.append_attribute( "hide" ).set_value( _render->isHide() );
+        serializeNodeProp( _render->isRenderEnable(), "enable", xmlNode );
+        serializeNodeProp( _render->isHide(), "hide", xmlNode );
+        serializeNodeProp( _render->getLocalColor(), "color", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void serializeAnimation( AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerService::serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Animation" );
 
-        xmlNode.append_attribute( "loop" ).set_value( _animation->isLoop() );
+        serializeNodeProp( _animation->isLoop(), "loop", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void serializeNode( const Mengine::NodePtr & _node, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerService::serializeNode( const Mengine::NodePtr & _node, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 
+        xmlNode.append_attribute( "uid" ).set_value( _node->getUniqueIdentity() );
         xmlNode.append_attribute( "name" ).set_value( _node->getName().c_str() );
         xmlNode.append_attribute( "type" ).set_value( _node->getType().c_str() );
-        xmlNode.append_attribute( "active" ).set_value( _node->isActivate() );
+
+        serializeNodeProp( _node->isEnable(), "enable", xmlNode );
+        serializeNodeProp( _node->getScale(), "scale", xmlNode );
+        serializeNodeProp( _node->getSkew(), "skew", xmlNode );
 
         RenderInterface * render = _node->getRender();
         if( render )
@@ -296,9 +280,9 @@ namespace Mengine
         {
             pugi::xml_node xmlChildrenContainer = xmlNode.append_child( "Children" );
 
-            _node->foreachChildrenUnslug( [&xmlChildrenContainer]( const NodePtr & _child )
+            _node->foreachChildren( [this, &xmlChildrenContainer]( const NodePtr & _child )
             {
-                serializeNode( _child, xmlChildrenContainer );
+                this->serializeNode( _child, xmlChildrenContainer );
             } );
         }
     }
@@ -321,7 +305,12 @@ namespace Mengine
 
         MyXMLWriter writer( packet.payload );
 
-        doc.save( writer, "  ", pugi::format_indent/*pugi::format_raw*/, pugi::encoding_utf8 );
+#ifdef _DEBUG
+        const unsigned int xmlFlags = pugi::format_indent;
+#else
+        const unsigned int xmlFlags = pugi::format_raw;
+#endif
+        doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
 
         sendPacket( packet );
     }
@@ -329,7 +318,7 @@ namespace Mengine
     void NodeDebuggerService::processPacket( NodeDebuggerPacket & _packet )
     {
         pugi::xml_document doc;
-        pugi::xml_parse_result result = doc.load_buffer(_packet.payload.data(), _packet.payload.size() );
+        pugi::xml_parse_result result = doc.load_buffer( _packet.payload.data(), _packet.payload.size() );
         if( !result )
         {
             return;
@@ -358,8 +347,117 @@ namespace Mengine
 
         if( typeStr == "Node" )
         {
-            //ReceiveScene( payloadNode );
+            pugi::xml_node xmlNode = payloadNode.child( "Node" );
+
+            if( xmlNode )
+            {
+                receiveChangedNode( xmlNode );
+            }
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerService::receiveChangedNode( const pugi::xml_node& _xmlNode )
+    {
+        String pathStr = _xmlNode.attribute( "path" ).value();
+        VectorNodePath path = stringToPath( pathStr );
+
+        NodePtr node = Mengine::findUniqueNode( m_scene, path );
+
+        if( node != nullptr )
+        {
+            deserializeNodeProp<bool>( node, "enable", _xmlNode, []( auto _node, auto _value )
+            {
+                if( _value != _node->isEnable() )
+                {
+                    if( _value )
+                    {
+                        _node->enable();
+                    }
+                    else
+                    {
+                        _node->disable();
+                    }
+                }
+            } );
+
+            deserializeNodeProp<mt::vec3f>( node, "scale", _xmlNode, []( auto _node, auto _value )
+            {
+                _node->setScale( _value );
+            } );
+
+            deserializeNodeProp<mt::vec2f>( node, "skew", _xmlNode, []( auto _node, auto _value )
+            {
+                _node->setSkew( _value );
+            } );
+
+            pugi::xml_node renderNode = _xmlNode.child( "Render" );
+            pugi::xml_node animationNode = _xmlNode.child( "Animation" );
+
+            RenderInterface * render = node->getRender();
+            if( render && renderNode )
+            {
+                deserializeNodeProp<bool>( node, "enable", renderNode, []( auto _node, auto _value )
+                {
+                    if( _node->getRender()->isRenderEnable() != _value )
+                    {
+                        _node->getRender()->setRenderEnable( _value );
+                    }
+                } );
+
+                deserializeNodeProp<bool>( node, "hide", renderNode, []( auto _node, auto _value )
+                {
+                    if( _node->getRender()->isHide() != _value )
+                    {
+                        _node->getRender()->setHide( _value );
+                    }
+                } );
+
+                deserializeNodeProp<Mengine::Color>( node, "color", renderNode, []( auto _node, auto _value )
+                {
+                    _node->getRender()->setLocalColor( _value );
+                } );
+            }
+
+            AnimationInterface * animation = node->getAnimation();
+            if( animation && animationNode )
+            {
+                deserializeNodeProp<bool>( node, "loop", animationNode, []( auto _node, auto _value )
+                {
+                    if( _node->getAnimation()->isLoop() != _value )
+                    {
+                        _node->getAnimation()->setLoop( _value );
+                    }
+                } );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    VectorNodePath NodeDebuggerService::stringToPath( const String & _str )
+    {
+        VectorNodePath path;
+
+        if( !_str.empty() )
+        {
+            const char* ptr = _str.c_str();
+            uint32_t uid = 0;
+            while( *ptr )
+            {
+                if( *ptr == '/' )
+                {
+                    path.push_back( uid );
+                    uid = 0;
+                }
+                else
+                {
+                    uid *= 10;
+                    uid += static_cast<uint32_t>( *ptr - '0' );
+                }
+
+                ++ptr;
+            }
+        }
+
+        return path;
     }
     //////////////////////////////////////////////////////////////////////////
 }

@@ -38,23 +38,4 @@ namespace Mengine
     {
         return m_external;
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceMusic::_convert()
-    {
-        const ConstString & codecType = this->getCodecType();
-        const ConstString & converterType = this->getConverterType();
-        const FilePath & filePath = this->getFilePath();
-
-        FilePath newFilePath;
-        ConstString newCodecType;
-        if( this->convertDefault_( converterType, filePath, newFilePath, codecType, newCodecType ) == false )
-        {
-            return false;
-        }
-
-        this->setFilePath( newFilePath );
-        this->setCodecType( newCodecType );
-
-        return true;
-    }
 }

@@ -24,7 +24,7 @@ namespace Mengine
         SERVICE_DECLARE( "AccountService" )
 
     public:
-        virtual void setAccountProviderInterface( const AccountProviderInterfacePtr & _accountProvider ) = 0;
+        virtual void setAccountProvider( const AccountProviderInterfacePtr & _accountProvider ) = 0;
 
     public:
         virtual AccountInterfacePtr createAccount() = 0;

@@ -57,6 +57,13 @@ namespace Mengine
         inline bool hasParent() const;
 
     public:
+        void setUniqueIdentity( uint32_t _uniqueIdentity );
+        uint32_t getUniqueIdentity() const;
+
+    protected:
+        uint32_t m_uniqueIdentity;
+
+    public:
         void addChild( const NodePtr & _node );
         void addChildFront( const NodePtr & _node );
         bool addChildAfter( const NodePtr & _node, const NodePtr & _after );
@@ -112,6 +119,11 @@ namespace Mengine
         void foreachChildren( const LambdaNode & _lambda ) const;
         void foreachChildrenUnslug( const LambdaNode & _lambda ) const;
 
+        typedef Lambda<bool( const NodePtr & )> LambdaNodeBreak;
+        void foreachChildrenUnslugBreak( const LambdaNodeBreak & _lambda ) const;
+
+        NodePtr findUniqueChild( uint32_t _uniqueIdentity ) const;
+        
         void removeParentRender_();
         void setParentRender_( Node * _parent );
 

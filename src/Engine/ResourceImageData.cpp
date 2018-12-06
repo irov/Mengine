@@ -44,8 +44,10 @@ namespace Mengine
             return false;
         }
 
+        const ConstString & codecType = this->getCodecType();
+
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( m_codecType );
+            ->createDecoderT<ImageDecoderInterfacePtr>( codecType );
 
         if( imageDecoder == nullptr )
         {

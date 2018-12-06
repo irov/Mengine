@@ -1,17 +1,17 @@
-#include "ResourceDefaultPrefetcher.h"
+#include "DefaultResourcePrefetcher.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    ResourceDefaultPrefetcher::ResourceDefaultPrefetcher()
+    DefaultResourcePrefetcher::DefaultResourcePrefetcher()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ResourceDefaultPrefetcher::~ResourceDefaultPrefetcher()
+    DefaultResourcePrefetcher::~DefaultResourcePrefetcher()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceDefaultPrefetcher::prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
+    bool DefaultResourcePrefetcher::prefetch( const ResourcePtr & _resource, const PrefetcherObserverInterfacePtr & _observer )
     {
         _resource->incrementReference();
 
@@ -20,7 +20,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceDefaultPrefetcher::unfetch( const ResourcePtr & _resource )
+    bool DefaultResourcePrefetcher::unfetch( const ResourcePtr & _resource )
     {
         _resource->decrementReference();
 

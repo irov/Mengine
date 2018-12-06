@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/AccountServiceInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/FileGroupInterface.h"
 
 #include "Kernel/ServiceBase.h"
@@ -24,7 +24,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void setAccountProviderInterface( const AccountProviderInterfacePtr & _accountProvider ) override;
+        void setAccountProvider( const AccountProviderInterfacePtr & _accountProvider ) override;
 
     public:
         AccountInterfacePtr createAccount() override;
@@ -90,5 +90,7 @@ namespace Mengine
         ConstString m_defaultAccountID;
 
         uint32_t m_playerEnumerator;
+
+        bool m_invalidateAccounts;
     };
 }

@@ -12,6 +12,7 @@ namespace Mengine
         , public Content
     {
         DECLARE_VISITABLE( Resource );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceSound();
@@ -23,9 +24,6 @@ namespace Mengine
 
         void setDefaultVolume( float _defaultVolume );
         float getDefaultVolume() const;
-
-    public:
-        bool _convert() override;
 
     public:
         SoundBufferInterfacePtr createSoundBuffer() const;

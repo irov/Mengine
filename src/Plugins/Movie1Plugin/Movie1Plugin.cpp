@@ -9,6 +9,7 @@
 #include "Interface/DataServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
@@ -43,7 +44,6 @@
 
 #include "DataflowAEK.h"
 
-#include "ResourceMoviePrefetcher.h"
 #include "ResourceMovieValidator.h"
 
 #include "pybind/pybind.hpp"
@@ -1619,29 +1619,29 @@ namespace Mengine
             return false;
         }
 
-        DataflowInterfacePtr aek = new FactorableUnique<DataflowAEK>();
+        DataflowInterfacePtr dataflowAEK = new FactorableUnique<DataflowAEK>();
 
-        if( aek->initialize() == false )
+        if( dataflowAEK->initialize() == false )
         {
             return false;
         }
 
-        DATA_SERVICE()
-            ->registerDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ), aek );
-
+        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ), dataflowAEK );
+        
         CODEC_SERVICE()
             ->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {
+            ResourcePrefetcherInterfacePtr resourcePrefetcher = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );
+
             RESOURCEPREFETCHER_SERVICE()
-                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<ResourceMoviePrefetcher>() );
+                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), resourcePrefetcher );
         }
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<ResourceMovieValidator>() );
+            VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<ResourceMovieValidator>() );
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
@@ -1714,12 +1714,10 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            RESOURCEVALIDATE_SERVICE()
-                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
         }
 
-        DATA_SERVICE()
-            ->unregisterDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {

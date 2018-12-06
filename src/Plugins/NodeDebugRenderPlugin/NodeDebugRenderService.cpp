@@ -509,7 +509,11 @@ namespace Mengine
                 protected:
                     void visit_scope( pybind::class_type_scope_interface * _scope ) override
                     {
+#ifndef NDEBUG
                         uint32_t count = _scope->getObjectCount();
+#else
+                        uint32_t count = 0;
+#endif
 
                         if( count == 0 )
                         {

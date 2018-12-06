@@ -35,20 +35,15 @@ namespace Mengine
         return resourceImage;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceAstralax::_convert()
-    {
-        bool result = this->convertDefault2_( m_converterType, m_filePath, m_filePath );
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceAstralax::_compile()
     {
         const ConstString & name = this->getName();
+
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        const FilePath & filePath = this->getFilePath();
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
-            ->createEmitterContainerFromFile( fileGroup, m_filePath, name );
+            ->createEmitterContainerFromFile( fileGroup, filePath, name );
 
         if( container == nullptr )
         {

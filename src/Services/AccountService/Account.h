@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/AccountInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/FileGroupInterface.h"
 
 #include "Config/Typedef.h"

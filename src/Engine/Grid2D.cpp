@@ -100,7 +100,7 @@ namespace Mengine
 
         uint32_t index = _i + _j * m_countX;
 
-        ColourValue_ARGB argb = _value.getAsARGB();
+        ColorValue_ARGB argb = _value.getAsARGB();
 
         m_vertices[index].color = argb;
 

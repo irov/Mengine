@@ -13,6 +13,7 @@ namespace Mengine
         , public Content
     {
         DECLARE_VISITABLE( Resource );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceMusic();
@@ -24,9 +25,6 @@ namespace Mengine
 
         void setExternal( bool _external );
         bool isExternal() const;
-
-    protected:
-        bool _convert() override;
 
     private:
         float m_volume;

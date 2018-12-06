@@ -3,7 +3,6 @@
 #include "ResourcePrefetcherServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
-#include "Kernel/Observable.h"
 #include "Kernel/Hashtable.h"
 
 namespace Mengine
@@ -11,7 +10,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourcePrefetcherService
         : public ServiceBase<ResourcePrefetcherServiceInterface>
-        , public Observable
     {
     public:
         ResourcePrefetcherService();

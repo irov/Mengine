@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/FileGroupInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"

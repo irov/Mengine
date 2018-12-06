@@ -1,23 +1,13 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadQueueInterface.h"
 
-#include "ThreadTaskPrefetchImageDecoder.h"
-#include "ThreadTaskPrefetchSoundDecoder.h"
-#include "ThreadTaskPrefetchDataflow.h"
+#include "ThreadTaskPrefetch.h"
 
 #include "Kernel/ServiceBase.h"
 
 #include "Kernel/Factory.h"
 
 #include "Config/Map.h"
-
-#ifndef MENGINE_PREFETCHER_THREAD_COUNT
-#define MENGINE_PREFETCHER_THREAD_COUNT 2
-#endif
-
-#ifndef MENGINE_PREFETCHER_PACKET_SIZE
-#define MENGINE_PREFETCHER_PACKET_SIZE 64
-#endif
 
 namespace Mengine
 {
@@ -55,6 +45,10 @@ namespace Mengine
         bool getData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data ) override;
 
     public:
+        bool prefetchStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, uint32_t _magicNumber, uint32_t _magicVersion, const PrefetcherObserverInterfacePtr & _observer ) override;
+        bool getStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, MemoryInterfacePtr & _memory ) override;
+        
+    public:
         bool unfetch( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath ) override;
 
     public:
@@ -62,14 +56,19 @@ namespace Mengine
 
     protected:
         bool hasPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const;
+        bool getPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver ) const;
         bool popPrefetch_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, PrefetchReceiver ** _receiver );
 
     protected:
         ThreadQueueInterfacePtr m_threadQueue;
 
+        typedef Vector<ConstString> VectorThreads;
+        VectorThreads m_threads;
+
         FactoryPtr m_factoryThreadTaskPrefetchImageDecoder;
         FactoryPtr m_factoryThreadTaskPrefetchSoundDecoder;
         FactoryPtr m_factoryThreadTaskPrefetchDataflow;
+        FactoryPtr m_factoryThreadTaskPrefetchStream;
 
         typedef std::pair<ConstString, FilePath> KeyPrefetchReceiver;
         typedef Map<KeyPrefetchReceiver, PrefetchReceiver> MapPrefetchReceiver;

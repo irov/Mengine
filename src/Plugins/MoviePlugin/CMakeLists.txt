@@ -23,8 +23,6 @@ src
     Movie2Data.h
     ResourceMovie2.cpp
     ResourceMovie2.h
-    ResourceMovie2Prefetcher.cpp
-    ResourceMovie2Prefetcher.h
     LoaderResourceMovie2.cpp
     LoaderResourceMovie2.h
     

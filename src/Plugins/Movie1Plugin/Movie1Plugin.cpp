@@ -1447,6 +1447,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie1Plugin::_initialize()
     {
+        this->addDependencyService( "PrefetcherService" );
+
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
             pybind::kernel_interface * kernel = SCRIPT_SERVICE()
@@ -1717,7 +1719,8 @@ namespace Mengine
             VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
         }
 
-        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+        DataflowInterfacePtr dataflow = VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+        dataflow->finalize();
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {

@@ -3,12 +3,15 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/PixelFormat.h"
 
 #include "Kernel/Logger.h"
 
 #include "TTFPrototypeGenerator.h"
+#include "TTFDataflow.h"
+#include "FEDataflow.h"
 
 #include "fe/fe.h"
 
@@ -49,6 +52,8 @@ namespace Mengine
     {
         SERVICE_CREATE( TTFAtlasService );
 
+        this->addDependencyService( "TextService" );
+
         FT_Library ftlibrary;
         FT_Error ft_err = FT_Init_FreeType( &ftlibrary );
 
@@ -72,6 +77,26 @@ namespace Mengine
 
         m_ftlibrary = ftlibrary;
 
+        TTFDataflowPtr dataflowTTF = new FactorableUnique<TTFDataflow>();
+
+        dataflowTTF->setFTLibrary( ftlibrary );
+
+        if( dataflowTTF->initialize() == false )
+        {
+            return false;
+        }
+
+        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ), dataflowTTF );
+
+        FEDataflowPtr dataflowFE = new FactorableUnique<FEDataflow>();
+
+        if( dataflowFE->initialize() == false )
+        {
+            return false;
+        }
+
+        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ), dataflowFE );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -79,6 +104,12 @@ namespace Mengine
     {
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
+
+        DataflowInterfacePtr dataflowTTF = VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
+        dataflowTTF->finalize();
+
+        DataflowInterfacePtr dataflowFE = VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
+        dataflowFE->finalize();
 
         SERVICE_FINALIZE( TTFAtlasServiceInterface );
 

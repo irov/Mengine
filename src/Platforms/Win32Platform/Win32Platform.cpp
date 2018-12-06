@@ -260,8 +260,6 @@ namespace Mengine
         TIME_SERVICE()
             ->resetDeltaTime();
 
-        bool nopause = HAS_OPTION( "nopause" );
-
 #ifdef NDEBUG
         try
 #endif
@@ -310,6 +308,9 @@ namespace Mengine
 
                 bool focus = APPLICATION_SERVICE()
                     ->isFocus();
+
+                bool nopause = APPLICATION_SERVICE()
+                    ->getNopause();
 
                 if( focus == true && m_active == true || nopause == true )
                 {
@@ -2070,8 +2071,9 @@ namespace Mengine
         }
 
         m_active = _active;
-
-        bool nopause = HAS_OPTION( "nopause" );
+                
+        bool nopause = APPLICATION_SERVICE()
+            ->getNopause();
 
         if( m_fpsMonitor != nullptr )
         {

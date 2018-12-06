@@ -24,7 +24,7 @@ namespace Mengine
 
     public:
         void setTTFMemory( const MemoryInterfacePtr & _memory );
-        const MemoryInterfacePtr & getTTFMemory() const override;
+        const MemoryInterfacePtr & getTTFMemory() const;
 
     public:
         void setFTFace( FT_Face _face );

@@ -45,11 +45,15 @@ namespace Mengine
         virtual void _finalize();
 
     protected:
+        bool addDependencyService( const Char * _name );
         bool addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory );
 
     protected:
         bool m_dynamicLoad;
         bool m_initialize;
+
+        typedef Vector<String> VectorDependencyServices;
+        VectorDependencyServices m_dependencyServices;
 
         typedef Vector<ConstString> VectorModuleFactory;
         VectorModuleFactory m_moduleFactories;

@@ -9,12 +9,11 @@ android {
             storePassword '123456'
         }
     }
-    buildToolsVersion "27.0.3"
+    buildToolsVersion '28.0.3'
     compileSdkVersion 26
     defaultConfig {
         applicationId "org.Mengine.Build"
         minSdkVersion 15
-        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
         ndk {

@@ -59,19 +59,23 @@ namespace Mengine
 
         m_initialize = false;
 
+        for( const String & serviceName : m_dependencyServices )
+        {
+            SERVICE_PROVIDER_GET()
+                ->finalizeService( serviceName.c_str() );
+        }
+
+        m_dependencyServices.clear();
+
         this->_finalize();
 
-        for( VectorModuleFactory::iterator
-            it = m_moduleFactories.begin(),
-            it_end = m_moduleFactories.end();
-            it != it_end;
-            ++it )
+        for( const ConstString & moduleFactory : m_moduleFactories )
         {
-            const ConstString & moduleFactory = *it;
-
             MODULE_SERVICE()
                 ->unregisterModule( moduleFactory );
         }
+
+        m_moduleFactories.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::isInitialize() const
@@ -103,6 +107,19 @@ namespace Mengine
     void PluginBase::_finalize()
     {
         //Empty
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginBase::addDependencyService( const Char * _name )
+    {
+        if( SERVICE_PROVIDER_GET()
+            ->existService( _name ) == false )
+        {
+            return false;
+        }
+
+        m_dependencyServices.emplace_back( _name );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginBase::addModuleFactory( const ConstString & _name, const ModuleFactoryInterfacePtr & _factory )

@@ -13,13 +13,11 @@ namespace Mengine
         , public Content
     {
         DECLARE_VISITABLE( ResourceTestPick );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceHIT();
         ~ResourceHIT() override;
-
-    public:
-        bool _convert() override;
 
     protected:
         bool _compile() override;

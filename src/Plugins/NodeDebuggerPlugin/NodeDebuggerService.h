@@ -8,9 +8,12 @@
 #include "Config/Deque.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/NodeUniqueFinder.h"
 
 #include "Interface/SocketInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+
+namespace pugi { class xml_node; }
 
 namespace Mengine
 {
@@ -61,7 +64,12 @@ namespace Mengine
         void privateInit();
         void sendPacket( NodeDebuggerPacket & _packet );
         void sendScene( const Mengine::ScenePtr & _scene );
+        void serializeNode( const Mengine::NodePtr & _node, pugi::xml_node & _xmlParentNode );
+        void serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode );
+        void serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode );
         void processPacket( NodeDebuggerPacket & _packet );
+        void receiveChangedNode( const pugi::xml_node& _xmlNode );
+        VectorNodePath stringToPath( const String & _str );
 
     protected:
         ScenePtr m_scene;

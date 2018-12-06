@@ -6,7 +6,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/FileGroupInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/RenderMaterialInterface.h"
 
 #include "Kernel/ConstString.h"
@@ -166,7 +166,7 @@ namespace Mengine
         SERVICE_DECLARE( "AstralaxSystem" )
 
     public:
-        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName ) = 0;
+        virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromMemory( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName ) = 0;
         virtual AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container ) = 0;
 
     public:

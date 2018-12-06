@@ -11,6 +11,7 @@ namespace Mengine
         , public Content
     {
         DECLARE_VISITABLE( ResourceImage );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceImageDefault();
@@ -18,9 +19,6 @@ namespace Mengine
 
     public:
         bool setup( const FilePath & _imagePath, const ConstString & _codecType, const mt::uv4f & _uv_image, const mt::uv4f & _uv_alpha, const mt::vec2f & _maxSize );
-
-    protected:
-        bool _convert() override;
 
     protected:
         bool _compile() override;

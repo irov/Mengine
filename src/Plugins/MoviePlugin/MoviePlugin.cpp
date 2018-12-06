@@ -8,6 +8,7 @@
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
@@ -17,7 +18,6 @@
 
 #include "DataflowAEZ.h"
 #include "Movie2DebugRender.h"
-#include "ResourceMovie2Prefetcher.h"
 
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/HotSpotPolygon.h"
@@ -447,8 +447,7 @@ namespace Mengine
             return false;
         }
 
-        DATA_SERVICE()
-            ->registerDataflow( STRINGIZE_STRING_LOCAL( "aezMovie" ), dataflowAEZ );
+        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aezMovie" ), dataflowAEZ );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceMovie2, 128> >() ) == false )
@@ -458,8 +457,10 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {
+            ResourcePrefetcherInterfacePtr resourcePrefetcher = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );
+
             RESOURCEPREFETCHER_SERVICE()
-                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<ResourceMovie2Prefetcher>() );
+                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), resourcePrefetcher );
         }
 
         if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
@@ -475,8 +476,7 @@ namespace Mengine
             movie2Validator->setMovieInstance( m_movieInstance );
             movie2Validator->setArchivator( archivator );
 
-            RESOURCEVALIDATE_SERVICE()
-                ->addResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), movie2Validator );
+            VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), movie2Validator );
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
@@ -520,8 +520,7 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
 
-        DATA_SERVICE()
-            ->unregisterDataflow( STRINGIZE_STRING_LOCAL( "aekMovie" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {
@@ -537,8 +536,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
         {
-            RESOURCEVALIDATE_SERVICE()
-                ->removeResourceValidator( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
         }
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )

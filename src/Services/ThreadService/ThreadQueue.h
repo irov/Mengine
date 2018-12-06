@@ -19,12 +19,17 @@ namespace Mengine
         ~ThreadQueue() override;
 
     public:
-        void setThreadName( const ConstString & _threadName );
-        void setThreadCount( uint32_t _count );
+        bool initialize() override;
+        void finalize() override;
+
+    public:
         void setPacketSize( uint32_t _size );
 
     public:
         bool update();
+
+    protected:
+        void addThread( const ConstString & _threadName ) override;
 
     protected:
         void addTask( const ThreadTaskInterfacePtr & _task ) override;
@@ -36,19 +41,23 @@ namespace Mengine
         void updateCurrentTask_( ThreadTaskInterfacePtr & _currentTask );
 
     protected:
-        ConstString m_threadName;
         uint32_t m_packetSize;
+        uint32_t m_threadSampler;
 
-        typedef List<ThreadTaskInterfacePtr> ListThreadTask;
-        ListThreadTask m_threadTasks;
+        typedef Vector<ConstString> VectorThreads;
+        VectorThreads m_threads;
+
+        typedef List<ThreadTaskInterfacePtr> ListThreadTasks;
+        ListThreadTasks m_threadTasks;
 
         typedef Vector<ThreadTaskInterfacePtr> VectorThreadTasks;
-        VectorThreadTasks m_currentTasks;
+        VectorThreadTasks m_currentThreadTasks;
 
         FactoryPtr m_factoryPoolTaskPacket;
 
         bool m_cancel;
     };
-
-    typedef IntrusivePtr<ThreadQueue> ThreadQueuePtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ThreadQueue, ThreadQueueInterface> ThreadQueuePtr;
+    //////////////////////////////////////////////////////////////////////////
 }

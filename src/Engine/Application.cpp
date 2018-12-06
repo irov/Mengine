@@ -1032,24 +1032,46 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Application::notifyDebugOpenFile_( const char * _folder, const char * _fileName )
+    void Application::notifyDebugOpenFile_( const Char * _folder, const Char * _fileName, bool _streaming )
     {
         bool isMainThread = THREAD_SERVICE()
             ->isMainThread();
 
         if( isMainThread == true )
         {
-            LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("open %s%s"
-                , _folder
-                , _fileName
-                );
+            if( _streaming == false )
+            {
+                LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("open %s%s"
+                    , _folder
+                    , _fileName
+                    );
+            }
+            else
+            {
+                LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("streaming %s%s"
+                    , _folder
+                    , _fileName
+                    );
+            }
         }
         else
         {
-            LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("[multithread] open %s%s"
-                , _folder
-                , _fileName
-                );
+            if( _streaming == false )
+            {
+                LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("open [multithread:%u] open %s%s"
+                    , THREAD_SERVICE()->getCurrentThreadId()
+                    , _folder
+                    , _fileName
+                    );
+            }
+            else
+            {
+                LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )("streaming [multithread:%u] open %s%s"
+                    , THREAD_SERVICE()->getCurrentThreadId()
+                    , _folder
+                    , _fileName
+                    );
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////

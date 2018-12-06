@@ -95,9 +95,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool CodecService::registerCodecExt( const String & _ext, const ConstString & _codecType )
     {
-        MapCodecTypes::iterator it_found = m_codecTypes.find( _ext );
+        MapCodecExts::iterator it_found = m_codecExts.find( _ext );
 
-        if( it_found != m_codecTypes.end() )
+        if( it_found != m_codecExts.end() )
         {
             const ConstString & alredyCodec = it_found->second;
 
@@ -110,7 +110,7 @@ namespace Mengine
             return false;
         }
 
-        m_codecTypes.emplace( _ext, _codecType );
+        m_codecExts.emplace( _ext, _codecType );
 
         return true;
     }
@@ -128,9 +128,9 @@ namespace Mengine
 
         String ext( dot_find + 1 );
 
-        MapCodecTypes::const_iterator it_found = m_codecTypes.find( ext );
+        MapCodecExts::const_iterator it_found = m_codecExts.find( ext );
 
-        if( it_found == m_codecTypes.end() )
+        if( it_found == m_codecExts.end() )
         {
             return ConstString::none();
         }

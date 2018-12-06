@@ -6,6 +6,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 
@@ -211,14 +212,18 @@ namespace Mengine
             }
 
 #ifndef MENGINE_MASTER_RELEASE
-            if( _ignored == false && resource->convert() == false )
+            if( _ignored == false )
             {
-                LOGGER_ERROR( "resource %s type [%s] invalid convert"
-                    , name.c_str()
-                    , type.c_str()
-                );
+                if( NOTIFICATION_SERVICE()
+                    ->notify( NOTIFICATOR_DEVELOPMENT_RESOURCE_CREATE, resource ) == false )
+                {
+                    LOGGER_ERROR( "resource %s type [%s] invalid convert"
+                        , name.c_str()
+                        , type.c_str()
+                    );
 
-                continue;
+                    return false;
+                }
             }
 #endif
         }

@@ -2,7 +2,7 @@
 
 #include "Interface/InputStreamInterface.h"
 #include "Interface/OutputStreamInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/MemoryInterface.h"
 
 #include "Kernel/Magic.h"

@@ -27,19 +27,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceHIT::_convert()
-    {
-        bool result = this->convertDefault_( m_converterType, m_filePath, m_filePath, m_codecType, m_codecType );
-
-        return result;
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::_compile()
     {
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
+        const FilePath & filePath = this->getFilePath();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, m_filePath, false );
+            ->openInputFile( fileGroup, filePath, false );
 
         if( stream == nullptr )
         {
@@ -136,12 +130,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceHIT::setPath( const FilePath & _filePath )
     {
-        if( m_filePath == _filePath )
+        const FilePath & filePath = this->getFilePath();
+
+        if( filePath == _filePath )
         {
             return;
         }
 
-        this->recompile( [this, _filePath]() { m_filePath = _filePath; } );
+        this->recompile( [this, _filePath]() { this->setFilePath( _filePath ); } );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceHIT::testPoint( const mt::vec2f & _point, float _minAlpha ) const

@@ -17,6 +17,8 @@ src
     Tuple.h
     Regex.h
     Atomic.h
+    Lambda.h
+    Define.h
 	Config.h
 	cmake_dummy.cpp
 )

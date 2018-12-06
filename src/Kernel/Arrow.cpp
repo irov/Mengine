@@ -4,8 +4,8 @@
 #include "Interface/ApplicationInterface.h"
 
 #include "Kernel/RenderCameraHelper.h"
-
 #include "Kernel/FactorableUnique.h"
+#include "Kernel/Assertion.h"
 
 #include "Config/Config.h"
 
@@ -40,7 +40,7 @@ namespace Mengine
             const RenderViewportInterfacePtr & renderViewport = render->getRenderViewport();
 
             mt::vec2f wp;
-            m_arrow->calcMouseWorldPosition( renderCamera, renderViewport, _position, wp );
+            m_arrow->calcMouseWorldPosition( renderCamera, renderViewport, _position, &wp );
 
             mt::vec3f v3( wp.x, wp.y, 0.f );
 
@@ -100,7 +100,7 @@ namespace Mengine
         if( renderCamera != nullptr && renderViewport != nullptr )
         {
             mt::vec2f wp;
-            this->calcMouseWorldPosition( renderCamera, renderViewport, cursor_pos, wp );
+            this->calcMouseWorldPosition( renderCamera, renderViewport, cursor_pos, &wp );
 
             mt::vec3f pos;
             pos.x = wp.x;
@@ -180,10 +180,10 @@ namespace Mengine
     //    m_hided = _value;
     //}
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::calcMouseWorldPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const
+    void Arrow::calcMouseWorldPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f * _worldPoint ) const
     {
         mt::vec2f adaptScreenPoint;
-        this->adaptScreenPosition_( _screenPoint, adaptScreenPoint );
+        this->adaptScreenPosition_( _screenPoint, &adaptScreenPoint );
 
         const Viewport & viewport = _viewport->getViewport();
 
@@ -217,16 +217,16 @@ namespace Mengine
         mt::vec2f p_vm;
         mt::mul_v2_v2_m4( p_vm, p, vm_inv );
 
-        _worldPoint = p_vm;
+        *_worldPoint = p_vm;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::calcPointClick( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f & _worldPoint ) const
+    void Arrow::calcPointClick( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _screenPoint, mt::vec2f * _worldPoint ) const
     {
         (void)_viewport;
         (void)_camera;
 
         mt::vec2f p1;
-        this->calcMouseWorldPosition( _camera, _viewport, _screenPoint, p1 );
+        this->calcMouseWorldPosition( _camera, _viewport, _screenPoint, &p1 );
 
         EArrowType arrowType = this->getArrowType();
 
@@ -238,29 +238,33 @@ namespace Mengine
 
                 mt::vec2f p = p1 + pc;
 
-                _worldPoint = p;
+                *_worldPoint = p;
             }break;
         case EAT_RADIUS:
             {
                 mt::vec2f p = p1;
 
-                _worldPoint = p;
+                *_worldPoint = p;
             }break;
         case EAT_POLYGON:
             {
                 mt::vec2f p = p1;
 
-                _worldPoint = p;
+                *_worldPoint = p;
+            }break;
+        default:
+            {
+                MENGINE_ASSERTION_FATAL( false, ("Arrow::calcPointClick arrow type '%d'", arrowType) );
             }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::calcPointDeltha( const RenderCameraInterfacePtr & _camera, const mt::vec2f & _screenDeltha, mt::vec2f & _worldDeltha ) const
+    void Arrow::calcPointDeltha( const RenderCameraInterfacePtr & _camera, const mt::vec2f & _screenDeltha, mt::vec2f * _worldDeltha ) const
     {
         Helper::screenToWorldDelta( _camera, _screenDeltha, _worldDeltha );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::calcMouseScreenPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _worldPoint, mt::vec2f & _screenPoint ) const
+    void Arrow::calcMouseScreenPosition( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const mt::vec2f & _worldPoint, mt::vec2f * _screenPoint ) const
     {
         const mt::mat4f & vm = _camera->getCameraViewMatrix();
 
@@ -297,12 +301,12 @@ namespace Mengine
         mt::vec2f sp = vp_begin + p_screen * vp_size;
 
         mt::vec2f adapt_sp;
-        this->adaptWorldPosition_( sp, adapt_sp );
+        this->adaptWorldPosition_( sp, &adapt_sp );
 
-        _screenPoint = adapt_sp;
+        *_screenPoint = adapt_sp;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f & _adaptScreenPoint ) const
+    void Arrow::adaptScreenPosition_( const mt::vec2f & _screenPoint, mt::vec2f * _adaptScreenPoint ) const
     {
         const Viewport & renderViewport = APPLICATION_SERVICE()
             ->getRenderViewport();
@@ -319,10 +323,10 @@ namespace Mengine
         mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
         mt::vec2f windowOffset = renderViewport.begin / currentResolutionSize;
 
-        _adaptScreenPoint = (_screenPoint - windowOffset) / windowScale;
+        *_adaptScreenPoint = (_screenPoint - windowOffset) / windowScale;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::adaptScreenDeltha_( const mt::vec2f & _screenDeltha, mt::vec2f & _adaptScreenDeltha ) const
+    void Arrow::adaptScreenDeltha_( const mt::vec2f & _screenDeltha, mt::vec2f * _adaptScreenDeltha ) const
     {
         const Viewport & renderViewport = APPLICATION_SERVICE()
             ->getRenderViewport();
@@ -338,10 +342,10 @@ namespace Mengine
 
         mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
 
-        _adaptScreenDeltha = _screenDeltha / windowScale;
+        *_adaptScreenDeltha = _screenDeltha / windowScale;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f & _adaptScreenPoint ) const
+    void Arrow::adaptWorldPosition_( const mt::vec2f & _screenPoint, mt::vec2f * _adaptScreenPoint ) const
     {
         const Viewport & renderViewport = APPLICATION_SERVICE()
             ->getRenderViewport();
@@ -358,6 +362,6 @@ namespace Mengine
         mt::vec2f windowScale = renderViewportSize / currentResolutionSize;
         mt::vec2f windowOffset = renderViewport.begin / currentResolutionSize;
 
-        _adaptScreenPoint = _screenPoint * windowScale + windowOffset;
+        *_adaptScreenPoint = _screenPoint * windowScale + windowOffset;
     }
 }

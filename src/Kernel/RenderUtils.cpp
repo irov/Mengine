@@ -39,7 +39,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void multiplyColorBuffer( const Color & _color, uint8_t * _out, const uint8_t * _in )
         {
-            ColourValue_ARGB argb = _color.getAsARGB();
+            ColorValue_ARGB argb = _color.getAsARGB();
 
 #ifdef MENGINE_RENDER_TEXTURE_RGBA
             uint8_t a8 = (argb >> 24) & 0xFF;

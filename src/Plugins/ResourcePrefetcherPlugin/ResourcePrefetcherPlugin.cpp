@@ -4,12 +4,16 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "ResourcePrefetcherServiceInterface.h"
 
-#include "ResourceImageDefaultPrefetcher.h"
-#include "ResourceSoundPrefetcher.h"
-#include "ResourceDefaultPrefetcher.h"
+#include "DataflowResourcePrefetcher.h"
+#include "ArchiveResourcePrefetcher.h"
+#include "ImageDecoderResourcePrefetcher.h"
+#include "SoundDecoderResourcePrefetcher.h"
+#include "DefaultResourcePrefetcher.h"
 
 #include "Kernel/FactorableUnique.h"
 
@@ -169,14 +173,40 @@ namespace Mengine
             pybind::def_function( kernel, "unfetchResources", &Detail::s_unfetchResources );
         }
 
-        RESOURCEPREFETCHER_SERVICE()
-            ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), new FactorableUnique<ResourceImageDefaultPrefetcher>() );
+        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Default" ), new FactorableUnique<DefaultResourcePrefetcher>() );
+        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ), new FactorableUnique<DataflowResourcePrefetcher>() );
+
+        ArchiveResourcePrefetcher * archivePrefetcherLZ4 = new FactorableUnique<ArchiveResourcePrefetcher>();
+
+        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
+            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+
+        if( archivator == nullptr )
+        {
+            return false;
+        }
+
+        archivePrefetcherLZ4->setArchivator( archivator );
+
+        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ArchiveLZ4" ), archivePrefetcherLZ4 );
+
+        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ImageDecoder" ), new FactorableUnique<ImageDecoderResourcePrefetcher>() );
+        VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "SoundDecoder" ), new FactorableUnique<SoundDecoderResourcePrefetcher>() );
+
+        ResourcePrefetcherInterfacePtr prefetcherImageDecoder = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ImageDecoder" ) );
 
         RESOURCEPREFETCHER_SERVICE()
-            ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceSound" ), new FactorableUnique<ResourceSoundPrefetcher>() );
+            ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceImageDefault" ), prefetcherImageDecoder );
+
+        ResourcePrefetcherInterfacePtr prefetcherSoundDecoder = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "SoundDecoder" ) );
 
         RESOURCEPREFETCHER_SERVICE()
-            ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceHIT" ), new FactorableUnique<ResourceDefaultPrefetcher>() );
+            ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceSound" ), prefetcherSoundDecoder );
+
+        ResourcePrefetcherInterfacePtr prefetcherDefault = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Default" ) );
+
+        RESOURCEPREFETCHER_SERVICE()
+            ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceHIT" ), prefetcherDefault );
 
         return true;
     }
@@ -200,6 +230,12 @@ namespace Mengine
 
         RESOURCEPREFETCHER_SERVICE()
             ->removeResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceHIT" ) );
+
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Default" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ArchiveLZ4" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ImageDecoder" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "SoundDecoder" ) );
 
         SERVICE_FINALIZE( Mengine::ResourcePrefetcherServiceInterface );
     }

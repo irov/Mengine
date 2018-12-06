@@ -10,29 +10,39 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadQueue::ThreadQueue()
         : m_packetSize( 1 )
+        , m_threadSampler( 0 )
         , m_cancel( false )
-    {
-        m_factoryPoolTaskPacket = new FactoryPool<ThreadTaskPacket, 4>();
+    {        
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadQueue::~ThreadQueue()
+    {        
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadQueue::initialize()
+    {
+        m_factoryPoolTaskPacket = new FactoryPool<ThreadTaskPacket, 4>();
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadQueue::finalize()
     {
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPoolTaskPacket );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ThreadQueue::setThreadName( const ConstString & _threadName )
-    {
-        m_threadName = _threadName;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ThreadQueue::setThreadCount( uint32_t _count )
-    {
-        m_currentTasks.resize( _count );
+
+        m_factoryPoolTaskPacket = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::setPacketSize( uint32_t _size )
     {
         m_packetSize = _size;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadQueue::addThread( const ConstString & _threadName )
+    {
+        m_threads.emplace_back( _threadName );
+
+        m_currentThreadTasks.emplace_back( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::addTask( const ThreadTaskInterfacePtr & _task )
@@ -44,7 +54,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::cancel()
     {
-        for( ThreadTaskInterfacePtr & currentTask : m_currentTasks )
+        for( ThreadTaskInterfacePtr & currentTask : m_currentThreadTasks )
         {
             if( currentTask == nullptr )
             {
@@ -57,7 +67,7 @@ namespace Mengine
             currentTask = nullptr;
         }
 
-        m_currentTasks.clear();
+        m_currentThreadTasks.clear();
 
         while( m_threadTasks.empty() == false )
         {
@@ -77,7 +87,7 @@ namespace Mengine
             return true;
         }
 
-        for( ThreadTaskInterfacePtr & currentTask : m_currentTasks )
+        for( ThreadTaskInterfacePtr & currentTask : m_currentThreadTasks )
         {
             this->updateCurrentTask_( currentTask );
         }
@@ -87,7 +97,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::updateCurrentTask_( ThreadTaskInterfacePtr & _currentTask )
     {
-        if( _currentTask == nullptr )
+        if( _currentTask == nullptr || 
+            _currentTask->isComplete() == true ||
+            _currentTask->isCancel() == true )
         {
             if( m_threadTasks.empty() == true )
             {
@@ -121,8 +133,12 @@ namespace Mengine
 
             if( packet->countTask() > 0 )
             {
+                m_threadSampler = (m_threadSampler + 1) % m_threads.size();
+                
+                const ConstString & threadName = m_threads[m_threadSampler];
+
                 if( THREAD_SERVICE()
-                    ->addTask( m_threadName, packet ) == false )
+                    ->addTask( threadName, packet ) == false )
                 {
                     uint32_t count = packet->countTask();
 
@@ -144,15 +160,5 @@ namespace Mengine
                 return;
             }
         }
-
-        if( _currentTask->isComplete() == true ||
-            _currentTask->isCancel() == true )
-        {
-            _currentTask = nullptr;
-
-            return;
-        }
-
-        return;
     }
 }

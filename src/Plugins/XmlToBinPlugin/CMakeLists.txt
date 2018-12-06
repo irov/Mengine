@@ -1,13 +1,13 @@
-set( MY_LIB_NAME XmlCodecPlugin )
+set( MY_LIB_NAME XmlToBinPlugin )
 
 ADD_FILTER(
 src
-	XmlCodecPlugin.h
-	XmlCodecPlugin.cpp
+	XmlToBinPlugin.h
+    XmlToBinPlugin.def
+	XmlToBinPlugin.cpp
 	XmlToBinDecoder.h
-	XmlToBinDecoder.cpp
-    XmlCodecPlugin.def
-	XmlCodecInterface.h
+	XmlToBinDecoder.cpp    
+	XmlToBinInterface.h
 )
 
 add_definitions(-DMENGINE_PLUGIN_DLL)

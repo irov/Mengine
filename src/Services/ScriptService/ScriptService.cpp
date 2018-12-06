@@ -176,14 +176,14 @@ namespace Mengine
 
         m_loggerWarning->setMessageLevel( LM_WARNING );
 
-        pybind::object py_logger = pybind::ptr_obj( m_kernel, m_loggerWarning );
+        pybind::object py_logger = pybind::make_object_t( m_kernel, m_loggerWarning );
         kernel->setStdOutHandle( py_logger.ptr() );
 
         m_loggerError = new ScriptLogger();
 
         m_loggerError->setMessageLevel( LM_ERROR );
 
-        pybind::object py_loggerError = pybind::ptr_obj( m_kernel, m_loggerError );
+        pybind::object py_loggerError = pybind::make_object_t( m_kernel, m_loggerError );
         kernel->setStdErrorHandle( py_loggerError.ptr() );
 
         pybind::set_observer_bind_call( new My_observer_bind_call() );
@@ -203,7 +203,7 @@ namespace Mengine
             return false;
         }
 
-        pybind::object py_moduleFinder = pybind::ptr_obj( m_kernel, m_moduleFinder );
+        pybind::object py_moduleFinder = pybind::make_object_t( m_kernel, m_moduleFinder );
 
         m_moduleFinder->setEmbed( py_moduleFinder );
 

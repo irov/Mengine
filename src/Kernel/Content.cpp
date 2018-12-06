@@ -42,6 +42,16 @@ namespace Mengine
         return m_converterType;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Content::setDataflowType( const ConstString & _dataflowType )
+    {
+        m_dataflowType = _dataflowType;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ConstString & Content::getDataflowType() const
+    {
+        return m_dataflowType;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Content::setValidNoExist( bool _validNoExist )
     {
         m_validNoExist = _validNoExist;

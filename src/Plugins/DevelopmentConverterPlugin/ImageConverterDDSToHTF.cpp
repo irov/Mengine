@@ -2,7 +2,7 @@
 
 #include "Interface/ImageCodecInterface.h"
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/FileServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"

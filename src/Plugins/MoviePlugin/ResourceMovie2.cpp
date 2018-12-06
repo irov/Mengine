@@ -6,6 +6,7 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/DataServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Movie2Interface.h"
 
@@ -24,26 +25,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceMovie2::~ResourceMovie2()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::setFilePath( const FilePath & _filePath )
-    {
-        m_filePath = _filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const FilePath & ResourceMovie2::getFilePath() const
-    {
-        return m_filePath;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceMovie2::setDataflowType( const ConstString & _dataflowType )
-    {
-        m_dataflowType = _dataflowType;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & ResourceMovie2::getDataflowType() const
-    {
-        return m_dataflowType;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::hasComposition( const ConstString & _name ) const
@@ -148,7 +129,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceMovie2::_compile()
     {
-        if( m_filePath.empty() == true )
+        const FilePath & filePath = this->getFilePath();
+
+        if( filePath.empty() == true )
         {
             LOGGER_ERROR( "resource movie '%s' group '%s' don`t set file path"
                 , this->getName().c_str()
@@ -160,7 +143,7 @@ namespace Mengine
 
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
-        DataInterfacePtr data = this->compileData_( fileGroup, m_filePath );
+        DataInterfacePtr data = this->compileData_( fileGroup, filePath );
 
         if( data == nullptr )
         {
@@ -216,15 +199,16 @@ namespace Mengine
             return nullptr;
         }
 
-        const DataflowInterfacePtr & dataflow = DATA_SERVICE()
-            ->getDataflow( m_dataflowType );
+        const ConstString & dataflowType = this->getDataflowType();
+
+        DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
         if( dataflow == nullptr )
         {
             LOGGER_ERROR( "resource '%s' group '%s' can` t find dataflow type '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
-                , m_dataflowType.c_str()
+                , dataflowType.c_str()
             );
 
             return nullptr;
@@ -238,7 +222,7 @@ namespace Mengine
             LOGGER_ERROR( "resource '%s' group '%s' can` t dataflow '%s' from '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
-                , m_dataflowType.c_str()
+                , dataflowType.c_str()
                 , _filePath.c_str()
             );
 

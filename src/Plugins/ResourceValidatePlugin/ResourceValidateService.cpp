@@ -2,9 +2,12 @@
 
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionVocabulary.h"
 #include "Kernel/Logger.h"
 
 //////////////////////////////////////////////////////////////////////////
@@ -34,21 +37,7 @@ namespace Mengine
         NOTIFICATION_SERVICE()
             ->removeObserver( NOTIFICATOR_ENGINE_ENABLE_PACKAGES, this );
 
-        MENGINE_ASSERTION( m_validators.empty() == true, ("resource validate service validators not empty '%d'"
-            , m_validators.size()
-            ) );
-
-        m_validators.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceValidateService::addResourceValidator( const ConstString & _type, const ResourceValidatorInterfacePtr & _validator )
-    {
-        m_validators.insert( _type, _validator );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ResourceValidateService::removeResourceValidator( const ConstString & _type )
-    {
-        m_validators.remove( _type );
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Validator" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::validResource( const ResourcePtr & _resource ) const
@@ -60,6 +49,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceValidateService::visitableResource_( const ResourcePtr & _resource ) const
     {
+        const ConstString & resourceType = _resource->getType();
+
+        const ResourceValidatorInterfacePtr & validator = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Validator" ), resourceType );
+        
+        if( validator == nullptr )
+        {
+            return true;
+        }
+
         LOGGER_INFO( "validate resource '%s' type '%s' group '%s' file group '%s' locale '%s'"
             , _resource->getName().c_str()
             , _resource->getType().c_str()
@@ -67,15 +65,6 @@ namespace Mengine
             , _resource->getFileGroup()->getName().c_str()
             , _resource->getLocale().c_str()
         );
-
-        const ConstString & resourceType = _resource->getType();
-
-        const ResourceValidatorInterfacePtr & validator = m_validators.find( resourceType );
-
-        if( validator == nullptr )
-        {
-            return true;
-        }
 
         bool successful = validator->validate( _resource );
 
@@ -94,19 +83,19 @@ namespace Mengine
             RESOURCE_SERVICE()
                 ->foreachResources( [this, &successful]( const ResourcePtr & _resource )
             {
-#ifndef MENGINE_MASTER_RELEASE
-                if( _resource->convert() == false )
-                {
-                    LOGGER_ERROR( "ResourceValidateService::visitableResources_ %s type [%s] invalid convert"
-                        , _resource->getName().c_str()
-                        , _resource->getType().c_str()
-                    );
-
-                    successful = false;
-
-                    return;
-                }
-#endif
+//#ifndef MENGINE_MASTER_RELEASE
+//                if( _resource->convert() == false )
+//                {
+//                    LOGGER_ERROR( "ResourceValidateService::visitableResources_ %s type [%s] invalid convert"
+//                        , _resource->getName().c_str()
+//                        , _resource->getType().c_str()
+//                    );
+//
+//                    successful = false;
+//
+//                    return;
+//                }
+//#endif
 
                 if( this->visitableResource_( _resource ) == false )
                 {

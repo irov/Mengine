@@ -99,6 +99,8 @@ Node
 	Node.h  
     NodeRenderHelper.cpp
     NodeRenderHelper.h
+    NodeUniqueFinder.cpp
+    NodeUniqueFinder.h
 )
 
 ADD_FILTER(
@@ -238,6 +240,7 @@ Resource\\\\Image
 
 ADD_FILTER(
 Resource\\\\Content
+    Contentable.h
 	Content.cpp
 	Content.h
 )
@@ -287,6 +290,8 @@ Core
 	AssertionNotImplemented.h
     AssertionMemoryPanic.h
     AssertionMainThreadGuard.h
+    AssertionVocabulary.h
+    AssertionVocabulary.cpp
 
     CRC32.h
     CRC32.cpp
@@ -403,6 +408,8 @@ Core
    
     Magic.h    
     Mixin.h
+    MixinPointer.h
+    Magicable.h
 	
 	Callback.h
     

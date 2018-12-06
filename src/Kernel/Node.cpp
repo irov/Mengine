@@ -24,6 +24,7 @@ namespace Mengine
         , m_freeze( false )
         //, m_rendering( false )
         //, m_invalidateRendering( true )
+        , m_uniqueIdentity( 0 )
         , m_parent( nullptr )
     {
     }
@@ -414,6 +415,16 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::setUniqueIdentity( uint32_t _uniqueIdentity )
+    {
+        m_uniqueIdentity = _uniqueIdentity;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t Node::getUniqueIdentity() const
+    {
+        return m_uniqueIdentity;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Node::addChild( const NodePtr & _node )
     {
         MENGINE_ASSERTION( _node != nullptr, ("node '%s' invalid add child NULL node"
@@ -535,9 +546,9 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const NodePtr & node = (*it);
+            const NodePtr & child = (*it);
 
-            _lambda( node );
+            _lambda( child );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -549,10 +560,50 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            const NodePtr & node = (*it);
+            NodePtr child = (*it);
 
-            _lambda( node );
+            _lambda( child );
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::foreachChildrenUnslugBreak( const LambdaNodeBreak & _lambda ) const
+    {
+        for( IntrusiveSlugListNodeChild::unslug_const_iterator
+            it = m_children.ubegin(),
+            it_end = m_children.uend();
+            it != it_end;
+            ++it )
+        {
+            NodePtr child = (*it);
+
+            if( _lambda( child ) == false )
+            {
+                break;
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    NodePtr Node::findUniqueChild( uint32_t _uniqueIdentity ) const
+    {
+        for( IntrusiveSlugListNodeChild::unslug_const_iterator
+            it = m_children.ubegin(),
+            it_end = m_children.uend();
+            it != it_end;
+            ++it )
+        {
+            NodePtr child = (*it);
+
+            uint32_t childUID = child->getUniqueIdentity();
+
+            if( childUID != _uniqueIdentity )
+            {
+                continue;
+            }
+
+            return child;
+        }
+
+        return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda )

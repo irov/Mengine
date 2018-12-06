@@ -459,7 +459,7 @@ namespace Mengine
             return time;
         }
         //////////////////////////////////////////////////////////////////////////
-        uint32_t s_scheduleGlobal( float _timing, const pybind::object & _script, const pybind::args & _args )
+        uint32_t s_scheduleGlobal( float _timing, const pybind::object & _cb, const pybind::args & _args )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduler();
@@ -471,7 +471,7 @@ namespace Mengine
 
             PythonScheduleEventPtr sl = m_factoryPythonScheduleEvent->createObject();
 
-            sl->initialize( _script, _args );
+            sl->initialize( _cb, _args );
 
             uint32_t id = sm->event( _timing, sl );
 
@@ -562,7 +562,7 @@ namespace Mengine
             return freeze;
         }
         //////////////////////////////////////////////////////////////////////////
-        float s_scheduleGlobalTime( uint32_t _id )
+        float s_scheduleGlobalPassed( uint32_t _id )
         {
             const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
                 ->getGlobalScheduler();
@@ -573,6 +573,21 @@ namespace Mengine
             }
 
             float time = sm->getTimePassed( _id );
+
+            return time;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        float s_scheduleGlobalLeft( uint32_t _id )
+        {
+            const SchedulerInterfacePtr & sm = PLAYER_SERVICE()
+                ->getGlobalScheduler();
+
+            if( sm == nullptr )
+            {
+                return 0.f;
+            }
+
+            float time = sm->getTimeLeft( _id );
 
             return time;
         }
@@ -1237,7 +1252,7 @@ namespace Mengine
                 ->minimizeWindow();
         }
         //////////////////////////////////////////////////////////////////////////
-        bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f & _screen )
+        bool s_calcMouseScreenPosition( const mt::vec2f & _pos, mt::vec2f * _screen )
         {
             const ArrowPtr & arrow = PLAYER_SERVICE()
                 ->getArrow();
@@ -1261,7 +1276,7 @@ namespace Mengine
                 ->getCursorPosition( _touchId );
 
             mt::vec2f pos_screen;
-            this->s_calcMouseScreenPosition( _pos, pos_screen );
+            this->s_calcMouseScreenPosition( _pos, &pos_screen );
 
             mt::vec2f mp = pos_screen - cp;
 
@@ -1272,7 +1287,7 @@ namespace Mengine
         void s_pushMouseButtonEvent( uint32_t _touchId, const mt::vec2f & _pos, uint32_t _button, bool _isDown )
         {
             mt::vec2f pos_screen;
-            this->s_calcMouseScreenPosition( _pos, pos_screen );
+            this->s_calcMouseScreenPosition( _pos, &pos_screen );
 
             INPUT_SERVICE()
                 ->pushMouseButtonEvent( _touchId, pos_screen.x, pos_screen.y, _button, 0.f, _isDown );
@@ -1848,7 +1863,7 @@ namespace Mengine
             void onMousePositionChange( uint32_t _touchId, const mt::vec2f & _position ) override
             {
                 mt::vec2f wp;
-                m_arrow->calcMouseWorldPosition( m_renderCamera, m_renderViewport, _position, wp );
+                m_arrow->calcMouseWorldPosition( m_renderCamera, m_renderViewport, _position, &wp );
 
                 mt::vec3f v3( wp.x, wp.y, 0.f );
 
@@ -1942,7 +1957,7 @@ namespace Mengine
             }
 
             mt::vec2f wp;
-            arrow->calcMouseWorldPosition( camera, viewport, _screenPoint, wp );
+            arrow->calcMouseWorldPosition( camera, viewport, _screenPoint, &wp );
 
             return wp;
         }
@@ -1977,7 +1992,7 @@ namespace Mengine
             }
 
             mt::vec2f wp;
-            arrow->calcPointClick( camera, viewport, _screenPoint, wp );
+            arrow->calcPointClick( camera, viewport, _screenPoint, &wp );
 
             return wp;
         }
@@ -2501,7 +2516,7 @@ namespace Mengine
 
             mt::vec2f wp;
             PLAYER_SERVICE()
-                ->calcGlobalMouseWorldPosition( pos, wp );
+                ->calcGlobalMouseWorldPosition( pos, &wp );
 
             return wp;
         }
@@ -2732,11 +2747,11 @@ namespace Mengine
 
                 mt::vec2f wp;
                 PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldPosition( point, wp );
+                    ->calcGlobalMouseWorldPosition( point, &wp );
 
                 mt::vec2f wd;
                 PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldDelta( delta, wd );
+                    ->calcGlobalMouseWorldDelta( delta, &wd );
 
                 pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, wd.x, wd.y, m_args );
 
@@ -2780,7 +2795,7 @@ namespace Mengine
 
                 mt::vec2f wp;
                 PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldPosition( point, wp );
+                    ->calcGlobalMouseWorldPosition( point, &wp );
 
                 pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
@@ -2825,7 +2840,7 @@ namespace Mengine
 
                 mt::vec2f wp;
                 PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldPosition( point, wp );
+                    ->calcGlobalMouseWorldPosition( point, &wp );
 
                 pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
@@ -2909,7 +2924,7 @@ namespace Mengine
 
                 mt::vec2f wp;
                 PLAYER_SERVICE()
-                    ->calcGlobalMouseWorldPosition( point, wp );
+                    ->calcGlobalMouseWorldPosition( point, &wp );
 
                 pybind::object py_result = m_cb.call_args( _event.touchId, wp.x, wp.y, _event.button, _event.pressure, _event.isDown, _event.isPressed, m_args );
 
@@ -3453,8 +3468,9 @@ namespace Mengine
         pybind::def_functor( kernel, "scheduleGlobalFreezeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalFreezeAll );
         pybind::def_functor( kernel, "scheduleGlobalResumeAll", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalResumeAll );
         pybind::def_functor( kernel, "scheduleGlobalIsFreeze", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalIsFreeze );
-        pybind::def_functor( kernel, "scheduleGlobalTime", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalTime );
-
+        pybind::def_functor_deprecated( kernel, "scheduleGlobalTime", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalPassed, "use scheduleGlobalPassed" );
+        pybind::def_functor( kernel, "scheduleGlobalPassed", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalPassed );
+        pybind::def_functor( kernel, "scheduleGlobalLeft", nodeScriptMethod, &EngineScriptMethod::s_scheduleGlobalLeft );
 
         pybind::def_functor( kernel, "getCursorPosition", nodeScriptMethod, &EngineScriptMethod::s_getCursorPosition );
         pybind::def_functor( kernel, "getTouchPosition", nodeScriptMethod, &EngineScriptMethod::s_getTouchPosition );

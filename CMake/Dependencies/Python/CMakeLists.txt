@@ -83,9 +83,7 @@ set( HAVE_FSYNC 0 )
 set( HAVE_WAIT3 0 )
 set( HAVE_WAIT4 0 )
 set( HAVE_DEVICE_MACROS 0 )
-file(MAKE_DIRECTORY ${python_BINARY_DIR}/Modules)
 
-file(WRITE ${python_BINARY_DIR}/Modules/Setup "#created by cmake, do not edit\n")
 configure_file(Modified/wininit.c ${SOURCE_DIR}/Modules/wininit.c COPYONLY)
 
 configure_file(Modified/pymem.h ${SOURCE_DIR}/Include/pymem.h COPYONLY)

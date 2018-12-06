@@ -14,10 +14,6 @@ namespace Mengine
         SERVICE_DECLARE( "ResourceValidateService" );
 
     public:
-        virtual void addResourceValidator( const ConstString & _type, const ResourceValidatorInterfacePtr & _validator ) = 0;
-        virtual void removeResourceValidator( const ConstString & _type ) = 0;
-
-    public:
         virtual bool validResource( const ResourcePtr & _resource ) const = 0;
     };
 }

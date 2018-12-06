@@ -2,6 +2,8 @@
 
 #include "ScriptablePrototypeGenerator.h"
 
+#include "Interface/EnumeratorServiceInterface.h"
+
 #include "Kernel/Node.h"
 
 #include "Kernel/ConstString.h"
@@ -34,6 +36,11 @@ namespace Mengine
 
             const ConstString & prototype = this->getPrototype();
             node->setType( prototype );
+
+            uint32_t uniqueIdentity = ENUMERATOR_SERVICE()
+                ->generateUniqueIdentity();
+
+            node->setUniqueIdentity( uniqueIdentity );
 
             this->setupScriptable( node );
 

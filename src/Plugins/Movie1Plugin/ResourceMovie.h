@@ -195,6 +195,7 @@ namespace Mengine
         , public Content
     {
         DECLARE_VISITABLE( Resource );
+        DECLARE_CONTENTABLE();
 
     public:
         ResourceMovie();
@@ -218,10 +219,6 @@ namespace Mengine
 
         void setLoopSegment( const mt::vec2f & _loopSegment );
         const mt::vec2f & getLoopSegment() const;
-
-    public:
-        void setDataflowType( const ConstString & _dataflowType );
-        const ConstString & getDataflowType() const;
 
     public:
         void setLayers( const VectorMovieLayers & _layers );
@@ -261,9 +258,6 @@ namespace Mengine
         void visitResourceMovie( VisitorResourceMovie * _visitor );
 
     protected:
-        bool _convert() override;
-
-    protected:
         bool _compile() override;
         void _release() override;
 
@@ -284,8 +278,6 @@ namespace Mengine
 
         bool m_hasOffsetPoint;
         mt::vec3f m_offsetPoint;
-
-        ConstString m_dataflowType;
 
         MovieFramePackInterfacePtr m_keyFramePack;
 

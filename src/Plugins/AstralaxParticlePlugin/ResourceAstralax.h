@@ -19,6 +19,8 @@ namespace Mengine
         , public Content
     {
         DECLARE_VISITABLE( Resource );
+        DECLARE_CONTENTABLE();
+        DECLARE_MAGICABLE( MAGIC_PTZ );
 
     public:
         ResourceAstralax();
@@ -31,9 +33,6 @@ namespace Mengine
 
     public:
         AstralaxEmitterInterfacePtr createEmitter();
-
-    public:
-        bool _convert() override;
 
     protected:
         bool _compile() override;

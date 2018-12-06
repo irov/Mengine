@@ -2,7 +2,7 @@
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidatorHelper.h"
 
-#include "Interface/ArchiveInterface.h"
+#include "Interface/ArchivatorInterface.h"
 
 #include "ResourceMovie2.h"
 

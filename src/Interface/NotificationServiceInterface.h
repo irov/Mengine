@@ -67,46 +67,24 @@ namespace Mengine
     template<class T>
     class GeneratorMethodObserverCallable;
     //////////////////////////////////////////////////////////////////////////
-    template<class C>
-    class GeneratorMethodObserverCallable<void (C::*)()>
-        : public MethodObserverCallable< C, void (C::*)() >
+    template<class C, class ... P>
+    class GeneratorMethodObserverCallable<void (C::*)(P...)>
+        : public MethodObserverCallable < C, void (C::*)(P...), typename std::remove_reference<P>::type ... >
     {
     public:
-        GeneratorMethodObserverCallable( C * _self, void (C::*_method)() )
-            : MethodObserverCallable<C, void (C::*)()>( _self, _method )
+        GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P...) )
+            : MethodObserverCallable<C, void (C::*)(P...), typename std::remove_reference<P>::type ...>( _self, _method )
         {
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    template<class C>
-    class GeneratorMethodObserverCallable<void (C::*)() const>
-        : public MethodObserverCallable< C, void (C::*)() const>
+    template<class C, class ... P>
+    class GeneratorMethodObserverCallable<void (C::*)(P...) const>
+        : public MethodObserverCallable < C, void (C::*)(P...) const, typename std::remove_reference<P>::type ... >
     {
     public:
-        GeneratorMethodObserverCallable( C * _self, void (C::*_method)() const )
-            : MethodObserverCallable<C, void (C::*)() const>( _self, _method )
-        {
-        }
-    };
-    //////////////////////////////////////////////////////////////////////////
-    template<class C, class P0>
-    class GeneratorMethodObserverCallable<void (C::*)(P0)>
-        : public MethodObserverCallable < C, void (C::*)(P0), typename std::remove_reference<P0>::type >
-    {
-    public:
-        GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P0) )
-            : MethodObserverCallable<C, void (C::*)(P0), typename std::remove_reference<P0>::type>( _self, _method )
-        {
-        }
-    };
-    //////////////////////////////////////////////////////////////////////////
-    template<class C, class P0, class P1>
-    class GeneratorMethodObserverCallable<void (C::*)(P0, P1)>
-        : public MethodObserverCallable< C, void (C::*)(P0, P1), typename std::remove_reference<P0>::type, typename std::remove_reference<P1>::type >
-    {
-    public:
-        GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P0, P1) )
-            : MethodObserverCallable<C, void (C::*)(P0, P1), typename std::remove_reference<P0>::type, typename std::remove_reference<P1>::type>( _self, _method )
+        GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P...) const )
+            : MethodObserverCallable<C, void (C::*)(P...) const, typename std::remove_reference<P>::type ...>( _self, _method )
         {
         }
     };

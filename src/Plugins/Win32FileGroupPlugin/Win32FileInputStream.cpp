@@ -38,7 +38,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size )
+    bool Win32FileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming )
     {
         STDEX_THREAD_GUARD_SCOPE( this, "Win32FileInputStream::open" );
 
@@ -49,7 +49,7 @@ namespace Mengine
 #endif
 
         WChar fullPath[MENGINE_MAX_PATH];
-        if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath ) == false )
+        if( this->openFile_( _relationPath, _folderPath, _filePath, fullPath, _streaming ) == false )
         {
             return false;
         }
@@ -107,7 +107,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath )
+    bool Win32FileInputStream::openFile_( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _fullPath, bool _streaming )
     {
         if( Helper::Win32ConcatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
         {
@@ -139,7 +139,7 @@ namespace Mengine
         if( SERVICE_EXIST( NotificationServiceInterface ) == true )
         {
             NOTIFICATION_SERVICE()
-                ->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str() );
+                ->notify( NOTIFICATOR_DEBUG_OPEN_FILE, _folderPath.c_str(), _filePath.c_str(), _streaming );
         }
 #endif
 

@@ -6,13 +6,14 @@
 
 namespace Mengine
 {
-    class XmlCodecPlugin
+    class XmlToBinPlugin
         : public PluginBase
     {
-        PLUGIN_DECLARE( "XmlCodec" )
+        PLUGIN_DECLARE( "XmlToBin" )
 
     public:
-        XmlCodecPlugin();
+        XmlToBinPlugin();
+        ~XmlToBinPlugin() override;
 
     protected:
         bool _initialize() override;

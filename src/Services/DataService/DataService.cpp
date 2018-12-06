@@ -1,6 +1,10 @@
 #include "DataService.h"
 
+#include "Interface/StringizeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+
 #include "Kernel/Logger.h"
+#include "Kernel/AssertionVocabulary.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( DataService, Mengine::DataService );
@@ -16,32 +20,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DataService::registerDataflow( const ConstString& _type, const DataflowInterfacePtr & _dataflow )
+    bool DataService::_initializeService()
     {
-        m_dataflows.emplace( _type, _dataflow );
+        //Empty
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DataService::unregisterDataflow( const ConstString& _type )
+    void DataService::_finalizeService()
     {
-        m_dataflows.erase( _type );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const DataflowInterfacePtr & DataService::getDataflow( const ConstString & _type ) const
-    {
-        MapDataflow::const_iterator it_found = m_dataflows.find( _type );
-
-        if( it_found == m_dataflows.end() )
-        {
-            LOGGER_ERROR( "DataService::getDataflow '%s' don't register"
-                , _type.c_str()
-            );
-
-            return DataflowInterfacePtr::none();
-        }
-
-        const DataflowInterfacePtr & dataflow = it_found->second;
-
-        return dataflow;
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Dataflow" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataService::dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream )

@@ -2,10 +2,11 @@
 
 #include "Interface/DataInterface.h"
 
-
+#include "Movie2Interface.h"
 #include "Movie2DataInterface.h"
 
 #include "Kernel/Resource.h"
+#include "Kernel/Content.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/Color.h"
 
@@ -56,20 +57,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class ResourceMovie2
         : public Resource
+        , public Content
     {
         DECLARE_VISITABLE( Resource );
+        DECLARE_CONTENTABLE();
+        DECLARE_MAGICABLE( MAGIC_AEZ );
 
     public:
         ResourceMovie2();
         ~ResourceMovie2() override;
-
-    public:
-        void setFilePath( const FilePath & _filePath );
-        const FilePath & getFilePath() const;
-
-    public:
-        void setDataflowType( const ConstString & _dataflowType );
-        const ConstString & getDataflowType() const;
 
     public:
         bool hasComposition( const ConstString & _name ) const;
@@ -84,6 +80,7 @@ namespace Mengine
         void setCompositionDesc( const ConstString & _name, const ResourceMovie2CompositionDesc & _composition );
         const ResourceMovie2CompositionDesc * getCompositionDesc( const ConstString & _name ) const;
 
+    public:
         typedef Lambda<void( const ConstString &, const ResourceMovie2CompositionDesc & )> LambdaCompositionDescs;
         void foreachCompositionDesc( const LambdaCompositionDescs & _lambda );
 
@@ -96,9 +93,6 @@ namespace Mengine
 
     protected:
         Movie2DataInterfacePtr m_movieData;
-
-        FilePath m_filePath;
-        ConstString m_dataflowType;
 
         typedef Map<ConstString, ResourceMovie2CompositionDesc> MapCompositions;
         MapCompositions m_compositions;

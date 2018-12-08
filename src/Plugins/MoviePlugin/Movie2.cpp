@@ -1606,44 +1606,49 @@ namespace Mengine
 
         ShaderDesc * desc = Helper::allocateT<ShaderDesc>();
 
+        desc->materialName = Helper::stringizeString( _callbackData->description );
+
         RenderProgramVariableInterfacePtr programVariable = RENDER_SYSTEM()
             ->createProgramVariable( 0, _callbackData->parameter_count );
 
-        if( strcmp( _callbackData->name, "desaturate" ) == 0 )
+        for( ae_uint32_t index = 0; index != _callbackData->parameter_count; ++index )
         {
-            desc->materialName = STRINGIZE_STRING_LOCAL( "Texture_Desaturate" );
+            ShaderParameterDesc parameter;
 
-            for( ae_uint32_t index = 0; index != _callbackData->parameter_count; ++index )
+            strcpy( parameter.uniform, _callbackData->parameter_uniforms[index] );
+            parameter.type = _callbackData->parameter_types[index];
+
+            float shader_values[4] = { 0.f };
+            switch( parameter.type )
             {
-                ShaderParameterDesc parameter;
-
-                strcpy( parameter.uniform, _callbackData->parameter_uniforms[index] );
-                parameter.type = _callbackData->parameter_types[index];
-
-                float shader_values[4] = { 0.f };
-                switch( parameter.type )
+            case AE_MOVIE_EXTENSION_SHADER_PARAMETER_SLIDER:
                 {
-                case AE_MOVIE_EXTENSION_SHADER_PARAMETER_SLIDER:
-                    {
-                        ae_float_t value = _callbackData->parameter_values[index];
+                    ae_float_t value = _callbackData->parameter_values[index];
 
-                        shader_values[0] = value;
+                    shader_values[0] = value;
 
-                        programVariable->setPixelVariableFloats( index, shader_values, 1 );
-                    }break;
-                case AE_MOVIE_EXTENSION_SHADER_PARAMETER_COLOR:
-                    {
-                        ae_color_t color_value = _callbackData->parameter_colors[index];
+                    programVariable->setPixelVariableFloats( index, shader_values, 1 );
+                }break;
+            case AE_MOVIE_EXTENSION_SHADER_PARAMETER_ANGLE:
+                {
+                    ae_float_t value = _callbackData->parameter_values[index];
 
-                        shader_values[0] = color_value.r;
-                        shader_values[1] = color_value.g;
-                        shader_values[2] = color_value.b;
-                        shader_values[3] = 1.f;
+                    shader_values[0] = value;
 
-                        programVariable->setPixelVariableFloats( index, shader_values, 4 );
-                    }break;
-                }                
-            }            
+                    programVariable->setPixelVariableFloats( index, shader_values, 1 );
+                }break;
+            case AE_MOVIE_EXTENSION_SHADER_PARAMETER_COLOR:
+                {
+                    ae_color_t color_value = _callbackData->parameter_colors[index];
+
+                    shader_values[0] = color_value.r;
+                    shader_values[1] = color_value.g;
+                    shader_values[2] = color_value.b;
+                    shader_values[3] = 1.f;
+
+                    programVariable->setPixelVariableFloats( index, shader_values, 4 );
+                }break;
+            }
         }
 
         desc->programVariable = programVariable;
@@ -2657,14 +2662,14 @@ namespace Mengine
                                 bb[0] = uv_correct.x;
                             }
 
-                            if( bb[2] < uv_correct.x )
-                            {
-                                bb[2] = uv_correct.x;
-                            }
-
                             if( bb[1] > uv_correct.y )
                             {
                                 bb[1] = uv_correct.y;
+                            }
+
+                            if( bb[2] < uv_correct.x )
+                            {
+                                bb[2] = uv_correct.x;
                             }
 
                             if( bb[3] < uv_correct.y )

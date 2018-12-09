@@ -1,6 +1,7 @@
 #include "PluginBase.h"
 
-#include "Interface/ModuleInterface.h"
+#include "Interface/ModuleServiceInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

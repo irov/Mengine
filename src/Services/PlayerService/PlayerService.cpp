@@ -16,6 +16,8 @@
 #include "Interface/ModuleInterface.h"
 #include "Interface/ApplicationInterface.h"
 #include "Interface/MemoryServiceInterface.h"
+#include "Interface/SceneServiceInterface.h"
+#include "Interface/ModuleServiceInterface.h"
 
 #include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
@@ -135,236 +137,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PlayerService::~PlayerService()
     {
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::setCurrentScene( const ScenePtr & _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb )
-    {
-        if( _scene == nullptr )
-        {
-            return false;
-        }
-
-        MODULE_SERVICE()
-            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), MapWParams() );
-
-        ScenePtr oldScene = m_scene;
-
-        if( m_scene != nullptr )
-        {
-            m_scene->disable();
-            m_scene = nullptr;
-        }
-
-        if( m_arrow != nullptr )
-        {
-            m_arrow->removeFromParent();
-            m_arrow->disable();
-        }
-
-        m_scheduleManager->removeAll();
-        m_affectorable->stopAllAffectors();
-
-        if( oldScene != nullptr && _destroyOld == true )
-        {
-            if( oldScene != nullptr )
-            {
-                oldScene->release();
-                oldScene = nullptr;
-            }
-
-            //NODE_SERVICE() 
-            //    ->clearHomeless();
-
-            if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
-            {
-                GRAVEYARD_SERVICE()
-                    ->clearTextures();
-            }
-        }
-
-        if( _cb != nullptr )
-        {
-            _cb->onSceneChange( nullptr, false, false );
-        }
-
-        m_scene = _scene;
-
-        PICKER_SERVICE()
-            ->setScene( m_scene );
-
-        if( _cb != nullptr )
-        {
-            _cb->onSceneChange( m_scene, false, false );
-        }
-
-#ifndef MENGINE_MASTER_RELEASE
-        PlayerResourceUselessCompilePtr unlessCompile = new FactorableUnique<PlayerResourceUselessCompile>();
-        unlessCompile->begin();
-#endif
-
-        m_scene->enableForce();
-
-        if( m_arrow != nullptr )
-        {
-            m_arrow->enableForce();
-        }
-
-#ifndef MENGINE_MASTER_RELEASE
-        unlessCompile->end();
-#endif
-
-        MEMORY_SERVICE()
-            ->clearCacheBuffers();
-
-        if( _cb != nullptr )
-        {
-            _cb->onSceneChange( m_scene, true, false );
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb )
-    {
-        MODULE_SERVICE()
-            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), MapWParams() );
-
-        if( m_arrow != nullptr )
-        {
-            m_arrow->removeFromParent();
-            m_arrow->disable();
-        }
-
-        m_scheduleManager->removeAll();
-        m_affectorable->stopAllAffectors();
-
-        m_scene->disable();
-
-        //NODE_SERVICE() 
-        //    ->clearHomeless();
-
-        if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
-        {
-            GRAVEYARD_SERVICE()
-                ->clearTextures();
-        }
-
-        if( _cb != nullptr )
-        {
-            _cb->onSceneChange( nullptr, false, false );
-        }
-
-        if( _cb != nullptr )
-        {
-            _cb->onSceneChange( m_scene, false, false );
-        }
-
-#ifndef MENGINE_MASTER_RELEASE
-        PlayerResourceUselessCompilePtr unlessCompile = new FactorableUnique<PlayerResourceUselessCompile>();
-        unlessCompile->begin();
-#endif
-
-        m_scene->enable();
-
-#ifndef MENGINE_MASTER_RELEASE
-        unlessCompile->end();
-#endif
-
-        if( m_arrow != nullptr )
-        {
-            m_arrow->enable();
-        }
-
-        if( _cb != nullptr )
-        {
-            _cb->onSceneChange( m_scene, true, false );
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb )
-    {
-        if( m_scene != nullptr )
-        {
-            if( m_arrow != nullptr )
-            {
-                m_arrow->removeFromParent();
-                m_arrow->disable();
-            }
-
-            m_scheduleManager->removeAll();
-            m_affectorable->stopAllAffectors();
-
-            m_globalInputHandler->clear();
-
-            m_scene->release();
-
-            //NODE_SERVICE() 
-            //    ->clearHomeless();
-
-            if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
-            {
-                GRAVEYARD_SERVICE()
-                    ->clearTextures();
-            }
-
-            m_scene = nullptr;
-        }
-
-        PICKER_SERVICE()
-            ->setScene( nullptr );
-
-        if( _cb != nullptr )
-        {
-            _cb->onSceneChange( nullptr, false, true );
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerService::destroyCurrentScene()
-    {
-        ScenePtr destroyScene = m_scene;
-
-        if( m_scene != nullptr )
-        {
-            m_scene->release();
-            m_scene = nullptr;
-        }
-
-        destroyScene = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ScenePtr & PlayerService::getCurrentScene()
-    {
-        return m_scene;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::createGlobalScene()
-    {
-        ScenePtr scene = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
-
-        if( scene == nullptr )
-        {
-            return false;
-        }
-
-        m_globalScene = scene;
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerService::removeGlobalScene()
-    {
-        m_globalScene = nullptr;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const ScenePtr & PlayerService::getGlobalScene()
-    {
-        return m_globalScene;
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::setArrow( const ArrowPtr & _arrow )
     {
@@ -381,10 +154,7 @@ namespace Mengine
             m_arrow->setRenderViewport( m_renderViewport );
             m_arrow->setRenderScissor( m_renderScissor );
 
-            if( m_scene != nullptr )
-            {
-                m_arrow->enable();
-            }
+            m_arrow->enable();
         }
 
         PICKER_SERVICE()
@@ -489,27 +259,34 @@ namespace Mengine
         m_affectorable = new FactorableUnique<PlayerGlobalAffectorable>();
         m_affectorableGlobal = new FactorableUnique<PlayerGlobalAffectorable>();
 
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, this, &PlayerService::notifyChangeScenePrepareDestroy );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_DESTROY, this, &PlayerService::notifyChangeSceneDestroy );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, this, &PlayerService::notifyChangeScenePrepareInitialize );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_ENABLE, this, &PlayerService::notifyChangeScenePrepareEnable );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_ENABLE, this, &PlayerService::notifyChangeSceneEnable );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_ENABLE_FINALLY, this, &PlayerService::notifyChangeSceneEnableFinally );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_COMPLETE, this, &PlayerService::notifyChangeScenePrepareComplete );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_PREPARE_DISABLE, this, &PlayerService::notifyRestartScenePrepareDisable );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_DISABLE, this, &PlayerService::notifyRestartSceneDisable );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_PREPARE_ENABLE, this, &PlayerService::notifyRestartScenePrepareEnable );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_ENABLE, this, &PlayerService::notifyRestartSceneEnable );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_ENABLE_FINALLY, this, &PlayerService::notifyRestartSceneEnableFinally );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_PREPARE_DESTROY, this, &PlayerService::notifyRemoveScenePrepareDestroy );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &PlayerService::notifyRemoveSceneDestroy );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::_finalizeService()
     {
-        if( m_scene != nullptr )
-        {
-            m_scene->release();
-            m_scene = nullptr;
-        }
+        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, this );
+        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_CHANGE_SCENE_DESTROY, this );
+        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, this );
 
         if( m_arrow != nullptr )
         {
             m_arrow->release();
             m_arrow = nullptr;
-        }
-
-        if( m_globalScene != nullptr )
-        {
-            m_globalScene->release();
-            m_globalScene = nullptr;
         }
 
         if( m_camera2D != nullptr )
@@ -748,8 +525,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::tick( const UpdateContext * _context )
     {
-
-
         UPDATE_SERVICE()
             ->update( _context );
     }
@@ -823,20 +598,23 @@ namespace Mengine
         context.scissor = m_renderScissor;
         context.target = m_renderTarget;
 
-        if( m_scene != nullptr )
+        const ScenePtr & scene = SCENE_SERVICE()
+            ->getCurrentScene();
+
+        if( scene != nullptr )
         {
             if( debugMask == false )
             {
                 //RenderInterface * render = m_scene->getRender();
                 //render->renderWithChildren( &context, false );
-                Helper::nodeRenderChildren( m_scene, &context, false );
+                Helper::nodeRenderChildren( scene, &context, false );
             }
             else
             {
                 if( SERVICE_EXIST( NodeDebugRenderServiceInterface ) == true )
                 {
                     NODEDEBUGRENDER_SERVICE()
-                        ->renderDebugNode( m_scene, &context, false );
+                        ->renderDebugNode( scene, &context, false );
                 }
             }
         }
@@ -879,9 +657,12 @@ namespace Mengine
             m_arrow->onAppMouseLeave();
         }
 
-        if( m_scene != nullptr && m_scene->isActivate() == true )
+        const ScenePtr & scene = SCENE_SERVICE()
+            ->getCurrentScene();
+
+        if( scene != nullptr && scene->isActivate() == true )
         {
-            m_scene->onAppMouseLeave();
+            scene->onAppMouseLeave();
         }
 
         PICKER_SERVICE()
@@ -895,9 +676,12 @@ namespace Mengine
             m_arrow->onAppMouseEnter();
         }
 
-        if( m_scene != nullptr && m_scene->isActivate() == true )
+        const ScenePtr & scene = SCENE_SERVICE()
+            ->getCurrentScene();
+
+        if( scene != nullptr && scene->isActivate() == true )
         {
-            m_scene->onAppMouseEnter();
+            scene->onAppMouseEnter();
         }
 
         PICKER_SERVICE()
@@ -931,9 +715,169 @@ namespace Mengine
     {
         m_focus = _focus;
 
-        if( m_scene != nullptr && m_scene->isActivate() == true )
+        const ScenePtr & scene = SCENE_SERVICE()
+            ->getCurrentScene();
+
+        if( scene != nullptr && scene->isActivate() == true )
         {
-            m_scene->onFocus( _focus );
+            scene->onFocus( _focus );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyChangeScenePrepareDestroy( const ScenePtr & _oldScene, const ScenePtr & _newScene )
+    {
+        MENGINE_UNUSED( _oldScene );
+        MENGINE_UNUSED( _newScene );
+
+        MODULE_SERVICE()
+            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneChange" ), MapWParams() );
+
+        if( m_arrow != nullptr )
+        {
+            m_arrow->removeFromParent();
+            m_arrow->disable();
+        }
+
+        m_scheduleManager->removeAll();
+        m_affectorable->stopAllAffectors();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyChangeSceneDestroy( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+        if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
+        {
+            GRAVEYARD_SERVICE()
+                ->clearTextures();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyChangeScenePrepareInitialize( const ScenePtr & _scene )
+    {
+        PICKER_SERVICE()
+            ->setScene( _scene );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyChangeScenePrepareEnable( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+#ifndef MENGINE_MASTER_RELEASE
+        //PlayerResourceUselessCompilePtr unlessCompile = new FactorableUnique<PlayerResourceUselessCompile>();
+        //unlessCompile->begin();
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyChangeSceneEnable( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+        if( m_arrow != nullptr )
+        {
+            m_arrow->enableForce();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyChangeSceneEnableFinally( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+#ifndef MENGINE_MASTER_RELEASE
+        //unlessCompile->end();
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyChangeScenePrepareComplete( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+        MEMORY_SERVICE()
+            ->clearCacheBuffers();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyRestartScenePrepareDisable( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+        MODULE_SERVICE()
+            ->messageAll( STRINGIZE_STRING_LOCAL( "onSceneRestart" ), MapWParams() );
+
+        if( m_arrow != nullptr )
+        {
+            m_arrow->removeFromParent();
+            m_arrow->disable();
+        }
+
+        m_scheduleManager->removeAll();
+        m_affectorable->stopAllAffectors();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyRestartSceneDisable( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+        if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
+        {
+            GRAVEYARD_SERVICE()
+                ->clearTextures();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyRestartScenePrepareEnable( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+#ifndef MENGINE_MASTER_RELEASE
+        //PlayerResourceUselessCompilePtr unlessCompile = new FactorableUnique<PlayerResourceUselessCompile>();
+        //unlessCompile->begin();
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyRestartSceneEnable( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+        if( m_arrow != nullptr )
+        {
+            m_arrow->enableForce();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyRestartSceneEnableFinally( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+#ifndef MENGINE_MASTER_RELEASE
+        //unlessCompile->end();
+#endif
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyRemoveScenePrepareDestroy( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+        if( m_arrow != nullptr )
+        {
+            m_arrow->removeFromParent();
+            m_arrow->disable();
+        }
+
+        m_scheduleManager->removeAll();
+        m_affectorable->stopAllAffectors();
+
+        m_globalInputHandler->clear();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void PlayerService::notifyRemoveSceneDestroy()
+    {
+        PICKER_SERVICE()
+            ->setScene( nullptr );
+
+        if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
+        {
+            GRAVEYARD_SERVICE()
+                ->clearTextures();
         }
     }
 }

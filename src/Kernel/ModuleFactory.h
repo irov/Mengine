@@ -1,15 +1,13 @@
 #pragma once
 
-#include "Interface/ModuleInterface.h"
+#include "Interface/ModuleFactoryInterface.h"
 
 #include "Kernel/ConstString.h"
 
 #include "Kernel/FactoryDefault.h"
 
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
     template<class T>
     class ModuleFactory
         : public ModuleFactoryInterface
@@ -19,6 +17,10 @@ namespace Mengine
         ModuleFactory()
         {
             m_factory = new FactoryDefault<T>();
+        }
+
+        ~ModuleFactory() override
+        {
         }
 
     public:

@@ -53,15 +53,15 @@ namespace Mengine
         ~Node() override;
 
     public:
-        inline Node * getParent() const;
-        inline bool hasParent() const;
-
-    public:
         void setUniqueIdentity( uint32_t _uniqueIdentity );
         uint32_t getUniqueIdentity() const;
 
     protected:
         uint32_t m_uniqueIdentity;
+
+    public:
+        inline Node * getParent() const;
+        inline bool hasParent() const;
 
     public:
         void addChild( const NodePtr & _node );

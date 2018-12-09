@@ -1,10 +1,10 @@
 #pragma once
 
-#include "Interface/ModuleInterface.h"
+#include "Interface/ModuleServiceInterface.h"
 
 #include "Kernel/ServiceBase.h"
+#include "Kernel/Hashtable.h"
 
-#include "Config/Map.h"
 #include "Config/Vector.h"
 
 namespace Mengine
@@ -21,12 +21,12 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool registerModule( const ConstString & _name, const ModuleFactoryInterfacePtr & _module ) override;
-        void unregisterModule( const ConstString & _name ) override;
+        bool registerModule( const ConstString & _moduleName, const ModuleFactoryInterfacePtr & _module ) override;
+        void unregisterModule( const ConstString & _moduleName ) override;
 
     public:
-        bool runModule( const ConstString & _name ) override;
-        void stopModule( const ConstString & _name ) override;
+        bool runModule( const ConstString & _moduleName ) override;
+        bool stopModule( const ConstString & _moduleName ) override;
 
     public:
         void update( bool _focus ) override;
@@ -41,10 +41,11 @@ namespace Mengine
 
     protected:
         const ModuleInterfacePtr & findModule( const ConstString & _moduleName ) const;
+        ModuleInterfacePtr popModule( const ConstString & _moduleName );
 
     protected:
-        typedef Map<ConstString, ModuleFactoryInterfacePtr> MapModuleFactory;
-        MapModuleFactory m_moduleFactory;
+        typedef Hashtable<ConstString, ModuleFactoryInterfacePtr> HashtableModuleFactory;
+        HashtableModuleFactory m_moduleFactory;
 
         typedef Vector<ModuleInterfacePtr> VectorModules;
         VectorModules m_modules;

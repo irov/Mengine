@@ -104,8 +104,8 @@ namespace Mengine
         typedef ArgsObserverCallable<Args...> args_callable_type;
 
     public:
-        ArgsObserverVisitorCallable( Args ... _args )
-            : m_args( _args... )
+        ArgsObserverVisitorCallable( const Tuple<Args...> & _args )
+            : m_args( _args )
         {
         }
 
@@ -114,17 +114,17 @@ namespace Mengine
         {
             args_callable_type * callable_args = _callable.getT<args_callable_type *>();
 
-            this->call_with_tuple( callable_args, std::index_sequence_for<Args...>() );
+            this->call_with_tuple( callable_args, std::make_integer_sequence<uint32_t, sizeof ... (Args)>() );
         }
 
-        template<std::size_t... Is>
-        void call_with_tuple( args_callable_type * _callable, std::index_sequence<Is...> )
+        template<uint32_t ... I>
+        void call_with_tuple( args_callable_type * _callable, std::integer_sequence<uint32_t, I...> )
         {
-            _callable->call( std::get<Is>( m_args )... );
+            _callable->call( std::get<I>( m_args )... );
         }
 
     protected:
-        Tuple<Args...> m_args;
+        const Tuple<Args...> & m_args;
     };
     //////////////////////////////////////////////////////////////////////////
     class NotificationServiceInterface
@@ -153,7 +153,17 @@ namespace Mengine
         template<class ... Args>
         inline bool notify( uint32_t _id, const Args & ... _args )
         {
-            ArgsObserverVisitorCallable<Args...> visitor{ _args... };
+            ArgsObserverVisitorCallable<Args...> visitor( std::make_tuple( _args... ) );
+
+            bool successful = this->visitObservers( _id, &visitor );
+
+            return successful;
+        }
+
+        template<class ... Args>
+        inline bool notify_tuple( uint32_t _id, const Tuple<Args...> & _args )
+        {
+            ArgsObserverVisitorCallable<Args...> visitor(_args);
 
             bool successful = this->visitObservers( _id, &visitor );
 
@@ -161,6 +171,21 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
+    class NotifyOperator
+    {
+
+    };
+}
+//////////////////////////////////////////////////////////////////////////
 #define NOTIFICATION_SERVICE()\
     ((Mengine::NotificationServiceInterface*)SERVICE_GET(Mengine::NotificationServiceInterface))
-}
+//////////////////////////////////////////////////////////////////////////
+#define NOTIFICATION_ADDOBSERVERMETHOD( ID, Observer, Method )\
+    NOTIFICATION_SERVICE()->addObserverMethod( ID, Observer, Method )
+//////////////////////////////////////////////////////////////////////////
+#define NOTIFICATION_REMOVEOBSERVER( ID, Observer )\
+    NOTIFICATION_SERVICE()->removeObserver( ID, Observer )
+//////////////////////////////////////////////////////////////////////////
+#define NOTIFY( ID, ARGS )\
+    NOTIFICATION_SERVICE()->notify_tuple( ID, std::make_tuple ARGS )
+//////////////////////////////////////////////////////////////////////////

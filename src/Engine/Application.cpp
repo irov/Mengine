@@ -29,6 +29,8 @@
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
+#include "Interface/ModuleServiceInterface.h"
+#include "Interface/SceneServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Scene.h"
@@ -296,7 +298,7 @@ namespace Mengine
                 ->finalizeRenderResources();
         }
 
-        PLAYER_SERVICE()
+        SCENE_SERVICE()
             ->destroyCurrentScene();
 
         m_cursorResource = nullptr;
@@ -948,7 +950,7 @@ namespace Mengine
 
             if( _event.code == KC_F2 && _event.isDown == true )
             {
-                const ScenePtr & scene = PLAYER_SERVICE()
+                const ScenePtr & scene = SCENE_SERVICE()
                     ->getCurrentScene();
 
                 s_printChildren( scene );

@@ -10,6 +10,7 @@
 #include "Interface/MemoryInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/PackageInterface.h"
+#include "Interface/SceneServiceInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"

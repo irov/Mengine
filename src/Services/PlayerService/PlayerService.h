@@ -9,7 +9,10 @@
 #include "Kernel/ServiceBase.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/Resolution.h"
+#include "Kernel/Observable.h"
 #include "Kernel/Factory.h"
+#include "Kernel/RenderCameraOrthogonal.h"
+#include "Kernel/RenderViewport.h"
 
 #include "math/vec3.h"
 
@@ -17,15 +20,9 @@
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class Scene, Node> ScenePtr;
-    typedef IntrusivePtr<class Arrow> ArrowPtr;
-    typedef IntrusivePtr<class TextField> TextFieldPtr;
-    typedef IntrusivePtr<class RenderViewport> RenderViewportPtr;
-    typedef IntrusivePtr<class RenderCameraOrthogonal> RenderCameraOrthogonalPtr;
-    typedef IntrusivePtr<class RenderTargetInterface> RenderTargetInterfacePtr;
-
     class PlayerService
         : public ServiceBase<PlayerServiceInterface>
+        , public Observable
     {
     public:
         PlayerService();
@@ -34,19 +31,6 @@ namespace Mengine
     public:
         bool _initializeService() override;
         void _finalizeService() override;
-
-    public:
-        bool setCurrentScene( const ScenePtr & _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) override;
-        bool restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) override;
-        bool removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) override;
-        void destroyCurrentScene() override;
-
-        const ScenePtr & getCurrentScene() override;
-
-    public:
-        bool createGlobalScene() override;
-        void removeGlobalScene() override;
-        const ScenePtr & getGlobalScene() override;
 
     public:
         void setArrow( const ArrowPtr & _arrow ) override;
@@ -117,13 +101,23 @@ namespace Mengine
         void onFixedDisplayResolution( const Resolution & _resolution, bool _fixed ) override;
 
     protected:
-        void renderArrow_( uint32_t _debugMask );
+        void notifyChangeScenePrepareDestroy( const ScenePtr & _oldScene, const ScenePtr & _newScene );
+        void notifyChangeSceneDestroy( const ScenePtr & _scene );
+        void notifyChangeScenePrepareInitialize( const ScenePtr & _scene );        
+        void notifyChangeScenePrepareEnable( const ScenePtr & _scene );
+        void notifyChangeSceneEnable( const ScenePtr & _scene );
+        void notifyChangeSceneEnableFinally( const ScenePtr & _scene );
+        void notifyChangeScenePrepareComplete( const ScenePtr & _scene );
+        void notifyRestartScenePrepareDisable( const ScenePtr & _scene );
+        void notifyRestartSceneDisable( const ScenePtr & _scene );
+        void notifyRestartScenePrepareEnable( const ScenePtr & _scene );
+        void notifyRestartSceneEnable( const ScenePtr & _scene );
+        void notifyRestartSceneEnableFinally( const ScenePtr & _scene );
+        void notifyRemoveScenePrepareDestroy( const ScenePtr & _scene );
+        void notifyRemoveSceneDestroy();
 
-    private:
-        ScenePtr m_scene;
+    protected:
         ArrowPtr m_arrow;
-
-        ScenePtr m_globalScene;
 
         RenderCameraOrthogonalPtr m_camera2D;
         RenderViewportPtr m_viewport2D;

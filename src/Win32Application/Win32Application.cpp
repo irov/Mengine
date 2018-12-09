@@ -24,6 +24,7 @@
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/ModuleServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
@@ -93,6 +94,7 @@ SERVICE_EXTERN( RenderService );
 SERVICE_EXTERN( RenderMaterialService );
 SERVICE_EXTERN( RenderTextureService );
 SERVICE_EXTERN( ResourceService );
+SERVICE_EXTERN( SceneService );
 SERVICE_EXTERN( TextService );
 SERVICE_EXTERN( WatchdogService );
 SERVICE_EXTERN( ProfilerService );
@@ -676,7 +678,8 @@ namespace Mengine
         SERVICE_CREATE( RenderMaterialService );
         SERVICE_CREATE( RenderTextureService );
 
-        SERVICE_CREATE( ResourceService );
+        SERVICE_CREATE( SceneService );
+        SERVICE_CREATE( ResourceService );        
         SERVICE_CREATE( TextService );
         SERVICE_CREATE( WatchdogService );
         SERVICE_CREATE( ProfilerService );

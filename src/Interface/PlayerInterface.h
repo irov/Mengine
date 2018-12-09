@@ -8,43 +8,18 @@
 
 namespace Mengine
 {
-    typedef IntrusivePtr<class Node> NodePtr;
-    typedef IntrusivePtr<class Scene, class Node> ScenePtr;
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Arrow> ArrowPtr;
     typedef IntrusivePtr<class Affectorable> AffectorablePtr;
     typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
     typedef IntrusivePtr<class RenderCameraInterface> RenderCameraInterfacePtr;
     typedef IntrusivePtr<class RenderScissorInterface> RenderScissorInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
-    class Affectorable;
-    //////////////////////////////////////////////////////////////////////////
-    class SceneChangeCallbackInterface
-        : public Factorable
-    {
-    public:
-        virtual void onSceneChange( const ScenePtr & _scene, bool _enable, bool _remove ) = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<SceneChangeCallbackInterface> SceneChangeCallbackInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
     class PlayerServiceInterface
         : public ServiceInterface
         , public InputHandlerInterface
     {
         SERVICE_DECLARE( "PlayerService" )
-
-    public:
-        virtual bool setCurrentScene( const ScenePtr & _scene, bool _destroyOld, const SceneChangeCallbackInterfacePtr & _cb ) = 0;
-        virtual bool restartCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) = 0;
-        virtual bool removeCurrentScene( const SceneChangeCallbackInterfacePtr & _cb ) = 0;
-        virtual void destroyCurrentScene() = 0;
-
-        virtual const ScenePtr & getCurrentScene() = 0;
-
-    public:
-        virtual bool createGlobalScene() = 0;
-        virtual void removeGlobalScene() = 0;
-        virtual const ScenePtr & getGlobalScene() = 0;
 
     public:
         virtual void onFocus( bool _focus ) = 0;
@@ -65,7 +40,6 @@ namespace Mengine
     public:
         virtual void initializeRenderResources() = 0;
         virtual void finalizeRenderResources() = 0;
-
 
     public:
         virtual void setArrow( const ArrowPtr & _arrow ) = 0;
@@ -102,7 +76,8 @@ namespace Mengine
         virtual const AffectorablePtr & getAffectorable() const = 0;
         virtual const AffectorablePtr & getGlobalAffectorable() const = 0;
     };
-
+}
+//////////////////////////////////////////////////////////////////////////
 #define PLAYER_SERVICE()\
     ((Mengine::PlayerServiceInterface*)SERVICE_GET(Mengine::PlayerServiceInterface))
-}
+//////////////////////////////////////////////////////////////////////////

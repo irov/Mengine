@@ -33,66 +33,33 @@ namespace Mengine
         m_modules.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::registerModule( const ConstString & _name, const ModuleFactoryInterfacePtr & _module )
+    bool ModuleService::registerModule( const ConstString & _moduleName, const ModuleFactoryInterfacePtr & _module )
     {
-        m_moduleFactory.emplace( _name, _module );
+        m_moduleFactory.insert( _moduleName, _module );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::unregisterModule( const ConstString & _name )
+    void ModuleService::unregisterModule( const ConstString & _moduleName )
     {
-        m_moduleFactory.erase( _name );
+        m_moduleFactory.remove( _moduleName );
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace
+    bool ModuleService::runModule( const ConstString & _moduleName )
     {
-        class FModuleFinder
-        {
-        public:
-            FModuleFinder( const ConstString & _name )
-                : m_name( _name )
-            {
-            }
-
-        public:
-            bool operator() ( const ModuleInterfacePtr & _module )
-            {
-                const ConstString & moduleName = _module->getName();
-
-                return m_name == moduleName;
-            }
-
-        protected:
-            const ConstString & m_name;
-
-        private:
-            void operator = ( const FModuleFinder & )
-            {
-            }
-        };
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::runModule( const ConstString & _name )
-    {
-        VectorModules::iterator it_exist =
-            std::find_if( m_modules.begin(), m_modules.end(), FModuleFinder( _name ) );
-
-        if( it_exist != m_modules.end() )
+        if( this->findModule( _moduleName ) != nullptr )
         {
             return false;
         }
 
-        MapModuleFactory::iterator it_found = m_moduleFactory.find( _name );
+        const ModuleFactoryInterfacePtr & factory = m_moduleFactory.find( _moduleName );
 
-        if( it_found == m_moduleFactory.end() )
+        if( factory == nullptr )
         {
             return false;
         }
 
-        const ModuleFactoryInterfacePtr & factory = it_found->second;
-
-        ModuleInterfacePtr module = factory->createModule( _name );
+        ModuleInterfacePtr module = factory->createModule( _moduleName );
 
         if( module->avaliable() == false )
         {
@@ -109,21 +76,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleService::stopModule( const ConstString & _name )
+    bool ModuleService::stopModule( const ConstString & _moduleName )
     {
-        VectorModules::iterator it_found =
-            std::find_if( m_modules.begin(), m_modules.end(), FModuleFinder( _name ) );
+        ModuleInterfacePtr module = this->popModule( _moduleName );
 
-        if( it_found == m_modules.end() )
+        if( module == nullptr )
         {
-            return;
+            return false;
         }
 
-        const ModuleInterfacePtr & module = *it_found;
-
         module->finalize();
-
-        m_modules.erase( it_found );
+                
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ModuleService::update( bool _focus )
@@ -172,16 +136,39 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////		
     const ModuleInterfacePtr & ModuleService::findModule( const ConstString & _moduleName ) const
     {
-        for( const ModuleInterfacePtr & module : m_modules )
+        VectorModules::const_iterator it_found =
+            std::find_if( m_modules.begin(), m_modules.end(), [_moduleName]( const ModuleInterfacePtr & _module )
         {
-            if( module->getName() != _moduleName )
-            {
-                continue;
-            }
+            return _module->getName() == _moduleName;
+        } );
 
-            return module;
+        if( it_found == m_modules.end() )
+        {
+            return ModuleInterfacePtr::none();
         }
 
-        return ModuleInterfacePtr::none();
+        const ModuleInterfacePtr & module = *it_found;
+
+        return module;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ModuleInterfacePtr ModuleService::popModule( const ConstString & _moduleName )
+    {
+        VectorModules::iterator it_found =
+            std::find_if( m_modules.begin(), m_modules.end(), [_moduleName]( const ModuleInterfacePtr & _module )
+        {
+            return _module->getName() == _moduleName;
+        } );
+
+        if( it_found == m_modules.end() )
+        {
+            return nullptr;
+        }
+
+        ModuleInterfacePtr module = *it_found;
+
+        m_modules.erase( it_found );
+
+        return module;
     }
 }

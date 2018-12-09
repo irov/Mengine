@@ -6,6 +6,8 @@ src
     ServiceProviderInterface.h
 	PluginInterface.h
     ModuleInterface.h
+    ModuleFactoryInterface.h
+    ModuleServiceInterface.h
     ScriptModuleInterface.h
 	ScriptServiceInterface.h
 	CodecInterface.h
@@ -87,6 +89,7 @@ src
     UpdationInterface.h
     ServantInterface.h
     EnumeratorServiceInterface.h
+    SceneServiceInterface.h
     
 	dummy.cpp
 )

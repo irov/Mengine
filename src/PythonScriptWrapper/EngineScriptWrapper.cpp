@@ -21,6 +21,8 @@
 #include "Interface/AccountInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
+#include "Interface/ModuleServiceInterface.h"
+#include "Interface/SceneServiceInterface.h"
 
 #include "Kernel/ThreadTask.h"
 #include "Kernel/Scene.h"
@@ -618,7 +620,17 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         class PythonSceneChangeCallback
             : public SceneChangeCallbackInterface
+            , public Factorable
         {
+        public:
+            PythonSceneChangeCallback()
+            {
+            }
+
+            ~PythonSceneChangeCallback() override
+            {
+            }
+
         public:
             void initialize( const pybind::object & _cb, const pybind::args & _args )
             {
@@ -685,12 +697,12 @@ namespace Mengine
 
             py_cb->initialize( _cb, _args );
 
-            ScenePtr currentScene = PLAYER_SERVICE()
+            ScenePtr currentScene = SCENE_SERVICE()
                 ->getCurrentScene();
 
             if( currentScene != nullptr && currentScene->getName() == _name )
             {
-                if( PLAYER_SERVICE()
+                if( SCENE_SERVICE()
                     ->restartCurrentScene( py_cb ) == false )
                 {
                     return false;
@@ -708,7 +720,7 @@ namespace Mengine
 
                 scene->setName( _name );
 
-                if( PLAYER_SERVICE()
+                if( SCENE_SERVICE()
                     ->setCurrentScene( scene, _destroyOld, py_cb ) == false )
                 {
                     scene = nullptr;
@@ -722,7 +734,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         const ScenePtr & getCurrentScene()
         {
-            const ScenePtr & scene = PLAYER_SERVICE()
+            const ScenePtr & scene = SCENE_SERVICE()
                 ->getCurrentScene();
 
             return scene;
@@ -738,23 +750,9 @@ namespace Mengine
             return scene;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool createGlobalScene()
-        {
-            bool successful = PLAYER_SERVICE()
-                ->createGlobalScene();
-
-            return successful;
-        }
-        //////////////////////////////////////////////////////////////////////////
-        void removeGlobalScene()
-        {
-            PLAYER_SERVICE()
-                ->removeGlobalScene();
-        }
-        //////////////////////////////////////////////////////////////////////////
         const ScenePtr & getGlobalScene()
         {
-            const ScenePtr & scene = PLAYER_SERVICE()
+            const ScenePtr & scene = SCENE_SERVICE()
                 ->getGlobalScene();
 
             return scene;
@@ -2593,7 +2591,7 @@ namespace Mengine
 
             py_cb->initialize( _cb, _args );
 
-            if( PLAYER_SERVICE()
+            if( SCENE_SERVICE()
                 ->removeCurrentScene( py_cb ) == false )
             {
                 return false;
@@ -3378,8 +3376,6 @@ namespace Mengine
         pybind::def_functor_args( kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );
         pybind::def_functor( kernel, "getCurrentScene", nodeScriptMethod, &EngineScriptMethod::getCurrentScene );
 
-        pybind::def_functor( kernel, "createGlobalScene", nodeScriptMethod, &EngineScriptMethod::createGlobalScene );
-        pybind::def_functor( kernel, "removeGlobalScene", nodeScriptMethod, &EngineScriptMethod::removeGlobalScene );
         pybind::def_functor( kernel, "getGlobalScene", nodeScriptMethod, &EngineScriptMethod::getGlobalScene );
 
         pybind::def_functor( kernel, "createScene", nodeScriptMethod, &EngineScriptMethod::s_createScene );

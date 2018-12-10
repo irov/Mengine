@@ -635,6 +635,8 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     aeMovieStream * movieStream = ae_create_movie_stream( movieInstance, &my_read_stream, &my_copy_stream, f_in );
 
+    //MessageBox( NULL, L"Test", L"Test", MB_OK );
+
     ae_uint32_t major_version;
     ae_uint32_t minor_version;
     ae_result_t result_load_movie_data = ae_load_movie_data( movieData, movieStream, &major_version, &minor_version );

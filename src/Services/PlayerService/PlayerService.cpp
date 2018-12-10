@@ -196,7 +196,6 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_DESTROY, this, &PlayerService::notifyChangeSceneDestroy );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, this, &PlayerService::notifyChangeScenePrepareInitialize );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_ENABLE, this, &PlayerService::notifyChangeSceneEnable );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_ENABLE_FINALLY, this, &PlayerService::notifyChangeSceneEnableFinally );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_COMPLETE, this, &PlayerService::notifyChangeScenePrepareComplete );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_PREPARE_DISABLE, this, &PlayerService::notifyRestartScenePrepareDisable );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_DISABLE, this, &PlayerService::notifyRestartSceneDisable );
@@ -697,15 +696,6 @@ namespace Mengine
         {
             m_arrow->enableForce();
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerService::notifyChangeSceneEnableFinally( const ScenePtr & _scene )
-    {
-        MENGINE_UNUSED( _scene );
-
-#ifndef MENGINE_MASTER_RELEASE
-        //unlessCompile->end();
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyChangeScenePrepareComplete( const ScenePtr & _scene )

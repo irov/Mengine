@@ -20,6 +20,8 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_ENABLE, this, &ResourceUselessCompileChecker::notifyChangeScenePrepareEnable );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_ENABLE_FINALLY, this, &ResourceUselessCompileChecker::notifyChangeSceneEnableFinally );
 
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_PREPARE_ENABLE, this, &ResourceUselessCompileChecker::notifyRestartScenePrepareEnable );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_ENABLE_FINALLY, this, &ResourceUselessCompileChecker::notifyRestartSceneEnableFinally );
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -38,6 +40,22 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void ResourceUselessCompileChecker::notifyChangeSceneEnableFinally( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_RESOURCE_COMPILE, this );
+        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_RESOURCE_RELEASE, this );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceUselessCompileChecker::notifyRestartScenePrepareEnable( const ScenePtr & _scene )
+    {
+        MENGINE_UNUSED( _scene );
+
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESOURCE_COMPILE, this, &ResourceUselessCompileChecker::notifyResourceCompile );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESOURCE_RELEASE, this, &ResourceUselessCompileChecker::notifyResourceRelease );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ResourceUselessCompileChecker::notifyRestartSceneEnableFinally( const ScenePtr & _scene )
     {
         MENGINE_UNUSED( _scene );
 

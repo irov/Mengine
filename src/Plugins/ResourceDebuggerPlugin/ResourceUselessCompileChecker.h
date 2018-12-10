@@ -24,6 +24,8 @@ namespace Mengine
     protected:
         void notifyChangeScenePrepareEnable( const ScenePtr & _scene );
         void notifyChangeSceneEnableFinally( const ScenePtr & _scene );
+        void notifyRestartScenePrepareEnable( const ScenePtr & _scene );
+        void notifyRestartSceneEnableFinally( const ScenePtr & _scene );
 
     protected:
         void notifyResourceCompile( Resource * _resource );

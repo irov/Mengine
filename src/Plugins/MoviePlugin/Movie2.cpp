@@ -1689,6 +1689,12 @@ namespace Mengine
 
                 programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1 );
             }break;
+        case AE_MOVIE_EXTENSION_SHADER_PARAMETER_ANGLE:
+            {
+                shader_values[0] = _callbackData->value;
+
+                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1 );
+            }break;
         case AE_MOVIE_EXTENSION_SHADER_PARAMETER_COLOR:
             {
                 shader_values[0] = _callbackData->color.r;

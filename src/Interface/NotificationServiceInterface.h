@@ -186,6 +186,6 @@ namespace Mengine
 #define NOTIFICATION_REMOVEOBSERVER( ID, Observer )\
     NOTIFICATION_SERVICE()->removeObserver( ID, Observer )
 //////////////////////////////////////////////////////////////////////////
-#define NOTIFY( ID, ARGS )\
+#define NOTIFICATION_NOTIFY( ID, ARGS )\
     NOTIFICATION_SERVICE()->notify_tuple( ID, std::make_tuple ARGS )
 //////////////////////////////////////////////////////////////////////////

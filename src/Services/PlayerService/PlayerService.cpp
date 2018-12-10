@@ -59,74 +59,7 @@
 SERVICE_FACTORY( PlayerService, Mengine::PlayerService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
-{
-    //////////////////////////////////////////////////////////////////////////    
-    namespace
-    {
-        class PlayerResourceUselessCompile
-            : public Factorable
-            , public Observable
-        {
-        public:
-            PlayerResourceUselessCompile()
-            {
-            }
-
-            ~PlayerResourceUselessCompile() override
-            {
-            }
-
-        public:
-            void begin()
-            {
-                NOTIFICATION_SERVICE()
-                    ->addObserverMethod( NOTIFICATOR_RESOURCE_COMPILE, this, &PlayerResourceUselessCompile::resourceCompile );
-
-                NOTIFICATION_SERVICE()
-                    ->addObserverMethod( NOTIFICATOR_RESOURCE_RELEASE, this, &PlayerResourceUselessCompile::resourceRelease );
-            }
-
-            void end()
-            {
-                NOTIFICATION_SERVICE()
-                    ->removeObserver( NOTIFICATOR_RESOURCE_COMPILE, this );
-
-                NOTIFICATION_SERVICE()
-                    ->removeObserver( NOTIFICATOR_RESOURCE_RELEASE, this );
-            }
-
-        protected:
-            void resourceCompile( Resource * _resource )
-            {
-                m_resources.emplace_back( _resource );
-            }
-
-            void resourceRelease( Resource * _resource )
-            {
-                VectorResourceDesc::iterator it_remove =
-                    std::find( m_resources.begin(), m_resources.end(), _resource );
-
-                if( it_remove == m_resources.end() )
-                {
-                    return;
-                }
-
-                LOGGER_PERFORMANCE( "Useless Compile '%s' '%s' '%s'"
-                    , _resource->getType().c_str()
-                    , _resource->getGroupName().c_str()
-                    , _resource->getName().c_str()
-                );
-
-                m_resources.erase( it_remove );
-            }
-
-        protected:
-            typedef Vector<Resource *> VectorResourceDesc;
-            VectorResourceDesc m_resources;
-        };
-
-        typedef IntrusivePtr<PlayerResourceUselessCompile> PlayerResourceUselessCompilePtr;
-    }
+{    
     //////////////////////////////////////////////////////////////////////////
     PlayerService::PlayerService()
         : m_arrowHided( false )
@@ -262,15 +195,12 @@ namespace Mengine
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, this, &PlayerService::notifyChangeScenePrepareDestroy );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_DESTROY, this, &PlayerService::notifyChangeSceneDestroy );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, this, &PlayerService::notifyChangeScenePrepareInitialize );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_ENABLE, this, &PlayerService::notifyChangeScenePrepareEnable );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_ENABLE, this, &PlayerService::notifyChangeSceneEnable );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_ENABLE_FINALLY, this, &PlayerService::notifyChangeSceneEnableFinally );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_PREPARE_COMPLETE, this, &PlayerService::notifyChangeScenePrepareComplete );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_PREPARE_DISABLE, this, &PlayerService::notifyRestartScenePrepareDisable );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_DISABLE, this, &PlayerService::notifyRestartSceneDisable );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_PREPARE_ENABLE, this, &PlayerService::notifyRestartScenePrepareEnable );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_ENABLE, this, &PlayerService::notifyRestartSceneEnable );
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_RESTART_SCENE_ENABLE_FINALLY, this, &PlayerService::notifyRestartSceneEnableFinally );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_PREPARE_DESTROY, this, &PlayerService::notifyRemoveScenePrepareDestroy );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &PlayerService::notifyRemoveSceneDestroy );
 
@@ -759,16 +689,6 @@ namespace Mengine
             ->setScene( _scene );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::notifyChangeScenePrepareEnable( const ScenePtr & _scene )
-    {
-        MENGINE_UNUSED( _scene );
-
-#ifndef MENGINE_MASTER_RELEASE
-        //PlayerResourceUselessCompilePtr unlessCompile = new FactorableUnique<PlayerResourceUselessCompile>();
-        //unlessCompile->begin();
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyChangeSceneEnable( const ScenePtr & _scene )
     {
         MENGINE_UNUSED( _scene );
@@ -824,16 +744,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void PlayerService::notifyRestartScenePrepareEnable( const ScenePtr & _scene )
-    {
-        MENGINE_UNUSED( _scene );
-
-#ifndef MENGINE_MASTER_RELEASE
-        //PlayerResourceUselessCompilePtr unlessCompile = new FactorableUnique<PlayerResourceUselessCompile>();
-        //unlessCompile->begin();
-#endif
-    }
-    //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyRestartSceneEnable( const ScenePtr & _scene )
     {
         MENGINE_UNUSED( _scene );
@@ -842,15 +752,6 @@ namespace Mengine
         {
             m_arrow->enableForce();
         }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void PlayerService::notifyRestartSceneEnableFinally( const ScenePtr & _scene )
-    {
-        MENGINE_UNUSED( _scene );
-
-#ifndef MENGINE_MASTER_RELEASE
-        //unlessCompile->end();
-#endif
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyRemoveScenePrepareDestroy( const ScenePtr & _scene )

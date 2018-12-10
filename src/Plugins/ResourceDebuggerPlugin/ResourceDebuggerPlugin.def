@@ -1,0 +1,2 @@
+LIBRARY		"ResourceDebuggerPlugin"
+EXPORTS 	dllCreatePlugin 	@1

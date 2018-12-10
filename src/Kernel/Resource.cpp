@@ -56,8 +56,7 @@ namespace Mengine
         //    );
 
 #ifndef MENGINE_MASTER_RELEASE
-        NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_RESOURCE_COMPILE, this );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RESOURCE_COMPILE, (this) );
 #endif
 
         return result;
@@ -68,8 +67,7 @@ namespace Mengine
         this->release();
 
 #ifndef MENGINE_MASTER_RELEASE
-        NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_RESOURCE_RELEASE, this );
+        NOTIFICATION_NOTIFY( NOTIFICATOR_RESOURCE_RELEASE, (this) );
 #endif
     }
     //////////////////////////////////////////////////////////////////////////

@@ -138,6 +138,10 @@ PLUGIN_EXPORT( ResourceConvert );
 PLUGIN_EXPORT( ResourceValidate );
 #endif
 
+#ifdef MENGINE_PLUGIN_RESOURCEDEBUGGER
+PLUGIN_EXPORT( ResourceDebugger );
+#endif
+
 #ifdef MENGINE_PLUGIN_METABUFLOADER
 PLUGIN_EXPORT( MetabufLoader );
 #endif
@@ -722,6 +726,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
         MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_RESOURCEDEBUGGER
+        MENGINE_ADD_PLUGIN( ResourceDebugger, "initialize Plugin Resource Debugger..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_METABUFLOADER

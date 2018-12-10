@@ -1,4 +1,4 @@
-#include "PluginAmplifier.h"
+#include "AmplifierPlugin.h"
 
 #include "Interface/AmplifierInterface.h"
 #include "Interface/ServiceInterface.h"
@@ -7,28 +7,32 @@
 //////////////////////////////////////////////////////////////////////////
 SERVICE_EXTERN( Amplifier );
 //////////////////////////////////////////////////////////////////////////
-PLUGIN_FACTORY( Amplifier, Mengine::PluginAmplifier );
+PLUGIN_FACTORY( Amplifier, Mengine::AmplifierPlugin );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    PluginAmplifier::PluginAmplifier()
+    AmplifierPlugin::AmplifierPlugin()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginAmplifier::_initialize()
+    AmplifierPlugin::~AmplifierPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AmplifierPlugin::_initialize()
     {
         SERVICE_CREATE( Amplifier );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PluginAmplifier::_finalize()
+    void AmplifierPlugin::_finalize()
     {
         SERVICE_FINALIZE( Mengine::AmplifierInterface );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PluginAmplifier::_destroy()
+    void AmplifierPlugin::_destroy()
     {
         SERVICE_DESTROY( Mengine::AmplifierInterface );
     }

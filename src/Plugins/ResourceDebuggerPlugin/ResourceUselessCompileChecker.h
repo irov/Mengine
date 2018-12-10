@@ -1,0 +1,39 @@
+#pragma once
+
+#include "Kernel/Factorable.h"
+#include "Kernel/Observable.h"
+#include "Kernel/Resource.h"
+#include "Kernel/Scene.h"
+
+#include "Config/Vector.h"
+
+namespace Mengine
+{
+    class ResourceUselessCompileChecker
+        : public Factorable
+        , public Observable
+    {
+    public:
+        ResourceUselessCompileChecker();
+        ~ResourceUselessCompileChecker() override;
+
+    public:
+        bool initialize();
+        void finalize();
+
+    protected:
+        void notifyChangeScenePrepareEnable( const ScenePtr & _scene );
+        void notifyChangeSceneEnableFinally( const ScenePtr & _scene );
+
+    protected:
+        void notifyResourceCompile( Resource * _resource );
+        void notifyResourceRelease( Resource * _resource );
+
+    protected:
+        typedef Vector<Resource *> VectorResourceDesc;
+        VectorResourceDesc m_resources;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ResourceUselessCompileChecker> ResourceUselessCompileCheckerPtr;
+    //////////////////////////////////////////////////////////////////////////
+}

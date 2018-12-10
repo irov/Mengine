@@ -105,7 +105,6 @@ namespace Mengine
         void notifyChangeSceneDestroy( const ScenePtr & _scene );
         void notifyChangeScenePrepareInitialize( const ScenePtr & _scene );
         void notifyChangeSceneEnable( const ScenePtr & _scene );
-        void notifyChangeSceneEnableFinally( const ScenePtr & _scene );
         void notifyChangeScenePrepareComplete( const ScenePtr & _scene );
         void notifyRestartScenePrepareDisable( const ScenePtr & _scene );
         void notifyRestartSceneDisable( const ScenePtr & _scene );

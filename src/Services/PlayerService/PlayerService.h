@@ -103,16 +103,13 @@ namespace Mengine
     protected:
         void notifyChangeScenePrepareDestroy( const ScenePtr & _oldScene, const ScenePtr & _newScene );
         void notifyChangeSceneDestroy( const ScenePtr & _scene );
-        void notifyChangeScenePrepareInitialize( const ScenePtr & _scene );        
-        void notifyChangeScenePrepareEnable( const ScenePtr & _scene );
+        void notifyChangeScenePrepareInitialize( const ScenePtr & _scene );
         void notifyChangeSceneEnable( const ScenePtr & _scene );
         void notifyChangeSceneEnableFinally( const ScenePtr & _scene );
         void notifyChangeScenePrepareComplete( const ScenePtr & _scene );
         void notifyRestartScenePrepareDisable( const ScenePtr & _scene );
         void notifyRestartSceneDisable( const ScenePtr & _scene );
-        void notifyRestartScenePrepareEnable( const ScenePtr & _scene );
         void notifyRestartSceneEnable( const ScenePtr & _scene );
-        void notifyRestartSceneEnableFinally( const ScenePtr & _scene );
         void notifyRemoveScenePrepareDestroy( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
 

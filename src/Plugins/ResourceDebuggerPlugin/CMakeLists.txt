@@ -1,12 +1,12 @@
-SET( MY_LIB_NAME AmplifierPlugin )
+SET(MY_LIB_NAME ResourceDebuggerPlugin)
 
 ADD_FILTER(
 src
-    AmplifierPlugin.h
-    AmplifierPlugin.cpp
-    AmplifierPlugin.def
-    Amplifier.h
-    Amplifier.cpp
+    ResourceDebuggerPlugin.h
+    ResourceDebuggerPlugin.cpp
+    ResourceDebuggerPlugin.def
+    ResourceUselessCompileChecker.h
+    ResourceUselessCompileChecker.cpp
 )
 
 ADD_MENGINE_LIBRARY()
@@ -17,10 +17,8 @@ set_target_properties (${MY_LIB_NAME} PROPERTIES
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
-INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/metabuf/include )
 
 INCLUDE_DIRECTORIES( 
-    ${THIRDPARTY_DIR}/metabuf
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/libmath/include
     )
@@ -29,7 +27,6 @@ SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}
  ${MY_LIB_NAME}
 )
-
 
 SET( APPLICATION_DEPENDENCIES
  ${APPLICATION_DEPENDENCIES}

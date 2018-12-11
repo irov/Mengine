@@ -1,7 +1,7 @@
 #include "SDLFileGroupPlugin.h"
 
 #include "Interface/StringizeServiceInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/PlatformInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 

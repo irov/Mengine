@@ -21,7 +21,7 @@ namespace Mengine
         ~SDLFileInputStream() override;
 
     public:
-        bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size ) override;
+        bool open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming ) override;
         
     public:
         size_t read( void * _buf, size_t _count ) override;
@@ -54,6 +54,8 @@ namespace Mengine
         size_t m_reading;
 
         uint8_t m_readCache[MENGINE_FILE_STREAM_BUFFER_SIZE];
+
+		bool m_streaming;
 
         STDEX_THREAD_GUARD_INIT;
 

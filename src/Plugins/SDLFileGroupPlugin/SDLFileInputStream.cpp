@@ -22,6 +22,7 @@ namespace Mengine
         , m_carriage( 0 )
         , m_capacity( 0 )
         , m_reading( 0 )
+		, m_streaming( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -39,7 +40,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size )
+    bool SDLFileInputStream::open( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, size_t _offset, size_t _size, bool _streaming )
     {
         STDEX_THREAD_GUARD_SCOPE( this, "SDLFileInputStream::open" );
 
@@ -86,6 +87,8 @@ namespace Mengine
         m_carriage = 0;
         m_capacity = 0;
         m_reading = 0;
+
+		m_streaming = _streaming;
 
         if( m_offset != 0 )
         {

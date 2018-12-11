@@ -33,7 +33,7 @@ namespace Mengine
         virtual uint32_t getIcon() const = 0;
 
         virtual void setProjectTitle( const Char * _projectTitle ) = 0;
-        virtual void getProjectTitle( Char * _projectTitle ) const = 0;
+        virtual size_t getProjectTitle( Char * _projectTitle ) const = 0;
 
     public:
         virtual bool createWindow( const Resolution & _resolution, bool _fullscreen ) = 0;

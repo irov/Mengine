@@ -30,7 +30,7 @@ namespace Mengine
         uint32_t getIcon() const override;
 
         void setProjectTitle( const Char * _projectTitle ) override;
-        void getProjectTitle( Char * _projectTitle ) const override;
+		size_t getProjectTitle( Char * _projectTitle ) const override;
 
     public:
         bool createWindow( const Resolution & _resolution, bool _fullscreen ) override;

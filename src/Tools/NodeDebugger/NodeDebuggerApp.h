@@ -93,7 +93,8 @@ enum class ConnectionStatus : size_t
     ConnectionFailed
 };
 
-struct NetPacket
+
+struct NodeDebuggerPacket
 {
     std::vector<uint8_t> payload;
 };
@@ -167,17 +168,17 @@ public:
 
 private:
     void                    Update();
-    void                    ProcessPacket( const NetPacket& packet );
-    void                    ReceiveScene( const pugi::xml_node& xmlContainer );
-    void                    DeserializeNode( const pugi::xml_node& xmlNode, Node* node );
-    std::vector<uint32_t>   CollectNodePath( const Node* node );
-    std::string             PathToString( const std::vector<uint32_t>& path );
+    void                    ProcessPacket( const NodeDebuggerPacket & _packet );
+    void                    ReceiveScene( const pugi::xml_node & _xmlContainer );
+    void                    DeserializeNode( const pugi::xml_node & _xmlNode, Node * _node );
+    std::vector<uint32_t>   CollectNodePath( const Node * _node );
+    std::string             PathToString( const std::vector<uint32_t> & _path );
 
     // UI
     void                    DoUI();
-    std::string             DoIPInput( const std::string& title, const std::string& inIP );
-    void                    DoNodeElement( Node* node );
-    void                    DoNodeProperties( Node* node );
+    std::string             DoIPInput( const std::string & _title, const std::string & _inIP );
+    void                    DoNodeElement( Node * _node );
+    void                    DoNodeProperties( Node * _node );
     void                    OnConnectButton();
     void                    OnDisconnectButton();
 
@@ -187,32 +188,32 @@ private:
     void                    DisconnectFromServer();
     void                    SendNetworkData();
     void                    ReceiveNetworkData();
-    void                    SendChangedNode( const Node& node );
+    void                    SendChangedNode( const Node & _node );
 
 private:
-    GLFWwindow*                 mWindow;
-    bool                        mShutdown;
-    int                         mWidth;
-    int                         mHeight;
+    GLFWwindow*                     mWindow;
+    bool                            mShutdown;
+    int                             mWidth;
+    int                             mHeight;
 
     // UI
-    Node*                       mSelectedNode;
+    Node*                           mSelectedNode;
 
     // Server connection
-    std::string                 mServerAddress;
-    uint16_t                    mServerPort;
-    std::string                 mServerAddressCopy;
-    uint16_t                    mServerPortCopy;
-    bool                        mServerConnectionEstablished;
-    bool                        mServerForceReconnect;
-    volatile ConnectionStatus   mConnectionStatus;
-    zed_net_socket_t            mSocket;
-    std::deque<NetPacket>       mIncomingPackets;
-    std::deque<NetPacket>       mOutgoingPackets;
-    std::vector<uint8_t>        mReceivedData;
+    std::string                     mServerAddress;
+    uint16_t                        mServerPort;
+    std::string                     mServerAddressCopy;
+    uint16_t                        mServerPortCopy;
+    bool                            mServerConnectionEstablished;
+    bool                            mServerForceReconnect;
+    volatile ConnectionStatus       mConnectionStatus;
+    zed_net_socket_t                mSocket;
+    std::deque<NodeDebuggerPacket>  mIncomingPackets;
+    std::deque<NodeDebuggerPacket>  mOutgoingPackets;
+    std::vector<uint8_t>            mReceivedData;
 
-    std::thread                 mNetworkThread;
-    std::mutex                  mDataMutex;
+    std::thread                     mNetworkThread;
+    std::mutex                      mDataMutex;
 
-    Node*                       mScene;
+    Node*                           mScene;
 };

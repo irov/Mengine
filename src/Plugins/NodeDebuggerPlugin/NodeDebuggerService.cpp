@@ -126,37 +126,44 @@ namespace Mengine
                 }
 
                 // check if we have read something
-                if( m_receivedData.size() > sizeof( uint32_t ) )
+                if( m_receivedData.size() > sizeof( PacketHeader ) )
                 {
-                    // check if we have enough data to form a packet
-                    uint32_t dataSize = *reinterpret_cast<uint32_t*>( m_receivedData.data() );
-                    while( dataSize <= ( m_receivedData.size() - sizeof( uint32_t ) ) )
-                    {
-                        ThreadMutexScope mutexLock( m_dataMutex );
+                    ThreadMutexScope mutexLock( m_dataMutex );
 
-                        const size_t dataSizeWithSize = dataSize + sizeof( uint32_t );
+                    // check if we have enough data to form a packet
+                    PacketHeader* hdr = reinterpret_cast<PacketHeader *>( m_receivedData.data() );
+                    while(hdr != nullptr && hdr->payloadSize <= ( m_receivedData.size() - sizeof( uint32_t ) ) )
+                    {
+                        // received garbage - nothing fancy, just disconnect
+                        if( hdr->magic != PACKET_MAGIC )
+                        {
+                            //DisconnectFromServer();
+                            return true;
+                        }
+
+                        const size_t dataSizeWithHeader = hdr->payloadSize + sizeof( PacketHeader );
 
                         NodeDebuggerPacket packet;
-                        packet.payload.resize( dataSize );
-                        memcpy( packet.payload.data(), m_receivedData.data() + sizeof( uint32_t ), dataSize );
+                        packet.payload.resize( hdr->payloadSize );
+                        memcpy( packet.payload.data(), m_receivedData.data() + sizeof( PacketHeader ), hdr->payloadSize );
                         m_incomingPackets.emplace_back( packet );
 
                         // now remove this packet data from the buffer
-                        const size_t newSize = m_receivedData.size() - dataSizeWithSize;
+                        const size_t newSize = m_receivedData.size() - dataSizeWithHeader;
                         if( newSize )
                         {
-                            memmove( m_receivedData.data(), m_receivedData.data() + dataSizeWithSize, newSize );
+                            memmove( m_receivedData.data(), m_receivedData.data() + dataSizeWithHeader, newSize );
                             m_receivedData.resize( newSize );
 
-                            dataSize = *reinterpret_cast<uint32_t*>( m_receivedData.data() );
+                            hdr = reinterpret_cast<PacketHeader *>( m_receivedData.data() );
                         }
                         else
                         {
                             m_receivedData.clear();
-                            dataSize = 0;
+                            hdr = nullptr;
                         }
 
-                        if( newSize <= sizeof( uint32_t ) )
+                        if( newSize <= sizeof( PacketHeader ) )
                         {
                             break;
                         }
@@ -226,10 +233,11 @@ namespace Mengine
     {
         if( !_packet.payload.empty() )
         {
-            const uint32_t payloadLength = static_cast<uint32_t>( _packet.payload.size() );
-            const uint8_t* begin = reinterpret_cast<const uint8_t*>( &payloadLength );
-            const uint8_t* end = begin + sizeof( payloadLength );
-            _packet.payload.insert( _packet.payload.begin(), begin, end );
+            PacketHeader hdr;
+            hdr.magic = PACKET_MAGIC;
+            hdr.payloadSize = static_cast<uint32_t>( _packet.payload.size() );
+
+            InsertPacketHeader( _packet.payload, hdr );
 
             ThreadMutexScope mutexLock( m_dataMutex );
             m_outgoingPackets.emplace_back( _packet );

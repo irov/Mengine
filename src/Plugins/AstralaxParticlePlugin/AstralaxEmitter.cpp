@@ -222,7 +222,7 @@ namespace Mengine
             return false;
         }
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESTART )
+        EVENTABLE_METHOD( EVENT_ANIMATION_RESTART )
             ->onAnimationRestart( _enumerator, _time );
 
         m_emitter->restart();
@@ -264,7 +264,7 @@ namespace Mengine
 
         m_emitter->stop();
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+        EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
 
         return true;
@@ -272,7 +272,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxEmitter::_end( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+        EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////

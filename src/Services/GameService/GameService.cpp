@@ -54,7 +54,7 @@ namespace Mengine
             PLAYER_SERVICE()
                 ->calcGlobalMouseWorldPosition( point, &wp );
 
-            handle = EVENTABLE_METHODR( this, EVENT_GAME_KEY, handle )
+            handle = EVENTABLE_METHODR( EVENT_GAME_KEY, handle )
                 ->onGameKey( _event.code, wp.x, wp.y, _event.isDown, _event.isRepeat );
         }
 
@@ -79,7 +79,7 @@ namespace Mengine
             PLAYER_SERVICE()
                 ->calcGlobalMouseWorldPosition( point, &wp );
 
-            handle = EVENTABLE_METHODR( this, EVENT_GAME_TEXT, handle )
+            handle = EVENTABLE_METHODR( EVENT_GAME_TEXT, handle )
                 ->onGameText( _event.key, wp.x, wp.y );
         }
 
@@ -104,7 +104,7 @@ namespace Mengine
             PLAYER_SERVICE()
                 ->calcGlobalMouseWorldPosition( point, &wp );
 
-            handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON, handle )
+            handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_BUTTON, handle )
                 ->onGameMouseButton( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
         }
 
@@ -129,7 +129,7 @@ namespace Mengine
             PLAYER_SERVICE()
                 ->calcGlobalMouseWorldPosition( point, &wp );
 
-            handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )
+            handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_BUTTON_BEGIN, handle )
                 ->onGameMouseButtonBegin( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
         }
 
@@ -154,7 +154,7 @@ namespace Mengine
             PLAYER_SERVICE()
                 ->calcGlobalMouseWorldPosition( point, &wp );
 
-            handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_BUTTON_END, handle )
+            handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_BUTTON_END, handle )
                 ->onGameMouseButtonEnd( _event.touchId, wp.x, wp.y, _event.button, _event.isDown );
         }
 
@@ -184,7 +184,7 @@ namespace Mengine
             PLAYER_SERVICE()
                 ->calcGlobalMouseWorldDelta( delta, &wd );
 
-            handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_MOVE, handle )
+            handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_MOVE, handle )
                 ->onGameMouseMove( _event.touchId, wp.x, wp.y, wd.x, wd.y );
         }
 
@@ -203,7 +203,7 @@ namespace Mengine
 
         if( handle == false )
         {
-            handle = EVENTABLE_METHODR( this, EVENT_GAME_MOUSE_WHEEL, handle )
+            handle = EVENTABLE_METHODR( EVENT_GAME_MOUSE_WHEEL, handle )
                 ->onGameMouseWheel( _event.button, _event.x, _event.y, _event.wheel );
         }
 
@@ -218,7 +218,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::mouseLeave( const InputMousePositionEvent & _event )
     {
-        EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_LEAVE )
+        EVENTABLE_METHOD( EVENT_GAME_APP_MOUSE_LEAVE )
             ->onGameAppMouseLeave();
 
         PLAYER_SERVICE()
@@ -227,7 +227,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::mouseEnter( const InputMousePositionEvent & _event )
     {
-        EVENTABLE_METHOD( this, EVENT_GAME_APP_MOUSE_ENTER )
+        EVENTABLE_METHOD( EVENT_GAME_APP_MOUSE_ENTER )
             ->onGameAppMouseEnter( _event.x, _event.y );
 
         PLAYER_SERVICE()
@@ -255,7 +255,7 @@ namespace Mengine
 
         if( sreenFillrate > limitFillrate )
         {
-            EVENTABLE_METHOD( this, EVENT_GAME_OVER_FILLRATE )
+            EVENTABLE_METHOD( EVENT_GAME_OVER_FILLRATE )
                 ->onGameOverFillrate( sreenFillrate );
         }
 #endif
@@ -265,7 +265,7 @@ namespace Mengine
 
         for( const UserEvent & ev : m_userEvents )
         {
-            EVENTABLE_METHOD( this, EVENT_GAME_USER )
+            EVENTABLE_METHOD( EVENT_GAME_USER )
                 ->onGameUser( ev.id, ev.params );
         }
 
@@ -286,7 +286,7 @@ namespace Mengine
         PLAYER_SERVICE()
             ->render();
 
-        EVENTABLE_METHOD( this, EVENT_GAME_FRAME_END )
+        EVENTABLE_METHOD( EVENT_GAME_FRAME_END )
             ->onGameFrameEnd();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -302,7 +302,7 @@ namespace Mengine
             , is_debug
         );
 
-        bool result = EVENTABLE_METHODR( this, EVENT_GAME_PREPARATION, true )
+        bool result = EVENTABLE_METHODR( EVENT_GAME_PREPARATION, true )
             ->onGamePreparation( is_debug );
 
         if( result == false )
@@ -339,7 +339,7 @@ namespace Mengine
             }
         }
 
-        bool EVENT_INITIALIZE_result = EVENTABLE_METHODR( this, EVENT_GAME_INITIALIZE, true )
+        bool EVENT_INITIALIZE_result = EVENTABLE_METHODR( EVENT_GAME_INITIALIZE, true )
             ->onGameInitialize();
 
         if( EVENT_INITIALIZE_result == false )
@@ -359,7 +359,7 @@ namespace Mengine
 
         if( hasGlobalAccount == false )
         {
-            EVENTABLE_METHOD( this, EVENT_GAME_CREATE_GLOBAL_ACCOUNT )
+            EVENTABLE_METHOD( EVENT_GAME_CREATE_GLOBAL_ACCOUNT )
                 ->onGameCreateGlobalAccount();
         }
 
@@ -368,11 +368,11 @@ namespace Mengine
 
         if( hasCurrentAccount == false )
         {
-            EVENTABLE_METHOD( this, EVENT_GAME_CREATE_DEFAULT_ACCOUNT )
+            EVENTABLE_METHOD( EVENT_GAME_CREATE_DEFAULT_ACCOUNT )
                 ->onGameCreateDefaultAccount();
         }
 
-        EVENTABLE_METHOD( this, EVENT_GAME_LOAD_ACCOUNTS )
+        EVENTABLE_METHOD( EVENT_GAME_LOAD_ACCOUNTS )
             ->onGameLoadAccounts();
 
         return true;
@@ -399,16 +399,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::_finalizeService()
     {
-        EVENTABLE_METHOD( this, EVENT_GAME_ACCOUNT_FINALIZE )
+        EVENTABLE_METHOD( EVENT_GAME_ACCOUNT_FINALIZE )
             ->onGameAccountFinalize();
 
         SCRIPT_SERVICE()
             ->finalizeModules();
 
-        EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE )
+        EVENTABLE_METHOD( EVENT_GAME_FINALIZE )
             ->onGameFinalize();
 
-        EVENTABLE_METHOD( this, EVENT_GAME_DESTROY )
+        EVENTABLE_METHOD( EVENT_GAME_DESTROY )
             ->onGameDestroy();
 
         this->removeEvents();
@@ -427,19 +427,19 @@ namespace Mengine
         LOGGER_WARNING( "Run game"
         );
 
-        EVENTABLE_METHOD( this, EVENT_GAME_RUN )
+        EVENTABLE_METHOD( EVENT_GAME_RUN )
             ->onGameRun();
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::initializeRenderResources()
     {
-        EVENTABLE_METHOD( this, EVENT_GAME_INITIALIZE_RENDER_RESOURCES )
+        EVENTABLE_METHOD( EVENT_GAME_INITIALIZE_RENDER_RESOURCES )
             ->onGameInitializeRenderResources();
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::finalizeRenderResources()
     {
-        EVENTABLE_METHOD( this, EVENT_GAME_FINALIZE_RENDER_RESOURCES )
+        EVENTABLE_METHOD( EVENT_GAME_FINALIZE_RENDER_RESOURCES )
             ->onGameFinalizeRenderResources();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -471,7 +471,7 @@ namespace Mengine
                 ->onFocus( _focus );
         }
 
-        EVENTABLE_METHOD( this, EVENT_GAME_FOCUS )
+        EVENTABLE_METHOD( EVENT_GAME_FOCUS )
             ->onGameFocus( _focus );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -483,7 +483,7 @@ namespace Mengine
                 ->onFullscreen( _resolution, _fullscreen );
         }
 
-        EVENTABLE_METHOD( this, EVENT_GAME_FULLSCREEN )
+        EVENTABLE_METHOD( EVENT_GAME_FULLSCREEN )
             ->onGameFullscreen( _fullscreen );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -495,7 +495,7 @@ namespace Mengine
                 ->onFixedContentResolution( _resolution, _fixed );
         }
 
-        EVENTABLE_METHOD( this, EVENT_GAME_FIXED_CONTENT_RESOLUTION )
+        EVENTABLE_METHOD( EVENT_GAME_FIXED_CONTENT_RESOLUTION )
             ->onGameFixedContentResolution( _fixed );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -507,25 +507,25 @@ namespace Mengine
                 ->onFixedContentResolution( _resolution, _fixed );
         }
 
-        EVENTABLE_METHOD( this, EVENT_GAME_FIXED_DISPLAY_RESOLUTION )
+        EVENTABLE_METHOD( EVENT_GAME_FIXED_DISPLAY_RESOLUTION )
             ->onGameFixedDisplayResolution( _fixed );
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::setRenderViewport( const Viewport & _viewport, const Resolution & _contentResolution )
     {
-        EVENTABLE_METHOD( this, EVENT_GAME_RENDER_VIEWPORT )
+        EVENTABLE_METHOD( EVENT_GAME_RENDER_VIEWPORT )
             ->onGameRenderViewport( _viewport, _contentResolution );
     }
     //////////////////////////////////////////////////////////////////////////
     void GameService::setGameViewport( const Viewport & _viewport, float _aspect )
     {
-        EVENTABLE_METHOD( this, EVENT_GAME_VIEWPORT )
+        EVENTABLE_METHOD( EVENT_GAME_VIEWPORT )
             ->onGameViewport( _viewport, _aspect );
     }
     //////////////////////////////////////////////////////////////////////////
     bool GameService::close()
     {
-        bool needQuit = EVENTABLE_METHODR( this, EVENT_GAME_CLOSE, true )
+        bool needQuit = EVENTABLE_METHODR( EVENT_GAME_CLOSE, true )
             ->onGameClose();
 
         return needQuit;
@@ -542,7 +542,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void GameService::setCursorMode( bool _mode )
     {
-        EVENTABLE_METHOD( this, EVENT_GAME_CURSOR_MODE )
+        EVENTABLE_METHOD( EVENT_GAME_CURSOR_MODE )
             ->onGameCursorMode( _mode );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -555,7 +555,7 @@ namespace Mengine
     {
         m_timingFactor = _timingFactor;
 
-        EVENTABLE_METHOD( this, EVENT_GAME_ON_TIMING_FACTOR )
+        EVENTABLE_METHOD( EVENT_GAME_ON_TIMING_FACTOR )
             ->onGameTimingFactor( _timingFactor );
     }
     //////////////////////////////////////////////////////////////////////////

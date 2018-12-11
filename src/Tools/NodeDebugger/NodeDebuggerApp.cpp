@@ -21,17 +21,17 @@
 #define MutexLocker std::lock_guard<std::mutex>
 
 
-static bool zed_net_ext_tcp_wait_for_data( zed_net_socket_t* socket, const int timeoutMs )
+static bool zed_net_ext_tcp_wait_for_data( zed_net_socket_t* _socket, const int _timeoutMs )
 {
     fd_set socketsSet;
     socketsSet.fd_count = 1;
-    socketsSet.fd_array[0] = socket->handle;
+    socketsSet.fd_array[0] = _socket->handle;
 
     timeval tv;
-    tv.tv_sec = static_cast<long>(timeoutMs / 1000);
-    tv.tv_usec = static_cast<long>((timeoutMs - static_cast<int>(tv.tv_sec * 1000)) * 1000);
+    tv.tv_sec = static_cast<long>(_timeoutMs / 1000);
+    tv.tv_usec = static_cast<long>((_timeoutMs - static_cast<int>(tv.tv_sec * 1000)) * 1000);
 
-    const int result = ::select( 0, &socketsSet, nullptr, nullptr, (timeoutMs == 0) ? nullptr : &tv );
+    const int result = ::select( 0, &socketsSet, nullptr, nullptr, (_timeoutMs == 0) ? nullptr : &tv );
 
     return (1 == result);
 }
@@ -164,10 +164,10 @@ void NodeDebuggerApp::Update()
     }
 }
 
-void NodeDebuggerApp::ProcessPacket( const NetPacket& packet )
+void NodeDebuggerApp::ProcessPacket( const NodeDebuggerPacket & _packet )
 {
     pugi::xml_document doc;
-    pugi::xml_parse_result result = doc.load_buffer( packet.payload.data(), packet.payload.size() );
+    pugi::xml_parse_result result = doc.load_buffer( _packet.payload.data(), _packet.payload.size() );
     if( !result )
     {
         return;
@@ -200,9 +200,9 @@ void NodeDebuggerApp::ProcessPacket( const NetPacket& packet )
     }
 }
 
-void NodeDebuggerApp::ReceiveScene( const pugi::xml_node& xmlContainer )
+void NodeDebuggerApp::ReceiveScene( const pugi::xml_node & _xmlContainer )
 {
-    pugi::xml_node xmlNode = xmlContainer.first_child();
+    pugi::xml_node xmlNode = _xmlContainer.first_child();
 
     if( xmlNode )
     {
@@ -220,55 +220,55 @@ void NodeDebuggerApp::ReceiveScene( const pugi::xml_node& xmlContainer )
     }
 }
 
-void NodeDebuggerApp::DeserializeNode( const pugi::xml_node& xmlNode, Node* node )
+void NodeDebuggerApp::DeserializeNode( const pugi::xml_node& _xmlNode, Node* _node )
 {
-    node->uid = xmlNode.attribute( "uid" ).as_uint();
-    node->name = xmlNode.attribute( "name" ).value();
-    node->type = xmlNode.attribute( "type" ).value();
+    _node->uid = _xmlNode.attribute( "uid" ).as_uint();
+    _node->name = _xmlNode.attribute( "name" ).value();
+    _node->type = _xmlNode.attribute( "type" ).value();
 
-    deserializeNodeProp<bool>( *node, "enable", xmlNode, []( Node & _node, auto _value )
+    deserializeNodeProp<bool>( *_node, "enable", _xmlNode, []( Node & _node, auto _value )
     {
         _node.enable = _value;
     } );
 
-    deserializeNodeProp<mt::vec3f>( *node, "scale", xmlNode, []( Node & _node, auto _value )
+    deserializeNodeProp<mt::vec3f>( *_node, "scale", _xmlNode, []( Node & _node, auto _value )
     {
         _node.scale = _value;
     } );
 
-    deserializeNodeProp<mt::vec2f>( *node, "skew", xmlNode, []( Node & _node, auto _value )
+    deserializeNodeProp<mt::vec2f>( *_node, "skew", _xmlNode, []( Node & _node, auto _value )
     {
         _node.skew = _value;
     } );
 
-    pugi::xml_node renderNode = xmlNode.child( "Render" );
-    pugi::xml_node animationNode = xmlNode.child( "Animation" );
-    pugi::xml_node childrenNode = xmlNode.child( "Children" );
+    pugi::xml_node renderNode = _xmlNode.child( "Render" );
+    pugi::xml_node animationNode = _xmlNode.child( "Animation" );
+    pugi::xml_node childrenNode = _xmlNode.child( "Children" );
 
-    node->hasRender = renderNode;
-    node->hasAnimation = animationNode;
+    _node->hasRender = renderNode;
+    _node->hasAnimation = animationNode;
 
-    if( node->hasRender )
+    if( _node->hasRender )
     {
-        deserializeNodeProp<bool>( *node, "enable", renderNode, []( Node & _node, auto _value )
+        deserializeNodeProp<bool>( *_node, "enable", renderNode, []( Node & _node, auto _value )
         {
             _node.render.enable = _value;
         } );
 
-        deserializeNodeProp<bool>( *node, "hide", renderNode, []( Node & _node, auto _value )
+        deserializeNodeProp<bool>( *_node, "hide", renderNode, []( Node & _node, auto _value )
         {
             _node.render.hide = _value;
         } );
 
-        deserializeNodeProp<Color>( *node, "color", renderNode, []( Node & _node, auto _value )
+        deserializeNodeProp<Color>( *_node, "color", renderNode, []( Node & _node, auto _value )
         {
             _node.render.color = _value;
         } );
     }
 
-    if( node->hasAnimation )
+    if( _node->hasAnimation )
     {
-        deserializeNodeProp<bool>( *node, "loop", animationNode, []( Node & _node, auto _value )
+        deserializeNodeProp<bool>( *_node, "loop", animationNode, []( Node & _node, auto _value )
         {
             _node.animation.loop = _value;
         } );
@@ -279,20 +279,20 @@ void NodeDebuggerApp::DeserializeNode( const pugi::xml_node& xmlNode, Node* node
         for( const auto & child : childrenNode.children() )
         {
             Node* childNode = new Node();
-            childNode->parent = node;
+            childNode->parent = _node;
             DeserializeNode( child, childNode );
-            node->children.push_back( childNode );
+            _node->children.push_back( childNode );
         }
     }
 
-    node->dirty = false;
+    _node->dirty = false;
 }
 
-std::vector<uint32_t> NodeDebuggerApp::CollectNodePath( const Node* node )
+std::vector<uint32_t> NodeDebuggerApp::CollectNodePath( const Node * _node )
 {
     std::vector<uint32_t> path;
 
-    const Node* current = node;
+    const Node* current = _node;
     while( current && current->parent )
     {
         path.insert( path.begin(), current->uid );
@@ -302,10 +302,10 @@ std::vector<uint32_t> NodeDebuggerApp::CollectNodePath( const Node* node )
     return path;
 }
 
-std::string NodeDebuggerApp::PathToString( const std::vector<uint32_t>& path )
+std::string NodeDebuggerApp::PathToString( const std::vector<uint32_t> & _path )
 {
     std::stringstream stream;
-    std::copy( path.begin(), path.end(), std::ostream_iterator<uint32_t>( stream, "/" ) );
+    std::copy( _path.begin(), _path.end(), std::ostream_iterator<uint32_t>( stream, "/" ) );
 
     return stream.str();
 }
@@ -405,16 +405,16 @@ void NodeDebuggerApp::DoUI()
     ImGui::End();
 }
 
-std::string NodeDebuggerApp::DoIPInput( const std::string& title, const std::string& inIP )
+std::string NodeDebuggerApp::DoIPInput( const std::string & _title, const std::string & _inIP )
 {
     int octets[4] = { 127, 0, 0, 1 };
 
-    if( !inIP.empty() )
+    if( !_inIP.empty() )
     {
         int idx = 0;
         octets[idx] = 0;
 
-        for( const char c : inIP )
+        for( const char c : _inIP )
         {
             if( isdigit( c ) )
             {
@@ -437,7 +437,7 @@ std::string NodeDebuggerApp::DoIPInput( const std::string& title, const std::str
     ImGui::BeginGroup();
     ImGui::AlignFirstTextHeightToWidgets();
     ImGui::PushID( "IPInputForm" );
-    ImGui::TextUnformatted( title.c_str() );
+    ImGui::TextUnformatted( _title.c_str() );
     for( int i = 0; i < 4; ++i )
     {
         ImGui::SameLine();
@@ -478,21 +478,21 @@ std::string NodeDebuggerApp::DoIPInput( const std::string& title, const std::str
     return result;
 }
 
-void NodeDebuggerApp::DoNodeElement( Node* node )
+void NodeDebuggerApp::DoNodeElement( Node * _node )
 {
-    const ImGuiTreeNodeFlags seletedFlag = (mSelectedNode == node ) ? ImGuiTreeNodeFlags_Selected : 0;
+    const ImGuiTreeNodeFlags seletedFlag = (mSelectedNode == _node ) ? ImGuiTreeNodeFlags_Selected : 0;
     const ImGuiTreeNodeFlags flagsNormal = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | seletedFlag;
     const ImGuiTreeNodeFlags flagsNoChildren = ImGuiTreeNodeFlags_Leaf | seletedFlag;
 
-    const bool nodeOpen = ImGui::TreeNodeEx( node->name.c_str(), node->children.empty() ? flagsNoChildren : flagsNormal );
+    const bool nodeOpen = ImGui::TreeNodeEx( _node->name.c_str(), _node->children.empty() ? flagsNoChildren : flagsNormal );
     if( ImGui::IsItemClicked() )
     {
-        mSelectedNode = node;
+        mSelectedNode = _node;
     }
 
     if( nodeOpen )
     {
-        for( Node* child : node->children )
+        for( Node* child : _node->children )
         {
             DoNodeElement( child );
         }
@@ -501,86 +501,83 @@ void NodeDebuggerApp::DoNodeElement( Node* node )
     }
 }
 
-void NodeDebuggerApp::DoNodeProperties( Node* node )
+void NodeDebuggerApp::DoNodeProperties( Node * _node )
 {
-    auto uiEditorBool = [node]( const char * _caption, bool & _prop )
+    auto uiEditorBool = [_node]( const char * _caption, bool & _prop )
     {
         bool testValue = _prop;
         const bool input = ImGui::Checkbox( _caption, &testValue );
         if( input && testValue != _prop )
         {
             _prop = testValue;
-            node->dirty = true;
+            _node->dirty = true;
         }
     };
 
-    auto uiEditorVec3f = [node]( const char * _caption, mt::vec3f & _prop )
+    auto uiEditorVec3f = [_node]( const char * _caption, mt::vec3f & _prop )
     {
         mt::vec3f testValue = _prop;
         const bool input = ImGui::DragFloat3( _caption, testValue.buff() );
         if( input && testValue != _prop )
         {
             _prop = testValue;
-            node->dirty = true;
+            _node->dirty = true;
         }
     };
 
-    auto uiEditorVec2f = [node]( const char * _caption, mt::vec2f & _prop )
+    auto uiEditorVec2f = [_node]( const char * _caption, mt::vec2f & _prop )
     {
         mt::vec2f testValue = _prop;
         const bool input = ImGui::DragFloat2( _caption, testValue.buff() );
         if( input && testValue != _prop )
         {
             _prop = testValue;
-            node->dirty = true;
+            _node->dirty = true;
         }
     };
 
-    auto uiEditorColor = [node]( const char * _caption, Color & _prop )
+    auto uiEditorColor = [_node]( const char * _caption, Color & _prop )
     {
         Color testValue = _prop;
         const bool input = ImGui::ColorEdit4( _caption, testValue.arr );
         if( input && testValue != _prop )
         {
             _prop = testValue;
-            node->dirty = true;
+            _node->dirty = true;
         }
     };
 
 
     if( ImGui::CollapsingHeader( "Node:", ImGuiTreeNodeFlags_DefaultOpen ) )
     {
-        ImGui::Text( "Name: %s", node->name.c_str() );
+        ImGui::Text( "Name: %s", _node->name.c_str() );
         ImGui::SameLine();
         ImGui::Dummy( ImVec2( 20.0f, 5.0f ) );
         ImGui::SameLine();
-        ImGui::Text( "Type: %s", node->type.c_str() );
+        ImGui::Text( "Type: %s", _node->type.c_str() );
         ImGui::Spacing();
 
-        uiEditorVec3f( "Scale", node->scale );
+        uiEditorVec3f( "Scale", _node->scale );
         ImGui::Spacing();
 
-        uiEditorVec2f( "Skew", node->skew );
+        uiEditorVec2f( "Skew", _node->skew );
     }
 
-    if( node->hasRender && ImGui::CollapsingHeader( "Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
+    if( _node->hasRender && ImGui::CollapsingHeader( "Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
     {
-        uiEditorBool( "Enable", node->render.enable );
+        uiEditorBool( "Enable", _node->render.enable );
         ImGui::Spacing();
 
-        uiEditorBool( "Hide", node->render.hide );
+        uiEditorBool( "Hide", _node->render.hide );
         ImGui::Spacing();
 
-        uiEditorColor( "Color", node->render.color );
+        uiEditorColor( "Color", _node->render.color );
     }
 
-    if( node->hasAnimation && ImGui::CollapsingHeader( "Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
+    if( _node->hasAnimation && ImGui::CollapsingHeader( "Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
     {
-        uiEditorBool( "Loop", node->animation.loop );
+        uiEditorBool( "Loop", _node->animation.loop );
     }
-
-
-#undef CHECKBOX_CHECK
 }
 
 void NodeDebuggerApp::OnConnectButton()
@@ -654,7 +651,7 @@ void NodeDebuggerApp::SendNetworkData()
     {
         if( !mOutgoingPackets.empty() )
         {
-            for( const NetPacket& p : mOutgoingPackets)
+            for( const NodeDebuggerPacket & p : mOutgoingPackets)
             {
                 zed_net_tcp_socket_send( &mSocket, p.payload.data(), static_cast<int>( p.payload.size() ) );
             }
@@ -688,47 +685,60 @@ void NodeDebuggerApp::ReceiveNetworkData()
     while( bytesReceived > 0 && bytesReceived == BUFFER_SIZE );
 
     // check if we have read something
-    if( mReceivedData.size() > sizeof( uint32_t ) )
+    if( mReceivedData.size() > sizeof( PacketHeader ) )
     {
-        mDataMutex.lock();
+        MutexLocker lock( mDataMutex );
 
         // check if we have enough data to form a packet
-        uint32_t dataSize = *reinterpret_cast<uint32_t*>( mReceivedData.data() );
-        while( dataSize <= ( mReceivedData.size() - sizeof( uint32_t ) ) )
-        {
-            const size_t dataSizeWithSize = dataSize + sizeof( uint32_t );
+        PacketHeader* hdr = reinterpret_cast<PacketHeader *>( mReceivedData.data() );
 
-            NetPacket packet;
-            packet.payload.resize( dataSize );
-            memcpy( packet.payload.data(), mReceivedData.data() + sizeof( uint32_t ), dataSize );
+        // received garbage - nothing fancy, just disconnect
+        if( hdr->magic != PACKET_MAGIC )
+        {
+            DisconnectFromServer();
+            return;
+        }
+
+        while( hdr != nullptr && hdr->payloadSize <= ( mReceivedData.size() - sizeof( PacketHeader ) ) )
+        {
+            // received garbage - nothing fancy, just disconnect
+            if( hdr->magic != PACKET_MAGIC )
+            {
+                DisconnectFromServer();
+                return;
+            }
+
+            const size_t dataSizeWithHeader = hdr->payloadSize + sizeof( PacketHeader );
+
+            NodeDebuggerPacket packet;
+            packet.payload.resize( hdr->payloadSize );
+            memcpy( packet.payload.data(), mReceivedData.data() + sizeof( PacketHeader ), hdr->payloadSize );
             mIncomingPackets.emplace_back( packet );
 
             // now remove this packet data from the buffer
-            const size_t newSize = mReceivedData.size() - dataSizeWithSize;
+            const size_t newSize = mReceivedData.size() - dataSizeWithHeader;
             if( newSize )
             {
-                memmove( mReceivedData.data(), mReceivedData.data() + dataSizeWithSize, newSize );
+                memmove( mReceivedData.data(), mReceivedData.data() + dataSizeWithHeader, newSize );
                 mReceivedData.resize( newSize );
 
-                dataSize = *reinterpret_cast<uint32_t*>( mReceivedData.data() );
+                hdr = reinterpret_cast<PacketHeader *>( mReceivedData.data() );
             }
             else
             {
                 mReceivedData.clear();
-                dataSize = 0;
+                hdr = nullptr;
             }
 
-            if( newSize <= sizeof( uint32_t ) )
+            if( newSize <= sizeof( PacketHeader ) )
             {
                 break;
             }
         }
-
-        mDataMutex.unlock();
     }
 }
 
-void NodeDebuggerApp::SendChangedNode( const Node& node )
+void NodeDebuggerApp::SendChangedNode( const Node& _node )
 {
     pugi::xml_document doc;
 
@@ -739,32 +749,32 @@ void NodeDebuggerApp::SendChangedNode( const Node& node )
 
     pugi::xml_node xmlNode = payloadNode.append_child( "Node" );
 
-    std::string pathStr = PathToString( CollectNodePath( &node ) );
+    std::string pathStr = PathToString( CollectNodePath( &_node ) );
 
     xmlNode.append_attribute( "path" ).set_value( pathStr.c_str() );
-    xmlNode.append_attribute( "name" ).set_value( node.name.c_str() );
-    xmlNode.append_attribute( "type" ).set_value( node.type.c_str() );
+    xmlNode.append_attribute( "name" ).set_value( _node.name.c_str() );
+    xmlNode.append_attribute( "type" ).set_value( _node.type.c_str() );
 
-    serializeNodeProp( node.enable, "enable", xmlNode );
-    serializeNodeProp( node.scale, "scale", xmlNode );
+    serializeNodeProp( _node.enable, "enable", xmlNode );
+    serializeNodeProp( _node.scale, "scale", xmlNode );
 
-    if( node.hasRender )
+    if( _node.hasRender )
     {
         pugi::xml_node renderNode = xmlNode.append_child( "Render" );
 
-        serializeNodeProp( node.render.enable, "enable", renderNode );
-        serializeNodeProp( node.render.hide, "hide", renderNode );
-        serializeNodeProp( node.render.color, "color", renderNode );
+        serializeNodeProp( _node.render.enable, "enable", renderNode );
+        serializeNodeProp( _node.render.hide, "hide", renderNode );
+        serializeNodeProp( _node.render.color, "color", renderNode );
     }
 
-    if( node.hasAnimation )
+    if( _node.hasAnimation )
     {
         pugi::xml_node animationNode = xmlNode.append_child( "Animation" );
 
-        serializeNodeProp( node.animation.loop, "loop", animationNode );
+        serializeNodeProp( _node.animation.loop, "loop", animationNode );
     }
 
-    NetPacket packet;
+    NodeDebuggerPacket packet;
 
     MyXMLWriter writer( packet.payload );
 
@@ -778,9 +788,11 @@ void NodeDebuggerApp::SendChangedNode( const Node& node )
     if( !packet.payload.empty() )
     {
         const uint32_t payloadLength = static_cast<uint32_t>( packet.payload.size() );
-        const uint8_t* begin = reinterpret_cast<const uint8_t*>( &payloadLength );
-        const uint8_t* end = begin + sizeof( payloadLength );
-        packet.payload.insert( packet.payload.begin(), begin, end );
+
+        PacketHeader hdr;
+        hdr.magic = PACKET_MAGIC;
+        hdr.payloadSize = static_cast<uint32_t>( packet.payload.size() );
+        InsertPacketHeader( packet.payload, hdr );
 
         mOutgoingPackets.emplace_back( packet );
     }

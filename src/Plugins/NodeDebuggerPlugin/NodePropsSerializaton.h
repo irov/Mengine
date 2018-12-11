@@ -1,6 +1,14 @@
 #pragma once
 #include "Config/Lambda.h"
 
+#define PACKET_MAGIC    0xCAFEB00B
+
+struct PacketHeader
+{
+    uint32_t magic;
+    uint32_t payloadSize;
+};
+
 
 #ifdef NODE_SERIALIZATION_INGAME
 #define NODE_TYPE Mengine::NodePtr
@@ -17,6 +25,14 @@ namespace Mengine
     using String = std::string;
 }
 #endif
+
+
+void InsertPacketHeader( Mengine::Vector<uint8_t> & _payload, const PacketHeader & _hdr )
+{
+    const uint8_t* begin = reinterpret_cast<const uint8_t*>( & _hdr );
+    const uint8_t* end = begin + sizeof( PacketHeader );
+    _payload.insert( _payload.begin(), begin, end );
+}
 
 
 namespace _util

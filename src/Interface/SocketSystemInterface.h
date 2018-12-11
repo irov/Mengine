@@ -16,6 +16,6 @@ namespace Mengine
     };
 }
 //////////////////////////////////////////////////////////////////////////
-#define SOCKET_SYSTEM( serviceProvider )\
-    ((Mengine::SocketSystemInterface*)SERVICE_GET(serviceProvider, Mengine::SocketSystemInterface))
+#define SOCKET_SYSTEM()\
+    ((Mengine::SocketSystemInterface*)SERVICE_GET(Mengine::SocketSystemInterface))
 //////////////////////////////////////////////////////////////////////////

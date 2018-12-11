@@ -171,6 +171,9 @@ PLUGIN_EXPORT( Movie1 );
 PLUGIN_EXPORT( TTF );
 #endif
 
+PLUGIN_EXPORT( Win32Socket );
+PLUGIN_EXPORT( NodeDebugger );
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -769,6 +772,9 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_TTF
         MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
 #endif
+
+        MENGINE_ADD_PLUGIN( Win32Socket, "initialize Plugin Win32Socket..." );
+        MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger..." );
 
 #	undef MENGINE_ADD_PLUGIN
 

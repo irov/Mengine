@@ -106,7 +106,7 @@ namespace Mengine
 
         ae_play_movie_sub_composition( m_composition, m_subcomposition, 0.f );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_PLAY )
+        EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
             ->onAnimationPlay( _enumerator, _time );
 
         return true;
@@ -123,7 +123,7 @@ namespace Mengine
             return false;
         }
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESTART )
+        EVENTABLE_METHOD( EVENT_ANIMATION_RESTART )
             ->onAnimationRestart( _enumerator, _time );
 
         return true;
@@ -142,7 +142,7 @@ namespace Mengine
 
         ae_pause_movie_sub_composition( m_composition, m_subcomposition );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_PAUSE )
+        EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
             ->onAnimationPause( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -159,7 +159,7 @@ namespace Mengine
 
         ae_resume_movie_sub_composition( m_composition, m_subcomposition );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESUME )
+        EVENTABLE_METHOD( EVENT_ANIMATION_RESUME )
             ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -176,7 +176,7 @@ namespace Mengine
 
         ae_stop_movie_sub_composition( m_composition, m_subcomposition );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+        EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
 
         return true;
@@ -184,7 +184,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_end( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+        EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -201,7 +201,7 @@ namespace Mengine
 
         ae_interrupt_movie_sub_composition( m_composition, m_subcomposition, AE_FALSE );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_INTERRUPT )
+        EVENTABLE_METHOD( EVENT_ANIMATION_INTERRUPT )
             ->onAnimationInterrupt( _enumerator );
 
         return true;

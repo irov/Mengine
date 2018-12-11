@@ -688,7 +688,7 @@ namespace Mengine
 
         ae_play_movie_composition( m_composition, timing * 0.001f );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_PLAY )
+        EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
             ->onAnimationPlay( _enumerator, _time );
 
         return true;
@@ -696,7 +696,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::_restart( uint32_t _enumerator, float _time )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESTART )
+        EVENTABLE_METHOD( EVENT_ANIMATION_RESTART )
             ->onAnimationRestart( _enumerator, _time );
 
         return true;
@@ -704,13 +704,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_pause( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_PAUSE )
+        EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
             ->onAnimationPause( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_resume( uint32_t _enumerator, float _time )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESUME )
+        EVENTABLE_METHOD( EVENT_ANIMATION_RESUME )
             ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -727,7 +727,7 @@ namespace Mengine
 
         ae_stop_movie_composition( m_composition );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+        EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
 
         return true;
@@ -735,7 +735,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_end( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+        EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -754,7 +754,7 @@ namespace Mengine
 
         ae_interrupt_movie_composition( m_composition, AE_FALSE );
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_INTERRUPT )
+        EVENTABLE_METHOD( EVENT_ANIMATION_INTERRUPT )
             ->onAnimationInterrupt( _enumerator );
 
         return true;
@@ -1704,6 +1704,12 @@ namespace Mengine
 
                 programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 4 );
             }break;
+        case AE_MOVIE_EXTENSION_SHADER_PARAMETER_TIME:
+            {
+                shader_values[0] = _callbackData->value;
+
+                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1 );
+            }break;
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -2011,11 +2017,6 @@ namespace Mengine
 
         aeMovieCompositionRenderInfo info;
         ae_calculate_movie_composition_render_info( m_composition, &info );
-
-        if( info.max_vertex_count != 0 )
-        {
-            m_vertices.resize( info.max_vertex_count );
-        }
 
         if( info.max_vertex_count != 0 )
         {

@@ -209,7 +209,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SamplerOzzAnimation::_stop( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+        EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
 
         return true;
@@ -217,7 +217,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SamplerOzzAnimation::_end( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+        EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////

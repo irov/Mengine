@@ -2,8 +2,6 @@
 
 #include "NodeDebuggerInterface.h"
 
-#include "NodeDebugRenderVisitor.h"
-
 #include "Kernel/FactorableUnique.h"
 
 

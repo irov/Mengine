@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"

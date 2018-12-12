@@ -272,7 +272,7 @@ namespace Mengine
 
         m_needUpdateVideoBuffer = false;
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+        EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
 
         return true;
@@ -284,7 +284,7 @@ namespace Mengine
 
         m_needUpdateVideoBuffer = false;
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+        EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -334,13 +334,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_pause( uint32_t _enumerator )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_PAUSE )
+        EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
             ->onAnimationPause( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_resume( uint32_t _enumerator, float _time )
     {
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+        EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationResume( _enumerator, _time );
     }
     //////////////////////////////////////////////////////////////////////////

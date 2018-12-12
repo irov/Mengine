@@ -46,6 +46,7 @@ namespace Mengine
         : m_pD3D( nullptr )
         , m_pD3DDevice( nullptr )
         , m_hd3d9( NULL )
+        , m_fullscreen( true )
         , m_adapterToUse( D3DADAPTER_DEFAULT )
         , m_deviceType( D3DDEVTYPE_HAL )
         , m_waitForVSync( false )

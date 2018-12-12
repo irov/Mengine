@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Interface/RenderEnumInterface.h"
+#include "Interface/MaterialEnumInterface.h"
 
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/RenderProgramInterface.h"

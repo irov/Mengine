@@ -23,6 +23,7 @@ namespace Mengine
             , width( 0 )
             , height( 0 )
             , fps( 0.f )
+            , channel( 0 )
             , duration( 0.f )
             , format( PF_UNKNOWN )
             , clamp( true )

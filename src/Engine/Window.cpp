@@ -517,11 +517,11 @@ namespace Mengine
         return windowSize;
     }
     //////////////////////////////////////////////////////////////////////////
-    const mt::vec2f Window::getTileSize( int _tile ) const
+    const mt::vec2f Window::getTileSize( uint32_t _tile ) const
     {
-        if( _tile < 0 || _tile > ResourceWindow_Count )
+        if( _tile >= ResourceWindow_Count )
         {
-            LOGGER_ERROR( "Window::getTileSize: %s invalid tile argument '%d'"
+            LOGGER_ERROR( "window '%s' invalid tile argument '%u'"
                 , this->getName().c_str()
                 , _tile
             );
@@ -538,7 +538,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Window::setClientSizeInTiles: '%s' not compiled."
+            LOGGER_ERROR( "window '%s' not compiled."
                 , this->getName().c_str()
             );
 

@@ -306,6 +306,10 @@ namespace Mengine
             {
             }
 
+            ~PythonVisitorMovieSlot() override
+            {
+            }
+
         protected:
             void visitMovieNode( const MoviePtr & _movie, const NodePtr & _node ) override
             {
@@ -327,6 +331,7 @@ namespace Mengine
             pybind::list & m_list;
 
         private:
+            PythonVisitorMovieSlot( const PythonVisitorMovieSlot & );
             void operator = ( const PythonVisitorMovieSlot & );
         };
         //////////////////////////////////////////////////////////////////////////

@@ -34,7 +34,7 @@ namespace Mengine
 
     public:
         mt::vec2f getWindowSize() const;
-        const mt::vec2f getTileSize( int _tile ) const;
+        const mt::vec2f getTileSize( uint32_t _tile ) const;
 
         void setResourceWindow( const ResourceWindowPtr & _resourceWindow );
         const ResourceWindowPtr & getResourceWindow() const;

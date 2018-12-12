@@ -11,7 +11,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitter2::AstralaxEmitter2()
-        : m_emitterId( 0 )
+        : m_particleSystem(nullptr)        
+        , m_emitterId( 0 )
         , m_updateSpeed( 0.f )
         , m_leftBorder( 0.0 )
         , m_rightBorder( 0.0 )
@@ -21,6 +22,7 @@ namespace Mengine
         , m_angle( 0.f )
         , m_start( false )
         , m_looped( false )
+        , m_is3d( false )
         , m_relative( false )
     {
     }

@@ -5,6 +5,8 @@
 #include "Config/Typedef.h"
 #include "Config/String.h"
 
+#include "Kernel/Factorable.h"
+
 #include "Environment/Windows/WindowsIncluder.h"
 
 namespace Mengine
@@ -18,16 +20,20 @@ namespace Mengine
     };
 
     class Win32AlreadyRunningMonitor
+        : public Factorable
     {
     public:
         Win32AlreadyRunningMonitor();
-        ~Win32AlreadyRunningMonitor();
+        ~Win32AlreadyRunningMonitor() override;
 
     public:
-        bool run( int _policy, const WChar * _windowClassName, const WChar * _projectTitle );
-        void stop();
+        bool initialize( int _policy, const WChar * _windowClassName, const WChar * _projectTitle );
+        void finalize();
 
     protected:
         HANDLE m_mutex;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Win32AlreadyRunningMonitor> Win32AlreadyRunningMonitorPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

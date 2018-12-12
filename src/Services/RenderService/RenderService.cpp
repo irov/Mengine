@@ -53,6 +53,9 @@ namespace Mengine
         , m_iterateRenderObjects( 0 )
         , m_limitRenderObjects( 0 )
         , m_stopRenderObjects( false )
+        , m_currentBlendSrc( BF_ONE )
+        , m_currentBlendDst( BF_ONE )
+        , m_currentBlendOp( BOP_ADD )
     {
     }
     //////////////////////////////////////////////////////////////////////////

@@ -125,6 +125,7 @@ Thread
 
 ADD_FILTER(
 Render     
+    MaterialEnumInterface.h
     RenderEnumInterface.h
 	RenderSystemInterface.h
 	RenderImageInterface.h

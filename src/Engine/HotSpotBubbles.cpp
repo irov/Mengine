@@ -8,7 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     HotSpotBubbles::HotSpotBubbles()
-        : m_enumerator( 0 )
+        : m_enumeratorBubble( 0 )
         , m_invalidateBubbleWM( true )
     {
     }
@@ -21,7 +21,7 @@ namespace Mengine
     {
         Bubble b;
 
-        uint32_t new_id = ++m_enumerator;
+        uint32_t new_id = ++m_enumeratorBubble;
         b.id = new_id;
         b.pos = _pos;
         b.pos_wm = _pos;

@@ -173,7 +173,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::setScene( const Mengine::ScenePtr & _scene )
+    void NodeDebuggerService::setScene( const ScenePtr & _scene )
     {
         if( m_scene != _scene )
         {
@@ -254,7 +254,7 @@ namespace Mengine
         serializeNodeProp( _animation->isLoop(), "loop", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::serializeNode( const Mengine::NodePtr & _node, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerService::serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 
@@ -289,7 +289,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::sendScene( const Mengine::ScenePtr & _scene )
+    void NodeDebuggerService::sendScene( const ScenePtr & _scene )
     {
         pugi::xml_document doc;
 
@@ -363,7 +363,7 @@ namespace Mengine
         String pathStr = _xmlNode.attribute( "path" ).value();
         VectorNodePath path = stringToPath( pathStr );
 
-        NodePtr node = Mengine::findUniqueNode( m_scene, path );
+        NodePtr node = findUniqueNode( m_scene, path );
 
         if( node != nullptr )
         {
@@ -414,7 +414,7 @@ namespace Mengine
                     }
                 } );
 
-                deserializeNodeProp<Mengine::Color>( "color", renderNode, [render]( auto _value )
+                deserializeNodeProp<Color>( "color", renderNode, [render]( auto _value )
                 {
 					render->setLocalColor( _value );
                 } );

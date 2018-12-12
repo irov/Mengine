@@ -793,11 +793,8 @@ namespace Mengine
             U32String space_delim = U" ";
 
             VectorU32String space_delims;
-            if( m_wrap == true )
-            {
-                space_delims.emplace_back( space_delim );
-                space_delims.emplace_back( U"\r" );
-            }
+            space_delims.emplace_back( space_delim );
+            space_delims.emplace_back( U"\r" );
 
             VectorTextLines new_textLines;
             for( const VectorTextChunks & textChunks : textLines )

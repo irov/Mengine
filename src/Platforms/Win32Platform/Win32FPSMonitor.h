@@ -2,13 +2,17 @@
 
 #include "Environment/Windows/WindowsIncluder.h"
 
+#include "Kernel/Factorable.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Win32FPSMonitor
+        : public Factorable
     {
     public:
         Win32FPSMonitor();
+        ~Win32FPSMonitor() override;
 
     public:
         bool initialize();
@@ -36,4 +40,7 @@ namespace Mengine
         HANDLE m_hDestroySignalEvent;
         HANDLE m_hFrameSignalThread;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Win32FPSMonitor> Win32FPSMonitorPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

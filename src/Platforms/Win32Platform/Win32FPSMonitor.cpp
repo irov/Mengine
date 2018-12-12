@@ -22,6 +22,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    Win32FPSMonitor::~Win32FPSMonitor()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32FPSMonitor::initialize()
     {
         m_hFrameSignalEvent = ::CreateEvent( NULL, FALSE, FALSE, NULL );

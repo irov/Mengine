@@ -12,8 +12,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     HotSpotCircle::HotSpotCircle()
-        : m_enumerator( 0 )
-        , m_radius( 0.f )
+        : m_radius( 0.f )
         , m_ellipse( 1.f )
     {
     }

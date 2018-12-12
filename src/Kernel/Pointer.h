@@ -29,6 +29,14 @@ namespace Mengine
         }
 
     public:
+        PointerT & operator = (const PointerT & _pointer )
+        {
+            this->m_pointer = _pointer.m_pointer;
+
+            return *this;
+        }
+
+    public:
         operator T * () const
         {
             return m_pointer;

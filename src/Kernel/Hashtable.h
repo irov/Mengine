@@ -173,6 +173,15 @@ namespace Mengine
             }
 
         public:
+            const_iterator & operator = ( const const_iterator & _it )
+            {
+                this->m_carriage = _it.m_carriage;
+                this->m_end = _it.m_end;
+
+                return *this;
+            }
+
+        public:
             inline const value_type & operator -> () const
             {
                 return *m_carriage;

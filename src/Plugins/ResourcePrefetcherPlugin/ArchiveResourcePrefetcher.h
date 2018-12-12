@@ -28,6 +28,6 @@ namespace Mengine
         ArchivatorInterfacePtr m_archivator;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<ArchiveResourcePrefetcher> ArchivePrefetcherPtr;
+    typedef IntrusivePtr<ArchiveResourcePrefetcher> ArchiveResourcePrefetcherPtr;
     //////////////////////////////////////////////////////////////////////////
 }

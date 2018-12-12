@@ -241,23 +241,20 @@ namespace Mengine
                     break;
                 }
 
-                if( result > 0 )
+                // удалось успешно извлечь пакет информации theora
+                int result2 = theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet );
+
+                if( result2 < 0 )
                 {
-                    // удалось успешно извлечь пакет информации theora
-                    int result2 = theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet );
+                    // ошибка декодирования, поврежденный поток
+                    LOGGER_ERROR( "TheoraCodec Error: error during theora_decode_header (corrupt stream) %d"
+                        , result2
+                    );
 
-                    if( result2 < 0 )
-                    {
-                        // ошибка декодирования, поврежденный поток
-                        LOGGER_ERROR( "TheoraCodec Error: error during theora_decode_header (corrupt stream) %d"
-                            , result2
-                        );
-
-                        return false;
-                    }
-
-                    ++theoraHeaderPackets;
+                    return false;
                 }
+
+                ++theoraHeaderPackets;
             }
 
             // эту страничку обработали, надо извлечь новую

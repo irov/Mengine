@@ -26,7 +26,5 @@ namespace Mengine
     protected:
         float m_radius;
         float m_ellipse;
-
-        uint32_t m_enumerator;
     };
 }

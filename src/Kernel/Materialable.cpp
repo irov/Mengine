@@ -133,7 +133,7 @@ namespace Mengine
                         {
                             materialId = EM_TEXTURE_SCREEN_EXTERNAL_ALPHA;
                         }
-                    }
+                    }break;
                 case EMB_MULTIPLY:
                     {
                         if( _disableTextureColor == true )
@@ -144,7 +144,7 @@ namespace Mengine
                         {
                             materialId = EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA;
                         }
-                    }
+                    }break;
                 default:
                     break;
                 }
@@ -345,7 +345,7 @@ namespace Mengine
                         {
                             materialId = EM_TEXTURE_SCREEN_EXTERNAL_ALPHA;
                         }
-                    }
+                    }break;
                 case EMB_MULTIPLY:
                     {
                         if( _disableTextureColor == true )
@@ -356,7 +356,7 @@ namespace Mengine
                         {
                             materialId = EM_TEXTURE_MULTIPLY_EXTERNAL_ALPHA;
                         }
-                    }
+                    }break;
                 default:
                     break;
                 }

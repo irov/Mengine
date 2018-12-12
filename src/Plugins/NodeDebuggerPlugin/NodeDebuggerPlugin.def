@@ -1,0 +1,2 @@
+LIBRARY		"NodeDebuggerPlugin"
+EXPORTS 	dllCreatePlugin 	@1

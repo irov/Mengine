@@ -6,6 +6,7 @@
 #include "Kernel/Mixin.h"
 
 #include "Config/Char.h"
+#include "Config/String.h"
 
 namespace Mengine
 {
@@ -20,8 +21,13 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual bool connect( const SocketConnectInfo & _data ) = 0;
-        virtual void disconnect() = 0;
+        virtual bool   connect( const SocketConnectInfo & _data ) = 0;
+        virtual bool   bind( const SocketConnectInfo & _data ) = 0;
+        virtual bool   waitForClient() = 0;
+        virtual bool   waitForData(size_t timeoutMs) = 0;
+        virtual size_t send( const void* _data, const size_t _numBytes ) = 0;
+        virtual size_t recieve( void* _data, const size_t _maxBytes ) = 0;
+        virtual void   disconnect() = 0;
 
     public:
         virtual OutputStreamInterfacePtr getSendStream() const = 0;

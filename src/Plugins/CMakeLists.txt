@@ -11,6 +11,8 @@ ADD_SUBDIRECTORY(OggVorbisPlugin)
 ADD_SUBDIRECTORY(Movie1Plugin)
 ADD_SUBDIRECTORY(MoviePlugin)
 
+ADD_SUBDIRECTORY(NodeDebuggerPlugin)
+
 if(MENGINE_PLUGIN_METABUFLOADER)
     ADD_SUBDIRECTORY(MetabufLoaderPlugin)
 endif()
@@ -82,10 +84,10 @@ endif()
 
 
 if(MENGINE_TARGET_MSVC)
-    ADD_SUBDIRECTORY( Win32SocketPlugin )    
+    ADD_SUBDIRECTORY( Win32SocketPlugin )
     ADD_SUBDIRECTORY( Win32FileGroupPlugin )
 	ADD_SUBDIRECTORY( Win32ConsoleLogger )
-    
+
     ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
 endif()
 
@@ -93,14 +95,14 @@ if(MENGINE_TARGET_MINGW)
     ADD_SUBDIRECTORY( Win32SocketPlugin )
     ADD_SUBDIRECTORY( Win32FileGroupPlugin )
 	ADD_SUBDIRECTORY( Win32ConsoleLogger )
-	
+
 	ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
 endif()
 
 if(MENGINE_TARGET_SDL)
     ADD_SUBDIRECTORY( SDLFileGroupPlugin )
     ADD_SUBDIRECTORY( Win32ConsoleLogger )
-    
+
     ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
 endif()
 

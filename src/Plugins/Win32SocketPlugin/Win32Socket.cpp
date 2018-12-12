@@ -1,3 +1,4 @@
+#define _WINSOCK_DEPRECATED_NO_WARNINGS
 #include "Win32Socket.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -50,6 +51,107 @@ namespace Mengine
         m_socket = socket;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Socket::bind( const SocketConnectInfo & _info )
+    {
+        m_socket = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
+
+        if( !m_socket || INVALID_SOCKET == m_socket )
+        {
+            return false;
+        }
+
+        SOCKADDR_IN addr;
+        ZeroMemory( &addr, sizeof( addr ) );
+
+        const uint16_t port = static_cast<uint16_t>( std::stoi( _info.port ) );
+
+        addr.sin_family = AF_INET;
+        addr.sin_port = ::htons( port );
+        addr.sin_addr.s_addr = ::inet_addr( _info.ip );
+
+        if( ::bind( m_socket, reinterpret_cast<LPSOCKADDR>( &addr ), sizeof( addr ) ) == SOCKET_ERROR )
+        {
+            ::closesocket( m_socket );
+            m_socket = INVALID_SOCKET;
+
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Socket::waitForClient()
+    {
+        if( ::listen( m_socket, SOMAXCONN ) == SOCKET_ERROR )
+        {
+            ::closesocket( m_socket );
+            m_socket = INVALID_SOCKET;
+
+            return false;
+        }
+
+        sockaddr_in clientAddr;
+        int addLen = sizeof( clientAddr );
+        ZeroMemory( &clientAddr, addLen );
+
+        SOCKET clientSocket = ::accept( m_socket, reinterpret_cast<LPSOCKADDR>( &clientAddr ), &addLen );
+
+        ::closesocket( m_socket );
+
+        if( !clientSocket || clientSocket == INVALID_SOCKET )
+        {
+            return false;
+        }
+
+        m_socket = clientSocket;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32Socket::waitForData( size_t timeoutMs )
+    {
+        if( m_socket == INVALID_SOCKET )
+        {
+            return false;
+        }
+
+        fd_set socketsSet;
+        socketsSet.fd_count = 1;
+        socketsSet.fd_array[0] = m_socket;
+
+        timeval tv;
+        tv.tv_sec = static_cast<long>(timeoutMs / 1000);
+        tv.tv_usec = static_cast<long>((timeoutMs - static_cast<size_t>(tv.tv_sec * 1000)) * 1000);
+
+        const int result = ::select( 0, &socketsSet, nullptr, nullptr, (timeoutMs == 0) ? nullptr : &tv );
+
+        return (1 == result);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32Socket::send( const void * _data, const size_t _numBytes )
+    {
+        if( m_socket == INVALID_SOCKET )
+        {
+            return 0;
+        }
+
+        const int numBytesSent = ::send( m_socket, reinterpret_cast<const char*>( _data ), static_cast<int>( _numBytes ), 0 );
+
+        return (numBytesSent > 0 ? static_cast<size_t>( numBytesSent ) : 0u);
+    }
+    //////////////////////////////////////////////////////////////////////////
+    size_t Win32Socket::recieve( void* _data, const size_t _maxBytes )
+    {
+        if( m_socket == INVALID_SOCKET )
+        {
+            return 0;
+        }
+
+        const int numBytesReceived = ::recv( m_socket, reinterpret_cast<char*>( _data ), static_cast<int>( _maxBytes ), 0 );
+
+        return (numBytesReceived > 0 ? static_cast<size_t>( numBytesReceived ) : 0u);
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Socket::disconnect()

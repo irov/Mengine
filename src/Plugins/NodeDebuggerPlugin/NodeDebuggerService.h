@@ -13,18 +13,21 @@
 #include "Interface/SocketInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 
-namespace pugi { class xml_node; }
+#define PUGIXML_NO_STL
+#define PUGIXML_HEADER_ONLY
+#include "pugixml.hpp"
 
 namespace Mengine
 {
-    enum class NodeDebuggerServerState : size_t
+	//////////////////////////////////////////////////////////////////////////
+    enum class NodeDebuggerServerState : uint32_t
     {
         Invalid,
         WaitingForClient,
         Connected
     };
-
-    enum class NodeDebuggerPacketType : size_t
+	//////////////////////////////////////////////////////////////////////////
+    enum class NodeDebuggerPacketType : uint32_t
     {
         // asking packets
         Ask_Scene,
@@ -32,12 +35,11 @@ namespace Mengine
         // answering packets
         Answer_Scene
     };
-
+	//////////////////////////////////////////////////////////////////////////
     struct NodeDebuggerPacket
     {
         Vector<uint8_t> payload;
     };
-
     //////////////////////////////////////////////////////////////////////////
     class NodeDebuggerService
         : public ServiceBase<NodeDebuggerServiceInterface>
@@ -57,14 +59,14 @@ namespace Mengine
         void onDone( uint32_t _id ) override;
 
     public:
-        void setScene( const Mengine::ScenePtr & _scene ) override;
+        void setScene( const ScenePtr & _scene ) override;
         void update() override;
 
     private:
         void privateInit();
         void sendPacket( NodeDebuggerPacket & _packet );
-        void sendScene( const Mengine::ScenePtr & _scene );
-        void serializeNode( const Mengine::NodePtr & _node, pugi::xml_node & _xmlParentNode );
+        void sendScene( const ScenePtr & _scene );
+        void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
         void serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode );
         void serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode );
         void processPacket( NodeDebuggerPacket & _packet );

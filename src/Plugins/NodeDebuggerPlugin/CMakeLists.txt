@@ -10,6 +10,8 @@ ADD_FILTER(
 
     NodeDebuggerService.h
     NodeDebuggerService.cpp
+	
+	NodeDebuggerSerializaton.h
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )

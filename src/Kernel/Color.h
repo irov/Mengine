@@ -176,6 +176,10 @@ namespace Mengine
             return Color( r, g, b, a );
         }
 
+	public:
+		float * buff();
+		const float * buff() const;
+
     public:
         void setR( float _r );
         inline float getR() const;

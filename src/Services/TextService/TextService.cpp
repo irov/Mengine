@@ -232,7 +232,7 @@ namespace Mengine
                 else if( strcmp( str_key, "Override" ) == 0 )
                 {
                     uint32_t value = 0;
-                    if( sscanf( str_value, "%d", &value ) != 1 )
+                    if( sscanf( str_value, "%u", &value ) != 1 )
                     {
                         LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' tag 'Override' '%s'"
                             , m_fileGroup->getName().c_str()
@@ -316,7 +316,7 @@ namespace Mengine
                 else if( strcmp( str_key, "Empty" ) == 0 )
                 {
                     uint32_t value = 0;
-                    if( sscanf( str_value, "%d", &value ) != 1 )
+                    if( sscanf( str_value, "%u", &value ) != 1 )
                     {
                         LOGGER_ERROR( "TextService::loadResource '%s:%s' invalid read for text '%s' tag 'Empty' '%s'"
                             , m_fileGroup->getName().c_str()

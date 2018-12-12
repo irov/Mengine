@@ -1098,10 +1098,8 @@ namespace Mengine
             VectorConstString * m_accounts;
 
         private:
-            void operator = ( const MyAccountVisitor & )
-            {
-                //Empty
-            }
+            MyAccountVisitor( const MyAccountVisitor & );
+            void operator = ( const MyAccountVisitor & );
         };
 
         VectorConstString s_getAccounts()

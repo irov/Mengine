@@ -13,6 +13,8 @@ namespace Mengine
         , m_pD3DDevice( nullptr )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
+        , m_hwWidthInv( 0.f )
+        , m_hwHeightInv( 0.f )
         , m_pD3DTexture( nullptr )
         , m_pD3DSurface( nullptr )
         , m_pD3DSurfaceOld( nullptr )

@@ -34,6 +34,7 @@ namespace Mengine
         : m_fps( 0 )
         , m_showDebugText( 0 )
         , m_globalKeyHandlerF9( 0 )
+        , m_schedulerFPS( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////

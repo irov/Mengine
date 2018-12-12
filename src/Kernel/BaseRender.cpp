@@ -381,24 +381,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::updateRendering_()
     {
+        m_rendering = false;
+
         if( this->isRenderEnable() == false )
         {
-            m_rendering = false;
-
             return;
         }
 
         if( this->isHide() == true )
         {
-            m_rendering = false;
-
             return;
         }
 
         if( this->isLocalTransparent() == true )
         {
-            m_rendering = false;
-
             return;
         }
 

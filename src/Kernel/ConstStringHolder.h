@@ -17,6 +17,9 @@ namespace Mengine
         ConstStringHolder( const ConstStringHolder & _holder );
         virtual ~ConstStringHolder();
 
+    protected:
+        ConstStringHolder & operator = ( const ConstStringHolder & _holder );
+
     public:
         typedef uint32_t size_type;
         typedef int64_t hash_type;

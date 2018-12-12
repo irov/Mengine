@@ -7,7 +7,7 @@ namespace Mengine
     Affectorable::Affectorable()
         : m_angularSpeed( 0.f )
         , m_linearSpeed( 0.f, 0.f, 0.f )
-        , m_enumerator( 0 )
+        , m_enumeratorAffector( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -22,7 +22,7 @@ namespace Mengine
             return INVALID_AFFECTOR_ID;
         }
 
-        AFFECTOR_ID id = ++m_enumerator;
+        AFFECTOR_ID id = ++m_enumeratorAffector;
 
         _affector->setId( id );
 

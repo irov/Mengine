@@ -315,8 +315,6 @@ namespace Mengine
             return true;
         }
 
-        _interpolate = true;
-
         MovieFrameSource frame;
         if( _interpolate == true && immutable == false )
         {

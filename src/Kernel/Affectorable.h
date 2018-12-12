@@ -51,7 +51,7 @@ namespace Mengine
         float m_angularSpeed;
         mt::vec3f m_linearSpeed;
 
-        uint32_t m_enumerator;
+        uint32_t m_enumeratorAffector;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Affectorable> AffectorablePtr;

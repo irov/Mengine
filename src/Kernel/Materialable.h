@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/MaterialEnumInterface.h"
 #include "Interface/RenderEnumInterface.h"
 
 #include "Kernel/ConstString.h"

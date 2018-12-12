@@ -131,9 +131,9 @@ namespace Mengine
 
         HWND m_hWnd;
 
-        Win32AlreadyRunningMonitor * m_alreadyRunningMonitor;
+        Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
 
-        Win32FPSMonitor * m_fpsMonitor;
+        Win32FPSMonitorPtr m_fpsMonitor;
 
         Win32MouseEvent m_mouseEvent;
 

@@ -151,6 +151,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class NodeScriptMethod
+        : public Factorable
     {
     public:
         NodeScriptMethod()
@@ -2309,6 +2310,8 @@ namespace Mengine
             return id;
         }
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<NodeScriptMethod> NodeScriptMethodPtr;
     //////////////////////////////////////////////////////////////////////////
     static bool classWrapping()
     {

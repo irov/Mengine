@@ -203,7 +203,7 @@ namespace Mengine
         VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Default" ), new FactorableUnique<DefaultResourcePrefetcher>() );
         VOCALUBARY_SET( ResourcePrefetcherInterface, STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "Dataflow" ), new FactorableUnique<DataflowResourcePrefetcher>() );
 
-        ArchiveResourcePrefetcher * archivePrefetcherLZ4 = new FactorableUnique<ArchiveResourcePrefetcher>();
+        ArchiveResourcePrefetcherPtr archivePrefetcherLZ4 = new FactorableUnique<ArchiveResourcePrefetcher>();
 
         const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
             ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );

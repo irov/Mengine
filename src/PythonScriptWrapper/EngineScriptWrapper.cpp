@@ -1397,10 +1397,13 @@ namespace Mengine
             {
             }
 
-        protected:
-            void operator = ( const PythonSaxCallback & )
+            ~PythonSaxCallback()
             {
             }
+
+        protected:
+            PythonSaxCallback( const PythonSaxCallback & );
+            void operator = ( const PythonSaxCallback & );
 
         public:
             void callback_begin_node( const char * _node )

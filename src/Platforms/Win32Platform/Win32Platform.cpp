@@ -40,6 +40,7 @@ namespace Mengine
         , m_fpsMonitor( nullptr )
         , m_active( false )
         , m_update( false )
+        , m_icon( 0 )
         , m_close( false )
         , m_vsync( false )
         , m_pauseUpdatingTime( -1.f )
@@ -186,9 +187,7 @@ namespace Mengine
 
         if( m_alreadyRunningMonitor != nullptr )
         {
-            m_alreadyRunningMonitor->stop();
-
-            delete m_alreadyRunningMonitor;
+            m_alreadyRunningMonitor->finalize();
             m_alreadyRunningMonitor = nullptr;
         }
 
@@ -214,8 +213,6 @@ namespace Mengine
         if( m_fpsMonitor != nullptr )
         {
             m_fpsMonitor->finalize();
-
-            delete m_fpsMonitor;
             m_fpsMonitor = nullptr;
         }
     }
@@ -1012,9 +1009,9 @@ namespace Mengine
 
         if( alreadyRunning == true )
         {
-            m_alreadyRunningMonitor = new Win32AlreadyRunningMonitor();
+            m_alreadyRunningMonitor = new FactorableUnique<Win32AlreadyRunningMonitor>();
 
-            if( m_alreadyRunningMonitor->run( EARP_SETFOCUS, MENGINE_WINDOW_CLASSNAME, m_projectTitle ) == false )
+            if( m_alreadyRunningMonitor->initialize( EARP_SETFOCUS, MENGINE_WINDOW_CLASSNAME, m_projectTitle ) == false )
             {
                 LOGGER_ERROR( "Application invalid running monitor"
                 );
@@ -1103,7 +1100,7 @@ namespace Mengine
 
         if( maxfps == false && vsync == false )
         {
-            m_fpsMonitor = new Win32FPSMonitor();
+            m_fpsMonitor = new FactorableUnique<Win32FPSMonitor>();
             m_fpsMonitor->initialize();
 
             m_fpsMonitor->setActive( true );

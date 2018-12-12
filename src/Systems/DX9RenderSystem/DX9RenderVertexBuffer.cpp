@@ -12,6 +12,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DX9RenderVertexBuffer::DX9RenderVertexBuffer()
         : m_pD3DDevice( nullptr )
+        , m_bufferType( BT_STATIC )
         , m_vertexSize( 0 )
         , m_vertexCount( 0 )
         , m_usage( 0 )

@@ -8,6 +8,7 @@ namespace Mengine
         : m_pD3DDevice( nullptr )
         , m_pD3DTexture( nullptr )
         , m_mode( ERIM_NORMAL )
+        , m_hwMipmaps( 0 )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )
         , m_hwChannels( 0 )

@@ -17,6 +17,7 @@ namespace Mengine
 
     public:
         XlsExportPlugin();
+        ~XlsExportPlugin() override;
 
     protected:
         bool _initialize() override;

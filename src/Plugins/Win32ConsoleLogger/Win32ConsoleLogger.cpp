@@ -17,7 +17,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ConsoleLogger::Win32ConsoleLogger()
-        : m_createConsole( false )
+        : m_CONOUT(nullptr)
+        , m_createConsole( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -76,17 +77,14 @@ namespace Mengine
             SetConsoleScreenBufferSize( output_handle, coninfo.dwSize );
         }
 
-        freopen( "CONOUT$", "w", stdout );
+        m_CONOUT = freopen( "CONOUT$", "w", stdout );
 
         //::MoveWindow( GetConsoleWindow(), 0, 650, 0, 0, TRUE );
         // make cout, wcout, cin, wcin, wcerr, cerr, wclog and clog
         // point to console as well
         std::ios::sync_with_stdio();
 
-        if( hKernel32 != nullptr )
-        {
-            FreeLibrary( hKernel32 );
-        }
+        FreeLibrary( hKernel32 );
 
         std::cout << "console ready.." << std::endl;
     }
@@ -97,6 +95,9 @@ namespace Mengine
         {
             return;
         }
+
+        fclose( m_CONOUT );
+        m_CONOUT = nullptr;
 
         FreeConsole();
 

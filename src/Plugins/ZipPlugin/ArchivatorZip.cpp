@@ -112,7 +112,7 @@ namespace Mengine
 
         err = inflateEnd( &stream );
 
-        return Z_OK;
+        return err;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ArchivatorZip::decompress( void * _distance, size_t _bufferSize, const void * _source, size_t _sourceSize, size_t & _decompressSize )

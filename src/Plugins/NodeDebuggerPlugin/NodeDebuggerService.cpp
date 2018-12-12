@@ -65,7 +65,7 @@ namespace Mengine
 
         switch( m_serverState )
         {
-            case NodeDebuggerServerState::WaitingForClient:
+        case NodeDebuggerServerState::WaitingForClient:
             {
                 if( !m_socket->waitForClient() )
                 {
@@ -80,14 +80,14 @@ namespace Mengine
                 sendScene( m_scene );
             } break;
 
-            case NodeDebuggerServerState::Connected:
+        case NodeDebuggerServerState::Connected:
             {
                 // check if need to send data
                 m_dataMutex->lock();
                 {
                     if( !m_outgoingPackets.empty() )
                     {
-                        for( const auto& p : m_outgoingPackets)
+                        for( const auto& p : m_outgoingPackets )
                         {
                             m_socket->send( p.payload.data(), p.payload.size() );
                         }
@@ -115,8 +115,7 @@ namespace Mengine
                         {
                             m_receivedData.insert( m_receivedData.end(), &buffer[0], &buffer[bytesReceived] );
                         }
-                    }
-                    while( bytesReceived == BUFFER_SIZE );
+                    } while( bytesReceived == BUFFER_SIZE );
                 }
 
                 // check if we have read something
@@ -125,8 +124,8 @@ namespace Mengine
                     ThreadMutexScope mutexLock( m_dataMutex );
 
                     // check if we have enough data to form a packet
-                    PacketHeader* hdr = reinterpret_cast<PacketHeader *>( m_receivedData.data() );
-                    while(hdr != nullptr && hdr->payloadSize <= ( m_receivedData.size() - sizeof( uint32_t ) ) )
+                    PacketHeader* hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
+                    while( hdr != nullptr && hdr->payloadSize <= (m_receivedData.size() - sizeof( uint32_t )) )
                     {
                         // received garbage - nothing fancy, just disconnect
                         if( hdr->magic != PACKET_MAGIC )
@@ -149,7 +148,7 @@ namespace Mengine
                             memmove( m_receivedData.data(), m_receivedData.data() + dataSizeWithHeader, newSize );
                             m_receivedData.resize( newSize );
 
-                            hdr = reinterpret_cast<PacketHeader *>( m_receivedData.data() );
+                            hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
                         }
                         else
                         {
@@ -208,15 +207,19 @@ namespace Mengine
         m_socket = SOCKET_SYSTEM()->createSocket();
 
         SocketConnectInfo sci = { "0.0.0.0", "18790" };
-        m_socket->bind(sci);
+        m_socket->bind( sci );
 
-        m_threadJob = THREAD_SERVICE()->createJob( 50u );
+        m_threadJob = THREAD_SERVICE()
+            ->createJob( 50u );
 
-        THREAD_SERVICE()->createThread(STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread"), -1, __FILE__, __LINE__ );
+        THREAD_SERVICE()
+            ->createThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), -1, __FILE__, __LINE__ );
 
-        THREAD_SERVICE()->addTask(STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob);
+        THREAD_SERVICE()
+            ->addTask( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob );
 
-        m_dataMutex = THREAD_SERVICE()->createMutex( __FILE__, __LINE__ );
+        m_dataMutex = THREAD_SERVICE()
+            ->createMutex( __FILE__, __LINE__ );
 
         m_serverState = NodeDebuggerServerState::WaitingForClient;
 
@@ -229,7 +232,7 @@ namespace Mengine
         {
             PacketHeader hdr;
             hdr.magic = PACKET_MAGIC;
-            hdr.payloadSize = static_cast<uint32_t>( _packet.payload.size() );
+            hdr.payloadSize = static_cast<uint32_t>(_packet.payload.size());
 
             InsertPacketHeader( _packet.payload, hdr );
 
@@ -373,23 +376,23 @@ namespace Mengine
                 {
                     if( _value )
                     {
-						node->enable();
+                        node->enable();
                     }
                     else
                     {
-						node->disable();
+                        node->disable();
                     }
                 }
             } );
 
             deserializeNodeProp<mt::vec3f>( "scale", _xmlNode, [node]( auto _value )
             {
-				node->setScale( _value );
+                node->setScale( _value );
             } );
 
             deserializeNodeProp<mt::vec2f>( "skew", _xmlNode, [node]( auto _value )
             {
-				node->setSkew( _value );
+                node->setSkew( _value );
             } );
 
             pugi::xml_node renderNode = _xmlNode.child( "Render" );
@@ -402,7 +405,7 @@ namespace Mengine
                 {
                     if( render->isRenderEnable() != _value )
                     {
-						render->setRenderEnable( _value );
+                        render->setRenderEnable( _value );
                     }
                 } );
 
@@ -410,13 +413,13 @@ namespace Mengine
                 {
                     if( render->isHide() != _value )
                     {
-						render->setHide( _value );
+                        render->setHide( _value );
                     }
                 } );
 
                 deserializeNodeProp<Color>( "color", renderNode, [render]( auto _value )
                 {
-					render->setLocalColor( _value );
+                    render->setLocalColor( _value );
                 } );
             }
 
@@ -427,7 +430,7 @@ namespace Mengine
                 {
                     if( animation->isLoop() != _value )
                     {
-						animation->setLoop( _value );
+                        animation->setLoop( _value );
                     }
                 } );
             }
@@ -453,7 +456,7 @@ namespace Mengine
                 else
                 {
                     uid *= 10;
-                    uid += static_cast<uint32_t>( *ptr - '0' );
+                    uid += static_cast<uint32_t>(*ptr - '0');
                 }
 
                 ++ptr;

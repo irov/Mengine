@@ -28,5 +28,7 @@ namespace Mengine
 
     protected:
         bool m_createConsole;
+
+        FILE * m_CONOUT;
     };
 }

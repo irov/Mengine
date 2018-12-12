@@ -23,15 +23,9 @@
 #include "pybind/pybind.hpp"
 #include "stdex/allocator_report.h"
 
-#define PUGIXML_NO_STL
-#define PUGIXML_HEADER_ONLY
-#include "pugixml.hpp"
-
 #include <iomanip>
 
-#define NODE_SERIALIZATION_INGAME
-#include "NodePropsSerializaton.h"
-
+#include "NodeDebuggerSerializaton.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( NodeDebuggerService, Mengine::NodeDebuggerService );
@@ -373,29 +367,29 @@ namespace Mengine
 
         if( node != nullptr )
         {
-            deserializeNodeProp<bool>( node, "enable", _xmlNode, []( auto _node, auto _value )
+            deserializeNodeProp<bool>( "enable", _xmlNode, [node]( auto _value )
             {
-                if( _value != _node->isEnable() )
+                if( _value != node->isEnable() )
                 {
                     if( _value )
                     {
-                        _node->enable();
+						node->enable();
                     }
                     else
                     {
-                        _node->disable();
+						node->disable();
                     }
                 }
             } );
 
-            deserializeNodeProp<mt::vec3f>( node, "scale", _xmlNode, []( auto _node, auto _value )
+            deserializeNodeProp<mt::vec3f>( "scale", _xmlNode, [node]( auto _value )
             {
-                _node->setScale( _value );
+				node->setScale( _value );
             } );
 
-            deserializeNodeProp<mt::vec2f>( node, "skew", _xmlNode, []( auto _node, auto _value )
+            deserializeNodeProp<mt::vec2f>( "skew", _xmlNode, [node]( auto _value )
             {
-                _node->setSkew( _value );
+				node->setSkew( _value );
             } );
 
             pugi::xml_node renderNode = _xmlNode.child( "Render" );
@@ -404,36 +398,36 @@ namespace Mengine
             RenderInterface * render = node->getRender();
             if( render && renderNode )
             {
-                deserializeNodeProp<bool>( node, "enable", renderNode, []( auto _node, auto _value )
+                deserializeNodeProp<bool>( "enable", renderNode, [render]( auto _value )
                 {
-                    if( _node->getRender()->isRenderEnable() != _value )
+                    if( render->isRenderEnable() != _value )
                     {
-                        _node->getRender()->setRenderEnable( _value );
+						render->setRenderEnable( _value );
                     }
                 } );
 
-                deserializeNodeProp<bool>( node, "hide", renderNode, []( auto _node, auto _value )
+                deserializeNodeProp<bool>( "hide", renderNode, [render]( auto _value )
                 {
-                    if( _node->getRender()->isHide() != _value )
+                    if( render->isHide() != _value )
                     {
-                        _node->getRender()->setHide( _value );
+						render->setHide( _value );
                     }
                 } );
 
-                deserializeNodeProp<Mengine::Color>( node, "color", renderNode, []( auto _node, auto _value )
+                deserializeNodeProp<Mengine::Color>( "color", renderNode, [render]( auto _value )
                 {
-                    _node->getRender()->setLocalColor( _value );
+					render->setLocalColor( _value );
                 } );
             }
 
             AnimationInterface * animation = node->getAnimation();
             if( animation && animationNode )
             {
-                deserializeNodeProp<bool>( node, "loop", animationNode, []( auto _node, auto _value )
+                deserializeNodeProp<bool>( "loop", animationNode, [animation]( auto _value )
                 {
-                    if( _node->getAnimation()->isLoop() != _value )
+                    if( animation->isLoop() != _value )
                     {
-                        _node->getAnimation()->setLoop( _value );
+						animation->setLoop( _value );
                     }
                 } );
             }
@@ -446,7 +440,8 @@ namespace Mengine
 
         if( !_str.empty() )
         {
-            const char* ptr = _str.c_str();
+            const Char* ptr = _str.c_str();
+
             uint32_t uid = 0;
             while( *ptr )
             {

@@ -1,5 +1,4 @@
 #include "NodeDebuggerPlugin.h"
-
 #include "NodeDebuggerInterface.h"
 
 #include "Kernel/FactorableUnique.h"

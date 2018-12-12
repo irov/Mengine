@@ -105,7 +105,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Meshget::_update( const UpdateContext * _context )
     {
-        EVENTABLE_METHOD( this, EVENT_MESHGET_UPDATE )
+        EVENTABLE_METHOD( EVENT_MESHGET_UPDATE )
             ->onMeshgetUpdate( _context );
     }
     //////////////////////////////////////////////////////////////////////////

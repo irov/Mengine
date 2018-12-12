@@ -97,7 +97,7 @@ namespace Mengine
         PICKER_SERVICE()
             ->updateTraps();
 
-        EVENTABLE_METHOD( this, EVENT_ACTIVATE )
+        EVENTABLE_METHOD( EVENT_ACTIVATE )
             ->onHotSpotActivate();
     }
     //////////////////////////////////////////////////////////////////////////
@@ -121,25 +121,25 @@ namespace Mengine
         PICKER_SERVICE()
             ->updateTraps();
 
-        EVENTABLE_METHOD( this, EVENT_DEACTIVATE )
+        EVENTABLE_METHOD( EVENT_DEACTIVATE )
             ->onHotSpotDeactivate();
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::onHandleMouseLeave()
     {
-        EVENTABLE_METHOD( this, EVENT_MOUSE_LEAVE )
+        EVENTABLE_METHOD( EVENT_MOUSE_LEAVE )
             ->onHotSpotMouseLeave();
     }
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::onHandleMouseOverDestroy()
     {
-        EVENTABLE_METHOD( this, EVENT_MOUSE_OVER_DESTROY )
+        EVENTABLE_METHOD( EVENT_MOUSE_OVER_DESTROY )
             ->onHotSpotMouseOverDestroy();
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::onHandleMouseEnter( float _x, float _y )
     {
-        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_ENTER, m_defaultHandle )
+        bool handle = EVENTABLE_METHODR( EVENT_MOUSE_ENTER, m_defaultHandle )
             ->onHotSpotMouseEnter( _x, _y );
 
         return handle;
@@ -147,9 +147,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleKeyEvent( const InputKeyEvent & _event )
     {
-        //bool handle = m_defaultHandle;
-
-        bool handle = EVENTABLE_METHODR( this, EVENT_KEY, m_defaultHandle )
+        bool handle = EVENTABLE_METHODR( EVENT_KEY, m_defaultHandle )
             ->onHotSpotKey( _event );
 
         return handle;
@@ -157,9 +155,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleTextEvent( const InputTextEvent & _event )
     {
-        //bool handle = m_defaultHandle;
-
-        bool handle = EVENTABLE_METHODR( this, EVENT_TEXT, m_defaultHandle )
+        bool handle = EVENTABLE_METHODR( EVENT_TEXT, m_defaultHandle )
             ->onHotSpotText( _event );
 
         return handle;
@@ -167,9 +163,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleMouseButtonEvent( const InputMouseButtonEvent & _event )
     {
-        //bool handle = m_defaultHandle;
-
-        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON, m_defaultHandle )
+        bool handle = EVENTABLE_METHODR( EVENT_MOUSE_BUTTON, m_defaultHandle )
             ->onHotSpotMouseButton( _event );
 
         return handle;
@@ -177,7 +171,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////	
     bool HotSpot::handleMouseButtonEventBegin( const InputMouseButtonEvent & _event )
     {
-        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON_BEGIN, false )
+        bool handle = EVENTABLE_METHODR( EVENT_MOUSE_BUTTON_BEGIN, false )
             ->onHotSpotMouseButtonBegin( _event );
 
         return handle;
@@ -185,7 +179,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleMouseButtonEventEnd( const InputMouseButtonEvent & _event )
     {
-        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_BUTTON_END, false )
+        bool handle = EVENTABLE_METHODR( EVENT_MOUSE_BUTTON_END, false )
             ->onHotSpotMouseButtonEnd( _event );
 
         return handle;
@@ -193,7 +187,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleMouseMove( const InputMouseMoveEvent & _event )
     {
-        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_MOVE, m_defaultHandle )
+        bool handle = EVENTABLE_METHODR( EVENT_MOUSE_MOVE, m_defaultHandle )
             ->onHotSpotMouseMove( _event );
 
         return handle;
@@ -201,31 +195,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool HotSpot::handleMouseWheel( const InputMouseWheelEvent & _event )
     {
-        bool handle = EVENTABLE_METHODR( this, EVENT_MOUSE_WHEEL, m_defaultHandle )
+        bool handle = EVENTABLE_METHODR( EVENT_MOUSE_WHEEL, m_defaultHandle )
             ->onHotSpotMouseWheel( _event );
 
         return handle;
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //void HotSpot::_setLocalHide( bool _value )
-    //{
-    //    Node::_setLocalHide( _value );
-
-    //    if( _value == true )
-    //    {
-    //        if( this->isAfterActive() == true && this->isFreeze() == false )
-    //        {
-    //            this->deactivatePicker_();
-    //        }
-    //    }
-    //    else
-    //    {
-    //        if( this->isAfterActive() == true && this->isFreeze() == false )
-    //        {
-    //            this->activatePicker_();
-    //        }
-    //    }
-    //}
     //////////////////////////////////////////////////////////////////////////
     void HotSpot::_freeze( bool _value )
     {

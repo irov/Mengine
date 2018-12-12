@@ -80,7 +80,7 @@ namespace Mengine
         const ConstString & internalGroup = m_resourceInternalObject->getInternalGroup();
         const ConstString & internalName = m_resourceInternalObject->getInternalName();
 
-        pybind::object py_object = EVENTABLE_METHODR( m_movie, EVENT_MOVIE_GET_INTERNAL, pybind::object() )
+        pybind::object py_object = EVENTABLE_OTHER_METHODR( m_movie, EVENT_MOVIE_GET_INTERNAL, pybind::object() )
             ->onMovieGetInternal( internalGroup, internalName );
 
         if( py_object.is_invalid() == true )
@@ -114,7 +114,7 @@ namespace Mengine
             return false;
         }
 
-        NodePtr node = EVENTABLE_METHODR( m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, nullptr )
+        NodePtr node = EVENTABLE_OTHER_METHODR( m_movie, EVENT_MOVIE_ACTIVATE_INTERNAL, nullptr )
             ->onMovieActivateInternal( m_internalObject );
 
         if( node == nullptr )
@@ -148,7 +148,7 @@ namespace Mengine
         m_internalNode->removeFromParent();
         m_internalNode = nullptr;
 
-        EVENTABLE_METHOD( m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL )
+        EVENTABLE_OTHER_METHOD( m_movie, EVENT_MOVIE_DEACTIVATE_INTERNAL )
             ->onMovieDeactivateInternal( m_internalObject );
     }
     //////////////////////////////////////////////////////////////////////////

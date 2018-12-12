@@ -58,7 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Entity::_activate()
     {
-        EVENTABLE_METHOD( this, EVENT_ENTITY_PREPARATION )
+        EVENTABLE_METHOD( EVENT_ENTITY_PREPARATION )
             ->onEntityPreparation( m_behavior );
 
         bool successful = Node::_activate();
@@ -70,13 +70,13 @@ namespace Mengine
     {
         Node::_afterActivate();
 
-        EVENTABLE_METHOD( this, EVENT_ENTITY_ACTIVATE )
+        EVENTABLE_METHOD( EVENT_ENTITY_ACTIVATE )
             ->onEntityActivate( m_behavior );
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::_deactivate()
     {
-        EVENTABLE_METHOD( this, EVENT_ENTITY_PREPARATION_DEACTIVATE )
+        EVENTABLE_METHOD( EVENT_ENTITY_PREPARATION_DEACTIVATE )
             ->onEntityPreparationDeactivate( m_behavior );
 
         Node::_deactivate();
@@ -86,13 +86,13 @@ namespace Mengine
     {
         Node::_afterDeactivate();
 
-        EVENTABLE_METHOD( this, EVENT_ENTITY_DEACTIVATE )
+        EVENTABLE_METHOD( EVENT_ENTITY_DEACTIVATE )
             ->onEntityDeactivate( m_behavior );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Entity::_compile()
     {
-        EVENTABLE_METHOD( this, EVENT_ENTITY_COMPILE )
+        EVENTABLE_METHOD( EVENT_ENTITY_COMPILE )
             ->onEntityCompile( m_behavior );
 
         return true;
@@ -100,13 +100,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Entity::_release()
     {
-        EVENTABLE_METHOD( this, EVENT_ENTITY_RELEASE )
+        EVENTABLE_METHOD( EVENT_ENTITY_RELEASE )
             ->onEntityRelease( m_behavior );
     }
     //////////////////////////////////////////////////////////////////////////
     void Entity::onCreate()
     {
-        EVENTABLE_METHOD( this, EVENT_ENTITY_CREATE )
+        EVENTABLE_METHOD( EVENT_ENTITY_CREATE )
             ->onEntityCreate( m_behavior, this );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -116,7 +116,7 @@ namespace Mengine
 
         Node * old_parent = this->getParent();
 
-        EVENTABLE_METHOD( this, EVENT_ENTITY_DESTROY )
+        EVENTABLE_METHOD( EVENT_ENTITY_DESTROY )
             ->onEntityDestroy( m_behavior );
 
         m_behavior = nullptr;

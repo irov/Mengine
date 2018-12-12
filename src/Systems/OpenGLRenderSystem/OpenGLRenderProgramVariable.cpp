@@ -87,6 +87,21 @@ namespace Mengine
 
         m_pixelVariables[_index] = v;
     }
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderProgramVariable::updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _count )
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count )
+	{
+
+	}
+	//////////////////////////////////////////////////////////////////////////
+	void OpenGLRenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count )
+	{
+
+	}
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgramVariable::apply( const RenderProgramInterfacePtr & _program )
     {

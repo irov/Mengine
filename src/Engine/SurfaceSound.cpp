@@ -257,7 +257,7 @@ namespace Mengine
                 ->stopEmitter( m_soundEmitter );
         }
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+        EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationStop( _enumerator );
 
         return true;
@@ -271,7 +271,7 @@ namespace Mengine
                 ->stopEmitter( m_soundEmitter );
         }
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+        EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////
@@ -407,7 +407,7 @@ namespace Mengine
 
         uint32_t id = this->getPlayId();
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_PAUSE )
+        EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
             ->onAnimationPause( id );
     }
 
@@ -417,7 +417,7 @@ namespace Mengine
 
         uint32_t id = this->getPlayId();
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_RESUME )
+        EVENTABLE_METHOD( EVENT_ANIMATION_RESUME )
             ->onAnimationResume( id, 0.f );
     }
 

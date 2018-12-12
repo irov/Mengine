@@ -64,12 +64,12 @@ namespace Mengine
             {
                 m_frameTime -= frameDelay;
 
-                EVENTABLE_METHOD( this, EVENT_SURFACE_IMAGESEQUENCE_FRAME_END )
+                EVENTABLE_METHOD( EVENT_SURFACE_IMAGESEQUENCE_FRAME_END )
                     ->onSurfaceImageSequenceFrameEnd( m_currentFrame );
 
                 ++m_currentFrame;
 
-                EVENTABLE_METHOD( this, EVENT_SURFACE_IMAGESEQUENCE_FRAME_TICK )
+                EVENTABLE_METHOD( EVENT_SURFACE_IMAGESEQUENCE_FRAME_TICK )
                     ->onSurfaceImageSequenceFrameTick( m_currentFrame, frameCount );
 
                 if( m_currentFrame == frameCount )
@@ -231,7 +231,7 @@ namespace Mengine
             return false;
         }
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_STOP )
+        EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
             ->onAnimationStop( _enumerator );
 
         return true;
@@ -248,7 +248,7 @@ namespace Mengine
             return;
         }
 
-        EVENTABLE_METHOD( this, EVENT_ANIMATION_END )
+        EVENTABLE_METHOD( EVENT_ANIMATION_END )
             ->onAnimationEnd( _enumerator );
     }
     //////////////////////////////////////////////////////////////////////////

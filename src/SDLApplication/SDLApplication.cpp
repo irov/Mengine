@@ -5,7 +5,7 @@
 #include "Engine/Application.h"
 
 #include "Interface/LoggerInterface.h"
-#include "Interface/FileSystemInterface.h"
+#include "Interface/FileServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ConverterServiceInterface.h"
@@ -26,6 +26,7 @@
 #include "Interface/TimeSystemInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/ModuleServiceInterface.h"
 
 #include "PythonScriptWrapper/PythonWrapper.h"
 
@@ -325,24 +326,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLApplication::initializeUserDirectory_()
     {
-        WChar userPathW[MENGINE_MAX_PATH];
+        Char userPath[MENGINE_MAX_PATH];
         size_t userPathLen = PLATFORM_SERVICE()
-            ->getUserPath( userPathW, MENGINE_MAX_PATH );
+            ->getUserPath( userPath );
 
-        Char utf8_userPath[MENGINE_MAX_PATH];
-        size_t utf8_userPathLen;
-        UNICODE_SYSTEM()
-            ->unicodeToUtf8( userPathW, userPathLen, utf8_userPath, MENGINE_MAX_PATH, &utf8_userPathLen );
-
-        utf8_userPath[utf8_userPathLen] = '\0';
-
-        FilePath cs_userPath = Helper::stringizeFilePath( utf8_userPath, utf8_userPathLen );
+        FilePath cs_userPath = Helper::stringizeFilePath( userPath, userPathLen );
 
         // mount user directory
         if( FILE_SERVICE()
             ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
         {
-            LOGGER_ERROR( "SDLApplication: failed to mount user directory %s"
+            LOGGER_ERROR( "SDLApplication: failed to mount user directory '%s'"
                 , cs_userPath.c_str()
             );
 
@@ -724,21 +718,15 @@ namespace Mengine
 
 #undef MENGINE_ADD_PLUGIN
 
-        VectorWString plugins;
+        VectorString plugins;
         CONFIG_VALUES( "Plugins", "Name", plugins );
 
-        for( VectorWString::const_iterator
-            it = plugins.begin(),
-            it_end = plugins.end();
-            it != it_end;
-            ++it )
+        for( const String & pluginName : plugins )
         {
-            const WString & pluginName = *it;
-
             if( PLUGIN_SERVICE()
-                ->loadPlugin( pluginName ) == false )
+                ->loadPlugin( pluginName.c_str() ) == false )
             {
-                LOGGER_ERROR( "Application Failed to load plugin %ls"
+                LOGGER_ERROR( "Application Failed to load plugin '%s'"
                     , pluginName.c_str()
                 );
 
@@ -757,21 +745,15 @@ namespace Mengine
 
         if( devplugins == true && nodevplugins == false )
         {
-            VectorWString devPlugins;
+            VectorString devPlugins;
             CONFIG_VALUES( "DevPlugins", "Name", devPlugins );
 
-            for( VectorWString::const_iterator
-                it = devPlugins.begin(),
-                it_end = devPlugins.end();
-                it != it_end;
-                ++it )
+            for( const String & pluginName : devPlugins )
             {
-                const WString & pluginName = *it;
-
                 if( PLUGIN_SERVICE()
-                    ->loadPlugin( pluginName ) == false )
+                    ->loadPlugin( pluginName.c_str() ) == false )
                 {
-                    LOGGER_WARNING( "Application Failed to load dev plugin %ls"
+                    LOGGER_WARNING( "Application Failed to load dev plugin '%s'"
                         , pluginName.c_str()
                     );
                 }
@@ -781,14 +763,8 @@ namespace Mengine
         VectorString modules;
         CONFIG_VALUES( "Modules", "Name", modules );
 
-        for( VectorString::const_iterator
-            it = modules.begin(),
-            it_end = modules.end();
-            it != it_end;
-            ++it )
+        for( const String & moduleName : modules )
         {
-            const String & moduleName = *it;
-
             if( MODULE_SERVICE()
                 ->runModule( Helper::stringizeString( moduleName ) ) == false )
             {
@@ -855,16 +831,8 @@ namespace Mengine
             projectTitle = entry->getValue();
         }
 
-        WString wprojectTitle;
-        if( Helper::utf8ToUnicodeSize( projectTitle.c_str(), projectTitle.size(), wprojectTitle ) == false )
-        {
-            LOGGER_ERROR( "Application project title %s not convert to unicode"
-                , projectTitle.c_str()
-            );
-        }
-
         PLATFORM_SERVICE()
-            ->setProjectTitle( wprojectTitle );
+            ->setProjectTitle( projectTitle.c_str() );
 
         const Resolution & windowResolution = APPLICATION_SERVICE()
             ->getCurrentResolution();

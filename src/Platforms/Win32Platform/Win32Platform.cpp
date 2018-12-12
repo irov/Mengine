@@ -372,9 +372,11 @@ namespace Mengine
         Helper::utf8ToUnicode( _projectTitle, m_projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Platform::getProjectTitle( Char * _projectTitle ) const
+	size_t Win32Platform::getProjectTitle( Char * _projectTitle ) const
     {
-        Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+        size_t projectTitleLen = Helper::unicodeToUtf8( m_projectTitle, _projectTitle, MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME );
+
+		return projectTitleLen;
     }
     //////////////////////////////////////////////////////////////////////////
     size_t Win32Platform::getShortPathName( const Char * _path, Char * _shortpath, size_t _len ) const

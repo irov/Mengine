@@ -81,11 +81,6 @@ namespace Mengine
                 {
                     ptrdiff_t d = std::distance( _cacheFonts.begin(), it_found );
 
-                    if( d < 0 )
-                    {
-                        c.fontId = 0;
-                    }
-
                     c.fontId = (uint32_t)d;
                 }
                 else

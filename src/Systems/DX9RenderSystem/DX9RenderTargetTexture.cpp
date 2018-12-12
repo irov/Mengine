@@ -10,6 +10,7 @@ namespace Mengine
         : m_width( 0 )
         , m_height( 0 )
         , m_channels( 0 )
+        , m_format( PF_UNKNOWN )
         , m_pD3DDevice( nullptr )
         , m_hwWidth( 0 )
         , m_hwHeight( 0 )

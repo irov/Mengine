@@ -95,10 +95,13 @@ namespace Mengine
             {
             }
 
-        protected:
-            void operator = ( const BitmapGlyphSaxCallback & )
+            ~BitmapGlyphSaxCallback()
             {
             }
+
+        protected:
+            BitmapGlyphSaxCallback( const BitmapGlyphSaxCallback & );
+            void operator = ( const BitmapGlyphSaxCallback & );
 
         public:
             void callback_begin_node( const char * _node )

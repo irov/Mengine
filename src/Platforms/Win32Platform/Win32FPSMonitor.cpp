@@ -19,6 +19,7 @@ namespace Mengine
         , m_running( true )
         , m_active( false )
         , m_frameTime( 100 )
+        , m_threadId( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////

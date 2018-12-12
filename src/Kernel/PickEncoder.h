@@ -11,6 +11,7 @@ namespace Mengine
     {
     public:
         PickEncoder();
+        ~PickEncoder() override;
 
     public:
         bool setOptions( CodecOptions * _options ) override;

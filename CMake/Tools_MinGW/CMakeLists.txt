@@ -63,7 +63,7 @@ ADD_SUBDIRECTORY( ${SOURCE_DIR}/Platform/Win32Platform ${CMAKE_TEMP_DIR}/Platfor
 
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/DevelopmentConverterPlugin ${CMAKE_TEMP_DIR}/Plugin/DevelopmentConverterPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ImageCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/ImageCodecPlugin )
-ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/XmlCodecPlugin ${CMAKE_TEMP_DIR}/Plugin/XmlCodecPlugin )
+ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/XmlToBinPlugin ${CMAKE_TEMP_DIR}/Plugin/XmlToBinPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/ZipPlugin ${CMAKE_TEMP_DIR}/Plugin/ZipPlugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/LZ4Plugin ${CMAKE_TEMP_DIR}/Plugin/LZ4Plugin )
 ADD_SUBDIRECTORY( ${SOURCE_DIR}/Plugin/Win32FileGroupPlugin ${CMAKE_TEMP_DIR}/Plugin/Win32FileGroupPlugin )

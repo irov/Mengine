@@ -80,9 +80,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontBase::_prefetch( const PrefetcherObserverInterfacePtr & _observer )
     {
-        MENGINE_UNUSED( _observer );
-
-        //Empty
+        _observer->onPrefetchComplete( true );
 
         return true;
     }

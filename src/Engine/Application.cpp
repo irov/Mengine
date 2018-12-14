@@ -73,6 +73,7 @@
 #include "Window.h"
 #include "Landscape2D.h"
 
+#include "ShapePacMan.h"
 #include "ShapeQuadFixed.h"
 #include "ShapeQuadFlex.h"
 
@@ -373,6 +374,8 @@ namespace Mengine
         NODE_FACTORY( RenderCameraOrthogonalTarget );
         //NODE_FACTORY( SceneNode3D );
         NODE_FACTORY( Window );
+
+        NODE_FACTORY( ShapePacMan );
 
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );

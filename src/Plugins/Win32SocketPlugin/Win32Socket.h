@@ -25,14 +25,13 @@ namespace Mengine
     public:
         bool connect( const SocketConnectInfo & _info ) override;
         bool bind( const SocketConnectInfo & _info ) override;
-		void disconnect() override;
+        void disconnect() override;
 
-		bool waitForClient() override;
-        bool waitForData( size_t timeoutMs) override;
+        bool waitForClient() override;
+        bool waitForData( size_t _timeoutMs ) override;
 
-        size_t send( const void* _data, const size_t _numBytes ) override;
-        size_t recieve( void* _data, const size_t _maxBytes ) override;
-        
+        int send( const void* _data, const size_t _numBytes ) override;
+        int receive( void* _data, const size_t _maxBytes ) override;
 
     public:
         OutputStreamInterfacePtr getSendStream() const override;

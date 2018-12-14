@@ -130,7 +130,7 @@ namespace Mengine
         return (1 == result);
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Socket::send( const void * _data, const size_t _numBytes )
+    int Win32Socket::send( const void * _data, const size_t _numBytes )
     {
         if( m_socket == INVALID_SOCKET )
         {
@@ -139,10 +139,10 @@ namespace Mengine
 
         const int numBytesSent = ::send( m_socket, reinterpret_cast<const char*>( _data ), static_cast<int>( _numBytes ), 0 );
 
-        return (numBytesSent > 0 ? static_cast<size_t>( numBytesSent ) : 0u);
+        return numBytesSent;
     }
     //////////////////////////////////////////////////////////////////////////
-    size_t Win32Socket::recieve( void* _data, const size_t _maxBytes )
+    int Win32Socket::receive( void* _data, const size_t _maxBytes )
     {
         if( m_socket == INVALID_SOCKET )
         {
@@ -151,7 +151,7 @@ namespace Mengine
 
         const int numBytesReceived = ::recv( m_socket, reinterpret_cast<char*>( _data ), static_cast<int>( _maxBytes ), 0 );
 
-        return (numBytesReceived > 0 ? static_cast<size_t>( numBytesReceived ) : 0u);
+        return numBytesReceived;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32Socket::disconnect()

@@ -64,6 +64,7 @@ namespace Mengine
 
     private:
         void privateInit();
+        void recreateServer();
         void sendPacket( NodeDebuggerPacket & _packet );
         void sendScene( const ScenePtr & _scene );
         void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
@@ -76,6 +77,7 @@ namespace Mengine
     protected:
         ScenePtr m_scene;
         SocketInterfacePtr m_socket;
+        volatile bool m_shouldRecreateServer;
         ThreadJobPtr m_threadJob;
         ThreadMutexInterfacePtr m_dataMutex;
         NodeDebuggerServerState m_serverState;

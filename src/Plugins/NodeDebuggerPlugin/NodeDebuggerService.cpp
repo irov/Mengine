@@ -35,6 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     NodeDebuggerService::NodeDebuggerService()
         : m_serverState( NodeDebuggerServerState::Invalid )
+        , m_shouldRecreateServer( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -58,11 +59,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerService::onWork( uint32_t )
     {
-        if( m_socket == nullptr )
-        {
-            return false;
-        }
-
         switch( m_serverState )
         {
         case NodeDebuggerServerState::WaitingForClient:
@@ -106,16 +102,28 @@ namespace Mengine
                     static const size_t BUFFER_SIZE = 4096;
                     uint8_t buffer[BUFFER_SIZE];
 
-                    size_t bytesReceived = 0;
+                    int bytesReceived = 0;
+                    bool clientDisconnected = false;
                     do
                     {
-                        bytesReceived = m_socket->recieve( buffer, BUFFER_SIZE );
+                        bytesReceived = m_socket->receive( buffer, BUFFER_SIZE );
 
-                        if( bytesReceived )
+                        if( bytesReceived > 0 )
                         {
                             m_receivedData.insert( m_receivedData.end(), &buffer[0], &buffer[bytesReceived] );
                         }
-                    } while( bytesReceived == BUFFER_SIZE );
+                        else
+                        {
+                            clientDisconnected = true;
+                        }
+                    } while( !clientDisconnected && bytesReceived == static_cast<int>(BUFFER_SIZE) );
+
+                    if( clientDisconnected )
+                    {
+                        m_shouldRecreateServer = true;
+                        m_serverState = NodeDebuggerServerState::Invalid;
+                        return true;
+                    }
                 }
 
                 // check if we have read something
@@ -130,7 +138,8 @@ namespace Mengine
                         // received garbage - nothing fancy, just disconnect
                         if( hdr->magic != PACKET_MAGIC )
                         {
-                            //DisconnectFromServer();
+                            m_shouldRecreateServer = true;
+                            m_serverState = NodeDebuggerServerState::Invalid;
                             return true;
                         }
 
@@ -187,6 +196,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerService::update()
     {
+        if( m_shouldRecreateServer )
+        {
+            recreateServer();
+        }
+
         if( m_socket == nullptr )
         {
             privateInit();
@@ -204,10 +218,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerService::privateInit()
     {
-        m_socket = SOCKET_SYSTEM()->createSocket();
-
-        SocketConnectInfo sci = { "0.0.0.0", "18790" };
-        m_socket->bind( sci );
+        m_shouldRecreateServer = true;
 
         m_threadJob = THREAD_SERVICE()
             ->createJob( 50u );
@@ -221,9 +232,23 @@ namespace Mengine
         m_dataMutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
 
+        m_threadJob->addWorker( this );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerService::recreateServer()
+    {
+        m_socket = SOCKET_SYSTEM()->createSocket();
+
+        SocketConnectInfo sci = { "0.0.0.0", "18790" };
+        m_socket->bind( sci );
+
         m_serverState = NodeDebuggerServerState::WaitingForClient;
 
-        m_threadJob->addWorker( this );
+        m_receivedData.resize( 0 );
+        m_incomingPackets.resize( 0 );
+        m_outgoingPackets.resize( 0 );
+
+        m_shouldRecreateServer = false;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerService::sendPacket( NodeDebuggerPacket & _packet )

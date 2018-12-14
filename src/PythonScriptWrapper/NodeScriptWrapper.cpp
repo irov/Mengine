@@ -57,6 +57,7 @@
 #include "Engine/Landscape2D.h"
 #include "Engine/Grid2D.h"
 
+#include "Engine/ShapePacMan.h"
 #include "Engine/ShapeQuadFixed.h"
 #include "Engine/ShapeQuadFlex.h"
 
@@ -2349,6 +2350,7 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( Landscape2D );
         SCRIPT_CLASS_WRAPPING( Grid2D );
 
+        SCRIPT_CLASS_WRAPPING( ShapePacMan );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
 
@@ -3077,6 +3079,14 @@ namespace Mengine
                 .def_proxy_static( "getSurfaceSize", nodeScriptMethod, &NodeScriptMethod::s_Shape_getSurfaceSize )
                 .def_proxy_static( "getLocalImageCenter", nodeScriptMethod, &NodeScriptMethod::s_Shape_getLocalImageCenter )
                 .def_proxy_static( "getWorldImageCenter", nodeScriptMethod, &NodeScriptMethod::s_Shape_getWorldImageCenter )
+                ;
+
+            
+            pybind::interface_<ShapePacMan, pybind::bases<Shape> >( kernel, "ShapePacMan", false )
+                .def( "setAngleFrom", &ShapePacMan::setAngleFrom )
+                .def( "getAngleFrom", &ShapePacMan::getAngleFrom )
+                .def( "setAngleTo", &ShapePacMan::setAngleTo )
+                .def( "getAngleTo", &ShapePacMan::getAngleTo )
                 ;
 
             pybind::interface_<ShapeQuad, pybind::bases<Shape> >( kernel, "ShapeQuad", false )

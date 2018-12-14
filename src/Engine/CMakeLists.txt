@@ -54,6 +54,11 @@ Surface\\\\SurfaceTrackMatte
 
 SOURCE_GROUP( Object )
 
+ADD_FILTER(Shape\\\\ShapePacMan
+    ShapePacMan.cpp
+    ShapePacMan.h
+)
+
 ADD_FILTER(
 Shape\\\\ShapeQuad
 	ShapeQuad.cpp

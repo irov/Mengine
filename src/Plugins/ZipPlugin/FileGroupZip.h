@@ -39,6 +39,9 @@ namespace Mengine
         bool createDirectory( const FilePath & _folderName ) const override;
 
     public:
+        bool findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFiles & _lambda ) const override;
+
+    public:
         InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) override;
         bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file, size_t _offset, size_t _size, bool _streaming ) override;
 

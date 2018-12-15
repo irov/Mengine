@@ -50,8 +50,8 @@ namespace Mengine
         void removeGlobalModule( const Char * _name ) override;
 
     public:
-        void addModulePath( const ConstString & _pak, const VectorScriptModulePack & _modules ) override;
-        void removeModulePath( const ConstString & _pack, const VectorScriptModulePack & _modules ) override;
+        void addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) override;
+        void removeModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) override;
 
     public:
         bool bootstrapModules() override;

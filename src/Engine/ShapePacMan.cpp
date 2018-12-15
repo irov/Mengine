@@ -4,6 +4,8 @@
 
 #include "Kernel/Logger.h"
 
+#include "math/angle.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -21,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ShapePacMan::setAngleFrom( float _angleFrom )
     {
-        m_angleFrom = _angleFrom;
+        m_angleFrom = mt::angle_norm( _angleFrom );
 
         this->invalidateVerticesLocal();
     }
@@ -33,7 +35,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ShapePacMan::setAngleTo( float _angleTo )
     {
-        m_angleTo = _angleTo;
+        m_angleTo = mt::angle_norm( _angleTo );
 
         this->invalidateVerticesLocal();
     }
@@ -452,7 +454,7 @@ namespace Mengine
 
         uint32_t argb = color.getAsARGB();
 
-        for( uint32_t index = 0; index != m_vertexCount; ++index )
+        for( uint32_t index = 0; index != 8; ++index )
         {
             m_verticesWM[index].color = argb;
         }

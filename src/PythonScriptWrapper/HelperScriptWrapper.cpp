@@ -661,6 +661,21 @@ namespace Mengine
             return round_value;
         }
 
+        float mt_pi()
+        {
+            return mt::constant::pi;
+        }
+
+        float mt_deg2rad( float _deg )
+        {
+            return _deg * mt::constant::deg2rad;
+        }
+
+        float mt_rad2deg( float _rad )
+        {
+            return _rad * mt::constant::rad2deg;
+        }
+
         float mt_sqrtf( float a )
         {
             return ::sqrtf( a );
@@ -2608,7 +2623,7 @@ namespace Mengine
                 return false;
             }
 
-            FilePath filepath = Helper::stringizeFilePath( utf8_fileName.c_str(), utf8_fileName.size() );
+            FilePath filepath = Helper::stringizeFilePathSize( utf8_fileName.c_str(), utf8_fileName.size() );
 
             size_t size;
             if( pybind::pickle( _kernel, _data, _pickleTypes, nullptr, 0, size ) == false )
@@ -2681,7 +2696,7 @@ namespace Mengine
                 return _kernel->ret_none();
             }
 
-            FilePath filename = Helper::stringizeFilePath( utf8_fileName.c_str(), utf8_fileName.size() );
+            FilePath filename = Helper::stringizeFilePathSize( utf8_fileName.c_str(), utf8_fileName.size() );
 
             MemoryInterfacePtr binaryBuffer = account->loadBinaryFile( filename );
 
@@ -2762,7 +2777,7 @@ namespace Mengine
                 return false;
             }
 
-            FilePath filename = Helper::stringizeFilePath( utf8_fileName.c_str(), utf8_fileName.size() );
+            FilePath filename = Helper::stringizeFilePath( utf8_fileName );
 
             bool exist = account->hasBinaryFile( filename );
 
@@ -3123,6 +3138,9 @@ namespace Mengine
         pybind::def_functor( kernel, "rounding", helperScriptMethod, &HelperScriptMethod::mt_rounding );
         pybind::def_functor( kernel, "roundingf", helperScriptMethod, &HelperScriptMethod::mt_roundingf );
 
+        pybind::def_functor( kernel, "pi", helperScriptMethod, &HelperScriptMethod::mt_pi );
+        pybind::def_functor( kernel, "deg2rad", helperScriptMethod, &HelperScriptMethod::mt_deg2rad );
+        pybind::def_functor( kernel, "rad2deg", helperScriptMethod, &HelperScriptMethod::mt_rad2deg );
 
         pybind::def_functor( kernel, "sqrtf", helperScriptMethod, &HelperScriptMethod::mt_sqrtf );
         pybind::def_functor( kernel, "powf", helperScriptMethod, &HelperScriptMethod::mt_powf );

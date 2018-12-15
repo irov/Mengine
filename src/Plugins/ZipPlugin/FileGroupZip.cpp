@@ -12,14 +12,15 @@
 #include "Kernel/FilePath.h"
 #include "Kernel/String.h"
 #include "Kernel/MemoryHelper.h"
+#include "Kernel/AssertionNotImplemented.h"
 
 #include <string.h>
 #include <stdio.h>
 
 #include "../dependencies/zlib/zlib.h"
 
-#	define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
-#	define ZIP_MAX_FILENAME 1024
+#define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
+#define ZIP_MAX_FILENAME 1024
 
 namespace Mengine
 {
@@ -183,7 +184,7 @@ namespace Mengine
                 continue;
             }
 
-            FilePath fileName = Helper::stringizeFilePath( fileNameBuffer, header.fileNameLen );
+            FilePath fileName = Helper::stringizeFilePathSize( fileNameBuffer, header.fileNameLen );
 
             if( header.compressionMethod != Z_NO_COMPRESSION && header.compressionMethod != Z_DEFLATED )
             {
@@ -270,6 +271,17 @@ namespace Mengine
     bool FileGroupZip::createDirectory( const FilePath & _folderName ) const
     {
         (void)_folderName;
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool FileGroupZip::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFiles & _lambda ) const
+    {
+        MENGINE_UNUSED( _filePath );
+        MENGINE_UNUSED( _mask );
+        MENGINE_UNUSED( _lambda );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
     }

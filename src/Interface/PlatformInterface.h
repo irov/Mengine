@@ -93,6 +93,10 @@ namespace Mengine
         virtual bool removeFile( const Char * _path ) = 0;
 
     public:
+        typedef Lambda<void( const Char * _filepath )> LambdaFiles;
+        virtual bool findFiles( const Char * _path, const LambdaFiles & _lambda ) = 0;
+
+    public:
         virtual uint64_t getFileTime( const Char * _path ) const = 0;
 
     public:

@@ -19,8 +19,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     struct ModulePathes
     {
-        ConstString pack;
-        VectorConstString pathes;
+        FileGroupInterfacePtr fileGroup;
+        VectorFilePath pathes;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<ModulePathes> VectorModulePathes;
@@ -40,8 +40,8 @@ namespace Mengine
         void setEmbed( const pybind::object & _embed );
 
     public:
-        void addModulePath( const ConstString & _pack, const VectorConstString & _pathes );
-        void removeModulePath( const ConstString & _pack );
+        void addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _pathes );
+        void removeModulePath( const FileGroupInterfacePtr & _fileGroup );
 
     public:
         PyObject * find_module( pybind::kernel_interface * _kernel, PyObject * _module, PyObject * _path );
@@ -50,7 +50,7 @@ namespace Mengine
     protected:
         bool find_module_source_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader );
         bool find_module_code_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader );
-        bool find_module_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader, const char * _ext, uint32_t _extN, const Char * _init, uint32_t _extI );
+        bool find_module_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader, const Char * _ext, uint32_t _extN, const Char * _init, uint32_t _extI );
 
     protected:
         bool convertDotToSlash_( pybind::kernel_interface * _kernel, Char * _cache, uint32_t _cacheSize, PyObject * _module, uint32_t & _modulePathCacheLen );

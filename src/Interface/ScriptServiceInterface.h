@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
 #include "Interface/ScriptModuleInterface.h"
+#include "Interface/FileGroupInterface.h"
 
 #include "Config/Typedef.h"
 #include "Config/String.h"
@@ -50,8 +51,8 @@ namespace Mengine
         virtual bool finalizeModules() = 0;
 
     public:
-        virtual void addModulePath( const ConstString & _pack, const VectorScriptModulePack & _modules ) = 0;
-        virtual void removeModulePath( const ConstString & _pack, const VectorScriptModulePack & _modules ) = 0;
+        virtual void addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) = 0;
+        virtual void removeModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) = 0;
 
         virtual ScriptModuleInterfacePtr importModule( const ConstString& _name ) = 0;
 

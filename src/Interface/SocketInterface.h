@@ -22,10 +22,10 @@ namespace Mengine
     {
     public:
         virtual bool connect( const SocketConnectInfo & _data ) = 0;
-        virtual bool bind( const SocketConnectInfo & _data ) = 0;
+        virtual bool bind( const SocketConnectInfo & _data, const bool _blocking = true ) = 0;
         virtual void disconnect() = 0;
 
-        virtual bool waitForClient() = 0;
+        virtual int checkForClientConnection() = 0;
         virtual bool waitForData( size_t _timeoutMs ) = 0;
 
         virtual int send( const void* _data, const size_t _numBytes ) = 0;

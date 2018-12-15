@@ -63,17 +63,22 @@ namespace Mengine
         {
         case NodeDebuggerServerState::WaitingForClient:
             {
-                if( !m_socket->waitForClient() )
+                const int check = m_socket->checkForClientConnection();
+                if( check < 0 )
                 {
+                    // failed
                     m_serverState = NodeDebuggerServerState::Invalid;
                     return false;
                 }
+                else if( check > 0 )
+                {
+                    // got client connection
+                    m_serverState = NodeDebuggerServerState::Connected;
 
-                m_serverState = NodeDebuggerServerState::Connected;
+                    APPLICATION_SERVICE()->setNopause(true);
 
-                APPLICATION_SERVICE()->setNopause( true );
-
-                sendScene( m_scene );
+                    sendScene(m_scene);
+                }
             } break;
 
         case NodeDebuggerServerState::Connected:
@@ -240,7 +245,7 @@ namespace Mengine
         m_socket = SOCKET_SYSTEM()->createSocket();
 
         SocketConnectInfo sci = { "0.0.0.0", "18790" };
-        m_socket->bind( sci );
+        m_socket->bind( sci, false );
 
         m_serverState = NodeDebuggerServerState::WaitingForClient;
 

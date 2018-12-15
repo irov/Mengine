@@ -24,10 +24,10 @@ namespace Mengine
 
     public:
         bool connect( const SocketConnectInfo & _info ) override;
-        bool bind( const SocketConnectInfo & _info ) override;
+        bool bind( const SocketConnectInfo & _info, const bool _blocking = true) override;
         void disconnect() override;
 
-        bool waitForClient() override;
+        int checkForClientConnection() override;
         bool waitForData( size_t _timeoutMs ) override;
 
         int send( const void* _data, const size_t _numBytes ) override;
@@ -42,6 +42,7 @@ namespace Mengine
 
     protected:
         SOCKET m_socket;
+        bool m_isBlocking;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Win32Socket> Win32SocketPtr;

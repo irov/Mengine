@@ -4,10 +4,12 @@ ExternalProject_Add(glad_download PREFIX glad
 		DOWNLOAD_COMMAND ""
 		SOURCE_DIR ${THIRDPARTY_DIR}/glad
 
-        UPDATE_COMMAND ""
+        UPDATE_COMMAND ${CMAKE_COMMAND} -E copy 
+			${CMAKE_CURRENT_SOURCE_DIR}/CMakeLists_glad.txt
+			${THIRDPARTY_DIR}/glad/CMakeLists.txt
       
         CMAKE_ARGS 
-            -DCMAKE_INSTALL_PREFIX=${THIRDPARTY_DIR}/glad
+            -DCMAKE_INSTALL_PREFIX=${THIRDPARTY_DIR}/glad/${CMAKE_GENERATOR}/${CMAKE_BUILD_TYPE}
             -DGLAD_API=gl=3.3
             -DGLAD_INSTALL=ON
     )

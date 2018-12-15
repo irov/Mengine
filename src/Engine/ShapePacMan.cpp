@@ -55,7 +55,33 @@ namespace Mengine
             , mt::constant::fourth_pi + mt::constant::half_pi * 3.f
         };
 
-        if( m_angleTo <= mt::constant::fourth_pi * 1.f )
+        if( mt::equal_f_z( m_angleTo ) == true )
+        {
+            m_verticesLocal[0].x = offset.x + 0.f;
+            m_verticesLocal[0].y = offset.y + 0.f;
+
+            m_verticesLocal[1].x = offset.x + size.x;
+            m_verticesLocal[1].y = offset.y + 0.f;
+
+            m_verticesLocal[2].x = offset.x + size.x;
+            m_verticesLocal[2].y = offset.y + size.y;
+
+            m_verticesLocal[3].x = offset.x + 0.f;
+            m_verticesLocal[3].y = offset.y + size.y;
+
+            m_vertexCount = 4;
+
+            m_indices[0 * 3 + 0] = 0;
+            m_indices[0 * 3 + 1] = 1;
+            m_indices[0 * 3 + 2] = 2;
+
+            m_indices[1 * 3 + 0] = 0;
+            m_indices[1 * 3 + 1] = 2;
+            m_indices[1 * 3 + 2] = 3;
+
+            m_indexCount = 6;
+        }
+        else if( m_angleTo < mt::constant::fourth_pi * 1.f )
         {
             m_verticesLocal[0].x = offset.x + size.x * 0.5f;
             m_verticesLocal[0].y = offset.y + size.y * 0.5f;
@@ -102,7 +128,7 @@ namespace Mengine
 
             m_indexCount = 16;
         }
-        else if( m_angleTo <= mt::constant::fourth_pi * 2.f )
+        else if( m_angleTo < mt::constant::fourth_pi * 2.f )
         {
             m_verticesLocal[0].x = offset.x + size.x * 0.5f;
             m_verticesLocal[0].y = offset.y + size.y * 0.5f;
@@ -145,7 +171,7 @@ namespace Mengine
 
             m_indexCount = 12;
         }
-        else if( m_angleTo <= mt::constant::fourth_pi * 3.f )
+        else if( m_angleTo < mt::constant::fourth_pi * 3.f )
         {
             m_verticesLocal[0].x = offset.x + size.x * 0.5f;
             m_verticesLocal[0].y = offset.y + size.y * 0.5f;
@@ -188,7 +214,7 @@ namespace Mengine
 
             m_indexCount = 12;
         }
-        else if( m_angleTo <= mt::constant::fourth_pi * 4.f )
+        else if( m_angleTo < mt::constant::fourth_pi * 4.f )
         {
             m_verticesLocal[0].x = offset.x + size.x * 0.5f;
             m_verticesLocal[0].y = offset.y + size.y * 0.5f;
@@ -227,7 +253,7 @@ namespace Mengine
 
             m_indexCount = 9;
         }
-        else if( m_angleTo <= mt::constant::fourth_pi * 5.f )
+        else if( m_angleTo < mt::constant::fourth_pi * 5.f )
         {
             m_verticesLocal[0].x = offset.x + size.x * 0.5f;
             m_verticesLocal[0].y = offset.y + size.y * 0.5f;
@@ -266,7 +292,7 @@ namespace Mengine
 
             m_indexCount = 9;
         }
-        else if( m_angleTo <= mt::constant::fourth_pi * 6.f )
+        else if( m_angleTo < mt::constant::fourth_pi * 6.f )
         {
             m_verticesLocal[0].x = offset.x + size.x * 0.5f;
             m_verticesLocal[0].y = offset.y + size.y * 0.5f;
@@ -301,7 +327,7 @@ namespace Mengine
 
             m_indexCount = 6;
         }
-        else if( m_angleTo <= mt::constant::fourth_pi * 7.f )
+        else if( m_angleTo < mt::constant::fourth_pi * 7.f )
         {
             m_verticesLocal[0].x = offset.x + size.x * 0.5f;
             m_verticesLocal[0].y = offset.y + size.y * 0.5f;
@@ -336,7 +362,7 @@ namespace Mengine
 
             m_indexCount = 6;
         }
-        else if( m_angleTo <= mt::constant::fourth_pi * 8.f )
+        else if( m_angleTo < mt::constant::fourth_pi * 8.f )
         {
             m_verticesLocal[0].x = offset.x + size.x * 0.5f;
             m_verticesLocal[0].y = offset.y + size.y * 0.5f;
@@ -367,16 +393,25 @@ namespace Mengine
 
             m_indexCount = 3;
         }
+        else if( mt::equal_f_f( m_angleTo, mt::constant::two_pi ) == true )
+        {
+            m_vertexCount = 0;
+            m_indexCount = 0;
+        }
 
         uint32_t uvCount = m_surface->getUVCount();
 
-        for( uint32_t i = 0; i != uvCount; ++i )
+        for( uint32_t indexUV = 0; indexUV != uvCount; ++indexUV )
         {
-            const mt::uv4f & uv = m_surface->getUV( i );
+            const mt::uv4f & uv = m_surface->getUV( indexUV );
 
-            for( uint32_t v = 0; v != m_vertexCount; ++v )
+            for( uint32_t indexVertex = 0; indexVertex != m_vertexCount; ++indexVertex )
             {
-                m_verticesWM[v].uv[i] = uv[v];
+                RenderVertex2D & v = m_verticesWM[indexVertex];
+
+                mt::vec2f p = v.position.to_vec2f() / size;
+                    
+                mt::uv4_quad_point( v.uv[indexUV], uv, p );
             }
         }
     }

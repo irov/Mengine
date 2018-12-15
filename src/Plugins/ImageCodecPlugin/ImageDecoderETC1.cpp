@@ -49,7 +49,7 @@ namespace Mengine
         m_stream->read( &m_etc1_ptr, sizeof( ETC1Header ) );
         m_needSeek = false;
 
-        if( strcmp( m_etc1_ptr.tag, "PKM 10" ) != 0 )
+        if( strncmp( m_etc1_ptr.tag, "PKM 10", 6 ) != 0 )
         {
             LOGGER_ERROR( "ImageDecoderETC1::initialize Bad or not ETC1 file" );
 

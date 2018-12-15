@@ -6,7 +6,8 @@
 namespace Mengine
 {
     Win32Socket::Win32Socket()
-        : m_socket( INVALID_SOCKET )
+        : m_socket(INVALID_SOCKET)
+        , m_isBlocking( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -53,7 +54,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::bind( const SocketConnectInfo & _info )
+    bool Win32Socket::bind( const SocketConnectInfo & _info, const bool _blocking)
     {
         m_socket = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
 
@@ -79,17 +80,21 @@ namespace Mengine
             return false;
         }
 
+        m_isBlocking = _blocking;
+        u_long arg = _blocking ? 0u : 1u;
+        ::ioctlsocket( m_socket, FIONBIO, &arg );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::waitForClient()
+    int Win32Socket::checkForClientConnection()
     {
         if( ::listen( m_socket, SOMAXCONN ) == SOCKET_ERROR )
         {
             ::closesocket( m_socket );
             m_socket = INVALID_SOCKET;
 
-            return false;
+            return -1;
         }
 
         sockaddr_in clientAddr;
@@ -98,16 +103,30 @@ namespace Mengine
 
         SOCKET clientSocket = ::accept( m_socket, reinterpret_cast<LPSOCKADDR>( &clientAddr ), &addLen );
 
-        ::closesocket( m_socket );
+        int result = 1;
 
-        if( !clientSocket || clientSocket == INVALID_SOCKET )
+        if( clientSocket == INVALID_SOCKET )
         {
-            return false;
+            const int lastError = ::WSAGetLastError();
+
+            if( m_isBlocking == false && lastError == WSAEWOULDBLOCK )
+            {
+                // no connections yet
+                result = 0;
+            }
+            else
+            {
+                ::closesocket( m_socket );
+                result = -1;
+            }
+        }
+        else
+        {
+            ::closesocket( m_socket );
+            m_socket = clientSocket;
         }
 
-        m_socket = clientSocket;
-
-        return true;
+        return result;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Socket::waitForData( size_t timeoutMs )

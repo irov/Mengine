@@ -150,6 +150,115 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    static bool ListDirectoryContents( const WChar * _dir, const WChar * _mask, const LambdaFiles & _lambda )
+    {
+        {
+            WChar sPath[2048];
+            wsprintf( sPath, L"%s%s", _dir, _mask );
+
+            WIN32_FIND_DATA fdFile;
+            HANDLE hFind = FindFirstFile( sPath, &fdFile );
+
+            if( hFind != INVALID_HANDLE_VALUE )
+            {
+                do
+                {
+                    if( wcscmp( fdFile.cFileName, L"." ) == 0
+                        || wcscmp( fdFile.cFileName, L".." ) == 0 )
+                    {
+                        continue;
+                    }
+
+                    if( fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY )
+                    {
+                        continue;
+                    }
+
+                    Char utf8_filepath[MENGINE_MAX_PATH];
+                    if( Helper::unicodeToUtf8( fdFile.cFileName, utf8_filepath, MENGINE_MAX_PATH ) == false )
+                    {
+                        FindClose( hFind );
+
+                        return false;
+                    }
+
+                    FilePath fp = Helper::stringizeFilePath( utf8_filepath );
+
+                    _lambda( fp );
+
+                } while( FindNextFile( hFind, &fdFile ) == TRUE );
+            }
+
+            FindClose( hFind );
+        }
+        
+        {
+            WChar sPath[2048];
+            wsprintf( sPath, L"%s*.*", _dir );
+
+            WIN32_FIND_DATA fdFile;
+            HANDLE hFind = FindFirstFile( sPath, &fdFile );
+
+            if( hFind == INVALID_HANDLE_VALUE )
+            {
+                return true;
+            }
+
+            do
+            {
+                if( wcscmp( fdFile.cFileName, L"." ) == 0
+                    || wcscmp( fdFile.cFileName, L".." ) == 0 )
+                {
+                    continue;
+                }
+
+                if( (fdFile.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY) == 0 )
+                {
+                    continue;
+                }
+
+                WChar nextDir[2048];
+                wsprintf( nextDir, L"%s%s\\", _dir, fdFile.cFileName );
+                 
+                ListDirectoryContents( nextDir, _mask, _lambda );
+
+            } while( FindNextFile( hFind, &fdFile ) == TRUE );
+
+            FindClose( hFind );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFiles & _lambda ) const
+    {
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::Win32ConcatenateFilePath( m_relationPath, m_folderPath, _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
+                , m_folderPath.c_str()
+                , _filePath.c_str()
+            );
+
+            return false;
+        }
+
+        Helper::pathCorrectForwardslash( unicode_path );
+
+        WChar unicode_mask[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        if( ListDirectoryContents( unicode_path, unicode_mask, _lambda ) == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming )
     {
         (void)_fileName;

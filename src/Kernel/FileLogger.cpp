@@ -34,7 +34,7 @@ namespace Mengine
 
         utf8_logFilename += ".log";
 
-        FilePath logFilename = Helper::stringizeFilePath( utf8_logFilename.c_str(), utf8_logFilename.size() );
+        FilePath logFilename = Helper::stringizeFilePathSize( utf8_logFilename.c_str(), utf8_logFilename.size() );
 
         const FileGroupInterfacePtr & fileGroup = FILE_SERVICE()
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );

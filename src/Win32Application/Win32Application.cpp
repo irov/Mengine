@@ -330,7 +330,7 @@ namespace Mengine
 
         // mount user directory
         if( FILE_SERVICE()
-            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, Helper::stringizeFilePath( userPath, userPathLen ), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
+            ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, Helper::stringizeFilePathSize( userPath, userPathLen ), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
         {
             LOGGER_ERROR( "WinApplication: failed to mount user directory %ls"
                 , userPath

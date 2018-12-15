@@ -28,11 +28,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
-        FilePath stringizeFilePath( const Char * _value, size_t _size );
+        FilePath stringizeFilePath( const Char * _value );
+        FilePath stringizeFilePathSize( const Char * _value, size_t _size );
         FilePath stringizeFilePath( const String & _path );
         FilePath stringizeFilePath( const PathString & _path );
     }
     //////////////////////////////////////////////////////////////////////////
 #	define STRINGIZE_FILEPATH_LOCAL( str )\
-	Helper::stringizeFilePath( str, (sizeof(str) - 1) )
+	Helper::stringizeFilePathSize( str, (sizeof(str) - 1) )
 }

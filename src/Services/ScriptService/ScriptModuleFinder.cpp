@@ -65,50 +65,29 @@ namespace Mengine
         m_embed = _embed;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptModuleFinder::addModulePath( const ConstString & _pack, const VectorConstString & _pathes )
+    void ScriptModuleFinder::addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorFilePath & _pathes )
     {
         ModulePathes mp;
-        mp.pack = _pack;
+        mp.fileGroup = _fileGroup;
         mp.pathes = _pathes;
 
         m_modulePaths.emplace_back( mp );
+
+        //for( const FilePath & path : _pathes )
+        //{
+        //    _fileGroup->findFiles( path, "*.py", []( const FilePath & _filePath )
+        //    {
+        //        LOGGER_ERROR( "fp %s"
+        //            , _filePath.c_str()
+        //        );
+        //    } );
+        //}
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-        class FModuleRemove
-        {
-        public:
-            FModuleRemove( const ConstString & _pack )
-                : m_pack( _pack )
-            {
-            }
-
-        protected:
-            void operator = ( const FModuleRemove & )
-            {
-            }
-
-        public:
-            bool operator() ( const ModulePathes & _path )
-            {
-                if( _path.pack != m_pack )
-                {
-                    return false;
-                }
-
-                return true;
-            }
-
-        protected:
-            const ConstString & m_pack;
-        };
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ScriptModuleFinder::removeModulePath( const ConstString & _pack )
+    void ScriptModuleFinder::removeModulePath( const FileGroupInterfacePtr & _fileGroup )
     {
         m_modulePaths.erase(
-            std::find_if( m_modulePaths.begin(), m_modulePaths.end(), FModuleRemove( _pack ) )
+            std::find_if( m_modulePaths.begin(), m_modulePaths.end(), [&_fileGroup]( const ModulePathes & _pathes ) { return _pathes.fileGroup == _fileGroup; } )
             , m_modulePaths.end()
         );
     }
@@ -209,7 +188,7 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ScriptModuleFinder::find_module_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader, const Char * _ext, uint32_t _extN, const char * _init, uint32_t _extI )
+    bool ScriptModuleFinder::find_module_( pybind::kernel_interface * _kernel, PyObject * _module, const ScriptModuleLoaderPtr & _loader, const Char * _ext, uint32_t _extN, const Char * _init, uint32_t _extI )
     {
         Char modulePathCache[MENGINE_MAX_PATH];
 
@@ -247,15 +226,14 @@ namespace Mengine
     {
         for( const ModulePathes & mp : m_modulePaths )
         {
-            FileGroupInterfacePtr fileGroup = FILE_SERVICE()
-                ->getFileGroup( mp.pack );
+            const FileGroupInterfacePtr & fileGroup = mp.fileGroup;
 
             if( fileGroup == nullptr )
             {
                 continue;
             }
 
-            for( const ConstString & path : mp.pathes )
+            for( const FilePath & path : mp.pathes )
             {
                 m_cacheFullPath.clear();
                 m_cacheFullPath += path;

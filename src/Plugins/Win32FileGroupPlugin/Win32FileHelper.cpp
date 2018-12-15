@@ -74,7 +74,7 @@ namespace Mengine
             ::FindClose( hFind );
 
             return true;
-        }
+        }        
         //////////////////////////////////////////////////////////////////////////
         bool Win32ConcatenateFilePath( const FilePath & _relationPath, const FilePath & _folderPath, const FilePath & _filePath, WChar * _concatenatePath, size_t _capacity )
         {

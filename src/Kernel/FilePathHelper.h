@@ -13,6 +13,7 @@ namespace Mengine
         FilePath unicodeToFilePath( const WString & _unicode );
         void pathCorrectBackslash( WChar * _out );
         void pathCorrectBackslashTo( WChar * _out, const WChar * _in );
+        void pathCorrectForwardslash( WChar * _out );
         void pathRemoveBackslash( WChar * _path );
         bool pathRemoveFileSpec( WChar * _in );
 		void pathCorrectBackslashA( Char * _out );

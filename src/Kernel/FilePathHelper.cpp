@@ -65,7 +65,7 @@ namespace Mengine
                 return FilePath( ConstString::none() );
             }
 
-            FilePath c_folder = Helper::stringizeFilePath( str_fullpath, folder_delimiter - str_fullpath + 1 );
+            FilePath c_folder = Helper::stringizeFilePathSize( str_fullpath, folder_delimiter - str_fullpath + 1 );
 
             return c_folder;
         }
@@ -99,6 +99,17 @@ namespace Mengine
             wcscpy( _out, _in );
 
             pathCorrectBackslash( _out );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pathCorrectForwardslash( WChar * _path )
+        {
+            WChar * pch = wcschr( _path, L'/' );
+            while( pch != NULL )
+            {
+                *pch = L'\\';
+
+                pch = wcschr( pch, L'/' );
+            }
         }
         //////////////////////////////////////////////////////////////////////////
         void pathRemoveBackslash( WChar * _path )

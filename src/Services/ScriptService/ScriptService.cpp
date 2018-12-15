@@ -269,22 +269,21 @@ namespace Mengine
         return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::addModulePath( const ConstString & _pak, const VectorScriptModulePack & _modules )
+    void ScriptService::addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules )
     {
         if( _modules.empty() == true )
         {
             return;
         }
 
-        VectorConstString pathes;
+        VectorFilePath pathes;
 
-        for( const ScriptModulePack & pak : _modules )
+        for( const ScriptModulePack & pack : _modules )
         {
-            pathes.emplace_back( pak.path );
+            pathes.emplace_back( pack.path );
         }
 
-        m_moduleFinder->addModulePath( _pak, pathes );
-
+        m_moduleFinder->addModulePath( _fileGroup, pathes );
 
         m_bootstrapperModules.insert( m_bootstrapperModules.end(), _modules.begin(), _modules.end() );
 
@@ -297,52 +296,29 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace
+    void ScriptService::removeModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules )
     {
-        class FBootstrapperModuleRemove
+        m_moduleFinder->removeModulePath( _fileGroup );
+
+        for( const ScriptModulePack & pack : _modules )
         {
-        public:
-            FBootstrapperModuleRemove( const ScriptModulePack & _pack )
-                : m_pack( _pack )
+            m_bootstrapperModules.erase(
+                std::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), [&pack]( const ScriptModulePack & _pack )
             {
-            }
-
-        protected:
-            void operator = ( const FBootstrapperModuleRemove & )
-            {
-            }
-
-        public:
-            bool operator() ( const ScriptModulePack & _pack )
-            {
-                if( _pack.module < m_pack.module )
+                if( _pack.module < pack.module )
                 {
                     return false;
                 }
 
-                if( _pack.path < m_pack.path )
+                if( _pack.path < pack.path )
                 {
                     return false;
                 }
 
                 return true;
-            }
-
-        protected:
-            const ScriptModulePack & m_pack;
-        };
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void ScriptService::removeModulePath( const ConstString & _pack, const VectorScriptModulePack & _modules )
-    {
-        m_moduleFinder->removeModulePath( _pack );
-
-        for( const ScriptModulePack & pack : _modules )
-        {
-            m_bootstrapperModules.erase(
-                std::remove_if( m_bootstrapperModules.begin(), m_bootstrapperModules.end(), FBootstrapperModuleRemove( pack ) )
+            } )
                 , m_bootstrapperModules.end()
-            );
+                );
         }
     }
     //////////////////////////////////////////////////////////////////////////

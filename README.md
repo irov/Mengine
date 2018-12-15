@@ -13,13 +13,13 @@ Mengine is an multiple platforms engine for creating and running graphical games
 
 `Mengine\build\downloads\downloads.bat`
     
-Дальше мы можем собираем например дебаг для Visual Studio 15 2017
+Дальше мы можем собрать например дебаг для Visual Studio 15 2017
 
 `Mengine\build\msvc15\build_depends_msvc15_debug.bat`
 
 и сформировать солюшен
 
-`Mengine\build\msvc15\make_solution_tools_msvc15_debug.bat`
+`Mengine\build\msvc15\make_solution_msvc15_debug.bat`
     
 который мы сможем найти в папке
 

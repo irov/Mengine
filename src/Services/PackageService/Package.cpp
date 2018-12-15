@@ -370,7 +370,7 @@ namespace Mengine
         //	->getPlatformTags();
 
         SCRIPT_SERVICE()
-            ->addModulePath( m_name, m_scriptsPackages );
+            ->addModulePath( m_fileGroup, m_scriptsPackages );
 
         for( const PakResourceDesc & desc : m_resourcesDesc )
         {
@@ -476,7 +476,7 @@ namespace Mengine
         m_enable = false;
 
         SCRIPT_SERVICE()
-            ->removeModulePath( m_name, m_scriptsPackages );
+            ->removeModulePath( m_fileGroup, m_scriptsPackages );
 
         for( const PakResourceDesc & desc : m_resourcesDesc )
         {

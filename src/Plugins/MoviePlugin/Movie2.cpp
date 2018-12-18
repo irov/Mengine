@@ -1674,7 +1674,7 @@ namespace Mengine
     {
         (void)_callbackData;
         (void)_ud;
-        
+
         ShaderDesc * desc = reinterpret_cast<ShaderDesc *>(_callbackData->element_userdata);
 
         const RenderProgramVariableInterfacePtr & programVariable = desc->programVariable;
@@ -1983,7 +1983,7 @@ namespace Mengine
 
         providers.track_matte_provider = &__movie_composition_track_matte_provider;
         providers.track_matte_deleter = &__movie_composition_track_matte_deleter;
-        providers.track_matte_update = &__movie_composition_track_matte_update;        
+        providers.track_matte_update = &__movie_composition_track_matte_update;
 
         providers.shader_provider = &__movie_composition_shader_provider;
         providers.shader_deleter = &__movie_composition_shader_deleter;

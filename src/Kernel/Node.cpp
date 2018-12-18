@@ -1241,12 +1241,11 @@ namespace Mengine
         //invalidateBoundingBox();add
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::_updateBoundingBox( mt::box2f& _boundingBox ) const
+    void Node::_updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
-        _boundingBox.minimum.x = -(std::numeric_limits<float>::max)();
-        _boundingBox.minimum.y = -(std::numeric_limits<float>::max)();
-        _boundingBox.maximum.x = (std::numeric_limits<float>::max)();
-        _boundingBox.maximum.y = (std::numeric_limits<float>::max)();
+        (void)_boundingBox;
+
+        *_boundingBoxCurrent = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Node::getAffectorableUpdatableMode() const

@@ -216,20 +216,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool DataflowAEZ::initialize()
     {
-        m_poolMovieData = new FactoryPool<Movie2Data, 128>();
+        m_factoryMovieData = new FactoryPool<Movie2Data, 128>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DataflowAEZ::finalize()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_poolMovieData );
-        m_poolMovieData = nullptr;
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMovieData );
+        m_factoryMovieData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataflowAEZ::create()
     {
-        Movie2DataPtr data = m_poolMovieData->createObject();
+        Movie2DataPtr data = m_factoryMovieData->createObject();
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
 

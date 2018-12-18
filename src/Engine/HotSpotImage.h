@@ -32,7 +32,7 @@ namespace Mengine
         bool testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
     protected:
-        void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
+        void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
     protected:
         bool _compile() override;

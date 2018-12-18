@@ -2,6 +2,7 @@
 
 #include "Interface/FileGroupInterface.h"
 #include "Interface/ArchivatorInterface.h"
+#include "Interface/DataflowInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
@@ -23,23 +24,26 @@ namespace Mengine
         void setModule( pybind::kernel_interface * _kernel, PyObject * _module );
         PyObject * getModule() const;
 
+        void setDataflow( const DataflowInterfacePtr & _dataflow );
+        const DataflowInterfacePtr & getDataflow() const;
+
     public:
-        bool initialize( const FileGroupInterfacePtr & _group, const FilePath & _path, const ArchivatorInterfacePtr & _archivator );
+        bool initialize( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path );
 
     public:
         void setPackagePath( bool _packagePath );
 
     public:
-        virtual PyObject * load_module( pybind::kernel_interface * _kernel, PyObject * _module ) = 0;
+        PyObject * load_module( pybind::kernel_interface * _kernel, PyObject * _moduleName );
 
     protected:
         pybind::kernel_interface * m_kernel;
         PyObject * m_module;
 
-        FileGroupInterfacePtr m_group;
-        FilePath m_path;
+        DataflowInterfacePtr m_dataflow;
 
-        ArchivatorInterfacePtr m_archivator;
+        FileGroupInterfacePtr m_fileGroup;
+        FilePath m_filePath;
 
         bool m_packagePath;
     };

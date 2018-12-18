@@ -29,7 +29,7 @@ namespace Mengine
 
                 LOGGER_ERROR( "Vocabulary '%s' type '%s'"
                     , _category.c_str()
-                    , _type.c_str() 
+                    , _type.c_str()
                 );
 
                 ++count;

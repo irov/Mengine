@@ -20,7 +20,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class SceneServiceInterface
         : public ServiceInterface
-    {    
+    {
         SERVICE_DECLARE( "SceneService" )
 
     public:

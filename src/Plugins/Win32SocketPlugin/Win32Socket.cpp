@@ -6,7 +6,7 @@
 namespace Mengine
 {
     Win32Socket::Win32Socket()
-        : m_socket(INVALID_SOCKET)
+        : m_socket( INVALID_SOCKET )
         , m_isBlocking( true )
     {
     }
@@ -54,7 +54,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::bind( const SocketConnectInfo & _info, const bool _blocking)
+    bool Win32Socket::bind( const SocketConnectInfo & _info, const bool _blocking )
     {
         m_socket = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
 
@@ -66,13 +66,13 @@ namespace Mengine
         SOCKADDR_IN addr;
         ZeroMemory( &addr, sizeof( addr ) );
 
-        const uint16_t port = static_cast<uint16_t>( std::stoi( _info.port ) );
+        const uint16_t port = static_cast<uint16_t>(std::stoi( _info.port ));
 
         addr.sin_family = AF_INET;
         addr.sin_port = ::htons( port );
         addr.sin_addr.s_addr = ::inet_addr( _info.ip );
 
-        if( ::bind( m_socket, reinterpret_cast<LPSOCKADDR>( &addr ), sizeof( addr ) ) == SOCKET_ERROR )
+        if( ::bind( m_socket, reinterpret_cast<LPSOCKADDR>(&addr), sizeof( addr ) ) == SOCKET_ERROR )
         {
             ::closesocket( m_socket );
             m_socket = INVALID_SOCKET;
@@ -101,7 +101,7 @@ namespace Mengine
         int addLen = sizeof( clientAddr );
         ZeroMemory( &clientAddr, addLen );
 
-        SOCKET clientSocket = ::accept( m_socket, reinterpret_cast<LPSOCKADDR>( &clientAddr ), &addLen );
+        SOCKET clientSocket = ::accept( m_socket, reinterpret_cast<LPSOCKADDR>(&clientAddr), &addLen );
 
         int result = 1;
 
@@ -156,7 +156,7 @@ namespace Mengine
             return 0;
         }
 
-        const int numBytesSent = ::send( m_socket, reinterpret_cast<const char*>( _data ), static_cast<int>( _numBytes ), 0 );
+        const int numBytesSent = ::send( m_socket, reinterpret_cast<const char*>(_data), static_cast<int>(_numBytes), 0 );
 
         return numBytesSent;
     }
@@ -168,7 +168,7 @@ namespace Mengine
             return 0;
         }
 
-        const int numBytesReceived = ::recv( m_socket, reinterpret_cast<char*>( _data ), static_cast<int>( _maxBytes ), 0 );
+        const int numBytesReceived = ::recv( m_socket, reinterpret_cast<char*>(_data), static_cast<int>(_maxBytes), 0 );
 
         return numBytesReceived;
     }

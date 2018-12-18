@@ -52,7 +52,7 @@ namespace Mengine
         ScenePtr oldScene = m_scene;
 
         NOTIFICATION_NOTIFY( NOTIFICATOR_CHANGE_SCENE_PREPARE_DESTROY, (m_scene, _scene) );
-        
+
         if( m_scene != nullptr )
         {
             m_scene->disable();

@@ -101,7 +101,7 @@ namespace Mengine
         if( m_ttfFEPath.empty() == false )
         {
             FEDataInterfacePtr data = Helper::dataflow( m_fileGroup, m_ttfFEPath, STRINGIZE_STRING_LOCAL( "feFont" ) );
-            
+
             if( data == nullptr )
             {
                 return false;

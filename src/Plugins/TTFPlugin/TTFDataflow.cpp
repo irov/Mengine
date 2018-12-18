@@ -37,20 +37,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TTFDataflow::initialize()
     {
-        m_poolData = new FactoryPool<TTFData, 128>();
+        m_factoryTTFData = new FactoryPool<TTFData, 128>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void TTFDataflow::finalize()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_poolData );
-        m_poolData = nullptr;
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTTFData );
+        m_factoryTTFData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr TTFDataflow::create()
     {
-        TTFDataPtr data = m_poolData->createObject();
+        TTFDataPtr data = m_factoryTTFData->createObject();
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
 
@@ -89,7 +89,7 @@ namespace Mengine
             return false;
         }
 
-        data->setFTFace( face );        
+        data->setFTFace( face );
 
         return true;
     }

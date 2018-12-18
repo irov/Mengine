@@ -26,6 +26,6 @@ namespace Mengine
     protected:
         WSADATA m_wsaData;
 
-        FactoryPtr m_poolWin32Socket;
+        FactoryPtr m_factoryWin32Socket;
     };
 }

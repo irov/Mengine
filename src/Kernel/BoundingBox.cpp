@@ -3,8 +3,11 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    static const float bounding_max = (std::numeric_limits<float>::max)();
+    //////////////////////////////////////////////////////////////////////////
     BoundingBox::BoundingBox()
-        : m_boundingBox( 0.f, 0.f, 0.f, 0.f )
+        : m_boundingBox( -bounding_max, -bounding_max, bounding_max, bounding_max )
+        , m_boundingBoxCurrent( nullptr )
         , m_invalidateBoundingBox( true )
     {
     }
@@ -17,12 +20,12 @@ namespace Mengine
     {
         m_invalidateBoundingBox = false;
 
-        this->_updateBoundingBox( m_boundingBox );
+        this->_updateBoundingBox( m_boundingBox, &m_boundingBoxCurrent );
     }
     //////////////////////////////////////////////////////////////////////////
-    void BoundingBox::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    void BoundingBox::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         (void)_boundingBox;
-        //Empty
+        (void)_boundingBoxCurrent;
     }
 }

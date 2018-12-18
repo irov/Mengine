@@ -183,20 +183,20 @@ namespace Mengine
     {
         const RenderVertex2D * vertices = this->getVertices();
 
-        const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f * bb = this->getBoundingBox();
 
         if( this->hasBackground() == true )
         {
             const WindowEdge & edge = m_edge[ResourceWindow_Background];
 
-            this->addRenderQuad( _state, edge.material, &vertices[0 * 4], 4, &bb, false );
+            this->addRenderQuad( _state, edge.material, &vertices[0 * 4], 4, bb, false );
         }
 
         for( uint32_t i = 1; i != ResourceWindow_Count; ++i )
         {
             const WindowEdge & edge = m_edge[i];
 
-            this->addRenderQuad( _state, edge.material, &vertices[i * 4], 4, &bb, false );
+            this->addRenderQuad( _state, edge.material, &vertices[i * 4], 4, bb, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -435,7 +435,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::_updateBoundingBox( mt::box2f& _boundingBox ) const
+    void Window::_updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const RenderVertex2D * vertices = this->getVertices();
 
@@ -445,6 +445,8 @@ namespace Mengine
         {
             mt::add_internal_point( _boundingBox, vertices[i].position.x, vertices[i].position.y );
         }
+
+        *_boundingBoxCurrent = &_boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
     void Window::_invalidateWorldMatrix()

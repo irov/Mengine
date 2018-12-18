@@ -35,7 +35,7 @@ namespace Mengine
 
             desc.name[0] = '\0';
             desc.lambda = nullptr;
-        }        
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     ServiceProvider::~ServiceProvider()
@@ -330,7 +330,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void ServiceProvider::destroy()
-    {        
+    {
         for( uint32_t index = 0; index != m_waitsCount; ++index )
         {
             WaitDesc & desc = m_waits[index];

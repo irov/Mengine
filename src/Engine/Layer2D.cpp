@@ -205,9 +205,9 @@ namespace Mengine
                 const RenderVertex2D * verticesImageMask = m_layer->getVerticesImageMaskWM();
                 const RenderMaterialInterfacePtr & materialImageMask = m_layer->getMaterialImageMask();
 
-                const mt::box2f & bb = m_layer->getBoundingBox();
+                const mt::box2f * bb = m_layer->getBoundingBox();
 
-                this->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, &bb, false );
+                this->addRenderQuad( _context, materialImageMask, verticesImageMask, 4, bb, false );
             }
 
         protected:

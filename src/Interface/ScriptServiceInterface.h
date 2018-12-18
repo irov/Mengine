@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/MemoryInterface.h"
 #include "Interface/ScriptModuleInterface.h"
+#include "Interface/ScriptCodeDataInterface.h"
 #include "Interface/FileGroupInterface.h"
 
 #include "Config/Typedef.h"
@@ -69,10 +69,6 @@ namespace Mengine
             PyObject * py_value = pybind::ptr( kernel, _value );
             this->addGlobalModule( _name, py_value );
         }
-
-    public:
-        virtual PyObject * loadModuleSource( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) = 0;
-        virtual PyObject * loadModuleBinary( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) = 0;
 
     public:
         virtual bool stringize( PyObject * _object, ConstString & _str ) = 0;

@@ -1,20 +1,25 @@
 #pragma once
 
 #include "Interface/DataflowInterface.h"
-#include "Interface/ArchivatorInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
 
+#include "pybind/pybind.hpp"
+
 namespace Mengine
 {
-    class FEDataflow
+    class DataflowPY
         : public DataflowInterface
         , public Factorable
     {
     public:
-        FEDataflow();
-        ~FEDataflow() override;
+        DataflowPY();
+        ~DataflowPY() override;
+
+    public:
+        void setKernel( pybind::kernel_interface * _kernel );
+        pybind::kernel_interface * getKernel() const;
 
     public:
         bool initialize() override;
@@ -27,9 +32,11 @@ namespace Mengine
         bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) override;
 
     protected:
-        FactoryPtr m_factoryFEData;
+        pybind::kernel_interface * m_kernel;
+
+        FactoryPtr m_factoryScriptCodeData;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<FEDataflow, DataflowInterface> FEDataflowPtr;
+    typedef IntrusivePtr<DataflowPY> DataflowPYPtr;
     //////////////////////////////////////////////////////////////////////////
 }

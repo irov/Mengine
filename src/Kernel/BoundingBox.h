@@ -14,7 +14,7 @@ namespace Mengine
         ~BoundingBox();
 
     public:
-        inline const mt::box2f & getBoundingBox() const;
+        inline const mt::box2f * getBoundingBox() const;
 
     protected:
         inline void invalidateBoundingBox() const;
@@ -23,10 +23,11 @@ namespace Mengine
         void updateBoundingBox() const;
 
     protected:
-        virtual void _updateBoundingBox( mt::box2f & _boundingBox ) const;
+        virtual void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const;
 
     protected:
         mutable mt::box2f m_boundingBox;
+        mutable mt::box2f * m_boundingBoxCurrent;
         mutable bool m_invalidateBoundingBox;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -37,13 +38,13 @@ namespace Mengine
         m_invalidateBoundingBox = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const mt::box2f & BoundingBox::getBoundingBox() const
+    inline const mt::box2f * BoundingBox::getBoundingBox() const
     {
         if( m_invalidateBoundingBox == true )
         {
             this->updateBoundingBox();
         }
 
-        return m_boundingBox;
+        return m_boundingBoxCurrent;
     }
 }

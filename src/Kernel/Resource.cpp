@@ -43,7 +43,7 @@ namespace Mengine
     bool Resource::_initialize()
     {
         return true;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     bool Resource::_incrementZero()
     {

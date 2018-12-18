@@ -243,9 +243,9 @@ namespace Mengine
 
         uint32_t verticesCount = (uint32_t)m_verticesWM.size();
 
-        const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderObject( _state, material, nullptr, vertices, verticesCount, indices, indicesCount, &bb, false );
+        this->addRenderObject( _state, material, nullptr, vertices, verticesCount, indices, indicesCount, bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
     void Grid2D::updateVerticesWM_()
@@ -294,7 +294,7 @@ namespace Mengine
         m_invalidateVerticesWM = true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Grid2D::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    void Grid2D::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -308,5 +308,7 @@ namespace Mengine
         mt::mul_v2_v2_m4( maximal_wm, maximal, wm );
 
         mt::set_box_from_two_point( _boundingBox, minimal_wm, maximal_wm );
+
+        *_boundingBoxCurrent = &_boundingBox;
     }
 }

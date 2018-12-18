@@ -412,7 +412,7 @@ namespace Mengine
                 RenderVertex2D & v = m_verticesWM[indexVertex];
 
                 mt::vec2f p = v.position.to_vec2f() / size;
-                    
+
                 mt::uv4_quad_point( v.uv[indexUV], uv, p );
             }
         }
@@ -424,12 +424,12 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
 
-        const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderObject( _state, material, nullptr, vertices, m_vertexCount, m_indices, m_indexCount, &bb, false );
+        this->addRenderObject( _state, material, nullptr, vertices, m_vertexCount, m_indices, m_indexCount, bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShapePacMan::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    void ShapePacMan::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const RenderVertex2D * vertices = this->getVerticesWM();
 
@@ -441,6 +441,8 @@ namespace Mengine
 
             mt::add_internal_point( _boundingBox, v.position.x, v.position.y );
         }
+
+        *_boundingBoxCurrent = &_boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
     void ShapePacMan::updateVerticesColor() const

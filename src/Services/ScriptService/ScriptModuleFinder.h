@@ -1,9 +1,10 @@
 #pragma once
 
 #include "Interface/ArchivatorInterface.h"
+#include "Interface/FileGroupInterface.h"
+#include "Interface/DataflowInterface.h"
 
-#include "ScriptModuleLoaderSource.h"
-#include "ScriptModuleLoaderCode.h"
+#include "ScriptModuleLoader.h"
 
 #include "Kernel/Factory.h"
 
@@ -31,6 +32,14 @@ namespace Mengine
     public:
         ScriptModuleFinder();
         ~ScriptModuleFinder() override;
+
+    public:
+        void setDataflowPY( const DataflowInterfacePtr & _dataflow );
+        const DataflowInterfacePtr & getDataflowPY() const;
+
+    public:
+        void setDataflowPYC( const DataflowInterfacePtr & _dataflow );
+        const DataflowInterfacePtr & getDataflowPYC() const;
 
     public:
         bool initialize();
@@ -61,15 +70,12 @@ namespace Mengine
     protected:
         pybind::object m_embed;
 
-        ArchivatorInterfacePtr m_archivator;
+        DataflowInterfacePtr m_dataflowPY;
+        DataflowInterfacePtr m_dataflowPYC;
 
         VectorModulePathes m_modulePaths;
 
-        FactoryPtr m_factoryScriptModuleLoaderCode;
-
-#ifndef MENGINE_MASTER_RELEASE
-        FactoryPtr m_factoryScriptModuleLoaderSource;
-#endif
+        FactoryPtr m_factoryScriptModuleLoader;
 
         typedef Vector<ScriptModuleLoaderPtr> MapModuleLoaders;
         MapModuleLoaders m_loaders;

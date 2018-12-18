@@ -125,16 +125,16 @@ namespace Mengine
         const RenderVertex2D * vertices_buff = &vertices[0];
         const RenderIndex * indices_buff = &m_indices[0];
 
-        const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderObject( _state, material, nullptr, vertices_buff, vertexCount, indices_buff, indicesCount, &bb, false );
+        this->addRenderObject( _state, material, nullptr, vertices_buff, vertexCount, indices_buff, indicesCount, bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meshget::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    void Meshget::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         if( m_positions.empty() == true )
         {
-            mt::ident_box( _boundingBox );
+            *_boundingBoxCurrent = nullptr;
 
             return;
         }
@@ -151,6 +151,8 @@ namespace Mengine
 
             mt::add_internal_point( _boundingBox, v.x, v.y );
         }
+
+        *_boundingBoxCurrent = &_boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
     void Meshget::_invalidateWorldMatrix()

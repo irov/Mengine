@@ -9,6 +9,7 @@ src
     ModuleFactoryInterface.h
     ModuleServiceInterface.h
     ScriptModuleInterface.h
+    ScriptCodeDataInterface.h
 	ScriptServiceInterface.h
 	CodecInterface.h
 	CodecFactoryInterface.h

@@ -236,7 +236,7 @@ namespace Mengine
         m_keyFramePack = data;
 
         return true;
-    }    
+    }
     //////////////////////////////////////////////////////////////////////////
     void ResourceMovie::_release()
     {

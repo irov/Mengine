@@ -35,6 +35,6 @@ namespace Mengine
     protected:
         ArchivatorInterfacePtr m_archivator;
 
-        FactoryPtr m_poolMovieFramePack;
+        FactoryPtr m_factoryMovieFramePack;
     };
 }

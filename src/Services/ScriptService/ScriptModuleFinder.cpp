@@ -24,23 +24,29 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void ScriptModuleFinder::setDataflowPY( const DataflowInterfacePtr & _dataflowPY )
+    {
+        m_dataflowPY = _dataflowPY;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const DataflowInterfacePtr & ScriptModuleFinder::getDataflowPY() const
+    {
+        return m_dataflowPY;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScriptModuleFinder::setDataflowPYC( const DataflowInterfacePtr & _dataflowPYC )
+    {
+        m_dataflowPYC = _dataflowPYC;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const DataflowInterfacePtr & ScriptModuleFinder::getDataflowPYC() const
+    {
+        return m_dataflowPYC;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ScriptModuleFinder::initialize()
     {
-        const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
-            ->getArchivator( STRINGIZE_STRING_LOCAL( "zip" ) );
-
-        if( archivator == nullptr )
-        {
-            return false;
-        }
-
-        m_archivator = archivator;
-
-        m_factoryScriptModuleLoaderCode = new FactoryPool<ScriptModuleLoaderCode, 8>();
-
-#ifndef MENGINE_MASTER_RELEASE
-        m_factoryScriptModuleLoaderSource = new FactoryPool<ScriptModuleLoaderSource, 8>();
-#endif
+        m_factoryScriptModuleLoader = new FactoryPool<ScriptModuleLoader, 8>();
 
         return true;
     }
@@ -49,15 +55,9 @@ namespace Mengine
     {
         m_embed = nullptr;
 
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModuleLoaderCode );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModuleLoader );
 
-        m_factoryScriptModuleLoaderCode = nullptr;
-
-#ifndef MENGINE_MASTER_RELEASE
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModuleLoaderSource );
-
-        m_factoryScriptModuleLoaderSource = nullptr;
-#endif
+        m_factoryScriptModuleLoader = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptModuleFinder::setEmbed( const pybind::object & _embed )
@@ -99,8 +99,9 @@ namespace Mengine
 
 #ifndef MENGINE_MASTER_RELEASE
         {
-            ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoaderSource->createObject();
+            ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoader->createObject();
 
+            loaderSource->setDataflow( m_dataflowPY );
             loaderSource->setModule( _kernel, _module );
 
             if( this->find_module_source_( _kernel, _module, loaderSource ) == true )
@@ -113,8 +114,9 @@ namespace Mengine
 #endif
 
         {
-            ScriptModuleLoaderPtr loaderCode = m_factoryScriptModuleLoaderCode->createObject();
+            ScriptModuleLoaderPtr loaderCode = m_factoryScriptModuleLoader->createObject();
 
+            loaderCode->setDataflow( m_dataflowPYC );
             loaderCode->setModule( _kernel, _module );
 
             if( this->find_module_code_( _kernel, _module, loaderCode ) == true )
@@ -246,7 +248,7 @@ namespace Mengine
                     continue;
                 }
 
-                _loader->initialize( fileGroup, c_fullPath, m_archivator );
+                _loader->initialize( fileGroup, c_fullPath );
 
                 return true;
             }

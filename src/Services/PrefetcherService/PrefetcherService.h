@@ -47,7 +47,7 @@ namespace Mengine
     public:
         bool prefetchStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, uint32_t _magicNumber, uint32_t _magicVersion, const PrefetcherObserverInterfacePtr & _observer ) override;
         bool getStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, MemoryInterfacePtr & _memory ) override;
-        
+
     public:
         bool unfetch( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath ) override;
 

@@ -52,7 +52,7 @@ namespace Mengine
         const ConstString & resourceType = _resource->getType();
 
         const ResourceValidatorInterfacePtr & validator = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Validator" ), resourceType );
-        
+
         if( validator == nullptr )
         {
             return true;
@@ -83,19 +83,19 @@ namespace Mengine
             RESOURCE_SERVICE()
                 ->foreachResources( [this, &successful]( const ResourcePtr & _resource )
             {
-//#ifndef MENGINE_MASTER_RELEASE
-//                if( _resource->convert() == false )
-//                {
-//                    LOGGER_ERROR( "ResourceValidateService::visitableResources_ %s type [%s] invalid convert"
-//                        , _resource->getName().c_str()
-//                        , _resource->getType().c_str()
-//                    );
-//
-//                    successful = false;
-//
-//                    return;
-//                }
-//#endif
+                //#ifndef MENGINE_MASTER_RELEASE
+                //                if( _resource->convert() == false )
+                //                {
+                //                    LOGGER_ERROR( "ResourceValidateService::visitableResources_ %s type [%s] invalid convert"
+                //                        , _resource->getName().c_str()
+                //                        , _resource->getType().c_str()
+                //                    );
+                //
+                //                    successful = false;
+                //
+                //                    return;
+                //                }
+                //#endif
 
                 if( this->visitableResource_( _resource ) == false )
                 {

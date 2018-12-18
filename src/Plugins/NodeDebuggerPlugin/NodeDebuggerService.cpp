@@ -75,9 +75,9 @@ namespace Mengine
                     // got client connection
                     m_serverState = NodeDebuggerServerState::Connected;
 
-                    APPLICATION_SERVICE()->setNopause(true);
+                    APPLICATION_SERVICE()->setNopause( true );
 
-                    sendScene(m_scene);
+                    sendScene( m_scene );
                 }
             } break;
 

@@ -38,7 +38,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<class C, class M, class ... Args>
     class MethodObserverCallable
-        : public ArgsObserverCallable < Args... >
+        : public ArgsObserverCallable<Args ...>
     {
     public:
         MethodObserverCallable( C * _self, M _method )
@@ -69,22 +69,22 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     template<class C, class ... P>
     class GeneratorMethodObserverCallable<void (C::*)(P...)>
-        : public MethodObserverCallable < C, void (C::*)(P...), typename std::remove_reference<P>::type ... >
+        : public MethodObserverCallable < C, void (C::*)(P...), std::remove_const_t<std::remove_reference_t<P>> ... >
     {
     public:
         GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P...) )
-            : MethodObserverCallable<C, void (C::*)(P...), typename std::remove_reference<P>::type ...>( _self, _method )
+            : MethodObserverCallable<C, void (C::*)(P...), std::remove_const_t<std::remove_reference_t<P>> ...>( _self, _method )
         {
         }
     };
     //////////////////////////////////////////////////////////////////////////
     template<class C, class ... P>
     class GeneratorMethodObserverCallable<void (C::*)(P...) const>
-        : public MethodObserverCallable < C, void (C::*)(P...) const, typename std::remove_reference<P>::type ... >
+        : public MethodObserverCallable < C, void (C::*)(P...) const, std::remove_const_t<std::remove_reference_t<P>> ... >
     {
     public:
         GeneratorMethodObserverCallable( C * _self, void (C::*_method)(P...) const )
-            : MethodObserverCallable<C, void (C::*)(P...) const, typename std::remove_reference<P>::type ...>( _self, _method )
+            : MethodObserverCallable<C, void (C::*)(P...) const, std::remove_const_t<std::remove_reference_t<P>> ...>( _self, _method )
         {
         }
     };
@@ -101,7 +101,7 @@ namespace Mengine
     class ArgsObserverVisitorCallable
         : public ObserverVisitorCallableInterface
     {
-        typedef ArgsObserverCallable<Args...> args_callable_type;
+        typedef ArgsObserverCallable< std::remove_reference_t<Args> ...> args_callable_type;
 
     public:
         ArgsObserverVisitorCallable( const Tuple<Args...> & _args )
@@ -163,7 +163,7 @@ namespace Mengine
         template<class ... Args>
         inline bool notify_tuple( uint32_t _id, const Tuple<Args...> & _args )
         {
-            ArgsObserverVisitorCallable<Args...> visitor(_args);
+            ArgsObserverVisitorCallable<Args...> visitor( _args );
 
             bool successful = this->visitObservers( _id, &visitor );
 

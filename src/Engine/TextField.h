@@ -126,7 +126,7 @@ namespace Mengine
         void _release() override;
 
         void _invalidateWorldMatrix() override;
-        void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
+        void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
         void _invalidateColor() override;
 
     protected:

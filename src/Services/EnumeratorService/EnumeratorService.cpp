@@ -22,5 +22,5 @@ namespace Mengine
         uint32_t newIdentity = ++m_enumerator;
 
         return newIdentity;
-    }    
+    }
 }

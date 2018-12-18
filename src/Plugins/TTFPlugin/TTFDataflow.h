@@ -37,7 +37,7 @@ namespace Mengine
     protected:
         FT_Library m_library;
 
-        FactoryPtr m_poolData;
+        FactoryPtr m_factoryTTFData;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TTFDataflow, DataflowInterface> TTFDataflowPtr;

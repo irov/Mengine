@@ -24,7 +24,7 @@ namespace Mengine
         void _render( const RenderContext * _state ) override;
 
     protected:
-        void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
+        void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
     protected:
         inline const RenderVertex2D * getVerticesWM() const;

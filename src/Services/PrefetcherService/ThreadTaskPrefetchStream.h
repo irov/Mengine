@@ -16,7 +16,7 @@ namespace Mengine
     public:
         void setArchivator( const ArchivatorInterfacePtr & _archivator );
         const ArchivatorInterfacePtr & getArchivator() const;
-        
+
     public:
         void setMagicNumber( uint32_t _magicNumber );
         uint32_t getMagicNumber() const;

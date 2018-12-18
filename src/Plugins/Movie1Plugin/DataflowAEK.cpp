@@ -38,21 +38,21 @@ namespace Mengine
 
         m_archivator = archivator;
 
-        m_poolMovieFramePack = new FactoryPool<MovieFramePack, 32>();
+        m_factoryMovieFramePack = new FactoryPool<MovieFramePack, 32>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void DataflowAEK::finalize()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_poolMovieFramePack );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMovieFramePack );
 
-        m_poolMovieFramePack = nullptr;
+        m_factoryMovieFramePack = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr DataflowAEK::create()
     {
-        MovieFramePackPtr data = m_poolMovieFramePack->createObject();
+        MovieFramePackPtr data = m_factoryMovieFramePack->createObject();
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
 

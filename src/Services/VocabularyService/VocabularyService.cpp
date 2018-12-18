@@ -30,7 +30,7 @@ namespace Mengine
     void VocabularyService::_finalizeService()
     {
         MENGINE_ASSERTION( m_mixins.empty(), ("Vocabulary not empty!") );
-        
+
         for( const HashtableMixins::value_type & value : m_mixins )
         {
             const CategoryKey & key = value.key;

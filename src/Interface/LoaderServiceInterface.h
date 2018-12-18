@@ -28,11 +28,6 @@ namespace Mengine
     public:
         virtual bool load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const = 0;
         virtual bool validation( const FileGroupInterfacePtr & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const = 0;
-
-    public:
-        virtual bool addLoader( const ConstString & _type, const LoaderInterfacePtr & _loader ) = 0;
-        virtual void removeLoader( const ConstString & _type ) = 0;
-        virtual const LoaderInterfacePtr & getLoader( const ConstString & _type ) const = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

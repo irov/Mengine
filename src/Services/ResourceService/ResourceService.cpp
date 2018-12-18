@@ -7,6 +7,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Metacode/Metacode.h"
 
@@ -20,7 +21,7 @@ SERVICE_FACTORY( ResourceService, Mengine::ResourceService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
+    /////////////////////////////////////////////////////////////////////
     ResourceService::ResourceService()
     {
     }
@@ -177,8 +178,7 @@ namespace Mengine
                 return false;
             }
 
-            const LoaderInterfacePtr & loader = LOADER_SERVICE()
-                ->getLoader( type );
+            LoaderInterfacePtr loader = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Loader" ), type );
 
             if( loader == nullptr )
             {

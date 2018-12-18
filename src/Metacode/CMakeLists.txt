@@ -6,13 +6,9 @@ Metabuf
 	Metacode.h
     Metatype.cpp
     Metatype.h
+    Metacache.cpp
+    Metacache.h
     protocol.xml
-)
-
-ADD_FILTER(
-Loader
-	LoaderService.cpp
-	LoaderService.h
 )
    
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )

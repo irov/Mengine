@@ -2,8 +2,6 @@
 
 #include "Kernel/Viewport.h"
 
-#include "Config/Vector.h"
-
 namespace Mengine
 {
     struct AspectRatioViewports
@@ -13,6 +11,4 @@ namespace Mengine
 
         Viewport viewport;
     };
-
-    typedef Vector<AspectRatioViewports> VectorAspectRatioViewports;
 }

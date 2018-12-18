@@ -4,10 +4,11 @@
 #include "Interface/InputStreamInterface.h"
 #include "Interface/ArchivatorInterface.h"
 
+#include "Metacode/Metacache.h"
+
 #include "Kernel/ServiceBase.h"
 
 #include "Kernel/ConstString.h"
-#include "Kernel/ConstStringTypes.h"
 #include "Kernel/Hashtable.h"
 #include "Kernel/String.h"
 
@@ -45,12 +46,7 @@ namespace Mengine
 #endif
 
     public:
-        const ConstString & getCacheConstString( uint32_t _index ) const;
-
-    public:
-        bool addLoader( const ConstString & _type, const LoaderInterfacePtr & _loader ) override;
-        virtual void removeLoader( const ConstString & _type ) override;
-        virtual const LoaderInterfacePtr & getLoader( const ConstString & _type ) const override;
+        const ConstString & getCacheConstString_( uint32_t _index ) const;
 
     protected:
         ArchivatorInterfacePtr m_archivator;
@@ -60,6 +56,6 @@ namespace Mengine
         typedef Hashtable<ConstString, LoaderInterfacePtr> HashtableLoaders;
         HashtableLoaders m_loaders;
 
-        mutable VectorConstString m_bufferConstString;
+        mutable Metacache m_metacache;
     };
 }

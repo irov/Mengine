@@ -192,8 +192,8 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderMemory>( "memoryImage" );
         Helper::registerDecoder<ImageDecoderArchive>( "archiveImage" );
 
-        m_companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
-        m_projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+        m_companyName = CONFIG_VALUE( "Project", "Company", String( "NONAME" ) );
+        m_projectName = CONFIG_VALUE( "Project", "Name", String( "UNKNOWN" ) );
         m_projectCodename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
         m_projectVersion = CONFIG_VALUE( "Project", "Version", 0U );
 
@@ -1467,12 +1467,12 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getMaxClientResolution( dres );
 
-        LOGGER_WARNING( "Application::calcWindowResolution Max Client Resolution Resolution %u %u"
+        LOGGER_WARNING( "Max Client Resolution Resolution %u %u"
             , dres.getWidth()
             , dres.getHeight()
         );
 
-        LOGGER_WARNING( "Application::calcWindowResolution Window Resolution Resolution %u %u"
+        LOGGER_WARNING( "Window Resolution Resolution %u %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
         );

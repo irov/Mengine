@@ -383,7 +383,7 @@ Core
     ConstStringHolder.cpp
 	ConstStringHolderLocalString.h
 	ConstStringHolderLocalString.cpp
-	ConstStringTypes.h
+	VectorConstString.h
     
     UID.h
     UID.cpp        
@@ -426,6 +426,7 @@ Core
     LoggerBase.h
     
     AspectRatioViewports.h
+	VectorAspectRatioViewports.h
     
     Range.h
     

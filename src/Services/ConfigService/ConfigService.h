@@ -30,7 +30,7 @@ namespace Mengine
         uint64_t getValue( const Char * _section, const Char * _key, uint64_t _default ) const override;
         float getValue( const Char * _section, const Char * _key, float _default ) const override;
         double getValue( const Char * _section, const Char * _key, double _default ) const override;
-        String getValue( const Char * _section, const Char * _key, const Char * _default ) const override;
+        String getValue( const Char * _section, const Char * _key, const String & _default ) const override;
         ConstString getValue( const Char * _section, const Char * _key, const ConstString & _default ) const override;
         FilePath getValue( const Char * _section, const Char * _key, const FilePath & _default ) const override;
         Resolution getValue( const Char * _section, const Char * _key, const Resolution & _default ) const override;

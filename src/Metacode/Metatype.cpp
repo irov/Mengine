@@ -6,7 +6,7 @@
 
 #include "Kernel/Logger.h"
 
-#include "LoaderService.h"
+#include "Metacache.h"
 
 namespace Metabuf
 {
@@ -70,22 +70,24 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::ConstString & _value, void * _userData )
     {
-        Mengine::LoaderService * loader = static_cast<Mengine::LoaderService *>(_userData);
+        Mengine::Metacache * cache = static_cast<Mengine::Metacache *>(_userData);
 
         uint32_t index;
         ar.readSize( index );
 
-        _value = loader->getCacheConstString( index );
+        const Mengine::ConstString & value = cache->strings[index];
+
+        _value = value;
     }
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::FilePath & _value, void * _userData )
     {
-        Mengine::LoaderService * loader = static_cast<Mengine::LoaderService *>(_userData);
+        Mengine::Metacache * cache = static_cast<Mengine::Metacache *>(_userData);
 
         uint32_t index;
         ar.readSize( index );
 
-        const Mengine::ConstString & value = loader->getCacheConstString( index );
+        const Mengine::ConstString & value = cache->strings[index];
 
 #ifndef NDEBUG
         const char * test_value = value.c_str();
@@ -109,7 +111,7 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Tags & _value, void * _userData )
     {
-        Mengine::LoaderService * loader = static_cast<Mengine::LoaderService *>(_userData);
+        Mengine::Metacache * cache = static_cast<Mengine::Metacache *>(_userData);
 
         uint32_t count;
         ar.readSize( count );
@@ -119,7 +121,7 @@ namespace Metabuf
             uint32_t index;
             ar.readSize( index );
 
-            const Mengine::ConstString & tag = loader->getCacheConstString( index );
+            const Mengine::ConstString & tag = cache->strings[index];
 
             _value.addTag( tag );
         }

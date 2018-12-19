@@ -162,9 +162,9 @@ namespace Mengine
         return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    String ConfigService::getValue( const Char * _section, const Char * _key, const Char * _default ) const
+    String ConfigService::getValue( const Char * _section, const Char * _key, const String & _default ) const
     {
-        return Helper::s_getValueT<String>( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     ConstString ConfigService::getValue( const Char * _section, const Char * _key, const ConstString & _default ) const

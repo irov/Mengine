@@ -9,16 +9,17 @@
 #include "Kernel/Params.h"
 #include "Kernel/String.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/ConstStringTypes.h"
+#include "Kernel/VectorConstString.h"
 #include "Kernel/Tags.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/Resolution.h"
 #include "Kernel/Viewport.h"
 #include "Kernel/AspectRatioViewports.h"
+#include "Kernel/VectorAspectRatioViewports.h"
 #include "Kernel/Color.h"
 
 #ifndef MENGINE_INI_BUFFER_SIZE 
-#	define MENGINE_INI_BUFFER_SIZE 16384U
+#define MENGINE_INI_BUFFER_SIZE 16384U
 #endif
 
 namespace Mengine
@@ -31,7 +32,7 @@ namespace Mengine
         {
             FilePath path;
 
-            char buff[MENGINE_INI_BUFFER_SIZE];
+            Char buff[MENGINE_INI_BUFFER_SIZE];
         };
         //////////////////////////////////////////////////////////////////////////
         bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _category, const FilePath & _path );

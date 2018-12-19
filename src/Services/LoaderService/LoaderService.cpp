@@ -9,9 +9,10 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/FilePath.h"
 #include "Kernel/FilePathHelper.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "metabuf/Metadata.hpp"
-#include "Metacode.h"
+#include "Metacode/Metacode.h"
 
 #include "Kernel/Logger.h"
 
@@ -56,7 +57,7 @@ namespace Mengine
 
         m_loaders.clear();
 
-        m_bufferConstString.clear();
+        m_metacache.strings.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void LoaderService::setProtocolPath( const FilePath & _protocolPath )
@@ -69,28 +70,28 @@ namespace Mengine
         return m_protocolPath;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::load( const FileGroupInterfacePtr & _pak, const FilePath & _path, Metabuf::Metadata * _metadata, bool & _exist ) const
+    bool LoaderService::load( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, Metabuf::Metadata * _metadata, bool & _exist ) const
     {
-        LOGGER_INFO( "LoaderService::load pak '%s:%s'"
-            , _pak->getName().c_str()
-            , _path.c_str()
+        LOGGER_INFO( "pak '%s:%s'"
+            , _fileGroup->getName().c_str()
+            , _filePath.c_str()
         );
 
-        if( _path.empty() == true )
+        if( _filePath.empty() == true )
         {
-            LOGGER_ERROR( "LoaderService::import invalid open bin '%s' path is empty"
-                , _pak->getName().c_str()
+            LOGGER_ERROR( "invalid open bin '%s' path is empty"
+                , _fileGroup->getName().c_str()
             );
 
             return false;
         }
 
         InputStreamInterfacePtr file_bin;
-        if( this->openBin_( _pak, _path, file_bin, _exist ) == false )
+        if( this->openBin_( _fileGroup, _filePath, file_bin, _exist ) == false )
         {
-            LOGGER_ERROR( "LoaderService::import invalid open bin '%s':'%s'"
-                , _pak->getName().c_str()
-                , _path.c_str()
+            LOGGER_ERROR( "invalid open bin '%s':'%s'"
+                , _fileGroup->getName().c_str()
+                , _filePath.c_str()
             );
 
             return false;
@@ -111,15 +112,15 @@ namespace Mengine
             file_bin = nullptr;
 
             PathString cache_path_xml;
-            cache_path_xml += _path;
+            cache_path_xml += _filePath;
             cache_path_xml.replace_last( "xml" );
 
             ConstString c_cache_path_xml = Helper::stringizeStringSize( cache_path_xml.c_str(), cache_path_xml.size() );
 
-            if( this->makeBin_( _pak, FilePath( c_cache_path_xml ), _path ) == false )
+            if( this->makeBin_( _fileGroup, FilePath( c_cache_path_xml ), _filePath ) == false )
             {
-                LOGGER_ERROR( "LoaderService::import invlid rebild bin %s from xml %s"
-                    , _path.c_str()
+                LOGGER_ERROR( "invlid rebild bin %s from xml %s"
+                    , _filePath.c_str()
                     , c_cache_path_xml.c_str()
                 );
 
@@ -127,7 +128,7 @@ namespace Mengine
             }
 
             file_bin = FILE_SERVICE()
-                ->openInputFile( _pak, _path, false );
+                ->openInputFile( _fileGroup, _filePath, false );
 
             done = this->importBin_( file_bin, _metadata, nullptr );
         }
@@ -136,10 +137,10 @@ namespace Mengine
         return done;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::validation( const FileGroupInterfacePtr & _pak, const FilePath & _path, const Metabuf::Metadata * _metadata ) const
+    bool LoaderService::validation( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const Metabuf::Metadata * _metadata ) const
     {
-        InputStreamInterfacePtr stream =
-            FILE_SERVICE()->openInputFile( _pak, _path, false );
+        InputStreamInterfacePtr stream = FILE_SERVICE()
+            ->openInputFile( _fileGroup, _filePath, false );
 
         if( stream == nullptr )
         {
@@ -181,7 +182,7 @@ namespace Mengine
 
         if( size == 0 )
         {
-            LOGGER_ERROR( "LoaderService::importBin_ invalid size (empty)"
+            LOGGER_ERROR( "invalid size (empty)"
             );
 
             return false;
@@ -241,7 +242,7 @@ namespace Mengine
         {
             if( _reimport == nullptr )
             {
-                LOGGER_ERROR( "LoaderService::loadBinary invlid uncompress"
+                LOGGER_ERROR( "invalid uncompress"
                 );
             }
             else
@@ -260,39 +261,33 @@ namespace Mengine
             return false;
         }
 
-        m_bufferConstString.resize( stringCount );
+        m_metacache.strings.resize( stringCount );
 
-        for( ConstString & buffer : m_bufferConstString )
+        for( ConstString & buffer : m_metacache.strings )
         {
             uint32_t stringSize;
             int64_t stringHash;
             const char * str = Metacode::readString( binary_memory, bin_size, read_size, stringSize, stringHash );
 
-            if( str == nullptr )
-            {
-                LOGGER_ERROR( "LoaderService::loadBinary invlid read string (error)"
-                );
-
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( str, false )("invlid read string (error)");
 
             STRINGIZE_SERVICE()
                 ->stringize( str, stringSize, stringHash, buffer );
         }
 
-        if( _metadata->parseRoot( binary_memory, bin_size, read_size, (void *)this ) == false )
+        if( _metadata->parseRoot( binary_memory, bin_size, read_size, (void *)&m_metacache ) == false )
         {
-            LOGGER_ERROR( "LoaderService::loadBinary invlid parse (error)"
+            LOGGER_ERROR( "invlid parse (error)"
             );
 
             return false;
         }
 
-        m_bufferConstString.clear();
+        m_metacache.strings.clear();
 
         if( read_size != bin_size )
         {
-            LOGGER_ERROR( "LoaderService::loadBinary invlid parse (read != archive)"
+            LOGGER_ERROR( "invlid parse (read != archive)"
             );
 
             return false;
@@ -396,7 +391,7 @@ namespace Mengine
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( "LoaderService::makeBin_ invalid create decoder xml2bin for %s:%s"
+            LOGGER_ERROR( "invalid create decoder xml2bin for %s:%s"
                 , _pak->getName().c_str()
                 , _pathXml.c_str()
             );
@@ -406,7 +401,7 @@ namespace Mengine
 
         if( decoder->prepareData( nullptr ) == false )
         {
-            LOGGER_ERROR( "LoaderService::makeBin_ invalid initialize decoder xml2bin for %s:%s"
+            LOGGER_ERROR( "invalid initialize decoder xml2bin for %s:%s"
                 , _pak->getName().c_str()
                 , _pathXml.c_str()
             );
@@ -461,28 +456,4 @@ namespace Mengine
         return true;
     }
 #endif
-    //////////////////////////////////////////////////////////////////////////
-    const ConstString & LoaderService::getCacheConstString( uint32_t _index ) const
-    {
-        return m_bufferConstString[_index];
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool LoaderService::addLoader( const ConstString & _type, const LoaderInterfacePtr & _loader )
-    {
-        m_loaders.insert( _type, _loader );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void LoaderService::removeLoader( const ConstString & _type )
-    {
-        m_loaders.remove( _type );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const LoaderInterfacePtr & LoaderService::getLoader( const ConstString & _type ) const
-    {
-        const LoaderInterfacePtr & loader = m_loaders.find( _type );
-
-        return loader;
-    }
 }

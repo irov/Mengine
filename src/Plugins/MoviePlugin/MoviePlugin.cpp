@@ -325,7 +325,7 @@ namespace Mengine
     {
         this->addDependencyService( "PrefetcherService" );
 
-        String hashkey = CONFIG_VALUE( "MoviePlugin", "HASHKEY", "" );
+        String hashkey = CONFIG_VALUE( "MoviePlugin", "HASHKEY", String( "" ) );
 
         if( hashkey.empty() == true )
         {
@@ -483,8 +483,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {
-            LOADER_SERVICE()
-                ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
+            VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
         }
 
         return true;
@@ -544,8 +543,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {
-            LOADER_SERVICE()
-                ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
         }
     }
 }

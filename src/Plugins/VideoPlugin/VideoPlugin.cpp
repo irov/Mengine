@@ -114,8 +114,10 @@ namespace Mengine
             VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<ResourceVideoValidator>() );
         }
 
-        LOADER_SERVICE()
-            ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<LoaderResourceVideo>() );
+        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        {
+            VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<LoaderResourceVideo>() );
+        }
 
         return true;
     }
@@ -151,7 +153,9 @@ namespace Mengine
             VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
         }
 
-        LOADER_SERVICE()
-            ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
+        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        {
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
+        }
     }
 }

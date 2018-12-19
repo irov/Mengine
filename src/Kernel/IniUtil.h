@@ -40,7 +40,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key );
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, String & _value );
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, const Char ** _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags & _value );
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution & _value );

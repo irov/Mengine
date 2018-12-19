@@ -86,7 +86,7 @@ namespace Mengine
     {
         m_frames = 0;
 
-        String utf8_d3d9DLL = CONFIG_VALUE( "Render", "D3D9_DLL", String( "d3d9.dll" ) );
+        const Char * utf8_d3d9DLL = CONFIG_VALUE( "Render", "D3D9_DLL", "d3d9.dll" );
 
         WString unicode_d3d9DLL;
         Helper::utf8ToUnicode( utf8_d3d9DLL, unicode_d3d9DLL );
@@ -96,7 +96,7 @@ namespace Mengine
         if( m_hd3d9 == nullptr )
         {
             LOGGER_ERROR( "Failed to load d3d9 dll '%s'"
-                , utf8_d3d9DLL.c_str()
+                , utf8_d3d9DLL
             );
 
             return false;

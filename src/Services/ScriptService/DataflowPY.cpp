@@ -77,7 +77,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "invalid marshal get object" );
 
-            return nullptr;
+            return false;
         }
 
         if( m_kernel->code_check( code ) == false )
@@ -85,7 +85,7 @@ namespace Mengine
             LOGGER_ERROR( "marshal get object not code"
             );
 
-            return nullptr;
+            return false;
         }
 
         data->setScriptCode( pybind::make_borrowed_t( m_kernel, code ) );

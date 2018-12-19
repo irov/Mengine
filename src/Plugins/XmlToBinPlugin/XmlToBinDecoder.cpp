@@ -135,7 +135,7 @@ namespace Mengine
         (void)_buffer;
         (void)_bufferSize;
 
-        LOGGER_WARNING( "Xml2BinDecoder::decode: xml to bin:\nxml - %s\nbin - %s"
+        LOGGER_WARNING( "xml to bin:\nxml - %s\nbin - %s"
             , m_options.pathXml.c_str()
             , m_options.pathBin.c_str()
         );
@@ -145,7 +145,7 @@ namespace Mengine
 
         if( protocol_stream == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error open protocol %s"
+            LOGGER_ERROR( "error open protocol %s"
                 , m_options.pathProtocol.c_str()
             );
 
@@ -159,7 +159,7 @@ namespace Mengine
 
         if( memory_protocol == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid create memory for protocol"
+            LOGGER_ERROR( "invalid create memory for protocol"
             );
 
             return 0;
@@ -169,7 +169,7 @@ namespace Mengine
 
         if( memory_protocol_buffer == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid new memory buffer '%u'"
+            LOGGER_ERROR( "invalid new memory buffer '%u'"
                 , protocol_size
             );
 
@@ -178,7 +178,7 @@ namespace Mengine
 
         if( protocol_stream->read( memory_protocol_buffer, protocol_size ) != protocol_size )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error read protocol %s error invalid read size"
+            LOGGER_ERROR( "error read protocol %s error invalid read size"
                 , m_options.pathProtocol.c_str()
             );
 
@@ -191,7 +191,7 @@ namespace Mengine
 
         if( xml_protocol.readProtocol( memory_protocol_buffer, protocol_size ) == false )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error read protocol %s error:\n%s"
+            LOGGER_ERROR( "error read protocol %s error:\n%s"
                 , m_options.pathProtocol.c_str()
                 , xml_protocol.getError().c_str()
             );
@@ -228,7 +228,7 @@ namespace Mengine
 
         if( xml_stream == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error open xml %s"
+            LOGGER_ERROR( "error open xml %s"
                 , m_options.pathXml.c_str()
             );
 
@@ -239,7 +239,7 @@ namespace Mengine
 
         if( xml_size == 0 )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error open xml %s (file size == 0)"
+            LOGGER_ERROR( "error open xml %s (file size == 0)"
                 , m_options.pathXml.c_str()
             );
 
@@ -251,7 +251,7 @@ namespace Mengine
 
         if( memory_xml == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid create memory for xml"
+            LOGGER_ERROR( "invalid create memory for xml"
             );
 
             return 0;
@@ -261,7 +261,7 @@ namespace Mengine
 
         if( memory_xml == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid new memory buffer '%u'"
+            LOGGER_ERROR( "invalid new memory buffer '%u'"
                 , xml_size
             );
 
@@ -284,7 +284,7 @@ namespace Mengine
 
         Metabuf::Xml2Metabuf xml_metabuf( &xml_protocol, xml_meta );
 
-        LOGGER_INFO( "Xml2BinDecoder::decode:\nxml %s\nbin %s"
+        LOGGER_INFO( "\nxml %s\nbin %s"
             , m_options.pathXml.c_str()
             , m_options.pathBin.c_str()
         );
@@ -300,7 +300,7 @@ namespace Mengine
 
         if( memory_header == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid create memory for bin"
+            LOGGER_ERROR( "invalid create memory for bin"
             );
 
             return 0;
@@ -310,7 +310,7 @@ namespace Mengine
 
         if( memory_header_buffer == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid new memory buffer '%u'"
+            LOGGER_ERROR( "invalid new memory buffer '%u'"
                 , Metacode::header_size
             );
 
@@ -322,7 +322,7 @@ namespace Mengine
         size_t header_size;
         if( xml_metabuf.header( memory_header_buffer, Metacode::header_size, xml_meta_version, header_size ) == false )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error header '%s' version '%u' error:\n%s"
+            LOGGER_ERROR( "error header '%s' version '%u' error:\n%s"
                 , m_options.pathXml.c_str()
                 , xml_meta_version
                 , xml_metabuf.getError().c_str()
@@ -336,7 +336,7 @@ namespace Mengine
 
         if( memory_bin == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid create memory for bin"
+            LOGGER_ERROR( "invalid create memory for bin"
             );
 
             return 0;
@@ -346,7 +346,7 @@ namespace Mengine
 
         if( memory_bin_buffer == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: invalid new memory buffer '%u'"
+            LOGGER_ERROR( "invalid new memory buffer '%u'"
                 , xml_size * 2
             );
 
@@ -356,7 +356,7 @@ namespace Mengine
         size_t bin_size;
         if( xml_metabuf.convert( memory_bin_buffer, xml_size * 2, memory_xml_buffer, xml_size, bin_size ) == false )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error convert %s error:\n%s"
+            LOGGER_ERROR( "error convert %s error:\n%s"
                 , m_options.pathXml.c_str()
                 , xml_metabuf.getError().c_str()
             );
@@ -369,7 +369,7 @@ namespace Mengine
 
         if( compress_memory == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error convert %s invalid compress buffer"
+            LOGGER_ERROR( "error convert %s invalid compress buffer"
                 , m_options.pathXml.c_str()
             );
 
@@ -381,7 +381,7 @@ namespace Mengine
 
         if( bin_stream == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error create bin %s"
+            LOGGER_ERROR( "error create bin %s"
                 , m_options.pathBin.c_str()
             );
 
@@ -398,7 +398,7 @@ namespace Mengine
 
         if( compress_buffer == nullptr )
         {
-            LOGGER_ERROR( "Xml2BinDecoder::decode: error create bin '%s' invalid get memory"
+            LOGGER_ERROR( "error create bin '%s' invalid get memory"
                 , m_options.pathBin.c_str()
             );
 

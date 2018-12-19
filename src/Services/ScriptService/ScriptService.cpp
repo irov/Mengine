@@ -208,15 +208,15 @@ namespace Mengine
 
         dataflowPYC->setKernel( m_kernel );
 
-        const ArchivatorInterfacePtr & archivatorLZ4 = ARCHIVE_SERVICE()
-            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
+        const ArchivatorInterfacePtr & archivatorZIP = ARCHIVE_SERVICE()
+            ->getArchivator( STRINGIZE_STRING_LOCAL( "zip" ) );
 
-        if( archivatorLZ4 == nullptr )
+        if( archivatorZIP == nullptr )
         {
             return false;
         }
 
-        dataflowPYC->setArchivator( archivatorLZ4 );
+        dataflowPYC->setArchivator( archivatorZIP );
 
         if( dataflowPYC->initialize() == false )
         {

@@ -655,6 +655,29 @@ namespace Mengine
         stdex::intrusive_this_release( this );
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::absorbBoundingBox( mt::box2f & _bb )
+    {
+        mt::box2f absorb_bb;
+        mt::insideout_box( absorb_bb );
+
+        const mt::box2f * bb = this->getBoundingBox();
+
+        if( bb != nullptr )
+        {
+            mt::merge_box( absorb_bb, *bb );
+        }
+
+        this->foreachChildren( [&absorb_bb]( const NodePtr & _child )
+        {
+            mt::box2f child_bb;
+            _child->absorbBoundingBox( child_bb );
+
+            mt::merge_box( absorb_bb, child_bb );
+        } );
+
+        _bb = absorb_bb;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Node::removeChild( const NodePtr & _node )
     {
 #ifndef NDEBUG
@@ -1239,13 +1262,6 @@ namespace Mengine
     {
         this->invalidateBoundingBox();
         //invalidateBoundingBox();add
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Node::_updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
-    {
-        (void)_boundingBox;
-
-        *_boundingBoxCurrent = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Node::getAffectorableUpdatableMode() const

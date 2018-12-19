@@ -170,8 +170,8 @@ namespace Mengine
             return false;
         }
 
-        String projectVersion_s;
-        if( IniUtil::getIniValue( ini, "ACCOUNT", "PROJECT_VERSION", projectVersion_s ) == false )
+        const Char * projectVersion_s;
+        if( IniUtil::getIniValue( ini, "ACCOUNT", "PROJECT_VERSION", &projectVersion_s ) == false )
         {
             LOGGER_ERROR( "account '%s' failed not found project version"
                 , m_id.c_str()
@@ -185,7 +185,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "account '%s' failed invalid project version '%s'"
                 , m_id.c_str()
-                , projectVersion_s.c_str()
+                , projectVersion_s
             );
 
             return false;
@@ -202,8 +202,8 @@ namespace Mengine
             return false;
         }
 
-        String uid;
-        if( IniUtil::getIniValue( ini, "ACCOUNT", "UID", uid ) == false )
+        const Char * uid;
+        if( IniUtil::getIniValue( ini, "ACCOUNT", "UID", &uid ) == false )
         {
             LOGGER_ERROR( "account '%s' failed not found uid"
                 , m_id.c_str()
@@ -223,13 +223,16 @@ namespace Mengine
             const ConstString & key = it->first;
             Setting & st = it->second;
 
-            if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), st.value ) == false )
+            const Char * value;
+            if( IniUtil::getIniValue( ini, "SETTINGS", key.c_str(), &value ) == false )
             {
                 LOGGER_WARNING( "account '%s' failed get setting '%s'"
                     , m_id.c_str()
                     , key.c_str()
                 );
             }
+
+            st.value = value;
         }
 
         return true;

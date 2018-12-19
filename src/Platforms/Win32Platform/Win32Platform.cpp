@@ -2013,7 +2013,7 @@ namespace Mengine
 
         WChar roamingPath[MENGINE_MAX_PATH];
 
-        String companyName = CONFIG_VALUE( "Project", "Company", String( "NONAME" ) );
+        const Char * companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
 
         WChar companyNameW[MENGINE_APPLICATION_COMPANY_MAXNAME];
         if( Helper::utf8ToUnicode( companyName, companyNameW, MENGINE_APPLICATION_COMPANY_MAXNAME ) == false )
@@ -2023,7 +2023,7 @@ namespace Mengine
 
         ::PathCombine( roamingPath, currentPath, companyNameW );
 
-        String projectName = CONFIG_VALUE( "Project", "Name", String( "UNKNOWN" ) );
+        const Char * projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
         WChar projectNameW[MENGINE_APPLICATION_PROJECT_MAXNAME];
         if( Helper::utf8ToUnicode( projectName, projectNameW, MENGINE_APPLICATION_PROJECT_MAXNAME ) == false )

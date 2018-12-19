@@ -184,7 +184,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     Mengine::FilePath fp_out = Mengine::Helper::unicodeToFilePath( out );
 
     if( PLUGIN_SERVICE()
-        ->loadPlugin( "XmlCodecPlugin.dll" ) == false )
+        ->loadPlugin( "XmlToBinPlugin.dll" ) == false )
     {
         return 0;
     }
@@ -196,7 +196,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( decoder == nullptr )
     {
-        LOGGER_ERROR( "LoaderEngine::makeBin_ invalid create decoder xml2bin for %s"
+        LOGGER_ERROR( "invalid create decoder xml2bin for %s"
             , fp_in.c_str()
         );
 
@@ -205,7 +205,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 
     if( decoder->prepareData( nullptr ) == false )
     {
-        LOGGER_ERROR( "LoaderEngine::makeBin_ invalid initialize decoder xml2bin for %s"
+        LOGGER_ERROR( "invalid initialize decoder xml2bin for %s"
             , fp_in.c_str()
         );
 

@@ -133,6 +133,9 @@ namespace Mengine
     public:
         void visitChildren( const VisitorPtr & _visitor );
 
+    public:
+        void absorbBoundingBox( mt::box2f & _bb );
+
     protected:
         void _destroy() override;
 
@@ -199,9 +202,6 @@ namespace Mengine
         bool m_enable;
 
         bool m_freeze;
-
-    protected:
-        void _updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Node> NodePtr;

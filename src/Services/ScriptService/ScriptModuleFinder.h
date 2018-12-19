@@ -10,7 +10,6 @@
 
 #include "Kernel/Factorable.h"
 #include "Kernel/ConstString.h"
-#include "Kernel/ConstStringTypes.h"
 #include "Kernel/FilePath.h"
 
 #include "pybind/pybind.hpp"

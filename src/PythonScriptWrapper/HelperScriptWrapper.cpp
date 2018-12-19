@@ -1957,9 +1957,10 @@ namespace Mengine
             return result;
         }
 
-        String s_getConfigString( const Char * _section, const Char * _key, const String & _default )
+        const Char * s_getConfigString( const Char * _section, const Char * _key, const Char * _default )
         {
-            String result = CONFIG_SERVICE()
+
+            const Char * result = CONFIG_SERVICE()
                 ->getValue( _section, _key, _default );
 
             return result;

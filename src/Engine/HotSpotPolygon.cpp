@@ -178,7 +178,7 @@ namespace Mengine
     {
         if( _bb != nullptr )
         {
-            mt::ident_box( *_bb );
+            mt::infinity_box( *_bb );
         }
 
         if( _screen != nullptr )

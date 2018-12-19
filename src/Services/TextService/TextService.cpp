@@ -518,8 +518,8 @@ namespace Mengine
             ConstString fontType = STRINGIZE_STRING_LOCAL( "Bitmap" );
             IniUtil::getIniValue( ini, fontName.c_str(), "Type", fontType );
 
-            bool precompile = false;
-            IniUtil::getIniValue( ini, fontName.c_str(), "Precompile", precompile );
+            //bool precompile = false;
+            //IniUtil::getIniValue( ini, fontName.c_str(), "Precompile", precompile );
 
             TextFontInterfacePtr font = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType );
@@ -550,19 +550,19 @@ namespace Mengine
                 return false;
             }
 
-            if( precompile == true )
-            {
-                if( font->compileFont() == false )
-                {
-                    LOGGER_ERROR( "invalid precompile '%s:%s' font %s"
-                        , _fileGroup->getName().c_str()
-                        , _path.c_str()
-                        , fontName.c_str()
-                    );
+            //if( precompile == true )
+            //{
+            //    if( font->compileFont() == false )
+            //    {
+            //        LOGGER_ERROR( "invalid precompile '%s:%s' font %s"
+            //            , _fileGroup->getName().c_str()
+            //            , _path.c_str()
+            //            , fontName.c_str()
+            //        );
 
-                    return false;
-                }
-            }
+            //        return false;
+            //    }
+            //}
 
             LOGGER_INFO( "add font '%s' path '%s:%s'"
                 , fontName.c_str()

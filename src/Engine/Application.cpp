@@ -192,8 +192,8 @@ namespace Mengine
         Helper::registerDecoder<ImageDecoderMemory>( "memoryImage" );
         Helper::registerDecoder<ImageDecoderArchive>( "archiveImage" );
 
-        m_companyName = CONFIG_VALUE( "Project", "Company", String( "NONAME" ) );
-        m_projectName = CONFIG_VALUE( "Project", "Name", String( "UNKNOWN" ) );
+        m_companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
+        m_projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
         m_projectCodename = CONFIG_VALUE( "Project", "Codename", ConstString::none() );
         m_projectVersion = CONFIG_VALUE( "Project", "Version", 0U );
 

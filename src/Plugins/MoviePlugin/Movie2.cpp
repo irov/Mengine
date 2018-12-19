@@ -2653,8 +2653,8 @@ namespace Mengine
                         float bb[4];
                         bb[0] = std::numeric_limits<float>::max();
                         bb[1] = std::numeric_limits<float>::max();
-                        bb[2] = std::numeric_limits<float>::lowest();
-                        bb[3] = std::numeric_limits<float>::lowest();
+                        bb[2] = -std::numeric_limits<float>::max();
+                        bb[3] = -std::numeric_limits<float>::max();
 
                         for( uint32_t index = 0; index != track_matte_mesh->vertexCount; ++index )
                         {

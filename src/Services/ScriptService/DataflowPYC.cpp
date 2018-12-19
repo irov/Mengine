@@ -109,16 +109,18 @@ namespace Mengine
             LOGGER_ERROR( "module invalid marshal get object"
             );
 
-            return nullptr;
+            return false;
         }
 
+#ifndef NDEBUG
         if( m_kernel->code_check( code ) == false )
         {
             LOGGER_ERROR( "module marshal get object not code"
             );
 
-            return nullptr;
+            return false;
         }
+#endif
 
         data->setScriptCode( pybind::make_borrowed_t( m_kernel, code ) );
 

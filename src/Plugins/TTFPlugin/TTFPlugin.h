@@ -1,5 +1,7 @@
 #pragma once
 
+#include "Interface/ThreadMutexInterface.h"
+
 #include "Kernel/PluginBase.h"
 
 #include "TTFServiceInterface.h"
@@ -26,5 +28,7 @@ namespace Mengine
 
     protected:
         FT_Library m_ftlibrary;
+
+        ThreadMutexInterfacePtr m_ftMutex;
     };
 }

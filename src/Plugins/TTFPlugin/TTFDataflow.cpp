@@ -5,6 +5,7 @@
 
 #include "TTFData.h"
 
+#include "Kernel/ThreadMutexScope.h"
 #include "Kernel/ResourceImage.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -35,6 +36,16 @@ namespace Mengine
         return m_library;
     }
     //////////////////////////////////////////////////////////////////////////
+    void TTFDataflow::setMutex( const ThreadMutexInterfacePtr & _mutex )
+    {
+        m_mutex = _mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ThreadMutexInterfacePtr & TTFDataflow::getMutex() const
+    {
+        return m_mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool TTFDataflow::initialize()
     {
         m_factoryTTFData = new FactoryPool<TTFData, 128>();
@@ -44,6 +55,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TTFDataflow::finalize()
     {
+        m_mutex = nullptr;
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTTFData );
         m_factoryTTFData = nullptr;
     }
@@ -78,6 +91,8 @@ namespace Mengine
             return false;
         }
 
+        MENGINE_THREAD_MUTEX_SCOPE( m_mutex );
+
         FT_Face face;
         FT_Error err_code = FT_New_Memory_Face( m_library, memory_byte, (FT_Long)memory_size, 0, &face );
 
@@ -86,6 +101,11 @@ namespace Mengine
             LOGGER_ERROR( "invalid FT_New_Memory_Face font"
             );
 
+            return false;
+        }
+
+        if( FT_Select_Charmap( face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
+        {
             return false;
         }
 

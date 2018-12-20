@@ -3,6 +3,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 
 #include "Kernel/PixelFormat.h"
@@ -77,9 +78,14 @@ namespace Mengine
 
         m_ftlibrary = ftlibrary;
 
+        m_ftMutex = THREAD_SERVICE()
+            ->createMutex( __FILE__, __LINE__ );
+
         TTFDataflowPtr dataflowTTF = new FactorableUnique<TTFDataflow>();
 
         dataflowTTF->setFTLibrary( ftlibrary );
+
+        dataflowTTF->setMutex( m_ftMutex );
 
         if( dataflowTTF->initialize() == false )
         {
@@ -102,6 +108,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TTFPlugin::_finalize()
     {
+        m_ftMutex = nullptr;
+
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "TTF" ) );
 

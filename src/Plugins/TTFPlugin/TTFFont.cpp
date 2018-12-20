@@ -185,20 +185,10 @@ namespace Mengine
 
         m_dataTTF = data;
 
-        FT_Face face = m_dataTTF->getFTFace();
-
-        if( FT_Select_Charmap( face, FT_ENCODING_UNICODE ) != FT_Err_Ok )
+        FT_Face face;
+        
+        if( this->loadFaceGlyph_( 'A', &face ) == false )
         {
-            return false;
-        }
-
-        if( FT_Set_Pixel_Sizes( face, 0, m_height * m_FESample ) != FT_Err_Ok )
-        {
-            LOGGER_ERROR( "TTFFont::_compile font '%s' invalid set pixel height '%u'"
-                , m_name.c_str()
-                , m_height
-            );
-
             return false;
         }
 
@@ -221,13 +211,6 @@ namespace Mengine
         }
 
         m_ttfSpacing = m_ttfHeight - (m_ttfAscender + m_ttfDescender);
-
-        FT_UInt glyph_index = FT_Get_Char_Index( face, 'A' );
-
-        if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT ) )
-        {
-            return false;
-        }
 
         FT_GlyphSlot face_glyphA = face->glyph;
 
@@ -441,11 +424,8 @@ namespace Mengine
             return true;
         }
 
-        FT_Face face = m_dataTTF->getFTFace();
-
-        FT_UInt glyph_index = FT_Get_Char_Index( face, _code );
-
-        if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+        FT_Face face;
+        if( this->loadFaceGlyph_( _code, &face ) == false )
         {
             return false;
         }
@@ -858,5 +838,31 @@ namespace Mengine
     float TTFFont::getFontSpacing() const
     {
         return m_ttfSpacing;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool TTFFont::loadFaceGlyph_( GlyphCode _code, FT_Face * _face )
+    {
+        FT_Face face = m_dataTTF->getFTFace();
+
+        if( FT_Set_Pixel_Sizes( face, 0, m_height * m_FESample ) != FT_Err_Ok )
+        {
+            LOGGER_ERROR( "TTFFont::_compile font '%s' invalid set pixel height '%u'"
+                , m_name.c_str()
+                , m_height
+            );
+
+            return false;
+        }
+
+        FT_UInt glyph_index = FT_Get_Char_Index( face, _code );
+
+        if( FT_Load_Glyph( face, glyph_index, FT_LOAD_RENDER | FT_LOAD_NO_AUTOHINT | FT_LOAD_COLOR ) )
+        {
+            return false;
+        }
+
+        *_face = face;
+
+        return true;
     }
 }

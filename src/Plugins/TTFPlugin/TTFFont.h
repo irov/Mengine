@@ -74,6 +74,9 @@ namespace Mengine
         bool _prepareGlyph( GlyphCode _code ) override;
 
     protected:
+        bool loadFaceGlyph_( GlyphCode _code, FT_Face * _face );
+
+    protected:
         FT_Library m_ftlibrary;
         TTFDataInterfacePtr m_dataTTF;
 

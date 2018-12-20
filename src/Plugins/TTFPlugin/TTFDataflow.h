@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Interface/DataflowInterface.h"
-#include "Interface/ArchivatorInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Kernel/Factorable.h"
 #include "Kernel/Factory.h"
@@ -25,6 +25,10 @@ namespace Mengine
         FT_Library getFTLibrary() const;
 
     public:
+        void setMutex( const ThreadMutexInterfacePtr & _mutex );
+        const ThreadMutexInterfacePtr & getMutex() const;
+
+    public:
         bool initialize() override;
         void finalize() override;
 
@@ -36,6 +40,8 @@ namespace Mengine
 
     protected:
         FT_Library m_library;
+
+        ThreadMutexInterfacePtr m_mutex;
 
         FactoryPtr m_factoryTTFData;
     };

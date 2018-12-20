@@ -338,7 +338,7 @@ namespace Mengine
             const Polygon & polygon = _hs->getPolygon();
 
             mt::box2f bb;
-            mt::infinity_box( bb );
+            mt::insideout_box( bb );
 
             const mt::mat4f & wm = _hs->getWorldMatrix();
 

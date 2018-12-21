@@ -6,6 +6,7 @@
 #include "Interface/SoundCodecInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
 #include "Interface/DataInterface.h"
+#include "Interface/DataflowInterface.h"
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/MemoryInterface.h"
 
@@ -33,7 +34,7 @@ namespace Mengine
         virtual bool getSoundDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder ) = 0;
 
     public:
-        virtual bool prefetchData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ConstString & _dataflowType, const PrefetcherObserverInterfacePtr & _observer ) = 0;
+        virtual bool prefetchData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const PrefetcherObserverInterfacePtr & _observer ) = 0;
         virtual bool getData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data ) = 0;
 
     public:

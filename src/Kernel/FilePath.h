@@ -22,6 +22,9 @@ namespace Mengine
             : ConstString( _cst )
         {
         }
+
+    public:
+        static const FilePath & none();
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<FilePath> VectorFilePath;

@@ -9,6 +9,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
+#include "Interface/PrefetcherServiceInterface.h"
 
 #include "DataflowPY.h"
 #include "DataflowPYC.h"
@@ -484,6 +485,35 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScriptService::prefetchModules( const PrefetcherObserverInterfacePtr & _cb )
+    {
+        DataflowInterfacePtr dataflowPY = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
+        DataflowInterfacePtr dataflowPYC = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pycScript" ) );
+
+        for( const ScriptModulePack & pack : m_bootstrapperModules )
+        {
+            const FileGroupInterfacePtr & fileGroup = pack.fileGroup;
+
+            fileGroup->findFiles( pack.path, "*.py", [&fileGroup, &dataflowPY, &_cb]( const FilePath & _filePath )
+            {
+                if( PREFETCHER_SERVICE()
+                    ->prefetchData( fileGroup, _filePath, dataflowPY, _cb ) == false )
+                {
+                    return;
+                }
+            } );
+
+            fileGroup->findFiles( pack.path, "*.pyc", [&fileGroup, &dataflowPYC, &_cb]( const FilePath & _filePath )
+            {
+                if( PREFETCHER_SERVICE()
+                    ->prefetchData( fileGroup, _filePath, dataflowPYC, _cb ) == false )
+                {
+                    return;
+                }
+            } );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptService::initModule( const char * _name )

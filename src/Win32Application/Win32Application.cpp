@@ -599,6 +599,8 @@ namespace Mengine
         SERVICE_CREATE( ThreadService );
 
         SERVICE_CREATE( NotificationService );
+        SERVICE_CREATE( PrototypeService );
+        SERVICE_CREATE( VocabularyService );
 
         SERVICE_CREATE( RenderSystem );
         SERVICE_CREATE( SoundSystem );
@@ -641,8 +643,6 @@ namespace Mengine
         }
 #endif
 
-        SERVICE_CREATE( PrototypeService );
-        SERVICE_CREATE( VocabularyService );
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
 

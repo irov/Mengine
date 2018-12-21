@@ -2,6 +2,7 @@
 
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "LoaderResourceCursorICO.h"
 #include "LoaderResourceCursorSystem.h"
@@ -38,8 +39,7 @@ namespace Mengine
     bool MetabufLoaderPlugin::_initialize()
     {
 #define DECLARE_LOADER(T)\
-        LOADER_SERVICE()\
-            ->addLoader( STRINGIZE_STRING_LOCAL(#T), new FactorableUnique<Loader##T>() )
+        VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( #T ), new FactorableUnique<Loader##T>() )
 
         DECLARE_LOADER( ResourceCursorICO );
         DECLARE_LOADER( ResourceCursorSystem );
@@ -56,6 +56,8 @@ namespace Mengine
         DECLARE_LOADER( ResourceShape );
         DECLARE_LOADER( ResourceSound );
         DECLARE_LOADER( ResourceWindow );
+
+#undef DECLARE_LOADER
 
         return true;
     }

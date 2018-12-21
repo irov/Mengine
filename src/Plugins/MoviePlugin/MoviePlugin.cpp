@@ -325,19 +325,14 @@ namespace Mengine
     {
         this->addDependencyService( "PrefetcherService" );
 
-        String hashkey = CONFIG_VALUE( "MoviePlugin", "HASHKEY", "" );
+        const Char * hashkey = CONFIG_VALUE( "MoviePlugin", "HASHKEY", "NONE" );
 
-        if( hashkey.empty() == true )
+        size_t hashkeylen = strlen( hashkey );
+
+        if( hashkeylen != 40 )
         {
-            LOGGER_ERROR( "MoviePlugin::_initialize not setup HASHKEY" );
-
-            return false;
-        }
-
-        if( hashkey.size() != 40 )
-        {
-            LOGGER_ERROR( "MoviePlugin::_initialize invalid HASHKEY '%s'"
-                , hashkey.c_str()
+            LOGGER_ERROR( "invalid HASHKEY '%s'"
+                , hashkey
             );
 
             return false;
@@ -483,8 +478,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {
-            LOADER_SERVICE()
-                ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
+            VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
         }
 
         return true;
@@ -544,8 +538,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {
-            LOADER_SERVICE()
-                ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
         }
     }
 }

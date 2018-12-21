@@ -32,7 +32,7 @@ namespace Mengine
         void getScreenPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * _bb, Polygon * _screen ) const;
 
     protected:
-        void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
+        void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
     protected:
         Polygon m_polygon;

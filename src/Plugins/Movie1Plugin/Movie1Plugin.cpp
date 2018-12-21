@@ -1634,7 +1634,7 @@ namespace Mengine
         }
 
         VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "aekMovie" ), dataflowAEK );
-        
+
         CODEC_SERVICE()
             ->registerCodecExt( "aek", STRINGIZE_STRING_LOCAL( "aekMovie" ) );
 
@@ -1653,8 +1653,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {
-            LOADER_SERVICE()
-                ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<LoaderResourceMovie>() );
+            VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<LoaderResourceMovie>() );
         }
 
         return true;
@@ -1729,8 +1728,7 @@ namespace Mengine
 
         if( SERVICE_EXIST( LoaderServiceInterface ) == true )
         {
-            LOADER_SERVICE()
-                ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
         }
     }
 }

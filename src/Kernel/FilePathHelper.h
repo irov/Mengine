@@ -16,9 +16,9 @@ namespace Mengine
         void pathCorrectForwardslash( WChar * _out );
         void pathRemoveBackslash( WChar * _path );
         bool pathRemoveFileSpec( WChar * _in );
-		void pathCorrectBackslashA( Char * _out );
-		void pathCorrectBackslashToA( Char * _out, const Char * _in );
-		void pathRemoveBackslashA( Char * _path );
-		bool pathRemoveFileSpecA( Char * _in );
+        void pathCorrectBackslashA( Char * _out );
+        void pathCorrectBackslashToA( Char * _out, const Char * _in );
+        void pathRemoveBackslashA( Char * _path );
+        bool pathRemoveFileSpecA( Char * _in );
     }
 }

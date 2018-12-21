@@ -647,7 +647,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool AccountService::saveAccounts()
-    {   
+    {
         if( m_invalidateAccounts == false )
         {
             return true;

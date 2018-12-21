@@ -1,2 +1,2 @@
-LIBRARY		"XmlCodecPlugin"
+LIBRARY		"XmlToBinPlugin"
 EXPORTS 	dllCreatePlugin 	@1

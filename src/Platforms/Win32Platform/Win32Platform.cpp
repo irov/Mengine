@@ -44,7 +44,7 @@ namespace Mengine
         , m_close( false )
         , m_vsync( false )
         , m_pauseUpdatingTime( -1.f )
-        , m_activeFrameTime( 1000.f / 60.f )
+        , m_activeFrameTime( 0.f )
         , m_inactiveFrameTime( 100.f )
         , m_cursorInArea( false )
         , m_clickOutArea( false )
@@ -387,7 +387,7 @@ namespace Mengine
         }
 
         WChar unicode_shortpath[MENGINE_MAX_PATH] = { 0 };
-        DWORD len = GetShortPathName( unicode_path, unicode_shortpath, (DWORD)_len );
+        DWORD len = ::GetShortPathName( unicode_path, unicode_shortpath, (DWORD)_len );
 
         if( Helper::unicodeToUtf8Size( unicode_shortpath, (size_t)len, _shortpath, MENGINE_MAX_PATH ) == false )
         {
@@ -402,7 +402,7 @@ namespace Mengine
     void Win32Platform::getMaxClientResolution( Resolution & _resolution ) const
     {
         RECT workArea;
-        SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 );
+        ::SystemParametersInfo( SPI_GETWORKAREA, 0, &workArea, 0 );
 
         RECT clientArea = workArea;
         ::AdjustWindowRect( &clientArea, WS_OVERLAPPEDWINDOW, FALSE );
@@ -711,8 +711,8 @@ namespace Mengine
                 if( m_cursorInArea == true )
                 {
                     m_cursorInArea = false;
-                    InvalidateRect( hWnd, NULL, FALSE );
-                    UpdateWindow( hWnd );
+                    ::InvalidateRect( hWnd, NULL, FALSE );
+                    ::UpdateWindow( hWnd );
 
                     mt::vec2f point;
                     this->calcCursorPosition_( point );
@@ -720,7 +720,7 @@ namespace Mengine
                     INPUT_SERVICE()
                         ->pushMouseLeaveEvent( 0, point.x, point.y, 0.f );
 
-                    if( (GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
+                    if( (::GetKeyState( VK_LBUTTON ) & 0x8000) != 0 )
                     {
                         m_clickOutArea = true;
                     }
@@ -742,8 +742,8 @@ namespace Mengine
                 {
                     m_cursorInArea = true;
 
-                    InvalidateRect( hWnd, NULL, FALSE );
-                    UpdateWindow( hWnd );
+                    ::InvalidateRect( hWnd, NULL, FALSE );
+                    ::UpdateWindow( hWnd );
 
                     INPUT_SERVICE()
                         ->pushMouseEnterEvent( 0, point.x, point.y, 0.f );
@@ -753,7 +753,7 @@ namespace Mengine
                 {
                     m_clickOutArea = false;
 
-                    if( (GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
+                    if( (::GetKeyState( VK_LBUTTON ) & 0x8000) == 0 )
                     {
                         INPUT_SERVICE()
                             ->pushMouseButtonEvent( 0, point.x, point.y, 0, 0.f, false );
@@ -766,8 +766,8 @@ namespace Mengine
                 if( m_lastMouse == false )
                 {
                     POINT p;
-                    GetCursorPos( &p );
-                    ScreenToClient( hWnd, &p );
+                    ::GetCursorPos( &p );
+                    ::ScreenToClient( hWnd, &p );
 
                     m_lastMouseX = p.x;
                     m_lastMouseY = p.y;
@@ -790,7 +790,7 @@ namespace Mengine
                 float fdy = (float)dy;
 
                 RECT rect;
-                if( GetClientRect( m_hWnd, &rect ) == FALSE )
+                if( ::GetClientRect( m_hWnd, &rect ) == FALSE )
                 {
                     return false;
                 }
@@ -992,8 +992,8 @@ namespace Mengine
         wc.lpfnWndProc = _wndProc;
         wc.hInstance = _hInstance;
 
-        wc.hIcon = LoadIcon( _hInstance, MAKEINTRESOURCEW( _hIcon ) );
-        wc.hCursor = LoadCursor( NULL, MAKEINTRESOURCEW( 32512 ) );
+        wc.hIcon = ::LoadIcon( _hInstance, MAKEINTRESOURCEW( _hIcon ) );
+        wc.hCursor = ::LoadCursor( NULL, MAKEINTRESOURCEW( 32512 ) );
 
         wc.lpszClassName = _className;
         wc.hbrBackground = _hbrBackground;
@@ -1022,7 +1022,7 @@ namespace Mengine
 
         m_windowResolution = _resolution;
 
-        HBRUSH black_brush = (HBRUSH)GetStockObject( BLACK_BRUSH );
+        HBRUSH black_brush = (HBRUSH)::GetStockObject( BLACK_BRUSH );
 
         // Register the window class		
         ATOM result = this->registerClass_(
@@ -1091,7 +1091,7 @@ namespace Mengine
 
         m_mouseEvent.initialize( m_hWnd );
 
-        m_activeFrameTime = CONFIG_VALUE( "Engine", "MaxActiveFrameTime", m_activeFrameTime );
+        m_activeFrameTime = CONFIG_VALUE( "Engine", "MaxActiveFrameTime", 1000.f / 60.f );
 
         bool vsync = APPLICATION_SERVICE()
             ->getVSync();
@@ -1117,7 +1117,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::notifyWindowModeChanged( const Resolution & _resolution, bool _fullscreen )
     {
-        LOGGER_WARNING( "WinApplication::notifyWindowModeChanged %d:%d %d"
+        LOGGER_WARNING( "resolution %d:%d fullscreen %d"
             , _resolution.getWidth()
             , _resolution.getHeight()
             , _fullscreen
@@ -1389,7 +1389,7 @@ namespace Mengine
         float y = static_cast<float>(cPos.y);
 
         RECT rect;
-        if( GetClientRect( m_hWnd, &rect ) == FALSE )
+        if( ::GetClientRect( m_hWnd, &rect ) == FALSE )
         {
             return false;
         }
@@ -1419,7 +1419,7 @@ namespace Mengine
 
         Helper::pathRemoveFileSpec( fullPath );
 
-        size_t len = wcslen( fullPath );
+        size_t len = ::wcslen( fullPath );
 
         if( len == 0 )
         {
@@ -1456,7 +1456,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::createDirectory_( const WChar * _directoryPath )
     {
-        size_t unicode_pathSize = wcslen( _directoryPath );
+        size_t unicode_pathSize = ::wcslen( _directoryPath );
 
         WChar fullPath[MENGINE_MAX_PATH];
 
@@ -1468,7 +1468,7 @@ namespace Mengine
 
             Helper::pathRemoveBackslash( fullPath );
 
-            if( PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
+            if( ::PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
             {
                 return true;
             }
@@ -1492,7 +1492,7 @@ namespace Mengine
 
             Helper::pathRemoveBackslash( fullPath );
 
-            if( PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
+            if( ::PathIsDirectoryW( fullPath ) == FILE_ATTRIBUTE_DIRECTORY )
             {
                 break;
             }
@@ -1564,7 +1564,7 @@ namespace Mengine
         WChar pathCorrect[MENGINE_MAX_PATH];
         Helper::pathCorrectBackslashTo( pathCorrect, _path );
 
-        size_t len = wcslen( pathCorrect );
+        size_t len = ::wcslen( pathCorrect );
 
         if( len == 0 )	// current dir
         {
@@ -1576,7 +1576,7 @@ namespace Mengine
             return true;	// let it be
         }
 
-        DWORD attributes = GetFileAttributes( pathCorrect );
+        DWORD attributes = ::GetFileAttributes( pathCorrect );
 
         if( attributes == INVALID_FILE_ATTRIBUTES )
         {
@@ -1610,7 +1610,7 @@ namespace Mengine
         wcscpy( fullPath, unicode_userPath );
         wcscat( fullPath, pathCorrect );
 
-        if( DeleteFile( fullPath ) == FALSE )
+        if( ::DeleteFile( fullPath ) == FALSE )
         {
             DWORD err = GetLastError();
 
@@ -1634,7 +1634,7 @@ namespace Mengine
         }
 
         WIN32_FIND_DATA data;
-        HANDLE hFind = FindFirstFile( unicode_path, &data );
+        HANDLE hFind = ::FindFirstFile( unicode_path, &data );
 
         if( hFind == INVALID_HANDLE_VALUE )
         {
@@ -1645,16 +1645,16 @@ namespace Mengine
             Char utf8_filepath[MENGINE_MAX_PATH];
             if( Helper::unicodeToUtf8( data.cFileName, utf8_filepath, MENGINE_MAX_PATH ) == false )
             {
-                FindClose( hFind );
+                ::FindClose( hFind );
 
                 return false;
             }
 
             _lambda( utf8_filepath );
 
-        } while( FindNextFile( hFind, &data ) == TRUE );
+        } while( ::FindNextFile( hFind, &data ) == TRUE );
 
-        FindClose( hFind );
+        ::FindClose( hFind );
 
         return true;
     }
@@ -1669,7 +1669,7 @@ namespace Mengine
     bool Win32Platform::createDirectoryUser_( const WChar * _userPath, const WChar * _path, const WChar * _file, const void * _data, size_t _size )
     {
         WChar szPath[MENGINE_MAX_PATH];
-        PathAppend( szPath, _userPath );
+        ::PathAppend( szPath, _userPath );
 
         WChar pathCorrect[MENGINE_MAX_PATH];
         Helper::pathCorrectBackslashTo( pathCorrect, _path );
@@ -1677,7 +1677,7 @@ namespace Mengine
         WChar fileCorrect[MENGINE_MAX_PATH];
         Helper::pathCorrectBackslashTo( fileCorrect, _file );
 
-        PathAppend( szPath, pathCorrect );
+        ::PathAppend( szPath, pathCorrect );
 
         if( this->existFile_( szPath ) == false )
         {
@@ -1744,7 +1744,7 @@ namespace Mengine
 
         WCHAR szPath[MENGINE_MAX_PATH];
 
-        if( FAILED( SHGetFolderPath( NULL
+        if( FAILED( ::SHGetFolderPath( NULL
             , CSIDL_COMMON_PICTURES | CSIDL_FLAG_CREATE
             , NULL
             , 0
@@ -1788,7 +1788,7 @@ namespace Mengine
 
         WCHAR szPath[MENGINE_MAX_PATH];
 
-        if( FAILED( SHGetFolderPath( NULL
+        if( FAILED( ::SHGetFolderPath( NULL
             , CSIDL_COMMON_MUSIC | CSIDL_FLAG_CREATE
             , NULL
             , 0
@@ -1819,7 +1819,7 @@ namespace Mengine
     bool Win32Platform::getErrorMessage( uint32_t _messageId, Char * _out ) const
     {
         LPTSTR errorText = NULL;
-        if( FormatMessage(
+        if( ::FormatMessage(
             // use system message tables to retrieve error text
             FORMAT_MESSAGE_FROM_SYSTEM
             // allocate buffer on local heap for error text
@@ -1842,7 +1842,7 @@ namespace Mengine
         {
             Helper::unicodeToUtf8( errorText, _out, 2048 );
 
-            LocalFree( errorText );
+            ::LocalFree( errorText );
         }
 
         return true;
@@ -1858,7 +1858,7 @@ namespace Mengine
         WChar unicode_command[4096];
         Helper::utf8ToUnicode( _command, unicode_command, 4096 );
 
-        int err = _wsystem( unicode_command );
+        int err = ::_wsystem( unicode_command );
 
         if( err != 0 )
         {
@@ -1943,8 +1943,8 @@ namespace Mengine
             currentPath[len] = L'/';
             currentPath[len + 1] = L'\0';
 
-            wcscat( currentPath, L"User" );
-            wcscat( currentPath, L"/" );
+            ::wcscat( currentPath, L"User" );
+            ::wcscat( currentPath, L"/" );
 
             WChar unicode_path[MENGINE_MAX_PATH];
             Helper::pathCorrectBackslashTo( unicode_path, currentPath );
@@ -1960,13 +1960,13 @@ namespace Mengine
 
         LPITEMIDLIST itemIDList;
 
-        HRESULT hr = SHGetSpecialFolderLocation( NULL,
+        HRESULT hr = ::SHGetSpecialFolderLocation( NULL,
             CSIDL_APPDATA | CSIDL_FLAG_CREATE, &itemIDList );
 
         if( hr != S_OK )
         {
             LPTSTR errorText = NULL;
-            if( FormatMessage(
+            if( ::FormatMessage(
                 // use system message tables to retrieve error text
                 FORMAT_MESSAGE_FROM_SYSTEM
                 // allocate buffer on local heap for error text
@@ -1992,14 +1992,14 @@ namespace Mengine
                     , hr
                 );
 
-                LocalFree( errorText );
+                ::LocalFree( errorText );
             }
 
             return 0;
         }
 
         WChar currentPath[MENGINE_MAX_PATH];
-        BOOL result = SHGetPathFromIDListW( itemIDList, currentPath );
+        BOOL result = ::SHGetPathFromIDListW( itemIDList, currentPath );
 
         if( result == FALSE )
         {
@@ -2009,11 +2009,11 @@ namespace Mengine
             return 0;
         }
 
-        CoTaskMemFree( itemIDList );
+        ::CoTaskMemFree( itemIDList );
 
         WChar roamingPath[MENGINE_MAX_PATH];
 
-        String companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
+        const Char * companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
 
         WChar companyNameW[MENGINE_APPLICATION_COMPANY_MAXNAME];
         if( Helper::utf8ToUnicode( companyName, companyNameW, MENGINE_APPLICATION_COMPANY_MAXNAME ) == false )
@@ -2021,9 +2021,9 @@ namespace Mengine
             return 0;
         }
 
-        PathCombine( roamingPath, currentPath, companyNameW );
+        ::PathCombine( roamingPath, currentPath, companyNameW );
 
-        String projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
+        const Char * projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
 
         WChar projectNameW[MENGINE_APPLICATION_PROJECT_MAXNAME];
         if( Helper::utf8ToUnicode( projectName, projectNameW, MENGINE_APPLICATION_PROJECT_MAXNAME ) == false )
@@ -2031,7 +2031,7 @@ namespace Mengine
             return 0;
         }
 
-        PathCombine( roamingPath, roamingPath, projectNameW );
+        ::PathCombine( roamingPath, roamingPath, projectNameW );
 
         Helper::pathCorrectBackslash( roamingPath );
 
@@ -2091,7 +2091,7 @@ namespace Mengine
             return false;
         }
 
-        ShellExecute( NULL, L"open", unicode_url, NULL, NULL, SW_SHOWNORMAL );
+        ::ShellExecute( NULL, L"open", unicode_url, NULL, NULL, SW_SHOWNORMAL );
 
         return true;
     }

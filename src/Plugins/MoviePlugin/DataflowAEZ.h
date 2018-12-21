@@ -41,7 +41,7 @@ namespace Mengine
 
         ArchivatorInterfacePtr m_archivator;
 
-        FactoryPtr m_poolMovieData;
+        FactoryPtr m_factoryMovieData;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataflowAEZ> DataflowAEZPtr;

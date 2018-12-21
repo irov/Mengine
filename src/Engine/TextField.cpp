@@ -380,7 +380,7 @@ namespace Mengine
 
         const VectorRenderVertex2D::value_type * vertices = &textVertices.front();
 
-        const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f * bb = this->getBoundingBox();
 
         for( const Chunk & chunk : m_chunks )
         {
@@ -391,7 +391,7 @@ namespace Mengine
                 continue;
             }
 
-            this->addRenderQuad( _state, chunk.material, chunk_vertices, chunk.vertex_count, &bb, false );
+            this->addRenderQuad( _state, chunk.material, chunk_vertices, chunk.vertex_count, bb, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1311,10 +1311,8 @@ namespace Mengine
         return offset;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    void TextField::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
-        Node::_updateBoundingBox( _boundingBox );
-
         //mt::vec2f offset = mt::zero_v2;
 
         //const mt::mat4f & wm = this->getWorldMatrix();
@@ -1338,6 +1336,10 @@ namespace Mengine
 
         //    offset.y += m_lineOffset;
         //}
+
+        MENGINE_UNUSED( _boundingBox );
+
+        *_boundingBoxCurrent = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     float TextField::getHorizontAlignOffset_( const VectorTextLine2 & _lines ) const

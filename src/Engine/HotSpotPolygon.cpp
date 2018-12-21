@@ -49,13 +49,13 @@ namespace Mengine
         this->invalidateBoundingBox();
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotPolygon::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    void HotSpotPolygon::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const VectorPoints & points = m_polygon.getPoints();
 
         if( points.empty() == true )
         {
-            Node::_updateBoundingBox( _boundingBox );
+            *_boundingBoxCurrent = nullptr;
 
             return;
         }
@@ -76,6 +76,8 @@ namespace Mengine
 
             mt::add_internal_point( _boundingBox, wmp_it );
         }
+
+        *_boundingBoxCurrent = &_boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
     bool HotSpotPolygon::testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const
@@ -176,7 +178,7 @@ namespace Mengine
     {
         if( _bb != nullptr )
         {
-            mt::ident_box( *_bb );
+            mt::insideout_box( *_bb );
         }
 
         if( _screen != nullptr )

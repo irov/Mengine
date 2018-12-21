@@ -23,12 +23,12 @@ namespace Mengine
 
         const RenderMaterialInterfacePtr & material = m_surface->getMaterial();
 
-        const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderQuad( _state, material, vertices, 4, &bb, false );
+        this->addRenderQuad( _state, material, vertices, 4, bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShapeQuad::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    void ShapeQuad::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const RenderVertex2D * vertices = this->getVerticesWM();
 
@@ -37,6 +37,8 @@ namespace Mengine
         mt::add_internal_point( _boundingBox, vertices[1].position.x, vertices[1].position.y );
         mt::add_internal_point( _boundingBox, vertices[2].position.x, vertices[2].position.y );
         mt::add_internal_point( _boundingBox, vertices[3].position.x, vertices[3].position.y );
+
+        *_boundingBoxCurrent = &_boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
     void ShapeQuad::updateVerticesColor() const

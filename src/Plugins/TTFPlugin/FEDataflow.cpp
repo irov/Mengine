@@ -24,20 +24,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FEDataflow::initialize()
     {
-        m_poolData = new FactoryPool<FEData, 128>();
+        m_factoryFEData = new FactoryPool<FEData, 128>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void FEDataflow::finalize()
     {
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_poolData );
-        m_poolData = nullptr;
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryFEData );
+        m_factoryFEData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     DataInterfacePtr FEDataflow::create()
     {
-        FEDataPtr data = m_poolData->createObject();
+        FEDataPtr data = m_factoryFEData->createObject();
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
 
@@ -48,7 +48,7 @@ namespace Mengine
     {
         FEData * data = stdex::intrusive_get<FEData *>( _data );
 
-        MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, "FEDataflow::load", __FILE__, __LINE__ );        
+        MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, "FEDataflow::load", __FILE__, __LINE__ );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, false );
 

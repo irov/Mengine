@@ -380,9 +380,9 @@ namespace Mengine
             size_t binary_size = load_binary_size;
             size_t compress_size = load_compress_size;
 
-            MemoryInterfacePtr compress_buffer = Helper::createMemoryCacheBuffer( compress_size, _doc, _file, _line );
+            MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc, _file, _line );
 
-            if( compress_buffer == nullptr )
+            if( compress_memory == nullptr )
             {
                 LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory '%d' (compress)"
                     , compress_size
@@ -391,9 +391,9 @@ namespace Mengine
                 return nullptr;
             }
 
-            void * compress_memory = compress_buffer->getBuffer();
+            void * compress_buffer = compress_memory->getBuffer();
 
-            size_t read_data = _stream->read( compress_memory, compress_size );
+            size_t read_data = _stream->read( compress_buffer, compress_size );
 
             if( read_data != (size_t)compress_size )
             {
@@ -407,7 +407,7 @@ namespace Mengine
 
             if( crc32 != 0 )
             {
-                uint32_t check_crc32 = Helper::make_crc32( compress_memory, compress_size );
+                uint32_t check_crc32 = Helper::make_crc32( compress_buffer, compress_size );
 
                 if( check_crc32 != crc32 )
                 {
@@ -420,10 +420,10 @@ namespace Mengine
                 }
             }
 
-            MemoryBufferInterfacePtr binary_buffer = MEMORY_SERVICE()
+            MemoryBufferInterfacePtr binary_memory = MEMORY_SERVICE()
                 ->createMemoryBuffer();
 
-            if( binary_buffer == nullptr )
+            if( binary_memory == nullptr )
             {
                 LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory '%d' (binary)"
                     , binary_size
@@ -432,10 +432,10 @@ namespace Mengine
                 return nullptr;
             }
 
-            void * binary_memory = binary_buffer->newBuffer( binary_size, _doc, _file, _line );
+            void * binary_buffer = binary_memory->newBuffer( binary_size, _doc, _file, _line );
 
             size_t uncompressSize = 0;
-            if( _archivator->decompress( binary_memory, binary_size, compress_memory, compress_size, uncompressSize ) == false )
+            if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, uncompressSize ) == false )
             {
                 LOGGER_ERROR( "loadStreamArchiveBuffer: invalid decompress"
                 );
@@ -453,7 +453,7 @@ namespace Mengine
                 return nullptr;
             }
 
-            return binary_buffer;
+            return binary_memory;
         }
         //////////////////////////////////////////////////////////////////////////
         MemoryInterfacePtr loadStreamArchiveMagicMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, magic_number_type _magic, magic_version_type _version, const Char * _doc, const Char * _file, uint32_t _line )
@@ -466,6 +466,96 @@ namespace Mengine
             MemoryInterfacePtr memory = Helper::loadStreamArchiveMemory( _stream, _archivator, _doc, _file, _line );
 
             return memory;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        MemoryInterfacePtr loadStreamCacheArchiveMemory( const InputStreamInterfacePtr & _stream, const ArchivatorInterfacePtr & _archivator, const Char * _doc, const Char * _file, uint32_t _line )
+        {
+            uint32_t crc32;
+            _stream->read( &crc32, sizeof( crc32 ) );
+
+            uint32_t load_binary_size;
+            _stream->read( &load_binary_size, sizeof( load_binary_size ) );
+
+            uint32_t load_compress_size;
+            _stream->read( &load_compress_size, sizeof( load_compress_size ) );
+
+            size_t binary_size = load_binary_size;
+            size_t compress_size = load_compress_size;
+
+            MemoryInterfacePtr compress_memory = Helper::createMemoryCacheBuffer( compress_size, _doc, _file, _line );
+
+            if( compress_memory == nullptr )
+            {
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory '%d' (compress)"
+                    , compress_size
+                );
+
+                return nullptr;
+            }
+
+            void * compress_buffer = compress_memory->getBuffer();
+
+            size_t read_data = _stream->read( compress_buffer, compress_size );
+
+            if( read_data != (size_t)compress_size )
+            {
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid read data '%d' need '%d'"
+                    , read_data
+                    , compress_size
+                );
+
+                return nullptr;
+            }
+
+            if( crc32 != 0 )
+            {
+                uint32_t check_crc32 = Helper::make_crc32( compress_buffer, compress_size );
+
+                if( check_crc32 != crc32 )
+                {
+                    LOGGER_ERROR( "loadStreamArchiveBuffer: invalid crc32 '%d' need '%d'"
+                        , check_crc32
+                        , crc32
+                    );
+
+                    return nullptr;
+                }
+            }
+
+            MemoryBufferInterfacePtr binary_memory = MEMORY_SERVICE()
+                ->createMemoryCacheBuffer();
+
+            if( binary_memory == nullptr )
+            {
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid get memory '%d' (binary)"
+                    , binary_size
+                );
+
+                return nullptr;
+            }
+
+            void * binary_buffer = binary_memory->newBuffer( binary_size, _doc, _file, _line );
+
+            size_t uncompressSize = 0;
+            if( _archivator->decompress( binary_buffer, binary_size, compress_buffer, compress_size, uncompressSize ) == false )
+            {
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid decompress"
+                );
+
+                return nullptr;
+            }
+
+            if( uncompressSize != binary_size )
+            {
+                LOGGER_ERROR( "loadStreamArchiveBuffer: invalid decompress size '%d' need '%d'"
+                    , uncompressSize
+                    , binary_size
+                );
+
+                return nullptr;
+            }
+
+            return binary_memory;
         }
     }
 }

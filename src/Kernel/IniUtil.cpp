@@ -72,7 +72,7 @@ namespace Mengine
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
-        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, String & _value )
+        bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, const Char ** _value )
         {
             const Char * ini_value = _ini.getSettingValue( _section, _key );
 
@@ -81,7 +81,7 @@ namespace Mengine
                 return false;
             }
 
-            _value.assign( ini_value );
+            *_value = ini_value;
 
             return true;
         }

@@ -191,7 +191,7 @@ namespace Mengine
 
             FindClose( hFind );
         }
-        
+
         {
             WChar sPath[2048];
             wsprintf( sPath, L"%s*.*", _dir );
@@ -219,7 +219,7 @@ namespace Mengine
 
                 WChar nextDir[2048];
                 wsprintf( nextDir, L"%s%s\\", _dir, fdFile.cFileName );
-                 
+
                 ListDirectoryContents( nextDir, _mask, _lambda );
 
             } while( FindNextFile( hFind, &fdFile ) == TRUE );

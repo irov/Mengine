@@ -655,8 +655,10 @@ namespace Mengine
         stdex::intrusive_this_release( this );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::absorbBoundingBox( mt::box2f & _bb )
+    bool Node::absorbBoundingBox( mt::box2f & _bb )
     {
+        bool successul = false;
+
         mt::box2f absorb_bb;
         mt::insideout_box( absorb_bb );
 
@@ -665,17 +667,24 @@ namespace Mengine
         if( bb != nullptr )
         {
             mt::merge_box( absorb_bb, *bb );
+
+            successul = true;
         }
 
-        this->foreachChildren( [&absorb_bb]( const NodePtr & _child )
+        this->foreachChildren( [&absorb_bb, &successul]( const NodePtr & _child )
         {
             mt::box2f child_bb;
-            _child->absorbBoundingBox( child_bb );
+            if( _child->absorbBoundingBox( child_bb ) == true )
+            {
+                successul = true;
+            }
 
             mt::merge_box( absorb_bb, child_bb );
         } );
 
         _bb = absorb_bb;
+
+        return successul;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::removeChild( const NodePtr & _node )

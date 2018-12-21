@@ -134,7 +134,7 @@ namespace Mengine
         void visitChildren( const VisitorPtr & _visitor );
 
     public:
-        void absorbBoundingBox( mt::box2f & _bb );
+        bool absorbBoundingBox( mt::box2f & _bb );
 
     protected:
         void _destroy() override;

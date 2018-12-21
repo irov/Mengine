@@ -555,6 +555,12 @@ namespace Mengine
             }
         }
 
+        if( SERVICE_EXIST( Mengine::NodeDebuggerServiceInterface ) == true )
+        {
+            NODEDEBUGGER_SERVICE()
+                ->render( &context );
+        }
+
         MODULE_SERVICE()
             ->render( &context );
 

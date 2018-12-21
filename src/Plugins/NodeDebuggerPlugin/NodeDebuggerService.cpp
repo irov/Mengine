@@ -221,6 +221,47 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerService::render( const RenderContext * _context )
+    {
+        if( m_selectedNodePath.empty() == false )
+        {
+            NodePtr node = findUniqueNode( m_scene, m_selectedNodePath );
+            if( node != nullptr )
+            {
+                const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
+                    ->getDebugMaterial();
+
+                const mt::box2f & bbox = node->getBoundingBox();
+
+                RenderVertex2D * vertices = RENDER_SERVICE()
+                    ->getDebugRenderVertex2D( 5 );
+
+                vertices[0].position = mt::vec3f( bbox.minimum.x, bbox.minimum.y, 0.f );
+                vertices[1].position = mt::vec3f( bbox.maximum.x, bbox.minimum.y, 0.f );
+                vertices[2].position = mt::vec3f( bbox.maximum.x, bbox.maximum.y, 0.f );
+                vertices[3].position = mt::vec3f( bbox.minimum.x, bbox.maximum.y, 0.f );
+                vertices[4].position = vertices[0].position;
+
+                vertices[0].color =
+                vertices[1].color =
+                vertices[2].color =
+                vertices[3].color =
+                vertices[4].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
+
+                for( size_t i = 0; i < 4; ++i )
+                {
+                    RENDER_SERVICE()
+                        ->addRenderLine( _context
+                            , debugMaterial
+                            , &vertices[i]
+                            , 2
+                            , nullptr
+                            , false );
+                }
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerService::privateInit()
     {
         m_shouldRecreateServer = true;
@@ -389,9 +430,25 @@ namespace Mengine
                 receiveChangedNode( xmlNode );
             }
         }
+        else if( typeStr == "Selection" )
+        {
+            m_selectedNodePath.clear();
+
+            pugi::xml_node xmlNode = payloadNode.child( "Path" );
+
+            if( xmlNode )
+            {
+                pugi::xml_attribute valueAttr = xmlNode.attribute( "value" );
+
+                if( valueAttr )
+                {
+                    m_selectedNodePath = stringToPath( valueAttr.value() );
+                }
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::receiveChangedNode( const pugi::xml_node& _xmlNode )
+    void NodeDebuggerService::receiveChangedNode( const pugi::xml_node & _xmlNode )
     {
         String pathStr = _xmlNode.attribute( "path" ).value();
         VectorNodePath path = stringToPath( pathStr );
@@ -471,7 +528,7 @@ namespace Mengine
     {
         VectorNodePath path;
 
-        if( !_str.empty() )
+        if( !_str.empty() && _str[0] != '-' )
         {
             const Char* ptr = _str.c_str();
 

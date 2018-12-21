@@ -61,6 +61,7 @@ namespace Mengine
     public:
         void setScene( const ScenePtr & _scene ) override;
         void update() override;
+        void render( const RenderContext * _context ) override;
 
     private:
         void privateInit();
@@ -71,7 +72,7 @@ namespace Mengine
         void serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode );
         void serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode );
         void processPacket( NodeDebuggerPacket & _packet );
-        void receiveChangedNode( const pugi::xml_node& _xmlNode );
+        void receiveChangedNode( const pugi::xml_node & _xmlNode );
         VectorNodePath stringToPath( const String & _str );
 
     protected:
@@ -84,5 +85,6 @@ namespace Mengine
         Deque<NodeDebuggerPacket> m_incomingPackets;
         Deque<NodeDebuggerPacket> m_outgoingPackets;
         Vector<uint8_t> m_receivedData;
+        VectorNodePath m_selectedNodePath;
     };
 }

@@ -52,6 +52,13 @@ namespace Mengine
 
     struct DebuggerNode
     {
+        enum : size_t
+        {
+            Icon_None       = 0,
+            Icon_Render     = 1,
+            Icon_Animation  = 2,
+        };
+
         uint32_t                uid;
         String                  name;
         String                  type;
@@ -69,6 +76,7 @@ namespace Mengine
         DebuggerNode*           parent;
 
         bool                    dirty;
+        size_t                  iconBits;
 
         void CheckIfChanged( const DebuggerNode* _other )
         {
@@ -121,6 +129,7 @@ namespace Mengine
         void                DoNodeProperties( DebuggerNode * _node );
         void                OnConnectButton();
         void                OnDisconnectButton();
+        void                OnSelectNode( DebuggerNode * _node );
 
         // network
         void                NetworkLoop();
@@ -128,7 +137,9 @@ namespace Mengine
         void                DisconnectFromServer();
         void                SendNetworkData();
         void                ReceiveNetworkData();
+        void                SendXML( const pugi::xml_document & _doc );
         void                SendChangedNode( const DebuggerNode & _node );
+        void                SendNodeSelection( const String & _path );
 
     private:
         GLFWwindow*                 mWindow;
@@ -154,5 +165,6 @@ namespace Mengine
         std::mutex                  mDataMutex;
 
         DebuggerNode*               mScene;
+        String                      mSelectedNodePath;
     };
 }

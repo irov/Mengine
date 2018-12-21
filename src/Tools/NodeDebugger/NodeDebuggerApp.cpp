@@ -19,6 +19,14 @@
 
 namespace Mengine
 {
+    static const char* sNodeIcons[] = {
+        "",
+        "[R] ",
+        "[A] ",
+        "[R/A] "
+    };
+
+
     static bool zed_net_ext_tcp_wait_for_data( zed_net_socket_t* _socket, const int _timeoutMs )
     {
         fd_set socketsSet;
@@ -178,6 +186,13 @@ namespace Mengine
                 SendChangedNode( *mSelectedNode );
                 mSelectedNode->dirty = false;
             }
+
+            if( !mSelectedNodePath.empty() )
+            {
+                SendNodeSelection( mSelectedNodePath );
+
+                mSelectedNodePath.clear();
+            }
         }
     }
 
@@ -239,6 +254,8 @@ namespace Mengine
 
     void NodeDebuggerApp::DeserializeNode( const pugi::xml_node& _xmlNode, DebuggerNode* _node )
     {
+        _node->iconBits = DebuggerNode::Icon_None;
+
         _node->uid = _xmlNode.attribute( "uid" ).as_uint();
         _node->name = _xmlNode.attribute( "name" ).value();
         _node->type = _xmlNode.attribute( "type" ).value();
@@ -267,6 +284,8 @@ namespace Mengine
 
         if( _node->hasRender )
         {
+            _node->iconBits |= DebuggerNode::Icon_Render;
+
             deserializeNodeProp<bool>( "enable", renderNode, [_node]( bool _value )
             {
                 _node->render.enable = _value;
@@ -285,6 +304,8 @@ namespace Mengine
 
         if( _node->hasAnimation )
         {
+            _node->iconBits |= DebuggerNode::Icon_Animation;
+
             deserializeNodeProp<bool>( "loop", animationNode, [_node]( bool _value )
             {
                 _node->animation.loop = _value;
@@ -514,10 +535,13 @@ namespace Mengine
         const ImGuiTreeNodeFlags flagsNormal = ImGuiTreeNodeFlags_OpenOnDoubleClick | ImGuiTreeNodeFlags_OpenOnArrow | seletedFlag;
         const ImGuiTreeNodeFlags flagsNoChildren = ImGuiTreeNodeFlags_Leaf | seletedFlag;
 
-        const bool nodeOpen = ImGui::TreeNodeEx( _node->name.c_str(), _node->children.empty() ? flagsNoChildren : flagsNormal );
+        std::string treeNodeId = std::to_string( _node->uid );
+        std::string fullLabel = std::string( sNodeIcons[_node->iconBits] ) + _node->name.c_str() + "##" + treeNodeId;
+
+        const bool nodeOpen = ImGui::TreeNodeEx( fullLabel.c_str(), _node->children.empty() ? flagsNoChildren : flagsNormal );
         if( ImGui::IsItemClicked() )
         {
-            mSelectedNode = _node;
+            OnSelectNode( _node );
         }
 
         if( nodeOpen )
@@ -626,6 +650,23 @@ namespace Mengine
     void NodeDebuggerApp::OnDisconnectButton()
     {
         mConnectionStatus = ConnectionStatus::DisconnectionRequested;
+    }
+
+    void NodeDebuggerApp::OnSelectNode( DebuggerNode * _node )
+    {
+        if( mSelectedNode != _node )
+        {
+            mSelectedNode = _node;
+
+            if( mSelectedNode != nullptr )
+            {
+                mSelectedNodePath = PathToString( CollectNodePath( mSelectedNode ) );
+            }
+            else
+            {
+                mSelectedNodePath = "-";
+            }
+        }
     }
 
 
@@ -783,7 +824,33 @@ namespace Mengine
         }
     }
 
-    void NodeDebuggerApp::SendChangedNode( const DebuggerNode& _node )
+    void NodeDebuggerApp::SendXML( const pugi::xml_document & _doc )
+    {
+        NodeDebuggerPacket packet;
+
+        MyXMLWriter writer( packet.payload );
+
+#ifdef _DEBUG
+        const unsigned int xmlFlags = pugi::format_indent;
+#else
+        const unsigned int xmlFlags = pugi::format_raw;
+#endif
+        _doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+
+        if( !packet.payload.empty() )
+        {
+            const uint32_t payloadLength = static_cast<uint32_t>(packet.payload.size());
+
+            PacketHeader hdr;
+            hdr.magic = PACKET_MAGIC;
+            hdr.payloadSize = static_cast<uint32_t>(packet.payload.size());
+            InsertPacketHeader( packet.payload, hdr );
+
+            mOutgoingPackets.emplace_back( packet );
+        }
+    }
+
+    void NodeDebuggerApp::SendChangedNode( const DebuggerNode & _node )
     {
         pugi::xml_document doc;
 
@@ -819,27 +886,22 @@ namespace Mengine
             serializeNodeProp( _node.animation.loop, "loop", animationNode );
         }
 
-        NodeDebuggerPacket packet;
+        SendXML( doc );
+    }
 
-        MyXMLWriter writer( packet.payload );
+    void NodeDebuggerApp::SendNodeSelection(const String & _path)
+    {
+        pugi::xml_document doc;
 
-#ifdef _DEBUG
-        const unsigned int xmlFlags = pugi::format_indent;
-#else
-        const unsigned int xmlFlags = pugi::format_raw;
-#endif
-        doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "Selection" );
 
-        if( !packet.payload.empty() )
-        {
-            const uint32_t payloadLength = static_cast<uint32_t>(packet.payload.size());
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
 
-            PacketHeader hdr;
-            hdr.magic = PACKET_MAGIC;
-            hdr.payloadSize = static_cast<uint32_t>(packet.payload.size());
-            InsertPacketHeader( packet.payload, hdr );
+        pugi::xml_node xmlNode = payloadNode.append_child( "Path" );
 
-            mOutgoingPackets.emplace_back( packet );
-        }
+        xmlNode.append_attribute( "value" ).set_value( _path.c_str() );
+
+        SendXML( doc );
     }
 }

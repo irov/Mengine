@@ -13,6 +13,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 
 #include "Config/Stringstream.h"
@@ -43,7 +44,7 @@ namespace Mengine
             return true;
         }
 
-        uint32_t PrefetcherServiceThreadCount = CONFIG_VALUE( "PrefetcherService", "ThreadCount", 2 );
+        uint32_t PrefetcherServiceThreadCount = CONFIG_VALUE( "PrefetcherService", "ThreadCount", 1 );
         uint32_t PrefetcherServicePacketSize = CONFIG_VALUE( "PrefetcherService", "PacketSize", 64 );
 
         m_threadQueue = THREAD_SERVICE()
@@ -141,6 +142,8 @@ namespace Mengine
 
         ThreadTaskPrefetchImageDecoderPtr task = m_factoryThreadTaskPrefetchImageDecoder->createObject();
 
+        MENGINE_ASSERTION_MEMORY_PANIC( task, false );
+
         task->initialize( _fileGroup, _filePath, _observer );
         task->setImageCodec( _codecType );
 
@@ -212,6 +215,8 @@ namespace Mengine
 
         ThreadTaskPrefetchSoundDecoderPtr task = m_factoryThreadTaskPrefetchSoundDecoder->createObject();
 
+        MENGINE_ASSERTION_MEMORY_PANIC( task, false );
+
         task->initialize( _fileGroup, _filePath, _observer );
         task->setSoundCodec( _codecType );
 
@@ -251,8 +256,18 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PrefetcherService::prefetchData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _dataflowType, const PrefetcherObserverInterfacePtr & _observer )
+    bool PrefetcherService::prefetchData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const PrefetcherObserverInterfacePtr & _observer )
     {
+        if( _dataflow == nullptr )
+        {
+            LOGGER_ERROR( "PrefetcherService::prefetchData: '%s':'%s' invalide dataflow is nullptr"
+                , _fileGroup->getName().c_str()
+                , _filePath.c_str()
+            );
+
+            return false;
+        }
+
         if( m_avaliable == false )
         {
             _observer->onPrefetchIgnored();
@@ -272,6 +287,7 @@ namespace Mengine
         {
             ++receiver->refcount;
 
+            if( _observer == nullptr )
             _observer->onPrefetchAlreadyExist();
 
             return true;
@@ -283,22 +299,11 @@ namespace Mengine
 
         ThreadTaskPrefetchDataflowPtr task = m_factoryThreadTaskPrefetchDataflow->createObject();
 
+        MENGINE_ASSERTION_MEMORY_PANIC( task, false );
+
         task->initialize( _fileGroup, _filePath, _observer );
 
-        DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), _dataflowType );
-
-        if( dataflow == nullptr )
-        {
-            LOGGER_ERROR( "PrefetcherService::prefetchData: '%s':'%s' invalide get dataflow '%s'"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
-                , _dataflowType.c_str()
-            );
-
-            return false;
-        }
-
-        task->setDataflow( dataflow );
+        task->setDataflow( _dataflow );
 
         new_receiver.prefetcher = task;
 
@@ -367,6 +372,8 @@ namespace Mengine
         new_receiver.refcount = 1;
 
         ThreadTaskPrefetchStreamPtr task = m_factoryThreadTaskPrefetchStream->createObject();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( task, false );
 
         task->initialize( _fileGroup, _filePath, _observer );
 

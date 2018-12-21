@@ -618,6 +618,7 @@ namespace Mengine
     void Package::addScriptPak_( const FilePath & _path, const ConstString & _module, const ConstString & _initializer, const ConstString & _finalizer, const Tags & _platform )
     {
         ScriptModulePack pak;
+        pak.fileGroup = m_fileGroup;
         pak.path = _path;
         pak.module = _module;
         pak.initializer = _initializer;

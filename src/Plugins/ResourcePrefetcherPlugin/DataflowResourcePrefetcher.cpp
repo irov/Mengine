@@ -1,6 +1,8 @@
 #include "DataflowResourcePrefetcher.h"
 
 #include "Interface/PrefetcherServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Content.h"
 
@@ -27,8 +29,10 @@ namespace Mengine
         const FilePath & filePath = content->getFilePath();
         const ConstString & dataflowType = content->getDataflowType();
 
+        DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
+
         if( PREFETCHER_SERVICE()
-            ->prefetchData( fileGroup, filePath, dataflowType, _observer ) == false )
+            ->prefetchData( fileGroup, filePath, dataflow, _observer ) == false )
         {
             return false;
         }

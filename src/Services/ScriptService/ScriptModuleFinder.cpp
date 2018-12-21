@@ -72,16 +72,6 @@ namespace Mengine
         mp.pathes = _pathes;
 
         m_modulePaths.emplace_back( mp );
-
-        //for( const FilePath & path : _pathes )
-        //{
-        //    _fileGroup->findFiles( path, "*.py", []( const FilePath & _filePath )
-        //    {
-        //        LOGGER_ERROR( "fp %s"
-        //            , _filePath.c_str()
-        //        );
-        //    } );
-        //}
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptModuleFinder::removeModulePath( const FileGroupInterfacePtr & _fileGroup )

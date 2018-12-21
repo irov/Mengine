@@ -150,11 +150,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static bool ListDirectoryContents( const WChar * _dir, const WChar * _mask, const LambdaFiles & _lambda )
+    static bool ListDirectoryContents( const WChar * _dir, const WChar * _mask, const WChar * _path, const LambdaFiles & _lambda )
     {
         {
-            WChar sPath[2048];
-            wsprintf( sPath, L"%s%s", _dir, _mask );
+            WChar sPath[MENGINE_MAX_PATH];
+            wsprintf( sPath, L"%s%s%s", _dir, _path, _mask );
 
             WIN32_FIND_DATA fdFile;
             HANDLE hFind = FindFirstFile( sPath, &fdFile );
@@ -174,8 +174,11 @@ namespace Mengine
                         continue;
                     }
 
+                    WChar unicode_filepath[MENGINE_MAX_PATH];
+                    wsprintf( unicode_filepath, L"%s%s", _path, fdFile.cFileName );
+
                     Char utf8_filepath[MENGINE_MAX_PATH];
-                    if( Helper::unicodeToUtf8( fdFile.cFileName, utf8_filepath, MENGINE_MAX_PATH ) == false )
+                    if( Helper::unicodeToUtf8( unicode_filepath, utf8_filepath, MENGINE_MAX_PATH ) == false )
                     {
                         FindClose( hFind );
 
@@ -193,8 +196,8 @@ namespace Mengine
         }
 
         {
-            WChar sPath[2048];
-            wsprintf( sPath, L"%s*.*", _dir );
+            WChar sPath[MENGINE_MAX_PATH];
+            wsprintf( sPath, L"%s%s*.*", _dir, _path );
 
             WIN32_FIND_DATA fdFile;
             HANDLE hFind = FindFirstFile( sPath, &fdFile );
@@ -217,10 +220,10 @@ namespace Mengine
                     continue;
                 }
 
-                WChar nextDir[2048];
-                wsprintf( nextDir, L"%s%s\\", _dir, fdFile.cFileName );
+                WChar nextPath[2048];
+                wsprintf( nextPath, L"%s%s\\", _path, fdFile.cFileName );
 
-                ListDirectoryContents( nextDir, _mask, _lambda );
+                ListDirectoryContents( _dir, _mask, nextPath, _lambda );
 
             } while( FindNextFile( hFind, &fdFile ) == TRUE );
 
@@ -232,8 +235,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32FileGroupDirectory::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFiles & _lambda ) const
     {
-        WChar unicode_path[MENGINE_MAX_PATH];
-        if( Helper::Win32ConcatenateFilePath( m_relationPath, m_folderPath, _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
+        WChar unicode_base[MENGINE_MAX_PATH];
+        if( Helper::Win32ConcatenateFilePath( m_relationPath, m_folderPath, FilePath::none(), unicode_base, MENGINE_MAX_PATH ) == false )
         {
             LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
@@ -243,7 +246,7 @@ namespace Mengine
             return false;
         }
 
-        Helper::pathCorrectForwardslash( unicode_path );
+        Helper::pathCorrectForwardslash( unicode_base );
 
         WChar unicode_mask[MENGINE_MAX_PATH];
         if( Helper::utf8ToUnicode( _mask, unicode_mask, MENGINE_MAX_PATH ) == false )
@@ -251,7 +254,13 @@ namespace Mengine
             return false;
         }
 
-        if( ListDirectoryContents( unicode_path, unicode_mask, _lambda ) == false )
+        WChar unicode_path[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( _filePath, unicode_path, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        if( ListDirectoryContents( unicode_base, unicode_mask, unicode_path, _lambda ) == false )
         {
             return false;
         }

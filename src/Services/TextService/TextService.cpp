@@ -7,6 +7,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -575,27 +576,32 @@ namespace Mengine
 
 
 #ifndef MENGINE_MASTER_RELEASE
-        bool valid_successful = true;
+        bool noresourceCheck = HAS_OPTION( "noresourcecheck" );
 
-        for( const MapTextFont::value_type & value : m_fonts )
+        if( noresourceCheck == false )
         {
-            const TextFontInterfacePtr & font = value.second;
+            bool valid_successful = true;
 
-            if( font->isValid() == false )
+            for( const MapTextFont::value_type & value : m_fonts )
             {
-                LOGGER_ERROR( "TextService::loadFonts invalid initialize '%s:%s' font '%s' invalidate!"
-                    , _fileGroup->getName().c_str()
-                    , _path.c_str()
-                    , font->getName().c_str()
-                );
+                const TextFontInterfacePtr & font = value.second;
 
-                valid_successful = false;
+                if( font->isValid() == false )
+                {
+                    LOGGER_ERROR( "TextService::loadFonts invalid initialize '%s:%s' font '%s' invalidate!"
+                        , _fileGroup->getName().c_str()
+                        , _path.c_str()
+                        , font->getName().c_str()
+                    );
+
+                    valid_successful = false;
+                }
             }
-        }
 
-        if( valid_successful == false )
-        {
-            return false;
+            if( valid_successful == false )
+            {
+                return false;
+            }
         }
 #endif
 

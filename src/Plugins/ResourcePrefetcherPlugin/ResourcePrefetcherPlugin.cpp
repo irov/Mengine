@@ -160,6 +160,18 @@ namespace Mengine
             return count != 0;
         }
         //////////////////////////////////////////////////////////////////////////
+        static bool s_prefetchScripts( const pybind::object & _cb, const pybind::args & _args )
+        {
+            PyPrefetcherObserverPtr observer = new FactorableUnique<PyPrefetcherObserver>( _cb, _args );
+
+            SCRIPT_SERVICE()
+                ->prefetchModules( observer );
+
+            uint32_t count = observer->getCount();
+
+            return count != 0;
+        }
+        //////////////////////////////////////////////////////////////////////////
         static void s_unfetchFonts()
         {
             TEXT_SERVICE()
@@ -197,6 +209,7 @@ namespace Mengine
             pybind::def_function_args( kernel, "prefetchResources", &Detail::s_prefetchResources );
             pybind::def_function( kernel, "unfetchResources", &Detail::s_unfetchResources );
             pybind::def_function_args( kernel, "prefetchFonts", &Detail::s_prefetchFonts );
+            pybind::def_function_args( kernel, "prefetchScripts", &Detail::s_prefetchScripts );
             pybind::def_function( kernel, "unfetchFonts", &Detail::s_unfetchFonts );
         }
 

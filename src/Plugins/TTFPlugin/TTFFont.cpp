@@ -6,6 +6,7 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "TTFDataInterface.h"
 #include "FEDataInterface.h"
@@ -255,17 +256,23 @@ namespace Mengine
     {
         if( m_ttfFEPath.empty() == false )
         {
+            DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
+                
             if( PREFETCHER_SERVICE()
-                ->prefetchData( m_fileGroup, m_ttfFEPath, STRINGIZE_STRING_LOCAL( "feFont" ), _observer ) == false )
+                ->prefetchData( m_fileGroup, m_ttfFEPath, dataflow, _observer ) == false )
             {
                 return false;
             }
         }
 
-        if( PREFETCHER_SERVICE()
-            ->prefetchData( m_fileGroup, m_ttfPath, STRINGIZE_STRING_LOCAL( "ttfFont" ), _observer ) == false )
         {
-            return false;
+            DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
+
+            if( PREFETCHER_SERVICE()
+                ->prefetchData( m_fileGroup, m_ttfPath, dataflow, _observer ) == false )
+            {
+                return false;
+            }
         }
 
         return true;

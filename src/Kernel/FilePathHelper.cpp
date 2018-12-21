@@ -153,66 +153,66 @@ namespace Mengine
 
             return true;
         }
-		//////////////////////////////////////////////////////////////////////////
-		void pathCorrectBackslashA( Char * _path )
-		{
-			Char * pch = strchr( _path, '\\' );
-			while( pch != NULL )
-			{
-				*pch = '/';
+        //////////////////////////////////////////////////////////////////////////
+        void pathCorrectBackslashA( Char * _path )
+        {
+            Char * pch = strchr( _path, '\\' );
+            while( pch != NULL )
+            {
+                *pch = '/';
 
-				pch = strchr( pch, '\\' );
-			}
-		}
-		//////////////////////////////////////////////////////////////////////////
-		void pathCorrectBackslashToA( Char * _out, const Char * _in )
-		{
-			strcpy( _out, _in );
+                pch = strchr( pch, '\\' );
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pathCorrectBackslashToA( Char * _out, const Char * _in )
+        {
+            strcpy( _out, _in );
 
-			pathCorrectBackslashA( _out );
-		}
-		//////////////////////////////////////////////////////////////////////////
-		void pathRemoveBackslashA( Char * _path )
-		{
-			size_t len = strlen( _path );
+            pathCorrectBackslashA( _out );
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void pathRemoveBackslashA( Char * _path )
+        {
+            size_t len = strlen( _path );
 
-			Char * pch = _path + len - 1;
+            Char * pch = _path + len - 1;
 
-			if( *pch == '/' )
-			{
-				*pch = '\0';
-			}
-		}
-		//////////////////////////////////////////////////////////////////////////
-		bool pathRemoveFileSpecA( Char * _path )
-		{
-			size_t len = strlen( _path );
+            if( *pch == '/' )
+            {
+                *pch = '\0';
+            }
+        }
+        //////////////////////////////////////////////////////////////////////////
+        bool pathRemoveFileSpecA( Char * _path )
+        {
+            size_t len = strlen( _path );
 
-			if( len == 0 )
-			{
-				return true;
-			}
+            if( len == 0 )
+            {
+                return true;
+            }
 
-			Char * pch = _path + len - 1;
+            Char * pch = _path + len - 1;
 
-			if( *pch == '/' )
-			{
-				return false;
-			}
+            if( *pch == '/' )
+            {
+                return false;
+            }
 
-			pch--;
+            pch--;
 
-			while( *pch != '/' )
-			{
-				pch--;
-			}
+            while( *pch != '/' )
+            {
+                pch--;
+            }
 
-			pch++;
+            pch++;
 
-			*pch = '\0';
+            *pch = '\0';
 
-			return true;
-		}
+            return true;
+        }
 
     }
 }

@@ -96,7 +96,7 @@ namespace Mengine
         void _update( const UpdateContext * _context ) override;
         void _render( const RenderContext * _state ) override;
 
-        void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
+        void _updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
     private:
         bool compileEmitterImage_( const AstralaxEmitterInterfacePtr & _emitter );

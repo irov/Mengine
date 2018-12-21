@@ -27,7 +27,7 @@ namespace Mengine
         bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) override;
 
     protected:
-        FactoryPtr m_poolData;
+        FactoryPtr m_factoryFEData;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<FEDataflow, DataflowInterface> FEDataflowPtr;

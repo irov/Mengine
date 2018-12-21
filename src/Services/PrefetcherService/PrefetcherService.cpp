@@ -51,7 +51,7 @@ namespace Mengine
 
         for( uint32_t index = 0; index != PrefetcherServiceThreadCount; ++index )
         {
-            Stringstream ss; 
+            Stringstream ss;
             ss << "ThreadPrefetcherService_" << index;
             ConstString threadName = Helper::stringizeString( ss.str() );
 
@@ -59,7 +59,7 @@ namespace Mengine
                 ->createThread( threadName, -1, __FILE__, __LINE__ );
 
             m_threads.emplace_back( threadName );
-            
+
             m_threadQueue->addThread( threadName );
         }
 

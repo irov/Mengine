@@ -67,6 +67,35 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * s_getValueString( const IniUtil::IniStore & _ini, const Tags & _platform, const Char * _section, const Char * _key, const Char * _default )
+        {
+            stdex::array_string<128> platform_section;
+            platform_section.append( _section );
+
+            const VectorConstString & tags = _platform.getTags();
+
+            for( const ConstString & tag : tags )
+            {
+                platform_section.append( '-' );
+                platform_section.append( tag );
+
+                const Char * value;
+                if( IniUtil::getIniValue( _ini, platform_section.c_str(), _key, &value ) == true )
+                {
+                    return value;
+                }
+            }
+
+            const Char * value;
+            if( IniUtil::getIniValue( _ini, _section, _key, &value ) == true )
+            {
+                return value;
+            }
+
+            return _default;
+        }
+        //////////////////////////////////////////////////////////////////////////
         template<class T>
         static T s_getValueT( const IniUtil::IniStore & _ini, const Tags & _platform, const Char * _section, const Char * _key, T _default )
         {
@@ -162,9 +191,9 @@ namespace Mengine
         return Helper::s_getValueT( m_ini, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
-    String ConfigService::getValue( const Char * _section, const Char * _key, const Char * _default ) const
+    const Char * ConfigService::getValue( const Char * _section, const Char * _key, const Char * _default ) const
     {
-        return Helper::s_getValueT<String>( m_ini, m_platformTags, _section, _key, _default );
+        return Helper::s_getValueString( m_ini, m_platformTags, _section, _key, _default );
     }
     //////////////////////////////////////////////////////////////////////////
     ConstString ConfigService::getValue( const Char * _section, const Char * _key, const ConstString & _default ) const

@@ -74,6 +74,9 @@ namespace Mengine
         bool _prepareGlyph( GlyphCode _code ) override;
 
     protected:
+        bool loadFaceGlyph_( GlyphCode _code, FT_Face * _face );
+
+    protected:
         FT_Library m_ftlibrary;
         TTFDataInterfacePtr m_dataTTF;
 
@@ -93,7 +96,7 @@ namespace Mengine
 
         FilePath m_ttfFEPath;
         ConstString m_ttfFEName;
-        
+
         FEDataInterfacePtr m_dataFE;
         fe_effect * m_ttfFEEffect;
         const fe_node * m_ttfEffectNodes[FE_MAX_PINS];

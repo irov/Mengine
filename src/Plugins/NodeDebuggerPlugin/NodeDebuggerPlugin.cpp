@@ -39,6 +39,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerPlugin::_destroy()
     {
-        SERVICE_DESTROY( Mengine::NodeDebuggerServiceInterface);
+        SERVICE_DESTROY( Mengine::NodeDebuggerServiceInterface );
     }
 }

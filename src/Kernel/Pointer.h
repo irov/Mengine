@@ -29,7 +29,7 @@ namespace Mengine
         }
 
     public:
-        PointerT & operator = (const PointerT & _pointer )
+        PointerT & operator = ( const PointerT & _pointer )
         {
             this->m_pointer = _pointer.m_pointer;
 

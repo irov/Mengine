@@ -175,5 +175,5 @@ namespace Mengine
             m_movieData->release();
             m_movieData = nullptr;
         }
-    }    
+    }
 }

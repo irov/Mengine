@@ -52,6 +52,7 @@
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/OptionsInterface.h"
 #include "Interface/CodecServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -103,6 +104,7 @@ SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( FileService );
+SERVICE_EXTERN( VocabularyService );
 SERVICE_EXTERN( LoaderService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -211,6 +213,7 @@ namespace Mengine
         SERVICE_CREATE( PluginSystem );
         SERVICE_CREATE( PluginService );
         SERVICE_CREATE( PrototypeService );
+        SERVICE_CREATE( VocabularyService );
 
         SERVICE_CREATE( Platform );
         SERVICE_CREATE( FileService );
@@ -229,7 +232,7 @@ namespace Mengine
             ->loadPlugin( "DevelopmentConverterPlugin.dll" );
 
         PLUGIN_SERVICE()
-            ->loadPlugin( "XmlCodecPlugin.dll" );
+            ->loadPlugin( "XmlToBinPlugin.dll" );
 
         if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), nullptr, Helper::emptyPath(), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )

@@ -42,7 +42,7 @@ namespace Mengine
     public:
         virtual bool createDirectory( const FilePath & _folderPath ) const = 0;
 
-    public:        
+    public:
         virtual bool findFiles( const FilePath & _folderPath, const Char * _mask, const LambdaFiles & _lambda ) const = 0;
 
     public:

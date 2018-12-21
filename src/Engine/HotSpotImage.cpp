@@ -124,10 +124,10 @@ namespace Mengine
             return !m_outward;
         }
 
-        const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f * bb = this->getBoundingBox();
 
         mt::box2f bb_screen;
-        Helper::worldToScreenBox( _camera, _viewport, _contentResolution, bb, bb_screen );
+        Helper::worldToScreenBox( _camera, _viewport, _contentResolution, *bb, bb_screen );
 
         if( mt::is_intersect( bb_screen, _point ) == false )
         {
@@ -179,10 +179,10 @@ namespace Mengine
             return !m_outward;
         }
 
-        const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f * bb = this->getBoundingBox();
 
         mt::box2f bb_screen;
-        Helper::worldToScreenBox( _camera, _viewport, _contentResolution, bb, bb_screen );
+        Helper::worldToScreenBox( _camera, _viewport, _contentResolution, *bb, bb_screen );
 
         if( mt::is_intersect( bb_screen, _point, _radiusx, _radiusy ) == false )
         {
@@ -239,10 +239,10 @@ namespace Mengine
             return m_outward;
         }
 
-        const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f * bb = this->getBoundingBox();
 
         mt::box2f bb_screen;
-        Helper::worldToScreenBox( _camera, _viewport, _contentResolution, bb, bb_screen );
+        Helper::worldToScreenBox( _camera, _viewport, _contentResolution, *bb, bb_screen );
 
         mt::box2f bb_polygon;
         _polygon.to_box2f( bb_polygon );
@@ -260,7 +260,7 @@ namespace Mengine
         return !m_outward;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HotSpotImage::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    void HotSpotImage::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 
@@ -277,5 +277,7 @@ namespace Mengine
         mt::mul_v2_v2_m4( maximal_wm, maximal, wm );
 
         mt::set_box_from_two_point( _boundingBox, minimal_wm, maximal_wm );
+
+        *_boundingBoxCurrent = &_boundingBox;
     }
 }

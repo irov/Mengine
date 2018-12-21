@@ -109,16 +109,16 @@ namespace Mengine
         const RenderVertex2D * vertices = this->getVerticesWM();
         const RenderMaterialInterfacePtr & material = this->getMaterial();
 
-        const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f * bb = this->getBoundingBox();
 
-        this->addRenderObject( _state, material, nullptr, vertices, m_vertexCount, m_shape->indices, m_indicesCount, &bb, false );
+        this->addRenderObject( _state, material, nullptr, vertices, m_vertexCount, m_shape->indices, m_indicesCount, bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieMesh2D::_updateBoundingBox( mt::box2f & _boundingBox ) const
+    void MovieMesh2D::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         if( m_vertexCount == 0 )
         {
-            mt::reset( _boundingBox, 0.f, 0.f );
+            *_boundingBoxCurrent = nullptr;
 
             return;
         }
@@ -131,6 +131,8 @@ namespace Mengine
         {
             mt::add_internal_point( _boundingBox, vertices[i].position.x, vertices[i].position.y );
         }
+
+        *_boundingBoxCurrent = &_boundingBox;
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieMesh2D::_invalidateWorldMatrix()

@@ -69,14 +69,7 @@ namespace Mengine
         bool removeWrapper( const ConstString& _type ) override;
         const ScriptWrapperInterfacePtr & getWrapper( const ConstString & _type ) const override;
 
-    public:
-        PyObject * loadModuleSource( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) override;
-        PyObject * loadModuleBinary( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _stream ) override;
-
-    public:
-        void handleException();
-
-    private:
+    protected:
         pybind::kernel_interface * m_kernel;
 
         ScriptModuleFinderPtr m_moduleFinder;

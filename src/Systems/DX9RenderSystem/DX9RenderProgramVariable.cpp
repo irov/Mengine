@@ -90,7 +90,7 @@ namespace Mengine
     void DX9RenderProgramVariable::updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _count )
     {
         Variable & v = m_pixelVariables[_index];
-        
+
         float * values = &m_dataFloats[v.offset];
         std::copy( _values, _values + _count, values );
     }

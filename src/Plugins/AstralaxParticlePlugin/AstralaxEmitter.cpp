@@ -379,7 +379,7 @@ namespace Mengine
             this->updateVertexWM_( m_vertices, flush.vertexCount );
         }
 
-        const mt::box2f & bb = this->getBoundingBox();
+        const mt::box2f * bb = this->getBoundingBox();
 
         for( uint32_t
             it_mesh = 0,
@@ -419,7 +419,7 @@ namespace Mengine
             const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                 ->getMaterial2( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), stage, PT_TRIANGLELIST, mesh.textures, textures );
 
-            this->addRenderObject( _state, material, nullptr, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, &bb, false );
+            this->addRenderObject( _state, material, nullptr, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, bb, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -735,11 +735,13 @@ namespace Mengine
         m_emitter->changeEmitterModel( nullptr, 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::_updateBoundingBox( mt::box2f& _boundingBox ) const
+    void AstralaxEmitter::_updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
         const mt::box2f & bb = m_emitter->getBoundingBox();
 
         _boundingBox = bb;
+
+        *_boundingBoxCurrent = &_boundingBox;
     }
     /////////////////////////////////////////////////////////////////////////
     float AstralaxEmitter::getDuration() const

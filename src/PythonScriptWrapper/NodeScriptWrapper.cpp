@@ -277,6 +277,21 @@ namespace Mengine
         //	return unicode;
         //}
         //////////////////////////////////////////////////////////////////////////
+        mt::box2f s_BoundingBox_getBoundingBox( BoundingBox * _boundingBox )
+        {
+            const mt::box2f * bb = _boundingBox->getBoundingBox();
+
+            if( bb == nullptr )
+            {
+                mt::box2f infinity_bb;
+                mt::infinity_box( infinity_bb );
+
+                return infinity_bb;
+            }
+
+            return *bb;
+        }
+        //////////////////////////////////////////////////////////////////////////
         void s_Transformation_setAngleDeg( Transformation * _transformation, float _angle )
         {
             float rad = _angle * mt::constant::deg2rad;
@@ -323,7 +338,7 @@ namespace Mengine
             const Polygon & polygon = _hs->getPolygon();
 
             mt::box2f bb;
-            mt::ident_box( bb );
+            mt::insideout_box( bb );
 
             const mt::mat4f & wm = _hs->getWorldMatrix();
 
@@ -2423,7 +2438,7 @@ namespace Mengine
             ;
 
         pybind::interface_<BoundingBox, pybind::bases<Mixin> >( kernel, "BoundingBox" )
-            .def( "getBoundingBox", &BoundingBox::getBoundingBox )
+            .def_proxy_static( "getBoundingBox", nodeScriptMethod, &NodeScriptMethod::s_BoundingBox_getBoundingBox )
             ;
 
         pybind::interface_<Transformation, pybind::bases<Mixin> >( kernel, "Transformation" )

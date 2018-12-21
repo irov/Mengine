@@ -7,6 +7,11 @@
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
+
+#include "DataflowPY.h"
+#include "DataflowPYC.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactorableUnique.h"
@@ -188,12 +193,47 @@ namespace Mengine
 
         pybind::set_observer_bind_call( new My_observer_bind_call() );
 
+        DataflowPYPtr dataflowPY = new FactorableUnique<DataflowPY>();
+
+        dataflowPY->setKernel( m_kernel );
+
+        if( dataflowPY->initialize() == false )
+        {
+            return false;
+        }
+
+        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ), dataflowPY );
+
+        DataflowPYCPtr dataflowPYC = new FactorableUnique<DataflowPYC>();
+
+        dataflowPYC->setKernel( m_kernel );
+
+        const ArchivatorInterfacePtr & archivatorZIP = ARCHIVE_SERVICE()
+            ->getArchivator( STRINGIZE_STRING_LOCAL( "zip" ) );
+
+        if( archivatorZIP == nullptr )
+        {
+            return false;
+        }
+
+        dataflowPYC->setArchivator( archivatorZIP );
+
+        if( dataflowPYC->initialize() == false )
+        {
+            return false;
+        }
+
+        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pycScript" ), dataflowPYC );
+
         pybind::interface_<ScriptModuleFinder>( m_kernel, "ScriptModuleFinder", true )
             .def_kernel( "find_module", &ScriptModuleFinder::find_module )
             .def_kernel( "load_module", &ScriptModuleFinder::load_module )
             ;
 
         m_moduleFinder = new FactorableUnique<ScriptModuleFinder>();
+
+        m_moduleFinder->setDataflowPY( dataflowPY );
+        m_moduleFinder->setDataflowPYC( dataflowPYC );
 
         if( m_moduleFinder->initialize() == false )
         {
@@ -608,136 +648,4 @@ namespace Mengine
 
         return wrapper;
     }
-    //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptService::loadModuleSource( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _buffer )
-    {
-        const char * str_moduleName = m_kernel->string_to_char( _moduleName );
-
-        if( _buffer == nullptr )
-        {
-            return nullptr;
-        }
-
-        char * source_memory = _buffer->getBuffer();
-
-        PyObject * code = m_kernel->code_compile_file( source_memory, str_moduleName );
-
-        if( code == nullptr )
-        {
-            m_kernel->error_message( "module '%s' invalid marshal get object"
-                , str_moduleName
-            );
-
-            return nullptr;
-        }
-
-        if( m_kernel->code_check( code ) == false )
-        {
-            LOGGER_ERROR( "module '%s' marshal get object not code"
-                , str_moduleName
-            );
-
-            return nullptr;
-        }
-
-        PyObject * py_module = m_kernel->module_init( str_moduleName );
-
-        PyObject * dict = m_kernel->module_dict( py_module );
-
-        if( _packagePath == true )
-        {
-            PyObject * py_packagePath = m_kernel->build_value( "[O]", _moduleName );
-            pybind::dict_setstring_t( m_kernel, dict, "__path__", py_packagePath );
-        }
-
-        PyObject * py_module_exec = m_kernel->module_execcode( str_moduleName, code );
-
-        m_kernel->decref( code );
-
-        return py_module_exec;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static int s_get_int( const uint8_t * _buff )
-    {
-        int x;
-        x = (int)_buff[0];
-        x |= (int)_buff[1] << 8;
-        x |= (int)_buff[2] << 16;
-        x |= (int)_buff[3] << 24;
-
-        return x;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptService::loadModuleBinary( PyObject * _moduleName, bool _packagePath, const MemoryInterfacePtr & _buffer )
-    {
-        const char * str_moduleName = m_kernel->string_to_char( _moduleName );
-
-        if( _buffer == nullptr )
-        {
-            return nullptr;
-        }
-
-        uint8_t * code_memory = _buffer->getBuffer();
-        size_t code_size = _buffer->getSize();
-
-        long file_magic = s_get_int( code_memory );
-        long py_magic = m_kernel->marshal_magic_number();
-
-        if( file_magic != py_magic )
-        {
-            LOGGER_ERROR( "module '%s' invalid magic %u need %u"
-                , str_moduleName
-                , file_magic
-                , py_magic
-            );
-
-            return nullptr;
-        }
-
-        PyObject * code = m_kernel->marshal_get_object( (char *)code_memory + 8, code_size - 8 );
-
-        if( code == nullptr )
-        {
-            m_kernel->error_message( "module '%s' invalid marshal get object"
-                , str_moduleName
-            );
-
-            return nullptr;
-        }
-
-        if( m_kernel->code_check( code ) == false )
-        {
-            LOGGER_ERROR( "module '%s' marshal get object not code"
-                , str_moduleName
-            );
-
-            return nullptr;
-        }
-
-        PyObject * py_module = m_kernel->module_init( str_moduleName );
-
-        if( py_module == nullptr )
-        {
-            LOGGER_ERROR( "module '%s' invalid module init"
-                , str_moduleName
-            );
-
-            return nullptr;
-        }
-
-        PyObject * dict = m_kernel->module_dict( py_module );
-
-        if( _packagePath == true )
-        {
-            PyObject * py_packagePath = m_kernel->build_value( "[O]", _moduleName );
-            pybind::dict_setstring_t( m_kernel, dict, "__path__", py_packagePath );
-        }
-
-        PyObject * py_module_exec = m_kernel->module_execcode( str_moduleName, code );
-
-        m_kernel->decref( code );
-
-        return py_module_exec;
-    }
-    //////////////////////////////////////////////////////////////////////////
 }

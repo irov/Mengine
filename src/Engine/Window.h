@@ -45,7 +45,7 @@ namespace Mengine
         bool _compile() override;
         void _release() override;
         void _render( const RenderContext * _state ) override;
-        void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
+        void _updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
         void _invalidateWorldMatrix() override;
         void _invalidateColor() override;
 

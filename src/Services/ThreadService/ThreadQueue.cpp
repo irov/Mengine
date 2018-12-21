@@ -12,11 +12,11 @@ namespace Mengine
         : m_packetSize( 1 )
         , m_threadSampler( 0 )
         , m_cancel( false )
-    {        
+    {
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadQueue::~ThreadQueue()
-    {        
+    {
     }
     //////////////////////////////////////////////////////////////////////////
     bool ThreadQueue::initialize()
@@ -97,7 +97,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ThreadQueue::updateCurrentTask_( ThreadTaskInterfacePtr & _currentTask )
     {
-        if( _currentTask == nullptr || 
+        if( _currentTask == nullptr ||
             _currentTask->isComplete() == true ||
             _currentTask->isCancel() == true )
         {
@@ -134,7 +134,7 @@ namespace Mengine
             if( packet->countTask() > 0 )
             {
                 m_threadSampler = (m_threadSampler + 1) % m_threads.size();
-                
+
                 const ConstString & threadName = m_threads[m_threadSampler];
 
                 if( THREAD_SERVICE()

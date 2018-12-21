@@ -17,7 +17,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ConsoleLogger::Win32ConsoleLogger()
-        : m_CONOUT(nullptr)
+        : m_CONOUT( nullptr )
         , m_createConsole( false )
     {
     }

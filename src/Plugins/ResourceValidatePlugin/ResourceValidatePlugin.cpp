@@ -60,7 +60,7 @@ namespace Mengine
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceImageSequence" ) );
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceMusic" ) );
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceSound" ) );
-        
+
         SERVICE_FINALIZE( Mengine::ResourceValidateServiceInterface );
     }
     //////////////////////////////////////////////////////////////////////////

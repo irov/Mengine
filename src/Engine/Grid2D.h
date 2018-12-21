@@ -63,7 +63,7 @@ namespace Mengine
     protected:
         void _invalidateWorldMatrix() override;
 
-        void _updateBoundingBox( mt::box2f & _boundingBox ) const override;
+        void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
     protected:
         void updateVerticesWM_();

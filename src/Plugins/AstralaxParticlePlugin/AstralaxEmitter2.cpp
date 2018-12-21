@@ -11,7 +11,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     AstralaxEmitter2::AstralaxEmitter2()
-        : m_particleSystem(nullptr)        
+        : m_particleSystem( nullptr )
         , m_emitterId( 0 )
         , m_updateSpeed( 0.f )
         , m_leftBorder( 0.0 )
@@ -70,10 +70,7 @@ namespace Mengine
             return false;
         }
 
-        m_box.minimum.x = -std::numeric_limits<float>::max();
-        m_box.minimum.y = -std::numeric_limits<float>::max();
-        m_box.maximum.x = std::numeric_limits<float>::max();
-        m_box.maximum.y = std::numeric_limits<float>::max();
+        mt::infinity_box( m_box );
 
         return true;
     }

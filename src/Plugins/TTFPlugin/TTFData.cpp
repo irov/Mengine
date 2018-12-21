@@ -59,5 +59,5 @@ namespace Mengine
     FT_Face TTFData::getFTFace() const
     {
         return m_face;
-    }    
+    }
 }

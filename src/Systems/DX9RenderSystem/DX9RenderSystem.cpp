@@ -86,7 +86,7 @@ namespace Mengine
     {
         m_frames = 0;
 
-        String utf8_d3d9DLL = CONFIG_VALUE( "Render", "D3D9_DLL", "d3d9.dll" );
+        const Char * utf8_d3d9DLL = CONFIG_VALUE( "Render", "D3D9_DLL", "d3d9.dll" );
 
         WString unicode_d3d9DLL;
         Helper::utf8ToUnicode( utf8_d3d9DLL, unicode_d3d9DLL );
@@ -96,7 +96,7 @@ namespace Mengine
         if( m_hd3d9 == nullptr )
         {
             LOGGER_ERROR( "Failed to load d3d9 dll '%s'"
-                , utf8_d3d9DLL.c_str()
+                , utf8_d3d9DLL
             );
 
             return false;
@@ -150,7 +150,7 @@ namespace Mengine
         D3DDISPLAYMODE Mode;
         IF_DXCALL( m_pD3D, GetAdapterDisplayMode, (m_adapterToUse, &Mode) )
         {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow Can't determine desktop video mode"
+            LOGGER_ERROR( "Can't determine desktop video mode"
             );
 
             return false;
@@ -293,7 +293,7 @@ namespace Mengine
 
             if( FAILED( hr_checkDeviceMultiSampleType ) )
             {
-                LOGGER_ERROR( "DX9RenderSystem::createRenderWindow can't support multi sample count '%u' error [%p]"
+                LOGGER_ERROR( "can't support multi sample count '%u' error [%p]"
                     , testMultiSampleType
                     , hr_checkDeviceMultiSampleType
                 );
@@ -377,12 +377,12 @@ namespace Mengine
             return false;
         }
 
-        LOGGER_WARNING( "DX9RenderSystem::createRenderWindow VertexShaderVersion [%u] [%u]"
+        LOGGER_WARNING( "VertexShaderVersion [%u] [%u]"
             , caps.VertexShaderVersion
             , caps.VertexShaderVersion < D3DVS_VERSION( 1, 1 )
         );
 
-        LOGGER_WARNING( "DX9RenderSystem::createRenderWindow PixelShaderVersion [%u] [%u] [%u]"
+        LOGGER_WARNING( "PixelShaderVersion [%u] [%u] [%u]"
             , caps.PixelShaderVersion
             , caps.PixelShaderVersion < D3DPS_VERSION( 1, 1 )
             , caps.PixelShaderVersion >= D3DPS_VERSION( 2, 0 )
@@ -393,7 +393,7 @@ namespace Mengine
         if( (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 ||
             caps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
         {
-            LOGGER_ERROR( "DX9RenderSystem::createRenderWindow can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE"
+            LOGGER_ERROR( "can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE"
             );
 
             hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,

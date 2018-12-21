@@ -24,7 +24,7 @@ namespace Mengine
 
     public:
         bool connect( const SocketConnectInfo & _info ) override;
-        bool bind( const SocketConnectInfo & _info, const bool _blocking = true) override;
+        bool bind( const SocketConnectInfo & _info, const bool _blocking = true ) override;
         void disconnect() override;
 
         int checkForClientConnection() override;

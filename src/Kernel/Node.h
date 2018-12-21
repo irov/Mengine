@@ -123,7 +123,7 @@ namespace Mengine
         void foreachChildrenUnslugBreak( const LambdaNodeBreak & _lambda ) const;
 
         NodePtr findUniqueChild( uint32_t _uniqueIdentity ) const;
-        
+
         void removeParentRender_();
         void setParentRender_( Node * _parent );
 
@@ -132,6 +132,9 @@ namespace Mengine
 
     public:
         void visitChildren( const VisitorPtr & _visitor );
+
+    public:
+        void absorbBoundingBox( mt::box2f & _bb );
 
     protected:
         void _destroy() override;
@@ -199,9 +202,6 @@ namespace Mengine
         bool m_enable;
 
         bool m_freeze;
-
-    protected:
-        void _updateBoundingBox( mt::box2f& _boundingBox ) const override;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Node> NodePtr;

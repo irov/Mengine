@@ -177,11 +177,8 @@ namespace Mengine
                 ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), archivePrefetcherLZ4 );
         }
 
-        LOADER_SERVICE()
-            ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<LoaderResourceAstralax>() );
-
-        LOADER_SERVICE()
-            ->addLoader( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<LoaderResourceAstralax>() );
+        VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<LoaderResourceAstralax>() );
+        VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<LoaderResourceAstralax>() );
 
         return true;
     }
@@ -229,11 +226,8 @@ namespace Mengine
                 ->removeResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
         }
 
-        LOADER_SERVICE()
-            ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
-
-        LOADER_SERVICE()
-            ->removeLoader( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleModule::_destroy()

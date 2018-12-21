@@ -233,6 +233,9 @@ namespace Mengine
 
                 FilePath c_fullPath = Helper::stringizeFilePath( m_cacheFullPath );
 
+#pragma message ("/**************************************************************")
+#pragma message ("|   TODO: Change to open file")
+#pragma message ("**************************************************************/")
                 if( fileGroup->existFile( c_fullPath ) == false )
                 {
                     continue;

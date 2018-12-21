@@ -17,6 +17,7 @@ namespace Mengine
     public:
         virtual void setScene( const ScenePtr & _scene ) = 0;
         virtual void update() = 0;
+        virtual void render( const RenderContext * _context ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

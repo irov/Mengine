@@ -78,7 +78,7 @@ namespace Mengine
         glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
         glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE );
         glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-        glfwWindowHint( GLFW_RESIZABLE, GLFW_FALSE );
+        glfwWindowHint( GLFW_RESIZABLE, GLFW_TRUE );
 
         mWindow = glfwCreateWindow( mWidth, mHeight, "Node Debugger", nullptr, nullptr );
 
@@ -104,6 +104,13 @@ namespace Mengine
         glfwSetCharCallback( mWindow, ImGui_ImplGlfw_CharCallback );
         glfwSetKeyCallback( mWindow, ImGui_ImplGlfw_KeyCallback );
         glfwSetMouseButtonCallback( mWindow, ImGui_ImplGlfw_MouseButtonCallback );
+        glfwSetWindowSizeCallback(mWindow, []( GLFWwindow * _wnd, int _width, int _height ) {
+             NodeDebuggerApp * _this = reinterpret_cast<NodeDebuggerApp *>(glfwGetWindowUserPointer( _wnd ));
+             if( _this != nullptr )
+             {
+                 _this->Resize( _width, _height );
+             }
+        });
 
         // Setup Dear ImGui binding
         IMGUI_CHECKVERSION();
@@ -154,6 +161,16 @@ namespace Mengine
         {
             DestroyNode( mScene );
             mScene = nullptr;
+        }
+    }
+
+    void NodeDebuggerApp::Resize( const int _width, const int _height )
+    {
+        if( mWidth != _width || mHeight != _height )
+        {
+            mWidth = _width;
+            mHeight = _height;
+            glViewport( 0, 0, mWidth, mHeight );
         }
     }
 
@@ -371,7 +388,7 @@ namespace Mengine
         const float leftPanelWidth = 400.0f;
 
         ImGui::SetNextWindowPos( ImVec2( 0, 0 ), ImGuiCond_FirstUseEver );
-        ImGui::SetNextWindowSize( ImVec2( static_cast<float>(mWidth), static_cast<float>(mHeight) ), ImGuiCond_FirstUseEver );
+        ImGui::SetNextWindowSize( ImVec2( static_cast<float>(mWidth), static_cast<float>(mHeight) ), ImGuiCond_Always );
 
         if( ImGui::Begin( "Node Debugger", nullptr, kPanelFlags ) )
         {

@@ -52,11 +52,13 @@ namespace Mengine
 
     struct DebuggerNode
     {
-        enum : size_t
+        enum class Icon : size_t
         {
-            Icon_None       = 0,
-            Icon_Render     = 1,
-            Icon_Animation  = 2,
+            Icon_Unknown    = 0,
+            Icon_Movie2     = 1,
+            Icon_Scene      = 2,
+            Icon_Layer2D    = 3,
+            Icon_Entity     = 4,
         };
 
         uint32_t                uid;
@@ -76,7 +78,7 @@ namespace Mengine
         DebuggerNode*           parent;
 
         bool                    dirty;
-        size_t                  iconBits;
+        Icon                    icon;
 
         void CheckIfChanged( const DebuggerNode* _other )
         {
@@ -124,6 +126,7 @@ namespace Mengine
         void                DestroyNode( DebuggerNode * _node );
 
         // UI
+        void                LoadIconsAtlas();
         void                DoUI();
         String              DoIPInput( const String & _title, const String & _inIP );
         void                DoNodeElement( DebuggerNode * _node );
@@ -150,6 +153,7 @@ namespace Mengine
 
         // UI
         DebuggerNode*               mSelectedNode;
+        uintptr_t                   mIconsAtlas;
 
         // Server connection
         String                      mServerAddress;

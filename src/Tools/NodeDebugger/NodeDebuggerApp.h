@@ -114,6 +114,7 @@ namespace Mengine
         void                Shutdown();
 
     private:
+        void                Resize( const int _width, const int _height );
         void                Update();
         void                ProcessPacket( const NodeDebuggerPacket & _packet );
         void                ReceiveScene( const pugi::xml_node & _xmlContainer );

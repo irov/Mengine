@@ -548,7 +548,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    PyObject * ScriptService::initModule( const char * _name )
+    PyObject * ScriptService::initModule( const Char * _name )
     {
         LOGGER_INFO( "init module '%s'"
             , _name

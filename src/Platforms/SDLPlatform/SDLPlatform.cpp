@@ -67,11 +67,6 @@ namespace Mengine
 	{
 #ifdef WIN32
 		WChar unicode_path[MENGINE_MAX_PATH];
-		if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
-		{
-			return 0;
-		}
-
 		DWORD len = (DWORD)::GetCurrentDirectory( MENGINE_MAX_PATH, unicode_path );
 
 		if( len == 0 )
@@ -112,8 +107,7 @@ namespace Mengine
 		if( (developmentMode == true && roamingMode == false) || noroamingMode == true )
 		{
 			Char currentPath[MENGINE_MAX_PATH];
-			size_t currentPathLen = PLATFORM_SERVICE()
-				->getCurrentPath( currentPath );
+            size_t currentPathLen = this->getCurrentPath( currentPath );
 
 			if( MENGINE_MAX_PATH <= currentPathLen + 5 )
 			{
@@ -196,14 +190,14 @@ namespace Mengine
 		_resolution = Resolution( (uint32_t)rect.w, (uint32_t)rect.h );
 	}
 	//////////////////////////////////////////////////////////////////////////
-	static void MySDL_LogOutputFunction( void *userdata, int category, SDL_LogPriority priority, const char *message )
+	static void MySDL_LogOutputFunction( void * _userdata, int _category, SDL_LogPriority _priority, const char * _message )
 	{
-		(void)userdata;
-		(void)category;
+		(void)_userdata;
+		(void)_category;
 
 		EMessageLevel level = LM_INFO;
 
-		switch( priority )
+		switch( _priority )
 		{
 		case SDL_LOG_PRIORITY_VERBOSE:
 			level = LM_INFO;
@@ -227,10 +221,10 @@ namespace Mengine
 			break;
 		}
 
-		size_t messageLen = strlen( message );
+		size_t messageLen = strlen( _message );
 
 		LOGGER_SERVICE()
-			->logMessage( level, 0, message, messageLen );
+			->logMessage( level, 0, _message, messageLen );
 	}
 	//////////////////////////////////////////////////////////////////////////
 	static int RemoveMouse_EventFilter( void *userdata, SDL_Event * event )
@@ -845,17 +839,17 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
 	{
-		unsigned int a0;			/* 16 bit, low    bits */
-		unsigned int a1;			/* 16 bit, medium bits */
-		unsigned int a2;			/* 32 bit, high   bits */
+		uint32_t a0;			/* 16 bit, low    bits */
+		uint32_t a1;			/* 16 bit, medium bits */
+		uint32_t a2;			/* 32 bit, high   bits */
 
-		unsigned int carry;		/* carry bit for subtraction */
+		uint32_t carry;		/* carry bit for subtraction */
 		int negative;		/* whether a represents a negative value */
 
 							/* Copy the time values to a2/a1/a0 */
 		a2 = filetime->dwHighDateTime;
-		a1 = ((unsigned int)filetime->dwLowDateTime) >> 16;
-		a0 = ((unsigned int)filetime->dwLowDateTime) & 0xffff;
+		a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
+		a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
 
 		/* Subtract the time difference */
 		if( a0 >= 32768 )
@@ -871,7 +865,7 @@ namespace Mengine
 		a2 -= 27111902 + carry;
 
 		/* If a is negative, replace a by (-1-a) */
-		negative = (a2 >= ((unsigned int)1) << 31);
+		negative = (a2 >= ((uint32_t)1) << 31);
 		if( negative )
 		{
 			/* Set a to -a - 1 (a is a2/a1/a0) */

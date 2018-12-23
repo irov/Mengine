@@ -58,9 +58,9 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams & _values );
         //////////////////////////////////////////////////////////////////////////
-        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const ConstString & _value );
-        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const char * _key, const String & _value );
-        bool writeIniSection( const OutputStreamInterfacePtr & _file, const char * _section, uint32_t _sectionSize );
+        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const Char * _key, const ConstString & _value );
+        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const Char * _key, const String & _value );
+        bool writeIniSection( const OutputStreamInterfacePtr & _file, const Char * _section, uint32_t _sectionSize );
         //////////////////////////////////////////////////////////////////////////
         template<class T, size_t I_Size>
         static bool writeIniSection( const OutputStreamInterfacePtr & _file, T( &_section )[I_Size] )

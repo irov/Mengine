@@ -26,7 +26,7 @@ namespace Mengine
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    uint64_t C11TimeSystem::getMilliseconds()
+    uint64_t C11TimeSystem::getTimeMilliseconds()
     {
         std::chrono::system_clock::time_point tp = std::chrono::system_clock::now();
         std::chrono::system_clock::time_point::duration epoch = tp.time_since_epoch();

@@ -384,9 +384,9 @@ namespace Mengine
         MyXMLWriter writer( packet.payload );
 
 #ifdef _DEBUG
-        const unsigned int xmlFlags = pugi::format_indent;
+        const uint32_t xmlFlags = pugi::format_indent;
 #else
-        const unsigned int xmlFlags = pugi::format_raw;
+        const uint32_t xmlFlags = pugi::format_raw;
 #endif
         doc.save( writer, "  ", xmlFlags, pugi::encoding_utf8 );
 

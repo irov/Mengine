@@ -27,7 +27,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     Pointer MemoryInput::newBuffer( size_t _size )
     {
-        unsigned char * memory = Helper::reallocateArrayT<unsigned char>( m_data, _size );
+        uint8_t * memory = Helper::reallocateArrayT<uint8_t>( m_data, _size );
 
         if( memory == nullptr )
         {
@@ -74,7 +74,6 @@ namespace Mengine
         }
 
         stdex::memorycopy( _buf, 0, m_pos, cnt );
-        //std::copy( m_pos, m_pos + cnt, (unsigned char *)_buf );
 
         m_pos += cnt;
 

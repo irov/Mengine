@@ -104,5 +104,5 @@ namespace Mengine
         bool m_pow2;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<OpenGLRenderImage> OpenGLRenderImagePtr;
+    typedef IntrusivePtr<OpenGLRenderImage> OpenGLRenderImagePtr;
 }

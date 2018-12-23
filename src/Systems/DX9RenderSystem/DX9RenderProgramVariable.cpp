@@ -23,7 +23,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderProgramVariable::finalize()
     {
-        //Empty
+        m_vertexVariables.clear();
+        m_pixelVariables.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
@@ -39,48 +40,60 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setVertexVariableFloats( uint32_t _index, float * _values, uint32_t _count )
+    void DX9RenderProgramVariable::setVertexVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _count )
     {
+        MENGINE_UNUSED( _uniform );
+
         Variable v;
         Detail::makeVariableData( v, m_dataFloats, 0, _values, _count );
 
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setVertexVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count )
+    void DX9RenderProgramVariable::setVertexVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count )
     {
+        MENGINE_UNUSED( _uniform );
+
         Variable v;
         Detail::makeVariableData( v, m_dataIntegers, 1, _values, _count );
 
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setVertexVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count )
+    void DX9RenderProgramVariable::setVertexVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count )
     {
+        MENGINE_UNUSED( _uniform );
+
         Variable v;
         Detail::makeVariableData( v, m_dataBooleans, 2, _values, _count );
 
         m_vertexVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setPixelVariableFloats( uint32_t _index, float * _values, uint32_t _count )
+    void DX9RenderProgramVariable::setPixelVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _count )
     {
+        MENGINE_UNUSED( _uniform );
+
         Variable v;
         Detail::makeVariableData( v, m_dataFloats, 0, _values, _count );
 
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setPixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count )
+    void DX9RenderProgramVariable::setPixelVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count )
     {
+        MENGINE_UNUSED( _uniform );
+
         Variable v;
         Detail::makeVariableData( v, m_dataIntegers, 1, _values, _count );
 
         m_pixelVariables[_index] = v;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DX9RenderProgramVariable::setPixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count )
+    void DX9RenderProgramVariable::setPixelVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count )
     {
+        MENGINE_UNUSED( _uniform );
+
         Variable v;
         Detail::makeVariableData( v, m_dataBooleans, 2, _values, _count );
 

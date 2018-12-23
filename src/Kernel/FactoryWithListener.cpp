@@ -3,7 +3,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    FactoryWithListener::FactoryWithListener( const char * _name )
+    FactoryWithListener::FactoryWithListener( const Char * _name )
         : Factory( _name )
     {
     }

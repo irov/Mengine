@@ -1,13 +1,14 @@
 #pragma once
 
 #include "Config/Typedef.h"
+#include "Config/Char.h"
 
 namespace Mengine
 {
     typedef uint32_t magic_number_type;
     typedef uint32_t magic_version_type;
 
-    template<char c0, char c1, char c2, char c3, uint32_t version>
+    template<Char c0, Char c1, Char c2, Char c3, uint32_t version>
     struct Magic
     {
         static const magic_number_type magic_number = c0 + (c1 << 8) + (c2 << 16) + (c3 << 24);
@@ -16,7 +17,7 @@ namespace Mengine
 
     namespace Helper
     {
-        inline bool magicTest4( const char * _header, const char * _magic )
+        inline bool magicTest4( const Char * _header, const Char * _magic )
         {
             return (_header[0] == _magic[0])
                 && (_header[1] == _magic[1])

@@ -16,7 +16,7 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadMutex::initialize( const char * _file, uint32_t _line )
+    bool SDLThreadMutex::initialize( const Char * _file, uint32_t _line )
     {
         m_file = _file;
 		m_line = _line;

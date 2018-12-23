@@ -84,7 +84,7 @@ namespace Mengine
 
         dest->buffer = (JOCTET *)
             (*cinfo->mem->alloc_small) ((j_common_ptr)cinfo, JPOOL_IMAGE,
-                OUTPUT_BUF_SIZE * sizeof( unsigned char ));
+                OUTPUT_BUF_SIZE * sizeof( uint8_t ));
 
         dest->pub.next_output_byte = dest->buffer;
         dest->pub.free_in_buffer = OUTPUT_BUF_SIZE;

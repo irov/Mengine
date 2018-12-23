@@ -516,10 +516,7 @@ namespace Mengine
 
             return false;
         }
-
-        //unsigned int playerCount;
-
-        //config.getSettingUInt( L"SETTINGS", L"AccountCount", playerCount );
+        
         if( IniUtil::getIniValue( ini, "SETTINGS", "AccountEnumerator", m_playerEnumerator ) == false )
         {
             LOGGER_ERROR( "get AccountEnumerator failed '%s'"

@@ -373,7 +373,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter2::changeEmitterImage( uint32_t _width, uint32_t _height, const void * _data, size_t _bytes )
     {
-        unsigned char* magic_data = const_cast<unsigned char *>(reinterpret_cast<const unsigned char *>(_data));
+        uint8_t * magic_data = const_cast<uint8_t *>(reinterpret_cast<const uint8_t *>(_data));
 
         if( Magic_ChangeImage( m_emitterId, -1, (int)_width, (int)_height, magic_data, (int)_bytes ) == MAGIC_ERROR )
         {

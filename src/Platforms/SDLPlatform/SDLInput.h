@@ -56,6 +56,6 @@ namespace Mengine
         SDL_Scancode getSDLKey_( KeyCode _code ) const;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<SDLInput> SDLInputPtr;
+    typedef IntrusivePtr<SDLInput> SDLInputPtr;
     //////////////////////////////////////////////////////////////////////////
 }

@@ -84,7 +84,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_MEMORY_PANIC( source_memory, false );
 
-        uint8_t * source_buffer = source_memory->getBuffer();
+        const uint8_t * source_buffer = source_memory->getBuffer();
         size_t source_size = source_memory->getSize();
 
         MENGINE_ASSERTION_MEMORY_PANIC( source_buffer, false );

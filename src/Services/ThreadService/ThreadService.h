@@ -32,7 +32,7 @@ namespace Mengine
         ThreadJobPtr createJob( uint32_t _sleep ) override;
 
     public:
-        bool createThread( const ConstString & _threadName, int _priority, const char * _file, uint32_t _line ) override;
+        bool createThread( const ConstString & _threadName, int32_t _priority, const Char * _file, uint32_t _line ) override;
         bool destroyThread( const ConstString & _threadName ) override;
 
     public:

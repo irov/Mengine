@@ -41,7 +41,7 @@ namespace Mengine
         pybind::kernel_interface * getKernel() override;
 
     public:
-        PyObject * initModule( const char * _name );
+        PyObject * initModule( const Char * _name );
 
         ScriptModuleInterfacePtr importModule( const ConstString& _name ) override;
 

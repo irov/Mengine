@@ -1627,7 +1627,7 @@ namespace Mengine
 
                     shader_values[0] = value;
 
-                    programVariable->setPixelVariableFloats( index, shader_values, 1 );
+                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 1 );
                 }break;
             case AE_MOVIE_EXTENSION_SHADER_PARAMETER_ANGLE:
                 {
@@ -1635,7 +1635,7 @@ namespace Mengine
 
                     shader_values[0] = value;
 
-                    programVariable->setPixelVariableFloats( index, shader_values, 1 );
+                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 1 );
                 }break;
             case AE_MOVIE_EXTENSION_SHADER_PARAMETER_COLOR:
                 {
@@ -1646,7 +1646,7 @@ namespace Mengine
                     shader_values[2] = color_value.b;
                     shader_values[3] = 1.f;
 
-                    programVariable->setPixelVariableFloats( index, shader_values, 4 );
+                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 4 );
                 }break;
             }
         }
@@ -2685,7 +2685,7 @@ namespace Mengine
                             }
                         }
 
-                        programVariable->setPixelVariableFloats( 0, bb, 4 );
+                        programVariable->setPixelVariableFloats( "uvbb", 0, bb, 4 );
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 

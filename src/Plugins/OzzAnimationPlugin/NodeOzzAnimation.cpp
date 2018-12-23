@@ -195,7 +195,7 @@ namespace Mengine
 
         for( int i = 0; i < num_joints; ++i )
         {
-            const char * joint_name = joint_names[i];
+            const Char * joint_name = joint_names[i];
 
             if( strstr( joint_name, "Spine1" ) != nullptr )
             {

@@ -13,7 +13,7 @@ namespace Mengine
         virtual ~ScriptLogger();
 
     public:
-        virtual void write( const char * _msg, uint32_t _size );
+        virtual void write( const Char * _msg, uint32_t _size );
 
     public:
         PyObject * py_write( pybind::kernel_interface * _kernel, PyObject * _args, PyObject * _kwds );

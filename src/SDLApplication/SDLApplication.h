@@ -40,7 +40,7 @@ namespace Mengine
         void stop();
 
     protected:
-        bool getApplicationPath_( const char * _section, const char * _key, ConstString & _path );
+        bool getApplicationPath_( const Char * _section, const Char * _key, ConstString & _path );
 
     protected:
         bool initializeStringizeService_();
@@ -82,9 +82,6 @@ namespace Mengine
 
         WString m_projectName;
         WString m_companyName;
-
-        typedef stdex::vector<PluginInterface *> TVectorPlugins;
-        TVectorPlugins m_plugins;
 
         bool m_running;
         bool m_active;

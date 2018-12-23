@@ -7,7 +7,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static uint16_t readBEUint16( const Char* pIn )
+    static uint16_t readBEUint16( const uint8_t * pIn )
     {
         return (pIn[0] << 8) | pIn[1];
     }
@@ -56,7 +56,7 @@ namespace Mengine
             return false;
         }
 
-        char * buffer = reinterpret_cast<char *>(&m_etc1_ptr);
+        uint8_t * buffer = reinterpret_cast<uint8_t *>(&m_etc1_ptr);
         m_etc1_ptr.format = readBEUint16( buffer + ETC1_PKM_FORMAT_OFFSET );
         m_etc1_ptr.texHeight = readBEUint16( buffer + ETC1_PKM_ENCODED_HEIGHT_OFFSET );
         m_etc1_ptr.texWidth = readBEUint16( buffer + ETC1_PKM_ENCODED_WIDTH_OFFSET );

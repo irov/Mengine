@@ -219,14 +219,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool cURLService::cancelRequest( HttpRequestID _id )
     {
-        for( VectorReceiverDesc::iterator
-            it = m_receiverDescs.begin(),
-            it_end = m_receiverDescs.end();
-            it != it_end;
-            ++it )
+        for( ReceiverDesc & desc : m_receiverDescs )
         {
-            ReceiverDesc & desc = *it;
-
             if( desc.id != _id )
             {
                 continue;

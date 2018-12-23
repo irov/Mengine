@@ -31,10 +31,10 @@ namespace Mengine
         stdex::memorycopy( buffer, 0, _ptr, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    Pointer MemoryBuffer::newBuffer( size_t _size, const Char * _doc, const char * _file, uint32_t _line )
+    Pointer MemoryBuffer::newBuffer( size_t _size, const Char * _doc, const Char * _file, uint32_t _line )
     {
-        (void)_file;
-        (void)_line;
+        MENGINE_UNUSED( _file );
+        MENGINE_UNUSED( _line );
 
         void * new_memory = Helper::reallocateMemory( m_memory, _size, _doc );
 

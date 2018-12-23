@@ -125,11 +125,11 @@ namespace Mengine
             return false;
         }
 
-        const char * matrix_uniforms[] = {"viewMatrix", "projectionMatrix", "worldMatrix", "vpMatrix", "wvpMatrix"};
+        const Char * matrix_uniforms[] = {"viewMatrix", "projectionMatrix", "worldMatrix", "vpMatrix", "wvpMatrix"};
 
         for( uint32_t i = 0; i != EPML_MAX_COUNT; ++i )
         {
-            const char * uniform = matrix_uniforms[i];
+            const Char * uniform = matrix_uniforms[i];
 
             GLint location;
             GLCALLR( location, glGetUniformLocation, (program, uniform) );
@@ -139,7 +139,7 @@ namespace Mengine
         
         for( uint32_t index = 0; index != m_samplerCount; ++index )
         {
-            char samplerVar[16];
+            Char samplerVar[16];
             sprintf( samplerVar, "inSampler%u", index );
 
             GLint location;

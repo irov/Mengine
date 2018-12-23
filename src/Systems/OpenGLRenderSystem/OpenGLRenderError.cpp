@@ -5,53 +5,56 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    static const char * glGetErrorString( GLenum _err )
+    namespace Helper
     {
-        switch( _err )
+        //////////////////////////////////////////////////////////////////////////
+        static const Char * glGetErrorString( GLenum _err )
         {
-        case GL_INVALID_ENUM:
-            return "GL_INVALID_ENUM";
-        case GL_INVALID_VALUE:
-            return "GL_INVALID_VALUE";
-        case GL_INVALID_OPERATION:
-            return "GL_INVALID_OPERATION";
-        case GL_INVALID_FRAMEBUFFER_OPERATION:
-            return "GL_INVALID_FRAMEBUFFER_OPERATION";
-        case GL_OUT_OF_MEMORY:
-            return "GL_OUT_OF_MEMORY";
-#ifdef WIN32
-        case GL_STACK_UNDERFLOW:
-            return "GL_STACK_UNDERFLOW";
-        case GL_STACK_OVERFLOW:
-            return "GL_STACK_OVERFLOW";
-#endif
-        default:
+            switch( _err )
             {
+            case GL_INVALID_ENUM:
+                return "GL_INVALID_ENUM";
+            case GL_INVALID_VALUE:
+                return "GL_INVALID_VALUE";
+            case GL_INVALID_OPERATION:
+                return "GL_INVALID_OPERATION";
+            case GL_INVALID_FRAMEBUFFER_OPERATION:
+                return "GL_INVALID_FRAMEBUFFER_OPERATION";
+            case GL_OUT_OF_MEMORY:
+                return "GL_OUT_OF_MEMORY";
+#ifdef WIN32
+            case GL_STACK_UNDERFLOW:
+                return "GL_STACK_UNDERFLOW";
+            case GL_STACK_OVERFLOW:
+                return "GL_STACK_OVERFLOW";
+#endif
+            default:
+                {
+                }
             }
+
+            return "GL_UNKNOWN";
         }
-
-        return "GL_UNKNOWN";
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool openglRenderErrorCheck( const char * _file, int _line )
-    {
-        GLenum err = glGetError();
-
-        if( err == GL_NO_ERROR )
+        //////////////////////////////////////////////////////////////////////////
+        bool OpenGLRenderErrorCheck( const Char * _file, uint32_t _line )
         {
-            return false;
-        }
+            GLenum err = glGetError();
 
-        const char * err_str = glGetErrorString( err );     
+            if( err == GL_NO_ERROR )
+            {
+                return false;
+            }
 
-        LOGGER_ERROR( "%s:[%d] error %s:%d"
-            , _file
-            , _line
-            , err_str
-            , err 
+            const Char * err_str = glGetErrorString( err );
+
+            LOGGER_ERROR( "%s:[%d] error %s:%d"
+                , _file
+                , _line
+                , err_str
+                , err
             );
 
-        return true;
+            return true;
+        }
     }
 }

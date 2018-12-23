@@ -51,14 +51,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexAttribute::compile( GLuint _program )
     {
-        for( TVectorAttribute::iterator
-            it = m_attributes.begin(),
-            it_end = m_attributes.end();
-            it != it_end;
-            ++it )
+        for( Attribute & attribute : m_attributes )
         {
-            Attribute & attribute = *it;
-
             const Char * attribute_uniform_str = attribute.uniform.c_str();
 
             int location;
@@ -82,14 +76,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderVertexAttribute::enable()
     {
-        for( TVectorAttribute::const_iterator
-            it = m_attributes.begin(),
-            it_end = m_attributes.end();
-            it != it_end;
-            ++it )
+        for( const Attribute & attribute : m_attributes )
         {
-            const Attribute & attribute = *it;
-
             GLint attribute_location = attribute.location;
 
             GLCALL( glEnableVertexAttribArray, (attribute_location) );
@@ -124,14 +112,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderVertexAttribute::disable()
     {
-        for( TVectorAttribute::const_iterator
-            it = m_attributes.begin(),
-            it_end = m_attributes.end();
-            it != it_end;
-            ++it )
+        for( const Attribute & attribute : m_attributes )
         {
-            const Attribute & attribute = *it;
-
             GLCALL( glDisableVertexAttribArray, (attribute.location) );
         }
     }

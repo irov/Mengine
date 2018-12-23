@@ -71,7 +71,7 @@ namespace Mengine
         return true;
     }
     ////////////////////////////////////////////////////////////////////////
-    static size_t s_writeRequestPerformerResponse( char *ptr, size_t size, size_t nmemb, void *userdata )
+    static size_t s_writeRequestPerformerResponse( char * ptr, size_t size, size_t nmemb, void * userdata )
     {
         cURLThreadTask * perfomer = static_cast<cURLThreadTask *>(userdata);
 
@@ -89,7 +89,7 @@ namespace Mengine
         curl_easy_setopt( _curl, CURLOPT_WRITEFUNCTION, &s_writeRequestPerformerResponse );
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLThreadTask::writeResponse( char * _ptr, size_t _size )
+    void cURLThreadTask::writeResponse( Char * _ptr, size_t _size )
     {
         m_response.append( _ptr, _size );
     }

@@ -146,10 +146,10 @@ namespace Mengine
 
             Stringstream ss( ini_value );
 
-            std::string single_string;
+            String single_string;
             while( ss >> single_string )
             {
-                const char * str_single_string = single_string.c_str();
+                const Char * str_single_string = single_string.c_str();
 
                 ConstString cstr_value = Helper::stringizeString( str_single_string );
 

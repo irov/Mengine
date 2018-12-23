@@ -49,5 +49,5 @@ namespace Mengine
         MemoryInterfacePtr m_lockMemory;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<OpenGLRenderIndexBuffer> OpenGLRenderIndexBufferPtr;
+    typedef IntrusivePtr<OpenGLRenderIndexBuffer> OpenGLRenderIndexBufferPtr;
 }

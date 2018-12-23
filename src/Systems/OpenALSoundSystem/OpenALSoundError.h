@@ -4,8 +4,12 @@
 
 namespace Mengine
 {
-    bool s_OpenALErrorCheck( const char * _file, int _line );
+    namespace Helper
+    {
+        bool OpenALErrorCheck( const Char * _file, uint32_t _line );
+    }
 }
-
-#	define OPENAL_CHECK_ERROR() Mengine::s_OpenALErrorCheck( __FILE__, __LINE__ )
+//////////////////////////////////////////////////////////////////////////
+#define OPENAL_CHECK_ERROR() Mengine::Helper::OpenALErrorCheck( __FILE__, __LINE__ )
+//////////////////////////////////////////////////////////////////////////
 

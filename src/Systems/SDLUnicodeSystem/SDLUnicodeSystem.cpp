@@ -10,8 +10,8 @@ SERVICE_FACTORY( UnicodeSystem, Mengine::SDLUnicodeSystem );
 namespace Mengine
 {
 	//////////////////////////////////////////////////////////////////////////
-	static const char * SDL_UCS_types[] = { "UCS-2-INTERNAL", "UCS-4-INTERNAL" };
-	static const char * SDL_UCS_wchar_t = SDL_UCS_types[sizeof( WChar ) / 2 - 1];
+	static const Char * SDL_UCS_types[] = { "UCS-2-INTERNAL", "UCS-4-INTERNAL" };
+	static const Char * SDL_UCS_wchar_t = SDL_UCS_types[sizeof( WChar ) / 2 - 1];
     //////////////////////////////////////////////////////////////////////////
     SDLUnicodeSystem::SDLUnicodeSystem()
     {

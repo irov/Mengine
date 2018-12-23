@@ -27,6 +27,9 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+#include "Interface/AccountServiceInterface.h"
+#include "Interface/SceneServiceInterface.h"
 
 #include "PythonScriptWrapper/PythonWrapper.h"
 
@@ -120,6 +123,7 @@ SERVICE_EXTERN( InputService );
 SERVICE_EXTERN( CodecService );
 SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
+SERVICE_EXTERN( VocabularyService );
 
 SERVICE_EXTERN( ModuleService );
 SERVICE_EXTERN( DataService );
@@ -146,6 +150,8 @@ SERVICE_EXTERN( UserdataService );
 SERVICE_EXTERN( PlayerService );
 SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimelineService );
+SERVICE_EXTERN( AccountService );
+SERVICE_EXTERN( SceneService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
@@ -264,7 +270,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLApplication::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
+    bool SDLApplication::getApplicationPath_( const Char * _section, const Char * _key, ConstString & _path )
     {
         const FileGroupInterfacePtr & defaultFileGroup = FILE_SERVICE()
             ->getDefaultFileGroup();
@@ -281,7 +287,7 @@ namespace Mengine
             return false;
         }
 
-        const char * gameIniPath = ini.getSettingValue( _section, _key );
+        const Char * gameIniPath = ini.getSettingValue( _section, _key );
 
         if( gameIniPath == nullptr )
         {
@@ -577,7 +583,7 @@ namespace Mengine
             return false;
         }
 
-
+        SERVICE_CREATE( VocabularyService );
         SERVICE_CREATE( ArchiveService );
 
         if( this->initializeArchiveService_() == false )
@@ -628,6 +634,8 @@ namespace Mengine
         SERVICE_CREATE( RenderMaterialService );
         SERVICE_CREATE( RenderTextureService );
 
+        SERVICE_CREATE( AccountService );
+        SERVICE_CREATE( SceneService );
         SERVICE_CREATE( ResourceService );
         SERVICE_CREATE( TextService );
         SERVICE_CREATE( WatchdogService );
@@ -898,7 +906,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::PluginServiceInterface );
         SERVICE_FINALIZE( Mengine::InputServiceInterface );
         SERVICE_FINALIZE( Mengine::UnicodeSystemInterface );
-
+        
         SERVICE_FINALIZE( Mengine::CodecServiceInterface );
 
         SERVICE_FINALIZE( Mengine::SoundServiceInterface );
@@ -919,6 +927,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::ArchiveServiceInterface );
         SERVICE_FINALIZE( Mengine::MemoryServiceInterface );
         SERVICE_FINALIZE( Mengine::NotificationServiceInterface );
+        SERVICE_FINALIZE( Mengine::VocabularyServiceInterface );
 
         SERVICE_FINALIZE( Mengine::ThreadServiceInterface );
         SERVICE_FINALIZE( Mengine::ThreadSystemInterface );

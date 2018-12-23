@@ -170,14 +170,14 @@ namespace Mengine
         RenderVertexBufferInterfacePtr m_currentVertexBuffer;
         RenderIndexBufferInterfacePtr m_currentIndexBuffer;        
 
-        typedef Vector<OpenGLRenderVertexShaderPtr> TVectorRenderVertexShaders;
-        TVectorRenderVertexShaders m_deferredCompileVertexShaders;
+        typedef Vector<OpenGLRenderVertexShaderPtr> VectorRenderVertexShaders;
+        VectorRenderVertexShaders m_deferredCompileVertexShaders;
 
-        typedef Vector<OpenGLRenderFragmentShaderPtr> TVectorRenderFragmentShaders;
-        TVectorRenderFragmentShaders m_deferredCompileFragmentShaders;
+        typedef Vector<OpenGLRenderFragmentShaderPtr> VectorRenderFragmentShaders;
+        VectorRenderFragmentShaders m_deferredCompileFragmentShaders;
 
-        typedef Vector<OpenGLRenderProgramPtr> TVectorDeferredRenderPrograms;
-        TVectorDeferredRenderPrograms m_deferredCompilePrograms;
+        typedef Vector<OpenGLRenderProgramPtr> VectorDeferredRenderPrograms;
+        VectorDeferredRenderPrograms m_deferredCompilePrograms;
 
         OpenGLRenderProgramPtr m_currentProgram;
 
@@ -186,20 +186,20 @@ namespace Mengine
 
         TextureStage m_textureStage[MENGINE_MAX_TEXTURE_STAGES];
 
-        typedef Vector<OpenGLRenderImage *> TVectorCacheRenderImages;
-        TVectorCacheRenderImages m_cacheRenderImages;
+        typedef Vector<OpenGLRenderImage *> VectorCacheRenderImages;
+        VectorCacheRenderImages m_cacheRenderImages;
 
-        typedef Vector<OpenGLRenderVertexShader *> TVectorCacheRenderVertexShaders;
-        TVectorCacheRenderVertexShaders m_cacheRenderVertexShaders;
+        typedef Vector<OpenGLRenderVertexShader *> VectorCacheRenderVertexShaders;
+        VectorCacheRenderVertexShaders m_cacheRenderVertexShaders;
 
-        typedef Vector<OpenGLRenderFragmentShader *> TVectorCacheRenderFragmentShaders;
-        TVectorCacheRenderFragmentShaders m_cacheRenderFragmentShaders;
+        typedef Vector<OpenGLRenderFragmentShader *> VectorCacheRenderFragmentShaders;
+        VectorCacheRenderFragmentShaders m_cacheRenderFragmentShaders;
 
-        typedef Vector<OpenGLRenderProgram *> TVectorCacheRenderPrograms;
-        TVectorCacheRenderPrograms m_cacheRenderPrograms;
+        typedef Vector<OpenGLRenderProgram *> VectorCacheRenderPrograms;
+        VectorCacheRenderPrograms m_cacheRenderPrograms;
 
-        typedef Vector<OpenGLRenderProgramVariable *> TVectorCacheRenderProgramVariables;
-        TVectorCacheRenderProgramVariables m_cacheRenderProgramVariables;
+        typedef Vector<OpenGLRenderProgramVariable *> VectorCacheRenderProgramVariables;
+        VectorCacheRenderProgramVariables m_cacheRenderProgramVariables;
 
         bool m_renderWindowCreate;
         bool m_depthMask;

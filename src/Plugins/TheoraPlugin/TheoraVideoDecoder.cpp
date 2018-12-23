@@ -297,7 +297,7 @@ namespace Mengine
 
         if( m_theoraInfo.pixelformat != OC_PF_420 )
         {
-            const char * pixelformat[] = { "OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444" };
+            const Char * pixelformat[] = { "OC_PF_420", "OC_PF_RSVD", "OC_PF_422", "OC_PF_444" };
 
             LOGGER_ERROR( "VideoDecoderTheora::_prepareData invalid support pixel format '%s' pls use OC_PF_420"
                 , pixelformat[m_theoraInfo.pixelformat]

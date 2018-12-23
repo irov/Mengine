@@ -70,7 +70,7 @@ namespace Mengine
         (void)_pos;
 
         uint64_t time = TIME_SYSTEM()
-            ->getMilliseconds();
+            ->getTimeMilliseconds();
 
         m_playTime = time;
         m_pauseTime = 0UL;
@@ -81,7 +81,7 @@ namespace Mengine
         (void)_id;
 
         uint64_t time = TIME_SYSTEM()
-            ->getMilliseconds();
+            ->getTimeMilliseconds();
 
         uint64_t deltha = m_pauseTime - m_playTime;
 
@@ -96,7 +96,7 @@ namespace Mengine
         (void)_id;
 
         uint64_t time = TIME_SYSTEM()
-            ->getMilliseconds();
+            ->getTimeMilliseconds();
 
         m_pauseTime = time;
     }
@@ -121,7 +121,7 @@ namespace Mengine
         }
 
         uint64_t time = TIME_SYSTEM()
-            ->getMilliseconds();
+            ->getTimeMilliseconds();
 
         uint64_t timePos = time - m_playTime;
 

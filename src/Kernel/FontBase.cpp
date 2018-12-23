@@ -137,7 +137,7 @@ namespace Mengine
     {
         U32String ttf_codes;
 
-        const char * text_str = _text.c_str();
+        const Char * text_str = _text.c_str();
         size_t text_len = _text.size();
 
         for( const char

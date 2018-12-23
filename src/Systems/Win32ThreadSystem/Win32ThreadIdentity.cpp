@@ -50,7 +50,7 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const Char * _file, uint32_t _line )
+    bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int32_t _priority, const Char * _file, uint32_t _line )
     {
         (void)_file;
         (void)_line;
@@ -77,27 +77,27 @@ namespace Mengine
 
         switch( _priority )
         {
-        case -2:
+        case MENGINE_THREAD_PRIORITY_LOWEST:
             {
                 SetThreadPriority( m_handle, THREAD_PRIORITY_LOWEST );
             }break;
-        case -1:
+        case MENGINE_THREAD_PRIORITY_BELOW_NORMAL:
             {
                 SetThreadPriority( m_handle, THREAD_PRIORITY_BELOW_NORMAL );
             }break;
-        case 0:
+        case MENGINE_THREAD_PRIORITY_NORMAL:
             {
                 SetThreadPriority( m_handle, THREAD_PRIORITY_NORMAL );
             }break;
-        case 1:
+        case MENGINE_THREAD_PRIORITY_ABOVE_NORMAL:
             {
                 SetThreadPriority( m_handle, THREAD_PRIORITY_ABOVE_NORMAL );
             }break;
-        case 2:
+        case MENGINE_THREAD_PRIORITY_HIGHEST:
             {
                 SetThreadPriority( m_handle, THREAD_PRIORITY_HIGHEST );
             }break;
-        case 3:
+        case MENGINE_THREAD_PRIORITY_TIME_CRITICAL:
             {
                 SetThreadPriority( m_handle, THREAD_PRIORITY_TIME_CRITICAL );
             }break;

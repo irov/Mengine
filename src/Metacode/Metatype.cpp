@@ -90,9 +90,9 @@ namespace Metabuf
         const Mengine::ConstString & value = cache->strings[index];
 
 #ifndef NDEBUG
-        const char * test_value = value.c_str();
+        const Mengine::Char * test_value = value.c_str();
 
-        const char * s = strstr( test_value, "\\" );
+        const Mengine::Char * s = strstr( test_value, "\\" );
 
         if( s != nullptr )
         {

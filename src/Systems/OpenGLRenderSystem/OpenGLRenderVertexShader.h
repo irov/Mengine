@@ -39,6 +39,6 @@ namespace Mengine
         GLuint m_shaderId;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<OpenGLRenderVertexShader> OpenGLRenderVertexShaderPtr;
+    typedef IntrusivePtr<OpenGLRenderVertexShader> OpenGLRenderVertexShaderPtr;
     //////////////////////////////////////////////////////////////////////////
 }

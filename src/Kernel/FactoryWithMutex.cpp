@@ -3,7 +3,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    FactoryWithMutex::FactoryWithMutex( const char * _name )
+    FactoryWithMutex::FactoryWithMutex( const Char * _name )
         : Factory( _name )
     {
     }

@@ -516,6 +516,7 @@ namespace Mengine
             }
 
             m_soundIdentities.erase( it );
+
             break;
         }
 

@@ -11,14 +11,14 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual void setVertexVariableFloats( uint32_t _index, float * _values, uint32_t _count ) = 0;
-        virtual void setVertexVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
-        virtual void setVertexVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
+        virtual void setVertexVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _count ) = 0;
+        virtual void setVertexVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
+        virtual void setVertexVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
 
     public:
-        virtual void setPixelVariableFloats( uint32_t _index, float * _values, uint32_t _count ) = 0;
-        virtual void setPixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
-        virtual void setPixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
+        virtual void setPixelVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _count ) = 0;
+        virtual void setPixelVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
+        virtual void setPixelVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count ) = 0;
 
     public:
         virtual void updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _count ) = 0;

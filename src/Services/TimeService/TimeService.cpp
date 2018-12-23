@@ -20,7 +20,7 @@ namespace Mengine
     void TimeService::resetDeltaTime()
     {
         uint64_t currentTime = TIME_SYSTEM()
-            ->getMilliseconds();
+            ->getTimeMilliseconds();
 
         m_prevTime = currentTime;
     }
@@ -28,7 +28,7 @@ namespace Mengine
     float TimeService::getDeltaTime()
     {
         uint64_t currentTime = TIME_SYSTEM()
-            ->getMilliseconds();
+            ->getTimeMilliseconds();
 
         uint64_t deltaTime = currentTime - m_prevTime;
 

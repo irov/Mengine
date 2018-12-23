@@ -3,7 +3,7 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static const char* s_affectorToString[] =
+    static const Char* s_affectorToString[] =
     {
         "ETA_POSITION",
         "ETA_ANGLE",
@@ -16,8 +16,9 @@ namespace Mengine
         "__ETA_LAST__"
     };
     //////////////////////////////////////////////////////////////////////////
-    const char * affectorToString( uint32_t _event )
+    const Char * affectorToString( uint32_t _event )
     {
         return s_affectorToString[_event];
     }
+    //////////////////////////////////////////////////////////////////////////
 }

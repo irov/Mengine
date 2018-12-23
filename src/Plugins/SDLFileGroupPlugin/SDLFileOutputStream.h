@@ -32,6 +32,6 @@ namespace Mengine
         size_t m_size;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<SDLFileOutputStream> SDLFileOutputStreamPtr;
+    typedef IntrusivePtr<SDLFileOutputStream> SDLFileOutputStreamPtr;
     //////////////////////////////////////////////////////////////////////////
 }	// namespace Mengine

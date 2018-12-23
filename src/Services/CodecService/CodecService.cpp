@@ -117,9 +117,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ConstString & CodecService::findCodecType( const FilePath & _path ) const
     {
-        const char * str_path = _path.c_str();
+        const Char * str_path = _path.c_str();
 
-        const char * dot_find = strrchr( str_path, '.' );
+        const Char * dot_find = strrchr( str_path, '.' );
 
         if( dot_find == nullptr )
         {

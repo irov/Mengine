@@ -52,7 +52,7 @@ namespace Mengine
         : public MemoryGetterStreamInterface
     {
     public:
-        virtual Pointer cacheBuffer( size_t _size, const char * _doc, const Char * _file, uint32_t _line ) = 0;
+        virtual Pointer cacheBuffer( size_t _size, const Char * _doc, const Char * _file, uint32_t _line ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<MemoryCacheInputInterface> MemoryCacheInputInterfacePtr;

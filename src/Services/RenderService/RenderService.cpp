@@ -366,7 +366,7 @@ namespace Mengine
             return false;
         }
 
-        unsigned char * buffer_textureData = static_cast<unsigned char *>(textureData);
+        uint8_t * buffer_textureData = static_cast<uint8_t *>(textureData);
 
         buffer_textureData[0] = 0xFF;
         buffer_textureData[1] = 0xFF;

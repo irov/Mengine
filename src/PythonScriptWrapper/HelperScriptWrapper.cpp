@@ -493,7 +493,7 @@ namespace Mengine
                 }
                 else
                 {
-                    const char * value = py_obj.str();
+                    const Char * value = py_obj.str();
 
                     if( value == nullptr )
                     {
@@ -1031,7 +1031,7 @@ namespace Mengine
         uint64_t s_getTimeMs()
         {
             uint64_t ms = TIME_SYSTEM()
-                ->getMilliseconds();
+                ->getTimeMilliseconds();
 
             return ms;
         }

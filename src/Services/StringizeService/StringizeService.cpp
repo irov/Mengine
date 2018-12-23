@@ -57,7 +57,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void StringizeService::stringize( const char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr )
+    void StringizeService::stringize( const Char * _str, ConstStringHolder::size_type _size, ConstString::hash_type _hash, ConstString & _cstr )
     {
         if( _size == (ConstStringHolder::size_type) - 1 )
         {

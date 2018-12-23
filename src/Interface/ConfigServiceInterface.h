@@ -47,7 +47,7 @@ namespace Mengine
     template<class T>
     T decltype_string( T t );
 
-    const char * decltype_string( const char * t );
+    const char * decltype_string( const Char * t );
 
 }
 //////////////////////////////////////////////////////////////////////////

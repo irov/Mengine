@@ -37,7 +37,7 @@ namespace Mengine
         void _onComplete( bool _successful ) override;
 
     public:
-        void writeResponse( char * _ptr, size_t _size );
+        void writeResponse( Char * _ptr, size_t _size );
 
     protected:
         HttpRequestID m_id;

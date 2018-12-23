@@ -18,8 +18,6 @@
 #include <algorithm>
 
 //////////////////////////////////////////////////////////////////////////
-#define GLUNUSED(x) ((void)(x))
-//////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderSystem, Mengine::OpenGLRenderSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -150,12 +148,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount )
     {
-        GLUNUSED( _bits );
-        GLUNUSED( _fullscreen );
-        GLUNUSED( _waitForVSync );
-        GLUNUSED( _FSAAType );
-        GLUNUSED( _FSAAQuality );
-        GLUNUSED( _MultiSampleCount );
+        MENGINE_UNUSED( _bits );
+        MENGINE_UNUSED( _fullscreen );
+        MENGINE_UNUSED( _waitForVSync );
+        MENGINE_UNUSED( _FSAAType );
+        MENGINE_UNUSED( _FSAAQuality );
+        MENGINE_UNUSED( _MultiSampleCount );
 
         m_resolution = _resolution;
 
@@ -213,14 +211,8 @@ namespace Mengine
         GLCALL( glLoadIdentity, () );
 #endif
 
-        for( TVectorRenderVertexShaders::const_iterator 
-            it = m_deferredCompileVertexShaders.begin(),
-            it_end = m_deferredCompileVertexShaders.end();
-            it != it_end;
-            ++it )
+        for( const OpenGLRenderVertexShaderPtr & shader : m_deferredCompileVertexShaders )
         {
-            const OpenGLRenderVertexShaderPtr & shader = *it;
-
             if( shader->compile() == false )
             {
                 return false;
@@ -229,14 +221,8 @@ namespace Mengine
 
         m_deferredCompileVertexShaders.clear();
 
-        for( TVectorRenderFragmentShaders::const_iterator
-            it = m_deferredCompileFragmentShaders.begin(),
-            it_end = m_deferredCompileFragmentShaders.end();
-            it != it_end;
-            ++it )
+        for( const OpenGLRenderFragmentShaderPtr & shader : m_deferredCompileFragmentShaders )
         {
-            const OpenGLRenderFragmentShaderPtr & shader = *it;
-
             if( shader->compile() == false )
             {
                 return false;
@@ -245,14 +231,8 @@ namespace Mengine
 
         m_deferredCompileFragmentShaders.clear();
 
-        for( TVectorDeferredRenderPrograms::const_iterator
-            it = m_deferredCompilePrograms.begin(),
-            it_end = m_deferredCompilePrograms.end();
-            it != it_end;
-            ++it )
+        for( const OpenGLRenderProgramPtr & program : m_deferredCompilePrograms )
         {
-            const OpenGLRenderProgramPtr & program = *it;
-
             if( program->compile() == false )
             {
                 return false;
@@ -268,8 +248,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderSystem::screenshot( const RenderImageInterfacePtr & _image, const mt::vec4f & _rect )
     {
-        GLUNUSED( _image );
-        GLUNUSED( _rect );
+        MENGINE_UNUSED( _image );
+        MENGINE_UNUSED( _rect );
         //ToDo!
 
         return false;
@@ -337,8 +317,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setTextureMatrix( uint32_t _stage, const mt::mat4f & _texture )
     {
-        GLUNUSED( _stage );
-        GLUNUSED( _texture );
+        MENGINE_UNUSED( _stage );
+        MENGINE_UNUSED( _texture );
         // To Do
     }
     //////////////////////////////////////////////////////////////////////////
@@ -555,7 +535,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::updateProgram( const RenderProgramInterfacePtr & _program )
     {
-        GLUNUSED( _program );
+        MENGINE_UNUSED( _program );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderProgramVariableInterfacePtr OpenGLRenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount )
@@ -594,9 +574,9 @@ namespace Mengine
         uint32_t _baseVertexIndex, uint32_t _minIndex,
         uint32_t _verticesNum, uint32_t _startIndex, uint32_t _indexCount )
     {
-        GLUNUSED( _verticesNum );
-        GLUNUSED( _minIndex );
-        GLUNUSED( _baseVertexIndex );
+        MENGINE_UNUSED( _verticesNum );
+        MENGINE_UNUSED( _minIndex );
+        MENGINE_UNUSED( _baseVertexIndex );
 
         if( m_currentIndexBuffer == nullptr || m_currentVertexBuffer == nullptr || m_currentProgram == nullptr )
         {
@@ -719,7 +699,7 @@ namespace Mengine
     //////////////////////////////////////////L////////////////////////////////
     void OpenGLRenderSystem::setTextureFactor( uint32_t _color )
     {
-        GLUNUSED( _color );
+        MENGINE_UNUSED( _color );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setBlendFactor( EBlendFactor _src, EBlendFactor _dst, EBlendOp _op )
@@ -864,7 +844,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr OpenGLRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
     {
-        GLUNUSED( _depth );
+        MENGINE_UNUSED( _depth );
 
         uint32_t hwChannels = 0;
         PixelFormat hwFormat = PF_UNKNOWN;
@@ -1002,7 +982,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::changeWindowMode( const Resolution & _resolution, bool _fullscreen )
     {
-        GLUNUSED( _fullscreen );
+        MENGINE_UNUSED( _fullscreen );
 
         m_resolution = _resolution;
 
@@ -1046,47 +1026,23 @@ namespace Mengine
     {
         (void)_fullscreen;
 
-        for( TVectorCacheRenderImages::iterator
-            it = m_cacheRenderImages.begin(),
-            it_end = m_cacheRenderImages.end();
-            it != it_end;
-            ++it )
+        for( OpenGLRenderImage * image : m_cacheRenderImages )
         {
-            OpenGLRenderImage * image = *it;
-
             image->release();
         }
 
-        for( TVectorCacheRenderVertexShaders::iterator
-            it = m_cacheRenderVertexShaders.begin(),
-            it_end = m_cacheRenderVertexShaders.end();
-            it != it_end;
-            ++it )
+        for( OpenGLRenderVertexShader * shader : m_cacheRenderVertexShaders )
         {
-            OpenGLRenderVertexShader * shader = *it;
-
             shader->release();
         }
 
-        for( TVectorCacheRenderFragmentShaders::iterator
-            it = m_cacheRenderFragmentShaders.begin(),
-            it_end = m_cacheRenderFragmentShaders.end();
-            it != it_end;
-            ++it )
+        for( OpenGLRenderFragmentShader * shader : m_cacheRenderFragmentShaders )
         {
-            OpenGLRenderFragmentShader * shader = *it;
-
             shader->release();
         }
 
-        for( TVectorCacheRenderPrograms::iterator
-            it = m_cacheRenderPrograms.begin(),
-            it_end = m_cacheRenderPrograms.end();
-            it != it_end;
-            ++it )
+        for( OpenGLRenderProgram * program : m_cacheRenderPrograms )
         {
-            OpenGLRenderProgram * program = *it;
-
             program->release();
         }
     }
@@ -1095,67 +1051,43 @@ namespace Mengine
     {
         (void)_fullscreen;
 
-        for( TVectorCacheRenderImages::iterator
-            it = m_cacheRenderImages.begin(),
-            it_end = m_cacheRenderImages.end();
-            it != it_end;
-            ++it )
+        for( OpenGLRenderImage * image : m_cacheRenderImages )
         {
-            OpenGLRenderImage * image = *it;
-
             image->reload();
         }
 
-        for( TVectorCacheRenderVertexShaders::iterator
-            it = m_cacheRenderVertexShaders.begin(),
-            it_end = m_cacheRenderVertexShaders.end();
-            it != it_end;
-            ++it )
+        for( OpenGLRenderVertexShader * shader : m_cacheRenderVertexShaders )
         {
-            OpenGLRenderVertexShader * shader = *it;
-
             shader->compile();
         }
 
-        for( TVectorCacheRenderFragmentShaders::iterator
-            it = m_cacheRenderFragmentShaders.begin(),
-            it_end = m_cacheRenderFragmentShaders.end();
-            it != it_end;
-            ++it )
+        for( OpenGLRenderFragmentShader * shader : m_cacheRenderFragmentShaders )
         {
-            OpenGLRenderFragmentShader * shader = *it;
-
             shader->compile();
         }
 
-        for( TVectorCacheRenderPrograms::iterator
-            it = m_cacheRenderPrograms.begin(),
-            it_end = m_cacheRenderPrograms.end();
-            it != it_end;
-            ++it )
+        for( OpenGLRenderProgram * program : m_cacheRenderPrograms )
         {
-            OpenGLRenderProgram * program = *it;
-
             program->compile();
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::setVSync( bool _vSync )
     {
-        GLUNUSED( _vSync );
+        MENGINE_UNUSED( _vSync );
         //m_windowContext->setVSync( _vSync );
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::clear( uint8_t _r, uint8_t _g, uint8_t _b )
     {
-        GLUNUSED( _r );
-        GLUNUSED( _g );
-        GLUNUSED( _b );
+        MENGINE_UNUSED( _r );
+        MENGINE_UNUSED( _g );
+        MENGINE_UNUSED( _b );
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr OpenGLRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
     {
-        GLUNUSED( _depth );
+        MENGINE_UNUSED( _depth );
 
         uint32_t hwChannels = 0;
         PixelFormat hwFormat = PF_UNKNOWN;
@@ -1217,100 +1149,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
     {
-        GLUNUSED( _width );
-        GLUNUSED( _height );
-        GLUNUSED( _channels );
-        GLUNUSED( _format );
+        MENGINE_UNUSED( _width );
+        MENGINE_UNUSED( _height );
+        MENGINE_UNUSED( _channels );
+        MENGINE_UNUSED( _format );
 
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderTargetInterfacePtr OpenGLRenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
     {
-        GLUNUSED( _width );
-        GLUNUSED( _height );
-        GLUNUSED( _channels );
-        GLUNUSED( _format );
+        MENGINE_UNUSED( _width );
+        MENGINE_UNUSED( _height );
+        MENGINE_UNUSED( _channels );
+        MENGINE_UNUSED( _format );
 
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     RenderImageInterfacePtr OpenGLRenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget )
     {
-        GLUNUSED( _renderTarget );
+        MENGINE_UNUSED( _renderTarget );
 
         return nullptr;
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //void OpenGLRenderSystem::makeProjectionOrthogonal( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
-    //{
-    //    mt::mat4f scale;
-    //    mt::make_scale_m4( scale, 1.f, 1.f, 1.f );
-
-    //    mt::mat4f translation;
-    //    mt::make_translation_m4( translation, 0.f, 0.f, 0.f );
-
-    //    mt::mat4f transform;
-    //    mt::mul_m4_m4( transform, scale, translation );
-
-    //    mt::mat4f ortho;
-    //    mt::make_projection_ortho_lh_m4( ortho, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
-
-    //    mt::mul_m4_m4( _projectionMatrix, transform, ortho );
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //void OpenGLRenderSystem::makeProjectionPerspective( mt::mat4f & _projectionMatrix, float _fov, float _aspect, float _zn, float _zf )
-    //{
-    //    mt::mat4f scale;
-    //    mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
-
-    //    mt::mat4f translation;
-    //    mt::make_translation_m4( translation, -0.5f, +0.5f, 0.0f );
-
-    //    mt::mat4f transform;
-    //    mt::mul_m4_m4( transform, scale, translation );
-
-    //    mt::mat4f projection_fov;
-    //    mt::make_projection_fov_m4( projection_fov, _fov, _aspect, _zn, _zf );
-
-    //    mt::mul_m4_m4( _projectionMatrix, transform, projection_fov );
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //void OpenGLRenderSystem::makeProjectionFrustum( mt::mat4f & _projectionMatrix, const Viewport & _viewport, float _near, float _far )
-    //{
-    //    mt::mat4f scale;
-    //    mt::make_scale_m4( scale, 1.0f, 1.0f, 1.0f );
-
-    //    mt::mat4f translation;
-    //    mt::make_translation_m4( translation, -0.5f, -0.5f, 0.0f );
-
-    //    mt::mat4f transform;
-    //    mt::mul_m4_m4( transform, scale, translation );
-
-    //    mt::mat4f frustum;
-    //    mt::make_projection_frustum_m4( frustum, _viewport.begin.x, _viewport.end.x, _viewport.begin.y, _viewport.end.y, _near, _far );
-
-    //    mt::mul_m4_m4( _projectionMatrix, transform, frustum );
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //void OpenGLRenderSystem::makeViewMatrixFromViewport( mt::mat4f & _viewMatrix, const Viewport & _viewport )
-    //{
-    //    GLUNUSED( _viewport );
-
-    //    mt::mat4f wm;
-    //    mt::ident_m4( wm );
-
-    //    mt::inv_m4_m4( _viewMatrix, wm );
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //void OpenGLRenderSystem::makeViewMatrixLookAt( mt::mat4f & _viewMatrix, const mt::vec3f & _eye, const mt::vec3f & _dir, const mt::vec3f & _up, float _sign )
-    //{
-    //    mt::make_lookat_m4( _viewMatrix, _eye, _dir, _up, _sign );
-    //}
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderImageDestroy_( OpenGLRenderImage * _image )
     {
-        TVectorCacheRenderImages::iterator it_found = std::find( m_cacheRenderImages.begin(), m_cacheRenderImages.end(), _image );
+        VectorCacheRenderImages::iterator it_found = std::find( m_cacheRenderImages.begin(), m_cacheRenderImages.end(), _image );
 
         if( it_found == m_cacheRenderImages.end() )
         {
@@ -1326,7 +1192,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderVertexShaderDestroy_( OpenGLRenderVertexShader * _vertexShader )
     {
-        TVectorCacheRenderVertexShaders::iterator it_found = std::find( m_cacheRenderVertexShaders.begin(), m_cacheRenderVertexShaders.end(), _vertexShader );
+        VectorCacheRenderVertexShaders::iterator it_found = std::find( m_cacheRenderVertexShaders.begin(), m_cacheRenderVertexShaders.end(), _vertexShader );
 
         if( it_found == m_cacheRenderVertexShaders.end() )
         {
@@ -1339,7 +1205,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderFragmentShaderDestroy_( OpenGLRenderFragmentShader * _fragmentShader )
     {
-        TVectorCacheRenderFragmentShaders::iterator it_found = std::find( m_cacheRenderFragmentShaders.begin(), m_cacheRenderFragmentShaders.end(), _fragmentShader );
+        VectorCacheRenderFragmentShaders::iterator it_found = std::find( m_cacheRenderFragmentShaders.begin(), m_cacheRenderFragmentShaders.end(), _fragmentShader );
 
         if( it_found == m_cacheRenderFragmentShaders.end() )
         {
@@ -1352,7 +1218,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderProgramDestroy_( OpenGLRenderProgram * _program )
     {
-        TVectorCacheRenderPrograms::iterator it_found = std::find( m_cacheRenderPrograms.begin(), m_cacheRenderPrograms.end(), _program );
+        VectorCacheRenderPrograms::iterator it_found = std::find( m_cacheRenderPrograms.begin(), m_cacheRenderPrograms.end(), _program );
 
         if( it_found == m_cacheRenderPrograms.end() )
         {
@@ -1365,7 +1231,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::onRenderProgramVariableDestroy_( OpenGLRenderProgramVariable * _variable )
     {
-		TVectorCacheRenderProgramVariables::iterator it_found = std::find( m_cacheRenderProgramVariables.begin(), m_cacheRenderProgramVariables.end(), _variable );
+		VectorCacheRenderProgramVariables::iterator it_found = std::find( m_cacheRenderProgramVariables.begin(), m_cacheRenderProgramVariables.end(), _variable );
 
         if( it_found == m_cacheRenderProgramVariables.end() )
         {

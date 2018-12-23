@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config/Typedef.h"
+#include "Config/Char.h"
 
 namespace Mengine
 {
@@ -22,5 +23,6 @@ namespace Mengine
         __ETA_LAST__
     };
     //////////////////////////////////////////////////////////////////////////
-    const char * affectorToString( uint32_t _event );
+    const Char * affectorToString( uint32_t _event );
+    //////////////////////////////////////////////////////////////////////////
 }

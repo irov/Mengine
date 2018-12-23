@@ -146,7 +146,7 @@ namespace Mengine
 
         if( dataInfo->height != mipmap_height )
         {
-            unsigned char * image_data = static_cast<unsigned char *>(textureBuffer);
+            uint8_t * image_data = static_cast<uint8_t *>(textureBuffer);
             size_t pixel_size = pitch / HWWidth;
 
             stdex::memorycopy( image_data, dataInfo->height * pitch, image_data + (dataInfo->height - 1) * pitch, dataInfo->width * pixel_size );

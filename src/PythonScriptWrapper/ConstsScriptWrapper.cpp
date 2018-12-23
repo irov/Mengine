@@ -50,9 +50,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static const char * s_ConstString_repr( ConstString * _cs )
+    static const Char * s_ConstString_repr( ConstString * _cs )
     {
-        const char * str_repr = _cs->c_str();
+        const Char * str_repr = _cs->c_str();
 
         return str_repr;
     }
@@ -132,9 +132,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static const char * s_FilePath_repr( FilePath * _cs )
+    static const Char * s_FilePath_repr( FilePath * _cs )
     {
-        const char * str_repr = _cs->c_str();
+        const Char * str_repr = _cs->c_str();
 
         return str_repr;
     }

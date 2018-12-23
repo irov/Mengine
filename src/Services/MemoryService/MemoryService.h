@@ -48,7 +48,7 @@ namespace Mengine
         MemoryInputInterfacePtr createMemoryInput() override;
 
     protected:
-        CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const char * _doc, const char * _file, uint32_t _line );
+        CacheBufferID lockBufferNoMutex_( size_t _size, void ** _memory, const Char * _doc, const Char * _file, uint32_t _line );
 
     protected:
         struct CacheBufferMemory

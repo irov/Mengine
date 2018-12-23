@@ -73,7 +73,7 @@ namespace Mengine
         GLint m_samplerLocation[MENGINE_MAX_TEXTURE_STAGES];
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<OpenGLRenderProgram> OpenGLRenderProgramPtr;
+    typedef IntrusivePtr<OpenGLRenderProgram> OpenGLRenderProgramPtr;
     //////////////////////////////////////////////////////////////////////////
 }
 

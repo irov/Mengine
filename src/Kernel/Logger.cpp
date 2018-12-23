@@ -28,7 +28,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    LoggerOperator & LoggerOperator::operator () ( const char * _format, ... )
+    LoggerOperator & LoggerOperator::operator () ( const Char * _format, ... )
     {
         va_list argList;
 

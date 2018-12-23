@@ -6,24 +6,27 @@
 
 namespace Mengine
 {
-    bool s_OpenALErrorCheck( const char * _file, int _line )
+    namespace Helper
     {
-        ALenum error = alGetError();
-
-        if( error == AL_NO_ERROR )
+        bool OpenALErrorCheck( const Char * _file, uint32_t _line )
         {
-            return true;
+            ALenum error = alGetError();
+
+            if( error == AL_NO_ERROR )
+            {
+                return true;
+            }
+
+            const Char * message = alGetString( error );
+
+            LOGGER_ERROR( "OpenAL Error: (%s %d) %d:%s"
+                , _file
+                , _line
+                , error
+                , message
+            );
+
+            return false;
         }
-
-        const char * message = alGetString( error );
-
-        LOGGER_ERROR( "OpenAL Error: (%s %d) %d:%s"
-            , _file
-            , _line
-            , error
-            , message
-        );
-
-        return false;
     }
 }

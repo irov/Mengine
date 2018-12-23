@@ -39,5 +39,5 @@ namespace Mengine
         GLuint m_shaderId;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<OpenGLRenderFragmentShader> OpenGLRenderFragmentShaderPtr;
+    typedef IntrusivePtr<OpenGLRenderFragmentShader> OpenGLRenderFragmentShaderPtr;
 }

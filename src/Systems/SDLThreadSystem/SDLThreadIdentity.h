@@ -18,10 +18,9 @@ namespace Mengine
         ~SDLThreadIdentity() override;
 
     public:
-        bool initialize( const ThreadMutexInterfacePtr & _mutex, int _priority, const char * _file, uint32_t _line );
+        bool initialize( const ThreadMutexInterfacePtr & _mutex, int32_t _priority, const Char * _file, uint32_t _line );
         
     public:
-
         void main();
 
     public:
@@ -31,19 +30,25 @@ namespace Mengine
     public:
         void join() override;
 
+    public:
+        int32_t getPriority() const;
+
     protected:
         ThreadMutexInterfacePtr m_mutex;
+
+        int32_t m_priority;
 
         SDL_Thread * m_thread;
 
         ThreadTaskInterface * m_task;
 
-		const char * m_file;
+		const Char * m_file;
 		uint32_t m_line;
         
         bool m_complete;
 		bool m_exit;
 	};
-
-    typedef stdex::intrusive_ptr<SDLThreadIdentity> SDLThreadIdentityPtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<SDLThreadIdentity> SDLThreadIdentityPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

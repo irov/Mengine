@@ -19,7 +19,7 @@ namespace Mengine
     double WatchdogService::watch( const ConstString & _tag )
     {
         uint64_t ms = TIME_SYSTEM()
-            ->getMilliseconds();
+            ->getTimeMilliseconds();
 
         MapWatchers::iterator it_found = m_watchers.find( _tag );
 

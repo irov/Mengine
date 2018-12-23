@@ -51,9 +51,9 @@ namespace Mengine
             GLboolean normalized;
         };
 
-        typedef Vector<Attribute> TVectorAttribute;
-        TVectorAttribute m_attributes;
+        typedef Vector<Attribute> VectorAttribute;
+        VectorAttribute m_attributes;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<OpenGLRenderVertexAttribute> OpenGLRenderVertexAttributePtr;
+    typedef IntrusivePtr<OpenGLRenderVertexAttribute> OpenGLRenderVertexAttributePtr;
 }

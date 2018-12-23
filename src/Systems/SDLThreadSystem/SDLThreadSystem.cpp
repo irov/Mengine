@@ -44,13 +44,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr SDLThreadSystem::createThread( int _priority, const char * _file, uint32_t _line )
+    ThreadIdentityInterfacePtr SDLThreadSystem::createThread( int32_t _priority, const Char * _file, uint32_t _line )
     {
         SDLThreadIdentityPtr identity = m_factoryThreadIdentity->createObject();
 
         if( identity == nullptr )
         {
-            LOGGER_ERROR("SDLThreadSystem::createThread invalid initialize (doc: '%s:%u')"
+            LOGGER_ERROR("invalid initialize (doc: '%s:%u')"
                 , _file
 				, _line
                 );
@@ -78,7 +78,7 @@ namespace Mengine
         SDL_Delay( _ms );
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterfacePtr SDLThreadSystem::createMutex( const char * _file, uint32_t _line )
+    ThreadMutexInterfacePtr SDLThreadSystem::createMutex( const Char * _file, uint32_t _line )
     {
         SDLThreadMutexPtr mutex = m_factoryThreadMutex->createObject();
         

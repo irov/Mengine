@@ -23,14 +23,14 @@ namespace Mengine
         void finalize();
 
     public:
-        void setVertexVariableFloats( uint32_t _index, float * _values, uint32_t _count ) override;
-        void setVertexVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count ) override;
-        void setVertexVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count ) override;
+        void setVertexVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _count ) override;
+        void setVertexVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count ) override;
+        void setVertexVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count ) override;
 
     public:
-        void setPixelVariableFloats( uint32_t _index, float * _values, uint32_t _count ) override;
-        void setPixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count ) override;
-        void setPixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count ) override;
+        void setPixelVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _count ) override;
+        void setPixelVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count ) override;
+        void setPixelVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count ) override;
 
 	public:
 		void updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _count ) override;
@@ -55,6 +55,7 @@ namespace Mengine
 
         struct Variable
         {
+            Char uniform[32];
             uint32_t type;
             uint32_t offset;
             uint32_t count;

@@ -32,9 +32,10 @@ namespace Mengine
     protected:
         SDL_mutex * m_cs;
 
-		const char * m_file;
+		const Char * m_file;
 		uint32_t m_line;
     };
-
-    typedef stdex::intrusive_ptr<SDLThreadMutex> SDLThreadMutexPtr;
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<SDLThreadMutex> SDLThreadMutexPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

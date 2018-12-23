@@ -24,14 +24,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MixerValue::setValue( const ConstString & _type, float _value, float _from, bool _force )
     {
-        for( VectorMixerElement::iterator
-            it = m_mixer.begin(),
-            it_end = m_mixer.end();
-            it != it_end;
-            ++it )
+        for( Element & mixer : m_mixer )
         {
-            Element & mixer = *it;
-
             if( mixer.type != _type )
             {
                 continue;
@@ -64,14 +58,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     float MixerValue::getValue( const ConstString & _type ) const
     {
-        for( VectorMixerElement::const_iterator
-            it = m_mixer.begin(),
-            it_end = m_mixer.end();
-            it != it_end;
-            ++it )
+        for( const Element & mixer : m_mixer )
         {
-            const Element & mixer = *it;
-
             if( mixer.type != _type )
             {
                 continue;
@@ -89,14 +77,8 @@ namespace Mengine
     {
         float volume = 1.f;
 
-        for( VectorMixerElement::const_iterator
-            it = m_mixer.begin(),
-            it_end = m_mixer.end();
-            it != it_end;
-            ++it )
+        for( const Element & mixer : m_mixer )
         {
-            const Element & mixer = *it;
-
             float value = mixer.follower.getValue();
 
             volume *= value;
@@ -109,15 +91,10 @@ namespace Mengine
     {
         bool process = false;
 
-        for( VectorMixerElement::iterator
-            it = m_mixer.begin(),
-            it_end = m_mixer.end();
-            it != it_end;
-            ++it )
+        for( Element & m : m_mixer )
         {
-            Element & m = *it;
-
             float used = 0.f;
+
             if( m.follower.update( _context, &used ) == false )
             {
                 process = true;

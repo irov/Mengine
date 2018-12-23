@@ -158,7 +158,7 @@ namespace Mengine
         return threadJob;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::createThread( const ConstString & _threadName, int _priority, const char * _file, uint32_t _line )
+    bool ThreadService::createThread( const ConstString & _threadName, int32_t _priority, const Char * _file, uint32_t _line )
     {
         if( m_avaliable == false )
         {

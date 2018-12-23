@@ -34,16 +34,11 @@ namespace Mengine
         curl_easy_setopt( _curl, CURLOPT_POST, 1 );
 
         struct curl_slist * curl_header_list = NULL;
+
         if( m_headers.empty() == false )
         {
-            for( VectorString::const_iterator
-                it = m_headers.begin(),
-                it_end = m_headers.end();
-                it != it_end;
-                ++it )
+            for( const String & header : m_headers )
             {
-                const String & header = *it;
-
                 curl_header_list = curl_slist_append( curl_header_list, header.c_str() );
             }
 
@@ -58,13 +53,9 @@ namespace Mengine
         {
             Stringstream ss;
 
-            for( VectorString::const_iterator
-                it = m_headers.begin(),
-                it_end = m_headers.end();
-                it != it_end;
-                ++it )
+            for( const String & header : m_headers )
             {
-                ss << *it;
+                ss << header;
                 ss << std::endl;
             }
 

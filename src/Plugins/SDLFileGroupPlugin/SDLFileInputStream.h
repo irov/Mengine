@@ -66,6 +66,6 @@ namespace Mengine
 #endif
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef stdex::intrusive_ptr<SDLFileInputStream> SDLFileInputStreamPtr;
+    typedef IntrusivePtr<SDLFileInputStream> SDLFileInputStreamPtr;
     //////////////////////////////////////////////////////////////////////////
 }	// namespace Mengine

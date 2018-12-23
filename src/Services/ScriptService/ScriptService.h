@@ -3,6 +3,7 @@
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PrototypeServiceInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "ConstStringHolderPythonString.h"
 
@@ -72,7 +73,12 @@ namespace Mengine
         bool removeWrapper( const ConstString& _type ) override;
         const ScriptWrapperInterfacePtr & getWrapper( const ConstString & _type ) const override;
 
+    public:
+        const ThreadMutexInterfacePtr & getMutex() const;
+
     protected:
+        ThreadMutexInterfacePtr m_mutex;
+
         pybind::kernel_interface * m_kernel;
 
         ScriptModuleFinderPtr m_moduleFinder;

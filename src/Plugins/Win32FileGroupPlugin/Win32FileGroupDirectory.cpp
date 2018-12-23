@@ -221,7 +221,7 @@ namespace Mengine
                 }
 
                 WChar nextPath[2048];
-                wsprintf( nextPath, L"%s%s\\", _path, fdFile.cFileName );
+                wsprintf( nextPath, L"%s%s/", _path, fdFile.cFileName );
 
                 ListDirectoryContents( _dir, _mask, nextPath, _lambda );
 

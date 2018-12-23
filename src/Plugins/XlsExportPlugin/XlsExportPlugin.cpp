@@ -54,7 +54,7 @@ namespace Mengine
         WChar shortpath_exportPath[MENGINE_MAX_PATH];
         GetShortPathName( exportPath, shortpath_exportPath, MENGINE_MAX_PATH );
 
-        pybind::kernel_interface * kernel = pybind::initialize( nullptr, shortpath_exportPath, false, false, true );
+        pybind::kernel_interface * kernel = pybind::initialize( nullptr, nullptr, shortpath_exportPath, false, false, true );
 
         //PyObject * xls_module = pybind::module_init( "Xls" );
 
@@ -113,7 +113,7 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
-        kernel->finalize();
+        kernel->destroy();
 
         delete m_warninglogger;
         delete m_errorLogger;

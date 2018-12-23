@@ -56,11 +56,11 @@ namespace Mengine
             const GlobalInputHandlerInterfacePtr & globalHandleSystem = PLAYER_SERVICE()
                 ->getGlobalInputHandler();
 
-            m_globalKeyHandlerF9 = globalHandleSystem->addGlobalKeyHandler( "DebugRenderService toggleDebugText", KC_F9, [this]( const InputKeyEvent & _event )
+            m_globalKeyHandlerF9 = globalHandleSystem->addGlobalKeyHandler( KC_F9, [this]( const InputKeyEvent & _event )
             {
                 (void)_event;
                 this->toggleDebugText_();
-            } );
+            }, "NodeDebugRenderService" );
 
             m_debugText = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), "TextField"_c );

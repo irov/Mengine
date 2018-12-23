@@ -295,7 +295,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderTextureService::visitTexture( VisitorRenderTextureInterface * _visitor ) const
+    void RenderTextureService::visitTexture( const LambdaRenderTexture & _lambda ) const
     {
         for( uint32_t i = 0; i != MENGINE_TEXTURE_MANAGER_HASH_SIZE; ++i )
         {
@@ -309,7 +309,7 @@ namespace Mengine
             {
                 const RenderTextureInterface * texture = it->second;
 
-                _visitor->visitRenderTexture( texture );
+                _lambda( texture );
             }
         }
     }

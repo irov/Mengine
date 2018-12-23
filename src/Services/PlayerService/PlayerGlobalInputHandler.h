@@ -22,11 +22,11 @@ namespace Mengine
         void finalize() override;
 
     public:
-        uint32_t addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc ) override;
+        uint32_t addGlobalHandler( const InputHandlerInterfacePtr & _handler, const Char * _doc ) override;
         InputHandlerInterfacePtr removeGlobalHandler( uint32_t _id ) override;
 
     public:
-        uint32_t addGlobalKeyHandler( const String & _doc, KeyCode _code, const LambdaKeyHandler & _handler ) override;
+        uint32_t addGlobalKeyHandler( KeyCode _code, const LambdaKeyHandler & _lambda, const Char * _doc ) override;
 
     public:
         bool enableGlobalHandler( uint32_t _id, bool _value ) override;
@@ -52,9 +52,11 @@ namespace Mengine
             uint32_t id;
 
             InputHandlerInterfacePtr handler;
-            String doc;
             bool enable;
             bool dead;
+#ifndef NDEBUG
+            String doc;
+#endif
         };
 
         typedef Vector<GlobalHandlerDesc> VectorGlobalHandler;

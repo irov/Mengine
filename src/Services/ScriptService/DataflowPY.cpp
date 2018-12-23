@@ -71,7 +71,7 @@ namespace Mengine
         source_buffer[stream_size] = '\n';
         source_buffer[stream_size + 1] = '\0';
 
-        m_kernel->acquire_lock();
+        pybind::mutex_scope scope( m_kernel );
 
         PyObject * code = m_kernel->code_compile_file( source_buffer, "DataflowPY" );
 
@@ -89,8 +89,6 @@ namespace Mengine
 
             return false;
         }
-
-        m_kernel->release_lock();
 
         data->setScriptCode( pybind::make_borrowed_t( m_kernel, code ) );
 

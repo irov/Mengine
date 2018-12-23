@@ -8,7 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AmplifierMusicCallbackInterface
-        : public Factorable
+        : public Mixin
     {
     public:
         virtual void onMusicPause() = 0;
@@ -37,7 +37,8 @@ namespace Mengine
         virtual void setPosMs( float _posMs ) = 0;
         virtual float getPosMs() const = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
 #define AMPLIFIER_SERVICE()\
     ((Mengine::AmplifierInterface *)SERVICE_GET(Mengine::AmplifierInterface))
-}
+//////////////////////////////////////////////////////////////////////////

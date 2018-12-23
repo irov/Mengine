@@ -30,8 +30,8 @@ namespace Mengine
     public:
         virtual MemoryInputInterfacePtr compressBuffer( const ArchivatorInterfacePtr & _archivator, const void * _buffer, size_t _size, EArchivatorCompress _compress ) = 0;
     };
-    //////////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
 #define ARCHIVE_SERVICE()\
     ((Mengine::ArchiveServiceInterface *)SERVICE_GET(Mengine::ArchiveServiceInterface))
     //////////////////////////////////////////////////////////////////////////
-}

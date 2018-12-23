@@ -102,7 +102,7 @@ namespace Mengine
             return false;
         }
 
-        m_kernel->acquire_lock();
+        pybind::mutex_scope scope( m_kernel );
 
         PyObject * code = m_kernel->marshal_get_object( (char *)source_buffer + 8, source_size - 8 );
 
@@ -123,8 +123,6 @@ namespace Mengine
             return false;
         }
 #endif
-
-        m_kernel->release_lock();
 
         data->setScriptCode( pybind::make_borrowed_t( m_kernel, code ) );
 

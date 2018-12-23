@@ -16,7 +16,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    double WatchdogService::watch( const String & _tag )
+    double WatchdogService::watch( const ConstString & _tag )
     {
         uint64_t ms = TIME_SYSTEM()
             ->getMilliseconds();

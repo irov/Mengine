@@ -175,17 +175,22 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const String & _doc )
+    uint32_t PlayerGlobalInputHandler::addGlobalHandler( const InputHandlerInterfacePtr & _handler, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         GlobalHandlerDesc desc;
 
         uint32_t new_id = ++m_handlersEnumerator;
         desc.id = new_id;
 
         desc.handler = _handler;
-        desc.doc = _doc;
         desc.enable = true;
         desc.dead = false;
+
+#ifndef NDEBUG
+        desc.doc = _doc;
+#endif
 
         m_handlersAdd.emplace_back( desc );
 
@@ -303,9 +308,11 @@ namespace Mengine
         };
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t PlayerGlobalInputHandler::addGlobalKeyHandler( const String & _doc, KeyCode _code, const LambdaKeyHandler & _handler )
+    uint32_t PlayerGlobalInputHandler::addGlobalKeyHandler( KeyCode _code, const LambdaKeyHandler & _lambda, const Char * _doc )
     {
-        uint32_t id = this->addGlobalHandler( new FactorableUnique<Detail::GlobalKeyHandler>( _code, _handler ), _doc );
+        InputHandlerInterfacePtr handler = new FactorableUnique<Detail::GlobalKeyHandler>( _code, _lambda );
+
+        uint32_t id = this->addGlobalHandler( handler, _doc );
 
         return id;
     }

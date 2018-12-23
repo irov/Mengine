@@ -85,7 +85,7 @@ namespace Mengine
         WChar unicode_filePath[MENGINE_MAX_PATH];
         if( Helper::Win32ConcatenateFilePath( m_relationPath, m_folderPath, _fileName, unicode_filePath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR( "Win32FileSystem::existFile invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
                 , _fileName.c_str()
             );
@@ -284,7 +284,7 @@ namespace Mengine
 
         if( _stream == nullptr )
         {
-            LOGGER_ERROR( "Win32FileGroupDirectory::openInputFile failed _stream == NULL"
+            LOGGER_ERROR( "failed _stream == NULL"
             );
 
             return false;
@@ -294,7 +294,7 @@ namespace Mengine
 
         if( file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming ) == false )
         {
-            LOGGER_ERROR( "Win32FileGroupDirectory::openInputFile failed open file '%s':'%s'"
+            LOGGER_ERROR( "failed open file '%s':'%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
             );
@@ -316,7 +316,7 @@ namespace Mengine
     {
         if( _stream == nullptr )
         {
-            LOGGER_ERROR( "Win32FileGroupDirectory::openOutputFile failed _stream == NULL"
+            LOGGER_ERROR( "failed _stream == NULL"
             );
 
             return false;
@@ -326,7 +326,7 @@ namespace Mengine
 
         if( file->open( m_relationPath, m_folderPath, _filePath ) == false )
         {
-            LOGGER_ERROR( "Win32FileGroupDirectory::openOutputFile failed open file '%s':'%s'"
+            LOGGER_ERROR( "failed open file '%s':'%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
             );

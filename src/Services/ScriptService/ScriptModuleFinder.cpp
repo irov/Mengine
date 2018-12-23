@@ -84,19 +84,18 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptModuleFinder::find_module( pybind::kernel_interface * _kernel, PyObject * _module, PyObject * _path )
     {
-        (void)_module;
-        (void)_path;
+        MENGINE_UNUSED( _path );
 
 #ifndef MENGINE_MASTER_RELEASE
         {
-            ScriptModuleLoaderPtr loaderSource = m_factoryScriptModuleLoader->createObject();
+            ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject();
 
-            loaderSource->setDataflow( m_dataflowPY );
-            loaderSource->setModule( _kernel, _module );
+            loader->setDataflow( m_dataflowPY );
+            loader->setModule( _kernel, _module );
 
-            if( this->find_module_source_( _kernel, _module, loaderSource ) == true )
+            if( this->find_module_source_( _kernel, _module, loader ) == true )
             {
-                m_loaders.emplace_back( loaderSource );
+                m_loaders.emplace_back( loader );
 
                 return m_embed.ret();
             }
@@ -104,14 +103,14 @@ namespace Mengine
 #endif
 
         {
-            ScriptModuleLoaderPtr loaderCode = m_factoryScriptModuleLoader->createObject();
+            ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject();
 
-            loaderCode->setDataflow( m_dataflowPYC );
-            loaderCode->setModule( _kernel, _module );
+            loader->setDataflow( m_dataflowPYC );
+            loader->setModule( _kernel, _module );
 
-            if( this->find_module_code_( _kernel, _module, loaderCode ) == true )
+            if( this->find_module_code_( _kernel, _module, loader ) == true )
             {
-                m_loaders.emplace_back( loaderCode );
+                m_loaders.emplace_back( loader );
 
                 return m_embed.ret();
             }
@@ -227,15 +226,11 @@ namespace Mengine
 
             for( const FilePath & path : mp.pathes )
             {
-                m_cacheFullPath.clear();
-                m_cacheFullPath += path;
+                m_cacheFullPath = path;
                 m_cacheFullPath.append( _modulePath, _modulePathLen );
 
                 FilePath c_fullPath = Helper::stringizeFilePath( m_cacheFullPath );
 
-#pragma message ("/**************************************************************")
-#pragma message ("|   TODO: Change to open file")
-#pragma message ("**************************************************************/")
                 if( fileGroup->existFile( c_fullPath ) == false )
                 {
                     continue;

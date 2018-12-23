@@ -340,6 +340,33 @@ namespace Mengine
 
         return true;
     }
+    //////////////////////////////////////////////////////////////////////////			
+    bool PrefetcherService::popData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
+    {
+        if( m_avaliable == false )
+        {
+            return false;
+        }
+
+        PrefetchReceiver * receiver;
+        if( this->popPrefetch_( _fileGroup, _filePath, &receiver ) == false )
+        {
+            return false;
+        }
+
+        ThreadTaskPrefetchDataflowPtr prefetcherDataflow = stdex::intrusive_static_cast<ThreadTaskPrefetchDataflowPtr>(receiver->prefetcher);
+
+        const DataInterfacePtr & prefetch_data = prefetcherDataflow->getData();
+
+        if( prefetch_data == nullptr )
+        {
+            return false;
+        }
+
+        _data = prefetch_data;
+
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::prefetchStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, uint32_t _magicNumber, uint32_t _magicVersion, const PrefetcherObserverInterfacePtr & _observer )
     {
@@ -518,7 +545,7 @@ namespace Mengine
             return false;
         }
 
-        *_receiver = const_cast<PrefetchReceiver *>(&receiver);
+        *_receiver = &receiver;
 
         return true;
     }

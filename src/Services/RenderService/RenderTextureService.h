@@ -48,7 +48,7 @@ namespace Mengine
         bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr& _fileGroup, const ConstString & _codecName, const FilePath & _fileName ) override;
 
     public:
-        void visitTexture( VisitorRenderTextureInterface * _visitor ) const override;
+        void visitTexture( const LambdaRenderTexture & _lambda ) const override;
         size_t getImageMemoryUse( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) const override;
 
     protected:

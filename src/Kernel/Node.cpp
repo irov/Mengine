@@ -22,8 +22,6 @@ namespace Mengine
         , m_afterActive( false )
         , m_enable( true )
         , m_freeze( false )
-        //, m_rendering( false )
-        //, m_invalidateRendering( true )
         , m_uniqueIdentity( 0 )
         , m_parent( nullptr )
     {
@@ -123,11 +121,9 @@ namespace Mengine
 
         if( m_afterActive == false )
         {
-            LOGGER_ERROR( "Node::deactivate %s invalid deactivate in 'activate state'"
+            LOGGER_ERROR( "node '%s' invalid deactivate in 'activate state'"
                 , this->getName().c_str()
             );
-
-            //return;
         }
 
         m_afterActive = false;
@@ -692,7 +688,7 @@ namespace Mengine
 #ifndef NDEBUG
         if( stdex::helper::intrusive_has( m_children.begin(), m_children.end(), _node ) == false )
         {
-            LOGGER_ERROR( "Node::removeChild %s not found children %s"
+            LOGGER_ERROR( "node '%s' not found children %s"
                 , this->getName().c_str()
                 , _node->getName().c_str()
             );

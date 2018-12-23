@@ -2,8 +2,9 @@
 
 #include "Interface/ServiceInterface.h"
 
+#include "Kernel/ConstString.h"
+
 #include "Config/Typedef.h"
-#include "Config/String.h"
 
 namespace Mengine
 {
@@ -14,7 +15,7 @@ namespace Mengine
         SERVICE_DECLARE( "Watchdog" )
 
     public:
-        virtual double watch( const String & _tag ) = 0;
+        virtual double watch( const ConstString & _tag ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #define WATCHDOG_SERVICE()\

@@ -5,14 +5,10 @@
 #include "Interface/RenderTextureInterface.h"
 #include "Interface/FileGroupInterface.h"
 
+#include "Config/Lambda.h"
+
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    class VisitorRenderTextureInterface
-    {
-    public:
-        virtual void visitRenderTexture( const RenderTextureInterfacePtr & _texture ) = 0;
-    };
     //////////////////////////////////////////////////////////////////////////
     class RenderTextureServiceInterface
         : public ServiceInterface
@@ -42,7 +38,8 @@ namespace Mengine
         virtual bool saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr& _fileGroup, const ConstString & _codecName, const FilePath & _fileName ) = 0;
 
     public:
-        virtual void visitTexture( VisitorRenderTextureInterface * _visitor ) const = 0;
+        typedef Lambda<void( const RenderTextureInterfacePtr & )> LambdaRenderTexture;
+        virtual void visitTexture( const LambdaRenderTexture & _lambda ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #define RENDERTEXTURE_SERVICE()\

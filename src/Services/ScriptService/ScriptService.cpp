@@ -10,6 +10,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/ArchiveServiceInterface.h"
 #include "Interface/PrefetcherServiceInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "DataflowPY.h"
 #include "DataflowPYC.h"
@@ -135,11 +136,39 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
+    static void kernel_mutex_lock( void * _ctx )
+    {
+        ScriptService * service = static_cast<ScriptService *>(_ctx);
+
+        const ThreadMutexInterfacePtr & mutex = service->getMutex();
+
+        mutex->lock();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static void kernel_mutex_unlock( void * _ctx )
+    {
+        ScriptService * service = static_cast<ScriptService *>(_ctx);
+
+        const ThreadMutexInterfacePtr & mutex = service->getMutex();
+
+        mutex->unlock();
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ScriptService::_initializeService()
     {
         bool developmentMode = HAS_OPTION( "dev" );
 
-        pybind::kernel_interface * kernel = pybind::initialize( nullptr, nullptr, developmentMode, false, true );
+        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+            ->createMutex( __FILE__, __LINE__ );
+
+        m_mutex = mutex;
+
+        pybind::kernel_mutex_t kernel_mutex;
+        kernel_mutex.ctx = this;
+        kernel_mutex.lock = &kernel_mutex_lock;
+        kernel_mutex.unlock = &kernel_mutex_unlock;
+
+        pybind::kernel_interface * kernel = pybind::initialize( nullptr, &kernel_mutex, nullptr, developmentMode, false, true );
 
         if( kernel == nullptr )
         {
@@ -298,11 +327,14 @@ namespace Mengine
 
         m_kernel->setStdErrorHandle( nullptr );
 
-        m_kernel->finalize();
+        m_kernel->destroy();
+        m_kernel = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
 
         m_factoryScriptModule = nullptr;
+
+        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     pybind::kernel_interface * ScriptService::getKernel()
@@ -677,5 +709,10 @@ namespace Mengine
         const ScriptWrapperInterfacePtr & wrapper = it_found->second;
 
         return wrapper;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const ThreadMutexInterfacePtr & ScriptService::getMutex() const
+    {
+        return m_mutex;
     }
 }

@@ -999,42 +999,23 @@ namespace Mengine
             return py_list;
         }
 
-        class MyVisitorRenderTexture
-            : public VisitorRenderTextureInterface
-        {
-        public:
-            MyVisitorRenderTexture( const pybind::list & _list )
-                : m_list( _list )
-            {
-            }
-
-        protected:
-            void visitRenderTexture( const RenderTextureInterfacePtr & _texture ) override
-            {
-                const FilePath & filePath = _texture->getFileName();
-
-                m_list.append( filePath );
-            }
-
-        protected:
-            pybind::list m_list;
-        };
-
         pybind::list s_textures( pybind::kernel_interface * _kernel )
         {
             pybind::list py_list( _kernel );
-
-            MyVisitorRenderTexture mvrt( py_list );
+            
             RENDERTEXTURE_SERVICE()
-                ->visitTexture( &mvrt );
+                ->visitTexture( [&py_list]( const RenderTextureInterfacePtr & _texture )
+            {
+                const FilePath & filePath = _texture->getFileName();
+
+                py_list.append( filePath );
+            } );
 
             return py_list;
         }
 
-        double s_watchdog( const String & _tag )
+        double s_watchdog( const ConstString & _tag )
         {
-            (void)_tag;
-
             double watch = WATCHDOG( _tag );
 
             return watch;

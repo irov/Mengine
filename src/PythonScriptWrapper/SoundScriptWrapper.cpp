@@ -508,7 +508,8 @@ namespace Mengine
         }
         //////////////////////////////////////////////////////////////////////////
         class PythonAmplifierMusicCallback
-            : public FactorableUnique<AmplifierMusicCallbackInterface>
+            : public AmplifierMusicCallbackInterface
+            , public Factorable
         {
         public:
             PythonAmplifierMusicCallback( const pybind::object & _cb, const pybind::args & _args )
@@ -554,7 +555,7 @@ namespace Mengine
 
             if( _cb.is_callable() == true )
             {
-                cb = new PythonAmplifierMusicCallback( _cb, _args );
+                cb = new FactorableUnique<PythonAmplifierMusicCallback>( _cb, _args );
             }
 
             AMPLIFIER_SERVICE()
@@ -740,7 +741,7 @@ namespace Mengine
 
             if( _cb.is_callable() == true )
             {
-                cb = new PythonAmplifierMusicCallback( _cb, _args );
+                cb = new FactorableUnique<PythonAmplifierMusicCallback>( _cb, _args );
             }
 
             if( AMPLIFIER_SERVICE()

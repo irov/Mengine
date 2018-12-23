@@ -2,6 +2,10 @@
 
 #include "imgui_impl_glfw_gl3_glad.h"
 
+#define STBI_ONLY_PNG
+#define STB_IMAGE_IMPLEMENTATION
+#include "stb_image.h"
+
 #include "Config/Stringstream.h"
 
 #include <chrono>
@@ -17,14 +21,35 @@
 
 #define MutexLocker std::lock_guard<std::mutex>
 
+#include "IconsAtlas.h"
+
+#include "ImGui_Ext.h"
+
 namespace Mengine
 {
-    static const char* sNodeIcons[] = {
-        "",
-        "[R] ",
-        "[A] ",
-        "[R/A] "
-    };
+    static DebuggerNode::Icon NodeTypeToIcon( const String & _type )
+    {
+        if( _type == "Movie2" )
+        {
+            return DebuggerNode::Icon::Icon_Movie2;
+        }
+        else if( _type == "Scene" )
+        {
+            return DebuggerNode::Icon::Icon_Scene;
+        }
+        else if( _type == "Layer2D" )
+        {
+            return DebuggerNode::Icon::Icon_Layer2D;
+        }
+        else if( _type == "Entity" )
+        {
+            return DebuggerNode::Icon::Icon_Entity;
+        }
+        else
+        {
+            return DebuggerNode::Icon::Icon_Unknown;
+        }
+    }
 
 
     static bool zed_net_ext_tcp_wait_for_data( zed_net_socket_t* _socket, const int _timeoutMs )
@@ -50,6 +75,7 @@ namespace Mengine
         , mWidth( 1280 )
         , mHeight( 720 )
         , mSelectedNode( nullptr )
+        , mIconsAtlas( 0 )
         , mServerAddress()
         , mServerPort( 18790 )
         , mServerAddressCopy()
@@ -78,7 +104,7 @@ namespace Mengine
         glfwWindowHint( GLFW_CONTEXT_VERSION_MINOR, 3 );
         glfwWindowHint( GLFW_OPENGL_FORWARD_COMPAT, GLFW_TRUE );
         glfwWindowHint( GLFW_OPENGL_PROFILE, GLFW_OPENGL_CORE_PROFILE );
-        glfwWindowHint( GLFW_RESIZABLE, GLFW_FALSE );
+        glfwWindowHint( GLFW_RESIZABLE, GLFW_TRUE );
 
         mWindow = glfwCreateWindow( mWidth, mHeight, "Node Debugger", nullptr, nullptr );
 
@@ -95,6 +121,8 @@ namespace Mengine
         gladLoadGLLoader( reinterpret_cast<GLADloadproc>(glfwGetProcAddress) );
         glfwSwapInterval( 1 ); // enable v-sync
 
+        LoadIconsAtlas();
+
         glViewport( 0, 0, mWidth, mHeight );
 
         glEnable( GL_BLEND );
@@ -104,6 +132,13 @@ namespace Mengine
         glfwSetCharCallback( mWindow, ImGui_ImplGlfw_CharCallback );
         glfwSetKeyCallback( mWindow, ImGui_ImplGlfw_KeyCallback );
         glfwSetMouseButtonCallback( mWindow, ImGui_ImplGlfw_MouseButtonCallback );
+        glfwSetWindowSizeCallback(mWindow, []( GLFWwindow * _wnd, int _width, int _height ) {
+             NodeDebuggerApp * _this = reinterpret_cast<NodeDebuggerApp *>(glfwGetWindowUserPointer( _wnd ));
+             if( _this != nullptr )
+             {
+                 _this->Resize( _width, _height );
+             }
+        });
 
         // Setup Dear ImGui binding
         IMGUI_CHECKVERSION();
@@ -112,6 +147,7 @@ namespace Mengine
         //ImGui::GetIO().ConfigFlags |= ImGuiConfigFlags_NoMouseCursorChange; // tell ImGui to not interfere with our cursors
         ImGui_ImplGlfwGL3_Init( mWindow, false );
         ImGui::StyleColorsClassic();
+        //ImGuiExt::SetBrightStyle();
 
         mShutdown = false;
         mNetworkThread = std::thread( &NodeDebuggerApp::NetworkLoop, this );
@@ -154,6 +190,16 @@ namespace Mengine
         {
             DestroyNode( mScene );
             mScene = nullptr;
+        }
+    }
+
+    void NodeDebuggerApp::Resize( const int _width, const int _height )
+    {
+        if( mWidth != _width || mHeight != _height )
+        {
+            mWidth = _width;
+            mHeight = _height;
+            glViewport( 0, 0, mWidth, mHeight );
         }
     }
 
@@ -254,8 +300,6 @@ namespace Mengine
 
     void NodeDebuggerApp::DeserializeNode( const pugi::xml_node& _xmlNode, DebuggerNode* _node )
     {
-        _node->iconBits = DebuggerNode::Icon_None;
-
         _node->uid = _xmlNode.attribute( "uid" ).as_uint();
         _node->name = _xmlNode.attribute( "name" ).value();
         _node->type = _xmlNode.attribute( "type" ).value();
@@ -284,8 +328,6 @@ namespace Mengine
 
         if( _node->hasRender )
         {
-            _node->iconBits |= DebuggerNode::Icon_Render;
-
             deserializeNodeProp<bool>( "enable", renderNode, [_node]( bool _value )
             {
                 _node->render.enable = _value;
@@ -304,8 +346,6 @@ namespace Mengine
 
         if( _node->hasAnimation )
         {
-            _node->iconBits |= DebuggerNode::Icon_Animation;
-
             deserializeNodeProp<bool>( "loop", animationNode, [_node]( bool _value )
             {
                 _node->animation.loop = _value;
@@ -322,6 +362,8 @@ namespace Mengine
                 _node->children.push_back( childNode );
             }
         }
+
+        _node->icon = NodeTypeToIcon( _node->type );
 
         _node->dirty = false;
     }
@@ -364,6 +406,28 @@ namespace Mengine
         delete _node;
     }
 
+    void NodeDebuggerApp::LoadIconsAtlas()
+    {
+        int width, height, bpp;
+        stbi_uc* data = stbi_load_from_memory( reinterpret_cast<const stbi_uc *>( IconsAtlas ), IconsAtlas_size, &width, &height, &bpp, STBI_rgb_alpha );
+        if( data != nullptr )
+        {
+            GLuint texture;
+            glGenTextures( 1, &texture );
+            glBindTexture( GL_TEXTURE_2D, texture );
+            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+
+            glBindTexture( GL_TEXTURE_2D, 0 );
+
+            mIconsAtlas = static_cast<uintptr_t>( texture );
+        }
+    }
+
     void NodeDebuggerApp::DoUI()
     {
         const ImGuiWindowFlags kPanelFlags = ImGuiWindowFlags_NoTitleBar | ImGuiWindowFlags_NoResize | ImGuiWindowFlags_NoMove | ImGuiWindowFlags_NoCollapse;
@@ -371,7 +435,7 @@ namespace Mengine
         const float leftPanelWidth = 400.0f;
 
         ImGui::SetNextWindowPos( ImVec2( 0, 0 ), ImGuiCond_FirstUseEver );
-        ImGui::SetNextWindowSize( ImVec2( static_cast<float>(mWidth), static_cast<float>(mHeight) ), ImGuiCond_FirstUseEver );
+        ImGui::SetNextWindowSize( ImVec2( static_cast<float>(mWidth), static_cast<float>(mHeight) ), ImGuiCond_Always );
 
         if( ImGui::Begin( "Node Debugger", nullptr, kPanelFlags ) )
         {
@@ -536,15 +600,22 @@ namespace Mengine
         const ImGuiTreeNodeFlags flagsNoChildren = ImGuiTreeNodeFlags_Leaf | seletedFlag;
 
         std::string treeNodeId = std::to_string( _node->uid );
-        std::string fullLabel = std::string( sNodeIcons[_node->iconBits] ) + _node->name.c_str() + "##" + treeNodeId;
+        std::string fullLabel = std::string( _node->name.c_str() ) + "##" + treeNodeId;
 
-        const bool nodeOpen = ImGui::TreeNodeEx( fullLabel.c_str(), _node->children.empty() ? flagsNoChildren : flagsNormal );
-        if( ImGui::IsItemClicked() )
+        auto result = ImGuiExt::TreeNodeWithIcon
+        (
+            reinterpret_cast<ImTextureID>( mIconsAtlas ),
+            static_cast<size_t>( _node->icon ),
+            fullLabel.c_str(),
+            _node->children.empty() ? flagsNoChildren : flagsNormal
+        );
+
+        if( result.second )
         {
             OnSelectNode( _node );
         }
 
-        if( nodeOpen )
+        if( result.first )
         {
             for( DebuggerNode* child : _node->children )
             {

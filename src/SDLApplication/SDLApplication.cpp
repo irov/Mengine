@@ -330,7 +330,7 @@ namespace Mengine
         size_t userPathLen = PLATFORM_SERVICE()
             ->getUserPath( userPath );
 
-        FilePath cs_userPath = Helper::stringizeFilePath( userPath, userPathLen );
+        FilePath cs_userPath = Helper::stringizeFilePathSize( userPath, userPathLen );
 
         // mount user directory
         if( FILE_SERVICE()
@@ -776,8 +776,7 @@ namespace Mengine
             }
         }
 
-        FilePath renderMaterialsPathEmpty;
-        FilePath renderMaterialsPath = CONFIG_VALUE( "Engine", "RenderMaterials", renderMaterialsPathEmpty );
+        FilePath renderMaterialsPath = CONFIG_VALUE( "Engine", "RenderMaterials", FilePath::none() );
 
         if( renderMaterialsPath.empty() == false )
         {

@@ -1625,40 +1625,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Platform::findFiles( const Char * _path, const LambdaFiles & _lambda )
-    {
-        WChar unicode_path[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _path, unicode_path, MENGINE_MAX_PATH ) == false )
-        {
-            return false;
-        }
-
-        WIN32_FIND_DATA data;
-        HANDLE hFind = ::FindFirstFile( unicode_path, &data );
-
-        if( hFind == INVALID_HANDLE_VALUE )
-        {
-            return true;
-        }
-         
-        do {
-            Char utf8_filepath[MENGINE_MAX_PATH];
-            if( Helper::unicodeToUtf8( data.cFileName, utf8_filepath, MENGINE_MAX_PATH ) == false )
-            {
-                ::FindClose( hFind );
-
-                return false;
-            }
-
-            _lambda( utf8_filepath );
-
-        } while( ::FindNextFile( hFind, &data ) == TRUE );
-
-        ::FindClose( hFind );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     uint64_t Win32Platform::getFileTime( const Char * _path ) const
     {
         (void)_path;

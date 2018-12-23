@@ -18,6 +18,8 @@
 #include "Interface/MemoryServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/TimeSystemInterface.h"
 
 #include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
@@ -66,6 +68,7 @@ namespace Mengine
         : m_arrowHided( false )
         , m_fps( 0 )
         , m_focus( true )
+        , m_oldTime( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -78,6 +81,7 @@ namespace Mengine
         if( m_arrow != nullptr )
         {
             m_arrow->disable();
+            m_arrow = nullptr;
         }
 
         m_arrow = _arrow;
@@ -164,6 +168,37 @@ namespace Mengine
     const AffectorablePtr & PlayerService::getGlobalAffectorable() const
     {
         return m_affectorableGlobal;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t PlayerService::addTimer( const LambdaTimer & _lambda )
+    {
+        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
+
+        TimerDesc desc;
+        desc.id = new_id;
+        desc.lambda = _lambda;
+
+        m_timers.emplace_back( desc );
+
+        return new_id;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PlayerService::removeTimer( uint32_t _id )
+    {
+        for( TimerDesc & desc : m_timers )
+        {
+            if( desc.id != _id )
+            {
+                continue;
+            }
+
+            desc = m_timers.back();
+            m_timers.pop_back();
+            
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::_initializeService()
@@ -473,6 +508,20 @@ namespace Mengine
         if( m_globalInputHandler != nullptr )
         {
             m_globalInputHandler->update();
+        }
+
+        uint64_t currentTime = GET_TIME_MILLISECONDS();
+
+        if( m_oldTime == 0 || currentTime - m_oldTime >= 1000 )
+        {
+            m_timersProcess = m_timers;
+
+            for( const TimerDesc & desc : m_timersProcess )
+            {
+                desc.lambda( desc.id, currentTime );
+            }
+
+            m_oldTime = currentTime - currentTime % 1000;
         }
 
         return true;

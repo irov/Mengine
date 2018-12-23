@@ -75,6 +75,11 @@ namespace Mengine
     public:
         virtual const AffectorablePtr & getAffectorable() const = 0;
         virtual const AffectorablePtr & getGlobalAffectorable() const = 0;
+
+    public:
+        typedef Lambda<void( uint32_t, uint64_t )> LambdaTimer;
+        virtual uint32_t addTimer( const LambdaTimer & _lambda ) = 0;
+        virtual bool removeTimer( uint32_t _id ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

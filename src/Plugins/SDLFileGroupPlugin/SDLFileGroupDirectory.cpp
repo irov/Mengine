@@ -10,6 +10,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionNotImplemented.h"
 #include "Kernel/Logger.h"
 #include "Kernel/String.h"
 
@@ -92,10 +93,7 @@ namespace Mengine
         SDL_RWops* rwops = SDL_RWFromFile( filePath, "rb" );
 
         if( rwops != nullptr )
-        {
-            Sint64 size = SDL_RWsize(rwops);
-            (void)size;
-            
+        {           
             SDL_RWclose( rwops );
             
             return true;
@@ -147,6 +145,17 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SDLFileGroupDirectory::findFiles( const FilePath & _folderPath, const Char * _mask, const LambdaFiles & _lambda ) const
+    {
+        MENGINE_UNUSED( _folderPath );
+        MENGINE_UNUSED( _mask );
+        MENGINE_UNUSED( _lambda );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming )

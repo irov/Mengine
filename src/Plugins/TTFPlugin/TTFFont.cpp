@@ -101,7 +101,9 @@ namespace Mengine
     {
         if( m_ttfFEPath.empty() == false )
         {
-            FEDataInterfacePtr data = Helper::dataflow( m_fileGroup, m_ttfFEPath, STRINGIZE_STRING_LOCAL( "feFont" ) );
+            DataflowInterfacePtr dataflowFE = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
+
+            FEDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfFEPath, dataflowFE );
 
             if( data == nullptr )
             {
@@ -130,7 +132,9 @@ namespace Mengine
     {
         if( m_ttfFEPath.empty() == false )
         {
-            FEDataInterfacePtr data = Helper::dataflow( m_fileGroup, m_ttfFEPath, STRINGIZE_STRING_LOCAL( "feFont" ) );
+            DataflowInterfacePtr dataflowFE = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
+
+            FEDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfFEPath, dataflowFE );
 
             if( data == nullptr )
             {
@@ -177,7 +181,9 @@ namespace Mengine
             }
         }
 
-        TTFDataInterfacePtr data = Helper::dataflow( m_fileGroup, m_ttfPath, STRINGIZE_STRING_LOCAL( "ttfFont" ) );
+        DataflowInterfacePtr dataflowTTF = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
+
+        TTFDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfPath, dataflowTTF );
 
         if( data == nullptr )
         {

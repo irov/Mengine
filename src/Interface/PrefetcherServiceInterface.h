@@ -36,6 +36,7 @@ namespace Mengine
     public:
         virtual bool prefetchData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const PrefetcherObserverInterfacePtr & _observer ) = 0;
         virtual bool getData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data ) = 0;
+        virtual bool popData( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data ) = 0;
 
     public:
         virtual bool prefetchStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, uint32_t magic_number, uint32_t magic_version, const PrefetcherObserverInterfacePtr & _observer ) = 0;

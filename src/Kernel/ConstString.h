@@ -83,7 +83,7 @@ namespace Mengine
 
         inline void clear()
         {
-            *this = ConstString::none();;
+            *this = ConstString::none();
         }
 
     public:

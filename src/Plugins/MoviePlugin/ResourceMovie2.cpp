@@ -146,7 +146,9 @@ namespace Mengine
 
         const ConstString & dataflowType = this->getDataflowType();
 
-        DataInterfacePtr data = Helper::dataflow( fileGroup, filePath, dataflowType );
+        DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
+
+        DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow );
 
         if( data == nullptr )
         {

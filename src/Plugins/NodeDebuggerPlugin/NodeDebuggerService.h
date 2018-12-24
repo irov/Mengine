@@ -1,10 +1,12 @@
 #pragma once
 
 #include "NodeDebuggerInterface.h"
+#include "NodeDebuggerBoundingBoxInterface.h"
 
 #include "Engine/TextField.h"
 
 #include "Config/Vector.h"
+#include "Config/Map.h"
 #include "Config/Deque.h"
 
 #include "Kernel/ServiceBase.h"

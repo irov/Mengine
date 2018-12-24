@@ -86,11 +86,12 @@ namespace Mengine
         bool handleMouseWheel( const InputMouseWheelEvent & _event ) override;
 
     protected:
+        PickerTrapState * m_picker;
+
+        //mutable mt::box2f m_cacheBoundingBox;
+
         bool m_outward;
         bool m_global;
-
-    protected:
-        PickerTrapState * m_picker;
 
         bool m_defaultHandle;
     };

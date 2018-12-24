@@ -104,9 +104,9 @@ namespace Mengine
 
         pybind::mutex_scope scope( m_kernel );
 
-        PyObject * code = m_kernel->marshal_get_object( (char *)source_buffer + 8, source_size - 8 );
+        PyObject * py_code = m_kernel->marshal_get_object( (char *)source_buffer + 8, source_size - 8 );
 
-        if( code == nullptr )
+        if( py_code == nullptr )
         {
             LOGGER_ERROR( "module invalid marshal get object"
             );
@@ -115,7 +115,7 @@ namespace Mengine
         }
 
 #ifndef NDEBUG
-        if( m_kernel->code_check( code ) == false )
+        if( m_kernel->code_check( py_code ) == false )
         {
             LOGGER_ERROR( "module marshal get object not code"
             );
@@ -124,7 +124,7 @@ namespace Mengine
         }
 #endif
 
-        data->setScriptCode( pybind::make_borrowed_t( m_kernel, code ) );
+        data->setScriptCode( pybind::make_borrowed_t( m_kernel, py_code ) );
 
         return true;
     }

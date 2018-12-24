@@ -16,7 +16,7 @@ namespace Mengine
     public:
         inline const mt::box2f * getBoundingBox() const;
 
-    protected:
+    public:
         inline void invalidateBoundingBox() const;
 
     protected:

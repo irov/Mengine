@@ -95,7 +95,7 @@ namespace Mengine
         VectorUV m_uvs;
         VectorColor m_colors;
 
-        VectorRenderIndices m_indices;
+        VectorRenderIndex m_indices;
 
         mutable VectorRenderVertex2D m_verticesWM;
 

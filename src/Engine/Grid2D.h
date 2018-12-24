@@ -89,7 +89,7 @@ namespace Mengine
         VectorRenderVertex2D m_vertices;
         VectorRenderVertex2D m_verticesWM;
 
-        VectorRenderIndices m_indices;
+        VectorRenderIndex m_indices;
 
         mutable bool m_invalidateVerticesWM;
     };

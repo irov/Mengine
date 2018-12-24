@@ -11,11 +11,18 @@
 #include "Interface/PrototypeServiceInterface.h"
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/SocketSystemInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
+
+#include "NodeDebuggerSerialization.h"
+
+#include "ShapeDebuggerBoundingBox.h"
+#include "HotSpotPolygonDebuggerBoundingBox.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/AssertionVocabulary.h"
 #include "Kernel/Scene.h"
 
 #include "Config/Stringstream.h"
@@ -24,8 +31,6 @@
 #include "stdex/allocator_report.h"
 
 #include <iomanip>
-
-#include "NodeDebuggerSerializaton.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( NodeDebuggerService, Mengine::NodeDebuggerService );
@@ -50,11 +55,20 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerService::_initializeService()
     {
+        VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), new FactorableUnique<ShapeDebuggerBoundingBox>() );
+        VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFlex" ), new FactorableUnique<ShapeDebuggerBoundingBox>() );
+        VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), new FactorableUnique<HotSpotPolygonDebuggerBoundingBox>() );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerService::_finalizeService()
     {
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFlex" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
+
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerService::onWork( uint32_t )
@@ -223,44 +237,61 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerService::render( const RenderContext * _context )
     {
-        if( m_selectedNodePath.empty() == false )
+        if( m_selectedNodePath.empty() == true )
         {
-            NodePtr node = findUniqueNode( m_scene, m_selectedNodePath );
-            if( node != nullptr )
-            {
-                const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
-                    ->getDebugMaterial();
+            return;
+        }
 
-                mt::box2f bbox;
-                if( node->absorbBoundingBox( bbox ) == true )
-                {
-                    RenderVertex2D * vertices = RENDER_SERVICE()
-                        ->getDebugRenderVertex2D( 5 );
+        NodePtr node = Helper::findUniqueNode( m_scene, m_selectedNodePath );
 
-                    vertices[0].position = mt::vec3f( bbox.minimum.x, bbox.minimum.y, 0.f );
-                    vertices[1].position = mt::vec3f( bbox.maximum.x, bbox.minimum.y, 0.f );
-                    vertices[2].position = mt::vec3f( bbox.maximum.x, bbox.maximum.y, 0.f );
-                    vertices[3].position = mt::vec3f( bbox.minimum.x, bbox.maximum.y, 0.f );
-                    vertices[4].position = vertices[0].position;
+        if( node == nullptr )
+        {
+            return;
+        }
 
-                    vertices[0].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
-                    vertices[1].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
-                    vertices[2].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
-                    vertices[3].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
-                    vertices[4].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
+        const ConstString & type = node->getType();
 
-                    for( size_t i = 0; i < 4; ++i )
-                    {
-                        RENDER_SERVICE()
-                            ->addRenderLine( _context
-                                , debugMaterial
-                                , &vertices[i]
-                                , 2
-                                , nullptr
-                                , false );
-                    }
-                }
-            }
+        NodeDebuggerBoundingBoxInterfacePtr boundingBox = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), type );
+
+        if( boundingBox == nullptr )
+        {
+            return;
+        }
+
+        mt::box2f bbox;
+        if( boundingBox->getBoundingBox( node, &bbox ) == false )
+        {
+            return;
+        }
+
+        const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
+            ->getDebugMaterial();
+
+
+        RenderVertex2D * vertices = RENDER_SERVICE()
+            ->getDebugRenderVertex2D( 5 );
+
+        vertices[0].position = mt::vec3f( bbox.minimum.x, bbox.minimum.y, 0.f );
+        vertices[1].position = mt::vec3f( bbox.maximum.x, bbox.minimum.y, 0.f );
+        vertices[2].position = mt::vec3f( bbox.maximum.x, bbox.maximum.y, 0.f );
+        vertices[3].position = mt::vec3f( bbox.minimum.x, bbox.maximum.y, 0.f );
+        vertices[4].position = vertices[0].position;
+
+        vertices[0].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
+        vertices[1].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
+        vertices[2].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
+        vertices[3].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
+        vertices[4].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
+
+        for( size_t i = 0; i < 4; ++i )
+        {
+            RENDER_SERVICE()
+                ->addRenderLine( _context
+                    , debugMaterial
+                    , &vertices[i]
+                    , 2
+                    , nullptr
+                    , false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -455,7 +486,7 @@ namespace Mengine
         String pathStr = _xmlNode.attribute( "path" ).value();
         VectorNodePath path = stringToPath( pathStr );
 
-        NodePtr node = findUniqueNode( m_scene, path );
+        NodePtr node = Helper::findUniqueNode( m_scene, path );
 
         if( node != nullptr )
         {

@@ -137,45 +137,35 @@ namespace Mengine
         void addSurface( const SurfacePtr & _surface );
         void removeSurface( const SurfacePtr & _surface );
 
-    protected:
+    public:
         void addSprite_( uint32_t _index, const ShapeQuadFixedPtr & _sprite );
         const ShapeQuadFixedPtr & getSprite_( uint32_t _index ) const;
-
-    public:
         const ShapeQuadFixedPtr & findSprite( const ConstString & _name ) const;
         bool hasSprite( const ConstString & _name ) const;
 
-    protected:
+    public:
         void addParticle_( uint32_t _index, const NodePtr & _particleEmitter );
         const NodePtr & getParticle_( uint32_t _index ) const;
-
-    public:
         const NodePtr & findParticle( const ConstString & _name ) const;
         bool hasParticle( const ConstString & _name ) const;
 
-    protected:
+    public:
         void addSlot_( uint32_t _index, const Movie2SlotPtr & _slot );
         const Movie2SlotPtr & getSlot_( uint32_t _index ) const;
-
-    public:
         const Movie2SlotPtr & findSlot( const ConstString & _name ) const;
         bool hasSlot( const ConstString & _name ) const;
         void visitSlots( const VisitorMovie2LayerInterfacePtr & _visitor );
 
-    protected:
+    public:
         void addSocket_( uint32_t _index, const HotSpotPolygonPtr & _hotspot );
         const HotSpotPolygonPtr & getSocket_( uint32_t _index ) const;
-
-    public:
         const HotSpotPolygonPtr & findSocket( const ConstString & _name ) const;
         bool hasSocket( const ConstString & _name ) const;
         void visitSockets( const VisitorMovie2LayerInterfacePtr & _visitor );
 
-    protected:
+    public:
         void addText_( uint32_t _index, const TextFieldPtr & _text );
         const TextFieldPtr & getText_( uint32_t _index ) const;
-
-    public:
         const TextFieldPtr & findText( const ConstString & _name ) const;
         bool hasText( const ConstString & _name ) const;
         void visitTexts( const VisitorMovie2LayerInterfacePtr & _visitor );
@@ -196,12 +186,14 @@ namespace Mengine
         Camera * addCamera( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport );
         bool removeCamera( const ConstString & _name );
         bool hasCamera( const ConstString & _name ) const;
-
         bool getCamera( const ConstString & _name, Camera ** _camera );
 
     public:
         bool interruptElements();
         bool checkInterruptElement() const;
+
+    public:
+        bool getWorldBoundingBox( mt::box2f * _bb ) const;
 
     protected:
         bool createCompositionLayers_();
@@ -227,18 +219,7 @@ namespace Mengine
         Viewport m_bounds;
 
         VectorRenderVertex2D m_vertices;
-        VectorRenderIndices m_indices;
-
-        struct Mesh
-        {
-            uint32_t begin_vertices;
-            uint32_t count_vertices;
-
-            uint32_t begin_indices;
-            uint32_t count_indices;
-
-            RenderMaterialInterfacePtr material;
-        };
+        VectorRenderIndex m_indices;
 
         typedef Map<ConstString, Camera> MapCameras;
         MapCameras m_cameras;

@@ -13,7 +13,7 @@
 #include <iterator>
 #include <algorithm>
 
-#include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerializaton.h"
+#include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
 
 #define ZED_NET_STATIC
 #define ZED_NET_IMPLEMENTATION

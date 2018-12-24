@@ -19,17 +19,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t HotSpotBubbles::addBubble( const mt::vec2f & _pos, float _radius, float _ellipse, bool _outward )
     {
-        Bubble b;
+        Bubble bubble;
 
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
-        b.id = new_id;
-        b.pos = _pos;
-        b.pos_wm = _pos;
-        b.radius = _radius;
-        b.ellipse = _ellipse;
-        b.outward = _outward;
+        bubble.id = new_id;
+        bubble.pos = _pos;
+        bubble.pos_wm = _pos;
+        bubble.radius = _radius;
+        bubble.ellipse = _ellipse;
+        bubble.outward = _outward;
 
-        m_bubbles.emplace_back( b );
+        m_bubbles.emplace_back( bubble );
 
         return new_id;
     }
@@ -51,15 +51,15 @@ namespace Mengine
 
         this->updateBubbleWM_();
 
-        for( const Bubble & b : m_bubbles )
+        for( const Bubble & bubble : m_bubbles )
         {
-            mt::vec2f v = pointIn1 - b.pos_wm;
+            mt::vec2f v = pointIn1 - bubble.pos_wm;
 
-            v.y /= b.ellipse;
+            v.y /= bubble.ellipse;
 
             float v_sqrlength = v.sqrlength();
 
-            if( v_sqrlength < b.radius * b.radius )
+            if( v_sqrlength < bubble.radius * bubble.radius )
             {
                 return !m_outward;
             }

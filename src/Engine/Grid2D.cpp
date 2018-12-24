@@ -181,7 +181,7 @@ namespace Mengine
 
         m_indices.resize( (m_countX - 1) * (m_countY - 1) * 6 );
 
-        VectorRenderIndices::iterator indices_iterator = m_indices.begin();
+        VectorRenderIndex::iterator indices_iterator = m_indices.begin();
 
         for( uint32_t j = 0; j != (m_countY - 1); ++j )
         {

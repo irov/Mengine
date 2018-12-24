@@ -52,9 +52,9 @@ namespace Mengine
     namespace Helper
     {
         template<class T>
-        inline DecoderFactoryInterfacePtr registerDecoder( const Char * _type )
+        inline DecoderFactoryInterfacePtr registerDecoder( const ConstString & _type )
         {
-            DecoderFactoryInterfacePtr decoder = new FactorableUnique<DecoderFactory<T> >();
+            DecoderFactoryInterfacePtr decoder = new FactorableUnique<DecoderFactory<T>>();
 
             if( decoder->initialize() == false )
             {
@@ -62,7 +62,7 @@ namespace Mengine
             }
 
             if( CODEC_SERVICE()
-                ->registerDecoder( Helper::stringizeString( _type ), decoder ) == false )
+                ->registerDecoder( _type, decoder ) == false )
             {
                 return nullptr;
             }
@@ -70,15 +70,15 @@ namespace Mengine
             return decoder;
         }
 
-        inline void unregisterDecoder( const Char * _type )
+        inline void unregisterDecoder( const ConstString & _type )
         {
             DecoderFactoryInterfacePtr decoder = CODEC_SERVICE()
-                ->unregisterDecoder( Helper::stringizeString( _type ) );
+                ->unregisterDecoder( _type );
 
             if( decoder == nullptr )
             {
                 LOGGER_ERROR( "invalid unregister decoder '%s'"
-                    , _type
+                    , _type.c_str()
                 );
 
                 return;

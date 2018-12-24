@@ -650,45 +650,45 @@ namespace Mengine
 
         stdex::intrusive_this_release( this );
     }
-    //////////////////////////////////////////////////////////////////////////
-    bool Node::absorbBoundingBox( mt::box2f & _bb )
-    {
-        bool successul = false;
+    ////////////////////////////////////////////////////////////////////////////
+    //bool Node::absorbBoundingBox( mt::box2f & _bb )
+    //{
+    //    bool successul = false;
 
-        mt::box2f absorb_bb;
-        mt::insideout_box( absorb_bb );
+    //    mt::box2f absorb_bb;
+    //    mt::insideout_box( absorb_bb );
 
-        const mt::box2f * bb = this->getBoundingBox();
+    //    const mt::box2f * bb = this->getBoundingBox();
 
-        if( bb != nullptr )
-        {
-            mt::merge_box( absorb_bb, *bb );
+    //    if( bb != nullptr )
+    //    {
+    //        mt::merge_box( absorb_bb, *bb );
 
-            successul = true;
-        }
+    //        successul = true;
+    //    }
 
-        this->foreachChildren( [&absorb_bb, &successul]( const NodePtr & _child )
-        {
-            mt::box2f child_bb;
-            if( _child->absorbBoundingBox( child_bb ) == true )
-            {
-                successul = true;
-            }
+    //    this->foreachChildren( [&absorb_bb, &successul]( const NodePtr & _child )
+    //    {
+    //        mt::box2f child_bb;
+    //        if( _child->absorbBoundingBox( child_bb ) == true )
+    //        {
+    //            successul = true;
+    //        }
 
-            mt::merge_box( absorb_bb, child_bb );
-        } );
+    //        mt::merge_box( absorb_bb, child_bb );
+    //    } );
 
-        _bb = absorb_bb;
+    //    _bb = absorb_bb;
 
-        return successul;
-    }
+    //    return successul;
+    //}
     //////////////////////////////////////////////////////////////////////////
     bool Node::removeChild( const NodePtr & _node )
     {
 #ifndef NDEBUG
         if( stdex::helper::intrusive_has( m_children.begin(), m_children.end(), _node ) == false )
         {
-            LOGGER_ERROR( "node '%s' not found children %s"
+            LOGGER_ERROR( "node '%s' not found children '%s'"
                 , this->getName().c_str()
                 , _node->getName().c_str()
             );
@@ -1265,8 +1265,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_invalidateWorldMatrix()
     {
-        this->invalidateBoundingBox();
-        //invalidateBoundingBox();add
+        RenderInterface * render = this->getRender();
+
+        if( render != nullptr )
+        {
+            render->invalidateBoundingBox();
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Node::getAffectorableUpdatableMode() const

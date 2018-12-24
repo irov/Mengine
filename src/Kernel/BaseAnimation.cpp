@@ -175,12 +175,16 @@ namespace Mengine
 
         m_interrupt = false;
         m_playTime = _time;
+        
+        bool old_play = m_play;
         m_play = true;
 
-        if( m_play == true )
+        if( old_play == true )
         {
             if( this->_restart( m_playId, _time ) == false )
             {
+                m_play = false;
+
                 return 0;
             }
         }
@@ -188,9 +192,11 @@ namespace Mengine
         {
             if( this->_play( m_playId, _time ) == false )
             {
+                m_play = false;
+
                 return 0;
             }
-        }
+        }        
 
         return id;
     }
@@ -242,10 +248,9 @@ namespace Mengine
         }
 
         m_pause = false;
+        m_playTime = _time;
 
         this->_resume( m_playId, _time );
-
-        m_playTime = _time;
     }
     //////////////////////////////////////////////////////////////////////////
     bool BaseAnimation::interrupt()

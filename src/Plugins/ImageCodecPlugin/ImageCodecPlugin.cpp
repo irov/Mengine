@@ -47,19 +47,19 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ImageCodecPlugin::_initialize()
     {
-        Helper::registerDecoder<ImageDecoderPNG>( "pngImage" );
-        Helper::registerDecoder<ImageDecoderJPEG>( "jpegImage" );
+        Helper::registerDecoder<ImageDecoderPNG>( STRINGIZE_STRING_LOCAL( "pngImage" ) );
+        Helper::registerDecoder<ImageDecoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
 
 #ifdef MENGINE_SUPPORT_DECODER_WEBP
-        Helper::registerDecoder<ImageDecoderWEBP>( "webpImage" );
+        Helper::registerDecoder<ImageDecoderWEBP>( STRINGIZE_STRING_LOCAL( "webpImage" ) );
 #endif
 
-        Helper::registerDecoder<ImageDecoderPVRTC>( "pvrImage" );
-        Helper::registerDecoder<ImageDecoderETC1>( "etcImage" );
-        Helper::registerDecoder<ImageDecoderDDS>( "ddsImage" );
+        Helper::registerDecoder<ImageDecoderPVRTC>( STRINGIZE_STRING_LOCAL( "pvrImage" ) );
+        Helper::registerDecoder<ImageDecoderETC1>( STRINGIZE_STRING_LOCAL( "etcImage" ) );
+        Helper::registerDecoder<ImageDecoderDDS>( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
 
-        Helper::registerDecoder<ImageDecoderHTF>( "htfImage" );
-        Helper::registerDecoder<ImageDecoderACF>( "acfImage" );
+        Helper::registerDecoder<ImageDecoderHTF>( STRINGIZE_STRING_LOCAL( "htfImage" ) );
+        Helper::registerDecoder<ImageDecoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
         CODEC_SERVICE()
             ->registerCodecExt( "png", STRINGIZE_STRING_LOCAL( "pngImage" ) );
@@ -96,15 +96,15 @@ namespace Mengine
         CODEC_SERVICE()
             ->registerCodecExt( "acf", STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
-        Helper::registerEncoder<ImageEncoderPNG>( "pngImage" );
-        Helper::registerEncoder<ImageEncoderJPEG>( "jpegImage" );
-        Helper::registerEncoder<ImageEncoderHTF>( "htfImage" );
-        Helper::registerEncoder<ImageEncoderACF>( "acfImage" );
+        Helper::registerEncoder<ImageEncoderPNG>( STRINGIZE_STRING_LOCAL( "pngImage" ) );
+        Helper::registerEncoder<ImageEncoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+        Helper::registerEncoder<ImageEncoderHTF>( STRINGIZE_STRING_LOCAL( "htfImage" ) );
+        Helper::registerEncoder<ImageEncoderACF>( STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
-        Helper::registerEncoder<ImageEncoderDDS>( "ddsImage" );
+        Helper::registerEncoder<ImageEncoderDDS>( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
 
-        Helper::registerDecoder<PickDecoderHIT>( "hitPick" );
-        Helper::registerEncoder<PickEncoderHIT>( "hitPick" );
+        Helper::registerDecoder<PickDecoderHIT>( STRINGIZE_STRING_LOCAL( "hitPick" ) );
+        Helper::registerEncoder<PickEncoderHIT>( STRINGIZE_STRING_LOCAL( "hitPick" ) );
 
         CODEC_SERVICE()
             ->registerCodecExt( "hit", STRINGIZE_STRING_LOCAL( "hitPick" ) );
@@ -114,27 +114,27 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ImageCodecPlugin::_finalize()
     {
-        Helper::unregisterDecoder( "pngImage" );
-        Helper::unregisterDecoder( "jpegImage" );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "pngImage" ) );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
 
 #ifdef MENGINE_SUPPORT_DECODER_WEBP
-        Helper::unregisterDecoder( "webpImage" );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "webpImage" ) );
 #endif
 
-        Helper::unregisterDecoder( "pvrImage" );
-        Helper::unregisterDecoder( "etcImage" );
-        Helper::unregisterDecoder( "ddsImage" );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "pvrImage" ) );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "etcImage" ) );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
 
-        Helper::unregisterDecoder( "htfImage" );
-        Helper::unregisterDecoder( "acfImage" );
-        Helper::unregisterEncoder( "pngImage" );
-        Helper::unregisterEncoder( "jpegImage" );
-        Helper::unregisterEncoder( "htfImage" );
-        Helper::unregisterEncoder( "acfImage" );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "htfImage" ) );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "acfImage" ) );
+        Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "pngImage" ) );
+        Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
+        Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "htfImage" ) );
+        Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "acfImage" ) );
 
-        Helper::unregisterEncoder( "ddsImage" );
+        Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "ddsImage" ) );
 
-        Helper::unregisterDecoder( "hitPick" );
-        Helper::unregisterEncoder( "hitPick" );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
+        Helper::unregisterEncoder( STRINGIZE_STRING_LOCAL( "hitPick" ) );
     }
 }

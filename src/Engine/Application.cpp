@@ -189,8 +189,8 @@ namespace Mengine
             return false;
         }
 
-        Helper::registerDecoder<ImageDecoderMemory>( "memoryImage" );
-        Helper::registerDecoder<ImageDecoderArchive>( "archiveImage" );
+        Helper::registerDecoder<ImageDecoderMemory>( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
+        Helper::registerDecoder<ImageDecoderArchive>( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
 
         m_companyName = CONFIG_VALUE( "Project", "Company", "NONAME" );
         m_projectName = CONFIG_VALUE( "Project", "Name", "UNKNOWN" );
@@ -304,8 +304,8 @@ namespace Mengine
 
         m_cursorResource = nullptr;
 
-        Helper::unregisterDecoder( "memoryImage" );
-        Helper::unregisterDecoder( "archiveImage" );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "memoryImage" ) );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "archiveImage" ) );
 
         m_locale.clear();
         m_projectCodename.clear();

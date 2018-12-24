@@ -50,9 +50,9 @@ namespace Mengine
     namespace Helper
     {
         template<class T>
-        inline EncoderFactoryInterfacePtr registerEncoder( const Char * _type )
+        inline EncoderFactoryInterfacePtr registerEncoder( const ConstString & _type )
         {
-            EncoderFactoryInterfacePtr encoder = new FactorableUnique<EncoderFactory<T> >();
+            EncoderFactoryInterfacePtr encoder = new FactorableUnique<EncoderFactory<T>>();
 
             if( encoder->initialize() == false )
             {
@@ -60,20 +60,20 @@ namespace Mengine
             }
 
             CODEC_SERVICE()
-                ->registerEncoder( Helper::stringizeString( _type ), encoder );
+                ->registerEncoder( _type, encoder );
 
             return encoder;
         }
 
-        inline void unregisterEncoder( const Char * _type )
+        inline void unregisterEncoder( const ConstString & _type )
         {
             EncoderFactoryInterfacePtr encoder = CODEC_SERVICE()
-                ->unregisterEncoder( Helper::stringizeString( _type ) );
+                ->unregisterEncoder( _type );
 
             if( encoder == nullptr )
             {
                 LOGGER_ERROR( "invalid unregister encoder '%s'"
-                    , _type
+                    , _type.c_str()
                 );
 
                 return;

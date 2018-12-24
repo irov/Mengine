@@ -1,4 +1,4 @@
-<Protocol Version = "131">
+<Protocol Version = "132">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -294,7 +294,7 @@
             <Attribute Name="Name" Type="Mengine::ConstString" Required="1"/>
             <Attribute Name="Duration" Type="float" Required="1"/>
             <Attribute Name="FrameDuration" Type="float" Required="1"/>
-            <Attribute Name="Bounds" Type="Mengine::Viewport"/>
+            <Attribute Name="Bounds" Type="mt::box2f"/>
             <Attribute Name="Master" Type="bool"/>
 
             <Node Name="Layer">

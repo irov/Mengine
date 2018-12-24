@@ -235,6 +235,44 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    static bool s_absorbBoundingBox( const NodePtr & _node, mt::box2f & _bb )
+    {
+        bool successul = false;
+
+        mt::box2f absorb_bb;
+        mt::insideout_box( absorb_bb );
+
+        const ConstString & type = _node->getType();
+
+        NodeDebuggerBoundingBoxInterfacePtr boundingBox = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), type );
+
+        if( boundingBox != nullptr )
+        {
+            mt::box2f bbox;
+            if( boundingBox->getBoundingBox( _node, &bbox ) == true )
+            {
+                mt::merge_box( absorb_bb, bbox );
+
+                successul = true;
+            }
+        }
+
+        _node->foreachChildren( [&absorb_bb, &successul]( const NodePtr & _child )
+        {
+            mt::box2f child_bb;
+            if( s_absorbBoundingBox( _child, child_bb ) == true )
+            {
+                successul = true;
+            }
+
+            mt::merge_box( absorb_bb, child_bb );
+        } );
+
+        _bb = absorb_bb;
+
+        return successul;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerService::render( const RenderContext * _context )
     {
         if( m_selectedNodePath.empty() == true )
@@ -249,24 +287,14 @@ namespace Mengine
             return;
         }
 
-        const ConstString & type = node->getType();
-
-        NodeDebuggerBoundingBoxInterfacePtr boundingBox = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), type );
-
-        if( boundingBox == nullptr )
-        {
-            return;
-        }
-
         mt::box2f bbox;
-        if( boundingBox->getBoundingBox( node, &bbox ) == false )
+        if( s_absorbBoundingBox( node, bbox ) == false )
         {
             return;
         }
 
         const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
             ->getDebugMaterial();
-
 
         RenderVertex2D * vertices = RENDER_SERVICE()
             ->getDebugRenderVertex2D( 5 );

@@ -1,6 +1,7 @@
 #include "Kernel/BaseAnimation.h"
 
 #include "Interface/UpdationInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "math/utils.h"
 
@@ -8,7 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     BaseAnimation::BaseAnimation()
-        : m_enumerator( 0 )
+        : m_playId( 0 )
         , m_playTime( 0.f )
         , m_animationSpeedFactor( 1.f )
         , m_intervalStart( 0.f )
@@ -168,28 +169,28 @@ namespace Mengine
 
         m_playIterator = m_playCount;
 
-        uint32_t id = ++m_enumerator;
+        uint32_t id = GENERATE_UNIQUE_IDENTITY();
+
+        m_playId = id;
+
+        m_interrupt = false;
+        m_playTime = _time;
+        m_play = true;
 
         if( m_play == true )
         {
-            if( this->_restart( m_enumerator, _time ) == false )
+            if( this->_restart( m_playId, _time ) == false )
             {
                 return 0;
             }
         }
         else
         {
-            if( this->_play( id, _time ) == false )
+            if( this->_play( m_playId, _time ) == false )
             {
                 return 0;
             }
         }
-
-        m_interrupt = false;
-
-        m_playTime = _time;
-
-        m_play = true;
 
         return id;
     }
@@ -206,7 +207,7 @@ namespace Mengine
         m_pause = false;
         m_interrupt = false;
 
-        if( this->_stop( m_enumerator ) == false )
+        if( this->_stop( m_playId ) == false )
         {
             return false;
         }
@@ -223,7 +224,7 @@ namespace Mengine
 
         m_pause = true;
 
-        this->_pause( m_enumerator );
+        this->_pause( m_playId );
 
         return true;
     }
@@ -242,7 +243,7 @@ namespace Mengine
 
         m_pause = false;
 
-        this->_resume( m_enumerator, _time );
+        this->_resume( m_playId, _time );
 
         m_playTime = _time;
     }
@@ -261,7 +262,7 @@ namespace Mengine
 
         m_interrupt = true;
 
-        if( this->_interrupt( m_enumerator ) == false )
+        if( this->_interrupt( m_playId ) == false )
         {
             m_interrupt = false;
 
@@ -298,7 +299,7 @@ namespace Mengine
         m_play = false;
         m_interrupt = false;
 
-        this->_end( m_enumerator );
+        this->_end( m_playId );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseAnimation::_setLoop( bool _value )

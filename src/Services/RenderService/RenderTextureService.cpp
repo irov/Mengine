@@ -7,6 +7,7 @@
 #include "Interface/GraveyardInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "RenderTexture.h"
 #include "DecoderRenderImageProvider.h"
@@ -26,8 +27,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     RenderTextureService::RenderTextureService()
-        : m_textureEnumerator( 0 )
-        , m_supportA8( false )
+        : m_supportA8( false )
         , m_supportL8( false )
         , m_supportR8G8B8( false )
         , m_supportNonPow2( false )
@@ -564,7 +564,7 @@ namespace Mengine
     {
         RenderTexturePtr texture = m_factoryRenderTexture->createObject();
 
-        uint32_t id = ++m_textureEnumerator;
+        uint32_t id = GENERATE_UNIQUE_IDENTITY();
 
         texture->initialize( id, _image, _width, _height );
 

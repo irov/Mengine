@@ -1,6 +1,7 @@
 #include "ThreadJob.h"
 
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -9,7 +10,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadJob::ThreadJob()
         : m_sleep( 1 )
-        , m_enumerator( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -77,7 +77,7 @@ namespace Mengine
             return 0;
         }
 
-        uint32_t new_id = ++m_enumerator;
+        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
         for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
         {

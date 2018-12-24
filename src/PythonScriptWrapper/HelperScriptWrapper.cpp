@@ -14,6 +14,7 @@
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/WatchdogInterface.h"
 #include "Interface/InputServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
@@ -592,11 +593,9 @@ namespace Mengine
     public:
         uint32_t mt_enumerator()
         {
-            static uint32_t i = 0;
+            uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
-            ++i;
-
-            return i;
+            return new_id;
         }
 
         int mt_rand( int a )

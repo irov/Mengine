@@ -7,6 +7,7 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -23,8 +24,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SoundService::SoundService()
-        : m_enumerator( 0 )
-        , m_supportStream( true )
+        : m_supportStream( true )
         , m_muted( false )
         , m_turnStream( false )
         , m_turnSound( false )
@@ -278,8 +278,7 @@ namespace Mengine
 
         SoundIdentityPtr emitter = m_factorySoundEmitter->createObject();
 
-        ++m_enumerator;
-        uint32_t new_id = m_enumerator;
+        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
         emitter->id = new_id;
 
         emitter->source = sourceInterface;

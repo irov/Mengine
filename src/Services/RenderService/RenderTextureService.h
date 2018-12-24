@@ -65,8 +65,6 @@ namespace Mengine
         FactoryPtr m_factoryRenderTexture;
         FactoryPtr m_factoryDecoderRenderImageProvider;
 
-        uint32_t m_textureEnumerator;
-
         bool m_supportA8;
         bool m_supportL8;
         bool m_supportR8G8B8;

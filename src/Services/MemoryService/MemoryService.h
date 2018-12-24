@@ -65,8 +65,6 @@ namespace Mengine
         typedef Vector<CacheBufferMemory> VectorCacheBufferMemory;
         VectorCacheBufferMemory m_buffers;
 
-        CacheBufferID m_enumeratorId;
-
         ThreadMutexInterfacePtr m_memoryCacheMutex;
 
         FactoryWithMutexPtr m_factoryMemoryBuffer;

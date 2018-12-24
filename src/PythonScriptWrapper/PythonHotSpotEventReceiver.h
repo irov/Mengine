@@ -30,7 +30,7 @@ namespace Mengine
         bool onHotSpotMouseMove( const InputMouseMoveEvent & _event ) override;
         bool onHotSpotMouseWheel( const InputMouseWheelEvent & _event ) override;
         void onHotSpotMouseOverDestroy() override;
-        void onHotSpotMouseButtonBegin( uint32_t _enumerator, bool _isEnd ) override;
-        void onHotSpotMouseButtonEnd( uint32_t _enumerator, bool _isEnd ) override;
+        void onHotSpotMouseButtonBegin( uint32_t _playId, bool _isEnd ) override;
+        void onHotSpotMouseButtonEnd( uint32_t _playId, bool _isEnd ) override;
     };
 }

@@ -266,31 +266,31 @@ namespace Mengine
         return Color::identity();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::_stop( uint32_t _enumerator )
+    bool SurfaceVideo::_stop( uint32_t _playId )
     {
-        (void)_enumerator;
+        (void)_playId;
 
         m_needUpdateVideoBuffer = false;
 
         EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
-            ->onAnimationStop( _enumerator );
+            ->onAnimationStop( _playId );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::_end( uint32_t _enumerator )
+    void SurfaceVideo::_end( uint32_t _playId )
     {
-        (void)_enumerator;
+        (void)_playId;
 
         m_needUpdateVideoBuffer = false;
 
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
-            ->onAnimationEnd( _enumerator );
+            ->onAnimationEnd( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::_play( uint32_t _enumerator, float _time )
+    bool SurfaceVideo::_play( uint32_t _playId, float _time )
     {
-        (void)_enumerator;
+        (void)_playId;
         (void)_time;
 
         m_time = 0.f;
@@ -310,10 +310,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::_restart( uint32_t _enumerator, float _time )
+    bool SurfaceVideo::_restart( uint32_t _playId, float _time )
     {
         (void)_time;
-        (void)_enumerator;
+        (void)_playId;
 
         m_time = 0.f;
         m_needUpdateVideoBuffer = true;
@@ -332,16 +332,16 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::_pause( uint32_t _enumerator )
+    void SurfaceVideo::_pause( uint32_t _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
-            ->onAnimationPause( _enumerator );
+            ->onAnimationPause( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void SurfaceVideo::_resume( uint32_t _enumerator, float _time )
+    void SurfaceVideo::_resume( uint32_t _playId, float _time )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
-            ->onAnimationResume( _enumerator, _time );
+            ->onAnimationResume( _playId, _time );
     }
     //////////////////////////////////////////////////////////////////////////
     void SurfaceVideo::updateVideoBuffer_() const
@@ -577,9 +577,9 @@ namespace Mengine
         return bytes != 0;
     }
     ////////////////////////////////////////////////////////////////////
-    bool SurfaceVideo::_interrupt( uint32_t _enumerator )
+    bool SurfaceVideo::_interrupt( uint32_t _playId )
     {
-        (void)_enumerator;
+        (void)_playId;
 
         return true;
     }

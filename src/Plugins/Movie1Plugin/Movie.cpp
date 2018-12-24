@@ -197,10 +197,10 @@ namespace Mengine
         return timing;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::_play( uint32_t _enumerator, float _time )
+    bool Movie::_play( uint32_t _playId, float _time )
     {
         //return false;
-        (void)_enumerator;
+        (void)_playId;
         (void)_time;
 
         if( this->isActivate() == false )
@@ -226,10 +226,10 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::_restart( uint32_t _enumerator, float _time )
+    bool Movie::_restart( uint32_t _playId, float _time )
     {
         (void)_time;
-        (void)_enumerator;
+        (void)_playId;
 
         if( this->isActivate() == false )
         {
@@ -241,37 +241,37 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::_pause( uint32_t _enumerator )
+    void Movie::_pause( uint32_t _playId )
     {
-        (void)_enumerator;
+        (void)_playId;
 
         this->pauseAnimation_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::_resume( uint32_t _enumerator, float _time )
+    void Movie::_resume( uint32_t _playId, float _time )
     {
         (void)_time;
-        (void)_enumerator;
+        (void)_playId;
 
         this->resumeAnimation_();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::_stop( uint32_t _enumerator )
+    bool Movie::_stop( uint32_t _playId )
     {
         this->stopAnimation_();
 
         EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
-            ->onAnimationStop( _enumerator );
+            ->onAnimationStop( _playId );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::_end( uint32_t _enumerator )
+    void Movie::_end( uint32_t _playId )
     {
         this->stopAnimation_();
 
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
-            ->onAnimationEnd( _enumerator );
+            ->onAnimationEnd( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie::updateFrameNode_( const MovieLayer & _layer, const NodePtr & _node, uint32_t _frameId, bool _interpolate, bool _first )
@@ -3161,9 +3161,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie::_interrupt( uint32_t _enumerator )
+    bool Movie::_interrupt( uint32_t _playId )
     {
-        (void)_enumerator;
+        (void)_playId;
 
         const VectorMovieLayers & layers = m_resourceMovie->getLayers();
 

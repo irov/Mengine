@@ -42,8 +42,6 @@ namespace Mengine
         typedef Vector<Bubble> VectorBubbles;
         VectorBubbles m_bubbles;
 
-        uint32_t m_enumeratorBubble;
-
         mutable bool m_invalidateBubbleWM;
     };
 }

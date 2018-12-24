@@ -1,13 +1,14 @@
 #include "Kernel/Affectorable.h"
 #include "Kernel/Affector.h"
 
+#include "Interface/EnumeratorServiceInterface.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Affectorable::Affectorable()
         : m_angularSpeed( 0.f )
         , m_linearSpeed( 0.f, 0.f, 0.f )
-        , m_enumeratorAffector( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -22,7 +23,7 @@ namespace Mengine
             return INVALID_AFFECTOR_ID;
         }
 
-        AFFECTOR_ID id = ++m_enumeratorAffector;
+        AFFECTOR_ID id = GENERATE_UNIQUE_IDENTITY();
 
         _affector->setId( id );
 

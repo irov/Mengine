@@ -65,8 +65,6 @@ namespace Mengine
     protected:
         uint32_t m_sleep;
 
-        uint32_t m_enumerator;
-
         ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
     };
     //////////////////////////////////////////////////////////////////////////

@@ -1,6 +1,7 @@
 #include "HotSpotBubbles.h"
 
 #include "Interface/RenderCameraInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -8,8 +9,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     HotSpotBubbles::HotSpotBubbles()
-        : m_enumeratorBubble( 0 )
-        , m_invalidateBubbleWM( true )
+        : m_invalidateBubbleWM( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,7 +21,7 @@ namespace Mengine
     {
         Bubble b;
 
-        uint32_t new_id = ++m_enumeratorBubble;
+        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
         b.id = new_id;
         b.pos = _pos;
         b.pos_wm = _pos;

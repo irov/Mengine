@@ -93,7 +93,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2SubComposition::_play( uint32_t _enumerator, float _time )
+    bool Movie2SubComposition::_play( uint32_t _playId, float _time )
     {
         if( m_composition == nullptr )
         {
@@ -107,12 +107,12 @@ namespace Mengine
         ae_play_movie_sub_composition( m_composition, m_subcomposition, 0.f );
 
         EVENTABLE_METHOD( EVENT_ANIMATION_PLAY )
-            ->onAnimationPlay( _enumerator, _time );
+            ->onAnimationPlay( _playId, _time );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2SubComposition::_restart( uint32_t _enumerator, float _time )
+    bool Movie2SubComposition::_restart( uint32_t _playId, float _time )
     {
         if( m_composition == nullptr )
         {
@@ -124,12 +124,12 @@ namespace Mengine
         }
 
         EVENTABLE_METHOD( EVENT_ANIMATION_RESTART )
-            ->onAnimationRestart( _enumerator, _time );
+            ->onAnimationRestart( _playId, _time );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::_pause( uint32_t _enumerator )
+    void Movie2SubComposition::_pause( uint32_t _playId )
     {
         if( m_composition == nullptr )
         {
@@ -143,10 +143,10 @@ namespace Mengine
         ae_pause_movie_sub_composition( m_composition, m_subcomposition );
 
         EVENTABLE_METHOD( EVENT_ANIMATION_PAUSE )
-            ->onAnimationPause( _enumerator );
+            ->onAnimationPause( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::_resume( uint32_t _enumerator, float _time )
+    void Movie2SubComposition::_resume( uint32_t _playId, float _time )
     {
         if( m_composition == nullptr )
         {
@@ -160,10 +160,10 @@ namespace Mengine
         ae_resume_movie_sub_composition( m_composition, m_subcomposition );
 
         EVENTABLE_METHOD( EVENT_ANIMATION_RESUME )
-            ->onAnimationResume( _enumerator, _time );
+            ->onAnimationResume( _playId, _time );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2SubComposition::_stop( uint32_t _enumerator )
+    bool Movie2SubComposition::_stop( uint32_t _playId )
     {
         if( m_composition == nullptr )
         {
@@ -177,18 +177,18 @@ namespace Mengine
         ae_stop_movie_sub_composition( m_composition, m_subcomposition );
 
         EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
-            ->onAnimationStop( _enumerator );
+            ->onAnimationStop( _playId );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2SubComposition::_end( uint32_t _enumerator )
+    void Movie2SubComposition::_end( uint32_t _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
-            ->onAnimationEnd( _enumerator );
+            ->onAnimationEnd( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2SubComposition::_interrupt( uint32_t _enumerator )
+    bool Movie2SubComposition::_interrupt( uint32_t _playId )
     {
         if( m_composition == nullptr )
         {
@@ -202,7 +202,7 @@ namespace Mengine
         ae_interrupt_movie_sub_composition( m_composition, m_subcomposition, AE_FALSE );
 
         EVENTABLE_METHOD( EVENT_ANIMATION_INTERRUPT )
-            ->onAnimationInterrupt( _enumerator );
+            ->onAnimationInterrupt( _playId );
 
         return true;
     }

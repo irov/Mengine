@@ -3,6 +3,7 @@
 #include "Interface/InputServiceInterface.h"
 #include "Interface/RenderSystemInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Arrow.h"
 #include "Kernel/Scene.h"
@@ -144,8 +145,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     PickerService::PickerService()
-        : m_enumerator( 0 )
-        , m_pickerTrapCount( 0 )
+        : m_pickerTrapCount( 0 )
         , m_block( false )
         , m_handleValue( true )
         , m_invalidateTraps( false )
@@ -267,7 +267,7 @@ namespace Mengine
 
         state.trap = _trap;
 
-        uint32_t id = ++m_enumerator;
+        uint32_t id = GENERATE_UNIQUE_IDENTITY();
         state.id = id;
         state.picked = false;
         state.pressed = false;

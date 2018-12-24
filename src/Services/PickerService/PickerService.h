@@ -80,9 +80,7 @@ namespace Mengine
         bool proccesTraps_( float _x, float _y, VectorPickerTrapStates & _states );
         void updateDead_();
 
-    private:
-        uint32_t m_enumerator;
-
+    protected:
         ArrowPtr m_arrow;
         ScenePtr m_scene;
 

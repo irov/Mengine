@@ -71,13 +71,13 @@ namespace Mengine
         m_cb.call();
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonHotSpotEventReceiver::onHotSpotMouseButtonBegin( uint32_t _enumerator, bool _isEnd )
+    void PythonHotSpotEventReceiver::onHotSpotMouseButtonBegin( uint32_t _playId, bool _isEnd )
     {
-        m_cb.call( _enumerator, _isEnd );
+        m_cb.call( _playId, _isEnd );
     }
     //////////////////////////////////////////////////////////////////////////
-    void PythonHotSpotEventReceiver::onHotSpotMouseButtonEnd( uint32_t _enumerator, bool _isEnd )
+    void PythonHotSpotEventReceiver::onHotSpotMouseButtonEnd( uint32_t _playId, bool _isEnd )
     {
-        m_cb.call( _enumerator, _isEnd );
+        m_cb.call( _playId, _isEnd );
     }
 }

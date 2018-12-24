@@ -1,6 +1,7 @@
 #include "MemoryService.h"
 
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -14,7 +15,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     MemoryService::MemoryService()
-        : m_enumeratorId( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -36,7 +36,6 @@ namespace Mengine
 
         ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SERVICE()
             ->createMutex( __FILE__, __LINE__ );
-
 
         m_factoryMemoryBuffer->setMutex( memoryFactoryMutex );
         m_factoryMemoryProxy->setMutex( memoryFactoryMutex );
@@ -170,7 +169,7 @@ namespace Mengine
             return INVALID_CACHE_BUFFER_ID;
         }
 
-        CacheBufferID new_id = ++m_enumeratorId;
+        CacheBufferID new_id = GENERATE_UNIQUE_IDENTITY();
 
         CacheBufferMemory buffer;
         buffer.id = new_id;

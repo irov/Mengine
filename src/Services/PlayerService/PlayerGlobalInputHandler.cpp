@@ -1,5 +1,7 @@
 #include "PlayerGlobalInputHandler.h"
 
+#include "Interface/EnumeratorServiceInterface.h"
+
 #include "Kernel/Logger.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/Assertion.h"
@@ -11,7 +13,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PlayerGlobalInputHandler::PlayerGlobalInputHandler()
-        : m_handlersEnumerator( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -181,7 +182,7 @@ namespace Mengine
 
         GlobalHandlerDesc desc;
 
-        uint32_t new_id = ++m_handlersEnumerator;
+        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
         desc.id = new_id;
 
         desc.handler = _handler;

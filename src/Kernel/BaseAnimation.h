@@ -98,7 +98,7 @@ namespace Mengine
         virtual bool _interrupt( uint32_t _enumerator ) = 0;
 
     protected:
-        uint32_t m_enumerator;
+        uint32_t m_playId;
 
         float m_playTime;
 
@@ -182,7 +182,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     inline uint32_t BaseAnimation::getPlayId() const
     {
-        return m_enumerator;
+        return m_playId;
     }
     //////////////////////////////////////////////////////////////////////////
     inline float BaseAnimation::getPlayTime() const

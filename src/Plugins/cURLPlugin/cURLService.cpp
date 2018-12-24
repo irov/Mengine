@@ -3,6 +3,7 @@
 #include "Interface/FileGroupInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "cURLGetMessageThreadTask.h"
 #include "cURLPostMessageThreadTask.h"
@@ -22,7 +23,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     cURLService::cURLService()
-        : m_enumeratorReceivers( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -86,7 +86,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::getMessage( const String & _url, const cURLReceiverInterfacePtr & _receiver )
     {
-        uint32_t task_id = ++m_enumeratorReceivers;
+        uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject();
 
@@ -116,7 +116,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::postMessage( const String & _url, const MapParams & _params, const cURLReceiverInterfacePtr & _receiver )
     {
-        uint32_t task_id = ++m_enumeratorReceivers;
+        uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject();
 
@@ -146,7 +146,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     HttpRequestID cURLService::headerData( const String & _url, const VectorString & _headers, const String & _data, const cURLReceiverInterfacePtr & _receiver )
     {
-        uint32_t task_id = ++m_enumeratorReceivers;
+        uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject();
 
@@ -187,7 +187,7 @@ namespace Mengine
             return 0;
         }
 
-        uint32_t task_id = ++m_enumeratorReceivers;
+        uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
         cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject();
 

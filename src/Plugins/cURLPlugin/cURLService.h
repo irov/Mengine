@@ -38,8 +38,6 @@ namespace Mengine
         void onHttpRequestComplete( HttpRequestID _id, uint32_t _status, const String & _error, const String & _response, uint32_t _code, bool _successful ) override;
 
     protected:
-        uint32_t m_enumeratorReceivers;
-
         struct ReceiverDesc
         {
             uint32_t id;

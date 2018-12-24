@@ -75,8 +75,6 @@ namespace Mengine
             InputMousePositionProviderInterfacePtr provider;
         };
 
-        uint32_t m_enumerator;
-
         typedef Vector<InputMousePositionProviderDesc> VectorMousePositionProviders;
         VectorMousePositionProviders m_mousePositionProviders;
 

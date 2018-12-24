@@ -177,53 +177,53 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SamplerOzzAnimation::_play( uint32_t _enumerator, float _time )
+    bool SamplerOzzAnimation::_play( uint32_t _playId, float _time )
     {
-        (void)_enumerator;
+        (void)_playId;
 
         m_time = _time;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SamplerOzzAnimation::_restart( uint32_t _enumerator, float _time )
+    bool SamplerOzzAnimation::_restart( uint32_t _playId, float _time )
     {
-        (void)_enumerator;
+        (void)_playId;
 
         m_time = _time;
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::_pause( uint32_t _enumerator )
+    void SamplerOzzAnimation::_pause( uint32_t _playId )
     {
-        (void)_enumerator;
+        (void)_playId;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::_resume( uint32_t _enumerator, float _time )
+    void SamplerOzzAnimation::_resume( uint32_t _playId, float _time )
     {
-        (void)_enumerator;
+        (void)_playId;
 
         m_time = _time;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SamplerOzzAnimation::_stop( uint32_t _enumerator )
+    bool SamplerOzzAnimation::_stop( uint32_t _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_STOP )
-            ->onAnimationStop( _enumerator );
+            ->onAnimationStop( _playId );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SamplerOzzAnimation::_end( uint32_t _enumerator )
+    void SamplerOzzAnimation::_end( uint32_t _playId )
     {
         EVENTABLE_METHOD( EVENT_ANIMATION_END )
-            ->onAnimationEnd( _enumerator );
+            ->onAnimationEnd( _playId );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SamplerOzzAnimation::_interrupt( uint32_t _enumerator )
+    bool SamplerOzzAnimation::_interrupt( uint32_t _playId )
     {
-        (void)_enumerator;
+        (void)_playId;
 
         return true;
     }

@@ -15,39 +15,39 @@ namespace Mengine
         , public Factorable
     {
     public:
-        void onAnimationPlay( uint32_t _enumerator, float _time ) override
+        void onAnimationPlay( uint32_t _playId, float _time ) override
         {
-            m_cb.call( _enumerator, _time );
+            m_cb.call( _playId, _time );
         }
 
-        void onAnimationRestart( uint32_t _enumerator, float _time ) override
+        void onAnimationRestart( uint32_t _playId, float _time ) override
         {
-            m_cb.call( _enumerator, _time );
+            m_cb.call( _playId, _time );
         }
 
-        void onAnimationPause( uint32_t _enumerator ) override
+        void onAnimationPause( uint32_t _playId ) override
         {
-            m_cb.call( _enumerator );
+            m_cb.call( _playId );
         }
 
-        void onAnimationResume( uint32_t _enumerator, float _time ) override
+        void onAnimationResume( uint32_t _playId, float _time ) override
         {
-            m_cb.call( _enumerator, _time );
+            m_cb.call( _playId, _time );
         }
 
-        void onAnimationStop( uint32_t _enumerator ) override
+        void onAnimationStop( uint32_t _playId ) override
         {
-            m_cb.call( _enumerator );
+            m_cb.call( _playId );
         }
 
-        void onAnimationEnd( uint32_t _enumerator ) override
+        void onAnimationEnd( uint32_t _playId ) override
         {
-            m_cb.call( _enumerator );
+            m_cb.call( _playId );
         }
 
-        void onAnimationInterrupt( uint32_t _enumerator ) override
+        void onAnimationInterrupt( uint32_t _playId ) override
         {
-            m_cb.call( _enumerator );
+            m_cb.call( _playId );
         }
     };
     //////////////////////////////////////////////////////////////////////////

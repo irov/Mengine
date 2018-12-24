@@ -2,6 +2,7 @@
 
 #include "Interface/NotificationServiceInterface.h"
 #include "Interface/ApplicationInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Logger.h"
 
@@ -276,7 +277,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t InputService::addMousePositionProvider( const InputMousePositionProviderInterfacePtr & _provider )
     {
-        uint32_t new_id = ++m_enumerator;
+        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
         InputMousePositionProviderDesc desc;
         desc.id = new_id;

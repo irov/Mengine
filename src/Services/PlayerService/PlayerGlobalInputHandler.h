@@ -62,7 +62,5 @@ namespace Mengine
         typedef Vector<GlobalHandlerDesc> VectorGlobalHandler;
         VectorGlobalHandler m_handlers;
         VectorGlobalHandler m_handlersAdd;
-
-        uint32_t m_handlersEnumerator;
     };
 }

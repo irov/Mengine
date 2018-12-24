@@ -102,8 +102,6 @@ namespace Mengine
         ListSchedules m_schedules;
         ListSchedules m_schedulesAdd;
 
-        uint32_t m_enumerator;
-
         bool m_freezeAll;
         bool m_update;
 

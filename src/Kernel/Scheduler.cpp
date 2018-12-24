@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 #include "Interface/UpdateServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Logger.h"
 #include "Kernel/Assertion.h"
@@ -18,7 +19,6 @@ namespace Mengine
         : m_updataterId( INVALID_UPDATABLE_ID )
         , m_speedFactor( 1.f )
         , m_time( 0.f )
-        , m_enumerator( 0 )
         , m_freezeAll( false )
         , m_update( false )
     {
@@ -65,7 +65,7 @@ namespace Mengine
             , _delay
             ) );
 
-        uint32_t new_id = ++m_enumerator;
+        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
         ScheduleEventDesc desc;
 
@@ -93,7 +93,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t Scheduler::timing( const SchedulePipeInterfacePtr & _pipe, const ScheduleTimingInterfacePtr & _timer, const ScheduleEventInterfacePtr & _event )
     {
-        uint32_t new_id = ++m_enumerator;
+        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
         ScheduleEventDesc desc;
 

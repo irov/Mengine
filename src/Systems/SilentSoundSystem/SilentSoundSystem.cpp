@@ -1,5 +1,7 @@
 #include "SilentSoundSystem.h"
 
+#include "Interface/EnumeratorServiceInterface.h"
+
 #include "Config/Config.h"
 #include "Kernel/Logger.h"
 
@@ -7,8 +9,6 @@
 #include "Kernel/AssertionFactory.h"
 
 #include <algorithm>
-#include <stdio.h>
-#include <stdarg.h>
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SilentSoundSystem, Mengine::SilentSoundSystem );
@@ -17,7 +17,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SilentSoundSystem::SilentSoundSystem()
-        : m_enumerate( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -89,7 +88,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SilentSoundSystem::genSourceId()
     {
-        uint32_t new_id = ++m_enumerate;
+        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
         return new_id;
     }
@@ -103,14 +102,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     uint32_t SilentSoundSystem::genBufferId()
     {
-        uint32_t new_id = ++m_enumerate;
+        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SilentSoundSystem::releaseBufferId( uint32_t _sourceId )
+    void SilentSoundSystem::releaseBufferId( uint32_t _bufferId )
     {
-        (void)_sourceId;
+        (void)_bufferId;
 
         //Empty
     }

@@ -38,16 +38,13 @@ namespace Mengine
     public:
         uint32_t genSourceId();
         void releaseSourceId( uint32_t _sourceId );
-
-        uint32_t genBufferId();
-        void releaseBufferId( uint32_t _sourceId );
-
-    public:
         void clearSourceId( uint32_t _sourceId );
 
-    private:
-        uint32_t m_enumerate;
-
+    public:
+        uint32_t genBufferId();
+        void releaseBufferId( uint32_t _bufferId );
+        
+    protected:
         FactoryPtr m_factorySilentSoundBuffer;
         FactoryPtr m_factorySilentSoundSource;
     };

@@ -100,10 +100,12 @@ namespace Mengine
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadTaskPrefetchImageDecoder );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadTaskPrefetchSoundDecoder );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadTaskPrefetchDataflow );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadTaskPrefetchStream );
 
         m_factoryThreadTaskPrefetchImageDecoder = nullptr;
         m_factoryThreadTaskPrefetchSoundDecoder = nullptr;
         m_factoryThreadTaskPrefetchDataflow = nullptr;
+        m_factoryThreadTaskPrefetchStream = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void PrefetcherService::update()

@@ -529,6 +529,25 @@ namespace Mengine
             return axis;
         }
 
+        uint32_t s_addTimer( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
+        {
+            uint32_t id = PLAYER_SERVICE()
+                ->addTimer( [_cb, _args]( uint32_t _id, uint64_t _time )
+            {
+                _cb.call_args( _id, _time, _args );
+            }, _kernel->object_repr( _cb.ptr() ) );
+
+            return id;
+        }
+
+        bool s_removeTimer( uint32_t _id )
+        {
+            bool successful = PLAYER_SERVICE()
+                ->removeTimer( _id );
+
+            return successful;
+        }
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE()
@@ -3369,6 +3388,9 @@ namespace Mengine
         pybind::def_functor( kernel, "removeTextAliasArguments", helperScriptMethod, &HelperScriptMethod::s_removeTextAliasArguments );
 
         pybind::def_functor( kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );
+
+        pybind::def_functor_kernel_args( kernel, "addTimer", helperScriptMethod, &HelperScriptMethod::s_addTimer );
+        pybind::def_functor( kernel, "removeTimer", helperScriptMethod, &HelperScriptMethod::s_removeTimer );
 
         return true;
     }

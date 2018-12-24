@@ -2649,7 +2649,7 @@ namespace Mengine
             .def( "isSolidColor", &Colorable::isSolidColor )
             ;
 
-        pybind::interface_<RenderInterface, pybind::bases<Colorable> >( kernel, "RenderInterface" )
+        pybind::interface_<RenderInterface, pybind::bases<Colorable, BoundingBox> >( kernel, "RenderInterface" )
             .def( "hide", &RenderInterface::setHide )
             .def( "isHide", &RenderInterface::isHide )
             .def( "localHide", &RenderInterface::setLocalHide )
@@ -2726,7 +2726,7 @@ namespace Mengine
             .def( "getBlendMode", &Materialable::getBlendMode )
             ;
 
-        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation, BoundingBox, Compilable, Renderable, Affectorable> >( kernel, "Node", false )
+        pybind::interface_<Node, pybind::bases<Scriptable, Identity, Transformation, Compilable, Renderable, Affectorable> >( kernel, "Node", false )
             .def( "enable", &Node::enable )
             .def( "disable", &Node::disable )
             .def( "isEnable", &Node::isEnable )

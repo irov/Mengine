@@ -32,24 +32,25 @@ namespace Mengine
             debugColor = 0xFFFF0000;
         }
 
-        const mt::box2f * box = _node->getBoundingBox();
+        mt::box2f box;
+        _node->getWorldBoundingBox( &box );
 
-        vertices[0].position.x = box->minimum.x;
-        vertices[0].position.y = box->minimum.y;
-        vertices[1].position.x = box->maximum.x;
-        vertices[1].position.y = box->minimum.y;
-        vertices[2].position.x = box->maximum.x;
-        vertices[2].position.y = box->minimum.y;
-        vertices[3].position.x = box->maximum.x;
-        vertices[3].position.y = box->maximum.y;
-        vertices[4].position.x = box->maximum.x;
-        vertices[4].position.y = box->maximum.y;
-        vertices[5].position.x = box->minimum.x;
-        vertices[5].position.y = box->maximum.y;
-        vertices[6].position.x = box->minimum.x;
-        vertices[6].position.y = box->maximum.y;
-        vertices[7].position.x = box->minimum.x;
-        vertices[7].position.y = box->minimum.y;
+        vertices[0].position.x = box.minimum.x;
+        vertices[0].position.y = box.minimum.y;
+        vertices[1].position.x = box.maximum.x;
+        vertices[1].position.y = box.minimum.y;
+        vertices[2].position.x = box.maximum.x;
+        vertices[2].position.y = box.minimum.y;
+        vertices[3].position.x = box.maximum.x;
+        vertices[3].position.y = box.maximum.y;
+        vertices[4].position.x = box.maximum.x;
+        vertices[4].position.y = box.maximum.y;
+        vertices[5].position.x = box.minimum.x;
+        vertices[5].position.y = box.maximum.y;
+        vertices[6].position.x = box.minimum.x;
+        vertices[6].position.y = box.maximum.y;
+        vertices[7].position.x = box.minimum.x;
+        vertices[7].position.y = box.minimum.y;
 
 
         for( uint32_t i = 0; i != 8; ++i )

@@ -57,6 +57,11 @@ namespace Mengine
     {
         ScriptCodeDataInterfacePtr codeData = Helper::popDataflow( m_fileGroup, m_filePath, m_dataflow );
 
+        if( codeData == nullptr )
+        {
+            return nullptr;
+        }
+
         const pybind::object & code = codeData->getScriptCode();
 
         if( code == nullptr )

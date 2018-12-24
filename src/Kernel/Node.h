@@ -6,7 +6,6 @@
 #include "Kernel/Compilable.h"
 #include "Kernel/Updatable.h"
 #include "Kernel/Renderable.h"
-#include "Kernel/BoundingBox.h"
 #include "Kernel/Transformation.h"
 #include "Kernel/Affectorable.h"
 #include "Kernel/Visitable.h"
@@ -37,7 +36,6 @@ namespace Mengine
         , public Compilable
         , public Updatable
         , public Renderable
-        , public BoundingBox
         , public Transformation
         , public Affectorable
         , public Visitable
@@ -133,8 +131,8 @@ namespace Mengine
     public:
         void visitChildren( const VisitorPtr & _visitor );
 
-    public:
-        bool absorbBoundingBox( mt::box2f & _bb );
+    //public:
+    //    bool absorbBoundingBox( mt::box2f & _bb );
 
     protected:
         void _destroy() override;

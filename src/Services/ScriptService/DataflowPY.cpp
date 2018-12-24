@@ -73,16 +73,17 @@ namespace Mengine
 
         pybind::mutex_scope scope( m_kernel );
 
-        PyObject * code = m_kernel->code_compile_file( source_buffer, "DataflowPY" );
+        PyObject * py_code = m_kernel->code_compile_file( source_buffer, "DataflowPY" );
 
-        if( code == nullptr )
+        if( py_code == nullptr )
         {
-            LOGGER_ERROR( "invalid marshal get object" );
+            LOGGER_ERROR( "invalid marshal get object" 
+            );
 
             return false;
         }
 
-        if( m_kernel->code_check( code ) == false )
+        if( m_kernel->code_check( py_code ) == false )
         {
             LOGGER_ERROR( "marshal get object not code"
             );
@@ -90,7 +91,7 @@ namespace Mengine
             return false;
         }
 
-        data->setScriptCode( pybind::make_borrowed_t( m_kernel, code ) );
+        data->setScriptCode( pybind::make_borrowed_t( m_kernel, py_code ) );
 
         return true;
     }

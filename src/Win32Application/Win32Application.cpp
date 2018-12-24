@@ -172,7 +172,10 @@ PLUGIN_EXPORT( TTF );
 #endif
 
 PLUGIN_EXPORT( Win32Socket );
+
+#ifdef MENGINE_PLUGIN_NODEDEBUGGER
 PLUGIN_EXPORT( NodeDebugger );
+#endif
 
 namespace Mengine
 {
@@ -735,6 +738,10 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( ResourceDebugger, "initialize Plugin Resource Debugger..." );
 #endif
 
+#ifdef MENGINE_PLUGIN_NODEDEBUGGER
+        MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger..." );
+#endif
+
 #ifdef MENGINE_PLUGIN_METABUFLOADER
         MENGINE_ADD_PLUGIN( MetabufLoader, "initialize Plugin Metabuf Loader..." );
 #endif
@@ -773,8 +780,7 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
 #endif
 
-        MENGINE_ADD_PLUGIN( Win32Socket, "initialize Plugin Win32Socket..." );
-        MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger..." );
+        MENGINE_ADD_PLUGIN( Win32Socket, "initialize Plugin Win32Socket..." );        
 
 #	undef MENGINE_ADD_PLUGIN
 

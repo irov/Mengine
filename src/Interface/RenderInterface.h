@@ -2,6 +2,7 @@
 
 #include "Kernel/Mixin.h"
 #include "Kernel/Colorable.h"
+#include "Kernel/BoundingBox.h"
 #include "Kernel/RenderContext.h"
 
 #include "Config/Lambda.h"
@@ -13,6 +14,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class RenderInterface
         : public Colorable
+        , public BoundingBox
     {
     public:
         virtual void setRelationRender( RenderInterface * _relationRender ) = 0;

@@ -199,6 +199,130 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Movie2::getWorldBoundingBox( mt::box2f * _bb ) const
+    {
+        bool successful = false;
+
+        const mt::mat4f & wm = this->getWorldMatrix();
+
+        mt::box2f bbwm;
+        mt::insideout_box( bbwm );
+
+        ae_uint32_t compute_movie_mesh_iterator = 0;
+
+        aeMovieRenderMesh mesh;
+        while( ae_compute_movie_mesh( m_composition, &compute_movie_mesh_iterator, &mesh ) == AE_TRUE )
+        {
+            if( mesh.track_matte_userdata == nullptr )
+            {
+                switch( mesh.layer_type )
+                {
+                case AE_MOVIE_LAYER_TYPE_SLOT:
+                    {
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SOCKET:
+                    {
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SPRITE:
+                    {
+                        ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_userdata);
+
+                        const mt::box2f * bb = node->getBoundingBox();
+                        
+                        if( bb == nullptr )
+                        {
+                            mt::merge_box( bbwm, *bb );
+
+                            successful = true;
+                        }
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_TEXT:
+                    {
+                        TextField * node = reinterpret_node_cast<TextField *>(mesh.element_userdata);
+
+                        const mt::box2f * bb = node->getBoundingBox();
+
+                        if( bb == nullptr )
+                        {
+                            mt::merge_box( bbwm, *bb );
+
+                            successful = true;
+                        }
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_PARTICLE:
+                    {
+                        //Node * node = reinterpret_node_cast<Node *>(mesh.element_userdata);
+
+                        //const mt::box2f * bb = node->getBoundingBox();
+
+                        //if( bb == nullptr )
+                        //{
+                        //    mt::merge_box( bb, *bb );
+                        //}
+                    }break;
+                case AE_MOVIE_LAYER_TYPE_SHAPE:
+                case AE_MOVIE_LAYER_TYPE_SOLID:
+                case AE_MOVIE_LAYER_TYPE_SEQUENCE:
+                case AE_MOVIE_LAYER_TYPE_IMAGE:
+                    {
+                        if( mesh.vertexCount == 0 )
+                        {
+                            continue;
+                        }
+
+                        for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        {
+                            mt::vec3f p;
+                            p.from_f3( mesh.position[index] );
+
+                            mt::vec2f pwm;
+                            mt::mul_v2_v3_m4( pwm, p, wm );
+
+                            mt::add_internal_point( bbwm, pwm );
+                        }
+
+                        successful = true;
+                    }break;
+                default:
+                    break;
+                }
+            }
+            else
+            {
+                switch( mesh.layer_type )
+                {
+                case AE_MOVIE_LAYER_TYPE_SEQUENCE:
+                case AE_MOVIE_LAYER_TYPE_IMAGE:
+                    {
+                        if( mesh.vertexCount == 0 )
+                        {
+                            continue;
+                        }
+
+                        for( ae_uint32_t index = 0; index != mesh.vertexCount; ++index )
+                        {
+                            mt::vec3f p;
+                            p.from_f3( mesh.position[index] );
+
+                            mt::vec2f pwm;
+                            mt::mul_v2_v3_m4( pwm, p, wm );
+
+                            mt::add_internal_point( bbwm, pwm );
+                        }
+
+                        successful = true;
+                    }break;
+                default:
+                    break;
+                }
+            }
+        }
+
+        *_bb = bbwm;
+
+        return successful;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Movie2::createCompositionLayers_()
     {
         const ResourceMovie2CompositionDesc * composition = m_resourceMovie2->getCompositionDesc( m_compositionName );

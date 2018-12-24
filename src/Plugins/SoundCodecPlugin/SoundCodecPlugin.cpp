@@ -18,16 +18,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundCodecPlugin::_initialize()
     {
-        Helper::registerDecoder<SoundDecoderWAV>( "wavSound" );
+        Helper::registerDecoder<SoundDecoderWAV>( STRINGIZE_STRING_LOCAL( "wavSound" ) );
 
         CODEC_SERVICE()
-            ->registerCodecExt( "wav", Helper::stringizeString( "wavSound" ) );
+            ->registerCodecExt( "wav", STRINGIZE_STRING_LOCAL( "wavSound" ) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundCodecPlugin::_finalize()
     {
-        Helper::unregisterDecoder( "wavSound" );
+        Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "wavSound" ) );
     }
 }

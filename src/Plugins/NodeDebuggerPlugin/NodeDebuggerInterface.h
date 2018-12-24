@@ -3,6 +3,8 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/RenderInterface.h"
 
+#include "NodeDebuggerBoundingBoxInterface.h"
+
 #include "Kernel/Node.h"
 #include "Kernel/Scene.h"
 #include "Kernel/RenderVisitor.h"

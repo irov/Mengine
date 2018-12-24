@@ -311,6 +311,15 @@ namespace Mengine
             m_debugCamera2D = nullptr;
         }
 
+#ifndef NDEBUG
+        for( const TimerDesc & desc : m_timers )
+        {
+            LOGGER_ERROR( "Not remove timer '%s'"
+                , desc.doc.c_str()
+            );
+        }
+#endif
+
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduleManager );
         m_factoryScheduleManager = nullptr;
     }
@@ -526,6 +535,8 @@ namespace Mengine
             {
                 desc.lambda( desc.id, currentTime );
             }
+
+            m_timersProcess.clear();
 
             m_oldTime = currentTime - currentTime % 1000;
         }

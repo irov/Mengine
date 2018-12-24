@@ -11,7 +11,13 @@ ADD_FILTER(
     NodeDebuggerService.h
     NodeDebuggerService.cpp
 	
-	NodeDebuggerSerializaton.h
+	NodeDebuggerSerialization.h
+    
+    NodeDebuggerBoundingBoxInterface.h
+    ShapeDebuggerBoundingBox.h
+    ShapeDebuggerBoundingBox.cpp
+    HotSpotPolygonDebuggerBoundingBox.h
+    HotSpotPolygonDebuggerBoundingBox.cpp
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )

@@ -1,5 +1,7 @@
 #include "Kernel/BoundingBox.h"
 
+#include "Config/Typedef.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -25,7 +27,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BoundingBox::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
     {
-        (void)_boundingBox;
-        (void)_boundingBoxCurrent;
+        MENGINE_UNUSED( _boundingBox );
+        MENGINE_UNUSED( _boundingBoxCurrent );
+
+        //Empty
     }
 }

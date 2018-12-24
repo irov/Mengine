@@ -27,16 +27,17 @@ namespace Mengine
         uint32_t getHeight() const;
 
     protected:
+        bool _compile() override;
+        void _release() override;
+
+    protected:
         bool testPoint( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point ) const override;
         bool testRadius( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, float _radiusx, float _radiusy ) const override;
         bool testPolygon( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, const mt::vec2f & _point, const Polygon & _polygon ) const override;
 
-    protected:
-        void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
-
-    protected:
-        bool _compile() override;
-        void _release() override;
+    public:
+        void getWorldBoundingBox( mt::box2f * _bb ) const;
+        void getScreenBoundingBox( const RenderCameraInterfacePtr & _camera, const RenderViewportInterfacePtr & _viewport, const Resolution & _contentResolution, mt::box2f * _bb ) const;
 
     protected:
         ResourceHolder<ResourceTestPick> m_resourceTestPick;

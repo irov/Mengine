@@ -2,22 +2,25 @@
 
 namespace Mengine
 {
-    NodePtr findUniqueNode( const NodePtr & _root, const VectorNodePath & _nodePath )
+    namespace Helper
     {
-        NodePtr finder = _root;
-
-        for( uint32_t id : _nodePath )
+        NodePtr findUniqueNode( const NodePtr & _root, const VectorNodePath & _nodePath )
         {
-            NodePtr child_finder = finder->findUniqueChild( id );
+            NodePtr finder = _root;
 
-            if( child_finder == nullptr )
+            for( uint32_t id : _nodePath )
             {
-                return nullptr;
+                NodePtr child_finder = finder->findUniqueChild( id );
+
+                if( child_finder == nullptr )
+                {
+                    return nullptr;
+                }
+
+                finder = child_finder;
             }
 
-            finder = child_finder;
+            return finder;
         }
-
-        return finder;
     }
 }

@@ -47,7 +47,7 @@ namespace Mengine
         float frameDuration;
 
         bool has_bounds;
-        Viewport bounds;
+        mt::box2f bounds;
 
         bool master;
 

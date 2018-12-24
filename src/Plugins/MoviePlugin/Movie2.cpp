@@ -201,6 +201,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::getWorldBoundingBox( mt::box2f * _bb ) const
     {
+        if( this->isCompile() == false )
+        {
+            return false;
+        }
+
         bool successful = false;
 
         const mt::mat4f & wm = this->getWorldMatrix();
@@ -229,7 +234,7 @@ namespace Mengine
 
                         const mt::box2f * bb = node->getBoundingBox();
                         
-                        if( bb == nullptr )
+                        if( bb != nullptr )
                         {
                             mt::merge_box( bbwm, *bb );
 
@@ -242,7 +247,7 @@ namespace Mengine
 
                         const mt::box2f * bb = node->getBoundingBox();
 
-                        if( bb == nullptr )
+                        if( bb != nullptr )
                         {
                             mt::merge_box( bbwm, *bb );
 
@@ -668,7 +673,7 @@ namespace Mengine
         return m_hasBounds;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Viewport & Movie2::getCompositionBounds() const
+    const mt::box2f & Movie2::getCompositionBounds() const
     {
         return m_bounds;
     }

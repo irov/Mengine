@@ -548,6 +548,33 @@ namespace Mengine
             return successful;
         }
 
+        mt::box2f s_getHotSpotPolygonBoundingBox( const HotSpotPolygonPtr & _hotspotPolygon )
+        {
+            mt::box2f bb;
+            mt::insideout_box( bb );
+
+            const Polygon & polygon = _hotspotPolygon->getPolygon();
+
+            const VectorPoints & points = polygon.getPoints();
+
+            if( points.empty() == true )
+            {
+                return bb;
+            }
+
+            const mt::mat4f & wm = _hotspotPolygon->getWorldMatrix();
+
+            for( const mt::vec2f & v : points )
+            {
+                mt::vec2f wmp_it;
+                mt::mul_v2_v2_m4( wmp_it, v, wm );
+
+                mt::add_internal_point( bb, wmp_it );
+            }
+
+            return bb;
+        }
+
         void s_setCursorPosition( const mt::vec2f & _pos )
         {
             const Resolution & contentResolution = APPLICATION_SERVICE()
@@ -3391,6 +3418,8 @@ namespace Mengine
 
         pybind::def_functor_kernel_args( kernel, "addTimer", helperScriptMethod, &HelperScriptMethod::s_addTimer );
         pybind::def_functor( kernel, "removeTimer", helperScriptMethod, &HelperScriptMethod::s_removeTimer );
+
+        pybind::def_functor( kernel, "getHotSpotPolygonBoundingBox", helperScriptMethod, &HelperScriptMethod::s_getHotSpotPolygonBoundingBox );
 
         return true;
     }

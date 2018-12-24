@@ -65,7 +65,10 @@ namespace Mengine
         void update() override;
         void render( const RenderContext * _context ) override;
 
-    private:
+    protected:
+        bool absorbBoundingBox( const NodePtr & node, mt::box2f & _bb ) const;
+
+    protected:
         void privateInit();
         void recreateServer();
         void sendPacket( NodeDebuggerPacket & _packet );

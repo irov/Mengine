@@ -358,6 +358,7 @@ namespace Mengine
     {
         this->update();
 
+#ifndef NDEBUG
         if( m_handlers.empty() == false )
         {
             LOGGER_ERROR( "GlobalHandleSystem::clear global handlers is not empty:"
@@ -370,5 +371,8 @@ namespace Mengine
                 );
             }
         }
+#endif
+
+        m_handlers.clear();
     }
 }

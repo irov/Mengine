@@ -170,13 +170,19 @@ namespace Mengine
         return m_affectorableGlobal;
     }
     //////////////////////////////////////////////////////////////////////////
-    uint32_t PlayerService::addTimer( const LambdaTimer & _lambda )
+    uint32_t PlayerService::addTimer( const LambdaTimer & _lambda, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
         TimerDesc desc;
         desc.id = new_id;
         desc.lambda = _lambda;
+
+#ifndef NDEBUG
+        desc.doc = _doc;
+#endif
 
         m_timers.emplace_back( desc );
 

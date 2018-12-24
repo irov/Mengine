@@ -56,7 +56,7 @@ namespace Mengine
         const AffectorablePtr & getGlobalAffectorable() const override;
 
     public:
-        uint32_t addTimer( const LambdaTimer & _lambda ) override;
+        uint32_t addTimer( const LambdaTimer & _lambda, const Char * _doc ) override;
         bool removeTimer( uint32_t _id ) override;
 
     public:
@@ -156,6 +156,9 @@ namespace Mengine
         {
             uint32_t id;
             LambdaTimer lambda;
+#ifndef NDEBUG
+            String doc;
+#endif
         };
 
         typedef Vector<TimerDesc> VectorTimerDesc;

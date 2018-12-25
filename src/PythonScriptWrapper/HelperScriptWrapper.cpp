@@ -15,6 +15,7 @@
 #include "Interface/WatchdogInterface.h"
 #include "Interface/InputServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/ChronometerServiceInterface.h"
 
 #include "Config/Typedef.h"
 #include "Config/Stringstream.h"
@@ -529,10 +530,10 @@ namespace Mengine
             return axis;
         }
 
-        uint32_t s_addTimer( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
+        uint32_t s_addChronometer( pybind::kernel_interface * _kernel, const pybind::object & _cb, const pybind::args & _args )
         {
-            uint32_t id = PLAYER_SERVICE()
-                ->addTimer( [_cb, _args]( uint32_t _id, uint64_t _time )
+            uint32_t id = CHRONOMETER_SERVICE()
+                ->addChronometer( [_cb, _args]( uint32_t _id, uint64_t _time )
             {
                 _cb.call_args( _id, _time, _args );
             }, _kernel->object_repr( _cb.ptr() ) );
@@ -540,10 +541,10 @@ namespace Mengine
             return id;
         }
 
-        bool s_removeTimer( uint32_t _id )
+        bool s_removeChronometer( uint32_t _id )
         {
-            bool successful = PLAYER_SERVICE()
-                ->removeTimer( _id );
+            bool successful = CHRONOMETER_SERVICE()
+                ->removeChronometer( _id );
 
             return successful;
         }
@@ -3416,8 +3417,8 @@ namespace Mengine
 
         pybind::def_functor( kernel, "getJoystickAxis", helperScriptMethod, &HelperScriptMethod::s_getJoystickAxis );
 
-        pybind::def_functor_kernel_args( kernel, "addTimer", helperScriptMethod, &HelperScriptMethod::s_addTimer );
-        pybind::def_functor( kernel, "removeTimer", helperScriptMethod, &HelperScriptMethod::s_removeTimer );
+        pybind::def_functor_kernel_args( kernel, "addChronometer", helperScriptMethod, &HelperScriptMethod::s_addChronometer );
+        pybind::def_functor( kernel, "removeChronometer", helperScriptMethod, &HelperScriptMethod::s_removeChronometer );
 
         pybind::def_functor( kernel, "getHotSpotPolygonBoundingBox", helperScriptMethod, &HelperScriptMethod::s_getHotSpotPolygonBoundingBox );
 

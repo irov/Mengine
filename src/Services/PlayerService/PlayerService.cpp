@@ -19,6 +19,7 @@
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/ChronometerServiceInterface.h"
 #include "Interface/TimeSystemInterface.h"
 
 #include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
@@ -68,7 +69,6 @@ namespace Mengine
         : m_arrowHided( false )
         , m_fps( 0 )
         , m_focus( true )
-        , m_oldTime( 0 )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -168,43 +168,6 @@ namespace Mengine
     const AffectorablePtr & PlayerService::getGlobalAffectorable() const
     {
         return m_affectorableGlobal;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    uint32_t PlayerService::addTimer( const LambdaTimer & _lambda, const Char * _doc )
-    {
-        MENGINE_UNUSED( _doc );
-
-        uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
-
-        TimerDesc desc;
-        desc.id = new_id;
-        desc.lambda = _lambda;
-
-#ifndef NDEBUG
-        desc.doc = _doc;
-#endif
-
-        m_timers.emplace_back( desc );
-
-        return new_id;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PlayerService::removeTimer( uint32_t _id )
-    {
-        for( TimerDesc & desc : m_timers )
-        {
-            if( desc.id != _id )
-            {
-                continue;
-            }
-
-            desc = m_timers.back();
-            m_timers.pop_back();
-            
-            return true;
-        }
-
-        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::_initializeService()
@@ -310,15 +273,6 @@ namespace Mengine
             m_debugCamera2D->disable();
             m_debugCamera2D = nullptr;
         }
-
-#ifndef NDEBUG
-        for( const TimerDesc & desc : m_timers )
-        {
-            LOGGER_ERROR( "Not remove timer '%s'"
-                , desc.doc.c_str()
-            );
-        }
-#endif
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduleManager );
         m_factoryScheduleManager = nullptr;
@@ -525,21 +479,8 @@ namespace Mengine
             m_globalInputHandler->update();
         }
 
-        uint64_t currentTime = GET_TIME_MILLISECONDS();
-
-        if( m_oldTime == 0 || currentTime - m_oldTime >= 1000 )
-        {
-            m_timersProcess = m_timers;
-
-            for( const TimerDesc & desc : m_timersProcess )
-            {
-                desc.lambda( desc.id, currentTime );
-            }
-
-            m_timersProcess.clear();
-
-            m_oldTime = currentTime - currentTime % 1000;
-        }
+        CHRONOMETER_SERVICE()
+            ->update();
 
         return true;
     }

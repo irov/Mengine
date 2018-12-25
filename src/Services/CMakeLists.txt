@@ -38,6 +38,7 @@ ADD_SUBDIRECTORY( VocabularyService )
 ADD_SUBDIRECTORY( EnumeratorService )
 ADD_SUBDIRECTORY( SceneService )
 ADD_SUBDIRECTORY( LoaderService )
+ADD_SUBDIRECTORY( ChronometerService )
 
 SET( APPLICATION_LIBS
  ${APPLICATION_LIBS}

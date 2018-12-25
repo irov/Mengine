@@ -1,9 +1,9 @@
 CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
 
-INCLUDE( ../macro_template.cmake )
-INCLUDE( ../android_template.cmake )
+INCLUDE(../macro_template.cmake)
+INCLUDE(../android_template.cmake)
 
-PROJECT( Mengine_Android_SDL )
+PROJECT(Mengine_Android_SDL)
 
 SET(CMAKE_SYSTEM_NAME Android)
 

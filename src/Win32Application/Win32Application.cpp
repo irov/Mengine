@@ -24,6 +24,7 @@
 #include "Interface/ConverterServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/ChronometerServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
@@ -108,6 +109,7 @@ SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
+SERVICE_EXTERN( ChronometerService );
 
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
@@ -626,6 +628,7 @@ namespace Mengine
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
         SERVICE_CREATE( EnumeratorService );
+        SERVICE_CREATE( ChronometerService );
         SERVICE_CREATE( TimeSystem );
         SERVICE_CREATE( TimeService );
 

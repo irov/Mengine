@@ -2,6 +2,10 @@ CMAKE_MINIMUM_REQUIRED( VERSION 3.0 )
 
 include(ExternalProject)
 
+macro(DOWNLOAD_FILE NAME URL FILE)
+    file(DOWNLOAD ${URL} ${THIRDPARTY_DIR}/${NAME}/${FILE} SHOW_PROGRESS)
+endmacro()
+
 macro(DOWNLOAD_URL NAME URL)
     ExternalProject_Add(${NAME}_download PREFIX ${NAME}
         SOURCE_DIR ${THIRDPARTY_DIR}/${NAME}

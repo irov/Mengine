@@ -13,6 +13,8 @@ DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip
 DOWNLOAD_URL(curl-android https://github.com/leenjewel/openssl_for_ios_and_android/releases/download/android_openssl-1.1.0f_curl-7.54.1/only_android_openssl-1.1.0f_curl-7.54.1.zip)
 DOWNLOAD_URL(openssl https://www.npcglib.org/~stathis/downloads/openssl-1.1.0f-vs2017.7z)
 
+DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
+
 GIT_CLONE(zlib https://github.com/madler/zlib.git "v1.2.11")
 GIT_CLONE(libogg https://github.com/xiph/ogg.git "v1.3.3")
 GIT_CLONE(libvorbis https://github.com/xiph/vorbis.git "v1.3.6")

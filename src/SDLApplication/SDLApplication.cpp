@@ -30,6 +30,8 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/AccountServiceInterface.h"
 #include "Interface/SceneServiceInterface.h"
+#include "Interface/EnumeratorServiceInterface.h"
+#include "Interface/ChronometerServiceInterface.h"
 
 #include "PythonScriptWrapper/PythonWrapper.h"
 
@@ -134,6 +136,7 @@ SERVICE_EXTERN( PrefetcherService );
 SERVICE_EXTERN( OptionsService );
 SERVICE_EXTERN( TimeSystem );
 SERVICE_EXTERN( TimeService );
+SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( UpdateService );
 SERVICE_EXTERN( LoaderService );
@@ -152,6 +155,7 @@ SERVICE_EXTERN( GameService );
 SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( SceneService );
+SERVICE_EXTERN( ChronometerService );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
@@ -614,6 +618,7 @@ namespace Mengine
         SERVICE_CREATE( MemoryService );
         SERVICE_CREATE( ConverterService );
         SERVICE_CREATE( InputService );
+        SERVICE_CREATE( EnumeratorService );
 
         SERVICE_CREATE( TimeSystem );
         SERVICE_CREATE( TimeService );
@@ -634,6 +639,7 @@ namespace Mengine
         SERVICE_CREATE( RenderMaterialService );
         SERVICE_CREATE( RenderTextureService );
 
+        SERVICE_CREATE( ChronometerService );
         SERVICE_CREATE( AccountService );
         SERVICE_CREATE( SceneService );
         SERVICE_CREATE( ResourceService );

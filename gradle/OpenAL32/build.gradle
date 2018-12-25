@@ -6,12 +6,9 @@ android {
 
     defaultConfig {
         minSdkVersion 15
-        targetSdkVersion 26
         versionCode 1
         versionName "1.0"
 
-        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
-        
         ndk {
             abiFilters 'armeabi-v7a'
         }
@@ -23,11 +20,12 @@ android {
                         "-DALSOFT_DLOPEN:BOOLEAN=OFF",
                         "-DALSOFT_WERROR:BOOLEAN=OFF",
                         "-DALSOFT_UTILS:BOOLEAN=OFF",
-                        "-DALSOFT_NO_CONFIG_UTIL:BOOLEAN=OFF",
+                        "-DALSOFT_NO_CONFIG_UTIL:BOOLEAN=ON",
                         "-DALSOFT_EXAMPLES:BOOLEAN=OFF",
                         "-DALSOFT_TESTS:BOOLEAN=OFF",
                         "-DALSOFT_CONFIG:BOOLEAN=OFF",
                         "-DALSOFT_HRTF_DEFS:BOOLEAN=OFF",
+                        "-DALSOFT_EMBED_HRTF_DATA:BOOLEAN=OFF",
                         "-DALSOFT_INSTALL:BOOLEAN=OFF"
             }
         }        

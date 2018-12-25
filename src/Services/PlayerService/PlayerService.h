@@ -56,10 +56,6 @@ namespace Mengine
         const AffectorablePtr & getGlobalAffectorable() const override;
 
     public:
-        uint32_t addTimer( const LambdaTimer & _lambda, const Char * _doc ) override;
-        bool removeTimer( uint32_t _id ) override;
-
-    public:
         void setRenderCamera( const RenderCameraInterfacePtr & _camera ) override;
         const RenderCameraInterfacePtr & getRenderCamera() const override;
 
@@ -149,21 +145,6 @@ namespace Mengine
         ScenePtr m_switchSceneTo;
 
         uint32_t m_fps;
-
-        uint64_t m_oldTime;
-                
-        struct TimerDesc
-        {
-            uint32_t id;
-            LambdaTimer lambda;
-#ifndef NDEBUG
-            String doc;
-#endif
-        };
-
-        typedef Vector<TimerDesc> VectorTimerDesc;
-        VectorTimerDesc m_timersProcess;
-        VectorTimerDesc m_timers;
 
     protected:
         RenderCameraOrthogonalPtr m_debugCamera2D;

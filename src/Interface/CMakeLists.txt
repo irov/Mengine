@@ -91,6 +91,7 @@ src
     ServantInterface.h
     EnumeratorServiceInterface.h
     SceneServiceInterface.h
+    ChronometerServiceInterface.h
     
 	dummy.cpp
 )

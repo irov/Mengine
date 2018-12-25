@@ -64,10 +64,6 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
             setOnGenericMotionListener(SDLActivity.getMotionListener());
         }
 
-        if ((Build.VERSION.SDK_INT >= 26) && !SDLActivity.isDeXMode()) {
-            setOnCapturedPointerListener(new SDLCapturedPointerListener_API26());
-        }
-
         // Some arbitrary defaults to avoid a potential division by zero
         mWidth = 1.0f;
         mHeight = 1.0f;
@@ -116,6 +112,10 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
                                int format, int width, int height) {
         Log.v("SDL", "surfaceChanged()");
 
+        if (SDLActivity.mSingleton == null) {
+            return;
+        }
+
         int sdlFormat = 0x15151002; // SDL_PIXELFORMAT_RGB565 by default
         switch (format) {
         case PixelFormat.A_8:
@@ -163,24 +163,27 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
 
         mWidth = width;
         mHeight = height;
-		int nDeviceWidth = width;
-		int nDeviceHeight = height;
-		try
-		{
-			if ( android.os.Build.VERSION.SDK_INT >= 17 )
-			{
-				android.util.DisplayMetrics realMetrics = new android.util.DisplayMetrics();
-				mDisplay.getRealMetrics( realMetrics );
-				nDeviceWidth = realMetrics.widthPixels;
-				nDeviceHeight = realMetrics.heightPixels;
-			}
-		}
-		catch ( java.lang.Throwable throwable ) {}
+        int nDeviceWidth = width;
+        int nDeviceHeight = height;
+        try
+        {
+            if (Build.VERSION.SDK_INT >= 17) {
+                android.util.DisplayMetrics realMetrics = new android.util.DisplayMetrics();
+                mDisplay.getRealMetrics( realMetrics );
+                nDeviceWidth = realMetrics.widthPixels;
+                nDeviceHeight = realMetrics.heightPixels;
+            }
+        }
+        catch ( java.lang.Throwable throwable ) {}
 
-		Log.v("SDL", "Window size: " + width + "x" + height);
-		Log.v("SDL", "Device size: " + nDeviceWidth + "x" + nDeviceHeight);
+        synchronized(SDLActivity.getContext()) {
+            // In case we're waiting on a size change after going fullscreen, send a notification.
+            SDLActivity.getContext().notifyAll();
+        }
+
+        Log.v("SDL", "Window size: " + width + "x" + height);
+        Log.v("SDL", "Device size: " + nDeviceWidth + "x" + nDeviceHeight);
         SDLActivity.onNativeResize(width, height, nDeviceWidth, nDeviceHeight, sdlFormat, mDisplay.getRefreshRate());
-
 
         boolean skip = false;
         int requestedOrientation = SDLActivity.mSingleton.getRequestedOrientation();
@@ -398,28 +401,88 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public void onSensorChanged(SensorEvent event) {
         if (event.sensor.getType() == Sensor.TYPE_ACCELEROMETER) {
+
+            // Since we may have an orientation set, we won't receive onConfigurationChanged events.
+            // We thus should check here.
+            int newOrientation = SDLActivity.SDL_ORIENTATION_UNKNOWN;
+    
             float x, y;
             switch (mDisplay.getRotation()) {
                 case Surface.ROTATION_90:
                     x = -event.values[1];
                     y = event.values[0];
+                    newOrientation = SDLActivity.SDL_ORIENTATION_LANDSCAPE;
                     break;
                 case Surface.ROTATION_270:
                     x = event.values[1];
                     y = -event.values[0];
+                    newOrientation = SDLActivity.SDL_ORIENTATION_LANDSCAPE_FLIPPED;
                     break;
                 case Surface.ROTATION_180:
                     x = -event.values[1];
                     y = -event.values[0];
+                    newOrientation = SDLActivity.SDL_ORIENTATION_PORTRAIT_FLIPPED;
                     break;
                 default:
                     x = event.values[0];
                     y = event.values[1];
+                    newOrientation = SDLActivity.SDL_ORIENTATION_PORTRAIT;
                     break;
             }
+
+            if (newOrientation != SDLActivity.mCurrentOrientation) {
+                SDLActivity.mCurrentOrientation = newOrientation;
+                SDLActivity.onNativeOrientationChanged(newOrientation);
+            }
+
             SDLActivity.onNativeAccel(-x / SensorManager.GRAVITY_EARTH,
                                       y / SensorManager.GRAVITY_EARTH,
                                       event.values[2] / SensorManager.GRAVITY_EARTH);
+
+            
         }
     }
+
+    // Captured pointer events for API 26.
+    public boolean onCapturedPointerEvent(MotionEvent event)
+    {
+        int action = event.getActionMasked();
+
+        float x, y;
+        switch (action) {
+            case MotionEvent.ACTION_SCROLL:
+                x = event.getAxisValue(MotionEvent.AXIS_HSCROLL, 0);
+                y = event.getAxisValue(MotionEvent.AXIS_VSCROLL, 0);
+                SDLActivity.onNativeMouse(0, action, x, y, false);
+                return true;
+
+            case MotionEvent.ACTION_HOVER_MOVE:
+            case MotionEvent.ACTION_MOVE:
+                x = event.getX(0);
+                y = event.getY(0);
+                SDLActivity.onNativeMouse(0, action, x, y, true);
+                return true;
+
+            case MotionEvent.ACTION_BUTTON_PRESS:
+            case MotionEvent.ACTION_BUTTON_RELEASE:
+
+                // Change our action value to what SDL's code expects.
+                if (action == MotionEvent.ACTION_BUTTON_PRESS) {
+                    action = MotionEvent.ACTION_DOWN;
+                }
+                else if (action == MotionEvent.ACTION_BUTTON_RELEASE) {
+                    action = MotionEvent.ACTION_UP;
+                }
+
+                x = event.getX(0);
+                y = event.getY(0);
+                int button = event.getButtonState();
+
+                SDLActivity.onNativeMouse(button, action, x, y, true);
+                return true;
+        }
+
+        return false;
+    }
+
 }

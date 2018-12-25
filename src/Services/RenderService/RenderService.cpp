@@ -157,6 +157,7 @@ namespace Mengine
         m_renderBatches.clear();
         m_renderPasses.clear();
         m_debugVertices.clear();
+        m_debugIndices.clear();
 
         m_cacheRenderBatches.clear();
 
@@ -734,6 +735,7 @@ namespace Mengine
         }
 
         m_debugVertices.clear();
+        m_debugIndices.clear();
 
         m_debugInfo.fillrate = 0.f;
         m_debugInfo.object = 0;
@@ -1427,13 +1429,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderVertex2D * RenderService::getDebugRenderVertex2D( uint32_t _count )
     {
-        m_debugVertices.emplace_back( ArrayRenderVertex2D() );
-        ArrayRenderVertex2D & vertices_array = m_debugVertices.back();
+        m_debugVertices.emplace_back( VectorRenderVertex2D() );
+        VectorRenderVertex2D & vertices_array = m_debugVertices.back();
         vertices_array.resize( _count );
 
         RenderVertex2D * vertices = &vertices_array.front();
 
         return vertices;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    RenderIndex * RenderService::getDebugRenderIndex( uint32_t _count )
+    {
+        m_debugIndices.emplace_back( VectorRenderIndex() );
+        VectorRenderIndex & indices_array = m_debugIndices.back();
+        indices_array.resize( _count );
+
+        RenderIndex * indices = &indices_array.front();
+
+        return indices;
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderService::setBatchMode( ERenderBatchMode _mode )

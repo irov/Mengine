@@ -443,7 +443,7 @@ namespace Mengine
         {
             RenderVertex2D & p = _vertices[it];
 
-            if( p.color == 0xFFFFFFFF )
+            if( p.color == Detail::COLOR_IDENTITY_VALUE )
             {
                 p.color = color_argb;
             }

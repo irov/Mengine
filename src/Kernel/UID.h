@@ -6,6 +6,6 @@ namespace Mengine
 {
     namespace Helper
     {
-        String makeUID( size_t _length );
+        String makeUID( uint32_t _length );
     }
 }

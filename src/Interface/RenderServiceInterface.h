@@ -68,7 +68,7 @@ namespace Mengine
             , const RenderMaterialInterfacePtr & _material
             , const RenderProgramVariableInterfacePtr & _variable
             , const RenderVertex2D * _vertices, uint32_t _vertexCount
-            , const RenderIndex * _indices, uint32_t _indicesNum
+            , const RenderIndex * _indices, uint32_t _indexCount
             , const mt::box2f * _bb, bool _debug ) = 0;
 
         virtual void addRenderQuad( const RenderContext * _context
@@ -83,6 +83,7 @@ namespace Mengine
 
     public:
         virtual RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) = 0;
+        virtual RenderIndex * getDebugRenderIndex( uint32_t _count ) = 0;
 
     public:
         virtual void setBatchMode( ERenderBatchMode _mode ) = 0;

@@ -320,7 +320,7 @@ namespace Mengine
     const RenderMaterialInterfacePtr & BaseRender::getDebugMaterial() const
     {
         const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
-            ->getDebugMaterial();
+            ->getDebugLineMaterial();
 
         return debugMaterial;
     }

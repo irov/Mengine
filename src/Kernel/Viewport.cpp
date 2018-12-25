@@ -32,6 +32,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    Viewport & Viewport::operator = ( const Viewport & _viewport )
+    {
+        this->begin = _viewport.begin;
+        this->end = _viewport.end;
+
+        return *this;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Viewport::setRectangle( const mt::vec2f & _begin, const mt::vec2f & _end )
     {
         begin = _begin;
@@ -73,6 +81,12 @@ namespace Mengine
         begin.y = mt::clamp( _begin.y, begin.y, _end.y );
         end.x = mt::clamp( _begin.x, end.x, _end.x );
         end.y = mt::clamp( _begin.y, end.y, _end.y );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Viewport::multiply( Viewport & _viewport, const mt::mat4f & _wm ) const
+    {
+        mt::mul_v2_v2_m4( _viewport.begin, this->begin, _wm );
+        mt::mul_v2_v2_m4( _viewport.end, this->end, _wm );
     }
     //////////////////////////////////////////////////////////////////////////
     void Viewport::clamp( const Viewport & _vp )

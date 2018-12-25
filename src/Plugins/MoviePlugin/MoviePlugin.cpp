@@ -482,10 +482,12 @@ namespace Mengine
             VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
         }
 
-        if( SERVICE_EXIST( NodeDebuggerServiceInterface ) == true )
+        SERVICE_WAIT( Mengine::NodeDebuggerServiceInterface, [this]( const ServiceInterfacePtr & _service )
         {
+            MENGINE_UNUSED( _service );
+
             VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<Movie2DebuggerBoundingBox>() );
-        }
+        } );
 
         return true;
     }

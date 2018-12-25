@@ -59,7 +59,7 @@ namespace Mengine
         }
 
         template<class T>
-        T * allocateArrayT( size_t _count )
+        T * allocateArrayT( uint32_t _count )
         {
             size_t memory_size = sizeof( T ) * _count;
             void * memory_buffer = stdex_malloc( memory_size, Typename<T>::value );
@@ -68,7 +68,7 @@ namespace Mengine
         }
 
         template<class T>
-        T * reallocateArrayT( T * _buffer, size_t _count )
+        T * reallocateArrayT( T * _buffer, uint32_t _count )
         {
             size_t memory_size = sizeof( T ) * _count;
             void * memory_buffer = stdex_realloc( _buffer, memory_size, Typename<T>::value );

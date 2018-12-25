@@ -20,6 +20,7 @@ namespace Mengine
         const RenderCameraInterfacePtr & getRenderCameraInheritance( RenderInterface * _render );
         const RenderScissorInterfacePtr & getRenderScissorInheritance( RenderInterface * _render );
         const RenderTargetInterfacePtr & getRenderTargetInheritance( RenderInterface * _render );
+        void getNodeRenderContext( const NodePtr & _node, RenderContext * _context );
         const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( Node * _node );
         const RenderCameraInterfacePtr & getNodeRenderCameraInheritance( Node * _node );
         const RenderScissorInterfacePtr & getNodeRenderScissorInheritance( Node * _node );

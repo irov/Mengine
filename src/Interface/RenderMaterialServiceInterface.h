@@ -54,8 +54,11 @@ namespace Mengine
             , const RenderTextureInterfacePtr * _textures ) = 0;
 
     public:
-        virtual void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) = 0;
-        virtual const RenderMaterialInterfacePtr & getDebugMaterial() const = 0;
+        virtual void setDebugLineMaterial( const RenderMaterialInterfacePtr & _debugLineMaterial ) = 0;
+        virtual const RenderMaterialInterfacePtr & getDebugLineMaterial() const = 0;
+
+        virtual void setDebugTriangleMaterial( const RenderMaterialInterfacePtr & _debugTriangleMaterial ) = 0;
+        virtual const RenderMaterialInterfacePtr & getDebugTriangleMaterial() const = 0;
 
     public:
         virtual ETextureFilter getDefaultTextureFilterMipmap() const = 0;

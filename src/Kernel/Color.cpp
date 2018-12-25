@@ -31,7 +31,7 @@ namespace Mengine
     {
         m_argb = Helper::makeARGB( m_r, m_g, m_b, m_a );
 
-        if( m_argb == 0xFFFFFFFF )
+        if( m_argb == Detail::COLOR_IDENTITY_VALUE )
         {
             m_invalidateARGB = Detail::COLOR_INVALIDATE_IDENTITY;
         }
@@ -111,7 +111,7 @@ namespace Mengine
     {
         m_argb = _val;
 
-        if( _val == 0xFFFFFFFF )
+        if( _val == Detail::COLOR_IDENTITY_VALUE )
         {
             m_r = 1.f;
             m_g = 1.f;

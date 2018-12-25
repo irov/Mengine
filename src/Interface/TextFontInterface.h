@@ -26,7 +26,7 @@ namespace Mengine
         struct IniStore;
     }
     //////////////////////////////////////////////////////////////////////////
-    enum EFontParams
+    enum EFontParams : uint32_t
     {
         EFP_NONE = 0x00000000,
         EFP_FONT = 0x00000001,
@@ -36,8 +36,7 @@ namespace Mengine
         EFP_MAX_LENGTH = 0x00000020,
         EFP_HORIZONTAL_ALIGN = 0x00000040,
         EFP_VERTICAL_ALIGN = 0x00000080,
-        EFP_CHAR_SCALE = 0x00000100,
-        EFP_MAX_VALUE = 0xffffffff
+        EFP_CHAR_SCALE = 0x00000100
     };
     //////////////////////////////////////////////////////////////////////////
     struct Glyph

@@ -9,7 +9,7 @@ namespace Mengine
         void nodeDebugRenderLine( const RenderContext * _context, RenderVertex2D * _vertices, uint32_t _count )
         {
             const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
-                ->getDebugMaterial();
+                ->getDebugLineMaterial();
 
             RENDER_SERVICE()
                 ->addRenderLine( _context

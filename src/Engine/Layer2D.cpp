@@ -348,11 +348,4 @@ namespace Mengine
 
         m_invalidateVerticesImageMaskWM = true;
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Layer2D::_updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const
-    {
-        mt::infinity_box( _boundingBox );
-
-        *_boundingBoxCurrent = &_boundingBox;
-    }
 }

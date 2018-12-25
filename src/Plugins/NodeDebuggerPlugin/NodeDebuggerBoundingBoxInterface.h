@@ -25,13 +25,13 @@ namespace Mengine
         {
             IntrusivePtr<T> t = stdex::intrusive_static_cast<IntrusivePtr<T>>(_node);
 
-            bool successful = this->_updateBoundingBox( t, _bb );
+            bool successful = this->_getBoundingBox( t, _bb );
 
             return successful;
         }
 
     protected:
-        virtual bool _updateBoundingBox( const IntrusivePtr<T> & _node, mt::box2f * _bb ) = 0;
+        virtual bool _getBoundingBox( const IntrusivePtr<T> & _node, mt::box2f * _bb ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 }

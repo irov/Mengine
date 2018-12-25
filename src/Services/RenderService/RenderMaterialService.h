@@ -69,8 +69,11 @@ namespace Mengine
             , const RenderTextureInterfacePtr * _textures ) override;
 
     public:
-        void setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial ) override;
-        const RenderMaterialInterfacePtr & getDebugMaterial() const override;
+        void setDebugLineMaterial( const RenderMaterialInterfacePtr & _debugLineMaterial ) override;
+        const RenderMaterialInterfacePtr & getDebugLineMaterial() const override;
+
+        void setDebugTriangleMaterial( const RenderMaterialInterfacePtr & _debugTriangleMaterial ) override;
+        const RenderMaterialInterfacePtr & getDebugTriangleMaterial() const override;
 
     public:
         ETextureFilter getDefaultTextureFilterMipmap() const override;
@@ -113,8 +116,9 @@ namespace Mengine
         typedef Vector<uint32_t> VectorMaterialIndexer;
         VectorMaterialIndexer m_materialEnumerators;
 
-        RenderMaterialInterfacePtr m_debugMaterial;
-
+        RenderMaterialInterfacePtr m_debugLineMaterial;
+        RenderMaterialInterfacePtr m_debugTriangleMaterial;
+        
         typedef Map<ConstString, RenderVertexShaderInterfacePtr> MapRenderVertexShaders;
         MapRenderVertexShaders m_vertexShaders;
 

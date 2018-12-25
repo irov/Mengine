@@ -24,14 +24,14 @@ namespace Mengine
             'v', 'w', 'x', 'y', 'z'
         };
         //////////////////////////////////////////////////////////////////////////
-        String makeUID( size_t _length )
+        String makeUID( uint32_t _length )
         {
             std::default_random_engine rng( std::random_device{}() );
 
-            std::uniform_int_distribution<> dist( 0, sizeof( char_array ) - 1 );
+            std::uniform_int_distribution<uint32_t> dist( 0, sizeof( char_array ) - 1 );
 
             String uid( _length, 0 );
-            std::generate_n( uid.begin(), _length, [&dist, &rng]() {size_t e = dist( rng ); return char_array[e]; } );
+            std::generate_n( uid.begin(), _length, [&dist, &rng]() {uint32_t e = dist( rng ); return char_array[e]; } );
 
             return uid;
         }

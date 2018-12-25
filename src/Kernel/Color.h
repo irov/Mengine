@@ -18,6 +18,7 @@ namespace Mengine
         const uint32_t COLOR_INVALIDATE_IDENTITY = 0;
         const uint32_t COLOR_INVALIDATE_FALSE = 1;
         const uint32_t COLOR_INVALIDATE_TRUE = 2;
+        const uint32_t COLOR_IDENTITY_VALUE = 0xFFFFFFFF;
     }
 
     class Color
@@ -28,7 +29,7 @@ namespace Mengine
             , m_g( 1.f )
             , m_b( 1.f )
             , m_a( 1.f )
-            , m_argb( 0xFFFFFFFF )
+            , m_argb( Detail::COLOR_IDENTITY_VALUE )
             , m_invalidateARGB( Detail::COLOR_INVALIDATE_IDENTITY )
         {
         }
@@ -38,7 +39,7 @@ namespace Mengine
             , m_g( _g )
             , m_b( _b )
             , m_a( _a )
-            , m_argb( 0xFFFFFFFF )
+            , m_argb( Detail::COLOR_IDENTITY_VALUE )
             , m_invalidateARGB( Detail::COLOR_INVALIDATE_TRUE )
         {
         }

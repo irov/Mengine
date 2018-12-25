@@ -11,6 +11,6 @@ namespace Mengine
         , public Factorable
     {
     public:
-        bool _updateBoundingBox( const Movie2Ptr & _node, mt::box2f * _bb ) override;
+        bool _getBoundingBox( const Movie2Ptr & _node, mt::box2f * _bb ) override;
     };
 }

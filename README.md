@@ -28,3 +28,5 @@ Mengine is an multiple platforms engine for creating and running graphical games
 Где мы найдем основной проект `Win32Application`
 
 Удачи в сборке, и использованию!
+
+[![CodeFactor](https://www.codefactor.io/repository/github/irov/mengine/badge)](https://www.codefactor.io/repository/github/irov/mengine)

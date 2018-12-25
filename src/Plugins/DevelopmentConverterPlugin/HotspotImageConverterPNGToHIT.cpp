@@ -49,7 +49,7 @@ namespace Mengine
 
         const PickCodecDataInfo * dataInfo = decoder->getCodecDataInfo();
 
-        uint32_t bufferSize = (uint32_t)dataInfo->mipmapsize;
+        uint32_t bufferSize = dataInfo->mipmapsize;
 
         MemoryInterfacePtr memory = Helper::createMemoryCacheBuffer( bufferSize, "HotspotImageConverterPNGToHIT", __FILE__, __LINE__ );
 
@@ -111,7 +111,7 @@ namespace Mengine
 
         optionsAlpha.flags |= DF_READ_ALPHA_ONLY;
         //optionsAlpha.flags |= DF_CUSTOM_PITCH;
-        optionsAlpha.pitch = dataInfo->width;
+        optionsAlpha.pitch = dataInfo->width * 1;
         optionsAlpha.channels = 1;
 
         imageDecoder->setOptions( &optionsAlpha );

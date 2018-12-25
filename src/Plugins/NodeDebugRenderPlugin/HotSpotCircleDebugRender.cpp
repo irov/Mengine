@@ -15,7 +15,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void HotSpotCircleDebugRender::_render( const RenderContext * _context, HotSpotCircle * _node )
     {
-        uint32_t debugColor = 0xFFFFFFFF;
+        uint32_t debugColor = Detail::COLOR_IDENTITY_VALUE;
 
         if( _node->isMousePickerOver() == true )
         {

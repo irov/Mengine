@@ -540,7 +540,7 @@ namespace Mengine
         return m_charScale;
     }
     //////////////////////////////////////////////////////////////////////////
-    const mt::vec2f& TextField::getTextSize() const
+    const mt::vec2f & TextField::getTextSize() const
     {
         if( this->isInvalidateTextLines() == true )
         {

@@ -186,7 +186,8 @@ namespace Mengine
         m_fragmentShaders.clear();
         m_programs.clear();
 
-        m_debugMaterial = nullptr;
+        m_debugLineMaterial = nullptr;
+        m_debugTriangleMaterial = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMaterial );
 
@@ -527,10 +528,16 @@ namespace Mengine
 
             if( is_debug == true )
             {
-                const RenderMaterialInterfacePtr & debugMaterial =
+                const RenderMaterialInterfacePtr & debugLineMaterial =
                     this->getMaterial( name, PT_LINELIST, 0, nullptr );
 
-                this->setDebugMaterial( debugMaterial );
+                this->setDebugLineMaterial( debugLineMaterial );
+
+                const RenderMaterialInterfacePtr & debugTriangleMaterial =
+                    this->getMaterial( name, PT_TRIANGLELIST, 0, nullptr );
+
+                this->setDebugTriangleMaterial( debugTriangleMaterial );
+                
             }
         }
 
@@ -935,14 +942,24 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderMaterialService::setDebugMaterial( const RenderMaterialInterfacePtr & _debugMaterial )
+    void RenderMaterialService::setDebugLineMaterial( const RenderMaterialInterfacePtr & _debugLineMaterial )
     {
-        m_debugMaterial = _debugMaterial;
+        m_debugLineMaterial = _debugLineMaterial;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialInterfacePtr & RenderMaterialService::getDebugMaterial() const
+    const RenderMaterialInterfacePtr & RenderMaterialService::getDebugLineMaterial() const
     {
-        return m_debugMaterial;
+        return m_debugLineMaterial;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderMaterialService::setDebugTriangleMaterial( const RenderMaterialInterfacePtr & _debugTriangleMaterial )
+    {
+        m_debugTriangleMaterial = _debugTriangleMaterial;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    const RenderMaterialInterfacePtr & RenderMaterialService::getDebugTriangleMaterial() const
+    {
+        return m_debugTriangleMaterial;
     }
     //////////////////////////////////////////////////////////////////////////
     ETextureFilter RenderMaterialService::getDefaultTextureFilterMipmap() const

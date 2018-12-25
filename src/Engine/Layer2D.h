@@ -68,9 +68,6 @@ namespace Mengine
         void _invalidateWorldMatrix() override;
 
     protected:
-        void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
-
-    protected:
         mt::vec2f m_size;
 
         Viewport m_viewport;

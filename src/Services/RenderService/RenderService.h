@@ -169,6 +169,7 @@ namespace Mengine
 
     public:
         RenderVertex2D * getDebugRenderVertex2D( uint32_t _count ) override;
+        RenderIndex * getDebugRenderIndex( uint32_t _count ) override;
 
     public:
         void setBatchMode( ERenderBatchMode _mode ) override;
@@ -320,9 +321,11 @@ namespace Mengine
         typedef Vector<RenderPassPtr> VectorRenderPass;
         VectorRenderPass m_renderPasses;
 
-        typedef VectorRenderVertex2D ArrayRenderVertex2D;
-        typedef List<ArrayRenderVertex2D> ListDebugVertices;
+        typedef List<VectorRenderVertex2D> ListDebugVertices;
         ListDebugVertices m_debugVertices;
+
+        typedef List<VectorRenderIndex> ListDebugIndices;
+        ListDebugIndices m_debugIndices;
 
         VectorRenderBatch m_cacheRenderBatches;
 

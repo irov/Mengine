@@ -15,14 +15,15 @@
 
 #include "NodeDebuggerSerialization.h"
 
-#include "ShapeDebuggerBoundingBox.h"
 #include "HotSpotPolygonDebuggerBoundingBox.h"
+#include "TextFieldDebuggerBoundingBox.h"
 
 #include "Kernel/Assertion.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/SchedulerHelper.h"
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/AssertionVocabulary.h"
+#include "Kernel/NodeRenderHelper.h"
 #include "Kernel/Scene.h"
 
 #include "Config/Stringstream.h"
@@ -55,18 +56,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerService::_initializeService()
     {
-        VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ), new FactorableUnique<ShapeDebuggerBoundingBox>() );
-        VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFlex" ), new FactorableUnique<ShapeDebuggerBoundingBox>() );
         VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), new FactorableUnique<HotSpotPolygonDebuggerBoundingBox>() );
+        VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ), new FactorableUnique<TextFieldDebuggerBoundingBox>() );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerService::_finalizeService()
     {
-        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
-        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFlex" ) );
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ) );
     }
@@ -237,11 +236,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static bool s_absorbBoundingBox( const NodePtr & _node, mt::box2f & _bb )
     {
+        if( _node->isEnable() == false )
+        {
+            return false;
+        }
+
         bool successul = false;
 
         mt::box2f absorb_bb;
         mt::insideout_box( absorb_bb );
-
+        
         const ConstString & type = _node->getType();
 
         NodeDebuggerBoundingBoxInterfacePtr boundingBox = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), type );
@@ -256,16 +260,32 @@ namespace Mengine
                 successul = true;
             }
         }
+        else
+        {
+            RenderInterface * render = _node->getRender();
+
+            if( render != nullptr )
+            {
+                const mt::box2f * rbbox = render->getBoundingBox();
+
+                if( rbbox != nullptr )
+                {
+                    mt::merge_box( absorb_bb, *rbbox );
+
+                    successul = true;
+                }
+            }
+        }
 
         _node->foreachChildren( [&absorb_bb, &successul]( const NodePtr & _child )
         {
             mt::box2f child_bb;
             if( s_absorbBoundingBox( _child, child_bb ) == true )
             {
-                successul = true;
-            }
+                mt::merge_box( absorb_bb, child_bb );
 
-            mt::merge_box( absorb_bb, child_bb );
+                successul = true;
+            }            
         } );
 
         _bb = absorb_bb;
@@ -287,40 +307,88 @@ namespace Mengine
             return;
         }
 
+        RenderContext node_context = *_context;
+        Helper::getNodeRenderContext( node, &node_context );
+
         mt::box2f bbox;
         if( s_absorbBoundingBox( node, bbox ) == false )
         {
             return;
         }
 
+        const RenderCameraInterfacePtr & camera = node_context.camera;
+
+        const mt::mat4f & vpminv = camera->getCameraViewProjectionMatrixInv();
+
+        mt::box2f bcrop;
+        mt::mul_v2_v2_m4( bcrop.minimum, mt::vec2f( -1.f, 1.f ), vpminv );
+        mt::mul_v2_v2_m4( bcrop.maximum, mt::vec2f( 1.f, -1.f ), vpminv );
+        
+        mt::crop_box( bbox, bcrop );
+
         const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
-            ->getDebugMaterial();
+            ->getDebugTriangleMaterial();
 
         RenderVertex2D * vertices = RENDER_SERVICE()
-            ->getDebugRenderVertex2D( 5 );
+            ->getDebugRenderVertex2D( 8 );
 
-        vertices[0].position = mt::vec3f( bbox.minimum.x, bbox.minimum.y, 0.f );
-        vertices[1].position = mt::vec3f( bbox.maximum.x, bbox.minimum.y, 0.f );
-        vertices[2].position = mt::vec3f( bbox.maximum.x, bbox.maximum.y, 0.f );
-        vertices[3].position = mt::vec3f( bbox.minimum.x, bbox.maximum.y, 0.f );
-        vertices[4].position = vertices[0].position;
+        float offset = 2.0f;
 
-        vertices[0].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
-        vertices[1].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
-        vertices[2].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
-        vertices[3].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
-        vertices[4].color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
+        vertices[0].position = mt::vec3f( bbox.minimum.x - offset, bbox.minimum.y - offset, 0.f );
+        vertices[1].position = mt::vec3f( bbox.maximum.x + offset, bbox.minimum.y - offset, 0.f );
+        vertices[2].position = mt::vec3f( bbox.maximum.x + offset, bbox.maximum.y + offset, 0.f );
+        vertices[3].position = mt::vec3f( bbox.minimum.x - offset, bbox.maximum.y + offset, 0.f );
+        vertices[4].position = mt::vec3f( bbox.minimum.x + offset, bbox.minimum.y + offset, 0.f );
+        vertices[5].position = mt::vec3f( bbox.maximum.x - offset, bbox.minimum.y + offset, 0.f );
+        vertices[6].position = mt::vec3f( bbox.maximum.x - offset, bbox.maximum.y - offset, 0.f );
+        vertices[7].position = mt::vec3f( bbox.minimum.x + offset, bbox.maximum.y - offset, 0.f );
 
-        for( size_t i = 0; i < 4; ++i )
+        ColorValue_ARGB color = Helper::makeARGB( 1.f, 0.f, 1.f, 1.f );
+
+        for( uint32_t index = 0; index != 8; ++index )
         {
-            RENDER_SERVICE()
-                ->addRenderLine( _context
-                    , debugMaterial
-                    , &vertices[i]
-                    , 2
-                    , nullptr
-                    , false );
+            vertices[index].color = color;
         }
+
+        RenderIndex * indices = RENDER_SERVICE()
+            ->getDebugRenderIndex( 2 * 3 * 4 );
+
+        indices[0 * 6 + 0 * 3 + 0] = 0;
+        indices[0 * 6 + 0 * 3 + 1] = 1;
+        indices[0 * 6 + 0 * 3 + 2] = 4;
+        indices[0 * 6 + 1 * 3 + 0] = 4;
+        indices[0 * 6 + 1 * 3 + 1] = 1;
+        indices[0 * 6 + 1 * 3 + 2] = 5;
+
+        indices[1 * 6 + 0 * 3 + 0] = 1;
+        indices[1 * 6 + 0 * 3 + 1] = 2;
+        indices[1 * 6 + 0 * 3 + 2] = 5;
+        indices[1 * 6 + 1 * 3 + 0] = 5;
+        indices[1 * 6 + 1 * 3 + 1] = 2;
+        indices[1 * 6 + 1 * 3 + 2] = 6;
+
+        indices[2 * 6 + 0 * 3 + 0] = 2;
+        indices[2 * 6 + 0 * 3 + 1] = 3;
+        indices[2 * 6 + 0 * 3 + 2] = 6;
+        indices[2 * 6 + 1 * 3 + 0] = 6;
+        indices[2 * 6 + 1 * 3 + 1] = 3;
+        indices[2 * 6 + 1 * 3 + 2] = 7;
+
+        indices[3 * 6 + 0 * 3 + 0] = 3;
+        indices[3 * 6 + 0 * 3 + 1] = 0;
+        indices[3 * 6 + 0 * 3 + 2] = 7;
+        indices[3 * 6 + 1 * 3 + 0] = 7;
+        indices[3 * 6 + 1 * 3 + 1] = 0;
+        indices[3 * 6 + 1 * 3 + 2] = 4;
+
+        RENDER_SERVICE()
+            ->addRenderObject( &node_context
+                , debugMaterial
+                , nullptr
+                , vertices, 8
+                , indices, 24
+                , &bbox
+                , false );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerService::privateInit()
@@ -431,10 +499,10 @@ namespace Mengine
         pugi::xml_node packetNode = doc.append_child( "Packet" );
         packetNode.append_attribute( "type" ).set_value( "Scene" );
 
-        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
-
         if( _scene != nullptr )
         {
+            pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
             serializeNode( _scene, payloadNode );
         }
 

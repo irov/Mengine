@@ -13,6 +13,9 @@ namespace Mengine
         Viewport( float _beginX, float _beginY, float _endX, float _endY );
 
     public:
+        Viewport & operator = ( const Viewport & _viewport );
+
+    public:
         void setRectangle( const mt::vec2f & _begin, const mt::vec2f & _end );
 
     public:
@@ -39,6 +42,7 @@ namespace Mengine
         void translate( const mt::vec2f & _value );
         void clamp( const mt::vec2f & _begin, const mt::vec2f & _right );
         void clamp( const Viewport & _vp );
+        void multiply( Viewport & _viewport, const mt::mat4f & _wm ) const;
 
     public:
         float getWidth() const;

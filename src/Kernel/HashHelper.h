@@ -9,14 +9,16 @@ namespace Mengine
     {
         constexpr uint64_t xmul12864( uint64_t a, uint64_t b )
         {
+            const uint64_t a32 = a >> 32;
+            const uint64_t b32 = b >> 32;
             const uint32_t al = (uint32_t)a;
-            const uint32_t ah = (uint32_t)(a >> 32);
+            const uint32_t ah = (uint32_t)a32;
             const uint32_t bl = (uint32_t)b;
-            const uint32_t bh = (uint32_t)(b >> 32);
+            const uint32_t bh = (uint32_t)b32;
 
             uint64_t x1 = (uint64_t)(al)* bh;
             uint64_t x2 = (uint64_t)(ah)* bl;
-            const uint64_t x3 = (uint64_t)(al)* bl;
+            const uint64_t x3 = (uint64_t)(al) * (uint64_t)(bl);
 
             x2 += x3 >> 32;
             x1 += (uint32_t)(x2);

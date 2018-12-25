@@ -170,7 +170,7 @@ namespace Mengine
                 vertex.position.y = pos_step_y * j;
                 vertex.position.z = 0.f;
 
-                vertex.color = 0xFFFFFFFF;
+                vertex.color = Detail::COLOR_IDENTITY_VALUE;
 
                 vertex.uv[0].x = m_offset.x + pos_uv_x * i;
                 vertex.uv[0].y = m_offset.y + pos_uv_y * j;

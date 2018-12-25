@@ -14,10 +14,10 @@ ADD_FILTER(
 	NodeDebuggerSerialization.h
     
     NodeDebuggerBoundingBoxInterface.h
-    ShapeDebuggerBoundingBox.h
-    ShapeDebuggerBoundingBox.cpp
     HotSpotPolygonDebuggerBoundingBox.h
     HotSpotPolygonDebuggerBoundingBox.cpp
+    TextFieldDebuggerBoundingBox.h
+    TextFieldDebuggerBoundingBox.cpp
 )
 
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )

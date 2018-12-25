@@ -48,6 +48,8 @@ namespace Mengine
 
         Viewport m_orthogonalViewport;
 
+        mutable Viewport m_renderViewport;
+
         bool m_proxyViewMatrix;
         bool m_fixedOrthogonalViewport;
     };

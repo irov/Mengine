@@ -214,6 +214,38 @@ namespace Mengine
             return target_relationRender;
         }
         //////////////////////////////////////////////////////////////////////////
+        void getNodeRenderContext( const NodePtr & _node, RenderContext * _context )
+        {
+            const RenderViewportInterfacePtr & viewport = Helper::getNodeRenderViewportInheritance( _node.get() );
+
+            if( viewport != nullptr )
+            { 
+                _context->viewport = viewport;
+            }
+            
+            const RenderCameraInterfacePtr & camera = Helper::getNodeRenderCameraInheritance( _node.get() );
+
+            if( camera != nullptr )
+            {
+                _context->camera = camera;
+            }
+
+            const RenderScissorInterfacePtr & scissor = Helper::getNodeRenderScissorInheritance( _node.get() );
+
+            if( camera != nullptr )
+            {
+                _context->scissor = scissor;
+            }
+
+            const RenderTargetInterfacePtr & target = Helper::getNodeRenderTargetInheritance( _node.get() );
+
+            if( camera != nullptr )
+            {
+                _context->target = target;
+            }
+
+        }
+        //////////////////////////////////////////////////////////////////////////
         const RenderViewportInterfacePtr & getNodeRenderViewportInheritance( Node * _node )
         {
             RenderInterface * render = _node->getRender();

@@ -171,7 +171,7 @@ namespace Mengine
         }
 
         ThreadIdentityInterfacePtr identity = THREAD_SYSTEM()
-            ->createThread( _priority, _file, _line );
+            ->createThread( _priority, _threadName.c_str(), _file, _line );
 
         if( identity == nullptr )
         {

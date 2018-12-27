@@ -306,7 +306,7 @@ namespace Mengine
         m_parent = nullptr;
 
         this->removeRelationTransformation();
-        this->setParentRender_( nullptr );
+        this->removeParentRender_();
 
         this->_changeParent( oldparent, nullptr );
     }

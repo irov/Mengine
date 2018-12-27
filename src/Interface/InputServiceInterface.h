@@ -187,7 +187,7 @@ namespace Mengine
             this->pushEvent( ev );
         }
         //////////////////////////////////////////////////////////////////////////
-        inline void pushMouseWheelEvent( float _x, float _y, uint32_t _button, int _whell )
+        inline void pushMouseWheelEvent( float _x, float _y, uint32_t _button, int32_t _whell )
         {
             float vx;
             float vy;

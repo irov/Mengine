@@ -63,7 +63,7 @@ namespace Mengine
         return service;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ServiceProvider::initializeService( TServiceProviderGenerator _generator, const Char * _doc, const Char * _file, int _line )
+    bool ServiceProvider::initializeService( TServiceProviderGenerator _generator, const Char * _doc, const Char * _file, uint32_t _line )
     {
         ServiceInterfacePtr service = this->generateService( _generator );
 

@@ -14,10 +14,6 @@
 
 #include <cstdio>
 
-#ifdef _MSC_VER
-#	define snprintf _snprintf
-#endif
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////

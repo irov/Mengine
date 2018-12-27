@@ -561,7 +561,7 @@ namespace Mengine
             }break;
         case WM_SYSKEYDOWN:
             {
-                unsigned int vkc = static_cast<unsigned int>(wParam);
+                uint32_t vkc = static_cast<uint32_t>(wParam);
 
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
@@ -573,7 +573,7 @@ namespace Mengine
             }break;
         case WM_SYSKEYUP:
             {
-                unsigned int vkc = static_cast<unsigned int>(wParam);
+                uint32_t vkc = static_cast<uint32_t>(wParam);
 
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
@@ -760,8 +760,8 @@ namespace Mengine
                     }
                 }
 
-                int x = (int)(short)LOWORD( lParam );
-                int y = (int)(short)HIWORD( lParam );
+                int32_t x = (int32_t)(int16_t)LOWORD( lParam );
+                int32_t y = (int32_t)(int16_t)HIWORD( lParam );
 
                 if( m_lastMouse == false )
                 {
@@ -775,8 +775,8 @@ namespace Mengine
                     m_lastMouse = true;
                 }
 
-                int dx = x - m_lastMouseX;
-                int dy = y - m_lastMouseY;
+                int32_t dx = x - m_lastMouseX;
+                int32_t dy = y - m_lastMouseY;
 
                 if( dx == 0 && dy == 0 )
                 {
@@ -816,12 +816,12 @@ namespace Mengine
             }break;
         case WM_MOUSEWHEEL:
             {
-                int zDelta = (int)(short)(HIWORD( wParam ));
+                int32_t zDelta = (int32_t)(int16_t)(HIWORD( wParam ));
 
                 mt::vec2f point;
                 this->calcCursorPosition_( point );
 
-                int wheel = zDelta / WHEEL_DELTA;
+                int32_t wheel = zDelta / WHEEL_DELTA;
 
                 INPUT_SERVICE()
                     ->pushMouseWheelEvent( point.x, point.y, 0, wheel );
@@ -980,7 +980,7 @@ namespace Mengine
         return handle;
     }
     //////////////////////////////////////////////////////////////////////////
-    ATOM Win32Platform::registerClass_( WNDPROC _wndProc, int _clsExtra, int _wndExtra
+    ATOM Win32Platform::registerClass_( WNDPROC _wndProc, int32_t _clsExtra, int32_t _wndExtra
         , HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
         , const WChar * _className )
     {
@@ -1349,7 +1349,7 @@ namespace Mengine
     RECT Win32Platform::getWindowsRect_( const Resolution & _resolution, bool _fullsreen ) const
     {
         RECT rc;
-        ::SetRect( &rc, 0, 0, (int)_resolution.getWidth(), (int)_resolution.getHeight() );
+        ::SetRect( &rc, 0, 0, (int32_t)_resolution.getWidth(), (int32_t)_resolution.getHeight() );
 
         if( _fullsreen == false )
         {
@@ -1824,7 +1824,7 @@ namespace Mengine
         WChar unicode_command[4096];
         Helper::utf8ToUnicode( _command, unicode_command, 4096 );
 
-        int err = ::_wsystem( unicode_command );
+        int32_t err = ::_wsystem( unicode_command );
 
         if( err != 0 )
         {
@@ -1841,8 +1841,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::getDesktopResolution( Resolution & _resolution ) const
     {
-        int cxscreen = ::GetSystemMetrics( SM_CXSCREEN );
-        int cyscreen = ::GetSystemMetrics( SM_CYSCREEN );
+        int32_t cxscreen = ::GetSystemMetrics( SM_CXSCREEN );
+        int32_t cyscreen = ::GetSystemMetrics( SM_CYSCREEN );
 
         _resolution.setWidth( cxscreen );
         _resolution.setHeight( cyscreen );
@@ -2017,7 +2017,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32Platform::setCursorPosition( const mt::vec2f & _pos )
     {
-        POINT cPos = { (int)_pos.x, (int)_pos.y };
+        POINT cPos = { (int32_t)_pos.x, (int32_t)_pos.y };
 
         ::ClientToScreen( m_hWnd, &cPos );
 

@@ -19,7 +19,7 @@ namespace Mengine
 
         SOCKET socket = this->getSocket();
 
-        int result = ::recv( socket, receiv_buffer, (int)_size, 0 );
+        int32_t result = ::recv( socket, receiv_buffer, (int32_t)_size, 0 );
 
         if( result < 0 )
         {

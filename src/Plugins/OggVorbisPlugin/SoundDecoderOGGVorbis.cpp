@@ -13,7 +13,7 @@ namespace Mengine
         return count;
     }
     //////////////////////////////////////////////////////////////////////////
-    static int s_seekOgg( void *_datasource, ogg_int64_t _offset, int _whence )
+    static int32_t s_seekOgg( void *_datasource, ogg_int64_t _offset, int _whence )
     {
         InputStreamInterface * stream = static_cast<InputStreamInterface *>(_datasource);
         ogg_int64_t offset = _offset;
@@ -50,7 +50,7 @@ namespace Mengine
         return long_pos;
     }
     //////////////////////////////////////////////////////////////////////////
-    static int s_closeOgg( void * _datasource )
+    static int32_t s_closeOgg( void * _datasource )
     {
         (void)_datasource;
 
@@ -89,7 +89,7 @@ namespace Mengine
         vorbisCallbacks.tell_func = s_tellOgg;
         vorbisCallbacks.close_func = s_closeOgg;
 
-        int opcall_err = ov_open_callbacks( m_stream.get(), &m_oggVorbisFile, nullptr, 0, vorbisCallbacks );
+        int32_t opcall_err = ov_open_callbacks( m_stream.get(), &m_oggVorbisFile, nullptr, 0, vorbisCallbacks );
 
         if( opcall_err < 0 )
         {
@@ -169,11 +169,11 @@ namespace Mengine
     size_t SoundDecoderOGGVorbis::_decode( void * _buffer, size_t _bufferSize )
     {
         long bytesDone = 0;
-        int bytesReading = (int)_bufferSize;
+        int32_t bytesReading = (int32_t)_bufferSize;
 
         for( ;;)
         {
-            int current_section = 0;
+            int32_t current_section = 0;
             char * readBuffer = (char *)_buffer + bytesDone;
             long decodeSize = ov_read( &m_oggVorbisFile, readBuffer, bytesReading, 0, 2, 1, &current_section );
 
@@ -232,7 +232,7 @@ namespace Mengine
         }
 
         double al_pos = (double)(_timing) * 0.001;
-        int seek_err = ov_time_seek( &m_oggVorbisFile, al_pos );
+        int32_t seek_err = ov_time_seek( &m_oggVorbisFile, al_pos );
 
         if( seek_err == OV_EINVAL )
         {

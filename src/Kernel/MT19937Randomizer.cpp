@@ -27,7 +27,7 @@ namespace Mengine
             return 0U;
         }
 
-        std::uniform_int_distribution<int> uid( 0, _max - 1 );
+        std::uniform_int_distribution<int32_t> uid( 0, _max - 1 );
 
         uint32_t rand_value = uid( m_engineRandomize );
 
@@ -46,7 +46,7 @@ namespace Mengine
             return _max - 1;
         }
 
-        std::uniform_int_distribution<int> uid( _min, _max - 1 );
+        std::uniform_int_distribution<int32_t> uid( _min, _max - 1 );
 
         uint32_t rand_value = uid( m_engineRandomize );
 

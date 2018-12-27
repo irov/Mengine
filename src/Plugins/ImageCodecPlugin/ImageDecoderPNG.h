@@ -31,6 +31,6 @@ namespace Mengine
         png_infop m_info_ptr;
         png_size_t m_row_bytes;
 
-        int m_interlace_number_of_passes;
+        int32_t m_interlace_number_of_passes;
     };
 }

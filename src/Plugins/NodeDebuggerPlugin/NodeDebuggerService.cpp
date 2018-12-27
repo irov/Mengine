@@ -76,7 +76,7 @@ namespace Mengine
         {
         case NodeDebuggerServerState::WaitingForClient:
             {
-                const int check = m_socket->checkForClientConnection();
+                const int32_t check = m_socket->checkForClientConnection();
                 if( check < 0 )
                 {
                     // failed
@@ -120,7 +120,7 @@ namespace Mengine
                     static const size_t BUFFER_SIZE = 4096;
                     uint8_t buffer[BUFFER_SIZE];
 
-                    int bytesReceived = 0;
+                    int32_t bytesReceived = 0;
                     bool clientDisconnected = false;
                     do
                     {
@@ -134,7 +134,7 @@ namespace Mengine
                         {
                             clientDisconnected = true;
                         }
-                    } while( !clientDisconnected && bytesReceived == static_cast<int>(BUFFER_SIZE) );
+                    } while( !clientDisconnected && bytesReceived == static_cast<int32_t>(BUFFER_SIZE) );
 
                     if( clientDisconnected )
                     {

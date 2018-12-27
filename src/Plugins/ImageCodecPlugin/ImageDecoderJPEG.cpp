@@ -122,7 +122,7 @@ namespace Mengine
         src->next_input_byte = nullptr;	// until buffer loaded 
     }
     //////////////////////////////////////////////////////////////////////////
-    static int s_getQuality( const jpeg_decompress_struct * _jpegObject )
+    static int32_t s_getQuality( const jpeg_decompress_struct * _jpegObject )
     {
         const JQUANT_TBL * tbl_ptrs = _jpegObject->quant_tbl_ptrs[0];
 

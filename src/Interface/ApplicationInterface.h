@@ -84,8 +84,8 @@ namespace Mengine
         virtual bool getFullscreenMode() const = 0;
 
         virtual uint32_t getWindowBits() const = 0;
-        virtual int getWindowFSAAType() const = 0;
-        virtual int getWindowFSAAQuality() const = 0;
+        virtual int32_t getWindowFSAAType() const = 0;
+        virtual int32_t getWindowFSAAQuality() const = 0;
 
     public:
         virtual void setFixedContentResolution( bool _fixedContetResolution ) = 0;

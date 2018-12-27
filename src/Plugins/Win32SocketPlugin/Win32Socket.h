@@ -30,8 +30,8 @@ namespace Mengine
         int checkForClientConnection() override;
         bool waitForData( size_t _timeoutMs ) override;
 
-        int send( const void* _data, const size_t _numBytes ) override;
-        int receive( void* _data, const size_t _maxBytes ) override;
+        int send( const void * _data, size_t _numBytes ) override;
+        int receive( void * _data, size_t _maxBytes ) override;
 
     public:
         OutputStreamInterfacePtr getSendStream() const override;

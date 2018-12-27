@@ -210,9 +210,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxParticleSystem::updateMaterial()
     {
-        int newMaterialCount = Magic_GetMaterialCount();
+        int32_t newMaterialCount = Magic_GetMaterialCount();
 
-        for( int i = m_materialCount; i != newMaterialCount; ++i )
+        for( int32_t i = m_materialCount; i != newMaterialCount; ++i )
         {
             MAGIC_MATERIAL m;
             if( Magic_GetMaterial( i, &m ) != MAGIC_SUCCESS )
@@ -307,7 +307,7 @@ namespace Mengine
 
             rs.program = program;
 
-            for( int stage = 0; stage != m.textures; ++stage )
+            for( int32_t stage = 0; stage != m.textures; ++stage )
             {
                 const MAGIC_TEXTURE_STATES & state = m.states[stage];
 
@@ -344,7 +344,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderMaterialStage * AstralaxParticleSystem::getMaterialStage( int _index ) const
+    const RenderMaterialStage * AstralaxParticleSystem::getMaterialStage( int32_t _index ) const
     {
         if( _index >= m_materialCount )
         {
@@ -354,7 +354,7 @@ namespace Mengine
         return m_stages[_index];
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceImagePtr & AstralaxParticleSystem::getResourceImage( int _index ) const
+    const ResourceImagePtr & AstralaxParticleSystem::getResourceImage( int32_t _index ) const
     {
         VectorAtlasDesc::size_type atlases_size = m_atlases.size();
 
@@ -384,9 +384,9 @@ namespace Mengine
     {
         MAGIC_VERTEX_FORMAT vertex_format = m->format;
 
-        int textures = m->textures;
+        int32_t textures = m->textures;
 
-        for( int i = 0; i != textures; ++i )
+        for( int32_t i = 0; i != textures; ++i )
         {
             ss << "sampler2D tex" << i << ";" << std::endl;
         }
@@ -421,7 +421,7 @@ namespace Mengine
             ss << "  float4 colorTex;" << std::endl;
             ss << "  float4 colorVarying=IN.color;" << std::endl;
 
-            for( int i = 0; i != textures; ++i )
+            for( int32_t i = 0; i != textures; ++i )
             {
                 ss << std::endl;
 
@@ -620,9 +620,9 @@ namespace Mengine
     {
         MAGIC_VERTEX_FORMAT vertex_format = m->format;
 
-        int textures = m->textures;
+        int32_t textures = m->textures;
 
-        for( int i = 0; i != textures; ++i )
+        for( int32_t i = 0; i != textures; ++i )
         {
             ss << "uniform sampler2D inSampler" << i << ";" << std::endl;
         }
@@ -631,7 +631,7 @@ namespace Mengine
 
         ss << "varying vec4 v_Col;" << std::endl;
 
-        for( int i = 0; i != textures; ++i )
+        for( int32_t i = 0; i != textures; ++i )
         {
             ss << "varying vec2 v_UV" << i << ";" << std::endl;
         }
@@ -649,7 +649,7 @@ namespace Mengine
             ss << "  vec4 colorTex;" << std::endl;
             ss << "  vec4 colorVarying=v_Col;" << std::endl;
 
-            for( int i = 0; i != textures; ++i )
+            for( int32_t i = 0; i != textures; ++i )
             {
                 ss << std::endl;
 
@@ -845,7 +845,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     RenderFragmentShaderInterfacePtr AstralaxParticleSystem::cacheFragmentShader_( const MAGIC_MATERIAL * m )
     {
-        int textures = m->textures;
+        int32_t textures = m->textures;
 
         for( const MagicStatesCache & cache : m_renderFragmentShaderCache )
         {
@@ -854,7 +854,7 @@ namespace Mengine
                 continue;
             }
 
-            for( int i = 0; i != textures; ++i )
+            for( int32_t i = 0; i != textures; ++i )
             {
                 const MAGIC_TEXTURE_STATES * a0 = cache.states + i;
                 const MAGIC_TEXTURE_STATES * a1 = m->states + i;
@@ -965,7 +965,7 @@ namespace Mengine
         memset( key.states + 0, 0, sizeof( MAGIC_TEXTURE_STATES ) );
         memset( key.states + 1, 0, sizeof( MAGIC_TEXTURE_STATES ) );
 
-        for( int i = 0; i != textures; ++i )
+        for( int32_t i = 0; i != textures; ++i )
         {
             key.states[i] = m->states[i];
         }

@@ -11,7 +11,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceWindow::ResourceWindow()
     {
-        for( int i = 0; i < ResourceWindow_Count; i++ )
+        for( uint32_t i = 0; i < ResourceWindow_Count; i++ )
         {
             m_elements[i].resourceImage = nullptr;
         }
@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceWindow::_compile()
     {
-        for( int i = 0; i < ResourceWindow_Count; i++ )
+        for( uint32_t i = 0; i < ResourceWindow_Count; i++ )
         {
             WindowElement & element = m_elements[i];
 
@@ -58,7 +58,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ResourceWindow::_release()
     {
-        for( int i = 0; i < ResourceWindow_Count; i++ )
+        for( uint32_t i = 0; i < ResourceWindow_Count; i++ )
         {
             WindowElement & element = m_elements[i];
 

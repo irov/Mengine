@@ -28,6 +28,6 @@ namespace Mengine
     protected:
         EMessageLevel m_level;
 
-        int m_softspace;
+        int32_t m_softspace;
     };
 }

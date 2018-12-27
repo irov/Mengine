@@ -182,7 +182,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
-        int _FSAAType, int _FSAAQuality )
+        int32_t _FSAAType, int32_t _FSAAQuality )
     {
         m_windowResolution = _resolution;
         m_contentResolution = _contentResolution;
@@ -795,7 +795,7 @@ namespace Mengine
         m_depthBufferWriteEnable = false;
         m_alphaBlendEnable = false;
 
-        for( int i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
+        for( int32_t i = 0; i != MENGINE_MAX_TEXTURE_STAGES; ++i )
         {
             this->restoreTextureStage_( i );
         }

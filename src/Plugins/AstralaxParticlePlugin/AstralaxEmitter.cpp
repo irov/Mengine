@@ -393,7 +393,7 @@ namespace Mengine
 
             for( uint32_t i = 0; i != mesh.textures; ++i )
             {
-                int textureId = mesh.texture[i];
+                int32_t textureId = mesh.texture[i];
 
                 const ResourceImagePtr & image = ASTRALAX_SYSTEM()
                     ->getResourceImage( textureId );

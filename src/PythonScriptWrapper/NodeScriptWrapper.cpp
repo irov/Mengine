@@ -301,7 +301,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         void s_Transformation_removeRelationTransformation( Transformation * _transformation )
         {
-            _transformation->setRelationTransformation( nullptr );
+            _transformation->removeRelationTransformation();
         }
         //////////////////////////////////////////////////////////////////////////
         const ConstString & s_Resource_getCategory( Resource * _resource )

@@ -65,7 +65,7 @@ namespace Mengine
         }
 
     public:
-        virtual bool initializeService( TServiceProviderGenerator _generator, const Char * _doc, const Char * _file, int _line ) = 0;
+        virtual bool initializeService( TServiceProviderGenerator _generator, const Char * _doc, const Char * _file, uint32_t _line ) = 0;
         virtual bool finalizeService( const Char * _name ) = 0;
         virtual bool destroyService( const Char * _name ) = 0;
 

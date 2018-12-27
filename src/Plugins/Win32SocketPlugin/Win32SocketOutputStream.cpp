@@ -19,7 +19,7 @@ namespace Mengine
 
         SOCKET socket = this->getSocket();
 
-        int send_result = ::send( socket, send_data, (int)_size, 0 );
+        int32_t send_result = ::send( socket, send_data, (int32_t)_size, 0 );
 
         if( send_result < 0 )
         {

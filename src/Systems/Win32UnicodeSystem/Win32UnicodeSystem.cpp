@@ -20,7 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32UnicodeSystem::unicodeToUtf8( const wchar_t * _unicode, size_t _unicodeSize, char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
+    bool Win32UnicodeSystem::unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size )
     {
 #   if (WINVER >= 0x0600)
         DWORD dwConversionFlags = WC_ERR_INVALID_CHARS;
@@ -28,15 +28,15 @@ namespace Mengine
         DWORD dwConversionFlags = 0;
 #   endif
 
-        int int_unicodeSize = static_cast<int>(_unicodeSize);
-        int int_utf8Capacity = static_cast<int>(_utf8Capacity);
+        int32_t int_unicodeSize = static_cast<int32_t>(_unicodeSize);
+        int32_t int_utf8Capacity = static_cast<int32_t>(_utf8Capacity);
 
         if( int_unicodeSize == UNICODE_UNSIZE && int_utf8Capacity != 0 )
         {
             ++int_utf8Capacity;
         }
 
-        int utf8_size = ::WideCharToMultiByte(
+        int32_t utf8_size = ::WideCharToMultiByte(
             CP_UTF8
             , dwConversionFlags
             , _unicode
@@ -70,17 +70,17 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32UnicodeSystem::utf8ToUnicode( const char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
+    bool Win32UnicodeSystem::utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _sizeUnicode )
     {
-        int int_utf8Size = static_cast<int>(_utf8Size);
-        int int_unicodeCapacity = static_cast<int>(_unicodeCapacity);
+        int32_t int_utf8Size = static_cast<int32_t>(_utf8Size);
+        int32_t int_unicodeCapacity = static_cast<int32_t>(_unicodeCapacity);
 
         if( int_utf8Size == UNICODE_UNSIZE && int_unicodeCapacity != 0 )
         {
             ++int_unicodeCapacity;
         }
 
-        int wc_size = ::MultiByteToWideChar(
+        int32_t wc_size = ::MultiByteToWideChar(
             CP_UTF8
             , MB_ERR_INVALID_CHARS
             , _utf8

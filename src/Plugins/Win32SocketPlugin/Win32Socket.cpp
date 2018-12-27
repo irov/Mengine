@@ -40,7 +40,7 @@ namespace Mengine
             return false;
         }
 
-        int connect_result = ::connect( socket, addrinfo->ai_addr, (int)addrinfo->ai_addrlen );
+        int32_t connect_result = ::connect( socket, addrinfo->ai_addr, (int)addrinfo->ai_addrlen );
 
         freeaddrinfo( addrinfo );
 
@@ -87,7 +87,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    int Win32Socket::checkForClientConnection()
+    int32_t Win32Socket::checkForClientConnection()
     {
         if( ::listen( m_socket, SOMAXCONN ) == SOCKET_ERROR )
         {
@@ -98,16 +98,16 @@ namespace Mengine
         }
 
         sockaddr_in clientAddr;
-        int addLen = sizeof( clientAddr );
+        int32_t addLen = sizeof( clientAddr );
         ZeroMemory( &clientAddr, addLen );
 
         SOCKET clientSocket = ::accept( m_socket, reinterpret_cast<LPSOCKADDR>(&clientAddr), &addLen );
 
-        int result = 1;
+        int32_t result = 1;
 
         if( clientSocket == INVALID_SOCKET )
         {
-            const int lastError = ::WSAGetLastError();
+            int32_t lastError = ::WSAGetLastError();
 
             if( m_isBlocking == false && lastError == WSAEWOULDBLOCK )
             {
@@ -144,31 +144,31 @@ namespace Mengine
         tv.tv_sec = static_cast<long>(timeoutMs / 1000);
         tv.tv_usec = static_cast<long>((timeoutMs - static_cast<size_t>(tv.tv_sec * 1000)) * 1000);
 
-        const int result = ::select( 0, &socketsSet, nullptr, nullptr, (timeoutMs == 0) ? nullptr : &tv );
+        int32_t result = ::select( 0, &socketsSet, nullptr, nullptr, (timeoutMs == 0) ? nullptr : &tv );
 
         return (1 == result);
     }
     //////////////////////////////////////////////////////////////////////////
-    int Win32Socket::send( const void * _data, const size_t _numBytes )
+    int32_t Win32Socket::send( const void * _data, size_t _numBytes )
     {
         if( m_socket == INVALID_SOCKET )
         {
             return 0;
         }
 
-        const int numBytesSent = ::send( m_socket, reinterpret_cast<const char*>(_data), static_cast<int>(_numBytes), 0 );
+        int32_t numBytesSent = ::send( m_socket, reinterpret_cast<const char*>(_data), static_cast<int>(_numBytes), 0 );
 
         return numBytesSent;
     }
     //////////////////////////////////////////////////////////////////////////
-    int Win32Socket::receive( void* _data, const size_t _maxBytes )
+    int32_t Win32Socket::receive( void* _data, size_t _maxBytes )
     {
         if( m_socket == INVALID_SOCKET )
         {
             return 0;
         }
 
-        const int numBytesReceived = ::recv( m_socket, reinterpret_cast<char*>(_data), static_cast<int>(_maxBytes), 0 );
+        const int32_t numBytesReceived = ::recv( m_socket, reinterpret_cast<char*>(_data), static_cast<int32_t>(_maxBytes), 0 );
 
         return numBytesReceived;
     }

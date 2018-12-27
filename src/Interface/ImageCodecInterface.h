@@ -28,7 +28,7 @@ namespace Mengine
         uint32_t channels;
         uint32_t depth;
 
-        int quality;
+        int32_t quality;
 
         PixelFormat format;
 

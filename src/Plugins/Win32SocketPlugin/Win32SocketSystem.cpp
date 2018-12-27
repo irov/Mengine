@@ -23,7 +23,7 @@ namespace Mengine
     {
         WORD wVersionRequested = MAKEWORD( 2, 2 );
 
-        int WSAStartup_result = ::WSAStartup( wVersionRequested, &m_wsaData );
+        int32_t WSAStartup_result = ::WSAStartup( wVersionRequested, &m_wsaData );
 
         if( WSAStartup_result != 0 )
         {

@@ -30,10 +30,10 @@ namespace Mengine
         bool avaliable() const override;
 
     public:
-        ThreadIdentityInterfacePtr createThread( int _priority, const char * _file, uint32_t _line ) override;
+        ThreadIdentityInterfacePtr createThread( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line ) override;
 
     public:
-        ThreadMutexInterfacePtr createMutex( const char * _file, uint32_t _line ) override;
+        ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) override;
 
     public:
         void sleep( uint32_t _ms ) override;

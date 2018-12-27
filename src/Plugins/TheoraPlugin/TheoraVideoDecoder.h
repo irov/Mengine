@@ -58,6 +58,6 @@ namespace Mengine
         bool readHeader_();
         size_t read_buffer_data_();
         bool decodeBuffer_( const yuv_buffer & _yuvBuffer, uint8_t * _buffer, size_t _pitch );
-        int readFrame_();
+        int32_t readFrame_();
     };
 }

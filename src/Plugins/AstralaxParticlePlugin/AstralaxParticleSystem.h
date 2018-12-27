@@ -46,8 +46,8 @@ namespace Mengine
         AstralaxEmitterInterfacePtr createEmitter( const AstralaxEmitterContainerInterfacePtr & _container ) override;
 
     public:
-        const RenderMaterialStage * getMaterialStage( int _index ) const override;
-        const ResourceImagePtr & getResourceImage( int _index ) const override;
+        const RenderMaterialStage * getMaterialStage( int32_t _index ) const override;
+        const ResourceImagePtr & getResourceImage( int32_t _index ) const override;
 
     public:
         uint32_t getEmitterCount() const override;
@@ -76,7 +76,7 @@ namespace Mengine
         typedef Map<uint32_t, AstralaxEmitterContainerDesc> MapHashEmitterContainers;
         MapHashEmitterContainers m_containers;
 
-        int m_materialCount;
+        int32_t m_materialCount;
         const RenderMaterialStage * m_stages[256];
 
         typedef Vector<ResourceImagePtr> VectorAtlasDesc;
@@ -84,7 +84,7 @@ namespace Mengine
 
         struct MagicStatesCache
         {
-            int textures;
+            int32_t textures;
             MAGIC_TEXTURE_STATES states[MENGINE_RENDER_VERTEX_UV_COUNT];
 
             RenderFragmentShaderInterfacePtr fragmentShader;

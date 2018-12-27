@@ -96,8 +96,8 @@ namespace Mengine
 
         const ozz::animation::Skeleton & skeleton = m_resourceOzzSkeleton->getOzzSkeleton();
 
-        int num_soa_joints = skeleton.num_soa_joints();
-        int num_joints = skeleton.num_joints();
+        int32_t num_soa_joints = skeleton.num_soa_joints();
+        int32_t num_joints = skeleton.num_joints();
 
         ozz::memory::Allocator* allocator = ozz::memory::default_allocator();
 

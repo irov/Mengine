@@ -4,6 +4,8 @@
 
 #include "Kernel/RenderIndex.h"
 
+#include "Config/Char.h"
+
 namespace Mengine
 {
     static const D3DFORMAT D32SFormats[] = { D3DFMT_D24S8, D3DFMT_D24X4S4, D3DFMT_D15S1, D3DFMT_D32, D3DFMT_D24X8, D3DFMT_D16, (D3DFORMAT)0 };
@@ -84,45 +86,45 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline D3DFORMAT s_toD3DFormat( int _format )
+    inline D3DFORMAT s_toD3DFormat( PixelFormat _format )
     {
         switch( _format )
         {
-        case 1:
+        case PF_L8:
             return D3DFMT_L8;
-        case 3:
+        case PF_A8:
             return D3DFMT_A8;
-        case 4:
+        case PF_A4L4:
             return D3DFMT_A4L4;
-        case 5:
+        case PF_BYTE_LA:
             return D3DFMT_A8L8; // Assume little endian here
-        case 31:
+        case PF_R3G3B2:
             return D3DFMT_R3G3B2;
-        case 9:
+        case PF_A1R5G5B5:
             return D3DFMT_A1R5G5B5;
-        case 6:
+        case PF_R5G6B5:
             return D3DFMT_R5G6B5;
-        case 8:
+        case PF_A4R4G4B4:
             return D3DFMT_A4R4G4B4;
-        case 10:
+        case PF_R8G8B8:
             return D3DFMT_R8G8B8;
-        case 12:
+        case PF_A8R8G8B8:
             return D3DFMT_A8R8G8B8;
-        case 26:
+        case PF_X8R8G8B8:
             return D3DFMT_X8R8G8B8;
-        case 34:
+        case PF_SHORT_GR:
             return D3DFMT_G16R16;
-        case 17:
+        case PF_DXT1:
             return D3DFMT_DXT1;
-        case 18:
+        case PF_DXT2:
             return D3DFMT_DXT2;
-        case 19:
+        case PF_DXT3:
             return D3DFMT_DXT3;
-        case 20:
+        case PF_DXT4:
             return D3DFMT_DXT4;
-        case 21:
+        case PF_DXT5:
             return D3DFMT_DXT5;
-        case 0:
+        case PF_UNKNOWN:
         default:
             return D3DFMT_UNKNOWN;
         }
@@ -375,7 +377,7 @@ namespace Mengine
         return format_id1 < format_id2;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline const char * s_getD3DFormatName( D3DFORMAT _format )
+    inline const Char * s_getD3DFormatName( D3DFORMAT _format )
     {
         switch( _format )
         {

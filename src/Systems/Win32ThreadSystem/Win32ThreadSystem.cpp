@@ -59,13 +59,13 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( int _priority, const char * _file, uint32_t _line )
+    ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
     {
         Win32ThreadIdentityPtr identity = m_factoryWin32ThreadIdentity->createObject();
 
         if( identity == nullptr )
         {
-            LOGGER_ERROR( "Win32ThreadSystem::createThread invalid create identity"
+            LOGGER_ERROR( "invalid create identity"
             );
 
             return nullptr;
@@ -75,13 +75,13 @@ namespace Mengine
 
         if( mutex == nullptr )
         {
-            LOGGER_ERROR( "Win32ThreadSystem::createThread invalid create mutex"
+            LOGGER_ERROR( "invalid create mutex"
             );
 
             return nullptr;
         }
 
-        if( identity->initialize( mutex, _priority, _file, _line ) == false )
+        if( identity->initialize( mutex, _priority, _doc, _file, _line ) == false )
         {
             LOGGER_ERROR( "Win32ThreadSystem::createThread invalid initialize"
             );
@@ -92,7 +92,7 @@ namespace Mengine
         return identity;
     }
     //////////////////////////////////////////////////////////////////////////
-    ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const char * _file, uint32_t _line )
+    ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const Char * _file, uint32_t _line )
     {
         Win32ThreadMutexPtr mutex = m_factoryWin32ThreadMutex->createObject();
 

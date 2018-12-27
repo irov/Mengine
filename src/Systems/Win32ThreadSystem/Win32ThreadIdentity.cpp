@@ -7,6 +7,35 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    namespace Detail
+    {
+        const DWORD MS_VC_EXCEPTION = 0x406D1388;
+#pragma pack(push,8)  
+        typedef struct tagTHREADNAME_INFO
+        {
+            DWORD dwType; // Must be 0x1000.  
+            LPCSTR szName; // Pointer to name (in user addr space).  
+            DWORD dwThreadID; // Thread ID (-1=caller thread).  
+            DWORD dwFlags; // Reserved for future use, must be zero.  
+        } THREADNAME_INFO;
+#pragma pack(pop)  
+        void SetThreadName( DWORD dwThreadID, const char* threadName ) {
+            THREADNAME_INFO info;
+            info.dwType = 0x1000;
+            info.szName = threadName;
+            info.dwThreadID = dwThreadID;
+            info.dwFlags = 0;
+#pragma warning(push)  
+#pragma warning(disable: 6320 6322)  
+            __try {
+                RaiseException( MS_VC_EXCEPTION, 0, sizeof( info ) / sizeof( ULONG_PTR ), (ULONG_PTR*)&info );
+            }
+            __except( EXCEPTION_EXECUTE_HANDLER ) {
+            }
+#pragma warning(pop)  
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     Win32ThreadIdentity::Win32ThreadIdentity()
         : m_handle( INVALID_HANDLE_VALUE )
         , m_task( nullptr )
@@ -23,7 +52,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    static unsigned int __stdcall s_tread_job( void * _userData )
+    static uint32_t __stdcall s_tread_job( void * _userData )
     {
         Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity*>(_userData);
 
@@ -50,10 +79,10 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int32_t _priority, const Char * _file, uint32_t _line )
+    bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
     {
-        (void)_file;
-        (void)_line;
+        MENGINE_UNUSED( _file );
+        MENGINE_UNUSED( _line );
 
         m_mutex = _mutex;
 
@@ -62,7 +91,7 @@ namespace Mengine
         m_line = _line;
 #endif
 
-        m_handle = (HANDLE)_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
+        m_handle = (HANDLE)::_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
 
         if( m_handle == NULL )
         {
@@ -75,31 +104,35 @@ namespace Mengine
             return false;
         }
 
+        DWORD threadId = ::GetThreadId( m_handle );
+
+        Detail::SetThreadName( threadId, _doc );
+
         switch( _priority )
         {
         case MENGINE_THREAD_PRIORITY_LOWEST:
             {
-                SetThreadPriority( m_handle, THREAD_PRIORITY_LOWEST );
+                ::SetThreadPriority( m_handle, THREAD_PRIORITY_LOWEST );
             }break;
         case MENGINE_THREAD_PRIORITY_BELOW_NORMAL:
             {
-                SetThreadPriority( m_handle, THREAD_PRIORITY_BELOW_NORMAL );
+                ::SetThreadPriority( m_handle, THREAD_PRIORITY_BELOW_NORMAL );
             }break;
         case MENGINE_THREAD_PRIORITY_NORMAL:
             {
-                SetThreadPriority( m_handle, THREAD_PRIORITY_NORMAL );
+                ::SetThreadPriority( m_handle, THREAD_PRIORITY_NORMAL );
             }break;
         case MENGINE_THREAD_PRIORITY_ABOVE_NORMAL:
             {
-                SetThreadPriority( m_handle, THREAD_PRIORITY_ABOVE_NORMAL );
+                ::SetThreadPriority( m_handle, THREAD_PRIORITY_ABOVE_NORMAL );
             }break;
         case MENGINE_THREAD_PRIORITY_HIGHEST:
             {
-                SetThreadPriority( m_handle, THREAD_PRIORITY_HIGHEST );
+                ::SetThreadPriority( m_handle, THREAD_PRIORITY_HIGHEST );
             }break;
         case MENGINE_THREAD_PRIORITY_TIME_CRITICAL:
             {
-                SetThreadPriority( m_handle, THREAD_PRIORITY_TIME_CRITICAL );
+                ::SetThreadPriority( m_handle, THREAD_PRIORITY_TIME_CRITICAL );
             }break;
         }
 
@@ -130,7 +163,7 @@ namespace Mengine
 
             m_mutex->unlock();
 
-            Sleep( 10 );
+            ::Sleep( 10 );
         }
     }
     //////////////////////////////////////////////////////////////////////////

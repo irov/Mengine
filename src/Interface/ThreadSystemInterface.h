@@ -15,13 +15,13 @@ namespace Mengine
         virtual bool avaliable() const = 0;
 
     public:
-        virtual ThreadIdentityInterfacePtr createThread( int32_t _priority, const Char * _doc, uint32_t _line ) = 0;
+        virtual ThreadIdentityInterfacePtr createThread( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line ) = 0;
 
     public:
         virtual void sleep( uint32_t _ms ) = 0;
 
     public:
-        virtual ThreadMutexInterfacePtr createMutex( const Char * _doc, uint32_t _line ) = 0;
+        virtual ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) = 0;
 
     public:
         virtual ptrdiff_t getCurrentThreadId() const = 0;

@@ -111,7 +111,7 @@ namespace Mengine
 
         const ImageCodecDataInfo* dataInfo = static_cast<const ImageCodecDataInfo*>(_bufferDataInfo);
 
-        int color_type;
+        int32_t color_type;
         if( dataInfo->channels == 1 )
         {
             color_type = PNG_COLOR_TYPE_GRAY;
@@ -135,7 +135,7 @@ namespace Mengine
 
         png_uint_32 width = (png_uint_32)dataInfo->width;
         png_uint_32 height = (png_uint_32)dataInfo->height;
-        int pixel_depth = 8;
+        int32_t pixel_depth = 8;
 
         png_set_IHDR( m_png_ptr, m_info_ptr, width, height, pixel_depth, color_type, PNG_INTERLACE_NONE,
             PNG_COMPRESSION_TYPE_BASE, PNG_FILTER_TYPE_BASE );

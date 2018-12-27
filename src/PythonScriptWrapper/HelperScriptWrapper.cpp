@@ -645,7 +645,7 @@ namespace Mengine
             return new_id;
         }
 
-        int mt_rand( int a )
+        int32_t mt_rand( int32_t a )
         {
             return mt::rand( a );
         }
@@ -655,7 +655,7 @@ namespace Mengine
             return mt::randf( a );
         }
 
-        int mt_range_rand( int a, int b )
+        int32_t mt_range_rand( int32_t a, int32_t b )
         {
             return mt::range_rand( a, b );
         }

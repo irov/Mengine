@@ -21,7 +21,6 @@ namespace Mengine
 
         uint32_t useProtocolVersion;
         uint32_t useProtocolCrc32;
-        //int version;
     };
     //////////////////////////////////////////////////////////////////////////
     class XmlDecoderInterface

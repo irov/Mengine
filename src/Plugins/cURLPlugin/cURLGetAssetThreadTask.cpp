@@ -56,7 +56,7 @@ namespace Mengine
         return realsize;
     }
     //////////////////////////////////////////////////////////////////////////
-    static int XFERInfoCallback( void * _userp
+    static int32_t XFERInfoCallback( void * _userp
         , curl_off_t _dltotal, curl_off_t _dlnow
         , curl_off_t _ultotal, curl_off_t _ulnow
     )

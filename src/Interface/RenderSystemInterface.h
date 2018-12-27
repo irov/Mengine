@@ -51,7 +51,7 @@ namespace Mengine
 
     public:
         virtual bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen,
-            bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
+            bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) = 0;
 
     public:
         // Render frame into _image

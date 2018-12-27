@@ -21,7 +21,7 @@ namespace Mengine
         ~Win32ThreadIdentity() override;
 
     public:
-        bool initialize( const ThreadMutexInterfacePtr & _mutex, int32_t _priority, const Char * _file, uint32_t _line );
+        bool initialize( const ThreadMutexInterfacePtr & _mutex, int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line );
 
     public:
         void main();

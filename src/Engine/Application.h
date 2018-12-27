@@ -49,8 +49,8 @@ namespace Mengine
         bool getFullscreenMode() const override;
 
         uint32_t getWindowBits() const override;
-        int getWindowFSAAType() const override;
-        int getWindowFSAAQuality() const override;
+        int32_t getWindowFSAAType() const override;
+        int32_t getWindowFSAAQuality() const override;
 
     public:
         bool isFocus() const override;
@@ -200,8 +200,8 @@ namespace Mengine
         bool m_vsync;
 
         bool m_textureFiltering;
-        int	m_FSAAType;
-        int m_FSAAQuality;
+        int32_t	m_FSAAType;
+        int32_t m_FSAAQuality;
 
         Resolution m_contentResolution;
 

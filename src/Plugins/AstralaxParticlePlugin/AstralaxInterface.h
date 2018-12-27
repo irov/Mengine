@@ -40,7 +40,7 @@ namespace Mengine
         uint32_t indexOffset;
         uint32_t indexCount;
 
-        int texture[8];
+        int32_t texture[8];
         uint32_t textures;
 
         int material;

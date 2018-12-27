@@ -124,7 +124,7 @@ namespace Mengine
 
     public:
         bool createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
-            int _FSAAType, int _FSAAQuality ) override;
+            int32_t _FSAAType, int32_t _FSAAQuality ) override;
 
         void destroyRenderWindow() override;
 

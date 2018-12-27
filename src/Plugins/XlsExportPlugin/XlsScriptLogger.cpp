@@ -61,17 +61,17 @@ namespace Mengine
         return _kernel->ret_none();
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsScriptLogger::write( const char * _msg, uint32_t _size )
+    void XlsScriptLogger::write( const Char * _msg, uint32_t _size )
     {
         LOGGER_VERBOSE_LEVEL( m_level, __FUNCTION__, __LINE__ ).logMessage( _msg, _size );
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsScriptLogger::setSoftspace( int _softspace )
+    void XlsScriptLogger::setSoftspace( int32_t _softspace )
     {
         m_softspace = _softspace;
     }
     //////////////////////////////////////////////////////////////////////////
-    int XlsScriptLogger::getSoftspace() const
+    int32_t XlsScriptLogger::getSoftspace() const
     {
         return m_softspace;
     }

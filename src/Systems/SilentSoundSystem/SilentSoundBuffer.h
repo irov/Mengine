@@ -38,8 +38,8 @@ namespace Mengine
         uint64_t m_playTime;
         uint64_t m_pauseTime;
 
-        int m_frequency;
-        int m_channels;
+        int32_t m_frequency;
+        int32_t m_channels;
         float m_length;
         bool m_isStereo;
 

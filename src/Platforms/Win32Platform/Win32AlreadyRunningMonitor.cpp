@@ -15,7 +15,7 @@ namespace Mengine
         this->finalize();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32AlreadyRunningMonitor::initialize( int _policy, const WChar * _windowClassName, const WChar * _projectTitle )
+    bool Win32AlreadyRunningMonitor::initialize( int32_t _policy, const WChar * _windowClassName, const WChar * _projectTitle )
     {
         // try to create mutex to sure that we are not running already
         WString mutexName = L"MengineAlreadyRunningMonitorMutex_";

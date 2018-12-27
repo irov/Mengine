@@ -73,7 +73,7 @@ namespace Mengine
 
         m_memory = memory;
 
-        int atlasCount = Magic_GetStaticAtlasCount( m_mf );
+        int32_t atlasCount = Magic_GetStaticAtlasCount( m_mf );
 
         if( atlasCount > 0 )
         {
@@ -138,9 +138,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const ResourceImagePtr & AstralaxEmitterContainer::getAtlasResourceImage( const Char * _file ) const
     {
-        int atlasCount = Magic_GetStaticAtlasCount( m_mf );
+        int32_t atlasCount = Magic_GetStaticAtlasCount( m_mf );
 
-        for( int i = 0; i != atlasCount; ++i )
+        for( int32_t i = 0; i != atlasCount; ++i )
         {
             MAGIC_STATIC_ATLAS atlas;
             Magic_GetStaticAtlas( m_mf, i, &atlas );

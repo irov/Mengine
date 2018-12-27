@@ -29,7 +29,7 @@ namespace Mengine
         uint32_t m_line;
     };
 
-    void Assertion( uint32_t _level, const Char * _test, const Char * _file, int _line, const Char * _info );
+    void Assertion( uint32_t _level, const Char * _test, const Char * _file, int32_t _line, const Char * _info );
 }
 //////////////////////////////////////////////////////////////////////////
 #ifndef NDEBUG

@@ -556,8 +556,8 @@ namespace Mengine
             return;
         }
 
-        this->setClientSize( mt::vec2f( static_cast<int>(_tiles.x) * m_edge[ResourceWindow_Background].initialSize.x,
-            static_cast<int>(_tiles.y) * m_edge[ResourceWindow_Background].initialSize.y ) );
+        this->setClientSize( mt::vec2f( static_cast<int32_t>(_tiles.x) * m_edge[ResourceWindow_Background].initialSize.x,
+            static_cast<int32_t>(_tiles.y) * m_edge[ResourceWindow_Background].initialSize.y ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Window::setResourceWindow( const ResourceWindowPtr & _resourceWindow )

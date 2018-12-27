@@ -32,7 +32,7 @@ namespace Mengine
         Bytef * dst_buffer = (Bytef *)_distance;
         const Bytef * src_buffer = (const Bytef *)_source;
 
-        int compress_method = 0;
+        int32_t compress_method = 0;
 
         switch( _compress )
         {
@@ -50,7 +50,7 @@ namespace Mengine
             }
         };
 
-        int zerr = ::compress2( dst_buffer, &compressSize, src_buffer, (uLong)_sourceSize, compress_method );
+        int32_t zerr = ::compress2( dst_buffer, &compressSize, src_buffer, (uLong)_sourceSize, compress_method );
 
         if( zerr != Z_OK )
         {
@@ -80,10 +80,10 @@ namespace Mengine
         stdex_free( address, "ArchivatorZip" );
     }
     //////////////////////////////////////////////////////////////////////////
-    static int my_uncompress( Bytef *dest, uLong *destLen, const Bytef *source, uLong sourceLen )
+    static int32_t my_uncompress( Bytef *dest, uLong *destLen, const Bytef *source, uLong sourceLen )
     {
         z_stream stream;
-        int err;
+        int32_t err;
 
         stream.next_in = const_cast<Bytef *>(source);
         stream.avail_in = (uInt)sourceLen;
@@ -122,7 +122,7 @@ namespace Mengine
         Bytef * dst_buffer = (Bytef *)_distance;
         const Bytef * src_buffer = (const Bytef *)_source;
 
-        int zerr = my_uncompress( dst_buffer, &destLen, src_buffer, (uLong)_sourceSize );
+        int32_t zerr = my_uncompress( dst_buffer, &destLen, src_buffer, (uLong)_sourceSize );
 
         if( zerr != Z_OK )
         {

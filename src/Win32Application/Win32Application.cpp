@@ -206,7 +206,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Application::getApplicationPath_( const char * _section, const char * _key, ConstString & _path )
+    bool Win32Application::getApplicationPath_( const Char * _section, const Char * _key, ConstString & _path )
     {
         FilePath applicationPath = STRINGIZE_FILEPATH_LOCAL( "application.ini" );
 
@@ -235,7 +235,7 @@ namespace Mengine
             return false;
         }
 
-        const char * gameIniPath = ini->getSettingValue( _section, _key );
+        const Char * gameIniPath = ini->getSettingValue( _section, _key );
 
         if( gameIniPath == nullptr )
         {
@@ -510,7 +510,7 @@ namespace Mengine
             return false;
         }
 
-        int pNumArgs;
+        int32_t pNumArgs;
         LPWSTR * szArglist = CommandLineToArgvW( lpCmdLine, &pNumArgs );
 
         if( szArglist == NULL )
@@ -525,13 +525,13 @@ namespace Mengine
 #   endif
 
         VectorString args;
-        for( int i = 1; i != pNumArgs; ++i )
+        for( int32_t i = 1; i != pNumArgs; ++i )
         {
             PWSTR arg = szArglist[i];
 
             CHAR utf_arg[1024];
 
-            int utf_arg_size = ::WideCharToMultiByte(
+            int32_t utf_arg_size = ::WideCharToMultiByte(
                 CP_UTF8
                 , dwConversionFlags
                 , arg

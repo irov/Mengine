@@ -266,7 +266,7 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     bool DX9RenderSystem::createRenderWindow( const Resolution & _resolution, uint32_t _bits,
-        bool _fullscreen, bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount )
+        bool _fullscreen, bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount )
     {
         (void)_bits;
         (void)_FSAAType;

@@ -160,7 +160,7 @@ namespace Mengine
             {
                 uint32_t layoutCount = 0;
 
-                for( int i = 0; i < FE_MAX_PINS; ++i )
+                for( int32_t i = 0; i < FE_MAX_PINS; ++i )
                 {
                     const fe_node * effect_node_layout = effect_node_out->in[FE_MAX_PINS - i - 1].node;
 
@@ -514,9 +514,9 @@ namespace Mengine
 
         if( m_ttfFEEffect != nullptr )
         {
-            int im_image_w = glyph_bitmap.width;
-            int im_image_h = glyph_bitmap.rows;
-            int im_image_pitch = glyph_bitmap.pitch;
+            int32_t im_image_w = glyph_bitmap.width;
+            int32_t im_image_h = glyph_bitmap.rows;
+            int32_t im_image_pitch = glyph_bitmap.pitch;
             const void * im_image_data = glyph_bitmap.buffer;
 
             FE_IMAGE_FORMAT im_image_format = TF_UNDEFINED;

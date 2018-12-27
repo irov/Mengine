@@ -68,12 +68,12 @@ namespace Mengine
         return m_level;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptLogger::setSoftspace( int _softspace )
+    void ScriptLogger::setSoftspace( int32_t _softspace )
     {
         m_softspace = _softspace;
     }
     //////////////////////////////////////////////////////////////////////////
-    int ScriptLogger::getSoftspace() const
+    int32_t ScriptLogger::getSoftspace() const
     {
         return m_softspace;
     }

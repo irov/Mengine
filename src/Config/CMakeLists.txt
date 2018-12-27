@@ -20,6 +20,7 @@ src
     Lambda.h
     Define.h
 	Config.h
+    Export.h
 	cmake_dummy.cpp
 )
 

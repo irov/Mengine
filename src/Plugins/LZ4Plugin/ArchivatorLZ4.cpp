@@ -19,7 +19,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     size_t ArchivatorLZ4::compressBound( size_t _size ) const
     {
-        int size = ::LZ4_compressBound( (int)_size );
+        int32_t size = ::LZ4_compressBound( (int)_size );
 
         size_t total_size = size;
 
@@ -31,7 +31,7 @@ namespace Mengine
         char * dst_buffer = (char *)_distance;
         const char * src_buffer = (const char *)_source;
 
-        int compress_method = 0;
+        int32_t compress_method = 0;
 
         switch( _compress )
         {
@@ -49,7 +49,7 @@ namespace Mengine
             }
         };
 
-        int compressSize = ::LZ4_compress_HC( src_buffer, dst_buffer, (int)_sourceSize, (int)_bufferSize, compress_method );
+        int32_t compressSize = ::LZ4_compress_HC( src_buffer, dst_buffer, (int32_t)_sourceSize, (int32_t)_bufferSize, compress_method );
 
         if( compressSize < 0 )
         {
@@ -72,7 +72,7 @@ namespace Mengine
         char * dst_buffer = (char *)_distance;
         const char * src_buffer = (const char *)_source;
 
-        int readBytes = ::LZ4_decompress_fast( src_buffer, dst_buffer, (int)_bufferSize );
+        int32_t readBytes = ::LZ4_decompress_fast( src_buffer, dst_buffer, (int32_t)_bufferSize );
 
         if( readBytes < 0 )
         {

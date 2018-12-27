@@ -178,9 +178,8 @@ namespace Mengine
 
         const ozz::animation::Skeleton & skeleton = m_resourceSkeleton->getOzzSkeleton();
 
-        int num_soa_joints = skeleton.num_soa_joints();
-
-        int num_joints = skeleton.num_joints();
+        int32_t num_soa_joints = skeleton.num_soa_joints();
+        int32_t num_joints = skeleton.num_joints();
 
         m_models = allocator->AllocateRange<ozz::math::Float4x4>( num_joints );
 
@@ -193,7 +192,7 @@ namespace Mengine
         // Finds the "Spine1" joint in the joint hierarchy.
         const ozz::Range<const char* const> & joint_names = skeleton.joint_names();
 
-        for( int i = 0; i < num_joints; ++i )
+        for( int32_t i = 0; i < num_joints; ++i )
         {
             const Char * joint_name = joint_names[i];
 
@@ -204,7 +203,7 @@ namespace Mengine
             }
         }
 
-        for( int i = 0; i != num_soa_joints; ++i )
+        for( int32_t i = 0; i != num_soa_joints; ++i )
         {
             m_upperBodyJointWeights[i] = ozz::math::simd_float4::zero();
         }
@@ -217,9 +216,9 @@ namespace Mengine
 
         // Sets the weight_setting of all the joints children of the arm to 1. Note
         // that weights are stored in SoA format.
-        for( int i = 0; i != it.num_joints; ++i )
+        for( int32_t i = 0; i != it.num_joints; ++i )
         {
-            const int joint_id = it.joints[i];
+            const int32_t joint_id = it.joints[i];
 
             // Updates upper body animation sampler joint weights.
             ozz::math::SimdFloat4& weight_setting = m_upperBodyJointWeights[joint_id / 4];
@@ -364,7 +363,7 @@ namespace Mengine
         }
 
         // Renders skin.
-        const int vertex_count = Detail::getMeshVertexCount( ozz_mesh );
+        const int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
         // Positions and normals are interleaved to improve caching while executing
         // skinning job.
@@ -391,8 +390,8 @@ namespace Mengine
 
             // Fills the job.
             ozz::geometry::SkinningJob skinning_job;
-            skinning_job.vertex_count = static_cast<int>(part_vertex_count);
-            const int part_influences_count = getPartInfluencesCount( part );
+            skinning_job.vertex_count = static_cast<int32_t>(part_vertex_count);
+            const int32_t part_influences_count = getPartInfluencesCount( part );
 
             // Clamps joints influence count according to the option.
             skinning_job.influences_count = part_influences_count;
@@ -530,7 +529,7 @@ namespace Mengine
         const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
 
         // Renders skin.
-        const int vertex_count = Detail::getMeshVertexCount( ozz_mesh );
+        const int32_t vertex_count = Detail::getMeshVertexCount( ozz_mesh );
 
         const uint32_t skinned_data_size = vertex_count * ozz_vertex_stride;
 

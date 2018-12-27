@@ -133,9 +133,9 @@ namespace Mengine
 
         png_uint_32 width = 0;
         png_uint_32 height = 0;
-        int color_type = 0;
-        int bit_depth = 0;
-        int interlace_method = 0;
+        int32_t color_type = 0;
+        int32_t bit_depth = 0;
+        int32_t interlace_method = 0;
 
         png_get_IHDR( m_png_ptr, m_info_ptr, &width, &height, &bit_depth, &color_type, &interlace_method, nullptr, nullptr );
 

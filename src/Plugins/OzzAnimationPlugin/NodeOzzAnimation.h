@@ -96,7 +96,7 @@ namespace Mengine
 
         ozz::Range<ozz::math::SimdFloat4> m_upperBodyJointWeights;
 
-        int m_upperBodyRoot;
+        int32_t m_upperBodyRoot;
 
         MemoryBufferInterfacePtr m_vertexMemory;
         RenderVertexBufferInterfacePtr m_vertexBuffer;

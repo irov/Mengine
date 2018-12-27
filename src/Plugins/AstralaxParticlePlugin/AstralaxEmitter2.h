@@ -61,9 +61,7 @@ namespace Mengine
         bool flushParticles( AstralaxMesh * _meshes, uint32_t _meshLimit, RenderVertex2D * _vertices, RenderIndex * _indices, AstralaxEmitterRenderFlush & _flush ) override;
 
     public:
-        //void getBoundingBox( int & left, int & top, int & right, int & bottom )  const override;
         const mt::box2f & getBoundingBox() const override;
-        //void getBoundingBox( Rect & _rect )  const override;
         void setEmitterTranslateWithParticle( bool _value ) override;
 
     public:

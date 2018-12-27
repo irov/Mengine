@@ -7,6 +7,7 @@
 #include "Kernel/FactorableUnique.h"
 
 #include "Config/String.h"
+#include "Config/Export.h"
 
 namespace Mengine
 {
@@ -104,7 +105,7 @@ namespace Mengine
 #	define PLUGIN_FACTORY_DYNAMIC(Name, Type)\
 	extern "C"\
 	{\
-		__declspec(dllexport) bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider,Mengine::PluginInterface ** _plugin )\
+		DLL_EXPORT bool dllCreatePlugin( Mengine::ServiceProviderInterface * _serviceProvider,Mengine::PluginInterface ** _plugin )\
 		{\
 			return PLUGIN_FUNCTION(Name)( _serviceProvider, _plugin, true );\
 		}\

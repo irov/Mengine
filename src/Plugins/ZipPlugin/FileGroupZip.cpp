@@ -146,7 +146,6 @@ namespace Mengine
 
             uint32_t signature;
             zipFile->read( &signature, sizeof( signature ) );
-            //int signature = s_read_int( zipFile );
 
             if( signature != 0x02014B50 )
             {
@@ -317,15 +316,15 @@ namespace Mengine
         zs.zalloc = &s_alloc_func;
         zs.zfree = &s_free_func;
 
-        int err_init = inflateInit2( &zs, -MAX_WBITS );
+        int32_t err_init = inflateInit2( &zs, -MAX_WBITS );
 
         if( err_init != Z_OK )
         {
             return false;
         }
 
-        int err_inflate = inflate( &zs, Z_FINISH );
-        int err_end = inflateEnd( &zs );
+        int32_t err_inflate = inflate( &zs, Z_FINISH );
+        int32_t err_end = inflateEnd( &zs );
 
         if( err_inflate != Z_STREAM_END )
         {

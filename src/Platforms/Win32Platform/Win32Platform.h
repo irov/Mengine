@@ -37,7 +37,7 @@ namespace Mengine
         Pointer getWindowHandle() const override;
 
     protected:
-        ATOM registerClass_( WNDPROC _wndProc, int _clsExtra, int _wndExtra
+        ATOM registerClass_( WNDPROC _wndProc, int32_t _clsExtra, int32_t _wndExtra
             , HINSTANCE _hInstance, DWORD _hIcon, HBRUSH _hbrBackground
             , const WChar * _className );
 
@@ -164,8 +164,8 @@ namespace Mengine
         MapCursors m_cursors;
 
         bool m_lastMouse;
-        int m_lastMouseX;
-        int m_lastMouseY;
+        int32_t m_lastMouseX;
+        int32_t m_lastMouseY;
 
         bool m_isDoubleClick;
         bool m_touchpad;

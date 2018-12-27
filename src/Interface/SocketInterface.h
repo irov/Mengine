@@ -25,11 +25,11 @@ namespace Mengine
         virtual bool bind( const SocketConnectInfo & _data, const bool _blocking = true ) = 0;
         virtual void disconnect() = 0;
 
-        virtual int checkForClientConnection() = 0;
+        virtual int32_t checkForClientConnection() = 0;
         virtual bool waitForData( size_t _timeoutMs ) = 0;
 
-        virtual int send( const void* _data, const size_t _numBytes ) = 0;
-        virtual int receive( void* _data, const size_t _maxBytes ) = 0;
+        virtual int32_t send( const void* _data, size_t _numBytes ) = 0;
+        virtual int32_t receive( void* _data, size_t _maxBytes ) = 0;
 
     public:
         virtual OutputStreamInterfacePtr getSendStream() const = 0;

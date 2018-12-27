@@ -30,30 +30,30 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    static int s_YTable[256];
-    static int s_BUTable[256];
-    static int s_GUTable[256];
-    static int s_GVTable[256];
-    static int s_RVTable[256];
+    static int32_t s_YTable[256];
+    static int32_t s_BUTable[256];
+    static int32_t s_GUTable[256];
+    static int32_t s_GVTable[256];
+    static int32_t s_RVTable[256];
     //////////////////////////////////////////////////////////////////////////
     static void s_createCoefTables()
     {
         //used to bring the table into the high side (scale up) so we
         //can maintain high precision and not use floats (FIXED POINT)
-        int scale = 1L << 13;
+        int32_t scale = 1L << 13;
 
-        for( int i = 0; i < 256; i++ )
+        for( int32_t i = 0; i < 256; i++ )
         {
-            int temp = i - 128;
+            int32_t temp = i - 128;
 
-            s_YTable[i] = (int)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
+            s_YTable[i] = (int32_t)((1.164 * scale + 0.5) * (i - 16));	//Calc Y component
 
-            s_RVTable[i] = (int)((1.596 * scale + 0.5) * temp);		//Calc R component
+            s_RVTable[i] = (int32_t)((1.596 * scale + 0.5) * temp);		//Calc R component
 
-            s_GUTable[i] = (int)((0.391 * scale + 0.5) * temp);		//Calc G u & v components
-            s_GVTable[i] = (int)((0.813 * scale + 0.5) * temp);
+            s_GUTable[i] = (int32_t)((0.391 * scale + 0.5) * temp);		//Calc G u & v components
+            s_GVTable[i] = (int32_t)((0.813 * scale + 0.5) * temp);
 
-            s_BUTable[i] = (int)((2.018 * scale + 0.5) * temp);		//Calc B component
+            s_BUTable[i] = (int32_t)((2.018 * scale + 0.5) * temp);		//Calc B component
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -152,7 +152,7 @@ namespace Mengine
                 // тестовый логический поток
                 // инициализируем тестовый поток на тот же поток с таким же
                 // идентификатором потока, как и у текущей странички
-                int serialno = ogg_page_serialno( &page );
+                int32_t serialno = ogg_page_serialno( &page );
                 if( ogg_stream_init( &oggStreamStateTest, serialno ) != 0 )
                 {
                     LOGGER_ERROR( "TheoraCodec Error: error during ogg_stream_init" );
@@ -216,14 +216,14 @@ namespace Mengine
         }
 
 
-        int theoraHeaderPackets = 1;
+        int32_t theoraHeaderPackets = 1;
 
         while( theoraHeaderPackets < 3 )
         {
             while( theoraHeaderPackets < 3 )
             {
                 ogg_packet packet;
-                int result = ogg_stream_packetout( &m_oggStreamState, &packet );
+                int32_t result = ogg_stream_packetout( &m_oggStreamState, &packet );
                 // если функция возвращает нуль, значит не хватает данных для декодирования
 
                 if( result < 0 )
@@ -242,7 +242,7 @@ namespace Mengine
                 }
 
                 // удалось успешно извлечь пакет информации theora
-                int result2 = theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet );
+                int32_t result2 = theora_decode_header( &m_theoraInfo, &m_theoraComment, &packet );
 
                 if( result2 < 0 )
                 {
@@ -408,7 +408,7 @@ namespace Mengine
 
         yuv_buffer yuvBuffer;
         // декодируем страничку в YUV-виде в спец. структуру yuv_buffer
-        int error_code = theora_decode_YUVout( &m_theoraState, &yuvBuffer );
+        int32_t error_code = theora_decode_YUVout( &m_theoraState, &yuvBuffer );
 
         if( error_code < 0 )
         {
@@ -440,10 +440,10 @@ namespace Mengine
             uint8_t * dstBitmapOffset = _buffer + m_pitch;
 
             uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 4;
-            int yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
+            int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
-            int y_height = _yuvBuffer.y_height >> 1;
-            int y_width = _yuvBuffer.y_width >> 1;
+            int32_t y_height = _yuvBuffer.y_height >> 1;
+            int32_t y_width = _yuvBuffer.y_width >> 1;
 
             uint8_t * ySrc = (uint8_t*)_yuvBuffer.y;
             uint8_t * uSrc = (uint8_t*)_yuvBuffer.u;
@@ -451,24 +451,24 @@ namespace Mengine
             uint8_t * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
             //Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-            for( int y = 0; y != y_height; ++y )
+            for( int32_t y = 0; y != y_height; ++y )
             {
-                for( int x = 0; x != y_width; ++x )
+                for( int32_t x = 0; x != y_width; ++x )
                 {
                     //Get uv pointers for row
-                    int u = uSrc[x];
-                    int v = vSrc[x];
+                    int32_t u = uSrc[x];
+                    int32_t v = vSrc[x];
 
                     //get corresponding lookup values					
-                    int rV = s_RVTable[v];
-                    int gUV = s_GUTable[u] + s_GVTable[v];
-                    int bU = s_BUTable[u];
+                    int32_t rV = s_RVTable[v];
+                    int32_t gUV = s_GUTable[u] + s_GVTable[v];
+                    int32_t bU = s_BUTable[u];
 
                     //scale down - brings are values back into the 8 bits of a byte
-                    int rgbY = s_YTable[*ySrc];
-                    int r = (rgbY + rV) >> 13;
-                    int g = (rgbY - gUV) >> 13;
-                    int b = (rgbY + bU) >> 13;
+                    int32_t rgbY = s_YTable[*ySrc];
+                    int32_t r = (rgbY + rV) >> 13;
+                    int32_t g = (rgbY - gUV) >> 13;
+                    int32_t b = (rgbY + bU) >> 13;
                     THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_R] );
                     THEORA_CLIP_RGB_COLOR( g, dstBitmap[THEORA_COLOR_G] );
                     THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
@@ -527,10 +527,10 @@ namespace Mengine
             uint8_t * dstBitmapOffset = _buffer + m_pitch;
 
             uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 3;
-            int yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
+            int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
-            int y_height = _yuvBuffer.y_height >> 1;
-            int y_width = _yuvBuffer.y_width >> 1;
+            int32_t y_height = _yuvBuffer.y_height >> 1;
+            int32_t y_width = _yuvBuffer.y_width >> 1;
 
             uint8_t * ySrc = (uint8_t*)_yuvBuffer.y;
             uint8_t * uSrc = (uint8_t*)_yuvBuffer.u;
@@ -538,25 +538,25 @@ namespace Mengine
             uint8_t * ySrc2 = ySrc + _yuvBuffer.y_stride;
 
             //Loop does four blocks per iteration (2 rows, 2 pixels at a time)
-            for( int y = 0; y != y_height; ++y )
+            for( int32_t y = 0; y != y_height; ++y )
             {
-                for( int x = 0; x != y_width; ++x )
+                for( int32_t x = 0; x != y_width; ++x )
                 {
                     //Get uv pointers for row
-                    int u = uSrc[x];
-                    int v = vSrc[x];
+                    int32_t u = uSrc[x];
+                    int32_t v = vSrc[x];
 
                     //get corresponding lookup values
 
-                    int rV = s_RVTable[v];
-                    int gUV = s_GUTable[u] + s_GVTable[v];
-                    int bU = s_BUTable[u];
+                    int32_t rV = s_RVTable[v];
+                    int32_t gUV = s_GUTable[u] + s_GVTable[v];
+                    int32_t bU = s_BUTable[u];
 
                     //scale down - brings are values back into the 8 bits of a byte
-                    int rgbY = s_YTable[*ySrc];
-                    int r = (rgbY + rV) >> 13;
-                    int g = (rgbY - gUV) >> 13;
-                    int b = (rgbY + bU) >> 13;
+                    int32_t rgbY = s_YTable[*ySrc];
+                    int32_t r = (rgbY + rV) >> 13;
+                    int32_t g = (rgbY - gUV) >> 13;
+                    int32_t b = (rgbY + bU) >> 13;
                     THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_R] );
                     THEORA_CLIP_RGB_COLOR( g, dstBitmap[THEORA_COLOR_G] );
                     THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
@@ -611,10 +611,10 @@ namespace Mengine
             uint8_t * dstBitmapOffset = _buffer + m_pitch;
 
             uint32_t dstOff = m_pitch * 2 - m_theoraInfo.width * 4;//m_theoraInfo.width * 4;//( m_Width*6 ) - ( yuv->y_width*3 );
-            int yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
+            int32_t yOff = (_yuvBuffer.y_stride * 2) - _yuvBuffer.y_width;
 
-            int y_height = _yuvBuffer.y_height >> 1;
-            int y_width = _yuvBuffer.y_width >> 1;
+            int32_t y_height = _yuvBuffer.y_height >> 1;
+            int32_t y_width = _yuvBuffer.y_width >> 1;
 
             uint8_t * ySrc = (uint8_t*)_yuvBuffer.y;
             uint8_t * uSrc = (uint8_t*)_yuvBuffer.u;
@@ -624,26 +624,26 @@ namespace Mengine
             //Loop does four blocks per iteration (2 rows, 2 pixels at a time)
             //int y_rgb_height_begin = y_height;
             //int y_rgb_height_end = y_height / 2;
-            int y_rgb_count = y_height / 2;
+            int32_t y_rgb_count = y_height / 2;
 
-            for( int y = 0; y != y_rgb_count; ++y )
+            for( int32_t y = 0; y != y_rgb_count; ++y )
             {
-                for( int x = 0; x != y_width; ++x )
+                for( int32_t x = 0; x != y_width; ++x )
                 {
                     //Get uv pointers for row
-                    int u = uSrc[x];
-                    int v = vSrc[x];
+                    int32_t u = uSrc[x];
+                    int32_t v = vSrc[x];
 
                     //get corresponding lookup values					
-                    int rV = s_RVTable[v];
-                    int gUV = s_GUTable[u] + s_GVTable[v];
-                    int bU = s_BUTable[u];
+                    int32_t rV = s_RVTable[v];
+                    int32_t gUV = s_GUTable[u] + s_GVTable[v];
+                    int32_t bU = s_BUTable[u];
 
                     //scale down - brings are values back into the 8 bits of a byte
-                    int rgbY = s_YTable[*ySrc];
-                    int r = (rgbY + rV) >> 13;
-                    int g = (rgbY - gUV) >> 13;
-                    int b = (rgbY + bU) >> 13;
+                    int32_t rgbY = s_YTable[*ySrc];
+                    int32_t r = (rgbY + rV) >> 13;
+                    int32_t g = (rgbY - gUV) >> 13;
+                    int32_t b = (rgbY + bU) >> 13;
                     THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_R] );
                     THEORA_CLIP_RGB_COLOR( g, dstBitmap[THEORA_COLOR_G] );
                     THEORA_CLIP_RGB_COLOR( b, dstBitmap[THEORA_COLOR_B] );
@@ -695,20 +695,20 @@ namespace Mengine
             dstBitmap = _buffer;
             dstBitmapOffset = _buffer + m_pitch;
 
-            for( int y = 0; y != y_rgb_count; ++y )
+            for( int32_t y = 0; y != y_rgb_count; ++y )
             {
-                for( int x = 0; x != y_width; ++x )
+                for( int32_t x = 0; x != y_width; ++x )
                 {
                     //Get uv pointers for row
-                    int v = vSrc[x];
+                    int32_t v = vSrc[x];
 
                     //get corresponding lookup values
 
-                    int rV = s_RVTable[v];
+                    int32_t rV = s_RVTable[v];
 
                     //scale down - brings are values back into the 8 bits of a byte
-                    int rgbY = s_YTable[*ySrc];
-                    int r = (rgbY + rV) >> 13;
+                    int32_t rgbY = s_YTable[*ySrc];
+                    int32_t r = (rgbY + rV) >> 13;
                     THEORA_CLIP_RGB_COLOR( r, dstBitmap[THEORA_COLOR_A] );
                     ++ySrc;
 
@@ -785,7 +785,7 @@ namespace Mengine
 
         for( ;; )
         {
-            int error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );
+            int32_t error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );
 
             if( error_packetout > 0 )
             {
@@ -845,7 +845,7 @@ namespace Mengine
             // theora processing...			
             for( ;; )
             {
-                int error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );
+                int32_t error_packetout = ogg_stream_packetout( &m_oggStreamState, &packet );
 
                 if( error_packetout > 0 )
                 {

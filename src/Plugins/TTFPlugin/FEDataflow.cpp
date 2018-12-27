@@ -55,7 +55,7 @@ namespace Mengine
         const void * memory_buffer = memory->getBuffer();
         size_t memory_size = memory->getSize();
 
-        fe_bundle * bundle = fe_bundle_load( memory_buffer, (int)memory_size );
+        fe_bundle * bundle = fe_bundle_load( memory_buffer, (int32_t)memory_size );
 
         if( bundle == nullptr )
         {

@@ -333,17 +333,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     static time_t s_FileTimeToUnixTime( const FILETIME * filetime )
     {
-        unsigned int a0;			/* 16 bit, low    bits */
-        unsigned int a1;			/* 16 bit, medium bits */
-        unsigned int a2;			/* 32 bit, high   bits */
+        uint32_t a0;			/* 16 bit, low    bits */
+        uint32_t a1;			/* 16 bit, medium bits */
+        uint32_t a2;			/* 32 bit, high   bits */
 
-        unsigned int carry;		/* carry bit for subtraction */
-        int negative;		/* whether a represents a negative value */
+        uint32_t carry;		/* carry bit for subtraction */
+        int32_t negative;		/* whether a represents a negative value */
 
         /* Copy the time values to a2/a1/a0 */
         a2 = filetime->dwHighDateTime;
-        a1 = ((unsigned int)filetime->dwLowDateTime) >> 16;
-        a0 = ((unsigned int)filetime->dwLowDateTime) & 0xffff;
+        a1 = ((uint32_t)filetime->dwLowDateTime) >> 16;
+        a0 = ((uint32_t)filetime->dwLowDateTime) & 0xffff;
 
         /* Subtract the time difference */
         if( a0 >= 32768 )
@@ -359,7 +359,7 @@ namespace Mengine
         a2 -= 27111902 + carry;
 
         /* If a is negative, replace a by (-1-a) */
-        negative = (a2 >= ((unsigned int)1) << 31);
+        negative = (a2 >= ((uint32_t)1) << 31);
         if( negative )
         {
             /* Set a to -a - 1 (a is a2/a1/a0) */

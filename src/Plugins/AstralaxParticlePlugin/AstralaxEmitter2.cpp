@@ -375,7 +375,7 @@ namespace Mengine
     {
         uint8_t * magic_data = const_cast<uint8_t *>(reinterpret_cast<const uint8_t *>(_data));
 
-        if( Magic_ChangeImage( m_emitterId, -1, (int)_width, (int)_height, magic_data, (int)_bytes ) == MAGIC_ERROR )
+        if( Magic_ChangeImage( m_emitterId, -1, (int32_t)_width, (int32_t)_height, magic_data, (int32_t)_bytes ) == MAGIC_ERROR )
         {
             return false;
         }
@@ -429,8 +429,8 @@ namespace Mengine
         m_angle = MT_RAD2DEG( _radians );
 
         Magic_SetDiagramAddition( m_emitterId, -1, MAGIC_DIAGRAM_DIRECTION, m_angle );
-        int k_par = Magic_GetParticlesTypeCount( m_emitterId );
-        for( int j = 0; j < k_par; j++ )
+        int32_t k_par = Magic_GetParticlesTypeCount( m_emitterId );
+        for( int32_t j = 0; j < k_par; j++ )
         {
             Magic_SetDiagramAddition( m_emitterId, j, MAGIC_DIAGRAM_DIRECTION, m_angle );
         }

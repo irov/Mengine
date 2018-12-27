@@ -42,7 +42,7 @@ namespace Mengine
 
     public:
         bool createRenderWindow( const Resolution & _resolution, uint32_t _bits, bool _fullscreen
-            , bool _waitForVSync, int _FSAAType, int _FSAAQuality, uint32_t _MultiSampleCount ) override;
+            , bool _waitForVSync, int32_t _FSAAType, int32_t _FSAAQuality, uint32_t _MultiSampleCount ) override;
 
         void clear( uint8_t _r, uint8_t _g, uint8_t _b ) override;
         // Render frame into _image
@@ -169,7 +169,7 @@ namespace Mengine
         D3DPRESENT_PARAMETERS * m_d3dpp;
 
         // sync routines
-        unsigned int m_frames;
+        uint32_t m_frames;
 
     protected:
         bool releaseResources_();

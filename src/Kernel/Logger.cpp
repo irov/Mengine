@@ -35,7 +35,7 @@ namespace Mengine
         va_start( argList, _format );
 
         Char str[MENGINE_LOGGER_MAX_MESSAGE] = { 0 };
-        int size = vsnprintf( str, MENGINE_LOGGER_MAX_MESSAGE, _format, argList );
+        int32_t size = vsnprintf( str, MENGINE_LOGGER_MAX_MESSAGE, _format, argList );
 
         va_end( argList );
 
@@ -101,7 +101,7 @@ namespace Mengine
                 str_function = String( engine_remove_prefix.first, engine_remove_prefix.second ) + String( engine_remove_suffix.first, engine_remove_suffix.second );
             }
 
-            int size2 = snprintf( str2, MENGINE_LOGGER_MAX_MESSAGE + 256, "%s[%u]: %.*s"
+            int32_t size2 = snprintf( str2, MENGINE_LOGGER_MAX_MESSAGE + 256, "%s[%u]: %.*s"
                 , str_function.c_str()
                 , m_line
                 , size

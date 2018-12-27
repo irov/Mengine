@@ -11,10 +11,10 @@ set MAKE_PROGRAM=%ANDROID_SDK%\cmake\3.6.4111459\bin\ninja.exe
 set TOOLCHAIN_FILE=%ANDROID_NDK%\build\cmake\android.toolchain.cmake
 set CMAKE_EXE=%ANDROID_SDK%\cmake\3.6.4111459\bin\cmake.exe
 set CMAKE_PATH="%CD%\..\..\CMake\Depends_Android_SDL"
-set BUILD_TEMP_DIR="%CD%\..\..\build_temp\build_android_sdl_%BUILD_TYPE%"
+set BUILD_TEMP_DIR="%CD%\..\..\build_temp\build_android_sdl"
 
-@mkdir %BUILD_TEMP_DIR%
-@pushd %BUILD_TEMP_DIR%
+@mkdir %BUILD_TEMP_DIR%\%BUILD_TYPE%
+@pushd %BUILD_TEMP_DIR%\%BUILD_TYPE%
 
 %CMAKE_EXE% -G "Android Gradle - Ninja" ^
     -DANDROID_PLATFORM=android-15 ^

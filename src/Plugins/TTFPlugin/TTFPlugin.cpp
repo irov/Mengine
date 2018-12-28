@@ -49,7 +49,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFPlugin::_initialize()
+    bool TTFPlugin::_initializePlugin()
     {
         SERVICE_CREATE( TTFAtlasService );
 
@@ -106,7 +106,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TTFPlugin::_finalize()
+    void TTFPlugin::_finalizePlugin()
     {
         m_ftMutex = nullptr;
 
@@ -123,5 +123,10 @@ namespace Mengine
 
         FT_Done_FreeType( m_ftlibrary );
         m_ftlibrary = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TTFPlugin::_destroy()
+    {
+        SERVICE_DESTROY( TTFAtlasServiceInterface );
     }
 }

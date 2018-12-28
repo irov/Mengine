@@ -38,7 +38,7 @@ namespace Mengine
     bool SoundService::_initializeService()
     {
         m_supportStream = THREAD_SERVICE()
-            ->avaliable();
+            ->isAvailableService();
 
         if( m_supportStream == true )
         {
@@ -103,6 +103,12 @@ namespace Mengine
             m_threadJobSoundBufferUpdate = nullptr;
         }
 
+        if( m_supportStream == true )
+        {
+            THREAD_SERVICE()
+                ->destroyThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ) );
+        }
+
         m_soundVolumeProviders.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundEmitter );
@@ -112,7 +118,7 @@ namespace Mengine
         m_factoryWorkerTaskSoundBufferUpdate = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundService::supportStreamSound() const
+    bool SoundService::isSupportStreamSound() const
     {
         return m_supportStream;
     }
@@ -251,7 +257,7 @@ namespace Mengine
     {
         if( m_supportStream == false && _streamable == true )
         {
-            LOGGER_WARNING( "SoundService::createSoundSource: unsupport stream sound"
+            LOGGER_WARNING( "unsupport stream sound"
             );
 
             _streamable = false;
@@ -259,7 +265,7 @@ namespace Mengine
 
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "SoundService::createSoundSource: service is stoped"
+            LOGGER_ERROR( "service is stoped"
             );
 
             return nullptr;
@@ -270,7 +276,7 @@ namespace Mengine
 
         if( sourceInterface == nullptr )
         {
-            LOGGER_ERROR( "SoundService::createSoundSource: create SoundSource invalid"
+            LOGGER_ERROR( "create SoundSource invalid"
             );
 
             return nullptr;
@@ -378,7 +384,7 @@ namespace Mengine
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "SoundService::createSoundDecoder_: Can't open sound file %s:%s"
+            LOGGER_ERROR( "Can't open sound file %s:%s"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
@@ -391,7 +397,7 @@ namespace Mengine
 
         if( soundDecoder == nullptr )
         {
-            LOGGER_ERROR( "SoundService::createSoundDecoder_: Can't create sound decoder for file %s:%s"
+            LOGGER_ERROR( "Can't create sound decoder for file %s:%s"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
@@ -401,7 +407,7 @@ namespace Mengine
 
         if( soundDecoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "SoundService::createSoundDecoder_: Can't initialize sound decoder for file %s:%s"
+            LOGGER_ERROR( "Can't initialize sound decoder for file %s:%s"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
@@ -416,7 +422,7 @@ namespace Mengine
     {
         if( m_supportStream == false && _streamable == true )
         {
-            LOGGER_WARNING( "SoundService::createSoundBufferFromFile: unsupport stream sound %s:%s"
+            LOGGER_WARNING( "unsupport stream sound %s:%s"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
@@ -426,7 +432,7 @@ namespace Mengine
 
         if( this->isStopService() == true )
         {
-            LOGGER_ERROR( "SoundService::createSoundBufferFromFile: service is stoped"
+            LOGGER_ERROR( "service is stoped"
             );
 
             return nullptr;
@@ -444,7 +450,7 @@ namespace Mengine
             {
                 if( soundDecoder->rewind() == false )
                 {
-                    LOGGER_ERROR( "SoundService::createSoundBufferFromFile invalid rewind decoder '%s':'%s'"
+                    LOGGER_ERROR( "invalid rewind decoder '%s':'%s'"
                         , _fileGroup->getName().c_str()
                         , _filePath.c_str()
                     );
@@ -460,7 +466,7 @@ namespace Mengine
 
         if( soundDecoder == nullptr )
         {
-            LOGGER_ERROR( "SoundService::createSoundBufferFromFile invalid create decoder '%s':'%s' type %s"
+            LOGGER_ERROR( "invalid create decoder '%s':'%s' type %s"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
                 , _codecType.c_str()
@@ -474,7 +480,7 @@ namespace Mengine
 
         if( buffer == nullptr )
         {
-            LOGGER_ERROR( "SoundService::createSoundBufferFromFile: Can't create sound buffer for file %s:%s"
+            LOGGER_ERROR( "Can't create sound buffer for file %s:%s"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
@@ -749,7 +755,7 @@ namespace Mengine
 
                 if( source == nullptr )
                 {
-                    LOGGER_ERROR( "SoundService::play invalid play %d source is nullptr"
+                    LOGGER_ERROR( "invalid play %d source is nullptr"
                         , identity->id
                     );
 
@@ -767,7 +773,7 @@ namespace Mengine
                 {
                     if( source->play() == false )
                     {
-                        LOGGER_ERROR( "SoundService::play invalid play %d"
+                        LOGGER_ERROR( "invalid play %d"
                             , identity->id
                         );
 
@@ -980,7 +986,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "SoundService::setSourceVolume identity is nullptr (volume '%f' default '%f' force '%d')"
+            LOGGER_ERROR( "identity is nullptr (volume '%f' default '%f' force '%d')"
                 , _volume
                 , _default
                 , _force
@@ -1002,7 +1008,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "SoundService::getSourceVolume identity is nullptr"
+            LOGGER_ERROR( "identity is nullptr"
             );
 
             return 0.f;
@@ -1019,7 +1025,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "SoundService::setSourceMixerVolume identity is nullptr (mixer '%s' volume '%f' default '%f')"
+            LOGGER_ERROR( "identity is nullptr (mixer '%s' volume '%f' default '%f')"
                 , _mixer.c_str()
                 , _volume
                 , _default
@@ -1041,7 +1047,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "SoundService::getSourceMixerVolume identity is nullptr (mixer '%s')"
+            LOGGER_ERROR( "identity is nullptr (mixer '%s')"
                 , _mixer.c_str()
             );
 
@@ -1059,7 +1065,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "SoundService::getDuration identity is nullptr"
+            LOGGER_ERROR( "identity is nullptr"
             );
 
             return 0.f;
@@ -1071,7 +1077,7 @@ namespace Mengine
 
         if( source == nullptr )
         {
-            LOGGER_ERROR( "SoundService::getDuration source is nullptr id '%d'"
+            LOGGER_ERROR( "source is nullptr id '%d'"
                 , _identity->getId()
             );
 
@@ -1087,7 +1093,7 @@ namespace Mengine
     {
         if( _identity == nullptr )
         {
-            LOGGER_ERROR( "SoundService::setPosMs identity is nullptr (pos '%f')"
+            LOGGER_ERROR( "identity is nullptr (pos '%f')"
                 , _pos
             );
 
@@ -1100,7 +1106,7 @@ namespace Mengine
 
         if( source == nullptr )
         {
-            LOGGER_ERROR( "SoundService:setPosMs not setup source %d"
+            LOGGER_ERROR( "not setup source %d"
                 , identity->id
             );
 
@@ -1111,7 +1117,7 @@ namespace Mengine
 
         if( _pos > lengthMs )
         {
-            LOGGER_ERROR( "SoundService::setPosMs emitter %d pos %f length %f"
+            LOGGER_ERROR( "emitter %d pos %f length %f"
                 , identity->id
                 , _pos
                 , lengthMs
@@ -1160,7 +1166,7 @@ namespace Mengine
 
             if( source->play() == false )
             {
-                LOGGER_ERROR( "SoundService::setPosMs invalid play"
+                LOGGER_ERROR( "invalid play"
                 );
 
                 return false;
@@ -1207,7 +1213,7 @@ namespace Mengine
 
         if( _identity->worker != nullptr )
         {
-            LOGGER_ERROR( "SoundService::playSoundBufferUpdate_ _source worker is not null"
+            LOGGER_ERROR( "_source worker is not null"
             );
 
             return false;

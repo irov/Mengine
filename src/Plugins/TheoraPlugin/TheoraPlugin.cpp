@@ -20,8 +20,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TheoraPlugin::_initialize()
+    bool TheoraPlugin::_initializePlugin()
     {
+        LOGGER_WARNING( "Video Theora Version: %s"
+            , theora_version_string()
+        );
+
         Helper::registerDecoder<TheoraVideoDecoder>( STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
         Helper::registerDecoder<TheoraVideoDecoder>( STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
 
@@ -31,14 +35,10 @@ namespace Mengine
         CODEC_SERVICE()
             ->registerCodecExt( "ogva", STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );
 
-        LOGGER_WARNING( "Video Theora Version: %s"
-            , theora_version_string()
-        );
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void TheoraPlugin::_finalize()
+    void TheoraPlugin::_finalizePlugin()
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "ogvVideo" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "ogvaVideo" ) );

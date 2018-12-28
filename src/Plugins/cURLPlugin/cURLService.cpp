@@ -11,6 +11,7 @@
 #include "cURLGetAssetThreadTask.h"
 
 #include "Kernel/FactoryPool.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
 
@@ -75,6 +76,11 @@ namespace Mengine
 
         THREAD_SERVICE()
             ->destroyThread( STRINGIZE_STRING_LOCAL( "cURLService" ) );
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskDownloadAsset );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskPostMessage );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskHeaderData );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryTaskGetMessage );
 
         m_factoryTaskDownloadAsset = nullptr;
         m_factoryTaskPostMessage = nullptr;

@@ -20,14 +20,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AmplifierPlugin::_initialize()
+    bool AmplifierPlugin::_initializePlugin()
     {
         SERVICE_CREATE( Amplifier );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AmplifierPlugin::_finalize()
+    void AmplifierPlugin::_finalizePlugin()
     {
         SERVICE_FINALIZE( Mengine::AmplifierInterface );
     }

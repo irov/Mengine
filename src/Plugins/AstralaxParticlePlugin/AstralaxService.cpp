@@ -18,7 +18,6 @@ namespace Mengine
 {
     AstralaxService::AstralaxService()
         : m_maxParticlesNum( 10000U )
-        , m_available( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -26,15 +25,20 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxService::_initializeService()
+    bool AstralaxService::_availableService() const
     {
-        m_available = CONFIG_VALUE( "Engine", "AstralaxAvaliable", true );
+        bool available = CONFIG_VALUE( "Engine", "AstralaxAvailable", true );
 
-        if( m_available == false )
+        if( available == false )
         {
-            return true;
+            return false;
         }
 
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool AstralaxService::_initializeService()
+    {
         const ArchivatorInterfacePtr & archivator = ARCHIVE_SERVICE()
             ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
 
@@ -54,21 +58,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxService::isAvailable() const
-    {
-        return m_available;
-    }
-    //////////////////////////////////////////////////////////////////////////
     AstralaxEmitterContainerInterfacePtr AstralaxService::createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _whoName )
     {
-        if( m_available == false )
+        if( this->isAvailableService() == false )
         {
             LOGGER_ERROR( "Particle Engine not available" );
 
             return nullptr;
         }
-
-
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SYSTEM()
             ->createEmitterContainerFromMemory( _fileGroup, _fileName, m_archivator, _whoName );

@@ -45,7 +45,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ImageCodecPlugin::_initialize()
+    bool ImageCodecPlugin::_initializePlugin()
     {
         Helper::registerDecoder<ImageDecoderPNG>( STRINGIZE_STRING_LOCAL( "pngImage" ) );
         Helper::registerDecoder<ImageDecoderJPEG>( STRINGIZE_STRING_LOCAL( "jpegImage" ) );
@@ -112,7 +112,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ImageCodecPlugin::_finalize()
+    void ImageCodecPlugin::_finalizePlugin()
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "pngImage" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "jpegImage" ) );

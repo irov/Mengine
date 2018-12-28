@@ -186,9 +186,6 @@ namespace Mengine
         SERVICE_DECLARE( "AstralaxService" )
 
     public:
-        virtual bool isAvailable() const = 0;
-
-    public:
         virtual AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) = 0;
 
     public:

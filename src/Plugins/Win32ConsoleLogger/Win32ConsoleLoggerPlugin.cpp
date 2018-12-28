@@ -16,7 +16,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ConsoleLoggerPlugin::_avaliable()
+    Win32ConsoleLoggerPlugin::~Win32ConsoleLoggerPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32ConsoleLoggerPlugin::_availablePlugin() const
     {
         bool nologs = HAS_OPTION( "nologs" );
 
@@ -35,7 +39,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ConsoleLoggerPlugin::_initialize()
+    bool Win32ConsoleLoggerPlugin::_initializePlugin()
     {
         m_loggerConsole = new FactorableUnique<Win32ConsoleLogger>();
 
@@ -45,9 +49,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ConsoleLoggerPlugin::_finalize()
+    void Win32ConsoleLoggerPlugin::_finalizePlugin()
     {
         LOGGER_SERVICE()
             ->unregisterLogger( m_loggerConsole );
+
+        m_loggerConsole = nullptr;
     }
 }

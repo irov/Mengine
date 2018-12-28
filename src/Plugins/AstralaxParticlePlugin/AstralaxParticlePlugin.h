@@ -14,8 +14,8 @@ namespace Mengine
         ~AstralaxParticlePlugin() override;
 
     protected:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializePlugin() override;
+        void _finalizePlugin() override;
 
     protected:
         void _destroy() override;

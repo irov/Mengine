@@ -20,7 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32SocketPlugin::_initialize()
+    bool Win32SocketPlugin::_initializePlugin()
     {
         LOGGER_INFO( "Initializing Win32 Socket Plugin" );
 
@@ -29,7 +29,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32SocketPlugin::_finalize()
+    void Win32SocketPlugin::_finalizePlugin()
     {
         SERVICE_FINALIZE( Mengine::SocketSystemInterface );
     }

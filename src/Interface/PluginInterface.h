@@ -23,14 +23,12 @@ namespace Mengine
         virtual bool isDynamicLoad() const = 0;
 
     public:
-        virtual bool avaliable() = 0;
+        virtual bool initializePlugin() = 0;
+        virtual void finalizePlugin() = 0;
 
     public:
-        virtual bool initialize() = 0;
-        virtual void finalize() = 0;
-
-    public:
-        virtual bool isInitialize() const = 0;
+        virtual bool isInitializePlugin() const = 0;
+        virtual bool isAvailablePlugin() const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PluginInterface> PluginInterfacePtr;

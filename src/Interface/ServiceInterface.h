@@ -20,6 +20,9 @@ namespace Mengine
         virtual void finalizeService() = 0;
         virtual bool isInitializeService() const = 0;
 
+    public:
+        virtual bool isAvailableService() const = 0;        
+
     protected:
         virtual void stopService() = 0;
         virtual bool isStopService() const = 0;
@@ -110,7 +113,8 @@ namespace Mengine
             return s_exist;
         }
     }
-    //////////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
 #define SERVICE_GET( Type )\
 	(Mengine::Helper::getService<Type>(__FILE__, __LINE__))
 //////////////////////////////////////////////////////////////////////////
@@ -153,4 +157,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
 #define SERVICE_WAIT( Type, Lambda )\
     SERVICE_PROVIDER_GET()->waitService(Type::getStaticServiceID(), Lambda)
-}
+//////////////////////////////////////////////////////////////////////////
+#define SERVICE_AVAILABLE( Type )\
+    [](){ static bool available = SERVICE_GET(Type)->isAvailableService(); return available;}()
+//////////////////////////////////////////////////////////////////////////

@@ -62,11 +62,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie1Plugin::_avaliable()
+    bool Movie1Plugin::_availablePlugin() const
     {
-        bool avaliable = CONFIG_VALUE( "Engine", "Movie1PluginAvaliable", true );
+        bool available = CONFIG_VALUE( "Engine", "Movie1PluginAvailable", true );
 
-        return avaliable;
+        return available;
     }
     //////////////////////////////////////////////////////////////////////////
     namespace Detail
@@ -1450,7 +1450,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie1Plugin::_initialize()
+    bool Movie1Plugin::_initializePlugin()
     {
         this->addDependencyService( "PrefetcherService" );
 
@@ -1659,7 +1659,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie1Plugin::_finalize()
+    void Movie1Plugin::_finalizePlugin()
     {
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {

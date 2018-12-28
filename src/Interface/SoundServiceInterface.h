@@ -22,7 +22,7 @@ namespace Mengine
         virtual void tick( const UpdateContext * _context ) = 0;
 
     public:
-        virtual bool supportStreamSound() const = 0;
+        virtual bool isSupportStreamSound() const = 0;
 
     public:
         virtual void addSoundVolumeProvider( const SoundVolumeProviderInterfacePtr & _soundVolumeProvider ) = 0;

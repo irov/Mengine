@@ -12,7 +12,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual bool avaliable() = 0;
+        virtual bool available() = 0;
 
     public:
         virtual void setName( const ConstString & _name ) = 0;

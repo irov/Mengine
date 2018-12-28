@@ -25,7 +25,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PrefetcherService::PrefetcherService()
-        : m_avaliable( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -33,18 +32,16 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    bool PrefetcherService::_availableService() const
+    {
+        bool available = CONFIG_VALUE( "Engine", "PrefetcherAvailable", true );
+
+        return available;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::_initializeService()
     {
-        bool avaliable = CONFIG_VALUE( "Engine", "PrefetcherAvaliable", true );
-
-        if( avaliable == false )
-        {
-            m_avaliable = false;
-
-            return true;
-        }
-
-        uint32_t PrefetcherServiceThreadCount = CONFIG_VALUE( "PrefetcherService", "ThreadCount", 2 );
+        uint32_t PrefetcherServiceThreadCount = CONFIG_VALUE( "PrefetcherService", "ThreadCount", 8 );
         uint32_t PrefetcherServicePacketSize = CONFIG_VALUE( "PrefetcherService", "PacketSize", 64 );
 
         m_threadQueue = THREAD_SERVICE()
@@ -74,7 +71,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PrefetcherService::_finalizeService()
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             return;
         }
@@ -114,7 +111,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::prefetchImageDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             _observer->onPrefetchIgnored();
 
@@ -160,7 +157,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::getImageDecoder( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, ImageDecoderInterfacePtr & _decoder )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             return false;
         }
@@ -187,7 +184,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::prefetchSoundDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, const PrefetcherObserverInterfacePtr & _observer )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             _observer->onPrefetchIgnored();
 
@@ -233,7 +230,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::getSoundDecoder( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, SoundDecoderInterfacePtr & _decoder )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             return false;
         }
@@ -260,17 +257,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::prefetchData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const DataflowInterfacePtr & _dataflow, const PrefetcherObserverInterfacePtr & _observer )
     {
-        if( _dataflow == nullptr )
-        {
-            LOGGER_ERROR( "PrefetcherService::prefetchData: '%s':'%s' invalide dataflow is nullptr"
-                , _fileGroup->getName().c_str()
-                , _filePath.c_str()
+        MENGINE_ASSERTION_MEMORY_PANIC( _dataflow, false )("PrefetcherService::prefetchData: '%s':'%s' invalide dataflow is nullptr"
+            , _fileGroup->getName().c_str()
+            , _filePath.c_str()
             );
 
-            return false;
-        }
-
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             _observer->onPrefetchIgnored();
 
@@ -318,7 +310,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////			
     bool PrefetcherService::getData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             return false;
         }
@@ -345,7 +337,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////			
     bool PrefetcherService::popData( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, DataInterfacePtr & _data )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             return false;
         }
@@ -372,7 +364,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::prefetchStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, const ArchivatorInterfacePtr & _archivator, uint32_t _magicNumber, uint32_t _magicVersion, const PrefetcherObserverInterfacePtr & _observer )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             _observer->onPrefetchIgnored();
 
@@ -421,7 +413,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::getStream( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath, MemoryInterfacePtr & _memory )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             return false;
         }

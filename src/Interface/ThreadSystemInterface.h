@@ -12,9 +12,6 @@ namespace Mengine
         SERVICE_DECLARE( "ThreadSystem" )
 
     public:
-        virtual bool avaliable() const = 0;
-
-    public:
         virtual ThreadIdentityInterfacePtr createThread( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line ) = 0;
 
     public:

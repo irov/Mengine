@@ -20,11 +20,9 @@ namespace Mengine
         ~AstralaxService() override;
 
     public:
+        bool _availableService() const override;
         bool _initializeService() override;
         void _finalizeService() override;
-
-    public:
-        bool isAvailable() const override;
 
     public:
         AstralaxEmitterContainerInterfacePtr createEmitterContainerFromFile( const FileGroupInterfacePtr& _fileGroupName, const FilePath & _fileName, const ConstString & _whoName ) override;
@@ -36,7 +34,5 @@ namespace Mengine
         ArchivatorInterfacePtr m_archivator;
 
         uint32_t m_maxParticlesNum;
-
-        bool m_available;
     };
 };

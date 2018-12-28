@@ -25,24 +25,20 @@ namespace Mengine
         bool isDynamicLoad() const override;
 
     protected:
-        bool avaliable() override;
+        bool initializePlugin() override;
+        void finalizePlugin() override;
 
     protected:
-        virtual bool _avaliable();
-
-    protected:
-        bool initialize() override;
-        void finalize() override;
-
-    protected:
-        bool isInitialize() const override;
+        bool isInitializePlugin() const override;
+        bool isAvailablePlugin() const override;
 
     protected:
         void destroy() override;
 
     protected:
-        virtual bool _initialize();
-        virtual void _finalize();
+        virtual bool _initializePlugin();
+        virtual void _finalizePlugin();
+        virtual bool _availablePlugin() const;
 
     protected:
         bool addDependencyService( const Char * _name );
@@ -50,7 +46,8 @@ namespace Mengine
 
     protected:
         bool m_dynamicLoad;
-        bool m_initialize;
+        bool m_initializePlugin;
+        bool m_availablePlugin;
 
         typedef Vector<String> VectorDependencyServices;
         VectorDependencyServices m_dependencyServices;

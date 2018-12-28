@@ -21,7 +21,6 @@ namespace Mengine
     OpenALSoundSystem::OpenALSoundSystem()
         : m_context( nullptr )
         , m_device( nullptr )
-        , m_threadAvaliable( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -137,9 +136,6 @@ namespace Mengine
         alListenerfv( AL_ORIENTATION, lorient );
         OPENAL_CHECK_ERROR();
 
-        m_threadAvaliable = THREAD_SERVICE()
-            ->avaliable();
-
         m_factoryOpenALSoundBuffer = new FactoryPool<OpenALSoundBufferMemory, 32>();
         m_factoryOpenALSoundBufferStream = new FactoryPool<OpenALSoundBufferStream, 32>();
         m_factoryOpenALSoundSource = new FactoryPool<OpenALSoundSource, 32>();
@@ -219,7 +215,7 @@ namespace Mengine
     {
         OpenALSoundBufferBasePtr base = nullptr;
 
-        if( _isStream == false || m_threadAvaliable == false )
+        if( _isStream == false || SERVICE_AVAILABLE( ThreadServiceInterface ) == false )
         {
             OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject();
 

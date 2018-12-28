@@ -29,12 +29,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebugRenderPlugin::_avaliable()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool NodeDebugRenderPlugin::_initialize()
+    bool NodeDebugRenderPlugin::_initializePlugin()
     {
         SERVICE_CREATE( NodeDebugRenderService );
 
@@ -59,7 +54,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebugRenderPlugin::_finalize()
+    void NodeDebugRenderPlugin::_finalizePlugin()
     {
         NODEDEBUGRENDER_SERVICE()
             ->removeNodeDebugRender( STRINGIZE_STRING_LOCAL( "Arrow" ) );

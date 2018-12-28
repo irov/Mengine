@@ -26,6 +26,7 @@ namespace Mengine
         ~PrefetcherService() override;
 
     public:
+        bool _availableService() const override;
         bool _initializeService() override;
         void _finalizeService() override;
 
@@ -74,8 +75,6 @@ namespace Mengine
         typedef std::pair<ConstString, FilePath> KeyPrefetchReceiver;
         typedef Map<KeyPrefetchReceiver, PrefetchReceiver> MapPrefetchReceiver;
         MapPrefetchReceiver m_prefetchReceiver;
-
-        bool m_avaliable;
     };
     //////////////////////////////////////////////////////////////////////////
 }

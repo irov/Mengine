@@ -27,6 +27,11 @@ namespace Mengine
     VideoPlugin::VideoPlugin()
     {
     }
+    //////////////////////////////////////////////////////////////////////////
+    VideoPlugin::~VideoPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -66,7 +71,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool VideoPlugin::_initialize()
+    bool VideoPlugin::_initializePlugin()
     {
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()
             ->getKernel();
@@ -109,32 +114,26 @@ namespace Mengine
             return false;
         }
 
-        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+        SERVICE_WAIT( ResourceValidateServiceInterface, []()
         {
             VOCALUBARY_SET( ResourceValidatorInterface, STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<ResourceVideoValidator>() );
-        }
+        } );
 
-        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        SERVICE_WAIT( LoaderServiceInterface, []()
         {
             VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<LoaderResourceVideo>() );
-        }
+        } );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void VideoPlugin::_finalize()
+    void VideoPlugin::_finalizePlugin()
     {
-        if( PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) ) == false )
-        {
-            return;
-        }
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
 
-        if( PROTOTYPE_SERVICE()
-            ->removePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) ) == false )
-        {
-            return;
-        }
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
 
         if( SCRIPT_SERVICE()
             ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) ) == false )
@@ -148,14 +147,14 @@ namespace Mengine
             return;
         }
 
-        if( SERVICE_EXIST( ResourceValidateServiceInterface ) == true )
+        SERVICE_WAIT( ResourceValidateServiceInterface, []()
         {
             VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
-        }
+        } );
 
-        if( SERVICE_EXIST( LoaderServiceInterface ) == true )
+        SERVICE_WAIT( LoaderServiceInterface, []()
         {
             VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ) );
-        }
+        } );
     }
 }

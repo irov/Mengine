@@ -54,7 +54,5 @@ namespace Mengine
         FactoryPtr m_factoryOpenALSoundBuffer;
         FactoryPtr m_factoryOpenALSoundBufferStream;
         FactoryPtr m_factoryOpenALSoundSource;
-
-        bool m_threadAvaliable;
     };
 }

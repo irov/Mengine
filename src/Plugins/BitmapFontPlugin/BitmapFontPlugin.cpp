@@ -24,7 +24,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool BitmapFontPlugin::_initialize()
+    bool BitmapFontPlugin::_initializePlugin()
     {
         SERVICE_CREATE( BitmapGlyphService );
 
@@ -36,7 +36,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BitmapFontPlugin::_finalize()
+    void BitmapFontPlugin::_finalizePlugin()
     {
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Font" ), STRINGIZE_STRING_LOCAL( "Bitmap" ) );

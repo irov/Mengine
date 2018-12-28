@@ -14,9 +14,6 @@ namespace Mengine
         SERVICE_DECLARE( "ThreadService" )
 
     public:
-        virtual bool avaliable() const = 0;
-
-    public:
         virtual void update() = 0;
 
     public:

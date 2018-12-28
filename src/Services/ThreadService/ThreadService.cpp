@@ -24,7 +24,6 @@ namespace Mengine
     ThreadService::ThreadService()
         : m_threadCount( 0 )
         , m_mainThreadId( 0 )
-        , m_avaliable( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -42,36 +41,35 @@ namespace Mengine
         _mutex->unlock();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool ThreadService::_availableService() const
+    {
+        bool available = CONFIG_VALUE( "Engine", "ThreadServiceAvailable", true );
+
+        if( available == false )
+        {
+            return false;
+        }
+
+        if( SERVICE_EXIST( Mengine::ThreadSystemInterface ) == false )
+        {
+            return false;
+        }
+
+        if( THREAD_SYSTEM()
+            ->isAvailableService() == false )
+        {
+            return false;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ThreadService::_initializeService()
     {
         m_factoryThreadMutexDummy = new FactoryPool<ThreadMutexDummy, 16>();
         m_factoryThreadQueue = new FactoryPool<ThreadQueue, 4>();
         m_factoryThreadJob = new FactoryPool<ThreadJob, 16>();
-
-        bool avaliable = CONFIG_VALUE( "Engine", "ThreadServiceAvaliable", true );
-
-        if( avaliable == false )
-        {
-            m_avaliable = false;
-
-            return true;
-        }
-
-        if( SERVICE_EXIST( Mengine::ThreadSystemInterface ) == false )
-        {
-            m_avaliable = false;
-
-            return true;
-        }
-
-        m_avaliable = THREAD_SYSTEM()
-            ->avaliable();
-
-        if( m_avaliable == false )
-        {
-            return true;
-        }
-
+        
         m_threadCount = CONFIG_VALUE( "Engine", "ThreadCount", 16U );
 
         m_mutexAllocatorPool = THREAD_SYSTEM()
@@ -138,11 +136,6 @@ namespace Mengine
         m_factoryThreadJob = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ThreadService::avaliable() const
-    {
-        return m_avaliable;
-    }
-    //////////////////////////////////////////////////////////////////////////
     ThreadJobPtr ThreadService::createJob( uint32_t _sleep )
     {
         ThreadJobPtr threadJob = m_factoryThreadJob->createObject();
@@ -160,7 +153,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::createThread( const ConstString & _threadName, int32_t _priority, const Char * _file, uint32_t _line )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             return false;
         }
@@ -228,7 +221,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::addTask( const ConstString & _threadName, const ThreadTaskInterfacePtr & _task )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             return false;
         }
@@ -327,7 +320,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadQueueInterfacePtr ThreadService::runTaskQueue( uint32_t _packetSize )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             return nullptr;
         }
@@ -455,7 +448,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr ThreadService::createMutex( const Char * _file, uint32_t _line )
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             ThreadMutexDummyPtr mutex_dummy =
                 m_factoryThreadMutexDummy->createObject();
@@ -477,7 +470,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ptrdiff_t ThreadService::getCurrentThreadId()
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             return 0U;
         }
@@ -490,7 +483,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ThreadService::isMainThread() const
     {
-        if( m_avaliable == false )
+        if( this->isAvailableService() == false )
         {
             return true;
         }

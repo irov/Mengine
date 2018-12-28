@@ -19,10 +19,10 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        bool avaliable() override;
+        bool available() override;
 
     protected:
-        virtual bool _avaliable();
+        virtual bool _available();
 
     public:
         bool initialize() override;

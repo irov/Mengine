@@ -212,12 +212,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourcePrefetcherPlugin::_avaliable()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourcePrefetcherPlugin::_initialize()
+    bool ResourcePrefetcherPlugin::_initializePlugin()
     {
         SERVICE_CREATE( ResourcePrefetcherService );
 
@@ -273,7 +268,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourcePrefetcherPlugin::_finalize()
+    void ResourcePrefetcherPlugin::_finalizePlugin()
     {
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {

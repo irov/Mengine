@@ -22,7 +22,7 @@ namespace Mengine
     {
         for( PluginDesc & desc : m_plugins )
         {
-            desc.plugin->finalize();
+            desc.plugin->finalizePlugin();
         }
 
         m_plugins.clear();
@@ -44,7 +44,7 @@ namespace Mengine
 
         for( PluginDesc & desc : reverse_plugins )
         {
-            desc.plugin->finalize();
+            desc.plugin->finalizePlugin();
             desc.plugin = nullptr;
         }
     }
@@ -150,12 +150,7 @@ namespace Mengine
             return false;
         }
 
-        if( _plugin->avaliable() == false )
-        {
-            return true;
-        }
-
-        if( _plugin->initialize() == false )
+        if( _plugin->initializePlugin() == false )
         {
             LOGGER_ERROR( "PluginService::loadPlugin invalid initialize plugin '%s'"
                 , name
@@ -194,7 +189,7 @@ namespace Mengine
                 continue;
             }
 
-            desc.plugin->finalize();
+            desc.plugin->finalizePlugin();
 
             m_plugins.erase( it );
 

@@ -31,10 +31,8 @@ namespace Mengine
         //Empty
 
         //ToDo
-        SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]( const ServiceInterfacePtr & _service )
+        SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]()
         {
-            MENGINE_UNUSED( _service );
-
             m_threadMutex = THREAD_SERVICE()
                 ->createMutex( __FILE__, __LINE__ );
         } );

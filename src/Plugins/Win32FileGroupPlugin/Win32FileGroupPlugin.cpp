@@ -52,7 +52,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32FileGroupPlugin::_initialize()
+    Win32FileGroupPlugin::~Win32FileGroupPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool Win32FileGroupPlugin::_initializePlugin()
     {
         FILE_SERVICE()
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "global" )
@@ -73,7 +77,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32FileGroupPlugin::_finalize()
+    void Win32FileGroupPlugin::_finalizePlugin()
     {
         FILE_SERVICE()
             ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( "global" ) );

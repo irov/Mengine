@@ -35,7 +35,7 @@ namespace Mengine
         void _stopService() override;
 
     public:
-        bool supportStreamSound() const override;
+        bool isSupportStreamSound() const override;
 
     public:
         void tick( const UpdateContext * _context ) override;

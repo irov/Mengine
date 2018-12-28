@@ -27,19 +27,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceConvertPlugin::_avaliable()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceConvertPlugin::_initialize()
+    bool ResourceConvertPlugin::_initializePlugin()
     {
         SERVICE_CREATE( ResourceConvertService );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceConvertPlugin::_finalize()
+    void ResourceConvertPlugin::_finalizePlugin()
     {
         SERVICE_FINALIZE( Mengine::ResourceConvertServiceInterface );
     }

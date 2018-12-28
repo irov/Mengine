@@ -41,7 +41,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool PrefetcherService::_initializeService()
     {
-        uint32_t PrefetcherServiceThreadCount = CONFIG_VALUE( "PrefetcherService", "ThreadCount", 8 );
+        uint32_t PrefetcherServiceThreadCount = CONFIG_VALUE( "PrefetcherService", "ThreadCount", 2 );
         uint32_t PrefetcherServicePacketSize = CONFIG_VALUE( "PrefetcherService", "PacketSize", 64 );
 
         m_threadQueue = THREAD_SERVICE()

@@ -9,7 +9,8 @@ namespace Mengine
     {
     public:
         ServiceBase() noexcept
-            : m_initializeService( false )
+            : m_available( true )
+            , m_initializeService( false )
             , m_stopService( false )
         {
         }
@@ -27,6 +28,13 @@ namespace Mengine
             }
 
             this->_dependencyService();
+
+            m_available = this->_availableService();
+
+            if( m_available == false )
+            {
+                return false;
+            }
 
             bool successful = this->_initializeService();
 
@@ -48,6 +56,11 @@ namespace Mengine
         }
 
     public:
+        bool isAvailableService() const override
+        {
+            return m_available;
+        }
+
         bool isInitializeService() const override
         {
             return m_initializeService;
@@ -57,6 +70,11 @@ namespace Mengine
         virtual void _dependencyService()
         {
             //Empty
+        }
+
+        virtual bool _availableService() const
+        {
+            return true;
         }
 
         virtual bool _initializeService()
@@ -100,6 +118,7 @@ namespace Mengine
         }
 
     protected:
+        bool m_available;
         bool m_initializeService;
         bool m_stopService;
     };

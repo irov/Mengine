@@ -55,4 +55,3 @@ namespace Mengine
 #define PROTOTYPE_SERVICE()\
 	((Mengine::PrototypeServiceInterface *)SERVICE_GET(Mengine::PrototypeServiceInterface))
 //////////////////////////////////////////////////////////////////////////
-

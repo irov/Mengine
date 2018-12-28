@@ -13,9 +13,10 @@ namespace Mengine
 
     public:
         SoundCodecPlugin();
+        ~SoundCodecPlugin() override;
 
     protected:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializePlugin() override;
+        void _finalizePlugin() override;
     };
 }

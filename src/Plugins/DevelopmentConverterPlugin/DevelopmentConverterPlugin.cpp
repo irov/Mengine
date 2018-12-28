@@ -31,7 +31,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DevelopmentConverterPlugin::_initialize()
+    bool DevelopmentConverterPlugin::_initializePlugin()
     {
         Helper::registerConverter<HotspotImageConverterPNGToHIT>( "png2hit" );
         Helper::registerConverter<SoundConverterFFMPEGToOGG>( "ffmpegToOggSound" );
@@ -47,7 +47,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DevelopmentConverterPlugin::_finalize()
+    void DevelopmentConverterPlugin::_finalizePlugin()
     {
         Helper::unregisterConverter( "png2hit" );
         Helper::unregisterConverter( "ffmpegToOggSound" );

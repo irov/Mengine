@@ -27,9 +27,6 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        bool avaliable() const override;
-
-    public:
         ThreadIdentityInterfacePtr createThread( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line ) override;
 
     public:

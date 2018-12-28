@@ -122,7 +122,7 @@ namespace Mengine
             ->cancelRequest( _id );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool cURLPlugin::_initialize()
+    bool cURLPlugin::_initializePlugin()
     {
         SERVICE_CREATE( cURLService );
 
@@ -142,7 +142,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void cURLPlugin::_finalize()
+    void cURLPlugin::_finalizePlugin()
     {
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()
             ->getKernel();

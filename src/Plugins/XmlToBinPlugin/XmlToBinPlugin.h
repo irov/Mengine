@@ -16,7 +16,7 @@ namespace Mengine
         ~XmlToBinPlugin() override;
 
     protected:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializePlugin() override;
+        void _finalizePlugin() override;
     };
 }

@@ -54,11 +54,6 @@ namespace Mengine
         m_factoryWin32ThreadMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadSystem::avaliable() const
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
     {
         Win32ThreadIdentityPtr identity = m_factoryWin32ThreadIdentity->createObject();

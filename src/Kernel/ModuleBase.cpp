@@ -21,14 +21,14 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::avaliable()
+    bool ModuleBase::available()
     {
-        bool successful = this->_avaliable();
+        bool successful = this->_available();
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::_avaliable()
+    bool ModuleBase::_available()
     {
         return true;
     }

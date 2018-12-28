@@ -52,7 +52,7 @@ namespace Mengine
 
     protected:
         void removeDependency_( const Char * _name );
-        void checkWaits_( const Char * _name, const ServiceInterfacePtr & _service );
+        void checkWaits_( const Char * _name );
 
     protected:
         struct ServiceDesc

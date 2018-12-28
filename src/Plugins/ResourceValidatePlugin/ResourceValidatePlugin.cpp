@@ -29,14 +29,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ResourceValidatePlugin::~ResourceValidatePlugin()
     {
-    }
+    }    
     //////////////////////////////////////////////////////////////////////////
-    bool ResourceValidatePlugin::_avaliable()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ResourceValidatePlugin::_initialize()
+    bool ResourceValidatePlugin::_initializePlugin()
     {
         SERVICE_CREATE( ResourceValidateService );
 
@@ -51,7 +46,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ResourceValidatePlugin::_finalize()
+    void ResourceValidatePlugin::_finalizePlugin()
     {
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceFile" ) );
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Validator" ), STRINGIZE_STRING_LOCAL( "ResourceHIT" ) );

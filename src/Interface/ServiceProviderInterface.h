@@ -72,7 +72,8 @@ namespace Mengine
     public:
         virtual void dependencyService( const Char * _name, const Char * _dependency ) = 0;
 
-        typedef Lambda<void( const ServiceInterfacePtr & )> LambdaWaitService;
+    public:
+        typedef Lambda<void()> LambdaWaitService;
         virtual void waitService( const Char * _name, const LambdaWaitService & _lambda ) = 0;
 
     public:

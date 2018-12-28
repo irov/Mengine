@@ -29,7 +29,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool XlsExportPlugin::_initialize()
+    bool XlsExportPlugin::_initializePlugin()
     {
         //Py_IgnoreEnvironmentFlag = 1;
         //Py_VerboseFlag = 1;
@@ -109,7 +109,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void XlsExportPlugin::_finalize()
+    void XlsExportPlugin::_finalizePlugin()
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 

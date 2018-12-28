@@ -25,7 +25,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OzzAnimationPlugin::_initialize()
+    bool OzzAnimationPlugin::_initializePlugin()
     {
         if( PROTOTYPE_SERVICE()
             ->addPrototype( "Resource"_c, "ResourceOzzSkeleton"_c, new FactorableUnique<DefaultPrototypeGenerator<ResourceOzzSkeleton, 16> > ) == false )
@@ -60,7 +60,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OzzAnimationPlugin::_finalize()
+    void OzzAnimationPlugin::_finalizePlugin()
     {
         PROTOTYPE_SERVICE()
             ->removePrototype( "Resource"_c, "ResourceOzzSkeleton"_c );

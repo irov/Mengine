@@ -19,7 +19,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ZipPlugin::_initialize()
+    ZipPlugin::~ZipPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ZipPlugin::_initializePlugin()
     {
         FILE_SERVICE()
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "zip" ), new FactoryDefault<FileGroupZip>() );
@@ -30,7 +34,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ZipPlugin::_finalize()
+    void ZipPlugin::_finalizePlugin()
     {
         FILE_SERVICE()
             ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( "zip" ) );

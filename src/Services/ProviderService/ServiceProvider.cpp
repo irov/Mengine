@@ -111,7 +111,7 @@ namespace Mengine
 
             ++m_servicesCount;
 
-            this->checkWaits_( name, service );
+            this->checkWaits_( name );
 
             return true;
         }
@@ -225,7 +225,7 @@ namespace Mengine
                 break;
             }
 
-            _lambda( desc.service );
+            _lambda();
 
             return;
         }
@@ -263,7 +263,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ServiceProvider::checkWaits_( const Char * _name, const ServiceInterfacePtr & _service )
+    void ServiceProvider::checkWaits_( const Char * _name )
     {
         for( uint32_t index = 0; index != m_waitsCount; )
         {
@@ -276,7 +276,7 @@ namespace Mengine
                 continue;
             }
 
-            desc.lambda( _service );
+            desc.lambda();
 
             WaitDesc & last_desc = m_waits[--m_waitsCount];
 

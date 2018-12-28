@@ -26,7 +26,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxParticlePlugin::_initialize()
+    bool AstralaxParticlePlugin::_initializePlugin()
     {
         LOGGER_INFO( "Initializing Astralax Particle System..." );
 
@@ -39,7 +39,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticlePlugin::_finalize()
+    void AstralaxParticlePlugin::_finalizePlugin()
     {
         SERVICE_FINALIZE( Mengine::AstralaxSystemInterface );
         SERVICE_FINALIZE( Mengine::AstralaxServiceInterface );

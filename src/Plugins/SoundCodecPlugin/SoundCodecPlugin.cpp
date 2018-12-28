@@ -16,7 +16,11 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SoundCodecPlugin::_initialize()
+    SoundCodecPlugin::~SoundCodecPlugin()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundCodecPlugin::_initializePlugin()
     {
         Helper::registerDecoder<SoundDecoderWAV>( STRINGIZE_STRING_LOCAL( "wavSound" ) );
 
@@ -26,7 +30,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundCodecPlugin::_finalize()
+    void SoundCodecPlugin::_finalizePlugin()
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "wavSound" ) );
     }

@@ -125,11 +125,6 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MoviePlugin::_avaliable()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         //////////////////////////////////////////////////////////////////////////
@@ -322,7 +317,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MoviePlugin::_initialize()
+    bool MoviePlugin::_initializePlugin()
     {
         this->addDependencyService( "PrefetcherService" );
 
@@ -482,17 +477,15 @@ namespace Mengine
             VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
         }
 
-        SERVICE_WAIT( Mengine::NodeDebuggerServiceInterface, [this]( const ServiceInterfacePtr & _service )
+        SERVICE_WAIT( Mengine::NodeDebuggerServiceInterface, []()
         {
-            MENGINE_UNUSED( _service );
-
             VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<Movie2DebuggerBoundingBox>() );
         } );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MoviePlugin::_finalize()
+    void MoviePlugin::_finalizePlugin()
     {
         ae_delete_movie_instance( m_movieInstance );
         m_movieInstance = nullptr;

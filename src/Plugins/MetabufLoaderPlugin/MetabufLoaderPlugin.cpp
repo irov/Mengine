@@ -36,7 +36,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MetabufLoaderPlugin::_initialize()
+    bool MetabufLoaderPlugin::_initializePlugin()
     {
 #define DECLARE_LOADER(T)\
         VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( #T ), new FactorableUnique<Loader##T>() )
@@ -62,7 +62,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MetabufLoaderPlugin::_finalize()
+    void MetabufLoaderPlugin::_finalizePlugin()
     {
     }
 }

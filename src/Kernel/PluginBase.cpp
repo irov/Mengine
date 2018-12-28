@@ -7,7 +7,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PluginBase::PluginBase()
         : m_dynamicLoad( false )
-        , m_initialize( false )
+        , m_initializePlugin( false )
+        , m_availablePlugin( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -25,40 +26,35 @@ namespace Mengine
         return m_dynamicLoad;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginBase::avaliable()
-    {
-        bool successful = this->_avaliable();
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool PluginBase::_avaliable()
+    bool PluginBase::_availablePlugin() const
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginBase::initialize()
+    bool PluginBase::initializePlugin()
     {
-        if( m_initialize == true )
+        if( m_initializePlugin == true )
         {
             return true;
         }
 
-        bool successful = this->_initialize();
+        m_availablePlugin = this->_availablePlugin();
 
-        m_initialize = successful;
+        bool successful = this->_initializePlugin();
 
-        return m_initialize;
+        m_initializePlugin = successful;
+
+        return m_initializePlugin;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PluginBase::finalize()
+    void PluginBase::finalizePlugin()
     {
-        if( m_initialize == false )
+        if( m_initializePlugin == false )
         {
             return;
         }
 
-        m_initialize = false;
+        m_initializePlugin = false;
 
         for( const String & serviceName : m_dependencyServices )
         {
@@ -68,7 +64,7 @@ namespace Mengine
 
         m_dependencyServices.clear();
 
-        this->_finalize();
+        this->_finalizePlugin();
 
         for( const ConstString & moduleFactory : m_moduleFactories )
         {
@@ -79,9 +75,14 @@ namespace Mengine
         m_moduleFactories.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginBase::isInitialize() const
+    bool PluginBase::isInitializePlugin() const
     {
-        return m_initialize;
+        return m_initializePlugin;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool PluginBase::isAvailablePlugin() const
+    {
+        return m_availablePlugin;
     }
     //////////////////////////////////////////////////////////////////////////
     void PluginBase::destroy()
@@ -98,14 +99,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginBase::_initialize()
+    bool PluginBase::_initializePlugin()
     {
         ///Empty
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void PluginBase::_finalize()
+    void PluginBase::_finalizePlugin()
     {
         //Empty
     }

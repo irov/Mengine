@@ -61,7 +61,7 @@ namespace Mengine
 
         ModuleInterfacePtr module = factory->createModule( _moduleName );
 
-        if( module->avaliable() == false )
+        if( module->available() == false )
         {
             return true;
         }

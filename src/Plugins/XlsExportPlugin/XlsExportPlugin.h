@@ -20,8 +20,8 @@ namespace Mengine
         ~XlsExportPlugin() override;
 
     protected:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializePlugin() override;
+        void _finalizePlugin() override;
 
     protected:
         void notifyChangeLocale( const ConstString & _prevLocale, const ConstString & _currentlocale );

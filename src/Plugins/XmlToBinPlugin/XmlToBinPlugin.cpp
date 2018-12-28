@@ -21,14 +21,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool XmlToBinPlugin::_initialize()
+    bool XmlToBinPlugin::_initializePlugin()
     {
         Helper::registerDecoder<XmlToBinDecoder>( STRINGIZE_STRING_LOCAL( "xml2bin" ) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void XmlToBinPlugin::_finalize()
+    void XmlToBinPlugin::_finalizePlugin()
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "xml2bin" ) );
     }

@@ -20,19 +20,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerPlugin::_avaliable()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerPlugin::_initialize()
+    bool NodeDebuggerPlugin::_initializePlugin()
     {
         SERVICE_CREATE( NodeDebuggerService );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerPlugin::_finalize()
+    void NodeDebuggerPlugin::_finalizePlugin()
     {
         SERVICE_FINALIZE( Mengine::NodeDebuggerServiceInterface );
     }

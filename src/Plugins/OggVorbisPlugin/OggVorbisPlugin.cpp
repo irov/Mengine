@@ -23,7 +23,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OggVorbisPlugin::_initialize()
+    bool OggVorbisPlugin::_initializePlugin()
     {
         Helper::registerDecoder<SoundDecoderOGGVorbis>( STRINGIZE_STRING_LOCAL( "oggSound" ) );
         Helper::registerDecoder<SoundDecoderOGGVorbis>( STRINGIZE_STRING_LOCAL( "ogvSound" ) );
@@ -34,7 +34,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OggVorbisPlugin::_finalize()
+    void OggVorbisPlugin::_finalizePlugin()
     {
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "oggSound" ) );
         Helper::unregisterDecoder( STRINGIZE_STRING_LOCAL( "ogvSound" ) );

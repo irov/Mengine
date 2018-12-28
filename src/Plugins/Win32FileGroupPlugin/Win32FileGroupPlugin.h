@@ -11,9 +11,10 @@ namespace Mengine
 
     public:
         Win32FileGroupPlugin();
+        ~Win32FileGroupPlugin() override;
 
     protected:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializePlugin() override;
+        void _finalizePlugin() override;
     };
 }

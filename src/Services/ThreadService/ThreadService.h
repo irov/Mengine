@@ -22,11 +22,9 @@ namespace Mengine
         ~ThreadService() override;
 
     public:
+        bool _availableService() const override;
         bool _initializeService() override;
         void _finalizeService() override;
-
-    public:
-        bool avaliable() const override;
 
     public:
         ThreadJobPtr createJob( uint32_t _sleep ) override;
@@ -96,7 +94,5 @@ namespace Mengine
         VectorThreadDescs m_threads;
 
         ptrdiff_t m_mainThreadId;
-
-        bool m_avaliable;
     };
 }

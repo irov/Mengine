@@ -30,16 +30,17 @@ namespace Mengine
     {
         //////////////////////////////////////////////////////////////////////////
         struct IniStore
-            : public tinyini::tinyini
         {
             FilePath path;
-
             MemoryStore memory;
+
+            tinyini::tinyini ini;
         };
         //////////////////////////////////////////////////////////////////////////
         bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path );
         bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream );
         //////////////////////////////////////////////////////////////////////////
+        bool hasIniSection( const IniStore & _ini, const Char * _section );
         bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key );
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, const Char ** _value );

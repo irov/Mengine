@@ -45,10 +45,10 @@ namespace Mengine
             _stream->read( memory, size );
             memory[size] = '\0';
 
-            if( _ini.load( memory ) == false )
+            if( _ini.ini.load( memory ) == false )
             {
                 LOGGER_ERROR( "ini invalid load '%s'"
-                    , _ini.getError()
+                    , _ini.ini.getError()
                 );
 
                 return false;
@@ -57,16 +57,21 @@ namespace Mengine
             return true;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool hasIniSection( const IniStore & _ini, const Char * _section )
+        {
+            return _ini.ini.hasSection( _section );
+        }
+        //////////////////////////////////////////////////////////////////////////
         bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key )
         {
-            bool successful = _ini.hasSettingValue( _section, _key );
+            bool successful = _ini.ini.hasSettingValue( _section, _key );
 
             return successful;
         }
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, const Char ** _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -80,7 +85,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, ConstString & _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -94,7 +99,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, FilePath & _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -129,7 +134,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Tags & _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -153,7 +158,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Resolution & _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -181,7 +186,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, Color & _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -217,7 +222,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, bool & _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -238,7 +243,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, int32_t & _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -258,7 +263,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint32_t & _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -278,7 +283,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, uint64_t & _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -298,7 +303,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, float & _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -318,7 +323,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, double & _value )
         {
-            const Char * ini_value = _ini.getSettingValue( _section, _key );
+            const Char * ini_value = _ini.ini.getSettingValue( _section, _key );
 
             if( ini_value == nullptr )
             {
@@ -338,11 +343,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorString & _values )
         {
-            uint32_t count = _ini.countSettingValues( _section, _key );
+            uint32_t count = _ini.ini.countSettingValues( _section, _key );
 
             for( uint32_t index = 0; index != count; ++index )
             {
-                const Char * value = _ini.getSettingValues( _section, _key, index );
+                const Char * value = _ini.ini.getSettingValues( _section, _key, index );
 
                 _values.emplace_back( String( value ) );
             }
@@ -352,11 +357,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorConstString & _values )
         {
-            uint32_t count = _ini.countSettingValues( _section, _key );
+            uint32_t count = _ini.ini.countSettingValues( _section, _key );
 
             for( uint32_t index = 0; index != count; ++index )
             {
-                const Char * value = _ini.getSettingValues( _section, _key, index );
+                const Char * value = _ini.ini.getSettingValues( _section, _key, index );
 
                 ConstString cs = Helper::stringizeString( value );
 
@@ -368,11 +373,11 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniValue( const IniStore & _ini, const Char * _section, const Char * _key, VectorAspectRatioViewports & _values )
         {
-            uint32_t count = _ini.countSettingValues( _section, _key );
+            uint32_t count = _ini.ini.countSettingValues( _section, _key );
 
             for( uint32_t index = 0; index != count; ++index )
             {
-                const Char * ini_value = _ini.getSettingValues( _section, _key, index );
+                const Char * ini_value = _ini.ini.getSettingValues( _section, _key, index );
 
                 AspectRatioViewports arv;
 
@@ -402,13 +407,13 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool getIniAllSettings( const IniStore & _ini, const Char * _section, MapParams & _values )
         {
-            uint32_t count = _ini.countSettings( _section );
+            uint32_t count = _ini.ini.countSettings( _section );
 
             for( uint32_t index = 0; index != count; ++index )
             {
                 const Char * key;
                 const Char * value;
-                _ini.getSettings( _section, index, &key, &value );
+                _ini.ini.getSettings( _section, index, &key, &value );
 
                 ConstString c_key = Helper::stringizeString( key );
 

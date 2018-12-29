@@ -64,6 +64,8 @@ namespace Mengine
             return false;
         }
 
+        //tinyini::tinyini & ini = store.ini;
+
         ConstString c_dir = STRINGIZE_STRING_LOCAL( "dir" );
 
         VectorString frameworkPacksSettings;
@@ -82,7 +84,7 @@ namespace Mengine
             pack.preload = true;
             pack.type = c_dir;
 
-            if( ini.hasSection( resourcePack.c_str() ) == false )
+            if( IniUtil::hasIniSection( ini, resourcePack.c_str() ) == false )
             {
                 LOGGER_CRITICAL( "PackageService::loadPackages %s invalid load resource pack no found section for '%s'"
                     , _resourceIni.c_str()
@@ -124,9 +126,9 @@ namespace Mengine
             pack.preload = true;
             pack.type = c_dir;
 
-            if( ini.hasSection( resourcePack.c_str() ) == false )
+            if( IniUtil::hasIniSection( ini, resourcePack.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "PackageService::loadPackages %s invalid load resource pack no found section for '%s'"
+                LOGGER_CRITICAL( "invalid load '%s' resource pack no found section for '%s'"
                     , _resourceIni.c_str()
                     , resourcePack.c_str()
                 );
@@ -166,9 +168,9 @@ namespace Mengine
             pack.preload = true;
             pack.type = c_dir;
 
-            if( ini.hasSection( languagePack.c_str() ) == false )
+            if( IniUtil::hasIniSection( ini, languagePack.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "PackageService::loadPackages %s invalid load language pack no found section for '%s'"
+                LOGGER_CRITICAL( "invalid load '%s' language pack no found section for '%s'"
                     , _resourceIni.c_str()
                     , languagePack.c_str()
                 );

@@ -225,8 +225,8 @@ namespace Mengine
             return false;
         }
 
-        std::unique_ptr<IniUtil::IniStore> ini( new IniUtil::IniStore() );
-        if( IniUtil::loadIni( *ini.get(), applicationInputStream ) == false )
+        IniUtil::IniStore ini;
+        if( IniUtil::loadIni( ini, applicationInputStream ) == false )
         {
             LOGGER_ERROR( "WinApplication::initializeConfigEngine_ Invalid load application settings %s"
                 , applicationPath.c_str()
@@ -235,9 +235,8 @@ namespace Mengine
             return false;
         }
 
-        const Char * gameIniPath = ini->getSettingValue( _section, _key );
-
-        if( gameIniPath == nullptr )
+        const Char * gameIniPath;
+        if( IniUtil::getIniValue( ini, _section, _key, &gameIniPath ) == false )
         {
             LOGGER_ERROR( "WinApplication::initializeConfigEngine_ Not found Game Path %s"
                 , applicationPath.c_str()

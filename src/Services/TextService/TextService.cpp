@@ -505,7 +505,7 @@ namespace Mengine
 
         for( const ConstString & fontName : fonts )
         {
-            if( ini.hasSection( fontName.c_str() ) == false )
+            if( IniUtil::hasIniSection( ini, fontName.c_str() ) == false )
             {
                 LOGGER_ERROR( "invalid '%s:%s' section for FONT '%s'"
                     , _fileGroup->getName().c_str()
@@ -588,7 +588,7 @@ namespace Mengine
 
                 if( font->isValid() == false )
                 {
-                    LOGGER_ERROR( "TextService::loadFonts invalid initialize '%s:%s' font '%s' invalidate!"
+                    LOGGER_ERROR( "invalid initialize '%s:%s' font '%s' invalidate!"
                         , _fileGroup->getName().c_str()
                         , _path.c_str()
                         , font->getName().c_str()
@@ -619,7 +619,7 @@ namespace Mengine
         IniUtil::IniStore ini;
         if( IniUtil::loadIni( ini, _fileGroup, _path ) == false )
         {
-            LOGGER_ERROR( "TextService::unloadFonts Invalid load settings '%s'"
+            LOGGER_ERROR( "invalid load settings '%s'"
                 , _path.c_str()
             );
 
@@ -631,9 +631,9 @@ namespace Mengine
 
         for( const ConstString & fontName : fonts )
         {
-            if( ini.hasSection( fontName.c_str() ) == false )
+            if( IniUtil::hasIniSection( ini, fontName.c_str() ) == false )
             {
-                LOGGER_ERROR( "TextService::unloadFonts invalid '%s:%s' section for FONT '%s'"
+                LOGGER_ERROR( "invalid '%s:%s' section for FONT '%s'"
                     , _fileGroup->getName().c_str()
                     , _path.c_str()
                     , fontName.c_str()

@@ -5,7 +5,9 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/FileGroupInterface.h"
+#include "Interface/MemoryInterface.h"
 
+#include "Kernel/MemoryStore.h"
 #include "Kernel/Params.h"
 #include "Kernel/String.h"
 #include "Kernel/ConstString.h"
@@ -32,11 +34,11 @@ namespace Mengine
         {
             FilePath path;
 
-            Char buff[MENGINE_INI_BUFFER_SIZE];
+            MemoryStore memory;
         };
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _category, const FilePath & _path );
-        bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input );
+        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path );
+        bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream );
         //////////////////////////////////////////////////////////////////////////
         bool hasIniValue( const IniStore & _ini, const Char * _section, const Char * _key );
         //////////////////////////////////////////////////////////////////////////

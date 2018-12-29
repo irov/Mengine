@@ -1,5 +1,10 @@
 @echo off
 
+if ["%~1"]==[""] (
+  @echo invalid arguments, please select configuration
+  goto end
+)
+
 set "CONFIGURATION=%1"
 
 @echo Starting build solution tools mingw %CONFIGURATION% configuration...
@@ -12,6 +17,7 @@ set "CONFIGURATION=%1"
 @call mingw32-make.exe
 @popd
 
+:end
 @echo Done
 
 @pause

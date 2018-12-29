@@ -6,6 +6,7 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
 
+#include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
 
 #include <stdio.h>
@@ -16,15 +17,15 @@ namespace Mengine
     namespace IniUtil
     {
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _category, const FilePath & _path )
+        bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
         {
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _category, _path, false );
+                ->openInputFile( _fileGroup, _path, false );
 
             if( stream == nullptr )
             {
-                LOGGER_ERROR( "loadIni invalid open ini file '%s:%s'"
-                    , _category->getName().c_str()
+                LOGGER_ERROR( "open ini file '%s:%s'"
+                    , _fileGroup->getName().c_str()
                     , _path.c_str()
                 );
 
@@ -36,26 +37,17 @@ namespace Mengine
             return loadIni( _ini, stream );
         }
         //////////////////////////////////////////////////////////////////////////
-        bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _input )
+        bool loadIni( IniStore & _ini, const InputStreamInterfacePtr & _stream )
         {
-            size_t size = _input->size();
+            size_t size = _stream->size();
 
-            if( size >= MENGINE_INI_BUFFER_SIZE )
+            char * memory = _ini.memory.allocate( size + 1, "loadInit" );
+            _stream->read( memory, size );
+            memory[size] = '\0';
+
+            if( _ini.load( memory ) == false )
             {
-                LOGGER_ERROR( "IniUtil::loadIni ini size %u max %u"
-                    , size
-                    , MENGINE_INI_BUFFER_SIZE
-                );
-
-                return false;
-            }
-
-            _input->read( _ini.buff, size );
-            _ini.buff[size] = '\0';
-
-            if( _ini.load( _ini.buff ) == false )
-            {
-                LOGGER_ERROR( "IniUtil::loadIni ini invalid load '%s'"
+                LOGGER_ERROR( "ini invalid load '%s'"
                     , _ini.getError()
                 );
 
@@ -172,7 +164,7 @@ namespace Mengine
             uint32_t height;
             if( sscanf( ini_value, "%u %u", &width, &height ) != 2 )
             {
-                LOGGER_ERROR( "getIniValue section %s key %s value %s invalid parse resolution"
+                LOGGER_ERROR( "section '%s' key '%s' value '%s' invalid parse resolution"
                     , _section
                     , _key
                     , ini_value
@@ -202,7 +194,7 @@ namespace Mengine
             float a;
             if( sscanf( ini_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
             {
-                LOGGER_ERROR( "getIniValue section %s key %s value %s invalid parse ColourValue"
+                LOGGER_ERROR( "section '%s' key '%s' value '%s' invalid parse ColourValue"
                     , _section
                     , _key
                     , ini_value
@@ -393,7 +385,7 @@ namespace Mengine
                     , &arv.viewport.end.y
                 ) != 6 )
                 {
-                    LOGGER_ERROR( "getIniValue section %s key %s value %s invalid parse aspect ration"
+                    LOGGER_ERROR( "section '%s' key '%s' value '%s' invalid parse aspect ration"
                         , _section
                         , _key
                         , ini_value

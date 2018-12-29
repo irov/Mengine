@@ -349,6 +349,8 @@ Core
     PixelFormat.cpp
     
     MemoryAllocator.h
+	MemoryStore.h
+	MemoryStore.cpp
     
     MemoryHelper.h
     MemoryHelper.cpp

@@ -30,7 +30,7 @@ namespace Mengine
     namespace Detail
     {
         template<class T>
-        void makeVariableData( DX9RenderProgramVariable::Variable & _variable, Vector<T> & _container, uint32_t _type, T * _values, uint32_t _count )
+        void makeVariableData( ProgramVariableDesc & _variable, Vector<T> & _container, uint32_t _type, T * _values, uint32_t _count )
         {
             _variable.type = _type;
             _variable.offset = _container.size();
@@ -44,7 +44,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _uniform );
 
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataFloats, 0, _values, _count );
 
         m_vertexVariables[_index] = v;
@@ -54,7 +54,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _uniform );
 
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataIntegers, 1, _values, _count );
 
         m_vertexVariables[_index] = v;
@@ -64,7 +64,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _uniform );
 
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataBooleans, 2, _values, _count );
 
         m_vertexVariables[_index] = v;
@@ -74,7 +74,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _uniform );
 
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataFloats, 0, _values, _count );
 
         m_pixelVariables[_index] = v;
@@ -84,7 +84,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _uniform );
 
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataIntegers, 1, _values, _count );
 
         m_pixelVariables[_index] = v;
@@ -94,7 +94,7 @@ namespace Mengine
     {
         MENGINE_UNUSED( _uniform );
 
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataBooleans, 2, _values, _count );
 
         m_pixelVariables[_index] = v;
@@ -102,7 +102,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderProgramVariable::updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _count )
     {
-        Variable & v = m_pixelVariables[_index];
+        ProgramVariableDesc & v = m_pixelVariables[_index];
 
         float * values = &m_dataFloats[v.offset];
         std::copy( _values, _values + _count, values );
@@ -110,7 +110,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count )
     {
-        Variable & v = m_pixelVariables[_index];
+        ProgramVariableDesc & v = m_pixelVariables[_index];
 
         int32_t * values = &m_dataIntegers[v.offset];
         std::copy( _values, _values + _count, values );
@@ -118,7 +118,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void DX9RenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count )
     {
-        Variable & v = m_pixelVariables[_index];
+        ProgramVariableDesc & v = m_pixelVariables[_index];
 
         int32_t * values = &m_dataBooleans[v.offset];
         std::copy( _values, _values + _count, values );
@@ -129,7 +129,7 @@ namespace Mengine
         (void)_program;
 
         uint32_t vertexEnumerator = 0;
-        for( const Variable & v : m_vertexVariables )
+        for( const ProgramVariableDesc & v : m_vertexVariables )
         {
             switch( v.type )
             {
@@ -158,7 +158,7 @@ namespace Mengine
         }
 
         uint32_t pixelEnumerator = 0;
-        for( const Variable & v : m_pixelVariables )
+        for( const ProgramVariableDesc & v : m_pixelVariables )
         {
             switch( v.type )
             {

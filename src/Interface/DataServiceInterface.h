@@ -19,13 +19,13 @@ namespace Mengine
         SERVICE_DECLARE( "DataService" )
 
     public:
-        virtual DataInterfacePtr dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream ) = 0;
+        virtual DataInterfacePtr dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const Char * _doc ) = 0;
 
     public:
         template<class T>
-        T dataflowT( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream )
+        T dataflowT( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const Char * _doc )
         {
-            DataInterfacePtr data = this->dataflow( _dataflow, _stream );
+            DataInterfacePtr data = this->dataflow( _dataflow, _stream, _doc );
 
 #ifndef NDEBUG
             if( data == nullptr )

@@ -93,7 +93,7 @@ namespace Mengine
     bool MovieKeyConverterXMLToAEK::validateVersion( const InputStreamInterfacePtr & _stream ) const
     {
         MovieFramePackInterfacePtr framePack = DATA_SERVICE()
-            ->dataflowT<MovieFramePackInterfacePtr>( m_dataflow, _stream );
+            ->dataflowT<MovieFramePackInterfacePtr>( m_dataflow, _stream, "MovieKeyConverterXMLToAEK" );
 
         if( framePack == nullptr )
         {

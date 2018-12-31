@@ -33,7 +33,7 @@ namespace Mengine
         DataInterfacePtr create() override;
 
     public:
-        bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) override;
+        bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc ) override;
 
     protected:
         pybind::kernel_interface * m_kernel;

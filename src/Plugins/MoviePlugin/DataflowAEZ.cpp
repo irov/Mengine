@@ -236,8 +236,10 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowAEZ::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
+    bool DataflowAEZ::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         Movie2Data * data = stdex::intrusive_get<Movie2Data *>( _data );
 
         MemoryInterfacePtr memory = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEZ ), GET_MAGIC_VERSION( MAGIC_AEZ ), "DataflowAEZ::load", __FILE__, __LINE__ );

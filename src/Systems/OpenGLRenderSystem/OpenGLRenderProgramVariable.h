@@ -6,10 +6,16 @@
 
 #include "Config/Vector.h"
 
-#include <d3d9.h>
-
 namespace Mengine
 {
+    struct ProgramVariableDesc
+    {
+        Char uniform[32];
+        uint32_t type;
+        uint32_t offset;
+        uint32_t count;
+    };
+
     class OpenGLRenderProgramVariable
         : public RenderProgramVariableInterface
         , public Factorable
@@ -53,15 +59,7 @@ namespace Mengine
         VectorDataIntegers m_pixelIntegers;
         VectorDataBooleans m_pixelBooleans;
 
-        struct Variable
-        {
-            Char uniform[32];
-            uint32_t type;
-            uint32_t offset;
-            uint32_t count;
-        };
-
-        typedef Vector<Variable> VectorVariables;
+        typedef Vector<ProgramVariableDesc> VectorVariables;
         VectorVariables m_vertexVariables;
         VectorVariables m_pixelVariables;
     };

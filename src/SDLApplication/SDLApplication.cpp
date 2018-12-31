@@ -249,7 +249,7 @@ namespace Mengine
         if( FILE_SERVICE()
             ->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), c_dir, nullptr ) == false )
         {
-            LOGGER_ERROR( "SDLApplication::setupFileService: failed to mount application directory"
+            LOGGER_ERROR( "failed to mount application directory"
             );
 
             return false;
@@ -264,7 +264,7 @@ namespace Mengine
         if( FILE_SERVICE()
             ->mountFileGroup( c_dev, defaultFileGroup, FilePath( ConstString::none() ), c_dir, nullptr ) == false )
         {
-            LOGGER_ERROR( "SDLApplication::setupFileService: failed to mount dev directory"
+            LOGGER_ERROR( "failed to mount dev directory"
             );
 
             return false;
@@ -284,18 +284,17 @@ namespace Mengine
         IniUtil::IniStore ini;
         if( IniUtil::loadIni( ini, defaultFileGroup, applicationPath ) == false )
         {
-            LOGGER_ERROR( "SDLApplication::getApplicationPath_ Invalid load application settings %s"
+            LOGGER_ERROR( "Invalid load application settings %s"
                 , applicationPath.c_str()
             );
 
             return false;
         }
 
-        const Char * gameIniPath = ini.getSettingValue( _section, _key );
-
-        if( gameIniPath == nullptr )
+        const Char * gameIniPath;
+        if( IniUtil::getIniValue( ini, _section, _key, &gameIniPath ) == false )
         {
-            LOGGER_ERROR( "SDLApplication::getApplicationPath_ Not found Game Path %s"
+            LOGGER_ERROR( "Not found Game Path %s"
                 , applicationPath.c_str()
             );
 
@@ -324,7 +323,7 @@ namespace Mengine
         if( CONFIG_SERVICE()
             ->loadConfig( defaultFileGroup, gameIniPath ) == false )
         {
-            LOGGER_ERROR( "SDLApplication::initializeConfigEngine_ invalid load config %s"
+            LOGGER_ERROR( "invalid load config %s"
                 , gameIniPath.c_str()
             );
 
@@ -346,7 +345,7 @@ namespace Mengine
         if( FILE_SERVICE()
             ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, cs_userPath, STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
         {
-            LOGGER_ERROR( "SDLApplication: failed to mount user directory '%s'"
+            LOGGER_ERROR( "failed to mount user directory '%s'"
                 , cs_userPath.c_str()
             );
 
@@ -514,7 +513,7 @@ namespace Mengine
 
         if( SERVICE_CREATE( SoundService ) == false )
         {
-            LOGGER_ERROR( "SDLApplication::initializeSoundEngine_ Failed to create Sound Engine"
+            LOGGER_ERROR( "Failed to create Sound Engine"
             );
 
             return false;

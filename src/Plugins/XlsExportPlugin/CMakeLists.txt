@@ -44,16 +44,18 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     Crypt32.lib
     )
     
-if((MENGINE_TARGET_MSVC OR MENGINE_TARGET_SDL) AND MENGINE_PLATFORM_WIN32)
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
-            ${THIRDPARTY_DIR}/openssl/lib/libcryptoMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
-            ${THIRDPARTY_DIR}/openssl/lib/libsslMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
-        )
-endif()
+if(MENGINE_PLATFORM_WIN32)
+    if(MENGINE_ARCHITECTURE_X86)
+        TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
+                ${THIRDPARTY_DIR}/openssl/lib/libcryptoMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+                ${THIRDPARTY_DIR}/openssl/lib/libsslMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+            )
+    endif()
 
-if((MENGINE_TARGET_MSVC OR MENGINE_TARGET_SDL) AND MENGINE_PLATFORM_WIN64)
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
-            ${THIRDPARTY_DIR}/openssl/lib64/libcryptoMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
-            ${THIRDPARTY_DIR}/openssl/lib64/libsslMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
-        )
+    if(MENGINE_ARCHITECTURE_X64)
+        TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
+                ${THIRDPARTY_DIR}/openssl/lib64/libcryptoMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+                ${THIRDPARTY_DIR}/openssl/lib64/libsslMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+            )
+    endif()
 endif()

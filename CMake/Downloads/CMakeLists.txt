@@ -1,9 +1,8 @@
-CMAKE_MINIMUM_REQUIRED( VERSION 3.0 )
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
 PROJECT(Downloads)
 
 SET(MENGINE_REPOSITORY ${CMAKE_CURRENT_SOURCE_DIR}/../..)
-SET(CMAKE_DEPENDENCIES_DIR ${MENGINE_REPOSITORY}/CMake/Dependencies)
 SET(THIRDPARTY_DIR ${MENGINE_REPOSITORY}/dependencies)
 
 include(download_template.cmake)
@@ -34,7 +33,7 @@ GIT_CLONE(libfe https://github.com/irov/font-effects-lib.git)
 GIT_CLONE(libmath https://github.com/irov/libmath.git)
 GIT_CLONE(jansson https://github.com/akheron/jansson.git)
 GIT_CLONE(freetype git://git.sv.nongnu.org/freetype/freetype2.git "VER-2-9-1")
-GIT_CLONE(libpng https://github.com/glennrp/libpng.git "v1.6.35")
+GIT_CLONE(libpng https://github.com/glennrp/libpng.git "v1.6.36")
 GIT_CLONE(libjpeg https://github.com/winlibs/libjpeg.git "libjpeg-9c")
 GIT_CLONE(libtheora https://github.com/xiph/theora.git "v1.1.1")
 GIT_CLONE(openal-soft https://github.com/kcat/openal-soft.git "openal-soft-1.19.1")

@@ -1,10 +1,8 @@
 #pragma once
 
-#include "Interface/ThreadInterface.h"
-
 #include "UnityAdsEventHandler.h"
 
-#include "Android/AndroidEventation.h"
+#include "Environment/Android/AndroidEventation.h"
 
 #include "Kernel/ModuleBase.h"
 

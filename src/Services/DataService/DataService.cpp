@@ -32,7 +32,7 @@ namespace Mengine
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "Dataflow" ) );
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr DataService::dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream )
+    DataInterfacePtr DataService::dataflow( const DataflowInterfacePtr & _dataflow, const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
         DataInterfacePtr data = _dataflow->create();
 
@@ -44,7 +44,7 @@ namespace Mengine
             return nullptr;
         }
 
-        if( _dataflow->load( data, _stream ) == false )
+        if( _dataflow->load( data, _stream, _doc ) == false )
         {
             LOGGER_ERROR( "invalid load data"
             );

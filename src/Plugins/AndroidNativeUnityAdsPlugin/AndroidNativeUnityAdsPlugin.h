@@ -1,7 +1,5 @@
 #pragma once
 
-#include "Interface/ThreadInterface.h"
-
 #include "Kernel/PluginBase.h"
 
 namespace Mengine 
@@ -16,10 +14,7 @@ namespace Mengine
         ~AndroidNativeUnityAdsPlugin() override;
 
     protected:
-        bool _avaliable() override;
-
-    protected:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializePlugin() override;
+        void _finalizePlugin() override;
     };
 }

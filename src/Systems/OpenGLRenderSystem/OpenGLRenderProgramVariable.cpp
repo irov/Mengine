@@ -31,7 +31,7 @@ namespace Mengine
     namespace Detail
     {
         template<class T>
-        void makeVariableData( OpenGLRenderProgramVariable::Variable & _variable, Vector<T> & _container, const Char * _uniform, uint32_t _type, T * _values, uint32_t _count )
+        void makeVariableData( ProgramVariableDesc & _variable, Vector<T> & _container, const Char * _uniform, uint32_t _type, T * _values, uint32_t _count )
         {
             strcpy( _variable.uniform, _uniform );
             _variable.type = _type;
@@ -44,7 +44,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgramVariable::setVertexVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _count )
     {
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataFloats, _uniform, 0, _values, _count );
 
         m_vertexVariables[_index] = v;
@@ -52,7 +52,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgramVariable::setVertexVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count )
     {
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataIntegers, _uniform, 1, _values, _count );
 
         m_vertexVariables[_index] = v;
@@ -60,7 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgramVariable::setVertexVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count )
     {
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataBooleans, _uniform, 2, _values, _count );
 
         m_vertexVariables[_index] = v;
@@ -68,7 +68,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgramVariable::setPixelVariableFloats( const Char * _uniform, uint32_t _index, float * _values, uint32_t _count )
     {
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataFloats, _uniform, 0, _values, _count );
 
         m_pixelVariables[_index] = v;
@@ -76,7 +76,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgramVariable::setPixelVariableIntegers( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count )
     {
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataIntegers, _uniform, 1, _values, _count );
 
         m_pixelVariables[_index] = v;
@@ -84,7 +84,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderProgramVariable::setPixelVariableBooleans( const Char * _uniform, uint32_t _index, int32_t * _values, uint32_t _count )
     {
-        Variable v;
+        ProgramVariableDesc v;
         Detail::makeVariableData( v, m_dataBooleans, _uniform, 2, _values, _count );
 
         m_pixelVariables[_index] = v;
@@ -92,7 +92,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderProgramVariable::updatePixelVariableFloats( uint32_t _index, float * _values, uint32_t _count )
 	{
-        Variable & v = m_pixelVariables[_index];
+        ProgramVariableDesc & v = m_pixelVariables[_index];
 
         float * values = &m_dataFloats[v.offset];
         std::copy( _values, _values + _count, values );
@@ -100,7 +100,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderProgramVariable::updatePixelVariableIntegers( uint32_t _index, int32_t * _values, uint32_t _count )
 	{
-        Variable & v = m_pixelVariables[_index];
+        ProgramVariableDesc & v = m_pixelVariables[_index];
 
         int32_t * values = &m_dataIntegers[v.offset];
         std::copy( _values, _values + _count, values );
@@ -108,7 +108,7 @@ namespace Mengine
 	//////////////////////////////////////////////////////////////////////////
 	void OpenGLRenderProgramVariable::updatePixelVariableBooleans( uint32_t _index, int32_t * _values, uint32_t _count )
 	{
-        Variable & v = m_pixelVariables[_index];
+        ProgramVariableDesc & v = m_pixelVariables[_index];
 
         int32_t * values = &m_dataBooleans[v.offset];
         std::copy( _values, _values + _count, values );

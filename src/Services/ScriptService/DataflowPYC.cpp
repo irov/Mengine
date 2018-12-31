@@ -76,8 +76,10 @@ namespace Mengine
         return x;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowPYC::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
+    bool DataflowPYC::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         ScriptCodeData * data = stdex::intrusive_get<ScriptCodeData *>( _data );
 
         MemoryInterfacePtr source_memory = Helper::loadStreamCacheArchiveMemory( _stream, m_archivator, "DataflowPYC", __FILE__, __LINE__ );

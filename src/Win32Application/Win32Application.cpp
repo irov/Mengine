@@ -1012,6 +1012,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::PackageServiceInterface );
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
         SERVICE_FINALIZE( Mengine::GraveyardInterface );
+        SERVICE_FINALIZE( Mengine::ChronometerServiceInterface );
         SERVICE_FINALIZE( Mengine::UpdateServiceInterface );
         SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
         SERVICE_FINALIZE( Mengine::TextServiceInterface );

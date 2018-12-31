@@ -1,4 +1,4 @@
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
                                              
 project( theora )
 
@@ -35,8 +35,8 @@ set( sources
 	
 set( sources_ext )	
 	
-if(WIN32 AND NOT MENGINE_PLATFORM_WIN64)
-	if(MSVC)
+if(WIN32 AND MENGINE_ARCHITECTURE_X86)
+	if(MENGINE_TOOLCHAIN_MSVC)
 		add_definitions(-DOC_X86_ASM)
 		
 		set( sources_ext

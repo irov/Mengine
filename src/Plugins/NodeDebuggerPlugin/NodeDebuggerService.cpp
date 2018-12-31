@@ -74,6 +74,9 @@ namespace Mengine
     {
         switch( m_serverState )
         {
+        case NodeDebuggerServerState::Invalid:
+            {
+            }break;
         case NodeDebuggerServerState::WaitingForClient:
             {
                 const int32_t check = m_socket->checkForClientConnection();
@@ -93,7 +96,6 @@ namespace Mengine
                     sendScene( m_scene );
                 }
             } break;
-
         case NodeDebuggerServerState::Connected:
             {
                 // check if need to send data

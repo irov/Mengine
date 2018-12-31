@@ -15,6 +15,7 @@ endif()
 
 INCLUDE_DIRECTORIES( 
 		${THIRDPARTY_DIR}/pybind/include
+        ${THIRDPARTY_DIR}/libmath/include
 )
 
 ADD_MENGINE_LIBRARY()
@@ -38,7 +39,7 @@ SET( APPLICATION_LIBS
     ${APPLICATION_LIBS}
 	Kernel
 	Engine
-	AndroidUtils	
+	Android	
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}pybind${MENGINE_LIB_SUFFIX}
     )
 

@@ -1,11 +1,11 @@
 #include "AndroidNativeDevToDevModule.h"
 
-#include "Interface/ThreadSystemInterface.h"
+#include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Callback.h"
 #include "Kernel/FactorableUnique.h"
 
-#include "Android/AndroidUtils.h"
+#include "Environment/Android/AndroidUtils.h"
 
 #include "pybind/pybind.hpp"
 

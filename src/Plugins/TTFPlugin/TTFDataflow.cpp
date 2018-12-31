@@ -70,8 +70,10 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool TTFDataflow::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
+    bool TTFDataflow::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         TTFData * data = stdex::intrusive_get<TTFData *>( _data );
 
         MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, "TTFDataflow::load", __FILE__, __LINE__ );

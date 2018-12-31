@@ -59,13 +59,14 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
+    bool DataflowAEK::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
         MemoryInterfacePtr binaryBuffer = Helper::loadStreamArchiveData( _stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), "DataflowAEK", __FILE__, __LINE__ );
 
         if( binaryBuffer == nullptr )
         {
-            LOGGER_ERROR( "DataflowAEK::load: invalid get data"
+            LOGGER_ERROR( "invalid get data (doc: %s)"
+                , _doc
             );
 
             return false;
@@ -78,7 +79,8 @@ namespace Mengine
 
         if( this->loadBuffer_( pack, binaryBuffer_memory, binaryBuffer_size ) == false )
         {
-            LOGGER_ERROR( "DataflowAEK::load: invalid load buffer"
+            LOGGER_ERROR( "invalid load buffer (doc: %s)"
+                , _doc
             );
 
             return false;
@@ -101,7 +103,7 @@ namespace Mengine
 
             if( true_metacode_version != metacode_version )
             {
-                LOGGER_ERROR( "DataflowAEK::loadBuffer_: invalid metacode version %d (need %d)"
+                LOGGER_ERROR( "invalid metacode version %d (need %d)"
                     , metacode_version
                     , true_metacode_version
                 );
@@ -114,7 +116,7 @@ namespace Mengine
 
             if( format_version != MOVIE_KEY_FRAME_FORMAT_VERSION )
             {
-                LOGGER_ERROR( "DataflowAEK::loadBuffer_: invalid format version %d (need %d)"
+                LOGGER_ERROR( "invalid format version %d (need %d)"
                     , format_version
                     , MOVIE_KEY_FRAME_FORMAT_VERSION
                 );

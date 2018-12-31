@@ -1,5 +1,4 @@
-
-CMAKE_MINIMUM_REQUIRED( VERSION 2.6 )
+CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
                                              
 project( GLee )
 

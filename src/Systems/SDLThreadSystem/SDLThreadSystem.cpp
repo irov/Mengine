@@ -39,18 +39,14 @@ namespace Mengine
         m_factoryThreadMutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadSystem::avaliable() const
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    ThreadIdentityInterfacePtr SDLThreadSystem::createThread( int32_t _priority, const Char * _file, uint32_t _line )
+    ThreadIdentityInterfacePtr SDLThreadSystem::createThread( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
     {
         SDLThreadIdentityPtr identity = m_factoryThreadIdentity->createObject();
 
         if( identity == nullptr )
         {
-            LOGGER_ERROR("invalid initialize (doc: '%s:%u')"
+            LOGGER_ERROR("invalid initialize (doc: %s) (file: '%s:%u')"
+                , _doc
                 , _file
 				, _line
                 );
@@ -60,9 +56,10 @@ namespace Mengine
 
 		ThreadMutexInterfacePtr mutex = this->createMutex( _file, _line );
 
-        if( identity->initialize( mutex, _priority, _file, _line ) == false )
+        if( identity->initialize( mutex, _priority, _doc, _file, _line ) == false )
         {
-            LOGGER_ERROR("SDLThreadSystem::createThread invalid initialize (doc: '%s:%u')"
+            LOGGER_ERROR("invalid initialize (doc: %s) (file: '%s:%u')"
+                , _doc
                 , _file
 				, _line
                 );

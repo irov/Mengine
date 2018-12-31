@@ -12,14 +12,14 @@ CriticalErrorsMonitor
 	CriticalErrorsMonitor.cpp
 )
 
-if(MSVC)
+if(MENGINE_TOOLCHAIN_MSVC)
 ADD_FILTER(
 main	
     win32_main.cpp
 )
 endif()
 
-if(MINGW)
+if(MENGINE_TOOLCHAIN_MINGW)
 ADD_FILTER(
 main	
     mingw32_main.cpp
@@ -35,14 +35,16 @@ Win32Application
 
 add_definitions(-DUNICODE)
 
-if(MINGW)
+if(MENGINE_TOOLCHAIN_MINGW)
     # resource compilation for mingw
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o
                        COMMAND windres.exe -I${CMAKE_CURRENT_SOURCE_DIR}
                                            -i${CMAKE_CURRENT_SOURCE_DIR}/Win32Application.rc
                                            -o ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)
     SET(SRC_FILES ${SRC_FILES} ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o)
-else()
+endif()
+
+if(MENGINE_TOOLCHAIN_MSVC)
     SET(SRC_FILES ${SRC_FILES} Win32Application.rc)
 endif()
 

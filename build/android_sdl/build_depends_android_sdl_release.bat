@@ -17,7 +17,7 @@ set BUILD_TEMP_DIR="%CD%\..\..\build_temp\build_android_sdl"
 @pushd %BUILD_TEMP_DIR%\%BUILD_TYPE%
 
 %CMAKE_EXE% -G "Android Gradle - Ninja" ^
-    -DANDROID_PLATFORM=android-15 ^
+    -DANDROID_PLATFORM=android-16 ^
     -DANDROID_ARM_NEON=TRUE ^
     -DANDROID_ABI=armeabi-v7a ^
     -DANDROID_STL=c++_shared ^
@@ -27,8 +27,6 @@ set BUILD_TEMP_DIR="%CD%\..\..\build_temp\build_android_sdl"
     -DCMAKE_MAKE_PROGRAM=%MAKE_PROGRAM% ^
     -DCMAKE_TOOLCHAIN_FILE=%TOOLCHAIN_FILE% ^
     -DCMAKE_SYSROOT_COMPILE=%ANDROID_SYSROOT% ^
-    -DCMAKE_C_FLAGS="-std=c11" ^
-    -DCMAKE_CXX_FLAGS="-std=c++14 -frtti -fexceptions" ^
     %CMAKE_PATH%
     
 %CMAKE_EXE% --build .\ --config %BUILD_TYPE%

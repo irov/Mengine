@@ -24,7 +24,7 @@ namespace Mengine
 	{
 	}
     //////////////////////////////////////////////////////////////////////////
-    bool SDLFileGroupPlugin::_initialize()
+    bool SDLFileGroupPlugin::_initializePlugin()
     {
         FILE_SERVICE()
             ->registerFileGroupFactory( STRINGIZE_STRING_LOCAL( "global" )
@@ -45,7 +45,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SDLFileGroupPlugin::_finalize()
+    void SDLFileGroupPlugin::_finalizePlugin()
     {
         FILE_SERVICE()
             ->unregisterFileGroupFactory( STRINGIZE_STRING_LOCAL( "global" ) );

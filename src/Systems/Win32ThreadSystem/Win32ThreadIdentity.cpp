@@ -7,6 +7,8 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+#if defined(_MSC_VER)
+    //////////////////////////////////////////////////////////////////////////
     namespace Detail
     {
         const DWORD MS_VC_EXCEPTION = 0x406D1388;
@@ -35,6 +37,8 @@ namespace Mengine
 #pragma warning(pop)  
         }
     }
+    //////////////////////////////////////////////////////////////////////////
+#endif
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadIdentity::Win32ThreadIdentity()
         : m_handle( INVALID_HANDLE_VALUE )
@@ -106,7 +110,9 @@ namespace Mengine
 
         DWORD threadId = ::GetThreadId( m_handle );
 
+#if defined(_MSC_VER)
         Detail::SetThreadName( threadId, _doc );
+#endif
 
         switch( _priority )
         {

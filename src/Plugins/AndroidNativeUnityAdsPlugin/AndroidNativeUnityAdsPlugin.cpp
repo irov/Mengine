@@ -1,6 +1,6 @@
 #include "AndroidNativeUnityAdsPlugin.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "AndroidNativeUnityAdsModule.h"
 
@@ -20,12 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeUnityAdsPlugin::_avaliable()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeUnityAdsPlugin::_initialize()
+    bool AndroidNativeUnityAdsPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidUnityAds" )
             , new ModuleFactory<AndroidNativeUnityAdsModule>() );
@@ -33,7 +28,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativeUnityAdsPlugin::_finalize()
+    void AndroidNativeUnityAdsPlugin::_finalizePlugin()
     {
     }    
 }

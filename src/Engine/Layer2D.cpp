@@ -200,7 +200,7 @@ namespace Mengine
             }
 
         protected:
-            void _render( const RenderContext * _context )
+            void _render( const RenderContext * _context ) override
             {
                 const RenderVertex2D * verticesImageMask = m_layer->getVerticesImageMaskWM();
                 const RenderMaterialInterfacePtr & materialImageMask = m_layer->getMaterialImageMask();

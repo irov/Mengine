@@ -524,17 +524,17 @@ namespace Mengine
                 m_cb.call_args( 0, m_args );
             }
 
-            void onMusicResume()
+            void onMusicResume() override
             {
                 m_cb.call_args( 1, m_args );
             }
 
-            void onMusicStop()
+            void onMusicStop() override
             {
                 m_cb.call_args( 2, m_args );
             }
 
-            void onMusicEnd()
+            void onMusicEnd() override
             {
                 m_cb.call_args( 3, m_args );
             }

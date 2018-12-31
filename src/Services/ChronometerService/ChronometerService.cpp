@@ -89,7 +89,7 @@ namespace Mengine
                 desc.lambda( desc.id, currentTime );
             }
 
-            m_chronometers.clear();
+            m_chronometersProcess.clear();
 
             m_oldTime = currentTime - currentTime % 1000;
         }

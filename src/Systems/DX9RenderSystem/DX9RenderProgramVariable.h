@@ -10,6 +10,13 @@
 
 namespace Mengine
 {
+    struct ProgramVariableDesc
+    {
+        uint32_t type;
+        uint32_t offset;
+        uint32_t count;
+    };
+
     class DX9RenderProgramVariable
         : public RenderProgramVariableInterface
         , public Factorable
@@ -53,14 +60,7 @@ namespace Mengine
         VectorDataIntegers m_pixelIntegers;
         VectorDataBooleans m_pixelBooleans;
 
-        struct Variable
-        {
-            uint32_t type;
-            uint32_t offset;
-            uint32_t count;
-        };
-
-        typedef Vector<Variable> VectorVariables;
+        typedef Vector<ProgramVariableDesc> VectorVariables;
         VectorVariables m_vertexVariables;
         VectorVariables m_pixelVariables;
     };

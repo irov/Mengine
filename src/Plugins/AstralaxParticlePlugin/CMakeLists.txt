@@ -57,29 +57,31 @@ set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER Plugins
 )
 
-if(MENGINE_PLATFORM_WIN32)
-    if(MENGINE_TARGET_MINGW)
-        #TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)		
-        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)
-		#TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/x64/magic3d.lib)
-    else()
-		TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/magic3d.lib)		
-    endif()
-endif()
-    
-if(MENGINE_PLATFORM_WIN64)
-    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/magic3d_x64.lib)
+if(MENGINE_TOOLCHAIN_MINGW)
+    #TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)		
+    TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/libmagic3d.a)
+    #TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/x64/magic3d.lib)
 endif()
 
-if(MENGINE_PLATFORM_MAC)
+if(MENGINE_TOOLCHAIN_MSVC)
+    if(MENGINE_ARCHITECTURE_X86)
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/magic3d.lib)		
+    endif()
+    
+    if(MENGINE_ARCHITECTURE_X64)
+        TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/magic3d_x64.lib)
+    endif()
+endif()
+
+if(MENGINE_TOOLCHAIN_XCODE_MAC)
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax/magic3d.dylib)
 endif()
 
-if(MENGINE_PLATFORM_IOS)
+if(MENGINE_TOOLCHAIN_XCODE_IOS)
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax-ios/bitcode/libimagic3d.a)
 endif()
 
-if(MENGINE_PLATFORM_ANDROID)
+if(MENGINE_TOOLCHAIN_GRADLE)
     TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${THIRDPARTY_DIR}/astralax-ios/bitcode/libimagic3d.a)
 endif()
 

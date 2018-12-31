@@ -42,7 +42,7 @@ namespace Mengine
 
         if( m_stream == nullptr )
         {
-            LOGGER_ERROR( "ThreadTaskPrefetchDataflow::_onRun can't create input file '%s'"
+            LOGGER_ERROR( "can't create input file '%s'"
                 , this->getFileGroup()->getName().c_str()
             );
 
@@ -53,7 +53,7 @@ namespace Mengine
 
         if( m_data == nullptr )
         {
-            LOGGER_ERROR( "ThreadTaskPrefetchDataflow::_onRun: '%s':'%s' dataflow invalid create data"
+            LOGGER_ERROR( "dataflow '%s':'%s' invalid create data"
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
             );
@@ -68,7 +68,7 @@ namespace Mengine
     {
         if( m_fileGroup->openInputFile( m_filePath, m_stream, 0, 0, false ) == false )
         {
-            LOGGER_ERROR( "ThreadTaskPrefetcherTextureDecoder::_onRun: invalide open file '%s':'%s'"
+            LOGGER_ERROR( "invalide open file '%s':'%s'"
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
             );
@@ -76,9 +76,9 @@ namespace Mengine
             return false;
         }
 
-        if( m_dataflow->load( m_data, m_stream ) == false )
+        if( m_dataflow->load( m_data, m_stream, m_filePath.c_str() ) == false )
         {
-            LOGGER_ERROR( "ThreadTaskPrefetcherTextureDecoder::_onRun: invalide load file '%s':'%s'"
+            LOGGER_ERROR( "invalide load file '%s':'%s'"
                 , this->getFileGroup()->getName().c_str()
                 , this->getFilePath().c_str()
             );

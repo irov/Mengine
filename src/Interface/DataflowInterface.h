@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Config/Typedef.h"
+#include "Config/Char.h"
 
 #include "Interface/DataInterface.h"
 #include "Interface/InputStreamInterface.h"
@@ -21,7 +22,7 @@ namespace Mengine
         virtual DataInterfacePtr create() = 0;
 
     public:
-        virtual bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) = 0;
+        virtual bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<DataflowInterface> DataflowInterfacePtr;

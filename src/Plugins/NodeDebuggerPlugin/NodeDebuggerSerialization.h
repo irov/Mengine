@@ -58,11 +58,7 @@ namespace Mengine
 
 
         template <typename T>
-        T getXmlValue( const pugi::xml_attribute & _attrib )
-        {
-            // nothing, specialize!
-            MENGINE_ASSERTION( false, "Specialize getXmlValue!!!" );
-        }
+        T getXmlValue( const pugi::xml_attribute & _attrib );
 
         template <>
         inline bool getXmlValue<bool>( const pugi::xml_attribute & _attrib )

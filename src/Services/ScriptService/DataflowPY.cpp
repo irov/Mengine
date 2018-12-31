@@ -54,7 +54,7 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowPY::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
+    bool DataflowPY::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
         ScriptCodeData * data = stdex::intrusive_get<ScriptCodeData *>( _data );
 
@@ -73,7 +73,7 @@ namespace Mengine
 
         pybind::mutex_scope scope( m_kernel );
 
-        PyObject * py_code = m_kernel->code_compile_file( source_buffer, "DataflowPY" );
+        PyObject * py_code = m_kernel->code_compile_file( source_buffer, _doc );
 
         if( py_code == nullptr )
         {

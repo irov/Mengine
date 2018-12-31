@@ -27,7 +27,7 @@ namespace Mengine
 
     public:
         DataInterfacePtr create() override;
-        bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream ) override;
+        bool load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc ) override;
 
     protected:
         bool loadBuffer_( MovieFramePack * _pack, const void * _buffer, size_t _size );

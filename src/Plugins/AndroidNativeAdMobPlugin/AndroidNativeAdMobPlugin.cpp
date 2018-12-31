@@ -2,7 +2,7 @@
 
 #include "AndroidNativeAdMobModule.h"
 
-#include "Interface/StringizeInterface.h"
+#include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/ModuleFactory.h"
 
@@ -20,12 +20,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeAdMobPlugin::_avaliable()
-    {
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeAdMobPlugin::_initialize()
+    bool AndroidNativeAdMobPlugin::_initializePlugin()
     {
         this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleAndroidAdMob" )
             , new ModuleFactory<AndroidNativeAdMobModule>() );
@@ -33,7 +28,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativeAdMobPlugin::_finalize()
+    void AndroidNativeAdMobPlugin::_finalizePlugin()
     {
     }
 }

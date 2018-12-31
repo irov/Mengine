@@ -36,7 +36,7 @@ namespace Mengine
             }
 
             DataInterfacePtr data = DATA_SERVICE()
-                ->dataflow( _dataflow, stream );
+                ->dataflow( _dataflow, stream, _filePath.c_str() );
 
             if( data == nullptr )
             {
@@ -74,7 +74,7 @@ namespace Mengine
             }
 
             DataInterfacePtr data = DATA_SERVICE()
-                ->dataflow( _dataflow, stream );
+                ->dataflow( _dataflow, stream, _filePath.c_str() );
 
             if( data == nullptr )
             {

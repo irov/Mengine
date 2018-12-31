@@ -44,8 +44,10 @@ namespace Mengine
         return data;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool FEDataflow::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream )
+    bool FEDataflow::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         FEData * data = stdex::intrusive_get<FEData *>( _data );
 
         MemoryInterfacePtr memory = Helper::createMemoryStream( _stream, "FEDataflow::load", __FILE__, __LINE__ );

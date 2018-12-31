@@ -29,8 +29,8 @@ ENDMACRO()
 MACRO(CREATE_PRECOMPILED_HEADER)
   IF(MSVC)
 	SET(PrecompiledHeader "PrecompiledHeader.h")
-	SET(PrecompiledSource "${SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.cpp")
-    SET(PrecompiledBinary "${SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.pch")
+	SET(PrecompiledSource "${MENGINE_SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.cpp")
+    SET(PrecompiledBinary "${MENGINE_SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.pch")
 
     SET_SOURCE_FILES_PROPERTIES(${PrecompiledSource}
                                 PROPERTIES COMPILE_FLAGS "/Yc\"${PrecompiledHeader}\" /FI\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
@@ -41,7 +41,7 @@ ENDMACRO()
 MACRO(ADD_PRECOMPILED_HEADER)
   IF(MSVC)
 	SET(PrecompiledHeader "PrecompiledHeader.h")
-    SET(PrecompiledBinary "${SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.pch")
+    SET(PrecompiledBinary "${MENGINE_SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.pch")
 
     SET_SOURCE_FILES_PROPERTIES(${SRC_FILES}
                                 PROPERTIES COMPILE_FLAGS "/Yu\"${PrecompiledHeader}\" /FI\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""

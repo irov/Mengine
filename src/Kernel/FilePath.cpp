@@ -31,14 +31,20 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FilePath stringizeFilePath( const String & _path )
         {
-            FilePath fp = Helper::stringizeFilePathSize( _path.c_str(), _path.size() );
+            const Char * value_str = _path.c_str();
+            String::size_type value_size = _path.size();
+
+            FilePath fp = Helper::stringizeFilePathSize( value_str, value_size );
 
             return fp;
         }
         //////////////////////////////////////////////////////////////////////////
         FilePath stringizeFilePath( const PathString & _path )
         {
-            FilePath fp = Helper::stringizeFilePathSize( _path.c_str(), _path.size() );
+            const Char * value_str = _path.c_str();
+            PathString::size_type value_size = _path.size();
+
+            FilePath fp = Helper::stringizeFilePathSize( value_str, value_size );
 
             return fp;
         }
@@ -52,7 +58,10 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         FilePath stringizeFilePathLocal( const PathString & _path )
         {
-            FilePath fp = Helper::stringizeFilePathLocal( _path.c_str(), _path.size() );
+            const Char * value_str = _path.c_str();
+            PathString::size_type value_size = _path.size();
+
+            FilePath fp = Helper::stringizeFilePathLocal( value_str, value_size );
 
             return fp;
         }

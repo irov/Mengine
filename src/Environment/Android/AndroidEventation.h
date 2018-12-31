@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Interface/ThreadInterface.h"
+#include "Interface/ThreadMutexInterface.h"
 
 #include "Config/Lambda.h"
 #include "Config/Vector.h"

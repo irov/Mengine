@@ -1,4 +1,4 @@
-set( MY_LIB_NAME ProjectBuilder )
+set(MY_LIB_NAME ProjectBuilder)
 
 ADD_FILTER(
 src
@@ -51,6 +51,7 @@ TARGET_LINK_LIBRARIES(${MY_LIB_NAME} PluginService)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} TextService)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} PrototypeService)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} LoaderService)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} VocabularyService)
 
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Win32UnicodeSystem)
 TARGET_LINK_LIBRARIES(${MY_LIB_NAME} Win32ThreadSystem)
@@ -77,24 +78,23 @@ TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
     ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}math${MENGINE_LIB_SUFFIX}
     Ws2_32.lib
     Crypt32.lib
-    )
-    
+    )    
 
-if(MSVC AND MENGINE_PLATFORM_WIN32)
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
-            ${THIRDPARTY_DIR}/openssl/lib/libcryptoMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
-            ${THIRDPARTY_DIR}/openssl/lib/libsslMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
-        )
+if(MENGINE_PLATFORM_WIN32)
+    if(MENGINE_ARCHITECTURE_X86)
+        TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
+                ${THIRDPARTY_DIR}/openssl/lib/libcryptoMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+                ${THIRDPARTY_DIR}/openssl/lib/libsslMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+            )
+    endif()
+
+    if(MENGINE_ARCHITECTURE_X64)
+        TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
+                ${THIRDPARTY_DIR}/openssl/lib64/libcryptoMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+                ${THIRDPARTY_DIR}/openssl/lib64/libsslMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
+            )
+    endif()
 endif()
-
-if(MSVC AND MENGINE_PLATFORM_WIN64)
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME}
-            ${THIRDPARTY_DIR}/openssl/lib64/libcryptoMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
-            ${THIRDPARTY_DIR}/openssl/lib64/libsslMT${MENGINE_DEPENDENCIES_LIB_SUFFIX}.lib
-        )
-endif()
-
-
     
 foreach(dependency ${APPLICATION_DEPENDENCIES})
 	#MESSAGE( ${LIB_PREFIX}${dependency}${MENGINE_LIB_SUFFIX} )
@@ -102,4 +102,4 @@ foreach(dependency ${APPLICATION_DEPENDENCIES})
 	TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} optimized ${dependency} )
 endforeach(dependency ${APPLICATION_DEPENDENCIES})    
 
-TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${APPLICATION_LIBS} comctl32 Version Shlwapi)
+TARGET_LINK_LIBRARIES(${MY_LIB_NAME} ${APPLICATION_LIBS} comctl32 Version Shlwapi)

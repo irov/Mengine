@@ -22,6 +22,7 @@
 
 #include "Kernel/Node.h"
 #include "Kernel/NodeRenderHelper.h"
+#include "Kernel/Assertion.h"
 
 #include "math/vec2.h"
 #include "math/vec3.h"
@@ -419,9 +420,12 @@ namespace Mengine
 
         String s_makeUID( uint32_t _length )
         {
-            String uid = Helper::makeUID( _length );
+            MENGINE_ASSERTION( _length < 1024, ("max UID length equal 1024") );
 
-            return uid;
+            Char uid[1024];
+            Helper::makeUID( _length, uid );
+
+            return String( uid, _length );
         }
 
         String s_getTextFromID( const ConstString & _textId )
@@ -2008,9 +2012,9 @@ namespace Mengine
                 return _kernel->ret_none();
             }
 
-            const String & value = account->getUID();
+            const AccountUID & value = account->getUID();
 
-            PyObject * py_value = pybind::ptr( _kernel, value );
+            PyObject * py_value = _kernel->string_from_char_size( value.data, AccountUID::size_data );
 
             return py_value;
         }

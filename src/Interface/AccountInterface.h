@@ -21,6 +21,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     DECLARE_MAGIC_NUMBER( MAGIC_ACCOUNT_DATA, 'A', 'C', 'D', '1', 1 );
     //////////////////////////////////////////////////////////////////////////
+    struct AccountUID
+    {
+        typedef Char value_type;
+        static const size_t size_data = 20;
+        Char data[size_data];
+    };
+    //////////////////////////////////////////////////////////////////////////
     class AccountSettingProviderInterface
         : public Mixin
     {
@@ -38,8 +45,8 @@ namespace Mengine
         virtual const FilePath & getFolder() const = 0;
 
     public:
-        virtual void setUID( const String & _uid ) = 0;
-        virtual const String & getUID() const = 0;
+        virtual void setUID( const AccountUID & _uid ) = 0;
+        virtual const AccountUID & getUID() const = 0;
 
     public:
         virtual bool addSetting( const ConstString & _setting, const Char * _defaultValue, const AccountSettingProviderInterfacePtr & _provider ) = 0;

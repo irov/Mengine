@@ -55,14 +55,8 @@ namespace Mengine
             , _dllName
         );
 
-        WChar unicode_dllName[MENGINE_MAX_PATH];
-        if( Helper::utf8ToUnicode( _dllName, unicode_dllName, MENGINE_MAX_PATH ) == false )
-        {
-            return false;
-        }
-
         DynamicLibraryInterfacePtr dlib = PLUGIN_SYSTEM()
-            ->loadDynamicLibrary( unicode_dllName );
+            ->loadDynamicLibrary( _dllName );
 
         if( dlib == nullptr )
         {

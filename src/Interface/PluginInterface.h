@@ -6,7 +6,6 @@
 #include "Kernel/Mixin.h"
 #include "Kernel/FactorableUnique.h"
 
-#include "Config/String.h"
 #include "Config/Export.h"
 
 namespace Mengine
@@ -55,7 +54,7 @@ namespace Mengine
         SERVICE_DECLARE( "PluginSystem" )
 
     public:
-        virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const WString & _dllName ) = 0;
+        virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dllName ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #define PLUGIN_SYSTEM()\

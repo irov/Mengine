@@ -453,5 +453,16 @@ namespace Mengine
 
             return true;
         }
+        //////////////////////////////////////////////////////////////////////////
+        bool writeIniSetting( const OutputStreamInterfacePtr & _file, const Char * _key, const Char * _value, size_t _size )
+        {
+            size_t len = strlen( _key );
+            _file->write( _key, len );
+            _file->write( " = ", sizeof( " = " ) - 1 );
+            _file->write( _value, _size );
+            _file->write( "\n", sizeof( "\n" ) - 1 );
+
+            return true;
+        }
     }
 }

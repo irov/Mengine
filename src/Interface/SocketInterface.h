@@ -6,7 +6,6 @@
 #include "Kernel/Mixin.h"
 
 #include "Config/Char.h"
-#include "Config/String.h"
 
 namespace Mengine
 {

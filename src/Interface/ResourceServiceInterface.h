@@ -6,7 +6,6 @@
 #include "Kernel/Visitor.h"
 
 #include "Config/Lambda.h"
-#include "Config/String.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"

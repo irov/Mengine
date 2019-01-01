@@ -85,9 +85,7 @@ endif()
 
 if(MENGINE_PLATFORM_WIN32)
     ADD_SUBDIRECTORY( Win32SocketPlugin )
-    ADD_SUBDIRECTORY( Win32FileGroupPlugin )
-
-    ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
+    ADD_SUBDIRECTORY( Win32FileGroupPlugin )    
 endif()
 
 if(MENGINE_PLATFORM_SDL)
@@ -96,6 +94,7 @@ endif()
 
 if(MENGINE_TOOLCHAIN_MSVC)
     ADD_SUBDIRECTORY( Win32ConsoleLogger )
+    
     ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
     ADD_SUBDIRECTORY( XlsExportPlugin )
     ADD_SUBDIRECTORY( XmlToBinPlugin )

@@ -10,8 +10,7 @@
 
 namespace Mengine
 {
-    const size_t UNICODE_UNSIZE = (size_t)-1;
-
+    //////////////////////////////////////////////////////////////////////////
     class UnicodeSystemInterface
         : public ServiceInterface
     {
@@ -21,10 +20,10 @@ namespace Mengine
         virtual bool unicodeToUtf8( const WChar * _unicode, size_t _unicodeSize, Char * _utf8, size_t _utf8Capacity, size_t * _utf8Size ) = 0;
         virtual bool utf8ToUnicode( const Char * _utf8, size_t _utf8Size, WChar * _unicode, size_t _unicodeCapacity, size_t * _unicodeSize ) = 0;
     };
-
+    //////////////////////////////////////////////////////////////////////////
 #define UNICODE_SYSTEM()\
-    SERVICE_GET(Mengine::UnicodeSystemInterface)
-
+    ((Mengine::UnicodeSystemInterface *)SERVICE_GET(Mengine::UnicodeSystemInterface))
+    //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
         //////////////////////////////////////////////////////////////////////////
@@ -153,7 +152,7 @@ namespace Mengine
             UnicodeSystemInterface * unicodeService = UNICODE_SYSTEM();
 
             size_t unicodeSize;
-            if( unicodeService->utf8ToUnicode( _utf8, UNICODE_UNSIZE, nullptr, 0, &unicodeSize ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, ~0U, nullptr, 0, &unicodeSize ) == false )
             {
                 return false;
             }
@@ -167,7 +166,7 @@ namespace Mengine
 
             _unicode.resize( unicodeSize );
 
-            if( unicodeService->utf8ToUnicode( _utf8, UNICODE_UNSIZE, &_unicode[0], unicodeSize, nullptr ) == false )
+            if( unicodeService->utf8ToUnicode( _utf8, ~0U, &_unicode[0], unicodeSize, nullptr ) == false )
             {
                 _unicode.clear();
 

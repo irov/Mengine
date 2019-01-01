@@ -1,6 +1,10 @@
 #include "Win32DynamicLibrary.h"
 
+#include "Interface/UnicodeSystemInterface.h"
+
 #include "Kernel/Logger.h"
+
+#include "Config/Config.h"
 
 namespace Mengine
 {
@@ -19,25 +23,31 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32DynamicLibrary::setName( const WString & _name )
+    void Win32DynamicLibrary::setName( const String & _name )
     {
         m_name = _name;
     }
     //////////////////////////////////////////////////////////////////////////
-    const WString & Win32DynamicLibrary::getName() const
+    const String & Win32DynamicLibrary::getName() const
     {
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32DynamicLibrary::load()
     {
-        m_hInstance = ::LoadLibrary( m_name.c_str() );
+        WChar unicode_name[MENGINE_MAX_PATH];
+        if( Helper::utf8ToUnicode( m_name, unicode_name, MENGINE_MAX_PATH ) == false )
+        {
+            return false;
+        }
+
+        m_hInstance = ::LoadLibrary( unicode_name );
 
         if( m_hInstance == NULL )
         {
             DWORD le = GetLastError();
 
-            LOGGER_ERROR( "DynamicLibrary::load %ls error code %d"
+            LOGGER_ERROR( "invalid load '%s' error code %d"
                 , m_name.c_str()
                 , le
             );

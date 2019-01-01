@@ -19,7 +19,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        DynamicLibraryInterfacePtr loadDynamicLibrary( const WString & _dynamicLibraryName ) override;
+        DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName ) override;
 
     protected:
         FactoryPtr m_factoryDynamicLibraries;

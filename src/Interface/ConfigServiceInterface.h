@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Config/Typedef.h"
-#include "Config/String.h"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/FileGroupInterface.h"

@@ -2,9 +2,7 @@
 
 #include "Kernel/Mixin.h"
 
-#include "Config/String.h"
-
-#include "math/vec2.h"
+#include "Config/Char.h"
 
 namespace Mengine
 {

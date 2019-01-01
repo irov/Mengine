@@ -443,6 +443,9 @@ Core
     Dataflow.cpp
 
     DataPointer.h
+    
+    StringArguments.h
+    StringArguments.cpp
 )
 
 ADD_FILTER(

@@ -7,7 +7,6 @@
 #include "Interface/PrefetcherObserverInterface.h"
 
 #include "Config/Typedef.h"
-#include "Config/String.h"
 
 #include "Kernel/ScriptWrapperInterface.h"
 #include "Kernel/ConstString.h"

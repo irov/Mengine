@@ -6,6 +6,7 @@
 #include "Kernel/ConstString.h"
 
 #include "Config/Vector.h"
+#include "Config/String.h"
 
 namespace Mengine
 {

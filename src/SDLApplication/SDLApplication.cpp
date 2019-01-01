@@ -41,6 +41,7 @@
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
 
+#include "Kernel/StringArguments.h"
 #include "Kernel/FileLogger.h"
 #include "Kernel/IniUtil.h"
 #include "Kernel/Date.h"
@@ -540,17 +541,17 @@ namespace Mengine
 
         SERVICE_CREATE( OptionsService );
 
-        VectorString options;
+        ArgumentsInterfacePtr arguments = new FactorableUnique<StringArguments>();
 
         for( int i = 1; i < argc; ++i )
         {
-            const char * arg = argv[i];
+            const Char * arg = argv[i];
 
-            options.push_back( arg );
+            arguments->addArgument( arg );
         }
 
         OPTIONS_SERVICE()
-            ->setArgs( options );
+            ->setArguments( arguments );
 
         SERVICE_CREATE( StringizeService );
 

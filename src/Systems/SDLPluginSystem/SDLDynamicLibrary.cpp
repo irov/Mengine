@@ -33,13 +33,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLDynamicLibrary::load()
     {
-        m_instance = SDL_LoadObject(m_name.c_str());
+        m_instance = SDL_LoadObject( m_name.c_str() );
 
-        if (m_instance == nullptr)
+        if( m_instance == nullptr )
         {
-            LOGGER_ERROR("DynamicLibrary::load %ls failed"
+            LOGGER_ERROR( "DynamicLibrary::load %ls failed"
                 , m_name.c_str()
-                );
+            );
 
             return false;
         }
@@ -54,7 +54,7 @@ namespace Mengine
             return nullptr;
         }
 
-        void* proc = ::SDL_LoadFunction( m_instance, _name );
+        void * proc = ::SDL_LoadFunction( m_instance, _name );
 
         TDynamicLibraryFunction dlfunc = reinterpret_cast<TDynamicLibraryFunction>(proc);
 

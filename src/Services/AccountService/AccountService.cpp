@@ -102,7 +102,8 @@ namespace Mengine
 
         AccountInterfacePtr account = this->createAccount_( accountID );
 
-        String uid = Helper::makeUID( 20 );
+        AccountUID uid;
+        Helper::makeUID( 20, uid.data );
 
         account->setUID( uid );
 
@@ -159,7 +160,8 @@ namespace Mengine
             return nullptr;
         }
 
-        String uid = Helper::makeUID( 20 );
+        AccountUID uid;
+        Helper::makeUID( 20, uid.data );
 
         newAccount->setUID( uid );
 
@@ -206,7 +208,8 @@ namespace Mengine
             return nullptr;
         }
 
-        String uid = Helper::makeUID( 20 );
+        AccountUID uid;
+        Helper::makeUID( 20, uid.data );
 
         newAccount->setUID( uid );
 

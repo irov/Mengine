@@ -4,12 +4,13 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 
 #include "Interface/UnicodeSystemInterface.h"
 
 //////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( PluginSystem, Mengine::SDLPluginSystem);
+SERVICE_FACTORY( PluginSystem, Mengine::SDLPluginSystem );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
@@ -36,38 +37,25 @@ namespace Mengine
         m_factoryDynamicLibraries = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    DynamicLibraryInterfacePtr SDLPluginSystem::loadDynamicLibrary( const WString & _dynamicLibraryName )
+    DynamicLibraryInterfacePtr SDLPluginSystem::loadDynamicLibrary( const Char * _dynamicLibraryName )
     {
-        LOGGER_WARNING("SDLPluginSystem::loadDynamicLibrary plugin '%ls'"
-            , _dynamicLibraryName.c_str()
-            );
+        LOGGER_INFO( "load dynamic library '%s'"
+            , _dynamicLibraryName
+        );
 
         SDLDynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject();
 
-        if( dynamicLibrary == nullptr )
-        {
-            LOGGER_ERROR("SDLPluginSystem::loadDynamicLibrary can't create dynamic library"
-                );
+        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr )("can't create dynamic library '%s'"
+            , _dynamicLibraryName
+            );
 
-            return nullptr;
-        }
-
-        String utf8_dynamicLibraryName;
-        if( Helper::unicodeToUtf8( _dynamicLibraryName, utf8_dynamicLibraryName ) == false )
-        {
-            LOGGER_ERROR( "SDLPluginSystem::loadDynamicLibrary can't get utf8 path"
-                );
-
-            return nullptr;
-        }
-                
-        dynamicLibrary->setName( utf8_dynamicLibraryName );
+        dynamicLibrary->setName( _dynamicLibraryName );
 
         if( dynamicLibrary->load() == false )
         {
-            LOGGER_ERROR( "SDLPluginSystem::loadDynamicLibrary can't load '%ls' plugin [invalid load]"
-                , _dynamicLibraryName.c_str()
-                );
+            LOGGER_ERROR( "can't load '%s' plugin [invalid load]"
+                , _dynamicLibraryName
+            );
 
             return nullptr;
         }

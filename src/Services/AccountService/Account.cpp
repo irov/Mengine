@@ -48,12 +48,12 @@ namespace Mengine
         return m_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Account::setUID( const String & _uid )
+    void Account::setUID( const AccountUID & _uid )
     {
         m_uid = _uid;
     }
     //////////////////////////////////////////////////////////////////////////
-    const String & Account::getUID() const
+    const AccountUID & Account::getUID() const
     {
         return m_uid;
     }
@@ -212,7 +212,7 @@ namespace Mengine
             return false;
         }
 
-        m_uid = uid;
+        ::strncpy( m_uid.data, uid, AccountUID::size_data );
 
         for( MapSettings::iterator
             it = m_settings.begin(),
@@ -262,7 +262,7 @@ namespace Mengine
         }
 
         IniUtil::writeIniSetting( file, "PROJECT_VERSION", projectVersion_s );
-        IniUtil::writeIniSetting( file, "UID", m_uid );
+        IniUtil::writeIniSetting( file, "UID", m_uid.data, AccountUID::size_data );
 
         IniUtil::writeIniSection( file, "[SETTINGS]" );
 

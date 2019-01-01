@@ -30,8 +30,8 @@ namespace Mengine
         const FilePath & getFolder() const override;
 
     public:
-        void setUID( const String & _uid ) override;
-        const String & getUID() const override;
+        void setUID( const AccountUID & _uid ) override;
+        const AccountUID & getUID() const override;
 
 
     public:
@@ -60,7 +60,7 @@ namespace Mengine
         FileGroupInterfacePtr m_fileGroup;
 
         ConstString m_id;
-        String m_uid;
+        AccountUID m_uid;
         uint32_t m_projectVersion;
 
         FilePath m_folder;

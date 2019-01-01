@@ -17,11 +17,13 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void OptionsService::setArgs( const VectorString & _args )
+    void OptionsService::setArguments( const ArgumentsInterfacePtr & _arguments )
     {
-        for( const String & arg : _args )
+        uint32_t argument_count = _arguments->getArgumentCount();
+
+        for( uint32_t index = 0; index != argument_count; ++index )
         {
-            const Char * option_str = arg.c_str();
+            const Char * option_str = _arguments->getArgument( index );
 
             const Char * option_key_str = strchr( option_str, '-' );
 

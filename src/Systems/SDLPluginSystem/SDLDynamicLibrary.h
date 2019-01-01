@@ -4,11 +4,13 @@
 
 #include "Kernel/Factorable.h"
 
+#include "Config/String.h"
+
 namespace Mengine
 {
-    class SDLDynamicLibrary 
+    class SDLDynamicLibrary
         : public DynamicLibraryInterface
-		, public Factorable
+        , public Factorable
     {
     public:
         SDLDynamicLibrary();

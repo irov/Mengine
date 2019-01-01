@@ -9,7 +9,6 @@
 
 #include "Kernel/ConstString.h"
 #include "Kernel/FilePath.h"
-#include "Kernel/String.h"
 
 namespace Mengine
 {

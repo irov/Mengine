@@ -91,16 +91,12 @@ if(MENGINE_PLATFORM_WIN32)
 endif()
 
 if(MENGINE_PLATFORM_SDL)
-    ADD_SUBDIRECTORY( SDLFileGroupPlugin )    
-
-    ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
+    ADD_SUBDIRECTORY( SDLFileGroupPlugin )
 endif()
 
 if(MENGINE_TOOLCHAIN_MSVC)
     ADD_SUBDIRECTORY( Win32ConsoleLogger )
-endif()
-
-if(MENGINE_PLATFORM_WIN32 AND NOT MENGINE_TOOLCHAIN_MINGW)
+    ADD_SUBDIRECTORY( DevelopmentConverterPlugin )
     ADD_SUBDIRECTORY( XlsExportPlugin )
     ADD_SUBDIRECTORY( XmlToBinPlugin )
 endif()

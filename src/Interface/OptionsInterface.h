@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
+#include "Interface/ArgumentsInterface.h"
 
-#include "Config/Typedef.h"
-#include "Config/String.h"
-#include "Config/VectorString.h"
+#include "Config/Char.h"
 
 namespace Mengine
 {
@@ -15,7 +14,7 @@ namespace Mengine
         SERVICE_DECLARE( "OptionsService" )
 
     public:
-        virtual void setArgs( const VectorString & _args ) = 0;
+        virtual void setArguments( const ArgumentsInterfacePtr & _arguments ) = 0;
 
     public:
         virtual bool hasOption( const Char * _key ) const = 0;

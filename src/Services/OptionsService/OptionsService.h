@@ -4,7 +4,7 @@
 
 #include "Kernel/ServiceBase.h"
 
-#include "Config/Char.h"
+#include "Config/Vector.h"
 
 #ifndef MENGINE_OPTIONS_KEY_SIZE
 #define MENGINE_OPTIONS_KEY_SIZE 32
@@ -28,7 +28,7 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void setArgs( const VectorString & _args ) override;
+        void setArguments( const ArgumentsInterfacePtr & _arguments ) override;
 
     public:
         bool hasOption( const Char * _key ) const override;

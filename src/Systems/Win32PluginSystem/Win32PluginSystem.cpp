@@ -4,6 +4,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Kernel/Logger.h"
 
@@ -35,20 +36,22 @@ namespace Mengine
         m_factoryDynamicLibraries = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    DynamicLibraryInterfacePtr Win32PluginSystem::loadDynamicLibrary( const WString & _dynamicLibraryName )
+    DynamicLibraryInterfacePtr Win32PluginSystem::loadDynamicLibrary( const Char * _dynamicLibraryName )
     {
-        LOGGER_WARNING( "Win32PluginSystem::loadDynamicLibrary plugin '%ls'"
-            , _dynamicLibraryName.c_str()
+        LOGGER_INFO( "load dynamic library '%s'"
+            , _dynamicLibraryName
         );
 
         Win32DynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr );
 
         dynamicLibrary->setName( _dynamicLibraryName );
 
         if( dynamicLibrary->load() == false )
         {
-            LOGGER_ERROR( "Win32PluginSystem::loadDynamicLibrary can't load '%ls' plugin [invalid load]"
-                , _dynamicLibraryName.c_str()
+            LOGGER_ERROR( "can't load dynamic library '%s' [invalid load]"
+                , _dynamicLibraryName
             );
 
             return nullptr;

@@ -1,10 +1,8 @@
 #pragma once
 
-#include "stdex/array_string.h"
+#include "Config/Config.h"
 
-#ifndef MENGINE_MAX_PATH
-#   define MENGINE_MAX_PATH 260
-#endif
+#include "stdex/array_string.h"
 
 namespace Mengine
 {

@@ -29,9 +29,8 @@
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
-
+#include "Kernel/StringArguments.h"
 #include "Kernel/Date.h"
-
 #include "Kernel/Logger.h"
 
 #include "PythonScriptWrapper/PythonWrapper.h"
@@ -500,6 +499,8 @@ namespace Mengine
 
         SERVICE_CREATE( FactoryService );
 
+        SERVICE_CREATE( UnicodeSystem );
+
         SERVICE_CREATE( OptionsService );
 
         LPCWSTR lpCmdLine = GetCommandLineW();
@@ -523,7 +524,8 @@ namespace Mengine
         DWORD dwConversionFlags = 0;
 #   endif
 
-        VectorString args;
+        ArgumentsInterfacePtr arguments = new FactorableUnique<StringArguments>();
+
         for( int32_t i = 1; i != pNumArgs; ++i )
         {
             PWSTR arg = szArglist[i];
@@ -546,12 +548,12 @@ namespace Mengine
                 return false;
             }
 
-            args.push_back( utf_arg );
+            arguments->addArgument( utf_arg );
         }
         LocalFree( szArglist );
 
         OPTIONS_SERVICE()
-            ->setArgs( args );
+            ->setArguments( arguments );
 
         SERVICE_CREATE( StringizeService );
         SERVICE_CREATE( LoggerService );
@@ -563,7 +565,7 @@ namespace Mengine
 
         SERVICE_CREATE( Platform );
 
-        SERVICE_CREATE( UnicodeSystem );
+        
 
         SERVICE_CREATE( PluginSystem );
         SERVICE_CREATE( PluginService );

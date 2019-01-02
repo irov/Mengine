@@ -651,17 +651,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Application::loadPersonality()
-    {
-        if( GAME_SERVICE()
-            ->loadPersonality() == false )
-        {
-            return false;
-        }
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
     static void s_printChildren2( const NodePtr & _node, uint32_t _tab )
     {
         IntrusiveSlugListNodeChild & children = _node->getChildren();

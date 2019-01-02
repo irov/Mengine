@@ -44,21 +44,10 @@ namespace Mengine
         PythonScriptWrapper( pybind::kernel_interface * _kernel )
             : m_kernel( _kernel )
         {
+            pybind::registration_type_cast<T>(m_kernel, new Helper::ScriptExtract<T>());
         }
 
         ~PythonScriptWrapper() override
-        {
-        }
-
-    public:
-        bool initialize() override
-        {
-            pybind::registration_type_cast<T>(m_kernel, new Helper::ScriptExtract<T>());
-
-            return true;
-        }
-
-        void finalize() override
         {
             pybind::unregistration_type_cast<T>(m_kernel);
         }

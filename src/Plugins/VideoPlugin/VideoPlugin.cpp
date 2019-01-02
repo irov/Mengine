@@ -90,17 +90,8 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_SurfaceVideo_setEventListener )
             ;
 
-        if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<PythonScriptWrapper<ResourceVideo> >( kernel ) ) == false )
-        {
-            return false;
-        }
-
-        if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), new FactorableUnique<PythonScriptWrapper<SurfaceVideo> >( kernel ) ) == false )
-        {
-            return false;
-        }
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<PythonScriptWrapper<ResourceVideo> >( kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ), new FactorableUnique<PythonScriptWrapper<SurfaceVideo> >( kernel ) );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceVideo" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceVideo, 128> > ) == false )
@@ -135,17 +126,8 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
 
-        if( SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceVideo" ) ) == false )
-        {
-            return;
-        }
-
-        if( SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) ) == false )
-        {
-            return;
-        }
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MoResourceVideovie2" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "SurfaceVideo" ) );
 
         SERVICE_WAIT( ResourceValidateServiceInterface, []()
         {

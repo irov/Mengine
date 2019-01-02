@@ -32,8 +32,7 @@
 #include "Interface/SceneServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
-
-#include "PythonScriptWrapper/PythonWrapper.h"
+#include "Interface/FrameworkInterface.h"
 
 #include <cstdio>
 #include <clocale>
@@ -157,6 +156,7 @@ SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( SceneService );
 SERVICE_EXTERN( ChronometerService );
+SERVICE_EXTERN( Framework );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
@@ -626,14 +626,7 @@ namespace Mengine
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
-
-        PythonWrapper::constsWrap();
-        PythonWrapper::helperWrap();
-        PythonWrapper::mathWrap();
-        PythonWrapper::nodeWrap();
-        PythonWrapper::entityWrap();
-        PythonWrapper::engineWrap();
-        PythonWrapper::soundWrap();
+        SERVICE_CREATE( Framework );
 
         SERVICE_CREATE( RenderService );
         SERVICE_CREATE( RenderMaterialService );
@@ -822,6 +815,18 @@ namespace Mengine
             ->initializeGame( defaultFileGroup, resourceIniPath ) == false )
         {
             LOGGER_CRITICAL( "Application invalid initialize game"
+            );
+
+            return false;
+        }
+
+        FRAMEWORK_SERVICE()
+            ->onFrameworkInitialize();
+
+        if( GAME_SERVICE()
+            ->loadPersonality() == false )
+        {
+            LOGGER_CRITICAL( "Game invalid load personality"
             );
 
             return false;

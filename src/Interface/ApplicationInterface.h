@@ -27,7 +27,7 @@ namespace Mengine
     class ApplicationInterface
         : public ServiceInterface
     {
-        SERVICE_DECLARE( "ApplicationService" );
+        SERVICE_DECLARE( "Application" );
 
     public:
         virtual bool getAllowFullscreenSwitchShortcut() const = 0;
@@ -60,7 +60,6 @@ namespace Mengine
 
     public:
         virtual bool initializeGame( const FileGroupInterfacePtr & _category, const FilePath & _resourceIniPath ) = 0;
-        virtual bool loadPersonality() = 0;
 
     public:
         virtual void getCompanyName( Char * _companyName ) const = 0;

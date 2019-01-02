@@ -69,11 +69,6 @@ namespace Mengine
         bool stringize( PyObject * _object, ConstString & _str ) override;
 
     public:
-        bool setWrapper( const ConstString& _type, const ScriptWrapperInterfacePtr & _wrapper ) override;
-        bool removeWrapper( const ConstString& _type ) override;
-        const ScriptWrapperInterfacePtr & getWrapper( const ConstString & _type ) const override;
-
-    public:
         const ThreadMutexInterfacePtr & getMutex() const;
 
     protected:
@@ -93,9 +88,6 @@ namespace Mengine
         typedef Map<ConstString, PyObject *> MapModules;
         typedef Map<ConstString, MapModules> MapCategoryPrototypies;
         MapCategoryPrototypies m_prototypies;
-
-        typedef Map<ConstString, ScriptWrapperInterfacePtr> MapScriptWrapper;
-        MapScriptWrapper m_scriptWrapper;
 
         typedef stdex::template_pool<ConstStringHolderPythonString, 1024> PoolConstStringHolderPythonString;
         PoolConstStringHolderPythonString m_poolPythonString;

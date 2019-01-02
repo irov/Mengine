@@ -93,6 +93,7 @@ src
     SceneServiceInterface.h
     ChronometerServiceInterface.h
     ArgumentsInterface.h
+    FrameworkInterface.h
     
 	dummy.cpp
 )

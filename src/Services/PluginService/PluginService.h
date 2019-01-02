@@ -6,12 +6,12 @@
 
 #include "Config/Vector.h"
 
-namespace Mengine
-{
 #ifndef MENGINE_PLUGIN_NAME_MAX
-#	define MENGINE_PLUGIN_NAME_MAX 32
+#define MENGINE_PLUGIN_NAME_MAX 64
 #endif
 
+namespace Mengine
+{
     class PluginService
         : public ServiceBase<PluginServiceInterface>
     {

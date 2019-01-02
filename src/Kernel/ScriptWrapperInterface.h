@@ -11,10 +11,6 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual bool initialize() = 0;
-        virtual void finalize() = 0;
-
-    public:
         virtual PyObject * wrap( Scriptable * _node ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////

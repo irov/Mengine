@@ -303,7 +303,7 @@ namespace Mengine
         if( SCRIPT_SERVICE()
             ->bootstrapModules() == false )
         {
-            LOGGER_ERROR( "Game::loadPersonality invalid bootstrap modules"
+            LOGGER_ERROR( "invalid bootstrap modules"
             );
 
             return false;
@@ -316,7 +316,7 @@ namespace Mengine
 
         if( module == nullptr )
         {
-            LOGGER_ERROR( "Game::loadPersonality invalid import module '%s'"
+            LOGGER_ERROR( "invalid import module '%s'"
                 , personality.c_str()
             );
 

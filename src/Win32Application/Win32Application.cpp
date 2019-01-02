@@ -26,14 +26,13 @@
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
+#include "Interface/FrameworkInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/StringArguments.h"
 #include "Kernel/Date.h"
 #include "Kernel/Logger.h"
-
-#include "PythonScriptWrapper/PythonWrapper.h"
 
 #include <cstdio>
 #include <clocale>
@@ -109,6 +108,7 @@ SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( Application );
 SERVICE_EXTERN( EnumeratorService );
 SERVICE_EXTERN( ChronometerService );
+SERVICE_EXTERN( Framework );
 
 PLUGIN_EXPORT( ImageCodec );
 PLUGIN_EXPORT( SoundCodec );
@@ -653,40 +653,7 @@ namespace Mengine
         SERVICE_CREATE( UpdateService );
         SERVICE_CREATE( LoaderService );
 
-        if( PythonWrapper::constsWrap() == false )
-        {
-            return false;
-        }
-
-        if( PythonWrapper::helperWrap() == false )
-        {
-            return false;
-        }
-
-        if( PythonWrapper::nodeWrap() == false )
-        {
-            return false;
-        }
-
-        if( PythonWrapper::mathWrap() == false )
-        {
-            return false;
-        }
-
-        if( PythonWrapper::entityWrap() == false )
-        {
-            return false;
-        }
-
-        if( PythonWrapper::engineWrap() == false )
-        {
-            return false;
-        }
-
-        if( PythonWrapper::soundWrap() == false )
-        {
-            return false;
-        }
+        SERVICE_CREATE( Framework );
 
         SERVICE_CREATE( RenderService );
         SERVICE_CREATE( RenderMaterialService );
@@ -895,24 +862,19 @@ namespace Mengine
             return false;
         }
 
-        if( PythonWrapper::gameWrap() == false )
-        {
-            return false;
-        }
+        FRAMEWORK_SERVICE()
+            ->onFrameworkInitialize();
 
-        if( APPLICATION_SERVICE()
+        if( GAME_SERVICE()
             ->loadPersonality() == false )
         {
-            LOGGER_CRITICAL( "Application invalid initialize game"
+            LOGGER_CRITICAL( "Game invalid load personality"
             );
 
             return false;
         }
 
         LOGGER_WARNING( "Creating Render Window..." );
-
-        bool fullscreen = APPLICATION_SERVICE()
-            ->getFullscreenMode();
 
         String projectTitle;
 
@@ -937,6 +899,9 @@ namespace Mengine
 
         PLATFORM_SERVICE()
             ->setIcon( IDI_MENGINE );
+
+        bool fullscreen = APPLICATION_SERVICE()
+            ->getFullscreenMode();
 
         if( PLATFORM_SERVICE()
             ->createWindow( windowResolution, fullscreen ) == false )

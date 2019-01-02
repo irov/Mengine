@@ -114,17 +114,8 @@ namespace Mengine
             .def_static_native_kernel( "setEventListener", &Detail::s_ParticleEmitter2_setEventListener )
             ;
 
-        if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new FactorableUnique<PythonScriptWrapper<AstralaxEmitter> >( kernel ) ) == false )
-        {
-            return false;
-        }
-
-        if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), new FactorableUnique<PythonScriptWrapper<AstralaxEmitter> >( kernel ) ) == false )
-        {
-            return false;
-        }
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new FactorableUnique<PythonScriptWrapper<AstralaxEmitter> >( kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ), new FactorableUnique<PythonScriptWrapper<AstralaxEmitter> >( kernel ) );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), new FactorableUnique<NodePrototypeGenerator<AstralaxEmitter, 128> > ) == false )
@@ -138,24 +129,8 @@ namespace Mengine
             return false;
         }
 
-        if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<PythonScriptWrapper<ResourceAstralax> >( kernel ) ) == false )
-        {
-            return false;
-        }
-
-
-        if( SCRIPT_SERVICE()
-            ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<PythonScriptWrapper<ResourceAstralax> >( kernel ) ) == false )
-        {
-            return false;
-        }
-
-        if( PROTOTYPE_SERVICE()
-            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceAstralax, 128> > ) == false )
-        {
-            return false;
-        }
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<PythonScriptWrapper<ResourceAstralax> >( kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<PythonScriptWrapper<ResourceAstralax> >( kernel ) );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceAstralax, 128> > ) == false )
@@ -185,11 +160,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void AstralaxParticleModule::_finalize()
     {
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
-
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
@@ -197,11 +169,8 @@ namespace Mengine
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );
 
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
-
-        SCRIPT_SERVICE()
-            ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ) );
 
         PROTOTYPE_SERVICE()
             ->removePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ) );

@@ -20,12 +20,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     PluginService::~PluginService()
     {
-        for( PluginDesc & desc : m_plugins )
-        {
-            desc.plugin->finalizePlugin();
-        }
-
-        m_plugins.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     bool PluginService::_initializeService()

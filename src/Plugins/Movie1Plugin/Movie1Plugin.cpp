@@ -1553,29 +1553,14 @@ namespace Mengine
             pybind::def_function_kernel( kernel, "getMovieSlotsPosition", &Detail::s_getMovieSlotsPosition );
             pybind::def_function_kernel( kernel, "getMovieSlotPosition", &Detail::s_getMovieSlotPosition );
 
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<PythonScriptWrapper<Movie> >( kernel ) );
-
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ), new FactorableUnique<PythonScriptWrapper<MovieSlot> >( kernel ) );
-
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new FactorableUnique<PythonScriptWrapper<MovieSceneEffect> >( kernel ) );
-
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new FactorableUnique<PythonScriptWrapper<MovieInternalObject> >( kernel ) );
-
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), new FactorableUnique<PythonScriptWrapper<MovieMesh2D> >( kernel ) );
-
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ), new FactorableUnique<PythonScriptWrapper<MovieEvent> >( kernel ) );
-
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie> >( kernel ) );
-
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new FactorableUnique<PythonScriptWrapper<ResourceInternalObject> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie" ), new FactorableUnique<PythonScriptWrapper<Movie> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ), new FactorableUnique<PythonScriptWrapper<MovieSlot> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ), new FactorableUnique<PythonScriptWrapper<MovieSceneEffect> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ), new FactorableUnique<PythonScriptWrapper<MovieInternalObject> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ), new FactorableUnique<PythonScriptWrapper<MovieMesh2D> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ), new FactorableUnique<PythonScriptWrapper<MovieEvent> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ), new FactorableUnique<PythonScriptWrapper<ResourceInternalObject> >( kernel ) );
         }
 
         if( PROTOTYPE_SERVICE()
@@ -1663,29 +1648,14 @@ namespace Mengine
     {
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie" ) );
-
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
-
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) );
-
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) );
-
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
-
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
-
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
-
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSlot" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieSceneEffect" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieInternalObject" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieMesh2D" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "MovieEvent" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceInternalObject" ) );
         }
 
         PROTOTYPE_SERVICE()

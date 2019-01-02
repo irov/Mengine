@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Interface/ScriptServiceInterface.h"
+#include "Interface/VocabularyServiceInterface.h"
 
 #include "FactoryPrototypeGenerator.h"
 
@@ -40,8 +41,7 @@ namespace Mengine
             {
                 const ConstString & prototype = this->getPrototype();
 
-                const ScriptWrapperInterfacePtr & scriptWrapper = SCRIPT_SERVICE()
-                    ->getWrapper( prototype );
+                ScriptWrapperInterfacePtr scriptWrapper = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), prototype );
 
                 if( scriptWrapper == nullptr )
                 {

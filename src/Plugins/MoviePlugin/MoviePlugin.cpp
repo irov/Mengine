@@ -391,17 +391,10 @@ namespace Mengine
                 .def( "getCompositionFrameDuration", &ResourceMovie2::getCompositionFrameDuration )
                 ;
 
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<PythonScriptWrapper<Movie2> >( kernel ) );
-
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new FactorableUnique<PythonScriptWrapper<Movie2Slot> >( kernel ) );
-
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new FactorableUnique<PythonScriptWrapper<Movie2SubComposition> >( kernel ) );
-
-            SCRIPT_SERVICE()
-                ->setWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie2> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<PythonScriptWrapper<Movie2> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ), new FactorableUnique<PythonScriptWrapper<Movie2Slot> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ), new FactorableUnique<PythonScriptWrapper<Movie2SubComposition> >( kernel ) );
+            VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<PythonScriptWrapper<ResourceMovie2> >( kernel ) );
         }
 
         if( PROTOTYPE_SERVICE()
@@ -492,17 +485,10 @@ namespace Mengine
 
         if( SERVICE_EXIST( ScriptServiceInterface ) == true )
         {
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie2" ) );
-
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie2Slot" ) );
-
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
-
-            SCRIPT_SERVICE()
-                ->removeWrapper( STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2Slot" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Movie2SubComposition" ) );
+            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
         }
 
         PROTOTYPE_SERVICE()

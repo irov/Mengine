@@ -18,6 +18,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionVocabulary.h"
 
 #include "Kernel/Logger.h"
 
@@ -298,18 +299,7 @@ namespace Mengine
         this->removeGlobalModule( "Menge" );
         this->removeGlobalModule( "_PYTHON_VERSION" );
 
-        for( MapScriptWrapper::iterator
-            it = m_scriptWrapper.begin(),
-            it_end = m_scriptWrapper.end();
-            it != it_end;
-            ++it )
-        {
-            const ScriptWrapperInterfacePtr & wrapper = it->second;
-
-            wrapper->finalize();
-        }
-
-        m_scriptWrapper.clear();
+        MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "ClassWrapping" ) );
 
         if( m_moduleFinder != nullptr )
         {
@@ -658,57 +648,6 @@ namespace Mengine
             ->stringizeExternal( holder, _cstr );
 
         return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ScriptService::setWrapper( const ConstString & _type, const ScriptWrapperInterfacePtr & _wrapper )
-    {
-        if( _wrapper->initialize() == false )
-        {
-            LOGGER_ERROR( "ScriptService::setWrapper type '%s' invalid initialize"
-                , _type.c_str()
-            );
-
-            return false;
-        }
-
-        m_scriptWrapper.emplace( _type, _wrapper );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool ScriptService::removeWrapper( const ConstString& _type )
-    {
-        MapScriptWrapper::iterator it_found = m_scriptWrapper.find( _type );
-
-        if( it_found == m_scriptWrapper.end() )
-        {
-            return false;
-        }
-
-        it_found->second->finalize();
-        it_found->second = nullptr;
-
-        m_scriptWrapper.erase( it_found );
-
-        return true;
-    }
-    //////////////////////////////////////////////////////////////////////////|
-    const ScriptWrapperInterfacePtr & ScriptService::getWrapper( const ConstString & _type ) const
-    {
-        MapScriptWrapper::const_iterator it_found = m_scriptWrapper.find( _type );
-
-        if( it_found == m_scriptWrapper.end() )
-        {
-            LOGGER_ERROR( "not found type %s"
-                , _type.c_str()
-            );
-
-            return ScriptWrapperInterfacePtr::none();
-        }
-
-        const ScriptWrapperInterfacePtr & wrapper = it_found->second;
-
-        return wrapper;
     }
     //////////////////////////////////////////////////////////////////////////
     const ThreadMutexInterfacePtr & ScriptService::getMutex() const

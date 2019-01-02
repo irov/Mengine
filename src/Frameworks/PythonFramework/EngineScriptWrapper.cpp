@@ -3633,17 +3633,8 @@ namespace Mengine
         pybind::def_functor_args( kernel, "createValueFollowerAcceleration", nodeScriptMethod, &EngineScriptMethod::s_createValueFollowerAcceleration );
         pybind::def_functor( kernel, "destroyValueFollower", nodeScriptMethod, &EngineScriptMethod::s_destroyValueFollower );
 
-        if( SCRIPT_SERVICE()
-            ->setWrapper( Helper::stringizeString( "PythonValueFollowerLinear" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( kernel ) ) == false )
-        {
-            return false;
-        }
-
-        if( SCRIPT_SERVICE()
-            ->setWrapper( Helper::stringizeString( "PythonValueFollowerAcceleration" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( kernel ) ) == false )
-        {
-            return false;
-        }
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( kernel ) );
 
         if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), new FactorableUnique<ScriptablePrototypeGenerator<PythonValueFollowerLinear, 32> >() ) == false )

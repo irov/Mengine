@@ -156,7 +156,8 @@ namespace Mengine
 
         virtual void turnSound( bool _turn ) = 0;
     };
-
-#define GAME_SERVICE()\
-    SERVICE_GET(Mengine::GameServiceInterface)
 }
+//////////////////////////////////////////////////////////////////////////
+#define GAME_SERVICE()\
+    ((Mengine::GameServiceInterface*)SERVICE_GET(Mengine::GameServiceInterface))
+//////////////////////////////////////////////////////////////////////////

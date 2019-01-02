@@ -585,6 +585,7 @@ namespace Mengine
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
+        pybind::registration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(kernel);
         pybind::registration_stl_vector_type_cast<Polygon, Vector<Polygon>>(kernel);
 
         pybind::struct_<mt::vec2f>( kernel, "vec2f" )

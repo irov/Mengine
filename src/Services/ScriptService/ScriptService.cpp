@@ -385,6 +385,16 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void ScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
+    {
+        m_embeddings.insert( _name, _embedding );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ScriptService::removeScriptEmbedding( const ConstString & _name )
+    {
+        m_embeddings.remove( _name );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool ScriptService::bootstrapModules()
     {
         for( const ScriptModulePack & pak : m_bootstrapperModules )

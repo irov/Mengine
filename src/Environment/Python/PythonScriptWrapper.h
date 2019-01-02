@@ -58,7 +58,7 @@ namespace Mengine
 #ifndef NDEBUG
             if( dynamic_cast<T *>(_scriptable) == nullptr )
             {
-                LOGGER_ERROR( "ScriptClassWrapper::wrap invalid type"
+                LOGGER_ERROR( "invalid type"
                 );
 
                 throw;

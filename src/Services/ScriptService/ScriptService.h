@@ -14,8 +14,8 @@
 #include "ScriptModuleFinder.h"
 
 #include "Kernel/Entity.h"
-
 #include "Kernel/Factory.h"
+#include "Kernel/Hashtable.h"
 
 #include "pybind/pybind.hpp"
 
@@ -55,6 +55,10 @@ namespace Mengine
         void removeModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) override;
 
     public:
+        void addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) override;
+        void removeScriptEmbedding( const ConstString & _name ) override;
+
+    public:
         bool bootstrapModules() override;
         bool initializeModules() override;
         bool finalizeModules() override;
@@ -84,6 +88,9 @@ namespace Mengine
 
         ScriptLogger * m_loggerWarning;
         ScriptLogger * m_loggerError;
+
+        typedef Hashtable<ConstString, ScriptEmbeddingInterfacePtr> HashtableEmbeddings;
+        HashtableEmbeddings m_embeddings;
 
         typedef Map<ConstString, PyObject *> MapModules;
         typedef Map<ConstString, MapModules> MapCategoryPrototypies;

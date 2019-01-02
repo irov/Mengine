@@ -10,6 +10,7 @@ src
     ModuleServiceInterface.h
     ScriptModuleInterface.h
     ScriptCodeDataInterface.h
+    ScriptEmbeddingInterface.h
 	ScriptServiceInterface.h
 	CodecInterface.h
 	CodecFactoryInterface.h

@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ScriptModuleInterface.h"
 #include "Interface/ScriptCodeDataInterface.h"
+#include "Interface/ScriptEmbeddingInterface.h"
 #include "Interface/FileGroupInterface.h"
 #include "Interface/PrefetcherObserverInterface.h"
 
@@ -52,11 +53,15 @@ namespace Mengine
         virtual void addModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) = 0;
         virtual void removeModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) = 0;
 
-        virtual ScriptModuleInterfacePtr importModule( const ConstString& _name ) = 0;
+        virtual ScriptModuleInterfacePtr importModule( const ConstString & _name ) = 0;
 
         virtual void setCurrentModule( PyObject * _module ) = 0;
         virtual void addGlobalModule( const Char * _name, PyObject * _module ) = 0;
         virtual void removeGlobalModule( const Char * _name ) = 0;
+
+    public:
+        virtual void addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) = 0;
+        virtual void removeScriptEmbedding( const ConstString & _name ) = 0;
 
     public:
         template<class T>

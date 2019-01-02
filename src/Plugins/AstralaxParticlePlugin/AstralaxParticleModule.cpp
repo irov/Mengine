@@ -133,6 +133,12 @@ namespace Mengine
         VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<PythonScriptWrapper<ResourceAstralax> >( kernel ) );
 
         if( PROTOTYPE_SERVICE()
+            ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceParticle" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceAstralax, 128> > ) == false )
+        {
+            return false;
+        }
+
+        if( PROTOTYPE_SERVICE()
             ->addPrototype( STRINGIZE_STRING_LOCAL( "Resource" ), STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), new FactorableUnique<ResourcePrototypeGenerator<ResourceAstralax, 128> > ) == false )
         {
             return false;
@@ -147,6 +153,9 @@ namespace Mengine
         if( SERVICE_EXIST( ResourcePrefetcherServiceInterface ) == true )
         {
             ResourcePrefetcherInterfacePtr archivePrefetcherLZ4 = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "ResourcePrefetcher" ), STRINGIZE_STRING_LOCAL( "ArchiveLZ4" ) );
+
+            RESOURCEPREFETCHER_SERVICE()
+                ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceParticle" ), archivePrefetcherLZ4 );
 
             RESOURCEPREFETCHER_SERVICE()
                 ->addResourcePrefetcher( STRINGIZE_STRING_LOCAL( "ResourceAstralax" ), archivePrefetcherLZ4 );

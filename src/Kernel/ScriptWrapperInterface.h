@@ -11,7 +11,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual PyObject * wrap( Scriptable * _node ) = 0;
+        virtual PyObject * wrap( Scriptable * _scriptable ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ScriptWrapperInterface> ScriptWrapperInterfacePtr;

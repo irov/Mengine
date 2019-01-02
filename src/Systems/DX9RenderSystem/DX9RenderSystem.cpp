@@ -1925,7 +1925,7 @@ namespace Mengine
     {
         mt::mat4f totalWVPMatrix = m_worldMatrix * m_modelViewMatrix * m_projectionMatrix;
 
-        mt::transpose_m4( m_totalWVPInvMatrix, totalWVPMatrix );
+        mt::transpose_m4_m4( m_totalWVPInvMatrix, totalWVPMatrix );
     }
 }
 

@@ -744,12 +744,45 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::setWorldPosition( const mt::vec3f & _pos )
-    {
-        const mt::vec3f & wp = this->getWorldPosition();
+    {        
+        if( m_relationTransformation != nullptr )
+        {
+            const mt::mat4f & rwm = m_relationTransformation->getWorldMatrix();
 
-        mt::vec3f wp_offset = _pos - wp;
+            mt::mat4f rwm_inv;
+            mt::inv_m4_m4( rwm_inv, rwm );
 
-        this->translate( wp_offset );
+            mt::vec3f new_lp;
+            mt::mul_v3_v3_m4( new_lp, _pos, rwm_inv );
+
+            const mt::mat4f & lm = this->getLocalMatrix();
+
+            mt::mat4f lm_inv;
+            mt::inv_m4_m4( lm_inv, lm );
+
+            mt::vec3f pp;
+            mt::mul_v3_v3_m4( pp, new_lp, lm_inv );
+
+            mt::vec3f pp2;
+            mt::mul_v3_v3_m4_r( pp2, pp, lm );
+
+            this->translate( pp2 );
+        }
+        else
+        { 
+            const mt::mat4f & lm = this->getLocalMatrix();
+
+            mt::mat4f lm_inv;
+            mt::inv_m4_m4( lm_inv, lm );
+
+            mt::vec3f pp;
+            mt::mul_v3_v3_m4( pp, _pos, lm_inv );
+
+            mt::vec3f pp2;
+            mt::mul_v3_v3_m4_r( pp2, pp, lm );
+
+            this->translate( pp2 );
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     const mt::vec3f & Transformation::getWorldPosition() const

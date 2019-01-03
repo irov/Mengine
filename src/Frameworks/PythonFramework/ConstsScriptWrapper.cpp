@@ -1,6 +1,5 @@
-#include "PythonWrapper.h"
+#include "ConstsScriptWrapper.h"
 
-#include "Interface/ScriptServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 
 #include "pybind/pybind.hpp"
@@ -173,9 +172,18 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonWrapper::constsWrap()
+    ConstsScriptWrapper::ConstsScriptWrapper()
     {
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ConstsScriptWrapper::~ConstsScriptWrapper()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ConstsScriptWrapper::embedding()
+    {
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
 
         pybind::registration_stl_vector_type_cast<ConstString, VectorConstString>(kernel);
 
@@ -194,6 +202,17 @@ namespace Mengine
             ;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ConstsScriptWrapper::ejecting()
+    {
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
+
+        pybind::unregistration_stl_vector_type_cast<ConstString, VectorConstString>(kernel);
+
+        kernel->remove_from_module( "ConstString", nullptr );
+        kernel->remove_from_module( "FilePath", nullptr );
     }
 }
 

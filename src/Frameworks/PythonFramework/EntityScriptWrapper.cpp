@@ -1,4 +1,4 @@
-#include "PythonWrapper.h"
+#include "EntityScriptWrapper.h"
 
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
@@ -14,6 +14,7 @@
 #include "Kernel/Scene.h"
 #include "Kernel/Arrow.h"
 #include "Kernel/FactoryPool.h"
+#include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
 
 #include "pybind/pybind.hpp"
@@ -21,6 +22,7 @@
 namespace Mengine
 {
     class EntityScriptMethod
+        : public Factorable
     {
     public:
         EntityScriptMethod()
@@ -28,9 +30,11 @@ namespace Mengine
             m_factoryEntityPrototypeGenerator = new FactoryPool<EntityPrototypeGenerator, 64>();
         }
 
-        ~EntityScriptMethod()
+        ~EntityScriptMethod() override
         {
-            m_factoryEntityPrototypeGenerator = new FactoryPool<EntityPrototypeGenerator, 64>();
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryEntityPrototypeGenerator );
+
+            m_factoryEntityPrototypeGenerator = nullptr;
         }
 
     public:
@@ -115,21 +119,6 @@ namespace Mengine
     protected:
         FactoryPtr m_factoryEntityPrototypeGenerator;
     };
-    //////////////////////////////////////////////////////////////////////////
-    static bool classWrapping()
-    {
-        pybind::kernel_interface * kernel = pybind::get_kernel();
-
-# define SCRIPT_CLASS_WRAPPING( Class )\
-    VOCALUBARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), new FactorableUnique<PythonScriptWrapper<Class> >(kernel))
-
-        SCRIPT_CLASS_WRAPPING( Entity );
-        SCRIPT_CLASS_WRAPPING( Scene );
-
-#	undef SCRIPT_CLASS_WRAPPING
-
-        return true;
-    }
     //////////////////////////////////////////////////////////////////////////
     class superclass_new_Entity
         : public pybind::new_adapter_interface
@@ -257,14 +246,18 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    bool PythonWrapper::entityWrap()
+    bool EntityScriptWrapper::embedding()
     {
-        if( classWrapping() == false )
-        {
-            return false;
-        }
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
 
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+# define SCRIPT_CLASS_WRAPPING( Class )\
+    VOCALUBARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), new FactorableUnique<PythonScriptWrapper<Class> >(kernel))
+
+        SCRIPT_CLASS_WRAPPING( Entity );
+        SCRIPT_CLASS_WRAPPING( Scene );
+
+#	undef SCRIPT_CLASS_WRAPPING        
 
         pybind::superclass_<Entity, pybind::bases<Node> >( kernel, "Entity", nullptr, new superclass_new_Entity, new superclass_destroy_Entity, false )
             .def_constructor( pybind::init<>() )
@@ -302,10 +295,21 @@ namespace Mengine
         pybind::def_functor_kernel( kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
         //pybind::def_function( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );
 
+        m_implement = entityScriptMethod;
+
         VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), new FactorableUnique<PythonScriptWrapper<Arrow> >( kernel ) );
         VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ), new FactorableUnique<PythonScriptWrapper<Entity> >( kernel ) );
         VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), new FactorableUnique<PythonScriptWrapper<Scene> >( kernel ) );
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void EntityScriptWrapper::ejecting()
+    {
+        m_implement = nullptr;
+
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ) );
     }
 }

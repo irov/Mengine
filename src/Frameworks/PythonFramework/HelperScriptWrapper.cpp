@@ -1,4 +1,4 @@
-#include "PythonWrapper.h"
+#include "HelperScriptWrapper.h"
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
@@ -70,9 +70,14 @@ namespace Mengine
     typedef Vector<HotSpotPolygon *> VectorHotSpotPolygons;
     //////////////////////////////////////////////////////////////////////////
     class HelperScriptMethod
+        : public Factorable
     {
     public:
         HelperScriptMethod()
+        {
+        }
+
+        ~HelperScriptMethod() override
         {
         }
 
@@ -1052,7 +1057,7 @@ namespace Mengine
         pybind::list s_textures( pybind::kernel_interface * _kernel )
         {
             pybind::list py_list( _kernel );
-            
+
             RENDERTEXTURE_SERVICE()
                 ->visitTexture( [&py_list]( const RenderTextureInterfacePtr & _texture )
             {
@@ -3135,11 +3140,18 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    bool PythonWrapper::helperWrap()
+    HelperScriptWrapper::HelperScriptWrapper()
     {
-        pybind::kernel_interface * kernel = pybind::get_kernel();
-
-        HelperScriptMethod * helperScriptMethod = new HelperScriptMethod();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    HelperScriptWrapper::~HelperScriptWrapper()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool HelperScriptWrapper::embedding()
+    {
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
 
         pybind::registration_type_cast<Blobject>(kernel, new extract_Blobject_type);
         pybind::registration_type_cast<Tags>(kernel, new extract_Tags_type);
@@ -3155,6 +3167,8 @@ namespace Mengine
 
         pybind::registration_stl_vector_type_cast<String, Vector<String>>(kernel);
         pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(kernel);
+
+        HelperScriptMethod * helperScriptMethod = new HelperScriptMethod();
 
         pybind::def_functor( kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
 
@@ -3426,6 +3440,31 @@ namespace Mengine
 
         pybind::def_functor( kernel, "getHotSpotPolygonBoundingBox", helperScriptMethod, &HelperScriptMethod::s_getHotSpotPolygonBoundingBox );
 
+        m_implement = helperScriptMethod;
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void HelperScriptWrapper::ejecting()
+    {
+        m_implement = nullptr;
+
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
+
+        pybind::unregistration_type_cast<Blobject>(kernel);
+        pybind::unregistration_type_cast<Tags>(kernel);
+
+        pybind::unregistration_stl_vector_type_cast<ResourceImage *, VectorResourceImage>(kernel);
+        pybind::unregistration_stl_vector_type_cast<HotSpotPolygon *, VectorHotSpotPolygons>(kernel);
+
+        pybind::unregistration_stl_map_type_cast<ConstString, WString, MapWParams>(kernel);
+        pybind::unregistration_stl_map_type_cast<ConstString, String, MapParams>(kernel);
+
+        pybind::unregistration_type_cast<String>(kernel);
+        pybind::unregistration_type_cast<WString>(kernel);
+
+        pybind::unregistration_stl_vector_type_cast<String, Vector<String>>(kernel);
+        pybind::unregistration_stl_vector_type_cast<WString, Vector<WString>>(kernel);
     }
 }

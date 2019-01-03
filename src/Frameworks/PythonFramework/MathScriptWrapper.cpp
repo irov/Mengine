@@ -1,4 +1,6 @@
-#include "PythonWrapper.h"
+#include "MathScriptWrapper.h"
+
+#include "Interface/ScriptServiceInterface.h"
 
 #include "Config/String.h"
 #include "Config/Stringstream.h"
@@ -581,9 +583,18 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PythonWrapper::mathWrap()
+    MathScriptWrapper::MathScriptWrapper()
     {
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    MathScriptWrapper::~MathScriptWrapper()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool MathScriptWrapper::embedding()
+    {
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
 
         pybind::registration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(kernel);
         pybind::registration_stl_vector_type_cast<Polygon, Vector<Polygon>>(kernel);
@@ -744,6 +755,15 @@ namespace Mengine
             ;
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void MathScriptWrapper::ejecting()
+    {
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
+
+        pybind::unregistration_stl_vector_type_cast<mt::vec2f, Vector<mt::vec2f>>(kernel);
+        pybind::unregistration_stl_vector_type_cast<Polygon, Vector<Polygon>>(kernel);
     }
 }
 

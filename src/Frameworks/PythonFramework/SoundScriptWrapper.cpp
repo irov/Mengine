@@ -1,4 +1,4 @@
-#include "PythonWrapper.h"
+#include "SoundScriptWrapper.h"
 
 #include "Interface/AmplifierInterface.h"
 #include "Interface/SoundServiceInterface.h"
@@ -6,10 +6,12 @@
 #include "Interface/ResourceServiceInterface.h"
 #include "Interface/PlayerInterface.h"
 #include "Interface/StringizeServiceInterface.h"
+#include "Interface/ScriptServiceInterface.h"
 
 #include "Kernel/Affectorable.h"
 #include "Kernel/Affector.h"
 #include "Kernel/AffectorHelper.h"
+#include "Kernel/AssertionFactory.h"
 
 #include "Config/Lambda.h"
 
@@ -25,12 +27,22 @@
 namespace Mengine
 {
     class SoundScriptMethod
+        : public Factorable
     {
     public:
         SoundScriptMethod()
         {
             m_factorySoundAffectorCallback = new FactoryPool<SoundAffectorCallback, 4>();
             m_factoryMusicAffectorCallback = new FactoryPool<MusicAffectorCallback, 4>();
+        }
+
+        ~SoundScriptMethod() override
+        {
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factorySoundAffectorCallback );
+            MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryMusicAffectorCallback );
+
+            m_factorySoundAffectorCallback = nullptr;
+            m_factoryMusicAffectorCallback = nullptr;
         }
 
     public:
@@ -407,7 +419,7 @@ namespace Mengine
 
             if( sourceEmitter == nullptr )
             {
-                LOGGER_ERROR( "soundPlay: can't get resource '%s'"
+                LOGGER_ERROR( "can't get resource '%s'"
                     , _resourceName.c_str()
                 );
 
@@ -417,7 +429,7 @@ namespace Mengine
             if( SOUND_SERVICE()
                 ->playEmitter( sourceEmitter ) == false )
             {
-                LOGGER_ERROR( "soundPlay: invalid play '%s'"
+                LOGGER_ERROR( "invalid play '%s'"
                     , _resourceName.c_str()
                 );
 
@@ -467,7 +479,7 @@ namespace Mengine
             if( SOUND_SERVICE()
                 ->setSourceVolume( _emitter, _volume, _volume, true ) == false )
             {
-                LOGGER_ERROR( "SoundScriptWrapper::s_soundSourceSetVolume invalid source volume %d"
+                LOGGER_ERROR( "invalid source volume %d"
                     , _emitter->getId()
                 );
             }
@@ -515,6 +527,10 @@ namespace Mengine
             PythonAmplifierMusicCallback( const pybind::object & _cb, const pybind::args & _args )
                 : m_cb( _cb )
                 , m_args( _args )
+            {
+            }
+
+            ~PythonAmplifierMusicCallback() override
             {
             }
 
@@ -791,13 +807,13 @@ namespace Mengine
             return silent;
         }
     };
-
     //////////////////////////////////////////////////////////////////////////
-    bool PythonWrapper::soundWrap()
+    bool SoundScriptWrapper::embedding()
     {
-        SoundScriptMethod * soundScriptMethod = new SoundScriptMethod();
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
 
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        SoundScriptMethod * soundScriptMethod = new SoundScriptMethod();
 
         pybind::interface_<SoundIdentityInterface, pybind::bases<Mixin> >( kernel, "SoundIdentity" )
             .def( "getId", &SoundIdentityInterface::getId )
@@ -850,6 +866,13 @@ namespace Mengine
         pybind::def_functor( kernel, "voiceSetVolume", soundScriptMethod, &SoundScriptMethod::voiceSetVolume );
         pybind::def_functor( kernel, "voiceGetVolume", soundScriptMethod, &SoundScriptMethod::voiceGetVolume );
 
+        m_implement = soundScriptMethod;
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundScriptWrapper::ejecting()
+    {
+        m_implement = nullptr;
     }
 }

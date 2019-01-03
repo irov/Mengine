@@ -1,4 +1,4 @@
-#include "EngineScriptWrapper.h"
+#include "EngineScriptEmbedding.h"
 
 #include "Config/Lambda.h"
 
@@ -3371,15 +3371,15 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    EngineScriptWrapper::EngineScriptWrapper()
+    EngineScriptEmbedding::EngineScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    EngineScriptWrapper::~EngineScriptWrapper()
+    EngineScriptEmbedding::~EngineScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool EngineScriptWrapper::embedding()
+    bool EngineScriptEmbedding::embedding()
     {
         EngineScriptMethod * nodeScriptMethod = new FactorableUnique<EngineScriptMethod>();
 
@@ -3677,7 +3677,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void EngineScriptWrapper::ejecting()
+    void EngineScriptEmbedding::ejecting()
     {
         m_implement = nullptr;
 

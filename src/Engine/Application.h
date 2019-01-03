@@ -32,9 +32,6 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        void parseArguments( const String & _args );
-
-    public:
         bool getAllowFullscreenSwitchShortcut() const override;
 
     public:
@@ -63,11 +60,13 @@ namespace Mengine
         bool registerBaseResourceTypes_();
         bool registerSceneGenerator_();
 
+    protected:
+        void unregisterBaseNodeTypes_();
+        void unregisterBaseResourceTypes_();
+        void unregisterSceneGenerator_();
+
     public:
         bool createRenderWindow() override;
-
-        //void screenshot( const RenderTextureInterfacePtr & _renderTargetImage, const mt::vec4f & _rect );
-
         void quit() override;
 
     public:

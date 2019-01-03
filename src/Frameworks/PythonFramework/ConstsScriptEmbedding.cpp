@@ -1,4 +1,4 @@
-#include "ConstsScriptWrapper.h"
+#include "ConstsScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
 
@@ -172,15 +172,15 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstsScriptWrapper::ConstsScriptWrapper()
+    ConstsScriptEmbedding::ConstsScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    ConstsScriptWrapper::~ConstsScriptWrapper()
+    ConstsScriptEmbedding::~ConstsScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ConstsScriptWrapper::embedding()
+    bool ConstsScriptEmbedding::embedding()
     {
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()
             ->getKernel();
@@ -204,7 +204,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ConstsScriptWrapper::ejecting()
+    void ConstsScriptEmbedding::ejecting()
     {
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()
             ->getKernel();

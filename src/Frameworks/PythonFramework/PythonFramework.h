@@ -18,6 +18,7 @@ namespace Mengine
         void _finalizeService() override;
 
     protected:
-        void onFrameworkInitialize() override;
+        bool onFrameworkInitialize() override;
+        void onFrameworkFinalize() override;
     };
 }

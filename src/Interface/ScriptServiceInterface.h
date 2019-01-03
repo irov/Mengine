@@ -60,7 +60,7 @@ namespace Mengine
         virtual void removeGlobalModule( const Char * _name ) = 0;
 
     public:
-        virtual void addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) = 0;
+        virtual bool addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) = 0;
         virtual void removeScriptEmbedding( const ConstString & _name ) = 0;
 
     public:

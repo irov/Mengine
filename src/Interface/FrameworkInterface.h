@@ -10,7 +10,8 @@ namespace Mengine
         SERVICE_DECLARE( "Framework" );
 
     public:
-        virtual void onFrameworkInitialize() = 0;
+        virtual bool onFrameworkInitialize() = 0;
+        virtual void onFrameworkFinalize() = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

@@ -6,13 +6,13 @@
 
 namespace Mengine
 {
-    class HelperScriptWrapper
+    class HelperScriptEmbedding
         : public ScriptEmbeddingInterface
         , public Factorable
     {
     public:
-        HelperScriptWrapper();
-        ~HelperScriptWrapper() override;
+        HelperScriptEmbedding();
+        ~HelperScriptEmbedding() override;
 
     public:
         bool embedding() override;

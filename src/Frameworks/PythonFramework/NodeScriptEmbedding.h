@@ -6,13 +6,13 @@
 
 namespace Mengine
 {
-    class SoundScriptWrapper
+    class NodeScriptEmbedding
         : public ScriptEmbeddingInterface
         , public Factorable
     {
     public:
-        SoundScriptWrapper();
-        ~SoundScriptWrapper() override;
+        NodeScriptEmbedding();
+        ~NodeScriptEmbedding() override;
 
     public:
         bool embedding() override;

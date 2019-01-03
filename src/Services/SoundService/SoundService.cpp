@@ -738,6 +738,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::playEmitter( const SoundIdentityInterfacePtr & _identity )
     {
+        if( _identity == nullptr )
+        {
+            return false;
+        }
+
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
         this->updateSourceVolume_( identity );
@@ -793,6 +798,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::pauseEmitter( const SoundIdentityInterfacePtr & _identity )
     {
+        if( _identity == nullptr )
+        {
+            return false;
+        }
+
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
         ESoundSourceState state = identity->getState();
@@ -833,6 +843,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::resumeEmitter( const SoundIdentityInterfacePtr & _identity )
     {
+        if( _identity == nullptr )
+        {
+            return false;
+        }
+
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
         ESoundSourceState state = identity->getState();
@@ -884,8 +899,13 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SoundService::stopEmitter( const SoundIdentityInterfacePtr & _identity )
     {
-        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        if( _identity == nullptr )
+        {
+            return false;
+        }
 
+        SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
+        
         switch( identity->state )
         {
         case ESS_PLAY:

@@ -2,15 +2,18 @@
 
 #include "Interface/LoggerInterface.h"
 
+#include "Kernel/Factorable.h"
+
 #include "pybind/types.hpp"
 
 namespace Mengine
 {
     class ScriptLogger
+        : public Factorable
     {
     public:
         ScriptLogger();
-        virtual ~ScriptLogger();
+        ~ScriptLogger() override;
 
     public:
         virtual void write( const Char * _msg, uint32_t _size );
@@ -30,4 +33,7 @@ namespace Mengine
 
         int32_t m_softspace;
     };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ScriptLogger> ScriptLoggerPtr;
+    //////////////////////////////////////////////////////////////////////////
 }

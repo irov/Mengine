@@ -6,19 +6,16 @@
 
 namespace Mengine
 {
-    class EngineScriptWrapper
+    class ConstsScriptEmbedding
         : public ScriptEmbeddingInterface
         , public Factorable
     {
     public:
-        EngineScriptWrapper();
-        ~EngineScriptWrapper() override;
+        ConstsScriptEmbedding();
+        ~ConstsScriptEmbedding() override;
 
     public:
         bool embedding() override;
         void ejecting() override;
-
-    protected:
-        FactorablePtr m_implement;
     };
 }

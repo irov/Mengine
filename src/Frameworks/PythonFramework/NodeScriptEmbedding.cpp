@@ -1,4 +1,4 @@
-#include "NodeScriptWrapper.h"
+#include "NodeScriptEmbedding.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/TimelineServiceInterface.h"
@@ -2327,7 +2327,15 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    bool NodeScriptWrapper::embedding()
+    NodeScriptEmbedding::NodeScriptEmbedding()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    NodeScriptEmbedding::~NodeScriptEmbedding()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool NodeScriptEmbedding::embedding()
     {
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()
             ->getKernel();
@@ -2400,7 +2408,7 @@ namespace Mengine
 
 #undef SCRIPT_CLASS_WRAPPING
 
-        NodeScriptMethod * nodeScriptMethod = new NodeScriptMethod();
+        NodeScriptMethod * nodeScriptMethod = new FactorableUnique<NodeScriptMethod>();
 
         pybind::interface_<Mixin>( kernel, "Mixin", true )
             .def_smart_pointer()
@@ -3185,7 +3193,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeScriptWrapper::ejecting()
+    void NodeScriptEmbedding::ejecting()
     {
 #define UNSCRIPT_CLASS_WRAPPING( Class )\
     VOCALUBARY_REMOVE(STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class))

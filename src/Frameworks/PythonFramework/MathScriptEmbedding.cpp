@@ -1,4 +1,4 @@
-#include "MathScriptWrapper.h"
+#include "MathScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
 
@@ -583,15 +583,15 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    MathScriptWrapper::MathScriptWrapper()
+    MathScriptEmbedding::MathScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    MathScriptWrapper::~MathScriptWrapper()
+    MathScriptEmbedding::~MathScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool MathScriptWrapper::embedding()
+    bool MathScriptEmbedding::embedding()
     {
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()
             ->getKernel();
@@ -757,7 +757,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MathScriptWrapper::ejecting()
+    void MathScriptEmbedding::ejecting()
     {
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()
             ->getKernel();

@@ -384,7 +384,7 @@ namespace Mengine
                     return nullptr;
                 }
 
-                if( record->hash == _hash && record->key == _key )
+                if( record->hash == _hash && record->key == _key && record->element.get() != reinterpret_cast<const element_type *>(~0) )
                 {
                     element_type_ptr pop_element = record->element;
 

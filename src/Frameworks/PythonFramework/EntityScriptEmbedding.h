@@ -6,13 +6,13 @@
 
 namespace Mengine
 {
-    class GameScriptWrapper
+    class EntityScriptEmbedding
         : public ScriptEmbeddingInterface
         , public Factorable
     {
     public:
-        GameScriptWrapper();
-        ~GameScriptWrapper() override;
+        EntityScriptEmbedding();
+        ~EntityScriptEmbedding() override;
 
     public:
         bool embedding() override;

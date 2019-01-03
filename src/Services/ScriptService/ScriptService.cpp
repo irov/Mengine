@@ -118,8 +118,6 @@ namespace Mengine
     ScriptService::ScriptService()
         : m_kernel( nullptr )
         , m_moduleMenge( nullptr )
-        , m_loggerWarning( nullptr )
-        , m_loggerError( nullptr )
         , m_initializeModules( false )
     {
     }
@@ -208,14 +206,14 @@ namespace Mengine
             .def_property( "softspace", &ScriptLogger::getSoftspace, &ScriptLogger::setSoftspace )
             ;
 
-        m_loggerWarning = new ScriptLogger();
+        m_loggerWarning = new FactorableUnique<ScriptLogger>();
 
         m_loggerWarning->setMessageLevel( LM_WARNING );
 
         pybind::object py_logger = pybind::make_object_t( m_kernel, m_loggerWarning );
         kernel->setStdOutHandle( py_logger.ptr() );
 
-        m_loggerError = new ScriptLogger();
+        m_loggerError = new FactorableUnique<ScriptLogger>();
 
         m_loggerError->setMessageLevel( LM_ERROR );
 
@@ -307,18 +305,16 @@ namespace Mengine
             m_moduleFinder = nullptr;
         }
 
-        delete m_loggerWarning;
         m_loggerWarning = nullptr;
-
-        m_kernel->setStdOutHandle( nullptr );
-
-        delete m_loggerError;
         m_loggerError = nullptr;
 
+        m_kernel->setStdOutHandle( nullptr );
         m_kernel->setStdErrorHandle( nullptr );
 
         m_kernel->destroy();
         m_kernel = nullptr;
+
+        m_bootstrapperModules.clear();
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModule );
 
@@ -385,14 +381,23 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
+    bool ScriptService::addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding )
     {
+        if( _embedding->embedding() == false )
+        {
+            return false;
+        }
+
         m_embeddings.insert( _name, _embedding );
+
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void ScriptService::removeScriptEmbedding( const ConstString & _name )
     {
-        m_embeddings.remove( _name );
+        const ScriptEmbeddingInterfacePtr & embedding = m_embeddings.remove( _name );
+
+        embedding->ejecting();
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScriptService::bootstrapModules()
@@ -408,7 +413,7 @@ namespace Mengine
 
             if( module == nullptr )
             {
-                LOGGER_ERROR( "ScriptService::bootstrapModules invalid import module %s"
+                LOGGER_ERROR( "invalid import module '%s'"
                     , pak.module.c_str()
                 );
 

@@ -315,74 +315,52 @@ namespace Mengine
 
         m_locale.clear();
         m_projectCodename.clear();
+
+        this->unregisterBaseNodeTypes_();
+        this->unregisterBaseResourceTypes_();
+        this->unregisterSceneGenerator_();
+
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseNodeTypes_()
     {
+        LOGGER_WARNING( "Register Object Factory..." );
+
 #	define NODE_FACTORY( Type )\
         if( PROTOTYPE_SERVICE()\
             ->addPrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type), new FactorableUnique<NodePrototypeGenerator<Type, 128> > ) == false )\
 		{\
 			return false;\
-		}
-
-        LOGGER_WARNING( "Creating Object Factory..." );
+		}        
 
         NODE_FACTORY( Node );
-
         NODE_FACTORY( Entity );
-        //NODE_FACTORY( ScriptHolder );
         NODE_FACTORY( Arrow );
         NODE_FACTORY( Scene );
-
         NODE_FACTORY( Gyroscope );
         NODE_FACTORY( Isometric );
-        //NODE_FACTORY( Parallax );
         NODE_FACTORY( MatrixProxy );
-
-        //NODE_FACTORY( ParticleEmitter );
-        //NODE_FACTORY( ParticleEmitter2 );
-
         NODE_FACTORY( HotSpotPolygon );
         NODE_FACTORY( HotSpotCircle );
         NODE_FACTORY( HotSpotBubbles );
         NODE_FACTORY( HotSpotImage );
         NODE_FACTORY( HotSpotShape );
-        //NODE_FACTORY( Light2D );
-        //NODE_FACTORY( ShadowCaster2D );
-        //NODE_FACTORY( TilePolygon );
         NODE_FACTORY( Point );
         NODE_FACTORY( Line );
         NODE_FACTORY( SoundEmitter );
         NODE_FACTORY( Grid2D );
         NODE_FACTORY( TextField );
-        //NODE_FACTORY( TileMap );
-        //NODE_FACTORY( Track );
-
         NODE_FACTORY( Meshget );
-
-        //NODE_FACTORY( Model );
         NODE_FACTORY( Interender );
         NODE_FACTORY( Layer2D );
         NODE_FACTORY( Landscape2D );
-        //NODE_FACTORY( Layer2DParallax );
-        //NODE_FACTORY( Layer2DIsometric );
-        //NODE_FACTORY( Layer2DPhysic );
-        //NODE_FACTORY( Layer2DLoop );
-        //NODE_FACTORY( Layer2DAccumulator );
-        //NODE_FACTORY( Layer2DTexture );
-        //NODE_FACTORY( LayerScene );
-        //NODE_FACTORY( RenderMesh );
         NODE_FACTORY( RenderViewport );
         NODE_FACTORY( RenderScissor );
         NODE_FACTORY( RenderCameraOrthogonal );
         NODE_FACTORY( RenderCameraProjection );
         NODE_FACTORY( RenderCameraOrthogonalTarget );
-        //NODE_FACTORY( SceneNode3D );
         NODE_FACTORY( Window );
-
         NODE_FACTORY( ShapePacMan );
-
         NODE_FACTORY( ShapeQuadFixed );
         NODE_FACTORY( ShapeQuadFlex );
 
@@ -391,9 +369,9 @@ namespace Mengine
 #	define SURFACE_FACTORY(Type)\
         if( PROTOTYPE_SERVICE()\
             ->addPrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type), new FactorableUnique<SurfacePrototypeGenerator<Type, 128> > ) == false )\
-						{\
+		{\
 			return false;\
-						}
+	    }
 
         SURFACE_FACTORY( SurfaceSound );
         SURFACE_FACTORY( SurfaceImage );
@@ -404,6 +382,60 @@ namespace Mengine
 #	undef SURFACE_FACTORY
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::unregisterBaseNodeTypes_()
+    {
+        LOGGER_WARNING( "Unregister Object Factory..." );
+
+#	define NODE_FACTORY( Type )\
+        PROTOTYPE_SERVICE()\
+            ->removePrototype( STRINGIZE_STRING_LOCAL("Node"), STRINGIZE_STRING_LOCAL(#Type) )
+
+        NODE_FACTORY( Node );
+        NODE_FACTORY( Entity );
+        NODE_FACTORY( Arrow );
+        NODE_FACTORY( Scene );
+        NODE_FACTORY( Gyroscope );
+        NODE_FACTORY( Isometric );
+        NODE_FACTORY( MatrixProxy );
+        NODE_FACTORY( HotSpotPolygon );
+        NODE_FACTORY( HotSpotCircle );
+        NODE_FACTORY( HotSpotBubbles );
+        NODE_FACTORY( HotSpotImage );
+        NODE_FACTORY( HotSpotShape );
+        NODE_FACTORY( Point );
+        NODE_FACTORY( Line );
+        NODE_FACTORY( SoundEmitter );
+        NODE_FACTORY( Grid2D );
+        NODE_FACTORY( TextField );
+        NODE_FACTORY( Meshget );
+        NODE_FACTORY( Interender );
+        NODE_FACTORY( Layer2D );
+        NODE_FACTORY( Landscape2D );
+        NODE_FACTORY( RenderViewport );
+        NODE_FACTORY( RenderScissor );
+        NODE_FACTORY( RenderCameraOrthogonal );
+        NODE_FACTORY( RenderCameraProjection );
+        NODE_FACTORY( RenderCameraOrthogonalTarget );
+        NODE_FACTORY( Window );
+        NODE_FACTORY( ShapePacMan );
+        NODE_FACTORY( ShapeQuadFixed );
+        NODE_FACTORY( ShapeQuadFlex );
+
+#	undef NODE_FACTORY
+
+#	define SURFACE_FACTORY(Type)\
+        PROTOTYPE_SERVICE()\
+            ->removePrototype( STRINGIZE_STRING_LOCAL("Surface"), STRINGIZE_STRING_LOCAL(#Type) )
+
+        SURFACE_FACTORY( SurfaceSound );
+        SURFACE_FACTORY( SurfaceImage );
+        SURFACE_FACTORY( SurfaceImageSequence );
+        SURFACE_FACTORY( SurfaceTrackMatte );
+        SURFACE_FACTORY( SurfaceSolidColor );
+
+#	undef SURFACE_FACTORY
     }
     //////////////////////////////////////////////////////////////////////////
     namespace
@@ -443,7 +475,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::registerSceneGenerator_()
     {
-        LOGGER_INFO( "initialize Scene Manager..." );
+        LOGGER_INFO( "Register Scene Manager..." );
 
         PrototypeGeneratorInterfacePtr generator = new FactorableUnique<SceneCategoryGenerator>;
 
@@ -456,42 +488,71 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    void Application::unregisterSceneGenerator_()
+    {
+        LOGGER_INFO( "Register Scene Manager..." );
+
+        PROTOTYPE_SERVICE()
+            ->removePrototype( STRINGIZE_STRING_LOCAL( "Scene" ), ConstString::none() );
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Application::registerBaseResourceTypes_()
     {
-        LOGGER_INFO( "Initializing Resource Type..." );
+        LOGGER_INFO( "Register Resource Type..." );
 
-#	define RESOURCE_FACTORY( Type ) \
+#	define ADD_PROTOTYPE( Type ) \
 		if( PROTOTYPE_SERVICE()\
 			->addPrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type), new FactorableUnique<ResourcePrototypeGenerator<Type, 128> > ) == false )\
 		{\
 			return false;\
 		}
 
-        RESOURCE_FACTORY( ResourceMusic );
+        ADD_PROTOTYPE( ResourceMusic );
+        ADD_PROTOTYPE( ResourceImageSequence );
+        ADD_PROTOTYPE( ResourceImage );
+        ADD_PROTOTYPE( ResourceImageData );
+        ADD_PROTOTYPE( ResourceImageDefault );
+        ADD_PROTOTYPE( ResourceImageSubstract );
+        ADD_PROTOTYPE( ResourceImageSubstractRGBAndAlpha );
+        ADD_PROTOTYPE( ResourceImageSolid );
+        ADD_PROTOTYPE( ResourceSound );
+        ADD_PROTOTYPE( ResourceFile );
+        ADD_PROTOTYPE( ResourceWindow );
+        ADD_PROTOTYPE( ResourceHIT );
+        ADD_PROTOTYPE( ResourceShape );
+        ADD_PROTOTYPE( ResourceCursorICO );
+        ADD_PROTOTYPE( ResourceCursorSystem );
 
-        RESOURCE_FACTORY( ResourceImageSequence );
-
-        //RESOURCE_FACTORY( ResourceFont );
-        //RESOURCE_FACTORY( ResourceGlyph );
-
-        RESOURCE_FACTORY( ResourceImage );
-        RESOURCE_FACTORY( ResourceImageData );
-        RESOURCE_FACTORY( ResourceImageDefault );
-        RESOURCE_FACTORY( ResourceImageSubstract );
-        RESOURCE_FACTORY( ResourceImageSubstractRGBAndAlpha );
-        RESOURCE_FACTORY( ResourceImageSolid );
-        RESOURCE_FACTORY( ResourceSound );
-        RESOURCE_FACTORY( ResourceFile );
-
-        RESOURCE_FACTORY( ResourceWindow );
-        RESOURCE_FACTORY( ResourceHIT );
-        RESOURCE_FACTORY( ResourceShape );
-        RESOURCE_FACTORY( ResourceCursorICO );
-        RESOURCE_FACTORY( ResourceCursorSystem );
-
-#	undef RESOURCE_FACTORY
+#	undef ADD_PROTOTYPE
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Application::unregisterBaseResourceTypes_()
+    {
+        LOGGER_INFO( "Initializing Resource Type..." );
+
+#	define REMOVE_PROTOTYPE( Type ) \
+		PROTOTYPE_SERVICE()\
+			->removePrototype( STRINGIZE_STRING_LOCAL("Resource"), STRINGIZE_STRING_LOCAL(#Type) )
+
+        REMOVE_PROTOTYPE( ResourceMusic );
+        REMOVE_PROTOTYPE( ResourceImageSequence );
+        REMOVE_PROTOTYPE( ResourceImage );
+        REMOVE_PROTOTYPE( ResourceImageData );
+        REMOVE_PROTOTYPE( ResourceImageDefault );
+        REMOVE_PROTOTYPE( ResourceImageSubstract );
+        REMOVE_PROTOTYPE( ResourceImageSubstractRGBAndAlpha );
+        REMOVE_PROTOTYPE( ResourceImageSolid );
+        REMOVE_PROTOTYPE( ResourceSound );
+        REMOVE_PROTOTYPE( ResourceFile );
+        REMOVE_PROTOTYPE( ResourceWindow );
+        REMOVE_PROTOTYPE( ResourceHIT );
+        REMOVE_PROTOTYPE( ResourceShape );
+        REMOVE_PROTOTYPE( ResourceCursorICO );
+        REMOVE_PROTOTYPE( ResourceCursorSystem );
+
+#	undef RESOURCE_FACTORY
     }
     //////////////////////////////////////////////////////////////////////////
     bool Application::createRenderWindow()

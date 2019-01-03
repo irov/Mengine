@@ -6,16 +6,19 @@
 
 namespace Mengine
 {
-    class MathScriptWrapper
+    class GameScriptEmbedding
         : public ScriptEmbeddingInterface
         , public Factorable
     {
     public:
-        MathScriptWrapper();
-        ~MathScriptWrapper() override;
+        GameScriptEmbedding();
+        ~GameScriptEmbedding() override;
 
     public:
         bool embedding() override;
         void ejecting() override;
+
+    protected:
+        FactorablePtr m_implement;
     };
 }

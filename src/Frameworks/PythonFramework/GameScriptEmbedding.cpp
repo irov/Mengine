@@ -1,4 +1,4 @@
-#include "GameScriptWrapper.h"
+#include "GameScriptEmbedding.h"
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/GameServiceInterface.h"
@@ -261,15 +261,15 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    GameScriptWrapper::GameScriptWrapper()
+    GameScriptEmbedding::GameScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    GameScriptWrapper::~GameScriptWrapper()
+    GameScriptEmbedding::~GameScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool GameScriptWrapper::embedding()
+    bool GameScriptEmbedding::embedding()
     {
         bool developmentMode = HAS_OPTION( "dev" );
 
@@ -336,7 +336,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void GameScriptWrapper::ejecting()
+    void GameScriptEmbedding::ejecting()
     {
         //Empty
     }

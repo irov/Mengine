@@ -1,4 +1,4 @@
-#include "EntityScriptWrapper.h"
+#include "EntityScriptEmbedding.h"
 
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/ResourceServiceInterface.h"
@@ -246,18 +246,18 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    bool EntityScriptWrapper::embedding()
+    EntityScriptEmbedding::EntityScriptEmbedding()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EntityScriptEmbedding::~EntityScriptEmbedding()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool EntityScriptEmbedding::embedding()
     {
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()
             ->getKernel();
-
-# define SCRIPT_CLASS_WRAPPING( Class )\
-    VOCALUBARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), new FactorableUnique<PythonScriptWrapper<Class> >(kernel))
-
-        SCRIPT_CLASS_WRAPPING( Entity );
-        SCRIPT_CLASS_WRAPPING( Scene );
-
-#	undef SCRIPT_CLASS_WRAPPING        
 
         pybind::superclass_<Entity, pybind::bases<Node> >( kernel, "Entity", nullptr, new superclass_new_Entity, new superclass_destroy_Entity, false )
             .def_constructor( pybind::init<>() )
@@ -286,7 +286,7 @@ namespace Mengine
             //.def( "setMainLayer", &Scene::setMainLayer )
             ;
 
-        EntityScriptMethod * entityScriptMethod = new EntityScriptMethod();
+        EntityScriptMethod * entityScriptMethod = new FactorableUnique<EntityScriptMethod>();
 
         pybind::def_functor( kernel, "addEntityPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addEntityPrototypeFinder );
         pybind::def_functor( kernel, "addScenePrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addScenePrototypeFinder );
@@ -299,17 +299,17 @@ namespace Mengine
 
         VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), new FactorableUnique<PythonScriptWrapper<Arrow> >( kernel ) );
         VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ), new FactorableUnique<PythonScriptWrapper<Entity> >( kernel ) );
-        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ), new FactorableUnique<PythonScriptWrapper<Scene> >( kernel ) );
+        VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ), new FactorableUnique<PythonScriptWrapper<Scene> >( kernel ) );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void EntityScriptWrapper::ejecting()
+    void EntityScriptEmbedding::ejecting()
     {
         m_implement = nullptr;
 
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ) );
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Entity" ) );
-        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Arrow" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
     }
 }

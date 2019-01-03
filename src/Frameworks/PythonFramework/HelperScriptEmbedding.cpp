@@ -1,4 +1,4 @@
-#include "HelperScriptWrapper.h"
+#include "HelperScriptEmbedding.h"
 
 #include "Interface/UnicodeSystemInterface.h"
 #include "Interface/ResourceServiceInterface.h"
@@ -3140,15 +3140,15 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    HelperScriptWrapper::HelperScriptWrapper()
+    HelperScriptEmbedding::HelperScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    HelperScriptWrapper::~HelperScriptWrapper()
+    HelperScriptEmbedding::~HelperScriptEmbedding()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool HelperScriptWrapper::embedding()
+    bool HelperScriptEmbedding::embedding()
     {
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()
             ->getKernel();
@@ -3168,7 +3168,7 @@ namespace Mengine
         pybind::registration_stl_vector_type_cast<String, Vector<String>>(kernel);
         pybind::registration_stl_vector_type_cast<WString, Vector<WString>>(kernel);
 
-        HelperScriptMethod * helperScriptMethod = new HelperScriptMethod();
+        HelperScriptMethod * helperScriptMethod = new FactorableUnique<HelperScriptMethod>();
 
         pybind::def_functor( kernel, "filterpowf", helperScriptMethod, &HelperScriptMethod::filterpowf );
 
@@ -3445,7 +3445,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void HelperScriptWrapper::ejecting()
+    void HelperScriptEmbedding::ejecting()
     {
         m_implement = nullptr;
 

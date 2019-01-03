@@ -78,6 +78,11 @@ namespace Mengine
 
 #ifndef MENGINE_MASTER_RELEASE
         m_mixinss[_category].erase( _type );
+
+        if( m_mixinss[_category].empty() == true )
+        {
+            m_mixinss.erase( _category );
+        }
 #endif
 
         return mixin;

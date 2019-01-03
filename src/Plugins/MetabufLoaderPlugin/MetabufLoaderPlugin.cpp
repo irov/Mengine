@@ -51,7 +51,6 @@ namespace Mengine
         DECLARE_LOADER( ResourceImageSolid );
         DECLARE_LOADER( ResourceImageSubstract );
         DECLARE_LOADER( ResourceImageSubstractRGBAndAlpha );
-        DECLARE_LOADER( ResourceImageSubstractRGBAndAlpha );
         DECLARE_LOADER( ResourceMusic );
         DECLARE_LOADER( ResourceShape );
         DECLARE_LOADER( ResourceSound );
@@ -64,5 +63,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void MetabufLoaderPlugin::_finalizePlugin()
     {
+#define DECLARE_LOADER(T)\
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( #T ) )
+
+        DECLARE_LOADER( ResourceCursorICO );
+        DECLARE_LOADER( ResourceCursorSystem );
+        DECLARE_LOADER( ResourceFile );
+        DECLARE_LOADER( ResourceHIT );
+        DECLARE_LOADER( ResourceImageData );
+        DECLARE_LOADER( ResourceImageDefault );
+        DECLARE_LOADER( ResourceImageSequence );
+        DECLARE_LOADER( ResourceImageSolid );
+        DECLARE_LOADER( ResourceImageSubstract );
+        DECLARE_LOADER( ResourceImageSubstractRGBAndAlpha );
+        DECLARE_LOADER( ResourceMusic );
+        DECLARE_LOADER( ResourceShape );
+        DECLARE_LOADER( ResourceSound );
+        DECLARE_LOADER( ResourceWindow );
+
+#undef DECLARE_LOADER
     }
 }

@@ -6,19 +6,16 @@
 
 namespace Mengine
 {
-    class EntityScriptWrapper
+    class MathScriptEmbedding
         : public ScriptEmbeddingInterface
         , public Factorable
     {
     public:
-        EntityScriptWrapper();
-        ~EntityScriptWrapper() override;
+        MathScriptEmbedding();
+        ~MathScriptEmbedding() override;
 
     public:
         bool embedding() override;
         void ejecting() override;
-
-    protected:
-        FactorablePtr m_implement;
     };
 }

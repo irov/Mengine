@@ -55,7 +55,7 @@ namespace Mengine
         void removeModulePath( const FileGroupInterfacePtr & _fileGroup, const VectorScriptModulePack & _modules ) override;
 
     public:
-        void addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) override;
+        bool addScriptEmbedding( const ConstString & _name, const ScriptEmbeddingInterfacePtr & _embedding ) override;
         void removeScriptEmbedding( const ConstString & _name ) override;
 
     public:
@@ -86,8 +86,8 @@ namespace Mengine
 
         VectorScriptModulePack m_bootstrapperModules;
 
-        ScriptLogger * m_loggerWarning;
-        ScriptLogger * m_loggerError;
+        ScriptLoggerPtr m_loggerWarning;
+        ScriptLoggerPtr m_loggerError;
 
         typedef Hashtable<ConstString, ScriptEmbeddingInterfacePtr> HashtableEmbeddings;
         HashtableEmbeddings m_embeddings;

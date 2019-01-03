@@ -1,4 +1,4 @@
-#include "SoundScriptWrapper.h"
+#include "SoundScriptEmbedding.h"
 
 #include "Interface/AmplifierInterface.h"
 #include "Interface/SoundServiceInterface.h"
@@ -808,12 +808,20 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    bool SoundScriptWrapper::embedding()
+    SoundScriptEmbedding::SoundScriptEmbedding()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    SoundScriptEmbedding::~SoundScriptEmbedding()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundScriptEmbedding::embedding()
     {
         pybind::kernel_interface * kernel = SCRIPT_SERVICE()
             ->getKernel();
 
-        SoundScriptMethod * soundScriptMethod = new SoundScriptMethod();
+        SoundScriptMethod * soundScriptMethod = new FactorableUnique<SoundScriptMethod>();
 
         pybind::interface_<SoundIdentityInterface, pybind::bases<Mixin> >( kernel, "SoundIdentity" )
             .def( "getId", &SoundIdentityInterface::getId )
@@ -871,7 +879,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void SoundScriptWrapper::ejecting()
+    void SoundScriptEmbedding::ejecting()
     {
         m_implement = nullptr;
     }

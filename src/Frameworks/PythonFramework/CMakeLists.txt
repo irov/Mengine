@@ -48,14 +48,21 @@ PythonSchedule
 
 ADD_FILTER(
 Wrapper
-    PythonWrapper.h	
+    HelperScriptWrapper.h
     HelperScriptWrapper.cpp
+    SoundScriptWrapper.h
 	SoundScriptWrapper.cpp
+    NodeScriptWrapper.h
 	NodeScriptWrapper.cpp
+    EngineScriptWrapper.h
     EngineScriptWrapper.cpp
+    MathScriptWrapper.h
 	MathScriptWrapper.cpp
+    EntityScriptWrapper.h
 	EntityScriptWrapper.cpp
+    ConstsScriptWrapper.h
 	ConstsScriptWrapper.cpp
+    GameScriptWrapper.h
 	GameScriptWrapper.cpp
 )
 

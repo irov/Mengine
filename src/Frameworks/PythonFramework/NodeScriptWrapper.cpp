@@ -1,4 +1,4 @@
-#include "PythonWrapper.h"
+#include "NodeScriptWrapper.h"
 
 #include "Interface/ApplicationInterface.h"
 #include "Interface/TimelineServiceInterface.h"
@@ -164,7 +164,7 @@ namespace Mengine
             m_factoryNodeAffectorCallback = new FactoryPool<ScriptableAffectorCallback, 4>();
         }
 
-        ~NodeScriptMethod()
+        ~NodeScriptMethod() override
         {
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleEvent );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDelaySchedulePipe );
@@ -2327,11 +2327,10 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<NodeScriptMethod> NodeScriptMethodPtr;
-    //////////////////////////////////////////////////////////////////////////
-    static bool classWrapping()
+    bool NodeScriptWrapper::embedding()
     {
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
 
 #define SCRIPT_CLASS_WRAPPING( Class )\
     VOCALUBARY_SET(ScriptWrapperInterface, STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class), new FactorableUnique<PythonScriptWrapper<Class> >(kernel))
@@ -2348,8 +2347,6 @@ namespace Mengine
 
         SCRIPT_CLASS_WRAPPING( ScriptHolder );
 
-        //SCRIPT_CLASS_WRAPPING( Light2D );
-        //SCRIPT_CLASS_WRAPPING( ShadowCaster2D );
         SCRIPT_CLASS_WRAPPING( Gyroscope );
         SCRIPT_CLASS_WRAPPING( Interender );
         SCRIPT_CLASS_WRAPPING( Isometric );
@@ -2366,16 +2363,13 @@ namespace Mengine
         SCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
         SCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
 
-        //SCRIPT_CLASS_WRAPPING( RenderMesh );
         SCRIPT_CLASS_WRAPPING( Window );
 
-        //SCRIPT_CLASS_WRAPPING( Parallax );
         SCRIPT_CLASS_WRAPPING( RenderViewport );
         SCRIPT_CLASS_WRAPPING( RenderScissor );
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonal );
         SCRIPT_CLASS_WRAPPING( RenderCameraProjection );
         SCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
-        //SCRIPT_CLASS_WRAPPING( Layer2DTexture );
 
         SCRIPT_CLASS_WRAPPING( Resource );
         SCRIPT_CLASS_WRAPPING( ResourceImage );
@@ -2406,19 +2400,7 @@ namespace Mengine
 
 #undef SCRIPT_CLASS_WRAPPING
 
-        return true;
-    }
-
-    bool PythonWrapper::nodeWrap()
-    {
         NodeScriptMethod * nodeScriptMethod = new NodeScriptMethod();
-
-        pybind::kernel_interface * kernel = pybind::get_kernel();
-
-        if( classWrapping() == false )
-        {
-            return false;
-        }
 
         pybind::interface_<Mixin>( kernel, "Mixin", true )
             .def_smart_pointer()
@@ -3198,6 +3180,81 @@ namespace Mengine
             .def( "getTiming", &SchedulerInterface::getTime )
             ;
 
+        m_implement = nodeScriptMethod;
+
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeScriptWrapper::ejecting()
+    {
+#define UNSCRIPT_CLASS_WRAPPING( Class )\
+    VOCALUBARY_REMOVE(STRINGIZE_STRING_LOCAL("ClassWrapping"), STRINGIZE_STRING_LOCAL(#Class))
+
+        UNSCRIPT_CLASS_WRAPPING( Node );
+        UNSCRIPT_CLASS_WRAPPING( Layer );
+        UNSCRIPT_CLASS_WRAPPING( Layer2D );
+        UNSCRIPT_CLASS_WRAPPING( HotSpot );
+        UNSCRIPT_CLASS_WRAPPING( HotSpotPolygon );
+        UNSCRIPT_CLASS_WRAPPING( HotSpotCircle );
+        UNSCRIPT_CLASS_WRAPPING( HotSpotBubbles );
+        UNSCRIPT_CLASS_WRAPPING( HotSpotImage );
+        UNSCRIPT_CLASS_WRAPPING( HotSpotShape );
+
+        UNSCRIPT_CLASS_WRAPPING( ScriptHolder );
+
+        UNSCRIPT_CLASS_WRAPPING( Gyroscope );
+        UNSCRIPT_CLASS_WRAPPING( Interender );
+        UNSCRIPT_CLASS_WRAPPING( Isometric );
+        UNSCRIPT_CLASS_WRAPPING( MatrixProxy );
+        UNSCRIPT_CLASS_WRAPPING( TextField );
+        UNSCRIPT_CLASS_WRAPPING( SoundEmitter );
+        UNSCRIPT_CLASS_WRAPPING( Meshget );
+        UNSCRIPT_CLASS_WRAPPING( Point );
+        UNSCRIPT_CLASS_WRAPPING( Line );
+        UNSCRIPT_CLASS_WRAPPING( Landscape2D );
+        UNSCRIPT_CLASS_WRAPPING( Grid2D );
+
+        UNSCRIPT_CLASS_WRAPPING( ShapePacMan );
+        UNSCRIPT_CLASS_WRAPPING( ShapeQuadFixed );
+        UNSCRIPT_CLASS_WRAPPING( ShapeQuadFlex );
+
+        UNSCRIPT_CLASS_WRAPPING( Window );
+
+        UNSCRIPT_CLASS_WRAPPING( RenderViewport );
+        UNSCRIPT_CLASS_WRAPPING( RenderScissor );
+        UNSCRIPT_CLASS_WRAPPING( RenderCameraOrthogonal );
+        UNSCRIPT_CLASS_WRAPPING( RenderCameraProjection );
+        UNSCRIPT_CLASS_WRAPPING( RenderCameraOrthogonalTarget );
+
+        UNSCRIPT_CLASS_WRAPPING( Resource );
+        UNSCRIPT_CLASS_WRAPPING( ResourceImage );
+        UNSCRIPT_CLASS_WRAPPING( ResourceImageData );
+        UNSCRIPT_CLASS_WRAPPING( ResourceImageDefault );
+        UNSCRIPT_CLASS_WRAPPING( ResourceMusic );
+        UNSCRIPT_CLASS_WRAPPING( ResourceImageSequence );
+        UNSCRIPT_CLASS_WRAPPING( ResourceSound );
+        UNSCRIPT_CLASS_WRAPPING( ResourceFile );
+
+        UNSCRIPT_CLASS_WRAPPING( ResourceImageSolid );
+        UNSCRIPT_CLASS_WRAPPING( ResourceShape );
+        UNSCRIPT_CLASS_WRAPPING( ResourceCursorICO );
+        UNSCRIPT_CLASS_WRAPPING( ResourceCursorSystem );
+        UNSCRIPT_CLASS_WRAPPING( ResourceWindow );
+        UNSCRIPT_CLASS_WRAPPING( ResourceImageSubstractRGBAndAlpha );
+        UNSCRIPT_CLASS_WRAPPING( ResourceImageSubstract );
+
+        UNSCRIPT_CLASS_WRAPPING( ResourceTestPick );
+        UNSCRIPT_CLASS_WRAPPING( ResourceHIT );
+
+        UNSCRIPT_CLASS_WRAPPING( Surface );
+        UNSCRIPT_CLASS_WRAPPING( SurfaceSound );
+        UNSCRIPT_CLASS_WRAPPING( SurfaceImage );
+        UNSCRIPT_CLASS_WRAPPING( SurfaceImageSequence );
+        UNSCRIPT_CLASS_WRAPPING( SurfaceTrackMatte );
+        UNSCRIPT_CLASS_WRAPPING( SurfaceSolidColor );
+
+#undef UNSCRIPT_CLASS_WRAPPING
+
+        m_implement = nullptr;
     }
 }

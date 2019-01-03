@@ -1,4 +1,4 @@
-#include "PythonWrapper.h"
+#include "EngineScriptWrapper.h"
 
 #include "Config/Lambda.h"
 
@@ -153,6 +153,7 @@ namespace Mengine
     typedef Vector<HotSpotPolygon *> VectorHotSpotPolygons;
     //////////////////////////////////////////////////////////////////////////
     class EngineScriptMethod
+        : public Factorable
     {
     public:
         EngineScriptMethod()
@@ -174,7 +175,7 @@ namespace Mengine
             m_factoryPyInputMousePositionProvider = new FactoryPool<PyInputMousePositionProvider, 8>();
         }
 
-        ~EngineScriptMethod()
+        ~EngineScriptMethod() override
         {
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonScheduleTiming );
             MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryPythonSchedulePipe );
@@ -3370,11 +3371,20 @@ namespace Mengine
         }
     };
     //////////////////////////////////////////////////////////////////////////
-    bool PythonWrapper::engineWrap()
+    EngineScriptWrapper::EngineScriptWrapper()
     {
-        EngineScriptMethod * nodeScriptMethod = new EngineScriptMethod();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    EngineScriptWrapper::~EngineScriptWrapper()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool EngineScriptWrapper::embedding()
+    {
+        EngineScriptMethod * nodeScriptMethod = new FactorableUnique<EngineScriptMethod>();
 
-        pybind::kernel_interface * kernel = pybind::get_kernel();
+        pybind::kernel_interface * kernel = SCRIPT_SERVICE()
+            ->getKernel();
 
         pybind::def_functor_args( kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );
         pybind::def_functor( kernel, "getCurrentScene", nodeScriptMethod, &EngineScriptMethod::getCurrentScene );
@@ -3633,6 +3643,8 @@ namespace Mengine
         pybind::def_functor_args( kernel, "createValueFollowerAcceleration", nodeScriptMethod, &EngineScriptMethod::s_createValueFollowerAcceleration );
         pybind::def_functor( kernel, "destroyValueFollower", nodeScriptMethod, &EngineScriptMethod::s_destroyValueFollower );
 
+        m_implement = nodeScriptMethod;
+
         VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerLinear> >( kernel ) );
         VOCALUBARY_SET( ScriptWrapperInterface, STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ), new FactorableUnique<PythonScriptWrapper<PythonValueFollowerAcceleration> >( kernel ) );
 
@@ -3662,7 +3674,18 @@ namespace Mengine
             return false;
         }
 
-
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void EngineScriptWrapper::ejecting()
+    {
+        m_implement = nullptr;
+
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ) );
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ) );
+
+        PROTOTYPE_SERVICE()->removePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerLinear" ) );
+        PROTOTYPE_SERVICE()->removePrototype( STRINGIZE_STRING_LOCAL( "Affector" ), STRINGIZE_STRING_LOCAL( "PythonValueFollowerAcceleration" ) );
+        PROTOTYPE_SERVICE()->removePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), STRINGIZE_STRING_LOCAL( "MT19937Randomizer" ) );
     }
 }

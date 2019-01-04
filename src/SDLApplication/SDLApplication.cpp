@@ -61,32 +61,6 @@
 
 #include "SDL_filesystem.h"
 
-#ifdef WIN32
-#	ifdef _WIN32_WINNT	
-#       undef _WIN32_WINNT
-#       define _WIN32_WINNT 0x0500
-#   endif
-
-#   ifdef _WIN32_WINDOWS
-#       undef _WIN32_WINDOWS
-#       define _WIN32_WINDOWS 0x0500
-#   endif
-
-#	define WIN32_LEAN_AND_MEAN
-
-#	ifndef NOMINMAX
-#	define NOMINMAX
-#	endif
-
-#   pragma warning(push, 0) 
-#	include <Windows.h>
-#   include <WinUser.h>
-
-#   include <shellapi.h>
-#   include <shlobj.h>
-#   pragma warning(pop)
-#endif
-
 #ifdef _MSC_VER
 #	define snprintf _snprintf
 #endif
@@ -156,6 +130,7 @@ SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( SceneService );
 SERVICE_EXTERN( ChronometerService );
+SERVICE_EXTERN( PickerService )
 SERVICE_EXTERN( Framework );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( ImageCodec );
@@ -167,24 +142,28 @@ PLUGIN_EXPORT( BitmapFont );
 PLUGIN_EXPORT( DebugRender );
 PLUGIN_EXPORT( ResourceValidate );
 
-#ifdef MENGINE_PLUGIN_VIDEO
+#ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
+PLUGIN_EXPORT( MetabufLoader );
+#endif
+
+#ifdef MENGINE_PLUGIN_VIDEO_STATIC
 PLUGIN_EXPORT( Video );
 #endif
 
-#ifdef MENGINE_PLUGIN_THEORA
+#ifdef MENGINE_PLUGIN_THEORA_STATIC
 PLUGIN_EXPORT( Theora );
 #endif
 
-#ifdef MENGINE_PLUGIN_TTF
-#ifndef MENGINE_PLUGIN_TTF_DLL
+#ifdef MENGINE_PLUGIN_TTF_STATIC
 PLUGIN_EXPORT( TTF );
 #endif
-#endif
 
-#ifdef MENGINE_PLUGIN_SPINE
-#ifndef MENGINE_PLUGIN_SPINE_DLL
+#ifdef MENGINE_PLUGIN_SPINE_STATIC
 PLUGIN_EXPORT( Spine );
 #endif
+
+#ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
+PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
 
 PLUGIN_EXPORT( Movie );
@@ -193,31 +172,27 @@ PLUGIN_EXPORT( OggVorbis );
 //PLUGIN_EXPORT( PathFinder );
 PLUGIN_EXPORT( SDLFileGroup );
 
-#ifdef MENGINE_PLUGIN_ASTRALAX
-#ifndef MENGINE_PLUGIN_ASTRALAX_DLL
+#ifdef MENGINE_PLUGIN_ASTRALAX_STATIC
 PLUGIN_EXPORT( AstralaxParticlePlugin2 );
 #endif
-#endif
 
-#ifdef MENGINE_PLUGIN_STEAM
-#ifndef MENGINE_PLUGIN_STEAM_DLL
+#ifdef MENGINE_PLUGIN_STEAM_STATIC
 PLUGIN_EXPORT( Steam );
 #endif
-#endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
 PLUGIN_EXPORT( AndroidNativeFacebook );
 #endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
 PLUGIN_EXPORT( AndroidNativeUnityAds );
 #endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
 PLUGIN_EXPORT( AndroidNativeAdMob );
 #endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
 PLUGIN_EXPORT( AndroidNativeDevToDev );
 #endif
 
@@ -642,6 +617,7 @@ namespace Mengine
         SERVICE_CREATE( GraveyardService );
         SERVICE_CREATE( PackageService );
         SERVICE_CREATE( UserdataService );
+        SERVICE_CREATE( PickerService );
         SERVICE_CREATE( PlayerService );
         SERVICE_CREATE( GameService );
         SERVICE_CREATE( TimelineService );
@@ -654,11 +630,11 @@ namespace Mengine
         LOGGER_ERROR( "Invalid %s", Info );}else{\
         LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
 
-#ifdef MENGINE_PLUGIN_DEBUGRENDER
+#ifdef MENGINE_PLUGIN_DEBUGRENDER_STATIC
         MENGINE_ADD_PLUGIN( DebugRender, "initialize Plugin Debug Render..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
+#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE_STATIC
         MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
 #endif
 
@@ -667,26 +643,31 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
         MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier..." );
 
-#ifdef MENGINE_PLUGIN_VIDEO
+#ifdef MENGINE_PLUGIN_VIDEO_STATIC
         MENGINE_ADD_PLUGIN( Video, "initialize Plugin Video..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_THEORA
+#ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
+        MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
+        MENGINE_ADD_PLUGIN( MetabufLoader, "initialize Plugin Metabuf Loader..." );
+#endif
+
+
+#ifdef MENGINE_PLUGIN_THEORA_STATIC
         MENGINE_ADD_PLUGIN( Theora, "initialize Plugin Theora..." );
 #endif
 
         MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin TTF..." );
 
-#ifdef MENGINE_PLUGIN_TTF
-#ifndef MENGINE_PLUGIN_TTF_DLL
+#ifdef MENGINE_PLUGIN_TTF_STATIC
         MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
 #endif
-#endif
 
-#ifdef MENGINE_PLUGIN_SPINE
-#ifndef MENGINE_PLUGIN_SPINE_DLL
+#ifdef MENGINE_PLUGIN_SPINE_STATIC
         MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
-#endif
 #endif
         MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
         //MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
@@ -694,32 +675,28 @@ namespace Mengine
 
         //MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
 
-#ifdef MENGINE_PLUGIN_ASTRALAX
-#ifndef MENGINE_PLUGIN_ASTRALAX_DLL
+#ifdef MENGINE_PLUGIN_ASTRALAX_STATIC
         MENGINE_ADD_PLUGIN( AstralaxParticlePlugin2, "initialize Astralax Particle Plugin..." );
 #endif
-#endif
 
 
-#ifdef MENGINE_PLUGIN_STEAM
-#ifndef MENGINE_PLUGIN_STEAM_DLL
+#ifdef MENGINE_PLUGIN_STEAM_STATIC
         MENGINE_ADD_PLUGIN( Steam, "initialize Steam Plugin..." );
 #endif
-#endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeFacebook, "initialize Android Facebook Native..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_UNITYADS_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeUnityAds, "initialize Android Unity Ads Native..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_ADMOB_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeAdMob, "initialize Android AdMob Native..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV
+#ifdef MENGINE_PLUGIN_ANDROID_NATIVE_DEVTODEV_STATIC
         MENGINE_ADD_PLUGIN( AndroidNativeDevToDev, "initialize Android DevToDev Native..." );
 #endif
 
@@ -902,16 +879,20 @@ namespace Mengine
         THREAD_SERVICE()
             ->stopTasks();
 
+        SERVICE_FINALIZE( Mengine::AccountServiceInterface );
         SERVICE_FINALIZE( Mengine::GameServiceInterface );
+        SERVICE_FINALIZE( Mengine::PickerServiceInterface );
         SERVICE_FINALIZE( Mengine::PlayerServiceInterface );
         SERVICE_FINALIZE( Mengine::PackageServiceInterface );
         SERVICE_FINALIZE( Mengine::UserdataServiceInterface );
         SERVICE_FINALIZE( Mengine::GraveyardInterface );
+        SERVICE_FINALIZE( Mengine::ChronometerServiceInterface );
         SERVICE_FINALIZE( Mengine::UpdateServiceInterface );
         SERVICE_FINALIZE( Mengine::ResourceServiceInterface );
         SERVICE_FINALIZE( Mengine::TextServiceInterface );
         SERVICE_FINALIZE( Mengine::PrototypeServiceInterface );
         SERVICE_FINALIZE( Mengine::ApplicationInterface );
+        SERVICE_FINALIZE( Mengine::FrameworkInterface );
         SERVICE_FINALIZE( Mengine::PrefetcherServiceInterface );
         SERVICE_FINALIZE( Mengine::DataServiceInterface );
         SERVICE_FINALIZE( Mengine::PluginServiceInterface );

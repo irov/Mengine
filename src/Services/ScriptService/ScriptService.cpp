@@ -551,6 +551,9 @@ namespace Mengine
                 }
             } );
         }
+
+        _cb->onPrefetchPreparation();
+        _cb->onPrefetchComplete( true );
     }
     //////////////////////////////////////////////////////////////////////////
     PyObject * ScriptService::initModule( const Char * _name )

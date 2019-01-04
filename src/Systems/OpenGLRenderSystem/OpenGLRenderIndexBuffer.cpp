@@ -88,7 +88,7 @@ namespace Mengine
         const uint32_t bufferSize = m_lockCount * m_indexSize;
 
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryCacheBuffer();
+            ->createMemoryBuffer();
 
         memory->newBuffer( bufferSize, "OpenGLRenderIndexBuffer", __FILE__, __LINE__ );
 

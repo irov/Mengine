@@ -88,11 +88,11 @@ namespace Mengine
         const uint32_t bufferSize = m_lockCount * m_vertexSize;
 
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryCacheBuffer();
+            ->createMemoryBuffer();
 
         memory->newBuffer( bufferSize, "OpenGLRenderVertexBuffer", __FILE__, __LINE__ );
 
-        m_lockMemory = memory;        
+        m_lockMemory = memory;
         
         return m_lockMemory;
     }

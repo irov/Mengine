@@ -25,7 +25,7 @@ namespace Mengine
     {
         size_t unicodeSize = (_unicodeSize == ~0U) ? wcslen( _unicode ) + 1 : _unicodeSize + 1;
 
-        Char * sdl_utf8 = (Char *)SDL_iconv_string( "UTF-8", SDL_UCS_wchar_t
+        char * sdl_utf8 = SDL_iconv_string( "UTF-8", SDL_UCS_wchar_t
             , (const char*)_unicode
             , unicodeSize * sizeof( WChar )
         );

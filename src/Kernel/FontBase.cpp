@@ -140,7 +140,7 @@ namespace Mengine
         const Char * text_str = _text.c_str();
         size_t text_len = _text.size();
 
-        for( const char
+        for( const Char
             *text_it = text_str,
             *text_end = text_str + text_len + 1;
             text_it != text_end;
@@ -233,7 +233,7 @@ namespace Mengine
         const Char * text_str = _text.c_str();
         size_t text_len = _text.size();
 
-        for( const char
+        for( const Char
             *text_it = text_str,
             *text_end = text_str + text_len + 1;
             text_it != text_end;

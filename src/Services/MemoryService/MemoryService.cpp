@@ -214,7 +214,8 @@ namespace Mengine
         {
             if( buffer.lock == true )
             {
-                LOGGER_ERROR( "CacheManager::finalize dont unlock buffer %d size %d"
+                LOGGER_ERROR( "don't unlock buffer '%s' id %d size %d"
+                    , buffer.doc
                     , buffer.id
                     , buffer.size
                 );

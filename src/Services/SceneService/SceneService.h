@@ -26,11 +26,9 @@ namespace Mengine
         const ScenePtr & getCurrentScene() const override;
 
     public:
+        bool createGlobalScene() override;
+        void removeGlobalScene() override;
         const ScenePtr & getGlobalScene() const override;
-
-    protected:
-        bool createGlobalScene();
-        void removeGlobalScene();
 
     protected:
         ScenePtr m_scene;

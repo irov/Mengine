@@ -103,6 +103,7 @@ namespace Mengine
         }
 
         m_currentProgram = nullptr;
+        m_currentProgramVariable = nullptr;
 
         m_currentIndexBuffer = nullptr;
         m_currentVertexBuffer = nullptr;
@@ -561,13 +562,13 @@ namespace Mengine
         return variable;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenGLRenderSystem::applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program )
+    bool OpenGLRenderSystem::setProgramVariable( const RenderProgramVariableInterfacePtr & _programVariable, const RenderProgramInterfacePtr & _program )
     {
-        OpenGLRenderProgramVariablePtr gl_variable = stdex::intrusive_static_cast<OpenGLRenderProgramVariablePtr>(_variable);
+        MENGINE_UNUSED( _program );
 
-        bool successful = gl_variable->apply( _program );
+        m_currentProgramVariable = stdex::intrusive_static_cast<OpenGLRenderProgramVariablePtr>(_programVariable);
 
-        return successful;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void OpenGLRenderSystem::drawIndexedPrimitive( EPrimitiveType _type,
@@ -589,6 +590,14 @@ namespace Mengine
         }
 
         m_currentProgram->bindMatrix( m_worldMatrix, m_viewMatrix, m_projectionMatrix, m_totalWVPMatrix );
+
+        if( m_currentProgramVariable != nullptr )
+        {
+            if( m_currentProgramVariable->apply( m_currentProgram ) == false )
+            {
+                return;
+            }
+        }
 
         for( uint32_t stageId = 0; stageId != MENGINE_MAX_TEXTURE_STAGES; ++stageId )
         {
@@ -923,6 +932,7 @@ namespace Mengine
         m_currentVertexBuffer = nullptr;
 
         m_currentProgram = nullptr;
+        m_currentProgramVariable = nullptr;
 
         return true;
     }

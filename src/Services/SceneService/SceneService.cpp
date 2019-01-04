@@ -23,7 +23,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::_initializeService()
     {
-        this->createGlobalScene();
+        //Empty
 
         return true;
     }
@@ -186,6 +186,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SceneService::createGlobalScene()
     {
+        if( m_globalScene != nullptr )
+        {
+            return true;
+        }
+
         ScenePtr scene = PROTOTYPE_SERVICE()
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
 

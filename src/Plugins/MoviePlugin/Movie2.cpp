@@ -1756,7 +1756,7 @@ namespace Mengine
 
                     shader_values[0] = value;
 
-                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 1 );
+                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 1, 1 );
                 }break;
             case AE_MOVIE_EXTENSION_SHADER_PARAMETER_ANGLE:
                 {
@@ -1764,7 +1764,7 @@ namespace Mengine
 
                     shader_values[0] = value;
 
-                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 1 );
+                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 1, 1 );
                 }break;
             case AE_MOVIE_EXTENSION_SHADER_PARAMETER_COLOR:
                 {
@@ -1775,7 +1775,7 @@ namespace Mengine
                     shader_values[2] = color_value.b;
                     shader_values[3] = 1.f;
 
-                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 4 );
+                    programVariable->setPixelVariableFloats( parameter.uniform, index, shader_values, 4, 1 );
                 }break;
             }
         }
@@ -1816,13 +1816,13 @@ namespace Mengine
             {
                 shader_values[0] = _callbackData->value;
 
-                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1 );
+                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1, 1 );
             }break;
         case AE_MOVIE_EXTENSION_SHADER_PARAMETER_ANGLE:
             {
                 shader_values[0] = _callbackData->value;
 
-                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1 );
+                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1, 1 );
             }break;
         case AE_MOVIE_EXTENSION_SHADER_PARAMETER_COLOR:
             {
@@ -1831,13 +1831,13 @@ namespace Mengine
                 shader_values[2] = _callbackData->color.b;
                 shader_values[3] = 1.f;
 
-                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 4 );
+                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 4, 1 );
             }break;
         case AE_MOVIE_EXTENSION_SHADER_PARAMETER_TIME:
             {
                 shader_values[0] = _callbackData->value;
 
-                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1 );
+                programVariable->updatePixelVariableFloats( _callbackData->index, shader_values, 1, 1 );
             }break;
         }
     }
@@ -2814,7 +2814,7 @@ namespace Mengine
                             }
                         }
 
-                        programVariable->setPixelVariableFloats( "uvbb", 0, bb, 4 );
+                        programVariable->setPixelVariableFloats( "uvbb", 0, bb, 4, 1 );
 
                         const RenderMaterialInterfacePtr & material = surfaceTrackMatte->getMaterial();
 

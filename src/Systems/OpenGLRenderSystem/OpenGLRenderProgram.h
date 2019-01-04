@@ -61,7 +61,7 @@ namespace Mengine
     protected:
         ConstString m_name;
 
-        GLuint m_program;
+        GLuint m_programId;
 
         OpenGLRenderVertexShaderPtr m_vertexShader;
         OpenGLRenderFragmentShaderPtr m_fragmentShader;

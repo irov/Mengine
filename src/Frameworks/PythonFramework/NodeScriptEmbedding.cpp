@@ -46,7 +46,7 @@
 #include "Plugins/MoviePlugin/ResourceMovie2.h"
 
 #include "Interface/ApplicationInterface.h"
-#include "Interface/PickerServiceInterface.h"
+#include "Interface/PickerTrapInterface.h"
 
 #include "Engine/HotSpot.h"
 #include "Engine/HotSpotPolygon.h"

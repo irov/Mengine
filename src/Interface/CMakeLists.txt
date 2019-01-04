@@ -47,6 +47,7 @@ src
     GameServiceInterface.h
     PlayerInterface.h
     SchedulerInterface.h
+    PickerTrapInterface.h
     PickerServiceInterface.h
     PlayerInterface.h
     PrototypeServiceInterface.h

@@ -1,10 +1,9 @@
 #pragma once
 
 #include "Interface/ServiceInterface.h"
-#include "Interface/InputHandlerInterface.h"
+#include "Interface/PickerTrapInterface.h"
 
-#include "Kernel/IntrusivePtr.h"
-#include "Kernel/Resolution.h"
+#include "Kernel/Scene.h"
 
 #include "Config/Vector.h"
 
@@ -12,45 +11,6 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Arrow> ArrowPtr;
-    typedef IntrusivePtr<class Scene, class Node> ScenePtr;
-    typedef IntrusivePtr<class Scriptable> ScriptablePtr;
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class PickerTrapInterface> PickerTrapInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    struct PickerTrapState
-    {
-        PickerTrapInterfacePtr trap;
-
-        uint32_t id;
-        bool picked;
-        bool pressed;
-        bool handle;
-        bool dead;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class RenderViewportInterface> RenderViewportInterfacePtr;
-    typedef IntrusivePtr<class RenderCameraInterface> RenderCameraInterfacePtr;
-    typedef IntrusivePtr<class RenderScissorInterface> RenderScissorInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    class PickerTrapInterface
-        : public InputHandlerInterface
-    {
-    public:
-        virtual bool pick( const mt::vec2f & _point, const RenderViewportInterfacePtr & _viewport, const RenderCameraInterfacePtr & _camera, const Resolution & _contentResolution, const ArrowPtr & _arrow ) = 0;
-
-    public:
-        virtual bool onHandleMouseEnter( float _x, float _y ) = 0;
-        virtual void onHandleMouseLeave() = 0;
-        virtual void onHandleMouseOverDestroy() = 0;
-
-    public:
-        virtual PickerTrapState * propagatePickerTrapState() const = 0;
-        virtual ScriptablePtr propagatePickerScriptable() = 0;
-    };
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<PickerTrapInterface> PickerTrapInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<PickerTrapInterfacePtr> VectorPickerTraps;
     //////////////////////////////////////////////////////////////////////////
@@ -97,6 +57,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<PickerServiceInterface> PickerServiceInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
+}
+//////////////////////////////////////////////////////////////////////////
 #define PICKER_SERVICE()\
     ((Mengine::PickerServiceInterface *)SERVICE_GET(Mengine::PickerServiceInterface))
-}
+//////////////////////////////////////////////////////////////////////////

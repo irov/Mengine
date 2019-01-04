@@ -3,11 +3,10 @@
 #include "Interface/ServiceInterface.h"
 
 #include "Kernel/Mixin.h"
+#include "Kernel/Scene.h"
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Scene, class Node> ScenePtr;
     //////////////////////////////////////////////////////////////////////////
     class SceneChangeCallbackInterface
         : public Mixin

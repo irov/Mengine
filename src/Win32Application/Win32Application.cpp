@@ -118,48 +118,48 @@ PLUGIN_EXPORT( LZ4 );
 PLUGIN_EXPORT( OggVorbis );
 PLUGIN_EXPORT( Win32FileGroup );
 
-#ifdef MENGINE_PLUGIN_BITMAPFONT
+#ifdef MENGINE_PLUGIN_BITMAPFONT_STATIC
 PLUGIN_EXPORT( BitmapFont );
 #endif
 
-#ifdef MENGINE_PLUGIN_NODEDEBUGRENDER
+#ifdef MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC
 PLUGIN_EXPORT( NodeDebugRender );
 #endif
 
-#ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER
+#ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
 PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
 
-#ifdef MENGINE_PLUGIN_RESOURCECONVERT
+#ifdef MENGINE_PLUGIN_RESOURCECONVERT_STATIC
 PLUGIN_EXPORT( ResourceConvert );
 #endif
 
 
-#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
+#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE_STATIC
 PLUGIN_EXPORT( ResourceValidate );
 #endif
 
-#ifdef MENGINE_PLUGIN_RESOURCEDEBUGGER
+#ifdef MENGINE_PLUGIN_RESOURCEDEBUGGER_STATIC
 PLUGIN_EXPORT( ResourceDebugger );
 #endif
 
-#ifdef MENGINE_PLUGIN_METABUFLOADER
+#ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
 PLUGIN_EXPORT( MetabufLoader );
 #endif
 
-#ifdef MENGINE_PLUGIN_VIDEO
+#ifdef MENGINE_PLUGIN_VIDEO_STATIC
 PLUGIN_EXPORT( Video );
 #endif
 
-#ifdef MENGINE_PLUGIN_THEORA
+#ifdef MENGINE_PLUGIN_THEORA_STATIC
 PLUGIN_EXPORT( Theora );
 #endif
 
-#ifdef MENGINE_PLUGIN_CURL_NO_DLL
+#ifdef MENGINE_PLUGIN_CURL_STATIC
 PLUGIN_EXPORT( cURL );
 #endif
 
-#ifdef MENGINE_PLUGIN_SPINE
+#ifdef MENGINE_PLUGIN_SPINE_STATIC
 PLUGIN_EXPORT( Spine );
 #endif
 
@@ -168,13 +168,13 @@ PLUGIN_EXPORT( Movie1 );
 //PLUGIN_EXPORT( Box2D );
 //PLUGIN_EXPORT( PathFinder );
 
-#ifdef MENGINE_PLUGIN_TTF
+#ifdef MENGINE_PLUGIN_TTF_STATIC
 PLUGIN_EXPORT( TTF );
 #endif
 
 PLUGIN_EXPORT( Win32Socket );
 
-#ifdef MENGINE_PLUGIN_NODEDEBUGGER
+#ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
 PLUGIN_EXPORT( NodeDebugger );
 #endif
 
@@ -689,31 +689,31 @@ namespace Mengine
 		LOGGER_ERROR( "Invalid %s", Info );}else{\
 		LOGGER_WARNING( "Successful %s", Info );}}while(false, false)
 
-#ifdef MENGINE_PLUGIN_NODEDEBUGRENDER
+#ifdef MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC
         MENGINE_ADD_PLUGIN( NodeDebugRender, "initialize Plugin Node Debug Render..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER
+#ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
         MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_RESOURCECONVERT
+#ifdef MENGINE_PLUGIN_RESOURCECONVERT_STATIC
         MENGINE_ADD_PLUGIN( ResourceConvert, "initialize Plugin Resource Convert..." );
 #endif        
 
-#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE
+#ifdef MENGINE_PLUGIN_RESOURCEVALIDATE_STATIC
         MENGINE_ADD_PLUGIN( ResourceValidate, "initialize Plugin Resource Validate..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_RESOURCEDEBUGGER
+#ifdef MENGINE_PLUGIN_RESOURCEDEBUGGER_STATIC
         MENGINE_ADD_PLUGIN( ResourceDebugger, "initialize Plugin Resource Debugger..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_NODEDEBUGGER
+#ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
         MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_METABUFLOADER
+#ifdef MENGINE_PLUGIN_METABUFLOADER_STATIC
         MENGINE_ADD_PLUGIN( MetabufLoader, "initialize Plugin Metabuf Loader..." );
 #endif
 
@@ -722,19 +722,19 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( OggVorbis, "initialize Plugin Ogg Vorbis Codec..." );
         MENGINE_ADD_PLUGIN( Amplifier, "initialize Plugin Amplifier..." );
 
-#ifdef MENGINE_PLUGIN_VIDEO
+#ifdef MENGINE_PLUGIN_VIDEO_STATIC
         MENGINE_ADD_PLUGIN( Video, "initialize Plugin Video..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_THEORA
+#ifdef MENGINE_PLUGIN_THEORA_STATIC
         MENGINE_ADD_PLUGIN( Theora, "initialize Plugin Theora..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_CURL_NO_DLL
+#ifdef MENGINE_PLUGIN_CURL_STATIC
         MENGINE_ADD_PLUGIN( cURL, "initialize Plugin cURL..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_SPINE
+#ifdef MENGINE_PLUGIN_SPINE_STATIC
         MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
 #endif
         MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
@@ -743,11 +743,11 @@ namespace Mengine
         //MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );
         //MENGINE_ADD_PLUGIN( PathFinder, "initialize Plugin Path Finder..." );
 
-#ifdef MENGINE_PLUGIN_BITMAPFONT
+#ifdef MENGINE_PLUGIN_BITMAPFONT_STATIC
         MENGINE_ADD_PLUGIN( BitmapFont, "initialize Plugin Bitmap Font..." );
 #endif
 
-#ifdef MENGINE_PLUGIN_TTF
+#ifdef MENGINE_PLUGIN_TTF_STATIC
         MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
 #endif
 

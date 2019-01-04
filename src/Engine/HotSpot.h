@@ -2,7 +2,7 @@
 
 #include "Kernel/Node.h"
 
-#include "Interface/PickerServiceInterface.h"
+#include "Interface/PickerTrapInterface.h"
 
 #include "HotSpotEventReceiverInterface.h"
 

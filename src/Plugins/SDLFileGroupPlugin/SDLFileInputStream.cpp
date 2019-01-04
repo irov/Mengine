@@ -22,7 +22,7 @@ namespace Mengine
         , m_carriage( 0 )
         , m_capacity( 0 )
         , m_reading( 0 )
-		, m_streaming( false )
+        , m_streaming( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -62,21 +62,21 @@ namespace Mengine
         {
             this->close_();
 
-            LOGGER_ERROR("SDLFileInputStream::open %s invalid file size"
+            LOGGER_ERROR( "invalid file size '%s'"
                 , fullPath
-                );
+            );
 
             return false;
         }
 
         if( _offset + _size > size )
         {
-            LOGGER_ERROR("SDLFileInputStream::open %s invalid file range %d:%d size %d"
+            LOGGER_ERROR( "invalid file '%s' range %d:%d size %d"
                 , fullPath
                 , _offset
                 , _size
                 , size
-                );
+            );
 
             return false;
         }
@@ -88,7 +88,7 @@ namespace Mengine
         m_capacity = 0;
         m_reading = 0;
 
-		m_streaming = _streaming;
+        m_streaming = _streaming;
 
         if( m_offset != 0 )
         {
@@ -98,11 +98,11 @@ namespace Mengine
             {
                 const char* sdlError = SDL_GetError();
 
-                LOGGER_ERROR("Win32InputStream::open seek offset %d size %d get error %s"
+                LOGGER_ERROR( "seek offset %d size %d get error %s"
                     , m_offset
                     , m_size
                     , sdlError
-                    );
+                );
 
                 return false;
             }
@@ -115,10 +115,10 @@ namespace Mengine
     {
         if( Helper::concatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR( "SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
                 , _filePath.c_str()
-                );
+            );
 
             return false;
         }
@@ -127,9 +127,9 @@ namespace Mengine
 
         if( m_rwops == nullptr )
         {
-            LOGGER_ERROR( "SDLFileInputStream::open %s invalid open"
+            LOGGER_ERROR( "invalid open '%s'"
                 , _fullPath
-                );
+            );
 
             return false;
         }
@@ -236,17 +236,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLFileInputStream::read_( void * _buf, size_t _size, size_t & _read )
     {
-        const size_t bytesRead = SDL_RWread( m_rwops, _buf, 1, _size );
+        if( _size == 0 )
+        {
+            _read = 0;
+
+            return true;
+        }
+
+        size_t bytesRead = SDL_RWread( m_rwops, _buf, 1, _size );
 
         if( bytesRead == 0 )
         {
-            const char* sdlError = SDL_GetError();
+            const Char * sdlError = SDL_GetError();
 
-            LOGGER_ERROR( "Win32InputStream::read %d:%d get error %s"
+            LOGGER_ERROR( "read %d:%d get error %s"
                 , _size
                 , m_size
                 , sdlError
-                );
+            );
 
             return false;
         }
@@ -279,11 +286,11 @@ namespace Mengine
             {
                 const char* sdlError = SDL_GetError();
 
-                LOGGER_ERROR( "Win32InputStream::seek %d:%d get error %s"
+                LOGGER_ERROR( "seek %d:%d get error %s"
                     , _pos
                     , m_size
                     , sdlError
-                    );
+                );
 
                 return false;
             }
@@ -337,10 +344,10 @@ namespace Mengine
         Char filePath[MENGINE_MAX_PATH];
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, m_filePath, filePath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR( "SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
                 , m_filePath.c_str()
-                );
+            );
 
             return false;
         }

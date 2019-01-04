@@ -106,7 +106,7 @@ namespace Mengine
         va_list argList;
 
         va_start( argList, _format );
-        char msg[4096];
+        Char msg[4096];
         vsprintf( msg, _format, argList );
         va_end( argList );
 

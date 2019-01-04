@@ -293,7 +293,6 @@ namespace Mengine
         pybind::def_functor( kernel, "addArrowPrototypeFinder", entityScriptMethod, &EntityScriptMethod::s_addArrowPrototypeFinder );
         pybind::def_functor( kernel, "createEntity", entityScriptMethod, &EntityScriptMethod::s_createEntity );
         pybind::def_functor_kernel( kernel, "importEntity", entityScriptMethod, &EntityScriptMethod::s_importEntity );
-        //pybind::def_function( "createEntityFromBinary", &ScriptMethod::createEntityFromBinary );
 
         m_implement = entityScriptMethod;
 

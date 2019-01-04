@@ -135,12 +135,16 @@ namespace Mengine
 
         if( this->hasPlugin( name ) == true )
         {
+            LOGGER_ERROR( "alredy exist plugin '%s'"
+                , name
+            );
+
             return false;
         }
 
         if( _plugin->initializePlugin() == false )
         {
-            LOGGER_ERROR( "PluginService::loadPlugin invalid initialize plugin '%s'"
+            LOGGER_ERROR( "invalid initialize plugin '%s'"
                 , name
             );
 

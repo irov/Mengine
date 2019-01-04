@@ -138,7 +138,7 @@ namespace Mengine
 
         header_offset += arc_offset;
 
-        char fileNameBuffer[ZIP_MAX_FILENAME];
+        Char fileNameBuffer[ZIP_MAX_FILENAME];
 
         for( ;;)
         {

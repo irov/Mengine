@@ -83,7 +83,7 @@ namespace Mengine
         virtual void setProgram( const RenderProgramInterfacePtr & _program ) = 0;
         virtual void updateProgram( const RenderProgramInterfacePtr & _program ) = 0;
         virtual RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount ) = 0;
-        virtual bool applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) = 0;
+        virtual bool setProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) = 0;
 
     public:
         virtual void drawIndexedPrimitive( EPrimitiveType _type, uint32_t _baseVertexIndex,

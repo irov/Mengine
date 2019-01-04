@@ -8,7 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     OpenGLRenderProgram::OpenGLRenderProgram()
-        : m_program( 0 )
+        : m_programId( 0 )
         , m_samplerCount( 0 )
     {
         for( uint32_t i = 0; i != EPML_MAX_COUNT; ++i )
@@ -29,7 +29,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     GLuint OpenGLRenderProgram::getProgramId() const
     {
-        return m_program;
+        return m_programId;
     }
     //////////////////////////////////////////////////////////////////////////
     const ConstString & OpenGLRenderProgram::getName() const
@@ -76,10 +76,10 @@ namespace Mengine
             return false;
         }
 
-        GLuint program;
-        GLCALLR( program, glCreateProgram, () );
+        GLuint programId;
+        GLCALLR( programId, glCreateProgram, () );
 
-        if( program == 0 )
+        if( programId == 0 )
         {
             LOGGER_ERROR("invalid create program '%s'"
                 , m_name.c_str()
@@ -90,23 +90,23 @@ namespace Mengine
 
         if( m_vertexShader != nullptr )
         {
-            m_vertexShader->attach( program );
+            m_vertexShader->attach( programId );
         }
 
         if( m_fragmentShader != nullptr )
         {
-            m_fragmentShader->attach( program );
+            m_fragmentShader->attach( programId );
         }
 
-        GLCALL( glLinkProgram, (program) );
+        GLCALL( glLinkProgram, (programId) );
 
         GLint linked;
-        GLCALL( glGetProgramiv, (program, GL_LINK_STATUS, &linked) );
+        GLCALL( glGetProgramiv, (programId, GL_LINK_STATUS, &linked) );
 
         if( linked == GL_FALSE )
         {
             GLchar errorLog[1024] = { 0 };
-            GLCALL( glGetProgramInfoLog, (program, 1023, NULL, errorLog) );
+            GLCALL( glGetProgramInfoLog, (programId, 1023, NULL, errorLog) );
 
             LOGGER_ERROR("program '%s' linking error '%s'"
                 , m_name.c_str()
@@ -116,7 +116,7 @@ namespace Mengine
             return false;
         }
 
-        if( m_vertexAttribute->compile( program ) == false )
+        if( m_vertexAttribute->compile( programId ) == false )
         {
             LOGGER_ERROR( "invalid program '%s' bind vertex attribute"
                 , m_name.c_str()
@@ -132,7 +132,7 @@ namespace Mengine
             const Char * uniform = matrix_uniforms[i];
 
             GLint location;
-            GLCALLR( location, glGetUniformLocation, (program, uniform) );
+            GLCALLR( location, glGetUniformLocation, (programId, uniform) );
 
             m_matrixLocation[i] = location;
         }
@@ -143,7 +143,7 @@ namespace Mengine
             sprintf( samplerVar, "inSampler%u", index );
 
             GLint location;
-            GLCALLR( location, glGetUniformLocation, (program, samplerVar) );
+            GLCALLR( location, glGetUniformLocation, (programId, samplerVar) );
 
             if( location == -1 )
             {
@@ -158,7 +158,7 @@ namespace Mengine
             m_samplerLocation[index] = location;
         }
 
-        m_program = program;
+        m_programId = programId;
 
         return true;
     }
@@ -175,16 +175,16 @@ namespace Mengine
             m_samplerLocation[i] = -1;
         }
 
-        if( m_program != 0 )
+        if( m_programId != 0 )
         {
-            GLCALL( glDeleteProgram, (m_program) );
-            m_program = 0;
+            GLCALL( glDeleteProgram, (m_programId) );
+            m_programId = 0;
         }
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenGLRenderProgram::enable() const
     {
-        GLCALL( glUseProgram, (m_program) );
+        GLCALL( glUseProgram, (m_programId) );
 
         return true;
     }

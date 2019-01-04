@@ -751,6 +751,20 @@ namespace Mengine
             return scene;
         }
         //////////////////////////////////////////////////////////////////////////
+        bool createGlobalScene()
+        {
+            bool successful = SCENE_SERVICE()
+                ->createGlobalScene();
+
+            return successful;
+        }
+        //////////////////////////////////////////////////////////////////////////
+        void removeGlobalScene()
+        {
+            SCENE_SERVICE()
+                ->removeGlobalScene();
+        }
+        //////////////////////////////////////////////////////////////////////////
         const ScenePtr & getGlobalScene()
         {
             const ScenePtr & scene = SCENE_SERVICE()
@@ -3389,6 +3403,9 @@ namespace Mengine
         pybind::def_functor_args( kernel, "setCurrentScene", nodeScriptMethod, &EngineScriptMethod::setCurrentScene );
         pybind::def_functor( kernel, "getCurrentScene", nodeScriptMethod, &EngineScriptMethod::getCurrentScene );
 
+        
+        pybind::def_functor( kernel, "createGlobalScene", nodeScriptMethod, &EngineScriptMethod::createGlobalScene );
+        pybind::def_functor( kernel, "removeGlobalScene", nodeScriptMethod, &EngineScriptMethod::removeGlobalScene );
         pybind::def_functor( kernel, "getGlobalScene", nodeScriptMethod, &EngineScriptMethod::getGlobalScene );
 
         pybind::def_functor( kernel, "createScene", nodeScriptMethod, &EngineScriptMethod::s_createScene );

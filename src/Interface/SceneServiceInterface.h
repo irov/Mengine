@@ -31,6 +31,8 @@ namespace Mengine
         virtual const ScenePtr & getCurrentScene() const = 0;
 
     public:
+        virtual bool createGlobalScene() = 0;
+        virtual void removeGlobalScene() = 0;
         virtual const ScenePtr & getGlobalScene() const = 0;
     };
 }

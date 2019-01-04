@@ -1816,8 +1816,13 @@ namespace Mengine
         return variable;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DX9RenderSystem::applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program )
+    bool DX9RenderSystem::setProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program )
     {
+        if( _variable == nullptr )
+        {
+            return true;
+        }
+
         DX9RenderProgramVariablePtr dx9_variable = stdex::intrusive_static_cast<DX9RenderProgramVariablePtr>(_variable);
 
         bool successful = dx9_variable->apply( m_pD3DDevice, _program );

@@ -101,7 +101,7 @@ namespace Mengine
         void setProgram( const RenderProgramInterfacePtr & _program ) override;
         void updateProgram( const RenderProgramInterfacePtr & _program ) override;
         RenderProgramVariableInterfacePtr createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount ) override;
-        bool applyProgramVariable( const RenderProgramVariableInterfacePtr & _variable, const RenderProgramInterfacePtr & _program ) override;
+        bool setProgramVariable( const RenderProgramVariableInterfacePtr & _programVariable, const RenderProgramInterfacePtr & _program ) override;
 
     public:
         RenderImageInterfacePtr createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format ) override;
@@ -180,6 +180,7 @@ namespace Mengine
         VectorDeferredRenderPrograms m_deferredCompilePrograms;
 
         OpenGLRenderProgramPtr m_currentProgram;
+        OpenGLRenderProgramVariablePtr m_currentProgramVariable;
 
         uint32_t m_glMaxClipPlanes;
         uint32_t m_glMaxCombinedTextureImageUnits;

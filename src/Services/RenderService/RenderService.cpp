@@ -658,10 +658,11 @@ namespace Mengine
 
         if( m_currentProgramVariable != nullptr )
         {
-            if( m_renderSystem->applyProgramVariable( m_currentProgramVariable, m_currentProgram ) == false )
-            {
-                return;
-            }
+            m_renderSystem->setProgramVariable( m_currentProgramVariable, m_currentProgram );
+        }
+        else
+        {
+            m_renderSystem->setProgramVariable( nullptr, m_currentProgram );
         }
 
         if( m_currentIndexBuffer != _renderObject->indexBuffer )

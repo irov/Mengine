@@ -13,8 +13,6 @@
 #include <iterator>
 #include <algorithm>
 
-#include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
-
 #define ZED_NET_STATIC
 #define ZED_NET_IMPLEMENTATION
 #include "zed_net.h"
@@ -309,48 +307,45 @@ namespace Mengine
             _node->enable = _value;
         } );
 
-        deserializeNodeProp<mt::vec3f>( "scale", _xmlNode, [_node]( mt::vec3f _value )
-        {
-            _node->scale = _value;
-        } );
+        _node->transformationProxy = false;
 
-        deserializeNodeProp<mt::vec2f>( "skew", _xmlNode, [_node]( mt::vec2f _value )
+        if( _node->type == "MatrixProxy" )
         {
-            _node->skew = _value;
-        } );
+            _node->transformationProxy = true;
+        }
+
+        pugi::xml_node transformNode = _xmlNode.child( "Transformation" );
+
+        _node->transformation.deserialize( transformNode );
 
         pugi::xml_node renderNode = _xmlNode.child( "Render" );
-        pugi::xml_node animationNode = _xmlNode.child( "Animation" );
-        pugi::xml_node childrenNode = _xmlNode.child( "Children" );
-
+       
         _node->hasRender = renderNode;
-        _node->hasAnimation = animationNode;
 
         if( _node->hasRender )
         {
-            deserializeNodeProp<bool>( "enable", renderNode, [_node]( bool _value )
-            {
-                _node->render.enable = _value;
-            } );
-
-            deserializeNodeProp<bool>( "hide", renderNode, [_node]( bool _value )
-            {
-                _node->render.hide = _value;
-            } );
-
-            deserializeNodeProp<Color>( "color", renderNode, [_node]( Color _value )
-            {
-                _node->render.color = _value;
-            } );
+            _node->render.deserialize( renderNode );
         }
+
+        pugi::xml_node animationNode = _xmlNode.child( "Animation" );
+
+        _node->hasAnimation = animationNode;
 
         if( _node->hasAnimation )
         {
-            deserializeNodeProp<bool>( "loop", animationNode, [_node]( bool _value )
-            {
-                _node->animation.loop = _value;
-            } );
+            _node->render.deserialize( animationNode );
         }
+
+        pugi::xml_node typeTextFieldNode = _xmlNode.child( "Type:TextField" );
+
+        _node->isTypeTextField = typeTextFieldNode;
+
+        if( _node->isTypeTextField )
+        {
+            _node->textField.deserialize( typeTextFieldNode );
+        }
+
+        pugi::xml_node childrenNode = _xmlNode.child( "Children" );
 
         if( childrenNode )
         {
@@ -631,7 +626,20 @@ namespace Mengine
         auto uiEditorBool = [_node]( const char * _caption, bool & _prop )
         {
             bool testValue = _prop;
-            const bool input = ImGui::Checkbox( _caption, &testValue );
+            bool input = ImGui::Checkbox( _caption, &testValue );
+
+            if( input && testValue != _prop )
+            {
+                _prop = testValue;
+                _node->dirty = true;
+            }
+        };
+
+        auto uiEditorVec1U = [_node]( const char * _caption, uint32_t & _prop )
+        {
+            uint32_t testValue = _prop;
+            bool input = ImGui::DragScalarN( _caption, ImGuiDataType_U32, &testValue, 1, 1.f );
+
             if( input && testValue != _prop )
             {
                 _prop = testValue;
@@ -641,14 +649,47 @@ namespace Mengine
 
         auto uiEditorVec3f = [_node]( const char * _caption, mt::vec3f & _prop )
         {
-            mt::vec3f testValue = _prop;
-            const bool input = ImGui::DragFloat3( _caption, testValue.buff() );
+            mt::vec3f testValue = _prop;            
+            bool input = ImGui::DragFloat3( _caption, testValue.buff() );
+
             if( input && testValue != _prop )
             {
                 _prop = testValue;
                 _node->dirty = true;
             }
         };
+
+        auto uiReadOnlyVec3f = [_node]( const char * _caption, mt::vec3f & _prop )
+        {
+            mt::vec3f testValue = _prop;
+            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::DragFloat3( _caption, testValue.buff() );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
+        };
+
+        auto uiEditorVec1f = [_node]( const char * _caption, float & _prop )
+        {
+            float testValue = _prop;
+            bool input = ImGui::DragFloat( _caption, &testValue );
+
+            if( input && testValue != _prop )
+            {
+                _prop = testValue;
+                _node->dirty = true;
+            }
+        };
+
+        auto uiReadOnlyVec1f = [_node]( const char * _caption, float & _prop )
+        {
+            float testValue = _prop;
+            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::DragFloat( _caption, &testValue );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
+        };        
 
         auto uiEditorVec2f = [_node]( const char * _caption, mt::vec2f & _prop )
         {
@@ -674,6 +715,72 @@ namespace Mengine
             }
         };
 
+        auto uiReadOnlyColor = [_node]( const Char * _caption, Color & _prop )
+        {
+            Color testValue = _prop;
+            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::ColorEdit4( _caption, testValue.buff() );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
+        };        
+
+        auto uiEditorString = [_node]( const char * _caption, String & _prop )
+        {
+            char testValue[2048] = { 0 };
+            strcpy( testValue, _prop.c_str() );
+            testValue[2047] = 0;
+            bool input = ImGui::InputText( _caption, testValue, 2048 );
+
+            if( input && _prop != testValue )
+            {
+                _prop = testValue;
+                _node->dirty = true;
+            }
+        };
+
+        auto uiReadOnlyString = [_node]( const char * _caption, String & _prop )
+        {
+            char testValue[2048] = {0};
+            strcpy( testValue, _prop.c_str() );
+            testValue[2047] = 0;
+            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::InputText( _caption, testValue, 2048 );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
+        };
+
+        auto uiEditorListBox = [_node]( const char * _caption, uint32_t & _prop, const std::initializer_list<String> & _items, uint32_t _count )
+        {
+            int32_t testValue = _prop;
+            bool input = ImGui::ListBox( _caption, &testValue, []( void* data, int idx, const char** out_text ) 
+            { 
+                *out_text = ((String *)data + idx)->c_str(); 
+                return true;
+            }, (void *)_items.begin(), _count );
+
+            if( input && _prop != testValue )
+            {
+                _prop = testValue;
+                _node->dirty = true;
+            }
+        };
+
+        auto uiReadOnlyListBox = [_node]( const char * _caption, uint32_t & _prop, const std::initializer_list<String> & _items, uint32_t _count )
+        {
+            int32_t testValue = _prop;
+            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::ListBox( _caption, &testValue, []( void* data, int idx, const char** out_text )
+            {
+                *out_text = ((String *)data + idx)->c_str();
+                return true;
+            }, (void *)_items.begin(), _count );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
+        };
+                
 
         if( ImGui::CollapsingHeader( "Node:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
@@ -686,18 +793,29 @@ namespace Mengine
 
             uiEditorBool( "Enable##node_enable", _node->enable );
             ImGui::Spacing();
+        }
 
-            uiEditorVec3f( "Scale", _node->scale );
-            ImGui::Spacing();
+        if( ImGui::CollapsingHeader( "Transformation:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        {
+            NodeTransformation & transformation = _node->transformation;
 
-            uiEditorVec2f( "Skew", _node->skew );
+            if( _node->transformationProxy == false )
+            {
+                uiEditorVec3f( "Position", transformation.position );
+                uiEditorVec3f( "Origin", transformation.origin );
+                uiEditorVec2f( "Skew", transformation.skew );
+                uiEditorVec3f( "Scale", transformation.scale );
+                uiEditorVec3f( "Orientation", transformation.orientation );
+
+                ImGui::Spacing();
+            }
+
+            uiReadOnlyVec3f( "World Position", transformation.worldPosition );
+            ImGui::Spacing();            
         }
 
         if( _node->hasRender && ImGui::CollapsingHeader( "Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            uiEditorBool( "Enable##render_enable", _node->render.enable );
-            ImGui::Spacing();
-
             uiEditorBool( "Hide", _node->render.hide );
             ImGui::Spacing();
 
@@ -707,6 +825,37 @@ namespace Mengine
         if( _node->hasAnimation && ImGui::CollapsingHeader( "Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
             uiEditorBool( "Loop", _node->animation.loop );
+        }
+
+        if( _node->isTypeTextField && ImGui::CollapsingHeader( "TextField:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        {
+            uiEditorVec1f( "Max Length", _node->textField.MaxLength );
+            uiEditorBool( "Wrap", _node->textField.Wrap );
+            uiEditorString( "TextID", _node->textField.TextID );
+            uiEditorString( "AliasEnvironment", _node->textField.TextAliasEnvironment );
+
+            if( _node->textField.HasText == true )
+            {                
+                uiReadOnlyString( "Format", _node->textField.Text );
+                uiReadOnlyString( "Text", _node->textField.Text );
+            }
+
+            uiEditorString( "FontName", _node->textField.FontName );
+            uiReadOnlyString( "Total FontName", _node->textField.TotalFontName );
+            uiEditorColor( "FontColor", _node->textField.FontColor );
+            uiReadOnlyColor( "TotalFontColor", _node->textField.TotalFontColor );
+            uiEditorVec1f( "LineOffset", _node->textField.LineOffset );
+            uiReadOnlyVec1f( "TotalLineOffset", _node->textField.TotalLineOffset );
+            uiEditorVec1f( "CharOffset", _node->textField.CharOffset );
+            uiReadOnlyVec1f( "TotalCharOffset", _node->textField.TotalCharOffset );
+            uiEditorVec1f( "CharScale", _node->textField.CharScale );
+            uiReadOnlyVec1f( "TotalCharScale", _node->textField.TotalCharScale );
+            uiEditorListBox( "HorizontAlign", _node->textField.HorizontAlign, { "Left", "Center", "Right", "None" }, 4 );
+            uiReadOnlyListBox( "TotalHorizontAlign", _node->textField.TotalHorizontAlign, { "Left", "Center", "Right", "None" }, 4 );
+            uiEditorListBox( "VerticalAlign", _node->textField.VerticalAlign, { "Bottom", "Center", "Top", "None" }, 4 );
+            uiReadOnlyListBox( "TotalVerticalAlign", _node->textField.TotalVerticalAlign, { "Bottom", "Center", "Top", "None" }, 4 );
+            uiEditorVec1U( "MaxCharCount", _node->textField.MaxCharCount );
+            uiEditorBool( "Pixelsnap", _node->textField.Pixelsnap );
         }
     }
 
@@ -939,22 +1088,33 @@ namespace Mengine
         xmlNode.append_attribute( "type" ).set_value( _node.type.c_str() );
 
         serializeNodeProp( _node.enable, "enable", xmlNode );
-        serializeNodeProp( _node.scale, "scale", xmlNode );
+        
+        if( _node.transformationProxy == false )
+        {
+            pugi::xml_node xmlTransformation = xmlNode.append_child( "Transformation" );
+
+            _node.transformation.serialize( xmlTransformation );
+        }
 
         if( _node.hasRender )
         {
-            pugi::xml_node renderNode = xmlNode.append_child( "Render" );
+            pugi::xml_node xmlRender = xmlNode.append_child( "Render" );
 
-            serializeNodeProp( _node.render.enable, "enable", renderNode );
-            serializeNodeProp( _node.render.hide, "hide", renderNode );
-            serializeNodeProp( _node.render.color, "color", renderNode );
+            _node.render.serialize( xmlRender );
         }
 
         if( _node.hasAnimation )
         {
-            pugi::xml_node animationNode = xmlNode.append_child( "Animation" );
+            pugi::xml_node xmlAnimation = xmlNode.append_child( "Animation" );
 
-            serializeNodeProp( _node.animation.loop, "loop", animationNode );
+            _node.animation.serialize( xmlAnimation );
+        }
+
+        if( _node.isTypeTextField )
+        {
+            pugi::xml_node xmlTextField = xmlNode.append_child( "Type:TextField" );
+
+            _node.textField.serialize( xmlTextField );
         }
 
         SendXML( doc );

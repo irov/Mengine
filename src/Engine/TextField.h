@@ -84,6 +84,13 @@ namespace Mengine
         float getCharScale() const;
 
     public:
+        void setHorizontAlign( ETextHorizontAlign _horizontAlign );
+        ETextHorizontAlign getHorizontAlign() const;
+
+        void setVerticalAlign( ETextVerticalAlign _verticalAlign );
+        ETextVerticalAlign getVerticalAlign() const;
+
+    public:
         void setHorizontalCenterAlign();
         bool isHorizontalCenterAlign() const;
 
@@ -163,7 +170,7 @@ namespace Mengine
         void updateFont_() const;
         void updateTextEntry_() const;
 
-    protected:
+    public:
         const ConstString & calcFontName() const;
         float calcLineOffset() const;
         float calcCharOffset() const;
@@ -171,7 +178,7 @@ namespace Mengine
 
         const Color & calcFontColor() const;
 
-        ETextHorizontAlign calcHorizontalAlign() const;
+        ETextHorizontAlign calcHorizontAlign() const;
         ETextVerticalAlign calcVerticalAlign() const;
 
         float calcCharScale() const;
@@ -181,7 +188,7 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        ConstString m_key;
+        ConstString m_textId;
         ConstString m_aliasEnvironment;
 
         mutable TextEntryInterfacePtr m_textEntry;

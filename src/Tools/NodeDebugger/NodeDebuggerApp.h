@@ -4,13 +4,10 @@
 #include "Config/String.h"
 #include "Config/Deque.h"
 
-#include "Kernel/Color.h"
+#include "Plugins/NodeDebuggerPlugin/NodeDebuggerSerialization.h"
 
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
-
-#include "math/vec2.h"
-#include "math/vec3.h"
 
 #define PUGIXML_NO_STL
 #define PUGIXML_HEADER_ONLY
@@ -38,16 +35,160 @@ namespace Mengine
         Vector<uint8_t> payload;
     };
 
+    
+
+#define DESERIALIZE_PROP(NAME)\
+    deserializeNodeProp<decltype(this->NAME)>( #NAME, _xmlNode, [this]( decltype(this->NAME) _value ) { this->NAME = _value; } )
+
+#define SERIALIZE_PROP(NAME)\
+    serializeNodeProp( this->NAME, #NAME, _xmlNode )
+
+    struct NodeTransformation
+    {        
+        mt::vec3f position;
+        mt::vec3f origin;
+        mt::vec2f skew;
+        mt::vec3f scale;
+        mt::vec3f orientation;
+        mt::vec3f worldPosition;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+            SERIALIZE_PROP( position );
+            SERIALIZE_PROP( origin );
+            SERIALIZE_PROP( skew );
+            SERIALIZE_PROP( scale );
+            SERIALIZE_PROP( orientation );
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( position );
+            DESERIALIZE_PROP( origin );
+            DESERIALIZE_PROP( skew );
+            DESERIALIZE_PROP( scale );
+            DESERIALIZE_PROP( orientation );
+            DESERIALIZE_PROP( worldPosition );
+        }
+    };
+
     struct NodeRender
     {
-        bool    enable;
         bool    hide;
         Color   color;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+            SERIALIZE_PROP( hide );
+            SERIALIZE_PROP( color );
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( hide );
+            DESERIALIZE_PROP( color );
+        }
     };
 
     struct NodeAnimation
     {
         bool loop;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+            SERIALIZE_PROP( loop );
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( loop );
+        }
+    };
+
+    struct NodeTextField
+    {
+        float MaxLength;
+
+        bool Wrap;
+
+        String TextID;
+        String TextAliasEnvironment;
+
+        bool HasText;
+        String Format;
+        String Text;
+
+        String FontName;
+        Color FontColor;
+        float LineOffset;
+        float CharOffset;
+        float CharScale;
+        uint32_t HorizontAlign;
+        uint32_t VerticalAlign;
+
+        String TotalFontName;
+        Color TotalFontColor;
+        float TotalLineOffset;
+        float TotalCharOffset;
+        float TotalCharScale;
+        uint32_t TotalHorizontAlign;
+        uint32_t TotalVerticalAlign;
+
+        uint32_t MaxCharCount;
+
+        bool Pixelsnap;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+            SERIALIZE_PROP( MaxLength );
+            SERIALIZE_PROP( Wrap );
+
+            SERIALIZE_PROP( TextID );
+            SERIALIZE_PROP( TextAliasEnvironment );
+
+            SERIALIZE_PROP( FontName );
+            SERIALIZE_PROP( FontColor );
+            SERIALIZE_PROP( LineOffset );
+            SERIALIZE_PROP( CharOffset );
+            SERIALIZE_PROP( CharScale );
+            SERIALIZE_PROP( HorizontAlign );
+            SERIALIZE_PROP( VerticalAlign );
+
+            SERIALIZE_PROP( MaxCharCount );
+            SERIALIZE_PROP( Pixelsnap );
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( MaxLength );
+            DESERIALIZE_PROP( Wrap );
+
+            DESERIALIZE_PROP( TextID );
+            DESERIALIZE_PROP( TextAliasEnvironment );
+
+            DESERIALIZE_PROP( HasText );
+            DESERIALIZE_PROP( Format );
+            DESERIALIZE_PROP( Text );
+
+            DESERIALIZE_PROP( FontName );
+            DESERIALIZE_PROP( FontColor );
+            DESERIALIZE_PROP( LineOffset );
+            DESERIALIZE_PROP( CharOffset );
+            DESERIALIZE_PROP( CharScale );
+            DESERIALIZE_PROP( HorizontAlign );
+            DESERIALIZE_PROP( VerticalAlign );
+
+            DESERIALIZE_PROP( TotalFontName );
+            DESERIALIZE_PROP( TotalFontColor );
+            DESERIALIZE_PROP( TotalLineOffset );
+            DESERIALIZE_PROP( TotalCharOffset );
+            DESERIALIZE_PROP( TotalCharScale );
+            DESERIALIZE_PROP( TotalHorizontAlign );
+            DESERIALIZE_PROP( TotalVerticalAlign );
+
+            DESERIALIZE_PROP( MaxCharCount );
+            DESERIALIZE_PROP( Pixelsnap );
+        }
     };
 
     struct DebuggerNode
@@ -65,44 +206,24 @@ namespace Mengine
         String                  name;
         String                  type;
         bool                    enable;
-        mt::vec3f               scale;
-        mt::vec2f               skew;
+
+        bool transformationProxy;
+        NodeTransformation transformation;
 
         bool                    hasRender;
-        bool                    hasAnimation;
-
         NodeRender              render;
+
+        bool                    hasAnimation;        
         NodeAnimation           animation;
+
+        bool                    isTypeTextField;
+        NodeTextField           textField;
 
         Vector<DebuggerNode*>   children;
         DebuggerNode*           parent;
 
         bool                    dirty;
         Icon                    icon;
-
-        void CheckIfChanged( const DebuggerNode* _other )
-        {
-            if( enable != _other->enable )
-            {
-                dirty = true;
-            }
-
-            // Render
-            if( render.enable != _other->render.enable )
-            {
-                dirty = true;
-            }
-            if( render.hide != _other->render.hide )
-            {
-                dirty = true;
-            }
-
-            // Animation
-            if( animation.loop != _other->animation.loop )
-            {
-                dirty = false;
-            }
-        }
     };
 
     class NodeDebuggerApp

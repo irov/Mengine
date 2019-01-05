@@ -747,7 +747,7 @@ namespace Mengine
 
         if( it_found == m_texts.end() )
         {
-            LOGGER_ERROR( "TextService::getTextEntry: TextService can't find string associated with key - '%s'"
+            LOGGER_ERROR( "can't find string associated with key - '%s'"
                 , _key.c_str()
             );
 
@@ -836,7 +836,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ConstString & TextService::getTextAlias( const ConstString & _environment, const ConstString& _alias ) const
+    const ConstString & TextService::getTextAlias( const ConstString & _environment, const ConstString & _alias ) const
     {
         PairAliasKey key = std::make_pair( _environment, _alias );
 
@@ -911,7 +911,7 @@ namespace Mengine
 
         if( m_defaultFontName.empty() == true )
         {
-            LOGGER_ERROR( "TextService::validate not setup default font name!"
+            LOGGER_ERROR( "not setup default font name!"
             );
 
             successful = false;
@@ -921,7 +921,7 @@ namespace Mengine
             TextFontInterfacePtr font;
             if( this->existFont( m_defaultFontName, font ) == false )
             {
-                LOGGER_ERROR( "TextService::validate not found default font %s"
+                LOGGER_ERROR( "not found default font %s"
                     , m_defaultFontName.c_str()
                 );
 
@@ -945,7 +945,7 @@ namespace Mengine
                 TextFontInterfacePtr font;
                 if( this->existFont( fontName, font ) == false )
                 {
-                    LOGGER_ERROR( "TextService::loadResource not found font %s for text %s"
+                    LOGGER_ERROR( "not found font %s for text %s"
                         , fontName.c_str()
                         , textKey.c_str()
                     );

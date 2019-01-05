@@ -74,8 +74,11 @@ namespace Mengine
         void sendPacket( NodeDebuggerPacket & _packet );
         void sendScene( const ScenePtr & _scene );
         void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
+
+        void serializeTransformation( const TransformationPtr & _transformation, pugi::xml_node & _xmlParentNode );
         void serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode );
         void serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode );
+        void serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode );
         void processPacket( NodeDebuggerPacket & _packet );
         void receiveChangedNode( const pugi::xml_node & _xmlNode );
         VectorNodePath stringToPath( const String & _str );

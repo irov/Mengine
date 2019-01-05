@@ -12,6 +12,7 @@
 #include "Interface/FactoryServiceInterface.h"
 #include "Interface/SocketSystemInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/TextServiceInterface.h"
 
 #include "NodeDebuggerSerialization.h"
 
@@ -25,6 +26,8 @@
 #include "Kernel/AssertionVocabulary.h"
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/Scene.h"
+#include "Kernel/StringFormat.h"
+#include "Kernel/Logger.h"
 
 #include "Config/Stringstream.h"
 
@@ -443,11 +446,22 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerService::serializeTransformation( const TransformationPtr & _transformation, pugi::xml_node & _xmlParentNode )
+    {
+        pugi::xml_node xmlNode = _xmlParentNode.append_child( "Transformation" );
+
+        serializeNodeProp( _transformation->getLocalPosition(), "position", xmlNode );
+        serializeNodeProp( _transformation->getOrigin(), "origin", xmlNode );
+        serializeNodeProp( _transformation->getSkew(), "skew", xmlNode );
+        serializeNodeProp( _transformation->getScale(), "scale", xmlNode );
+        serializeNodeProp( _transformation->getOrientation(), "orientation", xmlNode );
+        serializeNodeProp( _transformation->getWorldPosition(), "worldPosition", xmlNode );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerService::serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Render" );
 
-        serializeNodeProp( _render->isRenderEnable(), "enable", xmlNode );
         serializeNodeProp( _render->isHide(), "hide", xmlNode );
         serializeNodeProp( _render->getLocalColor(), "color", xmlNode );
     }
@@ -459,6 +473,74 @@ namespace Mengine
         serializeNodeProp( _animation->isLoop(), "loop", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerService::serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode )
+    {
+        pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:TextField" );
+
+        serializeNodeProp( _textField->getMaxLength(), "MaxLength", xmlNode );
+        serializeNodeProp( _textField->getWrap(), "Wrap", xmlNode );
+
+        const ConstString & textID = _textField->getTextID();
+        const ConstString & textAliasEnvironment = _textField->getTextAliasEnvironment();
+
+        serializeNodeProp( textID, "TextID", xmlNode );
+        serializeNodeProp( textAliasEnvironment, "TextAliasEnvironment", xmlNode );
+
+        const ConstString & aliasTestId = TEXT_SERVICE()
+            ->getTextAlias( textAliasEnvironment, textID );
+
+        TextEntryInterfacePtr textEntry;
+        if( TEXT_SERVICE()
+            ->existText( aliasTestId, &textEntry ) == false )
+        {
+            serializeNodeProp( false, "HasText", xmlNode );
+        }
+        else
+        {
+            serializeNodeProp( true, "HasText", xmlNode );
+
+            const String & textValue = textEntry->getValue();
+
+            serializeNodeProp( textValue, "Format", xmlNode );            
+
+            VectorString textFormatArgs = _textField->getTextFormatArgs();
+
+            TEXT_SERVICE()
+                ->getTextAliasArguments( textAliasEnvironment, textID, textFormatArgs );
+
+            String fmt;
+            if( Helper::getStringFormat( fmt, textValue, textFormatArgs ) == false )
+            {
+                LOGGER_ERROR( "invalid string '%s:%s' format with args '%d'"
+                    , _textField->getName().c_str()
+                    , _textField->getTextID().c_str()
+                    , textFormatArgs.size()
+                );
+            }
+
+            serializeNodeProp( fmt, "Text", xmlNode );
+        }        
+
+        serializeNodeProp( _textField->getFontName(), "FontName", xmlNode );
+        serializeNodeProp( _textField->getFontColor(), "FontColor", xmlNode );
+        serializeNodeProp( _textField->getLineOffset(), "LineOffset", xmlNode );
+        serializeNodeProp( _textField->getCharOffset(), "CharOffset", xmlNode );
+        serializeNodeProp( _textField->getCharScale(), "CharScale", xmlNode );
+        serializeNodeProp( (uint32_t)_textField->getHorizontAlign(), "HorizontAlign", xmlNode );
+        serializeNodeProp( (uint32_t)_textField->getVerticalAlign(), "VerticalAlign", xmlNode );
+
+        serializeNodeProp( _textField->calcFontName(), "TotalFontName", xmlNode );
+        serializeNodeProp( _textField->calcFontColor(), "TotalFontColor", xmlNode );
+        serializeNodeProp( _textField->calcLineOffset(), "TotalLineOffset", xmlNode );
+        serializeNodeProp( _textField->calcCharOffset(), "TotalCharOffset", xmlNode );
+        serializeNodeProp( _textField->calcCharScale(), "TotalCharScale", xmlNode );
+        serializeNodeProp( (uint32_t)_textField->calcHorizontAlign(), "TotalHorizontAlign", xmlNode );
+        serializeNodeProp( (uint32_t)_textField->calcVerticalAlign(), "TotalVerticalAlign", xmlNode );
+
+        serializeNodeProp( _textField->getMaxCharCount(), "MaxCharCount", xmlNode );
+        serializeNodeProp( _textField->getPixelsnap(), "Pixelsnap", xmlNode );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerService::serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
@@ -468,22 +550,29 @@ namespace Mengine
         xmlNode.append_attribute( "type" ).set_value( _node->getType().c_str() );
 
         serializeNodeProp( _node->isEnable(), "enable", xmlNode );
-        serializeNodeProp( _node->getScale(), "scale", xmlNode );
-        serializeNodeProp( _node->getSkew(), "skew", xmlNode );
+
+        this->serializeTransformation( _node, xmlNode );
 
         RenderInterface * render = _node->getRender();
-        if( render )
+
+        if( render != nullptr )
         {
-            serializeRender( render, xmlNode );
+            this->serializeRender( render, xmlNode );
         }
 
         AnimationInterface * animation = _node->getAnimation();
-        if( animation )
+        if( animation != nullptr )
         {
-            serializeAnimation( animation, xmlNode );
+            this->serializeAnimation( animation, xmlNode );
         }
 
-        if( !_node->emptyChildren() )
+        TextFieldPtr textField = stdex::intrusive_dynamic_cast<TextFieldPtr>(_node);
+        if( textField != nullptr )
+        {
+            this->serializeTextField( textField, xmlNode );
+        }
+
+        if( _node->emptyChildren() == false )
         {
             pugi::xml_node xmlChildrenContainer = xmlNode.append_child( "Children" );
 
@@ -603,54 +692,132 @@ namespace Mengine
                 }
             } );
 
-            deserializeNodeProp<mt::vec3f>( "scale", _xmlNode, [node]( auto _value )
+            pugi::xml_node transformationNode = _xmlNode.child( "Transformation" );
+
+            deserializeNodeProp<mt::vec3f>( "position", transformationNode, [node]( const mt::vec3f & _value )
             {
-                node->setScale( _value );
+                node->setLocalPosition( _value );
             } );
 
-            deserializeNodeProp<mt::vec2f>( "skew", _xmlNode, [node]( auto _value )
+            deserializeNodeProp<mt::vec3f>( "origin", transformationNode, [node]( const mt::vec3f & _value )
+            {
+                node->setOrigin( _value );
+            } );
+
+            deserializeNodeProp<mt::vec2f>( "skew", transformationNode, [node]( const mt::vec2f & _value )
             {
                 node->setSkew( _value );
             } );
 
-            pugi::xml_node renderNode = _xmlNode.child( "Render" );
-            pugi::xml_node animationNode = _xmlNode.child( "Animation" );
-
-            RenderInterface * render = node->getRender();
-            if( render && renderNode )
+            deserializeNodeProp<mt::vec3f>( "scale", transformationNode, [node]( const mt::vec3f & _value )
             {
-                deserializeNodeProp<bool>( "enable", renderNode, [render]( auto _value )
+                node->setScale( _value );
+            } );
+
+            deserializeNodeProp<mt::vec3f>( "orientation", transformationNode, [node]( const mt::vec3f & _value )
+            {
+                node->setOrientation( _value );
+            } );
+
+            pugi::xml_node renderNode = _xmlNode.child( "Render" );
+            
+            if( renderNode )
+            {
+                RenderInterface * render = node->getRender();
+
+                deserializeNodeProp<bool>( "hide", renderNode, [render]( bool _value )
                 {
-                    if( render->isRenderEnable() != _value )
-                    {
-                        render->setRenderEnable( _value );
-                    }
+                    render->setHide( _value );
                 } );
 
-                deserializeNodeProp<bool>( "hide", renderNode, [render]( auto _value )
-                {
-                    if( render->isHide() != _value )
-                    {
-                        render->setHide( _value );
-                    }
-                } );
-
-                deserializeNodeProp<Color>( "color", renderNode, [render]( auto _value )
+                deserializeNodeProp<Color>( "color", renderNode, [render]( Color _value )
                 {
                     render->setLocalColor( _value );
                 } );
             }
 
-            AnimationInterface * animation = node->getAnimation();
-            if( animation && animationNode )
+            pugi::xml_node animationNode = _xmlNode.child( "Animation" );
+            
+            if( animationNode )
             {
-                deserializeNodeProp<bool>( "loop", animationNode, [animation]( auto _value )
+                AnimationInterface * animation = node->getAnimation();
+
+                deserializeNodeProp<bool>( "loop", animationNode, [animation]( bool _value )
                 {
-                    if( animation->isLoop() != _value )
-                    {
-                        animation->setLoop( _value );
-                    }
+                    animation->setLoop( _value );
                 } );
+            }
+
+            pugi::xml_node typeTextFieldNode = _xmlNode.child( "Type:TextField" );
+        
+            if( typeTextFieldNode )
+            {
+                TextFieldPtr textField = stdex::intrusive_static_cast<TextFieldPtr>(node);
+
+                deserializeNodeProp<float>( "MaxLength", animationNode, [textField]( auto _value )
+                {
+                    textField->setMaxLength( _value );
+                } );
+
+                deserializeNodeProp<bool>( "Wrap", animationNode, [textField]( auto _value )
+                {
+                    textField->setWrap( _value );
+                } );
+
+                deserializeNodeProp<ConstString>( "TextID", animationNode, [textField]( auto _value )
+                {
+                    textField->setTextID( _value );
+                } );
+
+                deserializeNodeProp<ConstString>( "TextAliasEnvironment", animationNode, [textField]( auto _value )
+                {
+                    textField->setTextAliasEnvironment( _value );
+                } );
+
+                deserializeNodeProp<ConstString>( "FontName", animationNode, [textField]( auto _value )
+                {
+                    textField->setFontName( _value );
+                } );
+
+                deserializeNodeProp<Color>( "FontColor", animationNode, [textField]( auto _value )
+                {
+                    textField->setFontColor( _value );
+                } );
+
+                deserializeNodeProp<float>( "LineOffset", animationNode, [textField]( auto _value )
+                {
+                    textField->setLineOffset( _value );
+                } );
+
+                deserializeNodeProp<float>( "CharOffset", animationNode, [textField]( auto _value )
+                {
+                    textField->setCharOffset( _value );
+                } );
+
+                deserializeNodeProp<float>( "CharScale", animationNode, [textField]( auto _value )
+                {
+                    textField->setCharScale( _value );
+                } );
+
+                deserializeNodeProp<uint32_t>( "HorizontAlign", animationNode, [textField]( auto _value )
+                {
+                    textField->setHorizontAlign( (ETextHorizontAlign)_value );
+                } );
+
+                deserializeNodeProp<uint32_t>( "VerticalAlign", animationNode, [textField]( auto _value )
+                {
+                    textField->setVerticalAlign( (ETextVerticalAlign)_value );
+                } );
+
+                deserializeNodeProp<uint32_t>( "MaxCharCount", animationNode, [textField]( auto _value )
+                {
+                    textField->setMaxCharCount( _value );
+                } );
+
+                deserializeNodeProp<bool>( "Pixelsnap", animationNode, [textField]( auto _value )
+                {
+                    textField->setPixelsnap( _value );
+                } );                
             }
         }
     }

@@ -32,6 +32,7 @@ set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libwebp)
 	set(WEBP_BUILD_WEBPINFO OFF CACHE BOOL "Build the webpinfo command line tool." FORCE)
 	set(WEBP_BUILD_WEBPMUX OFF CACHE BOOL "Build the webpinfo command line tool." FORCE)
 	set(WEBP_BUILD_WEBP_JS OFF CACHE BOOL "Emscripten build of webp.js." FORCE)
+    set(WEBP_BUILD_EXTRAS OFF CACHE BOOL "Build extras." FORCE)
 	set(WEBP_ENABLE_SWAP_16BIT_CSP OFF CACHE BOOL "Enable byte swap for 16 bit colorspaces." FORCE)
 
 ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libwebp )

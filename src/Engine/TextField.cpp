@@ -135,7 +135,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::notifyChangeTextAliasArguments( const ConstString & _environment, const ConstString & _alias )
     {
-        if( m_aliasEnvironment != _environment || m_key != _alias )
+        if( m_aliasEnvironment != _environment || m_textId != _alias )
         {
             return;
         }
@@ -353,7 +353,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::_render( const RenderContext * _state )
     {
-        if( m_key.empty() == true )
+        if( m_textId.empty() == true )
         {
             return;
         }
@@ -640,7 +640,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextField::updateTextLines_ %s textID %s invalid setup line"
                             , this->getName().c_str()
-                            , m_key.c_str()
+                            , m_textId.c_str()
                         );
 
                         return false;
@@ -713,7 +713,7 @@ namespace Mengine
         m_textSize.y = 0.f;
         m_charCount = 0;
 
-        if( m_key.empty() == true )
+        if( m_textId.empty() == true )
         {
             return true;
         }
@@ -730,7 +730,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "TextField::updateTextLines_ '%s' invalid update text cache %s"
                 , this->getName().c_str()
-                , m_key.c_str()
+                , m_textId.c_str()
             );
 
             return false;
@@ -927,7 +927,7 @@ namespace Mengine
                     {
                         LOGGER_ERROR( "TextField::updateTextLines_ %s textID %s invalid setup line"
                             , this->getName().c_str()
-                            , m_key.c_str()
+                            , m_textId.c_str()
                         );
 
                         return false;
@@ -1006,7 +1006,7 @@ namespace Mengine
         m_invalidateTextEntry = false;
 
         const ConstString & aliasTestId = TEXT_SERVICE()
-            ->getTextAlias( m_aliasEnvironment, m_key );
+            ->getTextAlias( m_aliasEnvironment, m_textId );
 
         m_textEntry = TEXT_SERVICE()
             ->getTextEntry( aliasTestId );
@@ -1015,7 +1015,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "TextField::updateTextEntry_ '%s' can't find text ID '%s'"
                 , this->getName().c_str()
-                , m_key.c_str()
+                , m_textId.c_str()
             );
 
             return;
@@ -1183,7 +1183,7 @@ namespace Mengine
         return m_colorFont;
     }
     //////////////////////////////////////////////////////////////////////////
-    ETextHorizontAlign TextField::calcHorizontalAlign() const
+    ETextHorizontAlign TextField::calcHorizontAlign() const
     {
         const TextEntryInterfacePtr & textEntry = this->getTextEntry();
 
@@ -1352,7 +1352,7 @@ namespace Mengine
 
         float offset = 0.f;
 
-        ETextHorizontAlign horizontAlign = this->calcHorizontalAlign();
+        ETextHorizontAlign horizontAlign = this->calcHorizontAlign();
 
         switch( horizontAlign )
         {
@@ -1392,7 +1392,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void TextField::setTextID( const ConstString & _key )
     {
-        m_key = _key;
+        m_textId = _key;
 
         m_textFormatArgs.clear();
 
@@ -1467,7 +1467,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "TextField::getTextExpectedArgument '%s:%s' not compile"
                 , this->getName().c_str()
-                , m_key.c_str()
+                , m_textId.c_str()
             );
 
             return 0;
@@ -1501,7 +1501,7 @@ namespace Mengine
         {
             LOGGER_ERROR( "TextField::updateTextCache_ '%s:%s' invalid get text entry can't setup text ID"
                 , this->getName().c_str()
-                , m_key.c_str()
+                , m_textId.c_str()
             );
 
             return false;
@@ -1517,12 +1517,12 @@ namespace Mengine
         const String & textValue = textEntry->getValue();
 
         TEXT_SERVICE()
-            ->getTextAliasArguments( m_aliasEnvironment, m_key, m_textFormatArgs );
+            ->getTextAliasArguments( m_aliasEnvironment, m_textId, m_textFormatArgs );
 
         String fmt;
         if( Helper::getStringFormat( fmt, textValue, m_textFormatArgs ) == false )
         {
-            LOGGER_ERROR( "TextField::updateTextCache_ '%s:%s' invalid string format with args '%d'"
+            LOGGER_ERROR( "invalid string '%s:%s' format with args '%d'"
                 , this->getName().c_str()
                 , this->getTextID().c_str()
                 , m_textFormatArgs.size()
@@ -1546,6 +1546,48 @@ namespace Mengine
     bool TextField::getPixelsnap() const
     {
         return m_pixelsnap;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setHorizontAlign( ETextHorizontAlign _horizontAlign )
+    {
+        m_horizontAlign = _horizontAlign;
+
+        if( m_horizontAlign == ETFHA_NONE )
+        {
+            m_fontParams &= ~(EFP_HORIZONTAL_ALIGN);
+        }
+        else
+        {
+            m_fontParams |= EFP_HORIZONTAL_ALIGN;
+        }
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ETextHorizontAlign TextField::getHorizontAlign() const
+    {
+        return m_horizontAlign;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void TextField::setVerticalAlign( ETextVerticalAlign _verticalAlign )
+    {
+        m_verticalAlign = _verticalAlign;
+
+        if( m_verticalAlign == ETFVA_NONE )
+        {
+            m_fontParams &= ~(EFP_VERTICAL_ALIGN);
+        }
+        else
+        {
+            m_fontParams |= EFP_VERTICAL_ALIGN;
+        }
+
+        this->invalidateTextLines();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ETextVerticalAlign TextField::getVerticalAlign() const
+    {
+        return m_verticalAlign;
     }
     //////////////////////////////////////////////////////////////////////////
     void TextField::setVerticalTopAlign()

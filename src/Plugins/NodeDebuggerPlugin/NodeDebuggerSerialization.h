@@ -1,9 +1,17 @@
 #pragma once
 
+#include "Interface/StringizeServiceInterface.h"
+
 #include "Config/Lambda.h"
 #include "Config/Vector.h"
 #include "Config/String.h"
 #include "Config/Char.h"
+
+#include "math/vec2.h"
+#include "math/vec3.h"
+
+#include "Kernel/Color.h"
+#include "Kernel/ConstString.h"
 
 #define PUGIXML_NO_STL
 #define PUGIXML_HEADER_ONLY
@@ -19,7 +27,7 @@ namespace Mengine
         uint32_t payloadSize;
     };
 
-    void InsertPacketHeader( Vector<uint8_t> & _payload, const PacketHeader & _hdr )
+    inline void InsertPacketHeader( Vector<uint8_t> & _payload, const PacketHeader & _hdr )
     {
         const uint8_t* begin = reinterpret_cast<const uint8_t*>(&_hdr);
         const uint8_t* end = begin + sizeof( PacketHeader );
@@ -29,13 +37,21 @@ namespace Mengine
     namespace Detail
     {
         template <typename T>
-        void setXmlValue( pugi::xml_attribute & _attrib, const T & _value )
+        inline void setXmlValue( pugi::xml_attribute & _attrib, const T & _value )
         {
             _attrib.set_value( _value );
         }
 
         template <>
-        void setXmlValue<mt::vec2f>( pugi::xml_attribute & _attrib, const mt::vec2f & _value )
+        inline void setXmlValue<float>( pugi::xml_attribute & _attrib, const float & _value )
+        {
+            std::string str = std::to_string( _value );
+
+            _attrib.set_value( str.c_str() );
+        }
+
+        template <>
+        inline void setXmlValue<mt::vec2f>( pugi::xml_attribute & _attrib, const mt::vec2f & _value )
         {
             std::string str = std::to_string( _value.x ) + '/' + std::to_string( _value.y );
 
@@ -43,7 +59,7 @@ namespace Mengine
         }
 
         template <>
-        void setXmlValue<mt::vec3f>( pugi::xml_attribute & _attrib, const mt::vec3f & _value )
+        inline void setXmlValue<mt::vec3f>( pugi::xml_attribute & _attrib, const mt::vec3f & _value )
         {
             std::string str = std::to_string( _value.x ) + '/' + std::to_string( _value.y ) + '/' + std::to_string( _value.z );
 
@@ -51,14 +67,25 @@ namespace Mengine
         }
 
         template <>
-        void setXmlValue<Color>( pugi::xml_attribute & _attrib, const Color & _value )
+        inline void setXmlValue<Color>( pugi::xml_attribute & _attrib, const Color & _value )
         {
             setXmlValue<uint32_t>( _attrib, _value.getAsARGB() );
         }
 
+        template <>
+        inline void setXmlValue<String>( pugi::xml_attribute & _attrib, const String & _value )
+        {
+            _attrib.set_value( _value.c_str() );
+        }
+
+        template <>
+        inline void setXmlValue<ConstString>( pugi::xml_attribute & _attrib, const ConstString & _value )
+        {
+            _attrib.set_value( _value.c_str() );
+        }
 
         template <typename T>
-        T getXmlValue( const pugi::xml_attribute & _attrib );
+        inline T getXmlValue( const pugi::xml_attribute & _attrib );
 
         template <>
         inline bool getXmlValue<bool>( const pugi::xml_attribute & _attrib )
@@ -70,6 +97,12 @@ namespace Mengine
         inline uint32_t getXmlValue<uint32_t>( const pugi::xml_attribute & _attrib )
         {
             return _attrib.as_uint();
+        }
+
+        template <>
+        inline float getXmlValue<float>( const pugi::xml_attribute & _attrib )
+        {
+            return _attrib.as_float();
         }
 
         inline void deserializeFloats( const pugi::xml_attribute & _attrib, float * _floats, const size_t _numFloats )
@@ -116,6 +149,17 @@ namespace Mengine
             return Color( getXmlValue<uint32_t>( _attrib ) );
         }
 
+        template <>
+        inline String getXmlValue<String>( const pugi::xml_attribute & _attrib )
+        {
+            return _attrib.as_string();
+        }
+
+        template <>
+        inline ConstString getXmlValue<ConstString>( const pugi::xml_attribute & _attrib )
+        {
+            return Helper::stringizeString( _attrib.as_string() );
+        }
 
         template <typename T>
         bool deserializeNodePropImpl( const Char* _propType, const Char* _propName,
@@ -169,6 +213,12 @@ namespace Mengine
         };
 
         template<>
+        struct prop_type_name<float>
+        {
+            static const Char * get_value() { return "float"; }
+        };
+
+        template<>
         struct prop_type_name<mt::vec2f>
         {
             static const Char * get_value() { return "mt::vec2f"; }
@@ -185,10 +235,22 @@ namespace Mengine
         {
             static const Char * get_value() { return "Color"; }
         };
+
+        template<>
+        struct prop_type_name<String>
+        {
+            static const Char * get_value() { return "String"; }
+        };
+
+        template<>
+        struct prop_type_name<ConstString>
+        {
+            static const Char * get_value() { return "String"; }
+        };
     }
 
     template <typename T>
-    void serializeNodeProp( const T & _prop, const Char * _propName, pugi::xml_node & _xmlParentNode )
+    inline void serializeNodeProp( const T & _prop, const Char * _propName, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node propNode = _xmlParentNode.append_child( _propName );
         const Char * type_name = Detail::prop_type_name<T>::get_value();
@@ -198,7 +260,7 @@ namespace Mengine
     }
 
     template<typename T>
-    bool deserializeNodeProp( const Char * _propName,
+    inline bool deserializeNodeProp( const Char * _propName,
         const pugi::xml_node & _xmlParentNode,
         const Lambda<void( const T & )> & _lambda )
     {
@@ -224,9 +286,13 @@ namespace Mengine
         {
             const uint8_t* ptr = reinterpret_cast<const uint8_t*>(_data);
             m_buffer.insert( m_buffer.end(), ptr, ptr + _size );
+
+            m_debug.append( (const char *)_data, _size );
         }
 
     private:
         Vector<uint8_t>& m_buffer;
+
+        String m_debug;
     };
 }

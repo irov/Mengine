@@ -17,7 +17,8 @@ namespace Mengine
     {
         ETFHA_LEFT = 0,
         ETFHA_CENTER = 1,
-        ETFHA_RIGHT = 2
+        ETFHA_RIGHT = 2,
+        ETFHA_NONE = 3
     };
     //////////////////////////////////////////////////////////////////////////
     enum ETextVerticalAlign
@@ -25,6 +26,7 @@ namespace Mengine
         ETFVA_BOTTOM = 0,
         ETFVA_CENTER = 1,
         ETFVA_TOP = 2,
+        ETFVA_NONE = 3,
     };
     //////////////////////////////////////////////////////////////////////////
     class TextEntryInterface

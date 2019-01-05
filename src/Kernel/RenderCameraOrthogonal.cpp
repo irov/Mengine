@@ -23,6 +23,28 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    void RenderCameraOrthogonal::fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f & _screenPosition ) const
+    {
+        const mt::mat4f & vpm = this->getCameraViewProjectionMatrix();
+
+        mt::mat4f wvpm;
+        mt::mul_m4_m4( wvpm, _worldMatrix, vpm );
+
+        mt::vec2f v_clip;
+        mt::mul_v2_v2z_m4_homogenize( v_clip, wvpm );
+
+        mt::vec2f v_wvpn;
+        v_wvpn.x = (1.f + v_clip.x) * 0.5f;
+        v_wvpn.y = (1.f - v_clip.y) * 0.5f;
+
+        Viewport vp;
+        this->makeViewport_( vp );
+
+        mt::vec2f vpSize = (vp.end - vp.begin);
+
+        _screenPosition = vp.begin + vpSize * v_wvpn;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void RenderCameraOrthogonal::setCameraPosition( const mt::vec3f & _pos )
     {
         m_cameraPosition = _pos;
@@ -129,7 +151,15 @@ namespace Mengine
     void RenderCameraOrthogonal::_updateProjectionMatrix() const
     {
         Viewport renderViewport;
+        this->makeViewport_( renderViewport );
 
+        mt::make_projection_ortho_lh_m4( m_projectionMatrix, renderViewport.begin.x, renderViewport.end.x, renderViewport.begin.y, renderViewport.end.y, m_cameraNear, m_cameraFar );
+
+        mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderCameraOrthogonal::makeViewport_( Viewport & _viewport ) const
+    {
         if( m_fixedOrthogonalViewport == false )
         {
             float gameViewportAspect;
@@ -150,16 +180,12 @@ namespace Mengine
             mt::mat4f wm_inv;
             mt::inv_m4_m4( wm_inv, wm );
 
-            mt::mul_v2_v2_m4( renderViewport.begin, renderViewportWM.begin, wm_inv );
-            mt::mul_v2_v2_m4( renderViewport.end, renderViewportWM.end, wm_inv );
+            mt::mul_v2_v2_m4( _viewport.begin, renderViewportWM.begin, wm_inv );
+            mt::mul_v2_v2_m4( _viewport.end, renderViewportWM.end, wm_inv );
         }
         else
         {
-            renderViewport = m_orthogonalViewport;
+            _viewport = m_orthogonalViewport;
         }
-
-        mt::make_projection_ortho_lh_m4( m_projectionMatrix, renderViewport.begin.x, renderViewport.end.x, renderViewport.begin.y, renderViewport.end.y, m_cameraNear, m_cameraFar );
-
-        mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
     }
 }

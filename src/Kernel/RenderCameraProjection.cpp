@@ -119,6 +119,28 @@ namespace Mengine
         this->invalidateProjectionMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
+    void RenderCameraProjection::fromWorldToScreenPosition( const mt::mat4f & _worldMatrix, mt::vec2f & _screenPosition ) const
+    {
+        const mt::mat4f & vpm = this->getCameraViewProjectionMatrix();
+
+        mt::mat4f wvpm;
+        mt::mul_m4_m4( wvpm, _worldMatrix, vpm );
+
+        mt::vec2f v_clip;
+        mt::mul_v2_v2z_m4_homogenize( v_clip, wvpm );
+
+        mt::vec2f v_wvpn;
+        v_wvpn.x = (1.f + v_clip.x) * 0.5f;
+        v_wvpn.y = (1.f - v_clip.y) * 0.5f;
+
+        Viewport vp;
+        this->makeViewport_( vp );
+
+        mt::vec2f vpSize = (vp.end - vp.begin);
+
+        _screenPosition = vp.begin + vpSize * v_wvpn;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void RenderCameraProjection::_updateViewMatrix() const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
@@ -138,6 +160,16 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void RenderCameraProjection::_updateProjectionMatrix() const
+    {        
+        Viewport projectViewport;
+        this->makeViewport_( projectViewport );
+
+        mt::make_projection_frustum_m4( m_projectionMatrix, projectViewport.begin.x, projectViewport.end.x, projectViewport.begin.y, projectViewport.end.y, m_cameraNear, m_cameraFar );
+
+        mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void RenderCameraProjection::makeViewport_( Viewport & _viewport ) const
     {
         float tangent = ::tanf( m_cameraFov * 0.5f );
         float height = 2.f * 1.f * tangent;
@@ -167,8 +199,6 @@ namespace Mengine
         projectViewport.end.x *= projection_factor_x;
         projectViewport.end.y *= projection_factor_y;
 
-        mt::make_projection_frustum_m4( m_projectionMatrix, projectViewport.begin.x, projectViewport.end.x, projectViewport.begin.y, projectViewport.end.y, m_cameraNear, m_cameraFar );
-
-        mt::inv_m4_m4( m_projectionMatrixInv, m_projectionMatrix );
+        _viewport = projectViewport;
     }
 }

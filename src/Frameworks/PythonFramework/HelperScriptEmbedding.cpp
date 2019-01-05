@@ -2837,14 +2837,6 @@ namespace Mengine
                 return mt::vec2f( 0.f, 0.f );
             }
 
-            //RenderViewportInterfacePtr viewport = Helper::getNodeRenderViewportInheritance( _node );
-
-            //if( viewport == nullptr )
-            //{
-            //    viewport = PLAYER_SERVICE()
-            //        ->getRenderViewport();
-            //}
-
             RenderCameraInterfacePtr camera = Helper::getNodeRenderCameraInheritance( _node );
 
             if( camera == nullptr )
@@ -2853,30 +2845,10 @@ namespace Mengine
                     ->getRenderCamera();
             }
 
-            Viewport vp;
-
-            float aspect;
-            APPLICATION_SERVICE()
-                ->getGameViewport( aspect, vp );
-
-            //const Viewport & vp2 = viewport->getViewport();
-
-            const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
-
             const mt::mat4f & wm = _node->getWorldMatrix();
 
-            mt::mat4f wvpm;
-            mt::mul_m4_m4( wvpm, wm, vpm );
-
-            mt::vec2f v_clip;
-            mt::mul_v2_v2z_m4_homogenize( v_clip, wvpm );
-
-            mt::vec2f v_wvpn;
-            v_wvpn.x = (1.f + v_clip.x) * 0.5f;
-            v_wvpn.y = (1.f - v_clip.y) * 0.5f;
-
             mt::vec2f screen;
-            screen = vp.begin + (vp.end - vp.begin) * v_wvpn;
+            camera->fromWorldToScreenPosition( wm, screen );
 
             return screen;
         }

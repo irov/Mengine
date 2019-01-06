@@ -462,6 +462,7 @@ namespace Mengine
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Render" );
 
+        serializeNodeProp( _render->isRenderEnable(), "rendering", xmlNode );
         serializeNodeProp( _render->isHide(), "hide", xmlNode );
         serializeNodeProp( _render->getLocalColor(), "color", xmlNode );
     }

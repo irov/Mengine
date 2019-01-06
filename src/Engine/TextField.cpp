@@ -1279,6 +1279,7 @@ namespace Mengine
                     //float h = fontHeight - fontDescent;
                     offset = fontBearingYA * 0.5f;
                 }break;
+            case ETFVA_NONE:
             case ETFVA_TOP:
                 {
                     offset = 0.f;
@@ -1301,6 +1302,7 @@ namespace Mengine
                     offset = fontHeight - (fontHeight - fontAscent) - fontHeight * layoutCountf * 0.5f - layoutCount1f * _lineOffset * 0.5f;
                     //offset = 0.f;
                 }break;
+            case ETFVA_NONE:
             case ETFVA_TOP:
                 {
                     offset = fontHeight - (fontHeight - fontAscent);
@@ -1356,6 +1358,7 @@ namespace Mengine
 
         switch( horizontAlign )
         {
+        case ETFHA_NONE:
         case ETFHA_LEFT:
             {
                 offset = 0.f;

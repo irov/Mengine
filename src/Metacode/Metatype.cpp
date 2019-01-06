@@ -118,10 +118,8 @@ namespace Metabuf
 
         for( uint32_t i = 0; i != count; ++i )
         {
-            uint32_t index;
-            ar.readSize( index );
-
-            const Mengine::ConstString & tag = cache->strings[index];
+            Mengine::ConstString tag;
+            archive_read( ar, tag, _userData );
 
             _value.addTag( tag );
         }

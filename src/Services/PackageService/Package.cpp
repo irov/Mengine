@@ -366,16 +366,18 @@ namespace Mengine
             return false;
         }
 
-        //const Tags & platformTags = PLATFORM_SERVICE()
-        //	->getPlatformTags();
-
         SCRIPT_SERVICE()
             ->addModulePath( m_fileGroup, m_scriptsPackages );
 
+        const Tags & platformTags = PLATFORM_SERVICE()
+            ->getPlatformTags();
+
         for( const PakResourceDesc & desc : m_resourcesDesc )
         {
-            //PROFILER_SERVICE(m_serviceProvider)
-            //    ->memoryBegin();
+            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            {
+                continue;
+            }
 
             if( RESOURCE_SERVICE()
                 ->loadResources( m_locale, m_fileGroup, desc.path, desc.ignored ) == false )
@@ -388,18 +390,15 @@ namespace Mengine
 
                 return false;
             }
-
-            //size_t memory = PROFILER_SERVICE()
-            //	->memoryEnd();
-
-            //LOGGER_ERROR("resource desc %.04f -- %s"
-            //	, float( memory ) / (1024.f)
-            //	, desc.path.c_str()
-            //	);
         }
 
         for( const PakFontDesc & desc : m_pathFonts )
         {
+            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            {
+                continue;
+            }
+
             if( this->loadFont_( desc.path ) == false )
             {
                 LOGGER_ERROR( "Package::enable '%s:%s' invalid load font '%s'"
@@ -414,6 +413,11 @@ namespace Mengine
 
         for( const PakTextDesc & desc : m_pathTexts )
         {
+            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            {
+                continue;
+            }
+
             if( this->loadText_( desc.path ) == false )
             {
                 LOGGER_ERROR( "Package::enable '%s:%s' invalid load text '%s'"
@@ -428,6 +432,11 @@ namespace Mengine
 
         for( const PakDataDesc & desc : m_datas )
         {
+            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            {
+                continue;
+            }
+
             if( this->addUserData_( desc.name, desc.path ) == false )
             {
                 LOGGER_ERROR( "Package::enable '%s:%s' invalid load userdata '%s' path '%s'"
@@ -443,6 +452,11 @@ namespace Mengine
 
         for( const PakMaterialDesc & desc : m_pathMaterials )
         {
+            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            {
+                continue;
+            }
+
             if( this->loadMaterials_( desc.path ) == false )
             {
                 LOGGER_ERROR( "Package::enable '%s:%s' invalid load material '%s'"
@@ -478,8 +492,16 @@ namespace Mengine
         SCRIPT_SERVICE()
             ->removeModulePath( m_fileGroup, m_scriptsPackages );
 
+        const Tags & platformTags = PLATFORM_SERVICE()
+            ->getPlatformTags();
+
         for( const PakResourceDesc & desc : m_resourcesDesc )
         {
+            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            {
+                continue;
+            }
+
             if( RESOURCE_SERVICE()
                 ->unloadResources( m_locale, m_fileGroup, desc.path ) == false )
             {
@@ -489,6 +511,11 @@ namespace Mengine
 
         for( const PakFontDesc & desc : m_pathFonts )
         {
+            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            {
+                continue;
+            }
+
             if( this->unloadFont_( desc.path ) == false )
             {
                 return false;
@@ -497,6 +524,11 @@ namespace Mengine
 
         for( const PakTextDesc & desc : m_pathTexts )
         {
+            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            {
+                continue;
+            }
+
             if( this->unloadText_( desc.path ) == false )
             {
                 return false;
@@ -505,6 +537,11 @@ namespace Mengine
 
         for( const PakDataDesc & desc : m_datas )
         {
+            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            {
+                continue;
+            }
+
             if( this->removeUserData_( desc.name ) == false )
             {
                 return false;
@@ -513,6 +550,11 @@ namespace Mengine
 
         for( const PakMaterialDesc & desc : m_pathMaterials )
         {
+            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            {
+                continue;
+            }
+
             if( this->unloadMaterials_( desc.path ) == false )
             {
                 return false;

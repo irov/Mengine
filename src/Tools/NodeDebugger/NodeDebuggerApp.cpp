@@ -635,6 +635,12 @@ namespace Mengine
             }
         };
 
+        auto uiReadOnlyBool = [_node]( const char * _caption, bool & _prop )
+        {
+            bool testValue = _prop;
+            bool input = ImGui::Checkbox( _caption, &testValue );
+        };
+
         auto uiEditorVec1U = [_node]( const char * _caption, uint32_t & _prop )
         {
             uint32_t testValue = _prop;
@@ -816,6 +822,7 @@ namespace Mengine
 
         if( _node->hasRender && ImGui::CollapsingHeader( "Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
+            uiReadOnlyBool( "rendering", _node->render.rendering );
             uiEditorBool( "Hide", _node->render.hide );
             ImGui::Spacing();
 

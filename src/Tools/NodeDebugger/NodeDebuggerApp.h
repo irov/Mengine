@@ -74,6 +74,7 @@ namespace Mengine
 
     struct NodeRender
     {
+        bool    rendering;
         bool    hide;
         Color   color;
 
@@ -85,6 +86,7 @@ namespace Mengine
 
         void deserialize( const pugi::xml_node & _xmlNode )
         {
+            DESERIALIZE_PROP( rendering );
             DESERIALIZE_PROP( hide );
             DESERIALIZE_PROP( color );
         }

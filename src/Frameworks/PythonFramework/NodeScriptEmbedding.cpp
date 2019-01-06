@@ -2637,7 +2637,8 @@ namespace Mengine
             ;
 
         pybind::interface_<RenderInterface, pybind::bases<Colorable, BoundingBox> >( kernel, "RenderInterface" )
-            .def( "hide", &RenderInterface::setHide )
+            .def( "setHide", &RenderInterface::setHide )
+            .def_deprecated( "hide", &RenderInterface::setHide, "use setHide" )
             .def( "isHide", &RenderInterface::isHide )
             .def( "localHide", &RenderInterface::setLocalHide )
             .def( "isLocalHide", &RenderInterface::isLocalHide )

@@ -234,7 +234,7 @@ namespace Mengine
         NodeDebuggerApp();
         ~NodeDebuggerApp();
 
-        bool                Initialize();
+        bool                Initialize( const std::string& _address, const uint16_t _port );
         void                Loop();
         void                Shutdown();
 

@@ -86,7 +86,7 @@ namespace Mengine
     {
     }
 
-    bool NodeDebuggerApp::Initialize()
+    bool NodeDebuggerApp::Initialize( const std::string& _address, const uint16_t _port )
     {
         if( 0 != zed_net_init() )
         {
@@ -149,6 +149,15 @@ namespace Mengine
 
         mShutdown = false;
         mNetworkThread = std::thread( &NodeDebuggerApp::NetworkLoop, this );
+
+        // if requested to auto-connect, then do so
+        if( !_address.empty() && _port != 0 )
+        {
+            mServerAddress = _address;
+            mServerPort = _port;
+
+            OnConnectButton();
+        }
 
         return true;
     }
@@ -602,7 +611,8 @@ namespace Mengine
             reinterpret_cast<ImTextureID>( mIconsAtlas ),
             static_cast<size_t>( _node->icon ),
             fullLabel.c_str(),
-            _node->children.empty() ? flagsNoChildren : flagsNormal
+            _node->children.empty() ? flagsNoChildren : flagsNormal,
+            !_node->enable
         );
 
         if( result.second )

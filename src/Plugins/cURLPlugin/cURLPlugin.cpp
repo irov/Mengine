@@ -227,8 +227,6 @@ namespace Mengine
             .def( "CURLE_SSL_PINNEDPUBKEYNOTMATCH", CURLE_SSL_PINNEDPUBKEYNOTMATCH )
             .def( "CURLE_SSL_INVALIDCERTSTATUS", CURLE_SSL_INVALIDCERTSTATUS )
             .def( "CURLE_HTTP2_STREAM", CURLE_HTTP2_STREAM )
-            .def( "CURLE_RECURSIVE_API_CALL", CURLE_RECURSIVE_API_CALL )
-            .def( "CURL_LAST", CURL_LAST )
             ;
 
         pybind::def_functor_args( kernel, "getMessage", this, &cURLPlugin::getMessage );

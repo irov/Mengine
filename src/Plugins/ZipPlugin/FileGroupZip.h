@@ -73,5 +73,8 @@ namespace Mengine
 
         typedef Map<FilePath, FileInfo> MapFileInfo;
         MapFileInfo m_files;
+
+        typedef Vector<FilePath> VectorFiles;
+        VectorFiles m_indexes;
     };
 }

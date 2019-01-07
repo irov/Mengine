@@ -158,6 +158,10 @@ PLUGIN_EXPORT( Theora );
 PLUGIN_EXPORT( TTF );
 #endif
 
+#ifdef MENGINE_PLUGIN_CURL_STATIC
+PLUGIN_EXPORT( cURL );
+#endif
+
 #ifdef MENGINE_PLUGIN_SPINE_STATIC
 PLUGIN_EXPORT( Spine );
 #endif
@@ -666,9 +670,14 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
 #endif
 
+#ifdef MENGINE_PLUGIN_CURL_STATIC
+        MENGINE_ADD_PLUGIN( cURL, "initialize Plugin cURL..." );
+#endif
+
 #ifdef MENGINE_PLUGIN_SPINE_STATIC
         MENGINE_ADD_PLUGIN( Spine, "initialize Plugin Spine..." );
 #endif
+
         MENGINE_ADD_PLUGIN( Movie, "initialize Plugin Movie..." );
         //MENGINE_ADD_PLUGIN(Motor, "initialize Plugin Motor...");
         //MENGINE_ADD_PLUGIN( Box2D, "initialize Plugin Box2D..." );

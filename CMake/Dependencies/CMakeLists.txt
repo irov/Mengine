@@ -208,11 +208,11 @@ if(NOT MENGINE_TOOLCHAIN_GRADLE)
     
 		set(CURL_CA_PATH "none" CACHE STRING "CURL_CA_PATH" FORCE)
 
-		if(MENGINE_PLATFORM_XCODE)
+		if(MENGINE_TARGET_IOS)
 			set(CMAKE_USE_OPENSSL OFF CACHE BOOL "Use CMAKE_USE_OPENSSL code. Experimental" FORCE)
 		endif()
 
-		if(MENGINE_PLATFORM_ANDROID)
+		if(MENGINE_TARGET_ANDROID)
 			set(CMAKE_USE_OPENSSL OFF CACHE BOOL "Use CMAKE_USE_OPENSSL code. Experimental" FORCE)
 		endif()
 			
@@ -224,13 +224,13 @@ if(NOT MENGINE_TOOLCHAIN_GRADLE)
             set(CMAKE_USE_LIBSSH2 OFF CACHE BOOL "Use CMAKE_USE_LIBSSH2 code. Experimental" FORCE)
         endif()
 
-		if(MENGINE_PLATFORM_IOS)
+		if(MENGINE_TARGET_IOS)
 			set(ENABLE_THREADED_RESOLVER OFF CACHE BOOL "ENABLE_THREADED_RESOLVER" FORCE)
 			set(CMAKE_USE_LIBSSH2 OFF CACHE BOOL "Use CMAKE_USE_LIBSSH2 code. Experimental" FORCE)
 			set(CMAKE_USE_DARWINSSL ON CACHE BOOL "Use CMAKE_USE_DARWINSSL code. Experimental" FORCE)
 		endif()
 		
-		if(MENGINE_PLATFORM_IOS)
+		if(MENGINE_TARGET_IOS)
 			#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/curl/curl_config.h ${THIRDPARTY_DIR}/curl/lib/curl_config.h COPYONLY)
 			#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/curl/curlbuild.h ${THIRDPARTY_DIR}/curl/include/curl/curlbuild.h COPYONLY)	
 		endif()		
@@ -240,7 +240,7 @@ if(NOT MENGINE_TOOLCHAIN_GRADLE)
 endif()
 
 #dependencies SDL2
-if(MENGINE_PLATFORM_SDL)
+if(MENGINE_PLATFORM_SDL AND NOT MENGINE_TARGET_ANDROID)
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/SDL2)  
         set(SDL_CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Name suffix for debug builds" FORCE)
@@ -286,7 +286,7 @@ if(MENGINE_PLATFORM_SDL)
         if(MENGINE_TOOLCHAIN_GRADLE)
             configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLActivity.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java COPYONLY)
             configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLSurface.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLSurface.java COPYONLY)
-        endif()    
+        endif()
 
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/SDL2 )
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})

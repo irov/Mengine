@@ -100,7 +100,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeDevToDevModule::_initialize()
+    bool AndroidNativeDevToDevModule::_initializeModule()
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
@@ -124,7 +124,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativeDevToDevModule::_finalize()
+    void AndroidNativeDevToDevModule::_finalizeModule()
     {
     }
     //////////////////////////////////////////////////////////////////////////

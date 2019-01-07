@@ -20,6 +20,7 @@ namespace Mengine
         bool hasTag( const ConstString & _tag ) const;
         bool inTags( const Tags & _tag ) const;
 
+        bool empty() const;
         void clear();
 
     public:

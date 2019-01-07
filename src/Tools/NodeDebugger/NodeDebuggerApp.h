@@ -193,6 +193,24 @@ namespace Mengine
         }
     };
 
+    struct CachedImage
+    {
+        String      name;
+        uintptr_t   image;
+        size_t      width;
+        size_t      height;
+    };
+
+    struct NodeIcon
+    {
+        String      name;
+        uintptr_t   image;
+        float       uv0_X;
+        float       uv0_Y;
+        float       uv1_X;
+        float       uv1_Y;
+    };
+
     struct DebuggerNode
     {
         enum class Icon : size_t
@@ -209,13 +227,13 @@ namespace Mengine
         String                  type;
         bool                    enable;
 
-        bool transformationProxy;
-        NodeTransformation transformation;
+        bool                    transformationProxy;
+        NodeTransformation      transformation;
 
         bool                    hasRender;
         NodeRender              render;
 
-        bool                    hasAnimation;        
+        bool                    hasAnimation;
         NodeAnimation           animation;
 
         bool                    isTypeTextField;
@@ -225,7 +243,7 @@ namespace Mengine
         DebuggerNode*           parent;
 
         bool                    dirty;
-        Icon                    icon;
+        const NodeIcon*         icon;
     };
 
     class NodeDebuggerApp
@@ -234,39 +252,41 @@ namespace Mengine
         NodeDebuggerApp();
         ~NodeDebuggerApp();
 
-        bool                Initialize( const std::string& _address, const uint16_t _port );
-        void                Loop();
-        void                Shutdown();
+        bool                        Initialize( const std::string & _address, const uint16_t _port );
+        void                        Loop();
+        void                        Shutdown();
 
     private:
-        void                Resize( const int _width, const int _height );
-        void                Update();
-        void                ProcessPacket( const NodeDebuggerPacket & _packet );
-        void                ReceiveScene( const pugi::xml_node & _xmlContainer );
-        void                DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node );
-        Vector<uint32_t>    CollectNodePath( const DebuggerNode * _node );
-        String              PathToString( const Vector<uint32_t> & _path );
-        void                DestroyNode( DebuggerNode * _node );
+        void                        Resize( const int _width, const int _height );
+        void                        Update();
+        void                        ProcessPacket( const NodeDebuggerPacket & _packet );
+        void                        ReceiveScene( const pugi::xml_node & _xmlContainer );
+        void                        DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node );
+        Vector<uint32_t>            CollectNodePath( const DebuggerNode * _node );
+        String                      PathToString( const Vector<uint32_t> & _path );
+        void                        DestroyNode( DebuggerNode * _node );
 
         // UI
-        void                LoadIconsAtlas();
-        void                DoUI();
-        String              DoIPInput( const String & _title, const String & _inIP );
-        void                DoNodeElement( DebuggerNode * _node );
-        void                DoNodeProperties( DebuggerNode * _node );
-        void                OnConnectButton();
-        void                OnDisconnectButton();
-        void                OnSelectNode( DebuggerNode * _node );
+        const CachedImage*          GetIconImage( const String & _name );
+        void                        LoadIconsAtlas();
+        const NodeIcon*             GetIconForNodeType( const String & _nodeType );
+        void                        DoUI();
+        String                      DoIPInput( const String & _title, const String & _inIP );
+        void                        DoNodeElement( DebuggerNode * _node );
+        void                        DoNodeProperties( DebuggerNode * _node );
+        void                        OnConnectButton();
+        void                        OnDisconnectButton();
+        void                        OnSelectNode( DebuggerNode * _node );
 
         // network
-        void                NetworkLoop();
-        void                ConnectToServer();
-        void                DisconnectFromServer();
-        void                SendNetworkData();
-        void                ReceiveNetworkData();
-        void                SendXML( const pugi::xml_document & _doc );
-        void                SendChangedNode( const DebuggerNode & _node );
-        void                SendNodeSelection( const String & _path );
+        void                        NetworkLoop();
+        void                        ConnectToServer();
+        void                        DisconnectFromServer();
+        void                        SendNetworkData();
+        void                        ReceiveNetworkData();
+        void                        SendXML( const pugi::xml_document & _doc );
+        void                        SendChangedNode( const DebuggerNode & _node );
+        void                        SendNodeSelection( const String & _path );
 
     private:
         GLFWwindow*                 mWindow;
@@ -276,7 +296,9 @@ namespace Mengine
 
         // UI
         DebuggerNode*               mSelectedNode;
-        uintptr_t                   mIconsAtlas;
+        NodeIcon*                   mDefaultIcon;
+        Vector<NodeIcon>            mIcons;
+        Vector<CachedImage>         mImagesCache;
 
         // Server connection
         String                      mServerAddress;

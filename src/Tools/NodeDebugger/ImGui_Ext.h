@@ -48,8 +48,14 @@ static void SetBrightStyle( ImGuiStyle * _dst = nullptr )
     style.Colors[ImGuiCol_ModalWindowDarkening]  = ImVec4(0.20f, 0.20f, 0.20f, 0.35f);
 }
 
+struct ImIcon
+{
+    ImTextureID image;
+    ImVec2      uv0;
+    ImVec2      uv1;
+};
 
-static std::pair<bool, bool> TreeNodeWithIcon( ImTextureID _atlas, const size_t _iconId, const char * _label, const ImGuiTreeNodeFlags _flags = 0, const bool _disabled = false )
+static std::pair<bool, bool> TreeNodeWithIcon( const ImIcon * _icon, const char * _label, const ImGuiTreeNodeFlags _flags = 0, const bool _disabled = false )
 {
     std::string paddedLabel = std::string( "   " ) + _label;
 
@@ -69,15 +75,14 @@ static std::pair<bool, bool> TreeNodeWithIcon( ImTextureID _atlas, const size_t 
 
     const bool isClicked = ImGui::IsItemClicked();
 
-    ImGui::SameLine();
+    if( _icon != nullptr )
+    {
+        ImGui::SameLine();
 
-    const float uv0 = static_cast<float>( _iconId ) * 16.f;
-    const float uv1 = uv0 + 16.f;
-    const float invAtlasW = 1.f / 256.f;
-
-    ImGui::SetCursorPosX( ImGui::GetCursorPosX() - textSize.x - 8.f );
-    const ImVec4 imageColor = _disabled ? ImVec4( 1.0f, 1.0f, 1.0f, 0.5f ) : ImVec4( 1.0f, 1.0f, 1.0f, 1.0f );
-    ImGui::Image( _atlas, ImVec2( 16.f, 16.f ), ImVec2( uv0 * invAtlasW, 0.f ), ImVec2( uv1 * invAtlasW, 1.f ), imageColor );
+        ImGui::SetCursorPosX( ImGui::GetCursorPosX() - textSize.x - 8.f );
+        const ImVec4 imageColor = _disabled ? ImVec4( 1.0f, 1.0f, 1.0f, 0.5f ) : ImVec4( 1.0f, 1.0f, 1.0f, 1.0f );
+        ImGui::Image( _icon->image, ImVec2( 16.f, 16.f ), _icon->uv0, _icon->uv1, imageColor );
+    }
 
     return { isOpened, isClicked };
 }

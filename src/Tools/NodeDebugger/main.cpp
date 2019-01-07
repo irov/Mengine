@@ -22,7 +22,6 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
 {
     (void)hInstance;
     (void)hPrevInstance;
-    (void)lpCmdLine;
     (void)nShowCmd;
 
     stdex_allocator_initialize();

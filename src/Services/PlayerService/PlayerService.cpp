@@ -24,7 +24,6 @@
 
 #include "Plugins/AstralaxParticlePlugin/AstralaxInterface.h"
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
-#include "Plugins/NodeDebuggerPlugin/NodeDebuggerInterface.h"
 
 #include "Config/Stringstream.h"
 
@@ -468,12 +467,6 @@ namespace Mengine
         PICKER_SERVICE()
             ->update();
 
-        if( SERVICE_EXIST( Mengine::NodeDebuggerServiceInterface ) == true )
-        {
-            NODEDEBUGGER_SERVICE()
-                ->update();
-        }
-
         if( m_globalInputHandler != nullptr )
         {
             m_globalInputHandler->update();
@@ -560,12 +553,6 @@ namespace Mengine
                         ->renderDebugNode( scene, &context, false );
                 }
             }
-        }
-
-        if( SERVICE_EXIST( Mengine::NodeDebuggerServiceInterface ) == true )
-        {
-            NODEDEBUGGER_SERVICE()
-                ->render( &context );
         }
 
         MODULE_SERVICE()
@@ -706,12 +693,6 @@ namespace Mengine
     {
         PICKER_SERVICE()
             ->setScene( _scene );
-
-        if( SERVICE_EXIST( Mengine::NodeDebuggerServiceInterface ) == true )
-        {
-            NODEDEBUGGER_SERVICE()
-                ->setScene( _scene );
-        }
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::notifyChangeSceneEnable( const ScenePtr & _scene )
@@ -790,12 +771,6 @@ namespace Mengine
     {
         PICKER_SERVICE()
             ->setScene( nullptr );
-
-        if( SERVICE_EXIST( Mengine::NodeDebuggerServiceInterface ) == true )
-        {
-            NODEDEBUGGER_SERVICE()
-                ->setScene( nullptr );
-        }
 
         if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
         {

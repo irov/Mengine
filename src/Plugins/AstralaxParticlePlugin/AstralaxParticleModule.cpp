@@ -79,7 +79,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AstralaxParticleModule::_initialize()
+    bool AstralaxParticleModule::_initializeModule()
     {
         LOGGER_INFO( "Initializing Particle System ..." );
 
@@ -167,7 +167,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxParticleModule::_finalize()
+    void AstralaxParticleModule::_finalizeModule()
     {
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ) );
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "ClassWrapping" ), STRINGIZE_STRING_LOCAL( "AstralaxEmitter" ) );

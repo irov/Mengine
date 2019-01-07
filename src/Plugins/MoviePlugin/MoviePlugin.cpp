@@ -13,7 +13,6 @@
 #include "Plugins/NodeDebugRenderPlugin/NodeDebugRenderServiceInterface.h"
 #include "Plugins/ResourcePrefetcherPlugin/ResourcePrefetcherServiceInterface.h"
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
-#include "Plugins/NodeDebuggerPlugin/NodeDebuggerInterface.h"
 
 #include "Environment/Python/PythonScriptWrapper.h"
 
@@ -470,10 +469,7 @@ namespace Mengine
             VOCALUBARY_SET( LoaderInterface, STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ), new FactorableUnique<LoaderResourceMovie2>() );
         }
 
-        SERVICE_WAIT( Mengine::NodeDebuggerServiceInterface, []()
-        {
-            VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<Movie2DebuggerBoundingBox>() );
-        } );
+        VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ), new FactorableUnique<Movie2DebuggerBoundingBox>() );
 
         return true;
     }
@@ -528,9 +524,6 @@ namespace Mengine
             VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "Loader" ), STRINGIZE_STRING_LOCAL( "ResourceMovie2" ) );
         }
 
-        if( SERVICE_EXIST( NodeDebuggerServiceInterface ) == true )
-        {
-            VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ) );
-        }
+        VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "Movie2" ) );
     }
 }

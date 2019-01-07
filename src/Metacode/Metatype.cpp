@@ -111,8 +111,6 @@ namespace Metabuf
     //////////////////////////////////////////////////////////////////////////
     void archive_read( Reader & ar, Mengine::Tags & _value, void * _userData )
     {
-        Mengine::Metacache * cache = static_cast<Mengine::Metacache *>(_userData);
-
         uint32_t count;
         ar.readSize( count );
 

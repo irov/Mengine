@@ -46,9 +46,10 @@ namespace Mengine
         virtual void update() = 0;
 
     public:
+        virtual bool isSpecialDown() const = 0;
         virtual bool isAltDown() const = 0;
         virtual bool isShiftDown() const = 0;
-        virtual bool isCtrlDown() const = 0;
+        virtual bool isControlDown() const = 0;
 
     public:
         virtual bool isKeyDown( uint32_t _keyCode ) const = 0;

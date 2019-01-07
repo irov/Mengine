@@ -25,12 +25,12 @@ namespace Mengine
         virtual bool _available();
 
     public:
-        bool initialize() override;
-        void finalize() override;
+        bool initializeModule() override;
+        void finalizeModule() override;
 
     protected:
-        virtual bool _initialize();
-        virtual void _finalize();
+        virtual bool _initializeModule();
+        virtual void _finalizeModule();
 
     public:
         void update( bool _focus ) override;

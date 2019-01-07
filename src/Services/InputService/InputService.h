@@ -28,9 +28,10 @@ namespace Mengine
         void update() override;
 
     public:
+        bool isSpecialDown() const override;
         bool isAltDown() const override;
         bool isShiftDown() const override;
-        bool isCtrlDown() const override;
+        bool isControlDown() const override;
 
     public:
         bool isKeyDown( uint32_t _keyCode ) const override;
@@ -84,7 +85,6 @@ namespace Mengine
 
         bool m_keyBuffer[256];
         bool m_mouseBuffer[3];
-
-        class FMousePositionProviderFind;
+        bool m_mouseBufferSpecial[3];
     };
 }

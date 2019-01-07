@@ -19,8 +19,8 @@ namespace Mengine
         virtual const ConstString & getName() const = 0;
 
     public:
-        virtual bool initialize() = 0;
-        virtual void finalize() = 0;
+        virtual bool initializeModule() = 0;
+        virtual void finalizeModule() = 0;
 
     public:
         virtual void update( bool _focus ) = 0;

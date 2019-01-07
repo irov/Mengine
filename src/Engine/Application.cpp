@@ -909,7 +909,7 @@ namespace Mengine
                 this->updateDebugOpenFile_();
             }
 
-            if( _event.code == KC_P && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
+            if( _event.code == KC_P && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
             {
                 static bool s_particle_enable = true;
 
@@ -919,7 +919,7 @@ namespace Mengine
                     ->setParticleEnable( s_particle_enable );
             }
 
-            if( _event.code == KC_T && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
+            if( _event.code == KC_T && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
             {
                 static bool s_text_enable = true;
 
@@ -929,7 +929,7 @@ namespace Mengine
                     ->setTextEnable( s_text_enable );
             }
 
-            if( _event.code == KC_O && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
+            if( _event.code == KC_O && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
             {
                 static bool s_video_enable = true;
 
@@ -939,7 +939,7 @@ namespace Mengine
                     ->setVideoEnable( s_video_enable );
             }
 
-            if( _event.code == KC_R && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
+            if( _event.code == KC_R && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
             {
                 static bool s_text_debug = true;
 
@@ -949,7 +949,7 @@ namespace Mengine
                     ->notify( NOTIFICATOR_DEBUG_TEXT_MODE, s_text_debug );
             }
 
-            if( _event.code == KC_E && _event.isDown == true && INPUT_SERVICE()->isCtrlDown() == true )
+            if( _event.code == KC_E && _event.isDown == true && INPUT_SERVICE()->isControlDown() == true )
             {
                 NOTIFICATION_SERVICE()
                     ->notify( NOTIFICATOR_RELOAD_LOCALE_PREPARE );

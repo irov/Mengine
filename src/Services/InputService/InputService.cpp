@@ -31,6 +31,7 @@ namespace Mengine
 
         std::fill( m_keyBuffer, m_keyBuffer + sizeof( m_keyBuffer ), false );
         std::fill( m_mouseBuffer, m_mouseBuffer + sizeof( m_mouseBuffer ), false );
+        std::fill( m_mouseBufferSpecial, m_mouseBufferSpecial + sizeof( m_mouseBufferSpecial ), false );
 
         m_eventsAdd.reserve( 16 );
         m_events.reserve( 16 );
@@ -93,6 +94,26 @@ namespace Mengine
         m_events.clear();
     }
     //////////////////////////////////////////////////////////////////////////
+    bool InputService::isSpecialDown() const
+    {
+        if( this->isAltDown() == true )
+        {
+            return true;
+        }
+
+        if( this->isShiftDown() == true )
+        {
+            return true;
+        }
+
+        if( this->isControlDown() == true )
+        {
+            return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool InputService::isAltDown() const
     {
         if( this->isKeyDown( KC_MENU ) == true )
@@ -133,7 +154,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool InputService::isCtrlDown() const
+    bool InputService::isControlDown() const
     {
         if( this->isKeyDown( KC_CONTROL ) == true )
         {
@@ -288,32 +309,15 @@ namespace Mengine
         return new_id;
     }
     //////////////////////////////////////////////////////////////////////////
-    class InputService::FMousePositionProviderFind
-    {
-    public:
-        FMousePositionProviderFind( uint32_t _id )
-            : m_id( _id )
-        {
-        }
-
-    public:
-        bool operator()( const InputService::InputMousePositionProviderDesc & _desc ) const
-        {
-            return _desc.id == m_id;
-        }
-
-    protected:
-        uint32_t m_id;
-    };
-    //////////////////////////////////////////////////////////////////////////
     void InputService::removeMousePositionProvider( uint32_t _id )
     {
         VectorMousePositionProviders::iterator it_found =
-            std::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), FMousePositionProviderFind( _id ) );
+            std::find_if( m_mousePositionProviders.begin(), m_mousePositionProviders.end(), [_id]( const InputService::InputMousePositionProviderDesc & _desc ) { return _desc.id == _id; } );
 
         if( it_found == m_mousePositionProviders.end() )
         {
-            LOGGER_ERROR( "InputService::removeMousePositionProvider not found provider"
+            LOGGER_ERROR( "not found provider '%d'"
+                , _id
             );
 
             return;
@@ -360,7 +364,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void InputService::mouseButtonEvent_( const InputMouseButtonEvent & _params )
     {
-        m_mouseBuffer[_params.button] = _params.isDown;
+        m_mouseBuffer[_params.button] = _params.isDown;        
+        m_mouseBufferSpecial[_params.button] = this->isSpecialDown();
 
         this->applyCursorPosition_( _params.touchId, _params.x, _params.y );
 

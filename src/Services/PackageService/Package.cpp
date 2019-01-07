@@ -127,9 +127,8 @@ namespace Mengine
         if( FILE_SERVICE()
             ->mountFileGroup( m_name, m_category, m_path, m_type, &m_fileGroup ) == false )
         {
-            LOGGER_ERROR( "ResourcePak::mountFileGroup_ failed to mount pak '%s' path '%s'"
+            LOGGER_ERROR( "failed to mount pak '%s' path '%s'"
                 , m_name.c_str()
-                //, m_baseDir.c_str()
                 , m_path.c_str()
             );
 
@@ -144,7 +143,7 @@ namespace Mengine
         if( FILE_SERVICE()
             ->unmountFileGroup( m_name ) == false )
         {
-            LOGGER_ERROR( "ResourcePak::unmountFileGroup_ failed to mount pak '%s' path '%s'"
+            LOGGER_ERROR( "failed to mount pak '%s' path '%s'"
                 , m_name.c_str()
                 , m_path.c_str()
             );
@@ -173,7 +172,7 @@ namespace Mengine
         if( LOADER_SERVICE()
             ->load( m_fileGroup, m_descriptionPath, &pak, exist ) == false )
         {
-            LOGGER_ERROR( "ResourcePak::load Invalid resource file '%s:%s' '%s'"
+            LOGGER_ERROR( "invalid resource file '%s:%s' '%s'"
                 , m_path.c_str()
                 , m_name.c_str()
                 , m_descriptionPath.c_str()
@@ -357,7 +356,7 @@ namespace Mengine
 
         if( m_enable == true )
         {
-            LOGGER_ERROR( "Package::enable already enable '%s:%s' '%s'"
+            LOGGER_ERROR( "already enable '%s:%s' '%s'"
                 , m_path.c_str()
                 , m_name.c_str()
                 , m_descriptionPath.c_str()
@@ -374,7 +373,7 @@ namespace Mengine
 
         for( const PakResourceDesc & desc : m_resourcesDesc )
         {
-            if( desc.platform.empty() == false && desc.platform.inTags( platformTags ) == false )
+            if( desc.platform.empty() == false && platformTags.inTags( desc.platform ) == false )
             {
                 continue;
             }
@@ -382,7 +381,7 @@ namespace Mengine
             if( RESOURCE_SERVICE()
                 ->loadResources( m_locale, m_fileGroup, desc.path, desc.ignored ) == false )
             {
-                LOGGER_ERROR( "Package::enable '%s:%s' invalid load resource '%s'"
+                LOGGER_ERROR( "invalid load '%s:%s' resource '%s'"
                     , m_path.c_str()
                     , m_name.c_str()
                     , desc.path.c_str()

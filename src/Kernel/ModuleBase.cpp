@@ -33,24 +33,24 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::initialize()
+    bool ModuleBase::initializeModule()
     {
-        bool successful = this->_initialize();
+        bool successful = this->_initializeModule();
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::finalize()
+    void ModuleBase::finalizeModule()
     {
-        this->_finalize();
+        this->_finalizeModule();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::_initialize()
+    bool ModuleBase::_initializeModule()
     {
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ModuleBase::_finalize()
+    void ModuleBase::_finalizeModule()
     {
         //Empty
     }

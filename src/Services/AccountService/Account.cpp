@@ -230,6 +230,8 @@ namespace Mengine
                     , m_id.c_str()
                     , key.c_str()
                 );
+
+                continue;
             }
 
             st.value = value;

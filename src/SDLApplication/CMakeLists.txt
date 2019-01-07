@@ -104,6 +104,20 @@ if(MENGINE_TOOLCHAIN_GRADLE)
             ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}SDL2${MENGINE_SO_SUFFIX} )             
 
     TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} SDL2)
+    
+    add_library( hidapi
+            SHARED
+            IMPORTED )
+             
+    set_target_properties( # Specifies the target library.
+            hidapi
+            # Specifies the parameter you want to define.
+            PROPERTIES IMPORTED_LOCATION
+
+            # Provides the path to the library you want to import.
+            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}hidapi${MENGINE_SO_SUFFIX} )             
+
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} hidapi)    
 endif()
 
 if(MENGINE_TOOLCHAIN_MSVC OR MENGINE_TOOLCHAIN_XCODE_MAC)

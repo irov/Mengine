@@ -7,6 +7,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SDLThreadIdentity::SDLThreadIdentity()
         : m_thread( nullptr )
+        , m_conditionVariable( nullptr )
+        , m_conditionLock( nullptr )
         , m_priority( 0 )
         , m_task( nullptr )
         , m_complete( true )
@@ -78,7 +80,29 @@ namespace Mengine
 
         if( thread == nullptr )
         {
-            LOGGER_ERROR( "SDLThreadIdentity::createThread: invalid create thread error code - %s"
+            LOGGER_ERROR( "invalid create thread error code - %s"
+                , SDL_GetError()
+            );
+
+            return false;
+        }
+
+        SDL_mutex * conditionLock = SDL_CreateMutex();
+
+        if( conditionLock == nullptr )
+        {
+            LOGGER_ERROR( "invalid create mutex error code - %s"
+                , SDL_GetError()
+            );
+
+            return false;
+        }
+
+        SDL_cond * conditionVariable = SDL_CreateCond();
+
+        if( conditionVariable == nullptr )
+        {
+            LOGGER_ERROR( "invalid create condition error code - %s"
                 , SDL_GetError()
             );
 
@@ -86,6 +110,8 @@ namespace Mengine
         }
 
         m_thread = thread;
+        m_conditionLock = conditionLock;
+        m_conditionVariable = conditionVariable;
 
         return true;
     }
@@ -100,18 +126,22 @@ namespace Mengine
             if( m_complete == false && m_exit == false )
             {
                 m_task->main();
-                m_complete = true;
-            }
+                m_task = nullptr;
 
-            if( m_exit == true )
-            {
                 m_complete = true;
-                work = false;
             }
 
             m_mutex->unlock();
 
-            SDL_Delay( 10 );
+            if( m_exit == false )
+            {
+                SDL_CondWait( m_conditionVariable, m_conditionLock );
+            }
+
+            if( m_exit == true )
+            {
+                work = false;
+            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -135,6 +165,8 @@ namespace Mengine
         }
 
         m_mutex->unlock();
+
+        SDL_CondSignal( m_conditionVariable );
 
         return successful;
     }
@@ -174,6 +206,13 @@ namespace Mengine
         m_exit = true;
 
         m_mutex->unlock();
+
+        SDL_CondSignal( m_conditionVariable );
+        SDL_DestroyCond( m_conditionVariable );
+        m_conditionVariable = nullptr;
+
+        SDL_DestroyMutex( m_conditionLock );
+        m_conditionLock = nullptr;
 
         int status;
         SDL_WaitThread( m_thread, &status );

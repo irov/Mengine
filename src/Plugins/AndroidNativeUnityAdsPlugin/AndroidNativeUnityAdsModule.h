@@ -26,8 +26,8 @@ namespace Mengine
         ~AndroidNativeUnityAdsModule() override;
 
     protected:
-        bool _initialize() override;
-        void _finalize() override;
+        bool _initializeModule() override;
+        void _finalizeModule() override;
 
     protected:
         void _update( bool _focus ) override;

@@ -14,17 +14,27 @@ android {
             abiFilters 'armeabi-v7a'
         }
 
+        /*
         externalNativeBuild {
             cmake {
                 cFlags "-std=c11"
                 cppFlags "-std=c++17 -frtti -fexceptions"
+                arguments "-DSDL_SHARED:BOOLEAN=ON",
+                        "-DSDL_STATIC:BOOLEAN=OFF"
             }
-        }
+        }*/
     }
     
+    /*
     externalNativeBuild {
         cmake {
             path "../../dependencies/SDL2/CMakeLists.txt"
+        }
+    }*/
+    
+    externalNativeBuild {
+        ndkBuild {
+            path '../../dependencies/SDL2/Android.mk'
         }
     }
 }

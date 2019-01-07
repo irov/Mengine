@@ -36,7 +36,10 @@ namespace Mengine
     protected:
         ThreadMutexInterfacePtr m_mutex;
 
-        HANDLE m_handle;
+        HANDLE m_thread;
+
+        CRITICAL_SECTION m_conditionLock;
+        CONDITION_VARIABLE m_conditionVariable;
 
         ThreadTaskInterface * m_task;
 

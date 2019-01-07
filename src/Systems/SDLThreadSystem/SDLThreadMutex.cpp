@@ -39,7 +39,10 @@ namespace Mengine
 
         if( err != 0 )
         {
-            LOGGER_ERROR("SDLThreadMutex::lock invalid lock"
+            const char * err_str = SDL_GetError();
+
+            LOGGER_ERROR("invalid lock (msg '%s')"
+                         , err_str
                 );
         }
     }
@@ -50,7 +53,10 @@ namespace Mengine
 
         if( err != 0 )
         {
-            LOGGER_ERROR("SDLThreadMutex::unlock invalid unlock"
+            const char * err_str = SDL_GetError();
+
+            LOGGER_ERROR("invalid unlock (msg '%s')"
+                         , err_str
                 );
         }
     }
@@ -67,7 +73,7 @@ namespace Mengine
         {
             const char * err_msg = SDL_GetError();
             
-            LOGGER_ERROR("SDLThreadMutex::lock invalid try lock (msg %s)"
+            LOGGER_ERROR("invalid try lock (msg %s)"
                 , err_msg
                 );
         }

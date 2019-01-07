@@ -533,6 +533,7 @@ namespace Mengine
         {
             const FileGroupInterfacePtr & fileGroup = pack.fileGroup;
 
+#ifndef MENGINE_MASTER_RELEASE
             fileGroup->findFiles( pack.path, "*.py", [&fileGroup, &dataflowPY, &_cb]( const FilePath & _filePath )
             {
                 if( PREFETCHER_SERVICE()
@@ -541,8 +542,9 @@ namespace Mengine
                     return;
                 }
             } );
+#endif
 
-            fileGroup->findFiles( pack.path, "*.pyc", [&fileGroup, &dataflowPYC, &_cb]( const FilePath & _filePath )
+            fileGroup->findFiles( pack.path, "*.pyz", [&fileGroup, &dataflowPYC, &_cb]( const FilePath & _filePath )
             {
                 if( PREFETCHER_SERVICE()
                     ->prefetchData( fileGroup, _filePath, dataflowPYC, _cb ) == false )

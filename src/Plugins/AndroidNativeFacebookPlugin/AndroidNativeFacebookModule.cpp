@@ -288,7 +288,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeFacebookModule::_initialize()
+    bool AndroidNativeFacebookModule::_initializeModule()
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
@@ -322,7 +322,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativeFacebookModule::_finalize()
+    void AndroidNativeFacebookModule::_finalizeModule()
     {
     }
     //////////////////////////////////////////////////////////////////////////

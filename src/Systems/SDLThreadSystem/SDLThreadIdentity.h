@@ -40,6 +40,9 @@ namespace Mengine
 
         SDL_Thread * m_thread;
 
+        SDL_mutex * m_conditionLock;
+        SDL_cond * m_conditionVariable;
+
         ThreadTaskInterface * m_task;
         
         bool m_complete;

@@ -16,6 +16,7 @@ namespace Mengine
     {
     public:
         Win32ThreadMutex();
+        ~Win32ThreadMutex() override;
 
     public:
         void initialize( const Char * _file, uint32_t _line );

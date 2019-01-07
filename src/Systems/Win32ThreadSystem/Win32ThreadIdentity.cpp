@@ -41,7 +41,7 @@ namespace Mengine
 #endif
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadIdentity::Win32ThreadIdentity()
-        : m_handle( INVALID_HANDLE_VALUE )
+        : m_thread( INVALID_HANDLE_VALUE )
         , m_task( nullptr )
         , m_complete( true )
         , m_exit( false )
@@ -95,9 +95,9 @@ namespace Mengine
         m_line = _line;
 #endif
 
-        m_handle = (HANDLE)::_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
+        m_thread = (HANDLE)::_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
 
-        if( m_handle == NULL )
+        if( m_thread == NULL )
         {
             DWORD error_code = GetLastError();
 
@@ -108,7 +108,7 @@ namespace Mengine
             return false;
         }
 
-        DWORD threadId = ::GetThreadId( m_handle );
+        DWORD threadId = ::GetThreadId( m_thread );
 
 #if defined(_MSC_VER)
         Detail::SetThreadName( threadId, _doc );
@@ -118,29 +118,32 @@ namespace Mengine
         {
         case MENGINE_THREAD_PRIORITY_LOWEST:
             {
-                ::SetThreadPriority( m_handle, THREAD_PRIORITY_LOWEST );
+                ::SetThreadPriority( m_thread, THREAD_PRIORITY_LOWEST );
             }break;
         case MENGINE_THREAD_PRIORITY_BELOW_NORMAL:
             {
-                ::SetThreadPriority( m_handle, THREAD_PRIORITY_BELOW_NORMAL );
+                ::SetThreadPriority( m_thread, THREAD_PRIORITY_BELOW_NORMAL );
             }break;
         case MENGINE_THREAD_PRIORITY_NORMAL:
             {
-                ::SetThreadPriority( m_handle, THREAD_PRIORITY_NORMAL );
+                ::SetThreadPriority( m_thread, THREAD_PRIORITY_NORMAL );
             }break;
         case MENGINE_THREAD_PRIORITY_ABOVE_NORMAL:
             {
-                ::SetThreadPriority( m_handle, THREAD_PRIORITY_ABOVE_NORMAL );
+                ::SetThreadPriority( m_thread, THREAD_PRIORITY_ABOVE_NORMAL );
             }break;
         case MENGINE_THREAD_PRIORITY_HIGHEST:
             {
-                ::SetThreadPriority( m_handle, THREAD_PRIORITY_HIGHEST );
+                ::SetThreadPriority( m_thread, THREAD_PRIORITY_HIGHEST );
             }break;
         case MENGINE_THREAD_PRIORITY_TIME_CRITICAL:
             {
-                ::SetThreadPriority( m_handle, THREAD_PRIORITY_TIME_CRITICAL );
+                ::SetThreadPriority( m_thread, THREAD_PRIORITY_TIME_CRITICAL );
             }break;
         }
+
+        InitializeCriticalSection( &m_conditionLock );
+        InitializeConditionVariable( &m_conditionVariable );        
 
         return true;
     }
@@ -156,20 +159,22 @@ namespace Mengine
             if( m_complete == false )
             {
                 m_task->main();
-
                 m_task = nullptr;
 
                 m_complete = true;
             }
 
+            m_mutex->unlock();
+
+            if( m_exit == false )
+            {
+                SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, INFINITE );
+            }
+            
             if( m_exit == true )
             {
                 work = false;
             }
-
-            m_mutex->unlock();
-
-            ::Sleep( 10 );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -191,6 +196,8 @@ namespace Mengine
         }
 
         m_mutex->unlock();
+
+        WakeConditionVariable( &m_conditionVariable );
 
         return successful;
     }
@@ -231,9 +238,12 @@ namespace Mengine
             m_exit = true;
         }
         m_mutex->unlock();
+        
+        WakeAllConditionVariable( &m_conditionVariable );
+        DeleteCriticalSection( &m_conditionLock );
 
-        WaitForSingleObject( m_handle, INFINITE );
-        CloseHandle( m_handle );
-        m_handle = INVALID_HANDLE_VALUE;
+        WaitForSingleObject( m_thread, INFINITE );
+        CloseHandle( m_thread );
+        m_thread = INVALID_HANDLE_VALUE;
     }
 }

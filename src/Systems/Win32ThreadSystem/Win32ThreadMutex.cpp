@@ -11,6 +11,10 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
+    Win32ThreadMutex::~Win32ThreadMutex()
+    {
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Win32ThreadMutex::initialize( const Char * _file, uint32_t _line )
     {
         (void)_file;

@@ -246,7 +246,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    bool AndroidNativeUnityAdsModule::_initialize()
+    bool AndroidNativeUnityAdsModule::_initializeModule()
     {
         pybind::kernel_interface * kernel = pybind::get_kernel();
 
@@ -266,7 +266,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void AndroidNativeUnityAdsModule::_finalize()
+    void AndroidNativeUnityAdsModule::_finalizeModule()
     {
     }
     //////////////////////////////////////////////////////////////////////////

@@ -14,10 +14,10 @@
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/AssertionNotImplemented.h"
 
+#include "zlib.h"
+
 #include <string.h>
 #include <stdio.h>
-
-#include "../dependencies/zlib/zlib.h"
 
 #define ZIP_LOCAL_FILE_HEADER_SIGNATURE	0x04034b50
 #define ZIP_MAX_FILENAME 1024
@@ -71,7 +71,7 @@ namespace Mengine
 
         if( this->loadHeader_() == false )
         {
-            LOGGER_ERROR( "FileSystemZip::initialize can't load header %s"
+            LOGGER_ERROR( "can't load header '%s'"
                 , m_path.c_str()
             );
 
@@ -204,6 +204,7 @@ namespace Mengine
             fi.compr_method = header.compressionMethod;
 
             m_files.emplace( fileName, fi );
+            m_indexes.push_back( fileName );
 
             zipFile->skip( header.compressedSize );
         }
@@ -216,6 +217,7 @@ namespace Mengine
     void FileGroupZip::finalize()
     {
         m_files.clear();
+        m_indexes.clear();
 
         m_category = nullptr;
         m_zipFile = nullptr;
@@ -262,16 +264,71 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::existDirectory( const FilePath & _folderName ) const
     {
-        (void)_folderName;
+        MENGINE_UNUSED( _folderName );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::createDirectory( const FilePath & _folderName ) const
     {
-        (void)_folderName;
+        MENGINE_UNUSED( _folderName );
+
+        MENGINE_ASSERTION_NOT_IMPLEMENTED();
 
         return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    static int wildcards_mask( const Char * string, const Char * mask, int endofmask = 1 )
+    {
+        while( *string )
+        {
+            switch( *mask )
+            {
+            case '\0':
+                {
+                    return endofmask;
+                }
+            case '*':
+                {
+                    ++mask;
+
+                    while( *string )
+                    {
+                        int match = wildcards_mask( string, mask, endofmask );
+
+                        if( match >= 0 )
+                        {
+                            return match;
+                        }
+
+                        ++string;
+                    }
+
+                    return 1;
+                }
+            default:
+                {
+                    if( *string == *mask )
+                    {
+                        ++string;
+                        ++mask;
+                        break;
+                    }
+                    return -1;
+                }break;
+            }
+        }
+
+        if( *mask == '\0' ) 
+        {
+            return 0;
+        }
+        else 
+        {
+            return 1;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool FileGroupZip::findFiles( const FilePath & _filePath, const Char * _mask, const LambdaFiles & _lambda ) const
@@ -280,7 +337,20 @@ namespace Mengine
         MENGINE_UNUSED( _mask );
         MENGINE_UNUSED( _lambda );
 
-        MENGINE_ASSERTION_NOT_IMPLEMENTED();
+        PathString mask;
+        mask.append( _filePath.c_str(), _filePath.size() );
+        mask.append( _mask );
+
+        for( const FilePath & path : m_indexes )
+        {
+            const Char * path_str = path.c_str();
+            const Char * mask_str = mask.c_str();
+
+            if( wildcards_mask( path_str, mask_str ) == 0 )
+            {
+                _lambda( path );
+            }
+        }
 
         return false;
     }

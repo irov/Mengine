@@ -19,37 +19,10 @@
 
 #define MutexLocker std::lock_guard<std::mutex>
 
-#include "IconsAtlas.h"
-
 #include "ImGui_Ext.h"
 
 namespace Mengine
 {
-    static DebuggerNode::Icon NodeTypeToIcon( const String & _type )
-    {
-        if( _type == "Movie2" )
-        {
-            return DebuggerNode::Icon::Icon_Movie2;
-        }
-        else if( _type == "Scene" )
-        {
-            return DebuggerNode::Icon::Icon_Scene;
-        }
-        else if( _type == "Layer2D" )
-        {
-            return DebuggerNode::Icon::Icon_Layer2D;
-        }
-        else if( _type == "Entity" )
-        {
-            return DebuggerNode::Icon::Icon_Entity;
-        }
-        else
-        {
-            return DebuggerNode::Icon::Icon_Unknown;
-        }
-    }
-
-
     static bool zed_net_ext_tcp_wait_for_data( zed_net_socket_t* _socket, const int _timeoutMs )
     {
         fd_set socketsSet;
@@ -73,7 +46,7 @@ namespace Mengine
         , mWidth( 1280 )
         , mHeight( 720 )
         , mSelectedNode( nullptr )
-        , mIconsAtlas( 0 )
+        , mDefaultIcon( nullptr )
         , mServerAddress()
         , mServerPort( 18790 )
         , mServerAddressCopy()
@@ -86,7 +59,7 @@ namespace Mengine
     {
     }
 
-    bool NodeDebuggerApp::Initialize()
+    bool NodeDebuggerApp::Initialize( const std::string& _address, const uint16_t _port )
     {
         if( 0 != zed_net_init() )
         {
@@ -149,6 +122,15 @@ namespace Mengine
 
         mShutdown = false;
         mNetworkThread = std::thread( &NodeDebuggerApp::NetworkLoop, this );
+
+        // if requested to auto-connect, then do so
+        if( !_address.empty() && _port != 0 )
+        {
+            mServerAddress = _address;
+            mServerPort = _port;
+
+            OnConnectButton();
+        }
 
         return true;
     }
@@ -358,7 +340,7 @@ namespace Mengine
             }
         }
 
-        _node->icon = NodeTypeToIcon( _node->type );
+        _node->icon = GetIconForNodeType( _node->type );
 
         _node->dirty = false;
     }
@@ -401,25 +383,119 @@ namespace Mengine
         delete _node;
     }
 
+    const CachedImage* NodeDebuggerApp::GetIconImage( const String & _name )
+    {
+        const CachedImage* result = nullptr;
+
+        auto it = std::find_if( mImagesCache.begin(), mImagesCache.end(), [&_name]( const CachedImage & _ci )->bool {
+            return _ci.name == _name;
+        });
+
+        if( it != mImagesCache.end() )
+        {
+            result = &(*it);
+        }
+        else
+        {
+            int width, height, bpp;
+            stbi_uc* data = stbi_load( _name.c_str(), &width, &height, &bpp, STBI_rgb_alpha );
+            if( data != nullptr )
+            {
+                GLuint texture;
+                glGenTextures( 1, &texture );
+                glBindTexture( GL_TEXTURE_2D, texture );
+                glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+
+                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
+                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
+                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
+                glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+
+                glBindTexture( GL_TEXTURE_2D, 0 );
+
+                stbi_image_free( data );
+
+                mImagesCache.push_back( { _name, static_cast<uintptr_t>(texture), static_cast<size_t>(width), static_cast<size_t>(height) } );
+
+                result = &mImagesCache.back();
+            }
+        }
+
+        return result;
+    }
+
     void NodeDebuggerApp::LoadIconsAtlas()
     {
-        int width, height, bpp;
-        stbi_uc* data = stbi_load_from_memory( reinterpret_cast<const stbi_uc *>( IconsAtlas ), IconsAtlas_size, &width, &height, &bpp, STBI_rgb_alpha );
-        if( data != nullptr )
+        pugi::xml_document doc;
+        pugi::xml_parse_result result = doc.load_file( TEXT( "Icons.xml" ) );
+        if( !result )
         {
-            GLuint texture;
-            glGenTextures( 1, &texture );
-            glBindTexture( GL_TEXTURE_2D, texture );
-            glTexImage2D( GL_TEXTURE_2D, 0, GL_RGBA8, width, height, 0, GL_RGBA, GL_UNSIGNED_BYTE, data );
+            return;
+        }
 
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR );
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR );
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_CLAMP_TO_EDGE );
-            glTexParameteri( GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_CLAMP_TO_EDGE );
+        pugi::xml_node mainNode = doc.child( "Icons" );
+        if( !mainNode )
+        {
+            return;
+        }
 
-            glBindTexture( GL_TEXTURE_2D, 0 );
+        for( const auto & iconNode : mainNode.children() )
+        {
+            pugi::xml_attribute attrName = iconNode.attribute( "name" );
+            pugi::xml_attribute attrImage = iconNode.attribute( "image" );
 
-            mIconsAtlas = static_cast<uintptr_t>( texture );
+            if( attrName && attrImage )
+            {
+                const CachedImage* ci = GetIconImage( attrImage.as_string() );
+                if( ci != nullptr )
+                {
+                    pugi::xml_attribute attrX = iconNode.attribute("x");
+                    pugi::xml_attribute attrY = iconNode.attribute("y");
+
+                    const float x = attrX ? attrX.as_float() : 0.0f;
+                    const float y = attrY ? attrY.as_float() : 0.0f;
+
+                    NodeIcon ni;
+                    ni.name = attrName.as_string();
+                    ni.image = ci->image;
+                    ni.uv0_X = x / static_cast<float>(ci->width);
+                    ni.uv0_Y = y / static_cast<float>(ci->height);
+                    ni.uv1_X = (x + 16.0f) / static_cast<float>(ci->width);
+                    ni.uv1_Y = (y + 16.0f) / static_cast<float>(ci->height);
+
+                    mIcons.emplace_back( ni );
+                }
+            }
+        }
+
+        // trying to assign the default icon
+        auto it = std::find_if( mIcons.begin(), mIcons.end(), []( const NodeIcon & _ni )->bool {
+            return _ni.name == "?";
+        });
+
+        if( it != mIcons.end() )
+        {
+            mDefaultIcon = &(*it);
+        }
+        else
+        {
+            mDefaultIcon = nullptr;
+        }
+    }
+
+    const NodeIcon* NodeDebuggerApp::GetIconForNodeType( const String & _nodeType )
+    {
+        auto it = std::find_if( mIcons.begin(), mIcons.end(), [&_nodeType]( const NodeIcon & _ni )->bool {
+            return _ni.name == _nodeType;
+        });
+
+        if( it == mIcons.end() )
+        {
+            return mDefaultIcon;
+        }
+        else
+        {
+            return &(*it);
         }
     }
 
@@ -597,12 +673,23 @@ namespace Mengine
         std::string treeNodeId = std::to_string( _node->uid );
         std::string fullLabel = std::string( _node->name.c_str() ) + "##" + treeNodeId;
 
+        ImGuiExt::ImIcon icon;
+        ImGuiExt::ImIcon * iconPtr = nullptr;
+        if( _node->icon )
+        {
+            icon.image = reinterpret_cast<ImTextureID>(_node->icon->image);
+            icon.uv0 = ImVec2( _node->icon->uv0_X, _node->icon->uv0_Y );
+            icon.uv1 = ImVec2( _node->icon->uv1_X, _node->icon->uv1_Y );
+
+            iconPtr = &icon;
+        }
+
         auto result = ImGuiExt::TreeNodeWithIcon
         (
-            reinterpret_cast<ImTextureID>( mIconsAtlas ),
-            static_cast<size_t>( _node->icon ),
+            iconPtr,
             fullLabel.c_str(),
-            _node->children.empty() ? flagsNoChildren : flagsNormal
+            _node->children.empty() ? flagsNoChildren : flagsNormal,
+            !_node->enable
         );
 
         if( result.second )

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<Icons>
+    <Icon name="?" image="DefaultIcon.png" x="0" y = "0"/>
+    <Icon name="Movie2" image="IconsAtlas.png" x="16" y="0"/>
+    <Icon name="Scene" image="IconsAtlas.png" x="32" y="0"/>
+    <Icon name="Layer2D" image="IconsAtlas.png" x="48" y="0"/>
+    <Icon name="Entity" image="IconsAtlas.png" x="64" y="0"/>
+</Icons>
+

@@ -1,4 +1,4 @@
-#include "NodeDebuggerService.h"
+#include "NodeDebuggerModule.h"
 
 #include "Interface/OptionsInterface.h"
 #include "Interface/PlayerInterface.h"
@@ -13,6 +13,7 @@
 #include "Interface/SocketSystemInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
+#include "Interface/NotificationServiceInterface.h"
 
 #include "NodeDebuggerSerialization.h"
 
@@ -36,44 +37,43 @@
 
 #include <iomanip>
 
-//////////////////////////////////////////////////////////////////////////
-SERVICE_FACTORY( NodeDebuggerService, Mengine::NodeDebuggerService );
-//////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    NodeDebuggerService::NodeDebuggerService()
+    NodeDebuggerModule::NodeDebuggerModule()
         : m_serverState( NodeDebuggerServerState::Invalid )
         , m_shouldRecreateServer( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    NodeDebuggerService::~NodeDebuggerService()
+    NodeDebuggerModule::~NodeDebuggerModule()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::_dependencyService()
-    {
-        SERVICE_DEPENDENCY( NodeDebuggerService, PlayerServiceInterface );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerService::_initializeService()
+    bool NodeDebuggerModule::_initializeModule()
     {
         VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), new FactorableUnique<HotSpotPolygonDebuggerBoundingBox>() );
         VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ), new FactorableUnique<TextFieldDebuggerBoundingBox>() );
 
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, this, &NodeDebuggerModule::notifyChangeScenePrepareInitialize );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &NodeDebuggerModule::notifyRemoveSceneDestroy );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::_finalizeService()
+    void NodeDebuggerModule::_finalizeModule()
     {
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ) );
         VOCALUBARY_REMOVE( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ) );
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ) );
+
+        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, this );
+        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_REMOVE_SCENE_DESTROY, this );
+
     }
     //////////////////////////////////////////////////////////////////////////
-    bool NodeDebuggerService::onWork( uint32_t )
+    bool NodeDebuggerModule::onWork( uint32_t )
     {
         switch( m_serverState )
         {
@@ -94,9 +94,10 @@ namespace Mengine
                     // got client connection
                     m_serverState = NodeDebuggerServerState::Connected;
 
-                    APPLICATION_SERVICE()->setNopause( true );
+                    APPLICATION_SERVICE()
+                        ->setNopause( true );
 
-                    sendScene( m_scene );
+                    this->sendScene( m_scene );
                 }
             } break;
         case NodeDebuggerServerState::Connected:
@@ -200,40 +201,47 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::onDone( uint32_t )
+    void NodeDebuggerModule::onDone( uint32_t )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::setScene( const ScenePtr & _scene )
+    void NodeDebuggerModule::setScene( const ScenePtr & _scene )
     {
         if( m_scene != _scene )
         {
             m_scene = _scene;
 
-            if( m_serverState == NodeDebuggerServerState::Connected )
-            {
-                sendScene( m_scene );
-            }
+            this->updateScene();
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::update()
+    void NodeDebuggerModule::updateScene()
     {
+        if( m_serverState == NodeDebuggerServerState::Connected )
+        {
+            this->sendScene( m_scene );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::_update( bool _focus )
+    {
+        MENGINE_UNUSED( _focus );
+
         if( m_shouldRecreateServer )
         {
-            recreateServer();
+            this->recreateServer();
         }
 
         if( m_socket == nullptr )
         {
-            privateInit();
+            this->privateInit();
         }
         else
         {
             ThreadMutexScope mutexLock( m_dataMutex );
             if( !m_incomingPackets.empty() )
             {
-                processPacket( m_incomingPackets.front() );
+                this->processPacket( m_incomingPackets.front() );
                 m_incomingPackets.pop_front();
             }
         }
@@ -298,7 +306,7 @@ namespace Mengine
         return successul;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::render( const RenderContext * _context )
+    void NodeDebuggerModule::_render( const RenderContext * _context )
     {
         if( m_selectedNodePath.empty() == true )
         {
@@ -396,7 +404,7 @@ namespace Mengine
                 , false );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::privateInit()
+    void NodeDebuggerModule::privateInit()
     {
         m_shouldRecreateServer = true;
 
@@ -415,7 +423,7 @@ namespace Mengine
         m_threadJob->addWorker( this );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::recreateServer()
+    void NodeDebuggerModule::recreateServer()
     {
         m_socket = SOCKET_SYSTEM()->createSocket();
 
@@ -431,7 +439,7 @@ namespace Mengine
         m_shouldRecreateServer = false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::sendPacket( NodeDebuggerPacket & _packet )
+    void NodeDebuggerModule::sendPacket( NodeDebuggerPacket & _packet )
     {
         if( !_packet.payload.empty() )
         {
@@ -446,7 +454,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::serializeTransformation( const TransformationPtr & _transformation, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerModule::serializeTransformation( const TransformationPtr & _transformation, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Transformation" );
 
@@ -458,7 +466,7 @@ namespace Mengine
         serializeNodeProp( _transformation->getWorldPosition(), "worldPosition", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerModule::serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Render" );
 
@@ -467,14 +475,14 @@ namespace Mengine
         serializeNodeProp( _render->getLocalColor(), "color", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerModule::serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Animation" );
 
         serializeNodeProp( _animation->isLoop(), "loop", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerModule::serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:TextField" );
 
@@ -542,7 +550,7 @@ namespace Mengine
         serializeNodeProp( _textField->getPixelsnap(), "Pixelsnap", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode )
+    void NodeDebuggerModule::serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 
@@ -584,7 +592,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::sendScene( const ScenePtr & _scene )
+    void NodeDebuggerModule::sendScene( const ScenePtr & _scene )
     {
         pugi::xml_document doc;
 
@@ -612,7 +620,7 @@ namespace Mengine
         sendPacket( packet );
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::processPacket( NodeDebuggerPacket & _packet )
+    void NodeDebuggerModule::processPacket( NodeDebuggerPacket & _packet )
     {
         pugi::xml_document doc;
         pugi::xml_parse_result result = doc.load_buffer( _packet.payload.data(), _packet.payload.size() );
@@ -669,7 +677,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerService::receiveChangedNode( const pugi::xml_node & _xmlNode )
+    void NodeDebuggerModule::receiveChangedNode( const pugi::xml_node & _xmlNode )
     {
         String pathStr = _xmlNode.attribute( "path" ).value();
         VectorNodePath path = stringToPath( pathStr );
@@ -755,67 +763,67 @@ namespace Mengine
             {
                 TextFieldPtr textField = stdex::intrusive_static_cast<TextFieldPtr>(node);
 
-                deserializeNodeProp<float>( "MaxLength", animationNode, [textField]( auto _value )
+                deserializeNodeProp<float>( "MaxLength", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setMaxLength( _value );
                 } );
 
-                deserializeNodeProp<bool>( "Wrap", animationNode, [textField]( auto _value )
+                deserializeNodeProp<bool>( "Wrap", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setWrap( _value );
                 } );
 
-                deserializeNodeProp<ConstString>( "TextID", animationNode, [textField]( auto _value )
+                deserializeNodeProp<ConstString>( "TextID", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setTextID( _value );
                 } );
 
-                deserializeNodeProp<ConstString>( "TextAliasEnvironment", animationNode, [textField]( auto _value )
+                deserializeNodeProp<ConstString>( "TextAliasEnvironment", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setTextAliasEnvironment( _value );
                 } );
 
-                deserializeNodeProp<ConstString>( "FontName", animationNode, [textField]( auto _value )
+                deserializeNodeProp<ConstString>( "FontName", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setFontName( _value );
                 } );
 
-                deserializeNodeProp<Color>( "FontColor", animationNode, [textField]( auto _value )
+                deserializeNodeProp<Color>( "FontColor", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setFontColor( _value );
                 } );
 
-                deserializeNodeProp<float>( "LineOffset", animationNode, [textField]( auto _value )
+                deserializeNodeProp<float>( "LineOffset", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setLineOffset( _value );
                 } );
 
-                deserializeNodeProp<float>( "CharOffset", animationNode, [textField]( auto _value )
+                deserializeNodeProp<float>( "CharOffset", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setCharOffset( _value );
                 } );
 
-                deserializeNodeProp<float>( "CharScale", animationNode, [textField]( auto _value )
+                deserializeNodeProp<float>( "CharScale", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setCharScale( _value );
                 } );
 
-                deserializeNodeProp<uint32_t>( "HorizontAlign", animationNode, [textField]( auto _value )
+                deserializeNodeProp<uint32_t>( "HorizontAlign", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setHorizontAlign( (ETextHorizontAlign)_value );
                 } );
 
-                deserializeNodeProp<uint32_t>( "VerticalAlign", animationNode, [textField]( auto _value )
+                deserializeNodeProp<uint32_t>( "VerticalAlign", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setVerticalAlign( (ETextVerticalAlign)_value );
                 } );
 
-                deserializeNodeProp<uint32_t>( "MaxCharCount", animationNode, [textField]( auto _value )
+                deserializeNodeProp<uint32_t>( "MaxCharCount", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setMaxCharCount( _value );
                 } );
 
-                deserializeNodeProp<bool>( "Pixelsnap", animationNode, [textField]( auto _value )
+                deserializeNodeProp<bool>( "Pixelsnap", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setPixelsnap( _value );
                 } );                
@@ -823,7 +831,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    VectorNodePath NodeDebuggerService::stringToPath( const String & _str )
+    VectorNodePath NodeDebuggerModule::stringToPath( const String & _str ) const
     {
         VectorNodePath path;
 
@@ -852,4 +860,13 @@ namespace Mengine
         return path;
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::notifyChangeScenePrepareInitialize( const ScenePtr & _scene )
+    {
+        this->setScene( _scene );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::notifyRemoveSceneDestroy()
+    {
+        this->setScene( nullptr );
+    }
 }

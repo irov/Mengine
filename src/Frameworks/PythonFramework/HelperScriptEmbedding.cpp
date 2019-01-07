@@ -262,7 +262,7 @@ namespace Mengine
         bool s_isCtrlDown() const
         {
             return INPUT_SERVICE()
-                ->isCtrlDown();
+                ->isControlDown();
         }
 
         bool s_isKeyDown( uint32_t _keyCode ) const

@@ -1,11 +1,11 @@
 #include "NodeDebuggerPlugin.h"
-#include "NodeDebuggerInterface.h"
 
-#include "Kernel/FactorableUnique.h"
+#include "Interface/StringizeServiceInterface.h"
 
+#include "NodeDebuggerModule.h"
 
-//////////////////////////////////////////////////////////////////////////
-SERVICE_EXTERN( NodeDebuggerService );
+#include "Kernel/ModuleFactory.h"
+
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_FACTORY( NodeDebugger, Mengine::NodeDebuggerPlugin )
 //////////////////////////////////////////////////////////////////////////
@@ -22,18 +22,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerPlugin::_initializePlugin()
     {
-        SERVICE_CREATE( NodeDebuggerService );
+        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleNodeDebuggerModule" )
+            , new ModuleFactory<NodeDebuggerModule>() );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerPlugin::_finalizePlugin()
     {
-        SERVICE_FINALIZE( Mengine::NodeDebuggerServiceInterface );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerPlugin::_destroy()
     {
-        SERVICE_DESTROY( Mengine::NodeDebuggerServiceInterface );
     }
 }

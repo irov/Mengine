@@ -765,7 +765,7 @@ namespace Mengine
         auto uiEditorVec1f = [_node]( const char * _caption, float & _prop )
         {
             float testValue = _prop;
-            bool input = ImGui::DragFloat( _caption, &testValue );
+            bool input = ImGui::DragFloat( _caption, &testValue, 0.01f );
 
             if( input && testValue != _prop )
             {

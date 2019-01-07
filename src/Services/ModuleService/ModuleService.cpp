@@ -27,7 +27,7 @@ namespace Mengine
     {
         for( const ModuleInterfacePtr & module : m_modules )
         {
-            module->finalize();
+            module->finalizeModule();
         }
 
         m_modules.clear();
@@ -66,7 +66,7 @@ namespace Mengine
             return true;
         }
 
-        if( module->initialize() == false )
+        if( module->initializeModule() == false )
         {
             return false;
         }
@@ -85,7 +85,7 @@ namespace Mengine
             return false;
         }
 
-        module->finalize();
+        module->finalizeModule();
 
         return true;
     }

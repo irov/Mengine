@@ -1,6 +1,5 @@
 #pragma once
 
-#include "NodeDebuggerInterface.h"
 #include "NodeDebuggerBoundingBoxInterface.h"
 
 #include "Engine/TextField.h"
@@ -9,8 +8,10 @@
 #include "Config/Map.h"
 #include "Config/Deque.h"
 
-#include "Kernel/ServiceBase.h"
+#include "Kernel/ModuleBase.h"
 #include "Kernel/NodeUniqueFinder.h"
+#include "Kernel/Observable.h"
+#include "Kernel/Scene.h"
 
 #include "Interface/SocketInterface.h"
 #include "Interface/ThreadServiceInterface.h"
@@ -43,27 +44,30 @@ namespace Mengine
         Vector<uint8_t> payload;
     };
     //////////////////////////////////////////////////////////////////////////
-    class NodeDebuggerService
-        : public ServiceBase<NodeDebuggerServiceInterface>
+    class NodeDebuggerModule
+        : public ModuleBase
         , public ThreadWorkerInterface
+        , public Observable
     {
     public:
-        NodeDebuggerService();
-        ~NodeDebuggerService() override;
+        NodeDebuggerModule();
+        ~NodeDebuggerModule() override;
 
     public:
-        void _dependencyService() override;
-        bool _initializeService() override;
-        void _finalizeService() override;
+        bool _initializeModule() override;
+        void _finalizeModule() override;
 
     public:
         bool onWork( uint32_t _id ) override;
         void onDone( uint32_t _id ) override;
 
     public:
-        void setScene( const ScenePtr & _scene ) override;
-        void update() override;
-        void render( const RenderContext * _context ) override;
+        void setScene( const ScenePtr & _scene );
+        void updateScene();
+
+    public:        
+        void _update( bool _focus ) override;
+        void _render( const RenderContext * _context ) override;
 
     protected:
         bool absorbBoundingBox( const NodePtr & node, mt::box2f & _bb ) const;
@@ -81,7 +85,11 @@ namespace Mengine
         void serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode );
         void processPacket( NodeDebuggerPacket & _packet );
         void receiveChangedNode( const pugi::xml_node & _xmlNode );
-        VectorNodePath stringToPath( const String & _str );
+        VectorNodePath stringToPath( const String & _str ) const;
+
+    protected:
+        void notifyChangeScenePrepareInitialize( const ScenePtr & _scene );
+        void notifyRemoveSceneDestroy();
 
     protected:
         ScenePtr m_scene;

@@ -2,14 +2,12 @@ SET( MY_LIB_NAME NodeDebuggerPlugin )
 
 ADD_FILTER(
     src
-    NodeDebuggerInterface.h
-
     NodeDebuggerPlugin.h
     NodeDebuggerPlugin.def
     NodeDebuggerPlugin.cpp
 
-    NodeDebuggerService.h
-    NodeDebuggerService.cpp
+    NodeDebuggerModule.h
+    NodeDebuggerModule.cpp
 	
 	NodeDebuggerSerialization.h
     

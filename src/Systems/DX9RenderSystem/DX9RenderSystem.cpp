@@ -5,6 +5,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/UnicodeSystemInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 
 #include "DX9RenderEnum.h"
 #include "DX9ErrorHelper.h"
@@ -293,7 +294,7 @@ namespace Mengine
 
             if( FAILED( hr_checkDeviceMultiSampleType ) )
             {
-                LOGGER_ERROR( "can't support multi sample count '%u' error [%p]"
+                LOGGER_ERROR( "Can't support multi sample count '%u' error [%p]"
                     , testMultiSampleType
                     , hr_checkDeviceMultiSampleType
                 );
@@ -393,7 +394,7 @@ namespace Mengine
         if( (caps.DevCaps & D3DDEVCAPS_HWTRANSFORMANDLIGHT) == 0 ||
             caps.VertexShaderVersion < D3DVS_VERSION( 1, 1 ) )
         {
-            LOGGER_ERROR( "can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE"
+            LOGGER_ERROR( "Can't support D3DCREATE_HARDWARE_VERTEXPROCESSING try to create D3DCREATE_MIXED_VERTEXPROCESSING | D3DCREATE_FPU_PRESERVE"
             );
 
             hr = m_pD3D->CreateDevice( m_adapterToUse, m_deviceType, (HWND)windowHandle,
@@ -547,7 +548,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setProjectionMatrix device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -568,7 +569,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setModelViewMatrix device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -583,7 +584,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setWorldMatrix device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -594,7 +595,7 @@ namespace Mengine
         this->updateWVPInvMatrix_();
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+    RenderImageInterfacePtr DX9RenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
     {
         (void)_depth;
 
@@ -602,7 +603,7 @@ namespace Mengine
 
         if( this->d3dCreateTexture_( _width, _height, _mipmaps, 0, _format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem.createImage: can't create texture %dx%d %d"
+            LOGGER_ERROR( "can't create texture %dx%d %d"
                 , _width
                 , _height
                 , _format
@@ -617,9 +618,9 @@ namespace Mengine
             return nullptr;
         }
 
-        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, _mipmaps, texDesc.Width, texDesc.Height, _channels, _depth, _format );
+        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_NORMAL, _mipmaps, texDesc.Width, texDesc.Height, _channels, _depth, _format, _doc );
 
-        LOGGER_INFO( "DX9RenderSystem.createImage: texture created %dx%d %d:%d depth %d"
+        LOGGER_INFO( "texture created %dx%d %d:%d depth %d"
             , texDesc.Width
             , texDesc.Height
             , texDesc.Format
@@ -630,7 +631,7 @@ namespace Mengine
         return dxTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+    RenderImageInterfacePtr DX9RenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
     {
         (void)_depth;
 
@@ -638,7 +639,7 @@ namespace Mengine
 
         if( this->d3dCreateTexture_( _width, _height, 1, 0, _format, D3DPOOL_MANAGED, &dxTextureInterface ) == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem.createDynamicImage: can't create texture %dx%d %d"
+            LOGGER_ERROR( "can't create texture %dx%d %d"
                 , _width
                 , _height
                 , _format
@@ -653,9 +654,9 @@ namespace Mengine
             return nullptr;
         }
 
-        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_DYNAMIC, 1, texDesc.Width, texDesc.Height, _channels, _depth, _format );
+        DX9RenderImagePtr dxTexture = this->createDX9RenderImage_( dxTextureInterface, ERIM_DYNAMIC, 1, texDesc.Width, texDesc.Height, _channels, _depth, _format, _doc );
 
-        LOGGER_INFO( "DX9RenderSystem.createDynamicImage: texture created %dx%d %d:%d"
+        LOGGER_INFO( "texture created %dx%d %d:%d"
             , texDesc.Width
             , texDesc.Height
             , texDesc.Format
@@ -671,7 +672,7 @@ namespace Mengine
 
         if( target->initialize( m_pD3DDevice, _width, _height, _channels, _format ) == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem.createRenderTargetTexture: can't initialize offscreen target %dx%d format %d"
+            LOGGER_ERROR( "can't initialize offscreen target %dx%d format %d"
                 , _width
                 , _height
                 , _format
@@ -682,7 +683,7 @@ namespace Mengine
 
         m_renderResourceHandlers.push_back( target.get() );
 
-        LOGGER_INFO( "DX9RenderSystem.createRenderTargetTexture: offscreen target created %dx%d %d"
+        LOGGER_INFO( "offscreen target created %dx%d %d"
             , _width
             , _height
             , _format
@@ -697,7 +698,7 @@ namespace Mengine
 
         if( target->initialize( m_pD3DDevice, _width, _height, _channels, _format ) == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem.createRenderTargetOffscreen: can't initialize offscreen target %dx%d format %d"
+            LOGGER_ERROR( "can't initialize offscreen target %dx%d format %d"
                 , _width
                 , _height
                 , _format
@@ -706,7 +707,7 @@ namespace Mengine
             return nullptr;
         }
 
-        LOGGER_INFO( "DX9RenderSystem.createRenderTargetOffscreen: offscreen target created %dx%d %d"
+        LOGGER_INFO( "offscreen target created %dx%d %d"
             , _width
             , _height
             , _format
@@ -1878,11 +1879,26 @@ namespace Mengine
         DXCALL( m_pD3DDevice, Clear, (0, NULL, D3DCLEAR_TARGET, D3DCOLOR_XRGB( _r, _g, _b ), 0.f, 0) );
     }
     //////////////////////////////////////////////////////////////////////////
-    DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat )
+    DX9RenderImagePtr DX9RenderSystem::createDX9RenderImage_( LPDIRECT3DTEXTURE9 _pD3DTexture, ERenderImageMode _mode, uint32_t _mipmaps, uint32_t _hwWidth, uint32_t _hwHeight, uint32_t _hwChannels, uint32_t _hwDepth, PixelFormat _hwPixelFormat, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
         m_textureCount++;
 
         DX9RenderImagePtr dx9RenderImage = m_factoryDX9Image->createObject();
+
+        bool logcreateimage = HAS_OPTION( "logcreateimage" );
+
+        if( logcreateimage == true )
+        {
+            LOGGER_STATISTIC("create texture '%s' size %d:%d channels %d format %d"                
+                , _doc
+                , _hwWidth                
+                , _hwHeight
+                , _hwChannels
+                , _hwPixelFormat                
+                );
+        }
 
         dx9RenderImage->initialize( m_pD3DDevice, _pD3DTexture, _mode, _mipmaps, _hwWidth, _hwHeight, _hwChannels, _hwDepth, _hwPixelFormat );
 

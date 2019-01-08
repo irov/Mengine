@@ -41,16 +41,16 @@ namespace Mengine
 	LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, __PRETTY_FUNCTION__, __LINE__ )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_PERFORMANCE\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_PERFOMANCE, __PRETTY_FUNCTION__, __LINE__ )
+	LOGGER_VERBOSE_LEVEL( Mengine::LM_PERFOMANCE, nullptr, 0 )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_STATISTIC\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, __PRETTY_FUNCTION__, __LINE__ )
+	LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_WARNING\
 	LOGGER_VERBOSE_LEVEL( Mengine::LM_WARNING, __PRETTY_FUNCTION__, __LINE__ )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_INFO\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_INFO, __PRETTY_FUNCTION__, __LINE__ )
+	LOGGER_VERBOSE_LEVEL( Mengine::LM_INFO, nullptr, 0 )
 //////////////////////////////////////////////////////////////////////////
 #else
 //////////////////////////////////////////////////////////////////////////
@@ -64,15 +64,15 @@ namespace Mengine
 	LOGGER_VERBOSE_LEVEL( Mengine::LM_ERROR, __FUNCTION__, __LINE__ )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_PERFORMANCE\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_PERFOMANCE, __FUNCTION__, __LINE__ )
+	LOGGER_VERBOSE_LEVEL( Mengine::LM_PERFOMANCE, nullptr, 0 )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_STATISTIC\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, __FUNCTION__, __LINE__ )
+	LOGGER_VERBOSE_LEVEL( Mengine::LM_STATISTIC, nullptr, 0 )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_WARNING\
 	LOGGER_VERBOSE_LEVEL( Mengine::LM_WARNING, __FUNCTION__, __LINE__ )
 //////////////////////////////////////////////////////////////////////////
 #define LOGGER_INFO\
-	LOGGER_VERBOSE_LEVEL( Mengine::LM_INFO, __FUNCTION__, __LINE__ )
+	LOGGER_VERBOSE_LEVEL( Mengine::LM_INFO, nullptr, 0 )
 //////////////////////////////////////////////////////////////////////////
 #endif

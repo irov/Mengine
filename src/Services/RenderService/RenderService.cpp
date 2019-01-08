@@ -259,7 +259,7 @@ namespace Mengine
         uint32_t null_depth = 1;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
+            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, "NullTexture" );
 
         if( texture == nullptr )
         {
@@ -334,7 +334,7 @@ namespace Mengine
         uint32_t null_depth = 1;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN );
+            ->createTexture( null_mipmaps, null_width, null_height, null_channels, null_depth, PF_UNKNOWN, "WhitePixelTexture");
 
         if( texture == nullptr )
         {

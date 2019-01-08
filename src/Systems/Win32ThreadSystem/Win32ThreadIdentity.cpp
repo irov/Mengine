@@ -240,10 +240,11 @@ namespace Mengine
         m_mutex->unlock();
         
         WakeAllConditionVariable( &m_conditionVariable );
-        DeleteCriticalSection( &m_conditionLock );
-
+        
         WaitForSingleObject( m_thread, INFINITE );
         CloseHandle( m_thread );
         m_thread = INVALID_HANDLE_VALUE;
+
+        DeleteCriticalSection( &m_conditionLock );
     }
 }

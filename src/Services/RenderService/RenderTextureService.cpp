@@ -128,7 +128,7 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+    RenderTextureInterfacePtr RenderTextureService::createTexture( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
     {
         uint32_t HWMipmaps = _mipmaps;
         uint32_t HWWidth = _width;
@@ -141,7 +141,7 @@ namespace Mengine
         this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
         RenderImageInterfacePtr image = RENDER_SYSTEM()
-            ->createImage( HWMipmaps, HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
+            ->createImage( HWMipmaps, HWWidth, HWHeight, HWChannels, HWDepth, HWFormat, _doc );
 
         if( image == nullptr )
         {
@@ -168,7 +168,7 @@ namespace Mengine
         return texture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+    RenderTextureInterfacePtr RenderTextureService::createDynamicTexture( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
     {
         uint32_t HWWidth = _width;
         uint32_t HWHeight = _height;
@@ -179,11 +179,12 @@ namespace Mengine
         this->updateImageParams_( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
 
         RenderImageInterfacePtr image = RENDER_SYSTEM()
-            ->createDynamicImage( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat );
+            ->createDynamicImage( HWWidth, HWHeight, HWChannels, HWDepth, HWFormat, _doc );
 
         if( image == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::createDynamicTexture couldn't create image %dx%d channels %d"
+            LOGGER_ERROR( "couldn't create image '%s' size %d:%d channels %d"
+                , _doc
                 , HWWidth
                 , HWHeight
                 , HWChannels
@@ -385,7 +386,7 @@ namespace Mengine
 
         RenderImageDesc imageDesc = imageLoader->getImageDesc();
 
-        RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.channels, imageDesc.depth, imageDesc.format );
+        RenderTextureInterfacePtr new_texture = this->createTexture( imageDesc.mipmaps, imageDesc.width, imageDesc.height, imageDesc.channels, imageDesc.depth, imageDesc.format, _fileName.c_str() );
 
         if( new_texture == nullptr )
         {

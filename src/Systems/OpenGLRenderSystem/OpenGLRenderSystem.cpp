@@ -851,9 +851,10 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr OpenGLRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+    RenderImageInterfacePtr OpenGLRenderSystem::createImage( uint32_t _mipmaps, uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
     {
         MENGINE_UNUSED( _depth );
+        MENGINE_UNUSED( _doc );
 
         uint32_t hwChannels = 0;
         PixelFormat hwFormat = PF_UNKNOWN;
@@ -1095,9 +1096,10 @@ namespace Mengine
         MENGINE_UNUSED( _b );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr OpenGLRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format )
+    RenderImageInterfacePtr OpenGLRenderSystem::createDynamicImage( uint32_t _width, uint32_t _height, uint32_t _channels, uint32_t _depth, PixelFormat _format, const Char * _doc )
     {
         MENGINE_UNUSED( _depth );
+        MENGINE_UNUSED( _doc );
 
         uint32_t hwChannels = 0;
         PixelFormat hwFormat = PF_UNKNOWN;

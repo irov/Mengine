@@ -171,7 +171,7 @@ namespace Mengine
         const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
 
         RenderTextureInterfacePtr dynamicTexture = RENDERTEXTURE_SERVICE()
-            ->createDynamicTexture( dataInfo->width, dataInfo->height, channels, 1, dataInfo->format );
+            ->createDynamicTexture( dataInfo->width, dataInfo->height, channels, 1, dataInfo->format, "SurfaceVideo" );
 
         if( dynamicTexture == nullptr )
         {

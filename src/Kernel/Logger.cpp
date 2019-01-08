@@ -71,12 +71,6 @@ namespace Mengine
         {
             Char str2[MENGINE_LOGGER_MAX_MESSAGE + 256] = { 0 };
 
-            //const Char * correct_function = m_function;
-            //if( strstr( correct_function, "Mengine::" ) != nullptr )
-            //{
-            //    correct_function += sizeof( "Mengine::" ) - 1;
-            //}
-
             String str_function = m_file;
 
             StringRegex regex_lambda_remove( "::<lambda_.*>::operator \\(\\)" );

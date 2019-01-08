@@ -152,7 +152,7 @@ namespace Mengine
         PixelFormat format = PF_A8R8G8B8;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createDynamicTexture( m_maxAtlasWidth, newAtlas.height, 4, 1, format );
+            ->createDynamicTexture( m_maxAtlasWidth, newAtlas.height, 4, 1, format, "TTFAtlasService" );
 
         if( texture == nullptr )
         {

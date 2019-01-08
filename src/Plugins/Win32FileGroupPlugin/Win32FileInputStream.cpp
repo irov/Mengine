@@ -60,7 +60,7 @@ namespace Mengine
         {
             this->close_();
 
-            LOGGER_ERROR( "Win32InputStream::open %ls invalid file size"
+            LOGGER_ERROR( "invalid file '%ls' size"
                 , fullPath
             );
 
@@ -69,7 +69,7 @@ namespace Mengine
 
         if( _offset + _size > size )
         {
-            LOGGER_ERROR( "Win32InputStream::open %ls invalid file range %d:%d size %d"
+            LOGGER_ERROR( "invalid file '%ls' range %d:%d size %d"
                 , fullPath
                 , _offset
                 , _size
@@ -94,7 +94,7 @@ namespace Mengine
             {
                 DWORD dwError = ::GetLastError();
 
-                LOGGER_ERROR( "Win32InputStream::open seek offset %d size %d get error '%u'"
+                LOGGER_ERROR( "seek offset %d size %d get error '%u'"
                     , m_offset
                     , m_size
                     , dwError
@@ -111,7 +111,7 @@ namespace Mengine
     {
         if( Helper::Win32ConcatenateFilePath( _relationPath, _folderPath, _filePath, _fullPath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR( "Win32InputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR( "invlalid concatenate filePath '%s':'%s'"
                 , _folderPath.c_str()
                 , _filePath.c_str()
             );
@@ -242,7 +242,7 @@ namespace Mengine
         {
             DWORD dwError = GetLastError();
 
-            LOGGER_ERROR( "Win32InputStream::read %d:%d get error '%u'"
+            LOGGER_ERROR( "read %d:%d get error '%u'"
                 , _size
                 , m_size
                 , dwError
@@ -279,7 +279,7 @@ namespace Mengine
             {
                 DWORD dwError = ::GetLastError();
 
-                LOGGER_ERROR( "Win32InputStream::seek %d:%d get error '%u'"
+                LOGGER_ERROR( "seek %d:%d get error '%u'"
                     , _pos
                     , m_size
                     , dwError
@@ -406,7 +406,7 @@ namespace Mengine
         {
             DWORD dwError = GetLastError();
 
-            LOGGER_ERROR( "Win32InputStream::time invalid get file time '%d'"
+            LOGGER_ERROR( "invalid get file time '%d'"
                 , dwError
             );
 

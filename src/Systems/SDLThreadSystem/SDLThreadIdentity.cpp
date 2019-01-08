@@ -80,7 +80,7 @@ namespace Mengine
 
         if( thread == nullptr )
         {
-            LOGGER_ERROR( "invalid create thread error code - %s"
+            LOGGER_ERROR( "invalid create thread error code - '%s'"
                 , SDL_GetError()
             );
 
@@ -91,7 +91,7 @@ namespace Mengine
 
         if( conditionLock == nullptr )
         {
-            LOGGER_ERROR( "invalid create mutex error code - %s"
+            LOGGER_ERROR( "invalid create mutex error code - '%s'"
                 , SDL_GetError()
             );
 
@@ -211,18 +211,18 @@ namespace Mengine
         SDL_DestroyCond( m_conditionVariable );
         m_conditionVariable = nullptr;
 
-        SDL_DestroyMutex( m_conditionLock );
-        m_conditionLock = nullptr;
-
         int status;
         SDL_WaitThread( m_thread, &status );
 
         if( status != 0 )
         {
-            LOGGER_ERROR( "SDLThreadIdentity::joinThread: invalid join thread error code - %s"
+            LOGGER_ERROR( "invalid join thread error code - '%s'"
                 , status
             );
         }
+
+        SDL_DestroyMutex( m_conditionLock );
+        m_conditionLock = nullptr;
 
         m_thread = nullptr;
         m_mutex = nullptr;

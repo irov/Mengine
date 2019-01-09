@@ -141,7 +141,7 @@ namespace Mengine
     SERVICE_PROVIDER_GET()->dependencyService(Type::getStaticServiceID(), SERVICE_GET(Dependency)->getServiceID())
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_EXTERN( Name )\
-	extern bool SERVICE_NAME_CREATE( Name )(Mengine::ServiceInterfacePtr*);
+	extern bool SERVICE_NAME_CREATE( Name )(Mengine::ServiceInterfacePtr*)
 //////////////////////////////////////////////////////////////////////////
 #define SERVICE_CREATE( Name )\
 	SERVICE_PROVIDER_GET()->initializeService(&SERVICE_NAME_CREATE(Name), #Name, __FILE__, __LINE__)

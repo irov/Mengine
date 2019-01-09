@@ -58,7 +58,7 @@ namespace Mengine
 
         if( it_found == m_factoryFileGroups.end() )
         {
-            LOGGER_ERROR( "FileService::unregisterFileGroupFactory: not registry factory '%s'"
+            LOGGER_ERROR( "not registry factory '%s'"
                 , _type.c_str()
             );
 
@@ -74,7 +74,7 @@ namespace Mengine
 
         if( it_found == m_factoryFileGroups.end() )
         {
-            LOGGER_ERROR( "FileService::createFileGroup: not registry factory '%s'"
+            LOGGER_ERROR( "not registry factory '%s'"
                 , _type.c_str()
             );
 
@@ -87,7 +87,7 @@ namespace Mengine
 
         if( fileGroup == nullptr )
         {
-            LOGGER_ERROR( "FileService::createFileGroup: invalid create file group '%s'"
+            LOGGER_ERROR( "invalid create file group '%s'"
                 , _type.c_str()
             );
 
@@ -99,7 +99,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FileService::mountFileGroup( const ConstString & _name, const FileGroupInterfacePtr & _category, const FilePath & _path, const ConstString & _type, FileGroupInterfacePtr * _fileGroup )
     {
-        LOGGER_INFO( "FileService:mountFileSystem _fileGroupName '%s' _path '%s' _type '%s'"
+        LOGGER_INFO( "group '%s' path '%s' type '%s'"
             , _name.c_str()
             , _path.c_str()
             , _type.c_str()
@@ -109,7 +109,7 @@ namespace Mengine
 
         if( it_find != m_fileSystemMap.end() )
         {
-            LOGGER_ERROR( "FileService::mountFileSystem FileSystem with name '%s' is already mount\n"
+            LOGGER_ERROR( "already mount '%s'\n"
                 "Remount would be performed"
                 , _name.c_str()
             );
@@ -121,7 +121,7 @@ namespace Mengine
 
         if( fileGroup == nullptr )
         {
-            LOGGER_ERROR( "FileService::mountFileSystem can't create fileGroup '%s' type '%s' for object '%s'"
+            LOGGER_ERROR( "can't create fileGroup '%s' type '%s' for object '%s'"
                 , _name.c_str()
                 , _type.c_str()
                 , _path.c_str()
@@ -132,7 +132,7 @@ namespace Mengine
 
         if( fileGroup->initialize( _name, _category, _path ) == false )
         {
-            LOGGER_ERROR( "FileService::mountFileSystem can't initialize FileSystem '%s' for object '%s'"
+            LOGGER_ERROR( "can't initialize FileSystem '%s' for object '%s'"
                 , _name.c_str()
                 , _path.c_str()
             );
@@ -160,7 +160,7 @@ namespace Mengine
         MapFileSystem::iterator it_find = m_fileSystemMap.find( _name );
         if( it_find == m_fileSystemMap.end() )
         {
-            LOGGER_ERROR( "FileService::unmountFileGroup '%s' not mount"
+            LOGGER_ERROR( "not mount '%s'"
                 , _name.c_str()
             );
 
@@ -204,7 +204,7 @@ namespace Mengine
 
         if( it_find == m_fileSystemMap.end() )
         {
-            LOGGER_ERROR( "FileService::getFileGroup '%s' not mount"
+            LOGGER_ERROR( "not mount '%s'"
                 , _name.c_str()
             );
 
@@ -227,7 +227,7 @@ namespace Mengine
 
         if( file == nullptr )
         {
-            LOGGER_ERROR( "FileService::openInputFile can't create input file '%s:%s'"
+            LOGGER_ERROR( "can't create input file '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
             );
@@ -237,7 +237,7 @@ namespace Mengine
 
         if( _fileGroup->openInputFile( _fileName, file, 0, 0, _streaming ) == false )
         {
-            LOGGER_ERROR( "FileService::openInputFile can't open input file '%s:%s'"
+            LOGGER_ERROR( "can't open input file '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
             );
@@ -254,7 +254,7 @@ namespace Mengine
 
         if( file == nullptr )
         {
-            LOGGER_ERROR( "FileService::openOutputFile can't create output file '%s:%s'"
+            LOGGER_ERROR( "can't create output file '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
             );
@@ -264,7 +264,7 @@ namespace Mengine
 
         if( _fileGroup->openOutputFile( _fileName, file ) == false )
         {
-            LOGGER_ERROR( "FileService::openOutputFile can't open output file '%s:%s'"
+            LOGGER_ERROR( "can't open output file '%s:%s'"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
             );

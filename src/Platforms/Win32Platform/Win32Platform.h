@@ -2,11 +2,12 @@
 
 #include "Interface/PlatformInterface.h"
 
-#include "Kernel/ServiceBase.h"
-
 #include "Win32MouseEvent.h"
 #include "Win32AlreadyRunningMonitor.h"
 #include "Win32FPSMonitor.h"
+
+#include "Kernel/ServiceBase.h"
+#include "Kernel/Factory.h"
 
 namespace Mengine
 {
@@ -45,6 +46,9 @@ namespace Mengine
         const Tags & getPlatformTags() const override;
         bool hasPlatformTag( const ConstString & _tag ) const override;
         bool hasTouchpad() const override;
+
+    public:
+        DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName ) override;
 
     public:
         bool getDesktopResolution( Resolution & _resolution ) const override;
@@ -130,6 +134,8 @@ namespace Mengine
         HINSTANCE m_hInstance;
 
         HWND m_hWnd;
+
+        FactoryPtr m_factoryDynamicLibraries;
 
         Win32AlreadyRunningMonitorPtr m_alreadyRunningMonitor;
 

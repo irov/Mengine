@@ -96,6 +96,8 @@ src
     ChronometerServiceInterface.h
     ArgumentsInterface.h
     FrameworkInterface.h
+    PluginServiceInterface.h
+    DynamicLibraryInterface.h
     
 	dummy.cpp
 )

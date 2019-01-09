@@ -27,6 +27,7 @@
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/ModuleServiceInterface.h"
 #include "Interface/FrameworkInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Kernel/FactorableUnique.h"
 #include "Kernel/FactoryDefault.h"
@@ -83,7 +84,6 @@ SERVICE_EXTERN( ConverterService );
 SERVICE_EXTERN( InputService );
 SERVICE_EXTERN( TimeService );
 SERVICE_EXTERN( TimeSystem );
-SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( VocabularyService );
@@ -100,7 +100,7 @@ SERVICE_EXTERN( ProfilerService );
 SERVICE_EXTERN( GraveyardService );
 SERVICE_EXTERN( PackageService );
 SERVICE_EXTERN( UserdataService );
-SERVICE_EXTERN( PickerService )
+SERVICE_EXTERN( PickerService );
 SERVICE_EXTERN( PlayerService );
 SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( GameService );
@@ -567,7 +567,6 @@ namespace Mengine
 
         
 
-        SERVICE_CREATE( PluginSystem );
         SERVICE_CREATE( PluginService );
 
         SERVICE_CREATE( FileService );

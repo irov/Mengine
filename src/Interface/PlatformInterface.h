@@ -11,6 +11,7 @@
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/MemoryInterface.h"
+#include "Interface/DynamicLibraryInterface.h"
 
 #ifndef MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME
 #define MENGINE_PLATFORM_PROJECT_TITLE_MAXNAME 256
@@ -44,6 +45,9 @@ namespace Mengine
 
     public:
         virtual bool hasTouchpad() const = 0;
+
+    public:
+        virtual DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName ) = 0;
 
     public:
         virtual bool getDesktopResolution( Resolution & _resolution ) const = 0;

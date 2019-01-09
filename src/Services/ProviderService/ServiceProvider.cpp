@@ -1,5 +1,7 @@
 #include "ServiceProvider.h"
 
+#include "Interface/ServiceInterface.h"
+
 #include <string.h>
 
 //////////////////////////////////////////////////////////////////////////

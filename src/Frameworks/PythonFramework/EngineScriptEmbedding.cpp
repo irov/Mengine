@@ -13,7 +13,7 @@
 #include "Interface/PlatformInterface.h"
 #include "Interface/PackageServiceInterface.h"
 #include "Interface/RandomizerInterface.h"
-#include "Interface/PluginInterface.h"
+#include "Interface/PluginServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/SchedulerInterface.h"

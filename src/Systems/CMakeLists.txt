@@ -13,7 +13,6 @@ if(MENGINE_PLATFORM_SDL)
     ADD_SUBDIRECTORY(SDLUnicodeSystem)
     ADD_SUBDIRECTORY(SDLThreadSystem)
     ADD_SUBDIRECTORY(C11TimeSystem)
-    ADD_SUBDIRECTORY(SDLPluginSystem)
     
     if(MENGINE_PLATFORM_IOS)
         ADD_SUBDIRECTORY(MockupSocketSystem)

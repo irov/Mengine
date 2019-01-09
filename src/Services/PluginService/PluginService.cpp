@@ -1,12 +1,17 @@
 #include "PluginService.h"
 
 #include "Interface/UnicodeSystemInterface.h"
+#include "Interface/PlatformInterface.h"
 
 #include "Kernel/Logger.h"
 
 #include <string.h>
 
 #include <algorithm>
+
+#ifndef MENGINE_PLUGIN_CREATE_FUNCTION_NAME
+#define MENGINE_PLUGIN_CREATE_FUNCTION_NAME "dllCreatePlugin"
+#endif
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( PluginService, Mengine::PluginService );
@@ -43,33 +48,33 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::loadPlugin( const Char * _dllName )
+    bool PluginService::loadPlugin( const Char * _dynamicLibraryName )
     {
         LOGGER_WARNING( "load Plugin '%s'"
-            , _dllName
+            , _dynamicLibraryName
         );
 
-        DynamicLibraryInterfacePtr dlib = PLUGIN_SYSTEM()
-            ->loadDynamicLibrary( _dllName );
+        DynamicLibraryInterfacePtr dynamicLibrary = PLATFORM_SERVICE()
+            ->loadDynamicLibrary( _dynamicLibraryName );
 
-        if( dlib == nullptr )
+        if( dynamicLibrary == nullptr )
         {
-            LOGGER_ERROR( "PluginService::loadPlugin can't load '%s' plugin [invalid load]"
-                , _dllName
+            LOGGER_ERROR( "can't load '%s' plugin [invalid load]"
+                , _dynamicLibraryName
             );
 
             return false;
         }
 
-        const Char * symbol = "dllCreatePlugin";
+        const Char * symbol = MENGINE_PLUGIN_CREATE_FUNCTION_NAME;
 
         TDynamicLibraryFunction function_dllCreatePlugin =
-            dlib->getSymbol( symbol );
+            dynamicLibrary->getSymbol( symbol );
 
         if( function_dllCreatePlugin == nullptr )
         {
-            LOGGER_ERROR( "PluginService::loadPlugin can't load %s plugin symbol '%s'"
-                , _dllName
+            LOGGER_ERROR( "can't load %s plugin symbol '%s'"
+                , _dynamicLibraryName
                 , symbol
             );
 
@@ -78,10 +83,10 @@ namespace Mengine
 
         TPluginCreate dllCreatePlugin = (TPluginCreate)function_dllCreatePlugin;
 
-        if( this->createPlugin( dlib, dllCreatePlugin, true ) == false )
+        if( this->createPlugin( dynamicLibrary, dllCreatePlugin, true ) == false )
         {
-            LOGGER_ERROR( "PluginService::loadPlugin can't load '%s' plugin [invalid create]"
-                , _dllName
+            LOGGER_ERROR( "can't load '%s' plugin [invalid create]"
+                , _dynamicLibraryName
             );
 
             return false;
@@ -90,7 +95,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::createPlugin( const DynamicLibraryInterfacePtr & _dlib, TPluginCreate _create, bool _dynamic )
+    bool PluginService::createPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, TPluginCreate _create, bool _dynamic )
     {
         if( _create == nullptr )
         {
@@ -102,7 +107,7 @@ namespace Mengine
         PluginInterface * plugin;
         if( _create( serviceProvider, &plugin, _dynamic ) == false )
         {
-            LOGGER_ERROR( "PluginService::createPlugin can't create plugin [invalid create]"
+            LOGGER_ERROR( "can't create plugin [invalid create]"
             );
 
             return false;
@@ -110,13 +115,13 @@ namespace Mengine
 
         if( plugin == nullptr )
         {
-            LOGGER_ERROR( "PluginService::createPlugin can't create plugin [plugin is NULL]"
+            LOGGER_ERROR( "can't create plugin [plugin is NULL]"
             );
 
             return false;
         }
 
-        if( this->addPlugin( _dlib, plugin ) == false )
+        if( this->addPlugin( _dynamicLibrary, plugin ) == false )
         {
             return false;
         }
@@ -124,7 +129,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool PluginService::addPlugin( const DynamicLibraryInterfacePtr & _dlib, const PluginInterfacePtr & _plugin )
+    bool PluginService::addPlugin( const DynamicLibraryInterfacePtr & _dynamicLibrary, const PluginInterfacePtr & _plugin )
     {
         if( _plugin == nullptr )
         {
@@ -153,7 +158,7 @@ namespace Mengine
 
         PluginDesc desc;
         strcpy( desc.name, name );
-        desc.dlib = _dlib;
+        desc.dynamicLibrary = _dynamicLibrary;
         desc.plugin = _plugin;
 
         m_plugins.emplace_back( desc );
@@ -182,6 +187,9 @@ namespace Mengine
             }
 
             desc.plugin->finalizePlugin();
+            desc.plugin = nullptr;
+
+            desc.dynamicLibrary = nullptr;
 
             m_plugins.erase( it );
 

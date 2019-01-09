@@ -34,12 +34,6 @@ namespace Mengine
         }
 
     protected:
-        void destroy() override
-        {
-            delete this;
-        }
-
-    protected:
         FactoryPtr m_factory;
     };
 }

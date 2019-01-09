@@ -4,6 +4,8 @@ ADD_FILTER(
 src
     Win32Platform.h
     Win32Platform.cpp
+    Win32DynamicLibrary.h
+    Win32DynamicLibrary.cpp
     Win32MouseEvent.h
     Win32MouseEvent.cpp
     Win32FPSMonitor.h

@@ -12,6 +12,7 @@
 #include "Interface/ArchivatorInterface.h"
 #include "Interface/ConfigServiceInterface.h"
 #include "Interface/CodecServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 
@@ -46,7 +47,6 @@ SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
 SERVICE_EXTERN( FileService );
-SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
@@ -108,7 +108,6 @@ namespace Mengine
 
         SERVICE_CREATE( ThreadService );
         SERVICE_CREATE( MemoryService );
-        SERVICE_CREATE( PluginSystem );
         SERVICE_CREATE( PluginService );
 
         SERVICE_CREATE( FileService );

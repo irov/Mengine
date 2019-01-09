@@ -9,8 +9,13 @@
 #include "Interface/FileServiceInterface.h"
 #include "Interface/InputServiceInterface.h"
 
+#include "Win32DynamicLibrary.h"
+
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/FactoryPool.h"
+#include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -176,6 +181,8 @@ namespace Mengine
             m_touchpad = true;
         }
 
+        m_factoryDynamicLibraries = new FactoryPool<Win32DynamicLibrary, 8>();
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -203,7 +210,7 @@ namespace Mengine
         {
             if( ::UnregisterClass( MENGINE_WINDOW_CLASSNAME, m_hInstance ) == FALSE )
             {
-                LOGGER_ERROR( "Win32Platform::_finalizeService invalid UnregisterClass '%s'"
+                LOGGER_ERROR( "invalid UnregisterClass '%s'"
                     , MENGINE_WINDOW_CLASSNAME );
             }
 
@@ -215,6 +222,10 @@ namespace Mengine
             m_fpsMonitor->finalize();
             m_fpsMonitor = nullptr;
         }
+
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryDynamicLibraries );
+
+        m_factoryDynamicLibraries = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::setProcessDPIAware()
@@ -1837,6 +1848,30 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    DynamicLibraryInterfacePtr Win32Platform::loadDynamicLibrary( const Char * _dynamicLibraryName )
+    {
+        LOGGER_INFO( "load dynamic library '%s'"
+            , _dynamicLibraryName
+        );
+
+        Win32DynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr );
+
+        dynamicLibrary->setName( _dynamicLibraryName );
+
+        if( dynamicLibrary->load() == false )
+        {
+            LOGGER_ERROR( "can't load dynamic library '%s' [invalid load]"
+                , _dynamicLibraryName
+            );
+
+            return nullptr;
+        }
+
+        return dynamicLibrary;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::getDesktopResolution( Resolution & _resolution ) const

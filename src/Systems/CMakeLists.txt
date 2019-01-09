@@ -5,7 +5,6 @@ if(MENGINE_PLATFORM_WIN32)
     ADD_SUBDIRECTORY(Win32UnicodeSystem)
     ADD_SUBDIRECTORY(Win32ThreadSystem)
     ADD_SUBDIRECTORY(C11TimeSystem)
-    ADD_SUBDIRECTORY(Win32PluginSystem)
     ADD_SUBDIRECTORY(DX9RenderSystem)
 endif()
 

@@ -1,32 +1,3 @@
-//#ifdef _WIN32_WINNT	
-//#undef _WIN32_WINNT
-//#define _WIN32_WINNT 0x0500
-//#endif
-//
-//#ifdef _WIN32_WINDOWS
-//#undef _WIN32_WINDOWS
-//#define _WIN32_WINDOWS 0x0500
-//#endif
-//
-//#define WIN32_LEAN_AND_MEAN
-//
-//#ifndef NOMINMAX
-//#define NOMINMAX
-//#endif
-//
-//#pragma warning(push, 0) 
-//#include <Windows.h>
-//#include <WinUser.h>
-//
-//#include <shellapi.h>
-//#include <shlwapi.h>
-//#include <shlobj.h>
-//#include <fcntl.h>
-//#pragma warning(pop) 
-//
-//#pragma comment ( lib, "Ws2_32.lib" )
-//#pragma comment ( lib, "Crypt32.lib" )
-
 #include <iostream>
 
 #include "Interface/ServiceInterface.h"
@@ -53,6 +24,7 @@
 #include "Interface/OptionsInterface.h"
 #include "Interface/CodecServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
 
@@ -100,7 +72,6 @@ SERVICE_EXTERN( DataService );
 SERVICE_EXTERN( ThreadSystem );
 SERVICE_EXTERN( ThreadService );
 SERVICE_EXTERN( MemoryService );
-SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( PrototypeService );
 SERVICE_EXTERN( FileService );
@@ -210,7 +181,6 @@ namespace Mengine
         SERVICE_CREATE( ThreadSystem );
         SERVICE_CREATE( ThreadService );
         SERVICE_CREATE( MemoryService );
-        SERVICE_CREATE( PluginSystem );
         SERVICE_CREATE( PluginService );
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( VocabularyService );

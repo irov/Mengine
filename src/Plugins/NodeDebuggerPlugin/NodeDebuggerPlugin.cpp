@@ -22,8 +22,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerPlugin::_initializePlugin()
     {
-        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleNodeDebuggerModule" )
-            , new ModuleFactory<NodeDebuggerModule>() );
+        this->addModuleFactory( STRINGIZE_STRING_LOCAL( "ModuleNodeDebugger" )
+            , new FactorableUnique<ModuleFactory<NodeDebuggerModule>>() );
 
         return true;
     }

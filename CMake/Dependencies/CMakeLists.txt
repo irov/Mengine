@@ -308,6 +308,7 @@ if(0)
 endif()
 
 #define openal-soft
+if(NOT MENGINE_TARGET_IOS)
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/openal-soft)
     if(MENGINE_TOOLCHAIN_MSVC)			
@@ -341,6 +342,7 @@ set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/openal-soft)
 
 ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/openal-soft )
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
+endif()
 
 
 #define libpng

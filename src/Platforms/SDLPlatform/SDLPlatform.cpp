@@ -92,9 +92,10 @@ namespace Mengine
 
 		return pathLen;
 #elif TARGET_OS_IPHONE
-		wcscpy( _path, L"deploy-ios-data/" );
+        const char deploy_ios_data[] = "deploy-ios-data/";
+		strcpy( _path, deploy_ios_data );
 
-		return 16;
+		return sizeof(deploy_ios_data) - 1;
 #else  
 		_path[0] = L'\0';
 

@@ -29,6 +29,10 @@ src
     OpenGLRenderImage.h
 )
 
+if(MENGINE_TARGET_IOS)
+    add_definitions(-DGLES_SILENCE_DEPRECATION)
+endif()
+
 include_directories( 
     ${THIRDPARTY_DIR}/SDL2/include
     ${THIRDPARTY_DIR}/libmath/include

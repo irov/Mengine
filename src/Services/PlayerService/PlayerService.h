@@ -139,14 +139,8 @@ namespace Mengine
         AffectorablePtr m_affectorable;
         AffectorablePtr m_affectorableGlobal;
 
-        bool m_arrowHided;
         bool m_focus;
 
         ScenePtr m_switchSceneTo;
-
-        uint32_t m_fps;
-
-    protected:
-        RenderCameraOrthogonalPtr m_debugCamera2D;
     };
 }

@@ -1584,7 +1584,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Movie::createMovieVideo_( const MovieLayer & _layer )
     {
-        ResourcePtr resourceVideo = RESOURCE_SERVICE()
+        const ResourcePtr & resourceVideo = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
         if( resourceVideo == nullptr )
@@ -1791,7 +1791,7 @@ namespace Mengine
 
         if( resourceImage == nullptr )
         {
-            LOGGER_ERROR( "Movie::createMovieSprite_ %s resource %s layer %s invalid get resource for image %s"
+            LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' invalid get resource for image '%s'"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _layer.name.c_str()
@@ -1821,7 +1821,7 @@ namespace Mengine
 
         if( layer_sprite == nullptr )
         {
-            LOGGER_ERROR( "Movie::createMovieSprite_ %s resource %s layer %s invalid create 'Sprite'"
+            LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' invalid create 'Sprite'"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _layer.name.c_str()
@@ -1857,7 +1857,7 @@ namespace Mengine
 #ifndef NDEBUG
         if( stdex::intrusive_dynamic_cast<TextFieldPtr>(node) == nullptr )
         {
-            LOGGER_ERROR( "Movie::compileMovieText_ %s resource %s layer %s must be 'TextField' but node is %s type %s"
+            LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' must be 'TextField' but node is %s type %s"
                 , this->getName().c_str()
                 , this->getResourceMovieName().c_str()
                 , _layer.name.c_str()
@@ -1924,7 +1924,7 @@ namespace Mengine
 
         AnimationInterface * animationParticleEmitter2 = layer_particles->getAnimation();
 
-        ResourcePtr resourceParticle = RESOURCE_SERVICE()
+        const ResourcePtr & resourceParticle = RESOURCE_SERVICE()
             ->getResourceReference( _layer.source );
 
         if( resourceParticle == nullptr )
@@ -1966,7 +1966,7 @@ namespace Mengine
     {
         if( m_resourceMovie == nullptr )
         {
-            LOGGER_ERROR( "Movie::_compile: '%s' can't setup resource"
+            LOGGER_ERROR( "movie '%s' can't setup resource"
                 , this->getName().c_str()
             );
 
@@ -1975,7 +1975,7 @@ namespace Mengine
 
         if( m_resourceMovie.compile() == false )
         {
-            LOGGER_ERROR( "Movie::_compile '%s' resource %s not compile"
+            LOGGER_ERROR( "movie '%s' resource %s not compile"
                 , m_name.c_str()
                 , m_resourceMovie->getName().c_str()
             );
@@ -1985,7 +1985,7 @@ namespace Mengine
 
         if( this->setupSceneEffect_() == false )
         {
-            LOGGER_ERROR( "Movie::_compile: %s resource %s can't setup scene effect"
+            LOGGER_ERROR( "movie '%s' resource %s can't setup scene effect"
                 , m_name.c_str()
                 , m_resourceMovie->getName().c_str()
             );
@@ -1995,7 +1995,7 @@ namespace Mengine
 
         if( this->setupLayersParent_() == false )
         {
-            LOGGER_ERROR( "Movie::_compile: %s resource %s can't setup layer parents"
+            LOGGER_ERROR( "movie '%s' resource %s can't setup layer parents"
                 , m_name.c_str()
                 , m_resourceMovie->getName().c_str()
             );
@@ -2005,7 +2005,7 @@ namespace Mengine
 
         if( this->compileLayers_() == false )
         {
-            LOGGER_ERROR( "Movie::_compile: %s resource %s can't compile layers"
+            LOGGER_ERROR( "movie '%s' resource %s can't compile layers"
                 , m_name.c_str()
                 , m_resourceMovie->getName().c_str()
             );
@@ -2069,7 +2069,7 @@ namespace Mengine
 #ifndef NDEBUG
             if( stdex::intrusive_dynamic_cast<MovieSceneEffectPtr>(node) == nullptr )
             {
-                LOGGER_ERROR( "Movie::compileMovieText_ '%s' resource '%s' layer '%s' must be 'MovieSceneEffect' but node is %s type %s"
+                LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' must be 'MovieSceneEffect' but node is %s type %s"
                     , this->getName().c_str()
                     , this->getResourceMovieName().c_str()
                     , l.name.c_str()
@@ -2085,7 +2085,7 @@ namespace Mengine
 
             if( sceneEffect->setPropagateNode( parent ) == false )
             {
-                LOGGER_ERROR( "Movie::setupSceneEffect_: '%s' resource '%s' layer '%s' invalid set propagate node '%s' type '%s'!"
+                LOGGER_ERROR( "movie '%s' resource '%s' layer '%s' invalid set propagate node '%s' type '%s'!"
                     , this->getName().c_str()
                     , this->getResourceMovieName().c_str()
                     , l.name.c_str()
@@ -2145,7 +2145,7 @@ namespace Mengine
 
                 if( node_parent == nullptr )
                 {
-                    LOGGER_ERROR( "Movie::updateParent_ %s resource %s invalid parent node %d"
+                    LOGGER_ERROR( "movie '%s' resource '%s' invalid parent node %d"
                         , this->getName().c_str()
                         , this->getResourceMovieName().c_str()
                         , layer.parent
@@ -2154,7 +2154,7 @@ namespace Mengine
                     return false;
                 }
 
-                node->setRelationTransformation( node_parent );
+                node->setRelationTransformation( node_parent.get() );
             }
         }
 
@@ -2174,12 +2174,13 @@ namespace Mengine
                 continue;
             }
 
-            if( layer.parent == 0 )
+            if( layer.parent == 0 || layer.parent == movie_layer_parent_none )
             {
                 continue;
             }
 
             Node * parent = node->getParent();
+
             node->setRelationTransformation( parent );
         }
     }
@@ -2188,7 +2189,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Movie::stopAnimation_ %s is not compile"
+            LOGGER_ERROR( "movie '%s' is not compile"
                 , m_name.c_str()
             );
 

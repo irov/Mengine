@@ -25,6 +25,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRelationRender( RenderInterface * _relationRender )
     {
+        MENGINE_ASSERTION( _relationRender == nullptr );
+
         if( m_relationRender != nullptr )
         {
             m_relationRender->removeRelationRenderChildren_( this );
@@ -32,10 +34,7 @@ namespace Mengine
 
         m_relationRender = static_cast<BaseRender *>(_relationRender);
 
-        if( m_relationRender != nullptr )
-        {
-            m_relationRender->addRelationRenderChildren_( this );
-        }
+        m_relationRender->addRelationRenderChildren_( this );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRender()

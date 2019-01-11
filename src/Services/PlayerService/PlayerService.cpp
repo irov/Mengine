@@ -65,9 +65,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     PlayerService::PlayerService()
-        : m_arrowHided( false )
-        , m_focus( true )
-        , m_fps( 0 )
+        : m_focus( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -133,7 +131,8 @@ namespace Mengine
 
         if( it_found == m_schedulers.end() )
         {
-            LOGGER_ERROR( "Player::destroySchedulerManager scheduler not found!"
+            LOGGER_ERROR( "scheduler '%s' not found!"
+                , _scheduler->getName().c_str()
             );
 
             return false;
@@ -222,24 +221,6 @@ namespace Mengine
             m_arrow = nullptr;
         }
 
-        if( m_camera2D != nullptr )
-        {
-            m_camera2D->release();
-            m_camera2D = nullptr;
-        }
-
-        if( m_viewport2D != nullptr )
-        {
-            m_viewport2D->release();
-            m_viewport2D = nullptr;
-        }
-
-        if( m_arrowCamera2D != nullptr )
-        {
-            m_arrowCamera2D->release();
-            m_arrowCamera2D = nullptr;
-        }
-
         m_renderViewport = nullptr;
         m_renderCamera = nullptr;
         m_renderScissor = nullptr;
@@ -267,12 +248,6 @@ namespace Mengine
 
         m_switchSceneTo = nullptr;
 
-        if( m_debugCamera2D != nullptr )
-        {
-            m_debugCamera2D->disable();
-            m_debugCamera2D = nullptr;
-        }
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduleManager );
         m_factoryScheduleManager = nullptr;
     }
@@ -290,7 +265,6 @@ namespace Mengine
             ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
 
         m_camera2D->setOrthogonalViewport( vp );
-
         m_camera2D->enable();
 
         this->setRenderCamera( m_camera2D );
@@ -315,17 +289,30 @@ namespace Mengine
             m_arrow->setRenderViewport( m_renderViewport );
             m_arrow->setRenderScissor( m_renderScissor );
         }
-
-        m_debugCamera2D = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
-
-        m_debugCamera2D->setOrthogonalViewport( vp );
-
-        m_debugCamera2D->enable();
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::finalizeRenderResources()
     {
+        this->setRenderCamera( nullptr );
+        this->setRenderViewport( nullptr );
+
+        if( m_camera2D != nullptr )
+        {
+            m_camera2D->release();
+            m_camera2D = nullptr;
+        }        
+
+        if( m_viewport2D != nullptr )
+        {
+            m_viewport2D->release();
+            m_viewport2D = nullptr;
+        }
+
+        if( m_arrowCamera2D != nullptr )
+        {
+            m_arrowCamera2D->release();
+            m_arrowCamera2D = nullptr;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     bool PlayerService::handleKeyEvent( const InputKeyEvent & _event )
@@ -391,7 +378,6 @@ namespace Mengine
 
         bool handler = false;
 
-
         if( handler == false )
         {
             handler = PICKER_SERVICE()
@@ -409,7 +395,6 @@ namespace Mengine
         }
 
         bool handler = false;
-
 
         if( handler == false )
         {
@@ -508,7 +493,6 @@ namespace Mengine
     {
         m_renderScissor = _scissor;
 
-
         PICKER_SERVICE()
             ->setRenderScissor( _scissor );
     }
@@ -520,11 +504,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::render()
     {
-        //if( this->isChangedScene() == true )
-        //{
-        //	return;
-        //}
-
         uint32_t debugMask = APPLICATION_SERVICE()
             ->getDebugMask();
 
@@ -626,29 +605,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::onAppMousePosition( const InputMousePositionEvent & _event )
     {
-        (void)_event;
+        MENGINE_UNUSED( _event );
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::onFullscreen( const Resolution & _resolution, bool _fullscreen )
     {
-        (void)_resolution;
-        (void)_fullscreen;
+        MENGINE_UNUSED( _resolution );
+        MENGINE_UNUSED( _fullscreen );
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::onFixedContentResolution( const Resolution & _resolution, bool _fixed )
     {
-        (void)_resolution;
-        (void)_fixed;
+        MENGINE_UNUSED( _resolution );
+        MENGINE_UNUSED( _fixed );
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::onFixedDisplayResolution( const Resolution & _resolution, bool _fixed )
     {
-        (void)_resolution;
-        (void)_fixed;
+        MENGINE_UNUSED( _resolution );
+        MENGINE_UNUSED( _fixed );
     }
     //////////////////////////////////////////////////////////////////////////
     void PlayerService::onFocus( bool _focus )
     {
+        if( m_focus == _focus )
+        {
+            return;
+        }
+
         m_focus = _focus;
 
         const ScenePtr & scene = SCENE_SERVICE()
@@ -656,7 +640,7 @@ namespace Mengine
 
         if( scene != nullptr && scene->isActivate() == true )
         {
-            scene->onFocus( _focus );
+            scene->onFocus( m_focus );
         }
     }
     //////////////////////////////////////////////////////////////////////////

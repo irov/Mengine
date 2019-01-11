@@ -446,6 +446,8 @@ Core
     
     StringArguments.h
     StringArguments.cpp
+    
+    KeyCode.h
 )
 
 ADD_FILTER(

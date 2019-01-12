@@ -117,7 +117,6 @@ namespace Mengine
 
         RenderCameraOrthogonalPtr m_camera2D;
         RenderViewportPtr m_viewport2D;
-
         RenderCameraOrthogonalPtr m_arrowCamera2D;
 
         RenderViewportInterfacePtr m_renderViewport;
@@ -125,7 +124,6 @@ namespace Mengine
         RenderScissorInterfacePtr m_renderScissor;
         RenderTargetInterfacePtr m_renderTarget;
 
-        PickerServiceInterfacePtr m_pickerService;
         GlobalInputHandlerInterfacePtr m_globalInputHandler;
 
         SchedulerInterfacePtr m_scheduleManager;
@@ -140,7 +138,5 @@ namespace Mengine
         AffectorablePtr m_affectorableGlobal;
 
         bool m_focus;
-
-        ScenePtr m_switchSceneTo;
     };
 }

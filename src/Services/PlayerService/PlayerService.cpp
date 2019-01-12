@@ -246,8 +246,6 @@ namespace Mengine
         m_affectorable = nullptr;
         m_affectorableGlobal = nullptr;
 
-        m_switchSceneTo = nullptr;
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScheduleManager );
         m_factoryScheduleManager = nullptr;
     }
@@ -295,6 +293,7 @@ namespace Mengine
     {
         this->setRenderCamera( nullptr );
         this->setRenderViewport( nullptr );
+        this->setRenderScissor( nullptr );
 
         if( m_camera2D != nullptr )
         {

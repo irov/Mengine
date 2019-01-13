@@ -56,7 +56,6 @@ namespace Mengine
         REMOVE_SCRIPT_EMBEDDING( EntityScriptEmbedding );
         REMOVE_SCRIPT_EMBEDDING( SoundScriptEmbedding );
         REMOVE_SCRIPT_EMBEDDING( EngineScriptEmbedding );
-        REMOVE_SCRIPT_EMBEDDING( GameScriptEmbedding );
     }
     //////////////////////////////////////////////////////////////////////////
     bool PythonFramework::onFrameworkInitialize()

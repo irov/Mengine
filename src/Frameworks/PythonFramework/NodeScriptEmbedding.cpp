@@ -2161,7 +2161,7 @@ namespace Mengine
             _node->stopAffectors( ETA_COLOR );
         }
         //////////////////////////////////////////////////////////////////////////
-        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color> m_nodeAffectorCreatorInterpolateLinearColour;
+        NodeAffectorCreator::NodeAffectorCreatorInterpolateLinear<Color> m_nodeAffectorCreatorInterpolateLinearColor;
         //////////////////////////////////////////////////////////////////////////
         uint32_t s_Node_colorTo( Node * _node, float _time, const Color& _color, const pybind::object & _cb, const pybind::args & _args )
         {
@@ -2204,7 +2204,7 @@ namespace Mengine
             ScriptableAffectorCallbackPtr callback = createNodeAffectorCallback( _node, _cb, _args );
 
             AffectorPtr affector =
-                m_nodeAffectorCreatorInterpolateLinearColour.create( ETA_COLOR
+                m_nodeAffectorCreatorInterpolateLinearColor.create( ETA_COLOR
                     , callback
                     , [render]( const Color & _v ) { render->setLocalColor( _v ); }
                     , render->getLocalColor(), _color, _time
@@ -2795,7 +2795,8 @@ namespace Mengine
             .def( "getOffset", &Surface::getOffset )
             .def( "getUVCount", &Surface::getUVCount )
             .def( "getUV", &Surface::getUV )
-            .def( "getColour", &Surface::getColor )
+            .def( "getColor", &Surface::getColor )
+            .def_deprecated( "getColour", &Surface::getColor, "use getColor" )
             ;
 
         pybind::interface_<SurfaceSound, pybind::bases<Surface, Eventable, Animatable, Soundable> >( kernel, "SurfaceSound", false )

@@ -240,7 +240,7 @@ namespace Mengine
 
         float timing = ae_get_movie_sub_composition_time( m_subcomposition );
 
-        return timing * 1000.f;
+        return AE_TIME_MILLISECOND( timing );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_setFirstFrame()

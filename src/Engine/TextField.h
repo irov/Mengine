@@ -163,9 +163,11 @@ namespace Mengine
         void updateTextLinesMaxCount_( VectorTextLines & _textLines ) const;
         bool updateTextLinesDimension_( const TextFontInterfacePtr & _font, const VectorTextLines & _textLines, mt::vec2f * _size, uint32_t * _charCount, uint32_t * _layoutCount ) const;
 
-    protected:
+    public:
         inline const TextEntryInterfacePtr & getTextEntry() const;
         inline const TextFontInterfacePtr & getFont() const;
+
+    protected:
         inline void invalidateFont() const;
         void updateFont_() const;
         void updateTextEntry_() const;

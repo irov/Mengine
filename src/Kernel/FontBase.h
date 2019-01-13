@@ -42,7 +42,7 @@ namespace Mengine
         virtual bool _unfetch();
 
     public:
-        void setColourFont( const Color & _colour ) override;
+        void setColorFont( const Color & _color ) override;
         const Color & getFontColor() const override;
 
         void setLineOffset( float _lineOffset ) override;
@@ -72,7 +72,7 @@ namespace Mengine
 
         uint32_t m_params;
 
-        Color m_colourFont;
+        Color m_colorFont;
 
         float m_lineOffset;
         float m_charOffset;

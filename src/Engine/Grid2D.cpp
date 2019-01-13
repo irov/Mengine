@@ -262,8 +262,8 @@ namespace Mengine
 
         if( m_resourceImage != nullptr )
         {
-            const Color & textureColour = m_resourceImage->getColor();
-            color *= textureColour;
+            const Color & textureColor = m_resourceImage->getColor();
+            color *= textureColor;
         }
 
         const mt::mat4f & wm = this->getWorldMatrix();

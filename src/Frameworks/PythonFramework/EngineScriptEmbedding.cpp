@@ -1239,7 +1239,7 @@ namespace Mengine
             return resource;
         }
         //////////////////////////////////////////////////////////////////////////
-        ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const Color & _colour, const mt::vec2f & _maxSize )
+        ResourceImageSolidPtr s_createImageSolidResource( const ConstString & _resourceName, const Color & _color, const mt::vec2f & _maxSize )
         {
             ResourceImageSolidPtr resource = RESOURCE_SERVICE()
                 ->generateResource( STRINGIZE_STRING_LOCAL( "ResourceImageSolid" ) );
@@ -1251,7 +1251,7 @@ namespace Mengine
 
             resource->setName( _resourceName );
 
-            resource->setColor( _colour );
+            resource->setColor( _color );
 
             resource->setMaxSize( _maxSize );
             resource->setSize( _maxSize );

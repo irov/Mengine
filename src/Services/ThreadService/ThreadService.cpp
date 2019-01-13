@@ -83,6 +83,9 @@ namespace Mengine
         m_mainThreadId = THREAD_SYSTEM()
             ->getCurrentThreadId();
 
+        m_mutexMainCode = THREAD_SYSTEM()
+            ->createMutex( __FILE__, __LINE__ );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -126,6 +129,7 @@ namespace Mengine
         stdex_allocator_finalize_threadsafe();
 
         m_mutexAllocatorPool = nullptr;
+        m_mutexMainCode = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadQueue );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryThreadMutexDummy );
@@ -364,6 +368,23 @@ namespace Mengine
             return;
         }
     }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadService::waitMainCode( const LambdaMainCode & _lambda, const Char * _file, uint32_t _line )
+    {
+        ThreadConditionVariableInterfacePtr conditionVariable = THREAD_SYSTEM()
+            ->createConditionVariable( _file, _line );
+
+        m_mutexMainCode->lock();
+        MainCodeDesc desc;
+        desc.conditionVariable = conditionVariable;
+        desc.lambda = _lambda;
+        desc.file = _file;
+        desc.line = _line;
+        m_mainCodes.emplace_back( desc );
+        m_mutexMainCode->unlock();
+
+        conditionVariable->wait();
+    }
     ///////////////////////////////////////////////////////////////////////////
     void ThreadService::update()
     {
@@ -443,6 +464,17 @@ namespace Mengine
                 m_tasks.pop_back();
                 --it_task_end;
             }
+        }
+
+        VectorMainCodeDescs mainCodes;
+        m_mutexMainCode->lock();
+        std::swap( m_mainCodes, mainCodes );
+        m_mutexMainCode->unlock();
+
+        for( const MainCodeDesc & desc : mainCodes )
+        {
+            desc.lambda();
+            desc.conditionVariable->wake();
         }
     }
     //////////////////////////////////////////////////////////////////////////

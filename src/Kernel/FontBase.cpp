@@ -92,9 +92,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void FontBase::setColourFont( const Color & _colour )
+    void FontBase::setColorFont( const Color & _color )
     {
-        m_colourFont = _colour;
+        m_colorFont = _color;
 
         m_params |= EFP_COLOR_FONT;
     }
@@ -120,7 +120,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     const Color & FontBase::getFontColor() const
     {
-        return m_colourFont;
+        return m_colorFont;
     }
     //////////////////////////////////////////////////////////////////////////
     float FontBase::getLineOffset() const
@@ -303,10 +303,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool FontBase::initializeBase_( const IniUtil::IniStore & _ini )
     {
-        Color colourFont;
-        if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorFont", colourFont ) == true )
+        Color colorFont;
+        if( IniUtil::getIniValue( _ini, m_name.c_str(), "ColorFont", colorFont ) == true )
         {
-            this->setColourFont( colourFont );
+            this->setColorFont( colorFont );
         }
 
         float lineOffset;

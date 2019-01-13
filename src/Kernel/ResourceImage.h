@@ -67,7 +67,7 @@ namespace Mengine
         void setTextureAlpha( const RenderTextureInterfacePtr & _textureAlpha );
         inline const RenderTextureInterfacePtr & getTextureAlpha() const;
 
-        inline void setColor( const Color & _colour );
+        inline void setColor( const Color & _color );
         inline const Color & getColor() const;
 
     public:
@@ -172,9 +172,9 @@ namespace Mengine
         return m_textureAlpha;
     }
     //////////////////////////////////////////////////////////////////////////
-    inline void ResourceImage::setColor( const Color & _colour )
+    inline void ResourceImage::setColor( const Color & _color )
     {
-        m_color = _colour;
+        m_color = _color;
     }
     //////////////////////////////////////////////////////////////////////////
     inline const Color & ResourceImage::getColor() const

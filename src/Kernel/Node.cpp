@@ -813,7 +813,7 @@ namespace Mengine
             return nullptr;
         }
 
-        it_found--;
+        --it_found;
 
         NodePtr prev_node = *it_found;
 
@@ -834,7 +834,7 @@ namespace Mengine
         IntrusiveSlugListNodeChild::iterator it_found =
             stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), this );
 
-        it_found++;
+        ++it_found;
 
         if( it_found == parent_children.end() )
         {

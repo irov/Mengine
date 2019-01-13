@@ -33,6 +33,7 @@
 #include "Interface/EnumeratorServiceInterface.h"
 #include "Interface/ChronometerServiceInterface.h"
 #include "Interface/FrameworkInterface.h"
+#include "Interface/PluginServiceInterface.h"
 
 #include <cstdio>
 #include <clocale>
@@ -97,7 +98,6 @@ SERVICE_EXTERN( SoundService );
 
 SERVICE_EXTERN( InputService );
 SERVICE_EXTERN( CodecService );
-SERVICE_EXTERN( PluginSystem );
 SERVICE_EXTERN( PluginService );
 SERVICE_EXTERN( VocabularyService );
 
@@ -130,7 +130,7 @@ SERVICE_EXTERN( TimelineService );
 SERVICE_EXTERN( AccountService );
 SERVICE_EXTERN( SceneService );
 SERVICE_EXTERN( ChronometerService );
-SERVICE_EXTERN( PickerService )
+SERVICE_EXTERN( PickerService );
 SERVICE_EXTERN( Framework );
 //////////////////////////////////////////////////////////////////////////
 PLUGIN_EXPORT( ImageCodec );
@@ -543,7 +543,6 @@ namespace Mengine
 
         SERVICE_CREATE( Platform );
 
-        SERVICE_CREATE( PluginSystem );
         SERVICE_CREATE( PluginService );
 
         if( this->initializeFileEngine_() == false )

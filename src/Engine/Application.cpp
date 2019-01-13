@@ -1263,7 +1263,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::setFocus( bool _focus )
     {
-        //return;
         if( m_focus == _focus )
         {
             return;
@@ -1271,7 +1270,7 @@ namespace Mengine
 
         m_focus = _focus;
 
-        LOGGER_INFO( "Application::setFocus %d (freeze %d)"
+        LOGGER_INFO( "focus %d (freeze %d)"
             , m_focus
             , m_freeze
         );
@@ -1297,7 +1296,7 @@ namespace Mengine
 
         m_freeze = _freeze;
 
-        LOGGER_INFO( "Application::setFreeze %d (focus %d)"
+        LOGGER_INFO( "freeze %d (focus %d)"
             , m_freeze
             , m_focus
         );
@@ -1350,7 +1349,7 @@ namespace Mengine
                 ->update( m_focus );
         }
 
-        if( m_update == false && m_focus == false && m_nopause == false )
+        if( m_update == false && (m_focus == false || m_freeze == true) && m_nopause == false )
         {
             return false;
         }
@@ -1368,11 +1367,11 @@ namespace Mengine
             return false;
         }
 
-        if( m_focus == false && m_update == true )
+        if( (m_focus == false || m_freeze == true) && m_update == true )
         {
             m_update = false;
         }
-        else if( m_focus == true && m_update == false )
+        else if( (m_focus == true && m_freeze == false) && m_update == false )
         {
             m_update = true;
         }
@@ -1528,12 +1527,12 @@ namespace Mengine
         PLATFORM_SERVICE()
             ->getMaxClientResolution( dres );
 
-        LOGGER_WARNING( "Max Client Resolution Resolution %u %u"
+        LOGGER_WARNING( "Max Client Resolution %u %u"
             , dres.getWidth()
             , dres.getHeight()
         );
 
-        LOGGER_WARNING( "Window Resolution Resolution %u %u"
+        LOGGER_WARNING( "Window Resolution %u %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
         );
@@ -1587,15 +1586,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Application::findBestAspectViewport_( float _aspect, float & _bestAspect, Viewport & _viewport ) const
     {
-        LOGGER_INFO( "Application::findBestAspectViewport_ for aspect %f"
+        LOGGER_INFO( "find aspect %f"
             , _aspect
         );
 
         if( m_aspectRatioViewports.empty() == true )
         {
-            LOGGER_INFO( "Application::findBestAspectViewport_ empty"
-            );
-
             return false;
         }
 
@@ -1620,7 +1616,7 @@ namespace Mengine
             }
         }
 
-        LOGGER_INFO( "Application::findBestAspectViewport_ best aspect %f viewport [%f, %f, %f, %f]"
+        LOGGER_INFO( "best aspect %f viewport [%f, %f, %f, %f]"
             , _bestAspect
             , _viewport.begin.x
             , _viewport.begin.y
@@ -1633,7 +1629,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::calcRenderViewport_( const Resolution & _resolution, Viewport & _viewport )
     {
-        LOGGER_INFO( "Application::calcRenderViewport resolution [%d %d]"
+        LOGGER_INFO( "resolution [%d %d]"
             , _resolution.getWidth()
             , _resolution.getHeight()
         );
@@ -1702,7 +1698,7 @@ namespace Mengine
         Resolution windowResolution;
         this->calcWindowResolution( windowResolution );
 
-        LOGGER_INFO( "Application::isValidWindowMode resolution %d:%d\n"
+        LOGGER_INFO( "resolution %d:%d\n"
             , windowResolution.getWidth()
             , windowResolution.getHeight()
         );
@@ -1714,7 +1710,7 @@ namespace Mengine
 
         if( this->findBestAspectViewport_( aspect, bestAspect, aspectRatioViewport ) == true )
         {
-            LOGGER_INFO( "Application::isValidWindowMode viewport (1) %f:%f\n"
+            LOGGER_INFO( "viewport (1) %f:%f\n"
                 , aspectRatioViewport.getWidth()
                 , aspectRatioViewport.getHeight()
             );
@@ -1727,7 +1723,7 @@ namespace Mengine
         }
         else
         {
-            LOGGER_INFO( "Application::isValidWindowMode viewport (2) %d:%d\n"
+            LOGGER_INFO( "viewport (2) %d:%d\n"
                 , m_contentResolution.getWidth()
                 , m_contentResolution.getHeight()
             );
@@ -1744,7 +1740,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Application::changeWindowResolution( const Resolution & _resolution )
     {
-        LOGGER_ERROR( "Application::changeWindowResolution %u %u -> %u %u"
+        LOGGER_ERROR( "%u %u -> %u %u"
             , m_windowResolution.getWidth()
             , m_windowResolution.getHeight()
             , _resolution.getWidth()

@@ -85,6 +85,7 @@ namespace Mengine
         void serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode );
         void processPacket( NodeDebuggerPacket & _packet );
         void receiveChangedNode( const pugi::xml_node & _xmlNode );
+        void receiveGameControlCommand( const String & _command );
         VectorNodePath stringToPath( const String & _str ) const;
 
     protected:

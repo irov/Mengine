@@ -675,6 +675,19 @@ namespace Mengine
                 }
             }
         }
+        else if( typeStr == "GameControl" )
+        {
+            pugi::xml_node xmlNode = payloadNode.child( "Command" );
+            if( xmlNode )
+            {
+                pugi::xml_attribute valueAttr = xmlNode.attribute( "value" );
+
+                if( valueAttr )
+                {
+                    receiveGameControlCommand( valueAttr.as_string() );
+                }
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::receiveChangedNode( const pugi::xml_node & _xmlNode )
@@ -729,7 +742,7 @@ namespace Mengine
             } );
 
             pugi::xml_node renderNode = _xmlNode.child( "Render" );
-            
+
             if( renderNode )
             {
                 RenderInterface * render = node->getRender();
@@ -758,7 +771,7 @@ namespace Mengine
             }
 
             pugi::xml_node typeTextFieldNode = _xmlNode.child( "Type:TextField" );
-        
+
             if( typeTextFieldNode )
             {
                 TextFieldPtr textField = stdex::intrusive_static_cast<TextFieldPtr>(node);
@@ -826,8 +839,20 @@ namespace Mengine
                 deserializeNodeProp<bool>( "Pixelsnap", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setPixelsnap( _value );
-                } );                
+                } );
             }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::receiveGameControlCommand( const String & _command )
+    {
+        if( _command == "pause" )
+        {
+            const bool alreadyFrozen = APPLICATION_SERVICE()
+                ->isFrozen();
+
+            APPLICATION_SERVICE()
+                ->setFreeze( !alreadyFrozen );
         }
     }
     //////////////////////////////////////////////////////////////////////////

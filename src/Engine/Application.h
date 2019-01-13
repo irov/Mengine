@@ -50,6 +50,7 @@ namespace Mengine
 
     public:
         bool isFocus() const override;
+        bool isFrozen() const override;
 
     public:
         void setNopause( bool _nopause ) override;

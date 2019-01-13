@@ -52,7 +52,12 @@ namespace Mengine
         wcscat( exportPath, L"Python3Lib/" );
 
         WChar shortpath_exportPath[MENGINE_MAX_PATH];
-        GetShortPathName( exportPath, shortpath_exportPath, MENGINE_MAX_PATH );
+        DWORD ShortPathNameLen = ::GetShortPathName( exportPath, shortpath_exportPath, MENGINE_MAX_PATH );
+
+        if( ShortPathNameLen == 0 )
+        {
+            return false;
+        }
 
         pybind::kernel_interface * kernel = pybind::initialize( nullptr, nullptr, shortpath_exportPath, false, false, true );
 

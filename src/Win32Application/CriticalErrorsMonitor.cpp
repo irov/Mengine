@@ -96,7 +96,7 @@ namespace Mengine
         std::string stack;
         stdex::get_callstack( stack, pExceptionPointers->ContextRecord );
 
-        LOGGER_CRITICAL( "CriticalErrorsMonitor: catch exception and write dumb %ls\n\n\n %s\n\n\n"
+        LOGGER_CRITICAL( "catch exception and write dumb %ls\n\n\n %s\n\n\n"
             , g_crashDumpExceptionHandlerData->dumpPath.c_str()
             , stack.c_str()
         );

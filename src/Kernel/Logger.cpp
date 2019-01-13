@@ -69,7 +69,7 @@ namespace Mengine
 
         if( m_file != nullptr )
         {
-            this->logMessageStamp( str, size + 1 );
+            this->logMessageStamp( str, size );
         }
         else
         {

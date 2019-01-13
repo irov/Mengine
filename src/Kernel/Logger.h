@@ -12,10 +12,11 @@ namespace Mengine
         ~LoggerOperator();
 
     public:
-        LoggerOperator & operator()( const Char * _format, ... );
+        const LoggerOperator & operator()( const Char * _format, ... ) const;
 
     public:
-        void logMessage( const Char * _format, uint32_t _size );
+        void logMessageStamp( const Char * _msg, uint32_t _size ) const;
+        void logMessage( const Char * _msg, uint32_t _size ) const;
 
     protected:
         EMessageLevel m_level;

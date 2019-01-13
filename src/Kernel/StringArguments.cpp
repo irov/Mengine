@@ -20,7 +20,9 @@ namespace Mengine
     {
         const String & argument = m_arguments[_index];
 
-        return argument.c_str();
+        const Char * argument_str = argument.c_str();
+
+        return argument_str;
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t StringArguments::getArgumentCount() const

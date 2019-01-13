@@ -238,8 +238,8 @@ namespace Mengine
 
         public:
             NodeAffectorCreatorAccumulateLinear()
+                : m_factory( new FactoryPool<AffectorType, 16>() )
             {
-                m_factory = new FactoryPool<AffectorType, 16>();
             }
 
             virtual ~NodeAffectorCreatorAccumulateLinear()

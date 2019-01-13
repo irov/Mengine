@@ -20,7 +20,7 @@ namespace Mengine
 
     public:
         Polygon( const Polygon & _polygon );
-        Polygon( Polygon && _polygon );
+        Polygon( Polygon && _polygon ) noexcept;
 
     public:
         typedef uint32_t size_type;
@@ -28,8 +28,8 @@ namespace Mengine
         typedef VectorPoints::const_iterator const_iterator;
 
     public:
-        void operator = ( const Polygon & _polygon );
-        void operator = ( Polygon && _polygon );
+        Polygon & operator = ( const Polygon & _polygon );
+        Polygon & operator = ( Polygon && _polygon ) noexcept;
 
     public:
         mt::vec2f & operator [] ( size_type _index );

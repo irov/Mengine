@@ -18,19 +18,23 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Polygon::Polygon( Polygon && _polygon )
+    Polygon::Polygon( Polygon && _polygon ) noexcept
         : m_points( std::move( _polygon.m_points ) )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Polygon::operator = ( const Polygon & _polygon )
+    Polygon & Polygon::operator = ( const Polygon & _polygon )
     {
         m_points = _polygon.m_points;
+
+        return *this;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Polygon::operator = ( Polygon && _polygon )
+    Polygon & Polygon::operator = ( Polygon && _polygon ) noexcept
     {
         m_points = std::move( _polygon.m_points );
+
+        return *this;
     }
     //////////////////////////////////////////////////////////////////////////
     float Polygon::area() const

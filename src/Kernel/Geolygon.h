@@ -17,7 +17,7 @@ namespace Mengine
 
     public:
         Geolygon( const Geolygon & _polygon );
-        Geolygon( Geolygon && _polygon );
+        Geolygon( Geolygon && _polygon ) noexcept;
 
         Geolygon( const Polygon & _outer, const VectorPolygon & _inners );
         Geolygon( Polygon && _outer, VectorPolygon && _inners );
@@ -28,8 +28,8 @@ namespace Mengine
         typedef VectorPoints::const_iterator const_iterator;
 
     public:
-        void operator = ( const Geolygon & _polygon );
-        void operator = ( Geolygon && _polygon );
+        Geolygon & operator = ( const Geolygon & _polygon );
+        Geolygon & operator = ( Geolygon && _polygon ) noexcept;
 
     public:
         const Polygon & getOuter() const;

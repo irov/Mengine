@@ -25,7 +25,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRelationRender( RenderInterface * _relationRender )
     {
-        MENGINE_ASSERTION( _relationRender == nullptr );
+        MENGINE_ASSERTION( _relationRender != nullptr, ("set nullptr relation render") );
 
         if( m_relationRender != nullptr )
         {

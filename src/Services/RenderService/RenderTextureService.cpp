@@ -390,7 +390,7 @@ namespace Mengine
 
         if( new_texture == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::loadTexture create texture '%s:%s' codec '%s'"
+            LOGGER_ERROR( "create texture '%s:%s' codec '%s'"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
                 , _codecName.c_str()

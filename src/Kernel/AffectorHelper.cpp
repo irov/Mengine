@@ -28,6 +28,7 @@ namespace Mengine
             uint32_t id = this->getId();
 
             m_cb->onAffectorEnd( id, _isEnd );
+            m_cb = nullptr;
         }
     }
 }

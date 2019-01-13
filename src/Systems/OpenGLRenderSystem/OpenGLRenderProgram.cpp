@@ -228,8 +228,6 @@ namespace Mengine
 
         if( m_matrixLocation[EPML_WORLD_VIEW_PROJECTION] != -1 )
         {
-            mt::mat4f wvpMat = _viewMatrix * _projectionMatrix * _worldMatrix;
-
             GLint location = m_matrixLocation[EPML_WORLD_VIEW_PROJECTION];
 
             GLCALL( glUniformMatrix4fv, (location, 1, GL_FALSE, _totalWVPMatrix.buff()) );

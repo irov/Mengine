@@ -21,6 +21,7 @@
 #include "Interface/PrefetcherServiceInterface.h"
 
 #include "Kernel/FileLogger.h"
+#include "Kernel/Factory.h"
 #include "Kernel/ServiceBase.h"
 
 #include "SDLInput.h"
@@ -61,6 +62,9 @@ namespace Mengine
 
 	public:
 		bool hasTouchpad() const override;
+
+    public:
+        DynamicLibraryInterfacePtr loadDynamicLibrary( const Char * _dynamicLibraryName ) override;
 
 	public:
 		bool getDesktopResolution( Resolution & _resolution ) const override;
@@ -137,6 +141,8 @@ namespace Mengine
 		SDL_Window * m_window;
 
 		SDL_Joystick * m_accelerometer;
+
+        FactoryPtr m_factoryDynamicLibraries;
 
 		SDL_GLContext m_glContext;
 

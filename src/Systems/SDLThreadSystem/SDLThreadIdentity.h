@@ -39,9 +39,9 @@ namespace Mengine
         int32_t m_priority;
 
         SDL_Thread * m_thread;
-
-        SDL_mutex * m_conditionLock;
+        
         SDL_cond * m_conditionVariable;
+        SDL_mutex * m_conditionLock;
 
         ThreadTaskInterface * m_task;
         

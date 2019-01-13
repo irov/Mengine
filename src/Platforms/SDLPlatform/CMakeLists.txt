@@ -2,10 +2,12 @@ SET( MY_LIB_NAME SDLPlatform )
 
 ADD_FILTER(
 src
-    SDLInput.h
-    SDLInput.cpp
     SDLPlatform.h
     SDLPlatform.cpp
+    SDLDynamicLibrary.h
+    SDLDynamicLibrary.cpp
+    SDLInput.h
+    SDLInput.cpp   
 )
 
 add_definitions(-DUNICODE)

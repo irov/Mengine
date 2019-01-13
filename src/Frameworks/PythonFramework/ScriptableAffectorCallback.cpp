@@ -31,5 +31,7 @@ namespace Mengine
         }
 
         m_cb.call_args( m_scriptable, _id, _isEnd, m_args );
+
+        m_scriptable = nullptr;
     }
 }

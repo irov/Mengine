@@ -27,6 +27,11 @@ namespace Mengine
     struct PickCodecOptions
         : public CodecOptions
     {
+        PickCodecOptions()
+            : pitch( 0 )
+        {
+        }
+
         size_t pitch;
     };
     //////////////////////////////////////////////////////////////////////////

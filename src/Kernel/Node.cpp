@@ -302,11 +302,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::removeParent_()
     {
-        Node * oldparent = m_parent;
-        m_parent = nullptr;
-
         this->removeRelationTransformation();
         this->removeParentRender_();
+
+        Node * oldparent = m_parent;
+        m_parent = nullptr;
 
         this->_changeParent( oldparent, nullptr );
     }
@@ -649,39 +649,7 @@ namespace Mengine
         }
 
         stdex::intrusive_this_release( this );
-    }
-    ////////////////////////////////////////////////////////////////////////////
-    //bool Node::absorbBoundingBox( mt::box2f & _bb )
-    //{
-    //    bool successul = false;
-
-    //    mt::box2f absorb_bb;
-    //    mt::insideout_box( absorb_bb );
-
-    //    const mt::box2f * bb = this->getBoundingBox();
-
-    //    if( bb != nullptr )
-    //    {
-    //        mt::merge_box( absorb_bb, *bb );
-
-    //        successul = true;
-    //    }
-
-    //    this->foreachChildren( [&absorb_bb, &successul]( const NodePtr & _child )
-    //    {
-    //        mt::box2f child_bb;
-    //        if( _child->absorbBoundingBox( child_bb ) == true )
-    //        {
-    //            successul = true;
-    //        }
-
-    //        mt::merge_box( absorb_bb, child_bb );
-    //    } );
-
-    //    _bb = absorb_bb;
-
-    //    return successul;
-    //}
+    }    
     //////////////////////////////////////////////////////////////////////////
     bool Node::removeChild( const NodePtr & _node )
     {
@@ -845,7 +813,7 @@ namespace Mengine
             return nullptr;
         }
 
-        it_found--;
+        --it_found;
 
         NodePtr prev_node = *it_found;
 
@@ -866,7 +834,7 @@ namespace Mengine
         IntrusiveSlugListNodeChild::iterator it_found =
             stdex::helper::intrusive_find( parent_children.begin(), parent_children.end(), this );
 
-        it_found++;
+        ++it_found;
 
         if( it_found == parent_children.end() )
         {

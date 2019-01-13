@@ -277,6 +277,7 @@ namespace Mengine
         void                        OnConnectButton();
         void                        OnDisconnectButton();
         void                        OnSelectNode( DebuggerNode * _node );
+        void                        OnPauseButton();
 
         // network
         void                        NetworkLoop();
@@ -287,6 +288,7 @@ namespace Mengine
         void                        SendXML( const pugi::xml_document & _doc );
         void                        SendChangedNode( const DebuggerNode & _node );
         void                        SendNodeSelection( const String & _path );
+        void                        SendPauseRequest();
 
     private:
         GLFWwindow*                 mWindow;
@@ -316,5 +318,7 @@ namespace Mengine
 
         DebuggerNode*               mScene;
         String                      mSelectedNodePath;
+
+        bool                        mPauseRequested;
     };
 }

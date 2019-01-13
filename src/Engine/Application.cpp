@@ -1256,6 +1256,11 @@ namespace Mengine
         return m_focus;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Application::isFrozen() const
+    {
+        return m_freeze;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Application::setFocus( bool _focus )
     {
         if( m_focus == _focus )

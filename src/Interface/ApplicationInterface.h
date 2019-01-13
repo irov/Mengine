@@ -113,6 +113,7 @@ namespace Mengine
         virtual bool getVSync() const = 0;
 
         virtual bool isFocus() const = 0;
+        virtual bool isFrozen() const = 0;
 
         virtual void setNopause( bool _nopause ) = 0;
         virtual bool getNopause() const = 0;

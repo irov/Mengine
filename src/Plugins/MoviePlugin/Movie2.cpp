@@ -357,8 +357,8 @@ namespace Mengine
             return false;
         }
 
-        m_duration = composition->duration * 1000.f;
-        m_frameDuration = composition->frameDuration * 1000.f;
+        m_duration = AE_TIME_MILLISECOND( composition->duration );
+        m_frameDuration = AE_TIME_MILLISECOND( composition->frameDuration );
         m_hasBounds = composition->has_bounds;
         m_bounds = composition->bounds;
 
@@ -1404,6 +1404,78 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    static void __movie_composition_node_update_animation( const aeMovieNodeUpdateCallbackData * _callbackData, AnimationInterface * _animation )
+    {
+        switch( _callbackData->state )
+        {
+        case AE_MOVIE_STATE_UPDATE_BEGIN:
+            {
+                float time = TIMELINE_SERVICE()
+                    ->getTime();
+
+                if( _callbackData->loop == AE_TRUE && _animation->isLoop() == true )
+                {
+                    if( _animation->isPlay() == false )
+                    {
+                        if( _animation->play( time ) == 0 )
+                        {
+                            return;
+                        }
+                    }
+                }
+                else
+                {
+                    if( _animation->play( time ) == 0 )
+                    {
+                        return;
+                    }
+
+                    if( _callbackData->interrupt == AE_TRUE )
+                    {
+                        if( _animation->interrupt() == false )
+                        {
+                            return;
+                        }
+                    }
+                }
+
+                _animation->setTime( AE_TIME_MILLISECOND( _callbackData->offset ) );
+            }break;
+        case AE_MOVIE_STATE_UPDATE_PROCESS:
+            {
+            }break;
+        case AE_MOVIE_STATE_UPDATE_STOP:
+            {
+                _animation->stop();
+            }break;
+        case AE_MOVIE_STATE_UPDATE_END:
+            {
+                if( _callbackData->loop == AE_FALSE && _callbackData->interrupt == AE_FALSE )
+                {
+                    _animation->stop();
+                }
+            }break;
+        case AE_MOVIE_STATE_UPDATE_PAUSE:
+            {
+                _animation->pause();
+            }break;
+        case AE_MOVIE_STATE_UPDATE_RESUME:
+            {
+                float time = TIMELINE_SERVICE()
+                    ->getTime();
+
+                _animation->resume( time );
+            }break;
+        case AE_MOVIE_STATE_UPDATE_SEEK:
+            {
+                _animation->setTime( AE_TIME_MILLISECOND( _callbackData->offset ) );
+            }break;
+        default:
+            {
+            }break;
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     static ae_void_t __movie_composition_node_update( const aeMovieNodeUpdateCallbackData * _callbackData, ae_voidptr_t _ud )
     {
         (void)_ud;
@@ -1420,70 +1492,7 @@ namespace Mengine
 
                 AnimationInterface * particle_animation = particle->getAnimation();
 
-                switch( _callbackData->state )
-                {
-                case AE_MOVIE_STATE_UPDATE_BEGIN:
-                    {
-                        float time = TIMELINE_SERVICE()
-                            ->getTime();
-
-                        particle_animation->setTime( _callbackData->offset * 1000.f );
-
-                        if( _callbackData->loop == AE_TRUE )
-                        {
-                            if( particle_animation->isPlay() == false )
-                            {
-                                if( particle_animation->play( time ) == 0 )
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if( particle_animation->play( time ) == 0 )
-                            {
-                                return;
-                            }
-
-                            if( _callbackData->interrupt == AE_TRUE )
-                            {
-                                if( particle_animation->interrupt() == false )
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_PROCESS:
-                    {
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_STOP:
-                    {
-                        particle_animation->stop();
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_END:
-                    {
-                        if( _callbackData->loop == AE_FALSE && _callbackData->interrupt == AE_FALSE )
-                        {
-                            particle_animation->stop();
-                        }
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_PAUSE:
-                    {
-                        particle_animation->pause();
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_RESUME:
-                    {
-                        float time = TIMELINE_SERVICE()
-                            ->getTime();
-
-                        particle_animation->resume( time );
-                    }break;
-                default:
-                    {
-                    }break;
-                }
+                __movie_composition_node_update_animation( _callbackData, particle_animation );
             }break;
         case AE_MOVIE_LAYER_TYPE_VIDEO:
             {
@@ -1491,143 +1500,17 @@ namespace Mengine
 
                 AnimationInterface * surface_animation = surface->getAnimation();
 
-                switch( _callbackData->state )
-                {
-                case AE_MOVIE_STATE_UPDATE_BEGIN:
-                    {
-                        float time = TIMELINE_SERVICE()
-                            ->getTime();
-
-                        if( _callbackData->loop == AE_TRUE && surface_animation->isLoop() == true )
-                        {
-                            if( surface_animation->isPlay() == false )
-                            {
-                                if( surface_animation->play( time ) == 0 )
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if( surface_animation->play( time ) == 0 )
-                            {
-                                return;
-                            }
-
-                            if( _callbackData->interrupt == AE_TRUE )
-                            {
-                                if( surface_animation->interrupt() == false )
-                                {
-                                    return;
-                                }
-                            }
-                        }
-
-                        surface_animation->setTime( _callbackData->offset * 1000.f );
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_PROCESS:
-                    {
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_STOP:
-                    {
-                        surface_animation->stop();
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_END:
-                    {
-                        if( _callbackData->loop == AE_FALSE && _callbackData->interrupt == AE_FALSE )
-                        {
-                            surface_animation->stop();
-                        }
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_PAUSE:
-                    {
-                        surface_animation->pause();
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_RESUME:
-                    {
-                        float time = TIMELINE_SERVICE()
-                            ->getTime();
-
-                        surface_animation->resume( time );
-                    }break;
-                default:
-                    {
-                    }break;
-                }
+                __movie_composition_node_update_animation( _callbackData, surface_animation );
             }break;
         case AE_MOVIE_LAYER_TYPE_SOUND:
             {
                 SurfaceSound * surface = reinterpret_node_cast<SurfaceSound *>(_callbackData->element_userdata);
 
-                AnimationInterface * surface_animation = surface->getAnimation();
-
                 surface->setVolume( _callbackData->volume );
 
-                switch( _callbackData->state )
-                {
-                case AE_MOVIE_STATE_UPDATE_BEGIN:
-                    {
-                        float time = TIMELINE_SERVICE()
-                            ->getTime();
+                AnimationInterface * surface_animation = surface->getAnimation();
 
-                        surface_animation->setTime( _callbackData->offset * 1000.f );
-
-                        if( _callbackData->loop == AE_TRUE )
-                        {
-                            if( surface_animation->isPlay() == false )
-                            {
-                                if( surface_animation->play( time ) == 0 )
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                        else
-                        {
-                            if( surface_animation->play( time ) == 0 )
-                            {
-                                return;
-                            }
-
-                            if( _callbackData->interrupt == AE_TRUE )
-                            {
-                                if( surface_animation->interrupt() == false )
-                                {
-                                    return;
-                                }
-                            }
-                        }
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_PROCESS:
-                    {
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_STOP:
-                    {
-                        surface_animation->stop();
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_END:
-                    {
-                        if( _callbackData->loop == AE_FALSE && _callbackData->interrupt == AE_FALSE )
-                        {
-                            surface_animation->stop();
-                        }
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_PAUSE:
-                    {
-                        surface_animation->pause();
-                    }break;
-                case AE_MOVIE_STATE_UPDATE_RESUME:
-                    {
-                        float time = TIMELINE_SERVICE()
-                            ->getTime();
-
-                        surface_animation->resume( time );
-                    }break;
-                default:
-                    {
-                    }break;
-                }
+                __movie_composition_node_update_animation( _callbackData, surface_animation );
             }break;
         case AE_MOVIE_LAYER_TYPE_SLOT:
             {
@@ -2310,7 +2193,7 @@ namespace Mengine
 
         float timing = ae_get_movie_composition_time( m_composition );
 
-        return timing * 1000.f;
+        return AE_TIME_MILLISECOND( timing );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_setFirstFrame()
@@ -2334,7 +2217,7 @@ namespace Mengine
         float duration = ae_get_movie_composition_data_duration( compositionData );
         float frameDuration = ae_get_movie_composition_data_frame_duration( compositionData );
 
-        this->setTime( duration * 1000.f - frameDuration * 1000.f );
+        this->setTime( AE_TIME_MILLISECOND( (duration - frameDuration) ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_setAnimationSpeedFactor( float _factor )
@@ -2437,8 +2320,6 @@ namespace Mengine
             {
                 context.scissor = _context->scissor;
             }
-
-            //ColourValue_ARGB total_mesh_color = Helper::makeARGB( total_color_r * mesh.color.r, total_color_g * mesh.color.g, total_color_b * mesh.color.b, total_color_a * mesh.opacity );
 
             if( mesh.track_matte_userdata == nullptr )
             {

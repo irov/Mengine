@@ -8378,6 +8378,59 @@ namespace Metacode
                 uint32_t getId() const override;
             
             public:
+                bool has_Demand() const
+                {
+                    return m_Demand_successful;
+                }
+                
+                bool getd_Demand( bool _default ) const
+                {
+                    if( m_Demand_successful == false )
+                    {
+                        return _default;
+                    }
+                
+                    return this->m_Demand;
+                }
+                
+                bool get_Demand( bool * _value ) const
+                {
+                    if( m_Demand_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    *_value = this->m_Demand;
+                
+                    return true;
+                }
+                
+                template<class C, class M>
+                bool getm_Demand( C _self, M _method ) const
+                {
+                    if( m_Demand_successful == false )
+                    {
+                        return false;
+                    }
+                
+                    (_self->*_method)( this->m_Demand );
+                
+                    return true;
+                }
+                
+                bool getd_Demand( bool * _value, const bool & _default ) const
+                {
+                    if( m_Demand_successful == false )
+                    {
+                        *_value = _default;
+                
+                        return false;
+                    }
+                
+                    *_value = this->m_Demand;
+                
+                    return true;
+                }
                 bool has_Ignored() const
                 {
                     return m_Ignored_successful;
@@ -8511,6 +8564,8 @@ namespace Metacode
                 
             protected:
             protected:
+                bool m_Demand_successful;
+                bool m_Demand;
                 bool m_Ignored_successful;
                 bool m_Ignored;
                 bool m_Platform_successful;

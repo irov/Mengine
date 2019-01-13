@@ -240,6 +240,9 @@ namespace Mengine
             bool ignored = false;
             meta_resources.get_Ignored( &ignored );
 
+            bool demand = false;
+            meta_resources.get_Demand( &demand );
+
             Tags platform;
             meta_resources.get_Platform( &platform );
 
@@ -254,7 +257,7 @@ namespace Mengine
                 const Metacode::Meta_Data::Meta_Pak::Meta_Resources::Meta_Resource & meta_resource = *it_include;
 
                 const FilePath & Path = meta_resource.get_Path();
-                this->addResource_( Path, platform, ignored );
+                this->addResource_( Path, platform, demand, ignored );
             }
         }
 
@@ -637,11 +640,12 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Package::addResource_( const FilePath & _path, const Tags & _platform, bool _ignored )
+    void Package::addResource_( const FilePath & _path, const Tags & _platform, bool _demand, bool _ignored )
     {
         PakResourceDesc desc;
         desc.path = _path;
         desc.platform = _platform;
+        desc.demand = _demand;
         desc.ignored = _ignored;
 
         m_resourcesDesc.emplace_back( desc );

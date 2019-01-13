@@ -528,7 +528,14 @@ namespace Mengine
             }
 
             serializeNodeProp( fmt, "Text", xmlNode );
-        }        
+        }
+
+        THREAD_SERVICE()
+            ->waitMainCode( [&_textField]() {
+            const TextFontInterfacePtr & font = _textField->getFont();
+
+            MENGINE_UNUSED( font );
+        }, __FILE__, __LINE__ );
 
         serializeNodeProp( _textField->getFontName(), "FontName", xmlNode );
         serializeNodeProp( _textField->getFontColor(), "FontColor", xmlNode );

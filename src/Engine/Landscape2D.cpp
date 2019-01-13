@@ -30,7 +30,7 @@ namespace Mengine
     {
         if( m_images.empty() == true )
         {
-            LOGGER_ERROR( "Landscape2D::compileResources_ '%s' images is empty"
+            LOGGER_ERROR( "landscape '%s' images is empty"
                 , m_name.c_str()
             );
 
@@ -39,7 +39,7 @@ namespace Mengine
 
         if( m_elementCountX == 0 || m_elementCountY == 0 )
         {
-            LOGGER_ERROR( "Landscape2D::compileResources_ '%s' count X|Y not setup %d:%d"
+            LOGGER_ERROR( "landscape '%s' count X|Y not setup %d:%d"
                 , m_name.c_str()
                 , m_elementCountX
                 , m_elementCountY

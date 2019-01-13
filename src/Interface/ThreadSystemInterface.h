@@ -3,6 +3,7 @@
 #include "Interface/ServiceInterface.h"
 #include "Interface/ThreadIdentityInterface.h"
 #include "Interface/ThreadMutexInterface.h"
+#include "Interface/ThreadConditionVariableInterface.h"
 
 namespace Mengine
 {
@@ -13,12 +14,11 @@ namespace Mengine
 
     public:
         virtual ThreadIdentityInterfacePtr createThread( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line ) = 0;
+        virtual ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) = 0;
+        virtual ThreadConditionVariableInterfacePtr createConditionVariable( const Char * _file, uint32_t _line ) = 0;
 
     public:
         virtual void sleep( uint32_t _ms ) = 0;
-
-    public:
-        virtual ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) = 0;
 
     public:
         virtual ptrdiff_t getCurrentThreadId() const = 0;

@@ -199,7 +199,7 @@ namespace Mengine
             float a;
             if( sscanf( ini_value, "%f %f %f %f", &r, &g, &b, &a ) != 4 )
             {
-                LOGGER_ERROR( "section '%s' key '%s' value '%s' invalid parse ColourValue"
+                LOGGER_ERROR( "section '%s' key '%s' value '%s' invalid parse ColorValue"
                     , _section
                     , _key
                     , ini_value

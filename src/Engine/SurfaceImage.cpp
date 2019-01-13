@@ -212,7 +212,7 @@ namespace Mengine
     {
         if( m_resourceImage == nullptr )
         {
-            LOGGER_ERROR( "SurfaceImage.getColour: '%s' not setup texture"
+            LOGGER_ERROR( "surface image '%s' not setup texture"
                 , this->getName().c_str()
             );
 

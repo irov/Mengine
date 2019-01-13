@@ -7,7 +7,7 @@
 #include "Kernel/ThreadTask.h"
 
 #ifndef MENGINE_THREAD_JOB_WORK_COUNT
-#	define MENGINE_THREAD_JOB_WORK_COUNT 32
+#define MENGINE_THREAD_JOB_WORK_COUNT 32
 #endif
 
 namespace Mengine

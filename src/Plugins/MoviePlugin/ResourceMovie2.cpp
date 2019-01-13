@@ -51,7 +51,7 @@ namespace Mengine
 
         const ResourceMovie2CompositionDesc & composition = it_found->second;
 
-        return composition.duration * 1000.f;
+        return AE_TIME_MILLISECOND( composition.duration );
     }
     //////////////////////////////////////////////////////////////////////////
     float ResourceMovie2::getCompositionFrameDuration( const ConstString & _name ) const

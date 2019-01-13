@@ -195,8 +195,8 @@ namespace Mengine
         Color color;
         this->calcTotalColor( color );
 
-        const Color & textureColour = m_resourceImage->getColor();
-        color *= textureColour;
+        const Color & textureColor = m_resourceImage->getColor();
+        color *= textureColor;
 
         uint32_t argb = color.getAsARGB();
 

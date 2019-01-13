@@ -76,11 +76,11 @@ namespace Mengine
             return;
         }
 
-        const Color & personal_colour = this->getPersonalColor();
+        const Color & personal_color = this->getPersonalColor();
 
         RenderInterface * render = m_propagate->getRender();
 
-        render->setLocalColor( personal_colour );
+        render->setLocalColor( personal_color );
     }
     //////////////////////////////////////////////////////////////////////////
     void MovieSceneEffect::_invalidateWorldMatrix()

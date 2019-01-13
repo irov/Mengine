@@ -349,11 +349,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::calcTotalColor( Color & _color ) const
     {
-        const Color & worldColour = this->getWorldColor();
-        _color = worldColour;
+        const Color & worldColor = this->getWorldColor();
+        _color = worldColor;
 
-        const Color & personalColour = this->getPersonalColor();
-        _color *= personalColour;
+        const Color & personalColor = this->getPersonalColor();
+        _color *= personalColor;
     }
     //////////////////////////////////////////////////////////////////////////
     bool BaseRender::isSolidColor() const

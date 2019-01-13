@@ -41,7 +41,7 @@ namespace Mengine
             }
 
             Char msg[1024];
-            sprintf( msg, "[Assert] Vocabulary '%s' not empty ['%d']"
+            sprintf( msg, "[Assert] Vocabulary '%s' not empty ['%u']"
                 , _category.c_str()
                 , count
             );

@@ -31,14 +31,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Transformation::setRelationTransformation( Transformation * _relationTransformation )
     {
-        MENGINE_ASSERTION( _relationTransformation == nullptr );
-
-        bool identityPrevTransformation = true;
+        MENGINE_ASSERTION( _relationTransformation != nullptr, ("set nullptr relation transformation") );
 
         if( m_relationTransformation != nullptr )
         {
-            identityPrevTransformation = m_relationTransformation->isIdentityWorldMatrix();
-
             m_relationTransformation->removeRelationTransformationChild_( this );
         }
 

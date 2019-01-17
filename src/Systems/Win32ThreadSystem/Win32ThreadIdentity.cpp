@@ -149,10 +149,8 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::main()
-    {
-        bool work = true;
-
-        while( work == true )
+    {        
+        for( ;; )
         {
             m_mutex->lock();
 
@@ -173,7 +171,7 @@ namespace Mengine
             
             if( m_exit == true )
             {
-                work = false;
+                break;
             }
         }
     }
@@ -239,7 +237,7 @@ namespace Mengine
         }
         m_mutex->unlock();
         
-        WakeAllConditionVariable( &m_conditionVariable );
+        WakeConditionVariable( &m_conditionVariable );
         
         WaitForSingleObject( m_thread, INFINITE );
         CloseHandle( m_thread );

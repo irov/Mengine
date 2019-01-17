@@ -43,7 +43,7 @@ namespace Mengine
     NodeDebuggerModule::NodeDebuggerModule()
         : m_serverState( NodeDebuggerServerState::Invalid )
         , m_shouldRecreateServer( false )
-        , m_shouldUpdateScene( 0 )
+        , m_shouldUpdateScene( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -98,7 +98,7 @@ namespace Mengine
                     APPLICATION_SERVICE()
                         ->setNopause( true );
 
-                    this->sendScene( m_scene );
+                    m_shouldUpdateScene = true;
                 }
             } break;
         case NodeDebuggerServerState::Connected:
@@ -212,13 +212,13 @@ namespace Mengine
         {
             m_scene = _scene;
 
-            m_shouldUpdateScene = 1;
+            m_shouldUpdateScene = true;
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::updateScene()
     {
-        m_shouldUpdateScene = 0;
+        m_shouldUpdateScene = false;
 
         if( m_serverState == NodeDebuggerServerState::Connected )
         {
@@ -235,16 +235,9 @@ namespace Mengine
             this->recreateServer();
         }
 
-        if( m_shouldUpdateScene )
+        if( m_shouldUpdateScene == true )
         {
-            if( m_shouldUpdateScene == 5 )
-            {
-                this->updateScene();
-            }
-            else
-            {
-                ++m_shouldUpdateScene;
-            }
+            this->updateScene();
         }
 
         if( m_socket == nullptr )
@@ -544,13 +537,6 @@ namespace Mengine
 
             serializeNodeProp( fmt, "Text", xmlNode );
         }
-
-        THREAD_SERVICE()
-            ->waitMainCode( [&_textField]() {
-            const TextFontInterfacePtr & font = _textField->getFont();
-
-            MENGINE_UNUSED( font );
-        }, __FILE__, __LINE__ );
 
         serializeNodeProp( _textField->getFontName(), "FontName", xmlNode );
         serializeNodeProp( _textField->getFontColor(), "FontColor", xmlNode );

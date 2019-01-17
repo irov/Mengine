@@ -369,7 +369,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadService::waitMainCode( const LambdaMainCode & _lambda, const Char * _file, uint32_t _line )
+    void ThreadService::waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _file, uint32_t _line )
     {
         ThreadConditionVariableInterfacePtr conditionVariable = THREAD_SYSTEM()
             ->createConditionVariable( _file, _line );

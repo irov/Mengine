@@ -423,7 +423,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::addChild( const NodePtr & _node )
     {
-        MENGINE_ASSERTION( _node != nullptr, ("node '%s' invalid add child NULL node"
+        MENGINE_ASSERTION_RETURN_VOID( _node != nullptr, ("node '%s' invalid add child NULL node"
             , this->getName().c_str()
             ) );
 

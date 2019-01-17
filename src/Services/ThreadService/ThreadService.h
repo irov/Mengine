@@ -49,7 +49,7 @@ namespace Mengine
         void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
 
     public:
-        void waitMainCode( const LambdaMainCode & _lambda, const Char * _file, uint32_t _line ) override;
+        void waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _file, uint32_t _line ) override;
 
     public:
         void update() override;
@@ -100,7 +100,7 @@ namespace Mengine
         struct MainCodeDesc
         {
             ThreadConditionVariableInterfacePtr conditionVariable;
-            LambdaMainCode lambda;
+            LambdaMainThreadCode lambda;
             const Char * file;
             uint32_t line;
         };

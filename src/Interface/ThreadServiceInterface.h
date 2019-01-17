@@ -39,8 +39,8 @@ namespace Mengine
         virtual void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) = 0;
 
     public:
-        typedef Lambda<void()> LambdaMainCode;
-        virtual void waitMainCode( const LambdaMainCode & _lambda, const Char * _file, uint32_t _line ) = 0;
+        typedef Lambda<void()> LambdaMainThreadCode;
+        virtual void waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _file, uint32_t _line ) = 0;
 
     public:
         virtual ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) = 0;

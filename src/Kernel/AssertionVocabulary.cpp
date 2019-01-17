@@ -46,7 +46,7 @@ namespace Mengine
                 , count
             );
 
-            Mengine::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Vocabulary Empty" );
+            Mengine::Helper::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Vocabulary Empty" );
 #endif
         }
     }

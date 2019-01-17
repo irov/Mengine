@@ -95,8 +95,8 @@ namespace Mengine
     protected:
         ScenePtr m_scene;
         SocketInterfacePtr m_socket;
-        volatile bool m_shouldRecreateServer;
-        volatile size_t m_shouldUpdateScene;
+        AtomicBool m_shouldRecreateServer;
+        AtomicBool m_shouldUpdateScene;
         ThreadJobPtr m_threadJob;
         ThreadMutexInterfacePtr m_dataMutex;
         NodeDebuggerServerState m_serverState;

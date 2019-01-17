@@ -89,13 +89,14 @@ namespace Mengine
         VectorNodePath stringToPath( const String & _str ) const;
 
     protected:
-        void notifyChangeScenePrepareInitialize( const ScenePtr & _scene );
+        void notifyChangeScene( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
 
     protected:
         ScenePtr m_scene;
         SocketInterfacePtr m_socket;
         volatile bool m_shouldRecreateServer;
+        volatile size_t m_shouldUpdateScene;
         ThreadJobPtr m_threadJob;
         ThreadMutexInterfacePtr m_dataMutex;
         NodeDebuggerServerState m_serverState;

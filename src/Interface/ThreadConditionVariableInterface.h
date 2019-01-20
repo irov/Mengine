@@ -1,0 +1,18 @@
+#pragma once
+
+#include "Kernel/Mixin.h"
+
+namespace Mengine
+{
+    //////////////////////////////////////////////////////////////////////////
+    class ThreadConditionVariableInterface
+        : public Mixin
+    {
+    public:
+        virtual void wait() = 0;
+        virtual void wake() = 0;
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<ThreadConditionVariableInterface> ThreadConditionVariableInterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+}

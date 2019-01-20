@@ -728,7 +728,7 @@ namespace Mengine
         U32String cacheText;
         if( this->updateTextCache_( cacheText ) == false )
         {
-            LOGGER_ERROR( "TextField::updateTextLines_ '%s' invalid update text cache %s"
+            LOGGER_ERROR( "font '%s' invalid update text cache '%s'"
                 , this->getName().c_str()
                 , m_textId.c_str()
             );
@@ -982,7 +982,7 @@ namespace Mengine
 
         if( m_font == nullptr )
         {
-            LOGGER_ERROR( "TextField::updateFont_ '%s' can't found font '%s'"
+            LOGGER_ERROR( "font '%s' can't found font '%s'"
                 , this->getName().c_str()
                 , fontName.c_str()
             );
@@ -992,7 +992,7 @@ namespace Mengine
 
         if( m_font->compileFont() == false )
         {
-            LOGGER_ERROR( "TextField::updateFont_ '%s' invalid compile font '%s'"
+            LOGGER_ERROR( "font '%s' invalid compile font '%s'"
                 , this->getName().c_str()
                 , fontName.c_str()
             );

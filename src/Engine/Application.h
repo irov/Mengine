@@ -50,6 +50,7 @@ namespace Mengine
 
     public:
         bool isFocus() const override;
+        bool isFrozen() const override;
 
     public:
         void setNopause( bool _nopause ) override;
@@ -180,8 +181,6 @@ namespace Mengine
 
         Viewport m_renderViewport;
 
-        Viewport m_gameViewport;
-
         bool m_particleEnable;
         bool m_textEnable;
         bool m_videoEnable;
@@ -197,7 +196,6 @@ namespace Mengine
         bool m_nofullscreen;
         bool m_vsync;
 
-        bool m_textureFiltering;
         int32_t	m_FSAAType;
         int32_t m_FSAAQuality;
 
@@ -214,8 +212,6 @@ namespace Mengine
 
         uint32_t m_debugMask;
 
-        bool m_resetFrameTime;
-        float m_phycisFrameTime;
         float m_maxFrameTime;
 
         ResourceCursorPtr m_cursorResource;
@@ -235,10 +231,7 @@ namespace Mengine
 
         bool m_inputMouseButtonEventBlock;
 
-        bool m_resourceCheck;
-
         bool m_debugPause;
-
         bool m_debugFileOpen;
     };
 }

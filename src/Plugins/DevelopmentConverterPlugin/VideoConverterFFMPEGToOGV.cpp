@@ -36,7 +36,7 @@ namespace Mengine
 
         String buffer = "ffmpeg -loglevel error -y -threads 4 -i \"" + full_input + "\" -vcodec libtheora -f ogg -map_metadata -1 -an -q 9 -pix_fmt yuv420p \"" + full_output + "\"";
 
-        LOGGER_WARNING( "converting file '%s' to '%ls'\n%s"
+        LOGGER_WARNING( "converting file '%s' to '%s'\n%s"
             , full_input.c_str()
             , full_output.c_str()
             , buffer.c_str()

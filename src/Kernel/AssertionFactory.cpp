@@ -20,12 +20,12 @@ namespace Mengine
             uint32_t count = _factory->getCountObject();
 
             Char msg[1024];
-            sprintf( msg, "[Assert] Factory '%s' not empty ['%d']"
+            sprintf( msg, "[Assert] Factory '%s' not empty ['%u']"
                 , name
                 , count
             );
 
-            Mengine::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Factory Empty" );
+            Mengine::Helper::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Factory Empty" );
         }
     }
 }

@@ -2,6 +2,7 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Kernel/Logger.h"
 
@@ -27,31 +28,24 @@ namespace Mengine
     {
         m_factoryWin32ThreadIdentity = new FactoryPool<Win32ThreadIdentity, 16>();
         m_factoryWin32ThreadMutex = new FactoryPool<Win32ThreadMutex, 16>();
+        m_factoryWin32ThreadConditionVariable = new FactoryPool<Win32ThreadConditionVariable, 16, FactoryWithMutex>();
+
+        m_mutexConditionVariable = this->createMutex( __FILE__, __LINE__ );
+
+        m_factoryWin32ThreadConditionVariable->setMutex( m_mutexConditionVariable );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadSystem::_finalizeService()
     {
-        if( m_factoryWin32ThreadIdentity->isEmptyObjects() == false )
-        {
-            LOGGER_ERROR( "Win32ThreadSystem::finalize Win32ThreadIdentity not all remove %d"
-                , m_factoryWin32ThreadIdentity->getCountObject()
-            );
-        }
-
-        if( m_factoryWin32ThreadMutex->isEmptyObjects() == false )
-        {
-            LOGGER_ERROR( "Win32ThreadSystem::finalize Win32ThreadMutex not all remove %d"
-                , m_factoryWin32ThreadMutex->getCountObject()
-            );
-        }
-
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadIdentity );
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadMutex );
+        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryWin32ThreadConditionVariable );
 
         m_factoryWin32ThreadIdentity = nullptr;
         m_factoryWin32ThreadMutex = nullptr;
+        m_factoryWin32ThreadConditionVariable = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
@@ -68,17 +62,9 @@ namespace Mengine
 
         ThreadMutexInterfacePtr mutex = this->createMutex( _file, _line );
 
-        if( mutex == nullptr )
-        {
-            LOGGER_ERROR( "invalid create mutex"
-            );
-
-            return nullptr;
-        }
-
         if( identity->initialize( mutex, _priority, _doc, _file, _line ) == false )
         {
-            LOGGER_ERROR( "Win32ThreadSystem::createThread invalid initialize"
+            LOGGER_ERROR( "invalid initialize"
             );
 
             return nullptr;
@@ -91,9 +77,22 @@ namespace Mengine
     {
         Win32ThreadMutexPtr mutex = m_factoryWin32ThreadMutex->createObject();
 
+        MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr )("invalid create mutex");
+
         mutex->initialize( _file, _line );
 
         return mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadConditionVariableInterfacePtr Win32ThreadSystem::createConditionVariable( const Char * _file, uint32_t _line )
+    {
+        Win32ThreadConditionVariablePtr conditionVariable = m_factoryWin32ThreadConditionVariable->createObject();
+
+        MENGINE_ASSERTION_MEMORY_PANIC( conditionVariable, nullptr )("invalid create condition variable");
+
+        conditionVariable->initialize( _file, _line );
+
+        return conditionVariable;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadSystem::sleep( uint32_t _ms )

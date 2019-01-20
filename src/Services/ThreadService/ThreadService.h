@@ -2,6 +2,7 @@
 
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ThreadIdentityInterface.h"
+#include "Interface/ThreadConditionVariableInterface.h"
 
 #include "Kernel/ServiceBase.h"
 
@@ -48,6 +49,9 @@ namespace Mengine
         void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
 
     public:
+        void waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _file, uint32_t _line ) override;
+
+    public:
         void update() override;
 
     public:
@@ -92,6 +96,19 @@ namespace Mengine
 
         typedef Vector<ThreadDesc> VectorThreadDescs;
         VectorThreadDescs m_threads;
+
+        struct MainCodeDesc
+        {
+            ThreadConditionVariableInterfacePtr conditionVariable;
+            LambdaMainThreadCode lambda;
+            const Char * file;
+            uint32_t line;
+        };
+
+        ThreadMutexInterfacePtr m_mutexMainCode;
+
+        typedef Vector<MainCodeDesc> VectorMainCodeDescs;
+        VectorMainCodeDescs m_mainCodes;
 
         ptrdiff_t m_mainThreadId;
     };

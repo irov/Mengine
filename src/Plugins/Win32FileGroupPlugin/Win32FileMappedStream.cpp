@@ -69,7 +69,7 @@ namespace Mengine
 
         if( m_hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "Win32MappedInputStream::open %ls invalid open"
+            LOGGER_ERROR( "file '%ls' invalid open"
                 , concatenatePath
             );
 
@@ -82,7 +82,7 @@ namespace Mengine
         {
             DWORD error = GetLastError();
 
-            LOGGER_ERROR( "Win32MappedInputStream::open invalid create file mapping %ls error %d"
+            LOGGER_ERROR( "invalid create file mapping '%ls' error %d"
                 , concatenatePath
                 , error
             );
@@ -99,7 +99,7 @@ namespace Mengine
         {
             DWORD error = GetLastError();
 
-            LOGGER_ERROR( "Win32MappedInputStream::open invalid map view of file %ls error %d"
+            LOGGER_ERROR( "invalid map view of file '%ls' error %d"
                 , concatenatePath
                 , error
             );

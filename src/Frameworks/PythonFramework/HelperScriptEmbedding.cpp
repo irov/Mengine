@@ -2083,7 +2083,7 @@ namespace Mengine
                 return _kernel->ret_false();
             }
 
-            LOGGER_ERROR( "getAccountSettingBool account '%s' setting '%s' value '%ls' is not bool [True|False]"
+            LOGGER_ERROR( "getAccountSettingBool account '%s' setting '%s' value '%s' is not bool [True|False]"
                 , _accountID.c_str()
                 , _setting.c_str()
                 , value

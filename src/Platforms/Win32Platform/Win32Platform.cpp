@@ -1306,7 +1306,7 @@ namespace Mengine
 
                 if( errCode != 0 )
                 {
-                    LOGGER_ERROR( "WinApplication::notifyCursorIconSetup %s for file %ls errCode %d"
+                    LOGGER_ERROR( "icon %s for file %ls errCode %d"
                         , _name.c_str()
                         , unicode_icoFile.c_str()
                         , errCode
@@ -1527,7 +1527,7 @@ namespace Mengine
                 {
                 case ERROR_ALREADY_EXISTS:
                     {
-                        LOGGER_WARNING( "Win32Platform::createDirectory %ls alredy exists"
+                        LOGGER_WARNING( "directory '%ls' alredy exists"
                             , path.c_str()
                         );
 
@@ -1535,7 +1535,7 @@ namespace Mengine
                     }break;
                 case ERROR_PATH_NOT_FOUND:
                     {
-                        LOGGER_WARNING( "Win32Platform::createDirectory %ls not found"
+                        LOGGER_WARNING( "directory '%ls' not found"
                             , path.c_str()
                         );
 
@@ -1543,7 +1543,7 @@ namespace Mengine
                     }break;
                 default:
                     {
-                        LOGGER_WARNING( "Win32Platform::createDirectory %ls unknown error %d"
+                        LOGGER_WARNING( "directory '%ls' unknown error %d"
                             , path.c_str()
                             , err
                         );
@@ -1625,7 +1625,7 @@ namespace Mengine
         {
             DWORD err = GetLastError();
 
-            LOGGER_WARNING( "Win32Platform::removeFile '%ls' error '%d'"
+            LOGGER_WARNING( "file '%ls' error '%d'"
                 , fullPath
                 , err
             );
@@ -1660,7 +1660,7 @@ namespace Mengine
         {
             if( this->createDirectory_( szPath ) == false )
             {
-                LOGGER_ERROR( "%ls:%ls invalid createDirectory %s"
+                LOGGER_ERROR( "directory '%ls:%ls' invalid createDirectory '%ls'"
                     , pathCorrect
                     , fileCorrect
                     , szPath
@@ -1677,7 +1677,7 @@ namespace Mengine
 
         if( hFile == INVALID_HANDLE_VALUE )
         {
-            LOGGER_ERROR( "%ls:%ls invalid createFile %s"
+            LOGGER_ERROR( "%ls:%ls invalid createFile %ls"
                 , pathCorrect
                 , fileCorrect
                 , szPath
@@ -1693,7 +1693,7 @@ namespace Mengine
 
         if( result == FALSE )
         {
-            LOGGER_ERROR( "%ls:%ls invalid writeFile %s"
+            LOGGER_ERROR( "%ls:%ls invalid writeFile %ls"
                 , pathCorrect
                 , fileCorrect
                 , szPath

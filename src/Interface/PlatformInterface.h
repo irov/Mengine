@@ -111,7 +111,8 @@ namespace Mengine
     public:
         virtual bool cmd( const Char * _command ) = 0;
     };
-
+}
+//////////////////////////////////////////////////////////////////////////
 #define PLATFORM_SERVICE()\
     ((Mengine::PlatformInterface*)SERVICE_GET(Mengine::PlatformInterface))
-}
+//////////////////////////////////////////////////////////////////////////

@@ -25,6 +25,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::setRelationRender( RenderInterface * _relationRender )
     {
+        MENGINE_ASSERTION( _relationRender != nullptr, ("set nullptr relation render") );
+
         if( m_relationRender != nullptr )
         {
             m_relationRender->removeRelationRenderChildren_( this );
@@ -32,10 +34,7 @@ namespace Mengine
 
         m_relationRender = static_cast<BaseRender *>(_relationRender);
 
-        if( m_relationRender != nullptr )
-        {
-            m_relationRender->addRelationRenderChildren_( this );
-        }
+        m_relationRender->addRelationRenderChildren_( this );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRender()
@@ -350,11 +349,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::calcTotalColor( Color & _color ) const
     {
-        const Color & worldColour = this->getWorldColor();
-        _color = worldColour;
+        const Color & worldColor = this->getWorldColor();
+        _color = worldColor;
 
-        const Color & personalColour = this->getPersonalColor();
-        _color *= personalColour;
+        const Color & personalColor = this->getPersonalColor();
+        _color *= personalColor;
     }
     //////////////////////////////////////////////////////////////////////////
     bool BaseRender::isSolidColor() const

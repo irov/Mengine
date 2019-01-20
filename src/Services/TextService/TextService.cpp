@@ -674,7 +674,7 @@ namespace Mengine
                 WString ws_text;
                 Helper::utf8ToUnicode( text, ws_text );
 
-                LOGGER_ERROR( "TextService::addTextEntry: duplicate key found %s with text:"
+                LOGGER_ERROR( "duplicate key found %s with text:"
                     , _key.c_str()
                 );
 

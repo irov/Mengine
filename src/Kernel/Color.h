@@ -127,22 +127,22 @@ namespace Mengine
             return *this;
         }
 
-        inline Color operator + ( const Color& _colour ) const
+        inline Color operator + ( const Color& _color ) const
         {
-            float r = m_r + _colour.m_r;
-            float g = m_g + _colour.m_g;
-            float b = m_b + _colour.m_b;
-            float a = m_a + _colour.m_a;
+            float r = m_r + _color.m_r;
+            float g = m_g + _color.m_g;
+            float b = m_b + _color.m_b;
+            float a = m_a + _color.m_a;
 
             return Color( r, g, b, a );
         }
 
-        inline Color operator - ( const Color & _colour ) const
+        inline Color operator - ( const Color & _color ) const
         {
-            float r = m_r - _colour.m_r;
-            float g = m_g - _colour.m_g;
-            float b = m_b - _colour.m_b;
-            float a = m_a - _colour.m_a;
+            float r = m_r - _color.m_r;
+            float g = m_g - _color.m_g;
+            float b = m_b - _color.m_b;
+            float a = m_a - _color.m_a;
 
             return Color( r, g, b, a );
         }

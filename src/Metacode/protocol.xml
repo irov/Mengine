@@ -1,4 +1,4 @@
-<Protocol Version = "132">
+<Protocol Version = "133">
   <Type Name="Mengine::String" Evict="string"/>
   <Type Name="Mengine::WString" Evict="wstring"/>
   <Type Name="Mengine::ConstString" Evict="string"/>
@@ -472,6 +472,7 @@
 
         <Node Name="Resources">
           <Attribute Name="Ignored" Type="bool"/>
+          <Attribute Name="Demand" Type="bool"/>
           <Attribute Name="Platform" Type="Mengine::Tags"/>
           
           <Node Name="Resource">

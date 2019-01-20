@@ -303,7 +303,7 @@ namespace Mengine
         // mount root		
         if( FILE_SERVICE()->mountFileGroup( ConstString::none(), nullptr, FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( "dir" ), nullptr ) == false )
         {
-            LOGGER_ERROR( "WinApplication::setupFileService: failed to mount application directory %ls"
+            LOGGER_ERROR( "failed to mount application directory '%s'"
                 , currentPath
             );
 
@@ -314,7 +314,7 @@ namespace Mengine
         // mount root		
         if( FILE_SERVICE()->mountFileGroup( STRINGIZE_STRING_LOCAL( "dev" ), nullptr, FilePath( ConstString::none() ), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
         {
-            LOGGER_ERROR( "WinApplication::setupFileService: failed to mount dev directory %ls"
+            LOGGER_ERROR( "failed to mount dev directory '%s'"
                 , currentPath
             );
 
@@ -335,7 +335,7 @@ namespace Mengine
         if( FILE_SERVICE()
             ->mountFileGroup( STRINGIZE_STRING_LOCAL( "user" ), nullptr, Helper::stringizeFilePathSize( userPath, userPathLen ), STRINGIZE_STRING_LOCAL( "global" ), nullptr ) == false )
         {
-            LOGGER_ERROR( "WinApplication: failed to mount user directory %ls"
+            LOGGER_ERROR( "failed to mount user directory '%s'"
                 , userPath
             );
 
@@ -375,7 +375,7 @@ namespace Mengine
         String utf8_logFilename;
         if( Helper::unicodeToUtf8( unicode_logFilename, utf8_logFilename ) == false )
         {
-            LOGGER_ERROR( "WinApplication: failed log directory %ls convert to ut8f"
+            LOGGER_ERROR( "failed log directory '%ls' convert to ut8f"
                 , unicode_logFilename.c_str()
             );
 
@@ -762,7 +762,7 @@ namespace Mengine
             if( PLUGIN_SERVICE()
                 ->loadPlugin( pluginName.c_str() ) == false )
             {
-                LOGGER_CRITICAL( "Application Failed to load plugin %ls"
+                LOGGER_CRITICAL( "Application Failed to load plugin '%s'"
                     , pluginName.c_str()
                 );
 
@@ -797,7 +797,7 @@ namespace Mengine
                 if( PLUGIN_SERVICE()
                     ->loadPlugin( pluginName.c_str() ) == false )
                 {
-                    LOGGER_WARNING( "Application Failed to load dev plugin %ls"
+                    LOGGER_WARNING( "Application Failed to load dev plugin '%s'"
                         , pluginName.c_str()
                     );
                 }

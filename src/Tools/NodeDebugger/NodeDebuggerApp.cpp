@@ -53,6 +53,7 @@ namespace Mengine
         , mServerPortCopy( 0 )
         , mConnectionStatus( ConnectionStatus::Disconnected )
         , mScene( nullptr )
+        , mPauseRequested( false )
     {
     }
     NodeDebuggerApp::~NodeDebuggerApp()
@@ -216,8 +217,13 @@ namespace Mengine
             if( !mSelectedNodePath.empty() )
             {
                 SendNodeSelection( mSelectedNodePath );
-
                 mSelectedNodePath.clear();
+            }
+
+            if( mPauseRequested )
+            {
+                SendPauseRequest();
+                mPauseRequested = false;
             }
         }
     }
@@ -567,6 +573,14 @@ namespace Mengine
                 }
             }
 
+            if( ImGui::CollapsingHeader( "Game controls:" ) )
+            {
+                if( ImGui::Button( "Pause" ) )
+                {
+                    OnPauseButton();
+                }
+            }
+
             if( ImGui::CollapsingHeader( "Scene:", ImGuiTreeNodeFlags_DefaultOpen ) )
             {
                 if( mScene )
@@ -816,7 +830,7 @@ namespace Mengine
             ImGui::ColorEdit4( _caption, testValue.buff() );
             ImGui::PopStyleColor();
             ImGui::PopItemFlag();
-        };        
+        };
 
         auto uiEditorString = [_node]( const char * _caption, String & _prop )
         {
@@ -873,7 +887,6 @@ namespace Mengine
             ImGui::PopStyleColor();
             ImGui::PopItemFlag();
         };
-                
 
         if( ImGui::CollapsingHeader( "Node:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
@@ -904,7 +917,7 @@ namespace Mengine
             }
 
             uiReadOnlyVec3f( "World Position", transformation.worldPosition );
-            ImGui::Spacing();            
+            ImGui::Spacing();
         }
 
         if( _node->hasRender && ImGui::CollapsingHeader( "Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
@@ -929,7 +942,7 @@ namespace Mengine
             uiEditorString( "AliasEnvironment", _node->textField.TextAliasEnvironment );
 
             if( _node->textField.HasText == true )
-            {                
+            {
                 uiReadOnlyString( "Format", _node->textField.Text );
                 uiReadOnlyString( "Text", _node->textField.Text );
             }
@@ -981,6 +994,11 @@ namespace Mengine
                 mSelectedNodePath = "-";
             }
         }
+    }
+
+    void NodeDebuggerApp::OnPauseButton()
+    {
+        mPauseRequested = true;
     }
 
 
@@ -1226,6 +1244,22 @@ namespace Mengine
         pugi::xml_node xmlNode = payloadNode.append_child( "Path" );
 
         xmlNode.append_attribute( "value" ).set_value( _path.c_str() );
+
+        SendXML( doc );
+    }
+
+    void NodeDebuggerApp::SendPauseRequest()
+    {
+        pugi::xml_document doc;
+
+        pugi::xml_node packetNode = doc.append_child( "Packet" );
+        packetNode.append_attribute( "type" ).set_value( "GameControl" );
+
+        pugi::xml_node payloadNode = packetNode.append_child( "Payload" );
+
+        pugi::xml_node xmlNode = payloadNode.append_child( "Command" );
+
+        xmlNode.append_attribute( "value" ).set_value( "pause" );
 
         SendXML( doc );
     }

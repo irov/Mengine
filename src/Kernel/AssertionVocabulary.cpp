@@ -41,12 +41,12 @@ namespace Mengine
             }
 
             Char msg[1024];
-            sprintf( msg, "[Assert] Vocabulary '%s' not empty ['%d']"
+            sprintf( msg, "[Assert] Vocabulary '%s' not empty ['%u']"
                 , _category.c_str()
                 , count
             );
 
-            Mengine::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Vocabulary Empty" );
+            Mengine::Helper::Assertion( ASSERTION_LEVEL_ERROR, msg, _file, _line, "Assertion Vocabulary Empty" );
 #endif
         }
     }

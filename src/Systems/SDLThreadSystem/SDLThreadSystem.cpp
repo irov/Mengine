@@ -2,6 +2,7 @@
 
 #include "SDLThreadIdentity.h"
 #include "SDLThreadMutex.h"
+#include "SDLThreadConditionVariable.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -26,6 +27,7 @@ namespace Mengine
     {	
         m_factoryThreadIdentity = new FactoryPool<SDLThreadIdentity, 16>();
         m_factoryThreadMutex = new FactoryPool<SDLThreadMutex, 16>();
+        m_factoryThreadConditionVariable = new FactoryPool<SDLThreadMutex, 16>();
 
         return true;
     }
@@ -81,7 +83,7 @@ namespace Mengine
         
         if( mutex == nullptr )
         {
-            LOGGER_ERROR("SDLThreadSystem::createMutex invalid create (doc: '%s:%u')"
+            LOGGER_ERROR("invalid create (doc: '%s:%u')"
                 , _file
 				, _line
                 );
@@ -91,7 +93,7 @@ namespace Mengine
 
         if( mutex->initialize( _file, _line ) == false )
         {
-            LOGGER_ERROR("SDLThreadSystem::createMutex invalid initialize (doc: '%s:%u')"
+            LOGGER_ERROR("invalid initialize (doc: '%s:%u')"
                 , _file
 				, _line
                 );
@@ -100,6 +102,18 @@ namespace Mengine
         }
 
         return mutex;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    ThreadConditionVariableInterfacePtr SDLThreadSystem::createConditionVariable( const Char * _file, uint32_t _line )
+    {
+        SDLThreadConditionVariablePtr conditionVariable = m_factoryThreadConditionVariable->createObject();
+
+        if( conditionVariable->initialize( _file, _line ) == false )
+        {
+            return nullptr;
+        }
+
+        return conditionVariable;
     }
     //////////////////////////////////////////////////////////////////////////
     ptrdiff_t SDLThreadSystem::getCurrentThreadId() const

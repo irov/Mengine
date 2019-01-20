@@ -186,8 +186,8 @@ namespace Mengine
         Color color;
         this->calcTotalColor( color );
 
-        const Color & textureColour = m_surface->getColor();
-        color *= textureColour;
+        const Color & textureColor = m_surface->getColor();
+        color *= textureColor;
 
         VectorPosition::size_type vertexCount = m_positions.size();
 

@@ -5,6 +5,7 @@
 
 #include "Kernel/ThreadJob.h"
 #include "Kernel/ConstString.h"
+#include "Config/Lambda.h"
 
 namespace Mengine
 {
@@ -36,6 +37,10 @@ namespace Mengine
     public:
         virtual ThreadQueueInterfacePtr runTaskQueue( uint32_t _packetSize ) = 0;
         virtual void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) = 0;
+
+    public:
+        typedef Lambda<void()> LambdaMainThreadCode;
+        virtual void waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _file, uint32_t _line ) = 0;
 
     public:
         virtual ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) = 0;

@@ -253,9 +253,9 @@ namespace Mengine
                     {
                         if( _resourceImage != nullptr )
                         {
-                            const Color & colour = _resourceImage->getColor();
+                            const Color & color = _resourceImage->getColor();
 
-                            if( colour.isSolid() == false || _solid == false )
+                            if( color.isSolid() == false || _solid == false )
                             {
                                 materialId = EM_COLOR_BLEND;
                             }

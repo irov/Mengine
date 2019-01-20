@@ -43,6 +43,7 @@ namespace Mengine
     NodeDebuggerModule::NodeDebuggerModule()
         : m_serverState( NodeDebuggerServerState::Invalid )
         , m_shouldRecreateServer( false )
+        , m_shouldUpdateScene( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -55,7 +56,7 @@ namespace Mengine
         VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "HotSpotPolygon" ), new FactorableUnique<HotSpotPolygonDebuggerBoundingBox>() );
         VOCALUBARY_SET( NodeDebuggerBoundingBoxInterface, STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), STRINGIZE_STRING_LOCAL( "TextField" ), new FactorableUnique<TextFieldDebuggerBoundingBox>() );
 
-        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, this, &NodeDebuggerModule::notifyChangeScenePrepareInitialize );
+        NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_CHANGE_SCENE_COMPLETE, this, &NodeDebuggerModule::notifyChangeScene );
         NOTIFICATION_ADDOBSERVERMETHOD( NOTIFICATOR_REMOVE_SCENE_DESTROY, this, &NodeDebuggerModule::notifyRemoveSceneDestroy );
 
         return true;
@@ -68,7 +69,7 @@ namespace Mengine
 
         MENGINE_ASSERTION_VOCABULARY_EMPTY( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ) );
 
-        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_CHANGE_SCENE_INITIALIZE, this );
+        NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_CHANGE_SCENE_COMPLETE, this );
         NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_REMOVE_SCENE_DESTROY, this );
 
     }
@@ -97,7 +98,7 @@ namespace Mengine
                     APPLICATION_SERVICE()
                         ->setNopause( true );
 
-                    this->sendScene( m_scene );
+                    m_shouldUpdateScene = true;
                 }
             } break;
         case NodeDebuggerServerState::Connected:
@@ -211,12 +212,14 @@ namespace Mengine
         {
             m_scene = _scene;
 
-            this->updateScene();
+            m_shouldUpdateScene = true;
         }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::updateScene()
     {
+        m_shouldUpdateScene = false;
+
         if( m_serverState == NodeDebuggerServerState::Connected )
         {
             this->sendScene( m_scene );
@@ -230,6 +233,11 @@ namespace Mengine
         if( m_shouldRecreateServer )
         {
             this->recreateServer();
+        }
+
+        if( m_shouldUpdateScene == true )
+        {
+            this->updateScene();
         }
 
         if( m_socket == nullptr )
@@ -510,7 +518,7 @@ namespace Mengine
 
             const String & textValue = textEntry->getValue();
 
-            serializeNodeProp( textValue, "Format", xmlNode );            
+            serializeNodeProp( textValue, "Format", xmlNode );
 
             VectorString textFormatArgs = _textField->getTextFormatArgs();
 
@@ -528,7 +536,7 @@ namespace Mengine
             }
 
             serializeNodeProp( fmt, "Text", xmlNode );
-        }        
+        }
 
         serializeNodeProp( _textField->getFontName(), "FontName", xmlNode );
         serializeNodeProp( _textField->getFontColor(), "FontColor", xmlNode );
@@ -675,6 +683,19 @@ namespace Mengine
                 }
             }
         }
+        else if( typeStr == "GameControl" )
+        {
+            pugi::xml_node xmlNode = payloadNode.child( "Command" );
+            if( xmlNode )
+            {
+                pugi::xml_attribute valueAttr = xmlNode.attribute( "value" );
+
+                if( valueAttr )
+                {
+                    receiveGameControlCommand( valueAttr.as_string() );
+                }
+            }
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::receiveChangedNode( const pugi::xml_node & _xmlNode )
@@ -729,7 +750,7 @@ namespace Mengine
             } );
 
             pugi::xml_node renderNode = _xmlNode.child( "Render" );
-            
+
             if( renderNode )
             {
                 RenderInterface * render = node->getRender();
@@ -758,7 +779,7 @@ namespace Mengine
             }
 
             pugi::xml_node typeTextFieldNode = _xmlNode.child( "Type:TextField" );
-        
+
             if( typeTextFieldNode )
             {
                 TextFieldPtr textField = stdex::intrusive_static_cast<TextFieldPtr>(node);
@@ -826,8 +847,20 @@ namespace Mengine
                 deserializeNodeProp<bool>( "Pixelsnap", typeTextFieldNode, [textField]( auto _value )
                 {
                     textField->setPixelsnap( _value );
-                } );                
+                } );
             }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::receiveGameControlCommand( const String & _command )
+    {
+        if( _command == "pause" )
+        {
+            const bool alreadyFrozen = APPLICATION_SERVICE()
+                ->isFrozen();
+
+            APPLICATION_SERVICE()
+                ->setFreeze( !alreadyFrozen );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -860,7 +893,7 @@ namespace Mengine
         return path;
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeDebuggerModule::notifyChangeScenePrepareInitialize( const ScenePtr & _scene )
+    void NodeDebuggerModule::notifyChangeScene( const ScenePtr & _scene )
     {
         this->setScene( _scene );
     }

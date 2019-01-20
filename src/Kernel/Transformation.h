@@ -47,7 +47,7 @@ namespace Mengine
         ~Transformation();
 
     public:
-        void setRelationTransformation( const TransformationPtr & _relation );
+        void setRelationTransformation( Transformation * _relation );
         inline Transformation * getRelationTransformation() const;
 
     public:

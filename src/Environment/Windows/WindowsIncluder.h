@@ -2,17 +2,17 @@
 
 #ifdef WINVER
 #undef WINVER
-#define WINVER 0x0501
+#define WINVER 0x0600
 #endif
 
 #ifdef _WIN32_WINNT	
 #undef _WIN32_WINNT
-#define _WIN32_WINNT 0x0501
+#define _WIN32_WINNT 0x0600
 #endif
 
 #ifdef _WIN32_WINDOWS
 #undef _WIN32_WINDOWS
-#define _WIN32_WINDOWS 0x0501
+#define _WIN32_WINDOWS 0x0600
 #endif
 
 #define WIN32_LEAN_AND_MEAN
@@ -32,4 +32,5 @@
 #include <tlhelp32.h>
 #include <shellapi.h>
 #include <shlobj.h>
+#include <synchapi.h>
 #pragma warning(pop) 

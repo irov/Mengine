@@ -78,7 +78,7 @@ namespace Mengine
 
         if( soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "ResourceSound::createSoundBuffer: '%s' group '%s' can't load sound '%s'"
+            LOGGER_ERROR( "sound '%s' group '%s' can't load sound '%s'"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
                 , this->getFilePath().c_str()

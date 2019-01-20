@@ -79,7 +79,7 @@ namespace Mengine
         virtual uint32_t getLayoutCount() const = 0;
 
     public:
-        virtual void setColourFont( const Color & _colour ) = 0;
+        virtual void setColorFont( const Color & _color ) = 0;
         virtual void setLineOffset( float _lineOffset ) = 0;
         virtual void setCharOffset( float _charOffset ) = 0;
 

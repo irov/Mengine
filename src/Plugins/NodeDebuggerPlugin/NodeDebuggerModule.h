@@ -85,16 +85,18 @@ namespace Mengine
         void serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode );
         void processPacket( NodeDebuggerPacket & _packet );
         void receiveChangedNode( const pugi::xml_node & _xmlNode );
+        void receiveGameControlCommand( const String & _command );
         VectorNodePath stringToPath( const String & _str ) const;
 
     protected:
-        void notifyChangeScenePrepareInitialize( const ScenePtr & _scene );
+        void notifyChangeScene( const ScenePtr & _scene );
         void notifyRemoveSceneDestroy();
 
     protected:
         ScenePtr m_scene;
         SocketInterfacePtr m_socket;
-        volatile bool m_shouldRecreateServer;
+        AtomicBool m_shouldRecreateServer;
+        AtomicBool m_shouldUpdateScene;
         ThreadJobPtr m_threadJob;
         ThreadMutexInterfacePtr m_dataMutex;
         NodeDebuggerServerState m_serverState;

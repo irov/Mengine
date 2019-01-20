@@ -49,7 +49,7 @@ namespace Mengine
 
         if( utf8_size == 0 && _unicodeSize != 0 )
         {
-            LOGGER_ERROR( "Win32UnicodeSystem::unicodeToUtf8 %ls WideCharToMultiByte 0"
+            LOGGER_ERROR( "unicode '%ls' WideCharToMultiByte 0"
                 , _unicode
             );
 
@@ -97,7 +97,7 @@ namespace Mengine
             PLATFORM_SERVICE()
                 ->getErrorMessage( err, wstr_err );
 
-            LOGGER_ERROR( " '%s' MultiByteToWideChar '%ls'"
+            LOGGER_ERROR( "utf8 '%s' MultiByteToWideChar '%ls'"
                 , _utf8
                 , wstr_err
             );

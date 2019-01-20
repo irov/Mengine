@@ -1,6 +1,6 @@
 #include "Kernel/BoundingBox.h"
 
-#include "Config/Typedef.h"
+#include "Config/Config.h"
 
 namespace Mengine
 {

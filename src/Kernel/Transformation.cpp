@@ -29,34 +29,22 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setRelationTransformation( const TransformationPtr & _relation )
+    void Transformation::setRelationTransformation( Transformation * _relationTransformation )
     {
-        bool identityPrevTransformation = true;
+        MENGINE_ASSERTION( _relationTransformation != nullptr, ("set nullptr relation transformation") );
 
         if( m_relationTransformation != nullptr )
         {
-            identityPrevTransformation = m_relationTransformation->isIdentityWorldMatrix();
-
             m_relationTransformation->removeRelationTransformationChild_( this );
         }
 
-        m_relationTransformation = _relation.get();
+        m_relationTransformation = _relationTransformation;
 
-        if( m_relationTransformation != nullptr )
-        {
-            m_relationTransformation->addRelationTransformationChild_( this );
+        m_relationTransformation->addRelationTransformationChild_( this );
 
-            if( m_relationTransformation->isIdentityWorldMatrix() == true && m_identityWorldMatrix == true )
-            {
-                return;
-            }
-        }
-        else
+        if( m_relationTransformation->isIdentityWorldMatrix() == true && m_identityWorldMatrix == true )
         {
-            if( identityPrevTransformation == true )
-            {
-                return;
-            }
+            return;
         }
 
         this->invalidateWorldMatrix();

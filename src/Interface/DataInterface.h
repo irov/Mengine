@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Config/Config.h"
 #include "Config/Typedef.h"
 
 #include "Kernel/Mixin.h"

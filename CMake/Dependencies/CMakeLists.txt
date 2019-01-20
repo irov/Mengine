@@ -20,6 +20,8 @@ if( MENGINE_TARGET_AEPLUGIN )
 endif()
 
 #dependencies libwebp
+message("================libwebp================")
+if(1)
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libwebp)    
 	set(WEBP_ENABLE_SIMD ON CACHE BOOL "Enable any SIMD optimization." FORCE)
@@ -37,9 +39,11 @@ set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libwebp)
 	set(WEBP_ENABLE_SWAP_16BIT_CSP OFF CACHE BOOL "Enable byte swap for 16 bit colorspaces." FORCE)
 
 ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libwebp )
-set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})  
+set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
+endif()  
 
 #dependencies stdex
+message("================stdex================")
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/stdex)    
 	set(STDEX_EXTERNAL_BUILD ON CACHE BOOL "STDEX_EXTERNAL_BUILD" FORCE)
@@ -48,6 +52,7 @@ ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/stdex )
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2}) 
 
 #dependencies libfe
+message("================libfe================")
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libfe)    
 	set(FE_EXTERNAL_BUILD ON CACHE BOOL "FE_EXTERNAL_BUILD" FORCE)
@@ -57,6 +62,7 @@ ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libfe )
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})  
 
 #dependencies ozz
+message("================ozz================")
 if(NOT MENGINE_TARGET_ANDROID AND NOT MENGINE_TARGET_IOS)
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/ozz)    
@@ -75,6 +81,7 @@ if(NOT MENGINE_TARGET_ANDROID AND NOT MENGINE_TARGET_IOS)
 endif()
 
 #dependencies libmovie
+message("================libmovie================")
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libmovie)    
 	set(LIBMOVIE_EXTERNAL_BUILD ON CACHE BOOL "LIBMOVIE_EXTERNAL_BUILD" FORCE)
@@ -88,6 +95,7 @@ ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libmovie )
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})  
 
 #dependencies jansson
+message("================jansson================")
 if( MENGINE_PLATFORM_WIN32 )
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/jansson)    
@@ -107,6 +115,7 @@ if( MENGINE_PLATFORM_WIN32 )
 endif()
 
 #dependencies pugixml
+message("================pugixml================")
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/pugixml)
     set(BUILD_SHARED_LIBS OFF CACHE STRING "BUILD_SHARED_LIBS" FORCE)
@@ -119,6 +128,7 @@ ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/pugixml )
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 
 #dependencies metabuf
+message("================metabuf================")
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/metabuf)
 	set(METABUF_EXTERNAL_BUILD ON CACHE BOOL "METABUF_EXTERNAL_BUILD" FORCE)
@@ -138,6 +148,7 @@ add_dependencies(metabuf pugixml)
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 
 #dependencies libmath
+message("================libmath================")
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libmath)
 	set(LIBMATH_EXTERNAL_BUILD ON CACHE BOOL "LIBMATH_EXTERNAL_BUILD" FORCE)
@@ -147,6 +158,7 @@ ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/libmath )
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})    
 
 #dependencies tinyini
+message("================tinyini================")
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/tinyini)    
 	set(TINYINI_EXTERNAL_BUILD ON CACHE BOOL "TINYINI_EXTERNAL_BUILD" FORCE)
@@ -155,13 +167,14 @@ ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/tinyini )
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})    
 
 #dependencies freetype
+message("================freetype================")
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/freetype)
     set(SKIP_INSTALL_ALL ON CACHE BOOL "SKIP_INSTALL_ALL" FORCE)
 
     configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/freetype/CMakeLists.txt ${THIRDPARTY_DIR}/freetype/CMakeLists.txt COPYONLY)
 
-    if( MENGINE_PLATFORM_IOS )
+    if( MENGINE_TARGET_IOS )
         set(IOS_PLATFORM "OS" CACHE STRING "IOS_PLATFORM" FORCE)
     endif()
 
@@ -171,6 +184,7 @@ ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/freetype )
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})    
 
 #dependencies curl
+message("================curl================")
 if(NOT MENGINE_TOOLCHAIN_GRADLE)
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/curl) 	
@@ -231,8 +245,8 @@ if(NOT MENGINE_TOOLCHAIN_GRADLE)
 		endif()
 		
 		if(MENGINE_TARGET_IOS)
-			#configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/curl/curl_config.h ${THIRDPARTY_DIR}/curl/lib/curl_config.h COPYONLY)
-			#configure_file(${CMAKE_CURRENT_SOURCE_DIR}/curl/curlbuild.h ${THIRDPARTY_DIR}/curl/include/curl/curlbuild.h COPYONLY)	
+			configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/curl/curl_config.h ${THIRDPARTY_DIR}/curl/lib/curl_config.h COPYONLY)
+			configure_file(${CMAKE_CURRENT_SOURCE_DIR}/curl/curlbuild.h ${THIRDPARTY_DIR}/curl/include/curl/curlbuild.h COPYONLY)	
 		endif()		
 	
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/curl )
@@ -240,23 +254,29 @@ if(NOT MENGINE_TOOLCHAIN_GRADLE)
 endif()
 
 #dependencies SDL2
+message("================SDL2================")
 if(MENGINE_PLATFORM_SDL AND NOT MENGINE_TARGET_ANDROID)
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/SDL2)  
         set(SDL_CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Name suffix for debug builds" FORCE)
         
-        if(MENGINE_TOOLCHAIN_MSVC)
+        if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW)
             set(FORCE_STATIC_VCRT ON CACHE BOOL "Force /MT for static VC runtimes" FORCE)
             set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
             set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)
         endif()
         
-        if(MENGINE_TOOLCHAIN_GRADLE)
+        if(MENGINE_TARGET_ANDROID)
             set(SDL_SHARED ON CACHE BOOL "Build a static version of the library" FORCE)
             set(SDL_STATIC OFF CACHE BOOL "Build a static version of the library" FORCE)    
         endif()
 
-        if(MENGINE_TOOLCHAIN_MSVC)
+        if(MENGINE_TARGET_IOS)
+            set(SDL_SHARED OFF CACHE BOOL "Build a static version of the library" FORCE)
+            set(SDL_STATIC ON CACHE BOOL "Build a static version of the library" FORCE)    
+        endif()
+
+        if(MENGINE_TARGET_WINDOWS OR MENGINE_TARGET_MINGW)
             if(0)
                 set(SDL_JOYSTICK OFF CACHE BOOL "SDL_JOYSTICK" FORCE)
                 set(SDL_JOYSTICK_ENABLED_BY_DEFAULT OFF CACHE BOOL "SDL_JOYSTICK_ENABLED_BY_DEFAULT" FORCE)
@@ -274,13 +294,22 @@ if(MENGINE_PLATFORM_SDL AND NOT MENGINE_TARGET_ANDROID)
             endif()			
         endif()		
         
-        if(MENGINE_TOOLCHAIN_GRADLE)
+        if(MENGINE_TARGET_ANDROID)
             set(SDL_JOYSTICK ON CACHE BOOL "SDL_JOYSTICK" FORCE)
             set(SDL_JOYSTICK_ENABLED_BY_DEFAULT ON CACHE BOOL "SDL_JOYSTICK_ENABLED_BY_DEFAULT" FORCE)
             set(SDL_HAPTIC ON CACHE BOOL "SDL_HAPTIC" FORCE)
             set(SDL_HAPTIC_ENABLED_BY_DEFAULT ON CACHE BOOL "SDL_HAPTIC_ENABLED_BY_DEFAULT" FORCE)
             set(SDL_POWER ON CACHE BOOL "SDL_POWER" FORCE)
             set(SDL_POWER_ENABLED_BY_DEFAULT ON CACHE BOOL "SDL_POWER_ENABLED_BY_DEFAULT" FORCE)
+        endif()
+
+        if(MENGINE_TARGET_IOS)
+            set(SDL_JOYSTICK OFF CACHE BOOL "SDL_JOYSTICK" FORCE)
+            set(SDL_JOYSTICK_ENABLED_BY_DEFAULT OFF CACHE BOOL "SDL_JOYSTICK_ENABLED_BY_DEFAULT" FORCE)
+            set(SDL_HAPTIC OFF CACHE BOOL "SDL_HAPTIC" FORCE)
+            set(SDL_HAPTIC_ENABLED_BY_DEFAULT OFF CACHE BOOL "SDL_HAPTIC_ENABLED_BY_DEFAULT" FORCE)
+            set(SDL_POWER OFF CACHE BOOL "SDL_POWER" FORCE)
+            set(SDL_POWER_ENABLED_BY_DEFAULT OFF CACHE BOOL "SDL_POWER_ENABLED_BY_DEFAULT" FORCE)
         endif()
         
         if(MENGINE_TOOLCHAIN_GRADLE)
@@ -294,6 +323,7 @@ endif()
 
 
 #dependencies Box2D
+message("================Box2D================")
 if(0)
 	set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 	set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/Box2D/Box2D)
@@ -308,6 +338,7 @@ if(0)
 endif()
 
 #define openal-soft
+message("================openal-soft================")
 if(NOT MENGINE_TARGET_IOS)
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/openal-soft)
@@ -345,6 +376,7 @@ if(NOT MENGINE_TARGET_IOS)
 endif()
 
 #define libpng
+message("================libpng================")
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libpng)
     set(PNG_SHARED OFF CACHE BOOL "PNG_SHARED" FORCE)
@@ -353,7 +385,8 @@ set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/libpng)
     set(PNG_FRAMEWORK OFF CACHE BOOL "PNG_FRAMEWORK" FORCE)
     set(PNG_DEBUG OFF CACHE BOOL "PNG_DEBUG" FORCE)
     set(PNGARG OFF CACHE BOOL "PNGARG" FORCE)
-    set(PNG_HARDWARE_OPTIMIZATIONS OFF CACHE BOOL "PNGARG" FORCE)
+	SET(CMAKE_SYSTEM_PROCESSOR "arm64")
+    set(PNG_HARDWARE_OPTIMIZATIONS ON CACHE BOOL "PNG_HARDWARE_OPTIMIZATIONS" FORCE)
     set(ZLIB_LIBRARY ${THIRDPARTY_DIR}/zlib)
     set(ZLIB_INCLUDE_DIR ${THIRDPARTY_DIR}/zlib)
 
@@ -364,6 +397,7 @@ add_dependencies(png_static zlib)
 set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 
 #define pybind
+message("================pybind================")
 set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
 set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/pybind)
     set(PYBIND_PROJECT_NAME "pybind" CACHE STRING "PYBIND_PROJECT_NAME" FORCE)
@@ -386,6 +420,7 @@ if(MENGINE_TOOLCHAIN_MSVC)
     ADD_SUBDIRECTORY( Python3_decimal )
 
 	#define pybind3
+    message("================pybind3================")
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/pybind)
 		set(PYBIND_PROJECT_NAME "pybind3" CACHE STRING "PYBIND_PROJECT_NAME" FORCE)

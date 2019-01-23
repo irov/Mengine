@@ -53,6 +53,8 @@ namespace Mengine
         , mServerPortCopy( 0 )
         , mConnectionStatus( ConnectionStatus::Disconnected )
         , mScene( nullptr )
+        , mSceneUpdateFreq( 0 )
+        , mSceneUpdateTimer( 0.0 )
         , mPauseRequested( false )
     {
     }
@@ -138,11 +140,17 @@ namespace Mengine
 
     void NodeDebuggerApp::Loop()
     {
+        double lastTimerValue = glfwGetTime();
+
         while( GL_FALSE == glfwWindowShouldClose( mWindow ) )
         {
             glfwPollEvents();
 
-            Update();
+            const double currentTimerValue = glfwGetTime();
+            const double dt = currentTimerValue - lastTimerValue;
+            lastTimerValue = currentTimerValue;
+
+            Update( dt );
 
             glClearColor( 0.412f, 0.796f, 1.0f, 1.0f );
             glClear( GL_COLOR_BUFFER_BIT );
@@ -184,7 +192,7 @@ namespace Mengine
         }
     }
 
-    void NodeDebuggerApp::Update()
+    void NodeDebuggerApp::Update( const double _dt )
     {
         MutexLocker lock( mDataMutex );
 
@@ -218,6 +226,18 @@ namespace Mengine
             {
                 SendNodeSelection( mSelectedNodePath );
                 mSelectedNodePath.clear();
+            }
+
+            if( mSceneUpdateFreq > 0 )
+            {
+                mSceneUpdateTimer += _dt;
+
+                const double updateInterval = 1.0 / static_cast<double>( mSceneUpdateFreq );
+                if( mSceneUpdateTimer >= updateInterval )
+                {
+                    SendSceneRequest();
+                    mSceneUpdateTimer = 0.0;
+                }
             }
 
             if( mPauseRequested )
@@ -280,7 +300,7 @@ namespace Mengine
 
             DeserializeNode( xmlNode, mScene );
 
-            mSelectedNode = nullptr;
+            mSelectedNode = PathToNode( StringToPath( mLastSelectedNodePath ) );
         }
     }
 
@@ -371,6 +391,70 @@ namespace Mengine
         std::copy( _path.begin(), _path.end(), std::ostream_iterator<uint32_t>( stream, "/" ) );
 
         return stream.str();
+    }
+
+    Vector<uint32_t> NodeDebuggerApp::StringToPath( String & _pathStr )
+    {
+        Vector<uint32_t> path;
+
+        if( !_pathStr.empty() && _pathStr[0] != '-' )
+        {
+            const Char* ptr = _pathStr.c_str();
+
+            uint32_t uid = 0;
+            while( *ptr )
+            {
+                if( *ptr == '/' )
+                {
+                    path.push_back( uid );
+                    uid = 0;
+                }
+                else
+                {
+                    uid *= 10;
+                    uid += static_cast<uint32_t>( *ptr - '0' );
+                }
+
+                ++ptr;
+            }
+        }
+
+        return path;
+    }
+
+    DebuggerNode * NodeDebuggerApp::PathToNode( const Vector<uint32_t> & _path )
+    {
+        DebuggerNode * result = nullptr;
+
+        if( !_path.empty() )
+        {
+            DebuggerNode * node = mScene;
+
+            auto it = _path.begin(), end = _path.end();
+            for( ; it != end; ++it )
+            {
+                const uint32_t nextUid = *it;
+                auto found = std::find_if( node->children.begin(), node->children.end(), [nextUid]( const DebuggerNode * _n )->bool {
+                    return _n->uid == nextUid;
+                });
+
+                if( found != node->children.end() )
+                {
+                    node = *found;
+                }
+                else
+                {
+                    break;
+                }
+            }
+
+            if( it == end ) // seems like we've found it!
+            {
+                result = node;
+            }
+        }
+
+        return result;
     }
 
     void NodeDebuggerApp::DestroyNode( DebuggerNode * _node )
@@ -575,7 +659,14 @@ namespace Mengine
 
             if( ImGui::CollapsingHeader( "Game controls:" ) )
             {
-                if( ImGui::Button( "Pause" ) )
+                int hz = mSceneUpdateFreq;
+                if( ImGui::InputInt( "Update freq (hz):", &hz ) )
+                {
+                    mSceneUpdateFreq = std::clamp( hz, 0, 30 );
+                    mSceneUpdateTimer = 0.0;
+                }
+
+                if( ImGui::Button( "Pause game" ) )
                 {
                     OnPauseButton();
                 }
@@ -993,6 +1084,8 @@ namespace Mengine
             {
                 mSelectedNodePath = "-";
             }
+
+            mLastSelectedNodePath = mSelectedNodePath;
         }
     }
 
@@ -1158,6 +1251,11 @@ namespace Mengine
 
     void NodeDebuggerApp::SendXML( const pugi::xml_document & _doc )
     {
+        if( mConnectionStatus != ConnectionStatus::Connected )
+        {
+            return;
+        }
+
         NodeDebuggerPacket packet;
 
         MyXMLWriter writer( packet.payload );
@@ -1248,7 +1346,7 @@ namespace Mengine
         SendXML( doc );
     }
 
-    void NodeDebuggerApp::SendPauseRequest()
+    void NodeDebuggerApp::SendGameControlCommand( const String & _command )
     {
         pugi::xml_document doc;
 
@@ -1259,8 +1357,18 @@ namespace Mengine
 
         pugi::xml_node xmlNode = payloadNode.append_child( "Command" );
 
-        xmlNode.append_attribute( "value" ).set_value( "pause" );
+        xmlNode.append_attribute( "value" ).set_value( _command.c_str() );
 
         SendXML( doc );
+    }
+
+    void NodeDebuggerApp::SendSceneRequest()
+    {
+        SendGameControlCommand( "scene" );
+    }
+
+    void NodeDebuggerApp::SendPauseRequest()
+    {
+        SendGameControlCommand( "pause" );
     }
 }

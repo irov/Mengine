@@ -862,6 +862,10 @@ namespace Mengine
             APPLICATION_SERVICE()
                 ->setFreeze( !alreadyFrozen );
         }
+        else if( _command == "scene" )
+        {
+            m_shouldUpdateScene = true;
+        }
     }
     //////////////////////////////////////////////////////////////////////////
     VectorNodePath NodeDebuggerModule::stringToPath( const String & _str ) const

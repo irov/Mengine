@@ -258,12 +258,14 @@ namespace Mengine
 
     private:
         void                        Resize( const int _width, const int _height );
-        void                        Update();
+        void                        Update( const double _dt );
         void                        ProcessPacket( const NodeDebuggerPacket & _packet );
         void                        ReceiveScene( const pugi::xml_node & _xmlContainer );
         void                        DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node );
         Vector<uint32_t>            CollectNodePath( const DebuggerNode * _node );
         String                      PathToString( const Vector<uint32_t> & _path );
+        Vector<uint32_t>            StringToPath( String & _pathStr );
+        DebuggerNode *              PathToNode( const Vector<uint32_t> & _path );
         void                        DestroyNode( DebuggerNode * _node );
 
         // UI
@@ -288,6 +290,9 @@ namespace Mengine
         void                        SendXML( const pugi::xml_document & _doc );
         void                        SendChangedNode( const DebuggerNode & _node );
         void                        SendNodeSelection( const String & _path );
+
+        void                        SendGameControlCommand( const String & _command );
+        void                        SendSceneRequest();
         void                        SendPauseRequest();
 
     private:
@@ -318,7 +323,10 @@ namespace Mengine
 
         DebuggerNode*               mScene;
         String                      mSelectedNodePath;
+        String                      mLastSelectedNodePath;
 
+        int                         mSceneUpdateFreq;
+        double                      mSceneUpdateTimer;
         bool                        mPauseRequested;
     };
 }

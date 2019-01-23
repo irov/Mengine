@@ -526,14 +526,7 @@ namespace Mengine
                 ->getTextAliasArguments( textAliasEnvironment, textID, textFormatArgs );
 
             String fmt;
-            if( Helper::getStringFormat( fmt, textValue, textFormatArgs ) == false )
-            {
-                LOGGER_ERROR( "invalid string '%s:%s' format with args '%d'"
-                    , _textField->getName().c_str()
-                    , _textField->getTextID().c_str()
-                    , textFormatArgs.size()
-                );
-            }
+            Helper::getStringFormat( fmt, textValue, textFormatArgs );
 
             serializeNodeProp( fmt, "Text", xmlNode );
         }

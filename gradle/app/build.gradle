@@ -20,12 +20,14 @@ android {
             abiFilters 'armeabi-v7a'
         }
         signingConfig signingConfigs.config
+        targetSdkVersion 26
     }
     buildTypes {
         debug {
             debuggable true
             externalNativeBuild {
                 cmake {
+                    version "3.10.2"
                     arguments "-DANDROID_PLATFORM=android-16",
                             "-DANDROID_ARM_NEON=TRUE",
                             "-DANDROID_ABI=armeabi-v7a",
@@ -41,6 +43,7 @@ android {
         release {
             externalNativeBuild {
                 cmake {
+                    version "3.10.2"
                     arguments "-DANDROID_PLATFORM=android-16",
                             "-DANDROID_ARM_NEON=TRUE",
                             "-DANDROID_ABI=armeabi-v7a",

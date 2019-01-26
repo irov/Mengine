@@ -50,13 +50,6 @@ namespace Mengine
         const mt::vec2f & size = m_surface->getSize();
         const mt::vec2f & offset = m_surface->getOffset();
 
-        float angle_edge[4] = {
-            mt::constant::fourth_pi + mt::constant::half_pi * 0.f
-            , mt::constant::fourth_pi + mt::constant::half_pi * 1.f
-            , mt::constant::fourth_pi + mt::constant::half_pi * 2.f
-            , mt::constant::fourth_pi + mt::constant::half_pi * 3.f
-        };
-
         if( mt::equal_f_z( m_angleTo ) == true )
         {
             m_verticesLocal[0].x = offset.x + 0.f;

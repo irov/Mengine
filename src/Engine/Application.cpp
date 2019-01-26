@@ -1345,7 +1345,7 @@ namespace Mengine
                 ->update( m_focus );
         }
 
-        if( m_update == false && (m_focus == false && m_nopause == false) || m_freeze == true )
+        if( m_update == false && (m_focus == false || m_freeze == true) && m_nopause == true )
         {
             return false;
         }

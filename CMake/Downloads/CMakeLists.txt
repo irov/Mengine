@@ -11,9 +11,12 @@ DOWNLOAD_URL(boost https://dl.bintray.com/boostorg/release/1.68.0/source/boost_1
 DOWNLOAD_URL(astralax http://www.astralax.ru/download/programm/dev/magic_win.zip)
 DOWNLOAD_URL(curl-android https://github.com/leenjewel/openssl_for_ios_and_android/releases/download/android_openssl-1.1.0f_curl-7.54.1/only_android_openssl-1.1.0f_curl-7.54.1.zip)
 DOWNLOAD_URL(openssl https://www.npcglib.org/~stathis/downloads/openssl-1.1.0f-vs2017.7z)
+DOWNLOAD_URL(SDL2 https://www.libsdl.org/release/SDL2-2.0.9.zip)
+
 
 DOWNLOAD_FILE(stb_image https://raw.githubusercontent.com/nothings/stb/master/stb_image.h stb_image.h)
 
+GIT_CLONE(ios-cmake https://github.com/leetal/ios-cmake "2.1.4")
 GIT_CLONE(zlib https://github.com/madler/zlib.git "v1.2.11")
 GIT_CLONE(libogg https://github.com/xiph/ogg.git "v1.3.3")
 GIT_CLONE(libvorbis https://github.com/xiph/vorbis.git "v1.3.6")
@@ -28,7 +31,6 @@ GIT_CLONE(lz4 https://github.com/lz4/lz4.git "v1.8.3")
 GIT_CLONE(poly2tri https://github.com/jhasse/poly2tri.git)
 GIT_CLONE(curl https://github.com/curl/curl.git "curl-7_63_0")
 GIT_CLONE(tinyini https://github.com/irov/tinyini.git)
-GIT_CLONE(SDL2 https://github.com/spurious/SDL-mirror)
 GIT_CLONE(libfe https://github.com/irov/font-effects-lib.git)
 GIT_CLONE(libmath https://github.com/irov/libmath.git)
 GIT_CLONE(jansson https://github.com/akheron/jansson.git)

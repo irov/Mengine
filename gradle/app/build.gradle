@@ -13,7 +13,7 @@ android {
     compileSdkVersion 26
     defaultConfig {
         applicationId "org.Mengine.Build"
-        minSdkVersion 16
+        minSdkVersion 18
         versionCode 1
         versionName "1.0"
         ndk {
@@ -27,8 +27,7 @@ android {
             debuggable true
             externalNativeBuild {
                 cmake {
-                    version "3.10.2"
-                    arguments "-DANDROID_PLATFORM=android-16",
+                    arguments "-DANDROID_PLATFORM=android-18",
                             "-DANDROID_ARM_NEON=TRUE",
                             "-DANDROID_ABI=armeabi-v7a",
                             "-DANDROID_STL=c++_shared",
@@ -43,8 +42,7 @@ android {
         release {
             externalNativeBuild {
                 cmake {
-                    version "3.10.2"
-                    arguments "-DANDROID_PLATFORM=android-16",
+                    arguments "-DANDROID_PLATFORM=android-18",
                             "-DANDROID_ARM_NEON=TRUE",
                             "-DANDROID_ABI=armeabi-v7a",
                             "-DANDROID_STL=c++_shared",

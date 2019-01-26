@@ -5,7 +5,7 @@ android {
     compileSdkVersion 26
 
     defaultConfig {
-        minSdkVersion 15
+        minSdkVersion 18
         targetSdkVersion 26
         versionCode 1
         versionName "1.0"
@@ -13,28 +13,35 @@ android {
         ndk {
             abiFilters 'armeabi-v7a'
         }
-
-        /*
+        
         externalNativeBuild {
             cmake {
                 cFlags "-std=c11"
                 cppFlags "-std=c++17 -frtti -fexceptions"
-                arguments "-DSDL_SHARED:BOOLEAN=ON",
-                        "-DSDL_STATIC:BOOLEAN=OFF"
+                arguments "-DANDROID_PLATFORM=android-18",
+                        "-DANDROID_ARM_NEON=TRUE",
+                        "-DANDROID_ABI=armeabi-v7a",
+                        "-DANDROID_STL=c++_shared",
+                        "-DANDROID_TOOLCHAIN=clang",
+                        "-DCMAKE_BUILD_TYPE=Debug",
+                        "-DCMAKE_CONFIGURATION_TYPES:STRING=Debug",
+                        "-DMENGINE_LIB_DIR=build_android_sdl",
+                        "-DSDL_SHARED:BOOLEAN=ON",
+                        "-DSDL_STATIC:BOOLEAN=OFF",
+                        "-DSDL_JOYSTICK:BOOLEAN=ON",
+                        "-DSDL_JOYSTICK_ENABLED_BY_DEFAULT:BOOLEAN=ON",
+                        "-DSDL_HAPTIC:BOOLEAN=ON",
+                        "-DSDL_HAPTIC_ENABLED_BY_DEFAULT:BOOLEAN=ON",
+                        "-DSDL_POWER:BOOLEAN=ON",
+                        "-DSDL_POWER_ENABLED_BY_DEFAULT:BOOLEAN=ON"
             }
-        }*/
+        }
     }
     
-    /*
+    
     externalNativeBuild {
         cmake {
             path "../../dependencies/SDL2/CMakeLists.txt"
-        }
-    }*/
-    
-    externalNativeBuild {
-        ndkBuild {
-            path '../../dependencies/SDL2/Android.mk'
         }
     }
 }

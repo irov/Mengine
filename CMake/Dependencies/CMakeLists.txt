@@ -255,7 +255,7 @@ endif()
 
 #dependencies SDL2
 message("================SDL2================")
-if(MENGINE_PLATFORM_SDL AND NOT MENGINE_TARGET_ANDROID)
+if(MENGINE_PLATFORM_SDL)
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/SDL2)  
         set(SDL_CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Name suffix for debug builds" FORCE)
@@ -312,13 +312,14 @@ if(MENGINE_PLATFORM_SDL AND NOT MENGINE_TARGET_ANDROID)
             set(SDL_POWER_ENABLED_BY_DEFAULT OFF CACHE BOOL "SDL_POWER_ENABLED_BY_DEFAULT" FORCE)
         endif()
         
-        if(MENGINE_TOOLCHAIN_GRADLE)
+        if(MENGINE_TARGET_ANDROID)
+            MESSAGE("copy SDLActivity and SDLSurface")
             configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLActivity.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java COPYONLY)
             configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLSurface.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLSurface.java COPYONLY)
         endif()
 
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/SDL2 )
-    set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
+    set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})    
 endif()
 
 

@@ -164,7 +164,7 @@ namespace Mengine
 
             if( identity->source->play() == false )
             {
-                LOGGER_ERROR( "SoundService::playSounds_ invalid play"
+                LOGGER_ERROR( "invalid play"
                 );
 
                 continue;
@@ -303,6 +303,37 @@ namespace Mengine
         emitter->turn = _streamable ? m_turnStream : m_turnSound;
 
         this->updateSourceVolume_( emitter );
+
+        if( _streamable == true )
+        {
+            uint32_t streamableCount = std::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity ) { return _Identity->streamable; } );
+
+            uint32_t MaxSoundStreamable = CONFIG_VALUE( "Limit", "MaxSoundStreamable", 4 );
+
+            if( streamableCount > MaxSoundStreamable )
+            {
+                LOGGER_ERROR( "Sound streamable exceeded max count '%d'"
+                    , MaxSoundStreamable
+                );
+
+                return nullptr;
+            }
+        }
+        else
+        {
+            uint32_t instanceCount = std::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity ) { return !_Identity->streamable; } );
+
+            uint32_t MaxSoundInstance = CONFIG_VALUE( "Limit", "MaxSoundInstance", 16 );
+
+            if( instanceCount > MaxSoundInstance )
+            {
+                LOGGER_ERROR( "Sound instance exceeded max count '%d'"
+                    , MaxSoundInstance
+                );
+
+                return nullptr;
+            }
+        }
 
         m_soundIdentities.emplace_back( emitter );
 

@@ -120,6 +120,7 @@ namespace Mengine
 
     public:
         LRESULT wndProc( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam );
+        bool wndProcTouch( HWND hWnd, WPARAM wParam, LPARAM lParam );
         bool wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & _result );
 
     protected:

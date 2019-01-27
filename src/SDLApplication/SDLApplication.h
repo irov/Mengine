@@ -43,33 +43,14 @@ namespace Mengine
         bool getApplicationPath_( const Char * _section, const Char * _key, ConstString & _path );
 
     protected:
-        bool initializeStringizeService_();
-        bool initializeApplicationService_();
-        bool initializeNotificationService_();
-        bool initializeThreadEngine_();
         bool initializeFileEngine_();
         bool initializeConfigEngine_();
         bool initializeUserDirectory_();
         bool initializeLoggerFile_();
         bool initializeLoggerEngine_();
-        bool initializeUnicodeEngine_();
-        bool initializeParticleEngine2_();
         bool initializeRenderEngine_();
         bool initializeSoundEngine_();
-        bool initializeSilentSoundEngine_();
-        bool initializeNodeManager_();
-        bool initializeScriptEngine_();
-        bool initializeCodecEngine_();
-        bool initializeInputEngine_();
-        bool initializePluginService_();
         bool initializeArchiveService_();
-        bool initializeModuleEngine_();
-        bool initializeDataManager_();
-        bool initializeMemoryManager_();
-        bool initializePrefetcherService_();
-
-    public:
-        void setActivate( bool _value );
 
     protected:
         ServiceProviderInterface * m_serviceProvider;
@@ -77,11 +58,6 @@ namespace Mengine
         LoggerInterfacePtr m_loggerMessageBox;
         LoggerInterfacePtr m_loggerStdio;
         LoggerInterfacePtr m_fileLog;
-
-        ConstString m_platformName;
-
-        WString m_projectName;
-        WString m_companyName;
 
         bool m_running;
         bool m_active;

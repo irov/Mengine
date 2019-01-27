@@ -726,11 +726,18 @@ namespace Mengine
             }
         }
 
+#ifdef MENGINE_MASTER_RELEASE
+        bool devplugins = false;
+        bool devmodules = false;
+#else
 #ifndef NDEBUG
         bool devplugins = true;
+        bool devmodules = true;
 #else
         bool developmentMode = HAS_OPTION( "dev" );
         bool devplugins = developmentMode;
+        bool devmodules = developmentMode;
+#endif
 #endif
 
         bool nodevplugins = HAS_OPTION( "nodevplugins" );
@@ -760,11 +767,30 @@ namespace Mengine
             if( MODULE_SERVICE()
                 ->runModule( Helper::stringizeString( moduleName ) ) == false )
             {
-                LOGGER_ERROR( "Application Failed to run module %s"
+                LOGGER_ERROR( "Application Failed to run module '%s'"
                     , moduleName.c_str()
                 );
 
                 return false;
+            }
+        }
+
+        bool nodevmodules = HAS_OPTION( "nodevmodules" );
+
+        if( devmodules == true && nodevmodules == false )
+        {
+            VectorString devModules;
+            CONFIG_VALUES( "DevModules", "Name", devModules );
+
+            for( const String & moduleName : devModules )
+            {
+                if( MODULE_SERVICE()
+                            ->runModule( Helper::stringizeString( moduleName ) ) == false )
+                {
+                    LOGGER_ERROR( "Application Failed to run dev module '%s'"
+                                , moduleName.c_str()
+                        );
+                }
             }
         }
 

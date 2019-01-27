@@ -134,9 +134,10 @@ namespace Mengine
         case SDL_FINGERMOTION:
             {
                 //uint32_t touchId = (uint32_t)_event.tfinger.fingerId;
+                uint32_t fingerId = (uint32_t)_event.tfinger.fingerId;
 
                 INPUT_SERVICE()
-                    ->pushMouseMoveEvent( 0, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dy, _event.tfinger.pressure );
+                    ->pushMouseMoveEvent( fingerId, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dy, _event.tfinger.pressure );
             }break;
         case SDL_FINGERDOWN:
         case SDL_FINGERUP:

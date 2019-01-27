@@ -203,6 +203,10 @@ namespace Mengine
                 , m_args( _args )
             {}
 
+            ~PythonFacebookEventHandler() override
+            {
+            }
+
         protected:
             void onFacebookInitialized() override
             {
@@ -441,4 +445,4 @@ namespace Mengine
 
         return true;
     }
-}  
+}

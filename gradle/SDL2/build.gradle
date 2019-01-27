@@ -36,12 +36,18 @@ android {
                         "-DSDL_POWER_ENABLED_BY_DEFAULT:BOOLEAN=ON"
             }
         }
-    }
+    }    
     
-    
+    /*
     externalNativeBuild {
         cmake {
             path "../../dependencies/SDL2/CMakeLists.txt"
+        }
+    }*/
+    
+    externalNativeBuild {
+        ndkBuild {
+            path '../../dependencies/SDL2/Android.mk'
         }
     }
 }

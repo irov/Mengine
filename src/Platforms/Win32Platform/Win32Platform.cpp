@@ -151,6 +151,10 @@ namespace Mengine
             m_platformTags.clear();
             m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "IOS" ) );
 
+#ifdef _WIN32
+            m_platformTags.addTag( STRINGIZE_STRING_LOCAL( "WIN32" ) );
+#endif
+
             m_touchpad = true;
         }
         else if( HAS_OPTION( "android" ) )
@@ -334,6 +338,8 @@ namespace Mengine
                     {
                         m_pauseUpdatingTime = frameTime;
                     }
+
+                    ::Sleep( 100 );
                 }
 
                 APPLICATION_SERVICE()
@@ -699,6 +705,37 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
+    bool Win32Platform::wndProcTouch( HWND hWnd, WPARAM wParam, LPARAM lParam )
+    {
+        MENGINE_UNUSED( hWnd );
+
+        BOOL bHandled = FALSE;
+        UINT cInputs = LOWORD( wParam );
+        TOUCHINPUT pInputs[32];
+        if( pInputs ) {
+            if( GetTouchInputInfo( (HTOUCHINPUT)lParam, cInputs, pInputs, sizeof( TOUCHINPUT ) ) ) {
+                for( UINT i = 0; i < cInputs; i++ ) {
+                    TOUCHINPUT ti = pInputs[i];
+                    //do something with each touch input entry
+                }
+                bHandled = TRUE;
+            }
+            else {
+                /* handle the error here */
+            }
+        }
+        else {
+            /* handle the error here, probably out of memory */
+        }
+        if( bHandled ) {
+            // if you handled the message, close the touch input handle and return
+            CloseTouchInputHandle( (HTOUCHINPUT)lParam );
+            return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
     bool Win32Platform::wndProcInput( HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lParam, LRESULT & _result )
     {
         (void)hWnd;
@@ -739,6 +776,14 @@ namespace Mengine
 
                 handle = true;
                 _result = FALSE;
+            }break;
+        case WM_TOUCH:
+            {
+                if( this->wndProcTouch( hWnd, wParam, lParam ) == true )
+                {
+                    handle = true;
+                    _result = FALSE;
+                }
             }break;
         case WM_MOUSEMOVE:
             {
@@ -1071,6 +1116,8 @@ namespace Mengine
             return false;
         }
 
+        RegisterTouchWindow( m_hWnd, 0 );
+
         HWND hWndFgnd = ::GetForegroundWindow();
 
         if( hWndFgnd != m_hWnd )
@@ -1102,7 +1149,19 @@ namespace Mengine
 
         m_mouseEvent.initialize( m_hWnd );
 
-        m_activeFrameTime = CONFIG_VALUE( "Engine", "MaxActiveFrameTime", 1000.f / 60.f );
+        const Char * option_fps = GET_OPTION_VALUE( "fps" );
+
+        float activeFrameTimeDefault = 1000.f / 60.f;
+
+        if( option_fps != nullptr )
+        {
+            float fps;
+            Helper::charsToFloat( option_fps, fps );
+
+            activeFrameTimeDefault = 1000.f / fps;
+        }
+
+        m_activeFrameTime = CONFIG_VALUE2( "Engine", "MaxActiveFrameTime", activeFrameTimeDefault );
 
         bool vsync = APPLICATION_SERVICE()
             ->getVSync();

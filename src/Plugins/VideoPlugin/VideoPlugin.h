@@ -17,6 +17,9 @@ namespace Mengine
         ~VideoPlugin() override;
 
     protected:
+        bool _availablePlugin() const override;
+
+    protected:
         bool _initializePlugin() override;
         void _finalizePlugin() override;
     };

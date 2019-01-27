@@ -90,6 +90,7 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
     @Override
     public void surfaceCreated(SurfaceHolder holder) {
         Log.v("SDL", "surfaceCreated()");
+        holder.setType(SurfaceHolder.SURFACE_TYPE_GPU);
     }
 
     // Called when we lose the surface
@@ -219,13 +220,12 @@ public class SDLSurface extends SurfaceView implements SurfaceHolder.Callback,
            return;
         }
 
-        /* If the surface has been previously destroyed by onNativeSurfaceDestroyed, recreate it here */
-        SDLActivity.onNativeSurfaceChanged();
-
         /* Surface is ready */
         SDLActivity.mIsSurfaceReady = true;
 
-        SDLActivity.mNextNativeState = SDLActivity.NativeState.RESUMED;
+        /* If the surface has been previously destroyed by onNativeSurfaceDestroyed, recreate it here */
+        SDLActivity.onNativeSurfaceChanged();
+
         SDLActivity.handleNativeState();
     }
 

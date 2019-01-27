@@ -626,7 +626,7 @@ namespace Mengine
                 {
                     String k = it.key();
 
-                    LOGGER_ERROR( "SurfaceImageSequence::setEventListener '%s' invalid kwds '%s'\n"
+                    LOGGER_ERROR( "surface '%s' invalid kwds '%s'"
                         , _surface->getName().c_str()
                         , k.c_str()
                     );
@@ -662,7 +662,7 @@ namespace Mengine
                 {
                     String k = it.key();
 
-                    LOGGER_ERROR( "SurfaceSound::setEventListener '%s' invalid kwds '%s'\n"
+                    LOGGER_ERROR( "surface '%s' invalid kwds '%s'"
                         , _surface->getName().c_str()
                         , k.c_str()
                     );
@@ -710,7 +710,7 @@ namespace Mengine
                 {
                     String k = it.key();
 
-                    LOGGER_ERROR( "Meshget::setEventListener '%s' invalid kwds '%s'\n"
+                    LOGGER_ERROR( "node '%s' invalid kwds '%s'"
                         , _node->getName().c_str()
                         , k.c_str()
                     );
@@ -764,7 +764,7 @@ namespace Mengine
                 {
                     String k = it.key();
 
-                    LOGGER_ERROR( "ScriptHolder::setEventListener '%s' invalid kwds '%s'\n"
+                    LOGGER_ERROR( "node '%s' invalid kwds '%s'"
                         , _node->getName().c_str()
                         , k.c_str()
                     );
@@ -811,7 +811,7 @@ namespace Mengine
                 {
                     String k = it.key();
 
-                    LOGGER_ERROR( "HotSpot::setEventListener %s kwds %s"
+                    LOGGER_ERROR( "node '%s' kwds '%s'"
                         , _node->getName().c_str()
                         , k.c_str()
                     );

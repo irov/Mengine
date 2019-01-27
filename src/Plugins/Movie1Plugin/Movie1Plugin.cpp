@@ -963,7 +963,7 @@ namespace Mengine
                 {
                     String k = it.key();
 
-                    LOGGER_ERROR( "Movie::setEventListener '%s' invalid kwds '%s'\n"
+                    LOGGER_ERROR( "node '%s' invalid kwds '%s'"
                         , _node->getName().c_str()
                         , k.c_str()
                     );

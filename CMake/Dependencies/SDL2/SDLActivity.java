@@ -86,7 +86,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     protected static boolean mScreenKeyboardShown;
     protected static ViewGroup mLayout;
     protected static SDLClipboardHandler mClipboardHandler;
-    protected static Hashtable<Integer, PointerIcon> mCursors;
+    protected static Hashtable<Integer, Object> mCursors;
     protected static int mLastCursorID;
     protected static SDLGenericMotionListener_API12 mMotionListener;
     protected static HIDDeviceManager mHIDDeviceManager;
@@ -180,7 +180,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         mTextEdit = null;
         mLayout = null;
         mClipboardHandler = null;
-        mCursors = new Hashtable<Integer, PointerIcon>();
+        mCursors = new Hashtable<Integer, Object>();
         mLastCursorID = 0;
         mSDLThread = null;
         mExitCalledFromJava = false;
@@ -534,7 +534,6 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     static final int COMMAND_CHANGE_TITLE = 1;
     static final int COMMAND_CHANGE_WINDOW_STYLE = 2;
     static final int COMMAND_TEXTEDIT_HIDE = 3;
-    static final int COMMAND_CHANGE_SURFACEVIEW_FORMAT = 4;
     static final int COMMAND_SET_KEEP_SCREEN_ON = 5;
 
     protected static final int COMMAND_USER = 0x8000;
@@ -630,32 +629,6 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
                         }
                     }
                 }
-                break;
-            }
-            case COMMAND_CHANGE_SURFACEVIEW_FORMAT:
-            {
-                int format = ((int)msg.obj);
-                int pf;
-
-                if (SDLActivity.mSurface == null) {
-                    return;
-                }
-
-                SurfaceHolder holder = SDLActivity.mSurface.getHolder();
-                if (holder == null) {
-                    return;
-                }
-
-                if (format == 1) {
-                    pf = PixelFormat.RGBA_8888;
-                } else if (format == 2) {
-                    pf = PixelFormat.RGBX_8888;
-                } else {
-                    pf = PixelFormat.RGB_565;
-                }
-
-                holder.setFormat(pf);
-
                 break;
             }
             default:
@@ -1063,14 +1036,6 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
         return SDLActivity.mSurface.getNativeSurface();
     }
 
-    /**
-     * This method is called by SDL using JNI.
-     */
-    public static void setSurfaceViewFormat(int format) {
-        mSingleton.sendCommand(COMMAND_CHANGE_SURFACEVIEW_FORMAT, format);
-        return;
-    }
-
     // Input
 
     /**
@@ -1380,7 +1345,7 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     };
 
     public void onSystemUiVisibilityChange(int visibility) {
-        if (SDLActivity.mFullscreenModeActive && ((visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0 || (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0)) {
+        if (SDLActivity.mFullscreenModeActive && (visibility & View.SYSTEM_UI_FLAG_FULLSCREEN) == 0 || (visibility & View.SYSTEM_UI_FLAG_HIDE_NAVIGATION) == 0) {
 
             Handler handler = getWindow().getDecorView().getHandler();
             if (handler != null) {
@@ -1418,14 +1383,13 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
     public static int createCustomCursor(int[] colors, int width, int height, int hotSpotX, int hotSpotY) {
         Bitmap bitmap = Bitmap.createBitmap(colors, width, height, Bitmap.Config.ARGB_8888);
         ++mLastCursorID;
-
-        if (Build.VERSION.SDK_INT >= 24) {
-            try {
-                mCursors.put(mLastCursorID, PointerIcon.create(bitmap, hotSpotX, hotSpotY));
-            } catch (Exception e) {
-                return 0;
-            }
-        } else {
+        // This requires API 24, so use reflection to implement this
+        try {
+            Class PointerIconClass = Class.forName("android.view.PointerIcon");
+            Class[] arg_types = new Class[] { Bitmap.class, float.class, float.class };
+            Method create = PointerIconClass.getMethod("create", arg_types);
+            mCursors.put(mLastCursorID, create.invoke(null, bitmap, hotSpotX, hotSpotY));
+        } catch (Exception e) {
             return 0;
         }
         return mLastCursorID;
@@ -1435,14 +1399,12 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
      * This method is called by SDL using JNI.
      */
     public static boolean setCustomCursor(int cursorID) {
-
-        if (Build.VERSION.SDK_INT >= 24) {
-            try {
-                mSurface.setPointerIcon(mCursors.get(cursorID));
-            } catch (Exception e) {
-                return false;
-            }
-        } else {
+        // This requires API 24, so use reflection to implement this
+        try {
+            Class PointerIconClass = Class.forName("android.view.PointerIcon");
+            Method setPointerIcon = SDLSurface.class.getMethod("setPointerIcon", PointerIconClass);
+            setPointerIcon.invoke(mSurface, mCursors.get(cursorID));
+        } catch (Exception e) {
             return false;
         }
         return true;
@@ -1491,12 +1453,15 @@ public class SDLActivity extends Activity implements View.OnSystemUiVisibilityCh
             cursor_type = 1002; //PointerIcon.TYPE_HAND;
             break;
         }
-        if (Build.VERSION.SDK_INT >= 24) {
-            try {
-                mSurface.setPointerIcon(PointerIcon.getSystemIcon(SDL.getContext(), cursor_type));
-            } catch (Exception e) {
-                return false;
-            }
+        // This requires API 24, so use reflection to implement this
+        try {
+            Class PointerIconClass = Class.forName("android.view.PointerIcon");
+            Class[] arg_types = new Class[] { Context.class, int.class };
+            Method getSystemIcon = PointerIconClass.getMethod("getSystemIcon", arg_types);
+            Method setPointerIcon = SDLSurface.class.getMethod("setPointerIcon", PointerIconClass);
+            setPointerIcon.invoke(mSurface, getSystemIcon.invoke(null, SDL.getContext(), cursor_type));
+        } catch (Exception e) {
+            return false;
         }
         return true;
     }
@@ -1753,3 +1718,4 @@ class SDLClipboardHandler_Old implements
        mClipMgrOld.setText(string);
     }
 }
+

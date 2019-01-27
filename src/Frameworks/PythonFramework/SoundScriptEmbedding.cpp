@@ -178,6 +178,15 @@ namespace Mengine
 
             if( sourceEmitter == nullptr )
             {
+                LOGGER_ERROR( "sound '%s' invalid create identity"
+                    , _resourceName.c_str()
+                );
+
+                if( _cb.is_callable() == true )
+                {
+                    _cb.call_args( nullptr, 2, _args );
+                }
+
                 resource->decrementReference();
 
                 return nullptr;
@@ -191,10 +200,15 @@ namespace Mengine
             if( SOUND_SERVICE()
                 ->setSourceVolume( sourceEmitter, volume, volume, true ) == false )
             {
-                LOGGER_ERROR( "ScriptWrapper::createSoundSource invalid %s setSourceVolume %f"
+                LOGGER_ERROR( "sound '%s' invalid set volume %f"
                     , _resourceName.c_str()
                     , volume
                 );
+
+                if( _cb.is_callable() == true )
+                {
+                    _cb.call_args( nullptr, 2, _args );
+                }
 
                 resource->decrementReference();
 

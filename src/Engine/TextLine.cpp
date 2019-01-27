@@ -13,8 +13,6 @@ namespace Mengine
         : m_layout( _layout )
         , m_length( 0.f )
         , m_charOffset( _charOffset )
-        , m_offset( 0.f )
-        , m_invalidateTextLine( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -45,7 +43,7 @@ namespace Mengine
             Glyph glyph;
             if( _font->getGlyph( m_layout, glyphChar, glyphCharNext, &glyph ) == false )
             {
-                LOGGER_ERROR( "TextLine for fontName %s invalid glyph %u next %u"
+                LOGGER_ERROR( "TextLine for fontName '%s' invalid glyph %u next %u"
                     , _font->getName().c_str()
                     , glyphChar
                     , glyphCharNext

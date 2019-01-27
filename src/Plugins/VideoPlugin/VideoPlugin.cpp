@@ -4,6 +4,7 @@
 #include "Interface/StringizeServiceInterface.h"
 #include "Interface/LoaderServiceInterface.h"
 #include "Interface/VocabularyServiceInterface.h"
+#include "Interface/ConfigServiceInterface.h"
 
 #include "Plugins/ResourceValidatePlugin/ResourceValidateServiceInterface.h"
 
@@ -58,7 +59,8 @@ namespace Mengine
                 {
                     String k = it.key();
 
-                    LOGGER_ERROR( "SurfaceVideo::setEventListener invalid kwds '%s'\n"
+                    LOGGER_ERROR( "surface '%s' invalid kwds '%s'"
+                        , _surface->getName().c_str()
                         , k.c_str()
                     );
                 }
@@ -69,6 +71,13 @@ namespace Mengine
 
             return _kernel->ret_none();
         }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool VideoPlugin::_availablePlugin() const
+    {
+        bool available = CONFIG_VALUE( "Engine", "VideoPluginAvailable", true );
+
+        return available;
     }
     //////////////////////////////////////////////////////////////////////////
     bool VideoPlugin::_initializePlugin()

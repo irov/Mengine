@@ -19,7 +19,7 @@ namespace Mengine
 
             const Char * message = alGetString( error );
 
-            LOGGER_ERROR( "OpenAL Error: (%s %d) %d:%s"
+            LOGGER_ERROR( "OpenAL Error: (%s[%d]) %d:%s"
                 , _file
                 , _line
                 , error

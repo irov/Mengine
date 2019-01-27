@@ -362,10 +362,12 @@ namespace Mengine
 			{
 				APPLICATION_SERVICE()
 					->tick( frameTime );
+
+				SDL_Delay( 0 );
 			}
 			else
 			{
-				SDL_Delay( 20 );
+				SDL_Delay( 100 );
 			}
 
 			if( APPLICATION_SERVICE()
@@ -379,6 +381,10 @@ namespace Mengine
 
 					SDL_GL_SwapWindow( m_window );
 				}
+			}
+			else
+			{
+				SDL_Delay( 100 );
 			}
 
 			APPLICATION_SERVICE()

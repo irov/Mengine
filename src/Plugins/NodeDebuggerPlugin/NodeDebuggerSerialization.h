@@ -24,7 +24,8 @@ namespace Mengine
     struct PacketHeader
     {
         uint32_t magic;
-        uint32_t payloadSize;
+        uint32_t compressedSize;
+        uint32_t uncompressedSize;  // 0 if packed is not compressed
     };
 
     inline void InsertPacketHeader( Vector<uint8_t> & _payload, const PacketHeader & _hdr )

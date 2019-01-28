@@ -9,10 +9,6 @@
 #include "glad/glad.h"
 #include "GLFW/glfw3.h"
 
-#define PUGIXML_NO_STL
-#define PUGIXML_HEADER_ONLY
-#include "pugixml.hpp"
-
 #include "zed_net.h"
 
 #include <thread>
@@ -35,7 +31,7 @@ namespace Mengine
         Vector<uint8_t> payload;
     };
 
-    
+
 
 #define DESERIALIZE_PROP(NAME)\
     deserializeNodeProp<decltype(this->NAME)>( #NAME, _xmlNode, [this]( decltype(this->NAME) _value ) { this->NAME = _value; } )
@@ -44,7 +40,7 @@ namespace Mengine
     serializeNodeProp( this->NAME, #NAME, _xmlNode )
 
     struct NodeTransformation
-    {        
+    {
         mt::vec3f position;
         mt::vec3f origin;
         mt::vec2f skew;
@@ -259,6 +255,8 @@ namespace Mengine
     private:
         void                        Resize( const int _width, const int _height );
         void                        Update( const double _dt );
+        void                        CompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr );
+        void                        UncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
         void                        ProcessPacket( const NodeDebuggerPacket & _packet );
         void                        ReceiveScene( const pugi::xml_node & _xmlContainer );
         void                        DeserializeNode( const pugi::xml_node & _xmlNode, DebuggerNode * _node );
@@ -327,6 +325,7 @@ namespace Mengine
 
         int                         mSceneUpdateFreq;
         double                      mSceneUpdateTimer;
+        bool                        mUpdateSceneOnChange;
         bool                        mPauseRequested;
     };
 }

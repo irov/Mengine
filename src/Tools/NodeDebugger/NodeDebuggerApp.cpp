@@ -257,7 +257,7 @@ namespace Mengine
     {
         const size_t payloadSize = _packet.payload.size();
 
-        if( payloadSize < 1 )//1024 )
+        if( payloadSize < 1024 )
         {
             _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
             _hdr.uncompressedSize = 0; // packet is not compressed

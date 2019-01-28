@@ -267,7 +267,7 @@ namespace Mengine
 
         mt::box2f absorb_bb;
         mt::insideout_box( absorb_bb );
-        
+
         const ConstString & type = _node->getType();
 
         NodeDebuggerBoundingBoxInterfacePtr boundingBox = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), type );
@@ -307,7 +307,7 @@ namespace Mengine
                 mt::merge_box( absorb_bb, child_bb );
 
                 successul = true;
-            }            
+            }
         } );
 
         _bb = absorb_bb;
@@ -345,7 +345,7 @@ namespace Mengine
         mt::box2f bcrop;
         mt::mul_v2_v2_m4( bcrop.minimum, mt::vec2f( -1.f, 1.f ), vpminv );
         mt::mul_v2_v2_m4( bcrop.maximum, mt::vec2f( 1.f, -1.f ), vpminv );
-        
+
         mt::crop_box( bbox, bcrop );
 
         const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
@@ -455,7 +455,7 @@ namespace Mengine
     {
         const size_t payloadSize = _packet.payload.size();
 
-        if( m_compressor == nullptr || payloadSize < 1 )//1024 )
+        if( m_compressor == nullptr || payloadSize < 1024 )
         {
             _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
             _hdr.uncompressedSize = 0; // packet is not compressed
@@ -813,7 +813,7 @@ namespace Mengine
             }
 
             pugi::xml_node animationNode = _xmlNode.child( "Animation" );
-            
+
             if( animationNode )
             {
                 AnimationInterface * animation = node->getAnimation();

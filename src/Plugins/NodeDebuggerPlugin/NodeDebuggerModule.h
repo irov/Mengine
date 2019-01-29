@@ -15,10 +15,9 @@
 
 #include "Interface/SocketInterface.h"
 #include "Interface/ThreadServiceInterface.h"
+#include "Interface/ArchivatorInterface.h"
 
-#define PUGIXML_NO_STL
-#define PUGIXML_HEADER_ONLY
-#include "pugixml.hpp"
+#include "NodeDebuggerSerialization.h"
 
 namespace Mengine
 {
@@ -65,7 +64,7 @@ namespace Mengine
         void setScene( const ScenePtr & _scene );
         void updateScene();
 
-    public:        
+    public:
         void _update( bool _focus ) override;
         void _render( const RenderContext * _context ) override;
 
@@ -75,6 +74,8 @@ namespace Mengine
     protected:
         void privateInit();
         void recreateServer();
+        void compressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr );
+        void uncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData );
         void sendPacket( NodeDebuggerPacket & _packet );
         void sendScene( const ScenePtr & _scene );
         void serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode );
@@ -104,5 +105,6 @@ namespace Mengine
         Deque<NodeDebuggerPacket> m_outgoingPackets;
         Vector<uint8_t> m_receivedData;
         VectorNodePath m_selectedNodePath;
+        ArchivatorInterfacePtr m_compressor;
     };
 }

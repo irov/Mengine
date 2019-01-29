@@ -17,6 +17,10 @@
 #define ZED_NET_IMPLEMENTATION
 #include "zed_net.h"
 
+#include "lz4.h"
+
+#include <cassert>
+
 #define MutexLocker std::lock_guard<std::mutex>
 
 #include "ImGui_Ext.h"
@@ -55,6 +59,7 @@ namespace Mengine
         , mScene( nullptr )
         , mSceneUpdateFreq( 0 )
         , mSceneUpdateTimer( 0.0 )
+        , mUpdateSceneOnChange( false )
         , mPauseRequested( false )
     {
     }
@@ -248,6 +253,54 @@ namespace Mengine
         }
     }
 
+    void NodeDebuggerApp::CompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr )
+    {
+        const size_t payloadSize = _packet.payload.size();
+
+        if( payloadSize < 1024 )
+        {
+            _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
+            _hdr.uncompressedSize = 0; // packet is not compressed
+        }
+        else
+        {
+            const size_t maxCompressedSize = ::LZ4_compressBound( payloadSize );
+            Vector<uint8_t> compressedPayload( maxCompressedSize );
+
+            const int result = ::LZ4_compress_default( reinterpret_cast<char*>( _packet.payload.data() ), reinterpret_cast<char*>( compressedPayload.data() ), static_cast<int>( payloadSize ), static_cast<int>( maxCompressedSize ) );
+            if( result < 0 || result >= payloadSize )
+            {
+                _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
+                _hdr.uncompressedSize = 0; // packet is not compressed
+            }
+            else
+            {
+                _hdr.compressedSize = static_cast<uint32_t>( result );
+                _hdr.uncompressedSize = static_cast<uint32_t>( payloadSize );
+
+                compressedPayload.resize( _hdr.compressedSize );
+                _packet.payload.swap( compressedPayload );
+            }
+        }
+    }
+
+    void NodeDebuggerApp::UncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData )
+    {
+        if( _hdr.uncompressedSize == 0 )
+        {
+            // this packet is uncompressed, just copy
+            _packet.payload.resize( _hdr.compressedSize );
+            memcpy( _packet.payload.data(), _receivedData, _hdr.compressedSize );
+        }
+        else
+        {
+            _packet.payload.resize( _hdr.uncompressedSize );
+
+            const int result = ::LZ4_decompress_safe( reinterpret_cast<const char*>( _receivedData ), reinterpret_cast<char*>( _packet.payload.data() ), static_cast<int>( _hdr.compressedSize ), static_cast<int>( _hdr.uncompressedSize ) );
+            assert( result == _hdr.uncompressedSize );
+        }
+    }
+
     void NodeDebuggerApp::ProcessPacket( const NodeDebuggerPacket & _packet )
     {
         pugi::xml_document doc;
@@ -327,7 +380,7 @@ namespace Mengine
         _node->transformation.deserialize( transformNode );
 
         pugi::xml_node renderNode = _xmlNode.child( "Render" );
-       
+
         _node->hasRender = renderNode;
 
         if( _node->hasRender )
@@ -659,11 +712,22 @@ namespace Mengine
 
             if( ImGui::CollapsingHeader( "Game controls:" ) )
             {
+                ImGui::PushItemFlag( ImGuiItemFlags_Disabled, mUpdateSceneOnChange );
                 int hz = mSceneUpdateFreq;
                 if( ImGui::InputInt( "Update freq (hz):", &hz ) )
                 {
                     mSceneUpdateFreq = std::clamp( hz, 0, 30 );
                     mSceneUpdateTimer = 0.0;
+                }
+                ImGui::PopItemFlag();
+
+                if( ImGui::Checkbox( "Update scene on change", &mUpdateSceneOnChange ) )
+                {
+                    if( mUpdateSceneOnChange )
+                    {
+                        mSceneUpdateFreq = 0;
+                        mSceneUpdateTimer = 0.0;
+                    }
                 }
 
                 if( ImGui::Button( "Pause game" ) )
@@ -847,7 +911,7 @@ namespace Mengine
 
         auto uiEditorVec3f = [_node]( const char * _caption, mt::vec3f & _prop )
         {
-            mt::vec3f testValue = _prop;            
+            mt::vec3f testValue = _prop;
             bool input = ImGui::DragFloat3( _caption, testValue.buff() );
 
             if( input && testValue != _prop )
@@ -887,7 +951,7 @@ namespace Mengine
             ImGui::DragFloat( _caption, &testValue );
             ImGui::PopStyleColor();
             ImGui::PopItemFlag();
-        };        
+        };
 
         auto uiEditorVec2f = [_node]( const char * _caption, mt::vec2f & _prop )
         {
@@ -903,7 +967,7 @@ namespace Mengine
 
         auto uiEditorColor = [_node]( const Char * _caption, Color & _prop )
         {
-            Color testValue = _prop;			
+            Color testValue = _prop;
             bool input = ImGui::ColorEdit4( _caption, testValue.buff() );
 
             if( input && testValue != _prop )
@@ -952,9 +1016,9 @@ namespace Mengine
         auto uiEditorListBox = [_node]( const char * _caption, uint32_t & _prop, const std::initializer_list<String> & _items, uint32_t _count )
         {
             int32_t testValue = _prop;
-            bool input = ImGui::ListBox( _caption, &testValue, []( void* data, int idx, const char** out_text ) 
-            { 
-                *out_text = ((String *)data + idx)->c_str(); 
+            bool input = ImGui::ListBox( _caption, &testValue, []( void* data, int idx, const char** out_text )
+            {
+                *out_text = ((String *)data + idx)->c_str();
                 return true;
             }, (void *)_items.begin(), _count );
 
@@ -1210,7 +1274,7 @@ namespace Mengine
                 return;
             }
 
-            while( hdr != nullptr && hdr->payloadSize <= (mReceivedData.size() - sizeof( PacketHeader )) )
+            while( hdr != nullptr && hdr->compressedSize <= (mReceivedData.size() - sizeof( PacketHeader )) )
             {
                 // received garbage - nothing fancy, just disconnect
                 if( hdr->magic != PACKET_MAGIC )
@@ -1219,11 +1283,11 @@ namespace Mengine
                     return;
                 }
 
-                const size_t dataSizeWithHeader = hdr->payloadSize + sizeof( PacketHeader );
+                const size_t dataSizeWithHeader = hdr->compressedSize + sizeof( PacketHeader );
 
                 NodeDebuggerPacket packet;
-                packet.payload.resize( hdr->payloadSize );
-                memcpy( packet.payload.data(), mReceivedData.data() + sizeof( PacketHeader ), hdr->payloadSize );
+                UncompressPacket( packet, *hdr, mReceivedData.data() + sizeof( PacketHeader ) );
+
                 mIncomingPackets.emplace_back( packet );
 
                 // now remove this packet data from the buffer
@@ -1273,7 +1337,9 @@ namespace Mengine
 
             PacketHeader hdr;
             hdr.magic = PACKET_MAGIC;
-            hdr.payloadSize = static_cast<uint32_t>(packet.payload.size());
+
+            CompressPacket( packet, hdr);
+
             InsertPacketHeader( packet.payload, hdr );
 
             mOutgoingPackets.emplace_back( packet );
@@ -1298,7 +1364,7 @@ namespace Mengine
         xmlNode.append_attribute( "type" ).set_value( _node.type.c_str() );
 
         serializeNodeProp( _node.enable, "enable", xmlNode );
-        
+
         if( _node.transformationProxy == false )
         {
             pugi::xml_node xmlTransformation = xmlNode.append_child( "Transformation" );
@@ -1328,6 +1394,11 @@ namespace Mengine
         }
 
         SendXML( doc );
+
+        if( mUpdateSceneOnChange )
+        {
+            SendSceneRequest();
+        }
     }
 
     void NodeDebuggerApp::SendNodeSelection(const String & _path)

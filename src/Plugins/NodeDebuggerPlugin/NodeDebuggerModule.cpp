@@ -14,6 +14,7 @@
 #include "Interface/VocabularyServiceInterface.h"
 #include "Interface/TextServiceInterface.h"
 #include "Interface/NotificationServiceInterface.h"
+#include "Interface/ArchiveServiceInterface.h"
 
 #include "NodeDebuggerSerialization.h"
 
@@ -158,7 +159,7 @@ namespace Mengine
 
                     // check if we have enough data to form a packet
                     PacketHeader* hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
-                    while( hdr != nullptr && hdr->payloadSize <= (m_receivedData.size() - sizeof( uint32_t )) )
+                    while( hdr != nullptr && hdr->compressedSize <= (m_receivedData.size() - sizeof( PacketHeader )) )
                     {
                         // received garbage - nothing fancy, just disconnect
                         if( hdr->magic != PACKET_MAGIC )
@@ -168,11 +169,11 @@ namespace Mengine
                             return true;
                         }
 
-                        const size_t dataSizeWithHeader = hdr->payloadSize + sizeof( PacketHeader );
+                        const size_t dataSizeWithHeader = hdr->compressedSize + sizeof( PacketHeader );
 
                         NodeDebuggerPacket packet;
-                        packet.payload.resize( hdr->payloadSize );
-                        memcpy( packet.payload.data(), m_receivedData.data() + sizeof( PacketHeader ), hdr->payloadSize );
+                        uncompressPacket( packet, *hdr, m_receivedData.data() + sizeof( PacketHeader ) );
+
                         m_incomingPackets.emplace_back( packet );
 
                         // now remove this packet data from the buffer
@@ -182,7 +183,7 @@ namespace Mengine
                             memmove( m_receivedData.data(), m_receivedData.data() + dataSizeWithHeader, newSize );
                             m_receivedData.resize( newSize );
 
-                            hdr = reinterpret_cast<PacketHeader *>(m_receivedData.data());
+                            hdr = reinterpret_cast<PacketHeader *>( m_receivedData.data() );
                         }
                         else
                         {
@@ -266,7 +267,7 @@ namespace Mengine
 
         mt::box2f absorb_bb;
         mt::insideout_box( absorb_bb );
-        
+
         const ConstString & type = _node->getType();
 
         NodeDebuggerBoundingBoxInterfacePtr boundingBox = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "NodeDebuggerBoundingBox" ), type );
@@ -306,7 +307,7 @@ namespace Mengine
                 mt::merge_box( absorb_bb, child_bb );
 
                 successul = true;
-            }            
+            }
         } );
 
         _bb = absorb_bb;
@@ -344,7 +345,7 @@ namespace Mengine
         mt::box2f bcrop;
         mt::mul_v2_v2_m4( bcrop.minimum, mt::vec2f( -1.f, 1.f ), vpminv );
         mt::mul_v2_v2_m4( bcrop.maximum, mt::vec2f( 1.f, -1.f ), vpminv );
-        
+
         mt::crop_box( bbox, bcrop );
 
         const RenderMaterialInterfacePtr & debugMaterial = RENDERMATERIAL_SERVICE()
@@ -429,6 +430,9 @@ namespace Mengine
             ->createMutex( __FILE__, __LINE__ );
 
         m_threadJob->addWorker( this );
+
+        m_compressor = ARCHIVE_SERVICE()
+            ->getArchivator( STRINGIZE_STRING_LOCAL( "lz4" ) );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::recreateServer()
@@ -447,13 +451,62 @@ namespace Mengine
         m_shouldRecreateServer = false;
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::compressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr )
+    {
+        const size_t payloadSize = _packet.payload.size();
+
+        if( m_compressor == nullptr || payloadSize < 1024 )
+        {
+            _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
+            _hdr.uncompressedSize = 0; // packet is not compressed
+        }
+        else
+        {
+            const size_t maxCompressedSize = m_compressor->compressBound( payloadSize );
+            Vector<uint8_t> compressedPayload( maxCompressedSize );
+            size_t compressedSize = 0;
+            const bool success = m_compressor->compress( compressedPayload.data(), maxCompressedSize, _packet.payload.data(), payloadSize, compressedSize, EAC_NORMAL );
+            if( success == false || compressedSize >= payloadSize )
+            {
+                _hdr.compressedSize = static_cast<uint32_t>( payloadSize );
+                _hdr.uncompressedSize = 0; // packet is not compressed
+            }
+            else
+            {
+                _hdr.compressedSize = static_cast<uint32_t>( compressedSize );
+                _hdr.uncompressedSize = static_cast<uint32_t>( payloadSize );
+
+                compressedPayload.resize( compressedSize );
+                _packet.payload.swap( compressedPayload );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::uncompressPacket( NodeDebuggerPacket & _packet, PacketHeader & _hdr, const uint8_t * _receivedData )
+    {
+        if( _hdr.uncompressedSize == 0 )
+        {
+            // this packet is uncompressed, just copy
+            _packet.payload.resize( _hdr.compressedSize );
+            memcpy( _packet.payload.data(), _receivedData, _hdr.compressedSize );
+        }
+        else
+        {
+            _packet.payload.resize( _hdr.uncompressedSize );
+            size_t uncompressedDataSize = 0;
+            const bool success = m_compressor->decompress( _packet.payload.data(), _hdr.uncompressedSize, _receivedData, _hdr.compressedSize, uncompressedDataSize );
+            MENGINE_ASSERTION( success == true && uncompressedDataSize == _hdr.uncompressedSize, ( "Packet decompression failed!" ) );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::sendPacket( NodeDebuggerPacket & _packet )
     {
         if( !_packet.payload.empty() )
         {
             PacketHeader hdr;
             hdr.magic = PACKET_MAGIC;
-            hdr.payloadSize = static_cast<uint32_t>(_packet.payload.size());
+
+            compressPacket( _packet, hdr );
 
             InsertPacketHeader( _packet.payload, hdr );
 
@@ -760,7 +813,7 @@ namespace Mengine
             }
 
             pugi::xml_node animationNode = _xmlNode.child( "Animation" );
-            
+
             if( animationNode )
             {
                 AnimationInterface * animation = node->getAnimation();

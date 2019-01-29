@@ -49,7 +49,7 @@ namespace Mengine
         void onTurnSound( bool _turn ) override;
 
     public:
-        SoundIdentityInterfacePtr createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceCategory _category, bool _streamable ) override;
+        SoundIdentityInterfacePtr createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _sample, ESoundSourceCategory _category, bool _streamable, const Char * _doc ) override;
 
     public:
         SoundBufferInterfacePtr createSoundBufferFromFile( const FileGroupInterfacePtr& _pakName, const FilePath & _filePath, const ConstString & _codecType, bool _streamable ) override;

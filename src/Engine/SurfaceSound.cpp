@@ -7,6 +7,7 @@
 #include "ResourceSound.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <math.h>
 
@@ -29,7 +30,7 @@ namespace Mengine
     {
         if( m_resourceSound == nullptr )
         {
-            LOGGER_ERROR( "SoundEmitter::_compile: '%s' resource is null"
+            LOGGER_ERROR( "sound '%s' resource  is null"
                 , this->getName().c_str()
             );
 
@@ -38,7 +39,7 @@ namespace Mengine
 
         if( m_resourceSound.compile() == false )
         {
-            LOGGER_ERROR( "SoundEmitter::_compile: '%s' resource '%s' not compile"
+            LOGGER_ERROR( "sound '%s' resource '%s' not compile"
                 , this->getName().c_str()
                 , m_resourceSound->getName().c_str()
             );
@@ -50,8 +51,9 @@ namespace Mengine
 
         if( m_soundBuffer == nullptr )
         {
-            LOGGER_ERROR( "SoundEmitter::_compile: '%s' sound buffer not create"
+            LOGGER_ERROR( "sound '%s' resource '%s' sound buffer not create"
                 , this->getName().c_str()
+                , m_resourceSound->getName().c_str()
             );
 
             return false;
@@ -60,12 +62,16 @@ namespace Mengine
         bool streamable = m_resourceSound->isStreamable();
 
         m_soundEmitter = SOUND_SERVICE()
-            ->createSoundIdentity( m_isHeadMode, m_soundBuffer, m_sourceCategory, streamable );
+            ->createSoundIdentity( m_isHeadMode, m_soundBuffer, m_sourceCategory, streamable
+                , MENGINE_DOCUMENT( "SurfaceSound '%s' resource '%s'", this->getName().c_str(), m_resourceSound->getName().c_str() ) );
 
         if( m_soundEmitter == nullptr )
         {
-            LOGGER_ERROR( "SoundEmitter::_compile: sound emitter '%s' not compiled"
+            LOGGER_ERROR( "sound '%s' resource '%s' not compiled [category '%d' streamable '%d']"
                 , this->getName().c_str()
+                , m_resourceSound->getName().c_str()
+                , m_sourceCategory
+                , streamable
             );
 
             return false;

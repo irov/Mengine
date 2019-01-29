@@ -8,6 +8,7 @@
 #include "Engine/ResourceMusic.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <cmath>
 
@@ -83,7 +84,7 @@ namespace Mengine
         AmplifierMusicCallbackInterfacePtr m_callback;
     };
     //////////////////////////////////////////////////////////////////////////
-    bool Amplifier::playMusic( const ConstString& _resourceMusic, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
+    bool Amplifier::playMusic( const ConstString & _resourceMusic, float _pos, bool _looped, const AmplifierMusicCallbackInterfacePtr & _callback )
     {
         if( m_play == true )
         {
@@ -134,7 +135,8 @@ namespace Mengine
         }
 
         SoundIdentityInterfacePtr soundEmitter = SOUND_SERVICE()
-            ->createSoundIdentity( false, buffer, ES_SOURCE_CATEGORY_MUSIC, true );
+            ->createSoundIdentity( false, buffer, ES_SOURCE_CATEGORY_MUSIC, true
+                , MENGINE_DOCUMENT( "Amplifier::playMusic resource '%s'", _resourceMusic.c_str() ) );
 
         if( soundEmitter == nullptr )
         {

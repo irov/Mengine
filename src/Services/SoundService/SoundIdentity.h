@@ -54,6 +54,10 @@ namespace Mengine
         bool streamable;
         bool looped;
         bool turn;
+
+#ifndef NDEBUG
+        String doc;
+#endif
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<SoundIdentity> SoundIdentityPtr;

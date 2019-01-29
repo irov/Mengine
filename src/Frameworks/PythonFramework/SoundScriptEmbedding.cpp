@@ -19,6 +19,7 @@
 #include "Kernel/FactoryPool.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "pybind/pybind.hpp"
 
@@ -174,7 +175,9 @@ namespace Mengine
             bool streamable = resource->isStreamable();
 
             SoundIdentityInterfacePtr sourceEmitter = SOUND_SERVICE()
-                ->createSoundIdentity( true, soundBuffer, _category, streamable );
+                ->createSoundIdentity( true, soundBuffer, _category, streamable
+                    , MENGINE_DOCUMENT( "createSoundSource '%s'", _resourceName.c_str() )
+                );
 
             if( sourceEmitter == nullptr )
             {

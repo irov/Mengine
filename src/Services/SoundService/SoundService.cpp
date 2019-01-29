@@ -253,7 +253,7 @@ namespace Mengine
             ->onTurnSound( m_turnSound );
     }
     //////////////////////////////////////////////////////////////////////////
-    SoundIdentityInterfacePtr SoundService::createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceCategory _category, bool _streamable )
+    SoundIdentityInterfacePtr SoundService::createSoundIdentity( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer, ESoundSourceCategory _category, bool _streamable, const Char * _doc )
     {
         if( m_supportStream == false && _streamable == true )
         {
@@ -302,6 +302,10 @@ namespace Mengine
         emitter->looped = false;
         emitter->turn = _streamable ? m_turnStream : m_turnSound;
 
+#ifndef NDEBUG
+        emitter->doc = _doc;
+#endif
+
         this->updateSourceVolume_( emitter );
 
         if( _streamable == true )
@@ -315,6 +319,20 @@ namespace Mengine
                 LOGGER_ERROR( "Sound streamable exceeded max count '%d'"
                     , MaxSoundStreamable
                 );
+
+#ifndef NDEBUG
+                for( const SoundIdentityPtr & identity : m_soundIdentities )
+                {
+                    if( identity->streamable == false )
+                    {
+                        continue;
+                    }
+
+                    LOGGER_ERROR( "sound: streamable %s "
+                        , identity->doc.c_str()
+                    );
+                }
+#endif
 
                 return nullptr;
             }
@@ -330,6 +348,20 @@ namespace Mengine
                 LOGGER_ERROR( "Sound instance exceeded max count '%d'"
                     , MaxSoundInstance
                 );
+
+#ifndef NDEBUG
+                for( const SoundIdentityPtr & identity : m_soundIdentities )
+                {
+                    if( identity->streamable == true )
+                    {
+                        continue;
+                    }
+
+                    LOGGER_ERROR( "sound: instance %s"
+                        , identity->doc.c_str()
+                    );
+                }
+#endif
 
                 return nullptr;
             }

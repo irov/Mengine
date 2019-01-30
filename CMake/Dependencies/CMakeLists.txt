@@ -311,15 +311,15 @@ if(MENGINE_PLATFORM_SDL)
             set(SDL_POWER OFF CACHE BOOL "SDL_POWER" FORCE)
             set(SDL_POWER_ENABLED_BY_DEFAULT OFF CACHE BOOL "SDL_POWER_ENABLED_BY_DEFAULT" FORCE)
         endif()
-        
-        if(MENGINE_TARGET_ANDROID)
-            MESSAGE("copy SDLActivity and SDLSurface")
-            configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLActivity.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java COPYONLY)
-            configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLSurface.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLSurface.java COPYONLY)
-        endif()
 
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/SDL2 )
-    set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})    
+    set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
+endif()
+
+if(MENGINE_PLATFORM_SDL AND MENGINE_TARGET_ANDROID)
+    MESSAGE("copy SDLActivity and SDLSurface")
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLActivity.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLActivity.java COPYONLY)
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/SDL2/SDLSurface.java ${THIRDPARTY_DIR}/SDL2/android-project/app/src/main/java/org/libsdl/app/SDLSurface.java COPYONLY)
 endif()
 
 
@@ -371,6 +371,11 @@ if(NOT MENGINE_TARGET_IOS)
         SET(ALSOFT_EMBED_HRTF_DATA OFF CACHE BOOL "Embed the HRTF data files (increases library footprint)" FORCE)
         SET(ALSOFT_BUILD_IMPORT_LIB OFF CACHE BOOL "Build an import .lib using dlltool (requires sed)" FORCE)
         SET(ALSOFT_BACKEND_WAVE OFF CACHE BOOL "Enable Wave Writer backend" FORCE)
+        
+        configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)        
+        if(MENGINE_TARGET_ANDROID)
+            configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/bsinc_inc.h ${THIRDPARTY_DIR}/openal-soft/include/bsinc_inc.h COPYONLY)
+        endif()
 
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/openal-soft )
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})

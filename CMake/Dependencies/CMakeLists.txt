@@ -255,7 +255,7 @@ endif()
 
 #dependencies SDL2
 message("================SDL2================")
-if(MENGINE_PLATFORM_SDL)
+if(MENGINE_PLATFORM_SDL AND NOT MENGINE_TARGET_ANDROID)
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/SDL2)  
         set(SDL_CMAKE_DEBUG_POSTFIX "d" CACHE STRING "Name suffix for debug builds" FORCE)
@@ -340,7 +340,7 @@ endif()
 
 #define openal-soft
 message("================openal-soft================")
-if(NOT MENGINE_TARGET_IOS)
+if(NOT MENGINE_TARGET_IOS AND NOT MENGINE_TARGET_ANDROID)
     set(CMAKE_SOURCE_DIR2 ${CMAKE_SOURCE_DIR})
     set(CMAKE_SOURCE_DIR ${THIRDPARTY_DIR}/openal-soft)
         if(MENGINE_TOOLCHAIN_MSVC)			
@@ -371,15 +371,16 @@ if(NOT MENGINE_TARGET_IOS)
         SET(ALSOFT_EMBED_HRTF_DATA OFF CACHE BOOL "Embed the HRTF data files (increases library footprint)" FORCE)
         SET(ALSOFT_BUILD_IMPORT_LIB OFF CACHE BOOL "Build an import .lib using dlltool (requires sed)" FORCE)
         SET(ALSOFT_BACKEND_WAVE OFF CACHE BOOL "Enable Wave Writer backend" FORCE)
-        
-        configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)        
-        if(MENGINE_TARGET_ANDROID)
-            configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/bsinc_inc.h ${THIRDPARTY_DIR}/openal-soft/include/bsinc_inc.h COPYONLY)
-        endif()
 
     ADD_SUBDIRECTORY( ${CMAKE_SOURCE_DIR} ${CMAKE_TEMP_DIR}/openal-soft )
     set(CMAKE_SOURCE_DIR ${CMAKE_SOURCE_DIR2})
 endif()
+
+if(MENGINE_TARGET_ANDROID)
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/CMakeLists.txt ${THIRDPARTY_DIR}/openal-soft/CMakeLists.txt COPYONLY)
+    configure_file( ${CMAKE_CURRENT_SOURCE_DIR}/openal-soft/bsinc_inc.h ${THIRDPARTY_DIR}/openal-soft/include/bsinc_inc.h COPYONLY)
+endif()
+
 
 #define libpng
 message("================libpng================")

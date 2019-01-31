@@ -1,3 +1,1 @@
-include ':app', ':unity-ads'
-include ':OpenAL32'
-include ':SDL2'
+include ':app', ':unity-ads', ':libraries:OpenAL32', ':libraries:SDL2'

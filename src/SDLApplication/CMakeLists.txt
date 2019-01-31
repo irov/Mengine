@@ -94,43 +94,11 @@ if(MENGINE_TARGET_IOS)
     TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${THIRDPARTY_DIR}/SDL2/Xcode-iOS/SDL/build/Debug-iphoneos/libSDL2.a)
 endif()
 
-if(MENGINE_TARGET_ANDROID)
-    add_library( SDL2
-            SHARED
-            IMPORTED )
-             
-    set_target_properties( # Specifies the target library.
-            SDL2
-            # Specifies the parameter you want to define.
-            PROPERTIES IMPORTED_LOCATION
-
-            # Provides the path to the library you want to import.
-            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}SDL2${MENGINE_SO_SUFFIX} )             
-
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} SDL2)
-    
-    add_library( hidapi
-            SHARED
-            IMPORTED )
-             
-    set_target_properties( # Specifies the target library.
-            hidapi
-            # Specifies the parameter you want to define.
-            PROPERTIES IMPORTED_LOCATION
-
-            # Provides the path to the library you want to import.
-            ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}hidapi${MENGINE_SO_SUFFIX} )             
-
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} hidapi)    
-endif()
 
 if(MENGINE_TOOLCHAIN_MSVC OR MENGINE_TOOLCHAIN_XCODE_MAC)
     TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}SDL2main${MENGINE_DEPENDENCIES_DEBUG_SUFFIX}${MENGINE_LIB_SUFFIX})
 endif()
 
-if(MENGINE_TARGET_ANDROID)
-    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${THIRDPARTY_LIB_DIR}/${MENGINE_LIB_PREFIX}SDL2main${MENGINE_LIB_SUFFIX})
-endif()
 
 TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} ${APPLICATION_LIBS} )
 

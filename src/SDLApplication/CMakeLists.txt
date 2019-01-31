@@ -19,9 +19,6 @@ if(MENGINE_TARGET_ANDROID)
     )
 endif()
 
-add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
-
 INCLUDE_DIRECTORIES( 
     ${THIRDPARTY_DIR}/pybind/include
     ${THIRDPARTY_DIR}/SDL2/include

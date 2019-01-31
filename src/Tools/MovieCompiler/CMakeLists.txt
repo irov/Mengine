@@ -5,9 +5,6 @@ src
     MovieCompiler.cpp
 )
 
-add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
-
 INCLUDE_DIRECTORIES( 
 			         ${THIRDPARTY_DIR}/astralax
                      ${THIRDPARTY_DIR}/lz4/lib

@@ -11,8 +11,6 @@ ADD_FILTER(
     main.cpp
 )
 
-add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
 add_definitions(-D_WINSOCK_DEPRECATED_NO_WARNINGS)
 
 INCLUDE_DIRECTORIES(

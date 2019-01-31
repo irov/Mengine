@@ -10,7 +10,6 @@
 #include <memory.h>
 #include <string.h>
 #include <setjmp.h>
-#include <wtypes.h>
 
 #include <algorithm>
 #include <deque>

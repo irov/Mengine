@@ -44,7 +44,7 @@ android {
     
     externalNativeBuild {
         cmake {
-            path "../../dependencies/openal-soft/CMakeLists.txt"
+            path "../../../dependencies/openal-soft/CMakeLists.txt"
         }
     }
 }

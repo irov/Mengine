@@ -15,9 +15,6 @@ INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/pybind/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/libmath/include )
 INCLUDE_DIRECTORIES( ${THIRDPARTY_DIR}/stdex/include )
 
-add_definitions(-DUNICODE)
-add_definitions(-D_UNICODE)
-
 add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPYBIND_PYTHON_VERSION=342)

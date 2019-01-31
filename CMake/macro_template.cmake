@@ -50,10 +50,10 @@ MACRO(SET_MENGINE_ENVIRONMENT MENGINE_FRAMEWORK MENGINE_TARGET MENGINE_RENDER ME
 ENDMACRO()
 
 MACRO(ADD_FILTER group_name)
-	SOURCE_GROUP( ${group_name} FILES ${ARGN} )
-	SET( SRC_FILES ${SRC_FILES} ${ARGN} )
-	#MESSAGE( ${ARGN} )
+    SOURCE_GROUP(${group_name} FILES ${ARGN})
+    SET(SRC_FILES ${SRC_FILES} ${ARGN})
 ENDMACRO()
+
 # solution
 
 MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
@@ -80,11 +80,13 @@ MACRO(ADD_PLUGIN Plugin Toggle DLL MSG)
     ENDIF()
 ENDMACRO()
 
+SET(MENGINE_USE_PRECOMPILED_HEADER 1)
+
 MACRO(CREATE_PRECOMPILED_HEADER)
-  IF(MSVC)
-	SET(PrecompiledHeader "PrecompiledHeader.h")
+  IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)
+	SET(PrecompiledHeader "${MENGINE_SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.h")
 	SET(PrecompiledSource "${MENGINE_SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.cpp")
-    SET(PrecompiledBinary "${MENGINE_SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.pch")
+    SET(PrecompiledBinary "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/PrecompiledHeader.pch")
 
     SET_SOURCE_FILES_PROPERTIES(${PrecompiledSource}
                                 PROPERTIES COMPILE_FLAGS "/Yc\"${PrecompiledHeader}\" /FI\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
@@ -93,27 +95,29 @@ MACRO(CREATE_PRECOMPILED_HEADER)
 ENDMACRO()
 
 MACRO(ADD_PRECOMPILED_HEADER)
-  IF(MSVC)
-	SET(PrecompiledHeader "PrecompiledHeader.h")
-    SET(PrecompiledBinary "${MENGINE_SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.pch")
+  IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)
+	SET(PrecompiledHeader "${MENGINE_SOURCE_DIR}/PrecompiledHeader/PrecompiledHeader.h")
+    SET(PrecompiledBinary "${CMAKE_ARCHIVE_OUTPUT_DIRECTORY}/${CMAKE_BUILD_TYPE}/PrecompiledHeader.pch")
 
     SET_SOURCE_FILES_PROPERTIES(${SRC_FILES}
                                 PROPERTIES COMPILE_FLAGS "/Yu\"${PrecompiledHeader}\" /FI\"${PrecompiledHeader}\" /Fp\"${PrecompiledBinary}\""
-                                           )  
-										   #OBJECT_DEPENDS "${PrecompiledBinary}"
+                                           )
   ENDIF()
 ENDMACRO()
 
 MACRO(ADD_MENGINE_LIBRARY)
-	#ADD_PRECOMPILED_HEADER()
+	ADD_PRECOMPILED_HEADER()
 
 	ADD_LIBRARY( ${MY_LIB_NAME} STATIC ${SRC_FILES})
 	
-	#ADD_DEPENDENCIES( ${MY_LIB_NAME} PrecompiledHeader )
+    IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)
+        ADD_DEPENDENCIES( ${MY_LIB_NAME} PrecompiledHeader )
+        TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} PrecompiledHeader )
+    ENDIF()
 ENDMACRO()
 
 MACRO(ADD_MENGINE_SHARED)
-	#ADD_PRECOMPILED_HEADER()
+	ADD_PRECOMPILED_HEADER()
 
 	ADD_LIBRARY( ${MY_LIB_NAME} SHARED ${SRC_FILES})
 	
@@ -121,7 +125,10 @@ MACRO(ADD_MENGINE_SHARED)
 		PROPERTIES PREFIX ""
 		)
 	
-	#ADD_DEPENDENCIES( ${MY_LIB_NAME} PrecompiledHeader )
+    IF(MSVC AND MENGINE_USE_PRECOMPILED_HEADER)
+        ADD_DEPENDENCIES( ${MY_LIB_NAME} PrecompiledHeader )
+        TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} PrecompiledHeader )
+    ENDIF()
 ENDMACRO()
 
 MACRO(ADD_MENGINE_PLUGIN PLUGIN_NAME)

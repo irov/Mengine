@@ -60,9 +60,7 @@ namespace Mengine
             return nullptr;
         }
 
-        ThreadMutexInterfacePtr mutex = this->createMutex( _file, _line );
-
-        if( identity->initialize( mutex, _priority, _doc, _file, _line ) == false )
+        if( identity->initialize( _priority, _doc, _file, _line ) == false )
         {
             LOGGER_ERROR( "invalid initialize"
             );

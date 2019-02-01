@@ -83,12 +83,10 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
+    bool Win32ThreadIdentity::initialize( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
     {
         MENGINE_UNUSED( _file );
         MENGINE_UNUSED( _line );
-
-        m_mutex = _mutex;
 
 #ifndef NDEBUG
         m_file = _file;
@@ -152,7 +150,7 @@ namespace Mengine
     {        
         for( ;; )
         {
-            m_mutex->lock();
+            EnterCriticalSection( &m_conditionLock );
 
             if( m_complete == false )
             {
@@ -162,12 +160,9 @@ namespace Mengine
                 m_complete = true;
             }
 
-            m_mutex->unlock();
-
-            if( m_exit == false )
-            {
-                SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, INFINITE );
-            }
+            SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, INFINITE );
+            
+            LeaveCriticalSection( &m_conditionLock );
             
             if( m_exit == true )
             {
@@ -178,7 +173,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::processTask( ThreadTaskInterface * _task )
     {
-        if( m_mutex->try_lock() == false )
+        if( TryEnterCriticalSection( &m_conditionLock ) == FALSE )
         {
             return false;
         }
@@ -191,9 +186,9 @@ namespace Mengine
             m_complete = false;
 
             successful = true;
-        }
+        }                
 
-        m_mutex->unlock();
+        LeaveCriticalSection( &m_conditionLock );
 
         WakeConditionVariable( &m_conditionVariable );
 
@@ -209,7 +204,7 @@ namespace Mengine
 
         bool successful = false;
 
-        m_mutex->lock();
+        EnterCriticalSection( &m_conditionLock );
 
         if( m_complete == false )
         {
@@ -219,7 +214,7 @@ namespace Mengine
             successful = true;
         }
 
-        m_mutex->unlock();
+        LeaveCriticalSection( &m_conditionLock );
 
         return successful;
     }
@@ -231,13 +226,9 @@ namespace Mengine
             return;
         }
 
-        m_mutex->lock();
-        {
-            m_exit = true;
-        }
-        m_mutex->unlock();
+        m_exit = true;
         
-        WakeConditionVariable( &m_conditionVariable );
+        WakeAllConditionVariable( &m_conditionVariable );
         
         WaitForSingleObject( m_thread, INFINITE );
         CloseHandle( m_thread );

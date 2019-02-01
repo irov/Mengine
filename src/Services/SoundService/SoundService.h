@@ -120,6 +120,9 @@ namespace Mengine
         bool stopSoundBufferUpdate_( const SoundIdentityPtr & _source );
         bool playSoundBufferUpdate_( const SoundIdentityPtr & _source );
 
+	protected:
+		bool checkMaxSoundPlay_() const;
+
     protected:
         MixerValue m_commonVolume;
         MixerValue m_soundVolume;
@@ -130,6 +133,9 @@ namespace Mengine
 
         typedef Vector<SoundIdentityPtr> VectorSoundSource;
         VectorSoundSource m_soundIdentities;
+
+		typedef Vector<SoundIdentityInterfacePtr> VectorSoundListeners;
+		VectorSoundListeners m_soundStopListeners;
 
         ThreadJobPtr m_threadJobSoundBufferUpdate;
 

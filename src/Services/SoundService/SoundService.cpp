@@ -94,6 +94,7 @@ namespace Mengine
         }
 
         m_soundIdentities.clear();
+        m_soundStopListeners.clear();
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
@@ -307,65 +308,6 @@ namespace Mengine
 #endif
 
         this->updateSourceVolume_( emitter );
-
-        if( _streamable == true )
-        {
-            uint32_t streamableCount = std::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity ) { return _Identity->streamable; } );
-
-            uint32_t MaxSoundStreamable = CONFIG_VALUE( "Limit", "MaxSoundStreamable", 4 );
-
-            if( streamableCount > MaxSoundStreamable )
-            {
-                LOGGER_ERROR( "Sound streamable exceeded max count '%d'"
-                    , MaxSoundStreamable
-                );
-
-#ifndef NDEBUG
-                for( const SoundIdentityPtr & identity : m_soundIdentities )
-                {
-                    if( identity->streamable == false )
-                    {
-                        continue;
-                    }
-
-                    LOGGER_ERROR( "sound: streamable %s "
-                        , identity->doc.c_str()
-                    );
-                }
-#endif
-
-                return nullptr;
-            }
-        }
-        else
-        {
-            uint32_t instanceCount = std::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity ) { return !_Identity->streamable; } );
-
-            uint32_t MaxSoundInstance = CONFIG_VALUE( "Limit", "MaxSoundInstance", 16 );
-
-            if( instanceCount > MaxSoundInstance )
-            {
-                LOGGER_ERROR( "Sound instance exceeded max count '%d'"
-                    , MaxSoundInstance
-                );
-
-#ifndef NDEBUG
-                for( const SoundIdentityPtr & identity : m_soundIdentities )
-                {
-                    if( identity->streamable == true )
-                    {
-                        continue;
-                    }
-
-                    LOGGER_ERROR( "sound: instance %s"
-                        , identity->doc.c_str()
-                    );
-                }
-#endif
-
-                return nullptr;
-            }
-        }
 
         m_soundIdentities.emplace_back( emitter );
 
@@ -675,11 +617,6 @@ namespace Mengine
         return volume;
     }
     //////////////////////////////////////////////////////////////////////////
-    namespace
-    {
-        typedef Vector<SoundIdentityInterfacePtr> VectorSoundListeners;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void SoundService::tick( const UpdateContext * _context )
     {
         SOUND_SYSTEM()
@@ -706,8 +643,6 @@ namespace Mengine
         {
             process = true;
         }
-
-        VectorSoundListeners stopSoundListeners;
 
         for( const SoundIdentityPtr & identity : m_soundIdentities )
         {
@@ -743,9 +678,6 @@ namespace Mengine
                 continue;
             }
 
-            //float length_ms = source->source->getLengthMs();
-            //float pos_ms = source->source->getPosMs();
-
             const ThreadWorkerSoundBufferUpdatePtr & worker = identity->worker;
 
             float identity_timing = identity->timing;
@@ -766,7 +698,7 @@ namespace Mengine
 
                 if( identity->listener != nullptr )
                 {
-                    stopSoundListeners.emplace_back( identity );
+					m_soundStopListeners.emplace_back( identity );
                 }
             }
             else
@@ -780,11 +712,13 @@ namespace Mengine
             this->updateVolume();
         }
 
-        for( const SoundIdentityPtr & identity : stopSoundListeners )
+        for( const SoundIdentityPtr & identity : m_soundStopListeners )
         {
             SoundListenerInterfacePtr keep_listener = identity->getSoundListener();
             keep_listener->onSoundEnd( identity );
         }
+
+		m_soundStopListeners.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::mute( bool _mute )
@@ -808,8 +742,6 @@ namespace Mengine
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
 
-        this->updateSourceVolume_( identity );
-
         ESoundSourceState state = identity->getState();
 
         switch( state )
@@ -817,6 +749,13 @@ namespace Mengine
         case ESS_STOP:
         case ESS_PAUSE:
             {
+				if( this->checkMaxSoundPlay_() == false )
+				{
+					return false;
+				}
+
+				this->updateSourceVolume_( identity );
+
                 this->stopSoundBufferUpdate_( identity );
 
                 const SoundSourceInterfacePtr & source = identity->getSoundSource();
@@ -919,6 +858,13 @@ namespace Mengine
         {
         case ESS_PAUSE:
             {
+				if( this->checkMaxSoundPlay_() == false )
+				{
+					return false;
+				}
+
+				this->updateSourceVolume_( identity );
+
                 this->stopSoundBufferUpdate_( identity );
 
                 const SoundSourceInterfacePtr & source = identity->getSoundSource();
@@ -928,13 +874,13 @@ namespace Mengine
 
                 identity->timing = length_ms - pos_ms;
 
-                identity->state = ESS_PLAY;
+                identity->state = ESS_PLAY;				
 
                 if( identity->turn == true )
                 {
                     if( source->play() == false )
                     {
-                        LOGGER_ERROR( "SoundService::play invalid play %d"
+                        LOGGER_ERROR( "invalid play %d"
                             , identity->id
                         );
 
@@ -1322,6 +1268,39 @@ namespace Mengine
 
         return true;
     }
+	//////////////////////////////////////////////////////////////////////////
+	bool SoundService::checkMaxSoundPlay_() const
+	{
+		uint32_t playCount = std::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity ) { return _Identity->state == ESS_PLAY; } );
+
+		uint32_t MaxSoundPlay = CONFIG_VALUE( "Limit", "MaxSoundPlay", 16 );
+
+		if( playCount > MaxSoundPlay )
+		{
+			LOGGER_ERROR( "Sound play exceeded max count '%d'"
+				, MaxSoundPlay
+			);
+
+#ifndef NDEBUG
+			for( const SoundIdentityPtr & identity : m_soundIdentities )
+			{
+				if( identity->streamable == false )
+				{
+					continue;
+				}
+
+				LOGGER_ERROR( "sound: %s %s "
+					, identity->streamable == true ? "streamable" : "instance"
+					, identity->doc.c_str()
+				);
+			}
+#endif
+
+			return false;
+		}
+
+		return true;
+	}
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getPosMs( const SoundIdentityInterfacePtr & _identity )
     {

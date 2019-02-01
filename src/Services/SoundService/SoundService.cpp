@@ -7,6 +7,7 @@
 #include "Interface/PrefetcherServiceInterface.h"
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ConfigServiceInterface.h"
+#include "Interface/OptionsServiceInterface.h"
 #include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/FactoryPool.h"
@@ -63,6 +64,13 @@ namespace Mengine
 
         float voiceVolume = CONFIG_VALUE( "Engine", "VoiceVolume", 1.f );
         this->setVoiceVolume( STRINGIZE_STRING_LOCAL( "Generic" ), voiceVolume, 0.f );
+
+        bool musicoff = GET_OPTION_VALUE( "musicoff" );
+
+        if( musicoff == true )
+        {
+            this->setMusicVolume( STRINGIZE_STRING_LOCAL( "__MusicOFF__" ), 0.f, 0.f );
+        }
 
         m_factoryWorkerTaskSoundBufferUpdate = new FactoryPool<ThreadWorkerSoundBufferUpdate, 32>();
         m_factorySoundEmitter = new FactoryPool<SoundIdentity, 32>();
@@ -294,7 +302,6 @@ namespace Mengine
         emitter->bufferId = 0;
 
         emitter->timing = 0.f;
-        //emitter->volume.setValue( STRINGIZE_STRING_LOCAL( "Generic" ), 1.f, 1.f );
 
         emitter->state = ESS_STOP;
         emitter->category = _category;
@@ -1242,7 +1249,7 @@ namespace Mengine
 
         if( _identity->worker != nullptr )
         {
-            LOGGER_ERROR( "_source worker is not null"
+            LOGGER_ERROR( "identity worker is not null"
             );
 
             return false;
@@ -1258,7 +1265,17 @@ namespace Mengine
 
             _identity->worker = worker;
 
-            _identity->bufferId = m_threadJobSoundBufferUpdate->addWorker( _identity->worker );
+            uint32_t bufferId = m_threadJobSoundBufferUpdate->addWorker( _identity->worker );
+
+            if( bufferId == 0 )
+            {
+                LOGGER_ERROR( "identity worker invalid add worker"
+                );
+
+                return false;
+            }
+
+            _identity->bufferId = bufferId;
         }
         else
         {

@@ -21,7 +21,7 @@ namespace Mengine
         virtual bool isInitializeService() const = 0;
 
     public:
-        virtual bool isAvailableService() const = 0;        
+        virtual bool isAvailableService() const = 0;
 
     protected:
         virtual void stopService() = 0;

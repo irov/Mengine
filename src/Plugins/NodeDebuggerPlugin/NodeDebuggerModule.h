@@ -52,9 +52,12 @@ namespace Mengine
         NodeDebuggerModule();
         ~NodeDebuggerModule() override;
 
-    public:
+    protected:
         bool _initializeModule() override;
         void _finalizeModule() override;
+
+    protected:
+        bool _availableModule() const override;
 
     public:
         bool onWork( uint32_t _id ) override;

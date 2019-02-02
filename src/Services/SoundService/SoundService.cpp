@@ -705,7 +705,7 @@ namespace Mengine
 
                 if( identity->listener != nullptr )
                 {
-					m_soundStopListeners.emplace_back( identity );
+                    m_soundStopListeners.emplace_back( identity );
                 }
             }
             else
@@ -725,7 +725,7 @@ namespace Mengine
             keep_listener->onSoundEnd( identity );
         }
 
-		m_soundStopListeners.clear();
+        m_soundStopListeners.clear();
     }
     //////////////////////////////////////////////////////////////////////////
     void SoundService::mute( bool _mute )
@@ -756,12 +756,12 @@ namespace Mengine
         case ESS_STOP:
         case ESS_PAUSE:
             {
-				if( this->checkMaxSoundPlay_() == false )
-				{
-					return false;
-				}
+                if( this->checkMaxSoundPlay_() == false )
+                {
+                    return false;
+                }
 
-				this->updateSourceVolume_( identity );
+                this->updateSourceVolume_( identity );
 
                 this->stopSoundBufferUpdate_( identity );
 
@@ -865,12 +865,12 @@ namespace Mengine
         {
         case ESS_PAUSE:
             {
-				if( this->checkMaxSoundPlay_() == false )
-				{
-					return false;
-				}
+                if( this->checkMaxSoundPlay_() == false )
+                {
+                    return false;
+                }
 
-				this->updateSourceVolume_( identity );
+                this->updateSourceVolume_( identity );
 
                 this->stopSoundBufferUpdate_( identity );
 
@@ -881,7 +881,7 @@ namespace Mengine
 
                 identity->timing = length_ms - pos_ms;
 
-                identity->state = ESS_PLAY;				
+                identity->state = ESS_PLAY;
 
                 if( identity->turn == true )
                 {
@@ -921,7 +921,7 @@ namespace Mengine
         }
 
         SoundIdentityPtr identity = stdex::intrusive_static_cast<SoundIdentityPtr>(_identity);
-        
+
         switch( identity->state )
         {
         case ESS_PLAY:
@@ -1285,39 +1285,39 @@ namespace Mengine
 
         return true;
     }
-	//////////////////////////////////////////////////////////////////////////
-	bool SoundService::checkMaxSoundPlay_() const
-	{
-		uint32_t playCount = std::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity ) { return _Identity->state == ESS_PLAY; } );
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundService::checkMaxSoundPlay_() const
+    {
+        uint32_t playCount = std::count_if( m_soundIdentities.begin(), m_soundIdentities.end(), []( const SoundIdentityPtr & _Identity ) { return _Identity->state == ESS_PLAY; } );
 
-		uint32_t MaxSoundPlay = CONFIG_VALUE( "Limit", "MaxSoundPlay", 16 );
+        uint32_t MaxSoundPlay = CONFIG_VALUE( "Limit", "MaxSoundPlay", 16 );
 
-		if( playCount > MaxSoundPlay )
-		{
-			LOGGER_ERROR( "Sound play exceeded max count '%d'"
-				, MaxSoundPlay
-			);
+        if( playCount > MaxSoundPlay )
+        {
+            LOGGER_ERROR( "Sound play exceeded max count '%d'"
+                , MaxSoundPlay
+            );
 
 #ifndef NDEBUG
-			for( const SoundIdentityPtr & identity : m_soundIdentities )
-			{
-				if( identity->streamable == false )
-				{
-					continue;
-				}
+            for( const SoundIdentityPtr & identity : m_soundIdentities )
+            {
+                if( identity->streamable == false )
+                {
+                    continue;
+                }
 
-				LOGGER_ERROR( "sound: %s %s "
-					, identity->streamable == true ? "streamable" : "instance"
-					, identity->doc.c_str()
-				);
-			}
+                LOGGER_ERROR( "sound: %s %s "
+                    , identity->streamable == true ? "streamable" : "instance"
+                    , identity->doc.c_str()
+                );
+            }
 #endif
 
-			return false;
-		}
+            return false;
+        }
 
-		return true;
-	}
+        return true;
+    }
     //////////////////////////////////////////////////////////////////////////
     float SoundService::getPosMs( const SoundIdentityInterfacePtr & _identity )
     {

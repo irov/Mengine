@@ -12,15 +12,15 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual bool available() = 0;
-
-    public:
         virtual void setName( const ConstString & _name ) = 0;
         virtual const ConstString & getName() const = 0;
 
     public:
         virtual bool initializeModule() = 0;
         virtual void finalizeModule() = 0;
+
+    public:
+        virtual bool isAvailableModule() const = 0;
 
     public:
         virtual void update( bool _focus ) = 0;

@@ -63,12 +63,11 @@ namespace Mengine
         return 0;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::initialize( const ThreadMutexInterfacePtr & _mutex, int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
+    bool SDLThreadIdentity::initialize( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
     {
         MENGINE_UNUSED( _file );
         MENGINE_UNUSED( _line );
 
-        m_mutex = _mutex;
         m_priority = _priority;
 
 #ifndef NDEBUG
@@ -118,10 +117,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::main()
     {
-        bool work = true;
-        while( work )
+        for( ;; )
         {
-            m_mutex->lock();
+            SDL_LockMutex( m_conditionLock );
 
             if( m_complete == false && m_exit == false )
             {
@@ -131,23 +129,22 @@ namespace Mengine
                 m_complete = true;
             }
 
-            m_mutex->unlock();
-
-            if( m_exit == false )
-            {
-                SDL_CondWait( m_conditionVariable, m_conditionLock );
-            }
+            SDL_CondWait( m_conditionVariable, m_conditionLock );
+            
+            SDL_UnlockMutex( m_conditionLock );
 
             if( m_exit == true )
             {
-                work = false;
+                break;
             }
         }
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadIdentity::processTask( ThreadTaskInterface * _task )
     {
-        if( m_mutex->try_lock() == false )
+        int conditionLockResult = SDL_TryLockMutex( m_conditionLock );
+
+        if( conditionLockResult != 0 )
         {
             return false;
         }
@@ -164,7 +161,7 @@ namespace Mengine
             m_task->preparation();
         }
 
-        m_mutex->unlock();
+        SDL_UnlockMutex( m_conditionLock );
 
         SDL_CondSignal( m_conditionVariable );
 
@@ -180,7 +177,7 @@ namespace Mengine
 
         bool successful = false;
 
-        m_mutex->lock();
+        SDL_LockMutex( m_conditionLock );
 
         if( m_complete == false )
         {
@@ -189,7 +186,7 @@ namespace Mengine
             successful = true;
         }
 
-        m_mutex->unlock();
+        SDL_UnlockMutex( m_conditionLock );
 
         return successful;
     }
@@ -201,15 +198,9 @@ namespace Mengine
             return;
         }
 
-        m_mutex->lock();
-
         m_exit = true;
 
-        m_mutex->unlock();
-
-        SDL_CondSignal( m_conditionVariable );
-        SDL_DestroyCond( m_conditionVariable );
-        m_conditionVariable = nullptr;
+        SDL_CondBroadcast( m_conditionVariable );
 
         int status;
         SDL_WaitThread( m_thread, &status );
@@ -221,11 +212,13 @@ namespace Mengine
             );
         }
 
+        SDL_DestroyCond( m_conditionVariable );
+        m_conditionVariable = nullptr;
+
         SDL_DestroyMutex( m_conditionLock );
         m_conditionLock = nullptr;
 
         m_thread = nullptr;
-        m_mutex = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     int32_t SDLThreadIdentity::getPriority() const

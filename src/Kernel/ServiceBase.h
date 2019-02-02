@@ -9,7 +9,7 @@ namespace Mengine
     {
     public:
         ServiceBase() noexcept
-            : m_available( true )
+            : m_available( false )
             , m_initializeService( false )
             , m_stopService( false )
         {

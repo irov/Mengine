@@ -19,7 +19,7 @@
 
 namespace Mengine
 {
-    //////////////////////////////////////////////////////////////////////////
+    ////////////////////////////////////////////////////////////////////////
     class SoundService
         : public ServiceBase<SoundServiceInterface>
     {
@@ -120,8 +120,8 @@ namespace Mengine
         bool stopSoundBufferUpdate_( const SoundIdentityPtr & _source );
         bool playSoundBufferUpdate_( const SoundIdentityPtr & _source );
 
-	protected:
-		bool checkMaxSoundPlay_() const;
+    protected:
+        bool checkMaxSoundPlay_() const;
 
     protected:
         MixerValue m_commonVolume;
@@ -134,8 +134,8 @@ namespace Mengine
         typedef Vector<SoundIdentityPtr> VectorSoundSource;
         VectorSoundSource m_soundIdentities;
 
-		typedef Vector<SoundIdentityInterfacePtr> VectorSoundListeners;
-		VectorSoundListeners m_soundStopListeners;
+        typedef Vector<SoundIdentityInterfacePtr> VectorSoundListeners;
+        VectorSoundListeners m_soundStopListeners;
 
         ThreadJobPtr m_threadJobSoundBufferUpdate;
 

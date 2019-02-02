@@ -3,6 +3,7 @@
 #include "Interface/ThreadSystemInterface.h"
 
 #include "Kernel/Factorable.h"
+#include "Config/Atomic.h"
 
 #include "SDL_thread.h"
 #include "SDL_timer.h"
@@ -18,7 +19,7 @@ namespace Mengine
         ~SDLThreadIdentity() override;
 
     public:
-        bool initialize( const ThreadMutexInterfacePtr & _mutex, int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line );
+        bool initialize( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line );
         
     public:
         void main();
@@ -34,8 +35,6 @@ namespace Mengine
         int32_t getPriority() const;
 
     protected:
-        ThreadMutexInterfacePtr m_mutex;
-
         int32_t m_priority;
 
         SDL_Thread * m_thread;
@@ -45,8 +44,8 @@ namespace Mengine
 
         ThreadTaskInterface * m_task;
         
-        bool m_complete;
-		bool m_exit;
+        AtomicBool m_complete;
+        AtomicBool m_exit;
 
 #ifndef NDEBUG
         const Char * m_file;

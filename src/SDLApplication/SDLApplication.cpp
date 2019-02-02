@@ -184,6 +184,10 @@ PLUGIN_EXPORT( AstralaxParticlePlugin2 );
 PLUGIN_EXPORT( Steam );
 #endif
 
+#ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
+PLUGIN_EXPORT( NodeDebugger );
+#endif
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
 PLUGIN_EXPORT( AndroidNativeFacebook );
 #endif
@@ -690,6 +694,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_STEAM_STATIC
         MENGINE_ADD_PLUGIN( Steam, "initialize Steam Plugin..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
+        MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC

@@ -4,6 +4,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     ModuleBase::ModuleBase()
+        : m_available( false )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,20 +22,27 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::available()
+    bool ModuleBase::isAvailableModule() const
     {
-        bool successful = this->_available();
+        bool successful = this->_availableModule();
 
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleBase::_available()
+    bool ModuleBase::_availableModule() const
     {
-        return true;
+        return m_available;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::initializeModule()
     {
+        m_available = this->_availableModule();
+
+        if( m_available == false )
+        {
+            return false;
+        }
+
         bool successful = this->_initializeModule();
 
         return successful;

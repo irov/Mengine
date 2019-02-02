@@ -19,18 +19,18 @@ namespace Mengine
         const ConstString & getName() const override;
 
     public:
-        bool available() override;
-
-    protected:
-        virtual bool _available();
-
-    public:
         bool initializeModule() override;
         void finalizeModule() override;
+
+    public:
+        bool isAvailableModule() const override;
 
     protected:
         virtual bool _initializeModule();
         virtual void _finalizeModule();
+
+    protected:
+        virtual bool _availableModule() const;
 
     public:
         void update( bool _focus ) override;
@@ -56,5 +56,7 @@ namespace Mengine
 
     protected:
         ConstString m_name;
+
+        bool m_available;
     };
 }

@@ -72,7 +72,16 @@ namespace Mengine
 
         NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_CHANGE_SCENE_COMPLETE, this );
         NOTIFICATION_REMOVEOBSERVER( NOTIFICATOR_REMOVE_SCENE_DESTROY, this );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool NodeDebuggerModule::_availableModule() const
+    {
+        if( SERVICE_EXIST( Mengine::SocketSystemInterface ) == false )
+        {
+            return false;
+        }
 
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool NodeDebuggerModule::onWork( uint32_t )
@@ -437,7 +446,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::recreateServer()
     {
-        m_socket = SOCKET_SYSTEM()->createSocket();
+        m_socket = SOCKET_SYSTEM()
+            ->createSocket();
 
         SocketConnectInfo sci = { "0.0.0.0", "18790" };
         m_socket->bind( sci, false );

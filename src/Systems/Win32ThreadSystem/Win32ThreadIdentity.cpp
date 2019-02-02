@@ -148,31 +148,34 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::main()
     {        
-        for( ;; )
+        for( ; m_exit == false; )
         {
             EnterCriticalSection( &m_conditionLock );
 
-            if( m_complete == false )
+            while( m_complete == true && m_exit == false )
+            {
+                SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, INFINITE );
+            }
+
+            if( m_complete == false && m_exit == false )
             {
                 m_task->main();
                 m_task = nullptr;
 
                 m_complete = true;
             }
-
-            SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, INFINITE );
             
             LeaveCriticalSection( &m_conditionLock );
-            
-            if( m_exit == true )
-            {
-                break;
-            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::processTask( ThreadTaskInterface * _task )
     {
+        if( m_exit == true )
+        {
+            return false;
+        }
+
         if( TryEnterCriticalSection( &m_conditionLock ) == FALSE )
         {
             return false;
@@ -180,13 +183,13 @@ namespace Mengine
 
         bool successful = false;
 
-        if( m_complete == true && m_exit == false )
+        if( m_complete == true )
         {
             m_task = _task;
             m_complete = false;
 
             successful = true;
-        }                
+        }
 
         LeaveCriticalSection( &m_conditionLock );
 
@@ -202,9 +205,9 @@ namespace Mengine
             return false;
         }
 
-        bool successful = false;
-
         EnterCriticalSection( &m_conditionLock );
+
+        bool successful = false;
 
         if( m_complete == false )
         {

@@ -117,9 +117,14 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::main()
     {
-        for( ;; )
+        for( ; m_exit == false; )
         {
             SDL_LockMutex( m_conditionLock );
+
+            while( m_complete == true && m_exit == false )
+            {
+                SDL_CondWait( m_conditionVariable, m_conditionLock );
+            }
 
             if( m_complete == false && m_exit == false )
             {
@@ -128,20 +133,18 @@ namespace Mengine
 
                 m_complete = true;
             }
-
-            SDL_CondWait( m_conditionVariable, m_conditionLock );
             
             SDL_UnlockMutex( m_conditionLock );
-
-            if( m_exit == true )
-            {
-                break;
-            }
         }
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadIdentity::processTask( ThreadTaskInterface * _task )
     {
+        if( m_exit == true )
+        {
+            return false;
+        }
+
         int conditionLockResult = SDL_TryLockMutex( m_conditionLock );
 
         if( conditionLockResult != 0 )
@@ -151,14 +154,12 @@ namespace Mengine
 
         bool successful = false;
 
-        if( m_complete == true && m_exit == false )
+        if( m_complete == true )
         {
             m_task = _task;
             m_complete = false;
 
             successful = true;
-
-            m_task->preparation();
         }
 
         SDL_UnlockMutex( m_conditionLock );

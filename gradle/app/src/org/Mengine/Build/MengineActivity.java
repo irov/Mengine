@@ -2,6 +2,7 @@ package org.Mengine.Build;
 
 import android.content.*;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.facebook.CallbackManager;
 import com.facebook.appevents.AppEventsLogger;
@@ -14,6 +15,7 @@ import org.libsdl.app.SDLActivity;
 import org.libsdl.app.SDLSurface;
 
 public class MengineActivity extends SDLActivity {
+    private static final String TAG = "MENGINE";
 
     public FacebookInteractionLayer facebookInteractionLayer;
     public UnityAdsInteractionLayer unityAdsInteractionLayer;
@@ -46,10 +48,9 @@ public class MengineActivity extends SDLActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        //Facebook initialization should be done before setContentView
-        AppEventsLogger.activateApp(getApplication());
-
         super.onCreate(savedInstanceState);
+
+        AppEventsLogger.activateApp(getApplication());
 
         _instance = this;
 

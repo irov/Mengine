@@ -46,7 +46,24 @@ IF(MENGINE_TOOLCHAIN_MSVC OR MENGINE_TOOLCHAIN_MINGW)
     SET( APPLICATION_LIBS
         ${APPLICATION_LIBS}
         Winmm
-        )        
+        )
+ENDIF()
+
+IF(MENGINE_TARGET_ANDROID)
+    add_library( OpenAL32
+            SHARED
+            IMPORTED )
+             
+    set_target_properties( # Specifies the target library.
+            OpenAL32
+            # Specifies the parameter you want to define.
+            PROPERTIES IMPORTED_LOCATION
+
+            # Provides the path to the library you want to import.
+            ${MENGINE_REPOSITORY}/gradle/libraries/OpenAL32/build/intermediates/cmake/${CMAKE_BUILD_TYPE}/obj/${ANDROID_ABI}/libopenal.so
+            )             
+
+    TARGET_LINK_LIBRARIES( ${MY_LIB_NAME} OpenAL32)
 ENDIF()
 
 IF(MENGINE_TOOLCHAIN_MSVC)

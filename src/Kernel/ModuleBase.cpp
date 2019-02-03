@@ -24,14 +24,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::isAvailableModule() const
     {
-        bool successful = this->_availableModule();
-
-        return successful;
+        return m_available;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::_availableModule() const
     {
-        return m_available;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ModuleBase::initializeModule()

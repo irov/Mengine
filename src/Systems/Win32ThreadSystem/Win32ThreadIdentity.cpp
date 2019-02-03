@@ -157,6 +157,11 @@ namespace Mengine
                 SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, INFINITE );
             }
 
+            LeaveCriticalSection( &m_conditionLock );
+
+
+            EnterCriticalSection( &m_conditionLock );
+
             if( m_complete == false && m_exit == false )
             {
                 m_task->main();
@@ -176,26 +181,24 @@ namespace Mengine
             return false;
         }
 
+        if( m_complete == false )
+        {
+            return false;
+        }
+
         if( TryEnterCriticalSection( &m_conditionLock ) == FALSE )
         {
             return false;
         }
 
-        bool successful = false;
-
-        if( m_complete == true )
-        {
-            m_task = _task;
-            m_complete = false;
-
-            successful = true;
-        }
-
+        m_task = _task;
+        m_complete = false;
+        
         LeaveCriticalSection( &m_conditionLock );
 
-        WakeConditionVariable( &m_conditionVariable );
+        WakeAllConditionVariable( &m_conditionVariable );
 
-        return successful;
+        return true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::completeTask()

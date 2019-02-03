@@ -1,5 +1,6 @@
 *.iml
 /data
+!/data/README.md
 /build
 /release
 /captures

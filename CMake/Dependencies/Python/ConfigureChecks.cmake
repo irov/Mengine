@@ -604,19 +604,6 @@ endif(NOT volatile_WORKS)
 set(CMAKE_REQUIRED_INCLUDES ${CFG_HEADERS})
 check_c_source_compiles("#include <unistd.h>\n int main() {getpgrp(0);}" GETPGRP_HAVE_ARG)
 
-check_c_source_runs("int main() {
-        int val1 = nice(1); 
-        if (val1 != -1 && val1 == nice(2)) exit(0);
-        exit(1);}" HAVE_BROKEN_NICE)
-
-check_c_source_runs(" #include <poll.h>
-    int main () {
-    struct pollfd poll_struct = { 42, POLLIN|POLLPRI|POLLOUT, 0 }; close (42);
-    int poll_test = poll (&poll_struct, 1, 0);
-    if (poll_test < 0) { exit(0); }
-    else if (poll_test == 0 && poll_struct.revents != POLLNVAL) { exit(0); }
-    else { exit(1); } }" HAVE_BROKEN_POLL)
-
 if(HAVE_SYS_TIME_H)
   check_include_files("sys/time.h;time.h" TIME_WITH_SYS_TIME)
 else(HAVE_SYS_TIME_H)

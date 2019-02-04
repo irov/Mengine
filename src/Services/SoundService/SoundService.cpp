@@ -199,9 +199,39 @@ namespace Mengine
                 continue;
             }
 
-            this->stopSoundBufferUpdate_( source );
+            //this->stopSoundBufferUpdate_( source );
 
             source->source->pause();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundService::resumeSounds_()
+    {
+        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        {
+            if( identity == nullptr )
+            {
+                continue;
+            }
+
+            identity->turn = true;
+
+            if( identity->state != ESS_PLAY )
+            {
+                continue;
+            }
+
+            this->updateSourceVolume_( identity );
+
+            if( identity->source->resume() == false )
+            {
+                LOGGER_ERROR( "invalid resume"
+                );
+
+                continue;
+            }
+
+            //this->playSoundBufferUpdate_( identity );
         }
     }
     //////////////////////////////////////////////////////////////////////////

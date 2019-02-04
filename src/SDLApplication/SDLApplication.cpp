@@ -522,7 +522,7 @@ namespace Mengine
 
         SERVICE_CREATE( FactoryService );
 
-        SERVICE_CREATE( OptionsService );
+        SERVICE_CREATE( OptionsService );        
 
         ArgumentsInterfacePtr arguments = new FactorableUnique<StringArguments>();
 
@@ -910,16 +910,25 @@ namespace Mengine
     {
         SERVICE_FINALIZE( Mengine::ModuleServiceInterface );
 
-        PLATFORM_SERVICE()
-            ->stopPlatform();
+        if( SERVICE_EXIST( Mengine::PlatformInterface ) == true )
+        {
+            PLATFORM_SERVICE()
+                ->stopPlatform();
+        }
 
-        NOTIFICATION_SERVICE()
-            ->notify( NOTIFICATOR_ENGINE_FINALIZE );
+        if( SERVICE_EXIST( Mengine::NotificationServiceInterface ) == true )
+        {
+            NOTIFICATION_SERVICE()
+                ->notify( NOTIFICATOR_ENGINE_FINALIZE );
+        }
 
         SERVICE_PROVIDER_STOP();
 
-        THREAD_SERVICE()
-            ->stopTasks();
+        if( SERVICE_EXIST( Mengine::ThreadServiceInterface ) == true )
+        {
+            THREAD_SERVICE()
+                ->stopTasks();
+        }
 
         SERVICE_FINALIZE( Mengine::AccountServiceInterface );
         SERVICE_FINALIZE( Mengine::GameServiceInterface );

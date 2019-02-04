@@ -113,8 +113,10 @@ namespace Mengine
 
     protected:
         void playSounds_();
-        void pauseSounds_();
         void stopSounds_();
+        void pauseSounds_();
+        void resumeSounds_();
+        
 
     protected:
         bool stopSoundBufferUpdate_( const SoundIdentityPtr & _source );

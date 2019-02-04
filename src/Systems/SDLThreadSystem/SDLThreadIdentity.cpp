@@ -116,7 +116,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::main()
     {
-
         for( ; m_exit == false; )
         {
             SDL_LockMutex( m_conditionLock );

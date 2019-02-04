@@ -199,7 +199,7 @@ namespace Mengine
                 continue;
             }
 
-            //this->stopSoundBufferUpdate_( source );
+            this->stopSoundBufferUpdate_( source );
 
             source->source->pause();
         }
@@ -1311,6 +1311,46 @@ namespace Mengine
         {
             _identity->worker = nullptr;
             _identity->bufferId = 0;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundService::pauseSoundBufferUpdate_( const SoundIdentityPtr & _identity )
+    {
+        if( _identity->streamable == false )
+        {
+            return false;
+        }
+
+        if( _identity->worker == nullptr )
+        {
+            return false;
+        }
+
+        if( m_threadJobSoundBufferUpdate != nullptr )
+        {
+            m_threadJobSoundBufferUpdate->pauseWorker( _identity->bufferId );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundService::resumeSoundBufferUpdate_( const SoundIdentityPtr & _identity )
+    {
+        if( _identity->streamable == false )
+        {
+            return false;
+        }
+
+        if( _identity->worker == nullptr )
+        {
+            return false;
+        }
+
+        if( m_threadJobSoundBufferUpdate != nullptr )
+        {
+            m_threadJobSoundBufferUpdate->resumeWorker( _identity->bufferId );
         }
 
         return true;

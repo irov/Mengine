@@ -14,6 +14,7 @@
 #include <thread>
 #include <mutex>
 #include <deque>
+#include <functional>
 
 namespace Mengine
 {
@@ -242,6 +243,15 @@ namespace Mengine
         const NodeIcon*         icon;
     };
 
+    struct TabDescriptor
+    {
+        using TabFunctor = std::function<void()>;
+
+        String      title;
+        bool        enabled;
+        TabFunctor  functor;
+    };
+
     class NodeDebuggerApp
     {
     public:
@@ -271,6 +281,9 @@ namespace Mengine
         void                        LoadIconsAtlas();
         const NodeIcon*             GetIconForNodeType( const String & _nodeType );
         void                        DoUI();
+        void                        DoUIPropertiesTab();
+        void                        DoUILogTab();
+        void                        DoUIExampleTab();
         String                      DoIPInput( const String & _title, const String & _inIP );
         void                        DoNodeElement( DebuggerNode * _node );
         void                        DoNodeProperties( DebuggerNode * _node );
@@ -304,6 +317,8 @@ namespace Mengine
         NodeIcon*                   mDefaultIcon;
         Vector<NodeIcon>            mIcons;
         Vector<CachedImage>         mImagesCache;
+        Vector<TabDescriptor>       mTabs;
+        size_t                      mCurrentTab;
 
         // Server connection
         String                      mServerAddress;

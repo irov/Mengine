@@ -43,7 +43,6 @@ namespace Mengine
     Win32ThreadIdentity::Win32ThreadIdentity()
         : m_thread( INVALID_HANDLE_VALUE )
         , m_task( nullptr )
-        , m_complete( true )
         , m_exit( false )
 #ifndef NDEBUG
         , m_file( nullptr )
@@ -148,81 +147,54 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::main()
     {        
-        for( ; m_exit == false; )
+		while( m_exit == false )
         {
             EnterCriticalSection( &m_conditionLock );
 
-            while( m_complete == true && m_exit == false )
+			while( m_task == nullptr && m_exit == false )
             {
                 SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, INFINITE );
             }
 
             LeaveCriticalSection( &m_conditionLock );
-
-
-            EnterCriticalSection( &m_conditionLock );
-
-            if( m_complete == false && m_exit == false )
+			
+			if( m_task != nullptr && m_exit == false )
             {
-                m_task->main();
-                m_task = nullptr;
+				ThreadTaskInterface * task = m_task;
+                task->main();
 
-                m_complete = true;
+                m_task = nullptr;
             }
-            
-            LeaveCriticalSection( &m_conditionLock );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::processTask( ThreadTaskInterface * _task )
     {
-        if( m_exit == true )
+		if( m_exit == true )
         {
             return false;
         }
 
-        if( m_complete == false )
+		if( m_task != nullptr )
         {
-            return false;
-        }
+			return false;
+		}
 
-        if( TryEnterCriticalSection( &m_conditionLock ) == FALSE )
-        {
-            return false;
-        }
+		m_task = _task;
 
-        m_task = _task;
-        m_complete = false;
-        
-        LeaveCriticalSection( &m_conditionLock );
-
-        WakeAllConditionVariable( &m_conditionVariable );
+		WakeAllConditionVariable( &m_conditionVariable );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::completeTask()
+    void Win32ThreadIdentity::removeTask()
     {
         if( m_exit == true )
         {
-            return false;
+            return;
         }
 
-        EnterCriticalSection( &m_conditionLock );
-
-        bool successful = false;
-
-        if( m_complete == false )
-        {
-            m_task = nullptr;
-            m_complete = true;
-
-            successful = true;
-        }
-
-        LeaveCriticalSection( &m_conditionLock );
-
-        return successful;
+		m_task = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::join()

@@ -104,10 +104,7 @@ namespace Mengine
 
             const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
 
-            if( threadIdentity->completeTask() == false )
-            {
-                threadIdentity->join();
-            }
+			threadIdentity->removeTask();
         }
 
         m_tasks.clear();
@@ -199,7 +196,7 @@ namespace Mengine
                 continue;
             }
 
-            td.identity->completeTask();
+            td.identity->removeTask();
             td.identity->join();
 
             m_threads.erase( it );
@@ -286,18 +283,14 @@ namespace Mengine
 
             const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
 
-            bool successful = threadIdentity->completeTask();
+            threadIdentity->removeTask();
 
-            if( successful == false )
-            {
-                threadIdentity->join();
-                m_tasks.erase( it );
-            }
-
-            return successful;
+			m_tasks.erase( it );
+            
+            return true;
         }
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::stopTasks()
@@ -315,10 +308,7 @@ namespace Mengine
 
             const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
 
-            if( threadIdentity->completeTask() == false )
-            {
-                threadIdentity->join();
-            }
+			threadIdentity->removeTask();
         }
     }
     //////////////////////////////////////////////////////////////////////////

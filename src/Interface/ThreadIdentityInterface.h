@@ -19,7 +19,7 @@ namespace Mengine
     {
     public:
         virtual bool processTask( ThreadTaskInterface * _task ) = 0;
-        virtual bool completeTask() = 0;
+        virtual void removeTask() = 0;
 
     public:
         virtual void join() = 0;

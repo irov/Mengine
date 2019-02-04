@@ -119,8 +119,11 @@ namespace Mengine
         
 
     protected:
-        bool stopSoundBufferUpdate_( const SoundIdentityPtr & _source );
         bool playSoundBufferUpdate_( const SoundIdentityPtr & _source );
+        bool stopSoundBufferUpdate_( const SoundIdentityPtr & _source );
+        bool pauseSoundBufferUpdate_( const SoundIdentityPtr & _source );
+        bool resumeSoundBufferUpdate_( const SoundIdentityPtr & _source );
+        
 
     protected:
         bool checkMaxSoundPlay_() const;

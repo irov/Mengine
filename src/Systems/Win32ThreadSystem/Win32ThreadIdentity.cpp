@@ -55,9 +55,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    static uint32_t __stdcall s_tread_job( void * _userData )
+    static DWORD WINAPI s_tread_job( LPVOID lpThreadParameter )
     {
-        Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity*>(_userData);
+        Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity*>(lpThreadParameter);
 
 #ifdef NDEBUG
         try
@@ -79,7 +79,7 @@ namespace Mengine
         }
 #endif
 
-        return 0;
+        ExitThread( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::initialize( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
@@ -92,7 +92,7 @@ namespace Mengine
         m_line = _line;
 #endif
 
-        m_thread = (HANDLE)::_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
+        m_thread = ::CreateThread( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
 
         if( m_thread == NULL )
         {
@@ -146,16 +146,14 @@ namespace Mengine
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::main()
-    {        
-		while( m_exit == false )
+    {   
+        while( m_exit == false )
         {
             EnterCriticalSection( &m_conditionLock );
-
 			while( m_task == nullptr && m_exit == false )
             {
-                SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, INFINITE );
+                SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, 1000 );
             }
-
             LeaveCriticalSection( &m_conditionLock );
 			
 			if( m_task != nullptr && m_exit == false )
@@ -180,9 +178,13 @@ namespace Mengine
 			return false;
 		}
 
+        EnterCriticalSection( &m_conditionLock );
+
 		m_task = _task;
 
-		WakeAllConditionVariable( &m_conditionVariable );
+		WakeConditionVariable( &m_conditionVariable );
+
+        LeaveCriticalSection( &m_conditionLock );
 
         return true;
     }
@@ -204,9 +206,13 @@ namespace Mengine
             return;
         }
 
+        EnterCriticalSection( &m_conditionLock );
+
         m_exit = true;
         
-        WakeAllConditionVariable( &m_conditionVariable );
+        WakeConditionVariable( &m_conditionVariable );
+
+        LeaveCriticalSection( &m_conditionLock );
         
         WaitForSingleObject( m_thread, INFINITE );
         CloseHandle( m_thread );

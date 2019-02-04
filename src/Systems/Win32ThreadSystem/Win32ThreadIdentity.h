@@ -39,8 +39,6 @@ namespace Mengine
         CONDITION_VARIABLE m_conditionVariable;
 
 		Atomic<ThreadTaskInterface *> m_task;
-
-        AtomicBool m_complete;
         AtomicBool m_exit;
 
 #ifndef NDEBUG

@@ -11,7 +11,6 @@ namespace Mengine
         , m_conditionLock( nullptr )
         , m_priority( 0 )
         , m_task( nullptr )
-        , m_complete( true )
         , m_exit( false )
 #ifndef NDEBUG
         , m_file( nullptr )
@@ -117,25 +116,26 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::main()
     {
+
         for( ; m_exit == false; )
         {
             SDL_LockMutex( m_conditionLock );
 
-            while( m_complete == true && m_exit == false )
+            while( m_task == nullptr && m_exit == false )
             {
-                SDL_CondWait( m_conditionVariable, m_conditionLock );
+                SDL_CondWaitTimeout( m_conditionVariable, m_conditionLock, 1000 );
             }
 
-            if( m_complete == false && m_exit == false )
-            {
-                m_task->main();
-                m_task = nullptr;
-
-                m_complete = true;
-            }
-            
             SDL_UnlockMutex( m_conditionLock );
-        }
+
+            if( m_task != nullptr && m_exit == false )
+            {
+                ThreadTaskInterface * task = m_task;
+                task->main();
+
+                m_task = nullptr;
+            }
+        }        
     }
     //////////////////////////////////////////////////////////////////////////
     bool SDLThreadIdentity::processTask( ThreadTaskInterface * _task )
@@ -145,51 +145,30 @@ namespace Mengine
             return false;
         }
 
-        int conditionLockResult = SDL_TryLockMutex( m_conditionLock );
-
-        if( conditionLockResult != 0 )
+        if( m_task != nullptr )
         {
             return false;
         }
-
-        bool successful = false;
-
-        if( m_complete == true )
-        {
-            m_task = _task;
-            m_complete = false;
-
-            successful = true;
-        }
-
-        SDL_UnlockMutex( m_conditionLock );
-
-        SDL_CondSignal( m_conditionVariable );
-
-        return successful;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    bool SDLThreadIdentity::completeTask()
-    {
-        if( m_exit == true )
-        {
-            return false;
-        }
-
-        bool successful = false;
 
         SDL_LockMutex( m_conditionLock );
 
-        if( m_complete == false )
-        {
-            m_task = nullptr;
+        m_task = _task;
 
-            successful = true;
-        }
+        SDL_CondSignal( m_conditionVariable );
 
         SDL_UnlockMutex( m_conditionLock );
 
-        return successful;
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SDLThreadIdentity::removeTask()
+    {
+        if( m_exit == true )
+        {
+            return;
+        }
+
+        m_task = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLThreadIdentity::join()
@@ -199,9 +178,13 @@ namespace Mengine
             return;
         }
 
+        SDL_LockMutex( m_conditionLock );
+
         m_exit = true;
 
-        SDL_CondBroadcast( m_conditionVariable );
+        SDL_CondSignal( m_conditionVariable );
+
+        SDL_UnlockMutex( m_conditionLock );
 
         int status;
         SDL_WaitThread( m_thread, &status );

@@ -411,7 +411,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShapePacMan::_render( const RenderContext * _state )
+    void ShapePacMan::render( const RenderContext * _state ) const
     {
         const RenderVertex2D * vertices = this->getVerticesWM();
 

@@ -64,17 +64,10 @@ namespace Mengine
         const RenderTargetInterfacePtr & getRenderTarget() const override;
 
     public:
-        void render( const RenderContext * _context ) override;
-        void renderWithChildren( const RenderContext * _context, bool _external ) override;
-
-    protected:
-        virtual void _render( const RenderContext * _context ) = 0;
+        void renderWithChildren( const RenderContext * _context, bool _external ) const override;
 
     public:
-        const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) override;
-
-    protected:
-        virtual const RenderInterfacePtr & _makeTargetRender( const RenderContext * _context );
+        const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) const override;
 
     public:
         void setExternalRender( bool _externalRender ) override;

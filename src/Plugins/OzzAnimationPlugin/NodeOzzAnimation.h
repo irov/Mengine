@@ -70,7 +70,7 @@ namespace Mengine
 
     protected:
         void _update( const UpdateContext * _context ) override;
-        void _render( const RenderContext * _state ) override;
+        void render( const RenderContext * _state ) const override;
 
     protected:
         void updateAnimation_();

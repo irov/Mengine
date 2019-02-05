@@ -240,7 +240,7 @@ namespace Mengine
         return deep;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::removeParentRender_()
+    void Node::removeRelationRender_()
     {
         RenderInterface * render = this->getRender();
 
@@ -269,7 +269,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::setParentRender_( Node * _parent )
+    void Node::setRelationRender_( Node * _parent )
     {
         RenderInterface * render = this->getRender();
 
@@ -303,7 +303,7 @@ namespace Mengine
     void Node::removeParent_()
     {
         this->removeRelationTransformation();
-        this->removeParentRender_();
+        this->removeRelationRender_();
 
         Node * oldparent = m_parent;
         m_parent = nullptr;
@@ -317,7 +317,7 @@ namespace Mengine
         m_parent = _parent;
 
         this->setRelationTransformation( _parent );
-        this->setParentRender_( _parent );
+        this->setRelationRender_( _parent );
 
         UpdationInterface * updation = this->getUpdation();
 
@@ -794,7 +794,7 @@ namespace Mengine
         return nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    NodePtr Node::getSiblingPrev()
+    NodePtr Node::getSiblingPrev() const
     {
         Node * parent = this->getParent();
 
@@ -820,7 +820,7 @@ namespace Mengine
         return prev_node;
     }
     //////////////////////////////////////////////////////////////////////////
-    NodePtr Node::getSiblingNext()
+    NodePtr Node::getSiblingNext() const
     {
         Node * parent = this->getParent();
 

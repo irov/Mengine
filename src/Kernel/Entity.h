@@ -3,7 +3,7 @@
 #include "Interface/EventationInterface.h"
 
 #include "Kernel/Node.h"
-#include "Kernel/BaseRender.h"
+#include "Kernel/NoneRender.h"
 
 namespace Mengine
 {
@@ -47,7 +47,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     class Entity
         : public Node
-        , public BaseRender
+        , public NoneRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
@@ -87,9 +87,6 @@ namespace Mengine
 
     public:
         void _destroy() override;
-
-    protected:
-        void _render( const RenderContext * _context ) override;
 
     protected:
         ConstString m_prototype;

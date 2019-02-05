@@ -75,6 +75,8 @@ ADD_FILTER(
 BaseRender
 	BaseRender.cpp
 	BaseRender.h
+    NoneRender.cpp
+    NoneRender.h
 )
 
 ADD_FILTER(
@@ -307,9 +309,6 @@ Core
     
     Exception.h
     Visitor.h
-    
-    RenderVisitor.h
-    RenderVisitor.cpp
     
     Polygon.h
     Polygon.cpp

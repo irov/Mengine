@@ -418,7 +418,8 @@ namespace Mengine
                 RenderInterface * render = node->getRender();
                 render->setExternalRender( true );
 
-                node->setMovie( this );
+                const ConstString & movieName = this->getName();
+                node->setMovieName( movieName );
 
                 this->addSlot_( layer.index, node );
 
@@ -2262,7 +2263,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::_render( const RenderContext * _context )
+    void Movie2::render( const RenderContext * _context ) const
     {
         uint32_t vertex_iterator = 0;
         uint32_t index_iterator = 0;
@@ -2329,12 +2330,7 @@ namespace Mengine
                     {
                         Movie2Slot * node = reinterpret_node_cast<Movie2Slot *>(mesh.element_userdata);
 
-#ifdef MENGINE_NEW_RENDER
-                        RenderInterface * render = node->getRender();
-                        render->renderWithChildren( &context, true );
-#else
                         Helper::nodeRenderChildren( node, &context, true );
-#endif
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SOCKET:
                     {
@@ -2348,34 +2344,19 @@ namespace Mengine
                     {
                         ShapeQuadFixed * node = reinterpret_node_cast<ShapeQuadFixed *>(mesh.element_userdata);
 
-#ifdef MENGINE_NEW_RENDER
-                        RenderInterface * render = node->getRender();
-                        render->renderWithChildren( &context, true );
-#else
                         Helper::nodeRenderChildren( node, &context, true );
-#endif
                     }break;
                 case AE_MOVIE_LAYER_TYPE_TEXT:
                     {
                         TextField * node = reinterpret_node_cast<TextField *>(mesh.element_userdata);
 
-#ifdef MENGINE_NEW_RENDER
-                        RenderInterface * render = node->getRender();
-                        render->renderWithChildren( &context, true );
-#else
                         Helper::nodeRenderChildren( node, &context, true );
-#endif
                     }break;
                 case AE_MOVIE_LAYER_TYPE_PARTICLE:
                     {
                         Node * node = reinterpret_node_cast<Node *>(mesh.element_userdata);
 
-#ifdef MENGINE_NEW_RENDER
-                        RenderInterface * render = node->getRender();
-                        render->renderWithChildren( &context, true );
-#else
                         Helper::nodeRenderChildren( node, &context, true );
-#endif
                     }break;
                 case AE_MOVIE_LAYER_TYPE_SHAPE:
                     {

@@ -34,7 +34,7 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        void _render( const RenderContext * _state ) override;
+        void render( const RenderContext * _state ) const override;
 
     protected:
         mt::vec3f m_from;
@@ -42,6 +42,6 @@ namespace Mengine
 
         float m_width;
 
-        RenderVertex2D m_vertices[4];
+        mutable RenderVertex2D m_vertices[4];
     };
 }

@@ -130,7 +130,7 @@ namespace Mengine
         Entity::_deactivate();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Arrow::_render( const RenderContext * _state )
+    void Arrow::render( const RenderContext * _state ) const
     {
         (void)_state;
 

@@ -2433,7 +2433,7 @@ namespace Mengine
         this->updateForward_( _context->current );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie::_render( const RenderContext * _context )
+    void Movie::render( const RenderContext * _context ) const
     {
         (void)_context;
 

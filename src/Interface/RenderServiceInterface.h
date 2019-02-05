@@ -2,7 +2,6 @@
 
 #include "Interface/ServiceInterface.h"
 
-#include "Interface/RenderInterface.h"
 #include "Interface/RenderEnumInterface.h"
 #include "Interface/RenderImageInterface.h"
 #include "Interface/RenderTextureInterface.h"
@@ -32,6 +31,7 @@
 #include "Kernel/Pointer.h"
 #include "Kernel/RenderVertex2D.h"
 #include "Kernel/RenderIndex.h"
+#include "Kernel/RenderContext.h"
 
 #include "Config/Typedef.h"
 

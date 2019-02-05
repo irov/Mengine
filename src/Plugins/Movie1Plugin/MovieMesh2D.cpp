@@ -99,7 +99,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieMesh2D::_render( const RenderContext * _state )
+    void MovieMesh2D::render( const RenderContext * _state ) const
     {
         if( m_vertexCount == 0 )
         {

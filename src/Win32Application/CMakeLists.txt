@@ -33,8 +33,6 @@ Win32Application
 	Win32Application.h
 )
 
-add_definitions(-DUNICODE)
-
 if(MENGINE_TOOLCHAIN_MINGW)
     # resource compilation for mingw
     ADD_CUSTOM_COMMAND(OUTPUT ${CMAKE_CURRENT_BINARY_DIR}/Win32Application_rc.o

@@ -199,7 +199,7 @@ namespace Mengine
                 continue;
             }
 
-            this->stopSoundBufferUpdate_( source );
+            this->pauseSoundBufferUpdate_( source );
 
             source->source->pause();
         }
@@ -231,7 +231,7 @@ namespace Mengine
                 continue;
             }
 
-            //this->playSoundBufferUpdate_( identity );
+            this->resumeSoundBufferUpdate_( identity );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -271,7 +271,7 @@ namespace Mengine
 
         if( m_turnStream == true )
         {
-            this->playSounds_();
+            this->resumeSounds_();
         }
         else
         {
@@ -854,7 +854,7 @@ namespace Mengine
 
                 if( identity->turn == true )
                 {
-                    this->stopSoundBufferUpdate_( identity );
+                    this->pauseSoundBufferUpdate_( identity );
                 }
 
                 const SoundSourceInterfacePtr & source = identity->getSoundSource();
@@ -902,8 +902,6 @@ namespace Mengine
 
                 this->updateSourceVolume_( identity );
 
-                this->stopSoundBufferUpdate_( identity );
-
                 const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
                 float length_ms = source->getDuration();
@@ -915,7 +913,7 @@ namespace Mengine
 
                 if( identity->turn == true )
                 {
-                    if( source->play() == false )
+                    if( source->resume() == false )
                     {
                         LOGGER_ERROR( "invalid play %d"
                             , identity->id
@@ -924,7 +922,7 @@ namespace Mengine
                         return false;
                     }
 
-                    this->playSoundBufferUpdate_( identity );
+                    this->resumeSoundBufferUpdate_( identity );
                 }
 
                 const SoundListenerInterfacePtr & listener = identity->getSoundListener();

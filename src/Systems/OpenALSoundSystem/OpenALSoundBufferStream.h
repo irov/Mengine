@@ -31,10 +31,10 @@ namespace Mengine
         bool load( const SoundDecoderInterfacePtr & _soundDecoder ) override;
 
     public:
-        bool play( ALuint _source, bool _looped, float _pos ) override;
-        bool resume( ALuint _source ) override;
-        void pause( ALuint _source ) override;
-        void stop( ALuint _source ) override;
+        bool playSource( ALuint _source, bool _looped, float _pos ) override;
+        bool resumeSource( ALuint _source ) override;
+        void pauseSource( ALuint _source ) override;
+        void stopSource( ALuint _source ) override;
 
     public:
         bool setTimePos( ALuint _source, float _pos ) const override;

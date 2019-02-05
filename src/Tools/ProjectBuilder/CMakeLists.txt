@@ -14,8 +14,6 @@ src
     XmlToAekConverter.h
 )
 
-add_definitions(-DUNICODE)
-
 add_definitions(-DMS_NO_COREDLL)
 add_definitions(-DPy_NO_ENABLE_SHARED)
 add_definitions(-DPYBIND_PYTHON_VERSION=342)

@@ -10,8 +10,6 @@ src
     SDLInput.cpp   
 )
 
-add_definitions(-DUNICODE)
-
 ADD_MENGINE_LIBRARY( ${MY_LIB_NAME} ${SRC_FILES} )
 
 INCLUDE_DIRECTORIES( 

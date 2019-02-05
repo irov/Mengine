@@ -57,7 +57,7 @@ namespace Mengine
 
             this->apply_( m_sourceId );
 
-            if( m_soundBuffer->play( m_sourceId, m_loop, m_timing ) == false )
+            if( m_soundBuffer->playSource( m_sourceId, m_loop, m_timing ) == false )
             {
                 LOGGER_ERROR( "invalid buffer play %d loop %d timing %f"
                     , m_sourceId
@@ -70,7 +70,7 @@ namespace Mengine
         }
         else
         {
-            m_soundBuffer->resume( m_sourceId );
+            m_soundBuffer->resumeSource( m_sourceId );
         }
 
         //m_timing = 0.f;
@@ -106,18 +106,8 @@ namespace Mengine
         m_playing = false;
         m_pausing = true;
 
-        float timing = 0.f;
-        if( m_soundBuffer->getTimePos( m_sourceId, timing ) == false )
-        {
-            LOGGER_ERROR( "invalid get time pos %d (play %d)"
-                , m_sourceId
-                , m_playing
-            );
-        }
 
-        m_timing = timing;
-
-        m_soundBuffer->pause( m_sourceId );
+        m_soundBuffer->pauseSource( m_sourceId );
     }
     //////////////////////////////////////////////////////////////////////////
     bool OpenALSoundSource::resume()
@@ -137,7 +127,7 @@ namespace Mengine
             return false;
         }
 
-        m_soundBuffer->resume( m_sourceId );
+        m_soundBuffer->resumeSource( m_sourceId );
         
         m_playing = true;
         m_pausing = false;
@@ -322,7 +312,7 @@ namespace Mengine
             ALuint sourceId = m_sourceId;
             m_sourceId = 0;
 
-            m_soundBuffer->stop( sourceId );
+            m_soundBuffer->stopSource( sourceId );
             m_soundSystem->releaseSourceId( sourceId );
         }
     }

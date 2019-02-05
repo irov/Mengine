@@ -146,7 +146,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::play( ALuint _source, bool _looped, float _pos )
+    bool OpenALSoundBufferStream::playSource( ALuint _source, bool _looped, float _pos )
     {
         m_sourceId = _source;
         m_looped = _looped;
@@ -167,7 +167,7 @@ namespace Mengine
 
         if( state != AL_STOPPED && state != AL_INITIAL )
         {
-            this->stop( m_sourceId );
+            this->stopSource( m_sourceId );
             //alSourceRewind( _source );
         }
 
@@ -218,7 +218,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferStream::resume( ALuint _source )
+    bool OpenALSoundBufferStream::resumeSource( ALuint _source )
     {
         (void)_source;
 
@@ -230,7 +230,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferStream::pause( ALuint _source )
+    void OpenALSoundBufferStream::pauseSource( ALuint _source )
     {
         this->setUpdating_( false );
 
@@ -239,7 +239,7 @@ namespace Mengine
         //m_soundSystem->clearSourceId( _source );
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferStream::stop( ALuint _source )
+    void OpenALSoundBufferStream::stopSource( ALuint _source )
     {
         this->setUpdating_( false );
 
@@ -250,7 +250,7 @@ namespace Mengine
 
         // Если таковые существуют то
         while( process_count-- > 0 )
-        {
+        {            
             // Исключаем их из очереди
             ALuint buffer = 0;
 
@@ -327,7 +327,7 @@ namespace Mengine
     {
         MENGINE_THREAD_MUTEX_SCOPE( m_mutexUpdating );
 
-        if( this->m_updating == false )
+        if( m_updating == false )
         {
             return true;
         }

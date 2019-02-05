@@ -79,8 +79,8 @@ namespace Mengine
         uint32_t getChildrenRecursiveCount() const;
 
         NodePtr findChild( const ConstString & _name, bool _recursion ) const;
-        NodePtr getSiblingPrev();
-        NodePtr getSiblingNext();
+        NodePtr getSiblingPrev() const;
+        NodePtr getSiblingNext() const;
         bool hasChild( const ConstString & _name, bool _recursive ) const;
         bool emptyChildren() const;
 
@@ -122,8 +122,8 @@ namespace Mengine
 
         NodePtr findUniqueChild( uint32_t _uniqueIdentity ) const;
 
-        void removeParentRender_();
-        void setParentRender_( Node * _parent );
+        void removeRelationRender_();
+        void setRelationRender_( Node * _parent );
 
         typedef const Lambda<void( RenderInterface * )> LambdaNodeRenderCloseChildren;
         void foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );

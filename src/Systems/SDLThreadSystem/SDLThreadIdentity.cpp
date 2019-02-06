@@ -74,17 +74,6 @@ namespace Mengine
         m_line = _line;
 #endif
 
-        SDL_Thread * thread = SDL_CreateThread( &s_tread_job, _doc, reinterpret_cast<void *>(this) );
-
-        if( thread == nullptr )
-        {
-            LOGGER_ERROR( "invalid create thread error code - '%s'"
-                , SDL_GetError()
-            );
-
-            return false;
-        }
-
         SDL_mutex * conditionLock = SDL_CreateMutex();
 
         if( conditionLock == nullptr )
@@ -106,10 +95,22 @@ namespace Mengine
 
             return false;
         }
-
-        m_thread = thread;
+        
         m_conditionLock = conditionLock;
         m_conditionVariable = conditionVariable;
+        
+        SDL_Thread * thread = SDL_CreateThread( &s_tread_job, _doc, reinterpret_cast<void *>(this) );
+        
+        if( thread == nullptr )
+        {
+            LOGGER_ERROR( "invalid create thread error code - '%s'"
+                         , SDL_GetError()
+                         );
+            
+            return false;
+        }
+
+        m_thread = thread;
 
         return true;
     }

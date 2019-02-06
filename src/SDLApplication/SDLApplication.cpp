@@ -522,7 +522,7 @@ namespace Mengine
 
         SERVICE_CREATE( FactoryService );
 
-        SERVICE_CREATE( OptionsService );        
+        SERVICE_CREATE( OptionsService );
 
         ArgumentsInterfacePtr arguments = new FactorableUnique<StringArguments>();
 
@@ -793,11 +793,11 @@ namespace Mengine
             for( const String & moduleName : devModules )
             {
                 if( MODULE_SERVICE()
-                            ->runModule( Helper::stringizeString( moduleName ) ) == false )
+                    ->runModule( Helper::stringizeString( moduleName ) ) == false )
                 {
                     LOGGER_ERROR( "Application Failed to run dev module '%s'"
-                                , moduleName.c_str()
-                        );
+                        , moduleName.c_str()
+                    );
                 }
             }
         }
@@ -949,7 +949,7 @@ namespace Mengine
         SERVICE_FINALIZE( Mengine::PluginServiceInterface );
         SERVICE_FINALIZE( Mengine::InputServiceInterface );
         SERVICE_FINALIZE( Mengine::UnicodeSystemInterface );
-        
+
         SERVICE_FINALIZE( Mengine::CodecServiceInterface );
 
         SERVICE_FINALIZE( Mengine::SoundServiceInterface );

@@ -149,13 +149,9 @@ namespace Mengine
             return false;
         }
 
-        SDL_LockMutex( m_conditionLock );
-
         m_task = _task;
 
         SDL_CondSignal( m_conditionVariable );
-
-        SDL_UnlockMutex( m_conditionLock );
 
         return true;
     }
@@ -177,13 +173,9 @@ namespace Mengine
             return;
         }
 
-        SDL_LockMutex( m_conditionLock );
-
         m_exit = true;
 
         SDL_CondSignal( m_conditionVariable );
-
-        SDL_UnlockMutex( m_conditionLock );
 
         int status;
         SDL_WaitThread( m_thread, &status );

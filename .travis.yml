@@ -1,0 +1,35 @@
+dist: trusty
+sudo: required 
+
+language: cpp
+
+os:
+    - osx
+
+compiler:
+    - clang
+    
+env:
+    - TARGET_CPU=amd64 BUILD_CONFIGURATION=Debug
+    - TARGET_CPU=amd64 BUILD_CONFIGURATION=Release
+        
+script:
+    # dependencies
+    - mkdir build_downloads_cmake
+    - pushd build_downloads_cmake
+    - cmake ../CMake/Downloads/ -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+    - cmake --build . --config $BUILD_CONFIGURATION
+    - popd
+    
+    - mkdir build_dependencies_cmake
+    - pushd build_dependencies_cmake
+    - cmake ../CMake/Depends_Xcode_IOS_SDL/ -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+    - cmake --build . --config $BUILD_CONFIGURATION
+    - popd
+    
+    - mkdir build_engine_cmake
+    - pushd build_engine_cmake
+    - cmake ../CMake/Xcode_IOS_SDL/ -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+    - cmake --build . --config $BUILD_CONFIGURATION
+    - popd
+  

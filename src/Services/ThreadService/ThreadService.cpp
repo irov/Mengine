@@ -116,9 +116,12 @@ namespace Mengine
 
         m_threadQueues.clear();
 
+        m_mainCodes.clear();
+
         for( ThreadDesc & desc : m_threads )
         {
             desc.identity->join();
+            desc.identity = nullptr;
         }
 
         m_threads.clear();

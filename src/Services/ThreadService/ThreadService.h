@@ -111,5 +111,8 @@ namespace Mengine
         VectorMainCodeDescs m_mainCodes;
 
         ptrdiff_t m_mainThreadId;
+
+    protected:
+        void tryFastProcessTask_( ThreadTaskDesc & _desc );
     };
 }

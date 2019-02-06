@@ -252,6 +252,8 @@ namespace Mengine
 
         m_tasks.emplace_back( desc );
 
+        this->tryFastProcessTask_( desc );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -519,5 +521,26 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadService::tryFastProcessTask_( ThreadTaskDesc & _desc )
+    {
+        for( ThreadDesc & desc_thread : m_threads )
+        {
+            if( desc_thread.name != _desc.threadName )
+            {
+                continue;
+            }
+
+            ThreadTaskInterface * task_ptr = _desc.task.get();
+
+            if( desc_thread.identity->processTask( task_ptr ) == true )
+            {
+                _desc.identity = desc_thread.identity;
+                _desc.progress = true;
+
+                break;
+            }
+        }
     }
 }

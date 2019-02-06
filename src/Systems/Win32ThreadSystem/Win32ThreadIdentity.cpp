@@ -178,13 +178,9 @@ namespace Mengine
 			return false;
 		}
 
-        EnterCriticalSection( &m_conditionLock );
-
 		m_task = _task;
 
 		WakeConditionVariable( &m_conditionVariable );
-
-        LeaveCriticalSection( &m_conditionLock );
 
         return true;
     }
@@ -206,13 +202,9 @@ namespace Mengine
             return;
         }
 
-        EnterCriticalSection( &m_conditionLock );
-
         m_exit = true;
         
         WakeConditionVariable( &m_conditionVariable );
-
-        LeaveCriticalSection( &m_conditionLock );
         
         WaitForSingleObject( m_thread, INFINITE );
         CloseHandle( m_thread );

@@ -10,13 +10,13 @@
 
 namespace Mengine
 {
-    class DataflowPYC
+    class DataflowPYZ
         : public DataflowInterface
         , public Factorable
     {
     public:
-        DataflowPYC();
-        ~DataflowPYC() override;
+        DataflowPYZ();
+        ~DataflowPYZ() override;
 
     public:
         void setKernel( pybind::kernel_interface * _kernel );
@@ -43,6 +43,6 @@ namespace Mengine
         FactoryPtr m_factoryScriptCodeData;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<DataflowPYC> DataflowPYCPtr;
+    typedef IntrusivePtr<DataflowPYZ> DataflowPYZPtr;
     //////////////////////////////////////////////////////////////////////////
 }

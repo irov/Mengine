@@ -894,7 +894,11 @@ namespace Mengine
         auto uiReadOnlyBool = [_node]( const char * _caption, bool & _prop )
         {
             bool testValue = _prop;
-            bool input = ImGui::Checkbox( _caption, &testValue );
+            ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
+            ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
+            ImGui::Checkbox( _caption, &testValue );
+            ImGui::PopStyleColor();
+            ImGui::PopItemFlag();
         };
 
         auto uiEditorVec1U = [_node]( const char * _caption, uint32_t & _prop )
@@ -1077,16 +1081,17 @@ namespace Mengine
 
         if( _node->hasRender && ImGui::CollapsingHeader( "Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            uiReadOnlyBool( "rendering", _node->render.rendering );
+            uiRBool( "Enable", _node->render.enable );
             uiEditorBool( "Hide", _node->render.hide );
             ImGui::Spacing();
 
-            uiEditorColor( "Color", _node->render.color );
+            uiEditorColor( "Local Color", _node->render.local_color );
+            uiEditorColor( "Personal Color", _node->render.personal_color );            
         }
 
         if( _node->hasAnimation && ImGui::CollapsingHeader( "Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            uiEditorBool( "Loop", _node->animation.loop );
+            uiEditorBool( "loop", _node->animation.loop );
         }
 
         if( _node->isTypeTextField && ImGui::CollapsingHeader( "TextField:", ImGuiTreeNodeFlags_DefaultOpen ) )

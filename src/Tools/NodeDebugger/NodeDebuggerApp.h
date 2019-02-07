@@ -70,21 +70,24 @@ namespace Mengine
 
     struct NodeRender
     {
-        bool    rendering;
+        bool    enable;
         bool    hide;
-        Color   color;
+        Color   local_color;
+        Color   personal_color;
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
             SERIALIZE_PROP( hide );
-            SERIALIZE_PROP( color );
+            SERIALIZE_PROP( local_color );
+            SERIALIZE_PROP( personal_color );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
         {
-            DESERIALIZE_PROP( rendering );
+            DESERIALIZE_PROP( enable );
             DESERIALIZE_PROP( hide );
-            DESERIALIZE_PROP( color );
+            DESERIALIZE_PROP( local_color );
+            DESERIALIZE_PROP( personal_color );
         }
     };
 

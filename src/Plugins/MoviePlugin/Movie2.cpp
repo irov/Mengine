@@ -717,6 +717,18 @@ namespace Mengine
             return;
         }
 
+#ifndef NDEBUG
+        if( ae_has_movie_composition_node_any( m_composition, _name.c_str() ) == AE_FALSE )
+        {
+            LOGGER_ERROR( "movie '%s' layer '%s' not found"
+                , this->getName().c_str()
+                , _name.c_str()
+            );
+
+            return;
+        }
+#endif
+
         ae_set_movie_composition_nodes_enable_any( m_composition, _name.c_str(), _enable ? AE_TRUE : AE_FALSE );
     }
     //////////////////////////////////////////////////////////////////////////

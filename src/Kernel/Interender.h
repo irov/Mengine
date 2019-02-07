@@ -17,6 +17,6 @@ namespace Mengine
         ~Interender() override;
 
     protected:
-        void _render( const RenderContext * _context ) override;
+        void render( const RenderContext * _context ) const override;
     };
 }

@@ -17,8 +17,8 @@ src
     ScriptCodeData.cpp
     DataflowPY.h
     DataflowPY.cpp
-    DataflowPYC.h
-    DataflowPYC.cpp
+    DataflowPYZ.h
+    DataflowPYZ.cpp
 
     ConstStringHolderPythonString.h
     ConstStringHolderPythonString.cpp

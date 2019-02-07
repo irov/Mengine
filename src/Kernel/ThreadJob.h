@@ -26,6 +26,7 @@ namespace Mengine
     enum EThreadStatus
     {
         ETS_WORK,
+        ETS_PAUSE,
         ETS_DONE,
         ETS_FREE
     };
@@ -53,7 +54,9 @@ namespace Mengine
 
     public:
         uint32_t addWorker( const ThreadWorkerInterfacePtr &_worker );
-        void removeWorker( uint32_t _id );
+        bool removeWorker( uint32_t _id );
+        bool pauseWorker( uint32_t _id );
+        bool resumeWorker( uint32_t _id );
 
     protected:
         bool _onMain() override;

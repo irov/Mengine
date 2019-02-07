@@ -233,7 +233,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Grid2D::_render( const RenderContext * _state )
+    void Grid2D::render( const RenderContext * _state ) const
     {
         const RenderIndex * indices = &m_indices[0];
         uint32_t indicesCount = (uint32_t)m_indices.size();
@@ -248,7 +248,7 @@ namespace Mengine
         this->addRenderObject( _state, material, nullptr, vertices, verticesCount, indices, indicesCount, bb, false );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Grid2D::updateVerticesWM_()
+    void Grid2D::updateVerticesWM_() const
     {
         m_invalidateVerticesWM = false;
 

@@ -145,7 +145,7 @@ namespace Mengine
 
     protected:
         void _update( const UpdateContext * _context ) override;
-        void _render( const RenderContext * _context ) override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         void _setLocalHide( bool _value ) override;

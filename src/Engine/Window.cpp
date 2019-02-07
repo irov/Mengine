@@ -179,7 +179,7 @@ namespace Mengine
         m_resourceWindow.release();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Window::_render( const RenderContext * _state )
+    void Window::render( const RenderContext * _state ) const
     {
         const RenderVertex2D * vertices = this->getVertices();
 

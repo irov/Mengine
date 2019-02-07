@@ -22,10 +22,10 @@ namespace Mengine
     AstralaxEmitter::AstralaxEmitter()
         : m_emitter( nullptr )
         , m_randomMode( false )
-        , m_vertices( nullptr )
-        , m_vertexCount( 0 )
-        , m_indicies( nullptr )
-        , m_indexCount( 0 )
+        , m_renderVertices( nullptr )
+        , m_renderVertexCount( 0 )
+        , m_renderIndicies( nullptr )
+        , m_renderIndexCount( 0 )
         , m_positionProviderOriginOffset( 0.f, 0.f, 0.f )
         , m_emitterPositionRelative( false )
         , m_emitterCameraRelative( false )
@@ -188,13 +188,13 @@ namespace Mengine
 
         m_resourceParticle.release();
 
-        Helper::freeArrayT( m_vertices );
-        m_vertices = nullptr;
-        m_vertexCount = 0;
+        Helper::freeArrayT( m_renderVertices );
+        m_renderVertices = nullptr;
+        m_renderVertexCount = 0;
 
-        Helper::freeArrayT( m_indicies );
-        m_indicies = nullptr;
-        m_indexCount = 0;
+        Helper::freeArrayT( m_renderIndicies );
+        m_renderIndicies = nullptr;
+        m_renderIndexCount = 0;
     }
     //////////////////////////////////////////////////////////////////////////
     bool AstralaxEmitter::_play( uint32_t _enumerator, float _time )
@@ -330,7 +330,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::_render( const RenderContext * _state )
+    void AstralaxEmitter::render( const RenderContext * _state ) const
     {
         if( this->isPlay() == false )
         {
@@ -351,32 +351,32 @@ namespace Mengine
             return;
         }
 
-        if( m_vertexCount < flush.vertexCount )
+        if( m_renderVertexCount < flush.vertexCount )
         {
-            m_vertexCount = flush.vertexCount;
+            m_renderVertexCount = flush.vertexCount;
 
-            m_vertices = Helper::reallocateArrayT<RenderVertex2D>( m_vertices, m_vertexCount );
+            m_renderVertices = Helper::reallocateArrayT<RenderVertex2D>( m_renderVertices, m_renderVertexCount );
         }
 
-        if( m_indexCount < flush.indexCount )
+        if( m_renderIndexCount < flush.indexCount )
         {
-            m_indexCount = flush.indexCount;
+            m_renderIndexCount = flush.indexCount;
 
-            m_indicies = Helper::reallocateArrayT<RenderIndex>( m_indicies, m_indexCount );
+            m_renderIndicies = Helper::reallocateArrayT<RenderIndex>( m_renderIndicies, m_renderIndexCount );
         }
 
         AstralaxMesh meshes[MENGINE_PARTICLE_MAX_MESH];
 
-        if( m_emitter->flushParticles( meshes, MENGINE_PARTICLE_MAX_MESH, m_vertices, m_indicies, flush ) == false )
+        if( m_emitter->flushParticles( meshes, MENGINE_PARTICLE_MAX_MESH, m_renderVertices, m_renderIndicies, flush ) == false )
         {
             return;
         }
 
-        this->updateVertexColor_( m_vertices, flush.vertexCount );
+        this->updateVertexColor_( m_renderVertices, flush.vertexCount );
 
         if( m_emitterPositionRelative == false )
         {
-            this->updateVertexWM_( m_vertices, flush.vertexCount );
+            this->updateVertexWM_( m_renderVertices, flush.vertexCount );
         }
 
         const mt::box2f * bb = this->getBoundingBox();
@@ -419,11 +419,11 @@ namespace Mengine
             const RenderMaterialInterfacePtr & material = RENDERMATERIAL_SERVICE()
                 ->getMaterial2( STRINGIZE_STRING_LOCAL( "ParticleEmitter2" ), stage, PT_TRIANGLELIST, mesh.textures, textures );
 
-            this->addRenderObject( _state, material, nullptr, m_vertices + mesh.vertexOffset, mesh.vertexCount, m_indicies + mesh.indexOffset, mesh.indexCount, bb, false );
+            this->addRenderObject( _state, material, nullptr, m_renderVertices + mesh.vertexOffset, mesh.vertexCount, m_renderIndicies + mesh.indexOffset, mesh.indexCount, bb, false );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount )
+    void AstralaxEmitter::updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount ) const
     {
         Color color;
         this->calcTotalColor( color );
@@ -456,7 +456,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void AstralaxEmitter::updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount )
+    void AstralaxEmitter::updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount ) const
     {
         if( this->isIdentityWorldMatrix() == true )
         {
@@ -471,7 +471,7 @@ namespace Mengine
             it != it_end;
             ++it )
         {
-            mt::vec3f & pos = _vertices[it].position;
+            const mt::vec3f & pos = _vertices[it].position;
 
             mt::vec3f wm_pos;
             mt::mul_v3_v3_m4( wm_pos, pos, wm );

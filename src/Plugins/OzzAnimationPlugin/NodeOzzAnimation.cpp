@@ -524,7 +524,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void NodeOzzAnimation::_render( const RenderContext * _context )
+    void NodeOzzAnimation::render( const RenderContext * _context ) const
     {
         const Detail::Mesh & ozz_mesh = m_resourceMesh->getMesh();
 

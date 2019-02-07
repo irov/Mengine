@@ -1,5 +1,4 @@
 #include "Movie2Slot.h"
-#include "Movie2.h"
 
 #include "Kernel/Logger.h"
 
@@ -9,7 +8,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Movie2Slot::Movie2Slot()
-        : m_movie( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -17,14 +15,14 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2Slot::setMovie( const Movie2Ptr & _movie )
+    void Movie2Slot::setMovieName( const ConstString & _movieName )
     {
-        m_movie = _movie;
+        m_movieName = _movieName;
     }
     //////////////////////////////////////////////////////////////////////////
-    const Movie2Ptr & Movie2Slot::getMovie() const
+    const ConstString & Movie2Slot::getMovieName() const
     {
-        return m_movie;
+        return m_movieName;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2Slot::_destroy()
@@ -40,12 +38,12 @@ namespace Mengine
         {
             NodePtr node = *it;
 
-            LOGGER_ERROR( "Movie2Slot::_destroy slot %s:%s has children %s:%s!! (please remove, before release movie '%s')"
+            LOGGER_ERROR( "slot %s:%s has children %s:%s!! (please remove, before release movie '%s')"
                 , this->getName().c_str()
                 , this->getType().c_str()
                 , node->getName().c_str()
                 , node->getType().c_str()
-                , m_movie->getName().c_str()
+                , this->getMovieName().c_str()
             );
         }
 #endif
@@ -84,17 +82,10 @@ namespace Mengine
             return;
         }
 
-        LOGGER_ERROR( "MovieSlot::_changeParent slot %s:%s movie %s (please don't change parent it's danger)"
+        LOGGER_ERROR( "slot %s:%s movie %s (please don't change parent it's danger)"
             , this->getName().c_str()
             , this->getType().c_str()
-            , m_movie->getName().c_str()
+            , this->getMovieName().c_str()
         );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Movie2Slot::_render( const RenderContext * _state )
-    {
-        (void)_state;
-
-        //Empty
-    }
+    }    
 }

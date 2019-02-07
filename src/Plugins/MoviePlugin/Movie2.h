@@ -126,7 +126,7 @@ namespace Mengine
         void _update( const UpdateContext * _context ) override;
 
     protected:
-        void _render( const RenderContext * _state ) override;
+        void render( const RenderContext * _state ) const override;
 
     protected:
         void _changeParent( Node * _oldParent, Node * _newParent ) override;
@@ -218,8 +218,8 @@ namespace Mengine
         bool m_hasBounds;
         mt::box2f m_bounds;
 
-        VectorRenderVertex2D m_vertices;
-        VectorRenderIndex m_indices;
+        mutable VectorRenderVertex2D m_vertices;
+        mutable VectorRenderIndex m_indices;
 
         typedef Map<ConstString, Camera> MapCameras;
         MapCameras m_cameras;

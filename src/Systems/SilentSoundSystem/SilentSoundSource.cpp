@@ -96,6 +96,31 @@ namespace Mengine
         m_soundBuffer->pause( m_sourceId );
     }
     //////////////////////////////////////////////////////////////////////////
+    bool SilentSoundSource::resume()
+    {
+        if( m_playing == true )
+        {
+            return true;
+        }
+
+        if( m_soundBuffer == nullptr )
+        {
+            return false;
+        }
+
+        if( m_pausing == false )
+        {
+            return false;
+        }
+
+        m_soundBuffer->resume( m_sourceId );
+        
+        m_playing = true;
+        m_pausing = false;
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
     void SilentSoundSource::stop()
     {
         if( m_playing == false && m_pausing == false )

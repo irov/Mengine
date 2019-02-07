@@ -36,7 +36,7 @@ namespace Mengine
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        void _render( const RenderContext * _state ) override;
+        void render( const RenderContext * _state ) const override;
 
     protected:
         Point * m_linked;
@@ -44,6 +44,6 @@ namespace Mengine
 
         float m_width;
 
-        RenderVertex2D m_vertices[4];
+        mutable RenderVertex2D m_vertices[4];
     };
 }

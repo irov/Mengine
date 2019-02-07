@@ -2,9 +2,9 @@
 
 Mengine is an multiple platforms engine for creating and running graphical games
 
-|         | Linux  | Mac OS | Windows |
-| ------- | ------ | ------ | ------- |
-| master  | | [![Travis-CI](https://travis-ci.org/irov/Mengine.svg?branch=master)](https://travis-ci.org/irov/Mengine) | [![AppVeyor](https://ci.appveyor.com/api/projects/status/w9l085j2o2qn3ua5?svg=true)](https://ci.appveyor.com/project/irov/mengine) |
+|         | Linux  | Mac OS | Windows |   IOS   |
+| ------- | ------ | ------ | ------- | ------- |
+| master  | | | [![AppVeyor](https://ci.appveyor.com/api/projects/status/w9l085j2o2qn3ua5?svg=true)](https://ci.appveyor.com/project/irov/mengine) | [![Travis-CI](https://travis-ci.org/irov/Mengine.svg?branch=master)](https://travis-ci.org/irov/Mengine) |
 
 
 Проект использует [CMake](https://cmake.org/) в качестве cистемы сборки проекта

@@ -519,12 +519,7 @@ namespace Mengine
         {
             if( debugMask == false )
             {
-#ifdef MENGINE_NEW_RENDER
-                RenderInterface * render = scene->getRender();
-                render->renderWithChildren( &context, false );
-#else
                 Helper::nodeRenderChildren( scene, &context, false );
-#endif
             }
             else
             {
@@ -546,12 +541,7 @@ namespace Mengine
         {
             if( debugMask == false )
             {
-#ifdef MENGINE_NEW_RENDER
-                RenderInterface * render = m_arrow->getRender();
-                render->renderWithChildren( &context, false );
-#else
                 Helper::nodeRenderChildren( m_arrow, &context, false );
-#endif
             }
             else
             {

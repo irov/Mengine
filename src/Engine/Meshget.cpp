@@ -109,7 +109,7 @@ namespace Mengine
             ->onMeshgetUpdate( _context );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Meshget::_render( const RenderContext * _state )
+    void Meshget::render( const RenderContext * _state ) const
     {
         if( m_positions.empty() == true )
         {

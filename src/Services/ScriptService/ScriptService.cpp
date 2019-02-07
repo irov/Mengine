@@ -13,7 +13,7 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #include "DataflowPY.h"
-#include "DataflowPYC.h"
+#include "DataflowPYZ.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactorableUnique.h"
@@ -233,9 +233,9 @@ namespace Mengine
 
         VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ), dataflowPY );
 
-        DataflowPYCPtr dataflowPYC = new FactorableUnique<DataflowPYC>();
+        DataflowPYZPtr dataflowPYZ = new FactorableUnique<DataflowPYZ>();
 
-        dataflowPYC->setKernel( m_kernel );
+        dataflowPYZ->setKernel( m_kernel );
 
         const ArchivatorInterfacePtr & archivatorZIP = ARCHIVE_SERVICE()
             ->getArchivator( STRINGIZE_STRING_LOCAL( "zip" ) );
@@ -245,14 +245,14 @@ namespace Mengine
             return false;
         }
 
-        dataflowPYC->setArchivator( archivatorZIP );
+        dataflowPYZ->setArchivator( archivatorZIP );
 
-        if( dataflowPYC->initialize() == false )
+        if( dataflowPYZ->initialize() == false )
         {
             return false;
         }
 
-        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pycScript" ), dataflowPYC );
+        VOCALUBARY_SET( DataflowInterface, STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ), dataflowPYZ );
 
         pybind::interface_<ScriptModuleFinder>( m_kernel, "ScriptModuleFinder", true )
             .def_kernel( "find_module", &ScriptModuleFinder::find_module )
@@ -262,7 +262,7 @@ namespace Mengine
         m_moduleFinder = new FactorableUnique<ScriptModuleFinder>();
 
         m_moduleFinder->setDataflowPY( dataflowPY );
-        m_moduleFinder->setDataflowPYC( dataflowPYC );
+        m_moduleFinder->setDataflowPYZ( dataflowPYZ );
 
         if( m_moduleFinder->initialize() == false )
         {
@@ -527,7 +527,7 @@ namespace Mengine
     void ScriptService::prefetchModules( const PrefetcherObserverInterfacePtr & _cb )
     {
         DataflowInterfacePtr dataflowPY = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyScript" ) );
-        DataflowInterfacePtr dataflowPYC = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pycScript" ) );
+        DataflowInterfacePtr dataflowPYZ = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "pyzScript" ) );
 
         for( const ScriptModulePack & pack : m_bootstrapperModules )
         {
@@ -544,10 +544,10 @@ namespace Mengine
             } );
 #endif
 
-            fileGroup->findFiles( pack.path, "*.pyz", [&fileGroup, &dataflowPYC, &_cb]( const FilePath & _filePath )
+            fileGroup->findFiles( pack.path, "*.pyz", [&fileGroup, &dataflowPYZ, &_cb]( const FilePath & _filePath )
             {
                 if( PREFETCHER_SERVICE()
-                    ->prefetchData( fileGroup, _filePath, dataflowPYC, _cb ) == false )
+                    ->prefetchData( fileGroup, _filePath, dataflowPYZ, _cb ) == false )
                 {
                     return;
                 }

@@ -1,16 +1,14 @@
 #pragma once
 
 #include "Kernel/Node.h"
-#include "Kernel/BaseRender.h"
+#include "Kernel/NoneRender.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<class Movie2> Movie2Ptr;
-    //////////////////////////////////////////////////////////////////////////
     class Movie2Slot
         : public Node
-        , public BaseRender
+        , public NoneRender
     {
         DECLARE_VISITABLE( Node );
         DECLARE_RENDERABLE();
@@ -20,14 +18,11 @@ namespace Mengine
         ~Movie2Slot() override;
 
     public:
-        void setMovie( const Movie2Ptr & _movie );
-        const Movie2Ptr & getMovie() const;
+        void setMovieName( const ConstString & _movieName );
+        const ConstString & getMovieName() const;
 
     protected:
         void _destroy() override;
-
-        //protected:
-        //    void _setLocalHide( bool _value ) override;
 
     protected:
         void _setPersonalColor( const Color& _color ) override;
@@ -37,10 +32,7 @@ namespace Mengine
         void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
     protected:
-        void _render( const RenderContext * _state ) override;
-
-    protected:
-        Movie2Ptr m_movie;
+        ConstString m_movieName;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<Movie2Slot> Movie2SlotPtr;

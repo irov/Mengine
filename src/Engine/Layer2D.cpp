@@ -200,7 +200,7 @@ namespace Mengine
             }
 
         protected:
-            void _render( const RenderContext * _context ) override
+            void render( const RenderContext * _context ) const override
             {
                 const RenderVertex2D * verticesImageMask = m_layer->getVerticesImageMaskWM();
                 const RenderMaterialInterfacePtr & materialImageMask = m_layer->getMaterialImageMask();
@@ -300,14 +300,14 @@ namespace Mengine
         this->setRenderTarget( nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Layer2D::_render( const RenderContext * _context )
+    void Layer2D::render( const RenderContext * _context ) const
     {
         (void)_context;
 
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderInterfacePtr & Layer2D::_makeTargetRender( const RenderContext * _context )
+    const RenderInterfacePtr & Layer2D::makeTargetRender( const RenderContext * _context ) const
     {
         (void)_context;
 

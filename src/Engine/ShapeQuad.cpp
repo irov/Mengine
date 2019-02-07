@@ -17,7 +17,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void ShapeQuad::_render( const RenderContext * _state )
+    void ShapeQuad::render( const RenderContext * _state ) const
     {
         const RenderVertex2D * vertices = this->getVerticesWM();
 

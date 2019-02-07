@@ -138,11 +138,4 @@ namespace Mengine
 
         this->unwrap();
     }
-    //////////////////////////////////////////////////////////////////////////
-    void Entity::_render( const RenderContext * _context )
-    {
-        (void)_context;
-
-        //Empty
-    }
 }

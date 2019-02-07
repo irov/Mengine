@@ -29,7 +29,7 @@ namespace Mengine
         void _invalidateWorldMatrix() override;
 
     protected:
-        void _render( const RenderContext * _context ) override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         Node * m_propagate;

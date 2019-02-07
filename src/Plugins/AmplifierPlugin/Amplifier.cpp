@@ -245,7 +245,7 @@ namespace Mengine
         m_play = true;
 
         SOUND_SERVICE()
-            ->playEmitter( m_soundEmitter );
+            ->resumeEmitter( m_soundEmitter );
 
         return true;
     }

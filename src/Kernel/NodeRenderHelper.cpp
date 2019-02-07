@@ -2,6 +2,8 @@
 
 #include "Kernel/Node.h"
 
+//#define MENGINE_NEW_RENDER
+
 namespace Mengine
 {
     namespace Helper
@@ -11,6 +13,9 @@ namespace Mengine
         {
             RenderInterface * selfRender = _node->getRender();
 
+#ifdef MENGINE_NEW_RENDER
+            selfRender->renderWithChildren( _context, _external );
+#else
             if( selfRender != nullptr )
             {
                 if( selfRender->isRenderEnable() == false )
@@ -107,6 +112,7 @@ namespace Mengine
                     Helper::nodeRenderChildren( _child, _context, false );
                 } );
             }
+#endif
         }
         //////////////////////////////////////////////////////////////////////////
         RenderInterface * getNodeRenderInheritance( Node * _node )

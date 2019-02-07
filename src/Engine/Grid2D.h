@@ -58,7 +58,7 @@ namespace Mengine
         void _release() override;
 
     protected:
-        void _render( const RenderContext * _state ) override;
+        void render( const RenderContext * _state ) const override;
 
     protected:
         void _invalidateWorldMatrix() override;
@@ -66,13 +66,13 @@ namespace Mengine
         void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
     protected:
-        void updateVerticesWM_();
+        void updateVerticesWM_() const;
 
     protected:
         RenderMaterialInterfacePtr _updateMaterial() const override;
 
     protected:
-        inline const RenderVertex2D * getVerticesWM();
+        inline const RenderVertex2D * getVerticesWM() const;
 
     protected:
         ResourceHolder<ResourceImage> m_resourceImage;
@@ -86,17 +86,17 @@ namespace Mengine
         uint32_t m_countX;
         uint32_t m_countY;
 
-        VectorRenderVertex2D m_vertices;
-        VectorRenderVertex2D m_verticesWM;
-
         VectorRenderIndex m_indices;
+
+        VectorRenderVertex2D m_vertices;
+        mutable VectorRenderVertex2D m_verticesWM;
 
         mutable bool m_invalidateVerticesWM;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class Grid2D> Grid2DPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderVertex2D * Grid2D::getVerticesWM()
+    inline const RenderVertex2D * Grid2D::getVerticesWM() const
     {
         if( m_invalidateVerticesWM == true )
         {

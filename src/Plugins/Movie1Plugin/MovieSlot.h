@@ -33,7 +33,7 @@ namespace Mengine
         void _changeParent( Node * _oldParent, Node * _newParent ) override;
 
     protected:
-        void _render( const RenderContext * _context ) override;
+        void render( const RenderContext * _context ) const override;
 
     protected:
         ConstString m_movieName;

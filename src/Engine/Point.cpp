@@ -75,7 +75,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Point::_render( const RenderContext * _state )
+    void Point::render( const RenderContext * _state ) const
     {
         if( m_linked == nullptr )
         {

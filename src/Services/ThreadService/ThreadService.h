@@ -97,19 +97,22 @@ namespace Mengine
         typedef Vector<ThreadDesc> VectorThreadDescs;
         VectorThreadDescs m_threads;
 
+        ThreadMutexInterfacePtr m_mutexMainCode;
+
         struct MainCodeDesc
         {
             ThreadConditionVariableInterfacePtr conditionVariable;
             LambdaMainThreadCode lambda;
             const Char * file;
             uint32_t line;
-        };
-
-        ThreadMutexInterfacePtr m_mutexMainCode;
+        };        
 
         typedef Vector<MainCodeDesc> VectorMainCodeDescs;
         VectorMainCodeDescs m_mainCodes;
 
         ptrdiff_t m_mainThreadId;
+
+    protected:
+        void tryFastProcessTask_( ThreadTaskDesc & _desc );
     };
 }

@@ -26,7 +26,7 @@ namespace Mengine
 
     public:
         bool processTask( ThreadTaskInterface * _task ) override;
-        bool completeTask() override;
+        void removeTask() override;
 
     public:
         void join() override;
@@ -42,9 +42,7 @@ namespace Mengine
         SDL_cond * m_conditionVariable;
         SDL_mutex * m_conditionLock;
 
-        ThreadTaskInterface * m_task;
-        
-        AtomicBool m_complete;
+        Atomic<ThreadTaskInterface *> m_task;        
         AtomicBool m_exit;
 
 #ifndef NDEBUG

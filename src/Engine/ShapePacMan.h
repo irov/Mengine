@@ -27,7 +27,7 @@ namespace Mengine
         void updateVerticesColor() const;
 
     protected:
-        void _render( const RenderContext * _state ) override;
+        void render( const RenderContext * _state ) const override;
 
     protected:
         void _updateBoundingBox( mt::box2f & _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;

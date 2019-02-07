@@ -326,8 +326,11 @@ namespace Mengine
 
                 if( focus == true && m_active == true || nopause == true )
                 {
-                    if( APPLICATION_SERVICE()->render() == true )
-                    {
+                    bool sucessful = APPLICATION_SERVICE()
+                        ->render();
+
+                    if( sucessful == true )
+                    {                        
                         APPLICATION_SERVICE()
                             ->flush();
                     }
@@ -351,7 +354,7 @@ namespace Mengine
 #ifdef NDEBUG
         catch( const std::exception & ex )
         {
-            LOGGER_CRITICAL( "Win32Platform std::exception '%s'"
+            LOGGER_CRITICAL( "Exception '%s'"
                 , ex.what()
             );
         }

@@ -10,8 +10,8 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     SDLInput::SDLInput()
-        : m_width(0.f)
-        , m_height(0.f)
+        : m_width( 0.f )
+        , m_height( 0.f )
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -21,6 +21,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLInput::initialize()
     {
+        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
+        {
+            m_fingers[index] = -1;
+        }
+
         this->fillKeys_();
 
         return true;
@@ -34,9 +39,36 @@ namespace Mengine
     {
         float x = static_cast<float>(_mx);
         float y = static_cast<float>(_my);
-        
+
         _point.x = x / m_width;
         _point.y = y / m_height;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    uint32_t SDLInput::getFingerIndex_( SDL_FingerID _fingerId )
+    {
+        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
+        {
+            SDL_FingerID fingerId = m_fingers[index];
+
+            if( fingerId == _fingerId )
+            {
+                return index;
+            }
+        }
+
+        for( uint32_t index = 0; index != MENGINE_INPUT_MAX_TOUCH; ++index )
+        {
+            SDL_FingerID fingerId = m_fingers[index];
+
+            if( fingerId == -1 )
+            {
+                m_fingers[index] = _fingerId;
+
+                return index;
+            }
+        }
+
+        return 0;
     }
     //////////////////////////////////////////////////////////////////////////
     void SDLInput::handleEvent( const SDL_Event & _event )
@@ -63,35 +95,35 @@ namespace Mengine
 
                 KeyCode code = this->getKeyCode_( _event.key.keysym.scancode );
 
-				if( code == KC_UNASSIGNED )
-				{
-					return;
-				}
+                if( code == KC_UNASSIGNED )
+                {
+                    return;
+                }
 
                 bool isDown = _event.key.type == SDL_KEYDOWN;
-				
+
                 m_keyDown[code] = isDown;
-				
+
                 INPUT_SERVICE()
                     ->pushKeyEvent( point.x, point.y, code, isDown, false );
             } break;
-		case SDL_TEXTINPUT:
-			{
-				int x;
-				int y;
-				SDL_GetMouseState( &x, &y );
+        case SDL_TEXTINPUT:
+            {
+                int x;
+                int y;
+                SDL_GetMouseState( &x, &y );
 
-				mt::vec2f point;
-				this->calcCursorPosition_( x, y, point );
+                mt::vec2f point;
+                this->calcCursorPosition_( x, y, point );
 
                 WChar text_code[8] = { 0 };
-				size_t text_code_size;
+                size_t text_code_size;
                 UNICODE_SYSTEM()
-					->utf8ToUnicode( _event.text.text, (size_t)-1, text_code, 8, &text_code_size );
+                    ->utf8ToUnicode( _event.text.text, (size_t)-1, text_code, 8, &text_code_size );
 
-				INPUT_SERVICE()
-					->pushTextEvent( point.x, point.y, text_code[0] );
-			}break;
+                INPUT_SERVICE()
+                    ->pushTextEvent( point.x, point.y, text_code[0] );
+            }break;
         case SDL_MOUSEMOTION:
             {
                 mt::vec2f point;
@@ -110,17 +142,17 @@ namespace Mengine
                 this->calcCursorPosition_( _event.button.x, _event.button.y, point );
 
                 uint32_t button;
-                
+
                 switch( _event.button.button )
                 {
-                case SDL_BUTTON_LEFT: 
-                    button = 0; 
+                case SDL_BUTTON_LEFT:
+                    button = 0;
                     break;
                 case SDL_BUTTON_RIGHT:
-                    button = 1; 
+                    button = 1;
                     break;
                 case SDL_BUTTON_MIDDLE:
-                    button = 2; 
+                    button = 2;
                     break;
                 default:
                     button = _event.button.button - 1;
@@ -133,19 +165,18 @@ namespace Mengine
             break;
         case SDL_FINGERMOTION:
             {
-                //uint32_t touchId = (uint32_t)_event.tfinger.fingerId;
-                uint32_t fingerId = (uint32_t)_event.tfinger.fingerId;
+                uint32_t fingerIndex = this->getFingerIndex_( _event.tfinger.fingerId );
 
                 INPUT_SERVICE()
-                    ->pushMouseMoveEvent( fingerId, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dy, _event.tfinger.pressure );
+                    ->pushMouseMoveEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, _event.tfinger.dx, _event.tfinger.dy, _event.tfinger.pressure );
             }break;
         case SDL_FINGERDOWN:
         case SDL_FINGERUP:
             {
-                //uint32_t touchId = (uint32_t)_event.tfinger.fingerId;
+                uint32_t fingerIndex = this->getFingerIndex_( _event.tfinger.fingerId );
 
                 INPUT_SERVICE()
-                    ->pushMouseButtonEvent( 0, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, _event.tfinger.type == SDL_FINGERDOWN );
+                    ->pushMouseButtonEvent( fingerIndex, _event.tfinger.x, _event.tfinger.y, 0, _event.tfinger.pressure, _event.tfinger.type == SDL_FINGERDOWN );
             }
             break;
         }
@@ -194,17 +225,17 @@ namespace Mengine
         for( uint32_t i = 0; i != SDL_NUM_SCANCODES; ++i )
         {
             m_codes[i] = SDL_SCANCODE_UNKNOWN;
-        }				
+        }
 
         m_keys[SDL_SCANCODE_RETURN] = Mengine::KC_RETURN;
         m_keys[SDL_SCANCODE_ESCAPE] = Mengine::KC_ESCAPE;
         m_keys[SDL_SCANCODE_BACKSPACE] = Mengine::KC_BACK;
         m_keys[SDL_SCANCODE_TAB] = Mengine::KC_TAB;
         m_keys[SDL_SCANCODE_SPACE] = Mengine::KC_SPACE;
-                    
+
         m_keys[SDL_SCANCODE_MENU] = Mengine::KC_MENU;
 
-        
+
         m_keys[SDL_SCANCODE_LSHIFT] = Mengine::KC_LSHIFT;
         m_keys[SDL_SCANCODE_RSHIFT] = Mengine::KC_RSHIFT;
         m_keys[SDL_SCANCODE_LCTRL] = Mengine::KC_LCONTROL;
@@ -213,7 +244,7 @@ namespace Mengine
         m_keys[SDL_SCANCODE_RALT] = Mengine::KC_RMENU;
         m_keys[SDL_SCANCODE_PAUSE] = Mengine::KC_PAUSE;
         m_keys[SDL_SCANCODE_CAPSLOCK] = Mengine::KC_CAPITAL;
-        
+
         m_keys[SDL_SCANCODE_PAGEUP] = Mengine::KC_PRIOR;
         m_keys[SDL_SCANCODE_PAGEDOWN] = Mengine::KC_NEXT;
         m_keys[SDL_SCANCODE_END] = Mengine::KC_END;
@@ -320,8 +351,8 @@ namespace Mengine
         }
 
         KeyCode code = m_keys[_key];
-        
-        return code; 
+
+        return code;
     }
     //////////////////////////////////////////////////////////////////////////
     SDL_Scancode SDLInput::getSDLKey_( KeyCode _code ) const
@@ -333,6 +364,6 @@ namespace Mengine
 
         SDL_Scancode key = m_codes[_code];
 
-        return key; 
+        return key;
     }
 }

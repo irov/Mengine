@@ -29,7 +29,7 @@ script:
     
     - mkdir build_engine_cmake
     - pushd build_engine_cmake
-    - cmake ../CMake/Xcode_IOS_SDL/ -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU
+    - cmake ../CMake/Xcode_IOS_SDL/ -DCMAKE_BUILD_TYPE=$BUILD_CONFIGURATION -DTARGET_CPU=$TARGET_CPU -DMENGINE_BUILD_ONLY_EXECUTABLE_MODULE=ON
     - cmake --build . --config $BUILD_CONFIGURATION
     - popd
   

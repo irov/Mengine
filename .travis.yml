@@ -3,6 +3,12 @@ sudo: required
 
 language: cpp
 
+addons:
+  apt:
+    packages:
+    - cmake
+    - libgles2-mesa-dev
+
 os:
     - osx
 

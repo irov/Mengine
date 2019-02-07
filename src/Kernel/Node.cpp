@@ -281,7 +281,6 @@ namespace Mengine
             if( oldRenderParent != newRenderParent )
             {
                 render->setRelationRender( newRenderParent );
-                render->invalidateColor();
             }
         }
         else
@@ -294,7 +293,6 @@ namespace Mengine
                 this->foreachRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
                 {
                     _render->setRelationRender( newRenderParent );
-                    _render->invalidateColor();
                 } );
             }
         }

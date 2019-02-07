@@ -35,6 +35,8 @@ namespace Mengine
         m_relationRender = static_cast<BaseRender *>(_relationRender);
 
         m_relationRender->addRelationRenderChildren_( this );
+
+        this->invalidateColor();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRender()

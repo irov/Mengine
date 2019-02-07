@@ -541,9 +541,10 @@ namespace Mengine
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Render" );
 
-        serializeNodeProp( _render->isRenderEnable(), "rendering", xmlNode );
+        serializeNodeProp( _render->isRenderEnable(), "enable", xmlNode );
         serializeNodeProp( _render->isHide(), "hide", xmlNode );
-        serializeNodeProp( _render->getLocalColor(), "color", xmlNode );
+        serializeNodeProp( _render->getLocalColor(), "local_color", xmlNode );
+        serializeNodeProp( _render->getPersonalColor(), "personal_color", xmlNode );        
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )
@@ -816,9 +817,14 @@ namespace Mengine
                     render->setHide( _value );
                 } );
 
-                deserializeNodeProp<Color>( "color", renderNode, [render]( Color _value )
+                deserializeNodeProp<Color>( "local_color", renderNode, [render]( const Color & _value )
                 {
                     render->setLocalColor( _value );
+                } );
+
+                deserializeNodeProp<Color>( "personal_color", renderNode, [render]( const Color & _value )
+                {
+                    render->setPersonalColor( _value );
                 } );
             }
 

@@ -40,6 +40,8 @@ include_directories(
 
 ADD_MENGINE_LIBRARY()
 
+ADD_FRAMEWORK(${MY_LIB_NAME} OpenGLES)
+
 set_target_properties (${MY_LIB_NAME} PROPERTIES
     FOLDER Systems
 )

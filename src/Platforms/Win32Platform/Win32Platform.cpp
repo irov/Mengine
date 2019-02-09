@@ -1025,7 +1025,7 @@ namespace Mengine
                     WChar text_code[2];
                     size_t text_code_size;
                     UNICODE_SYSTEM()
-                        ->utf8ToUnicode( utf8, (size_t)-1, text_code, 2, &text_code_size );
+                        ->utf8ToUnicode( utf8, MENGINE_UNICODE_UNKNOWN_SIZE, text_code, 2, &text_code_size );
 
                     INPUT_SERVICE()
                         ->pushTextEvent( point.x, point.y, text_code[0] );

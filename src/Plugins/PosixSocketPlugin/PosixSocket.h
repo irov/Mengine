@@ -2,25 +2,22 @@
 
 #include "Interface/SocketInterface.h"
 
-#include "Win32SocketInputStream.h"
-#include "Win32SocketOutputStream.h"
-
-#include "Environment/Windows/WindowsIncluder.h"
+#include "PosixSocketInputStream.h"
+#include "PosixSocketOutputStream.h"
 
 #include "Kernel/Factorable.h"
 
-
 namespace Mengine
 {
-    class Win32Socket
+    class PosixSocket
         : public SocketInterface
-        , public Win32SocketInputStream
-        , public Win32SocketOutputStream
+        , public PosixSocketInputStream
+        , public PosixSocketOutputStream
         , public Factorable
     {
     public:
-        Win32Socket();
-        ~Win32Socket() override;
+        PosixSocket();
+        ~PosixSocket() override;
 
     public:
         bool connect( const SocketConnectInfo & _info ) override;
@@ -30,8 +27,8 @@ namespace Mengine
         int checkForClientConnection() override;
         bool waitForData( uint32_t _timeoutMs ) override;
 
-        int send( const void * _data, size_t _numBytes ) override;
-        int receive( void * _data, size_t _maxBytes ) override;
+        int send( const void * _buffer, size_t _size ) override;
+        int receive( void * _buffer, size_t _size ) override;
 
     public:
         OutputStreamInterfacePtr getSendStream() const override;
@@ -45,6 +42,6 @@ namespace Mengine
         bool m_isBlocking;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<Win32Socket> Win32SocketPtr;
+    typedef IntrusivePtr<PosixSocket> PosixSocketPtr;
     //////////////////////////////////////////////////////////////////////////
 }

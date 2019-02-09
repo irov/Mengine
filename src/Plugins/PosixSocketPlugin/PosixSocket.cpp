@@ -1,25 +1,30 @@
-#define _WINSOCK_DEPRECATED_NO_WARNINGS
-#include "Win32Socket.h"
+#include "PosixSocket.h"
 
 #include "Kernel/FactorableUnique.h"
 
+#include <unistd.h>
+#include <sys/socket.h>
+#include <netdb.h>
+#include <netinet/in.h>
+#include <arpa/inet.h>
+
 namespace Mengine
 {
-    Win32Socket::Win32Socket()
+    PosixSocket::PosixSocket()
         : m_socket( INVALID_SOCKET )
         , m_isBlocking( true )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    Win32Socket::~Win32Socket()
+    PosixSocket::~PosixSocket()
     {
         this->disconnect();
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::connect( const SocketConnectInfo & _info )
+    bool PosixSocket::connect( const SocketConnectInfo & _info )
     {
         addrinfo hints;
-        ZeroMemory( &hints, sizeof( hints ) );
+        memset( &hints, 0, sizeof( hints ) );
 
         hints.ai_family = AF_UNSPEC;
         hints.ai_socktype = SOCK_STREAM;
@@ -54,7 +59,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::bind( const SocketConnectInfo & _info, bool _blocking )
+    bool PosixSocket::bind( const SocketConnectInfo & _info, bool _blocking )
     {
         m_socket = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
 
@@ -63,8 +68,8 @@ namespace Mengine
             return false;
         }
 
-        SOCKADDR_IN addr;
-        ZeroMemory( &addr, sizeof( addr ) );
+        sockaddr_in addr;
+        memset( &addr, 0, sizeof( addr ) );
 
         const uint16_t port = static_cast<uint16_t>(std::stoi( _info.port ));
 
@@ -72,9 +77,9 @@ namespace Mengine
         addr.sin_port = ::htons( port );
         addr.sin_addr.s_addr = ::inet_addr( _info.ip );
 
-        if( ::bind( m_socket, reinterpret_cast<LPSOCKADDR>(&addr), sizeof( addr ) ) == SOCKET_ERROR )
+        if( ::bind( m_socket, reinterpret_cast<sockaddr *>(&addr), sizeof( addr ) ) == SOCKET_ERROR )
         {
-            ::closesocket( m_socket );
+            ::close( m_socket );
             m_socket = INVALID_SOCKET;
 
             return false;
@@ -82,16 +87,16 @@ namespace Mengine
 
         m_isBlocking = _blocking;
         u_long arg = _blocking ? 0u : 1u;
-        ::ioctlsocket( m_socket, FIONBIO, &arg );
+        ::ioctl( m_socket, O_NONBLOCK, &arg );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t Win32Socket::checkForClientConnection()
+    int32_t PosixSocket::checkForClientConnection()
     {
         if( ::listen( m_socket, SOMAXCONN ) == SOCKET_ERROR )
         {
-            ::closesocket( m_socket );
+            ::close( m_socket );
             m_socket = INVALID_SOCKET;
 
             return -1;
@@ -99,37 +104,35 @@ namespace Mengine
 
         sockaddr_in clientAddr;
         int32_t addLen = sizeof( clientAddr );
-        ZeroMemory( &clientAddr, addLen );
+        memset( &clientAddr, 0, addLen );
 
-        SOCKET clientSocket = ::accept( m_socket, reinterpret_cast<LPSOCKADDR>(&clientAddr), &addLen );
+        SOCKET clientSocket = ::accept( m_socket, reinterpret_cast<sockaddr *>(&clientAddr), &addLen );
 
         int32_t result = 1;
 
         if( clientSocket == INVALID_SOCKET )
         {
-            int32_t lastError = ::WSAGetLastError();
-
-            if( m_isBlocking == false && lastError == WSAEWOULDBLOCK )
+            if( m_isBlocking == false && errno  == EWOULDBLOCK )
             {
                 // no connections yet
                 result = 0;
             }
             else
             {
-                ::closesocket( m_socket );
+                ::close( m_socket );
                 result = -1;
             }
         }
         else
         {
-            ::closesocket( m_socket );
+            ::close( m_socket );
             m_socket = clientSocket;
         }
 
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::waitForData( uint32_t timeoutMs )
+    bool PosixSocket::waitForData( uint32_t timeoutMs )
     {
         if( m_socket == INVALID_SOCKET )
         {
@@ -137,8 +140,8 @@ namespace Mengine
         }
 
         fd_set socketsSet;
-        socketsSet.fd_count = 1;
-        socketsSet.fd_array[0] = m_socket;
+        FD_ZERO(&socketsSet);
+        FD_SET(m_socket, &socketsSet);
 
         timeval tv;
         tv.tv_sec = static_cast<long>(timeoutMs / 1000);
@@ -149,50 +152,50 @@ namespace Mengine
         return (1 == result);
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t Win32Socket::send( const void * _data, size_t _numBytes )
+    int32_t PosixSocket::send( const void * _buffer, size_t _size )
     {
         if( m_socket == INVALID_SOCKET )
         {
             return 0;
         }
 
-        int32_t numBytesSent = ::send( m_socket, reinterpret_cast<const char*>(_data), static_cast<int>(_numBytes), 0 );
+        int32_t numBytesSent = ::send( m_socket, _buffer, _size, 0 );
 
         return numBytesSent;
     }
     //////////////////////////////////////////////////////////////////////////
-    int32_t Win32Socket::receive( void* _data, size_t _maxBytes )
+    int32_t PosixSocket::receive( void * _buffer, size_t _size )
     {
         if( m_socket == INVALID_SOCKET )
         {
             return 0;
         }
 
-        const int32_t numBytesReceived = ::recv( m_socket, reinterpret_cast<char*>(_data), static_cast<int32_t>(_maxBytes), 0 );
+        const int32_t numBytesReceived = ::recv( m_socket, _buffer, _size, 0 );
 
         return numBytesReceived;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32Socket::disconnect()
+    void PosixSocket::disconnect()
     {
         if( m_socket != INVALID_SOCKET )
         {
-            ::closesocket( m_socket );
+            ::close( m_socket );
             m_socket = INVALID_SOCKET;
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr Win32Socket::getSendStream() const
+    OutputStreamInterfacePtr PosixSocket::getSendStream() const
     {
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr Win32Socket::getReceiveStream() const
+    InputStreamInterfacePtr PosixSocket::getReceiveStream() const
     {
         return this;
     }
     //////////////////////////////////////////////////////////////////////////
-    SOCKET Win32Socket::getSocket() const
+    SOCKET PosixSocket::getSocket() const
     {
         return m_socket;
     }

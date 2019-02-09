@@ -33,7 +33,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLSocket::send( const void * _buffer, size_t _len )
     {
-        const int result = SDLNet_TCP_Send(m_socket, _buffer, static_cast<int>(_len));
+        int result = SDLNet_TCP_Send(m_socket, _buffer, static_cast<int>(_len));
 
         if (result < static_cast<int>(_len))
         {
@@ -45,7 +45,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool SDLSocket::receive( void * _buffer, size_t _capacity, size_t & _receiv )
     {
-        const int result = SDLNet_TCP_Recv(m_socket, _buffer, static_cast<int>(_capacity));
+        int result = SDLNet_TCP_Recv(m_socket, _buffer, static_cast<int>(_capacity));
 
         if (result < 0)
         {

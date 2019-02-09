@@ -122,6 +122,7 @@ namespace Mengine
         typedef Lambda<void( const NodePtr & )> LambdaNode;
         void foreachChildren( const LambdaNode & _lambda ) const;
         void foreachChildrenUnslug( const LambdaNode & _lambda ) const;
+        void foreachChildrenReverse( const LambdaNode & _lambda ) const;
 
         typedef Lambda<bool( const NodePtr & )> LambdaNodeBreak;
         void foreachChildrenUnslugBreak( const LambdaNodeBreak & _lambda ) const;
@@ -130,9 +131,13 @@ namespace Mengine
 
         void removeRelationRender_();
         void setRelationRender_( Node * _parent );
+        void setRelationRenderFront_( Node * _parent );
+        void moveChildRenderFront_( const NodePtr & _child );
+        void moveChildRenderBack_( const NodePtr & _child );
 
         typedef const Lambda<void( RenderInterface * )> LambdaNodeRenderCloseChildren;
         void foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );
+        void foreachReverseRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );
 
     public:
         void visitChildren( const VisitorPtr & _visitor );
@@ -161,7 +166,6 @@ namespace Mengine
 
     protected:
         void _invalidateWorldMatrix() override;
-        //void _invalidateBoundingBox() override;
 
     public:
         bool compile() override;

@@ -297,6 +297,87 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::setRelationRenderFront_( Node * _parent )
+    {
+        RenderInterface * render = this->getRender();
+
+        if( render != nullptr )
+        {
+            RenderInterface * oldRenderParent = render->getRelationRender();
+            RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
+
+            if( oldRenderParent != newRenderParent )
+            {
+                render->setRelationRenderFront( newRenderParent );
+            }
+        }
+        else
+        {
+            RenderInterface * oldRenderParent = Helper::getNodeRenderInheritance( m_parent );
+            RenderInterface * newRenderParent = Helper::getNodeRenderInheritance( _parent );
+
+            if( oldRenderParent != newRenderParent )
+            {
+                this->foreachReverseRenderCloseChildren( [newRenderParent]( RenderInterface * _render )
+                {
+                    _render->setRelationRenderFront( newRenderParent );
+                } );
+            }
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::moveChildRenderFront_( const NodePtr & _child )
+    {
+        RenderInterface * render = this->getRender();        
+
+        if( render != nullptr )
+        {
+            RenderInterface * childRender = _child->getRender();
+
+            if( childRender != nullptr )
+            {
+                render->moveRelationRenderFront( childRender );
+            }
+            else
+            {
+                this->foreachReverseRenderCloseChildren( [render]( RenderInterface * _childRender )
+                {
+                    render->moveRelationRenderFront( _childRender );
+                } );
+            }
+        }
+        else
+        {
+            //ToDo
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::moveChildRenderBack_( const NodePtr & _child )
+    {
+        RenderInterface * render = this->getRender();        
+
+        if( render != nullptr )
+        {
+            RenderInterface * childRender = _child->getRender();
+
+            if( childRender != nullptr )
+            {
+                render->moveRelationRenderBack( childRender );
+            }
+            else
+            {
+                this->foreachRenderCloseChildren( [render]( RenderInterface * _childRender )
+                {
+                    render->moveRelationRenderBack( _childRender );
+                } );
+            }
+        }
+        else
+        {
+            //ToDo
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Node::removeParent_()
     {
         this->removeRelationTransformation();
@@ -310,24 +391,23 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::setParent_( Node * _parent, ENodeChildInsertMode _mode )
     {
-        this->setRelationRender_( _parent );
-
         switch( _mode )
         {
         case ENCI_FRONT:
             {
-                this->setRelationTransformationFront( _parent );
+                this->setRelationRenderFront_( _parent );
             }break;
         case ENCI_MIDDLE:
             {
-                this->setRelationTransformation( _parent );
+                this->setRelationRender_( _parent );
             }break;
         case ENCI_BACK:
             {
-                this->setRelationTransformation( _parent );
+                this->setRelationRender_( _parent );
             }break;
         }
         
+        this->setRelationTransformation( _parent );        
 
         UpdationInterface * updation = this->getUpdation();
 
@@ -493,9 +573,32 @@ namespace Mengine
                 return;
             }
 
+            const NodePtr & backNode = m_children.back();
+
+            if( backNode == _child )
+            {
+                return;
+            }
+
             this->eraseChild_( _child );
 
             this->insertChild_( _insert, _child );
+
+            switch( _mode )
+            {
+            case ENCI_FRONT:
+                {
+                    this->moveChildRenderFront_( _child );
+                }break;
+            case ENCI_MIDDLE:
+                {
+
+                }break;
+            case ENCI_BACK:
+                {
+                    this->moveChildRenderBack_( _child );
+                }break;
+            }            
         }
         else
         {
@@ -571,6 +674,20 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
+    void Node::foreachChildrenReverse( const LambdaNode & _lambda ) const
+    {
+        for( IntrusiveSlugListNodeChild::const_reverse_iterator
+            it = m_children.rbegin(),
+            it_end = m_children.rend();
+            it != it_end;
+            ++it )
+        {
+            const NodePtr & child = (*it);
+
+            _lambda( child );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
     void Node::foreachChildrenUnslugBreak( const LambdaNodeBreak & _lambda ) const
     {
         for( IntrusiveSlugListNodeChild::unslug_const_iterator
@@ -624,6 +741,23 @@ namespace Mengine
             else
             {
                 _child->foreachRenderCloseChildren( _lambda );
+            }
+        } );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Node::foreachReverseRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda )
+    {
+        this->foreachChildrenReverse( [&_lambda]( const NodePtr & _child )
+        {
+            RenderInterface * render = _child->getRender();
+
+            if( render != nullptr )
+            {
+                _lambda( render );
+            }
+            else
+            {
+                _child->foreachReverseRenderCloseChildren( _lambda );
             }
         } );
     }

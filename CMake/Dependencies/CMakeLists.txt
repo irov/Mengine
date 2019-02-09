@@ -11,7 +11,7 @@ if(MENGINE_DEPENDENCE_LZ4)
 endif()
 
 OPTION(MENGINE_DEPENDENCE_OGG "ogg" ON)
-if(MENGINE_DEPENDENCE_LIBOGG)
+if(MENGINE_DEPENDENCE_OGG)
     message("================libogg================")
     ADD_SUBDIRECTORY( libogg )
 endif()

@@ -78,7 +78,7 @@ namespace Mengine
         uint32_t channels = dataInfo->channels;
         PixelFormat format = dataInfo->format;
 
-        size_t memorySize = Helper::getTextureMemorySize( width, height, channels, 1, format );
+        uint32_t memorySize = Helper::getTextureMemorySize( width, height, channels, 1, format );
 
         m_buffer = Helper::allocateArrayT<uint8_t>( memorySize );
 

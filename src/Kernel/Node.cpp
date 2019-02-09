@@ -63,7 +63,7 @@ namespace Mengine
             return false;
         }
 
-        stdex::intrusive_this_acquire( this );
+        IntrusivePtrScope ankh( this );
 
         m_active = true;
 
@@ -100,8 +100,6 @@ namespace Mengine
         {
             m_active = false;
         }
-
-        stdex::intrusive_this_release( this );
 
         return m_active;
     }
@@ -216,13 +214,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::disable()
     {
-        stdex::intrusive_this_acquire( this );
+        IntrusivePtrScope ankh( this );
 
         this->deactivate();
 
         m_enable = false;
-
-        stdex::intrusive_this_release( this );
     }
     //////////////////////////////////////////////////////////////////////////
     uint32_t Node::getLeafDeep() const
@@ -562,7 +558,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _child, ENodeChildInsertMode _mode )
     {
-        IntrusivePtrScope keep_alive( this );
+        IntrusivePtrScope ankh( this );
 
         Node * child_parent = _child->getParent();
 
@@ -771,7 +767,7 @@ namespace Mengine
             return;
         }
 
-        stdex::intrusive_this_acquire( this );
+        IntrusivePtrScope ankh( this );
 
         NodePtr single_child = m_children.single();
 
@@ -790,8 +786,6 @@ namespace Mengine
                 children->visitChildren( _visitor );
             }
         }
-
-        stdex::intrusive_this_release( this );
     }    
     //////////////////////////////////////////////////////////////////////////
     bool Node::removeChild( const NodePtr & _node )
@@ -1075,7 +1069,7 @@ namespace Mengine
     {
         if( m_children.empty() != true )
         {
-            stdex::intrusive_this_acquire( this );
+            IntrusivePtrScope ankh( this );
 
             for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
             {
@@ -1085,8 +1079,6 @@ namespace Mengine
 
                 node->freeze( _value );
             }
-
-            stdex::intrusive_this_release( this );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1101,57 +1093,6 @@ namespace Mengine
     {
         return 0.f;
     }
-    //////////////////////////////////////////////////////////////////////////
-    //void Node::update( const UpdateContext * _context )
-    //{
-    //    if( this->isActivate() == false )
-    //    {
-    //        return;
-    //    }
-
-    //    if( this->isFreeze() == true )
-    //    {
-    //        return;
-    //    }
-
-    //    this->setUpdateRevision( _context->revision );
-
-    //    stdex::intrusive_this_acquire( this );
-
-    //    this->_update( _context );
-
-        //Affectorable::updateAffectors( _context );
-
-    //    this->updateChildren_( _context );
-
-    //    stdex::intrusive_this_release( this );
-    //}
-    ////////////////////////////////////////////////////////////////////////////
-    //void Node::updateChildren_( const UpdateContext * _context )
-    //{
-    //    if( m_children.empty() == true )
-    //    {
-    //        return;
-    //    }
-
-    //    NodePtr single = m_children.single();
-
-    //    if( single != nullptr )
-    //    {
-    //        single->update( _context );
-    //    }
-    //    else
-    //    {
-    //        for( IntrusiveSlugChild it( m_children ); it.eof() == false; )
-    //        {
-    //            NodePtr children = *it;
-
-    //            it.next_shuffle();
-
-    //            children->update( _context );
-    //        }
-    //    }
-    //}
     //////////////////////////////////////////////////////////////////////////
     bool Node::_activate()
     {

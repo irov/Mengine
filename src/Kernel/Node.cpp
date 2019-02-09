@@ -7,6 +7,7 @@
 #include "Interface/RenderMaterialServiceInterface.h"
 #include "Interface/UpdationInterface.h"
 
+#include "Kernel/IntrusivePtrScope.h"
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/Assertion.h"
 #include "Kernel/Logger.h"
@@ -307,10 +308,26 @@ namespace Mengine
         this->_changeParent( oldparent, nullptr );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::setParent_( Node * _parent )
+    void Node::setParent_( Node * _parent, ENodeChildInsertMode _mode )
     {
         this->setRelationRender_( _parent );
-        this->setRelationTransformation( _parent );
+
+        switch( _mode )
+        {
+        case ENCI_FRONT:
+            {
+                this->setRelationTransformationFront( _parent );
+            }break;
+        case ENCI_MIDDLE:
+            {
+                this->setRelationTransformation( _parent );
+            }break;
+        case ENCI_BACK:
+            {
+                this->setRelationTransformation( _parent );
+            }break;
+        }
+        
 
         UpdationInterface * updation = this->getUpdation();
 
@@ -423,7 +440,7 @@ namespace Mengine
             , this->getName().c_str()
             ) );
 
-        this->addChild_( m_children.end(), _node );
+        this->addChild_( m_children.end(), _node, ENCI_BACK );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::addChildFront( const NodePtr & _node )
@@ -432,7 +449,7 @@ namespace Mengine
             , this->getName().c_str()
             ) );
 
-        this->addChild_( m_children.begin(), _node );
+        this->addChild_( m_children.begin(), _node, ENCI_FRONT );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::addChildAfter( const NodePtr & _node, const NodePtr & _after )
@@ -458,14 +475,14 @@ namespace Mengine
             , this->getName().c_str()
             ) );
 
-        this->addChild_( it_found, _node );
+        this->addChild_( it_found, _node, ENCI_MIDDLE );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Node::addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _child )
+    void Node::addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _child, ENodeChildInsertMode _mode )
     {
-        stdex::intrusive_this_acquire( this );
+        IntrusivePtrScope keep_alive( this );
 
         Node * child_parent = _child->getParent();
 
@@ -473,8 +490,6 @@ namespace Mengine
         {
             if( *_insert == _child )
             {
-                stdex::intrusive_this_release( this );
-
                 return;
             }
 
@@ -491,7 +506,7 @@ namespace Mengine
 
             this->insertChild_( _insert, _child );
 
-            _child->setParent_( this );
+            _child->setParent_( this, _mode );
         }
 
         this->_addChild( _child );
@@ -515,8 +530,6 @@ namespace Mengine
         }
 
         _child->invalidateWorldMatrix();
-
-        stdex::intrusive_this_release( this );
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::insertChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node )

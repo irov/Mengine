@@ -48,7 +48,6 @@ namespace Mengine
 
     public:
         void setRelationTransformation( Transformation * _relationTransformation );
-        void setRelationTransformationFront( Transformation * _relationTransformation );
         inline Transformation * getRelationTransformation() const;
 
     public:
@@ -56,7 +55,6 @@ namespace Mengine
 
     protected:
         void addRelationTransformationChild_( Transformation * _childTransformation );
-        void addRelationTransformationChildFront_( Transformation * _childTransformation );
         void removeRelationTransformationChild_( Transformation * _childTransformation );
 
     public:

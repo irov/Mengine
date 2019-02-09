@@ -51,28 +51,6 @@ namespace Mengine
         this->invalidateWorldMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::setRelationTransformationFront( Transformation * _relationTransformation )
-    {
-        MENGINE_ASSERTION( _relationTransformation != nullptr, ("set nullptr relation transformation") );
-        MENGINE_ASSERTION( _relationTransformation != this, ("set this relation transformation") );
-
-        if( m_relationTransformation != nullptr )
-        {
-            m_relationTransformation->removeRelationTransformationChild_( this );
-        }
-
-        m_relationTransformation = _relationTransformation;
-
-        m_relationTransformation->addRelationTransformationChild_( this );
-
-        if( m_relationTransformation->isIdentityWorldMatrix() == true && m_identityWorldMatrix == true )
-        {
-            return;
-        }
-
-        this->invalidateWorldMatrix();
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Transformation::removeRelationTransformation()
     {
         if( m_relationTransformation == nullptr )
@@ -96,11 +74,6 @@ namespace Mengine
     void Transformation::addRelationTransformationChild_( Transformation * _childTransformation )
     {
         m_relationChildren.push_back( _childTransformation );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void Transformation::addRelationTransformationChildFront_( Transformation * _childTransformation )
-    {
-        m_relationChildren.insert( m_relationChildren.begin(), _childTransformation );
     }
     //////////////////////////////////////////////////////////////////////////
     void Transformation::removeRelationTransformationChild_( Transformation * _childTransformation )

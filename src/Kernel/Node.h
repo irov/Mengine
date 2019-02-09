@@ -22,10 +22,16 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum ENodeChildInsertMode
+    {
+        ENCI_FRONT,
+        ENCI_MIDDLE,
+        ENCI_BACK
+    };
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class PickerTrapInterface> PickerTrapInterfacePtr;
-
     typedef IntrusivePtr<class Node> NodePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_slug_list_size_ptr<Node> IntrusiveSlugListNodeChild;
     typedef stdex::intrusive_slug_ptr<IntrusiveSlugListNodeChild> IntrusiveSlugChild;
     //////////////////////////////////////////////////////////////////////////
@@ -90,7 +96,7 @@ namespace Mengine
     protected:
         void removeChild_( const NodePtr & _node );
         void removeParent_();
-        void setParent_( Node * _node );
+        void setParent_( Node * _node, ENodeChildInsertMode _mode );
 
     protected:
         virtual bool _hasChild( const ConstString & _name, bool _recursive ) const;
@@ -107,7 +113,7 @@ namespace Mengine
         IntrusiveSlugListNodeChild m_children;
 
     private:
-        void addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
+        void addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node, ENodeChildInsertMode _mode );
 
         void insertChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
         void eraseChild_( const NodePtr & _node );

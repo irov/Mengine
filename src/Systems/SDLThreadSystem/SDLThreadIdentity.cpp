@@ -141,9 +141,7 @@ namespace Mengine
 
 			if( m_task != nullptr && m_exit == false )
             {
-                ThreadTaskInterface * task = m_task;
-                task->main();
-
+                m_task->main();
                 m_task = nullptr;
             }
 

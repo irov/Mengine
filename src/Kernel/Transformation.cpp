@@ -32,6 +32,29 @@ namespace Mengine
     void Transformation::setRelationTransformation( Transformation * _relationTransformation )
     {
         MENGINE_ASSERTION( _relationTransformation != nullptr, ("set nullptr relation transformation") );
+        MENGINE_ASSERTION( _relationTransformation != this, ("set this relation transformation") );
+
+        if( m_relationTransformation != nullptr )
+        {
+            m_relationTransformation->removeRelationTransformationChild_( this );
+        }
+
+        m_relationTransformation = _relationTransformation;
+
+        m_relationTransformation->addRelationTransformationChild_( this );
+
+        if( m_relationTransformation->isIdentityWorldMatrix() == true && m_identityWorldMatrix == true )
+        {
+            return;
+        }
+
+        this->invalidateWorldMatrix();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Transformation::setRelationTransformationFront( Transformation * _relationTransformation )
+    {
+        MENGINE_ASSERTION( _relationTransformation != nullptr, ("set nullptr relation transformation") );
+        MENGINE_ASSERTION( _relationTransformation != this, ("set this relation transformation") );
 
         if( m_relationTransformation != nullptr )
         {
@@ -70,14 +93,19 @@ namespace Mengine
         this->invalidateWorldMatrix();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::addRelationTransformationChild_( Transformation * _child )
+    void Transformation::addRelationTransformationChild_( Transformation * _childTransformation )
     {
-        m_relationChildren.push_back( _child );
+        m_relationChildren.push_back( _childTransformation );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Transformation::removeRelationTransformationChild_( Transformation * _child )
+    void Transformation::addRelationTransformationChildFront_( Transformation * _childTransformation )
     {
-        VectorTransformation::iterator it_erase = std::find( m_relationChildren.begin(), m_relationChildren.end(), _child );
+        m_relationChildren.insert( m_relationChildren.begin(), _childTransformation );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void Transformation::removeRelationTransformationChild_( Transformation * _childTransformation )
+    {
+        VectorTransformation::iterator it_erase = std::find( m_relationChildren.begin(), m_relationChildren.end(), _childTransformation );
 
         MENGINE_ASSERTION( it_erase != m_relationChildren.end(), ("remove relation transformation not found") );
 

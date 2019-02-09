@@ -93,7 +93,7 @@ namespace Mengine
             }break;
         case NodeDebuggerServerState::WaitingForClient:
             {
-                const int32_t check = m_socket->checkForClientConnection();
+                int32_t check = m_socket->checkForClientConnection();
                 if( check < 0 )
                 {
                     // failed

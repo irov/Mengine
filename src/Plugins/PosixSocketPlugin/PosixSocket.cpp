@@ -3,6 +3,7 @@
 #include "Kernel/FactorableUnique.h"
 
 #include <unistd.h>
+#include <fcntl.h>
 #include <sys/socket.h>
 #include <netdb.h>
 #include <netinet/in.h>
@@ -87,7 +88,7 @@ namespace Mengine
 
         m_isBlocking = _blocking;
         u_long arg = _blocking ? 0u : 1u;
-        ::ioctl( m_socket, O_NONBLOCK, &arg );
+        ::fcntl( m_socket, F_SETFL, O_NONBLOCK, &arg );
 
         return true;
     }

@@ -1750,6 +1750,14 @@ namespace Mengine
 
         switch( _callbackData->state )
         {
+        case AE_MOVIE_COMPOSITION_PLAY:
+        case AE_MOVIE_COMPOSITION_STOP:
+        case AE_MOVIE_COMPOSITION_PAUSE:
+        case AE_MOVIE_COMPOSITION_RESUME:
+        case AE_MOVIE_COMPOSITION_LOOP_END:
+            {
+                //Empty
+            }break;
         case AE_MOVIE_COMPOSITION_INTERRUPT:
             {
                 if( m2->interruptElements() == false )

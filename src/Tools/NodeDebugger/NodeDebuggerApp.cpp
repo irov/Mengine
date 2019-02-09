@@ -1081,7 +1081,7 @@ namespace Mengine
 
         if( _node->hasRender && ImGui::CollapsingHeader( "Render:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
-            uiRBool( "Enable", _node->render.enable );
+            uiReadOnlyBool( "Enable", _node->render.enable );
             uiEditorBool( "Hide", _node->render.hide );
             ImGui::Spacing();
 

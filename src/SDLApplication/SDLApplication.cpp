@@ -188,6 +188,10 @@ PLUGIN_EXPORT( Steam );
 PLUGIN_EXPORT( NodeDebugger );
 #endif
 
+#ifdef MENGINE_PLUGIN_POSIX_SOCKET_STATIC
+PLUGIN_EXPORT( PosixSocket );
+#endif
+
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC
 PLUGIN_EXPORT( AndroidNativeFacebook );
 #endif
@@ -698,6 +702,10 @@ namespace Mengine
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
         MENGINE_ADD_PLUGIN( NodeDebugger, "initialize Plugin NodeDebugger..." );
+#endif
+
+#ifdef MENGINE_PLUGIN_POSIX_SOCKET_STATIC
+        MENGINE_ADD_PLUGIN( PosixSocket, "initialize Plugin PosixSocket..." );
 #endif
 
 #ifdef MENGINE_PLUGIN_ANDROID_NATIVE_FACEBOOK_STATIC

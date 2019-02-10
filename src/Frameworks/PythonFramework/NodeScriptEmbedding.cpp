@@ -2672,6 +2672,7 @@ namespace Mengine
             .def( "setLastFrame", &AnimationInterface::setLastFrame )
             .def( "setTime", &AnimationInterface::setTime )
             .def( "getTime", &AnimationInterface::getTime )
+            .def( "getDuration", &AnimationInterface::getDuration )
             .def( "setPlayCount", &AnimationInterface::setPlayCount )
             .def( "getPlayCount", &AnimationInterface::getPlayCount )
             .def( "getPlayIterator", &AnimationInterface::getPlayIterator )
@@ -2805,7 +2806,6 @@ namespace Mengine
         pybind::interface_<SurfaceSound, pybind::bases<Surface, Eventable, Animatable, Soundable> >( kernel, "SurfaceSound", false )
             .def( "setResourceSound", &SurfaceSound::setResourceSound )
             .def( "getResourceSound", &SurfaceSound::getResourceSound )
-            .def( "getDuration", &SurfaceSound::getDuration )
             .def_proxy_native_kernel( "setEventListener", nodeScriptMethod, &NodeScriptMethod::s_SurfaceSound_setEventListener )
             ;
 

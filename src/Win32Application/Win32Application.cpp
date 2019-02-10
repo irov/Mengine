@@ -557,6 +557,7 @@ namespace Mengine
         OPTIONS_SERVICE()
             ->setArguments( arguments );
 
+        SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( StringizeService );
         SERVICE_CREATE( LoggerService );
 
@@ -604,8 +605,7 @@ namespace Mengine
 
         SERVICE_CREATE( ThreadSystem );
         SERVICE_CREATE( ThreadService );
-
-        SERVICE_CREATE( NotificationService );
+        
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( VocabularyService );
 

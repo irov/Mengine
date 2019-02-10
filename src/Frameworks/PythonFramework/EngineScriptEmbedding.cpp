@@ -109,6 +109,7 @@
 #include "Kernel/ThreadTask.h"
 #include "Kernel/DefaultPrototypeGenerator.h"
 #include "Kernel/ScriptablePrototypeGenerator.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Environment/Python/PythonEventReceiver.h"
 #include "Environment/Python/PythonScriptWrapper.h"
@@ -909,10 +910,7 @@ namespace Mengine
             NodePtr node = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type );
 
-            if( node == nullptr )
-            {
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( node, nullptr );
 
             return node;
         }
@@ -922,6 +920,8 @@ namespace Mengine
             SurfacePtr surface = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), _type );
 
+            MENGINE_ASSERTION_MEMORY_PANIC( surface, nullptr );
+
             return surface;
         }
         //////////////////////////////////////////////////////////////////////////
@@ -929,6 +929,8 @@ namespace Mengine
         {
             RandomizerInterfacePtr randomizer = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Randomizer" ), _prototype );
+
+            MENGINE_ASSERTION_MEMORY_PANIC( randomizer, nullptr );
 
             return randomizer;
         }
@@ -947,15 +949,7 @@ namespace Mengine
             SurfaceImagePtr surface = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Surface" ), STRINGIZE_STRING_LOCAL( "SurfaceImage" ) );
 
-            if( surface == nullptr )
-            {
-                LOGGER_ERROR( "createSprite: '%s' resource '%s' invalid create surface 'SurfaceImage'"
-                    , _name.c_str()
-                    , _resource->getName().c_str()
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( surface, nullptr );
 
             surface->setName( _name );
             surface->setResourceImage( _resource );
@@ -963,15 +957,7 @@ namespace Mengine
             ShapeQuadFixedPtr shape = PROTOTYPE_SERVICE()
                 ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "ShapeQuadFixed" ) );
 
-            if( shape == nullptr )
-            {
-                LOGGER_ERROR( "Mengine.createSprite: '%s' resource '%s' invalid create shape 'ShapeQuadFixed'"
-                    , _name.c_str()
-                    , _resource->getName().c_str()
-                );
-
-                return nullptr;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC( shape, nullptr );
 
             shape->setName( _name );
             shape->setSurface( surface );
@@ -992,7 +978,7 @@ namespace Mengine
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR( "createResource: invalid create resource '%s'"
+                LOGGER_ERROR( "Mengine.createResource: invalid create resource '%s'"
                     , _type.c_str()
                 );
 
@@ -1008,7 +994,7 @@ namespace Mengine
             if( RESOURCE_SERVICE()
                 ->hasResource( _nameResource, &resource ) == false )
             {
-                LOGGER_ERROR( "directResourceCompile: not found resource '%s'"
+                LOGGER_ERROR( "Mengine.directResourceCompile: not found resource '%s'"
                     , _nameResource.c_str()
                 );
 
@@ -1017,7 +1003,7 @@ namespace Mengine
 
             if( resource->incrementReference() == false )
             {
-                LOGGER_ERROR( "directResourceCompile: resource '%s' type '%s' invalid compile"
+                LOGGER_ERROR( "Mengine.directResourceCompile: resource '%s' type '%s' invalid compile"
                     , _nameResource.c_str()
                     , resource->getType().c_str()
                 );
@@ -1034,7 +1020,7 @@ namespace Mengine
             if( RESOURCE_SERVICE()
                 ->hasResource( _nameResource, &resource ) == false )
             {
-                LOGGER_ERROR( "directResourceRelease: not found resource '%s'"
+                LOGGER_ERROR( "Mengine.directResourceRelease: not found resource '%s'"
                     , _nameResource.c_str()
                 );
 
@@ -1043,7 +1029,7 @@ namespace Mengine
 
             if( resource->decrementReference() == false )
             {
-                LOGGER_ERROR( "directResourceCompile: resource '%s' type '%s' invalid release"
+                LOGGER_ERROR( "Mengine.directResourceCompile: resource '%s' type '%s' invalid release"
                     , _nameResource.c_str()
                     , resource->getType().c_str()
                 );

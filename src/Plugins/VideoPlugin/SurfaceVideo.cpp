@@ -56,15 +56,6 @@ namespace Mengine
 
         return height;
     }
-    //////////////////////////////////////////////////////////////////////////
-    float SurfaceVideo::getDuration() const
-    {
-        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
-
-        float duration = (float)dataInfo->duration;
-
-        return duration;
-    }
     ////////////////////////////////////////////////////////////////////
     void SurfaceVideo::updateSize_()
     {
@@ -515,6 +506,16 @@ namespace Mengine
 
         return timing;
     }
+    //////////////////////////////////////////////////////////////////////////
+    float SurfaceVideo::_getDuration() const
+    {
+        const VideoCodecDataInfo * dataInfo = m_videoDecoder->getCodecDataInfo();
+
+        float duration = (float)dataInfo->duration;
+
+        return duration;
+    }
+
     ////////////////////////////////////////////////////////////////////
     void SurfaceVideo::_setFirstFrame()
     {

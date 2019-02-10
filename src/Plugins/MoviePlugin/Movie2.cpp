@@ -43,17 +43,19 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::setResourceMovie2( const ResourceMovie2Ptr & _resourceMovie2 )
+    void Movie2::setResourceMovie2( const ResourcePtr & _resource )
     {
-        if( m_resourceMovie2 == _resourceMovie2 )
+        ResourceMovie2Ptr resourceMovie2 = stdex::intrusive_static_cast<ResourceMovie2Ptr>(_resource);
+
+        if( m_resourceMovie2 == resourceMovie2 )
         {
             return;
         }
 
-        this->recompile( [this, _resourceMovie2]() {m_resourceMovie2 = _resourceMovie2; } );
+        this->recompile( [this, resourceMovie2]() {m_resourceMovie2 = resourceMovie2; } );
     }
     //////////////////////////////////////////////////////////////////////////
-    const ResourceMovie2Ptr & Movie2::getResourceMovie2() const
+    const ResourcePtr & Movie2::getResourceMovie2() const
     {
         return m_resourceMovie2;
     }
@@ -109,7 +111,7 @@ namespace Mengine
         return m_aliasEnvironment;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::interruptElements()
+    bool Movie2::interruptElements_()
     {
         for( const SurfacePtr & surface : m_surfaces )
         {
@@ -166,7 +168,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::checkInterruptElement() const
+    bool Movie2::checkInterruptElement_() const
     {
         for( const SurfacePtr & surface : m_surfaces )
         {
@@ -349,7 +351,7 @@ namespace Mengine
             LOGGER_ERROR( "movie '%s' resource '%s' path '%s' invalid get composition name '%s' in [%s]"
                 , this->getName().c_str()
                 , this->getResourceMovie2()->getName().c_str()
-                , this->getResourceMovie2()->getFilePath().c_str()
+                , m_resourceMovie2->getFilePath().c_str()
                 , m_compositionName.c_str()
                 , ss.str().c_str()
             );
@@ -621,11 +623,6 @@ namespace Mengine
         m_sprites.clear();
 
         m_matrixProxies.clear();
-    }
-    //////////////////////////////////////////////////////////////////////////
-    float Movie2::getDuration() const
-    {
-        return m_duration;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie2::setWorkAreaFromEvent( const ConstString & _eventName )
@@ -909,7 +906,7 @@ namespace Mengine
         ConstString c_name = Helper::stringizeString( _callbackData->name );
 
         Movie2::Camera * old_camera;
-        if( movie2->getCamera( c_name, &old_camera ) == true )
+        if( movie2->getCamera_( c_name, &old_camera ) == true )
         {
             *_cd = old_camera;
 
@@ -950,7 +947,7 @@ namespace Mengine
 
         renderViewport->setViewport( vp );
 
-        Movie2::Camera * new_camera = movie2->addCamera( c_name, renderCameraProjection, renderViewport );
+        Movie2::Camera * new_camera = movie2->addCamera_( c_name, renderCameraProjection, renderViewport );
 
         *_cd = new_camera;
 
@@ -963,7 +960,7 @@ namespace Mengine
 
         ConstString c_name = Helper::stringizeString( _callbackData->name );
 
-        movie2->removeCamera( c_name );
+        movie2->removeCamera_( c_name );
     }
     //////////////////////////////////////////////////////////////////////////
     static void __movie_composition_camera_update( const aeMovieCameraUpdateCallbackData * _callbackData, ae_voidptr_t _data )
@@ -1185,7 +1182,7 @@ namespace Mengine
                     return AE_FALSE;
                 }
 
-                UnknownParticleEmitterInterfacePtr unknownParticleEmitter2 = node->getUnknown();
+                UnknownParticleEmitterInterface * unknownParticleEmitter2 = node->getUnknown();
 
                 if( ae_has_movie_layer_data_option( layer, AE_OPTION( '\0', '\0', '\0', 't' ) ) == AE_TRUE )
                 {
@@ -1265,7 +1262,7 @@ namespace Mengine
 
                     surfaceTrackMatte->setBlendMode( blend_mode );
 
-                    movie2->addSurface( surfaceTrackMatte );
+                    movie2->addSurface_( surfaceTrackMatte );
 
                     *_nd = surfaceTrackMatte.get();
 
@@ -1295,7 +1292,7 @@ namespace Mengine
 
                     Resource * resourceVideo = reinterpret_node_cast<Resource *>(ae_get_movie_layer_data_resource_userdata( _callbackData->layer ));
 
-                    UnknownVideoSurfaceInterfacePtr unknownVideoSurface = surface->getUnknown();
+                    UnknownVideoSurfaceInterface * unknownVideoSurface = surface->getUnknown();
 
                     unknownVideoSurface->setResourceVideo( resourceVideo );
 
@@ -1308,7 +1305,7 @@ namespace Mengine
                     surface->setBlendMode( blend_mode );
                     surface->setPremultiplyAlpha( true );
 
-                    movie2->addSurface( surface );
+                    movie2->addSurface_( surface );
 
                     *_nd = surface.get();
 
@@ -1344,7 +1341,7 @@ namespace Mengine
 
                     surfaceSound->setResourceSound( resourceSound );
 
-                    movie2->addSurface( surfaceSound );
+                    movie2->addSurface_( surfaceSound );
 
                     *_nd = surfaceSound.get();
 
@@ -1760,7 +1757,7 @@ namespace Mengine
             }break;
         case AE_MOVIE_COMPOSITION_INTERRUPT:
             {
-                if( m2->interruptElements() == false )
+                if( m2->interruptElements_() == false )
                 {
                     LOGGER_ERROR( "movie '%s' invalid interrupt elements"
                         , m2->getName().c_str()
@@ -1780,7 +1777,7 @@ namespace Mengine
 
         Movie2 * m2 = reinterpret_node_cast<Movie2 *>(_ud);
 
-        if( m2->checkInterruptElement() == false )
+        if( m2->checkInterruptElement_() == false )
         {
             return AE_FALSE;
         }
@@ -1902,7 +1899,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    Movie2::Camera * Movie2::addCamera( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport )
+    Movie2::Camera * Movie2::addCamera_( const ConstString & _name, const RenderCameraProjectionPtr & _projection, const RenderViewportPtr & _viewport )
     {
         this->addChild( _projection );
         this->addChild( _viewport );
@@ -1918,7 +1915,7 @@ namespace Mengine
         return new_camera;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::removeCamera( const ConstString & _name )
+    bool Movie2::removeCamera_( const ConstString & _name )
     {
         MapCameras::iterator it_found = m_cameras.find( _name );
 
@@ -1937,7 +1934,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::hasCamera( const ConstString & _name ) const
+    bool Movie2::hasCamera_( const ConstString & _name ) const
     {
         MapCameras::const_iterator it_found = m_cameras.find( _name );
 
@@ -1949,7 +1946,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Movie2::getCamera( const ConstString & _name, Camera ** _camera )
+    bool Movie2::getCamera_( const ConstString & _name, Camera ** _camera )
     {
         MapCameras::iterator it_found = m_cameras.find( _name );
 
@@ -2215,6 +2212,11 @@ namespace Mengine
         float timing = ae_get_movie_composition_time( m_composition );
 
         return AE_TIME_MILLISECOND( timing );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Movie2::_getDuration() const
+    {
+        return m_duration;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2::_setFirstFrame()
@@ -2721,14 +2723,14 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::addSurface( const SurfacePtr & _surface )
+    void Movie2::addSurface_( const SurfacePtr & _surface )
     {
         _surface->compile();
 
         m_surfaces.emplace_back( _surface );
     }
     //////////////////////////////////////////////////////////////////////////
-    void Movie2::removeSurface( const SurfacePtr & _surface )
+    void Movie2::removeSurface_( const SurfacePtr & _surface )
     {
         _surface->release();
 

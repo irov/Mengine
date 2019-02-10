@@ -197,24 +197,24 @@ set(PYTHON_SRCS ${SOURCE_DIR}/Python/_warnings.c
                 ${SOURCE_DIR}/Python/traceback.c 
                 ${SOURCE_DIR}/Python/getopt.c 
 				${SOURCE_DIR}/Python/pystrcmp.c
-                ${SOURCE_DIR}/Python/pystrtod.c 
+                ${SOURCE_DIR}/Python/pystrtod.c
 				${SOURCE_DIR}/Python/formatter_unicode.c
 				${SOURCE_DIR}/Python/formatter_string.c
-                ${SOURCE_DIR}/Python/pyctype.c                
+                ${SOURCE_DIR}/Python/pyctype.c
                 ${SOURCE_DIR}/Python/dtoa.c
                 ${SOURCE_DIR}/Python/random.c
                 ${THREAD_SRC}
                 ${DYNLOAD_SRC}
                 )
 
-set(MODULE_SRCS ${SOURCE_DIR}/Modules/main.c 
+set(MODULE_SRCS ${SOURCE_DIR}/Modules/main.c
                 ${SOURCE_DIR}/Modules/gcmodule.c
                 ${SOURCE_DIR}/Modules/mathmodule.c
                 ${SOURCE_DIR}/Modules/_math.c
                 ${MOD_SRCS} )
 
 set( MODULE_SRCS ${MODULE_SRCS} Modified/config.c )
-set( MODULE_SRCS ${MODULE_SRCS} Modified/mockup.c )                
+set( MODULE_SRCS ${MODULE_SRCS} Modified/mockup.c )
 				
 if( NOT WIN32 )
 	set( MODULE_SRCS ${MODULE_SRCS} ${SOURCE_DIR}/Modules/getpath.c )

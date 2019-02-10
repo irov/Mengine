@@ -36,6 +36,8 @@ namespace Mengine
         void setTime( float _time ) override;
         float getTime() const override;
 
+        float getDuration() const override;
+
         void setPlayCount( uint32_t _count ) override;
         uint32_t getPlayCount() const override;
 
@@ -78,6 +80,7 @@ namespace Mengine
         virtual void _setLoop( bool _value );
         virtual void _setTime( float _time );
         virtual float _getTime() const;
+        virtual float _getDuration() const;
 
         virtual void _setAnimationSpeedFactor( float _factor );
         virtual void _setIntervalStart( float _startInterval );
@@ -101,6 +104,7 @@ namespace Mengine
         uint32_t m_playId;
 
         float m_playTime;
+        float m_duration;
 
         float m_animationSpeedFactor;
         float m_intervalStart;

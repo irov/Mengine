@@ -78,7 +78,7 @@ namespace Mengine
         void setResourceParticle( const ResourcePtr & _resource ) override;
         const ResourcePtr & getResourceParticle() const override;
 
-        float getDuration() const;
+        float _getDuration() const;
 
         void setEmitterRandomMode( bool _randomMode );
         bool getEmitterRandomMode() const;

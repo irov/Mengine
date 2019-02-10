@@ -708,53 +708,6 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    static void s_printChildren2( const NodePtr & _node, uint32_t _tab )
-    {
-        IntrusiveSlugListNodeChild & children = _node->getChildren();
-
-        for( IntrusiveSlugChild it( children ); it.eof() == false; )
-        {
-            const NodePtr & child = *it;
-
-            it.next_shuffle();
-
-            if( child->isEnable() == false )
-            {
-                continue;
-            }
-
-            LOGGER_ERROR( "%.*s-%s [%s] |%p| lp (%.2f, %.2f, %.2f) lo (%.2f, %.2f, %.2f) wp (%.2f, %.2f, %.2f) %s"
-                , _tab
-                , "                                         "
-                , child->getName().c_str()
-                , child->getType().c_str()
-                , child.get()
-                , child->getLocalPosition().x
-                , child->getLocalPosition().y
-                , child->getLocalPosition().z
-                , child->getOrientation().x
-                , child->getOrientation().y
-                , child->getOrientation().z
-                , child->getWorldPosition().x
-                , child->getWorldPosition().y
-                , child->getWorldPosition().z
-                , child->getAnimation() == nullptr ? "" : (child->getAnimation()->isPlay() == true ? "[Play]" : "[Stop]")
-            );
-
-            s_printChildren2( child, _tab + 1 );
-        }
-    }
-    //////////////////////////////////////////////////////////////////////////
-    static void s_printChildren( const NodePtr & _node )
-    {
-        if( _node == nullptr )
-        {
-            return;
-        }
-
-        s_printChildren2( _node, 0 );
-    }
-    //////////////////////////////////////////////////////////////////////////
     bool Application::keyEvent( const InputKeyEvent & _event )
     {
         bool developmentMode = HAS_OPTION( "dev" );
@@ -1005,10 +958,6 @@ namespace Mengine
 
             if( _event.code == KC_F2 && _event.isDown == true )
             {
-                const ScenePtr & scene = SCENE_SERVICE()
-                    ->getCurrentScene();
-
-                s_printChildren( scene );
             }
         }
 

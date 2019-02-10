@@ -359,14 +359,7 @@ namespace Mengine
 
     void NodeDebuggerApp::DeserializeNode( const pugi::xml_node& _xmlNode, DebuggerNode* _node )
     {
-        _node->uid = _xmlNode.attribute( "uid" ).as_uint();
-        _node->name = _xmlNode.attribute( "name" ).value();
-        _node->type = _xmlNode.attribute( "type" ).value();
-
-        deserializeNodeProp<bool>( "enable", _xmlNode, [_node]( bool _value )
-        {
-            _node->enable = _value;
-        } );
+        _node->deserialize( _xmlNode );
 
         _node->transformationProxy = false;
 
@@ -404,6 +397,15 @@ namespace Mengine
         if( _node->isTypeTextField )
         {
             _node->textField.deserialize( typeTextFieldNode );
+        }
+
+        pugi::xml_node typeMovie2Node = _xmlNode.child( "Type:Movie2" );
+
+        _node->isTypeMovie2 = typeMovie2Node;
+
+        if( _node->isTypeMovie2 )
+        {
+            _node->movie2.deserialize( typeMovie2Node );
         }
 
         pugi::xml_node childrenNode = _xmlNode.child( "Children" );
@@ -1092,6 +1094,10 @@ namespace Mengine
         if( _node->hasAnimation && ImGui::CollapsingHeader( "Animation:", ImGuiTreeNodeFlags_DefaultOpen ) )
         {
             uiEditorBool( "loop", _node->animation.loop );
+            uiReadOnlyBool( "play", _node->animation.play );
+            uiReadOnlyBool( "pause", _node->animation.pause );
+            uiEditorVec1f( "time", _node->animation.time );
+            uiReadOnlyVec1f( "duration", _node->animation.duration );
         }
 
         if( _node->isTypeTextField && ImGui::CollapsingHeader( "TextField:", ImGuiTreeNodeFlags_DefaultOpen ) )
@@ -1123,6 +1129,12 @@ namespace Mengine
             uiReadOnlyListBox( "TotalVerticalAlign", _node->textField.TotalVerticalAlign, { "Bottom", "Center", "Top", "None" }, 4 );
             uiEditorVec1U( "MaxCharCount", _node->textField.MaxCharCount );
             uiEditorBool( "Pixelsnap", _node->textField.Pixelsnap );
+        }
+
+        if( _node->isTypeMovie2 && ImGui::CollapsingHeader( "Movie2:", ImGuiTreeNodeFlags_DefaultOpen ) )
+        {
+            uiReadOnlyString( "Composition Name", _node->movie2.CompositionName );
+            uiEditorString( "AliasEnvironment", _node->movie2.TextAliasEnvironment );
         }
     }
 
@@ -1368,7 +1380,7 @@ namespace Mengine
         xmlNode.append_attribute( "name" ).set_value( _node.name.c_str() );
         xmlNode.append_attribute( "type" ).set_value( _node.type.c_str() );
 
-        serializeNodeProp( _node.enable, "enable", xmlNode );
+        _node.serialize( xmlNode );
 
         if( _node.transformationProxy == false )
         {
@@ -1396,6 +1408,13 @@ namespace Mengine
             pugi::xml_node xmlTextField = xmlNode.append_child( "Type:TextField" );
 
             _node.textField.serialize( xmlTextField );
+        }
+
+        if( _node.isTypeMovie2 )
+        {
+            pugi::xml_node xmlMovie2 = xmlNode.append_child( "Type:Movie2" );
+
+            _node.movie2.serialize( xmlMovie2 );
         }
 
         SendXML( doc );

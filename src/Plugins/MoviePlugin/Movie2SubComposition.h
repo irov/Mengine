@@ -45,7 +45,7 @@ namespace Mengine
         const Movie2Ptr & getMovie() const;
 
         void setDuration( float _duration );
-        float getDuration() const;
+        
 
         void setFrameDuration( float _frameDuration );
         float getFrameDuration() const;
@@ -73,6 +73,7 @@ namespace Mengine
         void _setLoop( bool _value ) override;
         void _setTime( float _time ) override;
         float _getTime() const override;
+        float _getDuration() const override;
         void _setFirstFrame() override;
         void _setLastFrame() override;
 

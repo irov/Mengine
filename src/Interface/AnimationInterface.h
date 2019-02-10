@@ -30,6 +30,8 @@ namespace Mengine
         virtual void setTime( float _time ) = 0;
         virtual float getTime() const = 0;
 
+        virtual float getDuration() const = 0;
+
         virtual void setPlayCount( uint32_t _count ) = 0;
         virtual uint32_t getPlayCount() const = 0;
 

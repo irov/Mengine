@@ -629,7 +629,7 @@ namespace Mengine
             return false;
         }
 
-        UnknownResourceImageDataInterfacePtr unknownImageData = resourceHIT->getUnknown();
+        UnknownResourceImageDataInterface * unknownImageData = resourceHIT->getUnknown();
 
         if( unknownImageData == nullptr )
         {
@@ -744,7 +744,7 @@ namespace Mengine
         *_boundingBoxCurrent = &_boundingBox;
     }
     /////////////////////////////////////////////////////////////////////////
-    float AstralaxEmitter::getDuration() const
+    float AstralaxEmitter::_getDuration() const
     {
         if( this->isCompile() == false )
         {

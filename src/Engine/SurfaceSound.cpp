@@ -339,7 +339,7 @@ namespace Mengine
             ->setLoop( m_soundEmitter, loop );
     }
     //////////////////////////////////////////////////////////////////////////
-    float SurfaceSound::getDuration() const
+    float SurfaceSound::_getDuration() const
     {
         if( m_soundEmitter == nullptr )
         {

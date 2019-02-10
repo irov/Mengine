@@ -17,6 +17,8 @@
 #include "Interface/ThreadServiceInterface.h"
 #include "Interface/ArchivatorInterface.h"
 
+#include "Plugins/MoviePlugin/UnknownMovie2Interface.h"
+
 #include "NodeDebuggerSerialization.h"
 
 namespace Mengine
@@ -87,6 +89,7 @@ namespace Mengine
         void serializeRender( const RenderInterface * _render, pugi::xml_node & _xmlParentNode );
         void serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode );
         void serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode );
+        void serializeMovie2( UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode );
         void processPacket( NodeDebuggerPacket & _packet );
         void receiveChangedNode( const pugi::xml_node & _xmlNode );
         void receiveGameControlCommand( const String & _command );

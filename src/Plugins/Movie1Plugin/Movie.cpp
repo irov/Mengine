@@ -183,7 +183,7 @@ namespace Mengine
     {
         if( this->isCompile() == false )
         {
-            LOGGER_ERROR( "Movie.getTiming: '%s' not compile"
+            LOGGER_ERROR( "movie '%s' not compile"
                 , m_name.c_str()
             );
 
@@ -195,6 +195,22 @@ namespace Mengine
         float timing = m_currentFrame * frameDuration + m_frameTime;
 
         return timing;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Movie::_getDuration() const
+    {
+        if( this->isCompile() == false )
+        {
+            LOGGER_ERROR( "movie '%s' not compile"
+                , m_name.c_str()
+            );
+
+            return 0.f;
+        }
+
+        float duration = m_resourceMovie->getDuration();
+
+        return duration;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Movie::_play( uint32_t _playId, float _time )
@@ -1600,7 +1616,7 @@ namespace Mengine
             return false;
         }
 
-        UnknownVideoSurfaceInterfacePtr unknownVideoSurface = surface->getUnknown();
+        UnknownVideoSurfaceInterface * unknownVideoSurface = surface->getUnknown();
 
         unknownVideoSurface->setResourceVideo( resourceVideo );
 
@@ -1920,7 +1936,7 @@ namespace Mengine
             return false;
         }
 
-        UnknownParticleEmitterInterfacePtr unknownParticleEmitter2 = layer_particles->getUnknown();
+        UnknownParticleEmitterInterface * unknownParticleEmitter2 = layer_particles->getUnknown();
 
         AnimationInterface * animationParticleEmitter2 = layer_particles->getAnimation();
 

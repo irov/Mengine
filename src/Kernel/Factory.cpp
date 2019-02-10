@@ -4,6 +4,7 @@
 #include "Interface/FactoryServiceInterface.h"
 
 #ifndef NDEBUG
+#   include "Interface/NotificationServiceInterface.h"
 #   include "Kernel/Logger.h"
 #   include <stdlib.h>
 #endif
@@ -15,7 +16,7 @@ namespace Mengine
         : m_name( _name )
         , m_count( 0 )
     {
-#ifndef MENGINE_MASTER_RELEASE
+#ifndef NDEBUG
         FACTORY_SERVICE()
             ->registerFactory( this );
 #endif
@@ -40,12 +41,20 @@ namespace Mengine
         Factorable * object = this->_createObject();
         object->setFactory( this );
 
+#ifndef NDEBUG
+        NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, (this, object) );
+#endif
+
         return object;
     }
     //////////////////////////////////////////////////////////////////////////
     void Factory::destroyObject( Factorable * _object )
     {
         STDEX_THREAD_GUARD_CHECK( this, "Factory::destroyObject" );
+
+#ifndef NDEBUG
+        NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_DESTROY_OBJECT, (this, _object) );
+#endif
 
         this->_destroyObject( _object );
 
@@ -65,7 +74,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Factory::_destroy()
     {
-#ifndef MENGINE_MASTER_RELEASE
+#ifndef NDEBUG
         FACTORY_SERVICE()
             ->unregisterFactory( this );
 #endif

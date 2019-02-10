@@ -1990,7 +1990,7 @@ namespace Mengine
 
         if( compositionData == nullptr )
         {
-            LOGGER_ERROR( "Movie2::_compile '%s' resource %s not found composition '%s'"
+            LOGGER_ERROR( "movie '%s' resource %s not found composition '%s'"
                 , m_name.c_str()
                 , m_resourceMovie2->getName().c_str()
                 , m_compositionName.c_str()
@@ -2037,7 +2037,7 @@ namespace Mengine
 
         if( composition == nullptr )
         {
-            LOGGER_ERROR( "Movie2::_compile '%s' resource '%s' invalid create composition '%s'"
+            LOGGER_ERROR( "movie '%s' resource '%s' invalid create composition '%s'"
                 , m_name.c_str()
                 , m_resourceMovie2->getName().c_str()
                 , m_compositionName.c_str()

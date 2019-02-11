@@ -19,17 +19,12 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void FactoryWithListener::destroyObject( Factorable * _object )
     {
-        STDEX_THREAD_GUARD_CHECK( this, "Factory::destroyObject" );
-
         if( m_destroyListener != nullptr )
         {
             m_destroyListener->onFactoryDestroyObject( _object );
         }
 
-        this->_destroyObject( _object );
-
-        --m_count;
-        intrusive_ptr_dec_ref( this );
+        Factory::destroyObject( _object );
     }
     //////////////////////////////////////////////////////////////////////////
 }

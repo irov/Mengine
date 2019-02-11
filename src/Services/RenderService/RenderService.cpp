@@ -130,7 +130,6 @@ namespace Mengine
         }
 
         m_factoryRenderBatch = new FactoryPool<RenderBatch, 16>();
-        m_factoryRenderPass = new FactoryPool<RenderPass, 128>();
 
         m_renderSystem = RENDER_SYSTEM();
 
@@ -175,10 +174,8 @@ namespace Mengine
         m_currentRenderScissor = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderBatch );
-        MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryRenderPass );
 
         m_factoryRenderBatch = nullptr;
-        m_factoryRenderPass = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
     bool RenderService::createRenderWindow( const Resolution & _resolution, const Resolution & _contentResolution, const Viewport & _renderViewport, uint32_t _bits, bool _fullscreen,
@@ -914,13 +911,13 @@ namespace Mengine
             return;
         }
 
-        for( const RenderPassPtr & renderPass : m_renderPasses )
+        for( const RenderPass * renderPass : m_renderPasses )
         {
             this->renderPass_( renderPass );
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::renderPass_( const RenderPassPtr & _renderPass )
+    void RenderService::renderPass_( const RenderPass * _renderPass )
     {
         if( _renderPass->viewport != nullptr )
         {
@@ -1067,7 +1064,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::renderObjects_( const RenderPassPtr & _renderPass )
+    void RenderService::renderObjects_( const RenderPass * _renderPass )
     {
         ArrayRenderObject::iterator it_begin = m_renderObjects.advance( _renderPass->beginRenderObject );
         ArrayRenderObject::iterator it_end = m_renderObjects.advance( _renderPass->beginRenderObject + _renderPass->countRenderObject );
@@ -1154,7 +1151,7 @@ namespace Mengine
             return true;
         }
 
-        const RenderPassPtr & pass = m_renderPasses.back();
+        const RenderPass * pass = m_renderPasses.back();
 
         if( pass->viewport != _context->viewport ||
             pass->camera != _context->camera ||
@@ -1170,7 +1167,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderPassPtr & RenderService::requestRenderPass_( const RenderContext * _context
+    RenderPass * RenderService::requestRenderPass_( const RenderContext * _context
         , const RenderMaterialInterfacePtr & _material
         , const RenderProgramVariableInterfacePtr & _variable
         , uint32_t _vertexCount, uint32_t _indexCount )
@@ -1188,7 +1185,7 @@ namespace Mengine
 
         if( this->testRenderPass_( _context, batch, _variable ) == true )
         {
-            RenderPassPtr pass = m_factoryRenderPass->createObject( MENGINE_DOCUMENT_FUNCTION );
+            RenderPass * pass = m_poolRenderPass.createT();
 
             pass->beginRenderObject = (uint32_t)m_renderObjects.size();
             pass->countRenderObject = 0U;
@@ -1208,7 +1205,7 @@ namespace Mengine
             m_renderPasses.emplace_back( pass );
         }
 
-        const RenderPassPtr & rp = m_renderPasses.back();
+        RenderPass * rp = m_renderPasses.back();
 
         return rp;
     }
@@ -1267,7 +1264,7 @@ namespace Mengine
             }
         }
 
-        const RenderPassPtr & rp = this->requestRenderPass_( _context, _material, _variable, _vertexCount, _indexCount );
+        RenderPass * rp = this->requestRenderPass_( _context, _material, _variable, _vertexCount, _indexCount );
 
         mt::box2f bb;
 
@@ -1541,7 +1538,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::insertRenderPasses_()
     {
-        for( const RenderPassPtr & pass : m_renderPasses )
+        for( const RenderPass * pass : m_renderPasses )
         {
             if( pass->flags & RENDER_PASS_FLAG_SINGLE )
             {
@@ -1629,7 +1626,7 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::batchRenderObjectSmart_( const RenderPassPtr & _renderPass, ArrayRenderObject::iterator _begin, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos )
+    void RenderService::batchRenderObjectSmart_( const RenderPass * _renderPass, ArrayRenderObject::iterator _begin, RenderObject * _ro, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos )
     {
         uint32_t vbPos = _vbPos;
         uint32_t ibPos = _ibPos;
@@ -1699,7 +1696,7 @@ namespace Mengine
         _ibPos = ibPos;
     }
     //////////////////////////////////////////////////////////////////////////
-    void RenderService::insertRenderObjects_( const RenderPassPtr & _renderPass, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos )
+    void RenderService::insertRenderObjects_( const RenderPass * _renderPass, const MemoryInterfacePtr & _vertexBuffer, uint32_t _vertexSize, const MemoryInterfacePtr & _indexBuffer, uint32_t & _vbPos, uint32_t & _ibPos )
     {
         uint32_t vbPos = _vbPos;
         uint32_t ibPos = _ibPos;

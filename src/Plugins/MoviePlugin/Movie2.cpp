@@ -2564,7 +2564,7 @@ namespace Mengine
 
                         if( mesh.shader_userdata == AE_NULLPTR )
                         {
-                            const RenderMaterialInterfacePtr & material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
+                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resource_image, ConstString::none(), blend_mode, false, false );
 
                             this->addRenderObject( &context, material, nullptr, vertices, mesh.vertexCount, indices, mesh.indexCount, nullptr, false );
                         }
@@ -2572,7 +2572,7 @@ namespace Mengine
                         {
                             ShaderDesc * shader_desc = reinterpret_cast<ShaderDesc *>(mesh.shader_userdata);
 
-                            const RenderMaterialInterfacePtr & material = Helper::makeImageMaterial( resource_image, shader_desc->materialName, blend_mode, false, false );
+                            RenderMaterialInterfacePtr material = Helper::makeImageMaterial( resource_image, shader_desc->materialName, blend_mode, false, false );
 
                             const RenderProgramVariableInterfacePtr & programVariable = shader_desc->programVariable;
 

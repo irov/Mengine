@@ -127,6 +127,10 @@ PLUGIN_EXPORT( BitmapFont );
 PLUGIN_EXPORT( NodeDebugRender );
 #endif
 
+#ifdef MENGINE_PLUGIN_NODELEAKDETECTOR_STATIC
+PLUGIN_EXPORT( NodeLeakDetector );
+#endif
+
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
 PLUGIN_EXPORT( ResourcePrefetcher );
 #endif
@@ -694,6 +698,10 @@ namespace Mengine
 #ifdef MENGINE_PLUGIN_NODEDEBUGRENDER_STATIC
         MENGINE_ADD_PLUGIN( NodeDebugRender, "initialize Plugin Node Debug Render..." );
 #endif
+
+#ifdef MENGINE_PLUGIN_NODELEAKDETECTOR_STATIC
+        MENGINE_ADD_PLUGIN( NodeLeakDetector, "initialize Plugin Node Leak Detector..." );
+#endif        
 
 #ifdef MENGINE_PLUGIN_RESOURCEPREFETCHER_STATIC
         MENGINE_ADD_PLUGIN( ResourcePrefetcher, "initialize Plugin Resource Prefetcher..." );

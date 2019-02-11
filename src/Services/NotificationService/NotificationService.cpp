@@ -3,6 +3,7 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Assertion.h"
+#include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
 #include "Kernel/ThreadMutexScope.h"
 
@@ -29,10 +30,7 @@ namespace Mengine
             ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
                 ->createMutex( __FILE__, __LINE__ );
 
-            if( mutex == nullptr )
-            {
-                return false;
-            }
+            MENGINE_ASSERTION_MEMORY_PANIC_VOID( mutex );
 
             m_mutex = mutex;
         } );

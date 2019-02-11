@@ -51,6 +51,7 @@ namespace Mengine
         , mHeight( 720 )
         , mSelectedNode( nullptr )
         , mDefaultIcon( nullptr )
+        , mCurrentTab( 0 )
         , mServerAddress()
         , mServerPort( 18790 )
         , mServerAddressCopy()
@@ -130,6 +131,23 @@ namespace Mengine
 
         mShutdown = false;
         mNetworkThread = std::thread( &NodeDebuggerApp::NetworkLoop, this );
+
+        // Create tabs
+        mTabs.push_back({
+            "Node properties",
+            true,
+            [this]() { this->DoUIPropertiesTab(); }
+        });
+        mTabs.push_back({
+            "Game logger",
+            true,
+            [this]() { this->DoUILogTab(); }
+        });
+        mTabs.push_back({
+            "Example tab",
+            true,
+            [this]() { this->DoUIExampleTab(); }
+        });
 
         // if requested to auto-connect, then do so
         if( !_address.empty() && _port != 0 )
@@ -264,7 +282,7 @@ namespace Mengine
         }
         else
         {
-            const size_t maxCompressedSize = ::LZ4_compressBound( payloadSize );
+            const size_t maxCompressedSize = ::LZ4_compressBound( static_cast<int>(payloadSize) );
             Vector<uint8_t> compressedPayload( maxCompressedSize );
 
             const int result = ::LZ4_compress_default( reinterpret_cast<char*>( _packet.payload.data() ), reinterpret_cast<char*>( compressedPayload.data() ), static_cast<int>( payloadSize ), static_cast<int>( maxCompressedSize ) );
@@ -297,7 +315,7 @@ namespace Mengine
             _packet.payload.resize( _hdr.uncompressedSize );
 
             const int result = ::LZ4_decompress_safe( reinterpret_cast<const char*>( _receivedData ), reinterpret_cast<char*>( _packet.payload.data() ), static_cast<int>( _hdr.compressedSize ), static_cast<int>( _hdr.uncompressedSize ) );
-            assert( result == _hdr.uncompressedSize );
+            assert( static_cast<uint32_t>(result) == _hdr.uncompressedSize );
         }
     }
 
@@ -652,6 +670,7 @@ namespace Mengine
 
         ImGui::SetNextWindowPos( ImVec2( 0, 0 ), ImGuiCond_FirstUseEver );
         ImGui::SetNextWindowSize( ImVec2( static_cast<float>(mWidth), static_cast<float>(mHeight) ), ImGuiCond_Always );
+        ImGui::GetStyle().WindowRounding = 0.f;
 
         if( ImGui::Begin( "Node Debugger", nullptr, kPanelFlags ) )
         {
@@ -753,16 +772,90 @@ namespace Mengine
             ImGui::NextColumn();
             if( ImGui::BeginChild( "Panel" ) )
             {
-                if( mSelectedNode )
+                const size_t numTabs = mTabs.size();
+                ImGuiStyle& style = ImGui::GetStyle();
+                float borderSize = style.FrameBorderSize;
+                float borderRounding = style.FrameRounding;
+                ImVec2 itemSpacing = style.ItemSpacing;
+                ImVec4 color = style.Colors[ImGuiCol_Button];
+                ImVec4 colorActive = style.Colors[ImGuiCol_ButtonActive];
+                ImVec4 colorHover = style.Colors[ImGuiCol_ButtonHovered];
+                ImVec4 colorDisabled = style.Colors[ImGuiCol_TextDisabled];
+                style.ItemSpacing.x = 0.f;
+                style.FrameBorderSize = 1.f;
+                style.FrameRounding = 5.f;
+
+                for( size_t i = 0; i < numTabs; ++i )
                 {
-                    DoNodeProperties( mSelectedNode );
+                    const TabDescriptor& td = mTabs[i];
+
+                    if( i > 0 )
+                    {
+                        ImGui::SameLine();
+                    }
+
+                    if( td.enabled )
+                    {
+                        if( mCurrentTab == i )
+                        {
+                            style.Colors[ImGuiCol_Button] = colorActive;
+                            style.Colors[ImGuiCol_ButtonActive] = colorActive;
+                            style.Colors[ImGuiCol_ButtonHovered] = colorActive;
+                        }
+                        else
+                        {
+                            style.Colors[ImGuiCol_Button] = color;
+                            style.Colors[ImGuiCol_ButtonActive] = colorActive;
+                            style.Colors[ImGuiCol_ButtonHovered] = colorHover;
+                        }
+                    }
+                    else
+                    {
+                        style.Colors[ImGuiCol_Button] = colorDisabled;
+                        style.Colors[ImGuiCol_ButtonActive] = colorDisabled;
+                        style.Colors[ImGuiCol_ButtonHovered] = colorDisabled;
+                    }
+
+                    if( ImGui::ButtonEx( td.title.c_str(), ImVec2( 0.f, 0.f ), td.enabled ? ImGuiButtonFlags_None : ImGuiButtonFlags_Disabled ) )
+                    {
+                        mCurrentTab = i;
+                    }
                 }
+
+                style.Colors[ImGuiCol_Button] = color;
+                style.Colors[ImGuiCol_ButtonActive] = colorActive;
+                style.Colors[ImGuiCol_ButtonHovered] = colorHover;
+                style.ItemSpacing = itemSpacing;
+                style.FrameBorderSize = borderSize;
+                style.FrameRounding = borderRounding;
+
+                // draw current tab content
+                mTabs[mCurrentTab].functor();
             }
             ImGui::EndChild();
 
             ImGui::Columns( 1 );
         }
         ImGui::End();
+    }
+
+    void NodeDebuggerApp::DoUIPropertiesTab()
+    {
+        if( mSelectedNode )
+        {
+            DoNodeProperties( mSelectedNode );
+        }
+    }
+
+    void NodeDebuggerApp::DoUILogTab()
+    {
+        char* text = "Log: libe 1\nLog: line 2\nLog: line 3\n";
+        ImGui::InputTextMultiline( "", "Log: libe 1\nLog: line 2\nLog: line 3\n", 0, ImVec2( 0.f, 0.f ), ImGuiInputTextFlags_ReadOnly );
+    }
+
+    void NodeDebuggerApp::DoUIExampleTab()
+    {
+        ImGui::TextColored( ImVec4(1.0f, 0.85f, 0.0f, 1.0f), "Hello example tab!" );
     }
 
     String NodeDebuggerApp::DoIPInput( const String & _title, const String & _inIP )
@@ -896,6 +989,7 @@ namespace Mengine
         auto uiReadOnlyBool = [_node]( const char * _caption, bool & _prop )
         {
             bool testValue = _prop;
+          
             ImGui::PushItemFlag( ImGuiItemFlags_Disabled, true );
             ImGui::PushStyleColor( ImGuiCol_FrameBg, ImVec4( 0.15f, 0.3f, 0.2f, 1.f ) );
             ImGui::Checkbox( _caption, &testValue );
@@ -1028,7 +1122,7 @@ namespace Mengine
                 return true;
             }, (void *)_items.begin(), _count );
 
-            if( input && _prop != testValue )
+            if( input && _prop != static_cast<uint32_t>(testValue) )
             {
                 _prop = testValue;
                 _node->dirty = true;

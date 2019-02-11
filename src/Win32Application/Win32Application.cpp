@@ -34,6 +34,7 @@
 #include "Kernel/StringArguments.h"
 #include "Kernel/Date.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <cstdio>
 #include <clocale>
@@ -215,7 +216,7 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         InputStreamInterfacePtr applicationInputStream = FILE_SERVICE()
-            ->openInputFile( fileGroup, applicationPath, false );
+            ->openInputFile( fileGroup, applicationPath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( applicationInputStream == nullptr )
         {
@@ -390,7 +391,7 @@ namespace Mengine
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
         OutputStreamInterfacePtr fileLogInterface = FILE_SERVICE()
-            ->openOutputFile( fileGroup, logFilename );
+            ->openOutputFile( fileGroup, logFilename, MENGINE_DOCUMENT_FUNCTION );
 
         if( fileLogInterface != nullptr )
         {
@@ -819,7 +820,7 @@ namespace Mengine
         for( const String & moduleName : modules )
         {
             if( MODULE_SERVICE()
-                ->runModule( Helper::stringizeString( moduleName ) ) == false )
+                ->runModule( Helper::stringizeString( moduleName ), MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_CRITICAL( "Application Failed to run module '%s'"
                     , moduleName.c_str()
@@ -837,7 +838,7 @@ namespace Mengine
             for( const String & moduleName : devModules )
             {
                 if( MODULE_SERVICE()
-                    ->runModule( Helper::stringizeString( moduleName ) ) == false )
+                    ->runModule( Helper::stringizeString( moduleName ), MENGINE_DOCUMENT_FUNCTION ) == false )
                 {
                     LOGGER_ERROR( "Application Failed to run dev module '%s'"
                         , moduleName.c_str()

@@ -5,6 +5,7 @@
 #include "Kernel/AssertionMemoryPanic.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <algorithm>
 
@@ -50,7 +51,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadIdentityInterfacePtr Win32ThreadSystem::createThread( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
     {
-        Win32ThreadIdentityPtr identity = m_factoryWin32ThreadIdentity->createObject();
+		Win32ThreadIdentityPtr identity = m_factoryWin32ThreadIdentity->createObject( _doc );
 
         if( identity == nullptr )
         {
@@ -73,7 +74,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadMutexInterfacePtr Win32ThreadSystem::createMutex( const Char * _file, uint32_t _line )
     {
-        Win32ThreadMutexPtr mutex = m_factoryWin32ThreadMutex->createObject();
+		Win32ThreadMutexPtr mutex = m_factoryWin32ThreadMutex->createObject( MENGINE_DOCUMENT( "file %s[%d]", _file, _line ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( mutex, nullptr )("invalid create mutex");
 
@@ -84,7 +85,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadConditionVariableInterfacePtr Win32ThreadSystem::createConditionVariable( const Char * _file, uint32_t _line )
     {
-        Win32ThreadConditionVariablePtr conditionVariable = m_factoryWin32ThreadConditionVariable->createObject();
+        Win32ThreadConditionVariablePtr conditionVariable = m_factoryWin32ThreadConditionVariable->createObject( MENGINE_DOCUMENT( "file %s[%d]", _file, _line ) );
 
         MENGINE_ASSERTION_MEMORY_PANIC( conditionVariable, nullptr )("invalid create condition variable");
 

@@ -6,6 +6,7 @@
 #include "Interface/PrototypeServiceInterface.h"
 
 #include "Kernel/Scene.h"
+#include "Kernel/Document.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( SceneService, Mengine::SceneService );
@@ -192,7 +193,7 @@ namespace Mengine
         }
 
         ScenePtr scene = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( scene == nullptr )
         {

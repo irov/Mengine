@@ -45,6 +45,7 @@
 #include "Kernel/FileLogger.h"
 #include "Kernel/IniUtil.h"
 #include "Kernel/Date.h"
+#include "Kernel/Document.h"
 
 #include "SDLMessageBoxLogger.h"
 
@@ -781,7 +782,7 @@ namespace Mengine
         for( const String & moduleName : modules )
         {
             if( MODULE_SERVICE()
-                ->runModule( Helper::stringizeString( moduleName ) ) == false )
+                ->runModule( Helper::stringizeString( moduleName ), MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_ERROR( "Application Failed to run module '%s'"
                     , moduleName.c_str()
@@ -801,7 +802,7 @@ namespace Mengine
             for( const String & moduleName : devModules )
             {
                 if( MODULE_SERVICE()
-                    ->runModule( Helper::stringizeString( moduleName ) ) == false )
+                    ->runModule( Helper::stringizeString( moduleName ), MENGINE_DOCUMENT_FUNCTION ) == false )
                 {
                     LOGGER_ERROR( "Application Failed to run dev module '%s'"
                         , moduleName.c_str()

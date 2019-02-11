@@ -27,13 +27,14 @@
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/FactoryDefault.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
+
+#include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <algorithm>
 #include <cmath>
 #include <stdio.h>
-
-#include "Kernel/Logger.h"
-
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderSystem, Mengine::DX9RenderSystem );
@@ -666,9 +667,9 @@ namespace Mengine
         return dxTexture;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
+    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetTexture( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc )
     {
-        DX9RenderTargetTexturePtr target = m_factoryDX9TargetTexture->createObject();
+        DX9RenderTargetTexturePtr target = m_factoryDX9TargetTexture->createObject( _doc );
 
         if( target->initialize( m_pD3DDevice, _width, _height, _channels, _format ) == false )
         {
@@ -692,9 +693,9 @@ namespace Mengine
         return target;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format )
+    RenderTargetInterfacePtr DX9RenderSystem::createRenderTargetOffscreen( uint32_t _width, uint32_t _height, uint32_t _channels, PixelFormat _format, const Char * _doc )
     {
-        DX9RenderTargetOffscreenPtr target = m_factoryDX9TargetOffscreen->createObject();
+        DX9RenderTargetOffscreenPtr target = m_factoryDX9TargetOffscreen->createObject( _doc );
 
         if( target->initialize( m_pD3DDevice, _width, _height, _channels, _format ) == false )
         {
@@ -716,11 +717,11 @@ namespace Mengine
         return target;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget )
+    RenderImageInterfacePtr DX9RenderSystem::createRenderTargetImage( const RenderTargetInterfacePtr & _renderTarget, const Char * _doc )
     {
         DX9RenderTargetTexturePtr dx9RenderTarget = stdex::intrusive_static_cast<DX9RenderTargetTexturePtr>(_renderTarget);
 
-        DX9RenderImageTargetPtr dx9TextureImageTarget = m_factoryDX9ImageTarget->createObject();
+        DX9RenderImageTargetPtr dx9TextureImageTarget = m_factoryDX9ImageTarget->createObject( _doc );
 
         dx9TextureImageTarget->initialize( dx9RenderTarget );
 
@@ -750,7 +751,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem::resetDevice_: restore failed"
+            LOGGER_ERROR( "restore failed"
             );
 
             return false;
@@ -763,7 +764,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::beginScene device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return false;
@@ -779,7 +780,7 @@ namespace Mengine
         }
         else if( hr == D3DERR_DEVICENOTRESET )
         {
-            LOGGER_WARNING( "DX9RenderSystem::beginScene: D3DERR_DEVICENOTRESET"
+            LOGGER_WARNING( "D3DERR_DEVICENOTRESET"
             );
 
             if( this->resetDevice_() == false )
@@ -791,13 +792,13 @@ namespace Mengine
         }
         else if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "DX9RenderSystem::beginScene: invalid TestCooperativeLevel %d"
+            LOGGER_ERROR( "invalid TestCooperativeLevel %d"
                 , hr
             );
 
             if( this->releaseResources_() == false )
             {
-                LOGGER_ERROR( "DX9RenderSystem::restore_ release resources"
+                LOGGER_ERROR( "release resources"
                 );
             }
 
@@ -816,7 +817,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::endScene device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -829,7 +830,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::swapBuffers device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -851,7 +852,7 @@ namespace Mengine
         }
         else if( FAILED( hr ) )
         {
-            LOGGER_ERROR( "DX9RenderSystem::swapBuffers failed to swap buffers %x"
+            LOGGER_ERROR( "failed to swap buffers %x"
                 , hr
             );
         }
@@ -863,7 +864,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::clearFrameBuffer device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -933,7 +934,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setViewport device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -955,7 +956,7 @@ namespace Mengine
 
         IF_DXCALL( m_pD3DDevice, SetViewport, (&VP) )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setRenderViewport: failed viewport (%d, %d, %d, %d)"
+            LOGGER_ERROR( "failed viewport (%d, %d, %d, %d)"
                 , VP.X
                 , VP.Y
                 , VP.X + VP.Width
@@ -982,7 +983,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem::changeWindowMode: Graphics change mode failed"
+            LOGGER_ERROR( "Graphics change mode failed"
             );
         }
     }
@@ -1062,7 +1063,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::d3dCreateTexture_ device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return false;
@@ -1082,7 +1083,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setTextureMatrix device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1090,7 +1091,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setTextureMatrix no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage %d (max %d)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );
@@ -1116,7 +1117,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::restore_ m_pD3DDevice is null"
+            LOGGER_ERROR( "m_pD3DDevice is null"
             );
 
             return false;
@@ -1128,7 +1129,7 @@ namespace Mengine
 
             IF_DXCALL( m_pD3DDevice, SetIndices, (nullptr) )
             {
-                LOGGER_ERROR( "DX9RenderSystem::releaseResources_ indices not reset"
+                LOGGER_ERROR( "indices not reset"
                 );
 
                 //return false;
@@ -1141,7 +1142,7 @@ namespace Mengine
 
             IF_DXCALL( m_pD3DDevice, SetStreamSource, (0, nullptr, 0, 0) )
             {
-                LOGGER_ERROR( "DX9RenderSystem::releaseResources_ stream source not reset"
+                LOGGER_ERROR( "stream source not reset"
                 );
 
                 //return false;
@@ -1157,7 +1158,7 @@ namespace Mengine
 
             IF_DXCALL( m_pD3DDevice, SetTexture, (i, nullptr) )
             {
-                LOGGER_ERROR( "DX9RenderSystem::releaseResources_ texture %d not reset"
+                LOGGER_ERROR( "texture %d not reset"
                     , i
                 );
 
@@ -1184,7 +1185,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::restore_ m_pD3DDevice is null"
+            LOGGER_ERROR( "m_pD3DDevice is null"
             );
 
             return false;
@@ -1192,7 +1193,7 @@ namespace Mengine
 
         if( this->releaseResources_() == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem::restore_ release resources"
+            LOGGER_ERROR( "release resources"
             );
 
             return false;
@@ -1216,7 +1217,7 @@ namespace Mengine
         }
         else if( FAILED( hr ) == true )
         {
-            LOGGER_ERROR( "DX9RenderSystem::restore_ failed to reset device (hr:%p)"
+            LOGGER_ERROR( "failed to reset device (hr:%p)"
                 , hr
             );
 
@@ -1241,7 +1242,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::release_ m_pD3DDevice is null"
+            LOGGER_ERROR( "m_pD3DDevice is null"
             );
 
             return;
@@ -1249,7 +1250,7 @@ namespace Mengine
 
         if( this->releaseResources_() == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem::release_ invalid release resource"
+            LOGGER_ERROR( "invalid release resource"
             );
 
             return;
@@ -1270,9 +1271,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType )
+    RenderVertexBufferInterfacePtr DX9RenderSystem::createVertexBuffer( uint32_t _vertexSize, EBufferType _bufferType, const Char * _doc )
     {
-        DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject();
+        DX9RenderVertexBufferPtr buffer = m_factoryVertexBuffer->createObject( _doc );
 
         if( buffer->initialize( m_pD3DDevice, _vertexSize, _bufferType ) == false )
         {
@@ -1308,9 +1309,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType )
+    RenderIndexBufferInterfacePtr DX9RenderSystem::createIndexBuffer( uint32_t _indexSize, EBufferType _bufferType, const Char * _doc )
     {
-        DX9RenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject();
+        DX9RenderIndexBufferPtr buffer = m_factoryIndexBuffer->createObject( _doc );
 
         if( buffer->initialize( m_pD3DDevice, _indexSize, _bufferType ) == false )
         {
@@ -1351,7 +1352,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::drawIndexedPrimitive device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1370,7 +1371,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setTexture device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1378,7 +1379,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setTexture no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage %d (max %d)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );
@@ -1404,7 +1405,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setSrcBlendFactor device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1423,7 +1424,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setTextureAddressing device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1431,7 +1432,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setTextureAddressing no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage %d (max %d)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );
@@ -1452,7 +1453,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setTextureFactor device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1467,7 +1468,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setCullMode device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1482,7 +1483,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setDepthBufferTestEnable device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1497,7 +1498,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setDepthBufferWriteEnable device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1512,7 +1513,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setDepthBufferCmpFunc device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1527,7 +1528,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setFillMode device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1542,7 +1543,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setColorBufferWriteEnable device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1577,7 +1578,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setAlphaBlendEnable device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1592,7 +1593,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setTextureStageFilter device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1600,7 +1601,7 @@ namespace Mengine
 
         if( _stage >= m_dxMaxCombinedTextureImageUnits )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setTextureStageFilter no support stage %d (max %d)"
+            LOGGER_ERROR( "no support stage %d (max %d)"
                 , _stage
                 , m_dxMaxCombinedTextureImageUnits
             );
@@ -1617,22 +1618,17 @@ namespace Mengine
         DXCALL( m_pD3DDevice, SetSamplerState, (_stage, D3DSAMP_MAGFILTER, dx_magnification) );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexAttributeInterfacePtr DX9RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize )
+    RenderVertexAttributeInterfacePtr DX9RenderSystem::createVertexAttribute( const ConstString & _name, uint32_t _elementSize, const Char * _doc )
     {
-        DX9RenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject();
+        DX9RenderVertexAttributePtr attribute = m_factoryRenderVertexAttribute->createObject( _doc );
 
-        if( attribute == nullptr )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::createVertexAttribute invalid create attribute %s"
-                , _name.c_str()
-            );
-
-            return nullptr;
-        }
+		MENGINE_ASSERTION_MEMORY_PANIC( attribute, nullptr )("invalid create attribute %s"
+			, _name.c_str()
+			);
 
         if( attribute->initialize( _name, _elementSize ) == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem::createVertexAttribute invalid initialize attribute %s"
+            LOGGER_ERROR( "invalid initialize attribute %s"
                 , _name.c_str()
             );
 
@@ -1642,22 +1638,17 @@ namespace Mengine
         return attribute;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
+    RenderFragmentShaderInterfacePtr DX9RenderSystem::createFragmentShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc )
     {
-        DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject();
+		DX9RenderFragmentShaderPtr shader = m_factoryRenderFragmentShader->createObject( _doc );
 
-        if( shader == nullptr )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::createFragmentShader invalid create shader %s"
-                , _name.c_str()
-            );
-
-            return nullptr;
-        }
+		MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr )("invalid create shader '%s'"
+			, _name.c_str()
+			);
 
         if( shader->initialize( _name, _memory, _compile ) == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem::createFragmentShader invalid initialize shader %s"
+            LOGGER_ERROR( "invalid initialize shader '%s'"
                 , _name.c_str()
             );
 
@@ -1668,7 +1659,7 @@ namespace Mengine
         {
             if( shader->compile( m_pD3DDevice ) == false )
             {
-                LOGGER_ERROR( "DX9RenderSystem::createFragmentShader invalid compile shader %s"
+                LOGGER_ERROR( "invalid compile shader '%s'"
                     , _name.c_str()
                 );
 
@@ -1683,22 +1674,17 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderVertexShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile )
+    RenderVertexShaderInterfacePtr DX9RenderSystem::createVertexShader( const ConstString & _name, const MemoryInterfacePtr & _memory, bool _compile, const Char * _doc )
     {
-        DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject();
+		DX9RenderVertexShaderPtr shader = m_factoryRenderVertexShader->createObject( _doc );
 
-        if( shader == nullptr )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::createVertexShader invalid create shader %s"
-                , _name.c_str()
-            );
-
-            return nullptr;
-        }
+		MENGINE_ASSERTION_MEMORY_PANIC( shader, nullptr )("invalid create shader %s"
+			, _name.c_str()
+			);
 
         if( shader->initialize( _name, _memory, _compile ) == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem::createVertexShader invalid initialize shader %s"
+            LOGGER_ERROR( "invalid initialize shader '%s'"
                 , _name.c_str()
             );
 
@@ -1709,7 +1695,7 @@ namespace Mengine
         {
             if( shader->compile( m_pD3DDevice ) == false )
             {
-                LOGGER_ERROR( "DX9RenderSystem::createVertexShader invalid compile shader %s"
+                LOGGER_ERROR( "invalid compile shader '%s'"
                     , _name.c_str()
                 );
 
@@ -1724,24 +1710,19 @@ namespace Mengine
         return shader;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount )
+    RenderProgramInterfacePtr DX9RenderSystem::createProgram( const ConstString & _name, const RenderVertexShaderInterfacePtr & _vertex, const RenderFragmentShaderInterfacePtr & _fragment, const RenderVertexAttributeInterfacePtr & _vertexAttribute, uint32_t _samplerCount, const Char * _doc )
     {
         (void)_samplerCount;
 
-        DX9RenderProgramPtr program = m_factoryRenderProgram->createObject();
+        DX9RenderProgramPtr program = m_factoryRenderProgram->createObject( _doc );
 
-        if( program == nullptr )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::createProgram invalid create program %s"
-                , _name.c_str()
-            );
-
-            return nullptr;
-        }
+		MENGINE_ASSERTION_MEMORY_PANIC( program, nullptr )("invalid create program '%s'"
+			, _name.c_str()
+			);
 
         if( program->initialize( _name, _vertex, _fragment, _vertexAttribute ) == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem::createProgram invalid initialize program %s"
+            LOGGER_ERROR( "invalid initialize program '%s'"
                 , _name.c_str()
             );
 
@@ -1752,7 +1733,7 @@ namespace Mengine
         {
             if( program->compile( m_pD3DDevice ) == false )
             {
-                LOGGER_ERROR( "DX9RenderSystem::createProgram invalid compile program %s"
+                LOGGER_ERROR( "invalid compile program '%s'"
                     , _name.c_str()
                 );
 
@@ -1794,21 +1775,16 @@ namespace Mengine
         dx9_program->bindMatrix( m_pD3DDevice, m_worldMatrix, m_modelViewMatrix, m_projectionMatrix, m_totalWVPInvMatrix );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount )
+    RenderProgramVariableInterfacePtr DX9RenderSystem::createProgramVariable( uint32_t _vertexCount, uint32_t _pixelCount, const Char * _doc )
     {
-        DX9RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject();
+        DX9RenderProgramVariablePtr variable = m_factoryRenderProgramVariable->createObject( _doc );
 
-        if( variable == nullptr )
-        {
-            LOGGER_ERROR( "DX9RenderSystem::createProgramVariable invalid create program variable"
+		MENGINE_ASSERTION_MEMORY_PANIC( variable, nullptr )("invalid create program variable"
             );
-
-            return nullptr;
-        }
 
         if( variable->initialize( _vertexCount, _pixelCount ) == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem::createProgramVariable invalid initialize program variable"
+			LOGGER_ERROR( "invalid initialize program variable"
             );
 
             return nullptr;
@@ -1835,7 +1811,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setVSync device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1847,7 +1823,7 @@ namespace Mengine
 
         if( this->restore_() == false )
         {
-            LOGGER_ERROR( "DX9RenderSystem::setVSync: Graphics change mode failed"
+            LOGGER_ERROR( "Graphics change mode failed"
             );
         }
     }
@@ -1870,7 +1846,7 @@ namespace Mengine
     {
         if( m_pD3DDevice == nullptr )
         {
-            LOGGER_ERROR( "DX9RenderSystem::clear_ device not created"
+            LOGGER_ERROR( "device not created"
             );
 
             return;
@@ -1885,7 +1861,7 @@ namespace Mengine
 
         m_textureCount++;
 
-        DX9RenderImagePtr dx9RenderImage = m_factoryDX9Image->createObject();
+        DX9RenderImagePtr dx9RenderImage = m_factoryDX9Image->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         bool logcreateimage = HAS_OPTION( "logcreateimage" );
 

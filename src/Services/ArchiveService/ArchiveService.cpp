@@ -5,6 +5,7 @@
 #include "Kernel/MemoryHelper.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ArchiveService, Mengine::ArchiveService );
@@ -125,7 +126,7 @@ namespace Mengine
         size_t compressSize2 = _archivator->compressBound( _size );
 
         MemoryInputInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryInput();
+            ->createMemoryInput( MENGINE_DOCUMENT_FUNCTION );
 
         void * buffer = memory->newBuffer( compressSize2 );
 

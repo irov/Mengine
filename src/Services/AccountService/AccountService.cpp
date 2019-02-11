@@ -13,6 +13,7 @@
 #include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Kernel/IniUtil.h"
 #include "Kernel/String.h"
@@ -259,7 +260,7 @@ namespace Mengine
             return nullptr;
         }
 
-        AccountPtr newAccount = m_factoryAccounts->createObject();
+		AccountPtr newAccount = m_factoryAccounts->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         uint32_t projectVersion = APPLICATION_SERVICE()
             ->getProjectVersion();
@@ -656,7 +657,7 @@ namespace Mengine
         FilePath accountsPath = CONFIG_VALUE( "Game", "AccountsPath", STRINGIZE_FILEPATH_LOCAL( "accounts.ini" ) );
 
         OutputStreamInterfacePtr file = FILE_SERVICE()
-            ->openOutputFile( m_fileGroup, accountsPath );
+            ->openOutputFile( m_fileGroup, accountsPath, MENGINE_DOCUMENT_FUNCTION );
 
         if( file == nullptr )
         {

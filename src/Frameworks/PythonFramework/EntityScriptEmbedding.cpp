@@ -16,6 +16,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "pybind/pybind.hpp"
 
@@ -41,7 +42,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         bool s_addPrototypeFinder( const ConstString & _category, const ConstString & _prototype, const pybind::object & _generator )
         {
-            EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject();
+            EntityPrototypeGeneratorPtr generator = m_factoryEntityPrototypeGenerator->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             generator->setGenerator( _generator );
 
@@ -75,11 +76,11 @@ namespace Mengine
         const pybind::object & s_createEntity( const ConstString & _prototype )
         {
             EntityPtr entity = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Entity" ), _prototype, MENGINE_DOCUMENT_FUNCTION );
 
             if( entity == nullptr )
             {
-                LOGGER_ERROR( "Error: can't create Entity '%s'"
+                LOGGER_ERROR( "can't create entity '%s'"
                     , _prototype.c_str()
                 );
 
@@ -133,7 +134,7 @@ namespace Mengine
             (void)_kwds;
 
             EntityPtr entity = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Entity" ) );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Entity" ), MENGINE_DOCUMENT_FUNCTION );
 
             entity->setEmbed( _kernel, _obj );
 
@@ -175,7 +176,7 @@ namespace Mengine
             (void)_kwds;
 
             ArrowPtr arrow = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ) );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Arrow" ), MENGINE_DOCUMENT_FUNCTION );
 
             arrow->setEmbed( _kernel, _obj );
 
@@ -217,7 +218,7 @@ namespace Mengine
             (void)_kwds;
 
             ScenePtr scene = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), MENGINE_DOCUMENT_FUNCTION );
 
             scene->setEmbed( _kernel, _obj );
 

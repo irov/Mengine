@@ -4,6 +4,7 @@
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -77,7 +78,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceVideoValidator::_validate( const ResourceVideoPtr & _resource )
     {
-        VideoDecoderInterfacePtr decoder = _resource->createVideoDecoder();
+		VideoDecoderInterfacePtr decoder = _resource->createVideoDecoder( MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {

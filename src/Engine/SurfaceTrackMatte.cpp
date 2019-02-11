@@ -6,6 +6,7 @@
 #include "Kernel/ResourceImage.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -22,7 +23,7 @@ namespace Mengine
     bool SurfaceTrackMatte::_initialize()
     {
         m_programVariable = RENDER_SYSTEM()
-            ->createProgramVariable( 0, 1 );
+            ->createProgramVariable( 0, 1, MENGINE_DOCUMENT_FUNCTION );
 
         if( m_programVariable == nullptr )
         {

@@ -21,6 +21,7 @@
 #include "Kernel/AssertionVocabulary.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "pybind/debug.hpp"
 
@@ -580,7 +581,7 @@ namespace Mengine
         }
         catch( ... )
         {
-            LOGGER_ERROR( "ScriptService: invalid import module '%s'(c-exception)"
+            LOGGER_ERROR( "invalid import module '%s'(c-exception)"
                 , _name.c_str()
             );
 
@@ -589,7 +590,7 @@ namespace Mengine
 
         if( exist == false )
         {
-            LOGGER_WARNING( "ScriptService: invalid import module '%s'(not exist)"
+            LOGGER_WARNING( "invalid import module '%s'(not exist)"
                 , _name.c_str()
             );
 
@@ -598,18 +599,18 @@ namespace Mengine
 
         if( py_module == nullptr )
         {
-            LOGGER_ERROR( "ScriptService: invalid import module '%s'(script)"
+            LOGGER_ERROR( "invalid import module '%s'(script)"
                 , _name.c_str()
             );
 
             return nullptr;
         }
 
-        ScriptModulePtr module = m_factoryScriptModule->createObject();
+		ScriptModulePtr module = m_factoryScriptModule->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( module->initialize( pybind::module( m_kernel, py_module ) ) == false )
         {
-            LOGGER_ERROR( "ScriptService: invalid import initialize '%s'(script)"
+            LOGGER_ERROR( "invalid import initialize '%s'(script)"
                 , _name.c_str()
             );
 

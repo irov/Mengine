@@ -10,6 +10,7 @@
 #include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "stdex/allocator.h"
 
@@ -142,11 +143,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadJobPtr ThreadService::createJob( uint32_t _sleep )
     {
-        ThreadJobPtr threadJob = m_factoryThreadJob->createObject();
+		ThreadJobPtr threadJob = m_factoryThreadJob->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( threadJob->initialize( _sleep ) == false )
         {
-            LOGGER_ERROR( "ThreadService::createJob invalid create"
+            LOGGER_ERROR( "invalid create"
             );
 
             return nullptr;
@@ -324,7 +325,7 @@ namespace Mengine
             return nullptr;
         }
 
-        ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject();
+		ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         taskQueue->setPacketSize( _packetSize );
 
@@ -478,7 +479,7 @@ namespace Mengine
         if( this->isAvailableService() == false )
         {
             ThreadMutexDummyPtr mutex_dummy =
-                m_factoryThreadMutexDummy->createObject();
+				m_factoryThreadMutexDummy->createObject( MENGINE_DOCUMENT( "file %s[%d]", _file, _line ) );
 
             return mutex_dummy;
         }

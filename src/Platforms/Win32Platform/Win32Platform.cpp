@@ -13,6 +13,7 @@
 
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/AssertionMemoryPanic.h"
@@ -1318,11 +1319,11 @@ namespace Mengine
                 ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
             OutputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openOutputFile( fileGroup, c_icoFile );
+                ->openOutputFile( fileGroup, c_icoFile, MENGINE_DOCUMENT_FUNCTION );
 
             if( stream == nullptr )
             {
-                LOGGER_ERROR( "Win32Platform::notifyCursorIconSetup name %s path %s can't open output stream '%s'"
+                LOGGER_ERROR( "name '%s' path '%s' can't open output stream '%s'"
                     , _name.c_str()
                     , _path.c_str()
                     , c_icoFile.c_str()
@@ -1336,7 +1337,7 @@ namespace Mengine
 
             if( stream->write( memory, size ) == false )
             {
-                LOGGER_ERROR( "Win32Platform::notifyCursorIconSetup name %s path %s can't write output stream '%s'"
+                LOGGER_ERROR( "name %s path %s can't write output stream '%s'"
                     , _name.c_str()
                     , _path.c_str()
                     , c_icoFile.c_str()
@@ -1351,7 +1352,7 @@ namespace Mengine
             WString unicode_icoFile;
             if( Helper::utf8ToUnicode( c_icoFile, unicode_icoFile ) == false )
             {
-                LOGGER_ERROR( "Win32Platform::notifyCursorIconSetup name %s path %s can't file name '%s' to unicode"
+                LOGGER_ERROR( "name %s path %s can't file name '%s' to unicode"
                     , _name.c_str()
                     , _path.c_str()
                     , c_icoFile.c_str()
@@ -1918,7 +1919,8 @@ namespace Mengine
             , _dynamicLibraryName
         );
 
-        Win32DynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries->createObject();
+        Win32DynamicLibraryPtr dynamicLibrary = m_factoryDynamicLibraries
+			->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( dynamicLibrary, nullptr );
 

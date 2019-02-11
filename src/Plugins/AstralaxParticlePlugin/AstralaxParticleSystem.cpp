@@ -10,6 +10,7 @@
 
 #include "Kernel/String.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ParticleSystem, Mengine::AstralaxParticleSystem );
@@ -93,14 +94,14 @@ namespace Mengine
         m_factoryPoolAstralaxEmitter = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator, const ConstString & _whoName )
+    AstralaxEmitterContainerInterfacePtr AstralaxParticleSystem::createEmitterContainerFromMemory( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ArchivatorInterfacePtr & _archivator, const Char * _doc )
     {
-        AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject();
+		AstralaxEmitterContainer2Ptr container = m_factoryPoolAstralaxEmitterContainer->createObject( _doc );
 
         if( container == nullptr )
         {
-            LOGGER_ERROR( "'%s' invalid create container"
-                , _whoName.c_str()
+            LOGGER_ERROR( "invalid create container doc '%s'"
+                , _doc
             );
 
             return nullptr;
@@ -108,8 +109,8 @@ namespace Mengine
 
         if( container->initialize( _fileGroup, _fileName, _archivator ) == false )
         {
-            LOGGER_ERROR( "'%s' invalid initialize container"
-                , _whoName.c_str()
+            LOGGER_ERROR( "invalid initialize container doc '%s'"
+                , _doc
             );
 
             return nullptr;
@@ -122,9 +123,11 @@ namespace Mengine
         if( it_found == m_containers.end() )
         {
             AstralaxEmitterContainerDesc new_desc;
-            new_desc.reference = 0;
-            new_desc.who = _whoName;
+            new_desc.reference = 0;            
             new_desc.container = container.get();
+#ifndef NDEBUG
+			new_desc.doc = _doc;
+#endif
 
             it_found = m_containers.emplace( id, new_desc ).first;
         }
@@ -132,10 +135,12 @@ namespace Mengine
         {
             container->finalize();
 
-            LOGGER_PERFORMANCE( "AstralaxParticleSystem::createEmitterContainerFromMemory '%s' useless load container original is '%s'"
-                , _whoName.c_str()
-                , it_found->second.who.c_str()
+#ifndef NDEBUG
+            LOGGER_PERFORMANCE( "useless load container '%s' original is '%s'"
+                , _doc
+                , it_found->second.doc.c_str()
             );
+#endif
         }
 
         AstralaxEmitterContainerDesc & desc = it_found->second;
@@ -146,9 +151,9 @@ namespace Mengine
         return new_container;
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterInterfacePtr AstralaxParticleSystem::createEmitter( const AstralaxEmitterContainerInterfacePtr & _container )
+    AstralaxEmitterInterfacePtr AstralaxParticleSystem::createEmitter( const AstralaxEmitterContainerInterfacePtr & _container, const Char * _doc )
     {
-        AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject();
+		AstralaxEmitter2Ptr emitter = m_factoryPoolAstralaxEmitter->createObject( _doc );
 
         if( emitter->initialize( this, _container ) == false )
         {
@@ -298,7 +303,7 @@ namespace Mengine
             }
 
             RenderProgramInterfacePtr program = RENDER_SYSTEM()
-                ->createProgram( STRINGIZE_STRING_LOCAL( "AstralaxProgram" ), vertexShader, fragmentShader, vertexAttribute, m.textures );
+                ->createProgram( STRINGIZE_STRING_LOCAL( "AstralaxProgram" ), vertexShader, fragmentShader, vertexAttribute, m.textures, MENGINE_DOCUMENT_FUNCTION );
 
             if( program == nullptr )
             {

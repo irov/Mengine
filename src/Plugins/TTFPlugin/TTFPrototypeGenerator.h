@@ -25,7 +25,7 @@ namespace Mengine
         FactoryPtr _initializeFactory() override;
 
     public:
-        FactorablePointer generate() override;
+        FactorablePointer generate( const Char * _doc ) override;
 
     protected:
         FT_Library m_ftlibrary;

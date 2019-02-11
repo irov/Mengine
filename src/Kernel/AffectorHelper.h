@@ -3,11 +3,10 @@
 #include "Config/Lambda.h"
 
 #include "Kernel/Affector.h"
-
 #include "Kernel/Factory.h"
 #include "Kernel/FactoryPool.h"
-
 #include "Kernel/ValueInterpolator.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -251,7 +250,7 @@ namespace Mengine
                 , const LambdaType & _lambda
                 , const T & _pos, const T & _dir, float _speed )
             {
-                AffectorTypePtr affector = m_factory->createObject();
+                AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
                 affector->setAffectorType( _type );
 
@@ -294,7 +293,7 @@ namespace Mengine
                 , const LambdaSettuper & _lambda
                 , const T & _start, const T & _end, float _time )
             {
-                AffectorTypePtr affector = m_factory->createObject();
+                AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
                 affector->setAffectorType( _type );
 
@@ -337,7 +336,7 @@ namespace Mengine
                 , const LambdaSettuper & _lambda
                 , const T & _start, const T & _end, const T & _v0, float _time )
             {
-                AffectorTypePtr affector = m_factory->createObject();
+                AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
                 affector->setAffectorType( _type );
 
@@ -383,7 +382,7 @@ namespace Mengine
                 , const LambdaSettuper & _settuper, const LambdaGetter & _getterFrom, const LambdaGetter & _getterTo, const LambdaPoints & _points
                 , float _time )
             {
-                AffectorTypePtr affector = m_factory->createObject();
+                AffectorTypePtr affector = m_factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
                 affector->setAffectorType( _type );
 

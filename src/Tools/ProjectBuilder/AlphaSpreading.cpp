@@ -15,6 +15,7 @@
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -37,7 +38,7 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         InputStreamInterfacePtr input_stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, inputFileName, false );
+            ->openInputFile( fileGroup, inputFileName, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( input_stream == nullptr )
         {
@@ -51,7 +52,7 @@ namespace Mengine
         ConstString codec = Helper::stringizeString( "pngImage" );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( codec );
+            ->createDecoderT<ImageDecoderInterfacePtr>( codec, MENGINE_DOCUMENT_FUNCTION );
 
         if( imageDecoder == nullptr )
         {
@@ -87,7 +88,7 @@ namespace Mengine
         uint32_t bufferSize = width * height * channels;
 
         MemoryBufferInterfacePtr memory_textureBuffer = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( memory_textureBuffer == nullptr )
         {
@@ -172,7 +173,7 @@ namespace Mengine
         }
 
         OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-            ->openOutputFile( fileGroup, outputFileName );
+            ->openOutputFile( fileGroup, outputFileName, MENGINE_DOCUMENT_FUNCTION );
 
         if( output_stream == nullptr )
         {
@@ -184,7 +185,7 @@ namespace Mengine
         }
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
-            ->createEncoderT<ImageEncoderInterfacePtr>( codec );
+            ->createEncoderT<ImageEncoderInterfacePtr>( codec, MENGINE_DOCUMENT_FUNCTION );
 
         if( imageEncoder == nullptr )
         {

@@ -45,7 +45,7 @@ namespace Mengine
         m_moduleFactory.remove( _moduleName );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool ModuleService::runModule( const ConstString & _moduleName )
+    bool ModuleService::runModule( const ConstString & _moduleName, const Char * _doc )
     {
         if( this->findModule( _moduleName ) != nullptr )
         {
@@ -59,7 +59,7 @@ namespace Mengine
             return false;
         }
 
-        ModuleInterfacePtr module = factory->createModule( _moduleName );
+        ModuleInterfacePtr module = factory->createModule( _moduleName, _doc );
 
         if( module->initializeModule() == false )
         {

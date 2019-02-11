@@ -17,6 +17,7 @@
 #include "Kernel/MemoryAllocator.h"
 #include "Kernel/IniUtil.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "utf8.h"
 
@@ -103,7 +104,7 @@ namespace Mengine
         {
             DataflowInterfacePtr dataflowFE = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
-            FEDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfFEPath, dataflowFE );
+            FEDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FUNCTION );
 
             if( data == nullptr )
             {
@@ -134,7 +135,7 @@ namespace Mengine
         {
             DataflowInterfacePtr dataflowFE = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "feFont" ) );
 
-            FEDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfFEPath, dataflowFE );
+            FEDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfFEPath, dataflowFE, MENGINE_DOCUMENT_FUNCTION );
 
             if( data == nullptr )
             {
@@ -183,7 +184,7 @@ namespace Mengine
 
         DataflowInterfacePtr dataflowTTF = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), STRINGIZE_STRING_LOCAL( "ttfFont" ) );
 
-        TTFDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfPath, dataflowTTF );
+        TTFDataInterfacePtr data = Helper::getDataflow( m_fileGroup, m_ttfPath, dataflowTTF, MENGINE_DOCUMENT_FUNCTION );
 
         if( data == nullptr )
         {

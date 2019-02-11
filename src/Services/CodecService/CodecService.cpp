@@ -48,25 +48,27 @@ namespace Mengine
         return remove_encoder;
     }
     //////////////////////////////////////////////////////////////////////////
-    DecoderInterfacePtr CodecService::createDecoder( const ConstString& _type )
+    DecoderInterfacePtr CodecService::createDecoder( const ConstString & _type, const Char * _doc )
     {
         const DecoderFactoryInterfacePtr & factory = m_factorDecoders.find( _type );
 
         if( factory == nullptr )
         {
-            LOGGER_ERROR( "not found codec '%s'"
+            LOGGER_ERROR( "not found codec '%s' doc '%s'"
                 , _type.c_str()
+				, _doc
             );
 
             return nullptr;
         }
 
-        DecoderInterfacePtr decoder = factory->createDecoder();
+		DecoderInterfacePtr decoder = factory->createDecoder( _doc );
 
         if( decoder->initialize() == false )
         {
-            LOGGER_ERROR( "invalid initialize codec '%s'"
+            LOGGER_ERROR( "invalid initialize codec '%s' doc '%s'"
                 , _type.c_str()
+				, _doc
             );
 
             return nullptr;
@@ -75,20 +77,21 @@ namespace Mengine
         return decoder;
     }
     //////////////////////////////////////////////////////////////////////////
-    EncoderInterfacePtr CodecService::createEncoder( const ConstString& _type )
+    EncoderInterfacePtr CodecService::createEncoder( const ConstString& _type, const Char * _doc )
     {
         const EncoderFactoryInterfacePtr & factory = m_factorEncoders.find( _type );
 
         if( factory == nullptr )
         {
-            LOGGER_ERROR( "not found codec '%s'"
+            LOGGER_ERROR( "not found codec '%s' doc '%s'"
                 , _type.c_str()
+				, _doc
             );
 
             return nullptr;
         }
 
-        EncoderInterfacePtr encoder = factory->createEncoder();
+		EncoderInterfacePtr encoder = factory->createEncoder( _doc );
 
         return encoder;
     }

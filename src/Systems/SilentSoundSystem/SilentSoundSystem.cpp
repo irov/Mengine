@@ -2,9 +2,8 @@
 
 #include "Interface/EnumeratorServiceInterface.h"
 
-#include "Config/Config.h"
 #include "Kernel/Logger.h"
-
+#include "Kernel/Document.h"
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
@@ -61,7 +60,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundSourceInterfacePtr SilentSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
     {
-        SilentSoundSourcePtr soundSource = m_factorySilentSoundSource->createObject();
+		SilentSoundSourcePtr soundSource = m_factorySilentSoundSource->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         soundSource->initialize( this );
 
@@ -73,11 +72,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundBufferInterfacePtr SilentSoundSystem::createSoundBuffer( const SoundDecoderInterfacePtr & _soundDecoder, bool _streamable )
     {
-        SilentSoundBufferPtr buffer = m_factorySilentSoundBuffer->createObject();
+		SilentSoundBufferPtr buffer = m_factorySilentSoundBuffer->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( buffer->load( _soundDecoder, _streamable ) == false )
         {
-            LOGGER_ERROR( "SilentSoundSystem::createSoundBuffer: failed to load sound buffer from decoder"
+            LOGGER_ERROR( "failed to load sound buffer from decoder"
             );
 
             return nullptr;

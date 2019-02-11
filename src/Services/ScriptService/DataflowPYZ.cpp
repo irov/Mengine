@@ -1,4 +1,4 @@
-#include "DataflowPYC.h"
+#include "DataflowPYZ.h"
 
 #include "Interface/ScriptServiceInterface.h"
 
@@ -14,51 +14,51 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
-    DataflowPYC::DataflowPYC()
+    DataflowPYZ::DataflowPYZ()
         : m_kernel( nullptr )
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    DataflowPYC::~DataflowPYC()
+    DataflowPYZ::~DataflowPYZ()
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void DataflowPYC::setKernel( pybind::kernel_interface * _kernel )
+    void DataflowPYZ::setKernel( pybind::kernel_interface * _kernel )
     {
         m_kernel = _kernel;
     }
     //////////////////////////////////////////////////////////////////////////
-    pybind::kernel_interface * DataflowPYC::getKernel() const
+    pybind::kernel_interface * DataflowPYZ::getKernel() const
     {
         return m_kernel;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DataflowPYC::setArchivator( const ArchivatorInterfacePtr & _archivator )
+    void DataflowPYZ::setArchivator( const ArchivatorInterfacePtr & _archivator )
     {
         m_archivator = _archivator;
     }
     //////////////////////////////////////////////////////////////////////////
-    const ArchivatorInterfacePtr & DataflowPYC::getArchivator() const
+    const ArchivatorInterfacePtr & DataflowPYZ::getArchivator() const
     {
         return m_archivator;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowPYC::initialize()
+    bool DataflowPYZ::initialize()
     {
         m_factoryScriptCodeData = new FactoryPool<ScriptCodeData, 128>();
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void DataflowPYC::finalize()
+    void DataflowPYZ::finalize()
     {
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptCodeData );
         m_factoryScriptCodeData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr DataflowPYC::create()
+    DataInterfacePtr DataflowPYZ::create( const Char * _doc )
     {
-        ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject();
+		ScriptCodeDataPtr data = m_factoryScriptCodeData->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
 
@@ -76,13 +76,13 @@ namespace Mengine
         return x;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool DataflowPYC::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
+    bool DataflowPYZ::load( const DataInterfacePtr & _data, const InputStreamInterfacePtr & _stream, const Char * _doc )
     {
         MENGINE_UNUSED( _doc );
 
         ScriptCodeData * data = stdex::intrusive_get<ScriptCodeData *>( _data );
 
-        MemoryInterfacePtr source_memory = Helper::loadStreamCacheArchiveMemory( _stream, m_archivator, "DataflowPYC", __FILE__, __LINE__ );
+        MemoryInterfacePtr source_memory = Helper::loadStreamCacheArchiveMemory( _stream, m_archivator, "DataflowPYZ", __FILE__, __LINE__ );
 
         MENGINE_ASSERTION_MEMORY_PANIC( source_memory, false );
 

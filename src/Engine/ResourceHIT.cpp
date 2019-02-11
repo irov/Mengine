@@ -9,6 +9,7 @@
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <math.h>
 
@@ -33,11 +34,11 @@ namespace Mengine
         const FilePath & filePath = this->getFilePath();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, filePath, false );
+            ->openInputFile( fileGroup, filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "ResourceHIT::_compile: '%s' - hit file '%s' not found"
+            LOGGER_ERROR( "name '%s' - hit file '%s' not found"
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
             );
@@ -46,11 +47,11 @@ namespace Mengine
         }
 
         PickDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<PickDecoderInterfacePtr>( m_codecType );
+            ->createDecoderT<PickDecoderInterfacePtr>( m_codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {
-            LOGGER_ERROR( "ResourceHIT::_compile: '%s' - hit file '%s' invalid create decoder '%s'"
+            LOGGER_ERROR( "name '%s' - hit file '%s' invalid create decoder '%s'"
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
                 , this->getCodecType().c_str()
@@ -61,7 +62,7 @@ namespace Mengine
 
         if( decoder->prepareData( stream ) == false )
         {
-            LOGGER_ERROR( "ResourceHIT::_compile: '%s' - hit file '%s' invalid initialize decoder '%s'"
+            LOGGER_ERROR( "name '%s' - hit file '%s' invalid initialize decoder '%s'"
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
                 , this->getCodecType().c_str()
@@ -77,11 +78,11 @@ namespace Mengine
         m_mipmaplevel = dataInfo->mipmaplevel;
 
         MemoryBufferInterfacePtr mipmap = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+			->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( mipmap == nullptr )
         {
-            LOGGER_ERROR( "ResourceHIT::_compile: '%s' - hit file '%s' invalid create memory"
+            LOGGER_ERROR( "name '%s' - hit file '%s' invalid create memory"
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
             );
@@ -94,7 +95,7 @@ namespace Mengine
 
         if( buffer == nullptr )
         {
-            LOGGER_ERROR( "ResourceHIT::_compile: '%s' - hit file '%s' invalid new memory '%u'"
+            LOGGER_ERROR( "name '%s' - hit file '%s' invalid new memory '%u'"
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
                 , mipmapsize
@@ -107,7 +108,7 @@ namespace Mengine
 
         if( test_mipmapsize != mipmapsize )
         {
-            LOGGER_ERROR( "ResourceHIT::_compile %s invalid decode hit %s size %d (%d)"
+            LOGGER_ERROR( "name '%s' invalid decode hit '%s' size %d (%d)"
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
                 , (uint32_t)m_mipmapsize

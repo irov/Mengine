@@ -1,0 +1,1 @@
+@call build_depends_msvc15_x64_sdl.bat Debug

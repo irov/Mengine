@@ -27,11 +27,11 @@ namespace Mengine
     struct Landscape2DElement
     {
         ResourceImagePtr image;
-        RenderMaterialInterfacePtr material;
+        mutable RenderMaterialInterfacePtr material;
         uint32_t i;
         uint32_t j;
         mt::box2f bb;
-        mt::box2f bb_wm;
+        mutable mt::box2f bb_wm;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef Vector<Landscape2DElement> VectorLandscape2DElements;
@@ -56,18 +56,18 @@ namespace Mengine
         void _release() override;
 
     protected:
-        void _render( const RenderContext * _state ) override;
+        void render( const RenderContext * _state ) const override;
 
     protected:
         void _invalidateWorldMatrix() override;
 
     protected:
-        void updateVerticesWM_();
-        void updateElementWM_();
+        void updateVerticesWM_() const;
+        void updateElementWM_() const;
 
     protected:
-        inline const RenderVertex2D * getVerticesWM( uint32_t _offset );
-        inline VectorLandscape2DElements & getElementWM();
+        inline const RenderVertex2D * getVerticesWM( uint32_t _offset ) const;
+        inline const VectorLandscape2DElements & getElementWM() const;
 
     protected:
         bool compileResources_();
@@ -85,13 +85,13 @@ namespace Mengine
 
         VectorLandscape2DElements m_elements;
 
-        VectorRenderVertex2D m_verticesWM;
+        mutable VectorRenderVertex2D m_verticesWM;
 
         mutable bool m_invalidateVerticesWM;
         mutable bool m_invalidateElementWM;
     };
     //////////////////////////////////////////////////////////////////////////
-    inline const RenderVertex2D * Landscape2D::getVerticesWM( uint32_t _offset )
+    inline const RenderVertex2D * Landscape2D::getVerticesWM( uint32_t _offset ) const
     {
         if( m_invalidateVerticesWM == true )
         {
@@ -101,7 +101,7 @@ namespace Mengine
         return &m_verticesWM[_offset];
     }
     //////////////////////////////////////////////////////////////////////////
-    inline VectorLandscape2DElements & Landscape2D::getElementWM()
+    inline const VectorLandscape2DElements & Landscape2D::getElementWM() const
     {
         if( m_invalidateElementWM == true )
         {

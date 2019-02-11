@@ -1,0 +1,3 @@
+LIBRARY		"PosixSocketPlugin"
+EXPORTS 	
+	dllCreatePlugin 	@1

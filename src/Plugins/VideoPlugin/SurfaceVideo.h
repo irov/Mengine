@@ -42,8 +42,7 @@ namespace Mengine
 
     public:
         float getWidth() const;
-        float getHeight() const;
-        float getDuration() const;
+        float getHeight() const;        
 
     protected:
         bool _compile() override;
@@ -68,6 +67,7 @@ namespace Mengine
     protected:
         void _setTime( float _time ) override;
         float _getTime() const override;
+        float _getDuration() const;
 
         void _setFirstFrame() override;
         void _setLastFrame() override;

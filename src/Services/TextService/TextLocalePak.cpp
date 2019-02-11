@@ -5,6 +5,7 @@
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "stdex/xml_sax_parser.h"
 
@@ -25,7 +26,7 @@ namespace Mengine
         m_path = _path;
 
         InputStreamInterfacePtr xml_text = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _path, false );
+            ->openInputFile( _fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( xml_text == nullptr )
         {
@@ -40,7 +41,7 @@ namespace Mengine
         size_t xml_buffer_size = xml_text->size();
 
         m_memory = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+			->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         Char * memory_buffer = m_memory->newBuffer( xml_buffer_size + 1, "TextLocalePack", __FILE__, __LINE__ );
 

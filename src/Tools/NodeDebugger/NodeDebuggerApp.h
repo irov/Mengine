@@ -71,36 +71,46 @@ namespace Mengine
 
     struct NodeRender
     {
-        bool    rendering;
+        bool    enable;
         bool    hide;
-        Color   color;
+        Color   local_color;
+        Color   personal_color;
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
             SERIALIZE_PROP( hide );
-            SERIALIZE_PROP( color );
+            SERIALIZE_PROP( local_color );
+            SERIALIZE_PROP( personal_color );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
         {
-            DESERIALIZE_PROP( rendering );
+            DESERIALIZE_PROP( enable );
             DESERIALIZE_PROP( hide );
-            DESERIALIZE_PROP( color );
+            DESERIALIZE_PROP( local_color );
+            DESERIALIZE_PROP( personal_color );
         }
     };
 
     struct NodeAnimation
     {
         bool loop;
+        bool play;
+        bool pause;
+        float duration;
+        float time;
 
         void serialize( pugi::xml_node & _xmlNode ) const
         {
-            SERIALIZE_PROP( loop );
+            SERIALIZE_PROP( loop );            
+            SERIALIZE_PROP( time );
         }
 
         void deserialize( const pugi::xml_node & _xmlNode )
         {
             DESERIALIZE_PROP( loop );
+            DESERIALIZE_PROP( duration );
+            DESERIALIZE_PROP( time );
         }
     };
 
@@ -190,6 +200,23 @@ namespace Mengine
         }
     };
 
+    struct NodeMovie2
+    {
+        String CompositionName;
+        String TextAliasEnvironment;        
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+            SERIALIZE_PROP( TextAliasEnvironment );
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( CompositionName );
+            DESERIALIZE_PROP( TextAliasEnvironment );
+        }
+    };
+
     struct CachedImage
     {
         String      name;
@@ -236,11 +263,27 @@ namespace Mengine
         bool                    isTypeTextField;
         NodeTextField           textField;
 
+        bool                    isTypeMovie2;
+        NodeMovie2           movie2;
+
         Vector<DebuggerNode*>   children;
         DebuggerNode*           parent;
 
         bool                    dirty;
         const NodeIcon*         icon;
+
+        void serialize( pugi::xml_node & _xmlNode ) const
+        {
+            SERIALIZE_PROP( enable );
+        }
+
+        void deserialize( const pugi::xml_node & _xmlNode )
+        {
+            DESERIALIZE_PROP( uid );
+            DESERIALIZE_PROP( name );
+            DESERIALIZE_PROP( type );
+            DESERIALIZE_PROP( enable );
+        }
     };
 
     struct TabDescriptor

@@ -82,7 +82,7 @@ namespace Mengine
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieSlot::_render( const RenderContext * _context )
+    void MovieSlot::render( const RenderContext * _context ) const
     {
         (void)_context;
 

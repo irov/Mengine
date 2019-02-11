@@ -69,9 +69,9 @@ namespace Mengine
         m_verticesWM.clear();
     }
     //////////////////////////////////////////////////////////////////////////
-    void Landscape2D::_render( const RenderContext * _state )
+    void Landscape2D::render( const RenderContext * _state ) const
     {
-        VectorLandscape2DElements & elementsWM = this->getElementWM();
+        const VectorLandscape2DElements & elementsWM = this->getElementWM();
 
         mt::vec2f min_screen( 0.f, 0.f );
         mt::vec2f max_screen( 1.f, 1.f );
@@ -80,7 +80,7 @@ namespace Mengine
 
         const mt::mat4f & vpm = camera->getCameraViewProjectionMatrix();
 
-        for( Landscape2DElement & el : elementsWM )
+        for( const Landscape2DElement & el : elementsWM )
         {
             mt::vec2f v_wvp_minimum;
             mt::mul_v2_v2_m4_homogenize( v_wvp_minimum, el.bb_wm.minimum, vpm );
@@ -220,7 +220,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Landscape2D::updateVerticesWM_()
+    void Landscape2D::updateVerticesWM_() const
     {
         m_invalidateVerticesWM = false;
 
@@ -231,7 +231,7 @@ namespace Mengine
 
         uint32_t vertex_offset = 0;
 
-        for( Landscape2DElement & el : m_elements )
+        for( const Landscape2DElement & el : m_elements )
         {
             const mt::uv4f & uv_image = el.image->getUVTextureImage();
             const mt::uv4f & uv_alpha = el.image->getUVTextureAlpha();
@@ -257,13 +257,13 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void Landscape2D::updateElementWM_()
+    void Landscape2D::updateElementWM_() const
     {
         m_invalidateElementWM = false;
 
         const mt::mat4f & wm = this->getWorldMatrix();
 
-        for( Landscape2DElement & el : m_elements )
+        for( const Landscape2DElement & el : m_elements )
         {
             mt::mul_v2_v2_m4( el.bb_wm.minimum, el.bb.minimum, wm );
             mt::mul_v2_v2_m4( el.bb_wm.maximum, el.bb.maximum, wm );

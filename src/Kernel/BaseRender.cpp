@@ -26,6 +26,7 @@ namespace Mengine
     void BaseRender::setRelationRender( RenderInterface * _relationRender )
     {
         MENGINE_ASSERTION( _relationRender != nullptr, ("set nullptr relation render") );
+        MENGINE_ASSERTION( _relationRender != this, ("set this relation render") );
 
         if( m_relationRender != nullptr )
         {
@@ -34,7 +35,26 @@ namespace Mengine
 
         m_relationRender = static_cast<BaseRender *>(_relationRender);
 
-        m_relationRender->addRelationRenderChildren_( this );
+        m_relationRender->addRelationRenderChildrenBack_( this );
+
+        this->invalidateColor();
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::setRelationRenderFront( RenderInterface * _relationRender )
+    {
+        MENGINE_ASSERTION( _relationRender != nullptr, ("set nullptr relation render") );
+        MENGINE_ASSERTION( _relationRender != this, ("set this relation render") );
+
+        if( m_relationRender != nullptr )
+        {
+            m_relationRender->removeRelationRenderChildren_( this );
+        }
+
+        m_relationRender = static_cast<BaseRender *>(_relationRender);
+
+        m_relationRender->addRelationRenderChildrenFront_( this );
+
+        this->invalidateColor();
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::removeRelationRender()
@@ -46,6 +66,40 @@ namespace Mengine
 
         m_relationRender->removeRelationRenderChildren_( this );
         m_relationRender = nullptr;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::moveRelationRenderFront( RenderInterface * _childRender )
+    {
+        MENGINE_ASSERTION( m_relationRenderChildren.empty() == false, ("move child is empty") );
+
+        BaseRender * childRender = static_cast<BaseRender *>(_childRender);
+
+        BaseRender * frontRender = m_relationRenderChildren.front();
+
+        if( frontRender == childRender )
+        {
+            return;
+        }
+
+        this->removeRelationRenderChildren_( childRender );
+        this->addRelationRenderChildrenFront_( childRender );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::moveRelationRenderBack( RenderInterface * _childRender )
+    {
+        MENGINE_ASSERTION( m_relationRenderChildren.empty() == false, ("move child is empty") );
+
+        BaseRender * childRender = static_cast<BaseRender *>(_childRender);
+
+        BaseRender * backRender = m_relationRenderChildren.back();
+
+        if( backRender == childRender )
+        {
+            return;
+        }
+
+        this->removeRelationRenderChildren_( childRender );
+        this->addRelationRenderChildrenBack_( childRender );
     }
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::foreachChildren( const LambdaRender & _lambda )
@@ -79,7 +133,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::_setHide( bool _hide )
     {
-        (void)_hide;
+        MENGINE_UNUSED( _hide );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
@@ -99,18 +154,24 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::_setLocalHide( bool _localHide )
     {
-        (void)_localHide;
+        MENGINE_UNUSED( _localHide );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::addRelationRenderChildren_( BaseRender * _child )
+    void BaseRender::addRelationRenderChildrenBack_( BaseRender * _childRender )
     {
-        m_relationRenderChildren.push_back( _child );
+        m_relationRenderChildren.push_back( _childRender );
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::removeRelationRenderChildren_( BaseRender * _child )
+    void BaseRender::addRelationRenderChildrenFront_( BaseRender * _childRender )
     {
-        VectorBaseRender::iterator it_erase = std::find( m_relationRenderChildren.begin(), m_relationRenderChildren.end(), _child );
+        m_relationRenderChildren.insert( m_relationRenderChildren.begin(), _childRender );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void BaseRender::removeRelationRenderChildren_( BaseRender * _childRender )
+    {
+        VectorBaseRender::iterator it_erase = std::find( m_relationRenderChildren.begin(), m_relationRenderChildren.end(), _childRender );
 
         MENGINE_ASSERTION( it_erase != m_relationRenderChildren.end(), ("remove relation child is not found") );
 
@@ -157,75 +218,31 @@ namespace Mengine
         return m_renderTarget;
     }
     //////////////////////////////////////////////////////////////////////////
-    void BaseRender::render( const RenderContext * _context )
+    void BaseRender::renderWithChildren( const RenderContext * _context, bool _external ) const
     {
-        this->_render( _context );
-    }
-    //////////////////////////////////////////////////////////////////////////
-    void BaseRender::renderWithChildren( const RenderContext * _context, bool _external )
-    {
-        if( this->isRendering() == false )
+        if( m_rendering == false )
         {
             return;
         }
 
-        if( this->isExternalRender() == true && _external == false )
+        if( m_externalRender == true && _external == false )
         {
             return;
         }
 
         RenderContext context;
 
-        const RenderViewportInterfacePtr & renderViewport = this->getRenderViewport();
+        context.viewport = m_renderViewport != nullptr ? m_renderViewport : _context->viewport;
+        context.camera = m_renderCamera != nullptr ? m_renderCamera : _context->camera;
+        context.scissor = m_renderScissor != nullptr ? m_renderScissor : _context->scissor;
+        context.target = m_renderTarget != nullptr ? m_renderTarget : _context->target;
 
-        if( renderViewport != nullptr )
-        {
-            context.viewport = renderViewport;
-        }
-        else
-        {
-            context.viewport = _context->viewport;
-        }
-
-        const RenderCameraInterfacePtr & renderCamera = this->getRenderCamera();
-
-        if( renderCamera != nullptr )
-        {
-            context.camera = renderCamera;
-        }
-        else
-        {
-            context.camera = _context->camera;
-        }
-
-        const RenderScissorInterfacePtr & renderScissor = this->getRenderScissor();
-
-        if( renderScissor != nullptr )
-        {
-            context.scissor = renderScissor;
-        }
-        else
-        {
-            context.scissor = _context->scissor;
-        }
-
-        const RenderTargetInterfacePtr & renderTarget = this->getRenderTarget();
-
-        if( renderTarget != nullptr )
-        {
-            context.target = renderTarget;
-        }
-        else
-        {
-            context.target = _context->target;
-        }
-
-        if( this->isLocalHide() == false && this->isPersonalTransparent() == false )
+        if( m_localHide == false && this->isPersonalTransparent() == false )
         {
             this->render( &context );
         }
 
-        for( BaseRender * child : m_relationRenderChildren )
+        for( const BaseRender * child : m_relationRenderChildren )
         {
             child->renderWithChildren( &context, false );
         }
@@ -241,16 +258,9 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    const RenderInterfacePtr & BaseRender::makeTargetRender( const RenderContext * _context )
+    const RenderInterfacePtr & BaseRender::makeTargetRender( const RenderContext * _context ) const
     {
-        const RenderInterfacePtr & render = this->_makeTargetRender( _context );
-
-        return render;
-    }
-    //////////////////////////////////////////////////////////////////////////
-    const RenderInterfacePtr & BaseRender::_makeTargetRender( const RenderContext * _context )
-    {
-        (void)_context;
+        MENGINE_UNUSED( _context );
 
         return RenderInterfacePtr::none();
     }
@@ -269,7 +279,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void BaseRender::_setExternalRender( bool _externalRender )
     {
-        (void)_externalRender;
+        MENGINE_UNUSED( _externalRender );
+
         //Empty
     }
     //////////////////////////////////////////////////////////////////////////

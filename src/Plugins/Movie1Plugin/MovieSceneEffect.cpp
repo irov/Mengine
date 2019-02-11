@@ -108,7 +108,7 @@ namespace Mengine
         m_propagate->setTransformation( transformationFlag, position, origin, scale, skew, rotation );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieSceneEffect::_render( const RenderContext * _context )
+    void MovieSceneEffect::render( const RenderContext * _context ) const
     {
         (void)_context;
 

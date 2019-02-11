@@ -10,6 +10,7 @@
 #include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <algorithm>
 
@@ -34,14 +35,14 @@ namespace Mengine
         return m_dataflowPY;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ScriptModuleFinder::setDataflowPYC( const DataflowInterfacePtr & _dataflowPYC )
+    void ScriptModuleFinder::setDataflowPYZ( const DataflowInterfacePtr & _dataflowPYZ )
     {
-        m_dataflowPYC = _dataflowPYC;
+        m_dataflowPYZ = _dataflowPYZ;
     }
     //////////////////////////////////////////////////////////////////////////
-    const DataflowInterfacePtr & ScriptModuleFinder::getDataflowPYC() const
+    const DataflowInterfacePtr & ScriptModuleFinder::getDataflowPYZ() const
     {
-        return m_dataflowPYC;
+        return m_dataflowPYZ;
     }
     //////////////////////////////////////////////////////////////////////////
     bool ScriptModuleFinder::initialize()
@@ -53,6 +54,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void ScriptModuleFinder::finalize()
     {
+        m_dataflowPY = nullptr;
+        m_dataflowPYZ = nullptr;
+
         m_embed = nullptr;
 
         MENGINE_ASSERTION_FACTORY_EMPTY( m_factoryScriptModuleLoader );
@@ -88,7 +92,7 @@ namespace Mengine
 
 #ifndef MENGINE_MASTER_RELEASE
         {
-            ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject();
+            ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             loader->setDataflow( m_dataflowPY );
             loader->setModule( _kernel, _module );
@@ -103,9 +107,9 @@ namespace Mengine
 #endif
 
         {
-            ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject();
+			ScriptModuleLoaderPtr loader = m_factoryScriptModuleLoader->createObject( MENGINE_DOCUMENT_FUNCTION );
 
-            loader->setDataflow( m_dataflowPYC );
+            loader->setDataflow( m_dataflowPYZ );
             loader->setModule( _kernel, _module );
 
             if( this->find_module_code_( _kernel, _module, loader ) == true )

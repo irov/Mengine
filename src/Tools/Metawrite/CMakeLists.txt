@@ -5,8 +5,6 @@ src
     Metawrite.cpp
 )
 
-add_definitions(-DUNICODE)
-
 INCLUDE_DIRECTORIES( 
     ${THIRDPARTY_DIR}/tiniini/include
     ${THIRDPARTY_DIR}/libmath/include

@@ -5,6 +5,7 @@
 #include "OpenGLRenderError.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -217,7 +218,7 @@ namespace Mengine
         size_t size = Helper::getTextureMemorySize( miplevel_width, miplevel_height, m_hwChannels, 1, m_hwPixelFormat );
 
         MemoryBufferInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( memory == nullptr )
         {

@@ -157,7 +157,7 @@ namespace Mengine
         this->setHide( _hide );
     }
     //////////////////////////////////////////////////////////////////////////
-    void MovieInternalObject::_render( const RenderContext * _context )
+    void MovieInternalObject::render( const RenderContext * _context ) const
     {
         (void)_context;
 

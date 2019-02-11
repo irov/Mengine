@@ -35,11 +35,6 @@ namespace Mengine
         m_duration = _duration;
     }
     //////////////////////////////////////////////////////////////////////////
-    float Movie2SubComposition::getDuration() const
-    {
-        return m_duration;
-    }
-    //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::setFrameDuration( float _frameDuration )
     {
         m_frameDuration = _frameDuration;
@@ -241,6 +236,11 @@ namespace Mengine
         float timing = ae_get_movie_sub_composition_time( m_subcomposition );
 
         return AE_TIME_MILLISECOND( timing );
+    }
+    //////////////////////////////////////////////////////////////////////////
+    float Movie2SubComposition::_getDuration() const
+    {
+        return m_duration;
     }
     //////////////////////////////////////////////////////////////////////////
     void Movie2SubComposition::_setFirstFrame()

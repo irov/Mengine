@@ -13,17 +13,18 @@ namespace Mengine
         : public ScriptablePrototypeGenerator<Type, Count>
     {
     protected:
-        FactorablePointer generate() override
+        FactorablePointer generate( const Char * _doc ) override
         {
             const FactoryPtr & factory = this->getFactory();
 
-            ResourcePtr resource = factory->createObject();
+            ResourcePtr resource = factory->createObject( _doc );
 
             if( resource == nullptr )
             {
-                LOGGER_ERROR( "can't generate %s %s"
+                LOGGER_ERROR( "can't generate '%s' '%s' doc '%s'"
                     , this->getCategory().c_str()
                     , this->getPrototype().c_str()
+					, _doc
                 );
 
                 return nullptr;

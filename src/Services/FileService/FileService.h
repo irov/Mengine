@@ -37,8 +37,8 @@ namespace Mengine
         const FileGroupInterfacePtr & getDefaultFileGroup() const override;
 
     public:
-        InputStreamInterfacePtr openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath& _fileName, bool _streaming ) override;
-        OutputStreamInterfacePtr openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath& _fileName ) override;
+        InputStreamInterfacePtr openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath& _fileName, bool _streaming, const Char * _doc ) override;
+        OutputStreamInterfacePtr openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath& _fileName, const Char * _doc ) override;
 
     private:
         FileGroupInterfacePtr m_defaultFileGroup;

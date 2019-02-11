@@ -5,6 +5,8 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
+#include "Kernel/Document.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -106,7 +108,7 @@ namespace Mengine
                 return;
             }
 
-            ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject();
+			ThreadTaskPacketPtr packet = m_factoryPoolTaskPacket->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             if( packet->initialize( m_packetSize ) == false )
             {

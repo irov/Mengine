@@ -21,8 +21,13 @@ namespace Mengine
 
     public:
         void setRelationRender( RenderInterface * _relationRender ) override;
+        void setRelationRenderFront( RenderInterface * _relationRender ) override;
         void removeRelationRender() override;
         inline BaseRender * getRelationRender() const override;
+
+    public:
+        void moveRelationRenderFront( RenderInterface * _childRender ) override;
+        void moveRelationRenderBack( RenderInterface * _childRender ) override;        
 
     public:
         void foreachChildren( const LambdaRender & _lambda ) override;
@@ -44,8 +49,9 @@ namespace Mengine
         virtual void _setLocalHide( bool _localHide );
 
     protected:
-        void addRelationRenderChildren_( BaseRender * _child );
-        void removeRelationRenderChildren_( BaseRender * _child );
+        void addRelationRenderChildrenBack_( BaseRender * _childRender );
+        void addRelationRenderChildrenFront_( BaseRender * _childRender );
+        void removeRelationRenderChildren_( BaseRender * _childRender );
 
     public:
         void setRenderViewport( const RenderViewportInterfacePtr & _viewport ) override;
@@ -64,17 +70,10 @@ namespace Mengine
         const RenderTargetInterfacePtr & getRenderTarget() const override;
 
     public:
-        void render( const RenderContext * _context ) override;
-        void renderWithChildren( const RenderContext * _context, bool _external ) override;
-
-    protected:
-        virtual void _render( const RenderContext * _context ) = 0;
+        void renderWithChildren( const RenderContext * _context, bool _external ) const override;
 
     public:
-        const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) override;
-
-    protected:
-        virtual const RenderInterfacePtr & _makeTargetRender( const RenderContext * _context );
+        const RenderInterfacePtr & makeTargetRender( const RenderContext * _context ) const override;
 
     public:
         void setExternalRender( bool _externalRender ) override;

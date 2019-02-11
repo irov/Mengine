@@ -9,6 +9,7 @@
 #include "Kernel/PixelFormat.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "stdex/xml_sax_parser.h"
 
@@ -398,7 +399,7 @@ namespace Mengine
     bool BitmapGlyph::initialize( const FileGroupInterfacePtr & _pak, const FilePath & _path )
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _pak, _path, false );
+            ->openInputFile( _pak, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

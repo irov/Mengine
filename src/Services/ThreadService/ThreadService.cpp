@@ -10,6 +10,7 @@
 #include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "stdex/allocator.h"
 
@@ -104,10 +105,7 @@ namespace Mengine
 
             const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
 
-            if( threadIdentity->completeTask() == false )
-            {
-                threadIdentity->join();
-            }
+			threadIdentity->removeTask();
         }
 
         m_tasks.clear();
@@ -119,9 +117,12 @@ namespace Mengine
 
         m_threadQueues.clear();
 
+        m_mainCodes.clear();
+
         for( ThreadDesc & desc : m_threads )
         {
             desc.identity->join();
+            desc.identity = nullptr;
         }
 
         m_threads.clear();
@@ -142,11 +143,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadJobPtr ThreadService::createJob( uint32_t _sleep )
     {
-        ThreadJobPtr threadJob = m_factoryThreadJob->createObject();
+		ThreadJobPtr threadJob = m_factoryThreadJob->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( threadJob->initialize( _sleep ) == false )
         {
-            LOGGER_ERROR( "ThreadService::createJob invalid create"
+            LOGGER_ERROR( "invalid create"
             );
 
             return nullptr;
@@ -199,7 +200,7 @@ namespace Mengine
                 continue;
             }
 
-            td.identity->completeTask();
+            td.identity->removeTask();
             td.identity->join();
 
             m_threads.erase( it );
@@ -255,6 +256,8 @@ namespace Mengine
 
         m_tasks.emplace_back( desc );
 
+        this->tryFastProcessTask_( desc );
+
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -286,18 +289,14 @@ namespace Mengine
 
             const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
 
-            bool successful = threadIdentity->completeTask();
+            threadIdentity->removeTask();
 
-            if( successful == false )
-            {
-                threadIdentity->join();
-                m_tasks.erase( it );
-            }
-
-            return successful;
+			m_tasks.erase( it );
+            
+            return true;
         }
 
-        return true;
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     void ThreadService::stopTasks()
@@ -315,10 +314,7 @@ namespace Mengine
 
             const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
 
-            if( threadIdentity->completeTask() == false )
-            {
-                threadIdentity->join();
-            }
+			threadIdentity->removeTask();
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -329,7 +325,7 @@ namespace Mengine
             return nullptr;
         }
 
-        ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject();
+		ThreadQueuePtr taskQueue = m_factoryThreadQueue->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         taskQueue->setPacketSize( _packetSize );
 
@@ -483,7 +479,7 @@ namespace Mengine
         if( this->isAvailableService() == false )
         {
             ThreadMutexDummyPtr mutex_dummy =
-                m_factoryThreadMutexDummy->createObject();
+				m_factoryThreadMutexDummy->createObject( MENGINE_DOCUMENT( "file %s[%d]", _file, _line ) );
 
             return mutex_dummy;
         }
@@ -529,5 +525,26 @@ namespace Mengine
         }
 
         return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadService::tryFastProcessTask_( ThreadTaskDesc & _desc )
+    {
+        for( ThreadDesc & desc_thread : m_threads )
+        {
+            if( desc_thread.name != _desc.threadName )
+            {
+                continue;
+            }
+
+            ThreadTaskInterface * task_ptr = _desc.task.get();
+
+            if( desc_thread.identity->processTask( task_ptr ) == true )
+            {
+                _desc.identity = desc_thread.identity;
+                _desc.progress = true;
+
+                break;
+            }
+        }
     }
 }

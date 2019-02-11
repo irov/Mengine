@@ -17,6 +17,7 @@
 #include "Kernel/Dataflow.h"
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "math/mat4.h"
 
@@ -208,7 +209,7 @@ namespace Mengine
 
         if( filePath.empty() == true )
         {
-            LOGGER_ERROR( "ResourceMovie::_compile: '%s' group '%s' don`t have Key Frames Pack Path"
+            LOGGER_ERROR( "'%s' group '%s' don`t have Key Frames Pack Path"
                 , this->getName().c_str()
                 , this->getGroupName().c_str()
             );
@@ -222,7 +223,7 @@ namespace Mengine
 
         DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
-        DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow );
+        DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, MENGINE_DOCUMENT_FUNCTION );
 
         if( data == nullptr )
         {

@@ -132,11 +132,11 @@ namespace Mengine
         return successful;
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadJob::removeWorker( uint32_t _id )
+    bool ThreadJob::removeWorker( uint32_t _id )
     {
         if( _id == 0 )
         {
-            return;
+            return false;
         }
 
         for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
@@ -148,8 +148,62 @@ namespace Mengine
                 continue;
             }
 
-            break;
+            return true;
         }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadJob::pauseWorker( uint32_t _id )
+    {
+        if( _id == 0 )
+        {
+            return false;
+        }
+
+        for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+        {
+            ThreadJobWorkerDesc & desc = m_workers[i];
+
+            if( desc.id != _id )
+            {
+                continue;
+            }
+
+            desc.mutex->lock();
+            desc.status = ETS_PAUSE;
+            desc.mutex->unlock();
+
+            return true;
+        }
+
+        return false;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool ThreadJob::resumeWorker( uint32_t _id )
+    {
+        if( _id == 0 )
+        {
+            return false;
+        }
+
+        for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+        {
+            ThreadJobWorkerDesc & desc = m_workers[i];
+
+            if( desc.id != _id )
+            {
+                continue;
+            }
+
+            desc.mutex->lock();
+            desc.status = ETS_WORK;
+            desc.mutex->unlock();
+
+            return true;
+        }
+
+        return false;
     }
     //////////////////////////////////////////////////////////////////////////
     static void s_thread_mainWorker( ThreadJobWorkerDesc & desc )

@@ -8,6 +8,7 @@
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -20,7 +21,7 @@ namespace Mengine
         bool loadIni( IniStore & _ini, const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
         {
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _path, false );
+                ->openInputFile( _fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
             if( stream == nullptr )
             {

@@ -16,6 +16,7 @@
 #include "Kernel/IniUtil.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "stdex/xml_sax_parser.h"
 
@@ -366,7 +367,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::loadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _filePath )
     {
-        TextLocalePackPtr pak = m_factoryTextLocalePak->createObject();
+		TextLocalePackPtr pak = m_factoryTextLocalePak->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( pak->initialize( _fileGroup, _filePath ) == false )
         {
@@ -387,7 +388,7 @@ namespace Mengine
         TextManagerLoadSaxCallback tmsc( this, _fileGroup, _filePath );
         if( stdex::xml_sax_parse( xml_buff, tmsc ) == false )
         {
-            LOGGER_ERROR( "TextService::loadTextEntry '%s:%s' invalid parse pak"
+            LOGGER_ERROR( "file '%s:%s' invalid parse pak"
                 , _fileGroup->getName().c_str()
                 , _filePath.c_str()
             );
@@ -463,7 +464,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool TextService::unloadTextEntry( const FileGroupInterfacePtr & _fileGroup, const FilePath & _path )
     {
-        TextLocalePackPtr pak = m_factoryTextLocalePak->createObject();
+		TextLocalePackPtr pak = m_factoryTextLocalePak->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( pak->initialize( _fileGroup, _path ) == false )
         {
@@ -523,7 +524,7 @@ namespace Mengine
             //IniUtil::getIniValue( ini, fontName.c_str(), "Precompile", precompile );
 
             TextFontInterfacePtr font = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Font" ), fontType, MENGINE_DOCUMENT_FUNCTION );
 
             if( font == nullptr )
             {
@@ -690,7 +691,7 @@ namespace Mengine
             return true;
         }
 
-        TextEntryPtr textEntry = m_factoryTextEntry->createObject();
+		TextEntryPtr textEntry = m_factoryTextEntry->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         textEntry->initialize( _key, _text, _font, _colorFont, _lineOffset, _charOffset, _maxLength, _horizontAlign, _verticalAlign, _scale, _params );
 

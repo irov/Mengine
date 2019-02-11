@@ -82,7 +82,7 @@ namespace Mengine
         Char filePath[MENGINE_MAX_PATH];
         if( Helper::concatenateFilePath( m_relationPath, m_folderPath, _fileName, filePath, MENGINE_MAX_PATH ) == false )
         {
-            LOGGER_ERROR("SDLFileInputStream::open invlalid concatenate filePath '%s':'%s'"
+            LOGGER_ERROR("invlalid concatenate filePath '%s':'%s'"
                 , m_folderPath.c_str()
                 , _fileName.c_str()
                 );
@@ -158,12 +158,12 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming )
+    InputStreamInterfacePtr SDLFileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming, const Char * _doc )
     {
         (void)_fileName;
         (void)_streaming;
 
-        SDLFileInputStreamPtr inputStream = m_factoryInputStream->createObject();
+        SDLFileInputStreamPtr inputStream = m_factoryInputStream->createObject( _doc );
 
         return inputStream;
     }
@@ -174,7 +174,7 @@ namespace Mengine
 
         if( _stream == nullptr )
         {
-            LOGGER_ERROR("SDLFileGroupDirectory::openInputFile failed _stream == NULL"
+            LOGGER_ERROR("failed _stream == NULL"
                 );
 
             return false;
@@ -184,7 +184,7 @@ namespace Mengine
 
         if( file->open( m_relationPath, m_folderPath, _filePath, _offset, _size, _streaming ) == false )
         {
-            LOGGER_ERROR("SDLFileGroupDirectory::openInputFile failed open file '%s':'%s'"
+            LOGGER_ERROR("failed open file '%s':'%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 );
@@ -195,9 +195,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr SDLFileGroupDirectory::createOutputFile()
+    OutputStreamInterfacePtr SDLFileGroupDirectory::createOutputFile( const Char * _doc )
     {
-        SDLFileOutputStreamPtr outputStream = m_factoryOutputStream->createObject();
+		SDLFileOutputStreamPtr outputStream = m_factoryOutputStream->createObject( _doc );
 
         return outputStream;
     }
@@ -206,7 +206,7 @@ namespace Mengine
     {
         if( _stream == nullptr )
         {
-            LOGGER_ERROR("SDLFileGroupDirectory::openOutputFile failed _stream == NULL"
+            LOGGER_ERROR("failed _stream == NULL"
                 );
 
             return false;
@@ -216,7 +216,7 @@ namespace Mengine
 
         if( file->open( m_relationPath, m_folderPath, _filePath ) == false )
         {
-            LOGGER_ERROR("SDLFileGroupDirectory::openOutputFile failed open file '%s':'%s'"
+            LOGGER_ERROR("failed open file '%s':'%s'"
                 , m_folderPath.c_str()
                 , _filePath.c_str()
                 );

@@ -160,7 +160,7 @@ namespace Mengine
         this->invalidateVerticesWM_();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D & _vertexData )
+    void TextField::updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D & _vertexData ) const
     {
         _vertexData.clear();
         m_chunks.clear();
@@ -351,7 +351,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::_render( const RenderContext * _state )
+    void TextField::render( const RenderContext * _state ) const
     {
         if( m_textId.empty() == true )
         {
@@ -553,6 +553,18 @@ namespace Mengine
     void TextField::calcTextViewport( Viewport & _viewport ) const
     {
         const TextFontInterfacePtr & font = this->getFont();
+
+        if( font == nullptr )
+        {
+            mt::box2f box;
+            mt::insideout_box( box );
+
+            _viewport.begin = box.minimum;
+            _viewport.end = box.maximum;
+
+            return;
+        }
+
         float lineOffset = this->calcLineOffset();
 
         float linesOffset = this->calcLinesOffset( lineOffset, font );
@@ -1706,7 +1718,7 @@ namespace Mengine
         this->invalidateTextLines();
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVerticesWM_( const TextFontInterfacePtr & _font )
+    void TextField::updateVerticesWM_( const TextFontInterfacePtr & _font ) const
     {
         m_invalidateVerticesWM = false;
 
@@ -1718,7 +1730,7 @@ namespace Mengine
         this->updateVertexDataWM_( m_vertexDataTextWM, m_vertexDataText );
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertexDataWM_( VectorRenderVertex2D & _outVertex, const VectorRenderVertex2D & _fromVertex )
+    void TextField::updateVertexDataWM_( VectorRenderVertex2D & _outVertex, const VectorRenderVertex2D & _fromVertex ) const
     {
         _outVertex.assign( _fromVertex.begin(), _fromVertex.end() );
 
@@ -1757,7 +1769,7 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void TextField::updateVertices_( const TextFontInterfacePtr & _font )
+    void TextField::updateVertices_( const TextFontInterfacePtr & _font ) const
     {
         m_invalidateVertices = false;
 

@@ -61,9 +61,9 @@ namespace Mengine
         m_factoryTTFData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr TTFDataflow::create()
+    DataInterfacePtr TTFDataflow::create( const Char * _doc )
     {
-        TTFDataPtr data = m_factoryTTFData->createObject();
+		TTFDataPtr data = m_factoryTTFData->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
 

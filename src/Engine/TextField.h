@@ -123,8 +123,8 @@ namespace Mengine
     public:
         uint32_t getCharCount() const;
 
-    protected:
-        void _render( const RenderContext * _state ) override;
+    public:
+        void render( const RenderContext * _state ) const override;
 
     protected:
         bool _activate() override;
@@ -142,17 +142,17 @@ namespace Mengine
         void notifyChangeTextAliasArguments( const ConstString & _environment, const ConstString & _alias );
 
     protected:
-        void updateVertices_( const TextFontInterfacePtr & _font );
+        void updateVertices_( const TextFontInterfacePtr & _font ) const;
         void invalidateVertices_() const;
 
-        void updateVerticesWM_( const TextFontInterfacePtr & _font );
-        void updateVertexDataWM_( VectorRenderVertex2D & _outVertex, const VectorRenderVertex2D & _fromVertex );
+        void updateVerticesWM_( const TextFontInterfacePtr & _font ) const;
+        void updateVertexDataWM_( VectorRenderVertex2D & _outVertex, const VectorRenderVertex2D & _fromVertex ) const;
 
         void invalidateVerticesWM_() const;
 
-        inline const VectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font );
+        inline const VectorRenderVertex2D & getTextVertices( const TextFontInterfacePtr & _font ) const;
 
-        void updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D& _vertexData );
+        void updateVertexData_( const TextFontInterfacePtr & _font, const Color & _color, VectorRenderVertex2D& _vertexData ) const;
 
     protected:
         void invalidateTextLines() const;
@@ -243,12 +243,12 @@ namespace Mengine
         };
 
         typedef Vector<Chunk> VectorChunks;
-        VectorChunks m_chunks;
+        mutable VectorChunks m_chunks;
 
         mutable VectorCacheFonts m_cacheFonts;
 
-        VectorRenderVertex2D m_vertexDataText;
-        VectorRenderVertex2D m_vertexDataTextWM;
+        mutable VectorRenderVertex2D m_vertexDataText;
+        mutable VectorRenderVertex2D m_vertexDataTextWM;
 
         mutable bool m_invalidateVertices;
         mutable bool m_invalidateVerticesWM;
@@ -263,7 +263,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<TextField> TextFieldPtr;
     //////////////////////////////////////////////////////////////////////////
-    inline const VectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font )
+    inline const VectorRenderVertex2D & TextField::getTextVertices( const TextFontInterfacePtr & _font ) const
     {
         if( m_invalidateVerticesWM == true )
         {

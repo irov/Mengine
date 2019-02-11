@@ -7,6 +7,7 @@
 
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -142,7 +143,7 @@ namespace Mengine
         }
 
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryProxy();
+			->createMemoryProxy( MENGINE_DOCUMENT_FUNCTION );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr )("invalid create memory proxy");
 

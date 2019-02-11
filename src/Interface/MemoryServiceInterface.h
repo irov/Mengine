@@ -12,14 +12,14 @@ namespace Mengine
         SERVICE_DECLARE( "MemoryService" )
 
     public:
-        virtual MemoryBufferInterfacePtr createMemoryBuffer() = 0;
-        virtual MemoryProxyInterfacePtr createMemoryProxy() = 0;
-        virtual MemoryBufferInterfacePtr createMemoryCacheBuffer() = 0;
+        virtual MemoryBufferInterfacePtr createMemoryBuffer( const Char * _doc ) = 0;
+        virtual MemoryProxyInterfacePtr createMemoryProxy( const Char * _doc ) = 0;
+        virtual MemoryBufferInterfacePtr createMemoryCacheBuffer( const Char * _doc ) = 0;
 
     public:
-        virtual MemoryCacheInputInterfacePtr createMemoryCacheInput() = 0;
-        virtual MemoryProxyInputInterfacePtr createMemoryProxyInput() = 0;
-        virtual MemoryInputInterfacePtr createMemoryInput() = 0;
+        virtual MemoryCacheInputInterfacePtr createMemoryCacheInput( const Char * _doc ) = 0;
+        virtual MemoryProxyInputInterfacePtr createMemoryProxyInput( const Char * _doc ) = 0;
+        virtual MemoryInputInterfacePtr createMemoryInput( const Char * _doc ) = 0;
 
     public:
         virtual void clearCacheBuffers() = 0;

@@ -7,6 +7,7 @@
 #include "Interface/NotificationServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
@@ -234,7 +235,7 @@ namespace Mengine
             return false;
         }
 
-        PackagePtr package = m_factoryPackage->createObject();
+        PackagePtr package = m_factoryPackage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         package->setup( _desc.name
             , _desc.type

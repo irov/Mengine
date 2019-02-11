@@ -22,10 +22,16 @@
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
+    enum ENodeChildInsertMode
+    {
+        ENCI_FRONT,
+        ENCI_MIDDLE,
+        ENCI_BACK
+    };
+    //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class PickerTrapInterface> PickerTrapInterfacePtr;
-
     typedef IntrusivePtr<class Node> NodePtr;
-
+    //////////////////////////////////////////////////////////////////////////
     typedef stdex::intrusive_slug_list_size_ptr<Node> IntrusiveSlugListNodeChild;
     typedef stdex::intrusive_slug_ptr<IntrusiveSlugListNodeChild> IntrusiveSlugChild;
     //////////////////////////////////////////////////////////////////////////
@@ -79,8 +85,8 @@ namespace Mengine
         uint32_t getChildrenRecursiveCount() const;
 
         NodePtr findChild( const ConstString & _name, bool _recursion ) const;
-        NodePtr getSiblingPrev();
-        NodePtr getSiblingNext();
+        NodePtr getSiblingPrev() const;
+        NodePtr getSiblingNext() const;
         bool hasChild( const ConstString & _name, bool _recursive ) const;
         bool emptyChildren() const;
 
@@ -90,7 +96,7 @@ namespace Mengine
     protected:
         void removeChild_( const NodePtr & _node );
         void removeParent_();
-        void setParent_( Node * _node );
+        void setParent_( Node * _node, ENodeChildInsertMode _mode );
 
     protected:
         virtual bool _hasChild( const ConstString & _name, bool _recursive ) const;
@@ -107,7 +113,7 @@ namespace Mengine
         IntrusiveSlugListNodeChild m_children;
 
     private:
-        void addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
+        void addChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node, ENodeChildInsertMode _mode );
 
         void insertChild_( const IntrusiveSlugListNodeChild::iterator & _insert, const NodePtr & _node );
         void eraseChild_( const NodePtr & _node );
@@ -116,17 +122,22 @@ namespace Mengine
         typedef Lambda<void( const NodePtr & )> LambdaNode;
         void foreachChildren( const LambdaNode & _lambda ) const;
         void foreachChildrenUnslug( const LambdaNode & _lambda ) const;
+        void foreachChildrenReverse( const LambdaNode & _lambda ) const;
 
         typedef Lambda<bool( const NodePtr & )> LambdaNodeBreak;
         void foreachChildrenUnslugBreak( const LambdaNodeBreak & _lambda ) const;
 
         NodePtr findUniqueChild( uint32_t _uniqueIdentity ) const;
 
-        void removeParentRender_();
-        void setParentRender_( Node * _parent );
+        void removeRelationRender_();
+        void setRelationRender_( Node * _parent );
+        void setRelationRenderFront_( Node * _parent );
+        void moveChildRenderFront_( const NodePtr & _child );
+        void moveChildRenderBack_( const NodePtr & _child );
 
         typedef const Lambda<void( RenderInterface * )> LambdaNodeRenderCloseChildren;
         void foreachRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );
+        void foreachReverseRenderCloseChildren( const LambdaNodeRenderCloseChildren & _lambda );
 
     public:
         void visitChildren( const VisitorPtr & _visitor );
@@ -155,7 +166,6 @@ namespace Mengine
 
     protected:
         void _invalidateWorldMatrix() override;
-        //void _invalidateBoundingBox() override;
 
     public:
         bool compile() override;

@@ -1,6 +1,7 @@
 #include "ResourceAstralaxValidator.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -21,7 +22,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = _resource->getFileGroup();
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
-            ->createEmitterContainerFromFile( fileGroup, filePath, name );
+			->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT( "ResourceAstralaxValidator::_validate '%s'", name.c_str() ) );
 
         if( container == nullptr )
         {

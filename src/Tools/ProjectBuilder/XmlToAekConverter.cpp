@@ -18,6 +18,7 @@
 #include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Xml2Metabuf.hpp"
 #include "Xml2Metacode.hpp"
@@ -62,7 +63,7 @@ namespace Mengine
         options.outputFileName = Helper::stringizeFilePath( utf8_aekPath );
 
         ConverterInterfacePtr converter = CONVERTER_SERVICE()
-            ->createConverter( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ) );
+            ->createConverter( STRINGIZE_STRING_LOCAL( "xmlToAekMovie" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( converter == nullptr )
         {

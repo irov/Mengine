@@ -34,6 +34,7 @@
 #include "Kernel/StringArguments.h"
 #include "Kernel/Date.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <cstdio>
 #include <clocale>
@@ -172,7 +173,9 @@ PLUGIN_EXPORT( Movie1 );
 PLUGIN_EXPORT( TTF );
 #endif
 
+#ifdef MENGINE_PLUGIN_WIN32_SOCKET_STATIC
 PLUGIN_EXPORT( Win32Socket );
+#endif
 
 #ifdef MENGINE_PLUGIN_NODEDEBUGGER_STATIC
 PLUGIN_EXPORT( NodeDebugger );
@@ -213,7 +216,7 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         InputStreamInterfacePtr applicationInputStream = FILE_SERVICE()
-            ->openInputFile( fileGroup, applicationPath, false );
+            ->openInputFile( fileGroup, applicationPath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( applicationInputStream == nullptr )
         {
@@ -388,7 +391,7 @@ namespace Mengine
             ->getFileGroup( STRINGIZE_STRING_LOCAL( "user" ) );
 
         OutputStreamInterfacePtr fileLogInterface = FILE_SERVICE()
-            ->openOutputFile( fileGroup, logFilename );
+            ->openOutputFile( fileGroup, logFilename, MENGINE_DOCUMENT_FUNCTION );
 
         if( fileLogInterface != nullptr )
         {
@@ -555,6 +558,7 @@ namespace Mengine
         OPTIONS_SERVICE()
             ->setArguments( arguments );
 
+        SERVICE_CREATE( NotificationService );
         SERVICE_CREATE( StringizeService );
         SERVICE_CREATE( LoggerService );
 
@@ -602,8 +606,7 @@ namespace Mengine
 
         SERVICE_CREATE( ThreadSystem );
         SERVICE_CREATE( ThreadService );
-
-        SERVICE_CREATE( NotificationService );
+        
         SERVICE_CREATE( PrototypeService );
         SERVICE_CREATE( VocabularyService );
 
@@ -750,7 +753,9 @@ namespace Mengine
         MENGINE_ADD_PLUGIN( TTF, "initialize Plugin TTF..." );
 #endif
 
-        MENGINE_ADD_PLUGIN( Win32Socket, "initialize Plugin Win32Socket..." );        
+#ifdef MENGINE_PLUGIN_WIN32_SOCKET_STATIC
+        MENGINE_ADD_PLUGIN( Win32Socket, "initialize Plugin Win32Socket..." );
+#endif
 
 #	undef MENGINE_ADD_PLUGIN
 
@@ -815,7 +820,7 @@ namespace Mengine
         for( const String & moduleName : modules )
         {
             if( MODULE_SERVICE()
-                ->runModule( Helper::stringizeString( moduleName ) ) == false )
+                ->runModule( Helper::stringizeString( moduleName ), MENGINE_DOCUMENT_FUNCTION ) == false )
             {
                 LOGGER_CRITICAL( "Application Failed to run module '%s'"
                     , moduleName.c_str()
@@ -833,7 +838,7 @@ namespace Mengine
             for( const String & moduleName : devModules )
             {
                 if( MODULE_SERVICE()
-                    ->runModule( Helper::stringizeString( moduleName ) ) == false )
+                    ->runModule( Helper::stringizeString( moduleName ), MENGINE_DOCUMENT_FUNCTION ) == false )
                 {
                     LOGGER_ERROR( "Application Failed to run dev module '%s'"
                         , moduleName.c_str()

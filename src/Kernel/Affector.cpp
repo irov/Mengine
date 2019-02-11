@@ -4,6 +4,8 @@
 #include "Interface/UpdateServiceInterface.h"
 #include "Interface/TimelineServiceInterface.h"
 
+#include "Kernel/IntrusivePtrScope.h"
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -98,7 +100,7 @@ namespace Mengine
 
         if( finish == true )
         {
-            stdex::intrusive_this_acquire( this );
+            IntrusivePtrScope ankh( this );
 
             this->unlink();
 
@@ -109,8 +111,6 @@ namespace Mengine
 
             TIMELINE_SERVICE()
                 ->endOffset();
-
-            stdex::intrusive_this_release( this );
         }
     }
     //////////////////////////////////////////////////////////////////////////

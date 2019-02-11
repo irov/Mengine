@@ -1,5 +1,11 @@
 #include "FactoryWithMutex.h"
 
+#ifndef NDEBUG
+#   include "Interface/NotificationServiceInterface.h"
+#   include "Kernel/Logger.h"
+#   include <stdlib.h>
+#endif
+
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -17,8 +23,10 @@ namespace Mengine
         m_mutex = _mutex;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer FactoryWithMutex::createObject()
+    FactorablePointer FactoryWithMutex::createObject( const Char * _doc )
     {
+		MENGINE_UNUSED( _doc );
+
         m_mutex->lock();
 
         ++m_count;
@@ -29,11 +37,19 @@ namespace Mengine
 
         m_mutex->unlock();
 
+#ifndef NDEBUG
+		NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, (this, object, _doc) );
+#endif
+
         return object;
     }
     //////////////////////////////////////////////////////////////////////////
     void FactoryWithMutex::destroyObject( Factorable * _object )
     {
+#ifndef NDEBUG
+		NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_DESTROY_OBJECT, (this, _object) );
+#endif
+
         m_mutex->lock();
 
         this->_destroyObject( _object );

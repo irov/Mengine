@@ -30,6 +30,7 @@
 #include "Kernel/Scene.h"
 #include "Kernel/StringFormat.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Config/Stringstream.h"
 
@@ -93,7 +94,7 @@ namespace Mengine
             }break;
         case NodeDebuggerServerState::WaitingForClient:
             {
-                const int32_t check = m_socket->checkForClientConnection();
+                int32_t check = m_socket->checkForClientConnection();
                 if( check < 0 )
                 {
                     // failed
@@ -447,7 +448,7 @@ namespace Mengine
     void NodeDebuggerModule::recreateServer()
     {
         m_socket = SOCKET_SYSTEM()
-            ->createSocket();
+            ->createSocket( MENGINE_DOCUMENT_FUNCTION );
 
         SocketConnectInfo sci = { "0.0.0.0", "18790" };
         m_socket->bind( sci, false );
@@ -541,9 +542,10 @@ namespace Mengine
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Render" );
 
-        serializeNodeProp( _render->isRenderEnable(), "rendering", xmlNode );
+        serializeNodeProp( _render->isRenderEnable(), "enable", xmlNode );
         serializeNodeProp( _render->isHide(), "hide", xmlNode );
-        serializeNodeProp( _render->getLocalColor(), "color", xmlNode );
+        serializeNodeProp( _render->getLocalColor(), "local_color", xmlNode );
+        serializeNodeProp( _render->getPersonalColor(), "personal_color", xmlNode );        
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeAnimation( const AnimationInterface * _animation, pugi::xml_node & _xmlParentNode )
@@ -551,6 +553,10 @@ namespace Mengine
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Animation" );
 
         serializeNodeProp( _animation->isLoop(), "loop", xmlNode );
+        serializeNodeProp( _animation->isPlay(), "play", xmlNode );
+        serializeNodeProp( _animation->isPause(), "pause", xmlNode );
+        serializeNodeProp( _animation->getTime(), "time", xmlNode );
+        serializeNodeProp( _animation->getDuration(), "duration", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeTextField( const TextFieldPtr & _textField, pugi::xml_node & _xmlParentNode )
@@ -614,14 +620,21 @@ namespace Mengine
         serializeNodeProp( _textField->getPixelsnap(), "Pixelsnap", xmlNode );
     }
     //////////////////////////////////////////////////////////////////////////
+    void NodeDebuggerModule::serializeMovie2( UnknownMovie2Interface * _unknownMovie2, pugi::xml_node & _xmlParentNode )
+    {
+        pugi::xml_node xmlNode = _xmlParentNode.append_child( "Type:Movie2" );
+
+        serializeNodeProp( _unknownMovie2->getCompositionName(), "CompositionName", xmlNode );
+        serializeNodeProp( _unknownMovie2->getTextAliasEnvironment(), "TextAliasEnvironment", xmlNode );
+    }
+    //////////////////////////////////////////////////////////////////////////
     void NodeDebuggerModule::serializeNode( const NodePtr & _node, pugi::xml_node & _xmlParentNode )
     {
         pugi::xml_node xmlNode = _xmlParentNode.append_child( "Node" );
 
-        xmlNode.append_attribute( "uid" ).set_value( _node->getUniqueIdentity() );
-        xmlNode.append_attribute( "name" ).set_value( _node->getName().c_str() );
-        xmlNode.append_attribute( "type" ).set_value( _node->getType().c_str() );
-
+        serializeNodeProp( _node->getUniqueIdentity(), "uid", xmlNode );
+        serializeNodeProp( _node->getName(), "name", xmlNode );
+        serializeNodeProp( _node->getType(), "type", xmlNode );
         serializeNodeProp( _node->isEnable(), "enable", xmlNode );
 
         this->serializeTransformation( _node, xmlNode );
@@ -643,6 +656,14 @@ namespace Mengine
         if( textField != nullptr )
         {
             this->serializeTextField( textField, xmlNode );
+        }
+
+        UnknownInterface * unknownNode = _node->getUnknown();
+
+        UnknownMovie2Interface * unknownMovie2 = dynamic_cast<UnknownMovie2Interface *>(unknownNode);
+        if( unknownMovie2 != nullptr )
+        {
+            this->serializeMovie2( unknownMovie2, xmlNode );
         }
 
         if( _node->emptyChildren() == false )
@@ -816,9 +837,14 @@ namespace Mengine
                     render->setHide( _value );
                 } );
 
-                deserializeNodeProp<Color>( "color", renderNode, [render]( Color _value )
+                deserializeNodeProp<Color>( "local_color", renderNode, [render]( const Color & _value )
                 {
                     render->setLocalColor( _value );
+                } );
+
+                deserializeNodeProp<Color>( "personal_color", renderNode, [render]( const Color & _value )
+                {
+                    render->setPersonalColor( _value );
                 } );
             }
 
@@ -832,77 +858,103 @@ namespace Mengine
                 {
                     animation->setLoop( _value );
                 } );
+
+                deserializeNodeProp<bool>( "time", animationNode, [animation]( float _value )
+                {
+                    if( _value < 0.f )
+                    {
+                        _value = 0.f;
+                    }
+                    else if( _value > animation->getDuration() )
+                    {
+                        _value = animation->getDuration();
+                    }
+
+                    animation->setTime( _value );
+                } );
             }
 
-            pugi::xml_node typeTextFieldNode = _xmlNode.child( "Type:TextField" );
+            pugi::xml_node typeNodeTextField = _xmlNode.child( "Type:TextField" );
 
-            if( typeTextFieldNode )
+            if( typeNodeTextField )
             {
                 TextFieldPtr textField = stdex::intrusive_static_cast<TextFieldPtr>(node);
 
-                deserializeNodeProp<float>( "MaxLength", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<float>( "MaxLength", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setMaxLength( _value );
                 } );
 
-                deserializeNodeProp<bool>( "Wrap", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<bool>( "Wrap", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setWrap( _value );
                 } );
 
-                deserializeNodeProp<ConstString>( "TextID", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<ConstString>( "TextID", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setTextID( _value );
                 } );
 
-                deserializeNodeProp<ConstString>( "TextAliasEnvironment", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<ConstString>( "TextAliasEnvironment", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setTextAliasEnvironment( _value );
                 } );
 
-                deserializeNodeProp<ConstString>( "FontName", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<ConstString>( "FontName", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setFontName( _value );
                 } );
 
-                deserializeNodeProp<Color>( "FontColor", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<Color>( "FontColor", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setFontColor( _value );
                 } );
 
-                deserializeNodeProp<float>( "LineOffset", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<float>( "LineOffset", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setLineOffset( _value );
                 } );
 
-                deserializeNodeProp<float>( "CharOffset", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<float>( "CharOffset", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setCharOffset( _value );
                 } );
 
-                deserializeNodeProp<float>( "CharScale", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<float>( "CharScale", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setCharScale( _value );
                 } );
 
-                deserializeNodeProp<uint32_t>( "HorizontAlign", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<uint32_t>( "HorizontAlign", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setHorizontAlign( (ETextHorizontAlign)_value );
                 } );
 
-                deserializeNodeProp<uint32_t>( "VerticalAlign", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<uint32_t>( "VerticalAlign", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setVerticalAlign( (ETextVerticalAlign)_value );
                 } );
 
-                deserializeNodeProp<uint32_t>( "MaxCharCount", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<uint32_t>( "MaxCharCount", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setMaxCharCount( _value );
                 } );
 
-                deserializeNodeProp<bool>( "Pixelsnap", typeTextFieldNode, [textField]( auto _value )
+                deserializeNodeProp<bool>( "Pixelsnap", typeNodeTextField, [textField]( auto _value )
                 {
                     textField->setPixelsnap( _value );
+                } );
+            }
+
+            pugi::xml_node typeNodeMovie2 = _xmlNode.child( "Type:Movie2" );
+
+            if( typeNodeMovie2 )
+            {
+                UnknownMovie2Interface * unknownMovie2 = node->getUnknown();
+
+                deserializeNodeProp<ConstString>( "TextAliasEnvironment", typeNodeMovie2, [unknownMovie2]( auto _value )
+                {
+                    unknownMovie2->setTextAliasEnvironment( _value );
                 } );
             }
         }

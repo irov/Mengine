@@ -6,6 +6,7 @@
 #include "Kernel/Exception.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ConfigService, Mengine::ConfigService );
@@ -42,7 +43,7 @@ namespace Mengine
     bool ConfigService::loadConfig( const FileGroupInterfacePtr & _fileGroup, const FilePath & _applicationPath )
     {
         InputStreamInterfacePtr applicationInputStream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _applicationPath, false );
+            ->openInputFile( _fileGroup, _applicationPath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( applicationInputStream == nullptr )
         {

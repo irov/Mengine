@@ -25,15 +25,17 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool NotificationService::_initializeService()
     {
-        ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( __FILE__, __LINE__ );
+        SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]() {
+            ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
+                ->createMutex( __FILE__, __LINE__ );
 
-        if( mutex == nullptr )
-        {
-            return false;
-        }
+            if( mutex == nullptr )
+            {
+                return false;
+            }
 
-        m_mutex = mutex;
+            m_mutex = mutex;
+        } );
 
         return true;
     }

@@ -353,7 +353,7 @@ namespace Mengine
                 .def( "getCompositionName", &Movie2::getCompositionName )
                 .def( "setTextAliasEnvironment", &Movie2::setTextAliasEnvironment )
                 .def( "getTextAliasEnvironment", &Movie2::getTextAliasEnvironment )
-                .def( "getDuration", &Movie2::getDuration )
+                .def_deprecated( "getDuration", &Movie2::getDuration, "Use animation" )
                 .def( "setWorkAreaFromEvent", &Movie2::setWorkAreaFromEvent )
                 .def( "removeWorkArea", &Movie2::removeWorkArea )
                 .def( "hasSubComposition", &Movie2::hasSubComposition )

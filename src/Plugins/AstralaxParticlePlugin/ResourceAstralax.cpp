@@ -4,6 +4,7 @@
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -37,13 +38,11 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     bool ResourceAstralax::_compile()
     {
-        const ConstString & name = this->getName();
-
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
         const FilePath & filePath = this->getFilePath();
 
         AstralaxEmitterContainerInterfacePtr container = ASTRALAX_SERVICE()
-            ->createEmitterContainerFromFile( fileGroup, filePath, name );
+			->createEmitterContainerFromFile( fileGroup, filePath, MENGINE_DOCUMENT( "ResourceAstralax::compile '%s'", this->getName().c_str() ) );
 
         if( container == nullptr )
         {
@@ -105,7 +104,7 @@ namespace Mengine
         m_container = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    AstralaxEmitterInterfacePtr ResourceAstralax::createEmitter()
+    AstralaxEmitterInterfacePtr ResourceAstralax::createEmitter( const Char * _doc )
     {
         if( this->isCompile() == false )
         {
@@ -117,7 +116,7 @@ namespace Mengine
         }
 
         AstralaxEmitterInterfacePtr emitter = ASTRALAX_SYSTEM()
-            ->createEmitter( m_container );
+            ->createEmitter( m_container, _doc );
 
         return emitter;
     }

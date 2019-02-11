@@ -37,8 +37,8 @@ namespace Mengine
         const DataflowInterfacePtr & getDataflowPY() const;
 
     public:
-        void setDataflowPYC( const DataflowInterfacePtr & _dataflow );
-        const DataflowInterfacePtr & getDataflowPYC() const;
+        void setDataflowPYZ( const DataflowInterfacePtr & _dataflow );
+        const DataflowInterfacePtr & getDataflowPYZ() const;
 
     public:
         bool initialize();
@@ -70,7 +70,7 @@ namespace Mengine
         pybind::object m_embed;
 
         DataflowInterfacePtr m_dataflowPY;
-        DataflowInterfacePtr m_dataflowPYC;
+        DataflowInterfacePtr m_dataflowPYZ;
 
         VectorModulePathes m_modulePaths;
 

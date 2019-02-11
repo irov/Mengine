@@ -27,7 +27,7 @@ namespace Mengine
 
     public:
         bool processTask( ThreadTaskInterface * _task ) override;
-        bool completeTask() override;
+        void removeTask() override;
 
     public:
         void join() override;
@@ -35,12 +35,12 @@ namespace Mengine
     protected:
         HANDLE m_thread;
 
+		CRITICAL_SECTION m_processLock;
+
         CRITICAL_SECTION m_conditionLock;
         CONDITION_VARIABLE m_conditionVariable;
 
-        ThreadTaskInterface * m_task;
-
-        AtomicBool m_complete;
+		ThreadTaskInterface * m_task;
         AtomicBool m_exit;
 
 #ifndef NDEBUG

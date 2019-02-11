@@ -15,6 +15,7 @@
 #include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Xml2Metabuf.hpp"
 #include "Xml2Metacode.hpp"
@@ -38,7 +39,7 @@ namespace Mengine
         Helper::unicodeToUtf8( _binPath, utf8_binPath );
 
         XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString( "xml2bin" ) );
+            ->createDecoderT<XmlDecoderInterfacePtr>( Helper::stringizeString( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
 
         if( decoder == nullptr )
         {

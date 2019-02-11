@@ -40,11 +40,11 @@ namespace Mengine
         bool findFiles( const FilePath & _folderPath, const Char * _mask, const LambdaFiles & _lambda ) const override;
 
     public:
-        InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming ) override;
+        InputStreamInterfacePtr createInputFile( const FilePath & _fileName, bool _streaming, const Char * _doc ) override;
         bool openInputFile( const FilePath & _fileName, const InputStreamInterfacePtr & _file, size_t _offset, size_t _size, bool _streaming ) override;
         
     public:
-        OutputStreamInterfacePtr createOutputFile() override;        
+        OutputStreamInterfacePtr createOutputFile( const Char * _doc ) override;
         bool openOutputFile( const FilePath& _fileName, const OutputStreamInterfacePtr & _file ) override;
 
     public:

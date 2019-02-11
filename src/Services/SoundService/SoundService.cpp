@@ -14,6 +14,7 @@
 #include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "math/utils.h"
 #include <algorithm>
@@ -199,9 +200,39 @@ namespace Mengine
                 continue;
             }
 
-            this->stopSoundBufferUpdate_( source );
+            this->pauseSoundBufferUpdate_( source );
 
             source->source->pause();
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void SoundService::resumeSounds_()
+    {
+        for( const SoundIdentityPtr & identity : m_soundIdentities )
+        {
+            if( identity == nullptr )
+            {
+                continue;
+            }
+
+            identity->turn = true;
+
+            if( identity->state != ESS_PLAY )
+            {
+                continue;
+            }
+
+            this->updateSourceVolume_( identity );
+
+            if( identity->source->resume() == false )
+            {
+                LOGGER_ERROR( "invalid resume"
+                );
+
+                continue;
+            }
+
+            this->resumeSoundBufferUpdate_( identity );
         }
     }
     //////////////////////////////////////////////////////////////////////////
@@ -241,7 +272,7 @@ namespace Mengine
 
         if( m_turnStream == true )
         {
-            this->playSounds_();
+            this->resumeSounds_();
         }
         else
         {
@@ -291,7 +322,7 @@ namespace Mengine
             return nullptr;
         }
 
-        SoundIdentityPtr emitter = m_factorySoundEmitter->createObject();
+		SoundIdentityPtr emitter = m_factorySoundEmitter->createObject( _doc );
 
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
         emitter->id = new_id;
@@ -392,7 +423,7 @@ namespace Mengine
     SoundDecoderInterfacePtr SoundService::createSoundDecoder_( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const ConstString & _codecType, bool _streamable )
     {
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( _fileGroup, _filePath, _streamable );
+            ->openInputFile( _fileGroup, _filePath, _streamable, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -405,7 +436,7 @@ namespace Mengine
         }
 
         SoundDecoderInterfacePtr soundDecoder = CODEC_SERVICE()
-            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType );
+            ->createDecoderT<SoundDecoderInterfacePtr>( _codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( soundDecoder == nullptr )
         {
@@ -824,7 +855,7 @@ namespace Mengine
 
                 if( identity->turn == true )
                 {
-                    this->stopSoundBufferUpdate_( identity );
+                    this->pauseSoundBufferUpdate_( identity );
                 }
 
                 const SoundSourceInterfacePtr & source = identity->getSoundSource();
@@ -872,8 +903,6 @@ namespace Mengine
 
                 this->updateSourceVolume_( identity );
 
-                this->stopSoundBufferUpdate_( identity );
-
                 const SoundSourceInterfacePtr & source = identity->getSoundSource();
 
                 float length_ms = source->getDuration();
@@ -885,7 +914,7 @@ namespace Mengine
 
                 if( identity->turn == true )
                 {
-                    if( source->play() == false )
+                    if( source->resume() == false )
                     {
                         LOGGER_ERROR( "invalid play %d"
                             , identity->id
@@ -894,7 +923,7 @@ namespace Mengine
                         return false;
                     }
 
-                    this->playSoundBufferUpdate_( identity );
+                    this->resumeSoundBufferUpdate_( identity );
                 }
 
                 const SoundListenerInterfacePtr & listener = identity->getSoundListener();
@@ -1257,7 +1286,7 @@ namespace Mengine
 
         if( m_threadJobSoundBufferUpdate != nullptr )
         {
-            ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject();
+			ThreadWorkerSoundBufferUpdatePtr worker = m_factoryWorkerTaskSoundBufferUpdate->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             SoundBufferInterfacePtr soundBuffer = _identity->source->getSoundBuffer();
 
@@ -1281,6 +1310,46 @@ namespace Mengine
         {
             _identity->worker = nullptr;
             _identity->bufferId = 0;
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundService::pauseSoundBufferUpdate_( const SoundIdentityPtr & _identity )
+    {
+        if( _identity->streamable == false )
+        {
+            return false;
+        }
+
+        if( _identity->worker == nullptr )
+        {
+            return false;
+        }
+
+        if( m_threadJobSoundBufferUpdate != nullptr )
+        {
+            m_threadJobSoundBufferUpdate->pauseWorker( _identity->bufferId );
+        }
+
+        return true;
+    }
+    //////////////////////////////////////////////////////////////////////////
+    bool SoundService::resumeSoundBufferUpdate_( const SoundIdentityPtr & _identity )
+    {
+        if( _identity->streamable == false )
+        {
+            return false;
+        }
+
+        if( _identity->worker == nullptr )
+        {
+            return false;
+        }
+
+        if( m_threadJobSoundBufferUpdate != nullptr )
+        {
+            m_threadJobSoundBufferUpdate->resumeWorker( _identity->bufferId );
         }
 
         return true;

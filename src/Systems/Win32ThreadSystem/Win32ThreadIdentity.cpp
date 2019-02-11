@@ -43,7 +43,6 @@ namespace Mengine
     Win32ThreadIdentity::Win32ThreadIdentity()
         : m_thread( INVALID_HANDLE_VALUE )
         , m_task( nullptr )
-        , m_complete( true )
         , m_exit( false )
 #ifndef NDEBUG
         , m_file( nullptr )
@@ -56,9 +55,9 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    static uint32_t __stdcall s_tread_job( void * _userData )
+    static DWORD WINAPI s_tread_job( LPVOID lpThreadParameter )
     {
-        Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity*>(_userData);
+        Win32ThreadIdentity * thread = static_cast<Win32ThreadIdentity*>(lpThreadParameter);
 
 #ifdef NDEBUG
         try
@@ -80,7 +79,7 @@ namespace Mengine
         }
 #endif
 
-        return 0;
+        ExitThread( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::initialize( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
@@ -93,7 +92,12 @@ namespace Mengine
         m_line = _line;
 #endif
 
-        m_thread = (HANDLE)::_beginthreadex( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
+		InitializeCriticalSection( &m_processLock );
+
+		InitializeCriticalSection( &m_conditionLock );
+		InitializeConditionVariable( &m_conditionVariable );
+
+        m_thread = ::CreateThread( NULL, 0, &s_tread_job, (LPVOID)this, 0, NULL );
 
         if( m_thread == NULL )
         {
@@ -140,89 +144,58 @@ namespace Mengine
             }break;
         }
 
-        InitializeCriticalSection( &m_conditionLock );
-        InitializeConditionVariable( &m_conditionVariable );        
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::main()
-    {        
-        for( ; m_exit == false; )
+    {   
+        while( m_exit == false )
         {
             EnterCriticalSection( &m_conditionLock );
-
-            while( m_complete == true && m_exit == false )
-            {
-                SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, INFINITE );
-            }
-
+			SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, 1000 );
             LeaveCriticalSection( &m_conditionLock );
-
-
-            EnterCriticalSection( &m_conditionLock );
-
-            if( m_complete == false && m_exit == false )
+			
+			EnterCriticalSection( &m_processLock );
+			if( m_task != nullptr && m_exit == false )
             {
                 m_task->main();
                 m_task = nullptr;
-
-                m_complete = true;
             }
-            
-            LeaveCriticalSection( &m_conditionLock );
+			LeaveCriticalSection( &m_processLock );
         }
     }
     //////////////////////////////////////////////////////////////////////////
     bool Win32ThreadIdentity::processTask( ThreadTaskInterface * _task )
     {
-        if( m_exit == true )
+		if( m_exit == true )
         {
             return false;
         }
 
-        if( m_complete == false )
-        {
-            return false;
-        }
+		if( TryEnterCriticalSection( &m_processLock ) == FALSE )
+		{
+			return false;
+		}
 
-        if( TryEnterCriticalSection( &m_conditionLock ) == FALSE )
-        {
-            return false;
-        }
+		m_task = _task;
 
-        m_task = _task;
-        m_complete = false;
-        
-        LeaveCriticalSection( &m_conditionLock );
+		LeaveCriticalSection( &m_processLock );
 
-        WakeAllConditionVariable( &m_conditionVariable );
+		WakeConditionVariable( &m_conditionVariable );
 
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::completeTask()
+    void Win32ThreadIdentity::removeTask()
     {
         if( m_exit == true )
         {
-            return false;
+            return;
         }
 
-        EnterCriticalSection( &m_conditionLock );
-
-        bool successful = false;
-
-        if( m_complete == false )
-        {
-            m_task = nullptr;
-            m_complete = true;
-
-            successful = true;
-        }
-
-        LeaveCriticalSection( &m_conditionLock );
-
-        return successful;
+		EnterCriticalSection( &m_processLock );
+		m_task = nullptr;
+		LeaveCriticalSection( &m_processLock );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadIdentity::join()
@@ -234,12 +207,13 @@ namespace Mengine
 
         m_exit = true;
         
-        WakeAllConditionVariable( &m_conditionVariable );
+        WakeConditionVariable( &m_conditionVariable );
         
         WaitForSingleObject( m_thread, INFINITE );
         CloseHandle( m_thread );
         m_thread = INVALID_HANDLE_VALUE;
 
+		DeleteCriticalSection( &m_processLock );
         DeleteCriticalSection( &m_conditionLock );
     }
 }

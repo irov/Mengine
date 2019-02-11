@@ -7,8 +7,6 @@
 
 #include "Config/Lambda.h"
 
-//#define MENGINE_NEW_RENDER
-
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
@@ -20,8 +18,14 @@ namespace Mengine
     {
     public:
         virtual void setRelationRender( RenderInterface * _relationRender ) = 0;
+        virtual void setRelationRenderFront( RenderInterface * _relationRender ) = 0;
         virtual void removeRelationRender() = 0;
         virtual RenderInterface * getRelationRender() const = 0;
+
+    public:
+        virtual void moveRelationRenderFront( RenderInterface * _childRender ) = 0;
+        virtual void moveRelationRenderBack( RenderInterface * _childRender ) = 0;        
+
 
     public:
         typedef Lambda<void( RenderInterface * )> LambdaRender;
@@ -60,11 +64,11 @@ namespace Mengine
         virtual bool isExternalRender() const = 0;
 
     public:
-        virtual void render( const RenderContext * _state ) = 0;
-        virtual void renderWithChildren( const RenderContext * _context, bool _external ) = 0;
+        virtual void render( const RenderContext * _state ) const = 0;
+        virtual void renderWithChildren( const RenderContext * _context, bool _external ) const = 0;
 
     public:
-        virtual const RenderInterfacePtr & makeTargetRender( const RenderContext * _state ) = 0;
+        virtual const RenderInterfacePtr & makeTargetRender( const RenderContext * _state ) const = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<RenderInterface> RenderInterfacePtr;

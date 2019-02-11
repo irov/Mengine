@@ -11,7 +11,7 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Interender::_render( const RenderContext * _context )
+    void Interender::render( const RenderContext * _context ) const
     {
         (void)_context;
 

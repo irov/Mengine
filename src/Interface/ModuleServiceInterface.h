@@ -20,7 +20,7 @@ namespace Mengine
         virtual void unregisterModule( const ConstString & _moduleName ) = 0;
 
     public:
-        virtual bool runModule( const ConstString & _moduleName ) = 0;
+        virtual bool runModule( const ConstString & _moduleName, const Char * _doc ) = 0;
         virtual bool stopModule( const ConstString & _moduleName ) = 0;
 
     public:

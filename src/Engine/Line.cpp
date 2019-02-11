@@ -53,7 +53,7 @@ namespace Mengine
         return material;
     }
     //////////////////////////////////////////////////////////////////////////
-    void Line::_render( const RenderContext * _state )
+    void Line::render( const RenderContext * _state ) const
     {
         const mt::mat4f & wm = this->getWorldMatrix();
 

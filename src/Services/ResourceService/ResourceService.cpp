@@ -15,6 +15,7 @@
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Resource.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( ResourceService, Mengine::ResourceService );
@@ -163,7 +164,7 @@ namespace Mengine
             }
 
             ResourcePtr resource =
-                this->createResource( _locale, _fileGroup, groupName, name, type );
+                this->createResource( _locale, _fileGroup, groupName, name, type, MENGINE_DOCUMENT_FUNCTION );
 
             if( resource == nullptr )
             {
@@ -334,14 +335,14 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerResourceReference ResourceService::generateResource( const ConstString& _type ) const
+    PointerResourceReference ResourceService::generateResource( const ConstString & _type, const Char * _doc ) const
     {
         ResourcePtr resource = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Resource" ), _type, _doc );
 
         if( resource == nullptr )
         {
-            LOGGER_ERROR( "ResourceManager::generateResource not registered resource type '%s'"
+            LOGGER_ERROR( "not registered resource type '%s'"
                 , _type.c_str()
             );
 
@@ -360,18 +361,19 @@ namespace Mengine
         return resource;
     }
     //////////////////////////////////////////////////////////////////////////
-    PointerResourceReference ResourceService::createResource( const ConstString & _locale, const FileGroupInterfacePtr& _fileGroup, const ConstString& _groupName, const ConstString& _name, const ConstString& _type )
+    PointerResourceReference ResourceService::createResource( const ConstString & _locale, const FileGroupInterfacePtr & _fileGroup, const ConstString & _groupName, const ConstString & _name, const ConstString & _type, const Char * _doc )
     {
-        ResourcePtr resource = this->generateResource( _type );
+        ResourcePtr resource = this->generateResource( _type, _doc );
 
         if( resource == nullptr )
         {
-            LOGGER_ERROR( "invalid generate resource locale '%s' category '%s' group '%s' name '%s' type '%s'"
+            LOGGER_ERROR( "invalid generate resource locale '%s' category '%s' group '%s' name '%s' type '%s' doc '%s'"
                 , _locale.c_str()
                 , _fileGroup->getName().c_str()
                 , _groupName.c_str()
                 , _name.c_str()
                 , _type.c_str()
+				, _doc
             );
 
             return nullptr;

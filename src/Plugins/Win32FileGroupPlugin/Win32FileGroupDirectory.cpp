@@ -10,6 +10,7 @@
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 #include "Kernel/String.h"
 
 #include "Environment/Windows/WindowsIncluder.h"
@@ -268,12 +269,12 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming )
+    InputStreamInterfacePtr Win32FileGroupDirectory::createInputFile( const FilePath & _fileName, bool _streaming, const Char * _doc )
     {
-        (void)_fileName;
-        (void)_streaming;
+		MENGINE_UNUSED( _fileName );
+		MENGINE_UNUSED( _streaming );
 
-        Win32FileInputStreamPtr inputStream = m_factoryInputStream->createObject();
+		Win32FileInputStreamPtr inputStream = m_factoryInputStream->createObject( _doc );
 
         return inputStream;
     }
@@ -305,9 +306,9 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile()
+    OutputStreamInterfacePtr Win32FileGroupDirectory::createOutputFile( const Char * _doc )
     {
-        Win32FileOutputStreamPtr outputStream = m_factoryOutputStream->createObject();
+		Win32FileOutputStreamPtr outputStream = m_factoryOutputStream->createObject( _doc );
 
         return outputStream;
     }

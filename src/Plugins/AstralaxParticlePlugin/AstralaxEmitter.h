@@ -78,7 +78,7 @@ namespace Mengine
         void setResourceParticle( const ResourcePtr & _resource ) override;
         const ResourcePtr & getResourceParticle() const override;
 
-        float getDuration() const;
+        float _getDuration() const;
 
         void setEmitterRandomMode( bool _randomMode );
         bool getEmitterRandomMode() const;
@@ -94,7 +94,7 @@ namespace Mengine
         void _release() override;
 
         void _update( const UpdateContext * _context ) override;
-        void _render( const RenderContext * _state ) override;
+        void render( const RenderContext * _state ) const override;
 
         void _updateBoundingBox( mt::box2f& _boundingBox, mt::box2f ** _boundingBoxCurrent ) const override;
 
@@ -103,8 +103,8 @@ namespace Mengine
         bool compilePolygon_( const AstralaxEmitterInterfacePtr & _emitter );
 
     protected:
-        void updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount );
-        void updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount );
+        void updateVertexColor_( RenderVertex2D * _vertices, uint32_t _verticesCount ) const;
+        void updateVertexWM_( RenderVertex2D * _vertices, uint32_t _verticesCount ) const;
 
     protected:
         void onProviderEmitterPosition( mt::vec3f & _position ) override;
@@ -126,11 +126,11 @@ namespace Mengine
 
         bool m_randomMode;
 
-        RenderVertex2D * m_vertices;
-        uint32_t m_vertexCount;
+        mutable RenderVertex2D * m_renderVertices;
+        mutable uint32_t m_renderVertexCount;
 
-        RenderIndex * m_indicies;
-        uint32_t m_indexCount;
+        mutable RenderIndex * m_renderIndicies;
+        mutable uint32_t m_renderIndexCount;
 
         bool m_emitterTranslateWithParticle;
         bool m_emitterTranslateWithParticleSetup;

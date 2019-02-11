@@ -116,7 +116,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr GraveyardService::resurrectTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath )
+    RenderTextureInterfacePtr GraveyardService::resurrectTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _filePath, const Char * _doc )
     {
         if( _filePath.empty() == true )
         {
@@ -153,7 +153,7 @@ namespace Mengine
         RenderTextureGraveEntry & entry = *it_found;
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->createRenderTexture( entry.image, entry.width, entry.height );
+			->createRenderTexture( entry.image, entry.width, entry.height, _doc );
 
         entry.image = nullptr;
 

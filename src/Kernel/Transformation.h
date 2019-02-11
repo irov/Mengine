@@ -47,15 +47,15 @@ namespace Mengine
         ~Transformation();
 
     public:
-        void setRelationTransformation( Transformation * _relation );
+        void setRelationTransformation( Transformation * _relationTransformation );
         inline Transformation * getRelationTransformation() const;
 
     public:
         void removeRelationTransformation();
 
     protected:
-        void addRelationTransformationChild_( Transformation * _child );
-        void removeRelationTransformationChild_( Transformation * _child );
+        void addRelationTransformationChild_( Transformation * _childTransformation );
+        void removeRelationTransformationChild_( Transformation * _childTransformation );
 
     public:
         inline const mt::mat4f & getWorldMatrix() const;

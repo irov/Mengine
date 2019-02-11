@@ -36,6 +36,7 @@
 #include "Image.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 #include "Kernel/FilePathHelper.h"
 #include "Kernel/FactoryDefault.h"
 
@@ -246,7 +247,7 @@ namespace Mengine
         options.params = utf8_params;
 
         ConverterInterfacePtr converter = CONVERTER_SERVICE()
-            ->createConverter( Helper::stringizeString( utf8_convertType ) );
+            ->createConverter( Helper::stringizeString( utf8_convertType ), MENGINE_DOCUMENT_FUNCTION );
 
         if( converter == nullptr )
         {
@@ -309,7 +310,7 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, c_path, false );
+            ->openInputFile( fileGroup, c_path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -324,7 +325,7 @@ namespace Mengine
             ->findCodecType( c_path );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( codecType );
+            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( imageDecoder == nullptr )
         {
@@ -497,7 +498,7 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, c_path, false );
+            ->openInputFile( fileGroup, c_path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

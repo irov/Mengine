@@ -399,7 +399,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         SoundAffectorCallbackPtr createSoundAffectorCallback( const SoundIdentityInterfacePtr & _emitter, const pybind::object & _cb, const pybind::args & _args )
         {
-            SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject();
+			SoundAffectorCallbackPtr callback = m_factorySoundAffectorCallback->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             callback->initialize( _emitter, _cb, _args );
 
@@ -730,7 +730,7 @@ namespace Mengine
         //////////////////////////////////////////////////////////////////////////
         MusicAffectorCallbackPtr createMusicAffectorCallback( const pybind::object & _cb, const pybind::args & _args )
         {
-            MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject();
+            MusicAffectorCallbackPtr callback = m_factoryMusicAffectorCallback->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             callback->initialize( _cb, _args );
 

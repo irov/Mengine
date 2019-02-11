@@ -100,7 +100,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferMemory::play( ALuint _source, bool _looped, float _pos )
+    bool OpenALSoundBufferMemory::playSource( ALuint _source, bool _looped, float _pos )
     {
         ALint state = 0;
         alGetSourcei( _source, AL_SOURCE_STATE, &state );
@@ -132,7 +132,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool OpenALSoundBufferMemory::resume( ALuint _source )
+    bool OpenALSoundBufferMemory::resumeSource( ALuint _source )
     {
         alSourcePlay( _source );
         OPENAL_CHECK_ERROR();
@@ -140,7 +140,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferMemory::pause( ALuint _source )
+    void OpenALSoundBufferMemory::pauseSource( ALuint _source )
     {
         alSourcePause( _source );
         OPENAL_CHECK_ERROR();
@@ -149,7 +149,7 @@ namespace Mengine
         //OAL_CHECK_ERROR();
     }
     //////////////////////////////////////////////////////////////////////////
-    void OpenALSoundBufferMemory::stop( ALuint _source )
+    void OpenALSoundBufferMemory::stopSource( ALuint _source )
     {
         alSourceStop( _source );
         OPENAL_CHECK_ERROR();

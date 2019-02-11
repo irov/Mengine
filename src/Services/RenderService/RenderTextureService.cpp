@@ -15,10 +15,12 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/FactoryPoolWithListener.h"
 #include "Kernel/AssertionFactory.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "stdex/memorycopy.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( RenderTextureService, Mengine::RenderTextureService );
@@ -145,7 +147,7 @@ namespace Mengine
 
         if( image == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::createTexture_ invalid create image %ux%u"
+            LOGGER_ERROR( "invalid create image %ux%u"
                 , HWWidth
                 , HWHeight
             );
@@ -153,11 +155,11 @@ namespace Mengine
             return nullptr;
         }
 
-        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height );
+		RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
 
         if( texture == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::createTexture_ invalid create render texture %ux%u"
+            LOGGER_ERROR( "invalid create render texture %ux%u"
                 , _width
                 , _height
             );
@@ -193,7 +195,7 @@ namespace Mengine
             return nullptr;
         }
 
-        RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height );
+		RenderTextureInterfacePtr texture = this->createRenderTexture( image, _width, _height, _doc );
 
         return texture;
     }
@@ -201,11 +203,11 @@ namespace Mengine
     bool RenderTextureService::saveImage( const RenderTextureInterfacePtr & _texture, const FileGroupInterfacePtr & _fileGroup, const ConstString & _codecName, const FilePath & _fileName )
     {
         OutputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openOutputFile( _fileGroup, _fileName );
+            ->openOutputFile( _fileGroup, _fileName, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::saveImage : can't create file '%s' '%s'"
+            LOGGER_ERROR( "can't create file '%s' '%s'"
                 , _fileGroup->getName().c_str()
                 , _fileName.c_str()
             );
@@ -214,11 +216,11 @@ namespace Mengine
         }
 
         ImageEncoderInterfacePtr imageEncoder = CODEC_SERVICE()
-            ->createEncoderT<ImageEncoderInterfacePtr>( _codecName );
+            ->createEncoderT<ImageEncoderInterfacePtr>( _codecName, MENGINE_DOCUMENT_FUNCTION );
 
         if( imageEncoder == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::saveImage : can't create encoder for filename '%s'"
+            LOGGER_ERROR( "can't create encoder for filename '%s'"
                 , _fileName.c_str()
             );
 
@@ -227,7 +229,7 @@ namespace Mengine
 
         if( imageEncoder->initialize( stream ) == false )
         {
-            LOGGER_ERROR( "RenderTextureService::saveImage : can't initialize encoder for filename '%s'"
+            LOGGER_ERROR( "can't initialize encoder for filename '%s'"
                 , _fileName.c_str()
             );
 
@@ -255,7 +257,7 @@ namespace Mengine
 
         if( buffer == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::saveImage : can't lock texture '%s'"
+            LOGGER_ERROR( "can't lock texture '%s'"
                 , _fileName.c_str()
             );
 
@@ -270,7 +272,7 @@ namespace Mengine
 
         if( imageEncoder->setOptions( &options ) == false )
         {
-            LOGGER_ERROR( "RenderTextureService::saveImage : invalid optionize '%s'"
+            LOGGER_ERROR( "invalid optionize '%s'"
                 , _fileName.c_str()
             );
 
@@ -287,7 +289,7 @@ namespace Mengine
 
         if( bytesWritten == 0 )
         {
-            LOGGER_ERROR( "RenderTextureService::saveImage : Error while encoding image data"
+            LOGGER_ERROR( "Error while encoding image data"
             );
 
             return false;
@@ -326,13 +328,13 @@ namespace Mengine
 
         textures.emplace( std::make_pair( _fileGroup->getName(), _fileName ), texture_ptr );
 
-        LOGGER_INFO( "RenderTextureService::cacheFileTexture cache texture %s:%s"
+        LOGGER_INFO( "cache texture %s:%s"
             , _fileGroup->getName().c_str()
             , _fileName.c_str()
         );
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName )
+    RenderTextureInterfacePtr RenderTextureService::loadTexture( const FileGroupInterfacePtr& _fileGroup, const FilePath & _fileName, const ConstString & _codecName, const Char * _doc )
     {
         const MapRenderTextureEntry & textures = this->getHashEntry_( _fileName );
 
@@ -348,7 +350,7 @@ namespace Mengine
         if( SERVICE_EXIST( Mengine::GraveyardInterface ) == true )
         {
             RenderTextureInterfacePtr resurrect_texture = GRAVEYARD_SERVICE()
-                ->resurrectTexture( _fileGroup, _fileName );
+                ->resurrectTexture( _fileGroup, _fileName, _doc );
 
             if( resurrect_texture != nullptr )
             {
@@ -364,11 +366,11 @@ namespace Mengine
         //	return atlas_texture;
         //}
 
-        DecoderRenderImageProviderPtr imageProvider = m_factoryDecoderRenderImageProvider->createObject();
+		DecoderRenderImageProviderPtr imageProvider = m_factoryDecoderRenderImageProvider->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( imageProvider == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::loadTexture invalid create render image provider" );
+            LOGGER_ERROR( "invalid create render image provider" );
 
             return nullptr;
         }
@@ -379,7 +381,7 @@ namespace Mengine
 
         if( imageLoader == nullptr )
         {
-            LOGGER_ERROR( "RenderTextureService::loadTexture invalid get image loader" );
+            LOGGER_ERROR( "invalid get image loader" );
 
             return nullptr;
         }
@@ -401,17 +403,11 @@ namespace Mengine
 
         const RenderImageInterfacePtr & image = new_texture->getImage();
 
-        if( image == nullptr )
-        {
-            LOGGER_ERROR( "RenderTextureService::loadTexture invalid get image"
-            );
-
-            return nullptr;
-        }
+		MENGINE_ASSERTION_MEMORY_PANIC( image, nullptr )("invalid get image");
 
         if( imageLoader->load( image ) == false )
         {
-            LOGGER_ERROR( "RenderTextureService::createTexture Invalid decode image"
+            LOGGER_ERROR( "invalid decode image"
             );
 
             image->unlock( 0, false );
@@ -561,9 +557,9 @@ namespace Mengine
         return false;
     }
     //////////////////////////////////////////////////////////////////////////
-    RenderTextureInterfacePtr RenderTextureService::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height )
+    RenderTextureInterfacePtr RenderTextureService::createRenderTexture( const RenderImageInterfacePtr & _image, uint32_t _width, uint32_t _height, const Char * _doc )
     {
-        RenderTexturePtr texture = m_factoryRenderTexture->createObject();
+        RenderTexturePtr texture = m_factoryRenderTexture->createObject( _doc );
 
         uint32_t id = GENERATE_UNIQUE_IDENTITY();
 

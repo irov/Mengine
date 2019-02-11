@@ -9,8 +9,8 @@
 
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
-
 #include "Kernel/RenderUtils.h"
+#include "Kernel/Document.h"
 
 #include "math/convex8.h"
 
@@ -1114,20 +1114,20 @@ namespace Mengine
             return batch;
         }
 
-        RenderBatchPtr new_batch = m_factoryRenderBatch->createObject();
+		RenderBatchPtr new_batch = m_factoryRenderBatch->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         new_batch->vertexAttribute = _vertexAttribute;
 
         uint32_t elementSize = _vertexAttribute->getElementSize();
 
         new_batch->vertexBuffer = m_renderSystem
-            ->createVertexBuffer( elementSize, BT_DYNAMIC );
+            ->createVertexBuffer( elementSize, BT_DYNAMIC, MENGINE_DOCUMENT_FUNCTION );
 
         new_batch->vertexCount = 0;
         new_batch->vertexMemory = nullptr;
 
         new_batch->indexBuffer = m_renderSystem
-            ->createIndexBuffer( sizeof( RenderIndex ), BT_DYNAMIC );
+            ->createIndexBuffer( sizeof( RenderIndex ), BT_DYNAMIC, MENGINE_DOCUMENT_FUNCTION );
 
         new_batch->indexCount = 0;
         new_batch->indexMemory = nullptr;
@@ -1188,7 +1188,7 @@ namespace Mengine
 
         if( this->testRenderPass_( _context, batch, _variable ) == true )
         {
-            RenderPassPtr pass = m_factoryRenderPass->createObject();
+            RenderPassPtr pass = m_factoryRenderPass->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             pass->beginRenderObject = (uint32_t)m_renderObjects.size();
             pass->countRenderObject = 0U;

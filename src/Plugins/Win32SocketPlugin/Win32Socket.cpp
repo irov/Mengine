@@ -54,7 +54,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::bind( const SocketConnectInfo & _info, const bool _blocking )
+    bool Win32Socket::bind( const SocketConnectInfo & _info, bool _blocking )
     {
         m_socket = ::socket( AF_INET, SOCK_STREAM, IPPROTO_TCP );
 
@@ -129,7 +129,7 @@ namespace Mengine
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32Socket::waitForData( size_t timeoutMs )
+    bool Win32Socket::waitForData( uint32_t timeoutMs )
     {
         if( m_socket == INVALID_SOCKET )
         {

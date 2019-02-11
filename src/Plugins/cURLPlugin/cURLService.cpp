@@ -14,6 +14,7 @@
 #include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "curl/curl.h"
 
@@ -42,7 +43,7 @@ namespace Mengine
 
         if( code != CURLE_OK )
         {
-            LOGGER_ERROR( "cURLHttpSystem::initialize invalid initialize curl %d:%s"
+            LOGGER_ERROR( "invalid initialize curl %d:%s"
                 , code
                 , curl_easy_strerror( code )
             );
@@ -94,7 +95,7 @@ namespace Mengine
     {
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
-        cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject();
+        cURLGetMessageThreadTaskPtr task = m_factoryTaskGetMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
         task->setReceiver( this );
@@ -103,7 +104,7 @@ namespace Mengine
         if( THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
         {
-            LOGGER_ERROR( "cURLHttpSystem::getMessage url '%s' invalid add task"
+            LOGGER_ERROR( "url '%s' invalid add task"
                 , _url.c_str()
             );
 
@@ -124,7 +125,7 @@ namespace Mengine
     {
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
-        cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject();
+		cURLPostMessageThreadTaskPtr task = m_factoryTaskPostMessage->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
         task->setReceiver( this );
@@ -133,7 +134,7 @@ namespace Mengine
         if( THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
         {
-            LOGGER_ERROR( "cURLHttpSystem::postMessage url '%s' invalid add task"
+            LOGGER_ERROR( "url '%s' invalid add task"
                 , _url.c_str()
             );
 
@@ -154,7 +155,7 @@ namespace Mengine
     {
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
-        cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject();
+		cURLHeaderDataThreadTaskPtr task = m_factoryTaskHeaderData->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
         task->setReceiver( this );
@@ -163,7 +164,7 @@ namespace Mengine
         if( THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
         {
-            LOGGER_ERROR( "cURLHttpSystem::headerData url '%s' invalid add task"
+            LOGGER_ERROR( "url '%s' invalid add task"
                 , _url.c_str()
             );
 
@@ -184,7 +185,7 @@ namespace Mengine
     {
         if( _fileGroup->existFile( _path ) == true )
         {
-            LOGGER_ERROR( "CurlHttpSystem::downloadAsset url '%s' category '%s' file alredy exist '%s'"
+            LOGGER_ERROR( "url '%s' category '%s' file alredy exist '%s'"
                 , _url.c_str()
                 , _fileGroup->getName().c_str()
                 , _path.c_str()
@@ -195,7 +196,7 @@ namespace Mengine
 
         uint32_t task_id = GENERATE_UNIQUE_IDENTITY();
 
-        cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject();
+		cURLGetAssetThreadTaskPtr task = m_factoryTaskDownloadAsset->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         task->setRequestId( task_id );
         task->setReceiver( this );
@@ -204,7 +205,7 @@ namespace Mengine
         if( THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "cURLService" ), task ) == false )
         {
-            LOGGER_ERROR( "CurlHttpSystem::downloadAsset url '%s' category '%s' path '%s' invalid add task"
+            LOGGER_ERROR( "url '%s' category '%s' path '%s' invalid add task"
                 , _url.c_str()
                 , _fileGroup->getName().c_str()
                 , _path.c_str()

@@ -6,10 +6,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadConditionVariable::Win32ThreadConditionVariable()
-#ifndef NDEBUG
-        : m_file( nullptr )
-        , m_line( 0 )
-#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -17,14 +13,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadConditionVariable::initialize( const Char * _file, uint32_t _line )
+    void Win32ThreadConditionVariable::initialize( const Char * _doc )
     {
-        MENGINE_UNUSED( _file );
-        MENGINE_UNUSED( _line );
+        MENGINE_UNUSED( _doc );
 
 #ifndef NDEBUG
-        m_file = _file;
-        m_line = _line;
+        m_doc = _doc;
 #endif
 
         InitializeCriticalSection( &m_conditionLock );
@@ -33,7 +27,9 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadConditionVariable::wait()
     {
+        EnterCriticalSection( &m_conditionLock );
         SleepConditionVariableCS( &m_conditionVariable, &m_conditionLock, INFINITE );
+        LeaveCriticalSection( &m_conditionLock );
     }
     //////////////////////////////////////////////////////////////////////////
     void Win32ThreadConditionVariable::wake()

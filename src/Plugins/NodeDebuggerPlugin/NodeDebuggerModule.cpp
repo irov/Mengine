@@ -428,16 +428,16 @@ namespace Mengine
         m_shouldRecreateServer = true;
 
         m_threadJob = THREAD_SERVICE()
-            ->createJob( 50u );
+            ->createJob( 50u, MENGINE_DOCUMENT_FUNCTION );
 
         THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), -1, __FILE__, __LINE__ );
+            ->createThread( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), -1, MENGINE_DOCUMENT_FUNCTION );
 
         THREAD_SERVICE()
             ->addTask( STRINGIZE_STRING_LOCAL( "NodeDebuggerListenThread" ), m_threadJob );
 
         m_dataMutex = THREAD_SERVICE()
-            ->createMutex( __FILE__, __LINE__ );
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         m_threadJob->addWorker( this );
 

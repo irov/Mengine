@@ -7,6 +7,7 @@
 #include "Kernel/AssertionFactory.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( MemoryService, Mengine::MemoryService );
@@ -25,7 +26,7 @@ namespace Mengine
     bool MemoryService::_initializeService()
     {
         m_memoryCacheMutex = THREAD_SERVICE()
-            ->createMutex( __FILE__, __LINE__ );
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         m_factoryMemoryCacheBuffer = new FactoryPool<MemoryCacheBuffer, 16, FactoryWithMutex>();
         m_factoryMemoryCacheInput = new FactoryPool<MemoryCacheInput, 16, FactoryWithMutex>();
@@ -35,7 +36,7 @@ namespace Mengine
         m_factoryMemoryProxy = new FactoryPool<MemoryProxy, 16, FactoryWithMutex>();
 
         ThreadMutexInterfacePtr memoryFactoryMutex = THREAD_SERVICE()
-            ->createMutex( __FILE__, __LINE__ );
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         m_factoryMemoryBuffer->setMutex( memoryFactoryMutex );
         m_factoryMemoryProxy->setMutex( memoryFactoryMutex );
@@ -82,10 +83,10 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     CacheBufferID MemoryService::lockBufferNoMutex_( size_t _size, void ** _memory, const Char * _doc, const Char * _file, uint32_t _line )
     {
-        size_t minSize = (size_t)(0);
-        size_t maxSize = (size_t)(-1);
+        size_t minSize = 0U;
+        size_t maxSize = ~0U;
 
-        const VectorCacheBufferMemory::size_type invalidIndex = (VectorCacheBufferMemory::size_type) - 1;
+        const VectorCacheBufferMemory::size_type invalidIndex = ~0U;
 
         VectorCacheBufferMemory::size_type minIndex = invalidIndex;
         VectorCacheBufferMemory::size_type maxIndex = invalidIndex;

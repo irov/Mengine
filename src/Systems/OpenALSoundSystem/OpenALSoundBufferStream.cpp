@@ -7,6 +7,7 @@
 
 #include "Kernel/ThreadMutexScope.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -30,7 +31,7 @@ namespace Mengine
     bool OpenALSoundBufferStream::_initialize()
     {
         ThreadMutexInterfacePtr mutexUpdating = THREAD_SERVICE()
-            ->createMutex( __FILE__, __LINE__ );
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         if( mutexUpdating == nullptr )
         {

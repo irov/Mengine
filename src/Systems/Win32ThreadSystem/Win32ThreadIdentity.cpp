@@ -44,10 +44,6 @@ namespace Mengine
         : m_thread( INVALID_HANDLE_VALUE )
         , m_task( nullptr )
         , m_exit( false )
-#ifndef NDEBUG
-        , m_file( nullptr )
-        , m_line( 0 )
-#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -82,14 +78,12 @@ namespace Mengine
         ExitThread( 0 );
     }
     //////////////////////////////////////////////////////////////////////////
-    bool Win32ThreadIdentity::initialize( int32_t _priority, const Char * _doc, const Char * _file, uint32_t _line )
+    bool Win32ThreadIdentity::initialize( int32_t _priority, const Char * _doc )
     {
-        MENGINE_UNUSED( _file );
-        MENGINE_UNUSED( _line );
+        MENGINE_UNUSED( _doc );
 
 #ifndef NDEBUG
-        m_file = _file;
-        m_line = _line;
+        m_doc = _doc;
 #endif
 
 		InitializeCriticalSection( &m_processLock );
@@ -103,7 +97,7 @@ namespace Mengine
         {
             DWORD error_code = GetLastError();
 
-            LOGGER_ERROR( "Win32ThreadIdentity::initialize: invalid create thread error code - %d"
+            LOGGER_ERROR( "invalid create thread error code - %d"
                 , error_code
             );
 

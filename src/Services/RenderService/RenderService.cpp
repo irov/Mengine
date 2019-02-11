@@ -152,6 +152,11 @@ namespace Mengine
             stdex::intrusive_ptr_release( ro.indexBuffer );
         }
 
+        for( RenderPass * rp : m_renderPasses )
+        {
+            m_poolRenderPass.destroyT( rp );
+        }
+
         m_renderObjects.clear();
         m_renderBatches.clear();
         m_renderPasses.clear();
@@ -719,9 +724,15 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void RenderService::restoreRenderSystemStates_()
     {
-        m_renderBatches.clear();
-        m_renderPasses.clear();
+        m_renderBatches.clear();        
         m_renderObjects.clear();
+
+        for( RenderPass * rp : m_renderPasses )
+        {
+            m_poolRenderPass.destroyT( rp );
+        }
+
+        m_renderPasses.clear();
 
         for( const RenderBatchPtr & batch : m_cacheRenderBatches )
         {
@@ -1472,7 +1483,7 @@ namespace Mengine
                 return false;
             }
 
-            MemoryInterfacePtr vertexMemory = vertexBuffer->lock( 0, batch->vertexCount );
+            MemoryInterfacePtr vertexMemory = vertexBuffer->lock( 0, batch->vertexCount, MENGINE_DOCUMENT_FUNCTION );
 
             if( vertexMemory == nullptr )
             {
@@ -1496,7 +1507,7 @@ namespace Mengine
                 return false;
             }
 
-            MemoryInterfacePtr indexMemory = indexBuffer->lock( 0, batch->indexCount );
+            MemoryInterfacePtr indexMemory = indexBuffer->lock( 0, batch->indexCount, MENGINE_DOCUMENT_FUNCTION );
 
             if( indexMemory == nullptr )
             {

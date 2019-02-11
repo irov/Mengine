@@ -4,6 +4,7 @@
 #include "Interface/EnumeratorServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -15,17 +16,16 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     ThreadJob::~ThreadJob()
     {
-        for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
-        {
-            ThreadJobWorkerDesc & desc = m_workers[i];
-
-            desc.worker = nullptr;
-            desc.mutex = nullptr;
-        }
     }
     //////////////////////////////////////////////////////////////////////////        
-    bool ThreadJob::initialize( uint32_t _sleep )
+    bool ThreadJob::initialize( uint32_t _sleep, const Char * _doc )
     {
+        MENGINE_UNUSED( _doc );
+
+#ifndef NDEBUG
+        m_doc = _doc;
+#endif
+
         m_sleep = _sleep;
 
         for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
@@ -33,7 +33,7 @@ namespace Mengine
             ThreadJobWorkerDesc & desc = m_workers[i];
 
             ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-                ->createMutex( __FILE__, __LINE__ );
+                ->createMutex( _doc );
 
             desc.mutex = mutex;
 
@@ -284,6 +284,24 @@ namespace Mengine
             ThreadJobWorkerDesc & desc = m_workers[i];
 
             s_thread_updateWorker( desc );
+        }
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadJob::_onCancel()
+    {
+
+    }
+    //////////////////////////////////////////////////////////////////////////
+    void ThreadJob::_onComplete( bool _successful )
+    {
+        MENGINE_UNUSED( _successful );
+
+        for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
+        {
+            ThreadJobWorkerDesc & desc = m_workers[i];
+
+            desc.worker = nullptr;
+            desc.mutex = nullptr;
         }
     }
 }

@@ -22,7 +22,7 @@ namespace Mengine
         virtual bool resize( uint32_t _count ) = 0;
 
     public:
-        virtual MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) = 0;
+        virtual MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size, const Char * _doc ) = 0;
         virtual bool unlock() = 0;
 
     public:

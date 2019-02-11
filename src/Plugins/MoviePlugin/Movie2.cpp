@@ -622,6 +622,12 @@ namespace Mengine
         m_texts.clear();
         m_particleEmitters.clear();
         m_sprites.clear();
+        m_subCompositions.clear();
+
+        for( const MatrixProxyPtr & proxy : m_matrixProxies )
+        {
+            proxy->removeFromParent();
+        }
 
         m_matrixProxies.clear();
     }
@@ -1947,7 +1953,9 @@ namespace Mengine
 
         Camera & c = it_found->second;
 
+        c.projection->removeFromParent();
         c.projection = nullptr;
+        c.viewport->removeFromParent();
         c.viewport = nullptr;
 
         m_cameras.erase( it_found );

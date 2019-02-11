@@ -6,6 +6,7 @@
 
 #include "Kernel/Factorable.h"
 
+#include "Config/String.h"
 #include "Config/Char.h"
 
 namespace Mengine
@@ -19,7 +20,7 @@ namespace Mengine
         ~Win32ThreadMutex() override;
 
     public:
-        void initialize( const Char * _file, uint32_t _line );
+        void initialize( const Char * _doc );
 
     protected:
         void lock() override;
@@ -35,8 +36,7 @@ namespace Mengine
         CRITICAL_SECTION m_cs;
 
 #ifndef NDEBUG
-        const Char * m_file;
-        uint32_t m_line;
+        String m_doc;
 #endif
     };
     //////////////////////////////////////////////////////////////////////////

@@ -5,6 +5,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/AssertionMemoryPanic.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 #include "Kernel/ThreadMutexScope.h"
 
 #include <algorithm>
@@ -28,7 +29,7 @@ namespace Mengine
     {
         SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]() {
             ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-                ->createMutex( __FILE__, __LINE__ );
+                ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
             MENGINE_ASSERTION_MEMORY_PANIC_VOID( mutex );
 

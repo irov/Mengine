@@ -147,7 +147,8 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////	
     void ThreadTask::_onComplete( bool _successful )
     {
-        (void)_successful;
+        MENGINE_UNUSED( _successful );
+
         //Empty
     }
 }

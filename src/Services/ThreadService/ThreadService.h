@@ -11,6 +11,7 @@
 
 #include "Kernel/Factory.h"
 
+#include "Config/String.h"
 #include "Config/Vector.h"
 
 namespace Mengine
@@ -28,10 +29,10 @@ namespace Mengine
         void _finalizeService() override;
 
     public:
-        ThreadJobPtr createJob( uint32_t _sleep ) override;
+        ThreadJobPtr createJob( uint32_t _sleep, const Char * _doc ) override;
 
     public:
-        bool createThread( const ConstString & _threadName, int32_t _priority, const Char * _file, uint32_t _line ) override;
+        bool createThread( const ConstString & _threadName, int32_t _priority, const Char * _doc ) override;
         bool destroyThread( const ConstString & _threadName ) override;
 
     public:
@@ -49,13 +50,13 @@ namespace Mengine
         void cancelTaskQueue( const ThreadQueueInterfacePtr & _queue ) override;
 
     public:
-        void waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _file, uint32_t _line ) override;
+        void waitMainThreadCode( const LambdaMainThreadCode & _lambda, const Char * _doc ) override;
 
     public:
         void update() override;
 
     public:
-        ThreadMutexInterfacePtr createMutex( const Char * _file, uint32_t _line ) override;
+        ThreadMutexInterfacePtr createMutex( const Char * _doc ) override;
 
     public:
         void sleep( uint32_t _ms ) override;
@@ -103,9 +104,8 @@ namespace Mengine
         {
             ThreadConditionVariableInterfacePtr conditionVariable;
             LambdaMainThreadCode lambda;
-            const Char * file;
-            uint32_t line;
-        };        
+            String doc;
+        };
 
         typedef Vector<MainCodeDesc> VectorMainCodeDescs;
         VectorMainCodeDescs m_mainCodes;

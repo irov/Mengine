@@ -105,7 +105,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    MemoryInterfacePtr DX9RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count )
+    MemoryInterfacePtr DX9RenderIndexBuffer::lock( uint32_t _offset, uint32_t _count, const Char * _doc )
     {
         if( _offset + _count > m_indexCount )
         {
@@ -143,7 +143,7 @@ namespace Mengine
         }
 
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
-			->createMemoryProxy( MENGINE_DOCUMENT_FUNCTION );
+			->createMemoryProxy( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( memory, nullptr )("invalid create memory proxy");
 
@@ -156,7 +156,7 @@ namespace Mengine
     {
         IF_DXCALL( m_pIB, Unlock, () )
         {
-            LOGGER_ERROR( "DX9RenderIndexBuffer::unlock invalid"
+            LOGGER_ERROR( "invalid"
             );
 
             return false;

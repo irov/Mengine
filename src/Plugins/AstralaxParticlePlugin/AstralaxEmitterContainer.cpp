@@ -6,6 +6,7 @@
 #include "Interface/PrefetcherServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Kernel/String.h"
 #include "Kernel/Stream.h"
@@ -37,7 +38,7 @@ namespace Mengine
             ->getStream( _fileGroup, _fileName, memory ) == false )
         {
             InputStreamInterfacePtr stream = FILE_SERVICE()
-                ->openInputFile( _fileGroup, _fileName, false );
+                ->openInputFile( _fileGroup, _fileName, false, MENGINE_DOCUMENT_FUNCTION );
 
             if( stream == nullptr )
             {

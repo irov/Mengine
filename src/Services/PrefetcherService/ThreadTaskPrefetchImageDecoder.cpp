@@ -7,6 +7,7 @@
 #include "Kernel/FactorableUnique.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -41,7 +42,7 @@ namespace Mengine
             return false;
         }
 
-        m_stream = m_fileGroup->createInputFile( m_filePath, false );
+        m_stream = m_fileGroup->createInputFile( m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( m_stream == nullptr )
         {
@@ -53,7 +54,7 @@ namespace Mengine
         }
 
         m_imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( m_imageCodec );
+            ->createDecoderT<ImageDecoderInterfacePtr>( m_imageCodec, MENGINE_DOCUMENT_FUNCTION );
 
         if( m_imageDecoder == nullptr )
         {
@@ -80,7 +81,7 @@ namespace Mengine
         }
 
         MemoryInputInterfacePtr memoryInput = MEMORY_SERVICE()
-            ->createMemoryInput();
+			->createMemoryInput( MENGINE_DOCUMENT_FUNCTION );
 
         if( memoryInput == nullptr )
         {

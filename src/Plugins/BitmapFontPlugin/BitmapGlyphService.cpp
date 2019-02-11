@@ -3,6 +3,8 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 
+#include "Kernel/Document.h"
+
 //////////////////////////////////////////////////////////////////////////
 SERVICE_FACTORY( BitmapGlyphService, Mengine::BitmapGlyphService );
 //////////////////////////////////////////////////////////////////////////
@@ -44,7 +46,7 @@ namespace Mengine
             return glyph;
         }
 
-        BitmapGlyphPtr glyph = m_factoryTextGlyph->createObject();
+		BitmapGlyphPtr glyph = m_factoryTextGlyph->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( glyph->initialize( _category, _path ) == false )
         {

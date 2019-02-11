@@ -28,11 +28,11 @@ namespace Mengine
         return factory;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer TTFPrototypeGenerator::generate()
+    FactorablePointer TTFPrototypeGenerator::generate( const Char * _doc )
     {
         const FactoryPtr & factory = this->getFactory();
 
-        TTFFontPtr font = factory->createObject();
+		TTFFontPtr font = factory->createObject( _doc );
 
         font->setFTLibrary( m_ftlibrary );
 

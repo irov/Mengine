@@ -11,7 +11,7 @@ namespace Mengine
         : public Mixin
     {
     public:
-        virtual ModuleInterfacePtr createModule( const ConstString & _name ) = 0;
+        virtual ModuleInterfacePtr createModule( const ConstString & _name, const Char * _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<ModuleFactoryInterface> ModuleFactoryInterfacePtr;

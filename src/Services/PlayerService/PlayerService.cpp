@@ -47,6 +47,7 @@
 #include "PlayerGlobalAffectorable.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Kernel/Resource.h"
 
@@ -113,7 +114,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SchedulerInterfacePtr PlayerService::createSchedulerManager( const ConstString & _name )
     {
-        SchedulerPtr sm = m_factoryScheduleManager->createObject();
+		SchedulerPtr sm = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( sm->initialize( _name ) == false )
         {
@@ -174,7 +175,7 @@ namespace Mengine
 
         m_factoryScheduleManager = new FactoryPool<Scheduler, 16>();
 
-        SchedulerPtr scheduleManager = m_factoryScheduleManager->createObject();
+		SchedulerPtr scheduleManager = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( scheduleManager->initialize( "LocalScheduleManager"_c ) == false )
         {
@@ -183,7 +184,7 @@ namespace Mengine
 
         m_scheduleManager = scheduleManager;
 
-        SchedulerPtr scheduleManagerGlobal = m_factoryScheduleManager->createObject();
+        SchedulerPtr scheduleManagerGlobal = m_factoryScheduleManager->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( scheduleManagerGlobal->initialize( "GlobalScheduleManager"_c ) == false )
         {
@@ -260,7 +261,7 @@ namespace Mengine
         Viewport vp( 0.f, 0.f, cr.x, cr.y );
 
         m_camera2D = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+			->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FUNCTION );
 
         m_camera2D->setOrthogonalViewport( vp );
         m_camera2D->enable();
@@ -268,7 +269,7 @@ namespace Mengine
         this->setRenderCamera( m_camera2D );
 
         m_viewport2D = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FUNCTION );
 
         m_viewport2D->setViewport( vp );
         m_viewport2D->enable();
@@ -276,7 +277,7 @@ namespace Mengine
         this->setRenderViewport( m_viewport2D );
 
         m_arrowCamera2D = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FUNCTION );
 
         m_arrowCamera2D->setOrthogonalViewport( vp );
         m_arrowCamera2D->enable();

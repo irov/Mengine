@@ -16,14 +16,13 @@ namespace Mengine
 
     public:
         virtual bool registerConverter( const ConstString& _type, const ConverterFactoryInterfacePtr & _converter ) = 0;
-
-    public:
         virtual bool unregisterConverter( const ConstString& _type ) = 0;
 
-        virtual ConverterInterfacePtr createConverter( const ConstString & _type ) = 0;
+	public:
+        virtual ConverterInterfacePtr createConverter( const ConstString & _type, const Char * _doc ) = 0;
 
     public:
-        virtual bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out ) = 0;
+        virtual bool convert( const ConstString & _converter, const FileGroupInterfacePtr & _category, const FilePath & _in, FilePath & _out, const Char * _doc ) = 0;
     };
 }
 //////////////////////////////////////////////////////////////////////////

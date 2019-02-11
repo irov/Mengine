@@ -8,6 +8,7 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Kernel/FilePath.h"
 #include "Kernel/String.h"
@@ -94,11 +95,11 @@ namespace Mengine
     bool FileGroupZip::loadHeader_()
     {
         InputStreamInterfacePtr zipFile = FILE_SERVICE()
-            ->openInputFile( m_category, m_path, false );
+            ->openInputFile( m_category, m_path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( zipFile == nullptr )
         {
-            LOGGER_ERROR( "FileSystemZip::loadHeader_ can't open input stream for path %s"
+            LOGGER_ERROR( "can't open input stream for path %s"
                 , m_path.c_str()
             );
 
@@ -114,7 +115,7 @@ namespace Mengine
 
         if( zipFile->read( endof_central_dir, 22 ) != 22 )
         {
-            LOGGER_ERROR( "FileSystemZip::loadHeader_ invalid zip format %s"
+            LOGGER_ERROR( "invalid zip format %s"
                 , m_path.c_str()
             );
 
@@ -125,7 +126,7 @@ namespace Mengine
 
         if( eocd != 0x06054B50 )
         {
-            LOGGER_ERROR( "FileSystemZip::loadHeader_ bad 'End of Central Dir' signature zip %s"
+            LOGGER_ERROR( "bad 'End of Central Dir' signature zip %s"
                 , m_path.c_str()
             );
 
@@ -187,7 +188,7 @@ namespace Mengine
 
             if( header.compressionMethod != Z_NO_COMPRESSION && header.compressionMethod != Z_DEFLATED )
             {
-                LOGGER_ERROR( "FileGroupZip::createInputFile: pak %s file %s invalid compress method %d"
+                LOGGER_ERROR( "pak '%s' file '%s' invalid compress method %d"
                     , m_path.c_str()
                     , fileName.c_str()
                     , header.compressionMethod
@@ -409,7 +410,7 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _fileName, bool _streaming )
+    InputStreamInterfacePtr FileGroupZip::createInputFile( const FilePath & _fileName, bool _streaming, const Char * _doc )
     {
         MapFileInfo::const_iterator it_found = m_files.find( _fileName );
 
@@ -420,13 +421,13 @@ namespace Mengine
 
         if( _streaming == true )
         {
-            InputStreamInterfacePtr stream = m_category->createInputFile( _fileName, true );
+			InputStreamInterfacePtr stream = m_category->createInputFile( _fileName, true, _doc );
 
             return stream;
         }
 
         MemoryInputInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryInput();
+			->createMemoryInput( _doc );
 
         return memory;
     }
@@ -435,7 +436,7 @@ namespace Mengine
     {
         if( _stream == nullptr )
         {
-            LOGGER_ERROR( "FileGroupZip::openInputFile: pak %s file %s stream is NULL"
+            LOGGER_ERROR( "pak '%s' file '%s' stream is NULL"
                 , m_path.c_str()
                 , _fileName.c_str()
             );
@@ -447,7 +448,7 @@ namespace Mengine
 
         if( it_found == m_files.end() )
         {
-            LOGGER_ERROR( "FileGroupZip::openInputFile: pak %s file %s not found"
+            LOGGER_ERROR( "pak '%s' file '%s' not found"
                 , m_path.c_str()
                 , _fileName.c_str()
             );
@@ -462,7 +463,7 @@ namespace Mengine
 
         if( _offset + file_size > fi.file_size )
         {
-            LOGGER_ERROR( "FileGroupZip::openInputFile: pak %s file %s invalid open range %d:%d (file size is low %d:%d)"
+            LOGGER_ERROR( "pak '%s' file '%s' invalid open range %d:%d (file size is low %d:%d)"
                 , m_path.c_str()
                 , _fileName.c_str()
                 , _offset
@@ -478,7 +479,7 @@ namespace Mengine
         {
             if( fi.compr_method != Z_NO_COMPRESSION )
             {
-                LOGGER_ERROR( "FileGroupZip::openInputFile: pak %s file %s invalid open, not support compress + stream"
+                LOGGER_ERROR( "pak '%s' file '%s' invalid open, not support compress + stream"
                     , m_path.c_str()
                     , _fileName.c_str()
                 );
@@ -488,7 +489,7 @@ namespace Mengine
 
             if( m_category->openInputFile( m_path, _stream, file_offset, file_size, true ) == false )
             {
-                LOGGER_ERROR( "FileGroupZip::openInputFile: pak %s file %s invalid open range %d:%d"
+                LOGGER_ERROR( "pak '%s' file '%s' invalid open range %d:%d"
                     , m_path.c_str()
                     , _fileName.c_str()
                     , fi.seek_pos
@@ -509,7 +510,7 @@ namespace Mengine
 
             if( buffer == nullptr )
             {
-                LOGGER_ERROR( "FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
+                LOGGER_ERROR( "pak '%s' file '%s' failed new memory %d"
                     , m_path.c_str()
                     , _fileName.c_str()
                     , fi.unz_size
@@ -529,7 +530,7 @@ namespace Mengine
 
             if( buffer == nullptr )
             {
-                LOGGER_ERROR( "FileGroupZip::createInputFile: pak %s file %s failed new memory %d"
+                LOGGER_ERROR( "pak '%s' file '%s' failed new memory %d"
                     , m_path.c_str()
                     , _fileName.c_str()
                     , fi.unz_size
@@ -542,7 +543,7 @@ namespace Mengine
 
             if( compress_buffer == nullptr )
             {
-                LOGGER_ERROR( "FileGroupZip::createInputFile: pak %s file %s failed cache memory %d"
+                LOGGER_ERROR( "pak '%s' file '%s' failed cache memory %d"
                     , m_path.c_str()
                     , _fileName.c_str()
                     , fi.file_size
@@ -560,7 +561,7 @@ namespace Mengine
 
             if( s_inflate_memory( buffer, fi.unz_size, compress_memory, fi.file_size ) == false )
             {
-                LOGGER_ERROR( "FileGroupZip::createInputFile: pak %s file %s failed inflate"
+				LOGGER_ERROR( "pak '%s' file '%s' failed inflate"
                     , m_path.c_str()
                     , _fileName.c_str()
                 );
@@ -572,10 +573,11 @@ namespace Mengine
         return true;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr FileGroupZip::createOutputFile()
+    OutputStreamInterfacePtr FileGroupZip::createOutputFile( const Char * _doc )
     {
-        LOGGER_ERROR( "FileGroupZip::createOutputFile unsupport method"
-        );
+		MENGINE_UNUSED( _doc );
+
+		LOGGER_ERROR( "unsupport method" );
 
         return nullptr;
     }
@@ -585,7 +587,7 @@ namespace Mengine
         (void)_fileName;
         (void)_file;
 
-        LOGGER_ERROR( "FileGroupZip::openOutputFile %s unsupport method"
+        LOGGER_ERROR( "'%s' unsupport method"
             , _fileName.c_str()
         );
 

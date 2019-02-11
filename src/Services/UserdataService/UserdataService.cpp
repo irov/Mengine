@@ -5,6 +5,7 @@
 #include "Interface/ArchiveServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Kernel/Stream.h"
 
@@ -112,11 +113,11 @@ namespace Mengine
         const UserdataDesc & desc = it_found->second;
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( desc.category, desc.path, false );
+            ->openInputFile( desc.category, desc.path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "UserdataService::loadData: data %s invalid open file %s"
+            LOGGER_ERROR( "data %s invalid open file %s"
                 , _name.c_str()
                 , desc.path.c_str()
             );
@@ -128,7 +129,7 @@ namespace Mengine
 
         if( binaryBuffer == nullptr )
         {
-            LOGGER_ERROR( "UserdataService::loadData: data %s invalid load stream archive %s"
+            LOGGER_ERROR( "data %s invalid load stream archive %s"
                 , _name.c_str()
                 , desc.path.c_str()
             );
@@ -145,7 +146,7 @@ namespace Mengine
 
         if( it_found == m_datas.end() )
         {
-            LOGGER_ERROR( "UserdataService::writeData: data %s not found"
+            LOGGER_ERROR( "data '%s' not found"
                 , _name.c_str()
             );
 
@@ -156,7 +157,7 @@ namespace Mengine
 
         if( _data == nullptr || _size == 0 )
         {
-            LOGGER_ERROR( "UserdataService::writeData: data %s write empty file %s"
+            LOGGER_ERROR( "data '%s' write empty file '%s'"
                 , _name.c_str()
                 , desc.path.c_str()
             );
@@ -165,11 +166,11 @@ namespace Mengine
         }
 
         OutputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openOutputFile( desc.category, desc.path );
+            ->openOutputFile( desc.category, desc.path, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
-            LOGGER_ERROR( "UserdataService::writeData: data %s invalid open file %s"
+            LOGGER_ERROR( "data '%s' invalid open file '%s'"
                 , _name.c_str()
                 , desc.path.c_str()
             );
@@ -182,7 +183,7 @@ namespace Mengine
 
         if( Helper::writeStreamArchiveData( stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_USER_DATA ), GET_MAGIC_VERSION( MAGIC_USER_DATA ), true, data_memory, data_size, EAC_NORMAL ) == false )
         {
-            LOGGER_ERROR( "UserdataService::writeData: data %s invalid write file %s"
+            LOGGER_ERROR( "data '%s' invalid write file '%s'"
                 , _name.c_str()
                 , desc.path.c_str()
             );

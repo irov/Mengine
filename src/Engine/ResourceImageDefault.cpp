@@ -8,6 +8,7 @@
 
 #include "Kernel/MemoryHelper.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 #include "Kernel/ConstString.h"
 #include "Kernel/String.h"
 
@@ -46,7 +47,7 @@ namespace Mengine
         const ConstString & codecType = this->getCodecType();
 
         RenderTextureInterfacePtr texture = RENDERTEXTURE_SERVICE()
-            ->loadTexture( fileGroup, filePath, codecType );
+            ->loadTexture( fileGroup, filePath, codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( texture == nullptr )
         {

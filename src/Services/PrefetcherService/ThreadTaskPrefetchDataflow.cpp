@@ -4,6 +4,7 @@
 #include "Interface/StringizeServiceInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -38,7 +39,7 @@ namespace Mengine
             return false;
         }
 
-        m_stream = m_fileGroup->createInputFile( m_filePath, false );
+        m_stream = m_fileGroup->createInputFile( m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( m_stream == nullptr )
         {
@@ -49,7 +50,7 @@ namespace Mengine
             return false;
         }
 
-        m_data = m_dataflow->create();
+        m_data = m_dataflow->create( MENGINE_DOCUMENT_FUNCTION );
 
         if( m_data == nullptr )
         {

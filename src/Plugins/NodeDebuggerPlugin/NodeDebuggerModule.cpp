@@ -30,6 +30,7 @@
 #include "Kernel/Scene.h"
 #include "Kernel/StringFormat.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Config/Stringstream.h"
 
@@ -447,7 +448,7 @@ namespace Mengine
     void NodeDebuggerModule::recreateServer()
     {
         m_socket = SOCKET_SYSTEM()
-            ->createSocket();
+            ->createSocket( MENGINE_DOCUMENT_FUNCTION );
 
         SocketConnectInfo sci = { "0.0.0.0", "18790" };
         m_socket->bind( sci, false );

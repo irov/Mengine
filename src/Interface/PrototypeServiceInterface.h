@@ -25,7 +25,7 @@ namespace Mengine
         virtual void finalize() = 0;
 
     public:
-        virtual FactorablePointer generate() = 0;
+        virtual FactorablePointer generate( const Char * _doc ) = 0;
 
     public:
         virtual uint32_t count() const = 0;
@@ -44,7 +44,7 @@ namespace Mengine
         virtual const PrototypeGeneratorInterfacePtr & getGenerator( const ConstString & _category, const ConstString & _prototype ) const = 0;
 
     public:
-        virtual FactorablePointer generatePrototype( const ConstString & _category, const ConstString & _prototype ) = 0;
+        virtual FactorablePointer generatePrototype( const ConstString & _category, const ConstString & _prototype, const Char * _doc ) = 0;
 
     public:
         typedef Lambda<void( const PrototypeGeneratorInterfacePtr & _factory )> LambdaPrototypeGenerator;

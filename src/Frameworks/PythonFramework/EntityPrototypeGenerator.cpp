@@ -8,6 +8,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "pybind/pybind.hpp"
 
@@ -181,7 +182,7 @@ namespace Mengine
         return m_type;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer EntityPrototypeGenerator::generate()
+    FactorablePointer EntityPrototypeGenerator::generate( const Char * _doc )
     {
         const pybind::object & py_type = this->preparePythonType();
 
@@ -194,22 +195,24 @@ namespace Mengine
 
         if( py_entity.is_invalid() == true )
         {
-            LOGGER_ERROR( "EntityPrototypeGenerator.generate: can't create object '%s' '%s' (invalid create)"
+            LOGGER_ERROR( "EntityPrototypeGenerator.generate: can't create object '%s' '%s' (invalid create) doc '%s'"
                 , m_category.c_str()
                 , m_prototype.c_str()
+				, _doc
             );
 
             return nullptr;
         }
 
         EntityPtr entity = PROTOTYPE_SERVICE()
-            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), m_category );
+            ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), m_category, MENGINE_DOCUMENT_FUNCTION );
 
         if( entity == nullptr )
         {
-            LOGGER_ERROR( "EntityPrototypeGenerator can't generate '%s' '%s'"
+            LOGGER_ERROR( "EntityPrototypeGenerator can't generate '%s' '%s' doc '%s'"
                 , m_category.c_str()
                 , m_prototype.c_str()
+				, _doc
             );
 
             return nullptr;
@@ -221,7 +224,7 @@ namespace Mengine
 
         const FactoryPtr & factory = this->getFactory();
 
-        PythonEntityBehaviorPtr behavior = factory->createObject();
+		PythonEntityBehaviorPtr behavior = factory->createObject( _doc );
         behavior->setScriptObject( py_entity );
 
         entity->setBehavior( behavior );

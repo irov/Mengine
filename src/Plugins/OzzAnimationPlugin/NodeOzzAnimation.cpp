@@ -7,6 +7,7 @@
 #include "ResourceOzzAnimation.h"
 
 #include "Kernel/RenderUtils.h"
+#include "Kernel/Document.h"
 
 #include "ozz/base/maths/soa_transform.h"
 #include "ozz/base/containers/vector.h"
@@ -227,15 +228,15 @@ namespace Mengine
         }
 
         m_vertexMemory = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+			->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         RenderVertexBufferInterfacePtr vertexBuffer = RENDER_SYSTEM()
-            ->createVertexBuffer( 1, BT_STREAM );
+            ->createVertexBuffer( 1, BT_STREAM, MENGINE_DOCUMENT_FUNCTION );
 
         m_vertexBuffer = vertexBuffer;
 
         RenderIndexBufferInterfacePtr indexStream = RENDER_SYSTEM()
-            ->createIndexBuffer( sizeof( RenderIndex ), BT_STREAM );
+            ->createIndexBuffer( sizeof( RenderIndex ), BT_STREAM, MENGINE_DOCUMENT_FUNCTION );
 
         m_indexBuffer = indexStream;
 

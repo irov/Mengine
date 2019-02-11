@@ -31,8 +31,10 @@ namespace Mengine
         return m_name;
     }
     //////////////////////////////////////////////////////////////////////////
-    FactorablePointer Factory::createObject()
+    FactorablePointer Factory::createObject( const Char * _doc )
     {
+		MENGINE_UNUSED( _doc );
+
         STDEX_THREAD_GUARD_CHECK( this, "Factory::createObject" );
 
         ++m_count;
@@ -42,7 +44,7 @@ namespace Mengine
         object->setFactory( this );
 
 #ifndef NDEBUG
-        NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, (this, object) );
+		NOTIFICATION_NOTIFY( NOTIFICATOR_DEBUG_CREATE_OBJECT, (this, object, _doc) );
 #endif
 
         return object;

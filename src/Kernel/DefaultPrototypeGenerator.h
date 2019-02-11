@@ -26,17 +26,18 @@ namespace Mengine
         }
 
     protected:
-        FactorablePointer generate() override
+        FactorablePointer generate( const Char * _doc ) override
         {
             const FactoryPtr & factory = this->getFactory();
 
-            TypePtr object = factory->createObject();
+            TypePtr object = factory->createObject( _doc );
 
             if( object == nullptr )
             {
-                LOGGER_ERROR( "DefaultPrototypeGenerator::generate can't generate %s %s"
+                LOGGER_ERROR( "DefaultPrototypeGenerator::generate can't generate %s %s doc '%s'"
                     , this->getCategory().c_str()
                     , this->getPrototype().c_str()
+					, _doc
                 );
 
                 return nullptr;

@@ -14,6 +14,7 @@
 #include "Kernel/Dataflow.h"
 #include "Kernel/Stream.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "stdex/memorycopy.h"
 
@@ -86,7 +87,7 @@ namespace Mengine
 
         if( compositionData == nullptr )
         {
-            LOGGER_ERROR( "ResourceMovie2::getCompositionData resource '%s' file '%s' not found composition data '%s'"
+            LOGGER_ERROR( "resource '%s' file '%s' not found composition data '%s'"
                 , this->getName().c_str()
                 , this->getFilePath().c_str()
                 , _name.c_str()
@@ -148,7 +149,7 @@ namespace Mengine
 
         DataflowInterfacePtr dataflow = VOCALUBARY_GET( STRINGIZE_STRING_LOCAL( "Dataflow" ), dataflowType );
 
-        DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow );
+        DataInterfacePtr data = Helper::getDataflow( fileGroup, filePath, dataflow, MENGINE_DOCUMENT_FUNCTION );
 
         if( data == nullptr )
         {

@@ -16,6 +16,7 @@
 #include "Kernel/Assertion.h"
 #include "Kernel/ThreadTask.h"
 #include "Kernel/SchedulerHelper.h"
+#include "Kernel/Document.h"
 
 #include "Config/Stringstream.h"
 
@@ -63,7 +64,7 @@ namespace Mengine
             }, "NodeDebugRenderService" );
 
             m_debugText = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), "TextField"_c );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), "TextField"_c, MENGINE_DOCUMENT_FUNCTION );
 
             m_debugText->setFontName( "__CONSOLE_FONT__"_c );
             m_debugText->setTextID( "__ID_TEXT_CONSOLE"_c );

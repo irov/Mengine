@@ -35,9 +35,9 @@ namespace Mengine
         m_factoryFEData = nullptr;
     }
     //////////////////////////////////////////////////////////////////////////
-    DataInterfacePtr FEDataflow::create()
+    DataInterfacePtr FEDataflow::create( const Char * _doc )
     {
-        FEDataPtr data = m_factoryFEData->createObject();
+		FEDataPtr data = m_factoryFEData->createObject( _doc );
 
         MENGINE_ASSERTION_MEMORY_PANIC( data, nullptr );
 

@@ -17,6 +17,7 @@
 #include "Plugins/XmlToBinPlugin/XmlToBinInterface.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 #include "Kernel/LoggerBase.h"
 #include "Kernel/FilePathHelper.h"
 #include "ToolUtils/ToolUtils.h"
@@ -191,7 +192,7 @@ int APIENTRY wWinMain( HINSTANCE hInstance, HINSTANCE hPrevInstance, PWSTR lpCmd
     using namespace Mengine::Literals;
 
     Mengine::XmlDecoderInterfacePtr decoder = CODEC_SERVICE()
-        ->createDecoderT<Mengine::XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ) );
+        ->createDecoderT<Mengine::XmlDecoderInterfacePtr>( STRINGIZE_STRING_LOCAL( "xml2bin" ), MENGINE_DOCUMENT_FUNCTION );
 
     if( decoder == nullptr )
     {

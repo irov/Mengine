@@ -1,6 +1,7 @@
 #include "FileService.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Interface/ServiceInterface.h"
 #include "Interface/StringizeServiceInterface.h"
@@ -83,7 +84,7 @@ namespace Mengine
 
         const FactoryPtr & factory = it_found->second;
 
-        FileGroupInterfacePtr fileGroup = factory->createObject();
+		FileGroupInterfacePtr fileGroup = factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         if( fileGroup == nullptr )
         {
@@ -221,9 +222,9 @@ namespace Mengine
         return m_defaultFileGroup;
     }
     //////////////////////////////////////////////////////////////////////////
-    InputStreamInterfacePtr FileService::openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, bool _streaming )
+    InputStreamInterfacePtr FileService::openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, bool _streaming, const Char * _doc )
     {
-        InputStreamInterfacePtr file = _fileGroup->createInputFile( _fileName, _streaming );
+		InputStreamInterfacePtr file = _fileGroup->createInputFile( _fileName, _streaming, _doc );
 
         if( file == nullptr )
         {
@@ -248,9 +249,9 @@ namespace Mengine
         return file;
     }
     //////////////////////////////////////////////////////////////////////////
-    OutputStreamInterfacePtr FileService::openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName )
+    OutputStreamInterfacePtr FileService::openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const Char * _doc )
     {
-        OutputStreamInterfacePtr file = _fileGroup->createOutputFile();
+		OutputStreamInterfacePtr file = _fileGroup->createOutputFile( _doc );
 
         if( file == nullptr )
         {

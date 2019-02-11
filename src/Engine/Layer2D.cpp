@@ -8,6 +8,7 @@
 #include "Kernel/Scene.h"
 #include "Kernel/RenderViewport.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -93,11 +94,11 @@ namespace Mengine
         if( m_renderCamera == nullptr )
         {
             m_renderCamera = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ) );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderCameraOrthogonal" ), MENGINE_DOCUMENT_FUNCTION );
 
             if( m_renderCamera == nullptr )
             {
-                LOGGER_ERROR( "Layer2D::createRenderViewport_ %s invalid create Camera2D"
+                LOGGER_ERROR( "name '%s' invalid create Camera2D"
                     , this->getName().c_str()
                 );
 
@@ -110,11 +111,11 @@ namespace Mengine
         if( m_renderViewport == nullptr )
         {
             m_renderViewport = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ) );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "RenderViewport" ), MENGINE_DOCUMENT_FUNCTION );
 
             if( m_renderViewport == nullptr )
             {
-                LOGGER_ERROR( "Layer2D::createRenderViewport_ %s invalid create RenderViewport"
+                LOGGER_ERROR( "name '%s' invalid create RenderViewport"
                     , this->getName().c_str()
                 );
 
@@ -223,7 +224,7 @@ namespace Mengine
         }
 
         RenderTargetInterfacePtr renderTarget = RENDER_SYSTEM()
-            ->createRenderTargetTexture( (uint32_t)m_size.x, (uint32_t)m_size.y, 3, PF_A8R8G8B8 );
+            ->createRenderTargetTexture( (uint32_t)m_size.x, (uint32_t)m_size.y, 3, PF_A8R8G8B8, MENGINE_DOCUMENT_FUNCTION );
 
         if( renderTarget == nullptr )
         {
@@ -234,7 +235,7 @@ namespace Mengine
         render->setRenderTarget( renderTarget );
 
         RenderImageInterfacePtr renderTargetImage = RENDER_SYSTEM()
-            ->createRenderTargetImage( renderTarget );
+            ->createRenderTargetImage( renderTarget, MENGINE_DOCUMENT_FUNCTION );
 
         if( renderTargetImage == nullptr )
         {
@@ -242,7 +243,7 @@ namespace Mengine
         }
 
         RenderTextureInterfacePtr renderTargetTexture = RENDERTEXTURE_SERVICE()
-            ->createRenderTexture( renderTargetImage, (uint32_t)m_size.x, (uint32_t)m_size.y );
+            ->createRenderTexture( renderTargetImage, (uint32_t)m_size.x, (uint32_t)m_size.y, MENGINE_DOCUMENT_FUNCTION );
 
         if( m_resourceImageMask.compile() == false )
         {

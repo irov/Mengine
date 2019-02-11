@@ -91,6 +91,7 @@ namespace Mengine
         const Movie2SubCompositionPtr & getSubComposition( const ConstString & _name ) const;
 
     public:
+		bool hasMovieLayers( const ConstString & _name ) const override;
         void setEnableMovieLayers( const ConstString & _name, bool _enable ) override;
 
     public:

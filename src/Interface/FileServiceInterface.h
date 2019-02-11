@@ -33,8 +33,8 @@ namespace Mengine
         virtual const FileGroupInterfacePtr & getDefaultFileGroup() const = 0;
 
     public:
-        virtual InputStreamInterfacePtr openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, bool _streamable ) = 0;
-        virtual OutputStreamInterfacePtr openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName ) = 0;
+        virtual InputStreamInterfacePtr openInputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, bool _streamable, const Char * _doc ) = 0;
+        virtual OutputStreamInterfacePtr openOutputFile( const FileGroupInterfacePtr & _fileGroup, const FilePath & _fileName, const Char * _doc ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
 #define FILE_SERVICE()\

@@ -6,6 +6,7 @@
 #include "DX9ErrorHelper.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -134,7 +135,7 @@ namespace Mengine
         }
 
         MemoryProxyInterfacePtr memory = MEMORY_SERVICE()
-            ->createMemoryProxy();
+			->createMemoryProxy( MENGINE_DOCUMENT_FUNCTION );
 
         memory->setBuffer( lock_memory, _count * m_vertexSize, __FILE__, __LINE__ );
 

@@ -8,6 +8,7 @@
 #include "Interface/MemoryServiceInterface.h"
 
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -23,7 +24,7 @@ namespace Mengine
     {
         const FactoryPtr & factory = getFactoryImage();
 
-        ImagePtr image = factory->createObject();
+		ImagePtr image = factory->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         return image;
     }
@@ -45,7 +46,7 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, _path, false );
+            ->openInputFile( fileGroup, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -56,7 +57,7 @@ namespace Mengine
             ->findCodecType( _path );
 
         ImageDecoderInterfacePtr imageDecoder = CODEC_SERVICE()
-            ->createDecoderT<ImageDecoderInterfacePtr>( codecType );
+            ->createDecoderT<ImageDecoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( imageDecoder == nullptr )
         {
@@ -77,7 +78,7 @@ namespace Mengine
         m_channels = dataInfo->channels;
 
         m_memory = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( m_memory == nullptr )
         {
@@ -116,7 +117,7 @@ namespace Mengine
             ->getDefaultFileGroup();
 
         OutputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openOutputFile( fileGroup, _path );
+            ->openOutputFile( fileGroup, _path, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {
@@ -127,7 +128,7 @@ namespace Mengine
             ->findCodecType( _path );
 
         ImageEncoderInterfacePtr encoder = CODEC_SERVICE()
-            ->createEncoderT<ImageEncoderInterfacePtr>( codecType );
+            ->createEncoderT<ImageEncoderInterfacePtr>( codecType, MENGINE_DOCUMENT_FUNCTION );
 
         if( encoder == nullptr )
         {
@@ -170,7 +171,7 @@ namespace Mengine
         m_channels = _channel;
 
         m_memory = MEMORY_SERVICE()
-            ->createMemoryBuffer();
+            ->createMemoryBuffer( MENGINE_DOCUMENT_FUNCTION );
 
         if( m_memory == nullptr )
         {

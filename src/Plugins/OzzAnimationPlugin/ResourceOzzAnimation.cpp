@@ -3,6 +3,7 @@
 #include "Interface/FileServiceInterface.h"
 
 #include "Kernel/MemoryHelper.h"
+#include "Kernel/Document.h"
 
 #include "ozz/base/io/stream.h"
 #include "ozz/base/io/archive.h"
@@ -38,7 +39,7 @@ namespace Mengine
         const FileGroupInterfacePtr & fileGroup = this->getFileGroup();
 
         InputStreamInterfacePtr stream = FILE_SERVICE()
-            ->openInputFile( fileGroup, m_filePath, false );
+            ->openInputFile( fileGroup, m_filePath, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( stream == nullptr )
         {

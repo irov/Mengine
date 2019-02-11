@@ -17,6 +17,7 @@
 #include "Kernel/MemoryAllocator.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "Config/Vector.h"
 
@@ -121,13 +122,13 @@ namespace Mengine
         {
             if( exist == false )
             {
-                LOGGER_ERROR( "MovieKeyConverter::convert: KeyFramesFile '%s' not found"
+                LOGGER_ERROR( "KeyFramesFile '%s' not found"
                     , m_options.inputFileName.c_str()
                 );
             }
             else
             {
-                LOGGER_ERROR( "MovieKeyConverter::convert: KeyFramesFile invalid parse '%s' "
+                LOGGER_ERROR( "KeyFramesFile invalid parse '%s' "
                     , m_options.inputFileName.c_str()
                 );
             }
@@ -558,7 +559,7 @@ namespace Mengine
                 {
                     if( Helper::intersection( polygon, imagePolygon, output ) == false )
                     {
-                        LOGGER_ERROR( "MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
+                        LOGGER_ERROR( "layer %d shapes invalid"
                             , layerIndex
                         );
 
@@ -569,7 +570,7 @@ namespace Mengine
                 {
                     if( Helper::difference( imagePolygon, polygon, output ) == false )
                     {
-                        LOGGER_ERROR( "MovieKeyConverterXMLToAEK::loadFramePak_ layer %d shapes invalid"
+                        LOGGER_ERROR( "layer %d shapes invalid"
                             , layerIndex
                         );
 
@@ -615,7 +616,7 @@ namespace Mengine
 
                     if( max_points >= MENGINE_MOVIE_SHAPE_MAX_VERTEX )
                     {
-                        LOGGER_ERROR( "MovieKeyConverterXMLToAEK::loadFramePak_ layer %d vertex overflow %d (max %d)"
+                        LOGGER_ERROR( "layer %d vertex overflow %d (max %d)"
                             , layerIndex
                             , max_points
                             , MENGINE_MOVIE_SHAPE_MAX_VERTEX
@@ -693,7 +694,7 @@ namespace Mengine
 
                     if( shapeIndicesCount >= MENGINE_MOVIE_SHAPE_MAX_INDICES )
                     {
-                        LOGGER_ERROR( "MovieKeyConverterXMLToAEK::loadFramePak_ layer %d index overflow %d (max $d)"
+                        LOGGER_ERROR( "layer %d index overflow %d (max $d)"
                             , layerIndex
                             , shapeIndicesCount
                             , MENGINE_MOVIE_SHAPE_MAX_INDICES
@@ -768,7 +769,7 @@ namespace Mengine
 
             if( polygon_size >= MENGINE_MOVIE_POLYGON_MAX_VERTEX )
             {
-                LOGGER_ERROR( "MovieKeyConverterXMLToAEK::loadFramePak_ layer %d polygon vertex overflow %d (max $d)"
+                LOGGER_ERROR( "layer %d polygon vertex overflow %d (max $d)"
                     , layerIndex
                     , polygon_size
                     , MENGINE_MOVIE_POLYGON_MAX_VERTEX
@@ -795,11 +796,11 @@ namespace Mengine
     bool MovieKeyConverterXMLToAEK::writeFramePak_( const Blobject & _buffer )
     {
         OutputStreamInterfacePtr output_stream = FILE_SERVICE()
-            ->openOutputFile( m_options.fileGroup, m_options.outputFileName );
+            ->openOutputFile( m_options.fileGroup, m_options.outputFileName, MENGINE_DOCUMENT_FUNCTION );
 
         if( output_stream == nullptr )
         {
-            LOGGER_ERROR( "MovieKeyConverterXMLToAEK::writeFramePak_ invalid open file %s:%s"
+            LOGGER_ERROR( "invalid open file %s:%s"
                 , m_options.fileGroup->getName().c_str()
                 , m_options.outputFileName.c_str()
             );
@@ -812,7 +813,7 @@ namespace Mengine
 
         if( Helper::writeStreamArchiveData( output_stream, m_archivator, GET_MAGIC_NUMBER( MAGIC_AEK ), GET_MAGIC_VERSION( MAGIC_AEK ), false, buffer_memory, buffer_size, EAC_BEST ) == false )
         {
-            LOGGER_ERROR( "MovieKeyConverterXMLToAEK::writeFramePak_ invalid write stream %s:%s"
+            LOGGER_ERROR( "invalid write stream %s:%s"
                 , m_options.fileGroup->getName().c_str()
                 , m_options.outputFileName.c_str()
             );

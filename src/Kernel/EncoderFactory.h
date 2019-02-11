@@ -30,9 +30,9 @@ namespace Mengine
         }
 
     protected:
-        EncoderInterfacePtr createEncoder() override
+        EncoderInterfacePtr createEncoder( const Char * _doc ) override
         {
-            IntrusivePtr<T> encoder = m_factory->createObject();
+            IntrusivePtr<T> encoder = m_factory->createObject( _doc );
 
             return encoder;
         }

@@ -70,6 +70,8 @@
 
 #include "Kernel/BasePrototypeGenerator.h"
 
+#include "Kernel/AssertionMemoryPanic.h"
+
 #include "Window.h"
 #include "Landscape2D.h"
 
@@ -449,20 +451,16 @@ namespace Mengine
             }
 
         protected:
-            FactorablePointer generate() override
+			FactorablePointer generate( const Char * _doc ) override
             {
                 ScenePtr scene = PROTOTYPE_SERVICE()
-                    ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ) );
+					->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), STRINGIZE_STRING_LOCAL( "Scene" ), _doc );
 
-                if( scene == nullptr )
-                {
-                    LOGGER_ERROR( "SceneCategoryGenerator can't create %s %s"
-                        , m_category.c_str()
-                        , m_prototype.c_str()
-                    );
-
-                    return nullptr;
-                }
+				MENGINE_ASSERTION_MEMORY_PANIC( scene, nullptr )("can't create '%s' '%s' doc '%s'"
+					, m_category.c_str()
+					, m_prototype.c_str()
+					, _doc
+					);
 
                 return scene;
             }

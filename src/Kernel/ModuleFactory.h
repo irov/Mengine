@@ -3,8 +3,8 @@
 #include "Interface/ModuleFactoryInterface.h"
 
 #include "Kernel/ConstString.h"
-
 #include "Kernel/FactoryDefault.h"
+#include "Kernel/Document.h"
 
 namespace Mengine
 {
@@ -24,9 +24,9 @@ namespace Mengine
         }
 
     public:
-        ModuleInterfacePtr createModule( const ConstString & _name ) override
+        ModuleInterfacePtr createModule( const ConstString & _name, const Char * _doc ) override
         {
-            IntrusivePtr<T> module = m_factory->createObject();
+			IntrusivePtr<T> module = m_factory->createObject( _doc );
 
             module->setName( _name );
 

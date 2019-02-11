@@ -7,6 +7,7 @@
 #include "Kernel/FactoryPool.h"
 #include "Kernel/AssertionFactory.h"
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include <algorithm>
 #include <stdio.h>
@@ -201,7 +202,7 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     SoundSourceInterfacePtr OpenALSoundSystem::createSoundSource( bool _isHeadMode, const SoundBufferInterfacePtr & _buffer )
     {
-        OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject();
+        OpenALSoundSourcePtr soundSource = m_factoryOpenALSoundSource->createObject( MENGINE_DOCUMENT_FUNCTION );
 
         soundSource->initialize( this );
 
@@ -217,7 +218,7 @@ namespace Mengine
 
         if( _isStream == false || SERVICE_AVAILABLE( ThreadServiceInterface ) == false )
         {
-            OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject();
+			OpenALSoundBufferMemoryPtr buffer = m_factoryOpenALSoundBuffer->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer->initialize( this ) == false )
             {
@@ -228,7 +229,7 @@ namespace Mengine
         }
         else
         {
-            OpenALSoundBufferStreamPtr buffer = m_factoryOpenALSoundBufferStream->createObject();
+			OpenALSoundBufferStreamPtr buffer = m_factoryOpenALSoundBufferStream->createObject( MENGINE_DOCUMENT_FUNCTION );
 
             if( buffer->initialize( this ) == false )
             {

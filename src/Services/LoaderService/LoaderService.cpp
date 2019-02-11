@@ -445,7 +445,7 @@ namespace Mengine
         }
 
         InputStreamInterfacePtr file_bin = FILE_SERVICE()
-            ->openInputFile( _pak, _path, false );
+            ->openInputFile( _pak, _path, false, MENGINE_DOCUMENT_FUNCTION );
 
         if( file_bin == nullptr )
         {

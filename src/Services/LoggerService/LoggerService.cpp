@@ -3,6 +3,7 @@
 #include "Interface/ThreadServiceInterface.h"
 
 #include "Kernel/ThreadMutexScope.h"
+#include "Kernel/Document.h"
 
 #include <algorithm>
 
@@ -34,7 +35,7 @@ namespace Mengine
         SERVICE_WAIT( Mengine::ThreadServiceInterface, [this]()
         {
             m_threadMutex = THREAD_SERVICE()
-                ->createMutex( __FILE__, __LINE__ );
+                ->createMutex( MENGINE_DOCUMENT_FUNCTION );
         } );
 
         return true;

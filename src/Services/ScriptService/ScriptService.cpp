@@ -159,7 +159,7 @@ namespace Mengine
         bool developmentMode = HAS_OPTION( "dev" );
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( __FILE__, __LINE__ );
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         m_mutex = mutex;
 

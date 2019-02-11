@@ -45,10 +45,10 @@ namespace Mengine
         if( m_supportStream == true )
         {
             m_threadJobSoundBufferUpdate = THREAD_SERVICE()
-                ->createJob( 50 );
+                ->createJob( 50, MENGINE_DOCUMENT_FUNCTION );
 
             THREAD_SERVICE()
-                ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), 0, __FILE__, __LINE__ );
+                ->createThread( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), 0, MENGINE_DOCUMENT_FUNCTION );
 
             THREAD_SERVICE()
                 ->addTask( STRINGIZE_STRING_LOCAL( "ThreadSoundBufferUpdate" ), m_threadJobSoundBufferUpdate );

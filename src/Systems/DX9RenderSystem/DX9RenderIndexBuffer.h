@@ -33,7 +33,7 @@ namespace Mengine
         bool resize( uint32_t _count ) override;
 
     protected:
-        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size ) override;
+        MemoryInterfacePtr lock( uint32_t _offset, uint32_t _size, const Char * _doc ) override;
         bool unlock() override;
 
     protected:

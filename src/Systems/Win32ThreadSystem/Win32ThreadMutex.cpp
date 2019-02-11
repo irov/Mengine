@@ -4,10 +4,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     Win32ThreadMutex::Win32ThreadMutex()
-#ifndef NDEBUG
-        : m_file( nullptr )
-        , m_line( 0 )
-#endif
     {
     }
     //////////////////////////////////////////////////////////////////////////
@@ -15,14 +11,12 @@ namespace Mengine
     {
     }
     //////////////////////////////////////////////////////////////////////////
-    void Win32ThreadMutex::initialize( const Char * _file, uint32_t _line )
+    void Win32ThreadMutex::initialize( const Char * _doc )
     {
-        (void)_file;
-        (void)_line;
+        MENGINE_UNUSED( _doc );
 
 #ifndef NDEBUG
-        m_file = _file;
-        m_line = _line;
+        m_doc = _doc;
 #endif
 
         InitializeCriticalSection( &m_cs );

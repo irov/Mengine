@@ -80,7 +80,7 @@ namespace Mengine
         }
 
         ThreadMutexInterfacePtr mutex = THREAD_SERVICE()
-            ->createMutex( __FILE__, __LINE__ );
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         if( mutex == nullptr )
         {

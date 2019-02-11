@@ -52,7 +52,7 @@ namespace Mengine
         }
 
         if( THREAD_SERVICE()
-            ->createThread( STRINGIZE_STRING_LOCAL( "cURLService" ), -1, __FILE__, __LINE__ ) == false )
+            ->createThread( STRINGIZE_STRING_LOCAL( "cURLService" ), -1, MENGINE_DOCUMENT_FUNCTION ) == false )
         {
             return false;
         }

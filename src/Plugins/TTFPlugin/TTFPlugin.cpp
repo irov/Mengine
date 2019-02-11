@@ -9,6 +9,7 @@
 #include "Kernel/PixelFormat.h"
 
 #include "Kernel/Logger.h"
+#include "Kernel/Document.h"
 
 #include "TTFPrototypeGenerator.h"
 #include "TTFDataflow.h"
@@ -79,7 +80,7 @@ namespace Mengine
         m_ftlibrary = ftlibrary;
 
         m_ftMutex = THREAD_SERVICE()
-            ->createMutex( __FILE__, __LINE__ );
+            ->createMutex( MENGINE_DOCUMENT_FUNCTION );
 
         TTFDataflowPtr dataflowTTF = new FactorableUnique<TTFDataflow>();
 

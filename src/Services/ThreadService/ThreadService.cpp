@@ -109,13 +109,6 @@ namespace Mengine
 			threadIdentity->removeTask();
         }
 
-        for( const ThreadTaskDesc & desc : m_tasks )
-        {
-            const ThreadTaskInterfacePtr & task = desc.task;
-
-            task->finally();
-        }
-
         m_tasks.clear();
 
         for( const ThreadQueueInterfacePtr & queue : m_threadQueues )
@@ -291,7 +284,7 @@ namespace Mengine
                 threadIdentity->removeTask();
             }
 
-            task->update();
+            task->finally();
 
 			m_tasks.erase( it );
             
@@ -309,15 +302,13 @@ namespace Mengine
 
             task->cancel();
 
-            if( desc.progress == false )
-            {
-                continue;
-            }
+			if( desc.progress == true )
+			{
+				const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
+				threadIdentity->removeTask();
+			}
 
-            const ThreadIdentityInterfacePtr & threadIdentity = desc.identity;
-            threadIdentity->removeTask();
-        
-            task->update();
+			task->finally();
         }
 
         m_tasks.clear();
@@ -440,6 +431,8 @@ namespace Mengine
             }
             else
             {
+				task->finally();
+
                 m_tasks[it_task] = m_tasks.back();
                 m_tasks.pop_back();
                 --it_task_end;
@@ -461,7 +454,7 @@ namespace Mengine
             else
             {
                 m_threadQueues[it_task] = m_threadQueues.back();
-                m_tasks.pop_back();
+				m_threadQueues.pop_back();
                 --it_task_end;
             }
         }

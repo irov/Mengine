@@ -1,11 +1,12 @@
 CMAKE_MINIMUM_REQUIRED(VERSION 3.0)
 
-PROJECT(Mengine_WIN32)
+OPTION(MENGINE_PROJECT_NAME "Mengine build master release" "Mengine_WIN32")
+OPTION(MENGINE_BUILD_MENGINE_MASTER_RELEASE "Mengine build master release" OFF)
+
+PROJECT(${MENGINE_PROJECT_NAME})
 
 INCLUDE(../macro_template.cmake)
 INCLUDE(../win32_template.cmake)
-
-OPTION(MENGINE_BUILD_MENGINE_MASTER_RELEASE "Mengine build master release" OFF)
 
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 

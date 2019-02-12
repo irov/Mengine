@@ -77,6 +77,11 @@ namespace Mengine
             return 0;
         }
 
+        if( this->isCancel() == true )
+        {
+            return 0;
+        }
+
         uint32_t new_id = GENERATE_UNIQUE_IDENTITY();
 
         for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
@@ -91,7 +96,7 @@ namespace Mengine
             return new_id;
         }
 
-        LOGGER_ERROR( "ThreadJob::addWorker overworkers more %d"
+        LOGGER_ERROR( "overworkers more %d"
             , MENGINE_THREAD_JOB_WORK_COUNT
         );
 
@@ -292,10 +297,8 @@ namespace Mengine
 
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadJob::_onComplete( bool _successful )
+    void ThreadJob::_onFinally()
     {
-        MENGINE_UNUSED( _successful );
-
         for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )
         {
             ThreadJobWorkerDesc & desc = m_workers[i];

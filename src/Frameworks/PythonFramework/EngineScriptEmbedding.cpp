@@ -897,10 +897,13 @@ namespace Mengine
             _node->release();
         }
         //////////////////////////////////////////////////////////////////////////
-        NodePtr s_createNode( const ConstString & _type )
+        NodePtr s_createNode( pybind::kernel_interface * _kernel, const ConstString & _type )
         {
+            Char pytraceback[4096];
+            _kernel->get_traceback( pytraceback, 4096 );
+
             NodePtr node = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT_FUNCTION );
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT( "%s", pytraceback ) );
 
             MENGINE_ASSERTION_MEMORY_PANIC( node, nullptr );
 
@@ -3398,7 +3401,7 @@ namespace Mengine
 
         pybind::def_functor( kernel, "getCamera2DPosition", nodeScriptMethod, &EngineScriptMethod::s_getCamera2DPosition );
 
-        pybind::def_functor( kernel, "createNode", nodeScriptMethod, &EngineScriptMethod::s_createNode );
+        pybind::def_functor_kernel( kernel, "createNode", nodeScriptMethod, &EngineScriptMethod::s_createNode );
         pybind::def_functor( kernel, "destroyNode", nodeScriptMethod, &EngineScriptMethod::s_destroyNode );
 
         pybind::def_functor( kernel, "createSurface", nodeScriptMethod, &EngineScriptMethod::s_createSurface );

@@ -37,11 +37,9 @@ namespace Mengine
     struct ThreadJobWorkerDesc
     {
         ThreadMutexInterfacePtr mutex;
-
         ThreadWorkerInterfacePtr worker;
 
         AtomicUInt32 id;
-
         AtomicUInt32 status;
     };
     //////////////////////////////////////////////////////////////////////////
@@ -65,13 +63,10 @@ namespace Mengine
         bool _onMain() override;
         void _onUpdate() override;
         void _onCancel() override;
-        void _onComplete( bool _successful ) override;
+        void _onFinally() override;
 
     protected:
-        bool check_remove( uint32_t _id );
-
-    protected:
-        uint32_t m_sleep;        
+        uint32_t m_sleep;
 
         ThreadJobWorkerDesc m_workers[MENGINE_THREAD_JOB_WORK_COUNT];
 

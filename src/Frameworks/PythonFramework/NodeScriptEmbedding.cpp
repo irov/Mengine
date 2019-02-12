@@ -17,6 +17,7 @@
 #include "Kernel/Arrow.h"
 #include "Kernel/NodeRenderHelper.h"
 #include "Kernel/MatrixProxy.h"
+#include "Kernel/AssertionMemoryPanic.h"
 
 #include "Interface/ScriptServiceInterface.h"
 #include "Interface/SchedulerInterface.h"
@@ -901,21 +902,21 @@ namespace Mengine
             return std::string( debugId );
         }
         //////////////////////////////////////////////////////////////////////////
-        NodePtr s_Node_createChildren( Node * _node, const ConstString & _type )
+        NodePtr s_Node_createChildren( pybind::kernel_interface * _kernel, Node * _node, const ConstString & _type )
         {
-            NodePtr newNode = PROTOTYPE_SERVICE()
-                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, MENGINE_DOCUMENT_FUNCTION );
+            Char pytraceback[4096];
+            _kernel->get_traceback( pytraceback, 4096 );
 
-            if( newNode == nullptr )
-            {
-                return nullptr;
-            }
+            NodePtr node = PROTOTYPE_SERVICE()
+                ->generatePrototype( STRINGIZE_STRING_LOCAL( "Node" ), _type, pytraceback );
 
-            newNode->disable();
+            MENGINE_ASSERTION_MEMORY_PANIC( node, nullptr );
 
-            _node->addChild( newNode );
+            node->disable();
 
-            return newNode;
+            _node->addChild( node );
+
+            return node;
         }
         //////////////////////////////////////////////////////////////////////////
         pybind::list s_Node_getAllChildren( pybind::kernel_interface * _kernel, Node * _node )
@@ -2755,7 +2756,7 @@ namespace Mengine
 
             .def_proxy_static( "getDebugId", nodeScriptMethod, &NodeScriptMethod::s_Node_getDebugId )
 
-            .def_proxy_static( "createChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_createChildren )
+            .def_proxy_static_kernel( "createChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_createChildren )
             .def_proxy_static_kernel( "getAllChildren", nodeScriptMethod, &NodeScriptMethod::s_Node_getAllChildren )
 
             .def_proxy_static_args( "colorTo", nodeScriptMethod, &NodeScriptMethod::s_Node_colorTo )

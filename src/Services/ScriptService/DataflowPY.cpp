@@ -58,7 +58,7 @@ namespace Mengine
     {
         ScriptCodeData * data = stdex::intrusive_get<ScriptCodeData *>( _data );
 
-        MemoryInterfacePtr source_memory = Helper::createMemoryCacheStreamExtraSize( _stream, 2, "DataflowPY", __FILE__, __LINE__ );
+        MemoryInterfacePtr source_memory = Helper::createMemoryCacheStreamExtraSize( _stream, 2, _doc, __FILE__, __LINE__ );
 
         MENGINE_ASSERTION_MEMORY_PANIC( source_memory, false );
 

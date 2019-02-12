@@ -67,8 +67,6 @@ namespace Mengine
 
         m_active = true;
 
-        //m_invalidateRendering = true;
-
         if( m_children.empty() == false )
         {
             NodePtr single = m_children.single();
@@ -154,8 +152,6 @@ namespace Mengine
         m_deactivating = false;
 
         this->_afterDeactivate();
-
-        //m_invalidateRendering = true;
     }
     //////////////////////////////////////////////////////////////////////////
     bool Node::enable()
@@ -1148,8 +1144,6 @@ namespace Mengine
     {
         bool result = Compilable::compile();
 
-        //m_invalidateRendering = true;
-
         return result;
     }
     //////////////////////////////////////////////////////////////////////////
@@ -1182,14 +1176,10 @@ namespace Mengine
         }
 
         Compilable::release();
-
-        //this->updateRendering_();
     }
     //////////////////////////////////////////////////////////////////////////
     void Node::_recompile()
     {
-        //m_invalidateRendering = true;
-
         if( m_enable == false )
         {
             return;
@@ -1205,8 +1195,6 @@ namespace Mengine
     //////////////////////////////////////////////////////////////////////////
     void Node::_uncompile()
     {
-        //m_invalidateRendering = true;
-
         if( m_enable == false )
         {
             return;
@@ -1246,30 +1234,4 @@ namespace Mengine
     {
         return nullptr;
     }
-    ////////////////////////////////////////////////////////////////////////////
-    //void Node::updateRendering_() const
-    //{
-    //    m_invalidateRendering = false;
-
-    //    if( this->isCompile() == false )
-    //    {
-    //        m_rendering = false;
-    //    }
-    //    else if( this->isActivate() == false )
-    //    {
-    //        m_rendering = false;
-    //    }
-    //    else if( this->isHide() == true )
-    //    {
-    //        m_rendering = false;
-    //    }
-    //    else if( this->isLocalTransparent() == true )
-    //    {
-    //        m_rendering = false;
-    //    }
-    //    else
-    //    {
-    //        m_rendering = true;
-    //    }
-    //}
 }

@@ -79,6 +79,11 @@ namespace Mengine
         if( m_arrow != nullptr )
         {
             m_arrow->disable();
+
+            m_arrow->setRenderCamera( nullptr );
+            m_arrow->setRenderViewport( nullptr );
+            m_arrow->setRenderScissor( nullptr );
+
             m_arrow = nullptr;
         }
 
@@ -219,6 +224,11 @@ namespace Mengine
         if( m_arrow != nullptr )
         {
             m_arrow->release();
+
+            m_arrow->setRenderCamera( nullptr );
+            m_arrow->setRenderViewport( nullptr );
+            m_arrow->setRenderScissor( nullptr );
+
             m_arrow = nullptr;
         }
 

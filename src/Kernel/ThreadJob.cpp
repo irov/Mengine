@@ -292,11 +292,6 @@ namespace Mengine
         }
     }
     //////////////////////////////////////////////////////////////////////////
-    void ThreadJob::_onCancel()
-    {
-
-    }
-    //////////////////////////////////////////////////////////////////////////
     void ThreadJob::_onFinally()
     {
         for( uint32_t i = 0; i != MENGINE_THREAD_JOB_WORK_COUNT; ++i )

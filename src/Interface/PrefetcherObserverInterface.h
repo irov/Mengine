@@ -1,11 +1,11 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
 
 namespace Mengine
 {
     class PrefetcherObserverInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void onPrefetchIgnored() = 0;

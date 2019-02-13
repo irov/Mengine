@@ -1,13 +1,13 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
 
 //////////////////////////////////////////////////////////////////////////
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class LoadableInterface
-        : public Mixin
+        : public Interface
     {
     public:
     };

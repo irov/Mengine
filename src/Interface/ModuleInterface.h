@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
+
 #include "Kernel/UpdateContext.h"
 #include "Kernel/RenderContext.h"
 #include "Kernel/ConstString.h"
@@ -9,7 +10,7 @@
 namespace Mengine
 {
     class ModuleInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void setName( const ConstString & _name ) = 0;

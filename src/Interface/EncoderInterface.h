@@ -2,15 +2,14 @@
 
 #include "Config/Typedef.h"
 
+#include "Interface/Interface.h"
 #include "Interface/CodecInterface.h"
 #include "Interface/OutputStreamInterface.h"
-
-#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     class EncoderInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool initialize( const OutputStreamInterfacePtr & _stream ) = 0;

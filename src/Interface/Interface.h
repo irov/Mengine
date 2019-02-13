@@ -1,0 +1,16 @@
+#pragma once
+
+#include "Kernel/Mixin.h"
+
+#include "Config/Config.h"
+
+namespace Mengine
+{
+    class Interface
+        : public Mixin
+    {
+    };
+    //////////////////////////////////////////////////////////////////////////
+    typedef IntrusivePtr<Interface> InterfacePtr;
+    //////////////////////////////////////////////////////////////////////////
+}

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "Interface/Interface.h"
 #include "Interface/InputStreamInterface.h"
 #include "Interface/OutputStreamInterface.h"
 #include "Interface/MemoryInterface.h"
@@ -29,7 +30,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class AccountSettingProviderInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void onChangeSetting( const Char * _value ) = 0;
@@ -38,7 +39,7 @@ namespace Mengine
     typedef IntrusivePtr<AccountSettingProviderInterface> AccountSettingProviderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class AccountInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual const ConstString & getID() const = 0;

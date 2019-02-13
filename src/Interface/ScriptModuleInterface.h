@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
+
 #include "Kernel/ConstString.h"
 
 #include "pybind/module.hpp"
@@ -9,7 +10,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ScriptModuleInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool onInitialize( const ConstString & _method ) = 0;

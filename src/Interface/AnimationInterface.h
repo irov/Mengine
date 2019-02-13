@@ -1,12 +1,12 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class AnimationInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void setLoop( bool _value ) = 0;

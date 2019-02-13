@@ -113,11 +113,6 @@ namespace Mengine
 
         this->_onCancel();
 
-		if( m_run == false )
-		{
-			this->_onFinally();
-		}
-
         return true;
     }
     //////////////////////////////////////////////////////////////////////////

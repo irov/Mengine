@@ -2,6 +2,8 @@
 
 #include "Interface/MaterialEnumInterface.h"
 #include "Interface/RenderEnumInterface.h"
+#include "Interface/RenderMaterialInterface.h"
+#include "Interface/RenderTextureInterface.h"
 
 #include "Kernel/ConstString.h"
 #include "Kernel/Mixin.h"
@@ -10,16 +12,6 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     typedef IntrusivePtr<class ResourceImage, class Resource> ResourceImagePtr;
-    typedef IntrusivePtr<class RenderMaterialInterface> RenderMaterialInterfacePtr;
-    typedef IntrusivePtr<class RenderTextureInterface> RenderTextureInterfacePtr;
-    //////////////////////////////////////////////////////////////////////////
-    enum EMaterialBlendMode
-    {
-        EMB_NORMAL,
-        EMB_ADD,
-        EMB_SCREEN,
-        EMB_MULTIPLY
-    };
     //////////////////////////////////////////////////////////////////////////
     namespace Helper
     {
@@ -77,6 +69,8 @@ namespace Mengine
             , EPrimitiveType _primitiveType
             , uint32_t _textureCount
             , const RenderTextureInterfacePtr * _textures ) const;
+
+        const RenderMaterialInterfacePtr & getSolidMaterial( EMaterialBlendMode _blendMode ) const;
 
     protected:
         ConstString m_materialName;

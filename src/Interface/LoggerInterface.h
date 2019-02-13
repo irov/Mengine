@@ -3,7 +3,7 @@
 #include "Config/Typedef.h"
 #include "Config/Char.h"
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
 
 namespace Mengine
 {
@@ -23,7 +23,7 @@ namespace Mengine
     };
     //////////////////////////////////////////////////////////////////////////
     class LoggerInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual bool initialize() = 0;

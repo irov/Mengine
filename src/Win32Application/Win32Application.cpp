@@ -97,7 +97,6 @@ SERVICE_EXTERN( ResourceService );
 SERVICE_EXTERN( SceneService );
 SERVICE_EXTERN( TextService );
 SERVICE_EXTERN( WatchdogService );
-SERVICE_EXTERN( ProfilerService );
 SERVICE_EXTERN( GraveyardService );
 SERVICE_EXTERN( PackageService );
 SERVICE_EXTERN( UserdataService );
@@ -669,7 +668,6 @@ namespace Mengine
         SERVICE_CREATE( ResourceService );        
         SERVICE_CREATE( TextService );
         SERVICE_CREATE( WatchdogService );
-        SERVICE_CREATE( ProfilerService );
         SERVICE_CREATE( GraveyardService );
         SERVICE_CREATE( PackageService );
         SERVICE_CREATE( UserdataService );

@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
 
 #include "Config/Char.h"
 
@@ -8,7 +8,7 @@ namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class ArgumentsInterface
-        : public Mixin
+        : public Interface
     {
     public:
         virtual void addArgument( const Char * _argument ) = 0;

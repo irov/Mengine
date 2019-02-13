@@ -2,23 +2,22 @@
 
 #include "Config/Typedef.h"
 
+#include "Interface/Interface.h"
 #include "Interface/ServiceInterface.h"
-
-#include "Kernel/Mixin.h"
 
 namespace Mengine
 {
     //////////////////////////////////////////////////////////////////////////
     class Factory;
     //////////////////////////////////////////////////////////////////////////
-    class VisitorFactoryService
-        : public Mixin
+    class VisitorFactoryInterface
+        : public Interface
     {
     public:
         virtual void visit( const Factory * _factory ) = 0;
     };
     //////////////////////////////////////////////////////////////////////////
-    typedef IntrusivePtr<VisitorFactoryService> VisitorFactoryServicePtr;
+    typedef IntrusivePtr<VisitorFactoryInterface> VisitorFactoryServicePtr;
     //////////////////////////////////////////////////////////////////////////
     class FactoryServiceInterface
         : public ServiceInterface

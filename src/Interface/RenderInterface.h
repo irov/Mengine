@@ -1,6 +1,7 @@
 #pragma once
 
-#include "Kernel/Mixin.h"
+#include "Interface/Interface.h"
+
 #include "Kernel/Colorable.h"
 #include "Kernel/BoundingBox.h"
 #include "Kernel/RenderContext.h"
@@ -13,7 +14,8 @@ namespace Mengine
     typedef IntrusivePtr<class RenderInterface> RenderInterfacePtr;
     //////////////////////////////////////////////////////////////////////////
     class RenderInterface
-        : public Colorable
+        : public Interface
+        , public Colorable
         , public BoundingBox
     {
     public:

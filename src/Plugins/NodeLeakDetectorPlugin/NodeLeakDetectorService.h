@@ -8,6 +8,10 @@
 #include "Config/Vector.h"
 #include "Config/String.h"
 
+#ifndef MENGINE_NODELEAKDETECTOR_HASHSIZE
+#define MENGINE_NODELEAKDETECTOR_HASHSIZE 127
+#endif
+
 namespace Mengine
 {
     class NodeLeakDetectorService
@@ -43,7 +47,7 @@ namespace Mengine
         };
 
         typedef Vector<NodeLeakDesc> VectorNodeLeakDesc;
-        VectorNodeLeakDesc m_nodeLeakDescs;
+        VectorNodeLeakDesc m_nodeLeakDescs[MENGINE_NODELEAKDETECTOR_HASHSIZE];
     };
 }
 //////////////////////////////////////////////////////////////////////////
